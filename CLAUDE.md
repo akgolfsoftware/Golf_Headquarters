@@ -199,6 +199,82 @@ akgolf-hq/
 
 ---
 
+## Git-arbeidsflyt — Claude Code håndterer dette
+
+Claude Code KAN og SKAL utføre git-operasjoner for Anders. Han er ikke utvikler
+og skal ikke skrive git-kommandoer selv. Følg disse reglene strengt:
+
+### 1. Auto-commit etter fullført oppgave
+
+Etter hver fullført oppgave: stage relevante filer, commit med beskrivende
+melding, og push til main. IKKE spør om bekreftelse på trivielle commits.
+
+```bash
+git add .
+git commit -m "feat: <hva ble gjort>"
+git push
+```
+
+### 2. Stop and ask før destruktive operasjoner
+
+Disse kommandoene krever eksplisitt "ja" fra Anders i chatten først.
+Forklar hva som vil skje før du venter på svar:
+
+- `git push --force` (eller `--force-with-lease`)
+- `git reset --hard`
+- `git rebase` på shared branches (typisk main)
+- Sletting av remote branches
+- Endringer som omskriver main-historikken
+- `git checkout` som vil overskrive ucommittede endringer
+
+### 3. Commit-meldinger — Conventional Commits på engelsk
+
+Format: `<type>: <kort beskrivelse>`
+
+Vanlige types:
+- `feat:` — ny funksjonalitet
+- `fix:` — bugfix
+- `docs:` — dokumentasjon
+- `refactor:` — kode-omstrukturering uten funksjonsendring
+- `chore:` — vedlikehold (deps, config, etc.)
+- `test:` — tester
+- `style:` — formatting, whitespace
+
+Eksempler:
+- `feat: add booking calendar component`
+- `fix: handle null user in auth check`
+- `docs: clarify font usage in CLAUDE.md`
+
+### 4. Status-update etter push
+
+Etter push, oppsummer på norsk hva som ble gjort, slik at Anders har oversikt
+uten å måtte sjekke selv. Eksempel:
+
+> ✓ Stagete 3 filer
+> ✓ Commitet: "feat: add contact page with stub form"
+> ✓ Pushet til main
+>
+> Kontaktsiden er live på localhost:3000/kontakt. Neste steg: deploye til Vercel.
+
+### 5. Branches og pull requests
+
+For Foundation-laget: jobb direkte på main. Det er kun Anders som rører dette
+repoet, og endringer er sjeldne og bevisste.
+
+For app-prosjekter (akgolf-website, akgolf-booking, etc.): bruk feature branches
+når det er relevant for større endringer:
+
+```bash
+git checkout -b feat/<kort-navn>
+# ... arbeid ...
+git push -u origin feat/<kort-navn>
+gh pr create --fill                # Bruker commit-meldinger som PR-tekst
+```
+
+Spør Anders før du oppretter PR — han skal vite at det skjer.
+
+---
+
 ## Verifikasjon (kjør før hver commit)
 
 ```bash
