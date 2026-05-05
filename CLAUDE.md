@@ -19,42 +19,81 @@ CoachHQ, landingssider og andre features bygges i **andre** prosjekter — ikke 
 
 ---
 
-## Designsystem — endres aldri uten eksplisitt beslutning
+## Designsystem v2 — endres aldri uten eksplisitt beslutning
 
-### Farger (i `src/app/globals.css` under `@theme`)
+### Arkitektur
 
-| Token       | Hex       | Tailwind-klasse                     |
-| ----------- | --------- | ----------------------------------- |
-| `primary`   | `#005840` | `bg-primary` `text-primary` etc.    |
-| `accent`    | `#D1F843` | `bg-accent` `text-accent` etc.      |
-| `dark-bg`   | `#0A1F18` | `bg-dark-bg` `text-dark-bg` etc.    |
+Tokens lagres som HSL-trippel uten `hsl()`-wrapper i `src/app/globals.css`
+(shadcn/ui-konvensjon). Tailwind v4 mapper dem til utilities via `@theme inline`.
 
-**ALDRI** hardkode hex-verdier i komponenter. Bruk alltid Tailwind-klassene.
-Hvis du trenger en ny farge, legg den inn som token i `globals.css` først.
+Lyst tema er default. Mørkt aktiveres via `.dark`-klasse på `<html>`-element.
+
+### Semantiske tokens (18 totalt)
+
+| Token | Lyst | Mørkt | Bruk |
+|---|---|---|---|
+| `background` | #FAFAF7 | #0F2A22 | Side-bakgrunn |
+| `foreground` | #0A1F17 | #F5F4EE | Primær tekst |
+| `card` | #FFFFFF | #163027 | Card-bakgrunn |
+| `card-foreground` | #0A1F17 | #F5F4EE | Tekst på card |
+| `popover` | #FFFFFF | #163027 | Popover/dropdown |
+| `popover-foreground` | #0A1F17 | #F5F4EE | Tekst i popover |
+| `primary` | #005840 | #D1F843 | CTA, primær handling |
+| `primary-foreground` | #D1F843 | #0A1F17 | Tekst på primary |
+| `secondary` | #F1EEE5 | #1B3B30 | Secondary buttons, chips |
+| `secondary-foreground` | #0A1F17 | #F5F4EE | Tekst på secondary |
+| `muted` | #F1EEE5 | #1B3B30 | Disabled, dempet bakgrunn |
+| `muted-foreground` | #5E5C57 | #9D9C95 | Sekundær tekst |
+| `accent` | #D1F843 | #D1F843 | Highlight, badges |
+| `accent-foreground` | #005840 | #0A1F17 | Tekst på accent |
+| `destructive` | #A32D2D | #D45353 | Slett, feil |
+| `destructive-foreground` | #FAFAF7 | #F5F4EE | Tekst på destructive |
+| `border` | #E5E3DD | #2B4F42 | Borders |
+| `input` | #E0DDD6 | #2B4F42 | Form-input borders |
+| `ring` | #005840 | #D1F843 | Focus ring |
+
+**Bruk:** `bg-primary`, `text-foreground`, `border-border`, `ring-ring` etc.
+**ALDRI** hardkode hex-verdier. Hvis du trenger ny farge, legg den inn som
+token i `globals.css` først.
 
 ### Border radius
 
-- `rounded-card` = 16px (cards, panels, modaler)
-- `rounded-pill` = 20px (knapper, tags, badges)
+`--radius` er satt til `1rem` (16px). Tailwind-utilities:
+- `rounded-lg` = 16px (cards, panels)
+- `rounded-md` = 12px (inputs, knapper)
+- `rounded-sm` = 8px (badges, tags)
+- `rounded-xl` = 12px hardkodet (større cards)
+- `rounded-2xl` = 16px hardkodet (hero-cards)
+- `rounded-full` = pill (CTAs, badges, status)
 
 ### 8pt-grid (håndheves i kode-review, ikke i CSS)
 
-All spacing skal være multipler av 8px. I Tailwind v4 betyr det:
-
+All spacing skal være multipler av 8px. I Tailwind v4:
 - Bruk: `p-2` (8), `p-4` (16), `p-6` (24), `p-8` (32), `p-10` (40), `p-12` (48), `p-16` (64)
 - Unngå: `p-1` (4), `p-3` (12), `p-5` (20), `p-7` (28), `p-9` (36)
-
 Samme regel for `m-`, `gap-`, `space-y-`, `w-`, `h-`.
 
-### Font
+### Typografi
 
-Inter, variable, lastet via `next/font/google` i `layout.tsx`. Eksponert som
-CSS-variabel `--font-inter` og brukt via `--font-sans` token. Ingen andre
-fonter — ikke import fra Google Fonts CDN, ikke bruk `<link>`-tags.
+Tre fonter, alle gratis via Google Fonts, lastet via `next/font/google` i `layout.tsx`:
+
+| Font | Bruk | Tailwind | CSS-variabel |
+|---|---|---|---|
+| Geist | UI, brødtekst (default) | `font-sans` (default) | `--font-geist` |
+| Geist Mono | Tabulære tall, kode, data | `font-mono` | `--font-geist-mono` |
+| Instrument Serif | Display, editorial italic | `font-display` (custom) | `--font-instrument-serif` |
+
+**Regler:**
+- Geist er variable, brukes som default (`font-sans`)
+- Instrument Serif lastes med `weight: "400"` og `style: ["normal", "italic"]`
+- Italic Instrument Serif gir editorial luxury-feel — bruk i hero-overskrifter
+- Geist Mono har `font-variant-numeric: tabular-nums` (eller bruk `.tabular`-klassen)
+- Ingen andre fonter — ikke import fra Google Fonts CDN, ikke bruk `<link>`-tags
 
 ### Ikoner
 
-Kun `lucide-react`. Ingen Heroicons, Phosphor, React Icons.
+Kun `lucide-react`. Default 24px, 1.5px stroke, round caps. Aldri farget — alltid
+`currentColor`. Ingen Heroicons, Phosphor, React Icons.
 
 ---
 

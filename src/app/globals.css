@@ -1,41 +1,148 @@
-/* AK Golf HQ — globale styles og designsystem-tokens (Tailwind v4) */
+/* AK Golf HQ — globale styles og designsystem-tokens (v2) */
 
 @import "tailwindcss";
 
-/* ---------- Designsystem-tokens ----------
- * Endres ALDRI uten eksplisitt beslutning.
- * Bruk via Tailwind-klasser: bg-primary, text-accent, bg-dark-bg, rounded-card, rounded-pill.
- * Ingen hardkodede hex-verdier i komponenter.
+/* ---------- Designsystem v2 ----------
+ * HSL-trippel uten hsl()-wrapper. Tailwind v4 mapper dem til utilities
+ * via @theme inline lenger nede. Endres ALDRI uten eksplisitt beslutning.
+ *
+ * Lyst tema er default. Mørkt aktiveres via .dark-klasse på html-element.
  */
-@theme {
-  /* Farger */
-  --color-primary: #005840;
-  --color-accent: #d1f843;
-  --color-dark-bg: #0a1f18;
 
-  /* Border radius */
-  --radius-card: 16px;
-  --radius-pill: 20px;
+:root {
+  /* Surfaces */
+  --background: 45 18% 97%;        /* #FAFAF7 */
+  --foreground: 157 53% 8%;        /* #0A1F17 */
+  --card: 0 0% 100%;
+  --card-foreground: 157 53% 8%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 157 53% 8%;
 
-  /* Font: Inter (variable, lastes via next/font i layout.tsx) */
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  /* Brand */
+  --primary: 159 100% 17%;         /* #005840 */
+  --primary-foreground: 72 92% 62%;/* #D1F843 — lime som tekst på primary */
+  --accent: 72 92% 62%;            /* #D1F843 */
+  --accent-foreground: 159 100% 17%;
+
+  /* Neutrals */
+  --secondary: 45 18% 94%;
+  --secondary-foreground: 157 53% 8%;
+  --muted: 45 18% 94%;
+  --muted-foreground: 60 4% 37%;
+
+  /* Feedback */
+  --destructive: 0 56% 41%;
+  --destructive-foreground: 0 0% 98%;
+
+  /* Form og fokus */
+  --border: 60 8% 90%;
+  --input: 60 8% 88%;
+  --ring: 159 100% 17%;
+
+  /* Radius (16px = card, 20px = pill håndteres via rounded-full) */
+  --radius: 1rem;
 }
 
-/* ---------- 8pt grid ----------
- * Tailwinds default --spacing er 0.25rem (4px).
- * For å håndheve 8pt-grid bruker vi KUN partall-utilities:
- * p-2 (8), p-4 (16), p-6 (24), p-8 (32), p-10 (40), p-12 (48), p-16 (64).
- * IKKE p-1, p-3, p-5, p-7. Dette håndheves i CLAUDE.md, ikke i CSS.
+.dark {
+  --background: 157 47% 11%;       /* #0F2A22 — løftet fra v1 #0A1F18 */
+  --foreground: 60 8% 96%;
+  --card: 157 39% 14%;             /* #163027 — surface-lag */
+  --card-foreground: 60 8% 96%;
+  --popover: 157 39% 14%;
+  --popover-foreground: 60 8% 96%;
+
+  --primary: 72 92% 62%;           /* I dark mode er lime primary */
+  --primary-foreground: 157 53% 8%;
+  --accent: 72 92% 62%;
+  --accent-foreground: 157 53% 8%;
+
+  --secondary: 157 39% 18%;
+  --secondary-foreground: 60 8% 96%;
+  --muted: 157 39% 18%;
+  --muted-foreground: 60 8% 68%;
+
+  --destructive: 0 56% 60%;
+  --destructive-foreground: 60 8% 96%;
+
+  --border: 157 39% 22%;
+  --input: 157 39% 22%;
+  --ring: 72 92% 62%;
+}
+
+/* ---------- Tailwind v4 token-mapping ----------
+ * @theme inline gjør at CSS-variablene over blir til Tailwind-utilities:
+ * bg-primary, text-foreground, border-border, ring-ring, etc.
  */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-sm: calc(var(--radius) - 8px);
+
+  --font-sans: var(--font-geist), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-instrument-serif), Georgia, serif;
+}
 
 /* ---------- Base ---------- */
+* {
+  border-color: hsl(var(--border));
+}
+
 html {
-  font-family: var(--font-sans);
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--color-dark-bg);
-  color: #ffffff;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: "ss01", "ss03", "cv11";
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
+
+/* Display-utility for Instrument Serif (brukes via klassen .font-display) */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Tabular nums shortcut */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Selection */
+::selection {
+  color: #0a1f17;
+  background: rgba(212, 247, 69, 0.4);
+}
+
+.dark ::selection {
+  color: #f6f6f4;
+  background: rgba(212, 247, 69, 0.3);
+}
+
+/* ---------- 8pt grid-konvensjon (håndheves i kode-review) ----------
+ * Bruk: p-2 (8), p-4 (16), p-6 (24), p-8 (32), p-10 (40), p-12 (48), p-16 (64)
+ * Unngå: p-1 (4), p-3 (12), p-5 (20), p-7 (28), p-9 (36)
+ */
