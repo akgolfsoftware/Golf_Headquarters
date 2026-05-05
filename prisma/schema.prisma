@@ -1,0 +1,95 @@
+// AK Golf HQ — Prisma schema
+// Foundation: 4 startmodeller. Resten migreres inn i egen fase.
+// Prisma 7: url/directUrl flyttet til prisma.config.ts. Schema har bare provider.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------- Enums ----------
+
+enum UserRole {
+  ADMIN
+  COACH
+  PLAYER
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+// ---------- Models ----------
+
+model User {
+  id        String   @id @default(cuid())
+  // Knytter mot Supabase auth.users.id (UUID).
+  // Holdes som String for å unngå Prisma-uuid-type-friksjon mot Supabase.
+  authId    String   @unique
+  email     String   @unique
+  name      String
+  role      UserRole @default(PLAYER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings Booking[]
+
+  @@map("users")
+}
+
+model ServiceType {
+  id          String   @id @default(cuid())
+  name        String
+  // Pris i ØRE (Int). Aldri Float for penger. Format i UI: priceOre / 100.
+  priceOre    Int
+  durationMin Int
+  description String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bookings Booking[]
+
+  @@map("service_types")
+}
+
+model Location {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings Booking[]
+
+  @@map("locations")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  userId        String
+  serviceTypeId String
+  locationId    String
+  startAt       DateTime
+  endAt         DateTime
+  status        BookingStatus @default(CONFIRMED)
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id])
+  serviceType ServiceType @relation(fields: [serviceTypeId], references: [id])
+  location    Location    @relation(fields: [locationId], references: [id])
+
+  @@index([userId])
+  @@index([startAt])
+  @@map("bookings")
+}

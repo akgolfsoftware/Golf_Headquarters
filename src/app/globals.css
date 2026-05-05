@@ -1,0 +1,41 @@
+/* AK Golf HQ — globale styles og designsystem-tokens (Tailwind v4) */
+
+@import "tailwindcss";
+
+/* ---------- Designsystem-tokens ----------
+ * Endres ALDRI uten eksplisitt beslutning.
+ * Bruk via Tailwind-klasser: bg-primary, text-accent, bg-dark-bg, rounded-card, rounded-pill.
+ * Ingen hardkodede hex-verdier i komponenter.
+ */
+@theme {
+  /* Farger */
+  --color-primary: #005840;
+  --color-accent: #d1f843;
+  --color-dark-bg: #0a1f18;
+
+  /* Border radius */
+  --radius-card: 16px;
+  --radius-pill: 20px;
+
+  /* Font: Inter (variable, lastes via next/font i layout.tsx) */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+/* ---------- 8pt grid ----------
+ * Tailwinds default --spacing er 0.25rem (4px).
+ * For å håndheve 8pt-grid bruker vi KUN partall-utilities:
+ * p-2 (8), p-4 (16), p-6 (24), p-8 (32), p-10 (40), p-12 (48), p-16 (64).
+ * IKKE p-1, p-3, p-5, p-7. Dette håndheves i CLAUDE.md, ikke i CSS.
+ */
+
+/* ---------- Base ---------- */
+html {
+  font-family: var(--font-sans);
+}
+
+body {
+  background: var(--color-dark-bg);
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
