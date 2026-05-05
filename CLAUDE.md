@@ -13,7 +13,7 @@ CoachHQ, landingssider og andre features bygges i **andre** prosjekter — ikke 
 - React 19
 - Prisma 7 + Supabase (Postgres)
 - Tailwind CSS v4 (CSS-first via `@theme` i `globals.css` — ingen `tailwind.config.ts`)
-- Inter (variable, via `next/font/google`) — eneste font
+- Geist + Geist Mono + Instrument Serif (alle via `next/font/google`)
 - Lucide React — eneste icon-bibliotek
 - npm (ikke pnpm, ikke yarn, ikke bun)
 
@@ -113,7 +113,7 @@ akgolf-hq/
 ├── src/
 │   ├── app/                    # App Router — sider, layouts, route handlers
 │   │   ├── globals.css         # Designsystem-tokens (@theme)
-│   │   ├── layout.tsx          # Root layout, Inter font
+│   │   ├── layout.tsx          # Root layout, Geist + Instrument Serif
 │   │   └── page.tsx
 │   ├── components/             # Delte komponenter (tom inntil videre)
 │   │   └── ui/                 # Primitives (Button, Card, etc.)
