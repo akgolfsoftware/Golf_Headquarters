@@ -7,6 +7,27 @@ CoachHQ, landingssider og andre features bygges i **andre** prosjekter — ikke 
 
 ---
 
+## Forholdet til AK Golf HQ-plattformen
+
+"AK Golf HQ" er paraply-konseptet for hele AK Golf Group sin tekniske plattform.
+Den inkluderer flere produkter:
+
+- **Website** (`akgolf.no`) — markedsføring, info, kontakt
+- **Booking** (`booking.akgolf.no`) — timebooking, betaling
+- **PlayerHQ** — spillerportal, treningsplaner, fakturaer
+- **CoachHQ** — intern admin, dagens økter, spillerliste
+
+Dette repoet (`akgolf-hq`) er **Foundation-laget** under paraplyen — ikke hele
+plattformen. Det inneholder kun delt Prisma-schema, Supabase-auth,
+designsystem-tokens og felles libs som de andre produktene importerer eller
+kopierer fra.
+
+Hvert produkt får sitt eget repo: `akgolf-website`, `akgolf-booking`,
+`akgolf-playerhq`, `akgolf-coachhq`. Foundation peker mot samme Supabase-database
+som alle de andre, men inneholder ingen UI-kode for sluttbrukere.
+
+---
+
 ## Stack (eksakte versjoner — ikke oppgrader uten beslutning)
 
 - Next.js 16 (App Router, TypeScript strict, Turbopack)
