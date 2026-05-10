@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          # Dummy-verdier for build (Next bygger uten DB-tilkobling)
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy?pgbouncer=true
+          DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
+          NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy
+          ANTHROPIC_API_KEY: dummy
+          STRIPE_SECRET_KEY: sk_test_dummy
+          STRIPE_WEBHOOK_SECRET: whsec_dummy
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_dummy
+          STRIPE_PRICE_ID_PRO: price_dummy
+          CRON_SECRET: dummy
