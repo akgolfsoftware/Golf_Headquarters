@@ -99,6 +99,10 @@ model User {
   trackManSessions  TrackManSession[]
   subscription      Subscription?
 
+  // Coaching-relasjoner
+  playerCoachingSessions CoachingSession[] @relation("PlayerCoachingSessions")
+  coachCoachingSessions  CoachingSession[] @relation("CoachCoachingSessions")
+
   @@map("users")
 }
 
@@ -339,6 +343,25 @@ model TrackManSession {
 
   @@index([userId, recordedAt])
   @@map("trackman_sessions")
+}
+
+// Coach-domenet (Fase 1.9)
+
+model CoachingSession {
+  id        String   @id @default(cuid())
+  userId    String
+  coachId   String
+  // messages: array av { role: "user" | "assistant" | "coach" | "system", content: string, ts: ISO }
+  messages  Json     @default("[]")
+  kind      String   @default("AI") // "AI" | "DIRECT"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User @relation("PlayerCoachingSessions", fields: [userId], references: [id], onDelete: Cascade)
+  coach User @relation("CoachCoachingSessions", fields: [coachId], references: [id], onDelete: Cascade)
+
+  @@index([userId, updatedAt])
+  @@map("coaching_sessions")
 }
 
 // Abonnement-domenet
