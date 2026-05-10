@@ -20,9 +20,10 @@ Disse 5 skjermene tester arketype A (Dashboard). Når Anders er fornøyd med vis
 
 ## Slik bruker du hver pakke i claude.ai/design
 
-### Engang per session (oppstart)
-1. Last opp `wireframe/brain/design-system-v2.md` som **system-kontekst** (drag & drop)
-2. Bekreft i en kort prompt: "Jeg har lastet opp designsystem v2. Bekreft at du har lest det."
+### Engang per session (oppstart) — last opp 2 filer
+1. **`wireframe/brain/desktop-import/branding-style-guide.html`** — primær visuell systemreferanse (61 KB interaktiv HTML med alle tokens, knapper, kort, sidebars, motion)
+2. **`wireframe/brain/design-system-v2.md`** — tekstlig backup-spec
+3. Bekreft i en kort prompt: "Jeg har lastet opp designsystem (branding-style-guide.html + design-system-v2.md). Bekreft at du har lest begge."
 
 ### Per skjerm
 1. Åpne `0X-{navn}.md`-filen

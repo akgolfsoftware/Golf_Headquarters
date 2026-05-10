@@ -11,9 +11,9 @@
 
 ## Designsystem
 
-Bruk `design-system-v2.md` (system-kontekst). Spesielt viktig:
-- Sidebar bg: `--color-player-sidebar` = `#0A1F18` (NB: lysere enn CoachHQ)
-- Sidebar aktiv-stripe: `--primary` (`#005840`) — IKKE accent (det er CoachHQ sin)
+Bruk **`branding-style-guide.html`** + **`design-system-v2.md`** (system-kontekst). Spesielt viktig:
+- **PlayerHQ sidebar er LYS:** `--player-sidebar-bg` = `#FFFFFF`, høyre-border `#F0EDE5`. Active item: `rgba(0,88,64,0.08)` bg + `#005840` tekst
+- Sidebar er ÉT-LAGS (220px), motsatt av CoachHQ som er to-lags
 - Maks 3 lime per skjerm
 - Tier-låste features dempes til 40% opacity + lucide `Lock`
 
@@ -33,8 +33,9 @@ PlayerHQ Hjem er **spillerens daglige startpunkt**. Skal svare på: "Hva skal je
 
 ## Layout-anvisning
 
-- **Sidebar (240px, `#0A1F18`)**
-  - 5 nav-lenker: Hjem (active, primary-stripe), Tren, Mål, Coach, Meg
+- **Sidebar (220px, LYS `#FFFFFF` med `#F0EDE5` høyre-border)**
+  - 5 nav-lenker med lucide-ikon: Hjem (active = `rgba(0,88,64,0.08)` bg + `#005840` tekst), Tren, Mål, Coach, Meg
+  - Logo "AK Golf" øverst i Inter 14px
   - Avatar (Markus, profilbilde i sirkel) nederst med tier-badge (Pro)
 
 - **Hovedinnhold**

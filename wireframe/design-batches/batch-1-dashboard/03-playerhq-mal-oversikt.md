@@ -14,7 +14,7 @@
 Bruk `design-system-v2.md`. Spesielt:
 - Pyramide-farger fra del 2 (FYS / TEK / SLAG / SPILL / TURN)
 - JetBrains Mono for HCP-tall og scorecards
-- Sidebar `--color-player-sidebar`
+- PlayerHQ sidebar er LYS (`#FFFFFF`) — ikke mørk. Se `branding-style-guide.html` seksjon 10
 
 ## Spec — hva skjermen er for
 

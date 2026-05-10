@@ -26,7 +26,7 @@ CoachHQ Analytics er **performance-dashboardet for stallen**. Coach skal raskt k
 
 ## Layout-anvisning
 
-- **Sidebar** (CoachHQ, Analytics-tab active)
+- **Sidebar (CoachHQ to-lags — 56px mørk rail + 200px lys nav, totalt 256px)** Analytics-tab active i nav-kolonnen (`rgba(209,248,67,0.30)` lime tint bg)
 
 - **Hovedinnhold**
   - **Hero**

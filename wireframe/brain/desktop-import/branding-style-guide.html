@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AK Golf HQ — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      /* Brand */
+      --brand-primary: #005840;
+      --brand-primary-hover: #00472f;
+      --brand-accent: #D1F843;
+      --brand-accent-hover: #C2EE2F;
+      --brand-accent-on: #0A1F18;
+
+      /* Accent Extension */
+      --accent-bg: rgba(209,248,67,0.12);
+      --accent-fill: rgba(209,248,67,0.25);
+      --accent-soft: #ECFCC0;
+
+      /* Surface */
+      --surface: #FAFAF7;
+      --surface-alt: #F5F2EA;
+      --surface-card: #FFFFFF;
+
+      /* Ink */
+      --ink: #0A1F18;
+      --ink-muted: #5E5C57;
+      --ink-subtle: #9C9990;
+      --ink-disabled: #C4C0B8;
+
+      /* Borders */
+      --line: #E5E3DD;
+      --line-soft: #EFEDE6;
+
+      /* Status */
+      --status-success: #1A7D56;
+      --status-success-bg: #E5F1EA;
+      --status-warning: #B8852A;
+      --status-warning-bg: #FFF0D6;
+      --status-danger: #A32D2D;
+      --status-danger-bg: #FAE3E3;
+
+      /* Sidebar — Player */
+      --sidebar-player-bg: #FFFFFF;
+      --sidebar-player-border: #F0EDE5;
+      --sidebar-player-active: rgba(0,88,64,0.08);
+
+      /* Sidebar — Coach */
+      --sidebar-coach-rail-bg: #061210;
+      --sidebar-coach-nav-bg: #FAFAF7;
+      --sidebar-coach-active: rgba(209,248,67,0.30);
+
+      /* Landing */
+      --landing-hero-bg: #0A0A0A;
+      --landing-hero-text: #FFFFFF;
+
+      /* Shadows */
+      --shadow-card: 0 1px 3px rgba(10,31,24,0.06), 0 1px 2px rgba(10,31,24,0.04);
+      --shadow-card-hover: 0 4px 12px rgba(10,31,24,0.08), 0 2px 4px rgba(10,31,24,0.04);
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration-micro: 120ms;
+      --duration-short: 200ms;
+      --duration-large: 320ms;
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ===== LAYOUT ===== */
+    .page-header {
+      padding: 64px 48px 48px;
+      border-bottom: 1px solid var(--line);
+    }
+    .page-header h1 {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .page-header p {
+      margin-top: 8px;
+      color: var(--ink-muted);
+      font-size: 15px;
+      max-width: 640px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    section {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    section:last-child { border-bottom: none; }
+
+    .section-title {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+    .section-subtitle {
+      color: var(--ink-muted);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+    .subsection-title {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+      margin-top: 32px;
+      color: var(--ink);
+    }
+    .subsection-title:first-of-type { margin-top: 0; }
+
+    /* ===== 1. COLOR SWATCHES ===== */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .swatch {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--surface-card);
+    }
+    .swatch-color {
+      height: 72px;
+      position: relative;
+    }
+    .swatch-color.checkerboard {
+      background-image: linear-gradient(45deg, #ddd 25%, transparent 25%),
+                         linear-gradient(-45deg, #ddd 25%, transparent 25%),
+                         linear-gradient(45deg, transparent 75%, #ddd 75%),
+                         linear-gradient(-45deg, transparent 75%, #ddd 75%);
+      background-size: 12px 12px;
+      background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+    }
+    .swatch-color.checkerboard .swatch-overlay {
+      position: absolute;
+      inset: 0;
+    }
+    .swatch-info {
+      padding: 10px 12px;
+    }
+    .swatch-name {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      display: block;
+    }
+    .swatch-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-muted);
+      display: block;
+      margin-top: 2px;
+    }
+    .swatch-var {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-subtle);
+      display: block;
+      margin-top: 1px;
+    }
+
+    /* ===== 2. TYPOGRAPHY ===== */
+    .type-specimen {
+      padding: 24px;
+      background: var(--surface-card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .type-specimen .sample {
+      margin-bottom: 8px;
+    }
+    .type-specimen .meta {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-subtle);
+    }
+
+    /* ===== 3. BUTTONS ===== */
+    .button-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all var(--duration-micro) var(--ease-out);
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--brand-primary);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover {
+      background: var(--brand-primary-hover);
+    }
+    .btn-accent {
+      background: var(--brand-accent);
+      color: var(--brand-accent-on);
+    }
+    .btn-accent:hover {
+      background: var(--brand-accent-hover);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .btn-ghost:hover {
+      background: var(--surface-alt);
+      border-color: var(--ink-disabled);
+    }
+
+    /* ===== 4. CARDS ===== */
+    .card-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .card {
+      padding: 24px;
+      border-radius: 20px;
+    }
+    .card-flush {
+      background: transparent;
+    }
+    .card-standard {
+      background: var(--surface-card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-card);
+    }
+    .card-featured {
+      background: var(--accent-bg);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-card-hover);
+    }
+    .card-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-subtle);
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .card-body {
+      font-size: 14px;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+
+    /* ===== 5. AVATARS ===== */
+    .avatar-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+
+    /* ===== 6. PILLS / BADGES ===== */
+    .pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .pill-default {
+      background: var(--surface-alt);
+      color: var(--ink-muted);
+    }
+    .pill-accent {
+      background: var(--accent-soft);
+      color: var(--brand-accent-on);
+    }
+    .pill-success {
+      background: var(--status-success-bg);
+      color: var(--status-success);
+    }
+    .pill-warning {
+      background: var(--status-warning-bg);
+      color: var(--status-warning);
+    }
+    .pill-danger {
+      background: var(--status-danger-bg);
+      color: var(--status-danger);
+    }
+
+    /* ===== 7. WEEK PILLS ===== */
+    .week-pills {
+      display: flex;
+      gap: 8px;
+    }
+    .week-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--duration-micro) var(--ease-out);
+      background: var(--surface-alt);
+      color: var(--ink-muted);
+      border: none;
+    }
+    .week-pill.active {
+      background: var(--brand-accent);
+      color: var(--brand-accent-on);
+    }
+    .week-pill:hover:not(.active) {
+      background: var(--line);
+    }
+
+    /* ===== 8. STREAK GRID ===== */
+    .streak-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      max-width: 320px;
+    }
+    .streak-day-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-subtle);
+      text-align: center;
+      padding-bottom: 4px;
+    }
+    .streak-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin: 0 auto;
+    }
+    .streak-done {
+      background: var(--status-success);
+    }
+    .streak-miss {
+      background: var(--line);
+    }
+    .streak-today {
+      background: var(--brand-accent);
+      box-shadow: 0 0 0 3px var(--accent-fill);
+    }
+
+    /* ===== 9. PROGRESS BAR ===== */
+    .progress-wrap {
+      margin-bottom: 20px;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .progress-label span:last-child {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--ink-muted);
+    }
+    .progress-track {
+      height: 8px;
+      background: var(--line);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--brand-accent), var(--brand-accent-hover));
+      transition: width var(--duration-large) var(--ease-out);
+    }
+
+    /* ===== 10. SIDEBAR ===== */
+    .sidebar-demo {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .sidebar-mock {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-card);
+      flex: 0 0 auto;
+    }
+
+    /* Player sidebar */
+    .player-sidebar {
+      width: 220px;
+      background: var(--sidebar-player-bg);
+      border-right: 1px solid var(--sidebar-player-border);
+      padding: 20px 12px;
+    }
+    .sidebar-logo {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--ink);
+      padding: 0 12px 20px;
+      border-bottom: 1px solid var(--line-soft);
+      margin-bottom: 12px;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all var(--duration-micro) var(--ease-out);
+      margin-bottom: 2px;
+    }
+    .sidebar-item:hover {
+      background: var(--surface-alt);
+    }
+    .sidebar-item.active {
+      background: var(--sidebar-player-active);
+      color: var(--brand-primary);
+      font-weight: 500;
+    }
+    .sidebar-item svg {
+      flex-shrink: 0;
+    }
+
+    /* Coach sidebar */
+    .coach-sidebar-wrap {
+      display: flex;
+      height: 360px;
+    }
+    .coach-rail {
+      width: 56px;
+      background: var(--sidebar-coach-rail-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+      gap: 16px;
+    }
+    .coach-rail-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all var(--duration-micro) var(--ease-out);
+    }
+    .coach-rail-icon:hover {
+      color: rgba(255,255,255,0.8);
+    }
+    .coach-rail-icon.active {
+      background: rgba(255,255,255,0.1);
+      color: var(--brand-accent);
+    }
+    .coach-nav {
+      width: 200px;
+      background: var(--sidebar-coach-nav-bg);
+      padding: 20px 12px;
+      border-right: 1px solid var(--line);
+    }
+    .coach-nav-title {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-subtle);
+      padding: 0 12px 12px;
+    }
+    .coach-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all var(--duration-micro) var(--ease-out);
+      margin-bottom: 2px;
+    }
+    .coach-nav-item:hover {
+      background: var(--surface-alt);
+    }
+    .coach-nav-item.active {
+      background: var(--sidebar-coach-active);
+      color: var(--brand-accent-on);
+      font-weight: 500;
+    }
+
+    /* ===== 11. DO/DONT ===== */
+    .do-dont-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .do-dont-card {
+      padding: 24px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+    }
+    .do-card {
+      background: var(--status-success-bg);
+      border-color: var(--status-success);
+    }
+    .dont-card {
+      background: var(--status-danger-bg);
+      border-color: var(--status-danger);
+    }
+    .do-dont-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .do-card .do-dont-header { color: var(--status-success); }
+    .dont-card .do-dont-header { color: var(--status-danger); }
+    .do-dont-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .do-dont-card li {
+      font-size: 14px;
+      color: var(--ink);
+      padding: 4px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    .do-card li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--status-success);
+    }
+    .dont-card li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--status-danger);
+    }
+
+    /* ===== 12. ICONS ===== */
+    .icon-grid {
+      display: flex;
+      gap: 32px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .icon-item span {
+      font-size: 11px;
+      color: var(--ink-subtle);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .icon-size-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-subtle);
+      margin-bottom: 12px;
+    }
+
+    /* ===== 13. MOTION ===== */
+    .motion-demo-area {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .motion-card-demo {
+      width: 240px;
+      padding: 24px;
+      background: var(--surface-card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow-card);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .motion-card-demo.animate-in {
+      animation: fadeSlideUp var(--duration-large) var(--ease-out) forwards;
+    }
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .motion-btn-demo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--brand-primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform var(--duration-micro) var(--ease-out),
+                  background var(--duration-micro) var(--ease-out),
+                  box-shadow var(--duration-short) var(--ease-out);
+    }
+    .motion-btn-demo:hover {
+      background: var(--brand-primary-hover);
+      box-shadow: 0 4px 16px rgba(0,88,64,0.2);
+    }
+    .motion-btn-demo:active {
+      transform: scale(0.97);
+    }
+    .motion-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+    }
+    .motion-spec {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--ink-muted);
+      background: var(--surface-alt);
+      padding: 8px 14px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    .replay-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--ink-muted);
+      font-family: 'Inter', sans-serif;
+      transition: all var(--duration-micro) var(--ease-out);
+    }
+    .replay-btn:hover {
+      background: var(--line);
+    }
+
+    /* ===== 14. HERO MOCKUP ===== */
+    .hero-mock {
+      background: var(--landing-hero-bg);
+      border-radius: 20px;
+      padding: 80px 56px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero-mock h2 {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--landing-hero-text);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero-mock p {
+      color: rgba(255,255,255,0.6);
+      font-size: 17px;
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+    .hero-mock .btn-accent {
+      font-size: 15px;
+      padding: 12px 28px;
+    }
+
+    /* ===== UTILITY ===== */
+    .mt-24 { margin-top: 24px; }
+    .mt-16 { margin-top: 16px; }
+    .mb-8 { margin-bottom: 8px; }
+    .mb-12 { margin-bottom: 12px; }
+    .mb-16 { margin-bottom: 16px; }
+    .flex-gap-12 { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    @media (max-width: 768px) {
+      .container { padding: 0 20px; }
+      .page-header { padding: 40px 20px 32px; }
+      .card-row { grid-template-columns: 1fr; }
+      .do-dont-grid { grid-template-columns: 1fr; }
+      .sidebar-demo { flex-direction: column; }
+      .swatch-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+      .hero-mock { padding: 48px 24px; }
+      .hero-mock h2 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="container">
+      <h1>AK Golf HQ Design System</h1>
+      <p>Visuell referanse for farger, typografi, komponenter og motion i AK Golf-plattformen. Alle tokens, varianter og retningslinjer samlet i ett dokument.</p>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- ===== 1. FARGEPALETTER ===== -->
+    <section id="colors">
+      <h2 class="section-title">1. Fargepaletter</h2>
+      <p class="section-subtitle">Alle design-tokens med CSS-variabelnavn, hex-verdier og visuelle swatches</p>
+
+      <h3 class="subsection-title">Brand</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#005840;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Primary</span>
+            <span class="swatch-value">#005840</span>
+            <span class="swatch-var">--brand-primary</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#00472f;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Primary Hover</span>
+            <span class="swatch-value">#00472f</span>
+            <span class="swatch-var">--brand-primary-hover</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#D1F843;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Accent (Lime)</span>
+            <span class="swatch-value">#D1F843</span>
+            <span class="swatch-var">--brand-accent</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#C2EE2F;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Accent Hover</span>
+            <span class="swatch-value">#C2EE2F</span>
+            <span class="swatch-var">--brand-accent-hover</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0A1F18;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Accent On</span>
+            <span class="swatch-value">#0A1F18</span>
+            <span class="swatch-var">--brand-accent-on</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">Accent-utvidelse</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color checkerboard">
+            <div class="swatch-overlay" style="background:rgba(209,248,67,0.12);"></div>
+          </div>
+          <div class="swatch-info">
+            <span class="swatch-name">Accent BG</span>
+            <span class="swatch-value">rgba(209,248,67,0.12)</span>
+            <span class="swatch-var">--accent-bg</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color checkerboard">
+            <div class="swatch-overlay" style="background:rgba(209,248,67,0.25);"></div>
+          </div>
+          <div class="swatch-info">
+            <span class="swatch-name">Accent Fill</span>
+            <span class="swatch-value">rgba(209,248,67,0.25)</span>
+            <span class="swatch-var">--accent-fill</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#ECFCC0;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Accent Soft</span>
+            <span class="swatch-value">#ECFCC0</span>
+            <span class="swatch-var">--accent-soft</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">Surface (varm krem)</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FAFAF7;border-bottom:1px solid #E5E3DD;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Surface</span>
+            <span class="swatch-value">#FAFAF7</span>
+            <span class="swatch-var">--surface</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F5F2EA;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Surface Alt (Sand)</span>
+            <span class="swatch-value">#F5F2EA</span>
+            <span class="swatch-var">--surface-alt</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FFFFFF;border-bottom:1px solid #E5E3DD;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Card</span>
+            <span class="swatch-value">#FFFFFF</span>
+            <span class="swatch-var">--surface-card</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">Tekst (Ink)</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0A1F18;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Ink</span>
+            <span class="swatch-value">#0A1F18</span>
+            <span class="swatch-var">--ink</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#5E5C57;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Ink Muted</span>
+            <span class="swatch-value">#5E5C57</span>
+            <span class="swatch-var">--ink-muted</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#9C9990;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Ink Subtle</span>
+            <span class="swatch-value">#9C9990</span>
+            <span class="swatch-var">--ink-subtle</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#C4C0B8;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Ink Disabled</span>
+            <span class="swatch-value">#C4C0B8</span>
+            <span class="swatch-var">--ink-disabled</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">Borders</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#E5E3DD;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Line</span>
+            <span class="swatch-value">#E5E3DD</span>
+            <span class="swatch-var">--line</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#EFEDE6;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Line Soft</span>
+            <span class="swatch-value">#EFEDE6</span>
+            <span class="swatch-var">--line-soft</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">Status</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#1A7D56;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Success</span>
+            <span class="swatch-value">#1A7D56</span>
+            <span class="swatch-var">--status-success</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#E5F1EA;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Success BG</span>
+            <span class="swatch-value">#E5F1EA</span>
+            <span class="swatch-var">--status-success-bg</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#B8852A;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Warning</span>
+            <span class="swatch-value">#B8852A</span>
+            <span class="swatch-var">--status-warning</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FFF0D6;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Warning BG</span>
+            <span class="swatch-value">#FFF0D6</span>
+            <span class="swatch-var">--status-warning-bg</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#A32D2D;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Danger</span>
+            <span class="swatch-value">#A32D2D</span>
+            <span class="swatch-var">--status-danger</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FAE3E3;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Danger BG</span>
+            <span class="swatch-value">#FAE3E3</span>
+            <span class="swatch-var">--status-danger-bg</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">Sidebar</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FFFFFF;border-bottom:1px solid #E5E3DD;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Player Sidebar BG</span>
+            <span class="swatch-value">#FFFFFF</span>
+            <span class="swatch-var">--sidebar-player-bg</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F0EDE5;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Player Border</span>
+            <span class="swatch-value">#F0EDE5</span>
+            <span class="swatch-var">--sidebar-player-border</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color checkerboard">
+            <div class="swatch-overlay" style="background:rgba(0,88,64,0.08);"></div>
+          </div>
+          <div class="swatch-info">
+            <span class="swatch-name">Player Active</span>
+            <span class="swatch-value">rgba(0,88,64,0.08)</span>
+            <span class="swatch-var">--sidebar-player-active</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#061210;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Coach Rail BG</span>
+            <span class="swatch-value">#061210</span>
+            <span class="swatch-var">--sidebar-coach-rail-bg</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FAFAF7;border-bottom:1px solid #E5E3DD;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Coach Nav BG</span>
+            <span class="swatch-value">#FAFAF7</span>
+            <span class="swatch-var">--sidebar-coach-nav-bg</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color checkerboard">
+            <div class="swatch-overlay" style="background:rgba(209,248,67,0.30);"></div>
+          </div>
+          <div class="swatch-info">
+            <span class="swatch-name">Coach Active</span>
+            <span class="swatch-value">rgba(209,248,67,0.30)</span>
+            <span class="swatch-var">--sidebar-coach-active</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">Landing</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0A0A0A;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Hero BG</span>
+            <span class="swatch-value">#0A0A0A</span>
+            <span class="swatch-var">--landing-hero-bg</span>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FFFFFF;border-bottom:1px solid #E5E3DD;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Hero Text</span>
+            <span class="swatch-value">#FFFFFF</span>
+            <span class="swatch-var">--landing-hero-text</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2. TYPOGRAFI ===== -->
+    <section id="typography">
+      <h2 class="section-title">2. Typografi</h2>
+      <p class="section-subtitle">Inter Tight, Inter og JetBrains Mono fra Google Fonts</p>
+
+      <div class="type-specimen">
+        <div class="sample" style="font-family:'Inter Tight',sans-serif;font-size:36px;font-style:italic;letter-spacing:-0.02em;font-weight:400;">God morgen, Henrik</div>
+        <div class="meta">Hero Greeting &mdash; Inter Tight, 36px, italic, -0.02em</div>
+      </div>
+
+      <div class="type-specimen">
+        <div class="sample" style="font-family:'Inter Tight',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.01em;">Seksjonstittler ser slik ut</div>
+        <div class="meta">Section Title &mdash; Inter Tight, 24px, bold, -0.01em</div>
+      </div>
+
+      <div class="type-specimen">
+        <div class="sample" style="font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:500;font-variant-numeric:tabular-nums;display:flex;gap:48px;">
+          <span>12.4</span>
+          <span style="color:var(--status-success);">+2.3</span>
+          <span>87%</span>
+        </div>
+        <div class="meta">KPI Numbers &mdash; JetBrains Mono, 48px, medium, tabular-nums</div>
+      </div>
+
+      <div class="type-specimen">
+        <div class="sample" style="font-family:'Inter',sans-serif;font-size:15px;font-weight:400;max-width:560px;line-height:1.6;">
+          Denne teksten bruker Inter i 15px regular for brodtekst. Den er designet for optimal lesbarhet i applikasjonens innholdsomrader, med 1.6 linjeavstand og komfortabel linjebredde.
+        </div>
+        <div class="meta">Body &mdash; Inter, 15px, regular, 1.6 line-height</div>
+      </div>
+
+      <div class="type-specimen">
+        <div class="sample" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-subtle);">Treningsfrekvens &bull; Status &bull; Neste Booking</div>
+        <div class="meta">Labels &mdash; Inter, 12px, medium, 0.04em, uppercase</div>
+      </div>
+    </section>
+
+    <!-- ===== 3. KNAPPER ===== -->
+    <section id="buttons">
+      <h2 class="section-title">3. Knapp-varianter</h2>
+      <p class="section-subtitle">Primary, Accent, Ghost — med normal og hover-state</p>
+
+      <h3 class="subsection-title">Normal</h3>
+      <div class="button-row">
+        <button class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          Primary
+        </button>
+        <button class="btn btn-accent">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Accent
+        </button>
+        <button class="btn btn-ghost">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          Ghost
+        </button>
+      </div>
+
+      <h3 class="subsection-title mt-24">Hover-preview (hold musepekeren over knappene)</h3>
+      <div class="button-row">
+        <button class="btn btn-primary" style="background:var(--brand-primary-hover);">Primary Hover</button>
+        <button class="btn btn-accent" style="background:var(--brand-accent-hover);">Accent Hover</button>
+        <button class="btn btn-ghost" style="background:var(--surface-alt);border-color:var(--ink-disabled);">Ghost Hover</button>
+      </div>
+
+      <div style="margin-top:20px;padding:16px;background:var(--surface-alt);border-radius:12px;">
+        <div class="meta" style="font-size:12px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-subtle);">Spesifikasjoner</div>
+        <div style="font-size:14px;color:var(--ink-muted);margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;">
+          border-radius: 12px;<br>
+          padding: 10px 20px;<br>
+          font-size: 14px; font-weight: 500;<br>
+          transition: all 120ms cubic-bezier(0.16, 1, 0.3, 1);
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 4. KORT ===== -->
+    <section id="cards">
+      <h2 class="section-title">4. Kort-hierarki</h2>
+      <p class="section-subtitle">Tre nivaer: Flush, Standard og Featured</p>
+
+      <div class="card-row">
+        <div class="card card-flush">
+          <div class="card-label">Flush</div>
+          <div class="card-title">Transparent bakgrunn</div>
+          <div class="card-body">Ingen border, ingen shadow. Brukes for inline innhold som ikke trenger visuell separasjon.</div>
+        </div>
+        <div class="card card-standard">
+          <div class="card-label">Standard</div>
+          <div class="card-title">Hvit med border</div>
+          <div class="card-body">1px border, shadow-card. Brukes for de fleste innholdskort i applikasjonen.</div>
+        </div>
+        <div class="card card-featured">
+          <div class="card-label">Featured</div>
+          <div class="card-title">Accent bakgrunn</div>
+          <div class="card-body">accent-bg bakgrunn med shadow-card-hover. Brukes for fremhevede elementer og CTA-er.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;padding:16px;background:var(--surface-alt);border-radius:12px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-muted);line-height:1.8;">
+          border-radius: 20px;<br>
+          shadow-card: 0 1px 3px rgba(10,31,24,0.06), 0 1px 2px rgba(10,31,24,0.04);<br>
+          shadow-card-hover: 0 4px 12px rgba(10,31,24,0.08), 0 2px 4px rgba(10,31,24,0.04);
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 5. AVATARER ===== -->
+    <section id="avatars">
+      <h2 class="section-title">5. Avatar-eksempler</h2>
+      <p class="section-subtitle">Flat farger, runde, med initialer. Aldri gradienter.</p>
+
+      <div class="avatar-row">
+        <div class="avatar" style="background:#005840;">HN</div>
+        <div class="avatar" style="background:#1A7D56;">AK</div>
+        <div class="avatar" style="background:#B8852A;">MR</div>
+        <div class="avatar" style="background:#A32D2D;">LS</div>
+        <div class="avatar" style="background:#5E5C57;">JD</div>
+      </div>
+
+      <div style="margin-top:20px;padding:16px;background:var(--surface-alt);border-radius:12px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-muted);line-height:1.8;">
+          width: 48px; height: 48px; border-radius: 50%;<br>
+          font: Inter Tight, 16px, 600; color: #FFFFFF;<br>
+          Flat background, ALDRI gradienter.
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 6. PILL/BADGE ===== -->
+    <section id="pills">
+      <h2 class="section-title">6. Pill / Badge-varianter</h2>
+      <p class="section-subtitle">Default, Accent, Success, Warning, Danger</p>
+
+      <div class="pill-row">
+        <span class="pill pill-default">Default</span>
+        <span class="pill pill-accent">Accent</span>
+        <span class="pill pill-success">Success</span>
+        <span class="pill pill-warning">Warning</span>
+        <span class="pill pill-danger">Danger</span>
+      </div>
+    </section>
+
+    <!-- ===== 7. UKE-PILLS ===== -->
+    <section id="week-pills">
+      <h2 class="section-title">7. Uke-pills</h2>
+      <p class="section-subtitle">Horisontale pills for uke-navigasjon. W3 er aktiv.</p>
+
+      <div class="week-pills">
+        <button class="week-pill">W1</button>
+        <button class="week-pill">W2</button>
+        <button class="week-pill active">W3</button>
+        <button class="week-pill">W4</button>
+        <button class="week-pill">W5</button>
+        <button class="week-pill">W6</button>
+      </div>
+    </section>
+
+    <!-- ===== 8. STREAK GRID ===== -->
+    <section id="streak">
+      <h2 class="section-title">8. Streak-grid</h2>
+      <p class="section-subtitle">14-dagers rutenett. Gronn = gjennomfort, gra = ikke gjort, lime = dagens</p>
+
+      <div class="streak-grid">
+        <!-- Day labels -->
+        <div class="streak-day-label">Ma</div>
+        <div class="streak-day-label">Ti</div>
+        <div class="streak-day-label">On</div>
+        <div class="streak-day-label">To</div>
+        <div class="streak-day-label">Fr</div>
+        <div class="streak-day-label">Lo</div>
+        <div class="streak-day-label">So</div>
+        <!-- Week 1 -->
+        <div class="streak-dot streak-done"></div>
+        <div class="streak-dot streak-done"></div>
+        <div class="streak-dot streak-miss"></div>
+        <div class="streak-dot streak-done"></div>
+        <div class="streak-dot streak-done"></div>
+        <div class="streak-dot streak-miss"></div>
+        <div class="streak-dot streak-done"></div>
+        <!-- Week 2 -->
+        <div class="streak-dot streak-done"></div>
+        <div class="streak-dot streak-miss"></div>
+        <div class="streak-dot streak-done"></div>
+        <div class="streak-dot streak-done"></div>
+        <div class="streak-dot streak-done"></div>
+        <div class="streak-dot streak-today"></div>
+        <div class="streak-dot streak-miss"></div>
+      </div>
+
+      <div style="display:flex;gap:24px;margin-top:20px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:var(--status-success);"></div>
+          <span style="font-size:13px;color:var(--ink-muted);">Gjennomfort</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:var(--line);"></div>
+          <span style="font-size:13px;color:var(--ink-muted);">Ikke gjort</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:var(--brand-accent);box-shadow:0 0 0 2px var(--accent-fill);"></div>
+          <span style="font-size:13px;color:var(--ink-muted);">I dag</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 9. PROGRESS BAR ===== -->
+    <section id="progress">
+      <h2 class="section-title">9. Progress-bar</h2>
+      <p class="section-subtitle">Lime gradient fill fra #D1F843 til #C2EE2F</p>
+
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Putting drill</span>
+          <span>25%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:25%;"></div>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Naerspill-okt</span>
+          <span>60%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:60%;"></div>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Ukentlig mal</span>
+          <span>85%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:85%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 10. SIDEBAR ===== -->
+    <section id="sidebars">
+      <h2 class="section-title">10. Sidebar-mockup</h2>
+      <p class="section-subtitle">PlayerHQ (lys) og CoachHQ (mork rail + lys nav)</p>
+
+      <div class="sidebar-demo">
+        <!-- Player Sidebar -->
+        <div class="sidebar-mock">
+          <div class="player-sidebar">
+            <div class="sidebar-logo">AK Golf</div>
+            <div class="sidebar-item active">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Dashboard
+            </div>
+            <div class="sidebar-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              Treningsplan
+            </div>
+            <div class="sidebar-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Bookinger
+            </div>
+            <div class="sidebar-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Statistikk
+            </div>
+            <div class="sidebar-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Profil
+            </div>
+          </div>
+        </div>
+
+        <!-- Coach Sidebar -->
+        <div class="sidebar-mock">
+          <div class="coach-sidebar-wrap">
+            <div class="coach-rail">
+              <div class="coach-rail-icon active">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              </div>
+              <div class="coach-rail-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div class="coach-rail-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <div class="coach-rail-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div class="coach-rail-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </div>
+            </div>
+            <div class="coach-nav">
+              <div class="coach-nav-title">Coach HQ</div>
+              <div class="coach-nav-item active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Dashboard
+              </div>
+              <div class="coach-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Spillere
+              </div>
+              <div class="coach-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Timeplan
+              </div>
+              <div class="coach-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Analyser
+              </div>
+              <div class="coach-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                Programmer
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 11. LIME DO/DONT ===== -->
+    <section id="lime-rules">
+      <h2 class="section-title">11. Lime-bruk: Do's and Don'ts</h2>
+      <p class="section-subtitle">Retningslinjer for riktig bruk av accent-fargen</p>
+
+      <div class="do-dont-grid">
+        <div class="do-dont-card do-card">
+          <div class="do-dont-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Riktig bruk
+          </div>
+          <ul>
+            <li>CTA-knapper (accent-variant)</li>
+            <li>Aktive pills og uke-navigasjon</li>
+            <li>Streak-prikker for dagens dag</li>
+            <li>Progress-bar fill</li>
+            <li>Positive delta-verdier (+2.3)</li>
+          </ul>
+        </div>
+        <div class="do-dont-card dont-card">
+          <div class="do-dont-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Feil bruk
+          </div>
+          <ul>
+            <li>Store bakgrunnsflater i lime</li>
+            <li>Lime som tekst-farge</li>
+            <li>Alle badges i lime</li>
+            <li>Gradienter med lime</li>
+            <li>Ikoner i lime (bruk primary i stedet)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 12. IKONER ===== -->
+    <section id="icons">
+      <h2 class="section-title">12. Ikon-eksempler</h2>
+      <p class="section-subtitle">Lucide icons, stroke 1.75 -- standard 18px, headers 20px, hero 24px</p>
+
+      <h3 class="subsection-title">18px Standard</h3>
+      <div class="icon-grid" style="margin-bottom:32px;">
+        <div class="icon-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendar</span>
+        </div>
+        <div class="icon-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Users</span>
+        </div>
+        <div class="icon-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span>TrendingUp</span>
+        </div>
+        <div class="icon-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          <span>Target</span>
+        </div>
+        <div class="icon-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>ChevronRight</span>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">20px Headers</h3>
+      <div class="icon-grid" style="margin-bottom:32px;">
+        <div class="icon-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendar</span>
+        </div>
+        <div class="icon-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Users</span>
+        </div>
+        <div class="icon-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span>TrendingUp</span>
+        </div>
+        <div class="icon-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          <span>Target</span>
+        </div>
+        <div class="icon-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>ChevronRight</span>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">24px Hero</h3>
+      <div class="icon-grid">
+        <div class="icon-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendar</span>
+        </div>
+        <div class="icon-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Users</span>
+        </div>
+        <div class="icon-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span>TrendingUp</span>
+        </div>
+        <div class="icon-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          <span>Target</span>
+        </div>
+        <div class="icon-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>ChevronRight</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 13. MOTION ===== -->
+    <section id="motion">
+      <h2 class="section-title">13. Motion-eksempler</h2>
+      <p class="section-subtitle">Ease-out entrance, mikro- og kort-varigheter</p>
+
+      <div class="motion-demo-area">
+        <div>
+          <div class="motion-card-demo" id="motionCard">
+            <div class="card-label">Animert kort</div>
+            <div class="card-title">Fade + Slide Up</div>
+            <div class="card-body">Dette kortet fader inn og glir opp med ease-out kurven.</div>
+          </div>
+          <button class="replay-btn" onclick="replayCardAnimation()" style="margin-top:12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Spill av igjen
+          </button>
+        </div>
+
+        <div class="motion-info">
+          <div>
+            <div class="motion-spec">ease-out: cubic-bezier(0.16, 1, 0.3, 1)</div>
+          </div>
+          <div>
+            <div class="motion-spec">micro: 120ms</div>
+          </div>
+          <div>
+            <div class="motion-spec">short: 200ms</div>
+          </div>
+          <div>
+            <div class="motion-spec">large: 320ms</div>
+          </div>
+          <div style="margin-top:8px;">
+            <p style="font-size:13px;color:var(--ink-muted);margin-bottom:12px;">Knapp-interaksjon (hover + active):</p>
+            <button class="motion-btn-demo">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              Hold musepekeren her
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 14. HERO MOCKUP ===== -->
+    <section id="hero">
+      <h2 class="section-title">14. Mork landing hero</h2>
+      <p class="section-subtitle">Mork bakgrunn med lime CTA</p>
+
+      <div class="hero-mock">
+        <h2>Tren smartere.<br>Spill bedre.</h2>
+        <p>AK Golf gir deg personlig treningsplan, data-drevet coaching og verktoyene du trenger for a ta spillet ditt til neste niva.</p>
+        <button class="btn btn-accent" style="font-size:15px;padding:14px 32px;">
+          Kom i gang
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer style="padding:40px 48px;text-align:center;color:var(--ink-subtle);font-size:13px;border-top:1px solid var(--line-soft);">
+    AK Golf HQ Design System &mdash; Sist oppdatert 2026-05-10
+  </footer>
+
+  <script>
+    // Motion demo: auto-play on scroll into view
+    const motionCard = document.getElementById('motionCard');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          motionCard.classList.add('animate-in');
+          observer.unobserve(motionCard);
+        }
+      });
+    }, { threshold: 0.5 });
+    observer.observe(motionCard);
+
+    function replayCardAnimation() {
+      motionCard.classList.remove('animate-in');
+      // Force reflow
+      void motionCard.offsetWidth;
+      motionCard.classList.add('animate-in');
+    }
+  </script>
+
+</body>
+</html>

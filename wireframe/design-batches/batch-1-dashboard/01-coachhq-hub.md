@@ -11,7 +11,7 @@
 
 ## Designsystem
 
-Bruk `design-system-v2.md` som er lastet opp som system-kontekst. Eksakte token-navn — IKKE hardkode hex-verdier eller font-størrelser.
+Bruk **`branding-style-guide.html`** (primær visuell systemreferanse) + **`design-system-v2.md`** (tekstlig backup) som er lastet opp som system-kontekst. Eksakte token-navn — IKKE hardkode hex-verdier eller font-størrelser.
 
 **Krav:**
 - 8pt-grid for all spacing (8, 16, 24, 32, 40, 48, 64)
@@ -34,8 +34,10 @@ CoachHQ Hub er **morgen-checkpoint** for coach. Vises alltid først ved innloggi
 
 ## Layout-anvisning (parsed fra HTML)
 
-- **Sidebar (240px, `--color-coach-sidebar` = `#061210`)**
-  - 12 nav-lenker med lucide-ikoner: Hub (active, accent-stripe), Daglig Brief, Treningsplaner, Elever, Coaching Board, Godkjenninger, Bookinger, Tester, Analytics, Økonomi, Fasiliteter, Innstillinger
+- **Sidebar (TO-LAGS — totalt 256px bred)**
+  - Venstre rail (56px, `--coach-rail-bg` = `#061210` mørk): 5 ikon-knapper for hovedseksjoner. Active = `rgba(255,255,255,0.1)` bg + lime ikon-farge
+  - Høyre nav-kolonne (200px, `--coach-nav-bg` = `#FAFAF7` lys): 12 nav-lenker med lucide-ikoner og tekst. Active = `rgba(209,248,67,0.30)` bg (lime tint) + `#0A1F18` tekst
+  - Nav-lenker i kolonnen: Hub (active), Daglig Brief, Treningsplaner, Elever, Coaching Board, Godkjenninger, Bookinger, Tester, Analytics, Økonomi, Fasiliteter, Innstillinger
   - Avatar nederst (Anders K.) med popover-trigger
 
 - **Hovedinnhold**

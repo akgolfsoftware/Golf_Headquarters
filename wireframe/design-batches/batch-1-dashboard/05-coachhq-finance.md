@@ -27,7 +27,7 @@ CoachHQ Økonomi er **det finansielle pulsmåleren**. Skal svare på:
 
 ## Layout-anvisning
 
-- **Sidebar** (CoachHQ, Drift-gruppe → Økonomi-tab active)
+- **Sidebar (CoachHQ to-lags — 56px mørk rail + 200px lys nav, totalt 256px)** Drift-gruppe → Økonomi-tab active i nav-kolonnen (`rgba(209,248,67,0.30)` lime tint bg)
 
 - **Hovedinnhold**
   - **Hero**
