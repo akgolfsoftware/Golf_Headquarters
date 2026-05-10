@@ -110,6 +110,12 @@ model User {
   signals     Signal[]
   planActions PlanAction[]
 
+  // Goals/achievements/sosiale (Fase 1.14)
+  goals        Goal[]
+  achievements Achievement[]
+  friendshipsA Friendship[] @relation("FriendshipUserA")
+  friendshipsB Friendship[] @relation("FriendshipUserB")
+
   @@map("users")
 }
 
@@ -404,6 +410,58 @@ model AgentRun {
 
   @@index([agentName, createdAt])
   @@map("agent_runs")
+}
+
+// Goals/Achievements/Friendship (Fase 1.14)
+
+model Goal {
+  id          String    @id @default(cuid())
+  userId      String
+  // Type: HCP_TARGET | ROUNDS_PER_MONTH | SG_AREA | FREE_TEXT
+  type        String
+  title       String
+  targetValue Float?
+  targetDate  DateTime?
+  // Status: ACTIVE | ACHIEVED | ABANDONED
+  status      String    @default("ACTIVE")
+  payload     Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@map("goals")
+}
+
+model Achievement {
+  id       String   @id @default(cuid())
+  userId   String
+  // STREAK_7 | STREAK_14 | FIRST_ROUND | SG_POSITIVE_30D | FIRST_TEST | etc.
+  kind     String
+  earnedAt DateTime @default(now())
+  payload  Json?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, kind])
+  @@index([userId, earnedAt])
+  @@map("achievements")
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  userAId   String
+  userBId   String
+  // PENDING | ACCEPTED | BLOCKED
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+
+  userA User @relation("FriendshipUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB User @relation("FriendshipUserB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  @@unique([userAId, userBId])
+  @@map("friendships")
 }
 
 // Coach-domenet (Fase 1.9)
