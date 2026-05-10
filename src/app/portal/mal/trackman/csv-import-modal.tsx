@@ -1,0 +1,144 @@
+"use client";
+
+import { useEffect, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { importTrackManCsv } from "./actions";
+
+export function CsvImportModal() {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  const today = new Date().toISOString().split("T")[0];
+  const [recordedAt, setRecordedAt] = useState(today);
+  const [filename, setFilename] = useState<string | null>(null);
+  const [csvContent, setCsvContent] = useState("");
+
+  useEffect(() => {
+    if (open) dialogRef.current?.showModal();
+    else dialogRef.current?.close();
+  }, [open]);
+
+  function lukk() {
+    setOpen(false);
+    setFilename(null);
+    setCsvContent("");
+    setError(null);
+  }
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const fil = e.target.files?.[0];
+    if (!fil) return;
+    setFilename(fil.name);
+    const text = await fil.text();
+    setCsvContent(text);
+  }
+
+  function lagre(e: React.FormEvent) {
+    e.preventDefault();
+    if (!csvContent) {
+      setError("Velg en CSV-fil først.");
+      return;
+    }
+    setError(null);
+    startTransition(async () => {
+      try {
+        await importTrackManCsv({ recordedAt, csvContent });
+        lukk();
+        router.refresh();
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Kunne ikke importere.");
+      }
+    });
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+      >
+        Importer CSV
+      </button>
+
+      <dialog
+        ref={dialogRef}
+        onClose={lukk}
+        className="rounded-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40 max-w-lg w-full"
+      >
+        <form onSubmit={lagre} className="p-6">
+          <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
+            <em className="font-normal text-primary md:italic">Importer</em> TrackMan-økt
+          </h2>
+          <p className="mt-1 mb-5 text-sm text-muted-foreground">
+            Eksporter CSV fra TrackMan-appen og last opp her. Hver rad blir
+            lagret som ett slag.
+          </p>
+
+          <div className="space-y-3">
+            <label className="block">
+              <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Dato for økt
+              </span>
+              <input
+                type="date"
+                value={recordedAt}
+                onChange={(e) => setRecordedAt(e.target.value)}
+                required
+                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                CSV-fil
+              </span>
+              <input
+                type="file"
+                accept=".csv,text/csv"
+                onChange={handleFile}
+                required
+                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-secondary-foreground"
+              />
+              {filename && (
+                <span className="mt-1 block text-xs text-muted-foreground">
+                  Valgt: {filename}
+                </span>
+              )}
+            </label>
+          </div>
+
+          {error && (
+            <div
+              role="alert"
+              className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
+            >
+              {error}
+            </div>
+          )}
+
+          <div className="mt-6 flex gap-3">
+            <button
+              type="button"
+              onClick={lukk}
+              disabled={pending}
+              className="rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground hover:border-border"
+            >
+              Avbryt
+            </button>
+            <button
+              type="submit"
+              disabled={pending}
+              className="flex-1 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+            >
+              {pending ? "Importerer…" : "Importer"}
+            </button>
+          </div>
+        </form>
+      </dialog>
+    </>
+  );
+}
