@@ -106,6 +106,10 @@ model User {
   playerCoachingSessions CoachingSession[] @relation("PlayerCoachingSessions")
   coachCoachingSessions  CoachingSession[] @relation("CoachCoachingSessions")
 
+  // Agent-relasjoner
+  signals     Signal[]
+  planActions PlanAction[]
+
   @@map("users")
 }
 
@@ -192,8 +196,9 @@ model TrainingPlan {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  user     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sessions TrainingPlanSession[]
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions    TrainingPlanSession[]
+  planActions PlanAction[]
 
   @@index([userId, isActive])
   @@map("training_plans")
@@ -346,6 +351,59 @@ model TrackManSession {
 
   @@index([userId, recordedAt])
   @@map("trackman_sessions")
+}
+
+// Agent-pipeline (Fase 1.12)
+
+model Signal {
+  id         String   @id @default(cuid())
+  userId     String
+  // Type signal: SG_TOTAL | SG_AREA | HCP_TREND | CLUB_AVG | PYRAMID_AREA | STREAK
+  kind       String
+  value      Float?
+  payload    Json?
+  computedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, kind, computedAt])
+  @@map("signals")
+}
+
+model PlanAction {
+  id         String   @id @default(cuid())
+  userId     String
+  planId     String?
+  // Type: PYRAMID_ADJUST | SESSION_ADD | SESSION_REMOVE | INTENSITY_ADJUST
+  //       | TAPER_ENGAGE | WITHDRAW | DRILL_SUGGEST | TEST_SCHEDULE
+  //       | PEER_COMPARE | RECOVERY_ADD
+  actionType String
+  suggestion Json
+  // Status: PENDING | ACCEPTED | REJECTED
+  status     String   @default("PENDING")
+  agentName  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan TrainingPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status, createdAt])
+  @@map("plan_actions")
+}
+
+model AgentRun {
+  id        String   @id @default(cuid())
+  agentName String
+  userId    String?
+  status    String // OK | ERROR
+  duration  Int // ms
+  output    Json?
+  error     String?
+  createdAt DateTime @default(now())
+
+  @@index([agentName, createdAt])
+  @@map("agent_runs")
 }
 
 // Coach-domenet (Fase 1.9)
