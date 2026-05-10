@@ -85,6 +85,9 @@ model User {
   playingYears Int?
   ambition     String?
   homeClub     String?
+  // Bruker-preferanser (notifikasjoner, språk, etc.) som flexibel JSON.
+  // Strukturen håndheves i kode (src/lib/preferences.ts) ikke i DB.
+  preferences  Json?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
