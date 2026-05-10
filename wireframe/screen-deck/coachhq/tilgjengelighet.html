@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Tilgjengelighet</title>
+<style>
+.avail-grid { display: grid; grid-template-columns: 56px repeat(7, 1fr); background: var(--border); gap: 1px; border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; }
+.avail-head { background: var(--bg); padding: 10px 6px; text-align: center; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
+.avail-time { background: var(--bg); padding: 10px 8px; font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); text-align: right; }
+.avail-cell { background: var(--bg-elev); min-height: 40px; cursor: pointer; position: relative; }
+.avail-free { background: rgba(16,185,129,0.20); }
+.avail-free:hover { background: rgba(16,185,129,0.32); }
+.avail-busy { background: rgba(107,114,128,0.18); }
+.avail-vacation { background: rgba(167,139,250,0.32); }
+.avail-blocked { background: rgba(239,68,68,0.16); background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(239,68,68,0.1) 4px 8px); }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="hub.html">Hub</a>
+      <a href="daglig-brief.html">Daglig Brief</a>
+      <a href="plans.html">Treningsplaner</a>
+      <a href="elever.html">Elever</a>
+      <a href="coaching-board.html">Coaching Board</a>
+      <a href="approvals.html">Godkjenninger</a>
+      <a href="kalender.html">Kalender</a>
+      <a href="#" class="active">Tilgjengelighet</a>
+      <a href="bookings.html">Bookinger</a>
+      <a href="sessions.html">Tester</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="finance.html">Økonomi</a>
+      <a href="settings-bruker.html">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">/admin/availability · uke 19 (11.–17. mai)</span>
+      <h1 class="page-title"><em>Tilgjengelighet</em> · Anders K</h1>
+      <p class="page-lede">Når du er tilgjengelig for booking. Grønt = ledig, grått = booket, lilla = ferie. Klikk en celle for å endre.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Bulk-actions</span>
+      <button class="action-item">Gjenta uke fremover →</button>
+      <button class="action-item">Blokker hele dag</button>
+      <button class="action-item">Sett standard-uke</button>
+      <button class="action-item action-item-info">Importer fra Google</button>
+      <button class="btn btn-primary" style="margin-left:auto;">Lagre endringer</button>
+    </div>
+
+    <div class="chips">
+      <button class="chip active">Anders K</button>
+      <button class="chip">Julie B</button>
+      <button class="chip">Andre H</button>
+      <span style="flex:1;"></span>
+      <button class="chip">‹ Forrige uke</button>
+      <button class="chip active">Uke 19</button>
+      <button class="chip">Neste uke ›</button>
+    </div>
+
+    <div class="avail-grid">
+      <div class="avail-head"></div>
+      <div class="avail-head">Man 11</div>
+      <div class="avail-head">Tir 12</div>
+      <div class="avail-head">Ons 13</div>
+      <div class="avail-head">Tor 14</div>
+      <div class="avail-head">Fre 15</div>
+      <div class="avail-head">Lør 16</div>
+      <div class="avail-head">Søn 17</div>
+
+      <div class="avail-time">06:00</div>
+      <div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">07:00</div>
+      <div class="avail-cell avail-free"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-blocked"></div><div class="avail-cell"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">08:00</div>
+      <div class="avail-cell avail-free"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-blocked"></div><div class="avail-cell avail-free"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">09:00</div>
+      <div class="avail-cell avail-free"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-blocked"></div><div class="avail-cell avail-free"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">10:00</div>
+      <div class="avail-cell avail-busy"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-blocked"></div><div class="avail-cell avail-free"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">11:00</div>
+      <div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-blocked"></div><div class="avail-cell avail-free"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">12:00</div>
+      <div class="avail-cell avail-blocked"></div><div class="avail-cell avail-blocked"></div><div class="avail-cell avail-blocked"></div><div class="avail-cell avail-blocked"></div><div class="avail-cell avail-blocked"></div><div class="avail-cell"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">13:00</div>
+      <div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-vacation"></div><div class="avail-cell avail-free"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">14:00</div>
+      <div class="avail-cell avail-busy"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-vacation"></div><div class="avail-cell avail-free"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">15:00</div>
+      <div class="avail-cell avail-busy"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-vacation"></div><div class="avail-cell"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">16:00</div>
+      <div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-vacation"></div><div class="avail-cell"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">17:00</div>
+      <div class="avail-cell avail-free"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-busy"></div><div class="avail-cell avail-free"></div><div class="avail-cell avail-vacation"></div><div class="avail-cell"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">18:00</div>
+      <div class="avail-cell avail-free"></div><div class="avail-cell"></div><div class="avail-cell avail-free"></div><div class="avail-cell"></div><div class="avail-cell avail-vacation"></div><div class="avail-cell"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">19:00</div>
+      <div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell avail-vacation"></div><div class="avail-cell"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">20:00</div>
+      <div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell avail-vacation"></div><div class="avail-cell"></div><div class="avail-cell"></div>
+
+      <div class="avail-time">21:00</div>
+      <div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div><div class="avail-cell"></div>
+    </div>
+
+    <div class="cal-legend" style="margin-top:14px;">
+      <span><i style="background:rgba(16,185,129,0.32); border-radius:3px;"></i> Tilgjengelig (24t)</span>
+      <span><i style="background:rgba(107,114,128,0.30); border-radius:3px;"></i> Booket (18t)</span>
+      <span><i style="background:rgba(167,139,250,0.40); border-radius:3px;"></i> Ferie / fri (8t — fredag)</span>
+      <span><i style="background:rgba(239,68,68,0.20); border-radius:3px;"></i> Blokkert (7t)</span>
+    </div>
+  </main>
+</div>
+</body></html>

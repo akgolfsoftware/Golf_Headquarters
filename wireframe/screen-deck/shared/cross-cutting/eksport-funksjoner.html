@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Eksport-funksjoner</title>
+<style>
+  .ex-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .ex-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+  .ex-format { display: inline-block; padding: 4px 10px; border-radius: 8px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 12px; }
+  .fmt-csv { background: rgba(16,185,129,0.14); color: #047857; }
+  .fmt-json { background: rgba(99,91,255,0.14); color: #4F47CC; }
+  .fmt-pdf { background: rgba(239,68,68,0.14); color: #B91C1C; }
+  .ex-card h3 { font-family: var(--font-display); font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+  .ex-uses { font-size: 12px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+  .ex-uses ul { margin-left: 18px; margin-top: 4px; }
+  .ex-output { background: #0A1F18; color: #E8E6E1; padding: 14px; border-radius: 8px; font-family: var(--font-mono); font-size: 10px; line-height: 1.5; overflow-x: auto; white-space: pre; min-height: 130px; }
+  .ex-mode { display: flex; gap: 8px; margin-top: 14px; }
+  .ex-mode-pill { padding: 4px 10px; border-radius: 10px; font-size: 10px; font-family: var(--font-mono); background: var(--bg); border: 1px solid var(--border); color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar" style="background: var(--bg-coach-sidebar);">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="import-assistent.html">Import</a>
+      <a href="#" class="active">Eksport</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-coach-content);">
+    <header class="page-head">
+      <span class="page-eyebrow">3 eksport-formater · single + bulk</span>
+      <h1 class="page-title"><em>Eksport</em>-funksjoner</h1>
+      <p class="page-lede">Alle eksport-formater i AK Golf Platform. Bulk-eksport gjelder hele lister, single gjelder én entitet.</p>
+    </header>
+
+    <div class="ex-grid">
+      <div class="ex-card">
+        <span class="ex-format fmt-csv">CSV</span>
+        <h3>Tabulær data</h3>
+        <div class="ex-uses">
+          <b style="color: var(--text); font-size: 12px;">Brukes til:</b>
+          <ul>
+            <li>Spillerliste til Excel</li>
+            <li>Booking-historie</li>
+            <li>Faktura-rapporter</li>
+            <li>Test-resultater</li>
+          </ul>
+        </div>
+        <div class="ex-output">name,hcp,club,sessions
+Markus R. P,7.4,GFGK,28
+Joachim S,4.2,WANG,42
+Lina H,11.4,WANG,18
+Emma S,9.2,GFGK,22
+Sofie B,14.2,Mulligan,15</div>
+        <div class="ex-mode">
+          <span class="ex-mode-pill">Bulk</span>
+          <span class="ex-mode-pill">Single</span>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <span class="ex-format fmt-json">JSON</span>
+        <h3>Strukturert data</h3>
+        <div class="ex-uses">
+          <b style="color: var(--text); font-size: 12px;">Brukes til:</b>
+          <ul>
+            <li>API-integrasjoner</li>
+            <li>Backup av treningsplan</li>
+            <li>Maskinell analyse</li>
+            <li>Migrering mellom systemer</li>
+          </ul>
+        </div>
+        <div class="ex-output">{
+  "player_id": "plr_markus",
+  "plan": {
+    "phase": "taper",
+    "pyramid": {
+      "FYS": 60, "TEK": 50,
+      "SLAG": 75, "SPILL": 85,
+      "TURN": 70
+    }
+  }
+}</div>
+        <div class="ex-mode">
+          <span class="ex-mode-pill">Bulk</span>
+          <span class="ex-mode-pill">Single</span>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <span class="ex-format fmt-pdf">PDF</span>
+        <h3>Lesbar rapport</h3>
+        <div class="ex-uses">
+          <b style="color: var(--text); font-size: 12px;">Brukes til:</b>
+          <ul>
+            <li>Spillerprofil til foresatte</li>
+            <li>Måneds-rapport</li>
+            <li>Fakturaer (Stripe)</li>
+            <li>Sesong-evalueringer</li>
+          </ul>
+        </div>
+        <div class="ex-output">┌─────────────────────────┐
+│ AK GOLF · MÅNEDSRAPPORT │
+│                         │
+│ Markus R. Pedersen      │
+│ Mai 2026 · uke 18–22    │
+│                         │
+│ Pyramide-status:        │
+│  FYS  ████████░░ 80%    │
+│  TEK  ██████░░░░ 62%    │
+└─────────────────────────┘</div>
+        <div class="ex-mode">
+          <span class="ex-mode-pill">Single</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="section" style="margin-top: 32px;">
+      <div class="section-head"><h2>Trigger-mønstre</h2></div>
+      <div class="card">
+        <p style="font-size: 13px; line-height: 1.7;">
+          <b>Single eksport:</b> tilgjengelig som "Eksporter" i drawer for spiller, plan eller faktura. Ferdig fil generert direkte til nedlasting.<br>
+          <b>Bulk eksport:</b> tilgjengelig fra liste-sider. Lager en jobb i bakgrunnen, sender e-post med nedlastings-link når ferdig (typisk &lt; 30 sek).<br>
+          <b>Skjema:</b> krever <code>data.export</code>-capability. Logges i audit-loggen med tidspunkt og bruker.
+        </p>
+      </div>
+    </section>
+  </main>
+</div>
+</body></html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Betaling · Booking</title></head>
+<body style="background: var(--bg);">
+
+<header style="background: white; border-bottom: 1px solid #E5E3DD; padding: 16px 48px;">
+  <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+    <a href="index.html" style="font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 18px; text-decoration: none; color: var(--text);">AK Golf · Booking</a>
+    <a href="min-side.html" style="color: var(--text-secondary); text-decoration: none; font-size: 13px;">Min side →</a>
+  </div>
+</header>
+
+<div style="max-width: 1000px; margin: 0 auto; padding: 24px 48px;">
+  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+    <span class="pill pill-muted">1. Tjeneste ✓</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill pill-muted">2. Tid ✓</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill pill-muted">3. Info ✓</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill" style="background: var(--primary); color: white;">4. Betaling</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill pill-muted">5. Bekreftelse</span>
+  </div>
+</div>
+
+<main style="max-width: 600px; margin: 0 auto; padding: 16px 48px 80px;">
+  <header style="margin-bottom: 24px;">
+    <span style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary);">Steg 4 av 5 · 2 200 kr</span>
+    <h1 style="font-family: var(--font-display); font-size: 32px; font-weight: 600; letter-spacing: -0.02em; margin: 8px 0 6px;">Sikker <em style="color: var(--primary); font-weight: 400;">betaling</em></h1>
+    <p style="color: var(--text-secondary); font-size: 14px;">Vi bruker Stripe — pengene reserveres på kortet ditt og trekkes etter økten.</p>
+  </header>
+
+  <div style="display: flex; gap: 8px; margin-bottom: 18px;">
+    <button class="btn btn-primary" style="flex: 1; justify-content: center;">Kort</button>
+    <a href="betaling-vipps.html" class="btn btn-ghost" style="flex: 1; justify-content: center;">Vipps</a>
+    <button class="btn btn-ghost" style="flex: 1; justify-content: center;">Faktura</button>
+  </div>
+
+  <div class="card">
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <label style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 6px;">Kortnummer</label>
+        <div style="position: relative;">
+          <input type="text" placeholder="1234 1234 1234 1234" style="width: 100%; padding: 12px 14px; padding-right: 90px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: var(--font-mono);">
+          <div style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; gap: 6px;">
+            <span style="width: 28px; height: 18px; background: #1A1F71; color: white; border-radius: 3px; font-size: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700;">VISA</span>
+            <span style="width: 28px; height: 18px; background: #EB001B; border-radius: 3px;"></span>
+          </div>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 6px;">Utløpsdato</label>
+          <input type="text" placeholder="MM / ÅÅ" style="width: 100%; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: var(--font-mono);">
+        </div>
+        <div>
+          <label style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 6px;">CVC</label>
+          <input type="text" placeholder="123" style="width: 100%; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: var(--font-mono);">
+        </div>
+      </div>
+      <div>
+        <label style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 6px;">Navn på kort</label>
+        <input type="text" value="Markus Rønning" style="width: 100%; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: inherit;">
+      </div>
+      <label style="display: flex; gap: 10px; align-items: center; padding-top: 4px; font-size: 13px; color: var(--text-secondary); cursor: pointer;">
+        <input type="checkbox" style="accent-color: var(--primary);">
+        Lagre kort for raskere booking neste gang
+      </label>
+    </div>
+  </div>
+
+  <a href="bekreftelse.html" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 16px; font-size: 16px; font-weight: 600; margin-top: 20px;">Betal 2 200 kr →</a>
+
+  <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); letter-spacing: 0.06em;">
+    <span>SIKKER BETALING VIA STRIPE</span>
+    <span>·</span>
+    <span>SSL-KRYPTERT</span>
+    <span>·</span>
+    <span>3D SECURE</span>
+  </div>
+  <p style="text-align: center; font-size: 12px; color: var(--text-secondary); margin-top: 14px; line-height: 1.5;">Du blir kun belastet etter at coachen har bekreftet booking. Avbestilling er gratis frem til 24 timer før økten.</p>
+</main>
+
+</body></html>

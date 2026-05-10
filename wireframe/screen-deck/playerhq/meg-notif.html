@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Meg · notifikasjoner</title>
+<style>
+.set-grid { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+.set-nav { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); padding: 8px; display: flex; flex-direction: column; gap: 1px; position: sticky; top: 16px; }
+.set-nav a { padding: 9px 12px; font-size: 13px; color: var(--text); text-decoration: none; border-radius: 8px; border-left: 2px solid transparent; }
+.set-nav a:hover { background: rgba(0,88,64,0.04); }
+.set-nav a.active { background: rgba(0,88,64,0.06); border-left-color: var(--primary-light); color: var(--primary); font-weight: 600; }
+.set-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); padding: 24px 28px; margin-bottom: 16px; }
+.notif-head { display: grid; grid-template-columns: 1fr 80px 80px 80px; gap: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 4px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); }
+.notif-head span { text-align: center; }
+.notif-head span:first-child { text-align: left; }
+.notif-row { display: grid; grid-template-columns: 1fr 80px 80px 80px; gap: 18px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); }
+.notif-row:last-child { border-bottom: 0; }
+.notif-name b { display: block; font-size: 14px; }
+.notif-name small { font-size: 12px; color: var(--text-secondary); }
+.toggle { width: 36px; height: 20px; border-radius: 10px; background: var(--border); position: relative; cursor: pointer; margin: 0 auto; }
+.toggle::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform 120ms ease; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.toggle.on { background: var(--primary); }
+.toggle.on::after { transform: translateX(16px); }
+</style>
+</head>
+<body>
+<div class="app app--player">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>player</em></div>
+    <nav class="app-nav">
+      <a href="hjem.html">Hjem</a>
+      <a href="treningsplan.html">Tren</a>
+      <a href="mal-oversikt.html">Mål</a>
+      <a href="coach-detalj.html">Coach</a>
+      <a href="meg-profil.html" class="active">Meg</a>
+    </nav>
+    <div class="app-tier">PRO</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">/portal/meg/notif · varsler</span>
+      <h1 class="page-title"><em>Notifikasjons</em>-innstillinger</h1>
+      <p class="page-lede">Velg hvordan du vil bli varslet om hva. Push, e-post og SMS — du bestemmer per type.</p>
+    </header>
+
+    <div class="set-grid">
+      <nav class="set-nav">
+        <a href="meg-profil.html">Profil</a>
+        <a href="meg-abonnement.html">Abonnement</a>
+        <a href="meg-helse.html">Helse &amp; sync</a>
+        <a href="#" class="active">Notifikasjoner</a>
+        <a href="meg-help.html">Hjelp &amp; support</a>
+        <a href="#">Personvern</a>
+        <a href="#">Logg ut</a>
+      </nav>
+
+      <div>
+        <div class="set-card">
+          <h2 style="font-family:var(--font-display); font-size:16px; font-weight:600; margin-bottom:6px;">Velg per type</h2>
+          <p style="font-size:12px; color:var(--text-secondary); margin-bottom:18px;">SMS koster ekstra hvis du sender mer enn 50/mnd. E-post og push er gratis.</p>
+
+          <div class="notif-head">
+            <span>Type</span>
+            <span>Push</span>
+            <span>E-post</span>
+            <span>SMS</span>
+          </div>
+
+          <div class="notif-row">
+            <div class="notif-name">
+              <b>Ny coach-melding</b>
+              <small>Når Anders eller annen coach sender melding</small>
+            </div>
+            <div class="toggle on"></div>
+            <div class="toggle on"></div>
+            <div class="toggle"></div>
+          </div>
+
+          <div class="notif-row">
+            <div class="notif-name">
+              <b>Plan-endring</b>
+              <small>Når coach endrer treningsplanen din</small>
+            </div>
+            <div class="toggle on"></div>
+            <div class="toggle on"></div>
+            <div class="toggle"></div>
+          </div>
+
+          <div class="notif-row">
+            <div class="notif-name">
+              <b>Påminnelse om økt</b>
+              <small>1 time før planlagt økt</small>
+            </div>
+            <div class="toggle on"></div>
+            <div class="toggle"></div>
+            <div class="toggle on"></div>
+          </div>
+
+          <div class="notif-row">
+            <div class="notif-name">
+              <b>Test-resultat klar</b>
+              <small>NGF, TrackMan, putting-tester</small>
+            </div>
+            <div class="toggle on"></div>
+            <div class="toggle on"></div>
+            <div class="toggle"></div>
+          </div>
+
+          <div class="notif-row">
+            <div class="notif-name">
+              <b>Faktura</b>
+              <small>Ny faktura, betalt, påminnelse</small>
+            </div>
+            <div class="toggle"></div>
+            <div class="toggle on"></div>
+            <div class="toggle"></div>
+          </div>
+
+          <div class="notif-row">
+            <div class="notif-name">
+              <b>Achievements</b>
+              <small>Ny streak-rekord, milestone, badge</small>
+            </div>
+            <div class="toggle on"></div>
+            <div class="toggle"></div>
+            <div class="toggle"></div>
+          </div>
+        </div>
+
+        <div class="set-card">
+          <h2 style="font-family:var(--font-display); font-size:16px; font-weight:600; margin-bottom:14px;">Stille perioder</h2>
+          <div style="display:flex; flex-direction:column; gap:14px; font-size:13px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <b>Stille natt</b>
+                <div style="font-size:12px; color:var(--text-secondary);">Ingen push mellom 22:00 og 07:00</div>
+              </div>
+              <div class="toggle on"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <b>Stille på runde</b>
+                <div style="font-size:12px; color:var(--text-secondary);">Auto-pause varsler når Garmin registrerer pågående runde</div>
+              </div>
+              <div class="toggle on"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

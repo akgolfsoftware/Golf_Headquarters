@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>BulkApproveModal</title></head>
+<body style="background: rgba(10,31,24,0.5); padding: 60px 40px;">
+<div class="modal" style="background: white; border-radius: 20px; max-width: 700px; margin: 0 auto; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+    <div>
+      <span class="page-eyebrow">7 lavrisiko-actions · alle confidence ≥ 90%</span>
+      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-top: 4px;">Bulk-godkjenn <em style="color: var(--primary); font-weight: 400;">agent-actions</em></h2>
+    </div>
+    <button style="background: transparent; border: 0; font-size: 24px; cursor: pointer; color: var(--text-secondary);">×</button>
+  </div>
+
+  <p style="color: var(--text-secondary); font-size: 13px; margin: 12px 0 20px;">Disse er trygge å godkjenne i én operasjon — ingen overskrider risiko-terskelen din.</p>
+
+  <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--bg); border-radius: 12px; margin-bottom: 12px;">
+    <input type="checkbox" checked style="width: 16px; height: 16px;">
+    <span style="font-size: 13px; flex: 1;">Velg alle (5 av 7 forhåndsvalgt)</span>
+    <span class="pill pill-success">Lavrisiko</span>
+  </div>
+
+  <div style="border: 1px solid var(--border); border-radius: 12px; max-height: 320px; overflow-y: auto; margin-bottom: 24px;">
+    <label style="display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(0,88,64,0.04);">
+      <input type="checkbox" checked style="width: 16px; height: 16px;">
+      <div>
+        <b style="font-size: 13px;">Push-varsel til Markus R · runde-påminnelse</b>
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">Sender 18:00 dagen før Bossum-runde</div>
+      </div>
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--success); font-weight: 600;">96%</span>
+    </label>
+    <label style="display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(0,88,64,0.04);">
+      <input type="checkbox" checked style="width: 16px; height: 16px;">
+      <div>
+        <b style="font-size: 13px;">Reminder til Julie S · måneds-test forfaller</b>
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">Putting-test 2m og 5m</div>
+      </div>
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--success); font-weight: 600;">94%</span>
+    </label>
+    <label style="display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(0,88,64,0.04);">
+      <input type="checkbox" checked style="width: 16px; height: 16px;">
+      <div>
+        <b style="font-size: 13px;">Auto-rebook · Aksel H · Mulligan 14. mai 16:00</b>
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">Coach kansellert · samme uke flyttes</div>
+      </div>
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--success); font-weight: 600;">92%</span>
+    </label>
+    <label style="display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(0,88,64,0.04);">
+      <input type="checkbox" checked style="width: 16px; height: 16px;">
+      <div>
+        <b style="font-size: 13px;">Faktura-purring · Selma L · 30 dager forfalt</b>
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">Sak #INV-2026-0312 · 1 600 kr</div>
+      </div>
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--success); font-weight: 600;">98%</span>
+    </label>
+    <label style="display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(0,88,64,0.04);">
+      <input type="checkbox" checked style="width: 16px; height: 16px;">
+      <div>
+        <b style="font-size: 13px;">Aktiver drill-anbefaling for Theo B</b>
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">2m putte-pyramide neste 2 økter</div>
+      </div>
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--success); font-weight: 600;">91%</span>
+    </label>
+    <label style="display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border);">
+      <input type="checkbox" style="width: 16px; height: 16px;">
+      <div>
+        <b style="font-size: 13px;">Generer ukerapport til foreldre · Emil N</b>
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">PDF + e-post · krever foresatte-godkjenning</div>
+      </div>
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--success); font-weight: 600;">90%</span>
+    </label>
+    <label style="display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center; padding: 12px 16px;">
+      <input type="checkbox" style="width: 16px; height: 16px;">
+      <div>
+        <b style="font-size: 13px;">Foreslå pause-uke for Aksel H (overtrening)</b>
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">Krever coach-vurdering · 2 røde flagg</div>
+      </div>
+      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--warning); font-weight: 600;">78%</span>
+    </label>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid var(--border);">
+    <button class="btn btn-ghost">Avbryt</button>
+    <button class="btn btn-primary">Godkjenn 5 valgte →</button>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Modal · Endre booking</title></head>
+<body style="background: rgba(10,31,23,0.50); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;">
+
+<div style="background: white; border-radius: var(--r-card); width: 100%; max-width: 600px; box-shadow: 0 20px 60px rgba(0,0,0,0.20); overflow: hidden;">
+
+  <div style="padding: 24px 28px 16px; display: flex; justify-content: space-between; align-items: start;">
+    <div>
+      <span style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary);">Endre booking</span>
+      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-top: 4px;">Velg <em style="color: var(--primary); font-weight: 400;">ny tid</em></h2>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Anders K. · Personlig coaching · 60 min · Mulligan</p>
+    </div>
+    <button style="background: transparent; border: 0; font-size: 22px; color: var(--text-secondary); cursor: pointer; line-height: 1;">×</button>
+  </div>
+
+  <div style="padding: 0 28px 24px;">
+    <div class="card" style="background: var(--bg); margin-bottom: 16px;">
+      <span class="card-label">Nåværende</span>
+      <p style="font-size: 14px; margin-top: 4px;"><b>Tirsdag 12. mai · 09:00–10:00</b> <span style="color: var(--text-secondary); margin-left: 8px;">→ velg ny dag/tid under</span></p>
+    </div>
+
+    <h3 style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px;">Velg dag (uke 20)</h3>
+    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 18px;">
+      <a href="#" style="background: var(--bg); border-radius: 10px; padding: 10px 6px; text-align: center; text-decoration: none; color: inherit; font-size: 12px;"><small style="font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary);">MAN</small><br><b>18</b></a>
+      <a href="#" style="background: white; border: 2px solid var(--primary); border-radius: 10px; padding: 10px 6px; text-align: center; text-decoration: none; color: inherit; font-size: 12px;"><small style="font-family: var(--font-mono); font-size: 9px; color: var(--primary);">TIR</small><br><b>19</b></a>
+      <a href="#" style="background: var(--bg); border-radius: 10px; padding: 10px 6px; text-align: center; text-decoration: none; color: inherit; font-size: 12px;"><small style="font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary);">ONS</small><br><b>20</b></a>
+      <a href="#" style="background: var(--bg); border-radius: 10px; padding: 10px 6px; text-align: center; text-decoration: none; color: inherit; font-size: 12px;"><small style="font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary);">TOR</small><br><b>21</b></a>
+      <a href="#" style="background: var(--bg); border-radius: 10px; padding: 10px 6px; text-align: center; text-decoration: none; color: inherit; font-size: 12px;"><small style="font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary);">FRE</small><br><b>22</b></a>
+      <a href="#" style="background: var(--bg); border-radius: 10px; padding: 10px 6px; text-align: center; text-decoration: none; color: inherit; font-size: 12px;"><small style="font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary);">LØR</small><br><b>23</b></a>
+      <div style="background: #FAFAF7; border-radius: 10px; padding: 10px 6px; text-align: center; font-size: 12px; color: var(--text-muted);"><small style="font-family: var(--font-mono); font-size: 9px;">SØN</small><br><b>24</b></div>
+    </div>
+
+    <h3 style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px;">Ledige tider · tirsdag 19. mai</h3>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+      <button style="background: white; border: 1px solid var(--border-strong); border-radius: 10px; padding: 12px 8px; cursor: pointer; font-family: inherit; font-size: 13px;">08:00</button>
+      <button style="background: var(--primary); color: white; border: 0; border-radius: 10px; padding: 12px 8px; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600;">09:00 ✓</button>
+      <button style="background: white; border: 1px solid var(--border-strong); border-radius: 10px; padding: 12px 8px; cursor: pointer; font-family: inherit; font-size: 13px;">10:00</button>
+      <button style="background: white; border: 1px solid var(--border-strong); border-radius: 10px; padding: 12px 8px; cursor: pointer; font-family: inherit; font-size: 13px;">11:00</button>
+      <button style="background: white; border: 1px solid var(--border-strong); border-radius: 10px; padding: 12px 8px; cursor: pointer; font-family: inherit; font-size: 13px;">13:00</button>
+      <button style="background: white; border: 1px solid var(--border-strong); border-radius: 10px; padding: 12px 8px; cursor: pointer; font-family: inherit; font-size: 13px;">15:00</button>
+      <button style="background: white; border: 1px solid var(--border-strong); border-radius: 10px; padding: 12px 8px; cursor: pointer; font-family: inherit; font-size: 13px;">17:00</button>
+      <button style="background: white; border: 1px solid var(--border-strong); border-radius: 10px; padding: 12px 8px; cursor: pointer; font-family: inherit; font-size: 13px;">18:00</button>
+    </div>
+
+    <p style="font-size: 12px; color: var(--text-secondary); margin-top: 14px;">Endring er gratis frem til 24t før opprinnelig tid. Pris uendret.</p>
+  </div>
+
+  <div style="padding: 16px 28px; background: var(--bg); border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: end;">
+    <button class="btn btn-ghost">Avbryt</button>
+    <button class="btn btn-primary">Bekreft endring til 19. mai 09:00 →</button>
+  </div>
+
+</div>
+
+</body></html>

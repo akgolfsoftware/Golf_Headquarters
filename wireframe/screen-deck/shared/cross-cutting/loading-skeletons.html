@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Loading skeletons</title>
+<style>
+  @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+  .sk { background: linear-gradient(90deg, var(--border) 0%, #F3F4F6 50%, var(--border) 100%); background-size: 800px 100%; animation: shimmer 1.4s infinite linear; border-radius: 6px; }
+  .sk-line { height: 10px; }
+  .sk-circ { width: 40px; height: 40px; border-radius: 50%; }
+  .sk-rect { height: 80px; border-radius: 10px; }
+  .sk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .sk-block { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  .sk-block-title { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .sk-flex { display: flex; gap: 12px; align-items: center; }
+  .sk-col { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .sk-table-row { display: grid; grid-template-columns: 1fr 80px 80px 60px; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar" style="background: var(--bg-coach-sidebar);">
+    <div class="app-logo">AK Golf<br><em>system</em></div>
+    <nav class="app-nav">
+      <a href="design-tokens.html">Tokens</a>
+      <a href="#" class="active">Skeletons</a>
+      <a href="empty-states.html">Empty-states</a>
+    </nav>
+    <div class="app-tier">DESIGN</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-coach-content);">
+    <header class="page-head">
+      <span class="page-eyebrow">6 skeleton-mønstre · venting i kontekst</span>
+      <h1 class="page-title"><em>Loading</em>-skeletons</h1>
+      <p class="page-lede">Bibliotek over alle skeleton-mønstre i AK Golf Platform. Vises mens innhold lastes for å unngå layout-shift.</p>
+    </header>
+
+    <div class="sk-grid">
+      <div class="sk-block">
+        <div class="sk-block-title">Dashboard · hero + KPI + cards</div>
+        <div class="sk-flex" style="margin-bottom: 14px;">
+          <div class="sk sk-circ"></div>
+          <div class="sk-col">
+            <div class="sk sk-line" style="width: 50%;"></div>
+            <div class="sk sk-line" style="width: 30%; height: 8px;"></div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px;">
+          <div class="sk sk-rect" style="height: 50px;"></div>
+          <div class="sk sk-rect" style="height: 50px;"></div>
+          <div class="sk sk-rect" style="height: 50px;"></div>
+          <div class="sk sk-rect" style="height: 50px;"></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div class="sk sk-rect"></div>
+          <div class="sk sk-rect"></div>
+        </div>
+      </div>
+
+      <div class="sk-block">
+        <div class="sk-block-title">List · player-rader</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div class="sk-flex"><div class="sk sk-circ" style="width:32px; height:32px;"></div><div class="sk-col"><div class="sk sk-line" style="width:60%;"></div><div class="sk sk-line" style="width:40%; height:7px;"></div></div><div class="sk sk-line" style="width:50px; height:8px;"></div></div>
+          <div class="sk-flex"><div class="sk sk-circ" style="width:32px; height:32px;"></div><div class="sk-col"><div class="sk sk-line" style="width:55%;"></div><div class="sk sk-line" style="width:35%; height:7px;"></div></div><div class="sk sk-line" style="width:50px; height:8px;"></div></div>
+          <div class="sk-flex"><div class="sk sk-circ" style="width:32px; height:32px;"></div><div class="sk-col"><div class="sk sk-line" style="width:65%;"></div><div class="sk sk-line" style="width:30%; height:7px;"></div></div><div class="sk sk-line" style="width:50px; height:8px;"></div></div>
+          <div class="sk-flex"><div class="sk sk-circ" style="width:32px; height:32px;"></div><div class="sk-col"><div class="sk sk-line" style="width:50%;"></div><div class="sk sk-line" style="width:42%; height:7px;"></div></div><div class="sk sk-line" style="width:50px; height:8px;"></div></div>
+          <div class="sk-flex"><div class="sk sk-circ" style="width:32px; height:32px;"></div><div class="sk-col"><div class="sk sk-line" style="width:58%;"></div><div class="sk sk-line" style="width:38%; height:7px;"></div></div><div class="sk sk-line" style="width:50px; height:8px;"></div></div>
+        </div>
+      </div>
+
+      <div class="sk-block">
+        <div class="sk-block-title">Detail · spillerprofil</div>
+        <div class="sk-flex" style="margin-bottom: 14px;">
+          <div class="sk sk-circ" style="width:60px; height:60px;"></div>
+          <div class="sk-col">
+            <div class="sk sk-line" style="width:55%; height:14px;"></div>
+            <div class="sk sk-line" style="width:35%; height:8px;"></div>
+            <div class="sk sk-line" style="width:25%; height:7px;"></div>
+          </div>
+        </div>
+        <div class="sk sk-rect" style="margin-bottom: 12px;"></div>
+        <div class="sk sk-line" style="width: 100%; margin-bottom: 8px;"></div>
+        <div class="sk sk-line" style="width: 85%; margin-bottom: 8px;"></div>
+        <div class="sk sk-line" style="width: 70%;"></div>
+      </div>
+
+      <div class="sk-block">
+        <div class="sk-block-title">Settings · form-shell</div>
+        <div class="sk sk-line" style="width: 30%; height: 14px; margin-bottom: 16px;"></div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="sk-flex"><div class="sk-col"><div class="sk sk-line" style="width:40%;"></div><div class="sk sk-line" style="width:60%; height:7px;"></div></div><div class="sk sk-line" style="width:140px; height:30px;"></div></div>
+          <div class="sk-flex"><div class="sk-col"><div class="sk sk-line" style="width:35%;"></div><div class="sk sk-line" style="width:55%; height:7px;"></div></div><div class="sk sk-line" style="width:140px; height:30px;"></div></div>
+          <div class="sk-flex"><div class="sk-col"><div class="sk sk-line" style="width:42%;"></div><div class="sk sk-line" style="width:50%; height:7px;"></div></div><div class="sk sk-line" style="width:36px; height:20px;"></div></div>
+          <div class="sk-flex"><div class="sk-col"><div class="sk sk-line" style="width:38%;"></div><div class="sk sk-line" style="width:65%; height:7px;"></div></div><div class="sk sk-line" style="width:36px; height:20px;"></div></div>
+        </div>
+      </div>
+
+      <div class="sk-block">
+        <div class="sk-block-title">Modal · innhold</div>
+        <div class="sk sk-line" style="width: 50%; height: 14px; margin-bottom: 8px;"></div>
+        <div class="sk sk-line" style="width: 70%; height: 7px; margin-bottom: 18px;"></div>
+        <div class="sk sk-line" style="width: 100%; margin-bottom: 6px;"></div>
+        <div class="sk sk-line" style="width: 95%; margin-bottom: 6px;"></div>
+        <div class="sk sk-line" style="width: 80%; margin-bottom: 18px;"></div>
+        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+          <div class="sk sk-line" style="width: 70px; height: 30px;"></div>
+          <div class="sk sk-line" style="width: 90px; height: 30px;"></div>
+        </div>
+      </div>
+
+      <div class="sk-block">
+        <div class="sk-block-title">Tabell · rader</div>
+        <div class="sk-table-row" style="border-bottom: 1px solid var(--border-strong);">
+          <div class="sk sk-line" style="width:60%; height:8px;"></div>
+          <div class="sk sk-line" style="width:80%; height:8px;"></div>
+          <div class="sk sk-line" style="width:80%; height:8px;"></div>
+          <div class="sk sk-line" style="width:60%; height:8px;"></div>
+        </div>
+        <div class="sk-table-row"><div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line"></div></div>
+        <div class="sk-table-row"><div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line"></div></div>
+        <div class="sk-table-row"><div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line"></div></div>
+        <div class="sk-table-row"><div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line"></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

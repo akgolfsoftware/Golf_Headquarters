@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Empty-detail · katalog</title>
+<style>
+  .ed2-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .ed2-demo { background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 10px; padding: 24px; min-height: 260px; display: flex; align-items: center; justify-content: center; margin: 10px 0 12px; text-align: center; position: relative; }
+  .ed2-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); padding-top: 10px; border-top: 1px solid var(--border); }
+  .ed2-icon { width: 60px; height: 60px; border-radius: 50%; background: var(--bg-elev); border: 1px dashed var(--border-strong); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-family: var(--font-display); font-size: 26px; color: var(--text-muted); }
+  .ed2-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; color: var(--text); }
+  .ed2-text { font-size: 12px; color: var(--text-secondary); line-height: 1.55; max-width: 280px; margin: 0 auto 14px; }
+  .ed2-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .ed2-arrow { position: absolute; top: 16px; left: 16px; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+  .ed2-tag { display: inline-block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 4px; background: rgba(0,88,64,0.10); color: var(--primary); margin-bottom: 10px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="../../coachhq/hub.html">Hub</a>
+      <a href="../../coachhq/elever.html">Elever</a>
+      <a href="../../coachhq/plans.html">Treningsplaner</a>
+      <a href="../../coachhq/bookings.html">Bookinger</a>
+      <a href="../../coachhq/approvals.html">Godkjenninger</a>
+      <a href="../../coachhq/analytics.html">Analytics</a>
+      <a href="../../coachhq/finance.html">Økonomi</a>
+      <a href="../../coachhq/facilities.html">Fasiliteter</a>
+      <a href="../../coachhq/settings-bruker.html" class="active">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Designsystem · Claude Design</span>
+      <h1 class="page-title"><em>Empty-detail</em> · katalog</h1>
+      <p class="page-lede">Tomme detail-views i master-detail layouts. Vis tydelig at brukeren må velge noe — eller gi en CTA for å starte.</p>
+    </header>
+
+    <div class="ed2-grid">
+      <div class="card">
+        <div class="card-label">Ingen valgt · sidepanel</div>
+        <h3>Velg fra liste</h3>
+        <div class="ed2-demo">
+          <div class="ed2-arrow">← Velg fra venstre</div>
+          <div>
+            <div class="ed2-icon">⇠</div>
+            <div class="ed2-title">Velg en elev</div>
+            <p class="ed2-text">Klikk en elev i lista til venstre for å se profil, treningsplan og siste økter.</p>
+            <div class="ed2-actions">
+              <button class="btn btn-ghost">+ Legg til ny elev</button>
+            </div>
+          </div>
+        </div>
+        <div class="ed2-meta">Brukes på · elever-side, plan-bibliotek, bookinger</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Nytt · ikke lagret</div>
+        <h3>Nytt element · utkast</h3>
+        <div class="ed2-demo">
+          <div>
+            <span class="ed2-tag">Utkast</span>
+            <div class="ed2-icon" style="background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.30); color:#B45309;">+</div>
+            <div class="ed2-title">Ny treningsplan · ikke lagret</div>
+            <p class="ed2-text">Du har startet et utkast men ikke lagret enda. Fyll inn navn og periode for å lagre.</p>
+            <div class="ed2-actions">
+              <button class="btn btn-primary">Lagre som utkast</button>
+              <button class="btn btn-ghost">Forkast</button>
+            </div>
+          </div>
+        </div>
+        <div class="ed2-meta">Brukes på · ny-plan-flyt, ny-økt-flyt, nye entiteter</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Slettet · fjernet</div>
+        <h3>Element fjernet</h3>
+        <div class="ed2-demo">
+          <div>
+            <span class="ed2-tag" style="background:rgba(239,68,68,0.10); color:#B91C1C;">Slettet</span>
+            <div class="ed2-icon" style="background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.25); color:#B91C1C;">×</div>
+            <div class="ed2-title">Denne planen er slettet</div>
+            <p class="ed2-text">Plan "Vinter 2026 — Jonas H." ble slettet 8. mai. Du kan gjenopprette i 22 dager til.</p>
+            <div class="ed2-actions">
+              <button class="btn btn-primary">Gjenopprett</button>
+              <button class="btn btn-ghost">Tilbake til liste</button>
+            </div>
+          </div>
+        </div>
+        <div class="ed2-meta">Brukes på · slettede ressurser, deep-link til arkivert</div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Cookie-policy — AK Golf</title>
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .cookie-tbl { width: 100%; border-collapse: separate; border-spacing: 0; background: white; border: 1px solid #E5E3DD; border-radius: 16px; overflow: hidden; margin-bottom: 32px; }
+  .cookie-tbl th, .cookie-tbl td { padding: 14px 18px; text-align: left; border-bottom: 1px solid #E5E3DD; font-size: 13px; }
+  .cookie-tbl th { background: #F5F4EE; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #6B7280; font-weight: 600; }
+  .cookie-tbl tr:last-child td { border-bottom: 0; }
+  .cookie-tbl td:first-child { font-family: 'JetBrains Mono', monospace; }
+  .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: white; border: 1px solid #E5E3DD; border-radius: 12px; margin-bottom: 12px; }
+  .toggle-row h3 { font-family: 'Inter Tight', sans-serif; font-size: 17px; margin-bottom: 4px; }
+  .toggle-row p { color: #6B7280; font-size: 13px; }
+  .switch { position: relative; width: 48px; height: 26px; background: #D1D5DB; border-radius: 999px; cursor: pointer; flex-shrink: 0; }
+  .switch.on { background: #005840; }
+  .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: 200ms; }
+  .switch.on::after { left: 25px; }
+  .switch.locked { background: #9CA3AF; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<header class="web-header"><div class="web-header-inner"><a href="index.html" class="web-logo">AK Golf</a><nav class="web-nav"><a href="om.html">Om</a><a href="tjenester.html">Tjenester</a><a href="coaches.html">Coaches</a><a href="anlegg.html">Anlegg</a><a href="priser.html">Priser</a><a href="blogg.html">Blogg</a><a href="kontakt.html">Kontakt</a></nav><a href="../auth/login.html" class="web-cta">Logg inn</a></div></header>
+
+<section class="subhero">
+  <div class="hero-eyebrow">COOKIE-POLICY</div>
+  <h1>Du <em>bestemmer</em>.</h1>
+  <p>Slik bruker AK Golf cookies — og hvordan du styrer dem.</p>
+</section>
+
+<section class="section-light-narrow">
+  <h2 style="font-family: 'Inter Tight', sans-serif; font-size: 28px; margin-bottom: 24px;">Dine valg</h2>
+
+  <div class="toggle-row">
+    <div>
+      <h3>Nødvendige cookies</h3>
+      <p>Innlogging, handlekurv, sikkerhet. Kan ikke slås av.</p>
+    </div>
+    <div class="switch on locked"></div>
+  </div>
+
+  <div class="toggle-row">
+    <div>
+      <h3>Analyse (Plausible)</h3>
+      <p>Hjelper oss forstå hvordan siden brukes. Ingen identifiserbar info.</p>
+    </div>
+    <div class="switch on"></div>
+  </div>
+
+  <div class="toggle-row">
+    <div>
+      <h3>Markedsføring</h3>
+      <p>Personlige annonser via Meta og Google. Krever samtykke.</p>
+    </div>
+    <div class="switch"></div>
+  </div>
+
+  <div style="display: flex; gap: 12px; margin-top: 24px;">
+    <button class="btn-primary-web" style="border: 0; cursor: pointer;">Lagre valg</button>
+    <button class="btn-ghost-web" style="border: 1px solid #D1D5DB; cursor: pointer;">Avvis alle</button>
+  </div>
+
+  <h2 style="font-family: 'Inter Tight', sans-serif; font-size: 28px; margin: 48px 0 24px;">Cookies vi bruker</h2>
+
+  <table class="cookie-tbl">
+    <thead><tr><th>Navn</th><th>Type</th><th>Formål</th><th>Varighet</th></tr></thead>
+    <tbody>
+      <tr><td>sb-access-token</td><td>Nødvendig</td><td>Supabase auth-token</td><td>1 time</td></tr>
+      <tr><td>sb-refresh-token</td><td>Nødvendig</td><td>Supabase refresh-token</td><td>30 dager</td></tr>
+      <tr><td>cart_id</td><td>Nødvendig</td><td>Handlekurv</td><td>Sesjon</td></tr>
+      <tr><td>cookie_consent</td><td>Nødvendig</td><td>Lagrer dine cookie-valg</td><td>12 mnd</td></tr>
+      <tr><td>plausible_uid</td><td>Analyse</td><td>Anonym sidevisning-tracking</td><td>1 dag</td></tr>
+      <tr><td>_fbp</td><td>Markedsføring</td><td>Meta Pixel</td><td>3 mnd</td></tr>
+      <tr><td>_ga</td><td>Markedsføring</td><td>Google Ads-konvertering</td><td>2 år</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size: 14px; color: #5E5C57; line-height: 1.7;">Du kan når som helst endre cookie-valgene dine ved å klikke på "Cookie-innstillinger" i bunnen av siden. Du kan også slette cookies via nettleseren din.</p>
+</section>
+
+<footer class="web-footer">
+  <div class="web-footer-inner">
+    <div><h3>AK Golf</h3><p style="color: rgba(255,255,255,0.6); margin-top: 16px;">Personlig golf-coaching for spillere som vil bli bedre.</p></div>
+    <div><h4>Tjenester</h4><a href="tjenester.html">Coaching</a><br><a href="for-klubber.html">For klubber</a><br><a href="for-bedrifter.html">For bedrifter</a><br><a href="junior.html">Junior</a></div>
+    <div><h4>Selskap</h4><a href="om.html">Om oss</a><br><a href="jobb.html">Karriere</a><br><a href="cases.html">Cases</a><br><a href="kontakt.html">Kontakt</a></div>
+    <div><h4>Juridisk</h4><a href="personvern.html">Personvern</a><br><a href="vilkar.html">Vilkår</a><br><a href="cookies.html">Cookies</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

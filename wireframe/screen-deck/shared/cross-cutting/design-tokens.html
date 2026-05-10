@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Design tokens</title>
+<style>
+  .tok-grid { display: grid; gap: 24px; }
+  .tok-section { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; }
+  .tok-section h2 { font-family: var(--font-display); font-size: 18px; font-weight: 600; margin-bottom: 14px; }
+  .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .swatch { display: flex; flex-direction: column; gap: 6px; }
+  .swatch-color { height: 60px; border-radius: 8px; border: 1px solid var(--border); }
+  .swatch-name { font-family: var(--font-mono); font-size: 11px; font-weight: 600; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+  .typo-row { display: grid; grid-template-columns: 200px 1fr; gap: 18px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .typo-row:last-child { border-bottom: 0; }
+  .typo-meta { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.5; }
+  .typo-meta b { color: var(--text); display: block; font-size: 12px; margin-bottom: 2px; letter-spacing: 0.04em; }
+  .space-row { display: flex; align-items: center; gap: 14px; padding: 6px 0; font-family: var(--font-mono); font-size: 11px; }
+  .space-bar { background: var(--primary); height: 16px; border-radius: 3px; }
+  .radius-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .radius-box { aspect-ratio: 1; background: var(--primary); display: flex; align-items: flex-end; justify-content: center; padding: 8px; color: var(--text-inverse); font-family: var(--font-mono); font-size: 10px; font-weight: 600; }
+  .shadow-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .shadow-box { background: var(--bg-elev); border-radius: 10px; padding: 18px; text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar" style="background: var(--bg-coach-sidebar);">
+    <div class="app-logo">AK Golf<br><em>system</em></div>
+    <nav class="app-nav">
+      <a href="#" class="active">Design tokens</a>
+      <a href="modal-katalog.html">Modal-katalog</a>
+      <a href="loading-skeletons.html">Skeletons</a>
+    </nav>
+    <div class="app-tier">DESIGN</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-coach-content);">
+    <header class="page-head">
+      <span class="page-eyebrow">Designsystem v2 · tokens</span>
+      <h1 class="page-title"><em>Design</em> tokens</h1>
+      <p class="page-lede">Alle visuelle tokens i AK Golf Platform. Endres aldri uten eksplisitt beslutning fra Anders.</p>
+    </header>
+
+    <div class="tok-grid">
+      <div class="tok-section">
+        <h2>Farger · brand</h2>
+        <div class="swatches">
+          <div class="swatch"><div class="swatch-color" style="background:#005840;"></div><span class="swatch-name">primary</span><span class="swatch-hex">#005840</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#00432F;"></div><span class="swatch-name">primary-dark</span><span class="swatch-hex">#00432F</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#006B4D;"></div><span class="swatch-name">primary-light</span><span class="swatch-hex">#006B4D</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#D1F843;"></div><span class="swatch-name">accent</span><span class="swatch-hex">#D1F843</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#B8C82E;"></div><span class="swatch-name">accent-dark</span><span class="swatch-hex">#B8C82E</span></div>
+        </div>
+        <h2 style="margin-top: 20px;">Farger · pyramide</h2>
+        <div class="swatches">
+          <div class="swatch"><div class="swatch-color" style="background:#005840;"></div><span class="swatch-name">pyr-fys</span><span class="swatch-hex">#005840</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#1A7D56;"></div><span class="swatch-name">pyr-tek</span><span class="swatch-hex">#1A7D56</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#D1F843;"></div><span class="swatch-name">pyr-slag</span><span class="swatch-hex">#D1F843</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#B8852A;"></div><span class="swatch-name">pyr-spill</span><span class="swatch-hex">#B8852A</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#5E5C57;"></div><span class="swatch-name">pyr-turn</span><span class="swatch-hex">#5E5C57</span></div>
+        </div>
+        <h2 style="margin-top: 20px;">Farger · status</h2>
+        <div class="swatches">
+          <div class="swatch"><div class="swatch-color" style="background:#10B981;"></div><span class="swatch-name">success</span><span class="swatch-hex">#10B981</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#F59E0B;"></div><span class="swatch-name">warning</span><span class="swatch-hex">#F59E0B</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#EF4444;"></div><span class="swatch-name">danger</span><span class="swatch-hex">#EF4444</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#3B82F6;"></div><span class="swatch-name">info</span><span class="swatch-hex">#3B82F6</span></div>
+          <div class="swatch"><div class="swatch-color" style="background:#0A1F17; border-color: #061210;"></div><span class="swatch-name">text</span><span class="swatch-hex">#0A1F17</span></div>
+        </div>
+      </div>
+
+      <div class="tok-section">
+        <h2>Typografi</h2>
+        <div class="typo-row">
+          <div class="typo-meta"><b>Inter Tight · Display</b>32px · 600 · -0.02em</div>
+          <div style="font-family: var(--font-display); font-size: 32px; font-weight: 600; letter-spacing: -0.02em;">Treningsplaner <em style="font-style: italic; font-weight: 400; color: var(--primary);">denne uken</em></div>
+        </div>
+        <div class="typo-row">
+          <div class="typo-meta"><b>Inter Tight · H2</b>18px · 600</div>
+          <div style="font-family: var(--font-display); font-size: 18px; font-weight: 600;">Aktive spillere · 38</div>
+        </div>
+        <div class="typo-row">
+          <div class="typo-meta"><b>Inter · Body</b>14px · 400 · 1.5</div>
+          <div style="font-size: 14px;">Standard brødtekst i appen. Brukes til alt løpende innhold, beskrivelser og informasjon i kort.</div>
+        </div>
+        <div class="typo-row">
+          <div class="typo-meta"><b>Inter · Small</b>12px · 500</div>
+          <div style="font-size: 12px;">Sekundær tekst, hjelpetekst, captions.</div>
+        </div>
+        <div class="typo-row">
+          <div class="typo-meta"><b>JetBrains Mono · Numbers</b>tabular · 28px</div>
+          <div class="num" style="font-size: 28px; font-weight: 600;">142 800 kr</div>
+        </div>
+        <div class="typo-row">
+          <div class="typo-meta"><b>Mono · Eyebrow</b>10px · 0.12em · UPPER</div>
+          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary);">Mandag 11. mai · uke 19</div>
+        </div>
+      </div>
+
+      <div class="tok-section">
+        <h2>Spacing · 8pt-grid</h2>
+        <div class="space-row"><span style="width:50px;">2 · 8px</span><div class="space-bar" style="width:8px;"></div></div>
+        <div class="space-row"><span style="width:50px;">4 · 16px</span><div class="space-bar" style="width:16px;"></div></div>
+        <div class="space-row"><span style="width:50px;">6 · 24px</span><div class="space-bar" style="width:24px;"></div></div>
+        <div class="space-row"><span style="width:50px;">8 · 32px</span><div class="space-bar" style="width:32px;"></div></div>
+        <div class="space-row"><span style="width:50px;">10 · 40px</span><div class="space-bar" style="width:40px;"></div></div>
+        <div class="space-row"><span style="width:50px;">12 · 48px</span><div class="space-bar" style="width:48px;"></div></div>
+        <div class="space-row"><span style="width:50px;">16 · 64px</span><div class="space-bar" style="width:64px;"></div></div>
+      </div>
+
+      <div class="tok-section">
+        <h2>Border radius</h2>
+        <div class="radius-grid">
+          <div class="radius-box" style="border-radius: 4px;">4px · sm</div>
+          <div class="radius-box" style="border-radius: 8px;">8px · btn</div>
+          <div class="radius-box" style="border-radius: 12px;">12px · md</div>
+          <div class="radius-box" style="border-radius: 16px;">16px · card</div>
+          <div class="radius-box" style="border-radius: 50%;">full · pill</div>
+        </div>
+      </div>
+
+      <div class="tok-section">
+        <h2>Shadows</h2>
+        <div class="shadow-grid">
+          <div class="shadow-box" style="box-shadow: 0 1px 2px rgba(0,0,0,0.05);">sm · 0 1px 2px</div>
+          <div class="shadow-box" style="box-shadow: 0 4px 14px rgba(0,88,64,0.20);">md · brand 14px</div>
+          <div class="shadow-box" style="box-shadow: 0 6px 20px rgba(0,88,64,0.18);">lg · 20px primary</div>
+          <div class="shadow-box" style="box-shadow: 0 4px 16px rgba(0,0,0,0.10);">xl · 16px black</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

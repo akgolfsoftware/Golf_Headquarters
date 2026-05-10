@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>PlanShareModal</title></head>
+<body style="background: rgba(10,31,24,0.5); padding: 60px 40px;">
+<div class="modal" style="background: white; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+    <div>
+      <span class="page-eyebrow">Approach-syklus uke 19-22</span>
+      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-top: 4px;">Del plan med <em style="color: var(--primary); font-weight: 400;">gruppe</em></h2>
+    </div>
+    <button style="background: transparent; border: 0; font-size: 24px; cursor: pointer; color: var(--text-secondary);">×</button>
+  </div>
+
+  <p style="color: var(--text-secondary); font-size: 13px; margin: 12px 0 20px;">Velg spillere som skal motta planen som sin egen. Hver spiller kan tilpasse senere.</p>
+
+  <div style="margin-bottom: 18px;">
+    <label class="card-label" style="display: block; margin-bottom: 10px;">Spillere (5 valgt av 14)</label>
+    <div style="border: 1px solid var(--border); border-radius: 12px; max-height: 240px; overflow-y: auto;">
+      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; background: rgba(0,88,64,0.04);">
+        <input type="checkbox" checked style="width: 16px; height: 16px;">
+        <span class="avatar avatar-sm">MR</span>
+        <span style="flex: 1; font-size: 13px;">Markus Roinaas Pedersen</span>
+        <small style="font-family: var(--font-mono); color: var(--text-secondary);">HCP 2.4</small>
+      </label>
+      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; background: rgba(0,88,64,0.04);">
+        <input type="checkbox" checked style="width: 16px; height: 16px;">
+        <span class="avatar avatar-sm">JS</span>
+        <span style="flex: 1; font-size: 13px;">Julie Steen</span>
+        <small style="font-family: var(--font-mono); color: var(--text-secondary);">HCP 4.1</small>
+      </label>
+      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; background: rgba(0,88,64,0.04);">
+        <input type="checkbox" checked style="width: 16px; height: 16px;">
+        <span class="avatar avatar-sm">AH</span>
+        <span style="flex: 1; font-size: 13px;">Aksel Hauger</span>
+        <small style="font-family: var(--font-mono); color: var(--text-secondary);">HCP 5.8</small>
+      </label>
+      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; background: rgba(0,88,64,0.04);">
+        <input type="checkbox" checked style="width: 16px; height: 16px;">
+        <span class="avatar avatar-sm">EN</span>
+        <span style="flex: 1; font-size: 13px;">Emil Norderud</span>
+        <small style="font-family: var(--font-mono); color: var(--text-secondary);">HCP 7.2</small>
+      </label>
+      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; background: rgba(0,88,64,0.04);">
+        <input type="checkbox" checked style="width: 16px; height: 16px;">
+        <span class="avatar avatar-sm">SL</span>
+        <span style="flex: 1; font-size: 13px;">Selma Larsen</span>
+        <small style="font-family: var(--font-mono); color: var(--text-secondary);">HCP 8.4</small>
+      </label>
+      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; cursor: pointer;">
+        <input type="checkbox" style="width: 16px; height: 16px;">
+        <span class="avatar avatar-sm">TB</span>
+        <span style="flex: 1; font-size: 13px;">Theo Bråten</span>
+        <small style="font-family: var(--font-mono); color: var(--text-secondary);">HCP 11.5</small>
+      </label>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 8px;">
+    <label class="card-label" style="display: block; margin-bottom: 8px;">Personlig melding (valgfritt)</label>
+    <textarea placeholder="F.eks. Vi kjører dette gruppen sammen uke 19-22..." style="width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 13px; min-height: 70px; background: var(--bg); resize: vertical;">Approach-fokus 4 uker. Felles økter onsdager 17:00 på Mulligan. Spør om du lurer.</textarea>
+  </div>
+
+  <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+    <button class="btn btn-ghost">Avbryt</button>
+    <button class="btn btn-primary">Send til 5 spillere →</button>
+  </div>
+
+</div>
+</body>
+</html>

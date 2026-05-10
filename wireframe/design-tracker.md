@@ -1,6 +1,27 @@
 # AK Golf Platform — Design Tracker
 
-**Sist oppdatert:** 2026-05-10
+**Sist oppdatert:** 2026-05-10 (Fase B fullført)
+
+## ✓ Fase B status — alle wireframes ferdige
+
+| Kategori | Status etter Fase B |
+|---|---|
+| CoachHQ-skjermer | 42 av 42 WIREFRAME (var 31 — la til 11) |
+| PlayerHQ-skjermer | 30 av 30 WIREFRAME (var 24 — la til 6) |
+| Auth + System | 8 av 8 WIREFRAME |
+| Tverrgående hovedflater | 25 av 25 WIREFRAME (var 0) |
+| Modaler | 28 av 28 WIREFRAME (var 0) |
+| State-katalog | 12 av 12 WIREFRAME (var 2) |
+| Web (akgolf.no) | 30 av 30 WIREFRAME (var 0) |
+| Booking-flyt | 24 hovedsider + 6 modaler/e-poster = 30 av 30 WIREFRAME (var 0) |
+| **TOTAL HTML-wireframes** | **203 av 203 WIREFRAME** ✓ |
+
+Alle skjermer er klare som visuelle referanser i claude.ai/design.
+Sjekk live-deck: åpne `wireframe/screen-deck/index.html` i nettleser.
+
+---
+
+## Original tracker
 
 Dette er sannhetskilden for hvor hver designe-enhet er i pipelinen.
 **Statusverdier:**

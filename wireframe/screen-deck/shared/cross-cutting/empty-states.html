@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Empty states</title>
+<style>
+  .es-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .es-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 14px; padding: 32px 24px; text-align: center; min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; position: relative; }
+  .es-tag { position: absolute; top: 14px; left: 18px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; color: var(--text-secondary); text-transform: uppercase; }
+  .es-illust { width: 120px; height: 120px; border-radius: 50%; background: rgba(0,88,64,0.06); border: 2px dashed var(--border-strong); display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--primary); position: relative; }
+  .es-illust span { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); position: absolute; bottom: -20px; letter-spacing: 0.08em; }
+  .es-title { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+  .es-msg { font-size: 13px; color: var(--text-secondary); max-width: 36ch; line-height: 1.5; }
+  .es-actions { display: flex; gap: 10px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar" style="background: var(--bg-coach-sidebar);">
+    <div class="app-logo">AK Golf<br><em>system</em></div>
+    <nav class="app-nav">
+      <a href="loading-skeletons.html">Skeletons</a>
+      <a href="#" class="active">Empty-states</a>
+      <a href="error-modal-katalog.html">Error-modaler</a>
+    </nav>
+    <div class="app-tier">DESIGN</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-coach-content);">
+    <header class="page-head">
+      <span class="page-eyebrow">4 arketyper · empty states</span>
+      <h1 class="page-title"><em>Empty</em>-states</h1>
+      <p class="page-lede">Hvordan vi viser tomme tilstander uten at de føles som feil. Alltid: forklarende tekst + klar handling.</p>
+    </header>
+
+    <div class="es-grid">
+      <div class="es-card">
+        <span class="es-tag">DASHBOARD · NY BRUKER</span>
+        <div class="es-illust">✨<span>illustrasjon</span></div>
+        <div class="es-title">Velkommen til AK Golf</div>
+        <div class="es-msg">Du er nesten klar. Fullfør profilen din så lager vi en personlig treningsplan basert på dine mål.</div>
+        <div class="es-actions">
+          <button class="btn btn-primary">Fullfør profil</button>
+          <button class="btn btn-ghost">Se rundtur</button>
+        </div>
+      </div>
+
+      <div class="es-card">
+        <span class="es-tag">LIST · INGEN DATA</span>
+        <div class="es-illust">📋<span>illustrasjon</span></div>
+        <div class="es-title">Ingen spillere ennå</div>
+        <div class="es-msg">Inviter dine første spillere for å begynne å bygge stallen din. De får e-post med invitasjons-link.</div>
+        <div class="es-actions">
+          <button class="btn btn-primary">Inviter spiller</button>
+          <button class="btn btn-ghost">Importer fra CSV</button>
+        </div>
+      </div>
+
+      <div class="es-card">
+        <span class="es-tag">DETAIL · IKKE VALGT</span>
+        <div class="es-illust">👈<span>illustrasjon</span></div>
+        <div class="es-title">Velg en spiller</div>
+        <div class="es-msg">Klikk på en spiller i listen til venstre for å se deres 360-profil med pyramide, plan og siste aktivitet.</div>
+        <div class="es-actions">
+          <button class="btn btn-ghost">Sorter listen</button>
+        </div>
+      </div>
+
+      <div class="es-card">
+        <span class="es-tag">SETTINGS · IKKE KONFIGURERT</span>
+        <div class="es-illust">⚙<span>illustrasjon</span></div>
+        <div class="es-title">Stripe ikke koblet til</div>
+        <div class="es-msg">Du må koble til Stripe for å motta betalinger fra spillere. Tar 2 minutter — du trenger BankID.</div>
+        <div class="es-actions">
+          <button class="btn btn-primary">Koble til Stripe</button>
+          <button class="btn btn-ghost">Les mer →</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

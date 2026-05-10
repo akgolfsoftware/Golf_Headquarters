@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>BookingConfirmationModal</title></head>
+<body style="background: rgba(10,31,24,0.5); padding: 60px 40px;">
+<div class="modal" style="background: white; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+    <div>
+      <span class="page-eyebrow">Steg 4 av 4 · siste sjekk før betaling</span>
+      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-top: 4px;">Bekreft <em style="color: var(--primary); font-weight: 400;">booking</em></h2>
+    </div>
+    <button style="background: transparent; border: 0; font-size: 24px; cursor: pointer; color: var(--text-secondary);">×</button>
+  </div>
+
+  <div style="background: linear-gradient(135deg, rgba(0,88,64,0.04) 0%, rgba(209,248,67,0.10) 100%); border: 1px solid rgba(0,88,64,0.10); border-radius: 16px; padding: 22px; margin: 20px 0 20px;">
+    <div class="card-label" style="margin-bottom: 14px;">Sammendrag</div>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(0,88,64,0.10);">
+        <span style="color: var(--text-secondary); font-size: 13px;">Dato</span>
+        <b style="font-family: var(--font-mono); font-size: 13px;">Onsdag 13. mai 2026</b>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(0,88,64,0.10);">
+        <span style="color: var(--text-secondary); font-size: 13px;">Tid</span>
+        <b style="font-family: var(--font-mono); font-size: 13px;">17:00 — 18:00 (60 min)</b>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(0,88,64,0.10);">
+        <span style="color: var(--text-secondary); font-size: 13px;">Fasilitet</span>
+        <b style="font-size: 13px;">Mulligan Fredrikstad · sim 1</b>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(0,88,64,0.10);">
+        <span style="color: var(--text-secondary); font-size: 13px;">Coach</span>
+        <b style="font-size: 13px;">Anders Kristiansen</b>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(0,88,64,0.10);">
+        <span style="color: var(--text-secondary); font-size: 13px;">Type</span>
+        <b style="font-size: 13px;">1-til-1 trening</b>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 4px;">
+        <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary);">Total</span>
+        <span style="font-family: var(--font-mono); font-size: 26px; font-weight: 600;">800 kr</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <label class="card-label" style="display: block; margin-bottom: 10px;">Betalingsmetode</label>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 2px solid var(--primary); border-radius: 12px; background: rgba(0,88,64,0.04); cursor: pointer;">
+        <input type="radio" checked>
+        <div style="background: #FF5B24; color: white; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 12px;">V</div>
+        <div style="flex: 1;">
+          <b style="font-size: 13px;">Vipps</b>
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">+47 90 12 34 56 · standard</div>
+        </div>
+      </label>
+      <label style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; cursor: pointer;">
+        <input type="radio">
+        <div style="background: var(--text); color: white; width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; font-weight: 600;">···4242</div>
+        <div style="flex: 1;">
+          <b style="font-size: 13px;">Visa-kort</b>
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">Utløp 04/28 · via Stripe</div>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+    <input type="checkbox" checked id="vilkaar">
+    <label for="vilkaar" style="font-size: 12px; color: var(--text-secondary);">Jeg godtar <a href="#" style="color: var(--primary);">avbestillingsvilkår</a> (gratis >48t, 50% innen 24t)</label>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid var(--border);">
+    <button class="btn btn-ghost">Tilbake</button>
+    <button class="btn btn-primary" style="padding: 12px 28px;">Betal 800 kr →</button>
+  </div>
+
+</div>
+</body>
+</html>

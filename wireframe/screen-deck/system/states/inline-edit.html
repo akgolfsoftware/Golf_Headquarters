@@ -1,0 +1,115 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Inline-edit · katalog</title>
+<style>
+  .ie-grid { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 720px; }
+  .ie-demo { background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 10px; padding: 24px; min-height: 80px; display: flex; align-items: center; gap: 24px; margin: 10px 0 12px; }
+  .ie-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); padding-top: 10px; border-top: 1px solid var(--border); }
+  .ie-state-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); width: 100px; flex-shrink: 0; }
+  .ie-field-label { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .ie-field-row { flex: 1; display: flex; flex-direction: column; }
+
+  .ie-default { padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 14px; color: var(--text); display: inline-flex; align-items: center; gap: 8px; transition: background 0.12s; }
+  .ie-default::after { content: "✎"; opacity: 0; font-size: 12px; color: var(--text-muted); transition: opacity 0.12s; }
+
+  .ie-hover { padding: 8px 10px; border-radius: 6px; background: rgba(0,88,64,0.06); cursor: pointer; font-size: 14px; color: var(--text); display: inline-flex; align-items: center; gap: 10px; }
+  .ie-hover::after { content: "✎"; font-size: 12px; color: var(--primary); }
+
+  .ie-edit { display: inline-flex; align-items: center; gap: 6px; }
+  .ie-edit input { padding: 7px 10px; border: 1.5px solid var(--primary); border-radius: 6px; font-family: inherit; font-size: 14px; outline: 0; min-width: 240px; background: #fff; }
+  .ie-edit-btn { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-elev); cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+  .ie-edit-btn.save { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .ie-edit-btn.cancel { color: var(--text-secondary); }
+
+  .ie-saving { padding: 8px 10px; border-radius: 6px; background: var(--bg-elev); font-size: 14px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 10px; opacity: 0.65; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ie-spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="../../coachhq/hub.html">Hub</a>
+      <a href="../../coachhq/elever.html">Elever</a>
+      <a href="../../coachhq/plans.html">Treningsplaner</a>
+      <a href="../../coachhq/bookings.html">Bookinger</a>
+      <a href="../../coachhq/approvals.html">Godkjenninger</a>
+      <a href="../../coachhq/analytics.html">Analytics</a>
+      <a href="../../coachhq/finance.html">Økonomi</a>
+      <a href="../../coachhq/facilities.html">Fasiliteter</a>
+      <a href="../../coachhq/settings-bruker.html" class="active">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Designsystem · Claude Design</span>
+      <h1 class="page-title"><em>Inline-edit</em> · katalog</h1>
+      <p class="page-lede">Inline-redigering av tekst-felt i 4 states: default (klikkbar), hover (subtil bakgrunn + edit-ikon), edit-mode (input + save/cancel), saving (spinner). Samme felt vist gjennom alle 4 stadier.</p>
+    </header>
+
+    <div class="ie-grid">
+      <div class="card">
+        <div class="card-label">State 1 av 4</div>
+        <h3>Default · klikkbar</h3>
+        <div class="ie-demo">
+          <span class="ie-state-label">Default</span>
+          <div class="ie-field-row">
+            <span class="ie-field-label">Spiller-navn</span>
+            <span class="ie-default">Jonas Hansen</span>
+          </div>
+        </div>
+        <div class="ie-meta">Trigger · klikk på feltet · ingen visuell endring i ro-tilstand</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">State 2 av 4</div>
+        <h3>Hover · edit-affordance</h3>
+        <div class="ie-demo">
+          <span class="ie-state-label">Hover</span>
+          <div class="ie-field-row">
+            <span class="ie-field-label">Spiller-navn</span>
+            <span class="ie-hover">Jonas Hansen</span>
+          </div>
+        </div>
+        <div class="ie-meta">Trigger · mouseover · viser bakgrunn 6% primary + lucide pencil-ikon høyre</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">State 3 av 4</div>
+        <h3>Edit-mode · input aktiv</h3>
+        <div class="ie-demo">
+          <span class="ie-state-label">Edit-mode</span>
+          <div class="ie-field-row">
+            <span class="ie-field-label">Spiller-navn</span>
+            <div class="ie-edit">
+              <input type="text" value="Jonas Hansen" autofocus />
+              <button class="ie-edit-btn save" title="Lagre (Enter)">✓</button>
+              <button class="ie-edit-btn cancel" title="Avbryt (Esc)">✕</button>
+            </div>
+          </div>
+        </div>
+        <div class="ie-meta">Trigger · klikk · keyboard · Enter=save · Esc=cancel · auto-fokus i input</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">State 4 av 4</div>
+        <h3>Saving · async pågår</h3>
+        <div class="ie-demo">
+          <span class="ie-state-label">Saving</span>
+          <div class="ie-field-row">
+            <span class="ie-field-label">Spiller-navn</span>
+            <span class="ie-saving">
+              <span class="ie-spinner"></span>
+              Jonas Hansen
+              <span style="font-family:var(--font-mono); font-size:11px; margin-left:6px;">· lagrer…</span>
+            </span>
+          </div>
+        </div>
+        <div class="ie-meta">Trigger · etter save-klikk · grayed-out + spinner · går til default ved success</div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

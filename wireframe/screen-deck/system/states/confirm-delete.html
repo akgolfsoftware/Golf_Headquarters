@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Confirm-delete · katalog</title>
+<style>
+  .cd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .cd-demo { background: rgba(0,0,0,0.30); border: 1px dashed var(--border-strong); border-radius: 10px; padding: 24px; min-height: 320px; display: flex; align-items: center; justify-content: center; margin: 10px 0 12px; }
+  .cd-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); padding-top: 10px; border-top: 1px solid var(--border); }
+
+  .cd-modal { background: var(--bg-elev); border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.30); width: 100%; max-width: 320px; overflow: hidden; }
+  .cd-header { background: linear-gradient(180deg, rgba(239,68,68,0.12) 0%, rgba(239,68,68,0.04) 100%); border-bottom: 1px solid rgba(239,68,68,0.20); padding: 14px 18px; display: flex; align-items: center; gap: 10px; }
+  .cd-header-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--danger); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+  .cd-header h4 { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--danger); margin: 0; }
+  .cd-body { padding: 16px 18px; }
+  .cd-body p { font-size: 13px; color: var(--text); line-height: 1.55; margin: 0 0 8px; }
+  .cd-body small { font-size: 11px; color: var(--text-secondary); display: block; }
+  .cd-consequences { list-style: none; padding: 10px 12px; margin: 12px 0 0; background: var(--bg); border-radius: 8px; border: 1px solid var(--border); }
+  .cd-consequences li { font-size: 11px; color: var(--text-secondary); padding: 3px 0; display: flex; gap: 8px; align-items: flex-start; }
+  .cd-consequences li::before { content: "•"; color: var(--danger); font-weight: 700; }
+  .cd-confirm-input { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .cd-confirm-input label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
+  .cd-confirm-input input { padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: var(--font-mono); font-size: 13px; outline: 0; background: var(--bg); }
+  .cd-confirm-input input:focus { border-color: var(--danger); }
+  .cd-actions { padding: 12px 18px 16px; display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid var(--border); }
+  .cd-btn-danger { padding: 8px 14px; border-radius: 8px; background: var(--danger); color: #fff; border: 0; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .cd-btn-danger:disabled { opacity: 0.45; cursor: not-allowed; }
+  .cd-btn-cancel { padding: 8px 14px; border-radius: 8px; background: transparent; color: var(--text); border: 1px solid var(--border); font-size: 13px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="../../coachhq/hub.html">Hub</a>
+      <a href="../../coachhq/elever.html">Elever</a>
+      <a href="../../coachhq/plans.html">Treningsplaner</a>
+      <a href="../../coachhq/bookings.html">Bookinger</a>
+      <a href="../../coachhq/approvals.html">Godkjenninger</a>
+      <a href="../../coachhq/analytics.html">Analytics</a>
+      <a href="../../coachhq/finance.html">Økonomi</a>
+      <a href="../../coachhq/facilities.html">Fasiliteter</a>
+      <a href="../../coachhq/settings-bruker.html" class="active">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Designsystem · Claude Design</span>
+      <h1 class="page-title"><em>Confirm-delete</em> · katalog</h1>
+      <p class="page-lede">Destructive confirm-dialoger. Rød header, "Slett"-knapp til høyre, "Avbryt" som default fokus. Alvorsgrad eskaleres med konsekvenser-liste eller skriv-bekreftelse.</p>
+    </header>
+
+    <div class="cd-grid">
+      <div class="card">
+        <div class="card-label">Enkel slett</div>
+        <h3>Standard delete</h3>
+        <div class="cd-demo">
+          <div class="cd-modal">
+            <div class="cd-header">
+              <div class="cd-header-icon">!</div>
+              <h4>Slett øvelse?</h4>
+            </div>
+            <div class="cd-body">
+              <p>Slette "Driver · low-point drill"?</p>
+              <small>Dette kan ikke angres.</small>
+            </div>
+            <div class="cd-actions">
+              <button class="cd-btn-cancel">Avbryt</button>
+              <button class="cd-btn-danger">Slett</button>
+            </div>
+          </div>
+        </div>
+        <div class="cd-meta">Brukes på · enkle ressurser uten avhengigheter</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Med konsekvenser</div>
+        <h3>Slett med liste</h3>
+        <div class="cd-demo">
+          <div class="cd-modal">
+            <div class="cd-header">
+              <div class="cd-header-icon">!</div>
+              <h4>Slett treningsplan?</h4>
+            </div>
+            <div class="cd-body">
+              <p>Slette "Vinter 2026 · Jonas H."?</p>
+              <small>Dette kan ikke angres.</small>
+              <ul class="cd-consequences">
+                <li>14 planlagte økter blir kansellert</li>
+                <li>Jonas mister tilgang til planen</li>
+                <li>Foresatt får varsel om kansellering</li>
+                <li>Tilknyttet økonomi-faktura må refunderes manuelt</li>
+              </ul>
+            </div>
+            <div class="cd-actions">
+              <button class="cd-btn-cancel">Avbryt</button>
+              <button class="cd-btn-danger">Slett uansett</button>
+            </div>
+          </div>
+        </div>
+        <div class="cd-meta">Brukes på · ressurser med avhengigheter, planer, kontoer</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Skriv "SLETT"</div>
+        <h3>Tekst-bekreftelse</h3>
+        <div class="cd-demo">
+          <div class="cd-modal">
+            <div class="cd-header">
+              <div class="cd-header-icon">!</div>
+              <h4>Slett spillerprofil permanent?</h4>
+            </div>
+            <div class="cd-body">
+              <p>Slette Jonas Hansen og all tilknyttet data?</p>
+              <small>Profil, treningsdata, video og fakturaer slettes. Kan IKKE angres.</small>
+              <div class="cd-confirm-input">
+                <label>Skriv "SLETT" for å bekrefte</label>
+                <input type="text" placeholder="SLETT" />
+              </div>
+            </div>
+            <div class="cd-actions">
+              <button class="cd-btn-cancel">Avbryt</button>
+              <button class="cd-btn-danger" disabled>Slett permanent</button>
+            </div>
+          </div>
+        </div>
+        <div class="cd-meta">Brukes på · permanent sletting, GDPR-removal, kunde-konto</div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

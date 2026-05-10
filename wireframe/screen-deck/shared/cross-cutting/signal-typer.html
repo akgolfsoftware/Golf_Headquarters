@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Signal-typer</title>
+<style>
+  .sig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .sig-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 16px; border-left: 4px solid var(--info); }
+  .sig-card.sev-info { border-left-color: var(--info); }
+  .sig-card.sev-warn { border-left-color: var(--warning); }
+  .sig-card.sev-urgent { border-left-color: var(--danger); }
+  .sig-card.sev-crit { border-left-color: #7c1d1d; background: rgba(124,29,29,0.04); }
+  .sig-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .sig-name { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--text); }
+  .sig-sev { font-family: var(--font-mono); font-size: 9px; padding: 2px 8px; border-radius: 8px; letter-spacing: 0.10em; font-weight: 700; }
+  .sev-info-bg { background: rgba(59,130,246,0.14); color: #1D4ED8; }
+  .sev-warn-bg { background: rgba(245,158,11,0.14); color: #B45309; }
+  .sev-urgent-bg { background: rgba(239,68,68,0.14); color: #B91C1C; }
+  .sev-crit-bg { background: rgba(124,29,29,0.14); color: #7c1d1d; }
+  .sig-trig { font-size: 11px; color: var(--text-secondary); margin: 8px 0; line-height: 1.5; }
+  .sig-trig b { color: var(--text); }
+  .sig-ex { font-family: var(--font-mono); font-size: 10px; background: var(--bg); padding: 6px 10px; border-radius: 6px; color: var(--text-secondary); border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar" style="background: var(--bg-coach-sidebar);">
+    <div class="app-logo">AK Golf<br><em>system</em></div>
+    <nav class="app-nav">
+      <a href="agent-pipeline-overview.html">Pipeline</a>
+      <a href="#" class="active">Signal-typer</a>
+      <a href="plan-aksjon-typer.html">Plan-aksjoner</a>
+    </nav>
+    <div class="app-tier">SYSTEM</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-coach-content);">
+    <header class="page-head">
+      <span class="page-eyebrow">15 signaltyper · alle kilder</span>
+      <h1 class="page-title"><em>Signal</em>-typer</h1>
+      <p class="page-lede">Alle signaler systemet kan generere. Hver type har severity, trigger-betingelse og payload-eksempel.</p>
+    </header>
+
+    <div class="sig-grid">
+      <div class="sig-card sev-warn"><div class="sig-head"><span class="sig-name">missing_session</span><span class="sig-sev sev-warn-bg">WARN</span></div><div class="sig-trig"><b>Trigger:</b> spiller har ikke logget økt > 7d.</div><div class="sig-ex">{ player_id, days_since: 9 }</div></div>
+      <div class="sig-card sev-info"><div class="sig-head"><span class="sig-name">round_logged</span><span class="sig-sev sev-info-bg">INFO</span></div><div class="sig-trig"><b>Trigger:</b> ny runde fra GolfBox eller manuell logg.</div><div class="sig-ex">{ player_id, course, score: 78, sg: +1.2 }</div></div>
+      <div class="sig-card sev-warn"><div class="sig-head"><span class="sig-name">handicap_change</span><span class="sig-sev sev-warn-bg">WARN</span></div><div class="sig-trig"><b>Trigger:</b> HCP endret > 1.0 siste 30d.</div><div class="sig-ex">{ player_id, old: 8.4, new: 7.4, delta: -1.0 }</div></div>
+      <div class="sig-card sev-urgent"><div class="sig-head"><span class="sig-name">tournament_lt_21d</span><span class="sig-sev sev-urgent-bg">URGENT</span></div><div class="sig-trig"><b>Trigger:</b> hovedmål-turnering < 21 dager.</div><div class="sig-ex">{ player_id, event, days: 19 }</div></div>
+      <div class="sig-card sev-urgent"><div class="sig-head"><span class="sig-name">injury_reported</span><span class="sig-sev sev-urgent-bg">URGENT</span></div><div class="sig-trig"><b>Trigger:</b> spiller eller coach melder skade.</div><div class="sig-ex">{ player_id, type: "ankel", severity: "moderat" }</div></div>
+      <div class="sig-card sev-info"><div class="sig-head"><span class="sig-name">test_completed</span><span class="sig-sev sev-info-bg">INFO</span></div><div class="sig-trig"><b>Trigger:</b> NGF/Team Norway-test levert.</div><div class="sig-ex">{ player_id, test: "bunker", result: "7/10" }</div></div>
+      <div class="sig-card sev-warn"><div class="sig-head"><span class="sig-name">plan_drift</span><span class="sig-sev sev-warn-bg">WARN</span></div><div class="sig-trig"><b>Trigger:</b> pyramide-allokasjon ute av band > 15%.</div><div class="sig-ex">{ player_id, tier: "TURN", drift: -22 }</div></div>
+      <div class="sig-card sev-info"><div class="sig-head"><span class="sig-name">booking_created</span><span class="sig-sev sev-info-bg">INFO</span></div><div class="sig-trig"><b>Trigger:</b> ny booking opprettet i kalender.</div><div class="sig-ex">{ booking_id, facility, start, coach }</div></div>
+      <div class="sig-card sev-warn"><div class="sig-head"><span class="sig-name">booking_cancelled</span><span class="sig-sev sev-warn-bg">WARN</span></div><div class="sig-trig"><b>Trigger:</b> booking avbestilt < 24 timer før.</div><div class="sig-ex">{ booking_id, hours_before: 8 }</div></div>
+      <div class="sig-card sev-urgent"><div class="sig-head"><span class="sig-name">invoice_overdue</span><span class="sig-sev sev-urgent-bg">URGENT</span></div><div class="sig-trig"><b>Trigger:</b> faktura > 14 dager forsinket.</div><div class="sig-ex">{ invoice_id, amount: 2400, days_late: 21 }</div></div>
+      <div class="sig-card sev-info"><div class="sig-head"><span class="sig-name">message_received</span><span class="sig-sev sev-info-bg">INFO</span></div><div class="sig-trig"><b>Trigger:</b> ny melding fra spiller eller foresatt.</div><div class="sig-ex">{ from, channel: "app", excerpt }</div></div>
+      <div class="sig-card sev-crit"><div class="sig-head"><span class="sig-name">sla_breach</span><span class="sig-sev sev-crit-bg">CRIT</span></div><div class="sig-trig"><b>Trigger:</b> coach-svar > 4t arbeidstid.</div><div class="sig-ex">{ message_id, hours_pending: 6 }</div></div>
+      <div class="sig-card sev-info"><div class="sig-head"><span class="sig-name">trackman_session</span><span class="sig-sev sev-info-bg">INFO</span></div><div class="sig-trig"><b>Trigger:</b> ny TrackMan-import oppdaget.</div><div class="sig-ex">{ player_id, club, shots: 42 }</div></div>
+      <div class="sig-card sev-warn"><div class="sig-head"><span class="sig-name">phase_transition</span><span class="sig-sev sev-warn-bg">WARN</span></div><div class="sig-trig"><b>Trigger:</b> periodisering bytter fase (forb → konk osv).</div><div class="sig-ex">{ plan_id, from: "build", to: "taper" }</div></div>
+      <div class="sig-card sev-info"><div class="sig-head"><span class="sig-name">achievement_unlock</span><span class="sig-sev sev-info-bg">INFO</span></div><div class="sig-trig"><b>Trigger:</b> spiller traff milestone (HCP, streak, runde-mål).</div><div class="sig-ex">{ player_id, achievement: "100 økter" }</div></div>
+    </div>
+  </main>
+</div>
+</body></html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Toast-system</title>
+<style>
+  .toast-stack { position: fixed; top: 24px; right: 24px; display: flex; flex-direction: column; gap: 10px; z-index: 100; max-width: 360px; }
+  .toast { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.10); display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: flex-start; border-left: 4px solid; position: relative; overflow: hidden; }
+  .toast-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 14px; }
+  .toast-success { border-left-color: var(--success); }
+  .toast-success .toast-icon { background: var(--success); }
+  .toast-warning { border-left-color: var(--warning); }
+  .toast-warning .toast-icon { background: var(--warning); }
+  .toast-error { border-left-color: var(--danger); }
+  .toast-error .toast-icon { background: var(--danger); }
+  .toast-info { border-left-color: var(--info); }
+  .toast-info .toast-icon { background: var(--info); }
+  .toast-body b { display: block; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .toast-body p { font-size: 12px; color: var(--text-secondary); margin: 0; line-height: 1.4; }
+  .toast-close { background: transparent; border: 0; font-size: 14px; color: var(--text-muted); cursor: pointer; padding: 0 4px; }
+  .toast-progress { position: absolute; bottom: 0; left: 0; height: 2px; background: currentColor; opacity: 0.3; }
+  .toast-success .toast-progress { color: var(--success); width: 80%; }
+  .toast-warning .toast-progress { color: var(--warning); width: 65%; }
+  .toast-error .toast-progress { color: var(--danger); width: 50%; }
+  .toast-info .toast-progress { color: var(--info); width: 30%; }
+  /* Demo placeholder background */
+  .demo-bg { background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 14px; padding: 60px 40px; text-align: center; color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; min-height: 300px; display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar" style="background: var(--bg-coach-sidebar);">
+    <div class="app-logo">AK Golf<br><em>system</em></div>
+    <nav class="app-nav">
+      <a href="modal-katalog.html">Modaler</a>
+      <a href="#" class="active">Toast-system</a>
+      <a href="error-modal-katalog.html">Errors</a>
+    </nav>
+    <div class="app-tier">DESIGN</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-coach-content); position: relative;">
+    <header class="page-head">
+      <span class="page-eyebrow">4 toast-typer · øverst-høyre · auto-dismiss 4s</span>
+      <h1 class="page-title"><em>Toast</em>-system</h1>
+      <p class="page-lede">Korte meldinger som vises i øvre høyre hjørne. Stables vertikalt. Forsvinner automatisk etter 4 sekunder, eller ved klikk.</p>
+    </header>
+
+    <div class="demo-bg">App-innhold i bakgrunnen</div>
+
+    <section class="section" style="margin-top: 32px;">
+      <div class="section-head"><h2>Anatomi</h2></div>
+      <div class="card">
+        <p style="font-size: 13px; line-height: 1.7;">
+          <b>Posisjon:</b> 24px fra topp og høyre kant.<br>
+          <b>Maks bredde:</b> 360px.<br>
+          <b>Stack-rekkefølge:</b> nyeste øverst, eldre faller ned.<br>
+          <b>Auto-dismiss:</b> 4 sek for success/info, 6 sek for warning, 8 sek for error.<br>
+          <b>Progress-bar:</b> nedre kant, indikerer gjenstående tid.<br>
+          <b>Action-link:</b> valgfri "Angre"-link i toasten — utvider levetiden til 10 sek.
+        </p>
+      </div>
+    </section>
+
+    <!-- Toast-stack øverst-høyre -->
+    <div class="toast-stack">
+      <div class="toast toast-success">
+        <span class="toast-icon">✓</span>
+        <div class="toast-body">
+          <b>Plan publisert</b>
+          <p>Sørlandsåpent-oppkjøring sendt til Markus R. Pedersen.</p>
+        </div>
+        <button class="toast-close">×</button>
+        <span class="toast-progress"></span>
+      </div>
+
+      <div class="toast toast-warning">
+        <span class="toast-icon">!</span>
+        <div class="toast-body">
+          <b>3 plan-aksjoner venter</b>
+          <p>Periodiserings-agent har foreslått endringer som trenger godkjenning.</p>
+        </div>
+        <button class="toast-close">×</button>
+        <span class="toast-progress"></span>
+      </div>
+
+      <div class="toast toast-error">
+        <span class="toast-icon">×</span>
+        <div class="toast-body">
+          <b>Kunne ikke lagre</b>
+          <p>Nettforbindelsen brøt. Endringene er trygt lagret lokalt — prøv igjen.</p>
+        </div>
+        <button class="toast-close">×</button>
+        <span class="toast-progress"></span>
+      </div>
+
+      <div class="toast toast-info">
+        <span class="toast-icon">i</span>
+        <div class="toast-body">
+          <b>TrackMan-data importert</b>
+          <p>42 nye slag fra Markus R. lagt til SG-analysen.</p>
+        </div>
+        <button class="toast-close">×</button>
+        <span class="toast-progress"></span>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

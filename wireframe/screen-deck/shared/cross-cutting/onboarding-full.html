@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Onboarding · 4-steg</title>
+<style>
+  .ob-step { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 16px; padding: 32px 36px; margin-bottom: 16px; position: relative; }
+  .ob-step-num { position: absolute; top: -14px; left: 28px; background: var(--primary); color: var(--text-inverse); padding: 6px 14px; border-radius: 12px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.10em; }
+  .ob-bar { display: flex; gap: 6px; margin-bottom: 24px; }
+  .ob-bar i { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+  .ob-bar i.done { background: var(--primary); }
+  .ob-bar i.active { background: var(--accent); }
+  .tier-card { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .tier-card .card { cursor: pointer; }
+  .tier-card .card.selected { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid label { font-size: 11px; color: var(--text-secondary); font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+  .form-grid input, .form-grid select { width: 100%; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 13px; font-family: inherit; background: var(--bg); }
+  .goal-list { display: flex; flex-direction: column; gap: 8px; }
+  .goal-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+  .goal-row.checked { background: rgba(0,88,64,0.06); border-color: var(--primary); }
+  .goal-check { width: 20px; height: 20px; border-radius: 4px; border: 2px solid var(--border-strong); flex-shrink: 0; }
+  .goal-row.checked .goal-check { background: var(--primary); border-color: var(--primary); }
+  .coach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .coach-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; cursor: pointer; }
+  .coach-card.selected { border-color: var(--primary); background: rgba(0,88,64,0.04); }
+  .coach-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--primary); color: var(--text-inverse); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-family: var(--font-display); font-weight: 600; }
+  .ob-actions { display: flex; justify-content: space-between; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar app--player" style="background: var(--bg-player-sidebar);">
+    <div class="app-logo">AK Golf<br><em>player</em></div>
+    <nav class="app-nav">
+      <a href="#" class="active">Velkommen</a>
+    </nav>
+    <div class="app-tier">NY BRUKER</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-player-content);">
+    <header class="page-head">
+      <span class="page-eyebrow">Onboarding · 4-steg wizard</span>
+      <h1 class="page-title"><em>Velkommen</em> til AK Golf</h1>
+      <p class="page-lede">Komplett flyt for ny PlayerHQ-bruker. Hele deck-layouten vises sekvensielt på én side for review.</p>
+    </header>
+
+    <!-- STEG 1 -->
+    <div class="ob-step">
+      <span class="ob-step-num">STEG 1 AV 4</span>
+      <div class="ob-bar"><i class="active"></i><i></i><i></i><i></i></div>
+      <h2 style="font-family: var(--font-display); font-size: 24px; margin-bottom: 8px;">Velg ditt nivå</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 18px;">Vi tilpasser opplevelsen etter hvor mye du vil ha av AK Golf. Du kan endre senere.</p>
+      <div class="tier-card">
+        <div class="card">
+          <div class="card-label">GRATIS</div>
+          <h3>Følg progresjonen din</h3>
+          <p style="margin: 8px 0;">Logg runder, se HCP-utvikling, generelle tips.</p>
+          <div style="font-family: var(--font-mono); font-size: 18px; font-weight: 700; margin-top: 12px;">0 kr/mnd</div>
+        </div>
+        <div class="card selected">
+          <div class="card-label" style="color: var(--primary);">PRO · ANBEFALT</div>
+          <h3>Egen treningsplan</h3>
+          <p style="margin: 8px 0;">Periodisert plan, AI-coach, månedlig 1-til-1 coaching-økt.</p>
+          <div style="font-family: var(--font-mono); font-size: 18px; font-weight: 700; margin-top: 12px;">499 kr/mnd</div>
+        </div>
+        <div class="card">
+          <div class="card-label">ELITE</div>
+          <h3>Full performance-pakke</h3>
+          <p style="margin: 8px 0;">Ukentlig coaching, TrackMan-analyse, turnering-prep, prioritet.</p>
+          <div style="font-family: var(--font-mono); font-size: 18px; font-weight: 700; margin-top: 12px;">2 490 kr/mnd</div>
+        </div>
+      </div>
+      <div class="ob-actions">
+        <button class="btn btn-ghost" disabled style="opacity:0.5;">Tilbake</button>
+        <button class="btn btn-primary">Fortsett →</button>
+      </div>
+    </div>
+
+    <!-- STEG 2 -->
+    <div class="ob-step">
+      <span class="ob-step-num">STEG 2 AV 4</span>
+      <div class="ob-bar"><i class="done"></i><i class="active"></i><i></i><i></i></div>
+      <h2 style="font-family: var(--font-display); font-size: 24px; margin-bottom: 8px;">Litt om deg</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 18px;">For å lage en god plan trenger vi litt basis-info.</p>
+      <div class="form-grid">
+        <div><label>Fornavn</label><input type="text" value="Markus"></div>
+        <div><label>Etternavn</label><input type="text" value="R. Pedersen"></div>
+        <div><label>Fødselsdato</label><input type="date" value="2008-04-12"></div>
+        <div><label>HCP</label><input type="number" value="7.4"></div>
+        <div><label>Hjemmebane</label><select><option>GFGK · Gamle Fredrikstad</option><option>Bossum</option><option>Larkollen</option></select></div>
+        <div><label>Klubbnivå</label><select><option>A2 Topp</option><option>A3 Konkurranse</option><option>A4 Trening</option></select></div>
+      </div>
+      <div class="ob-actions">
+        <button class="btn btn-ghost">Tilbake</button>
+        <button class="btn btn-primary">Fortsett →</button>
+      </div>
+    </div>
+
+    <!-- STEG 3 -->
+    <div class="ob-step">
+      <span class="ob-step-num">STEG 3 AV 4</span>
+      <div class="ob-bar"><i class="done"></i><i class="done"></i><i class="active"></i><i></i></div>
+      <h2 style="font-family: var(--font-display); font-size: 24px; margin-bottom: 8px;">Hva er målene dine?</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 18px;">Velg 1–3 mål. Vi bruker dette til å forme periodiseringen.</p>
+      <div class="goal-list">
+        <div class="goal-row checked"><span class="goal-check"></span><div><b>Senke HCP til 5</b><div style="font-size: 11px; color: var(--text-secondary);">Hovedmål · langsiktig</div></div></div>
+        <div class="goal-row checked"><span class="goal-check"></span><div><b>Kvalifisere til Sørlandsåpent</b><div style="font-size: 11px; color: var(--text-secondary);">Sesongmål · juni 2026</div></div></div>
+        <div class="goal-row"><span class="goal-check"></span><div><b>Bli klubbmester GFGK</b><div style="font-size: 11px; color: var(--text-secondary);">Klubbmål · august 2026</div></div></div>
+        <div class="goal-row"><span class="goal-check"></span><div><b>Spille mer turnering</b><div style="font-size: 11px; color: var(--text-secondary);">Erfarings-mål · 8+ turneringer per år</div></div></div>
+        <div class="goal-row"><span class="goal-check"></span><div><b>Forbedre putting</b><div style="font-size: 11px; color: var(--text-secondary);">Teknisk fokus · SG putting +0,5</div></div></div>
+      </div>
+      <div class="ob-actions">
+        <button class="btn btn-ghost">Tilbake</button>
+        <button class="btn btn-primary">Fortsett →</button>
+      </div>
+    </div>
+
+    <!-- STEG 4 -->
+    <div class="ob-step">
+      <span class="ob-step-num">STEG 4 AV 4</span>
+      <div class="ob-bar"><i class="done"></i><i class="done"></i><i class="done"></i><i class="active"></i></div>
+      <h2 style="font-family: var(--font-display); font-size: 24px; margin-bottom: 8px;">Velg din coach</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 18px;">Basert på dine svar har vi matchet 3 coacher som passer deg best.</p>
+      <div class="coach-grid">
+        <div class="coach-card selected">
+          <div class="coach-avatar">AK</div>
+          <b>Anders Kristiansen</b>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Hovedcoach · 12 års erfaring</div>
+          <div style="font-size: 11px; margin-top: 8px;">A1–A3 · 14 spillere</div>
+          <span class="pill pill-success" style="margin-top: 10px;">Best match · 94%</span>
+        </div>
+        <div class="coach-card">
+          <div class="coach-avatar" style="background: var(--pyr-tek);">JL</div>
+          <b>Julie Larsen</b>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Coach · WANG-spesialist</div>
+          <div style="font-size: 11px; margin-top: 8px;">A2–A4 · 9 spillere</div>
+          <span class="pill pill-info" style="margin-top: 10px;">87% match</span>
+        </div>
+        <div class="coach-card">
+          <div class="coach-avatar" style="background: var(--pyr-spill);">AS</div>
+          <b>Andre Solberg</b>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Assistant coach</div>
+          <div style="font-size: 11px; margin-top: 8px;">A3–A5 · 11 spillere</div>
+          <span class="pill pill-info" style="margin-top: 10px;">82% match</span>
+        </div>
+      </div>
+      <div class="ob-actions">
+        <button class="btn btn-ghost">Tilbake</button>
+        <button class="btn btn-primary">Fullfør og gå til Hub →</button>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

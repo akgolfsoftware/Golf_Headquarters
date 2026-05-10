@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Notifikasjons-taxonomy</title>
+<style>
+  .nt-icon { width: 36px; height: 36px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 600; color: #fff; font-size: 16px; }
+  .nt-coach { background: var(--primary); }
+  .nt-plan { background: var(--pyr-tek); }
+  .nt-okt { background: var(--pyr-spill); }
+  .nt-test { background: var(--info); }
+  .nt-fakt { background: var(--warning); }
+  .nt-ach { background: var(--accent); color: var(--text); }
+  .ch-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; margin-right: 4px; background: rgba(0,88,64,0.10); color: var(--primary); font-weight: 600; }
+  .ch-off { background: var(--border); color: var(--text-muted); }
+  .toggle { display: inline-block; width: 32px; height: 18px; border-radius: 9px; position: relative; }
+  .toggle.on { background: var(--primary); }
+  .toggle.off { background: var(--border); }
+  .toggle::after { content: ""; position: absolute; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: left 120ms; }
+  .toggle.on::after { left: 16px; }
+  .toggle.off::after { left: 2px; }
+  .mal { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); background: var(--bg); padding: 6px 10px; border-radius: 6px; display: inline-block; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar" style="background: var(--bg-coach-sidebar);">
+    <div class="app-logo">AK Golf<br><em>system</em></div>
+    <nav class="app-nav">
+      <a href="agent-pipeline-overview.html">Pipeline</a>
+      <a href="#" class="active">Notifikasjoner</a>
+      <a href="varslingssentral.html">Varslingssentral</a>
+      <a href="toast-system.html">Toast-system</a>
+    </nav>
+    <div class="app-tier">SYSTEM</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-coach-content);">
+    <header class="page-head">
+      <span class="page-eyebrow">Designsystem · varsler</span>
+      <h1 class="page-title"><em>Notifikasjons</em>-taxonomy</h1>
+      <p class="page-lede">Seks notifikasjonstyper på tvers av PlayerHQ og CoachHQ. Hver type har default-kanaler, mal og opt-out-policy.</p>
+    </header>
+
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th style="width:48px;">Ikon</th>
+          <th>Tittel · type</th>
+          <th>Mal</th>
+          <th>Kanaler</th>
+          <th style="width:80px;">Default</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="nt-icon nt-coach">M</span></td>
+          <td><b>Coach-melding</b><div style="font-size:11px; color:var(--text-secondary); margin-top:2px;">notification.coach_message</div></td>
+          <td><span class="mal">{coach_navn} har sendt deg en melding: «{utdrag}»</span></td>
+          <td><span class="ch-pill">PUSH</span><span class="ch-pill">E-POST</span><span class="ch-pill ch-off">SMS</span></td>
+          <td><span class="toggle on"></span></td>
+        </tr>
+        <tr>
+          <td><span class="nt-icon nt-plan">P</span></td>
+          <td><b>Plan-endring</b><div style="font-size:11px; color:var(--text-secondary); margin-top:2px;">notification.plan_changed</div></td>
+          <td><span class="mal">Treningsplanen din er oppdatert. Ny fase: {fase_navn}</span></td>
+          <td><span class="ch-pill">PUSH</span><span class="ch-pill">E-POST</span><span class="ch-pill ch-off">SMS</span></td>
+          <td><span class="toggle on"></span></td>
+        </tr>
+        <tr>
+          <td><span class="nt-icon nt-okt">Ø</span></td>
+          <td><b>Økt-påminnelse</b><div style="font-size:11px; color:var(--text-secondary); margin-top:2px;">notification.session_reminder</div></td>
+          <td><span class="mal">Økt om {minutter} min: {tittel} · {sted}</span></td>
+          <td><span class="ch-pill">PUSH</span><span class="ch-pill ch-off">E-POST</span><span class="ch-pill">SMS</span></td>
+          <td><span class="toggle on"></span></td>
+        </tr>
+        <tr>
+          <td><span class="nt-icon nt-test">T</span></td>
+          <td><b>Test-resultat</b><div style="font-size:11px; color:var(--text-secondary); margin-top:2px;">notification.test_result</div></td>
+          <td><span class="mal">{test_navn}: {resultat} · {delta} vs forrige</span></td>
+          <td><span class="ch-pill">PUSH</span><span class="ch-pill">E-POST</span><span class="ch-pill ch-off">SMS</span></td>
+          <td><span class="toggle on"></span></td>
+        </tr>
+        <tr>
+          <td><span class="nt-icon nt-fakt">F</span></td>
+          <td><b>Faktura</b><div style="font-size:11px; color:var(--text-secondary); margin-top:2px;">notification.invoice</div></td>
+          <td><span class="mal">Ny faktura {fakt_nr} på {beloep} kr · forfall {dato}</span></td>
+          <td><span class="ch-pill ch-off">PUSH</span><span class="ch-pill">E-POST</span><span class="ch-pill ch-off">SMS</span></td>
+          <td><span class="toggle on"></span></td>
+        </tr>
+        <tr>
+          <td><span class="nt-icon nt-ach">A</span></td>
+          <td><b>Achievement</b><div style="font-size:11px; color:var(--text-secondary); margin-top:2px;">notification.achievement</div></td>
+          <td><span class="mal">Du låste opp: {achievement_navn} 🏆</span></td>
+          <td><span class="ch-pill">PUSH</span><span class="ch-pill ch-off">E-POST</span><span class="ch-pill ch-off">SMS</span></td>
+          <td><span class="toggle off"></span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <section class="section" style="margin-top: 32px;">
+      <div class="section-head"><h2>Kanal-policy</h2></div>
+      <div class="bento" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="card">
+          <div class="card-label">Push</div>
+          <h3>Sanntid · alle apper</h3>
+          <p>Default på for alle hendelse-typer. Bruker kan slå av per type i Innstillinger → Varsler.</p>
+        </div>
+        <div class="card">
+          <div class="card-label">E-post</div>
+          <h3>Sammenkobling · daglig</h3>
+          <p>Sammenfattes i daglig digest kl 07:00. Faktura og plan-endring sendes umiddelbart som transactional e-post.</p>
+        </div>
+        <div class="card">
+          <div class="card-label">SMS</div>
+          <h3>Kun tidssensitivt</h3>
+          <p>Brukes kun for økt-påminnelse < 60 min og kritiske avvik. Krever telefonnummer-verifisering.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</body></html>

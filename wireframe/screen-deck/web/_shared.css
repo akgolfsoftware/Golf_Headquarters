@@ -1,0 +1,49 @@
+/* Shared styles for AK Golf web wireframes (offentlige sider) */
+body { background: #FAFAF7; color: #0A1F18; font-family: 'Inter', sans-serif; }
+.web-header { background: white; border-bottom: 1px solid #E5E3DD; padding: 16px 48px; position: sticky; top: 0; z-index: 50; }
+.web-header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.web-logo { font-family: 'Inter Tight', sans-serif; font-weight: 700; text-decoration: none; color: #0A1F18; font-size: 18px; }
+.web-nav { display: flex; gap: 32px; }
+.web-nav a { color: #0A1F18; text-decoration: none; font-size: 14px; font-weight: 500; }
+.web-nav a:hover { color: #005840; }
+.web-cta { background: #005840; color: white; padding: 10px 20px; border-radius: 12px; text-decoration: none; font-size: 14px; }
+
+.hero-dark { background: #0A0A0A; color: #FAFAF7; padding: 96px 48px 112px; text-align: center; }
+.hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #D1F843; margin-bottom: 24px; }
+.hero-title { font-family: 'Inter Tight', sans-serif; font-size: 72px; font-weight: 600; line-height: 1.04; letter-spacing: -0.03em; max-width: 1000px; margin: 0 auto 24px; }
+.hero-title em { font-style: italic; font-weight: 400; color: #D1F843; }
+.hero-sub { font-size: 18px; color: rgba(255,255,255,0.7); max-width: 640px; margin: 0 auto 40px; line-height: 1.5; }
+.hero-cta { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.btn-lime { background: #D1F843; color: #0A1F18; padding: 16px 32px; border-radius: 999px; font-weight: 600; text-decoration: none; font-size: 15px; display: inline-block; }
+.btn-outline-light { border: 1px solid rgba(255,255,255,0.3); color: white; padding: 16px 32px; border-radius: 999px; text-decoration: none; font-size: 15px; display: inline-block; }
+.btn-primary-web { background: #005840; color: white; padding: 14px 28px; border-radius: 999px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block; }
+.btn-ghost-web { border: 1px solid #D1D5DB; color: #0A1F18; padding: 14px 28px; border-radius: 999px; text-decoration: none; font-size: 14px; display: inline-block; background: white; }
+
+.section-light { padding: 96px 48px; max-width: 1200px; margin: 0 auto; }
+.section-light-narrow { padding: 64px 48px; max-width: 880px; margin: 0 auto; }
+.section-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6B7280; margin-bottom: 12px; }
+.section-title { font-family: 'Inter Tight', sans-serif; font-size: 48px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; max-width: 700px; margin-bottom: 16px; }
+.section-title em { font-style: italic; font-weight: 400; color: #005840; }
+.section-lede { font-size: 17px; color: #5E5C57; max-width: 600px; margin-bottom: 56px; }
+
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+.feature-card { background: white; border: 1px solid #E5E3DD; border-radius: 16px; padding: 32px; }
+.feature-card h3 { font-family: 'Inter Tight', sans-serif; font-size: 22px; margin-bottom: 12px; }
+.feature-card p { color: #5E5C57; font-size: 14px; line-height: 1.6; }
+.feature-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #005840; margin-bottom: 16px; letter-spacing: 0.1em; }
+
+.web-footer { background: #0A1F18; color: white; padding: 64px 48px; border-top: 1px solid rgba(255,255,255,0.1); }
+.web-footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
+.web-footer h3, .web-footer h4 { font-family: 'Inter Tight', sans-serif; margin-bottom: 16px; }
+.web-footer a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; line-height: 2; }
+.web-footer a:hover { color: white; }
+
+.subhero { background: linear-gradient(180deg, #0A1F18 0%, #143027 100%); color: white; padding: 80px 48px; text-align: center; }
+.subhero h1 { font-family: 'Inter Tight', sans-serif; font-size: 56px; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px; }
+.subhero h1 em { font-style: italic; font-weight: 400; color: #D1F843; }
+.subhero p { font-size: 17px; color: rgba(255,255,255,0.75); max-width: 640px; margin: 0 auto; line-height: 1.5; }
+
+.avatar-circle { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #005840 0%, #00432F 100%); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Inter Tight', sans-serif; font-weight: 600; font-size: 28px; }

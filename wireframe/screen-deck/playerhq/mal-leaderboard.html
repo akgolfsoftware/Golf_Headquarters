@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Mål · leaderboard</title>
+<style>
+.lb-row { display: grid; grid-template-columns: 50px 1fr 80px 80px 80px 100px; gap: 14px; align-items: center; padding: 12px 16px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; }
+.lb-row.lb-me { border-color: var(--primary); background: rgba(0,88,64,0.04); box-shadow: inset 3px 0 0 var(--accent); }
+.lb-row.lb-top1 { background: linear-gradient(135deg, rgba(209,248,67,0.20), rgba(209,248,67,0.04)); border-color: rgba(184,200,46,0.30); }
+.lb-rank { font-family: var(--font-mono); font-size: 18px; font-weight: 700; text-align: center; color: var(--text-secondary); }
+.lb-rank-medal { color: #B8852A; }
+.lb-row.lb-top1 .lb-rank { color: #5C6B0E; font-size: 22px; }
+.lb-name { display: flex; align-items: center; gap: 12px; }
+.lb-name b { font-size: 14px; font-weight: 600; }
+.lb-name small { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); display: block; }
+.lb-stat { font-family: var(--font-mono); font-size: 14px; font-weight: 600; text-align: center; }
+.lb-stat small { display: block; font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 400; }
+.lb-tabs { display: flex; gap: 4px; padding: 4px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-pill); width: fit-content; margin-bottom: 18px; }
+.lb-tabs button { padding: 10px 24px; border-radius: var(--r-pill); font-size: 13px; border: 0; background: transparent; cursor: pointer; font-family: inherit; color: var(--text-secondary); font-weight: 500; }
+.lb-tabs button.active { background: var(--primary); color: var(--text-inverse); }
+.pro-overlay { position: relative; }
+.pro-overlay::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, rgba(255,255,255,0.95)); pointer-events: none; border-radius: var(--r-card); }
+</style>
+</head>
+<body>
+<div class="app app--player">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>player</em></div>
+    <nav class="app-nav">
+      <a href="hjem.html">Hjem</a>
+      <a href="treningsplan.html">Tren</a>
+      <a href="mal-oversikt.html" class="active">Mål</a>
+      <a href="coach-detalj.html">Coach</a>
+      <a href="meg-profil.html">Meg</a>
+    </nav>
+    <div class="app-tier">PRO</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">/portal/mal/leaderboard · uke 19</span>
+      <h1 class="page-title"><em>Leader</em>board</h1>
+      <p class="page-lede">Hvor godt går det andre AK Golf-spillere — og hvor er du? Oppdateres hver natt kl 03:00.</p>
+    </header>
+
+    <div class="lb-tabs">
+      <button class="active">Venner (8)</button>
+      <button>Klubb (38)</button>
+      <button>Globalt (412)</button>
+    </div>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Sortér</span>
+      <button class="action-item">SG-snitt uke</button>
+      <button class="action-item">HCP</button>
+      <button class="action-item action-item-info">Antall økter</button>
+      <button class="action-item">Streak</button>
+      <span style="margin-left:auto; font-family:var(--font-mono); font-size:11px; color:var(--text-secondary);">Sist oppdatert: 11.05 03:00</span>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 50px 1fr 80px 80px 80px 100px; gap:14px; padding: 8px 16px; font-family:var(--font-mono); font-size:10px; letter-spacing:0.10em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:4px;">
+      <span style="text-align:center;">Rang</span>
+      <span>Spiller</span>
+      <span style="text-align:center;">HCP</span>
+      <span style="text-align:center;">SG-snitt</span>
+      <span style="text-align:center;">Økter</span>
+      <span style="text-align:center;">Badges</span>
+    </div>
+
+    <div class="lb-row lb-top1">
+      <div class="lb-rank">1</div>
+      <div class="lb-name"><span class="avatar">JS</span><div><b>Joachim Solberg</b><small>A1 · WANG · siden 2023</small></div></div>
+      <div class="lb-stat">4,2</div>
+      <div class="lb-stat" style="color:var(--success);">+1,8<small>SG</small></div>
+      <div class="lb-stat">9</div>
+      <div class="lb-stat"><span class="pill pill-success" style="font-size:9px;">14d streak</span></div>
+    </div>
+
+    <div class="lb-row">
+      <div class="lb-rank">2</div>
+      <div class="lb-name"><span class="avatar">JB</span><div><b>Joakim Berg</b><small>A1 · WANG · siden 2024</small></div></div>
+      <div class="lb-stat">5,4</div>
+      <div class="lb-stat" style="color:var(--success);">+1,4<small>SG</small></div>
+      <div class="lb-stat">7</div>
+      <div class="lb-stat"><span class="pill pill-success" style="font-size:9px;">10d streak</span></div>
+    </div>
+
+    <div class="lb-row lb-me">
+      <div class="lb-rank">3</div>
+      <div class="lb-name"><span class="avatar">M</span><div><b>Markus R Pedersen <span class="pill pill-info" style="font-size:9px; margin-left:4px;">DEG</span></b><small>A2 · GFGK · siden 2024</small></div></div>
+      <div class="lb-stat">7,4</div>
+      <div class="lb-stat" style="color:var(--success);">+1,2<small>SG</small></div>
+      <div class="lb-stat">8</div>
+      <div class="lb-stat"><span class="pill pill-success" style="font-size:9px;">11d streak</span></div>
+    </div>
+
+    <div class="lb-row">
+      <div class="lb-rank">4</div>
+      <div class="lb-name"><span class="avatar">JT</span><div><b>Joachim Tveit</b><small>A2 · GFGK · siden 2024</small></div></div>
+      <div class="lb-stat">6,8</div>
+      <div class="lb-stat" style="color:var(--success);">+0,8<small>SG</small></div>
+      <div class="lb-stat">7</div>
+      <div class="lb-stat"><span class="pill pill-warning" style="font-size:9px;">7d streak</span></div>
+    </div>
+
+    <div class="lb-row">
+      <div class="lb-rank">5</div>
+      <div class="lb-name"><span class="avatar">L</span><div><b>Lina Hagen</b><small>A3 · WANG · siden 2025</small></div></div>
+      <div class="lb-stat">11,4</div>
+      <div class="lb-stat" style="color:var(--success);">+0,6<small>SG</small></div>
+      <div class="lb-stat">6</div>
+      <div class="lb-stat"><span class="pill pill-success" style="font-size:9px;">9d streak</span></div>
+    </div>
+
+    <div class="lb-row">
+      <div class="lb-rank">6</div>
+      <div class="lb-name"><span class="avatar">E</span><div><b>Emma Solheim</b><small>A3 · GFGK · siden 2024</small></div></div>
+      <div class="lb-stat">9,2</div>
+      <div class="lb-stat">+0,3<small>SG</small></div>
+      <div class="lb-stat">5</div>
+      <div class="lb-stat"><span class="pill pill-muted" style="font-size:9px;">5d streak</span></div>
+    </div>
+
+    <div class="lb-row">
+      <div class="lb-rank">7</div>
+      <div class="lb-name"><span class="avatar">SB</span><div><b>Sofie Bø</b><small>A4 · Mulligan · siden 2025</small></div></div>
+      <div class="lb-stat">14,2</div>
+      <div class="lb-stat">+0,1<small>SG</small></div>
+      <div class="lb-stat">5</div>
+      <div class="lb-stat"><span class="pill pill-muted" style="font-size:9px;">6d streak</span></div>
+    </div>
+
+    <div class="lb-row">
+      <div class="lb-rank">8</div>
+      <div class="lb-name"><span class="avatar">MH</span><div><b>Maria Hansen</b><small>A4 · Bossum · siden 2025</small></div></div>
+      <div class="lb-stat">13,8</div>
+      <div class="lb-stat">−0,2<small>SG</small></div>
+      <div class="lb-stat">5</div>
+      <div class="lb-stat"><span class="pill pill-warning" style="font-size:9px;">3d streak</span></div>
+    </div>
+
+    <div style="margin-top:24px; padding:18px 22px; background:rgba(209,248,67,0.18); border:1px solid rgba(184,200,46,0.30); border-radius:var(--r-card); display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <b style="font-family:var(--font-display); font-size:15px;">Vil du se Klubb og Globalt?</b>
+        <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Globalt leaderboard krever Pro · sammenlign deg mot 412 spillere over hele Norge.</p>
+      </div>
+      <a href="meg-abonnement.html" class="btn btn-primary">Se Pro-fordeler →</a>
+    </div>
+
+    <section class="section" style="margin-top:32px;">
+      <div class="section-head"><h2>Dine badges</h2></div>
+      <div class="bento" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="card" style="text-align:center;">
+          <div style="font-family:var(--font-display); font-size:32px;">11</div>
+          <b style="font-size:13px;">Streak-mester</b>
+          <p style="font-size:11px;">11 dager på rad</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-family:var(--font-display); font-size:32px;">+1,2</div>
+          <b style="font-size:13px;">Best SG måned</b>
+          <p style="font-size:11px;">Ny rekord</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-family:var(--font-display); font-size:32px;">78</div>
+          <b style="font-size:13px;">Bossum-tamer</b>
+          <p style="font-size:11px;">Beste runde 2026</p>
+        </div>
+        <div class="card" style="text-align:center; opacity:0.5;">
+          <div style="font-family:var(--font-display); font-size:32px;">?</div>
+          <b style="font-size:13px;">Sub-7 HCP</b>
+          <p style="font-size:11px;">Mangler 0,4</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</body></html>

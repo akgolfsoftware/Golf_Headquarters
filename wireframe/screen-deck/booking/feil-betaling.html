@@ -1,0 +1,66 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Betaling feilet · Booking</title></head>
+<body style="background: var(--bg);">
+
+<header style="background: white; border-bottom: 1px solid #E5E3DD; padding: 16px 48px;">
+  <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+    <a href="index.html" style="font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 18px; text-decoration: none; color: var(--text);">AK Golf · Booking</a>
+    <a href="min-side.html" style="color: var(--text-secondary); text-decoration: none; font-size: 13px;">Min side →</a>
+  </div>
+</header>
+
+<div style="max-width: 1000px; margin: 0 auto; padding: 24px 48px;">
+  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+    <span class="pill pill-muted">1. Tjeneste ✓</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill pill-muted">2. Tid ✓</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill pill-muted">3. Info ✓</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill pill-danger">4. Betaling feilet</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill pill-muted">5. Bekreftelse</span>
+  </div>
+</div>
+
+<main style="max-width: 600px; margin: 0 auto; padding: 16px 48px 80px;">
+  <div style="text-align: center; padding: 24px 0 20px;">
+    <div style="width: 88px; height: 88px; background: rgba(239,68,68,0.12); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+    <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--danger);">Feilkode · card_declined</span>
+    <h1 style="font-family: var(--font-display); font-size: 32px; font-weight: 600; letter-spacing: -0.02em; margin: 12px 0 8px;">Betaling <em style="color: var(--danger); font-weight: 400;">feilet</em></h1>
+    <p style="color: var(--text-secondary); font-size: 14px;">Vi fikk ikke trekt 2 200 kr fra Visa **** 4242. Booking-en din er satt på vent i 15 min.</p>
+  </div>
+
+  <div class="card" style="background: rgba(239,68,68,0.04); border-color: rgba(239,68,68,0.30); margin-bottom: 20px;">
+    <span class="card-label" style="color: var(--danger);">Vanlige årsaker</span>
+    <ul style="font-size: 13px; color: var(--text-secondary); padding-left: 18px; line-height: 1.8; margin-top: 6px;">
+      <li><b>Manglende dekning</b> — sjekk saldo i banken</li>
+      <li><b>Kortet er sperret</b> for nettbutikker (kontakt banken)</li>
+      <li><b>3D Secure-kode feilet</b> — prøv igjen med riktig kode</li>
+      <li><b>Beløp over kortgrense</b> — øk grensen i nettbanken</li>
+    </ul>
+  </div>
+
+  <div class="card" style="margin-bottom: 24px;">
+    <span class="card-label">Booking på vent</span>
+    <table style="width: 100%; font-size: 14px; margin-top: 8px;">
+      <tr><td style="padding: 6px 0; color: var(--text-secondary);">Coach</td><td>Anders Kristiansen</td></tr>
+      <tr><td style="padding: 6px 0; color: var(--text-secondary);">Tid</td><td>Tirsdag 12. mai · 09:00</td></tr>
+      <tr><td style="padding: 6px 0; color: var(--text-secondary);">Sted</td><td>Mulligan Indoor · sim 1</td></tr>
+      <tr><td style="padding: 6px 0; color: var(--text-secondary);">Beløp</td><td><b>2 200 kr</b></td></tr>
+    </table>
+    <p style="font-size: 12px; color: var(--text-secondary); margin-top: 10px;">Vi holder slot-en din i 14 min 32 sek. Etter det blir den frigjort.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+    <a href="betaling.html" class="btn btn-primary" style="justify-content: center;">Prøv igjen →</a>
+    <a href="betaling-vipps.html" class="btn btn-ghost" style="justify-content: center;">Velg annen betalingsmetode →</a>
+  </div>
+
+  <p style="text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-secondary);">Trenger du hjelp? Send e-post til <a href="mailto:post@akgolf.no" style="color: var(--primary);">post@akgolf.no</a></p>
+</main>
+
+</body></html>

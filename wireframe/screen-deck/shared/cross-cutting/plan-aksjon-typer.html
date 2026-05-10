@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Plan-aksjon-typer</title>
+<style>
+  .who-pill { display: inline-block; padding: 2px 8px; border-radius: 8px; font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; }
+  .who-coach { background: rgba(0,88,64,0.12); color: var(--primary); }
+  .who-agent { background: rgba(184,200,46,0.30); color: #5C6B0E; }
+  .who-player { background: rgba(59,130,246,0.14); color: #1D4ED8; }
+  .auto-yes { color: var(--success); font-weight: 600; }
+  .auto-no { color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar" style="background: var(--bg-coach-sidebar);">
+    <div class="app-logo">AK Golf<br><em>system</em></div>
+    <nav class="app-nav">
+      <a href="agent-pipeline-overview.html">Pipeline</a>
+      <a href="signal-typer.html">Signal-typer</a>
+      <a href="#" class="active">Plan-aksjoner</a>
+    </nav>
+    <div class="app-tier">SYSTEM</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-coach-content);">
+    <header class="page-head">
+      <span class="page-eyebrow">10 PlanAction-typer · auto vs manuell</span>
+      <h1 class="page-title"><em>Plan-aksjon</em>-typer</h1>
+      <p class="page-lede">Alle aksjoner agentene eller coachene kan utføre på en spillers plan. Auto-godkjent kun ved lav risiko og lav delta.</p>
+    </header>
+
+    <table class="tbl">
+      <thead>
+        <tr><th>Type</th><th>Beskrivelse</th><th>Hvem</th><th>Trigger</th><th>Auto-godkjent</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>PYRAMID_ADJUST</b></td>
+          <td>Endrer prosentvis allokasjon mellom FYS/TEK/SLAG/SPILL/TURN.</td>
+          <td><span class="who-pill who-agent">Agent</span> <span class="who-pill who-coach">Coach</span></td>
+          <td>plan_drift, phase_transition</td>
+          <td class="auto-yes">Ja · ved Δ &lt; 10%</td>
+        </tr>
+        <tr>
+          <td><b>PHASE_SHIFT</b></td>
+          <td>Bytter eller forkorter fase i periodiseringen.</td>
+          <td><span class="who-pill who-coach">Coach</span></td>
+          <td>tournament_lt_21d, manuell</td>
+          <td class="auto-no">Nei</td>
+        </tr>
+        <tr>
+          <td><b>SESSION_INSERT</b></td>
+          <td>Legger til en spesifikk økt i ukeplanen.</td>
+          <td><span class="who-pill who-agent">Agent</span> <span class="who-pill who-coach">Coach</span></td>
+          <td>missing_session, plan_drift</td>
+          <td class="auto-yes">Ja · ved gap &gt; 5d</td>
+        </tr>
+        <tr>
+          <td><b>SESSION_SKIP</b></td>
+          <td>Markerer økt som ikke utført med begrunnelse.</td>
+          <td><span class="who-pill who-player">Spiller</span> <span class="who-pill who-coach">Coach</span></td>
+          <td>injury_reported, manuell</td>
+          <td class="auto-yes">Ja · ved skade-flag</td>
+        </tr>
+        <tr>
+          <td><b>TEST_TRIGGER</b></td>
+          <td>Bestiller ny baseline-test for spiller.</td>
+          <td><span class="who-pill who-agent">Agent</span> <span class="who-pill who-coach">Coach</span></td>
+          <td>handicap_change, fase-start</td>
+          <td class="auto-no">Nei</td>
+        </tr>
+        <tr>
+          <td><b>GOAL_UPDATE</b></td>
+          <td>Endrer eller legger til nytt mål for spilleren.</td>
+          <td><span class="who-pill who-coach">Coach</span> <span class="who-pill who-player">Spiller</span></td>
+          <td>achievement_unlock, manuell</td>
+          <td class="auto-no">Nei</td>
+        </tr>
+        <tr>
+          <td><b>VOLUME_REDUCE</b></td>
+          <td>Reduserer total økt-volum (ved overbelastning).</td>
+          <td><span class="who-pill who-agent">Agent</span></td>
+          <td>injury_reported</td>
+          <td class="auto-yes">Ja · ved skade</td>
+        </tr>
+        <tr>
+          <td><b>RECOVERY_INSERT</b></td>
+          <td>Legger inn restitusjonsblokk på 3–7 dager.</td>
+          <td><span class="who-pill who-agent">Agent</span> <span class="who-pill who-coach">Coach</span></td>
+          <td>phase_transition, injury_reported</td>
+          <td class="auto-yes">Ja · etter peak-fase</td>
+        </tr>
+        <tr>
+          <td><b>FOCUS_AREA_SHIFT</b></td>
+          <td>Endrer teknisk fokus innenfor en tier (f.eks. fra driver til jern).</td>
+          <td><span class="who-pill who-coach">Coach</span></td>
+          <td>test_completed, manuell</td>
+          <td class="auto-no">Nei</td>
+        </tr>
+        <tr>
+          <td><b>PLAN_ARCHIVE</b></td>
+          <td>Avslutter og arkiverer aktiv plan.</td>
+          <td><span class="who-pill who-coach">Coach</span></td>
+          <td>manuell, sesong-slutt</td>
+          <td class="auto-no">Nei</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <section class="section" style="margin-top: 32px;">
+      <div class="section-head"><h2>Auto-godkjenning · regler</h2></div>
+      <div class="card">
+        <p style="font-size: 13px; line-height: 1.7;">
+          En aksjon auto-godkjennes hvis: (1) typen er markert auto-tillatt over, (2) delta-størrelse er innenfor terskel, (3) spiller har ikke skade-flag som hindrer endringen, og (4) coach har ikke satt manuell override på spilleren.<br><br>
+          Coach får alltid varsel om auto-godkjente aksjoner i daglig brief, og kan rulle tilbake innen 24 timer uten ekstra bekreftelse.
+        </p>
+      </div>
+    </section>
+  </main>
+</div>
+</body></html>

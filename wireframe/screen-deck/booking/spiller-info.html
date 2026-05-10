@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Spiller-info · Booking</title></head>
+<body style="background: var(--bg);">
+
+<header style="background: white; border-bottom: 1px solid #E5E3DD; padding: 16px 48px;">
+  <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+    <a href="index.html" style="font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 18px; text-decoration: none; color: var(--text);">AK Golf · Booking</a>
+    <a href="min-side.html" style="color: var(--text-secondary); text-decoration: none; font-size: 13px;">Min side →</a>
+  </div>
+</header>
+
+<div style="max-width: 1000px; margin: 0 auto; padding: 24px 48px;">
+  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+    <span class="pill pill-muted">1. Tjeneste ✓</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill pill-muted">2. Tid ✓</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill" style="background: var(--primary); color: white;">3. Spiller</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill pill-muted">4. Betaling</span>
+    <span style="color: var(--text-muted);">→</span>
+    <span class="pill pill-muted">5. Bekreftelse</span>
+  </div>
+</div>
+
+<main style="max-width: 600px; margin: 0 auto; padding: 16px 48px 80px;">
+  <header style="margin-bottom: 24px;">
+    <span style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary);">Steg 3 av 5</span>
+    <h1 style="font-family: var(--font-display); font-size: 32px; font-weight: 600; letter-spacing: -0.02em; margin: 8px 0 6px;">Hvem skal <em style="color: var(--primary); font-weight: 400;">spille</em>?</h1>
+    <p style="color: var(--text-secondary); font-size: 14px;">Hjelper coachen å forberede seg. Du kan booke for deg selv eller noen andre.</p>
+  </header>
+
+  <div class="card">
+    <div style="display: flex; gap: 8px; margin-bottom: 18px;">
+      <button class="btn btn-primary" style="flex: 1; justify-content: center;">Meg selv</button>
+      <button class="btn btn-ghost" style="flex: 1; justify-content: center;">En annen</button>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <label style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 6px;">Spillernavn</label>
+        <input type="text" value="Markus Rønning" style="width: 100%; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: inherit;">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 6px;">Alder</label>
+          <input type="number" value="34" style="width: 100%; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: inherit;">
+        </div>
+        <div>
+          <label style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 6px;">HCP</label>
+          <input type="text" value="14,2" style="width: 100%; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: inherit;">
+        </div>
+      </div>
+      <div>
+        <label style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 6px;">Klubb</label>
+        <select style="width: 100%; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: inherit; background: white;">
+          <option>Bossum Golfklubb</option>
+          <option>Gamle Fredrikstad GK</option>
+          <option>Onsøy GK</option>
+          <option>Sarpsborg GK</option>
+          <option>Annet / ikke medlem</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 6px;">Hva vil du jobbe med?</label>
+        <textarea rows="4" placeholder="F.eks: Slice fra tee, korthold, putting..." style="width: 100%; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: inherit; resize: vertical;">Slice fra tee, ønsker mer kontroll på driveren. HCP har stagnert siste sesong.</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 12px; justify-content: space-between; margin-top: 16px;">
+    <a href="kunde-eksisterende.html" class="btn btn-ghost">← Tilbake</a>
+    <a href="sammendrag.html" class="btn btn-primary">Fortsett →</a>
+  </div>
+</main>
+
+</body></html>

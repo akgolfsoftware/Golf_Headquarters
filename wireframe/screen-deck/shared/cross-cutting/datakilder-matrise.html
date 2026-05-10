@@ -1,0 +1,125 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Datakilder-matrise</title>
+<style>
+  .src-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.06em; }
+  .src-supabase { background: rgba(0,88,64,0.12); color: var(--primary); }
+  .src-cache { background: rgba(209,248,67,0.30); color: #5C6B0E; }
+  .src-trackman { background: rgba(245,158,11,0.14); color: #B45309; }
+  .src-stripe { background: rgba(99,91,255,0.14); color: #4F47CC; }
+  .src-golfbox { background: rgba(59,130,246,0.14); color: #1D4ED8; }
+  .ep { font-family: var(--font-mono); font-size: 11px; color: var(--text); display: block; line-height: 1.6; }
+  .ep-get { color: var(--primary); }
+  .ep-post { color: var(--warning); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar" style="background: var(--bg-coach-sidebar);">
+    <div class="app-logo">AK Golf<br><em>system</em></div>
+    <nav class="app-nav">
+      <a href="cbac-matrise.html">CBAC-matrise</a>
+      <a href="#" class="active">Datakilder</a>
+      <a href="agent-pipeline-overview.html">Pipeline</a>
+    </nav>
+    <div class="app-tier">SYSTEM</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-coach-content);">
+    <header class="page-head">
+      <span class="page-eyebrow">API endpoints per skjerm · datakilder</span>
+      <h1 class="page-title"><em>Datakilder</em>-matrise</h1>
+      <p class="page-lede">Hvilke endpoints og kilder hver skjerm avhenger av. Brukes til cache-strategi, RLS-policy og infrastruktur-planlegging.</p>
+    </header>
+
+    <table class="tbl">
+      <thead>
+        <tr><th>Skjerm</th><th>GET</th><th>POST/PUT</th><th>Datakilder</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>CoachHQ Hub</b><div style="font-size:10px; color:var(--text-secondary);">/coachhq/hub</div></td>
+          <td><span class="ep ep-get">GET /api/coach/dashboard</span><span class="ep ep-get">GET /api/agents/pending</span><span class="ep ep-get">GET /api/messages/unread</span></td>
+          <td><span class="ep">—</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span> <span class="src-pill src-cache">Cache 60s</span></td>
+        </tr>
+        <tr>
+          <td><b>Elever-liste</b><div style="font-size:10px; color:var(--text-secondary);">/coachhq/elever</div></td>
+          <td><span class="ep ep-get">GET /api/players</span><span class="ep ep-get">GET /api/players/:id/pyramid</span></td>
+          <td><span class="ep ep-post">PATCH /api/players/:id</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span></td>
+        </tr>
+        <tr>
+          <td><b>Spillerprofil 360</b><div style="font-size:10px; color:var(--text-secondary);">/coachhq/elever/:id</div></td>
+          <td><span class="ep ep-get">GET /api/players/:id</span><span class="ep ep-get">GET /api/players/:id/sessions</span><span class="ep ep-get">GET /api/players/:id/sg</span><span class="ep ep-get">GET /api/players/:id/tests</span></td>
+          <td><span class="ep ep-post">POST /api/players/:id/note</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span> <span class="src-pill src-trackman">TrackMan</span> <span class="src-pill src-golfbox">GolfBox</span></td>
+        </tr>
+        <tr>
+          <td><b>Bookinger</b><div style="font-size:10px; color:var(--text-secondary);">/coachhq/bookinger</div></td>
+          <td><span class="ep ep-get">GET /api/bookings</span><span class="ep ep-get">GET /api/facilities/availability</span></td>
+          <td><span class="ep ep-post">POST /api/bookings</span><span class="ep ep-post">PATCH /api/bookings/:id</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span> <span class="src-pill src-cache">Cache 30s</span></td>
+        </tr>
+        <tr>
+          <td><b>Treningsplaner</b><div style="font-size:10px; color:var(--text-secondary);">/coachhq/plans</div></td>
+          <td><span class="ep ep-get">GET /api/plans</span><span class="ep ep-get">GET /api/plans/:id/phases</span></td>
+          <td><span class="ep ep-post">POST /api/plans</span><span class="ep ep-post">POST /api/plans/:id/publish</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span></td>
+        </tr>
+        <tr>
+          <td><b>Godkjenninger</b><div style="font-size:10px; color:var(--text-secondary);">/coachhq/godkjenninger</div></td>
+          <td><span class="ep ep-get">GET /api/plan-actions/pending</span></td>
+          <td><span class="ep ep-post">POST /api/plan-actions/:id/approve</span><span class="ep ep-post">POST /api/plan-actions/:id/reject</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span></td>
+        </tr>
+        <tr>
+          <td><b>Tester</b><div style="font-size:10px; color:var(--text-secondary);">/coachhq/tester</div></td>
+          <td><span class="ep ep-get">GET /api/tests</span><span class="ep ep-get">GET /api/tests/:id/results</span></td>
+          <td><span class="ep ep-post">POST /api/tests/:id/result</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span></td>
+        </tr>
+        <tr>
+          <td><b>Analytics</b><div style="font-size:10px; color:var(--text-secondary);">/coachhq/analytics</div></td>
+          <td><span class="ep ep-get">GET /api/analytics/sessions</span><span class="ep ep-get">GET /api/analytics/heatmap</span></td>
+          <td><span class="ep">—</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span> <span class="src-pill src-cache">Cache 5m</span></td>
+        </tr>
+        <tr>
+          <td><b>Økonomi</b><div style="font-size:10px; color:var(--text-secondary);">/coachhq/okonomi</div></td>
+          <td><span class="ep ep-get">GET /api/invoices</span><span class="ep ep-get">GET /api/finance/summary</span></td>
+          <td><span class="ep ep-post">POST /api/invoices</span><span class="ep ep-post">POST /api/invoices/:id/refund</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span> <span class="src-pill src-stripe">Stripe</span></td>
+        </tr>
+        <tr>
+          <td><b>Fasiliteter</b><div style="font-size:10px; color:var(--text-secondary);">/coachhq/fasiliteter</div></td>
+          <td><span class="ep ep-get">GET /api/facilities</span><span class="ep ep-get">GET /api/facilities/utilization</span></td>
+          <td><span class="ep ep-post">PATCH /api/facilities/:id</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span> <span class="src-pill src-cache">Cache 5m</span></td>
+        </tr>
+        <tr>
+          <td><b>PlayerHQ Hjem</b><div style="font-size:10px; color:var(--text-secondary);">/playerhq</div></td>
+          <td><span class="ep ep-get">GET /api/me/dashboard</span><span class="ep ep-get">GET /api/me/next-session</span></td>
+          <td><span class="ep">—</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span></td>
+        </tr>
+        <tr>
+          <td><b>PlayerHQ Plan</b><div style="font-size:10px; color:var(--text-secondary);">/playerhq/plan</div></td>
+          <td><span class="ep ep-get">GET /api/me/plan</span><span class="ep ep-get">GET /api/me/sessions</span></td>
+          <td><span class="ep ep-post">POST /api/me/sessions/:id/log</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span></td>
+        </tr>
+        <tr>
+          <td><b>PlayerHQ Booking</b><div style="font-size:10px; color:var(--text-secondary);">/playerhq/booking</div></td>
+          <td><span class="ep ep-get">GET /api/booking/availability</span></td>
+          <td><span class="ep ep-post">POST /api/booking</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span> <span class="src-pill src-stripe">Stripe</span></td>
+        </tr>
+        <tr>
+          <td><b>Foreldreportal</b><div style="font-size:10px; color:var(--text-secondary);">/parent</div></td>
+          <td><span class="ep ep-get">GET /api/parent/children</span><span class="ep ep-get">GET /api/parent/invoices</span></td>
+          <td><span class="ep">—</span></td>
+          <td><span class="src-pill src-supabase">Supabase</span> <span class="src-pill src-stripe">Stripe</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+</body></html>

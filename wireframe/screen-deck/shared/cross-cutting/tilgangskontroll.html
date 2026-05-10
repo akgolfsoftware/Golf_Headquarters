@@ -1,0 +1,98 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Tilgangskontroll</title>
+<style>
+  .tk-shell { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+  .tk-side { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 18px; height: fit-content; }
+  .tk-main { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 22px; }
+  .role-row { padding: 10px 12px; border-radius: 8px; margin-bottom: 4px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .role-row:hover { background: var(--bg); }
+  .role-row.active { background: rgba(0,88,64,0.08); color: var(--primary); font-weight: 600; }
+  .role-count { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+  .role-row.active .role-count { color: var(--primary); }
+  .cap-grp { margin-bottom: 18px; }
+  .cap-grp h4 { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); font-weight: 600; }
+  .cap-row { display: flex; align-items: center; gap: 12px; padding: 8px 6px; }
+  .cap-check { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border-strong); flex-shrink: 0; position: relative; }
+  .cap-check.on { background: var(--primary); border-color: var(--primary); }
+  .cap-check.on::after { content: "✓"; position: absolute; inset: 0; color: #fff; font-size: 12px; line-height: 16px; text-align: center; font-weight: 700; }
+  .cap-name { font-family: var(--font-mono); font-size: 12px; flex: 1; }
+  .cap-desc { font-size: 11px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="app-sidebar" style="background: var(--bg-coach-sidebar);">
+    <div class="app-logo">AK Golf<br><em>system</em></div>
+    <nav class="app-nav">
+      <a href="cbac-matrise.html">CBAC-matrise</a>
+      <a href="#" class="active">Tilgangskontroll</a>
+      <a href="#">Audit-logg</a>
+    </nav>
+    <div class="app-tier">SECURITY</div>
+  </aside>
+  <main class="app-main" style="background: var(--bg-coach-content);">
+    <header class="page-head">
+      <span class="page-eyebrow">CBAC · administrer roller og capabilities</span>
+      <h1 class="page-title"><em>Tilgangs</em>kontroll</h1>
+      <p class="page-lede">Velg en rolle for å se og endre tilgangene. Endringer logges i audit-loggen og krever bekreftelse.</p>
+    </header>
+
+    <div class="tk-shell">
+      <aside class="tk-side">
+        <div class="card-label" style="margin-bottom: 12px;">6 roller</div>
+        <div class="role-row"><span>SuperAdmin</span><span class="role-count">2 brukere</span></div>
+        <div class="role-row active"><span>Coach</span><span class="role-count">5 brukere</span></div>
+        <div class="role-row"><span>Assistant Coach</span><span class="role-count">3 brukere</span></div>
+        <div class="role-row"><span>Player</span><span class="role-count">38 brukere</span></div>
+        <div class="role-row"><span>Parent</span><span class="role-count">22 brukere</span></div>
+        <div class="role-row"><span>Guest</span><span class="role-count">∞</span></div>
+        <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);">
+          <a href="#" style="font-size: 12px; color: var(--primary); font-weight: 600;">Audit-logg →</a>
+        </div>
+      </aside>
+
+      <div class="tk-main">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border);">
+          <div>
+            <div class="card-label">Aktiv rolle</div>
+            <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: 600;">Coach</h2>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">5 brukere · 32 av 43 capabilities aktive</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-ghost">Avbryt</button>
+            <button class="btn btn-primary">Lagre endringer</button>
+          </div>
+        </div>
+
+        <div class="cap-grp">
+          <h4>Brukere & roller</h4>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">user.read.all</span><span class="cap-desc">Se alle brukere</span></div>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">user.invite_parent</span><span class="cap-desc">Invitere foresatte</span></div>
+          <div class="cap-row"><span class="cap-check"></span><span class="cap-name">user.update.role</span><span class="cap-desc">Endre roller (SuperAdmin)</span></div>
+        </div>
+
+        <div class="cap-grp">
+          <h4>Treningsplaner</h4>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">plan.create</span><span class="cap-desc">Opprette nye planer</span></div>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">plan.update</span><span class="cap-desc">Endre eksisterende planer</span></div>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">plan.publish</span><span class="cap-desc">Publisere til spiller</span></div>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">plan.action.approve</span><span class="cap-desc">Godkjenne agent-forslag</span></div>
+        </div>
+
+        <div class="cap-grp">
+          <h4>Bookinger</h4>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">booking.create.for_player</span><span class="cap-desc">Booke på vegne av spiller</span></div>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">booking.cancel.any</span><span class="cap-desc">Avbestille hvilken som helst booking</span></div>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">booking.read.all</span><span class="cap-desc">Se alle bookinger</span></div>
+        </div>
+
+        <div class="cap-grp">
+          <h4>Økonomi</h4>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">invoice.create</span><span class="cap-desc">Opprette faktura</span></div>
+          <div class="cap-row"><span class="cap-check on"></span><span class="cap-name">invoice.refund</span><span class="cap-desc">Refundere</span></div>
+          <div class="cap-row"><span class="cap-check"></span><span class="cap-name">finance.report</span><span class="cap-desc">Konsernregnskap (kun SuperAdmin)</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

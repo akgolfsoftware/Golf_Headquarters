@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Sammenlign — AK Golf</title>
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .compare-tbl { width: 100%; border-collapse: separate; border-spacing: 0; background: white; border: 1px solid #E5E3DD; border-radius: 16px; overflow: hidden; }
+  .compare-tbl th, .compare-tbl td { padding: 18px 24px; text-align: left; border-bottom: 1px solid #E5E3DD; }
+  .compare-tbl th { background: #F5F4EE; font-family: 'Inter Tight', sans-serif; font-size: 16px; font-weight: 600; }
+  .compare-tbl th.col-ak { background: #0A1F18; color: white; }
+  .compare-tbl th.col-ak em { font-style: italic; color: #D1F843; }
+  .compare-tbl tr:last-child td { border-bottom: 0; }
+  .compare-tbl td.check { color: #005840; font-size: 18px; font-weight: 700; text-align: center; }
+  .compare-tbl td.cross { color: #B91C1C; font-size: 18px; font-weight: 700; text-align: center; }
+  .compare-tbl td.partial { color: #B45309; font-size: 13px; text-align: center; font-style: italic; }
+  .compare-tbl tr.cat-row td { background: #F5F4EE; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #6B7280; padding: 12px 24px; }
+</style>
+</head>
+<body>
+
+<header class="web-header"><div class="web-header-inner"><a href="index.html" class="web-logo">AK Golf</a><nav class="web-nav"><a href="om.html">Om</a><a href="tjenester.html">Tjenester</a><a href="coaches.html">Coaches</a><a href="anlegg.html">Anlegg</a><a href="priser.html">Priser</a><a href="blogg.html">Blogg</a><a href="kontakt.html">Kontakt</a></nav><a href="../auth/login.html" class="web-cta">Logg inn</a></div></header>
+
+<section class="subhero">
+  <div class="hero-eyebrow">SAMMENLIGN</div>
+  <h1>AK Golf vs <em>alternativene</em>.</h1>
+  <p>Hvorfor velge oss over en lokal PGA-coach eller en swing-app? Her er forskjellen.</p>
+</section>
+
+<section class="section-light">
+  <table class="compare-tbl">
+    <thead>
+      <tr>
+        <th style="width: 40%;">Funksjon</th>
+        <th class="col-ak">AK <em>Golf</em></th>
+        <th>Tradisjonell PGA-coach</th>
+        <th>Kun apper (Skillest, Hackmotion)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="cat-row"><td colspan="4">COACHING</td></tr>
+      <tr><td>1:1 økter med master coach</td><td class="check">✓</td><td class="check">✓</td><td class="cross">×</td></tr>
+      <tr><td>TrackMan-data hver økt</td><td class="check">✓</td><td class="partial">noen</td><td class="cross">×</td></tr>
+      <tr><td>Personlig treningsplan etter økt</td><td class="check">✓</td><td class="partial">av og til</td><td class="cross">×</td></tr>
+      <tr><td>Mental coach inkludert (Elite)</td><td class="check">✓</td><td class="cross">×</td><td class="cross">×</td></tr>
+
+      <tr class="cat-row"><td colspan="4">DATA &amp; INNSIKT</td></tr>
+      <tr><td>SG-data per runde</td><td class="check">✓</td><td class="cross">×</td><td class="check">✓</td></tr>
+      <tr><td>Carry/spin/AoA-data</td><td class="check">✓</td><td class="partial">når på range</td><td class="cross">×</td></tr>
+      <tr><td>Trender over tid (12 mnd+)</td><td class="check">✓</td><td class="cross">×</td><td class="check">✓</td></tr>
+
+      <tr class="cat-row"><td colspan="4">FASILITETER</td></tr>
+      <tr><td>Innendørs hele vinteren</td><td class="check">✓</td><td class="partial">avhenger</td><td class="cross">×</td></tr>
+      <tr><td>4 TrackMan-simulatorer</td><td class="check">✓</td><td class="cross">×</td><td class="cross">×</td></tr>
+      <tr><td>Bookbar 06-23</td><td class="check">✓</td><td class="cross">×</td><td class="check">✓</td></tr>
+
+      <tr class="cat-row"><td colspan="4">ØKONOMI</td></tr>
+      <tr><td>Inngangspris</td><td class="check" style="font-family: 'JetBrains Mono', monospace; font-size: 14px;">0 kr</td><td class="check" style="font-family: 'JetBrains Mono', monospace; font-size: 14px;">800 kr/økt</td><td class="check" style="font-family: 'JetBrains Mono', monospace; font-size: 14px;">99 kr/mnd</td></tr>
+      <tr><td>Pro-tier</td><td class="check" style="font-family: 'JetBrains Mono', monospace; font-size: 14px;">299 kr/mnd</td><td class="check" style="font-family: 'JetBrains Mono', monospace; font-size: 14px;">9 600 kr/12 økter</td><td class="check" style="font-family: 'JetBrains Mono', monospace; font-size: 14px;">199 kr/mnd</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section style="background: #0A1F18; color: white; padding: 80px 48px; text-align: center;">
+  <h2 style="font-family: 'Inter Tight', sans-serif; font-size: 40px; font-weight: 600; margin-bottom: 16px;">Klar for å velge AK Golf?</h2>
+  <p style="color: rgba(255,255,255,0.7); margin-bottom: 32px;">Start gratis. Oppgrader når du vil.</p>
+  <a href="../auth/login.html" class="btn-lime">Kom i gang →</a>
+</section>
+
+<footer class="web-footer">
+  <div class="web-footer-inner">
+    <div><h3>AK Golf</h3><p style="color: rgba(255,255,255,0.6); margin-top: 16px;">Personlig golf-coaching for spillere som vil bli bedre.</p></div>
+    <div><h4>Tjenester</h4><a href="tjenester.html">Coaching</a><br><a href="for-klubber.html">For klubber</a><br><a href="for-bedrifter.html">For bedrifter</a><br><a href="junior.html">Junior</a></div>
+    <div><h4>Selskap</h4><a href="om.html">Om oss</a><br><a href="jobb.html">Karriere</a><br><a href="cases.html">Cases</a><br><a href="kontakt.html">Kontakt</a></div>
+    <div><h4>Juridisk</h4><a href="personvern.html">Personvern</a><br><a href="vilkar.html">Vilkår</a><br><a href="cookies.html">Cookies</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

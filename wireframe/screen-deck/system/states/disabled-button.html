@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Disabled-button · katalog</title>
+<style>
+  .db-table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .db-table th, .db-table td { padding: 18px 16px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .db-table tr:last-child td { border-bottom: 0; }
+  .db-table thead th { background: var(--bg); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
+  .db-row-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); font-weight: 600; }
+
+  /* Button base */
+  .b { padding: 8px 14px; border-radius: var(--r-pill); font-size: 13px; font-weight: 500; border: 1px solid transparent; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; transition: all 0.12s; white-space: nowrap; }
+
+  /* Primary */
+  .b-primary { background: var(--primary); color: #fff; }
+  .b-primary.h { background: #00432F; }
+  .b-primary.f { box-shadow: 0 0 0 3px rgba(0,88,64,0.30); }
+  .b-primary.d { background: var(--primary); opacity: 0.40; cursor: not-allowed; }
+  .b-primary.l { background: var(--primary); opacity: 0.85; cursor: wait; }
+
+  /* Secondary */
+  .b-secondary { background: var(--bg-elev); color: var(--text); border-color: var(--border); }
+  .b-secondary.h { background: var(--bg); border-color: var(--border-strong); }
+  .b-secondary.f { box-shadow: 0 0 0 3px rgba(0,88,64,0.18); }
+  .b-secondary.d { opacity: 0.45; cursor: not-allowed; }
+  .b-secondary.l { opacity: 0.70; cursor: wait; }
+
+  /* Ghost */
+  .b-ghost { background: transparent; color: var(--text); }
+  .b-ghost.h { background: rgba(0,88,64,0.08); }
+  .b-ghost.f { background: rgba(0,88,64,0.06); box-shadow: 0 0 0 3px rgba(0,88,64,0.18); }
+  .b-ghost.d { opacity: 0.40; cursor: not-allowed; color: var(--text-muted); }
+  .b-ghost.l { opacity: 0.65; cursor: wait; }
+
+  /* Destructive */
+  .b-destructive { background: var(--danger); color: #fff; }
+  .b-destructive.h { background: #B91C1C; }
+  .b-destructive.f { box-shadow: 0 0 0 3px rgba(239,68,68,0.30); }
+  .b-destructive.d { opacity: 0.40; cursor: not-allowed; }
+  .b-destructive.l { opacity: 0.85; cursor: wait; }
+
+  /* Accent */
+  .b-accent { background: var(--accent); color: var(--primary); font-weight: 600; }
+  .b-accent.h { background: #C5EE2F; }
+  .b-accent.f { box-shadow: 0 0 0 3px rgba(209,248,67,0.45); }
+  .b-accent.d { opacity: 0.45; cursor: not-allowed; }
+  .b-accent.l { opacity: 0.80; cursor: wait; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .mini-spin { width: 12px; height: 12px; border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+  .mini-spin.dark { border: 2px solid rgba(0,0,0,0.20); border-top-color: rgba(0,0,0,0.55); }
+  .mini-spin.light { border: 2px solid rgba(255,255,255,0.30); border-top-color: #fff; }
+
+  .db-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); padding-top: 14px; margin-top: 16px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="../../coachhq/hub.html">Hub</a>
+      <a href="../../coachhq/elever.html">Elever</a>
+      <a href="../../coachhq/plans.html">Treningsplaner</a>
+      <a href="../../coachhq/bookings.html">Bookinger</a>
+      <a href="../../coachhq/approvals.html">Godkjenninger</a>
+      <a href="../../coachhq/analytics.html">Analytics</a>
+      <a href="../../coachhq/finance.html">Økonomi</a>
+      <a href="../../coachhq/facilities.html">Fasiliteter</a>
+      <a href="../../coachhq/settings-bruker.html" class="active">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Designsystem · Claude Design</span>
+      <h1 class="page-title"><em>Disabled-button</em> · katalog</h1>
+      <p class="page-lede">Komplett button-state-matrise. 5 varianter (rader) × 5 states (kolonner). Disabled = 40% opacity + cursor: not-allowed. Loading = spinner + cursor: wait.</p>
+    </header>
+
+    <table class="db-table">
+      <thead>
+        <tr>
+          <th style="width:120px;">Variant</th>
+          <th>Default</th>
+          <th>Hover</th>
+          <th>Focus</th>
+          <th>Disabled</th>
+          <th>Loading</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="db-row-label">Primary</td>
+          <td><button class="b b-primary">Lagre</button></td>
+          <td><button class="b b-primary h">Lagre</button></td>
+          <td><button class="b b-primary f">Lagre</button></td>
+          <td><button class="b b-primary d" disabled>Lagre</button></td>
+          <td><button class="b b-primary l"><span class="mini-spin light"></span>Lagrer…</button></td>
+        </tr>
+        <tr>
+          <td class="db-row-label">Secondary</td>
+          <td><button class="b b-secondary">Avbryt</button></td>
+          <td><button class="b b-secondary h">Avbryt</button></td>
+          <td><button class="b b-secondary f">Avbryt</button></td>
+          <td><button class="b b-secondary d" disabled>Avbryt</button></td>
+          <td><button class="b b-secondary l"><span class="mini-spin dark"></span>Behandler…</button></td>
+        </tr>
+        <tr>
+          <td class="db-row-label">Ghost</td>
+          <td><button class="b b-ghost">Mer</button></td>
+          <td><button class="b b-ghost h">Mer</button></td>
+          <td><button class="b b-ghost f">Mer</button></td>
+          <td><button class="b b-ghost d" disabled>Mer</button></td>
+          <td><button class="b b-ghost l"><span class="mini-spin dark"></span>Henter…</button></td>
+        </tr>
+        <tr>
+          <td class="db-row-label">Destructive</td>
+          <td><button class="b b-destructive">Slett</button></td>
+          <td><button class="b b-destructive h">Slett</button></td>
+          <td><button class="b b-destructive f">Slett</button></td>
+          <td><button class="b b-destructive d" disabled>Slett</button></td>
+          <td><button class="b b-destructive l"><span class="mini-spin light"></span>Sletter…</button></td>
+        </tr>
+        <tr>
+          <td class="db-row-label">Accent</td>
+          <td><button class="b b-accent">Publiser</button></td>
+          <td><button class="b b-accent h">Publiser</button></td>
+          <td><button class="b b-accent f">Publiser</button></td>
+          <td><button class="b b-accent d" disabled>Publiser</button></td>
+          <td><button class="b b-accent l"><span class="mini-spin dark"></span>Publiserer…</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="db-meta">Kort om bruken: Primary brukes på CTA · Secondary er avbryt-default · Ghost for mindre handlinger · Destructive ALLTID med confirm-dialog · Accent for high-impact moments</div>
+  </main>
+</div>
+</body></html>
