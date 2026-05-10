@@ -116,6 +116,10 @@ model User {
   friendshipsA Friendship[] @relation("FriendshipUserA")
   friendshipsB Friendship[] @relation("FriendshipUserB")
 
+  // Documents og session-requests (Fase 1.17)
+  documents       Document[]
+  sessionRequests SessionRequest[]
+
   @@map("users")
 }
 
@@ -462,6 +466,42 @@ model Friendship {
 
   @@unique([userAId, userBId])
   @@map("friendships")
+}
+
+// Documents + session-requests (Fase 1.17)
+
+model Document {
+  id        String   @id @default(cuid())
+  // null = global (kontrakter, vilkår tilgjengelig for alle)
+  userId    String?
+  title     String
+  url       String
+  // CONTRACT | GUIDE | RECEIPT | OTHER
+  kind      String
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, kind])
+  @@map("documents")
+}
+
+model SessionRequest {
+  id          String    @id @default(cuid())
+  userId      String
+  coachId     String?
+  preferredAt DateTime?
+  pyramidArea String?
+  notes       String?
+  // PENDING | SCHEDULED | DECLINED
+  status      String    @default("PENDING")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@map("session_requests")
 }
 
 // Coach-domenet (Fase 1.9)
