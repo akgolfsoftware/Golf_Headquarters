@@ -5,11 +5,12 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 
-// HCP og spilleår lagres ikke i schema enda — utvides i Fase 1.4.
-// Foreløpig persisterer vi kun phone (eneste felt på User i dag).
 export async function saveOnboardingProfile(input: {
-  phone?: string;
-  // TODO Fase 1.4: hcp, playerYears, ambition
+  phone?: string | null;
+  hcp?: number | null;
+  playingYears?: number | null;
+  ambition?: string | null;
+  homeClub?: string | null;
 }) {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
@@ -18,6 +19,10 @@ export async function saveOnboardingProfile(input: {
     where: { id: user.id },
     data: {
       phone: input.phone ?? user.phone,
+      hcp: input.hcp ?? user.hcp,
+      playingYears: input.playingYears ?? user.playingYears,
+      ambition: input.ambition ?? user.ambition,
+      homeClub: input.homeClub ?? user.homeClub,
     },
   });
 

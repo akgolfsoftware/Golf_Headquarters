@@ -10,13 +10,40 @@ const TOTAL_STEPS = 4;
 export function OnboardingWizard() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [hcp, setHcp] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
+  const [phone, setPhone] = useState("");
+  const [hcp, setHcp] = useState("");
+  const [playingYears, setPlayingYears] = useState("");
+  const [ambition, setAmbition] = useState("");
+  const [homeClub, setHomeClub] = useState("");
   const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  function lagreSteg() {
+    return saveOnboardingProfile({
+      phone: phone || undefined,
+      hcp: hcp ? Number(hcp) : undefined,
+      playingYears: playingYears ? Number(playingYears) : undefined,
+      ambition: ambition || undefined,
+      homeClub: homeClub || undefined,
+    });
+  }
 
   function neste() {
-    if (step < TOTAL_STEPS) setStep(step + 1);
-    else fullfor();
+    setError(null);
+    startTransition(async () => {
+      try {
+        await lagreSteg();
+      } catch {
+        setError("Kunne ikke lagre. Prøv igjen.");
+        return;
+      }
+      if (step < TOTAL_STEPS) {
+        setStep(step + 1);
+      } else {
+        router.push("/portal");
+        router.refresh();
+      }
+    });
   }
 
   function tilbake() {
@@ -24,12 +51,13 @@ export function OnboardingWizard() {
   }
 
   function hopp() {
-    fullfor();
-  }
-
-  function fullfor() {
+    setError(null);
     startTransition(async () => {
-      await saveOnboardingProfile({ phone: phone || undefined });
+      try {
+        await lagreSteg();
+      } catch {
+        // ignorer — bruker vil bare videre
+      }
       router.push("/portal");
       router.refresh();
     });
@@ -75,33 +103,83 @@ export function OnboardingWizard() {
 
       {step === 2 && (
         <Steg
-          tittel="Om deg"
+          tittel="Om spillet ditt"
           ingress="La oss bli kjent med spillet ditt. Du kan endre alt senere i innstillingene."
         >
           <Felt
             label="Hva er din nåværende HCP?"
             id="hcp"
             type="number"
+            step="0.1"
             value={hcp}
             onChange={setHcp}
             placeholder="f.eks. 18.4"
           />
-          <p className="mt-2 text-xs text-muted-foreground">
-            HCP-feltet lagres i en kommende fase (1.4). Verdien går ikke tapt
-            hvis du fyller ut nå.
+          <Felt
+            label="Hvor mange år har du spilt golf?"
+            id="playingYears"
+            type="number"
+            step="1"
+            value={playingYears}
+            onChange={setPlayingYears}
+            placeholder="f.eks. 6"
+          />
+        </Steg>
+      )}
+
+      {step === 3 && (
+        <Steg
+          tittel="Mål og hjemmeklubb"
+          ingress="Hvor vil du, og hvor spiller du mest?"
+        >
+          <div>
+            <label
+              htmlFor="ambition"
+              className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+            >
+              Min ambisjon (maks 280 tegn)
+            </label>
+            <textarea
+              id="ambition"
+              value={ambition}
+              onChange={(e) => setAmbition(e.target.value.slice(0, 280))}
+              rows={3}
+              placeholder="f.eks. ned til single-HCP innen sommeren 2027"
+              className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
+            />
+            <div className="mt-1 text-right font-mono text-[10px] text-muted-foreground">
+              {ambition.length} / 280
+            </div>
+          </div>
+          <Felt
+            label="Hjemmeklubb (valgfritt)"
+            id="homeClub"
+            value={homeClub}
+            onChange={setHomeClub}
+            placeholder="f.eks. Gamle Fredrikstad GK"
+          />
+        </Steg>
+      )}
+
+      {step === 4 && (
+        <Steg
+          tittel="Treningspreferanser"
+          ingress="Dette steget kommer i Fase 1.5. Du kan trygt fullføre nå."
+        >
+          <p className="rounded-md border border-dashed border-border bg-muted/40 px-4 py-6 text-sm text-muted-foreground">
+            Treningstider og foretrukne dager kommer i en kommende fase. Klikk
+            «Fullfør» for å gå til portalen.
           </p>
         </Steg>
       )}
 
-      {(step === 3 || step === 4) && (
-        <Steg
-          tittel={step === 3 ? "Mål og ambisjon" : "Treningspreferanser"}
-          ingress="Disse stegene implementeres i en kommende fase."
+      {error && (
+        <div
+          role="alert"
+          className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
         >
-          <p className="rounded-md border border-dashed border-border bg-muted/40 px-4 py-6 text-sm text-muted-foreground">
-            Dette steget kommer i Fase 1.4. Du kan trygt hoppe over for nå.
-          </p>
-        </Steg>
+          {error}
+        </div>
       )}
 
       <div className="mt-8 flex gap-3">
@@ -175,6 +253,7 @@ function Felt({
   value,
   onChange,
   placeholder,
+  step,
 }: {
   label: string;
   id: string;
@@ -182,6 +261,7 @@ function Felt({
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
+  step?: string;
 }) {
   return (
     <div>
@@ -194,6 +274,7 @@ function Felt({
       <input
         id={id}
         type={type}
+        step={step}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
