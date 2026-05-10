@@ -47,6 +47,11 @@ model User {
   role        UserRole  @default(PLAYER)
   tier        Tier      @default(GRATIS)
   lastLoginAt DateTime?
+  // Spiller-profil (Fase 1.4)
+  hcp          Float?
+  playingYears Int?
+  ambition     String?
+  homeClub     String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
