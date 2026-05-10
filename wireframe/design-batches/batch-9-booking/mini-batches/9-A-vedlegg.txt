@@ -1,0 +1,22 @@
+# Vedlegg for Mini-batch 9-A - Booking forside + velgere
+
+Last opp disse 5 HTML-filene i Claude Design som visuelle vedlegg.
+Aapne hver i Finder, eller bruk: Cmd+Shift+G og lim inn stien.
+
+## Hovedskjermer (5 stk)
+
+~/Developer/akgolf-hq/wireframe/screen-deck/booking/index.html
+~/Developer/akgolf-hq/wireframe/screen-deck/booking/tjenester.html
+~/Developer/akgolf-hq/wireframe/screen-deck/booking/coaches.html
+~/Developer/akgolf-hq/wireframe/screen-deck/booking/coach-detalj.html
+~/Developer/akgolf-hq/wireframe/screen-deck/booking/anlegg.html
+
+## Pluss alltid (system-kontekst, engang per ny sesjon)
+
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/branding-style-guide.html
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/design-system-v2.md
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/fonts/  (alle 20 .woff2)
+
+## Pluss mini-batch-spec
+
+~/Developer/akgolf-hq/wireframe/design-batches/batch-9-booking/mini-batches/9-A.md

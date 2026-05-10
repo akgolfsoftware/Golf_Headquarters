@@ -1,0 +1,23 @@
+# Vedlegg for Mini-batch 4-C - Modaler
+
+Last opp disse 6 HTML-filene i Claude Design som visuelle vedlegg.
+Aapne hver i Finder, eller bruk: Cmd+Shift+G og lim inn stien.
+
+## Modal-skjermer (6 stk)
+
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/new-plan.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/ai-plan-generator.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/template-selector.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/plan-approval.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/payment.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/booking-confirmation.html
+
+## Pluss alltid (system-kontekst, engang per ny sesjon)
+
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/branding-style-guide.html
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/design-system-v2.md
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/fonts/  (alle 20 .woff2)
+
+## Pluss mini-batch-spec
+
+~/Developer/akgolf-hq/wireframe/design-batches/batch-4-wizard-form/mini-batches/4-C.md

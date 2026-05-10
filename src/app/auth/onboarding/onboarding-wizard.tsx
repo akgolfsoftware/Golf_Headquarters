@@ -163,12 +163,13 @@ export function OnboardingWizard() {
 
       {step === 4 && (
         <Steg
-          tittel="Treningspreferanser"
-          ingress="Dette steget kommer i Fase 1.5. Du kan trygt fullføre nå."
+          tittel="Klar!"
+          ingress="Da er vi i mål — du kan utvide profilen senere i Meg-tab."
         >
           <p className="rounded-md border border-dashed border-border bg-muted/40 px-4 py-6 text-sm text-muted-foreground">
-            Treningstider og foretrukne dager kommer i en kommende fase. Klikk
-            «Fullfør» for å gå til portalen.
+            Trykk «Fullfør» for å gå til portalen. Treningstider, helse-data og
+            varslingspreferanser kan settes opp senere i Meg → Innstillinger og
+            Meg → Helse.
           </p>
         </Steg>
       )}

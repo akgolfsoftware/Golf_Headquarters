@@ -101,8 +101,7 @@ export default async function TrenPlan({
             Du har ingen aktiv treningsplan ennå.
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Opprett en plan via «Ny økt»-wizard (kommer i Fase 1.8) eller bli
-            tildelt en plan av coach.
+            Opprett en økt via «Ny økt»-wizard eller bli tildelt en plan av coach.
           </p>
         </div>
       ) : dagensSesjoner.length === 0 ? (
