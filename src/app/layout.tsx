@@ -1,26 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-// Geist — UI og brødtekst (variable font, alle vekter)
-const geist = Geist({
-  variable: "--font-geist",
+// Inter — UI og brødtekst (variable font)
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-// Geist Mono — tabulære tall, kode, data
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Inter Tight — display, hero-greeting, seksjonstittler
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
   display: "swap",
 });
 
-// Instrument Serif — display og editorial italic
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  weight: "400",
-  style: ["normal", "italic"],
+// JetBrains Mono — KPI-tall, tabulære tall, kode
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -38,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="nb"
-      className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${inter.variable} ${interTight.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

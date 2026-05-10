@@ -98,9 +98,35 @@
   --radius-md: calc(var(--radius) - 4px);
   --radius-sm: calc(var(--radius) - 8px);
 
-  --font-sans: var(--font-geist), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-display: var(--font-instrument-serif), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-inter-tight), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* Pyramide-farger (offisielle AK Golf-pyramide) */
+  --color-pyr-fys: #005840;
+  --color-pyr-tek: #1A7D56;
+  --color-pyr-slag: #D1F843;
+  --color-pyr-spill: #B8852A;
+  --color-pyr-turn: #5E5C57;
+
+  /* Pyramide-track (lette versjoner for bg) */
+  --color-pyr-fys-track: rgba(0, 88, 64, 0.10);
+  --color-pyr-tek-track: rgba(26, 125, 86, 0.12);
+  --color-pyr-slag-track: rgba(209, 248, 67, 0.28);
+  --color-pyr-spill-track: rgba(184, 133, 42, 0.14);
+  --color-pyr-turn-track: rgba(94, 92, 87, 0.14);
+
+  /* Wireframe-tokens overført fra base.css */
+  --radius-card: 16px;
+  --radius-pill: 20px;
+  --radius-btn: 8px;
+  --radius-tier: 10px;
+
+  /* Sidebar-bakgrunner per overflate */
+  --color-coach-sidebar: #061210;
+  --color-player-sidebar: #0A1F18;
+  --color-coach-content: #F0F2F0;
+  --color-player-content: #F5F7F5;
 }
 
 /* ---------- Base ---------- */
@@ -115,12 +141,13 @@ html {
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-feature-settings: "ss01", "ss03", "cv11";
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Display-utility for Instrument Serif (brukes via klassen .font-display) */
+/* Display-utility for Inter Tight (brukes via klassen .font-display) */
 .font-display {
   font-family: var(--font-display);
   letter-spacing: -0.02em;
