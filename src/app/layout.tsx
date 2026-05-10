@@ -26,6 +26,18 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "AK Golf HQ",
   description: "AK Golf Group — booking, coaching og spillerutvikling",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "AK Golf",
+  },
+};
+
+export const viewport = {
+  themeColor: "#005840",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
