@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 import {
   anthropicKlient,
   bygSystemPrompt,
@@ -23,6 +24,22 @@ export async function POST(req: Request) {
   }
   if (user.tier === "GRATIS") {
     return NextResponse.json({ error: "upgrade-required" }, { status: 402 });
+  }
+
+  // Rate-limit: 10 meldinger per minutt per bruker
+  const rl = rateLimit({
+    key: `ai-chat:${user.id}`,
+    max: 10,
+    windowMs: 60_000,
+  });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited", resetAt: rl.resetAt },
+      {
+        status: 429,
+        headers: { "x-ratelimit-reset": String(rl.resetAt) },
+      }
+    );
   }
 
   let body: RequestBody;
