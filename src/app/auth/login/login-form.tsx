@@ -100,6 +100,29 @@ export function LoginForm() {
         {loading ? "Logger inn…" : "Logg inn"}
       </button>
 
+      <div className="relative pt-2">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-border" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-card px-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            eller
+          </span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        disabled
+        title="Google-innlogging krever oppsett — kommer snart"
+        className="flex w-full items-center justify-center gap-2 rounded-md border border-input bg-card px-4 py-3 text-sm font-medium text-muted-foreground hover:border-border disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        Logg inn med Google
+        <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.10em]">
+          Snart
+        </span>
+      </button>
+
       <p className="pt-4 text-center text-sm text-muted-foreground">
         Har du ikke konto?{" "}
         <Link href="/auth/signup" className="font-medium text-primary hover:underline">

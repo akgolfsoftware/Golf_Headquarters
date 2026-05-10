@@ -1,0 +1,26 @@
+import Link from "next/link";
+import { ResetForm } from "./reset-form";
+
+export default function ResetPasswordPage() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-secondary/40 p-8">
+      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-10 shadow-sm">
+        <Link
+          href="/"
+          className="mb-8 inline-block font-display text-xl font-bold tracking-tight"
+        >
+          AK <em className="font-normal text-primary not-italic md:italic">Golf</em>
+        </Link>
+
+        <h1 className="font-display text-3xl font-semibold leading-tight tracking-tight">
+          <em className="font-normal text-primary md:italic">Sett</em> nytt passord
+        </h1>
+        <p className="mt-2 mb-6 text-sm text-muted-foreground">
+          Velg et passord på minst 8 tegn.
+        </p>
+
+        <ResetForm />
+      </div>
+    </main>
+  );
+}
