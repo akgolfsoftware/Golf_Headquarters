@@ -1,30 +1,34 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { ServiceForm } from "./service-form";
 
 export default async function ServicesAdmin() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const services = await prisma.serviceType.findMany({
-    orderBy: { name: "asc" },
+    orderBy: [{ active: "desc" }, { name: "asc" }],
   });
 
   return (
     <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Tjenester
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Service</em>-typer
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Bookbare tjenester med pris og varighet.
-        </p>
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Tjenester
+          </span>
+          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
+            <em className="font-normal text-primary md:italic">Service</em>-typer
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {services.length} tjenester — {services.filter((s) => s.active).length} aktive.
+          </p>
+        </div>
+        <ServiceForm triggerLabel="+ Ny tjeneste" />
       </header>
 
       {services.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen tjenester definert. Legg dem til via Prisma Studio inntil CRUD-UI er bygget.
+          Ingen tjenester definert. Klikk «+ Ny tjeneste» for å starte.
         </div>
       ) : (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
@@ -36,6 +40,7 @@ export default async function ServicesAdmin() {
                 <Th className="text-right">Varighet</Th>
                 <Th className="text-right">Pris</Th>
                 <Th>Status</Th>
+                <Th></Th>
               </tr>
             </thead>
             <tbody>
@@ -67,6 +72,19 @@ export default async function ServicesAdmin() {
                       {s.active ? "Aktiv" : "Inaktiv"}
                     </span>
                   </Td>
+                  <Td className="text-right">
+                    <ServiceForm
+                      initial={{
+                        id: s.id,
+                        name: s.name,
+                        description: s.description,
+                        priceOre: s.priceOre,
+                        durationMin: s.durationMin,
+                        active: s.active,
+                      }}
+                      triggerLabel="Endre"
+                    />
+                  </Td>
                 </tr>
               ))}
             </tbody>
@@ -77,7 +95,7 @@ export default async function ServicesAdmin() {
   );
 }
 
-function Th({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function Th({ children = null, className = "" }: { children?: React.ReactNode; className?: string }) {
   return (
     <th
       className={`px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground ${className}`}
