@@ -1,30 +1,34 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { TemplateForm } from "./template-form";
 
 export default async function EmailTemplatesAdmin() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const templates = await prisma.emailTemplate.findMany({
-    orderBy: { name: "asc" },
+    orderBy: [{ active: "desc" }, { name: "asc" }],
   });
 
   return (
     <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          E-postmaler
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Mal</em>-bibliotek
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Slug-basert. Brukes av agent-pipeline for automatiske e-poster.
-        </p>
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            E-postmaler
+          </span>
+          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
+            <em className="font-normal text-primary md:italic">Mal</em>-bibliotek
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Slug-basert. Brukes av agent-pipeline for automatiske e-poster.
+          </p>
+        </div>
+        <TemplateForm triggerLabel="+ Ny mal" />
       </header>
 
       {templates.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen maler registrert. CRUD-UI for opprettelse kommer i v2.
+          Ingen maler registrert. Klikk «+ Ny mal» for å starte.
         </div>
       ) : (
         <ul className="space-y-3">
@@ -42,15 +46,28 @@ export default async function EmailTemplatesAdmin() {
                     {t.slug}
                   </code>
                 </div>
-                <span
-                  className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
-                    t.active
-                      ? "bg-primary/10 text-primary"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {t.active ? "Aktiv" : "Inaktiv"}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
+                      t.active
+                        ? "bg-primary/10 text-primary"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {t.active ? "Aktiv" : "Inaktiv"}
+                  </span>
+                  <TemplateForm
+                    initial={{
+                      id: t.id,
+                      slug: t.slug,
+                      name: t.name,
+                      subject: t.subject,
+                      body: t.body,
+                      active: t.active,
+                    }}
+                    triggerLabel="Endre"
+                  />
+                </div>
               </div>
               <p className="mt-3 text-sm text-foreground">
                 <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
