@@ -700,6 +700,24 @@ model Facility {
   @@map("facilities")
 }
 
+model SessionRecording {
+  id           String   @id @default(cuid())
+  sessionId    String?
+  uploadedById String
+  audioUrl     String
+  transcript   String?
+  duration     Int?
+  // PROCESSING | DONE | FAILED
+  status       String   @default("PROCESSING")
+  deepgramId   String?
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([uploadedById, createdAt])
+  @@map("session_recordings")
+}
+
 model PlanTemplate {
   id          String   @id @default(cuid())
   name        String
