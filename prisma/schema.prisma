@@ -120,6 +120,14 @@ model User {
   documents       Document[]
   sessionRequests SessionRequest[]
 
+  // CoachHQ-relasjoner (Fase 2.1)
+  tournamentResults TournamentResult[]
+  coachedGroups     Group[]            @relation("CoachOfGroup")
+  groupMemberships  GroupMember[]
+  apiKeys           ApiKey[]
+  auditLogs         AuditLog[]
+  coachAvailability CoachAvailability[]
+
   @@map("users")
 }
 
@@ -165,7 +173,8 @@ model Location {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  bookings Booking[]
+  bookings   Booking[]
+  facilities Facility[]
 
   @@map("locations")
 }
@@ -293,7 +302,8 @@ model CourseDefinition {
   slope     Int?
   createdAt DateTime @default(now())
 
-  rounds Round[]
+  rounds      Round[]
+  tournaments Tournament[]
 
   @@map("course_definitions")
 }
@@ -539,4 +549,167 @@ model Subscription {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("subscriptions")
+}
+
+// ---------- CoachHQ-modeller (Fase 2.1) ----------
+
+model Tournament {
+  id        String   @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime?
+  courseId  String?
+  // STROKE | MATCH | STABLEFORD | OTHER
+  format    String   @default("STROKE")
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  course  CourseDefinition?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  results TournamentResult[]
+
+  @@index([startDate])
+  @@map("tournaments")
+}
+
+model TournamentResult {
+  id           String  @id @default(cuid())
+  tournamentId String
+  userId       String
+  position     Int?
+  score        Int?
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, userId])
+  @@index([userId])
+  @@map("tournament_results")
+}
+
+model Group {
+  id        String   @id @default(cuid())
+  name      String
+  // A1 | A2 | A3 | A4 | A5
+  level     String?
+  coachId   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coach   User?         @relation("CoachOfGroup", fields: [coachId], references: [id], onDelete: SetNull)
+  members GroupMember[]
+
+  @@index([coachId])
+  @@map("groups")
+}
+
+model GroupMember {
+  id      String @id @default(cuid())
+  groupId String
+  userId  String
+  // PLAYER | ASSISTANT
+  role    String @default("PLAYER")
+  joinedAt DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+  @@index([userId])
+  @@map("group_members")
+}
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  subject   String
+  body      String   // markdown
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("email_templates")
+}
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  name       String
+  hashedKey  String    @unique
+  // første 8 tegn for visning (resten er ikke gjenfinnbar)
+  prefix     String
+  scopes     Json
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@map("api_keys")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  target    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([action, createdAt])
+  @@index([actorId, createdAt])
+  @@map("audit_logs")
+}
+
+model CoachAvailability {
+  id        String   @id @default(cuid())
+  coachId   String
+  // 0 = mandag, 6 = søndag
+  weekday   Int
+  startTime String // "08:00"
+  endTime   String // "18:00"
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coach User @relation(fields: [coachId], references: [id], onDelete: Cascade)
+
+  @@index([coachId, active])
+  @@map("coach_availability")
+}
+
+model Facility {
+  id         String   @id @default(cuid())
+  locationId String
+  name       String
+  capacity   Int      @default(1)
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@index([locationId, active])
+  @@map("facilities")
+}
+
+model PlanTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  weeks       Int
+  // payload: array av { week, day, title, pyramidArea, durationMin, drills:[{exerciseId, repsSets}] }
+  payload     Json
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("plan_templates")
 }
