@@ -1,9 +1,26 @@
 import Link from "next/link";
+import { LeadForm } from "./lead-form";
 
 export function MarketingFooter() {
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-6xl px-6 py-12">
+        <div className="mb-12 rounded-2xl bg-primary/5 p-8 text-center">
+          <h3 className="font-display text-xl font-semibold leading-tight tracking-tight">
+            <em className="font-normal text-primary md:italic">Få</em> ukentlige tips
+          </h3>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Korte, konkrete artikler om trening, statistikk og metode.
+          </p>
+          <div className="mx-auto mt-5 max-w-md">
+            <LeadForm
+              source="newsletter"
+              cta="Meld på"
+              takkemelding="Du er påmeldt — første tips kommer denne uken."
+            />
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
           <div>
             <Link
