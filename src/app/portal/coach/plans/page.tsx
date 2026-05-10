@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 
@@ -41,9 +42,9 @@ export default async function CoachPlans() {
           Når en coach lager en plan til deg, vises den her. Egne ad-hoc-økter
           ligger på{" "}
           <span className="font-mono">
-            <a href="/portal/tren" className="text-primary hover:underline">
+            <Link href="/portal/tren" className="text-primary hover:underline">
               /portal/tren
-            </a>
+            </Link>
           </span>
           .
         </div>
@@ -57,9 +58,12 @@ export default async function CoachPlans() {
                 className="rounded-lg border border-border bg-card p-4"
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-display text-base font-semibold text-foreground">
+                  <Link
+                    href={`/portal/coach/plans/${p.id}`}
+                    className="font-display text-base font-semibold text-foreground hover:text-primary"
+                  >
                     {p.name}
-                  </span>
+                  </Link>
                   {p.isActive && (
                     <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
                       Aktiv
