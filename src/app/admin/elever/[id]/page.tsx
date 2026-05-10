@@ -45,12 +45,20 @@ export default async function Profil360({
 
   return (
     <div className="space-y-6">
-      <Link
-        href="/admin/elever"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← Alle elever
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link
+          href="/admin/elever"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          ← Alle elever
+        </Link>
+        <Link
+          href={`/admin/elever/${id}/ai`}
+          className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+        >
+          Spør AI →
+        </Link>
+      </div>
 
       <header className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 sm:flex-row sm:items-start">
         <span className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-primary text-2xl font-semibold text-primary-foreground">
