@@ -17,6 +17,13 @@ enum UserRole {
   ADMIN
   COACH
   PLAYER
+  PARENT
+}
+
+enum Tier {
+  GRATIS
+  PRO
+  ELITE
 }
 
 enum BookingStatus {
@@ -29,19 +36,43 @@ enum BookingStatus {
 // ---------- Models ----------
 
 model User {
-  id        String   @id @default(cuid())
+  id          String    @id @default(cuid())
   // Knytter mot Supabase auth.users.id (UUID).
   // Holdes som String for å unngå Prisma-uuid-type-friksjon mot Supabase.
-  authId    String   @unique
-  email     String   @unique
-  name      String
-  role      UserRole @default(PLAYER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  authId      String    @unique
+  email       String    @unique
+  name        String
+  phone       String?
+  avatarUrl   String?
+  role        UserRole  @default(PLAYER)
+  tier        Tier      @default(GRATIS)
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  bookings Booking[]
+  bookings        Booking[]
+  parentRelations ParentRelation[] @relation("Child")
+  childRelations  ParentRelation[] @relation("Parent")
 
   @@map("users")
+}
+
+// Foresatt-spiller relasjon (junior har ofte 1-2 foresatte; voksen kan ha 0)
+model ParentRelation {
+  id           String   @id @default(cuid())
+  parentId     String
+  childId      String
+  relationship String   @default("Foresatt") // Foresatt, Trener, Søsken
+  approved     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  parent User @relation("Parent", fields: [parentId], references: [id], onDelete: Cascade)
+  child  User @relation("Child", fields: [childId], references: [id], onDelete: Cascade)
+
+  @@unique([parentId, childId])
+  @@index([childId])
+  @@map("parent_relations")
 }
 
 model ServiceType {
