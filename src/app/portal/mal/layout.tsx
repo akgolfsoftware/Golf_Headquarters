@@ -5,6 +5,7 @@ const ITEMS = [
   { href: "/portal/mal/runder", label: "Runder" },
   { href: "/portal/mal/trackman", label: "TrackMan" },
   { href: "/portal/mal/baner", label: "Baner" },
+  { href: "/portal/mal/leaderboard", label: "Leaderboard" },
 ];
 
 export default function MalLayout({ children }: { children: React.ReactNode }) {
