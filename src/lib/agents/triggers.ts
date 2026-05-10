@@ -6,10 +6,12 @@ import { runRoundAgent } from "./round-agent";
 import { runTestAgent } from "./test-agent";
 import { runTrackManAgent } from "./trackman-agent";
 import { runPeriodiseringsAgent } from "./periodiserings-agent";
+import { runAchievementAgent } from "./achievement-agent";
 
 export async function triggerRoundAgent(userId: string): Promise<void> {
   try {
     await runRoundAgent(userId);
+    await runAchievementAgent(userId);
   } catch (err) {
     console.error("[trigger] round-agent feilet", err);
   }
@@ -18,6 +20,7 @@ export async function triggerRoundAgent(userId: string): Promise<void> {
 export async function triggerTestAgent(userId: string): Promise<void> {
   try {
     await runTestAgent(userId);
+    await runAchievementAgent(userId);
   } catch (err) {
     console.error("[trigger] test-agent feilet", err);
   }
