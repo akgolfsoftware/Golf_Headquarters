@@ -2,6 +2,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
 import { SgSpider } from "@/components/portal/sg-spider";
+import { GoalsCard } from "@/components/portal/goals-card";
+import { NyGoalModal } from "./ny-goal-modal";
 
 export default async function MalOversikt() {
   const user = await requirePortalUser();
@@ -9,14 +11,17 @@ export default async function MalOversikt() {
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
 
-  const rounds = await prisma.round.findMany({
-    where: {
-      userId: user.id,
-      playedAt: { gte: tretti },
-    },
-    orderBy: { playedAt: "desc" },
-    include: { course: true },
-  });
+  const [rounds, goals] = await Promise.all([
+    prisma.round.findMany({
+      where: { userId: user.id, playedAt: { gte: tretti } },
+      orderBy: { playedAt: "desc" },
+      include: { course: true },
+    }),
+    prisma.goal.findMany({
+      where: { userId: user.id, status: "ACTIVE" },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
 
   const sg = aggregateSg(rounds);
 
@@ -65,6 +70,14 @@ export default async function MalOversikt() {
             </a>
           </div>
         )}
+
+        <div className="flex items-center justify-between">
+          <h3 className="font-display text-lg font-semibold tracking-tight">
+            Mine mål
+          </h3>
+          <NyGoalModal />
+        </div>
+        <GoalsCard goals={goals} />
       </section>
     </div>
   );
