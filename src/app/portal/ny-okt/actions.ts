@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { triggerPeriodiseringsAgent } from "@/lib/agents/triggers";
 import type { PyramidArea } from "@/generated/prisma/client";
 
 export type NyOktInput = {
@@ -30,6 +31,7 @@ export async function createAdHocSession(input: NyOktInput) {
   let plan = await prisma.trainingPlan.findFirst({
     where: { userId: user.id, isActive: true, name: "Egne økter" },
   });
+  let planNyOpprettet = false;
   if (!plan) {
     plan = await prisma.trainingPlan.create({
       data: {
@@ -39,6 +41,7 @@ export async function createAdHocSession(input: NyOktInput) {
         isActive: true,
       },
     });
+    planNyOpprettet = true;
   }
 
   const session = await prisma.trainingPlanSession.create({
@@ -58,6 +61,10 @@ export async function createAdHocSession(input: NyOktInput) {
       },
     },
   });
+
+  if (planNyOpprettet) {
+    await triggerPeriodiseringsAgent(plan.id);
+  }
 
   revalidatePath("/portal");
   revalidatePath("/portal/tren");

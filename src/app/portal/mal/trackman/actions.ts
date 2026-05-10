@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { triggerTrackManAgent } from "@/lib/agents/triggers";
 
 export type TrackManCsvInput = {
   recordedAt: string; // ISO-dato
@@ -44,6 +45,8 @@ export async function importTrackManCsv(input: TrackManCsvInput) {
       rawJson: rader,
     },
   });
+
+  await triggerTrackManAgent(user.id);
 
   revalidatePath("/portal/mal/trackman");
 }

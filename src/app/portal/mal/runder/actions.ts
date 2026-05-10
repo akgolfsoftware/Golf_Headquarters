@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { triggerRoundAgent } from "@/lib/agents/triggers";
 
 export type RoundInput = {
   courseId: string;
@@ -34,6 +35,8 @@ export async function createRound(input: RoundInput) {
       notes: input.notes ?? null,
     },
   });
+
+  await triggerRoundAgent(user.id);
 
   revalidatePath("/portal/mal");
   revalidatePath("/portal/mal/runder");
