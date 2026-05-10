@@ -1,17 +1,24 @@
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { TournamentForm } from "./tournament-form";
 
 export default async function Turneringer() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const tournaments = await prisma.tournament.findMany({
-    include: {
-      course: { select: { name: true } },
-      _count: { select: { results: true } },
-    },
-    orderBy: { startDate: "desc" },
-  });
+  const [tournaments, courses] = await Promise.all([
+    prisma.tournament.findMany({
+      include: {
+        course: { select: { name: true } },
+        _count: { select: { results: true } },
+      },
+      orderBy: { startDate: "desc" },
+    }),
+    prisma.courseDefinition.findMany({
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    }),
+  ]);
 
   const idag = new Date();
   const kommende = tournaments.filter((t) => t.startDate >= idag);
@@ -28,6 +35,7 @@ export default async function Turneringer() {
             <em className="font-normal text-primary md:italic">Turnerings</em>-kalender
           </h1>
         </div>
+        <TournamentForm courses={courses} triggerLabel="+ Ny turnering" />
       </header>
 
       {tournaments.length === 0 ? (
