@@ -1,51 +1,76 @@
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getAdminHubData } from "@/lib/admin-hub-data";
+import { HubKpiStrip } from "@/components/admin/hub-kpi-strip";
+import { DagensTimerCard } from "@/components/admin/dagens-timer-card";
+import { SpillerlisteCard } from "@/components/admin/spillerliste-card";
+import { AktivitetsFeed } from "@/components/admin/aktivitets-feed";
 
 export default async function AdminHub() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const data = await getAdminHubData(user);
+
+  const fornavn = user.name.split(" ")[0] ?? user.name;
+  const idag = new Date();
+  const eyebrow = idag.toLocaleDateString("nb-NO", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 
   return (
     <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Hub
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Hei,</em> {user.name}
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          Dagens timer, spillerliste og periodisering bygges i Fase 1.5. For nå
-          har du tilgang til CoachHQ med rollen{" "}
-          <strong className="text-foreground">{user.role}</strong>.
-        </p>
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            CoachHQ · {eyebrow}
+          </span>
+          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
+            <em className="font-normal text-primary md:italic">Hei,</em> {fornavn}
+          </h1>
+        </div>
+        <Link
+          href="/admin/brief"
+          className="inline-flex items-center gap-2 self-start rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 sm:self-end"
+        >
+          Daglig brief →
+        </Link>
       </header>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card label="Spillere i dag" value="—" hint="Krever Booking-modeller" />
-        <Card label="Aktive plans" value="—" hint="Krever Plan-modeller" />
-        <Card label="Ubesvart" value="—" hint="Krever Message-modeller" />
+      <HubKpiStrip
+        aktiveSpillere={data.kpi.aktiveSpillere}
+        dagensTimer={data.kpi.dagensTimer}
+        ubesvarteMeldinger={data.kpi.ubesvarteMeldinger}
+        ventendeGodkjenninger={data.kpi.ventendeGodkjenninger}
+      />
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <DagensTimerCard timer={data.dagensTimer} />
+        <SpillerlisteCard players={data.aktivePlayers} />
+      </div>
+
+      <AktivitetsFeed items={data.aktivitetsFeed} />
+
+      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <ModulCard label="Plans" href="/admin/plans" />
+        <ModulCard label="Spillere" href="/admin/elever" />
+        <ModulCard label="Bookinger" href="/admin/bookings" />
+        <ModulCard label="Finance" href="/admin/finance" />
       </section>
     </div>
   );
 }
 
-function Card({
-  label,
-  value,
-  hint,
-}: {
-  label: string;
-  value: string;
-  hint: string;
-}) {
+function ModulCard({ label, href }: { label: string; href: string }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+    <Link
+      href={href}
+      className="group rounded-lg border border-border bg-card p-4 text-center transition-colors hover:border-primary"
+    >
+      <span className="font-display text-base font-semibold text-foreground group-hover:text-primary">
         {label}
-      </div>
-      <div className="mt-1 font-display text-2xl font-semibold text-foreground">
-        {value}
-      </div>
-      <div className="mt-1 text-[11px] text-muted-foreground">{hint}</div>
-    </div>
+      </span>
+      <span className="block text-xs text-muted-foreground">→</span>
+    </Link>
   );
 }
