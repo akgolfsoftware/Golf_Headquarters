@@ -1,11 +1,45 @@
 // Next.js 16 proxy (tidligere "middleware" — renamet i v16).
-// Kjører på alle requests og refresher Supabase-sesjonen før request når app-koden.
+// Refresher Supabase-sesjonen og beskytter /portal og /admin mot uautentisert tilgang.
 
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 import { updateSession } from "@/lib/supabase/proxy";
 
 export async function proxy(request: NextRequest) {
-  return await updateSession(request);
+  const response = await updateSession(request);
+  const path = request.nextUrl.pathname;
+
+  const erBeskyttet =
+    path.startsWith("/portal") || path.startsWith("/admin");
+  if (!erBeskyttet) return response;
+
+  // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll: () => {
+          // Ikke nødvendig her — updateSession har allerede skrevet cookies.
+        },
+      },
+    }
+  );
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/login";
+    url.searchParams.set("next", path);
+    return NextResponse.redirect(url);
+  }
+
+  // Rolle-sjekk for /admin/* gjøres i src/app/admin/page.tsx (RSC) for å
+  // unngå Prisma-kall i proxy. Proxy-en stopper kun uautentiserte requests.
+  return response;
 }
 
 export const config = {
