@@ -19,19 +19,13 @@ const TIERS: TierOption[] = [
     value: "GRATIS",
     name: "Gratis",
     price: "0 kr",
-    desc: "Tilgang til app, 1 økt/mnd",
+    desc: "Tilgang til app, basis-funksjoner",
   },
   {
     value: "PRO",
     name: "Pro",
-    price: "499 kr/mnd",
-    desc: "Ukentlige økter, full tracking",
-  },
-  {
-    value: "ELITE",
-    name: "Elite",
-    price: "1 290 kr/mnd",
-    desc: "Personlig coach, ubegrenset",
+    price: "300 kr/mnd",
+    desc: "Full tracking, AI-coach, treningsplaner",
   },
 ];
 
@@ -98,7 +92,7 @@ export function SignupForm() {
         <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Velg medlemskap
         </label>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {TIERS.map((t) => {
             const aktiv = t.value === tier;
             return (
