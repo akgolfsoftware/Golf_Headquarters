@@ -802,6 +802,143 @@
 
   <div class="container">
 
+    <!-- ===== 0. LOGO ===== -->
+    <section id="logo">
+      <h2 class="section-title">0. AK Golf-logo</h2>
+      <p class="section-subtitle">7 offisielle logo-varianter. Bruk riktig variant til riktig bakgrunn.</p>
+
+      <style>
+        .logo-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          gap: 16px;
+        }
+        .logo-cell {
+          border-radius: 16px;
+          overflow: hidden;
+          border: 1px solid var(--line);
+        }
+        .logo-stage {
+          height: 160px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+        }
+        .logo-stage img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+        }
+        .logo-info {
+          padding: 12px 14px;
+          background: var(--surface-card);
+          border-top: 1px solid var(--line);
+        }
+        .logo-name {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--ink);
+        }
+        .logo-meta {
+          display: block;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 10px;
+          color: var(--ink-subtle);
+          margin-top: 2px;
+        }
+        .stage-light { background: #FAFAF7; }
+        .stage-dark { background: #0A0A0A; }
+        .stage-green { background: #005840; }
+      </style>
+
+      <div class="logo-grid">
+        <div class="logo-cell">
+          <div class="logo-stage stage-light">
+            <img src="logos/ak-golf-logo-primary-on-light.svg" alt="Primary on light">
+          </div>
+          <div class="logo-info">
+            <span class="logo-name">Primary — på lys bg</span>
+            <span class="logo-meta">primary-on-light.svg</span>
+          </div>
+        </div>
+
+        <div class="logo-cell">
+          <div class="logo-stage stage-dark">
+            <img src="logos/ak-golf-logo-primary-on-dark.svg" alt="Primary on dark">
+          </div>
+          <div class="logo-info">
+            <span class="logo-name">Primary — på mørk bg</span>
+            <span class="logo-meta">primary-on-dark.svg</span>
+          </div>
+        </div>
+
+        <div class="logo-cell">
+          <div class="logo-stage stage-green">
+            <img src="logos/ak-golf-logo-white-on-green.svg" alt="White on green">
+          </div>
+          <div class="logo-info">
+            <span class="logo-name">Hvit — på primary grønn</span>
+            <span class="logo-meta">white-on-green.svg</span>
+          </div>
+        </div>
+
+        <div class="logo-cell">
+          <div class="logo-stage stage-dark">
+            <img src="logos/ak-golf-logo-white-on-dark.svg" alt="White on dark">
+          </div>
+          <div class="logo-info">
+            <span class="logo-name">Hvit — på mørk bg</span>
+            <span class="logo-meta">white-on-dark.svg</span>
+          </div>
+        </div>
+
+        <div class="logo-cell">
+          <div class="logo-stage stage-light">
+            <img src="logos/ak-golf-logo-primary-mono.svg" alt="Primary mono">
+          </div>
+          <div class="logo-info">
+            <span class="logo-name">Primary mono</span>
+            <span class="logo-meta">primary-mono.svg</span>
+          </div>
+        </div>
+
+        <div class="logo-cell">
+          <div class="logo-stage stage-light">
+            <img src="logos/ak-golf-logo-black-mono.svg" alt="Black mono">
+          </div>
+          <div class="logo-info">
+            <span class="logo-name">Sort mono</span>
+            <span class="logo-meta">black-mono.svg</span>
+          </div>
+        </div>
+
+        <div class="logo-cell">
+          <div class="logo-stage stage-dark">
+            <img src="logos/ak-golf-logo-white-mono.svg" alt="White mono">
+          </div>
+          <div class="logo-info">
+            <span class="logo-name">Hvit mono</span>
+            <span class="logo-meta">white-mono.svg</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;padding:16px;background:var(--surface-alt);border-radius:12px;">
+        <div class="meta" style="font-size:12px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-subtle);">Bruksregler</div>
+        <ul style="margin-top:8px;padding-left:20px;font-size:14px;color:var(--ink-muted);line-height:1.7;">
+          <li><strong>Primary on light</strong> (grønn + lime) — default på alle lyse flater (#FAFAF7, #FFFFFF, sand).</li>
+          <li><strong>Primary on dark</strong> — landing hero (#0A0A0A), mørk modus, CoachHQ rail-kontekst.</li>
+          <li><strong>White on green</strong> — kun når bakgrunn er ren primary (#005840), f.eks. CTA-strip eller primary-fylt seksjon.</li>
+          <li><strong>White on dark</strong> — alternativ til "primary on dark" når lime-aksenten distraherer (compact UI, favicons, små størrelser).</li>
+          <li><strong>Mono-varianter</strong> — print, gravering, fax, ett-fargers PDF-eksport, partner-listinger som krever ensfarget logo.</li>
+          <li>Aldri legg logo på lime (#D1F843) — ingen variant gir nok kontrast.</li>
+          <li>Aldri skaler til mindre enn 24px høyde i UI eller 12mm i print.</li>
+          <li>Filer ligger i <code>wireframe/screen-deck/assets/logos/</code> for wireframes og <code>public/logos/</code> for kode.</li>
+        </ul>
+      </div>
+    </section>
+
     <!-- ===== 1. FARGEPALETTER ===== -->
     <section id="colors">
       <h2 class="section-title">1. Fargepaletter</h2>

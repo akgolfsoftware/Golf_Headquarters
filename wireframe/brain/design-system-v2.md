@@ -226,6 +226,24 @@ Generøs spacing mellom seksjoner (48–64px). Stram spacing inni kort (16–20p
 
 ---
 
+## 10b. Logo
+
+7 offisielle SVG-varianter ligger i `wireframe/brain/desktop-import/logos/` (versjonert kilde) og kopiert til:
+- `wireframe/screen-deck/assets/logos/` (for wireframes)
+- `public/logos/` (for produksjonskode)
+
+| Fil | Bruk |
+|---|---|
+| `ak-golf-logo-primary-on-light.svg` | Default på lys bg (#FAFAF7, #FFFFFF) — grønn + lime |
+| `ak-golf-logo-primary-on-dark.svg` | Mørk bg (#0A0A0A), landing hero, dark mode |
+| `ak-golf-logo-white-on-green.svg` | På ren primary grønn (#005840) |
+| `ak-golf-logo-white-on-dark.svg` | Compact mørk UI, favicons, små størrelser |
+| `ak-golf-logo-primary-mono.svg` | Print, ett-fargers eksport |
+| `ak-golf-logo-black-mono.svg` | Print sort, fax, gravering |
+| `ak-golf-logo-white-mono.svg` | Mørk bg uten lime-aksent |
+
+**Regler:** Aldri på lime. Aldri mindre enn 24px høyde i UI / 12mm i print. Visuell katalog i `branding-style-guide.html` seksjon 0.
+
 ## 11. Fotografi
 
 - Golfbane i **desaturert varm tone** (ikke fargemettet)
