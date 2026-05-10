@@ -1,9 +1,9 @@
-// Portal-shell-layout. Faktisk sidebar/header bygges i Fase 1.4.
+import { PortalShell } from "@/components/portal/portal-shell";
 
 export default function PortalLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="min-h-screen bg-background">{children}</div>;
+  return <PortalShell>{children}</PortalShell>;
 }
