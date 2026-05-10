@@ -10,6 +10,7 @@ import { PyramideCard } from "@/components/portal/pyramide-card";
 import { StreakBars } from "@/components/portal/streak-bars";
 import { SgFordelingCard } from "@/components/portal/sg-fordeling-card";
 import { SistRegistrertCard } from "@/components/portal/sist-registrert-card";
+import { PlanActionsCard } from "@/components/portal/plan-actions-card";
 
 export default async function PortalHjem() {
   const user = await requirePortalUser();
@@ -41,6 +42,8 @@ export default async function PortalHjem() {
         streakAktiv={streakAktivAntall}
         pyramideUkeProsent={pyrUkeProsent}
       />
+
+      <PlanActionsCard actions={data.pendingActions} />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
         <div className="lg:col-span-3">

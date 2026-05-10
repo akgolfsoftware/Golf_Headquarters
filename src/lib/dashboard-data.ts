@@ -13,6 +13,7 @@ import type {
   ExerciseDefinition,
   SessionDrill,
   CoachingSession,
+  PlanAction,
 } from "@/generated/prisma/client";
 import { sammeDag, startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { aggregateByArea, type PyramideAggregat } from "@/lib/pyramide";
@@ -38,6 +39,7 @@ export type DashboardData = {
   sgAggregate: SgAggregate;
   sisteRegistrerte: SistRegistrert[];
   sisteCoachMelding: { content: string; ts: Date; coachNavn: string } | null;
+  pendingActions: PlanAction[];
 };
 
 export async function getDashboardData(user: User): Promise<DashboardData> {
@@ -72,6 +74,7 @@ export async function getDashboardData(user: User): Promise<DashboardData> {
     sisteTester,
     sisteTrackman,
     sisteAiSesjon,
+    pendingActions,
   ] = await Promise.all([
     aktivePlanIds.length
       ? prisma.trainingPlanSession.findMany({
@@ -127,6 +130,11 @@ export async function getDashboardData(user: User): Promise<DashboardData> {
       where: { userId: user.id, kind: "AI" },
       orderBy: { updatedAt: "desc" },
       include: { coach: { select: { name: true } } },
+    }),
+    prisma.planAction.findMany({
+      where: { userId: user.id, status: "PENDING" },
+      orderBy: { createdAt: "desc" },
+      take: 5,
     }),
   ]);
 
@@ -205,6 +213,7 @@ export async function getDashboardData(user: User): Promise<DashboardData> {
     sgAggregate,
     sisteRegistrerte: reg,
     sisteCoachMelding,
+    pendingActions,
   };
 }
 
