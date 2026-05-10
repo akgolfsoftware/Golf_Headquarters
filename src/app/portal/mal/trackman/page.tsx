@@ -41,14 +41,19 @@ export default async function TrackManPage() {
               {sessions.map((s) => (
                 <tr
                   key={s.id}
-                  className="border-b border-border/60 last:border-0 hover:bg-muted/30"
+                  className="cursor-pointer border-b border-border/60 last:border-0 hover:bg-muted/30"
                 >
                   <Td>
-                    {s.recordedAt.toLocaleDateString("nb-NO", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
+                    <a
+                      href={`/portal/mal/trackman/${s.id}`}
+                      className="block text-foreground hover:text-primary"
+                    >
+                      {s.recordedAt.toLocaleDateString("nb-NO", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}
+                    </a>
                   </Td>
                   <Td>
                     <span className="rounded-sm bg-muted px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
