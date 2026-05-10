@@ -1,0 +1,294 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Test · Bunker u&d</title></head>
+<body>
+<div class="app app--player">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>player</em></div>
+    <nav class="app-nav">
+      <a href="#">Hjem</a>
+      <a href="#" class="active">Tren</a>
+      <a href="#">Mål</a>
+      <a href="#">Coach</a>
+      <a href="#">Meg</a>
+    </nav>
+    <div class="app-tier">PRO</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Test-detalj · pyramide-område SPILL</span>
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+        <h1 class="page-title"><em>Bunker u&amp;d</em> · 10 forsøk</h1>
+        <span class="pill" style="background:rgba(184,133,42,0.16); color:#6F4F18; font-size: 11px; padding: 6px 12px;">SPILL · korthold</span>
+        <span class="pill pill-warning" style="font-size: 11px; padding: 6px 12px;">Pågår</span>
+      </div>
+      <p class="page-lede">Sand-test: 10 forsøk fra ulik avstand og posisjon. Mål 8/10 før Sørlandsåpent. Du har gjort 4 forsøk siste 30d — best 6/10 (10.05).</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Test-status</span>
+      <button class="action-item action-item-success"><b>6/10</b> best</button>
+      <button class="action-item"><b>6/10</b> sist (10.05)</button>
+      <button class="action-item action-item-info"><b>8/10</b> mål</button>
+      <button class="action-item action-item-warn"><b>3d</b> til neste forsøk</button>
+      <button class="action-item"><b>4</b> forsøk siden start</button>
+      <a href="live-tapper.html" class="btn btn-primary" style="margin-left: auto;">+ Start nytt forsøk</a>
+    </div>
+
+    <div class="cal-with-drawer">
+      <div>
+        <!-- Bento: stor SVG-graf + side-kort -->
+        <section class="bento" style="grid-template-columns: 1.6fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div class="card" style="padding: 22px 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+              <div>
+                <div class="card-label">Forsøkshistorikk · siste 90d</div>
+                <h3 style="margin-top: 4px;">Trend mot mål 8/10</h3>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <span class="pill" style="background: rgba(0,88,64,0.10); color: var(--primary); font-size: 10px;">Du</span>
+                <span class="pill pill-info">A2-snitt</span>
+                <span class="pill pill-muted">Mål</span>
+              </div>
+            </div>
+
+            <svg viewBox="0 0 720 280" preserveAspectRatio="none" style="width: 100%; height: 280px; display: block;">
+              <!-- grid horizontal -->
+              <line x1="50" y1="40" x2="700" y2="40" stroke="#E5E7EB" stroke-width="1"/>
+              <line x1="50" y1="100" x2="700" y2="100" stroke="#E5E7EB" stroke-width="1"/>
+              <line x1="50" y1="160" x2="700" y2="160" stroke="#E5E7EB" stroke-width="1"/>
+              <line x1="50" y1="220" x2="700" y2="220" stroke="#E5E7EB" stroke-width="1"/>
+
+              <!-- y-axis -->
+              <text x="40" y="44" text-anchor="end" fill="#9CA3AF" font-family="JetBrains Mono" font-size="10">10</text>
+              <text x="40" y="104" text-anchor="end" fill="#9CA3AF" font-family="JetBrains Mono" font-size="10">8</text>
+              <text x="40" y="164" text-anchor="end" fill="#9CA3AF" font-family="JetBrains Mono" font-size="10">6</text>
+              <text x="40" y="224" text-anchor="end" fill="#9CA3AF" font-family="JetBrains Mono" font-size="10">4</text>
+
+              <!-- mål-linje 8/10 -->
+              <line x1="50" y1="100" x2="700" y2="100" stroke="#005840" stroke-width="2" stroke-dasharray="6,4" opacity="0.7"/>
+              <text x="700" y="96" text-anchor="end" fill="#005840" font-family="JetBrains Mono" font-size="10" font-weight="700">MÅL 8/10</text>
+
+              <!-- peer A2-snitt 5,5 -->
+              <line x1="50" y1="175" x2="700" y2="175" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.5"/>
+              <text x="700" y="171" text-anchor="end" fill="#1D4ED8" font-family="JetBrains Mono" font-size="10">A2-SNITT 5,5</text>
+
+              <!-- Du: 4 forsøk + projeksjon for testen 31.05 -->
+              <!-- Forsøk: 12.02 (3/10), 18.03 (4/10), 14.04 (5/10), 10.05 (6/10) -->
+              <polyline points="120,190 270,160 420,130 570,130"
+                        fill="none" stroke="#005840" stroke-width="2.5" stroke-linecap="round"/>
+              <polyline points="120,190 270,160 420,130 570,130 570,260 120,260"
+                        fill="rgba(0,88,64,0.08)" stroke="none"/>
+
+              <circle cx="120" cy="190" r="5" fill="#005840"/>
+              <text x="120" y="208" text-anchor="middle" fill="#0A1F17" font-family="JetBrains Mono" font-size="10" font-weight="600">3</text>
+
+              <circle cx="270" cy="160" r="5" fill="#005840"/>
+              <text x="270" y="178" text-anchor="middle" fill="#0A1F17" font-family="JetBrains Mono" font-size="10" font-weight="600">4</text>
+
+              <circle cx="420" cy="130" r="5" fill="#005840"/>
+              <text x="420" y="148" text-anchor="middle" fill="#0A1F17" font-family="JetBrains Mono" font-size="10" font-weight="600">5</text>
+
+              <circle cx="570" cy="130" r="6" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+              <text x="570" y="148" text-anchor="middle" fill="#0A1F17" font-family="JetBrains Mono" font-size="10" font-weight="700">6</text>
+
+              <!-- Projeksjon for 31.05 -->
+              <polyline points="570,130 670,115" fill="none" stroke="#005840" stroke-width="2" stroke-dasharray="5,4" opacity="0.55"/>
+              <circle cx="670" cy="115" r="5" fill="#FAFAF7" stroke="#005840" stroke-width="2" stroke-dasharray="2,2"/>
+              <text x="670" y="105" text-anchor="middle" fill="#005840" font-family="JetBrains Mono" font-size="10" font-weight="700">~7</text>
+
+              <!-- x-axis dates -->
+              <text x="120" y="265" text-anchor="middle" fill="#9CA3AF" font-family="JetBrains Mono" font-size="9">12.02</text>
+              <text x="270" y="265" text-anchor="middle" fill="#9CA3AF" font-family="JetBrains Mono" font-size="9">18.03</text>
+              <text x="420" y="265" text-anchor="middle" fill="#9CA3AF" font-family="JetBrains Mono" font-size="9">14.04</text>
+              <text x="570" y="265" text-anchor="middle" fill="#005840" font-family="JetBrains Mono" font-size="9" font-weight="700">10.05 NÅ</text>
+              <text x="670" y="265" text-anchor="middle" fill="#9CA3AF" font-family="JetBrains Mono" font-size="9">31.05</text>
+            </svg>
+
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 12px; line-height: 1.5;">Du har klatret jevnt fra 3/10 til 6/10. Fortsetter du i samme tempo, treffer du <b style="color: var(--primary);">~7/10 på testen 31.05</b> — 1 unna mål.</p>
+          </div>
+
+          <!-- Side-kort: Last vs Best vs Mål -->
+          <div class="card" style="padding: 22px 24px;">
+            <div class="card-label">Sist · Best · Mål</div>
+            <h3 style="margin-top: 4px; margin-bottom: 18px;">Hvor er du nå?</h3>
+
+            <div style="margin-bottom: 22px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); letter-spacing: 0.06em;">SIST · 10.05</span>
+                <span class="num" style="font-size: 22px; font-weight: 600;">6<small style="font-size: 13px; color: var(--text-secondary);">/10</small></span>
+              </div>
+              <div style="height: 10px; background: var(--border); border-radius: 5px; overflow: hidden;">
+                <div style="width: 60%; height: 100%; background: var(--pyr-spill); border-radius: 5px;"></div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 22px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); letter-spacing: 0.06em;">BEST · 10.05</span>
+                <span class="num" style="font-size: 22px; font-weight: 600; color: var(--primary);">6<small style="font-size: 13px; color: var(--text-secondary);">/10</small></span>
+              </div>
+              <div style="height: 10px; background: var(--border); border-radius: 5px; overflow: hidden;">
+                <div style="width: 60%; height: 100%; background: var(--primary); border-radius: 5px;"></div>
+              </div>
+              <p style="font-size: 11px; color: var(--success); margin-top: 6px; font-weight: 500;">★ Personlig rekord</p>
+            </div>
+
+            <div style="margin-bottom: 18px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                <span style="font-family: var(--font-mono); font-size: 11px; color: var(--primary); letter-spacing: 0.06em; font-weight: 700;">MÅL · 31.05</span>
+                <span class="num" style="font-size: 22px; font-weight: 600; color: var(--primary);">8<small style="font-size: 13px; color: var(--text-secondary);">/10</small></span>
+              </div>
+              <div style="height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; position: relative;">
+                <div style="width: 80%; height: 100%; background: rgba(0,88,64,0.20); border-radius: 5px;"></div>
+                <div style="position: absolute; left: 60%; top: -3px; bottom: -3px; width: 2px; background: var(--accent);"></div>
+              </div>
+              <p style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">Gap til mål: <b style="color: var(--text);">2 forsøk</b></p>
+            </div>
+
+            <div style="padding: 12px; background: rgba(209,248,67,0.16); border-radius: 8px; border-left: 3px solid #B8C82E;">
+              <p style="font-size: 12px; line-height: 1.5; color: var(--text);"><b>Peer-A2:</b> Snitt 5,5/10 — du er foran feltet. <b>Pro-snitt:</b> 8,2/10.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tabell per forsøk -->
+        <section class="card" style="padding: 22px 24px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+            <div>
+              <div class="card-label">Alle forsøk · 4 stk</div>
+              <h3 style="margin-top: 4px;">Hva har du gjort så langt</h3>
+            </div>
+            <button class="btn btn-link">Eksporter CSV</button>
+          </div>
+
+          <table class="tbl" style="border: 0;">
+            <thead>
+              <tr><th>Dato</th><th>Resultat</th><th>Sand-type</th><th>Posisjon</th><th>Coach-notat</th></tr>
+            </thead>
+            <tbody>
+              <tr style="background: rgba(0,88,64,0.04);">
+                <td><b>10.05.2026</b><br><small style="color: var(--text-secondary); font-family: var(--font-mono);">Søn · Mulligan</small></td>
+                <td><span class="num" style="font-size: 18px; font-weight: 600; color: var(--primary);">6/10</span><span class="pill pill-success" style="margin-left: 8px; font-size: 10px;">★ Best</span></td>
+                <td>Mulligan-sand</td>
+                <td>Medium · 8 m carry</td>
+                <td style="color: var(--text-secondary); font-size: 12px;">«Bedre kontakt — fortsett med åpen kølleblad.»</td>
+              </tr>
+              <tr>
+                <td><b>14.04.2026</b><br><small style="color: var(--text-secondary); font-family: var(--font-mono);">Tir · GFGK</small></td>
+                <td><span class="num" style="font-size: 18px; font-weight: 600;">5/10</span></td>
+                <td>Bossum-sand grov</td>
+                <td>Vanskelig · 12 m carry</td>
+                <td style="color: var(--text-secondary); font-size: 12px;">«Hardere sand — ta mer sand bak ballen.»</td>
+              </tr>
+              <tr>
+                <td><b>18.03.2026</b><br><small style="color: var(--text-secondary); font-family: var(--font-mono);">Tor · Mulligan</small></td>
+                <td><span class="num" style="font-size: 18px; font-weight: 600;">4/10</span></td>
+                <td>Mulligan-sand</td>
+                <td>Lett · 5 m carry</td>
+                <td style="color: var(--text-secondary); font-size: 12px;">«Setup ok, akselerasjon manglet i 4 av 10.»</td>
+              </tr>
+              <tr>
+                <td><b>12.02.2026</b><br><small style="color: var(--text-secondary); font-family: var(--font-mono);">Tor · Mulligan</small></td>
+                <td><span class="num" style="font-size: 18px; font-weight: 600; color: var(--text-secondary);">3/10</span><span class="pill pill-muted" style="margin-left: 8px; font-size: 10px;">Baseline</span></td>
+                <td>Mulligan-sand</td>
+                <td>Medium · 8 m carry</td>
+                <td style="color: var(--text-secondary); font-size: 12px;">«Baseline — vi vet hva vi skal jobbe med.»</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Agent-insight -->
+        <section class="card" style="padding: 22px 24px; background: linear-gradient(135deg, rgba(0,88,64,0.04) 0%, rgba(209,248,67,0.06) 100%); border-color: rgba(0,88,64,0.18);">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: var(--text-inverse); font-size: 14px; font-weight: 700;">A</span>
+            <div>
+              <div class="card-label" style="margin-bottom: 0;">Agent-innsikt · oppdatert i dag</div>
+              <h3 style="font-size: 16px; margin-top: 2px;">3 funn for testen 31.05</h3>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+            <div style="padding: 14px; background: var(--bg-elev); border-radius: 8px; border-left: 3px solid var(--primary);">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); letter-spacing: 0.10em; margin-bottom: 6px;">FORVENTNING</div>
+              <p style="font-size: 13px; line-height: 1.5;">Forventet <b style="color: var(--primary);">7/10</b> ved test 31.05 basert på 4 forsøk siste 30d.</p>
+            </div>
+            <div style="padding: 14px; background: var(--bg-elev); border-radius: 8px; border-left: 3px solid var(--accent-dark);">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); letter-spacing: 0.10em; margin-bottom: 6px;">ANBEFALING</div>
+              <p style="font-size: 13px; line-height: 1.5;">Hvis du gjør <b>2 økter på Chip-område 2</b> før test, øker forventet til <b style="color: var(--primary);">8/10</b>.</p>
+            </div>
+            <div style="padding: 14px; background: var(--bg-elev); border-radius: 8px; border-left: 3px solid var(--pyr-spill);">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); letter-spacing: 0.10em; margin-bottom: 6px;">VARSEL</div>
+              <p style="font-size: 13px; line-height: 1.5;">Sandbase-typen i <b>Bjaavann ligner Bossum chip-område</b> — ikke Mulligan-sand. Vurder en GFGK-økt.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Drawer: Hvordan utføre testen -->
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div>
+            <div class="drawer-meta">Test-protokoll</div>
+            <h3>Hvordan utføre testen</h3>
+            <div class="drawer-meta" style="margin-top: 4px; text-transform: none; letter-spacing: 0;">10 forsøk · ca 30 min</div>
+            <div style="margin-top: 8px; display: flex; gap: 6px;">
+              <span class="pill pill-info">Standard NGF</span>
+              <span class="pill pill-muted">A2-tilpasset</span>
+            </div>
+          </div>
+          <button class="drawer-close" title="Lukk">×</button>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Oppsett</div>
+          <ul style="list-style: none; padding: 0; margin: 0; font-size: 12px; line-height: 1.7;">
+            <li style="padding: 4px 0;"><b>Sand:</b> hvilken type tilgjengelig</li>
+            <li style="padding: 4px 0;"><b>Avstand til flagg:</b> 5–12 m carry</li>
+            <li style="padding: 4px 0;"><b>Posisjon:</b> 4 lett, 4 medium, 2 vanskelig</li>
+            <li style="padding: 4px 0;"><b>Suksess:</b> opp på green og innenfor 1,5 m</li>
+            <li style="padding: 4px 0;"><b>Kølle:</b> primært 56°/60° wedge</li>
+          </ul>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Steg-for-steg</div>
+          <ol style="list-style: none; padding: 0; margin: 0; font-size: 12px; line-height: 1.6;">
+            <li style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px;">
+              <span style="flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: var(--text-inverse); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 10px;">1</span>
+              <div>Varm opp 5 min med 3 prøveslag.</div>
+            </li>
+            <li style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px;">
+              <span style="flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: var(--text-inverse); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 10px;">2</span>
+              <div>Gjør 4 forsøk fra <b>lett lie</b> (på sand, god kontakt).</div>
+            </li>
+            <li style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px;">
+              <span style="flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: var(--text-inverse); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 10px;">3</span>
+              <div>4 forsøk <b>medium lie</b> (delvis nedgravd).</div>
+            </li>
+            <li style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px;">
+              <span style="flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: var(--text-inverse); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 10px;">4</span>
+              <div>2 forsøk <b>vanskelig lie</b> (nedgravd / oppoverbakke).</div>
+            </li>
+            <li style="padding: 8px 0; display: flex; gap: 10px;">
+              <span style="flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: var(--text-inverse); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 10px;">5</span>
+              <div>Logg resultat — antall innenfor 1,5 m av flagg.</div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Tips fra Anders</div>
+          <p style="font-size: 12px; line-height: 1.6; padding: 12px; background: rgba(0,88,64,0.04); border-radius: 8px; border-left: 3px solid var(--primary);">«Ta sanden, ikke ballen. Aksellerer gjennom — ikke stopp slaget. På vanskelige lies: kølleblad mer åpent og knus mer sand.»</p>
+        </div>
+
+        <div class="drawer-section" style="display: flex; flex-direction: column; gap: 8px; padding-bottom: 0;">
+          <a href="live-tapper.html" class="btn btn-primary">+ Start nytt forsøk</a>
+          <button class="btn btn-ghost">Book sand-tid GFGK</button>
+          <button class="btn btn-link" style="padding-left: 0;">Se video-protokoll →</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>

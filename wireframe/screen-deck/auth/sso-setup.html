@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>SSO-oppsett — AK Golf</title>
+<link rel="stylesheet" href="../base.css">
+<style>
+  body { background: linear-gradient(180deg, #FAFAF7 0%, #F0F2F0 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .auth-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); padding: 40px; width: 100%; max-width: 640px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .auth-logo { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 24px; }
+  .auth-logo em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .auth-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .auth-title em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .auth-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 22px; line-height: 1.5; }
+  .status-strip { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-left: 4px solid var(--text-muted); border-radius: var(--r-btn); margin-bottom: 24px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--text-secondary); text-transform: uppercase; }
+  .status-strip b { color: var(--text); font-weight: 600; }
+  .status-strip-active { border-left-color: var(--success); background: rgba(16,185,129,0.05); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .form-field { margin-bottom: 14px; }
+  .form-field-full { grid-column: 1 / -1; }
+  .form-label { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px; }
+  .form-input, .form-select { width: 100%; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: inherit; background: var(--bg-elev); }
+  .form-input:focus, .form-select:focus { outline: 0; border-color: var(--primary); }
+  .upload-box { border: 2px dashed var(--border-strong); border-radius: var(--r-card); padding: 22px; text-align: center; background: var(--bg); cursor: pointer; }
+  .upload-box:hover { border-color: var(--primary); }
+  .upload-box b { display: block; font-size: 13px; margin-bottom: 4px; }
+  .upload-box small { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; color: var(--text-secondary); text-transform: uppercase; }
+  .btn-row { display: flex; gap: 10px; margin-top: 18px; }
+  .btn-row .btn { flex: 1; justify-content: center; padding: 13px; font-size: 13px; font-weight: 600; }
+  .auth-link { color: var(--primary); text-decoration: none; font-weight: 500; }
+  .auth-footer { text-align: center; font-size: 13px; color: var(--text-secondary); padding-top: 18px; margin-top: 18px; border-top: 1px solid var(--border); }
+  .auth-meta { text-align: center; margin-top: 24px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--text-muted); }
+  .auth-meta a { color: var(--text-muted); text-decoration: none; margin: 0 6px; }
+</style>
+</head>
+<body>
+<div>
+  <div class="auth-card">
+    <div class="auth-logo">AK <em>Golf</em></div>
+    <h1 class="auth-title"><em>Single Sign-On</em> for AK Golf</h1>
+    <p class="auth-sub">Konfigurer SAML SSO for organisasjonens domene. La medlemmer logge inn med eksisterende Identity Provider.</p>
+
+    <div class="status-strip"><span>Status:</span> <b>Ikke aktivert</b> · Sist endret 2026-04-12</div>
+
+    <div class="form-field">
+      <label class="form-label">Organisasjonens e-postdomene</label>
+      <input class="form-input" type="text" value="akgolfgroup.no" placeholder="firma.no">
+    </div>
+
+    <div class="form-field">
+      <label class="form-label">SAML metadata XML</label>
+      <div class="upload-box">
+        <b>Slipp metadata.xml her, eller klikk for å bla</b>
+        <small>Maks 2 MB · XML eksportert fra IdP</small>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label class="form-label">SSO Login-URL</label>
+        <input class="form-input" type="url" value="https://login.akgolfgroup.no/saml/sso">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Identity Provider</label>
+        <select class="form-select">
+          <option>Azure AD (Microsoft Entra)</option>
+          <option>Okta</option>
+          <option>Google Workspace</option>
+          <option>Custom SAML 2.0</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost">Test tilkobling</button>
+      <a class="btn btn-primary" href="../coachhq/settings-sikkerhet.html" style="justify-content:center;">Aktiver SSO</a>
+    </div>
+
+    <div class="auth-footer">
+      Trenger hjelp med oppsett? <a href="#" class="auth-link">Kontakt support →</a>
+    </div>
+  </div>
+  <div class="auth-meta">
+    <a href="#">Trenger hjelp?</a> · <a href="#">Personvern</a> · <a href="#">Vilkår</a>
+  </div>
+</div>
+</body>
+</html>

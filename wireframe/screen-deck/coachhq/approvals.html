@@ -1,0 +1,234 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Godkjenninger</title></head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="#">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="#">Treningsplaner</a>
+      <a href="#">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="#" class="active">Godkjenninger</a>
+      <a href="#">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="#">Analytics</a>
+      <a href="#">Økonomi</a>
+      <a href="#">Fasiliteter</a>
+      <a href="#">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Agent-pipeline · uke 21 · 2026</span>
+      <h1 class="page-title"><em>Agent-godkjenninger</em></h1>
+      <p class="page-lede">Forslag fra agentene venter handling. Dra mellom kolonner eller bruk inline-knappene. Klikk et kort for full begrunnelse.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Status</span>
+      <button class="action-item action-item-warn"><b>12</b> venter</button>
+      <button class="action-item action-item-success"><b>28</b> godkjent denne uka</button>
+      <button class="action-item action-item-danger"><b>3</b> avvist</button>
+      <button class="action-item action-item-info"><b>4t</b> snitt-respons</button>
+      <button class="btn btn-ghost" style="margin-left: auto;">Godkjenn alle uten konflikt</button>
+    </div>
+
+    <div class="chips">
+      <button class="chip active">Alle agenter (43)</button>
+      <button class="chip">Plan-watcher (11)</button>
+      <button class="chip">Round-agent (9)</button>
+      <button class="chip">Test-agent (7)</button>
+      <button class="chip">Tournament-agent (8)</button>
+      <button class="chip">TrackMan-agent (8)</button>
+    </div>
+
+    <div class="cal-with-drawer">
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start;">
+
+        <div class="card-flush">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: rgba(245,158,11,0.14); border: 1px solid rgba(245,158,11,0.30); border-radius: var(--r-card); margin-bottom: 10px;">
+            <b style="font-family: var(--font-display); font-size: 14px; color: #B45309;">Venter handling</b>
+            <span class="num" style="font-size: 13px; color: #B45309; font-weight: 600;">12</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap: 10px;">
+
+            <article class="card" style="padding: 14px; cursor: grab; border-color: var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.04), inset 3px 0 0 var(--accent);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--primary);">PLAN-WATCHER</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">2t siden</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">JT</span><b style="font-size:12px;">Joachim T. Andersen</b></div>
+              <span class="pill pill-info" style="font-family:var(--font-mono); font-size:10px; margin-bottom: 8px; display:inline-flex;">PYRAMID_ADJUST</span>
+              <p style="font-size: 12px; line-height: 1.5; margin: 8px 0;"><b>Øk SLAG til 35 %</b>, reduser TEK til 15 %. Bjaavann sandbase.</p>
+              <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">SG arg trender −0,1. Spilleren har 3 turneringer på sandbase neste 6 uker...</p>
+              <div style="display:flex; gap:6px;"><button class="btn btn-primary" style="padding: 5px 10px; font-size: 11px; flex:1;">Godkjenn</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Endre</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Avvis</button></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--pyr-tek);">ROUND-AGENT</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">3t siden</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">LH</span><b style="font-size:12px;">Lina Hansen</b></div>
+              <span class="pill pill-info" style="font-family:var(--font-mono); font-size:10px;">SESSION_ADD</span>
+              <p style="font-size: 12px; line-height: 1.5; margin: 8px 0;"><b>Legg til bunker-økt</b> torsdag 14:00, GFGK.</p>
+              <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">Siste runde: 6 bunker-feil av 8 forsøk. Mål-treff under 50 %...</p>
+              <div style="display:flex; gap:6px;"><button class="btn btn-primary" style="padding: 5px 10px; font-size: 11px; flex:1;">Godkjenn</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Endre</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Avvis</button></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--pyr-spill);">TEST-AGENT</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">5t siden</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">MR</span><b style="font-size:12px;">Markus R. Pedersen</b></div>
+              <span class="pill pill-info" style="font-family:var(--font-mono); font-size:10px;">INTENSITY_ADJUST</span>
+              <p style="font-size: 12px; line-height: 1.5; margin: 8px 0;"><b>Reduser FYS i taper-fasen</b> til kun 1 økt.</p>
+              <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">HRV-trend +8 %. God restitusjon — kan trygt redusere volum...</p>
+              <div style="display:flex; gap:6px;"><button class="btn btn-primary" style="padding: 5px 10px; font-size: 11px; flex:1;">Godkjenn</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Endre</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Avvis</button></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--danger);">TOURNAMENT-AGENT</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">8t siden</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">AL</span><b style="font-size:12px;">Aksel Lien</b></div>
+              <span class="pill pill-danger" style="font-family:var(--font-mono); font-size:10px;">WITHDRAW</span>
+              <p style="font-size: 12px; line-height: 1.5; margin: 8px 0;"><b>Trekk fra Sørlandsåpent.</b> Spilleren skadet (håndledd).</p>
+              <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">Frist for refundert påmelding: 28.05. Anbefaler å trekke nå...</p>
+              <div style="display:flex; gap:6px;"><button class="btn btn-primary" style="padding: 5px 10px; font-size: 11px; flex:1;">Godkjenn</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Endre</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Avvis</button></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--info);">TRACKMAN-AGENT</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">i går</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">JS</span><b style="font-size:12px;">Joachim S. Berg</b></div>
+              <span class="pill pill-info" style="font-family:var(--font-mono); font-size:10px;">DRILL_SUGGEST</span>
+              <p style="font-size: 12px; line-height: 1.5; margin: 8px 0;"><b>Legg til carry-kontroll-drill</b> for jern 7.</p>
+              <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">Carry-spread økt fra ±3m til ±7m siste 14 dager...</p>
+              <div style="display:flex; gap:6px;"><button class="btn btn-primary" style="padding: 5px 10px; font-size: 11px; flex:1;">Godkjenn</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Endre</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Avvis</button></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--primary);">PLAN-WATCHER</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">i går</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">EM</span><b style="font-size:12px;">Emma Strand</b></div>
+              <span class="pill pill-info" style="font-family:var(--font-mono); font-size:10px;">TAPER_ENGAGE</span>
+              <p style="font-size: 12px; line-height: 1.5; margin: 8px 0;"><b>Start taper-fase i dag</b> — 9 dager til Vårspretten 2.</p>
+              <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">Volum bør reduseres 30 % for optimal peaking...</p>
+              <div style="display:flex; gap:6px;"><button class="btn btn-primary" style="padding: 5px 10px; font-size: 11px; flex:1;">Godkjenn</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Endre</button><button class="btn btn-ghost" style="padding: 5px 10px; font-size: 11px;">Avvis</button></div>
+            </article>
+
+            <button class="btn btn-link" style="padding: 8px 0; font-size: 12px; color: var(--text-secondary);">+ Vis 6 til</button>
+          </div>
+        </div>
+
+        <div class="card-flush">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: rgba(16,185,129,0.10); border: 1px solid rgba(16,185,129,0.30); border-radius: var(--r-card); margin-bottom: 10px;">
+            <b style="font-family: var(--font-display); font-size: 14px; color: #047857;">Godkjent denne uka</b>
+            <span class="num" style="font-size: 13px; color: #047857; font-weight: 600;">28</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap: 10px;">
+
+            <article class="card" style="padding: 14px; cursor: grab; opacity: 0.92; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--primary);">PLAN-WATCHER</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">man 26.05</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 6px;"><span class="avatar avatar-sm">MR</span><b style="font-size:12px;">Markus R. Pedersen</b></div>
+              <span class="pill pill-info" style="font-family:var(--font-mono); font-size:10px;">PYRAMID_ADJUST</span>
+              <p style="font-size: 11px; line-height: 1.4; margin: 8px 0; color: var(--text-secondary);">SLAG +10 %, FYS −5 %, TEK −10 %.</p>
+              <span class="pill pill-success">✓ Godkjent</span>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; opacity: 0.92; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--pyr-tek);">ROUND-AGENT</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">man 26.05</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 6px;"><span class="avatar avatar-sm">MR</span><b style="font-size:12px;">Markus R. Pedersen</b></div>
+              <span class="pill pill-info" style="font-family:var(--font-mono); font-size:10px;">SESSION_ADD</span>
+              <p style="font-size: 11px; line-height: 1.4; margin: 8px 0; color: var(--text-secondary);">Sim-runde Bjaavann tor 29.05.</p>
+              <span class="pill pill-success">✓ Godkjent</span>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; opacity: 0.92; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--pyr-spill);">TEST-AGENT</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">søn 25.05</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 6px;"><span class="avatar avatar-sm">SB</span><b style="font-size:12px;">Sofie Berg</b></div>
+              <span class="pill pill-info" style="font-family:var(--font-mono); font-size:10px;">TEST_SCHEDULE</span>
+              <p style="font-size: 11px; line-height: 1.4; margin: 8px 0; color: var(--text-secondary);">SLAG-test fre 30.05 · Mulligan.</p>
+              <span class="pill pill-success">✓ Godkjent</span>
+            </article>
+
+            <button class="btn btn-link" style="padding: 8px 0; font-size: 12px; color: var(--text-secondary);">+ Vis 25 til</button>
+          </div>
+        </div>
+
+        <div class="card-flush">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: rgba(107,114,128,0.10); border: 1px solid var(--border-strong); border-radius: var(--r-card); margin-bottom: 10px;">
+            <b style="font-family: var(--font-display); font-size: 14px; color: #4B5563;">Avvist / endret</b>
+            <span class="num" style="font-size: 13px; color: #4B5563; font-weight: 600;">3</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap: 10px;">
+
+            <article class="card" style="padding: 14px; cursor: grab; opacity: 0.85; border-left: 3px solid var(--danger); box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--danger);">TOURNAMENT-AGENT</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">tir 27.05</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 6px;"><span class="avatar avatar-sm">JT</span><b style="font-size:12px;">Joachim T. Andersen</b></div>
+              <span class="pill pill-danger" style="font-family:var(--font-mono); font-size:10px;">REGISTER</span>
+              <p style="font-size: 11px; line-height: 1.4; margin: 8px 0; color: var(--text-secondary);">Påmeld NM Junior. Avvist: ikke kvalifisert HCP.</p>
+              <span class="pill pill-danger">Avvist</span>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; opacity: 0.85; border-left: 3px solid var(--warning); box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--primary);">PLAN-WATCHER</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">man 26.05</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 6px;"><span class="avatar avatar-sm">LH</span><b style="font-size:12px;">Lina Hansen</b></div>
+              <span class="pill pill-warning" style="font-family:var(--font-mono); font-size:10px;">PYRAMID_ADJUST</span>
+              <p style="font-size: 11px; line-height: 1.4; margin: 8px 0; color: var(--text-secondary);">Foreslo TEK +10 %. Endret til TEK +5 % manuelt.</p>
+              <span class="pill pill-warning">Endret</span>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; opacity: 0.85; border-left: 3px solid var(--danger); box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><b style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em; color:var(--info);">TRACKMAN-AGENT</b><span style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">søn 25.05</span></div>
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 6px;"><span class="avatar avatar-sm">NL</span><b style="font-size:12px;">Nora Larsen</b></div>
+              <span class="pill pill-danger" style="font-family:var(--font-mono); font-size:10px;">DRILL_SUGGEST</span>
+              <p style="font-size: 11px; line-height: 1.4; margin: 8px 0; color: var(--text-secondary);">Avvist: spilleren har ikke aktiv plan.</p>
+              <span class="pill pill-danger">Avvist</span>
+            </article>
+          </div>
+        </div>
+
+      </div>
+
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div>
+            <div class="drawer-meta">Plan-watcher · 2t siden · Joachim T. Andersen</div>
+            <h3>PYRAMID_ADJUST</h3>
+            <div class="drawer-meta" style="margin-top: 4px; text-transform: none; letter-spacing: 0;">Plan: Spesifikk SLAG-fokus · A2 · HCP 4,1</div>
+            <div style="margin-top: 8px; display:flex; gap: 6px;">
+              <span class="pill pill-warning">Venter handling</span>
+              <span class="pill pill-info">Konfidens 87 %</span>
+            </div>
+          </div>
+          <button class="drawer-close">×</button>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Forslag</div>
+          <p style="font-size: 12px; line-height: 1.6;"><b>Øk SLAG til 35 %, Bjaavann sandbase.</b> Reduser TEK fra 25 % til 15 %, hold FYS på 10 %, øk SPILL fra 20 % til 30 %.</p>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Begrunnelse</div>
+          <p style="font-size: 12px; line-height: 1.6;">SG arg trender −0,1 siste 30 d. Joachim har 3 turneringer på sandbase neste 6 uker (Sørlandsåpent, Bjaavann Open, Junior Tour Sør). Bunker-treff under 50 % i siste 4 runder. Pyramide-justering er identisk med vellykket Markus-justering 24.05.</p>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Relatert data</div>
+          <table class="tbl" style="border:0; font-size: 11px;">
+            <tbody>
+              <tr><td>SG arg 30d</td><td class="num" style="color:var(--danger);">−0,12</td></tr>
+              <tr><td>Bunker-treff</td><td class="num">42 %</td></tr>
+              <tr><td>Sandbase-runder neste 6u</td><td class="num">3</td></tr>
+              <tr><td>HRV trend</td><td class="num" style="color:var(--success);">+4 %</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="drawer-section" style="display:flex; flex-direction:column; gap: 8px; padding-bottom: 0;">
+          <button class="btn btn-primary">Godkjenn forslag</button>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button class="btn btn-ghost">Endre verdier</button>
+            <button class="btn btn-ghost">Avvis</button>
+          </div>
+          <a class="btn btn-link" href="plan-detalj.html" style="padding-left:0; text-decoration:none;">Se Joachims plan-detalj →</a>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>

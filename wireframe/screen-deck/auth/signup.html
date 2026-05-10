@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Registrer deg — AK Golf</title>
+<link rel="stylesheet" href="../base.css">
+<style>
+  body { background: linear-gradient(180deg, #FAFAF7 0%, #F0F2F0 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .auth-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); padding: 40px; width: 100%; max-width: 560px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .auth-logo { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 24px; }
+  .auth-logo em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .auth-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .auth-title em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .auth-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+  .tier-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+  .tier-card { border: 1px solid var(--border); border-radius: var(--r-tier); padding: 14px; cursor: pointer; background: var(--bg-elev); }
+  .tier-card.active { border-color: var(--primary); background: rgba(0,88,64,0.04); box-shadow: 0 0 0 2px rgba(0,88,64,0.10); }
+  .tier-name { font-family: var(--font-display); font-size: 14px; font-weight: 600; }
+  .tier-price { font-family: var(--font-mono); font-size: 13px; color: var(--primary); margin: 4px 0; font-weight: 600; }
+  .tier-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+  .form-field { margin-bottom: 14px; }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-label { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px; }
+  .form-input { width: 100%; padding: 11px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: inherit; background: var(--bg-elev); }
+  .form-input:focus { outline: 0; border-color: var(--primary); }
+  .role-row { display: flex; gap: 8px; margin: 14px 0 18px; }
+  .role-opt { flex: 1; padding: 10px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); text-align: center; font-size: 12px; cursor: pointer; }
+  .role-opt.active { border-color: var(--primary); background: rgba(0,88,64,0.04); color: var(--primary); font-weight: 600; }
+  .form-check { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-secondary); margin: 16px 0 20px; cursor: pointer; }
+  .form-check input { accent-color: var(--primary); margin-top: 2px; }
+  .btn-full { width: 100%; justify-content: center; padding: 13px; font-size: 14px; font-weight: 600; }
+  .auth-link { color: var(--primary); text-decoration: none; font-weight: 500; }
+  .auth-footer { text-align: center; font-size: 13px; color: var(--text-secondary); padding-top: 20px; margin-top: 20px; border-top: 1px solid var(--border); }
+  .auth-meta { text-align: center; margin-top: 24px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--text-muted); }
+  .auth-meta a { color: var(--text-muted); text-decoration: none; margin: 0 6px; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="auth-card">
+      <div class="auth-logo">AK <em>Golf</em></div>
+      <h1 class="auth-title"><em>Velkommen til</em> AK Golf</h1>
+      <p class="auth-sub">Lag en konto og få første økt gratis.</p>
+
+      <label class="form-label" style="margin-bottom:8px;">Velg medlemskap</label>
+      <div class="tier-grid">
+        <div class="tier-card">
+          <div class="tier-name">Gratis</div>
+          <div class="tier-price">0 kr</div>
+          <div class="tier-desc">Tilgang til app, 1 økt/mnd</div>
+        </div>
+        <div class="tier-card active">
+          <div class="tier-name">Pro</div>
+          <div class="tier-price">499 kr/mnd</div>
+          <div class="tier-desc">Ukentlige økter, full tracking</div>
+        </div>
+        <div class="tier-card">
+          <div class="tier-name">Elite</div>
+          <div class="tier-price">1 290 kr/mnd</div>
+          <div class="tier-desc">Personlig coach, ubegrenset</div>
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-field"><label class="form-label">Fornavn</label><input class="form-input" value="Markus"></div>
+        <div class="form-field"><label class="form-label">Etternavn</label><input class="form-input" value="Pedersen"></div>
+      </div>
+      <div class="form-field"><label class="form-label">E-post</label><input class="form-input" type="email" value="markus@eksempel.no"></div>
+      <div class="form-row-2">
+        <div class="form-field"><label class="form-label">Passord</label><input class="form-input" type="password" value="••••••••"></div>
+        <div class="form-field"><label class="form-label">Bekreft passord</label><input class="form-input" type="password" value="••••••••"></div>
+      </div>
+
+      <label class="form-label" style="margin-top:8px;">Jeg er</label>
+      <div class="role-row">
+        <div class="role-opt active">Spiller</div>
+        <div class="role-opt">Coach</div>
+        <div class="role-opt">Foresatt</div>
+      </div>
+
+      <label class="form-check"><input type="checkbox" checked> Jeg godtar <a href="#" class="auth-link">vilkårene</a> og <a href="#" class="auth-link">personvernreglene</a>.</label>
+
+      <a class="btn btn-primary btn-full" href="onboarding.html">Registrer deg</a>
+
+      <div class="auth-footer">
+        Allerede konto? <a href="login.html" class="auth-link">Logg inn →</a>
+      </div>
+    </div>
+    <div class="auth-meta">
+      <a href="#">Trenger hjelp?</a> · <a href="#">Personvern</a> · <a href="#">Vilkår</a>
+    </div>
+  </div>
+</body>
+</html>

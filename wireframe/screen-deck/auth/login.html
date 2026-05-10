@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Logg inn — AK Golf</title>
+<link rel="stylesheet" href="../base.css">
+<style>
+  body { background: linear-gradient(180deg, #FAFAF7 0%, #F0F2F0 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .auth-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); padding: 40px; width: 100%; max-width: 480px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+  .auth-logo { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); margin-bottom: 28px; }
+  .auth-logo em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .auth-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .auth-title em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .auth-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+  .form-field { margin-bottom: 14px; }
+  .form-label { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px; }
+  .form-input { width: 100%; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-btn); font-size: 14px; font-family: inherit; background: var(--bg-elev); color: var(--text); }
+  .form-input:focus { outline: 0; border-color: var(--primary); }
+  .form-row { display: flex; align-items: center; justify-content: space-between; margin: 16px 0 20px; font-size: 12px; }
+  .form-check { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); cursor: pointer; }
+  .form-check input { accent-color: var(--primary); }
+  .btn-full { width: 100%; justify-content: center; padding: 13px; font-size: 14px; font-weight: 600; }
+  .auth-link { color: var(--primary); text-decoration: none; font-weight: 500; }
+  .auth-link:hover { text-decoration: underline; }
+  .divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-muted); }
+  .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .social-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+  .btn-social { padding: 11px; justify-content: center; font-size: 12px; font-weight: 500; border-radius: var(--r-btn); }
+  .auth-footer { text-align: center; font-size: 13px; color: var(--text-secondary); padding-top: 8px; border-top: 1px solid var(--border); margin-top: 8px; padding-top: 20px; }
+  .auth-meta { text-align: center; margin-top: 24px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--text-muted); }
+  .auth-meta a { color: var(--text-muted); text-decoration: none; margin: 0 6px; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="auth-card">
+      <div class="auth-logo">AK <em>Golf</em></div>
+      <h1 class="auth-title"><em>Velkommen</em> tilbake</h1>
+      <p class="auth-sub">Logg inn for å fortsette til plattformen.</p>
+
+      <div class="form-field">
+        <label class="form-label">E-post</label>
+        <input class="form-input" type="email" value="anders@akgolf.no" placeholder="navn@eksempel.no">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Passord</label>
+        <input class="form-input" type="password" value="••••••••••">
+      </div>
+
+      <div class="form-row">
+        <label class="form-check"><input type="checkbox" checked> Husk meg på denne enheten</label>
+        <a href="forgot-password.html" class="auth-link">Glemt passord? Reset →</a>
+      </div>
+
+      <a class="btn btn-primary btn-full" href="../coachhq/hub.html">Logg inn</a>
+
+      <div class="divider">Eller logg inn med</div>
+      <div class="social-row">
+        <button class="btn btn-ghost btn-social">BankID</button>
+        <button class="btn btn-ghost btn-social">Google</button>
+        <button class="btn btn-ghost btn-social">Apple</button>
+      </div>
+
+      <div class="auth-footer">
+        Ny her? <a href="signup.html" class="auth-link">Registrer deg →</a>
+      </div>
+    </div>
+    <div class="auth-meta">
+      <a href="#">Trenger hjelp?</a> · <a href="#">Personvern</a> · <a href="#">Vilkår</a>
+    </div>
+  </div>
+</body>
+</html>

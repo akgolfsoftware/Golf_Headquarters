@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Live · Tapper</title>
+<style>
+  body { background: #0A1F18; color: var(--text-inverse); }
+  .tapper { min-height: 100vh; display: grid; grid-template-rows: 64px 1fr 80px; background: radial-gradient(circle at 50% 30%, #143027 0%, #0A1F18 70%); position: relative; }
+  .tapper::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+  .tap-top { display: flex; align-items: center; justify-content: space-between; padding: 0 28px; border-bottom: 1px solid rgba(255,255,255,0.08); position: relative; z-index: 1; }
+  .tap-top h1 { font-family: var(--font-display); font-size: 17px; font-weight: 600; }
+  .tap-top h1 em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .tap-meta { display: flex; gap: 28px; align-items: center; }
+  .tap-time { font-family: var(--font-mono); font-size: 22px; color: var(--accent); font-weight: 600; }
+  .tap-end { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.40); color: #FCA5A5; padding: 10px 22px; border-radius: var(--r-pill); font-size: 13px; font-weight: 600; cursor: pointer; }
+  .tap-main { display: grid; grid-template-columns: 1fr 1.2fr; align-items: center; gap: 64px; padding: 32px 64px; position: relative; z-index: 1; }
+  .tap-counter-wrap { text-align: center; }
+  .tap-counter { font-family: var(--font-mono); font-size: 240px; font-weight: 600; line-height: 1; letter-spacing: -0.04em; color: var(--accent); text-shadow: 0 0 80px rgba(209,248,67,0.30); }
+  .tap-counter-sub { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.20em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 8px; }
+  .tap-stats-mini { display: flex; gap: 32px; justify-content: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .tap-stat-mini { text-align: center; }
+  .tap-stat-mini b { display: block; font-family: var(--font-mono); font-size: 28px; font-weight: 600; color: var(--text-inverse); }
+  .tap-stat-mini small { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+  .tap-buttons { display: grid; grid-template-rows: 1fr 1fr 1fr; gap: 16px; }
+  .tap-btn { min-height: 130px; border-radius: 22px; border: none; cursor: pointer; font-family: var(--font-display); font-size: 36px; font-weight: 700; letter-spacing: 0.04em; box-shadow: 0 8px 30px rgba(0,0,0,0.30), inset 0 -6px 0 rgba(0,0,0,0.15); transition: transform 80ms ease; display: flex; align-items: center; justify-content: space-between; padding: 0 36px; }
+  .tap-btn:active { transform: scale(0.97); }
+  .tap-btn small { font-family: var(--font-mono); font-size: 22px; font-weight: 600; opacity: 0.85; }
+  .tap-btn-treff { background: var(--success); color: #FFFFFF; }
+  .tap-btn-miss { background: var(--danger); color: #FFFFFF; }
+  .tap-btn-perfect { background: var(--accent); color: var(--text); box-shadow: 0 8px 30px rgba(209,248,67,0.35), inset 0 -6px 0 rgba(0,0,0,0.10); }
+  .tap-bottom { display: flex; gap: 12px; align-items: center; padding: 14px 28px; background: rgba(0,0,0,0.30); border-top: 1px solid rgba(255,255,255,0.08); position: relative; z-index: 1; }
+  .tap-fbtn { flex: 1; min-height: 56px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: var(--text-inverse); font-family: var(--font-display); font-size: 14px; font-weight: 600; cursor: pointer; }
+  .tap-fbtn-undo { background: rgba(245,158,11,0.18); border-color: rgba(245,158,11,0.40); color: #FCD34D; }
+</style>
+</head>
+<body>
+<div class="tapper">
+  <header class="tap-top">
+    <h1><em>Driver-ranging</em> · Mulligan bay 4</h1>
+    <div class="tap-meta">
+      <div><span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:rgba(255,255,255,0.5); text-transform:uppercase; margin-right:10px;">Pågått</span><span class="tap-time">08:42</span></div>
+      <button class="tap-end">Avslutt</button>
+    </div>
+  </header>
+
+  <main class="tap-main">
+    <div class="tap-counter-wrap">
+      <div class="tap-counter num">23</div>
+      <div class="tap-counter-sub">registrerte slag</div>
+      <div class="tap-stats-mini">
+        <div class="tap-stat-mini"><b class="num">15</b><small>Treff</small></div>
+        <div class="tap-stat-mini"><b class="num" style="color:#FCA5A5;">6</b><small>Miss</small></div>
+        <div class="tap-stat-mini"><b class="num" style="color:var(--accent);">2</b><small>Perfekt</small></div>
+        <div class="tap-stat-mini"><b class="num">65<small style="font-size:14px;">%</small></b><small>Hit-rate</small></div>
+      </div>
+    </div>
+    <div class="tap-buttons">
+      <button class="tap-btn tap-btn-treff">TREFF<small>+1</small></button>
+      <button class="tap-btn tap-btn-miss">MISS<small>+1</small></button>
+      <button class="tap-btn tap-btn-perfect">PERFEKT<small>+1</small></button>
+    </div>
+  </main>
+
+  <footer class="tap-bottom">
+    <button class="tap-fbtn tap-fbtn-undo">← Angre siste</button>
+    <button class="tap-fbtn">Pause</button>
+    <button class="tap-fbtn">Bytt kølle</button>
+    <button class="tap-fbtn" style="background:var(--accent); color:var(--text); border-color:var(--accent);">Lagre og avslutt</button>
+  </footer>
+</div>
+</body></html>

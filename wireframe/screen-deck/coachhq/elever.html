@@ -1,0 +1,390 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Elever</title></head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="#">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="#">Treningsplaner</a>
+      <a href="#" class="active">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="#">Godkjenninger</a>
+      <a href="#">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="#">Analytics</a>
+      <a href="#">Økonomi</a>
+      <a href="#">Fasiliteter</a>
+      <a href="#">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Følg opp · stallen</span>
+      <h1 class="page-title"><em>Elever</em> · 38 spillere</h1>
+      <p class="page-lede">Spillerne dine sortert etter aktivitet. Klikk en rad for full profil — mest relevante info først.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Status stallen</span>
+      <button class="action-item action-item-warn"><b>5</b> trenger oppmerksomhet</button>
+      <button class="action-item action-item-info"><b>3</b> nye denne mnd</button>
+      <button class="action-item action-item-warn"><b>4</b> uten plan</button>
+      <button class="action-item action-item-danger"><b>2</b> skadet</button>
+      <button class="btn btn-primary" style="margin-left: auto;">+ Ny spiller</button>
+    </div>
+
+    <div class="search-row">
+      <div class="search-input">
+        <span class="search-prefix">Søk</span>
+        <input type="text" placeholder="38 spillere — navn, HCP-band, klubb, A-K-kategori...">
+      </div>
+      <select class="sort-select">
+        <option>Mest aktiv (siste 7d)</option>
+        <option>HCP lav → høy</option>
+        <option>Sist økt</option>
+        <option>Navn A–Å</option>
+        <option>Trenger oppmerksomhet</option>
+      </select>
+    </div>
+
+    <div class="chips">
+      <button class="chip active">Alle (38)</button>
+      <button class="chip">A1 Elite (3)</button>
+      <button class="chip">A2 Topp (8)</button>
+      <button class="chip">A3 Konk. (14)</button>
+      <button class="chip">A4 Trening (9)</button>
+      <button class="chip">A5 Mosjon (4)</button>
+      <span style="flex:1"></span>
+      <button class="chip">Pro (24)</button>
+      <button class="chip">Elite (8)</button>
+      <button class="chip">Gratis (6)</button>
+    </div>
+
+    <div class="cal-with-drawer" style="margin-top: 16px;">
+      <div>
+        <div class="player-list">
+
+          <a class="player-row active" href="360-profil.html">
+            <span class="avatar">M</span>
+            <div class="player-info">
+              <b>Markus R. Pedersen</b>
+              <small>HCP 7,4 · A2 · GFGK · siden 2024</small>
+            </div>
+            <span class="mini-pyr" title="FYS 80, TEK 62, SLAG 90, SPILL 55, TURN 30">
+              <i style="--p: 80%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 62%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 90%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 55%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 30%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta">
+              <span class="num">8</span><small>økter 7d</small>
+            </div>
+            <span class="pill pill-success">På plan</span>
+            <span class="player-tier tier-pro">PRO</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">JS</span>
+            <div class="player-info">
+              <b>Joachim Solberg</b>
+              <small>HCP 4,2 · A1 · WANG · siden 2023</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 92%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 86%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 78%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 88%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 72%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">9</span><small>økter 7d</small></div>
+            <span class="pill pill-success">På plan</span>
+            <span class="player-tier tier-elite">ELITE</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">JT</span>
+            <div class="player-info">
+              <b>Joachim Tveit</b>
+              <small>HCP 6,8 · A2 · GFGK · siden 2024</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 78%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 70%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 42%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 62%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 55%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">7</span><small>økter 7d</small></div>
+            <span class="pill pill-warning">SLAG henger</span>
+            <span class="player-tier tier-pro">PRO</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">L</span>
+            <div class="player-info">
+              <b>Lina Hagen</b>
+              <small>HCP 11,4 · A3 · WANG · siden 2025</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 65%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 72%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 80%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 68%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 40%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">6</span><small>økter 7d</small></div>
+            <span class="pill pill-success">På plan</span>
+            <span class="player-tier tier-pro">PRO</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">E</span>
+            <div class="player-info">
+              <b>Emma Solheim</b>
+              <small>HCP 9,2 · A3 · GFGK · siden 2024</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 72%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 68%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 75%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 50%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 28%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">5</span><small>økter 7d</small></div>
+            <span class="pill pill-warning">For få turneringer</span>
+            <span class="player-tier tier-pro">PRO</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">SB</span>
+            <div class="player-info">
+              <b>Sofie Bø</b>
+              <small>HCP 14,2 · A4 · Mulligan · siden 2025</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 60%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 55%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 68%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 45%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 18%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">5</span><small>økter 7d</small></div>
+            <span class="pill pill-success">På plan</span>
+            <span class="player-tier tier-pro">PRO</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">MK</span>
+            <div class="player-info">
+              <b>Mathias Knutsen</b>
+              <small>HCP 18,3 · A4 · Mulligan · ny — 12 dager</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 40%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 35%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 22%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 18%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 5%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">4</span><small>økter 7d</small></div>
+            <span class="pill pill-info">Ny · trenger plan</span>
+            <span class="player-tier tier-free">GRATIS</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">A</span>
+            <div class="player-info">
+              <b>Aksel Lien</b>
+              <small>HCP 8,6 · A3 · GFGK · siden 2023</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 30%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 78%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 72%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 62%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 48%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">2</span><small>økter 7d</small></div>
+            <span class="pill pill-danger">Skadet ankel</span>
+            <span class="player-tier tier-pro">PRO</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">N</span>
+            <div class="player-info">
+              <b>Nora Larsen</b>
+              <small>HCP 16,8 · A4 · Bossum · siden 2024</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 55%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 48%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 38%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 32%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 12%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">3</span><small>økter 7d</small></div>
+            <span class="pill pill-warning">Uten plan</span>
+            <span class="player-tier tier-pro">PRO</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">MK</span>
+            <div class="player-info">
+              <b>Mia Karlsen</b>
+              <small>HCP 22,5 · A5 · Mulligan · siden 2025</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 35%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 28%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 22%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 18%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 0%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">4</span><small>økter 7d</small></div>
+            <span class="pill pill-success">På plan</span>
+            <span class="player-tier tier-free">GRATIS</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">JB</span>
+            <div class="player-info">
+              <b>Joakim Berg</b>
+              <small>HCP 5,4 · A1 · WANG · siden 2024</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 88%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 82%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 76%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 70%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 65%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">7</span><small>økter 7d</small></div>
+            <span class="pill pill-success">På plan</span>
+            <span class="player-tier tier-elite">ELITE</span>
+          </a>
+
+          <a class="player-row" href="360-profil.html">
+            <span class="avatar">MH</span>
+            <div class="player-info">
+              <b>Maria Hansen</b>
+              <small>HCP 13,8 · A4 · Bossum · siden 2025</small>
+            </div>
+            <span class="mini-pyr">
+              <i style="--p: 62%; --c: var(--pyr-fys);"></i>
+              <i style="--p: 58%; --c: var(--pyr-tek);"></i>
+              <i style="--p: 70%; --c: var(--pyr-slag);"></i>
+              <i style="--p: 48%; --c: var(--pyr-spill);"></i>
+              <i style="--p: 22%; --c: var(--pyr-turn);"></i>
+            </span>
+            <div class="player-meta"><span class="num">5</span><small>økter 7d</small></div>
+            <span class="pill pill-success">På plan</span>
+            <span class="player-tier tier-pro">PRO</span>
+          </a>
+
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top: 16px; font-size: 12px; color: var(--text-secondary);">
+          <span>Viser 12 av 38 · sortert på aktivitet siste 7 dager</span>
+          <button class="btn btn-ghost" style="padding: 8px 16px; font-size: 12px;">Vis alle 38 →</button>
+        </div>
+      </div>
+
+      <!-- DRAWER: full profil for valgt spiller -->
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div style="display:flex; gap:14px; align-items: flex-start;">
+            <span class="avatar" style="width:48px; height:48px; font-size:18px;">M</span>
+            <div>
+              <div class="drawer-meta">A2 · GFGK · siden mars 2024</div>
+              <h3 style="margin-top: 2px;">Markus R. Pedersen</h3>
+              <div style="margin-top: 6px; display:flex; gap:6px;">
+                <span class="pill pill-success">På plan</span>
+                <span class="player-tier tier-pro">PRO</span>
+                <span class="player-tier" style="background: rgba(0,88,64,0.06);">HCP 7,4</span>
+              </div>
+            </div>
+          </div>
+          <button class="drawer-close" title="Lukk">×</button>
+        </div>
+
+        <!-- Heads-up: mest relevant akkurat nå -->
+        <div class="drawer-section">
+          <div class="drawer-label">Akkurat nå</div>
+          <div style="display:flex; flex-direction:column; gap: 8px;">
+            <div style="background: rgba(209,248,67,0.18); border-left: 3px solid var(--accent); padding: 10px 12px; border-radius: 6px;">
+              <b style="font-size: 13px;">Sørlandsåpent · 21 dager</b>
+              <div style="font-size: 11px; margin-top: 2px;">Hovedmål sesongen. Status: på plan. Taper-fase aktiv.</div>
+            </div>
+            <div style="background: var(--bg); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border);">
+              <b style="font-size: 13px;">Neste økt: i dag 14:00</b>
+              <div style="font-size: 11px; margin-top: 2px;">Pitch 50–100m, lav trajectory · Mulligan Indoor · 60 min</div>
+            </div>
+            <div style="background: var(--bg); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border);">
+              <b style="font-size: 13px;">1 ny coach-notat</b>
+              <div style="font-size: 11px; margin-top: 2px;">«Putt-formen er rå nå — vi bruker neste økt på pitch i stedet.» — i går</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pyramide full -->
+        <div class="drawer-section">
+          <div class="drawer-label">Pyramide · uke 19</div>
+          <div class="pyr-tiers">
+            <div class="pyr-tier pyr-tier-turn" style="--w: 28%; --p: 30%;"><span>TURN</span><b>30</b></div>
+            <div class="pyr-tier pyr-tier-spill" style="--w: 46%; --p: 55%;"><span>SPILL</span><b>55</b></div>
+            <div class="pyr-tier pyr-tier-slag" style="--w: 64%; --p: 90%;"><span>SLAG</span><b>90</b></div>
+            <div class="pyr-tier pyr-tier-tek" style="--w: 82%; --p: 62%;"><span>TEK</span><b>62</b></div>
+            <div class="pyr-tier pyr-tier-fys" style="--w: 100%; --p: 80%;"><span>FYS</span><b>80</b></div>
+          </div>
+          <p style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">12 av 16 økter denne uka. SLAG topp, TURN svakest.</p>
+        </div>
+
+        <!-- SG breakdown -->
+        <div class="drawer-section">
+          <div class="drawer-label">Strokes Gained · siste 30d</div>
+          <div style="display:flex; flex-direction:column; gap: 5px; margin-top: 6px;">
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px;"><span style="width:38px; color:var(--text-secondary); font-family: var(--font-mono); font-size: 10px;">OTT</span><div style="flex:1; height:7px; background:var(--border); border-radius:3px;"><div style="width:64%; height:100%; background:var(--primary); border-radius:3px;"></div></div><span class="num" style="width:36px; text-align:right; font-size: 12px;">+0,3</span></div>
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px;"><span style="width:38px; color:var(--text-secondary); font-family: var(--font-mono); font-size: 10px;">APP</span><div style="flex:1; height:7px; background:var(--border); border-radius:3px;"><div style="width:48%; height:100%; background:var(--primary); border-radius:3px;"></div></div><span class="num" style="width:36px; text-align:right; font-size: 12px;">+0,2</span></div>
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px;"><span style="width:38px; color:var(--text-secondary); font-family: var(--font-mono); font-size: 10px;">ARG</span><div style="flex:1; height:7px; background:var(--border); border-radius:3px;"><div style="width:22%; height:100%; background:var(--danger); border-radius:3px;"></div></div><span class="num" style="width:36px; text-align:right; font-size: 12px;">-0,1</span></div>
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px;"><span style="width:38px; color:var(--text-secondary); font-family: var(--font-mono); font-size: 10px;">PUTT</span><div style="flex:1; height:7px; background:var(--border); border-radius:3px;"><div style="width:88%; height:100%; background:var(--primary); border-radius:3px;"></div></div><span class="num" style="width:36px; text-align:right; font-size: 12px;">+0,4</span></div>
+          </div>
+        </div>
+
+        <!-- Aktiv plan -->
+        <div class="drawer-section">
+          <div class="drawer-label">Aktiv plan</div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <b style="font-size: 13px;">Sørlandsåpent-oppkjøring 2026</b>
+              <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">12. mai — 31. mai · taper-fase</div>
+            </div>
+            <span class="num" style="font-size: 13px; font-weight: 600;">12/16</span>
+          </div>
+          <div style="height:6px; background:var(--border); border-radius:3px; margin-top: 8px;"><div style="width:75%; height:100%; background:var(--primary); border-radius:3px;"></div></div>
+        </div>
+
+        <!-- Aktivitet (kompakt) -->
+        <div class="drawer-section">
+          <div class="drawer-label">Aktivitet</div>
+          <div style="font-size: 12px;">
+            <div style="padding: 5px 0; display:flex; justify-content:space-between;"><span><b>søn 10.05</b> · Bossum 78</span><span class="num" style="color: var(--success); font-weight: 600;">SG +1,2</span></div>
+            <div style="padding: 5px 0; display:flex; justify-content:space-between;"><span><b>lør 09.05</b> · TrackMan 7-jern</span><span class="num" style="color: var(--text-secondary);">162 m</span></div>
+            <div style="padding: 5px 0; display:flex; justify-content:space-between;"><span><b>fre 08.05</b> · Bunker u&amp;d</span><span class="num"><span class="pill pill-success" style="font-size:10px; padding: 2px 7px;">6/10 +1</span></span></div>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="drawer-section" style="display:flex; flex-direction:column; gap: 8px;">
+          <button class="btn btn-primary">Send melding</button>
+          <button class="btn btn-ghost">Book økt</button>
+          <a class="btn btn-ghost" href="360-profil.html" style="text-align:center; text-decoration:none;">Se 360-profil →</a>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>
