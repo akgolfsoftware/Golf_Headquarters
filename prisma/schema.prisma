@@ -33,6 +33,39 @@ enum BookingStatus {
   COMPLETED
 }
 
+// PlayerHQ-domenet (Fase 1.5)
+
+enum SessionStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  SKIPPED
+  CANCELLED
+}
+
+enum PyramidArea {
+  FYS
+  TEK
+  SLAG
+  SPILL
+  TURN
+}
+
+enum LPhase {
+  KROPP
+  ARM
+  KOLLE
+  BALL
+  AUTO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  TRIALING
+}
+
 // ---------- Models ----------
 
 model User {
@@ -58,6 +91,13 @@ model User {
   bookings        Booking[]
   parentRelations ParentRelation[] @relation("Child")
   childRelations  ParentRelation[] @relation("Parent")
+
+  // PlayerHQ-relasjoner
+  trainingPlans     TrainingPlan[]
+  rounds            Round[]
+  testResults       TestResult[]
+  trackManSessions  TrackManSession[]
+  subscription      Subscription?
 
   @@map("users")
 }
@@ -128,4 +168,193 @@ model Booking {
   @@index([userId])
   @@index([startAt])
   @@map("bookings")
+}
+
+// ---------- PlayerHQ-modeller (Fase 1.5) ----------
+
+model TrainingPlan {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String
+  startDate   DateTime
+  endDate     DateTime?
+  isActive    Boolean   @default(true)
+  // Coach-id (User med role=COACH) hvis plan opprettet av coach. Ikke FK i v1
+  // for å holde det enkelt — modelleres som relasjon i Fase 1.9.
+  createdById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions TrainingPlanSession[]
+
+  @@index([userId, isActive])
+  @@map("training_plans")
+}
+
+model TrainingPlanSession {
+  id          String        @id @default(cuid())
+  planId      String
+  scheduledAt DateTime
+  durationMin Int
+  title       String
+  rationale   String?
+  pyramidArea PyramidArea
+  status      SessionStatus @default(PLANNED)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  plan   TrainingPlan            @relation(fields: [planId], references: [id], onDelete: Cascade)
+  drills SessionDrill[]
+  log    TrainingPlanSessionLog?
+
+  @@index([planId, scheduledAt])
+  @@map("training_plan_sessions")
+}
+
+model ExerciseDefinition {
+  id              String      @id @default(cuid())
+  name            String
+  description     String?
+  videoUrl        String?
+  pyramidArea     PyramidArea
+  lPhase          LPhase
+  defaultRepsSets String?
+  csMin           Int?
+  csMax           Int?
+  createdAt       DateTime    @default(now())
+
+  sessionDrills SessionDrill[]
+
+  @@index([pyramidArea])
+  @@map("exercise_definitions")
+}
+
+model SessionDrill {
+  id         String  @id @default(cuid())
+  sessionId  String
+  exerciseId String
+  repsSets   String
+  csTarget   Int?
+  notes      String?
+  orderIndex Int     @default(0)
+
+  session  TrainingPlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exercise ExerciseDefinition  @relation(fields: [exerciseId], references: [id])
+
+  @@index([sessionId])
+  @@map("session_drills")
+}
+
+model TrainingPlanSessionLog {
+  id          String    @id @default(cuid())
+  sessionId   String    @unique
+  startedAt   DateTime
+  completedAt DateTime?
+  csAchieved  Int?
+  notes       String?
+  rating      Int? // 1-5
+  createdAt   DateTime  @default(now())
+
+  session TrainingPlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("training_plan_session_logs")
+}
+
+// Mål-domenet
+
+model CourseDefinition {
+  id        String   @id @default(cuid())
+  name      String
+  par       Int
+  rating    Float?
+  slope     Int?
+  createdAt DateTime @default(now())
+
+  rounds Round[]
+
+  @@map("course_definitions")
+}
+
+model Round {
+  id       String   @id @default(cuid())
+  userId   String
+  courseId String
+  playedAt DateTime
+  score    Int
+  sgTotal  Float?
+  sgOtt    Float?
+  sgApp    Float?
+  sgArg    Float?
+  sgPutt   Float?
+  notes    String?
+  createdAt DateTime @default(now())
+
+  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course CourseDefinition @relation(fields: [courseId], references: [id])
+
+  @@index([userId, playedAt])
+  @@map("rounds")
+}
+
+model TestDefinition {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  pyramidArea PyramidArea
+  scoringRule String
+  createdAt   DateTime    @default(now())
+
+  results TestResult[]
+
+  @@map("test_definitions")
+}
+
+model TestResult {
+  id        String   @id @default(cuid())
+  userId    String
+  testId    String
+  takenAt   DateTime
+  score     Float
+  notes     String?
+  createdAt DateTime @default(now())
+
+  user User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  test TestDefinition @relation(fields: [testId], references: [id])
+
+  @@index([userId, takenAt])
+  @@map("test_results")
+}
+
+model TrackManSession {
+  id         String   @id @default(cuid())
+  userId     String
+  recordedAt DateTime
+  source     String // "csv-import" | "api"
+  shotCount  Int      @default(0)
+  rawJson    Json?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, recordedAt])
+  @@map("trackman_sessions")
+}
+
+// Abonnement-domenet
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  tier                 Tier               @default(GRATIS)
+  status               SubscriptionStatus @default(ACTIVE)
+  currentPeriodEnd     DateTime?
+  stripeSubscriptionId String?            @unique
+  stripeCustomerId     String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
 }
