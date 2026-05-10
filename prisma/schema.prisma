@@ -731,3 +731,21 @@ model PlanTemplate {
 
   @@map("plan_templates")
 }
+
+// Marketing — leads (Fase 3.3)
+
+model Lead {
+  id        String   @id @default(cuid())
+  email     String
+  name      String?
+  // "guide-download" | "newsletter" | "demo-request" | "for-klubber"
+  source    String?
+  // NEW | CONTACTED | CONVERTED | UNSUBSCRIBED
+  status    String   @default("NEW")
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([source, status])
+  @@map("leads")
+}
