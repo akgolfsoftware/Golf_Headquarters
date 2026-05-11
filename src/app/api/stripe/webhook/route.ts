@@ -113,6 +113,41 @@ export async function POST(req: Request) {
           const fullSub = await stripe.subscriptions.retrieve(subId);
           await syncSubscription(fullSub);
         }
+        // Booking-mode (one-time payment via metadata.bookingId)
+        const bookingId = session.metadata?.bookingId;
+        if (bookingId && session.payment_status === "paid") {
+          const paymentIntentId =
+            typeof session.payment_intent === "string"
+              ? session.payment_intent
+              : session.payment_intent?.id ?? null;
+          await prisma.booking.update({
+            where: { id: bookingId },
+            data: {
+              status: "CONFIRMED",
+              stripePaymentIntentId: paymentIntentId,
+            },
+          });
+          // Send bekreftelses-e-post (best-effort, ikke feil hvis Resend nede)
+          try {
+            const { sendBookingConfirmation } = await import(
+              "@/lib/email/booking-emails"
+            );
+            await sendBookingConfirmation(bookingId);
+          } catch (err) {
+            console.error("[stripe-webhook] booking-confirmation-email failed", err);
+          }
+        }
+        break;
+      }
+      case "checkout.session.expired": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const bookingId = session.metadata?.bookingId;
+        if (bookingId) {
+          await prisma.booking.update({
+            where: { id: bookingId },
+            data: { status: "CANCELLED" },
+          });
+        }
         break;
       }
       default:

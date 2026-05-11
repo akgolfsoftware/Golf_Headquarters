@@ -151,6 +151,8 @@ model ParentRelation {
 
 model ServiceType {
   id          String   @id @default(cuid())
+  // Public slug for booking-URL (/booking/[slug])
+  slug        String   @unique
   name        String
   // Pris i ØRE (Int). Aldri Float for penger. Format i UI: priceOre / 100.
   priceOre    Int
@@ -186,8 +188,18 @@ model Booking {
   locationId    String
   startAt       DateTime
   endAt         DateTime
-  status        BookingStatus @default(CONFIRMED)
+  status        BookingStatus @default(PENDING)
   notes         String?
+  // Pris låst ved booking (i øre, ikke Float). Refusjonsbeløp baseres på dette.
+  priceOre      Int           @default(0)
+  // Stripe-tracking. CheckoutSession før betaling, PaymentIntent etter.
+  stripeCheckoutSessionId String?
+  stripePaymentIntentId   String?
+  // Kontakt-info for bookinger gjort av ikke-innloggede kunder (gjest-flow).
+  guestName     String?
+  guestEmail    String?
+  guestPhone    String?
+  // Sletting av brukerkonto skal ikke slette historiske bookinger — sett userId til null.
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
@@ -197,6 +209,7 @@ model Booking {
 
   @@index([userId])
   @@index([startAt])
+  @@index([stripeCheckoutSessionId])
   @@map("bookings")
 }
 

@@ -43,18 +43,21 @@ const LOCATIONS = [
 
 const SERVICE_TYPES = [
   {
+    slug: "pro-time-30-min",
     name: "Pro-time 30 min",
     priceOre: 65000,
     durationMin: 30,
     description: "30 minutter én-til-én med Pro. Fokus på ett tema.",
   },
   {
+    slug: "pro-time-60-min",
     name: "Pro-time 60 min",
     priceOre: 119000,
     durationMin: 60,
     description: "Full time én-til-én med Pro. Tek, taktikk eller mental.",
   },
   {
+    slug: "trackman-analyse-60-min",
     name: "Trackman-analyse 60 min",
     priceOre: 149000,
     durationMin: 60,
@@ -62,12 +65,14 @@ const SERVICE_TYPES = [
       "Full analyse på Trackman med dispersjon, klubbdata og 3D-bane-flight.",
   },
   {
+    slug: "gruppe-oekt",
     name: "Gruppe-økt",
     priceOre: 39000,
     durationMin: 60,
     description: "Inntil 6 spillere. Egnet for nivåtilpasset trening.",
   },
   {
+    slug: "wang-oekt",
     name: "WANG-økt",
     priceOre: 0,
     durationMin: 90,
@@ -248,29 +253,24 @@ async function seedLocations() {
 async function seedServiceTypes() {
   console.log("\n[seed] ServiceTypes");
   for (const st of SERVICE_TYPES) {
-    const existing = await prisma.serviceType.findFirst({ where: { name: st.name } });
-    if (existing) {
-      await prisma.serviceType.update({
-        where: { id: existing.id },
-        data: {
-          priceOre: st.priceOre,
-          durationMin: st.durationMin,
-          description: st.description,
-          active: true,
-        },
-      });
-      console.log(`  · ${st.name} (${st.priceOre / 100} kr)`);
-    } else {
-      await prisma.serviceType.create({
-        data: {
-          name: st.name,
-          priceOre: st.priceOre,
-          durationMin: st.durationMin,
-          description: st.description,
-        },
-      });
-      console.log(`  + ${st.name} (${st.priceOre / 100} kr)`);
-    }
+    await prisma.serviceType.upsert({
+      where: { slug: st.slug },
+      update: {
+        name: st.name,
+        priceOre: st.priceOre,
+        durationMin: st.durationMin,
+        description: st.description,
+        active: true,
+      },
+      create: {
+        slug: st.slug,
+        name: st.name,
+        priceOre: st.priceOre,
+        durationMin: st.durationMin,
+        description: st.description,
+      },
+    });
+    console.log(`  · ${st.slug} (${st.priceOre / 100} kr)`);
   }
 }
 

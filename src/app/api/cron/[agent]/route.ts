@@ -3,12 +3,14 @@
 
 import { NextResponse } from "next/server";
 import { runPlanWatcher } from "@/lib/agents/plan-watcher";
+import { runBookingReminders } from "@/lib/agents/booking-reminders";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
 const AGENTS: Record<string, () => Promise<unknown>> = {
   "plan-watcher": runPlanWatcher,
+  "booking-reminders": runBookingReminders,
 };
 
 export async function GET(

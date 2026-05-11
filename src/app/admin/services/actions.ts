@@ -21,10 +21,36 @@ export type ServiceInput = {
   active: boolean;
 };
 
+function lagSlug(name: string): string {
+  return name
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/ø/g, "oe")
+    .replace(/æ/g, "ae")
+    .replace(/å/g, "aa")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export async function createService(input: ServiceInput) {
   const user = await krevCoach();
+  let slug = lagSlug(input.name);
+  if (!slug) throw new Error("invalid-slug");
+
+  // Sørg for unik slug
+  let counter = 1;
+  let kandidat = slug;
+  while (await prisma.serviceType.findUnique({ where: { slug: kandidat } })) {
+    counter++;
+    kandidat = `${slug}-${counter}`;
+  }
+  slug = kandidat;
+
   const ny = await prisma.serviceType.create({
     data: {
+      slug,
       name: input.name.trim(),
       description: input.description?.trim() || null,
       priceOre: input.priceOre,
