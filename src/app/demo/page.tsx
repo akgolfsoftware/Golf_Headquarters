@@ -1,10 +1,9 @@
 import Link from "next/link";
 
 /**
- * Demo-index — 100 % komplett pilot-dekning av AK Golf Platform.
- * 171 demo-pages dekker CoachHQ, PlayerHQ, Foreldreportal, Klubb-admin,
- * Auth, Onboarding, Live Session, Talent-modulen, Booking-forbruker,
- * tverrgående systemskjermer og alle kritiske state-varianter.
+ * Demo-index — komplett pilot-dekning av AK Golf Platform + akgolf.no marketing.
+ * 236 demo-pages: 171 plattform-pages + 45 state-varianter (dark/mobile/loading/error)
+ * + 20 akgolf.no marketing-pages (designet direkte i React).
  */
 
 type Pilot = {
@@ -316,6 +315,101 @@ const GROUPS: Group[] = [
       { url: "/avatar-upload-demo", title: "Avatar upload" },
     ],
   },
+  {
+    title: "State-varianter — Dark mode",
+    description: "Dark-mode versjoner av CoachHQ-dashboards og modaler",
+    pilots: [
+      { url: "/daglig-brief-dark-demo", title: "Daglig brief (dark)" },
+      { url: "/fasiliteter-dark-demo", title: "Fasiliteter (dark)" },
+      { url: "/analytics-v2-dark-demo", title: "Analytics v2 (dark)" },
+      { url: "/revisjonslogg-dark-demo", title: "Revisjonslogg (dark)" },
+      { url: "/rapporter-dark-demo", title: "Rapporter (dark)" },
+      { url: "/kapasitet-dark-demo", title: "Kapasitet (dark)" },
+      { url: "/kalender-dark-demo", title: "Kalender (dark)" },
+      { url: "/book-session-dark-demo", title: "Book session (dark)" },
+      { url: "/reschedule-dark-demo", title: "Reschedule (dark)" },
+      { url: "/facility-detail-dark-demo", title: "Facility detail (dark)" },
+      { url: "/booking-confirmation-dark-demo", title: "Booking confirmation (dark)" },
+      { url: "/message-detail-dark-demo", title: "Message detail (dark)" },
+      { url: "/payment-dark-demo", title: "Payment (dark)" },
+      { url: "/drill-challenge-dark-demo", title: "Drill challenge (dark)" },
+    ],
+  },
+  {
+    title: "State-varianter — Mobile",
+    description: "Mobile-versjoner av kritiske skjermer",
+    pilots: [
+      { url: "/live-summary-mobile-demo", title: "Live summary (mobile)" },
+      { url: "/drill-challenge-mobile-demo", title: "Drill challenge (mobile)" },
+      { url: "/message-detail-mobile-demo", title: "Message detail (mobile)" },
+      { url: "/notification-center-mobile-demo", title: "Notification center (mobile)" },
+      { url: "/payment-mobile-demo", title: "Payment (mobile)" },
+    ],
+  },
+  {
+    title: "State-varianter — Live Session detaljer",
+    description: "Connection-lost, longpress, pause, siste, skip-confirm, confetti",
+    pilots: [
+      { url: "/live-active-connection-lost-demo", title: "Active (connection lost)" },
+      { url: "/live-active-longpress-demo", title: "Active (longpress)" },
+      { url: "/live-between-pause-demo", title: "Between (pause)" },
+      { url: "/live-between-siste-demo", title: "Between (siste øvelse)" },
+      { url: "/live-between-skip-confirm-demo", title: "Between (skip confirm)" },
+      { url: "/live-summary-confetti-demo", title: "Summary (confetti)" },
+      { url: "/live-summary-feedback-sendt-demo", title: "Summary (feedback sendt)" },
+      { url: "/drill-challenge-loading-demo", title: "Challenge (loading)" },
+      { url: "/drill-challenge-steg1-bli-med-demo", title: "Challenge (bli med)" },
+      { url: "/drill-challenge-steg1-lag-ny-demo", title: "Challenge (lag ny)" },
+      { url: "/drill-challenge-success-demo", title: "Challenge (success)" },
+      { url: "/leaderboard-free-lock-demo", title: "Leaderboard (free-lock)" },
+    ],
+  },
+  {
+    title: "State-varianter — Message/Notification/Video/Loading",
+    description: "Empty, sender, skriver, vedlegg, achievements, plan, uleste, progress, error, trim, loading",
+    pilots: [
+      { url: "/message-detail-empty-demo", title: "Message (empty)" },
+      { url: "/message-detail-sender-demo", title: "Message (sender)" },
+      { url: "/message-detail-skriver-demo", title: "Message (skriver)" },
+      { url: "/message-detail-vedlegg-demo", title: "Message (vedlegg)" },
+      { url: "/notification-achievements-demo", title: "Notification (achievements)" },
+      { url: "/notification-plan-demo", title: "Notification (plan)" },
+      { url: "/notification-uleste-demo", title: "Notification (uleste)" },
+      { url: "/video-upload-progress-demo", title: "Video upload (progress)" },
+      { url: "/video-upload-error-demo", title: "Video upload (error)" },
+      { url: "/video-upload-trim-demo", title: "Video upload (trim)" },
+      { url: "/payment-loading-demo", title: "Payment (loading)" },
+      { url: "/book-session-loading-demo", title: "Book session (loading)" },
+      { url: "/facility-detail-loading-demo", title: "Facility detail (loading)" },
+      { url: "/booking-confirmation-loading-demo", title: "Booking confirmation (loading)" },
+    ],
+  },
+  {
+    title: "Marketing — akgolf.no (NYTT DESIGN)",
+    description: "20 marketing-pages designet direkte i React for forbrukernettstedet",
+    pilots: [
+      { url: "/akgolf-forside-demo", title: "Forside" },
+      { url: "/akgolf-om-demo", title: "Om oss" },
+      { url: "/akgolf-tjenester-demo", title: "Tjenester" },
+      { url: "/akgolf-priser-demo", title: "Priser" },
+      { url: "/akgolf-kontakt-demo", title: "Kontakt" },
+      { url: "/akgolf-coacher-demo", title: "Coacher (liste)" },
+      { url: "/akgolf-coach-profil-demo", title: "Coach-profil (Anders K)" },
+      { url: "/akgolf-anlegg-demo", title: "Anlegg (liste)" },
+      { url: "/akgolf-anlegg-detalj-demo", title: "Anlegg-detalj (Mulligan Borre)" },
+      { url: "/akgolf-faq-demo", title: "FAQ" },
+      { url: "/akgolf-blogg-demo", title: "Blogg (forside)" },
+      { url: "/akgolf-blogg-post-demo", title: "Blogg-post" },
+      { url: "/akgolf-suksess-demo", title: "Suksesshistorier" },
+      { url: "/akgolf-junior-demo", title: "Junior-program" },
+      { url: "/akgolf-bedrift-demo", title: "Bedrift" },
+      { url: "/akgolf-wang-demo", title: "WANG Toppidrett (partner)" },
+      { url: "/akgolf-mulligan-demo", title: "Mulligan Indoor (partner)" },
+      { url: "/akgolf-personvern-demo", title: "Personvernerklæring" },
+      { url: "/akgolf-vilkar-demo", title: "Vilkår og betingelser" },
+      { url: "/akgolf-cookies-demo", title: "Cookie-policy" },
+    ],
+  },
 ];
 
 export default function DemoIndex() {
@@ -326,7 +420,7 @@ export default function DemoIndex() {
       <div className="mx-auto max-w-6xl px-6 py-12">
         <header className="mb-12">
           <div className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
-            AK Golf Platform · Pilot-pages · 100 % komplett
+            AK Golf Group · Plattform + akgolf.no · Komplett pilot-dekning
           </div>
           <h1 className="mt-3 font-display text-5xl italic leading-tight">
             {total} produksjonsklare skjermer
