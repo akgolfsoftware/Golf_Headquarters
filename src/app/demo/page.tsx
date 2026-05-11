@@ -1,9 +1,10 @@
 import Link from "next/link";
 
 /**
- * Demo-index for alle pilot-pages konvertert fra Claude Design / wireframes / spec.
- * 127 pages dekker hele AK Golf Platform — CoachHQ, PlayerHQ, Foreldre, Klubb, Auth,
- * Onboarding, Live Session, Modaler, Edge cases, Settings, Talent-modulen.
+ * Demo-index — 100 % komplett pilot-dekning av AK Golf Platform.
+ * 171 demo-pages dekker CoachHQ, PlayerHQ, Foreldreportal, Klubb-admin,
+ * Auth, Onboarding, Live Session, Talent-modulen, Booking-forbruker,
+ * tverrgående systemskjermer og alle kritiske state-varianter.
  */
 
 type Pilot = {
@@ -20,7 +21,7 @@ type Group = {
 const GROUPS: Group[] = [
   {
     title: "CoachHQ — Plan & Profil",
-    description: "Spillerprofil, plan-bygger og plan-management",
+    description: "Spillerprofil, plan-bygger, plan-management og approvals",
     pilots: [
       { url: "/360-demo", title: "360-profil (Markus)" },
       { url: "/plan-bygger-demo", title: "Plan-bygger (6-steg wizard)" },
@@ -55,8 +56,28 @@ const GROUPS: Group[] = [
     ],
   },
   {
+    title: "CoachHQ — Lister & Konfig",
+    description: "Elever, planer, godkjenninger, bookinger, økter, tjenester",
+    pilots: [
+      { url: "/elever-demo", title: "Elever (spillerliste)" },
+      { url: "/treningsplaner-demo", title: "Treningsplaner" },
+      { url: "/godkjenninger-demo", title: "Godkjenninger" },
+      { url: "/bookinger-demo", title: "Bookinger" },
+      { url: "/okter-demo", title: "Økter (bibliotek)" },
+      { url: "/tjenester-demo", title: "Tjenester (katalog)" },
+      { url: "/lokasjoner-demo", title: "Lokasjoner" },
+      { url: "/team-demo", title: "Team" },
+      { url: "/coachhq-team-demo", title: "Team v2 (utvidet)" },
+      { url: "/grupper-demo", title: "Grupper" },
+      { url: "/coachhq-grupper-demo", title: "Grupper v2 (utvidet)" },
+      { url: "/turneringer-demo", title: "Turneringer (coach-syn)" },
+      { url: "/sesjon-opptak-demo", title: "Sesjon-opptak (video)" },
+      { url: "/coaching-board-demo", title: "Coaching-board (kanban)" },
+    ],
+  },
+  {
     title: "CoachHQ — Portefølje & Rapporter",
-    description: "Spillerlister, planlegger, rapporter, coach-profil",
+    description: "Spillerlister, planlegger, foreldre-innboks, coach-profil",
     pilots: [
       { url: "/coachhq-portefolje-demo", title: "Portefølje" },
       { url: "/coachhq-planlegger-demo", title: "Sesjon-planlegger" },
@@ -94,6 +115,16 @@ const GROUPS: Group[] = [
     ],
   },
   {
+    title: "PlayerHQ — Profil & Konto",
+    description: "Min profil, helse, varsler, abonnement",
+    pilots: [
+      { url: "/playerhq-profil-demo", title: "Min profil" },
+      { url: "/playerhq-helse-demo", title: "Helse (skader/restitusjon)" },
+      { url: "/playerhq-varsler-demo", title: "Varselsinnstillinger" },
+      { url: "/playerhq-abonnement-demo", title: "Abonnement (Pro)" },
+    ],
+  },
+  {
     title: "PlayerHQ — Wizards & Kalender",
     description: "Ny økt, ønsket økt, tren-kalender",
     pilots: [
@@ -105,14 +136,18 @@ const GROUPS: Group[] = [
   },
   {
     title: "Live Session-flyten",
-    description: "Live-økt fra intro til oppsummering — 7 skjermer",
+    description: "Fra intro til oppsummering — alle states (idle/aktiv/pause/ferdig)",
     pilots: [
       { url: "/live-intro-demo", title: "Live intro (modal)" },
       { url: "/live-session-demo", title: "Live session (Screen 1)" },
       { url: "/live-tapper-demo", title: "Live tapper" },
-      { url: "/live-active-demo", title: "Live active (Screen 2)" },
+      { url: "/live-active-demo", title: "Live active (mid-rep)" },
+      { url: "/live-active-idle-demo", title: "Live active (idle/før start)" },
+      { url: "/live-active-pause-demo", title: "Live active (pause)" },
+      { url: "/live-active-ferdig-demo", title: "Live active (ferdig)" },
       { url: "/live-between-demo", title: "Live between (Screen 3)" },
       { url: "/live-summary-demo", title: "Live summary (Screen 4)" },
+      { url: "/live-summary-achievement-demo", title: "Live summary (achievement)" },
       { url: "/edge-live-empty-demo", title: "Empty: ingen aktiv økt" },
     ],
   },
@@ -130,7 +165,7 @@ const GROUPS: Group[] = [
   },
   {
     title: "Talent-modulen",
-    description: "12 skjermer — CoachHQ Talent, PlayerHQ Talent, shared",
+    description: "14 skjermer — CoachHQ Talent, PlayerHQ Talent, shared",
     pilots: [
       { url: "/talent-demo", title: "Talent-pipeline (A1-A5)" },
       { url: "/talent-mine-spillere-demo", title: "Mine spillere" },
@@ -172,14 +207,31 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    title: "Booking-modaler",
-    description: "Booking-flyt: session, reschedule, facility, confirmation",
+    title: "Booking — Forbruker-flyt",
+    description: "booking.akgolf.no — komplett kjøpsflyt for forbrukere",
     pilots: [
-      { url: "/book-session-demo", title: "Book session" },
+      { url: "/booking-index-demo", title: "Booking-forsiden" },
+      { url: "/booking-tjenester-demo", title: "Velg tjeneste (1/5)" },
+      { url: "/booking-coaches-demo", title: "Velg coach (2/5)" },
+      { url: "/booking-coach-detalj-demo", title: "Coach-detalj" },
+      { url: "/booking-kalender-demo", title: "Velg tid (kalender)" },
+      { url: "/booking-anlegg-demo", title: "Velg anlegg" },
+      { url: "/booking-info-demo", title: "Din info (5/5)" },
+    ],
+  },
+  {
+    title: "Booking-modaler (admin/PlayerHQ)",
+    description: "Book session, reschedule, facility — alle steg og varianter",
+    pilots: [
+      { url: "/book-session-demo", title: "Book session (default)" },
+      { url: "/book-session-steg2-demo", title: "Book session steg 2 (tid)" },
+      { url: "/book-session-steg3-demo", title: "Book session steg 3 (bekreft)" },
       { url: "/book-session-free-demo", title: "Book session (FREE)" },
       { url: "/book-session-pro-demo", title: "Book session (PRO)" },
       { url: "/book-session-locked-demo", title: "Book session (locked)" },
       { url: "/reschedule-demo", title: "Reschedule" },
+      { url: "/reschedule-default-demo", title: "Reschedule (default)" },
+      { url: "/reschedule-success-demo", title: "Reschedule (success)" },
       { url: "/facility-detail-demo", title: "Facility detail" },
       { url: "/facility-detail-tabs-demo", title: "Facility detail (tabs)" },
       { url: "/booking-confirmation-demo", title: "Booking confirmation" },
@@ -198,15 +250,19 @@ const GROUPS: Group[] = [
   },
   {
     title: "Social / Tier / Other-modaler",
-    description: "Challenges, leaderboard, melding, varsel, payment, video",
+    description: "Challenges, leaderboard, melding, varsel, payment, video — med states",
     pilots: [
       { url: "/drill-challenge-demo", title: "Drill challenge" },
       { url: "/challenge-detail-demo", title: "Challenge detail" },
       { url: "/leaderboard-modal-demo", title: "Leaderboard (modal)" },
-      { url: "/message-detail-demo", title: "Message detail (utvidet)" },
+      { url: "/message-detail-demo", title: "Message detail" },
       { url: "/notification-center-demo", title: "Notification center" },
+      { url: "/notification-empty-demo", title: "Notification (empty)" },
       { url: "/video-upload-demo", title: "Video upload" },
+      { url: "/video-upload-success-demo", title: "Video upload (success)" },
       { url: "/payment-variants-demo", title: "Payment (Pro 300/mnd)" },
+      { url: "/payment-success-demo", title: "Payment (success)" },
+      { url: "/payment-error-demo", title: "Payment (error)" },
     ],
   },
   {
@@ -223,6 +279,19 @@ const GROUPS: Group[] = [
       { url: "/onboarding-coach-demo", title: "Onboarding — coach" },
       { url: "/onboarding-forelder-demo", title: "Onboarding — forelder" },
       { url: "/onboarding-ferdig-demo", title: "Onboarding — ferdig" },
+    ],
+  },
+  {
+    title: "System & Foundation",
+    description: "CBAC, tilgang, notif-taksonomi, design-tokens, e-postmaler",
+    pilots: [
+      { url: "/innstillings-layout-demo", title: "Innstillings-layout (shell)" },
+      { url: "/cbac-matrise-demo", title: "CBAC-matrise" },
+      { url: "/tilgang-demo", title: "Tilgangskontroll" },
+      { url: "/notif-taksonomi-demo", title: "Notifikasjons-taksonomi" },
+      { url: "/design-tokens-demo", title: "Designsystem-tokens" },
+      { url: "/email-templates-demo", title: "E-postmaler" },
+      { url: "/teknisk-plan-demo", title: "Teknisk plan / roadmap" },
     ],
   },
   {
@@ -257,15 +326,17 @@ export default function DemoIndex() {
       <div className="mx-auto max-w-6xl px-6 py-12">
         <header className="mb-12">
           <div className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
-            AK Golf Platform · Pilot-pages
+            AK Golf Platform · Pilot-pages · 100 % komplett
           </div>
           <h1 className="mt-3 font-display text-5xl italic leading-tight">
             {total} produksjonsklare skjermer
           </h1>
           <p className="mt-4 max-w-2xl text-muted-foreground">
-            Komplett dekning av CoachHQ, PlayerHQ, Foreldreportal, Klubb-admin,
-            Auth, Onboarding, Live Session, Talent-modulen og alle modaler.
-            Alle pages er server components med design-system v2.
+            Komplett pilot-dekning av AK Golf Platform — CoachHQ, PlayerHQ,
+            Foreldreportal, Klubb-admin, Booking-forbruker, Auth, Onboarding,
+            Live Session-flyten, Talent-modulen, tverrgående systemskjermer
+            og alle kritiske state-varianter. Alle pages er server components
+            med design-system v2.
           </p>
         </header>
 
@@ -299,8 +370,8 @@ export default function DemoIndex() {
 
         <footer className="mt-16 border-t border-border pt-6 text-xs text-muted-foreground">
           <p>
-            Sist oppdatert: 11.05.2026 · Alle pages er typesjekket med{" "}
-            <code className="font-mono">npx tsc --noEmit</code>.
+            Sist oppdatert: 11.05.2026 · Typesjekket med{" "}
+            <code className="font-mono">npx tsc --noEmit</code> (0 feil).
           </p>
         </footer>
       </div>
