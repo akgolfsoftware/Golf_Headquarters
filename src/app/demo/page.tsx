@@ -212,6 +212,50 @@ const PILOTS: Pilot[] = [
     description: "Coach gir feedback til agent etter aksjon (godkjent/avvist)",
     status: "ferdig",
   },
+  // ────────── Modal-C: Booking ──────────
+  {
+    url: "/book-session-demo",
+    title: "Modal — BookSession (steg 1)",
+    source: "modaler-C/01-book-session-steg1-pro.html",
+    description: "Velg fasilitet (4 alternativer, Mulligan Studio 2 valgt) med sort-chips",
+    status: "ferdig",
+  },
+  {
+    url: "/reschedule-demo",
+    title: "Modal — Reschedule",
+    source: "modaler-C/02-reschedule-default.html",
+    description: "Flytt eksisterende booking: nåværende vs ny tid, 7×7 kalender, grunn-textarea",
+    status: "ferdig",
+  },
+  {
+    url: "/facility-detail-demo",
+    title: "Modal — FacilityDetail (Oversikt)",
+    source: "modaler-C/03-facility-detail-oversikt.html",
+    description: "Side-panel: hero med grønn gradient, 4 tabs, pris-kort, stats-grid",
+    status: "ferdig",
+  },
+  {
+    url: "/booking-confirmation-demo",
+    title: "Modal — BookingConfirmation",
+    source: "modaler-C/04-booking-confirmation.html",
+    description: "Suksess-bekreftelse: ikon med ring, pris-pill, detaljer, 3 prep-steg",
+    status: "ferdig",
+  },
+  // ────────── CoachHQ — kalender + tilstander ──────────
+  {
+    url: "/kalender-maaned-demo",
+    title: "CoachHQ — Kalender (måned)",
+    source: "07-kalender-maaned.html",
+    description: "Måneds-visning mai 2026 med uke-numre, økt-pills, valgt-dag-sidebar",
+    status: "ferdig",
+  },
+  {
+    url: "/tilstander-demo",
+    title: "CoachHQ — Økt-kort tilstander",
+    source: "08-tilstander.html",
+    description: "Design-system-katalog: 9 økt-kort-tilstander + flyt-diagram + eskalering",
+    status: "ferdig",
+  },
 ];
 
 const SOURCE_MAP = {

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="nb"><head><meta charset="UTF-8"/><title>BookSessionModal · steg 1 · Free</title>
+<link rel="stylesheet" href="../tokens.css"/><link rel="stylesheet" href="../modal-shell.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"/>
+<style>
+.fac-list{display:flex;flex-direction:column;gap:10px;}
+.fac{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface-card);cursor:pointer;transition:border-color .15s;}
+.fac:hover{border-color:var(--ink-subtle);}
+.fac.selected{border-color:var(--brand-primary);background:var(--brand-primary-soft);box-shadow:0 0 0 3px rgba(0,88,64,0.08);}
+.fac-thumb{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,var(--surface-alt),var(--line));display:flex;align-items:center;justify-content:center;color:var(--ink-muted);}
+.fac-thumb-gfgk{background:linear-gradient(135deg,#2A4F39,#1A3526);color:#D1F843;}
+.fac-thumb-bossum{background:linear-gradient(135deg,#3A5774,#1F3045);color:#D1F843;}
+.fac-name{font-family:var(--font-tight);font-size:16px;font-weight:600;}
+.fac-sub{font-size:12.5px;color:var(--ink-muted);margin-top:2px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.fac-sub .dot{width:3px;height:3px;border-radius:50%;background:var(--ink-subtle);}
+.fac-price{font-family:var(--font-mono);font-size:13px;font-weight:600;text-align:right;}
+.fac-price-sub{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted);margin-top:2px;}
+.fac-check{width:24px;height:24px;border-radius:50%;background:var(--brand-primary);color:#fff;display:none;align-items:center;justify-content:center;margin-left:8px;}
+.fac.selected .fac-check{display:flex;}
+.fac-right{display:flex;align-items:center;gap:8px;}
+.tier-banner{display:flex;align-items:center;gap:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(209,248,67,0.18),rgba(0,88,64,0.06));border:1px solid rgba(0,88,64,0.15);border-radius:14px;margin-bottom:18px;}
+.tier-meter{flex-shrink:0;width:56px;height:56px;position:relative;}
+.tier-meter svg{transform:rotate(-90deg);}
+.tier-meter-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--brand-primary-deep);}
+.tier-txt{flex:1;font-size:13px;color:var(--brand-primary-deep);line-height:1.4;}
+.tier-txt b{font-weight:600;}
+.tier-upgrade{background:var(--brand-primary);color:#fff;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;}
+.tier-upgrade:hover{background:var(--brand-primary-hover);}
+</style></head>
+<body>
+<div class="scrim"><div class="modal" data-screen-label="BookSession steg 1 Free">
+<div class="modal-head">
+<div>
+<div class="modal-eyebrow"><span>STEG 1 AV 3</span><span style="color:var(--ink-subtle);">·</span><span>Velg fasilitet</span></div>
+<h2 class="modal-title">Book økt</h2>
+</div>
+<div style="display:flex;gap:10px;align-items:center;">
+<div class="step-dots"><span class="step-dot active"></span><span class="step-dot"></span><span class="step-dot"></span></div>
+<button class="modal-x"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+</div>
+</div>
+
+<div class="modal-body">
+<div class="tier-banner">
+<div class="tier-meter">
+<svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="none" stroke="rgba(0,88,64,0.12)" stroke-width="5"/><circle cx="28" cy="28" r="22" fill="none" stroke="var(--brand-primary)" stroke-width="5" stroke-dasharray="69 200" stroke-linecap="round"/></svg>
+<div class="tier-meter-val">1/2</div>
+</div>
+<div class="tier-txt">
+<b>Du har brukt 1 av 2 bookinger</b> denne måneden (Free-konto).<br>
+<span style="color:var(--brand-primary);">Oppgrader til Pro for ubegrenset booking, prioritert kø og lavere coach-pris.</span>
+</div>
+<a class="tier-upgrade" href="#">Oppgrader <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+<span class="lbl" style="margin:0;">4 FASILITETER · NÆRMEST FØRST</span>
+</div>
+
+<div class="fac-list">
+<div class="fac selected">
+<div class="fac-thumb"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;"><rect x="4" y="6" width="24" height="18" rx="2"/><path d="M4 11h24M10 24v3M22 24v3"/><circle cx="16" cy="17" r="2.5"/></svg></div>
+<div><div class="fac-name">Mulligan Studio 1</div><div class="fac-sub">TrackMan 4 · innendørs<span class="dot"></span>Fredrikstad sentrum<span class="pill pill-dist">1,2 km</span></div></div>
+<div class="fac-right"><div><div class="fac-price">1 600 kr</div><div class="fac-price-sub">/time</div></div><div class="fac-check"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div></div>
+</div>
+
+<div class="fac">
+<div class="fac-thumb"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;"><rect x="4" y="6" width="24" height="18" rx="2"/><path d="M4 11h24M10 24v3M22 24v3"/><circle cx="16" cy="17" r="2.5"/></svg></div>
+<div><div class="fac-name">Mulligan Studio 2</div><div class="fac-sub">TrackMan 4 · innendørs<span class="dot"></span>Fredrikstad sentrum<span class="pill pill-dist">1,2 km</span></div></div>
+<div class="fac-right"><div><div class="fac-price">1 600 kr</div><div class="fac-price-sub">/time</div></div><div class="fac-check"></div></div>
+</div>
+
+<div class="fac">
+<div class="fac-thumb fac-thumb-gfgk"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;"><path d="M4 26c4-2 8-4 12-4s8 2 12 4"/><path d="M16 22V6M16 6l10 4-10 4"/></svg></div>
+<div><div class="fac-name">GFGK Range</div><div class="fac-sub">Utendørs range<span class="dot"></span>Glommen<span class="pill pill-dist">4,5 km</span></div></div>
+<div class="fac-right"><div><div class="fac-price" style="color:var(--success);">Gratis</div><div class="fac-price-sub">for medlemmer</div></div><div class="fac-check"></div></div>
+</div>
+
+<div class="fac">
+<div class="fac-thumb fac-thumb-bossum"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;"><rect x="6" y="8" width="20" height="14" rx="1.5"/><path d="M10 22v3M22 22v3M10 14h12"/></svg></div>
+<div><div class="fac-name">Bossum Sim-rom</div><div class="fac-sub">Simulator<span class="dot"></span>Bossum<span class="pill pill-dist">8,3 km</span></div></div>
+<div class="fac-right"><div><div class="fac-price">800 kr</div><div class="fac-price-sub">/time</div></div><div class="fac-check"></div></div>
+</div>
+</div>
+</div>
+
+<div class="modal-foot">
+<button class="btn-ghost">Avbryt</button>
+<div class="modal-foot-right">
+<span style="font-size:12px;color:var(--ink-muted);margin-right:8px;">Valgt: <b style="color:var(--ink);">Mulligan Studio 1</b></span>
+<button class="btn-pri">Neste <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+</div>
+</div>
+</div></div>
+</body></html>

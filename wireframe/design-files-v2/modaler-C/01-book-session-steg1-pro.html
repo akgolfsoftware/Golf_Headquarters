@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="nb"><head><meta charset="UTF-8"/><title>BookSessionModal · steg 1 · Pro</title>
+<link rel="stylesheet" href="../tokens.css"/>
+<link rel="stylesheet" href="../modal-shell.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"/>
+<style>
+.fac-list{display:flex;flex-direction:column;gap:10px;}
+.fac{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface-card);cursor:pointer;transition:border-color .15s, background .15s;}
+.fac:hover{border-color:var(--ink-subtle);}
+.fac.selected{border-color:var(--brand-primary);background:var(--brand-primary-soft);box-shadow:0 0 0 3px rgba(0,88,64,0.08);}
+.fac-thumb{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,var(--surface-alt),var(--line));display:flex;align-items:center;justify-content:center;color:var(--ink-muted);flex-shrink:0;position:relative;overflow:hidden;}
+.fac-thumb-gfgk{background:linear-gradient(135deg,#2A4F39,#1A3526);color:#D1F843;}
+.fac-thumb-bossum{background:linear-gradient(135deg,#3A5774,#1F3045);color:#D1F843;}
+.fac-name{font-family:var(--font-tight);font-size:16px;font-weight:600;color:var(--ink);}
+.fac-sub{font-size:12.5px;color:var(--ink-muted);margin-top:2px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.fac-sub .dot{width:3px;height:3px;border-radius:50%;background:var(--ink-subtle);}
+.fac-price{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--ink);text-align:right;}
+.fac-price-sub{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted);font-weight:500;margin-top:2px;}
+.fac-check{width:24px;height:24px;border-radius:50%;background:var(--brand-primary);color:#fff;display:none;align-items:center;justify-content:center;flex-shrink:0;margin-left:8px;}
+.fac.selected .fac-check{display:flex;}
+.fac-right{display:flex;align-items:center;gap:8px;}
+.sort-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.sort-row .lbl{margin-bottom:0;}
+.sort-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:11.5px;color:var(--ink-muted);border:1px solid var(--line);background:var(--surface);cursor:pointer;}
+.sort-chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+</style></head>
+<body>
+<div class="scrim"><div class="modal" data-screen-label="BookSession steg 1 Pro">
+<div class="modal-head">
+<div>
+<div class="modal-eyebrow"><span>STEG 1 AV 3</span><span style="color:var(--ink-subtle);">·</span><span>Velg fasilitet</span></div>
+<h2 class="modal-title">Book økt</h2>
+</div>
+<div style="display:flex;gap:10px;align-items:center;">
+<div class="step-dots"><span class="step-dot active"></span><span class="step-dot"></span><span class="step-dot"></span></div>
+<button class="modal-x" aria-label="Lukk"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+</div>
+</div>
+
+<div class="modal-body">
+<div class="sort-row">
+<span class="lbl">4 FASILITETER · SORTERT PÅ AVSTAND</span>
+<div style="display:flex;gap:6px;">
+<button class="sort-chip active"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Avstand</button>
+<button class="sort-chip">Pris</button>
+<button class="sort-chip">Ledighet</button>
+</div>
+</div>
+
+<div class="fac-list">
+
+<div class="fac selected">
+<div class="fac-thumb"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;"><rect x="4" y="6" width="24" height="18" rx="2"/><path d="M4 11h24M10 24v3M22 24v3"/><circle cx="16" cy="17" r="2.5"/></svg></div>
+<div>
+<div class="fac-name">Mulligan Studio 1</div>
+<div class="fac-sub">TrackMan 4 · innendørs<span class="dot"></span>Fredrikstad sentrum<span class="pill pill-dist">1,2 km</span></div>
+</div>
+<div class="fac-right">
+<div>
+<div class="fac-price">1 600 kr</div>
+<div class="fac-price-sub">/time</div>
+</div>
+<div class="fac-check"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+</div>
+</div>
+
+<div class="fac">
+<div class="fac-thumb"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;"><rect x="4" y="6" width="24" height="18" rx="2"/><path d="M4 11h24M10 24v3M22 24v3"/><circle cx="16" cy="17" r="2.5"/></svg></div>
+<div>
+<div class="fac-name">Mulligan Studio 2</div>
+<div class="fac-sub">TrackMan 4 · innendørs<span class="dot"></span>Fredrikstad sentrum<span class="pill pill-dist">1,2 km</span></div>
+</div>
+<div class="fac-right">
+<div>
+<div class="fac-price">1 600 kr</div>
+<div class="fac-price-sub">/time</div>
+</div>
+<div class="fac-check"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+</div>
+</div>
+
+<div class="fac">
+<div class="fac-thumb fac-thumb-gfgk"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;"><path d="M4 26c4-2 8-4 12-4s8 2 12 4"/><path d="M16 22V6"/><path d="M16 6l10 4-10 4"/></svg></div>
+<div>
+<div class="fac-name">GFGK Range</div>
+<div class="fac-sub">Utendørs range · 50 utslagsmatter<span class="dot"></span>Glommen<span class="pill pill-dist">4,5 km</span></div>
+</div>
+<div class="fac-right">
+<div>
+<div class="fac-price" style="color:var(--success);">Gratis</div>
+<div class="fac-price-sub">for medlemmer</div>
+</div>
+<div class="fac-check"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+</div>
+</div>
+
+<div class="fac">
+<div class="fac-thumb fac-thumb-bossum"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;"><rect x="6" y="8" width="20" height="14" rx="1.5"/><path d="M10 22v3M22 22v3M10 14h12"/></svg></div>
+<div>
+<div class="fac-name">Bossum Sim-rom</div>
+<div class="fac-sub">Simulator · privatrom<span class="dot"></span>Bossum<span class="pill pill-dist">8,3 km</span></div>
+</div>
+<div class="fac-right">
+<div>
+<div class="fac-price">800 kr</div>
+<div class="fac-price-sub">/time</div>
+</div>
+<div class="fac-check"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="modal-foot">
+<button class="btn-ghost">Avbryt</button>
+<div class="modal-foot-right">
+<span style="font-size:12px;color:var(--ink-muted);margin-right:8px;">Valgt: <b style="color:var(--ink);">Mulligan Studio 1</b></span>
+<button class="btn-pri">Neste <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+</div>
+</div>
+
+</div></div>
+</body></html>
