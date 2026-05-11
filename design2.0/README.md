@@ -1,126 +1,100 @@
-# Design 2.0 — Komplett pakke for Claude Design
+# Design 2.0 — 14 selvstendige mini-batch-mapper
 
-**Klar for kjøring i claude.ai/design.** Alt du trenger ligger her — system-kontekst, prompts, vedlegg, oppskrift.
-
-## Hva er dette?
-
-Etter forrige runde leverte Claude Design 60 % broken-skjermer (state-katalog). Denne pakka er kompromisset: ren mappestruktur, anti-state-katalog-instruks, 14 mini-batches → 69 produksjons-skjermer.
+**Hver mappe inneholder ALT du trenger** — system-filer, fonter, spec, prompt, vedlegg. Cmd+A → drag → ferdig.
 
 ## Mappestruktur
 
 ```
 design2.0/
-├── 00-system/          ← Lastes opp ÉN gang per Claude Design-sesjon
-│   ├── branding-style-guide.html
-│   ├── design-system-v2.md
-│   ├── felles-instruks.md       ← KRITISK anti-state-katalog
-│   └── fonts/ (20 .woff2)
-│
-├── 01-coachhq-A/       ← Plan-management (360-profil, Plan-builder, etc.)
-├── 02-coachhq-B/       ← Operative dashboards (Daglig brief, Facilities, Analytics-v2, Audit, Reports)
-├── 03-coachhq-C/       ← Kalender + lister (Kalender, Kapasitet, Lag-snitt, Meldinger, Oppfolgingsko)
-├── 04-coachhq-D/       ← Spesial (Talent + Spiller-detalj light)
-│
-├── 05-playerhq-A/      ← Mål-data (Baner, Mal-detalj, Leaderboard, Test-detalj, TrackMan-analyse)
-├── 06-playerhq-B/      ← Coach-samhandling (Coach-detalj, Coaching-planer, Coach-notes, etc.)
-├── 07-playerhq-C/      ← Wizards + kalender (Ny-okt-wizard, Onskeligokt, Compose, etc.)
-│
-├── 08-modal-A/         ← Plan-modaler (7 stk)
-├── 09-modal-B/         ← Live Session 2-4 (3 stk)
-├── 10-modal-C/         ← Booking-modaler (4 stk inkl. 2 nye)
-├── 11-modal-D/         ← Round/Stats/Agent (6 stk inkl. 2 nye)
-├── 12-modal-E/         ← Social/Tier/Other (7 stk inkl. 4 nye)
-│
-├── 13-redesign-A/      ← Live Session-flyten (5 skjermer som var broken)
-└── 14-redesign-B/      ← Agenter + pipeline (5 skjermer som var broken)
+├── 01-coachhq-A/   (31 filer)  ← CoachHQ Plan-management
+├── 02-coachhq-B/   (31 filer)  ← CoachHQ Operative dashboards
+├── 03-coachhq-C/   (31 filer)  ← CoachHQ Kalender + lister
+├── 04-coachhq-D/   (28 filer)  ← CoachHQ Talent + Spiller-detalj
+├── 05-playerhq-A/  (31 filer)  ← PlayerHQ Mål-data
+├── 06-playerhq-B/  (31 filer)  ← PlayerHQ Coach-samhandling
+├── 07-playerhq-C/  (31 filer)  ← PlayerHQ Wizards + kalender
+├── 08-modal-A/     (33 filer)  ← Plan-modaler (7)
+├── 09-modal-B/     (29 filer)  ← Live Session 2-4 (3)
+├── 10-modal-C/     (30 filer)  ← Booking-modaler (4)
+├── 11-modal-D/     (32 filer)  ← Round/Stats/Agent (6)
+├── 12-modal-E/     (33 filer)  ← Social/Tier/Other (7)
+├── 13-redesign-A/  (33 filer)  ← Live Session-flyten redesign (5)
+└── 14-redesign-B/  (35 filer)  ← Agenter + pipeline redesign (5)
 ```
 
-Hver mini-batch-mappe inneholder:
-- **`spec.md`** — konsolidert skjerm-spec
-- **`prompt.md`** — custom prompt å kopiere inn
-- **`vedlegg.txt`** — opplastings-liste (filstier til wireframe/-mappa)
-- **`vedlegg/`** — alle HTML-filer du skal laste opp (allerede kopiert hit)
+## Hva inneholder hver mappe
 
-Redesign-mappene har egne `prompt-1-...md`-filer per skjerm (kjøres én av gangen).
+23 systemfiler (identisk i alle mapper):
+- `branding-style-guide.html`
+- `design-system-v2.md`
+- `felles-instruks.md` ← KRITISK anti-state-katalog
+- 20 .woff2-fonter (Inter, Inter Tight, JetBrains Mono)
+
+Pluss batch-spesifikke filer:
+- `spec.md` — konsolidert skjerm-spec
+- `prompt.md` — custom prompt å kopiere inn
+- `vedlegg.txt` — opplastings-instruks
+- 5-7 HTML-filer (selve skjermene som skal designes)
+
+For redesign-mappene (13, 14): én `prompt-N-{navn}.md` per skjerm, ikke samlet prompt.md.
 
 ---
 
-## Slik bruker du
+## Slik kjører du én mini-batch (eks. 01-coachhq-A)
 
-### Start ny Claude Design-sesjon
+### Steg 1 — Last opp alle filer fra mappa
 
-**Last opp 23 systemfiler én gang per sesjon** (du kan beholde dem på tvers av mini-batches hvis sesjonen er aktiv):
+1. Åpne **`design2.0/01-coachhq-A/`** i Finder
+2. **Cmd+A** for å markere alle filer
+3. **Drag til Claude Design** sin opplastings-area
+4. Vent til alle 31 filer er lastet (kan ta 30 sek)
 
-1. `00-system/branding-style-guide.html`
-2. `00-system/design-system-v2.md`
-3. `00-system/felles-instruks.md` ← KRITISK
-4. Alle 20 .woff2-filer fra `00-system/fonts/`
+### Steg 2 — Lim inn prompten
 
-Skriv i Claude Design: *"Designsystem + felles-instruks lastet. Bekreft at du har lest."*
+1. Åpne `prompt.md` på maskinen din (eller bruk fil-previewet i Claude Design)
+2. Kopier **HELE PROMPT-blokken** (alt under `# PROMPT (kopier fra og med denne linja):`)
+3. Lim inn som første melding i Claude Design
+4. Send
 
-### Per mini-batch (eks. 01-coachhq-A)
+### Steg 3 — Claude Design genererer
 
-1. **Last opp 7 filer** fra mini-batch-mappa:
-   - `01-coachhq-A/spec.md`
-   - `01-coachhq-A/vedlegg/` — alle 5 HTML-filer
+5 skjermer kommer i bulk (ingen "neste"-gating). Sjekk per skjerm:
+- ÉN produksjons-skjerm (ikke state-katalog)
+- Konkret innhold (Markus, Anders, 12,4, "Putte-økt")
+- Norske tegn rendres korrekt
+- Maks 3 lime-elementer
 
-2. **Kopier promp:** Åpne `01-coachhq-A/prompt.md`, kopier hele PROMPT-blokken, lim inn som første melding
+### Steg 4 — Lim design-link tilbake
 
-3. **Generer:** Claude Design produserer 5 skjermer
-
-4. **Lim design-link tilbake** til Claude Code (meg) per godkjent skjerm — jeg verifiserer og oppdaterer tracker
+For hver godkjent skjerm: kopier design-link og lim tilbake til Claude Code (meg). Jeg verifiserer og oppdaterer tracker.
 
 ---
 
 ## Anbefalt 7-dagers plan
 
-| Dag | Mini-batches | Skjermer | Tid |
-|---|---|---|---|
-| 1 | `01-coachhq-A` + `02-coachhq-B` | 10 | 2 t |
-| 2 | `03-coachhq-C` + `04-coachhq-D` | 7 | 1,5 t |
-| 3 | `05-playerhq-A` + `06-playerhq-B` | 10 | 2 t |
-| 4 | `07-playerhq-C` + `08-modal-A` | 12 | 2 t |
-| 5 | `09-modal-B` + `10-modal-C` | 7 | 1,5 t |
-| 6 | `11-modal-D` + `12-modal-E` | 13 | 2 t |
-| 7 | `13-redesign-A` + `14-redesign-B` | 10 | 2 t |
-| **TOTAL** | **14 mini-batches** | **69 skjermer** | **13 t** |
+| Dag | Mappe(r) | Skjermer |
+|---|---|---|
+| 1 | `01-coachhq-A` + `02-coachhq-B` | 10 |
+| 2 | `03-coachhq-C` + `04-coachhq-D` | 7 |
+| 3 | `05-playerhq-A` + `06-playerhq-B` | 10 |
+| 4 | `07-playerhq-C` + `08-modal-A` | 12 |
+| 5 | `09-modal-B` + `10-modal-C` | 7 |
+| 6 | `11-modal-D` + `12-modal-E` | 13 |
+| 7 | `13-redesign-A` + `14-redesign-B` | 10 |
+| **TOTAL** | **14 mini-batches** | **69 skjermer** |
 
----
-
-## Sjekkliste per godkjent skjerm
-
-For HVER skjerm fra Claude Design, sjekk:
-
-- [ ] Det er ÉN skjerm, ikke state-katalog (`grep -c "cap-title\|data-screen-label"` skal være ≤ 1)
-- [ ] Fyller hele viewport (fullscreen-skjermer)
-- [ ] Inneholder konkret innhold (Markus, Anders, 12,4, "Putte-økt")
-- [ ] Ingen "God morgen, [Navn]" eller "Welcome back" — italic editorial istedet
-- [ ] Komma som desimal (12,4 ikke 12.4)
-- [ ] Mellomrom som tusenseparator (1 600 kr)
-- [ ] Maks 3 lime-elementer synlig
-- [ ] Norske tegn rendres korrekt (æ/ø/å)
-
-Hvis et punkt feiler: klikk "Needs work..." og gi feedback.
+Hver mini-batch tar 30-60 min i Claude Design. **~13 timer over 7 dager.**
 
 ---
 
 ## Stop-condition
 
-**Hvis første mini-batch (`01-coachhq-A`) leverer ≤ 3/5 rene produksjons-skjermer:**
+**Hvis `01-coachhq-A` leverer ≤ 3/5 rene produksjons-skjermer** (state-katalog dukker opp igjen):
 
-Vi bytter til **Plan B: direkte React-generering med Claude Code**. Sparer Anders flere dager med claude.ai/design-arbeid og gir produksjonskode direkte.
-
-Si fra etter at du har gjennomgått første batch.
+Si fra umiddelbart. Vi bytter til **Plan B: direkte React-generering med Claude Code**. Sparer flere dager.
 
 ---
 
-## Etter alle 14 mini-batches
+## Start nå
 
-Claude Code (Anders + jeg) konverterer godkjente HTML-skjermer til React-komponenter i:
-
-- `src/app/admin/*` (CoachHQ-skjermer)
-- `src/app/portal/*` (PlayerHQ-skjermer)
-- `src/components/modals/*` (alle modaler)
-- `src/app/live/*` (redesignede live/agent-skjermer)
-
-**Klart til å starte. Åpne `01-coachhq-A/prompt.md` og gå i gang.**
+**Åpne `design2.0/01-coachhq-A/`** og dra alle 31 filer inn i Claude Design. Følg stegene over.
