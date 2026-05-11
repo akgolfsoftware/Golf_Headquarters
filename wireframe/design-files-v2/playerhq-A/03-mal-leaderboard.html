@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leaderboard · PlayerHQ — AK Golf</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<style>
+  .lb-head { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; margin-bottom: 24px; }
+
+  /* Your-rank card */
+  .your-rank {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    padding: 22px 28px;
+    background: linear-gradient(135deg, #0A1F18 0%, #102C22 100%);
+    color: #fff;
+    border-radius: var(--radius-card);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .your-rank::before {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; width: 220px; height: 100%;
+    background: radial-gradient(circle at 80% 50%, rgba(209,248,67,0.18), transparent 60%);
+    pointer-events: none;
+  }
+  .your-rank .rank-num {
+    font-family: var(--font-mono);
+    font-size: 64px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--brand-accent);
+  }
+  .your-rank .rank-num span { color: rgba(255,255,255,0.4); font-size: 30px; font-weight: 400; margin-left: 4px; }
+  .your-rank .rank-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--brand-accent);
+    color: var(--brand-accent-on);
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 20px;
+    border: 3px solid #fff;
+  }
+  .your-rank .rank-info strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .your-rank .rank-info span {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    font-family: var(--font-mono);
+  }
+  .your-rank .rank-deltas {
+    display: flex; gap: 20px;
+    z-index: 1;
+  }
+  .your-rank .rank-deltas div {
+    display: flex; flex-direction: column;
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  .your-rank .rank-deltas div strong {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-top: 4px;
+  }
+  .your-rank .rank-deltas div strong.up { color: var(--brand-accent); }
+
+  /* Table */
+  .lb-table {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+  .lb-table-head {
+    display: grid;
+    grid-template-columns: 56px 1.6fr 70px 100px 80px 130px 50px;
+    gap: 16px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-alt);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-subtle);
+    font-weight: 700;
+  }
+  .lb-table-head > div { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  .lb-table-head .sortable:hover { color: var(--ink); }
+  .lb-table-head .sortable.active { color: var(--ink); }
+  .lb-table-head .sortable svg { width: 11px; height: 11px; stroke-width: 2; }
+
+  .lb-row {
+    display: grid;
+    grid-template-columns: 56px 1.6fr 70px 100px 80px 130px 50px;
+    gap: 16px;
+    padding: 14px 24px;
+    align-items: center;
+    border-bottom: 1px solid var(--line-soft);
+    transition: background var(--duration-micro) var(--ease-out);
+    cursor: pointer;
+    position: relative;
+  }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row:hover { background: var(--surface-alt); }
+  .lb-row.me {
+    background: var(--accent-bg);
+  }
+  .lb-row.me:hover { background: rgba(209,248,67,0.18); }
+  .lb-row.me::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--brand-accent);
+  }
+  .lb-rank {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .lb-rank .delta-arrow {
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .lb-rank .delta-arrow.up { color: var(--status-success); }
+  .lb-rank .delta-arrow.down { color: var(--status-danger); }
+  .lb-rank.gold svg { color: #D4A437; }
+  .lb-rank.silver svg { color: #A8A8A8; }
+  .lb-rank.bronze svg { color: #B87333; }
+  .lb-rank svg { width: 22px; height: 22px; stroke-width: 1.5; flex-shrink: 0; }
+
+  .lb-player {
+    display: flex; align-items: center; gap: 12px;
+    min-width: 0;
+  }
+  .lb-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    color: #fff;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .lb-player .name strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .lb-player .name span {
+    font-size: 11px;
+    color: var(--ink-subtle);
+    font-family: var(--font-mono);
+  }
+  .lb-player .you-pill {
+    display: inline-block;
+    background: var(--brand-accent);
+    color: var(--brand-accent-on);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-left: 6px;
+    vertical-align: 2px;
+  }
+
+  .lb-hcp {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .lb-sg {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .lb-sg.pos { color: var(--status-success); }
+  .lb-sg.neg { color: var(--status-danger); }
+
+  .lb-sessions {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .lb-mini-bar {
+    flex: 1; height: 4px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    max-width: 50px;
+  }
+  .lb-mini-bar > div {
+    height: 100%;
+    background: var(--brand-primary);
+    border-radius: 999px;
+  }
+
+  .lb-badges { display: flex; gap: 6px; }
+  .lb-badge {
+    width: 24px; height: 24px;
+    border-radius: 7px;
+    display: grid; place-items: center;
+    background: var(--surface-alt);
+    color: var(--ink-muted);
+  }
+  .lb-badge svg { width: 12px; height: 12px; stroke-width: 1.75; }
+  .lb-badge.streak { background: var(--status-warning-bg); color: var(--status-warning); }
+  .lb-badge.test { background: var(--brand-primary-soft); color: var(--brand-primary); }
+  .lb-badge.momentum { background: var(--accent-bg); color: var(--brand-accent-on); }
+
+  .lb-action {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: grid; place-items: center;
+    color: var(--ink-subtle);
+  }
+  .lb-action:hover { background: var(--surface-alt); color: var(--ink); }
+  .lb-action svg { width: 14px; height: 14px; stroke-width: 1.75; }
+
+  /* Filters */
+  .lb-filters {
+    display: flex; gap: 12px; align-items: center;
+    padding: 16px 20px;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* Top podium for global tab nice touch */
+  .leaders-mini {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body data-screen-label="03 Leaderboard">
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-mark">AK</div>
+      <div class="sidebar-brand-text"><strong>AK Golf</strong><span>player</span></div>
+    </div>
+    <div>
+      <div class="sidebar-section-label">Treningsdag</div>
+      <nav class="sidebar-nav">
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Hjem</a>
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Tren <span class="count">12</span></a>
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Logg</a>
+      </nav>
+    </div>
+    <div>
+      <div class="sidebar-section-label">Mål-data</div>
+      <nav class="sidebar-nav">
+        <a href="01-baner.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Baner <span class="count">8</span></a>
+        <a href="02-mal-detalj.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>HCP-mål</a>
+        <a href="03-mal-leaderboard.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Leaderboard</a>
+        <a href="04-test-detalj.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Tester <span class="count">14</span></a>
+        <a href="05-trackman.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20"/><path d="M12 2a15 15 0 0 0 0 20"/></svg>TrackMan</a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">MP</div>
+        <div class="sidebar-user-meta"><strong>Markus Pedersen</strong><span>HCP 12,4 · GFGK</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; padding:0 8px; justify-content:space-between;">
+        <span class="tier-badge pro">Pro</span>
+        <span style="font-size:11px; color:var(--ink-subtle); font-family:var(--font-mono);">12. juli</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <div class="lb-head">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 10px;">Mål · Leaderboard · Uke 19 · 5.–11. mai 2026</div>
+        <h1 class="hero-italic"><em>#7 av 24 i klubben, Markus.</em></h1>
+        <div class="hero-sub">
+          <span>GFGK · ukens rangering</span>
+          <span class="dot"></span>
+          <span class="pill success" style="padding:3px 10px;">↑ +2 plasseringer fra uke 18</span>
+          <span class="dot"></span>
+          <span>Neste oppdatering søndag 23:59</span>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab">Venner <span class="tab-count">8</span></button>
+        <button class="tab active">Klubb <span class="tab-count">24</span></button>
+        <button class="tab">Globalt <span class="tab-count">100</span></button>
+      </div>
+    </div>
+
+    <!-- Your rank card -->
+    <div class="your-rank">
+      <div class="rank-num">#7<span>/ 24</span></div>
+      <div class="rank-avatar">MP</div>
+      <div class="rank-info">
+        <strong>Markus Roinås Pedersen</strong>
+        <span>HCP 12,4 · Junior · medlem siden 2022</span>
+      </div>
+      <div class="rank-deltas">
+        <div>Δ Uke<strong class="up">↑ 2</strong></div>
+        <div>Ukens SG<strong>+0,8</strong></div>
+        <div>Økter<strong>9</strong></div>
+        <div>Streak<strong>14 dg</strong></div>
+        <div>
+          <button class="btn btn-primary btn-sm" style="margin-top: 12px;">Se mine stats →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="lb-filters">
+      <span style="font-size:11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-subtle); font-weight: 600;">Periode</span>
+      <button class="chip active">Denne uka</button>
+      <button class="chip">Måned</button>
+      <button class="chip">Sesong</button>
+      <div style="width:1px; height: 20px; background: var(--line);"></div>
+      <span style="font-size:11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-subtle); font-weight: 600;">Metric</span>
+      <button class="chip active">Ukens SG</button>
+      <button class="chip">Økter</button>
+      <button class="chip">Streak</button>
+      <button class="chip">Tester</button>
+      <button class="chip">Badges</button>
+      <div style="width:1px; height: 20px; background: var(--line);"></div>
+      <div class="search" style="padding: 6px 12px; max-width: 200px; flex: 1;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input placeholder="Søk spiller …">
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="lb-table">
+      <div class="lb-table-head">
+        <div class="sortable active">Rang <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div>Spiller</div>
+        <div class="sortable">HCP</div>
+        <div class="sortable">Ukens SG</div>
+        <div class="sortable">Økter</div>
+        <div>Badges</div>
+        <div></div>
+      </div>
+
+      <!-- Rank 1 -->
+      <div class="lb-row">
+        <div class="lb-rank gold">1
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        </div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#1A7D56;">EL</div>
+          <div class="name"><strong>Emil Larssen</strong><span>GFGK · Senior</span></div>
+        </div>
+        <div class="lb-hcp">+0,8</div>
+        <div class="lb-sg pos">+2,4</div>
+        <div class="lb-sessions">14<div class="lb-mini-bar"><div style="width:100%"></div></div></div>
+        <div class="lb-badges">
+          <div class="lb-badge streak" title="21-dagers streak"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+          <div class="lb-badge test"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <div class="lb-badge momentum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div>
+        </div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 2 -->
+      <div class="lb-row">
+        <div class="lb-rank silver">2
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+        </div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#005840;">SH</div>
+          <div class="name"><strong>Sofie Halvorsen</strong><span>GFGK · Dame</span></div>
+        </div>
+        <div class="lb-hcp">+1,9</div>
+        <div class="lb-sg pos">+1,8</div>
+        <div class="lb-sessions">12<div class="lb-mini-bar"><div style="width:85%"></div></div></div>
+        <div class="lb-badges">
+          <div class="lb-badge streak"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+          <div class="lb-badge momentum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div>
+        </div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 3 -->
+      <div class="lb-row">
+        <div class="lb-rank bronze">3
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+        </div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#B8852A;">JV</div>
+          <div class="name"><strong>Johan Vedeler</strong><span>GFGK · Junior</span></div>
+        </div>
+        <div class="lb-hcp">+3,2</div>
+        <div class="lb-sg pos">+1,5</div>
+        <div class="lb-sessions">11<div class="lb-mini-bar"><div style="width:78%"></div></div></div>
+        <div class="lb-badges">
+          <div class="lb-badge test"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+        </div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 4 -->
+      <div class="lb-row">
+        <div class="lb-rank">4 <span class="delta-arrow up">↑1</span></div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#4A6B5C;">KH</div>
+          <div class="name"><strong>Kari Hansen</strong><span>GFGK · Senior</span></div>
+        </div>
+        <div class="lb-hcp">+4,1</div>
+        <div class="lb-sg pos">+1,2</div>
+        <div class="lb-sessions">10<div class="lb-mini-bar"><div style="width:71%"></div></div></div>
+        <div class="lb-badges">
+          <div class="lb-badge momentum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div>
+        </div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 5 -->
+      <div class="lb-row">
+        <div class="lb-rank">5 <span class="delta-arrow down">↓2</span></div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#7A6B4A;">TR</div>
+          <div class="name"><strong>Tobias Rønning</strong><span>GFGK · Junior</span></div>
+        </div>
+        <div class="lb-hcp">+5,4</div>
+        <div class="lb-sg pos">+1,1</div>
+        <div class="lb-sessions">8<div class="lb-mini-bar"><div style="width:57%"></div></div></div>
+        <div class="lb-badges">
+          <div class="lb-badge streak"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+        </div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 6 -->
+      <div class="lb-row">
+        <div class="lb-rank">6 <span class="delta-arrow up">↑1</span></div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#6B4A6B;">LM</div>
+          <div class="name"><strong>Lise Moe</strong><span>GFGK · Dame</span></div>
+        </div>
+        <div class="lb-hcp">+9,8</div>
+        <div class="lb-sg pos">+0,9</div>
+        <div class="lb-sessions">10<div class="lb-mini-bar"><div style="width:71%"></div></div></div>
+        <div class="lb-badges">
+          <div class="lb-badge test"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg></div>
+          <div class="lb-badge momentum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div>
+        </div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 7 — Markus -->
+      <div class="lb-row me">
+        <div class="lb-rank">7 <span class="delta-arrow up">↑2</span></div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:var(--brand-primary); color: var(--brand-accent);">MP</div>
+          <div class="name"><strong>Markus Pedersen<span class="you-pill">Deg</span></strong><span>GFGK · Junior · 14-dg streak</span></div>
+        </div>
+        <div class="lb-hcp">12,4</div>
+        <div class="lb-sg pos">+0,8</div>
+        <div class="lb-sessions">9<div class="lb-mini-bar"><div style="width:64%"></div></div></div>
+        <div class="lb-badges">
+          <div class="lb-badge streak"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+          <div class="lb-badge test"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg></div>
+          <div class="lb-badge momentum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div>
+        </div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 8 -->
+      <div class="lb-row">
+        <div class="lb-rank">8 <span class="delta-arrow down">↓3</span></div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#4A6B7A;">SK</div>
+          <div class="name"><strong>Stein Kvam</strong><span>GFGK · Senior</span></div>
+        </div>
+        <div class="lb-hcp">+13,6</div>
+        <div class="lb-sg pos">+0,6</div>
+        <div class="lb-sessions">7<div class="lb-mini-bar"><div style="width:50%"></div></div></div>
+        <div class="lb-badges">
+          <div class="lb-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></div>
+        </div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 9 -->
+      <div class="lb-row">
+        <div class="lb-rank">9</div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#6B5C4A;">AB</div>
+          <div class="name"><strong>Anna Berg</strong><span>GFGK · Junior</span></div>
+        </div>
+        <div class="lb-hcp">+15,2</div>
+        <div class="lb-sg pos">+0,4</div>
+        <div class="lb-sessions">8<div class="lb-mini-bar"><div style="width:57%"></div></div></div>
+        <div class="lb-badges">
+          <div class="lb-badge test"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg></div>
+        </div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 10 -->
+      <div class="lb-row">
+        <div class="lb-rank">10 <span class="delta-arrow up">↑4</span></div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#4A5C6B;">PN</div>
+          <div class="name"><strong>Petter Nilsen</strong><span>GFGK · Junior</span></div>
+        </div>
+        <div class="lb-hcp">+16,8</div>
+        <div class="lb-sg neg">−0,1</div>
+        <div class="lb-sessions">11<div class="lb-mini-bar"><div style="width:78%"></div></div></div>
+        <div class="lb-badges">
+          <div class="lb-badge streak"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+        </div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 11 -->
+      <div class="lb-row">
+        <div class="lb-rank">11</div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#5C4A6B;">IS</div>
+          <div class="name"><strong>Ida Solberg</strong><span>GFGK · Dame</span></div>
+        </div>
+        <div class="lb-hcp">+18,4</div>
+        <div class="lb-sg neg">−0,3</div>
+        <div class="lb-sessions">6<div class="lb-mini-bar"><div style="width:43%"></div></div></div>
+        <div class="lb-badges"></div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+      <!-- Rank 12 -->
+      <div class="lb-row">
+        <div class="lb-rank">12 <span class="delta-arrow down">↓1</span></div>
+        <div class="lb-player">
+          <div class="lb-avatar" style="background:#6B6B4A;">OS</div>
+          <div class="name"><strong>Ola Strand</strong><span>GFGK · Senior</span></div>
+        </div>
+        <div class="lb-hcp">+22,0</div>
+        <div class="lb-sg neg">−0,5</div>
+        <div class="lb-sessions">5<div class="lb-mini-bar"><div style="width:35%"></div></div></div>
+        <div class="lb-badges"></div>
+        <button class="lb-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+
+    </div>
+
+    <div style="margin-top: 16px; display:flex; justify-content:space-between; align-items:center; padding: 14px 4px; color: var(--ink-subtle); font-size: 12px;">
+      <span>Viser 1–12 av 24 medlemmer</span>
+      <div style="display:flex; gap: 8px;">
+        <button class="btn btn-ghost btn-sm">← Forrige</button>
+        <button class="btn btn-secondary btn-sm">Vis flere →</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

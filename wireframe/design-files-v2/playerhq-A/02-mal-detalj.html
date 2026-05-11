@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HCP-mål · PlayerHQ — AK Golf</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<style>
+  .detail-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    padding: 24px;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    margin-bottom: 24px;
+  }
+  .detail-icon {
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    background: var(--status-success-bg);
+    color: var(--status-success);
+    display: grid; place-items: center;
+  }
+  .detail-icon svg { width: 32px; height: 32px; stroke-width: 1.75; }
+  .detail-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .detail-title em { font-style: italic; font-weight: 500; }
+  .detail-sub {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+  .detail-sub .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-disabled); align-self: center; }
+  .detail-actions { display: flex; gap: 8px; }
+
+  /* Stat pills row */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-pill {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .stat-pill-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-subtle);
+    font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .stat-pill-label svg { width: 12px; height: 12px; stroke-width: 2; }
+  .stat-pill-value {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-pill-delta {
+    font-size: 12px;
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono);
+  }
+
+  /* Tabs */
+  .tabs-strip {
+    display: flex;
+    gap: 24px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 24px;
+  }
+  .strip-tab {
+    padding: 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .strip-tab:hover { color: var(--ink); }
+  .strip-tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+  }
+  .strip-tab .count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--surface-alt);
+    color: var(--ink-muted);
+    padding: 2px 7px;
+    border-radius: 999px;
+  }
+
+  /* Status banner */
+  .status-banner {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--status-success-bg);
+    border: 1px solid rgba(26,125,86,0.2);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .status-banner .badge {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--status-success);
+    color: #fff;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .status-banner .badge svg { width: 18px; height: 18px; stroke-width: 2.25; }
+  .status-banner strong {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--status-success);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .status-banner p { font-size: 13px; color: var(--ink); margin: 0; }
+  .status-banner .deltas {
+    display: flex; gap: 18px;
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    flex-shrink: 0;
+  }
+  .status-banner .deltas span strong {
+    color: var(--status-success);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    display: block;
+  }
+
+  /* Chart card */
+  .chart-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .chart-head {
+    display: flex; justify-content: space-between; align-items: start;
+    margin-bottom: 24px;
+  }
+  .chart-head h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .chart-head p { font-size: 12px; color: var(--ink-subtle); }
+  .chart-legend {
+    display: flex; gap: 16px;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .chart-legend > div { display: flex; align-items: center; gap: 6px; }
+  .legend-line {
+    width: 18px; height: 2px;
+    background: var(--ink);
+    border-radius: 999px;
+  }
+  .legend-line.dashed {
+    background: transparent;
+    border-top: 2px dashed var(--brand-accent-on);
+    height: 0;
+  }
+  .legend-line.goal {
+    background: var(--status-warning);
+  }
+  .legend-line.proj {
+    background: var(--brand-accent);
+  }
+
+  .chart {
+    position: relative;
+    width: 100%;
+    height: 320px;
+  }
+
+  /* Sub-goals row */
+  .subgoals {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .subgoal {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: all var(--duration-micro) var(--ease-out);
+    cursor: pointer;
+  }
+  .subgoal:hover {
+    border-color: var(--ink-subtle);
+    box-shadow: var(--shadow-card);
+  }
+  .subgoal-head {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .subgoal-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--brand-primary-soft);
+    color: var(--brand-primary);
+    display: grid; place-items: center;
+  }
+  .subgoal-icon svg { width: 14px; height: 14px; stroke-width: 2; }
+  .subgoal-status {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .subgoal-status.done { background: var(--status-success-bg); color: var(--status-success); }
+  .subgoal-status.progress { background: var(--accent-bg); color: var(--brand-accent-on); }
+  .subgoal-status.risk { background: var(--status-warning-bg); color: var(--status-warning); }
+
+  .subgoal-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+    flex: 1;
+  }
+  .subgoal-progress {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .subgoal-bar {
+    height: 4px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .subgoal-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--brand-accent), var(--brand-accent-hover));
+    border-radius: 999px;
+  }
+  .subgoal-bar-fill.success { background: var(--status-success); }
+  .subgoal-bar-fill.warning { background: var(--status-warning); }
+  .subgoal-meta {
+    display: flex; justify-content: space-between;
+    font-size: 11px;
+    color: var(--ink-subtle);
+    font-family: var(--font-mono);
+  }
+
+  /* Right column blocks */
+  .layout-2col {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  .recent-rounds {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    padding: 24px;
+  }
+  .recent-rounds h3 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .round-row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .round-row:last-child { border-bottom: none; }
+  .round-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-subtle);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .round-date strong { display: block; color: var(--ink); font-size: 14px; font-weight: 500; }
+  .round-name {
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .round-name span { display: block; color: var(--ink-subtle); font-size: 11px; font-weight: 400; }
+  .round-score {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .round-hcp {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--status-success);
+    background: var(--status-success-bg);
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .round-hcp.up { color: var(--status-danger); background: var(--status-danger-bg); }
+
+  /* Sparkline mini */
+  .sparkline {
+    height: 32px;
+  }
+</style>
+</head>
+<body data-screen-label="02 Mål-detalj">
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-mark">AK</div>
+      <div class="sidebar-brand-text"><strong>AK Golf</strong><span>player</span></div>
+    </div>
+    <div>
+      <div class="sidebar-section-label">Treningsdag</div>
+      <nav class="sidebar-nav">
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Hjem</a>
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Tren <span class="count">12</span></a>
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Logg</a>
+      </nav>
+    </div>
+    <div>
+      <div class="sidebar-section-label">Mål-data</div>
+      <nav class="sidebar-nav">
+        <a href="01-baner.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Baner <span class="count">8</span></a>
+        <a href="02-mal-detalj.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>HCP-mål</a>
+        <a href="03-mal-leaderboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Leaderboard</a>
+        <a href="04-test-detalj.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Tester <span class="count">14</span></a>
+        <a href="05-trackman.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20"/><path d="M12 2a15 15 0 0 0 0 20"/></svg>TrackMan</a>
+      </nav>
+    </div>
+    <div>
+      <div class="sidebar-section-label">Sosial</div>
+      <nav class="sidebar-nav">
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Coach</a>
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Meg</a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">MP</div>
+        <div class="sidebar-user-meta"><strong>Markus Pedersen</strong><span>HCP 12,4 · GFGK</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; padding:0 8px; justify-content:space-between;">
+        <span class="tier-badge pro">Pro</span>
+        <span style="font-size:11px; color:var(--ink-subtle); font-family:var(--font-mono);">12. juli</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- Breadcrumb -->
+    <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-subtle); margin-bottom:16px; font-family:var(--font-mono);">
+      <a href="#" style="color:var(--ink-muted);">Mål</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;stroke-width:2;"><polyline points="9 18 15 12 9 6"/></svg>
+      <a href="#" style="color:var(--ink-muted);">Aktive mål</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;stroke-width:2;"><polyline points="9 18 15 12 9 6"/></svg>
+      <span style="color:var(--ink);">HCP til scratch</span>
+    </div>
+
+    <!-- Header card -->
+    <div class="detail-head">
+      <div class="detail-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+      </div>
+      <div>
+        <h1 class="detail-title">HCP-mål: <em>til scratch innen jul</em></h1>
+        <div class="detail-sub">
+          <span>Nåværende <strong style="color:var(--ink); font-family: var(--font-mono);">+2,4</strong></span>
+          <span class="dot"></span>
+          <span>Mål-dato 31.12.2026</span>
+          <span class="dot"></span>
+          <span class="pill success" style="padding:3px 10px;">På rute — forventet truffet</span>
+        </div>
+      </div>
+      <div class="detail-actions">
+        <button class="btn btn-ghost btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Eksporter PDF</button>
+        <button class="btn btn-secondary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><polygon points="18.5 2.5 21.5 5.5 12 15 9 15 9 12"/></svg>Endre mål</button>
+        <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Del med foresatte</button>
+      </div>
+    </div>
+
+    <!-- Stat pills -->
+    <div class="stat-row">
+      <div class="stat-pill">
+        <div class="stat-pill-label">Δ siste 6 mnd</div>
+        <div class="stat-pill-value delta-up">−1,8</div>
+        <div class="stat-pill-delta delta-up">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;stroke-width:2.5;"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+          Best siden okt 2024
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-pill-label">Sist runde</div>
+        <div class="stat-pill-value">+1,2</div>
+        <div class="stat-pill-delta delta-up">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;stroke-width:2.5;"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+          −0,3 vs. forrige
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-pill-label">Beste runde HCP</div>
+        <div class="stat-pill-value delta-up">−2,8</div>
+        <div class="stat-pill-delta delta-flat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;stroke-width:2;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          4. mai 2026
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-pill-label">Peer-snitt (HCP 10–15)</div>
+        <div class="stat-pill-value">+3,1</div>
+        <div class="stat-pill-delta delta-up">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;stroke-width:2.5;"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+          Du ligger 0,7 foran
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-strip">
+      <div class="strip-tab active">Trend</div>
+      <div class="strip-tab">Delmål <span class="count">5</span></div>
+      <div class="strip-tab">Sammenlikning</div>
+      <div class="strip-tab">Coach-notater <span class="count">3</span></div>
+    </div>
+
+    <!-- Status banner -->
+    <div class="status-banner">
+      <div class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div>
+        <strong>Forventet truffet 31. desember 2026</strong>
+        <p>Basert på trend siste 12 uker. Du må holde −0,15 HCP/mnd for å nå mål.</p>
+      </div>
+      <div class="deltas">
+        <span><strong>−0,21</strong>siste 12 uker</span>
+        <span><strong>+0,06</strong>buffer/mnd</span>
+        <span><strong>7,5 mnd</strong>til mål</span>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-card">
+      <div class="chart-head">
+        <div>
+          <h3>HCP-utvikling og projeksjon</h3>
+          <p>13 måneder · historikk siden november 2025 · projeksjon basert på trend</p>
+        </div>
+        <div class="chart-legend">
+          <div><span class="legend-line"></span>Historikk</div>
+          <div><span class="legend-line proj"></span>Projeksjon</div>
+          <div><span class="legend-line goal"></span>Mål 0,0</div>
+        </div>
+      </div>
+      <div class="chart">
+        <svg viewBox="0 0 1200 320" preserveAspectRatio="none" style="width:100%; height:100%;">
+          <!-- Y-axis grid lines (HCP is lower-is-better, axis inverted: top = low HCP) -->
+          <!-- y values: 0=-3, 60=0, 120=3, 180=6, 240=9, 300=12 -->
+          <defs>
+            <linearGradient id="histGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0A1F18" stop-opacity="0.08"/>
+              <stop offset="100%" stop-color="#0A1F18" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="projGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#D1F843" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#D1F843" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Grid lines + Y labels -->
+          <g font-family="JetBrains Mono" font-size="10" fill="#9C9990">
+            <line x1="50" y1="40" x2="1180" y2="40" stroke="#EFEDE6" stroke-width="1"/>
+            <text x="40" y="44" text-anchor="end">−3</text>
+            <line x1="50" y1="100" x2="1180" y2="100" stroke="#EFEDE6" stroke-width="1"/>
+            <text x="40" y="104" text-anchor="end">0</text>
+            <line x1="50" y1="160" x2="1180" y2="160" stroke="#EFEDE6" stroke-width="1"/>
+            <text x="40" y="164" text-anchor="end">3</text>
+            <line x1="50" y1="220" x2="1180" y2="220" stroke="#EFEDE6" stroke-width="1"/>
+            <text x="40" y="224" text-anchor="end">6</text>
+            <line x1="50" y1="280" x2="1180" y2="280" stroke="#EFEDE6" stroke-width="1"/>
+            <text x="40" y="284" text-anchor="end">9</text>
+          </g>
+
+          <!-- Goal line at HCP 0 (y=100) -->
+          <line x1="50" y1="100" x2="1180" y2="100" stroke="#B8852A" stroke-width="1.5" stroke-dasharray="2 4"/>
+          <text x="1180" y="92" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#B8852A" font-weight="500">Mål: HCP 0,0</text>
+
+          <!-- Divider between history and projection -->
+          <line x1="615" y1="20" x2="615" y2="300" stroke="#C4C0B8" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
+          <rect x="615" y="20" width="565" height="2" fill="url(#projGrad)" opacity="0.5"/>
+          <text x="608" y="32" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#5E5C57" font-weight="500">Nå</text>
+          <text x="622" y="32" font-family="JetBrains Mono" font-size="10" fill="#5E5C57" font-weight="500">Projeksjon →</text>
+
+          <!-- Historical area fill -->
+          <path d="M 80 200 L 130 195 L 180 205 L 230 188 L 280 178 L 330 170 L 380 160 L 430 145 L 480 152 L 530 140 L 580 130 L 615 124 L 615 300 L 80 300 Z"
+                fill="url(#histGrad)"/>
+          <!-- Historical line -->
+          <path d="M 80 200 L 130 195 L 180 205 L 230 188 L 280 178 L 330 170 L 380 160 L 430 145 L 480 152 L 530 140 L 580 130 L 615 124"
+                stroke="#0A1F18" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+          <!-- Projection area -->
+          <path d="M 615 124 L 700 116 L 780 108 L 860 100 L 940 92 L 1020 88 L 1100 90 L 1170 95 L 1170 300 L 615 300 Z"
+                fill="url(#projGrad)" opacity="0.55"/>
+          <!-- Projection line -->
+          <path d="M 615 124 L 700 116 L 780 108 L 860 100 L 940 92 L 1020 88 L 1100 90 L 1170 95"
+                stroke="#005840" stroke-width="2.5" fill="none" stroke-dasharray="5 4" stroke-linecap="round"/>
+          <!-- Projection confidence band -->
+          <path d="M 615 124 L 700 108 L 780 96 L 860 84 L 940 72 L 1020 64 L 1100 64 L 1170 68
+                   L 1170 122 L 1100 116 L 1020 112 L 940 112 L 860 116 L 780 120 L 700 124 L 615 124 Z"
+                fill="#D1F843" opacity="0.18"/>
+
+          <!-- Data points (history) -->
+          <g>
+            <circle cx="80"  cy="200" r="3.5" fill="#fff" stroke="#0A1F18" stroke-width="2"/>
+            <circle cx="130" cy="195" r="3.5" fill="#fff" stroke="#0A1F18" stroke-width="2"/>
+            <circle cx="180" cy="205" r="3.5" fill="#fff" stroke="#0A1F18" stroke-width="2"/>
+            <circle cx="230" cy="188" r="3.5" fill="#fff" stroke="#0A1F18" stroke-width="2"/>
+            <circle cx="280" cy="178" r="3.5" fill="#fff" stroke="#0A1F18" stroke-width="2"/>
+            <circle cx="330" cy="170" r="3.5" fill="#fff" stroke="#0A1F18" stroke-width="2"/>
+            <circle cx="380" cy="160" r="3.5" fill="#fff" stroke="#0A1F18" stroke-width="2"/>
+            <!-- Best round highlight at 4. mai -->
+            <circle cx="430" cy="145" r="6" fill="#D1F843" stroke="#0A1F18" stroke-width="2"/>
+            <circle cx="480" cy="152" r="3.5" fill="#fff" stroke="#0A1F18" stroke-width="2"/>
+            <circle cx="530" cy="140" r="3.5" fill="#fff" stroke="#0A1F18" stroke-width="2"/>
+            <circle cx="580" cy="130" r="3.5" fill="#fff" stroke="#0A1F18" stroke-width="2"/>
+            <!-- Current (large) -->
+            <circle cx="615" cy="124" r="7" fill="#0A1F18"/>
+            <circle cx="615" cy="124" r="3" fill="#D1F843"/>
+          </g>
+
+          <!-- Tooltip on 4. mai -->
+          <g transform="translate(430 145)">
+            <line x1="0" y1="-12" x2="0" y2="-40" stroke="#0A1F18" stroke-width="1"/>
+            <g transform="translate(-90 -110)">
+              <rect width="180" height="62" rx="10" fill="#0A1F18"/>
+              <text x="14" y="20" font-family="Inter Tight" font-size="11" fill="#9C9990" font-weight="500" letter-spacing="0.05em">4. MAI 2026 · BORRE</text>
+              <text x="14" y="40" font-family="JetBrains Mono" font-size="18" fill="#D1F843" font-weight="500">−2,8</text>
+              <text x="60" y="40" font-family="Inter" font-size="11" fill="#fff">Beste HCP</text>
+              <text x="14" y="54" font-family="Inter" font-size="10" fill="#9C9990">Brutto 74 · Δ −0,4 vs. forrige</text>
+            </g>
+          </g>
+
+          <!-- X-axis labels (months) -->
+          <g font-family="JetBrains Mono" font-size="10" fill="#9C9990">
+            <text x="80"   y="312" text-anchor="middle">NOV</text>
+            <text x="180"  y="312" text-anchor="middle">DES</text>
+            <text x="280"  y="312" text-anchor="middle">JAN</text>
+            <text x="380"  y="312" text-anchor="middle">FEB</text>
+            <text x="480"  y="312" text-anchor="middle">MAR</text>
+            <text x="580"  y="312" text-anchor="middle">APR</text>
+            <text x="700"  y="312" text-anchor="middle" fill="#0A1F18" font-weight="500">MAI</text>
+            <text x="780"  y="312" text-anchor="middle">JUN</text>
+            <text x="860"  y="312" text-anchor="middle">JUL</text>
+            <text x="940"  y="312" text-anchor="middle">AUG</text>
+            <text x="1020" y="312" text-anchor="middle">SEP</text>
+            <text x="1100" y="312" text-anchor="middle">OKT</text>
+            <text x="1170" y="312" text-anchor="end" fill="#B8852A" font-weight="500">DES MÅL</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Sub-goals -->
+    <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom: 14px;">
+      <h2 style="font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.01em;">Delmål</h2>
+      <a href="#" style="font-size: 13px; font-weight: 600; color: var(--brand-primary); display:inline-flex; align-items:center; gap: 4px;">Se alle 5 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke-width:2;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+    </div>
+
+    <div class="subgoals">
+      <!-- Subgoal 1: Score < 75 -->
+      <div class="subgoal">
+        <div class="subgoal-head">
+          <div class="subgoal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <span class="subgoal-status progress">2 / 3</span>
+        </div>
+        <div class="subgoal-title">Score &lt; 75 i 3 runder på rad</div>
+        <div class="subgoal-progress">
+          <div class="subgoal-bar"><div class="subgoal-bar-fill" style="width:66%"></div></div>
+          <div class="subgoal-meta"><span>Sist: 74 ✓</span><span>1 igjen</span></div>
+        </div>
+      </div>
+      <!-- Subgoal 2: Driver carry done -->
+      <div class="subgoal">
+        <div class="subgoal-head">
+          <div class="subgoal-icon" style="background: var(--status-success-bg); color: var(--status-success);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="subgoal-status done">Ferdig</span>
+        </div>
+        <div class="subgoal-title">TrackMan Driver carry &gt; 270 m</div>
+        <div class="subgoal-progress">
+          <div class="subgoal-bar"><div class="subgoal-bar-fill success" style="width:100%"></div></div>
+          <div class="subgoal-meta"><span>Truffet 05.05.26</span><span>275 m</span></div>
+        </div>
+      </div>
+      <!-- Subgoal 3: Sand-test -->
+      <div class="subgoal">
+        <div class="subgoal-head">
+          <div class="subgoal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+          </div>
+          <span class="subgoal-status progress">På rute</span>
+        </div>
+        <div class="subgoal-title">Sand-test 30 m: nå 8,0 av 10</div>
+        <div class="subgoal-progress">
+          <div class="subgoal-bar"><div class="subgoal-bar-fill" style="width:68%"></div></div>
+          <div class="subgoal-meta"><span>6,8 nå</span><span>Mål 8,0</span></div>
+        </div>
+      </div>
+      <!-- Subgoal 4: SG-Total at risk -->
+      <div class="subgoal">
+        <div class="subgoal-head">
+          <div class="subgoal-icon" style="background: var(--status-warning-bg); color: var(--status-warning);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <span class="subgoal-status risk">I fare</span>
+        </div>
+        <div class="subgoal-title">18-hulls SG-Total &gt; +1,0</div>
+        <div class="subgoal-progress">
+          <div class="subgoal-bar"><div class="subgoal-bar-fill warning" style="width:48%"></div></div>
+          <div class="subgoal-meta"><span>+0,4 snitt</span><span>Mål +1,0</span></div>
+        </div>
+      </div>
+      <!-- Subgoal 5: Klubbmesterskap -->
+      <div class="subgoal">
+        <div class="subgoal-head">
+          <div class="subgoal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+          </div>
+          <span class="subgoal-status progress">Pågår</span>
+        </div>
+        <div class="subgoal-title">Topp 3 i klubbmesterskap juni</div>
+        <div class="subgoal-progress">
+          <div class="subgoal-bar"><div class="subgoal-bar-fill" style="width:30%"></div></div>
+          <div class="subgoal-meta"><span>Påmeldt</span><span>14.06.26</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-col: recent rounds + coach note -->
+    <div class="layout-2col" style="margin-top: 32px;">
+      <div class="recent-rounds">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+          <h3>Siste 6 runder · som bidrar til HCP</h3>
+          <a href="#" style="font-size: 12px; color: var(--brand-primary); font-weight: 600;">Logg →</a>
+        </div>
+
+        <div class="round-row">
+          <div class="round-date">09.<strong>mai</strong></div>
+          <div class="round-name">GFGK<span>Hjemmebane · 18 hull</span></div>
+          <div class="round-score">78 <span style="font-size:11px; color:var(--ink-subtle);">(+8)</span></div>
+          <div class="round-hcp">−0,2</div>
+        </div>
+        <div class="round-row">
+          <div class="round-date">04.<strong>mai</strong></div>
+          <div class="round-name">Borre <span class="pill accent" style="font-size:9px; padding:1px 6px; margin-left:6px;">PR</span><span>Sand-test PR · 18 hull</span></div>
+          <div class="round-score">74 <span style="font-size:11px; color:var(--status-success);">(−1)</span></div>
+          <div class="round-hcp">−0,4</div>
+        </div>
+        <div class="round-row">
+          <div class="round-date">28.<strong>apr</strong></div>
+          <div class="round-name">Oslo GK<span>Park · 18 hull</span></div>
+          <div class="round-score">79 <span style="font-size:11px; color:var(--ink-subtle);">(+7)</span></div>
+          <div class="round-hcp up">+0,1</div>
+        </div>
+        <div class="round-row">
+          <div class="round-date">22.<strong>apr</strong></div>
+          <div class="round-name">Larvik<span>Links · 18 hull</span></div>
+          <div class="round-score">78 <span style="font-size:11px; color:var(--ink-subtle);">(+8)</span></div>
+          <div class="round-hcp">−0,1</div>
+        </div>
+        <div class="round-row">
+          <div class="round-date">15.<strong>apr</strong></div>
+          <div class="round-name">Hauger<span>Skog · 18 hull</span></div>
+          <div class="round-score">82 <span style="font-size:11px; color:var(--ink-subtle);">(+10)</span></div>
+          <div class="round-hcp up">+0,3</div>
+        </div>
+        <div class="round-row">
+          <div class="round-date">08.<strong>apr</strong></div>
+          <div class="round-name">Stiklestad<span>Resort · 18 hull</span></div>
+          <div class="round-score">84 <span style="font-size:11px; color:var(--ink-subtle);">(+12)</span></div>
+          <div class="round-hcp up">+0,2</div>
+        </div>
+      </div>
+
+      <!-- Coach note -->
+      <div style="display:flex; flex-direction:column; gap: 16px;">
+        <div style="background: var(--surface-card); border: 1px solid var(--line); border-radius: var(--radius-card); padding: 24px;">
+          <div style="display:flex; gap: 12px; align-items:start; margin-bottom: 16px;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--brand-primary); color: var(--brand-accent); display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: 14px; flex-shrink:0;">AK</div>
+            <div>
+              <div style="font-weight: 600; font-size: 14px;">Anders Kristiansen</div>
+              <div style="font-size: 11px; color: var(--ink-subtle); font-family: var(--font-mono);">Hovedcoach · 07.05.26</div>
+            </div>
+          </div>
+          <p style="font-size: 14px; line-height: 1.5; color: var(--ink); margin-bottom: 16px;">Trenden fra 4. mai er reell — bunkerteknikken har låst seg i konsistent kontaktpunkt. Hold puttetempoet, vi tar én økt på 3-meterspar denne uka for å sikre delmålet på SG-Total.</p>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm">Svar</button>
+            <button class="btn btn-ghost btn-sm">Book økt →</button>
+          </div>
+        </div>
+
+        <div style="background: var(--accent-bg); border: 1px solid var(--line); border-radius: var(--radius-card); padding: 20px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom: 8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;stroke-width:2; color: var(--brand-primary);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <strong style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand-primary); font-weight: 700;">Innsikt</strong>
+          </div>
+          <p style="font-size: 13px; line-height: 1.5; color: var(--ink);">Du forbedrer HCP 2,3× raskere i mai vs. snitt-spiller med samme nivå. Hovedfaktor: sand-treningen siden mars.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

@@ -23,32 +23,63 @@ const PILOTS: Pilot[] = [
     status: "ferdig",
   },
   {
-    url: "/hub-v2",
-    title: "CoachHQ — Hub (Sprint 0)",
-    source: "Original Sprint 0-pilot",
-    description: "Eldre Hub-pilot som ble bygd direkte fra wireframe — ikke fra Claude Design",
-    status: "ferdig",
-  },
-  {
     url: "/plan-bygger-demo",
-    title: "CoachHQ — Plan-bygger",
+    title: "CoachHQ — Plan-bygger (steg 4)",
     source: "coachhq-A/02-plan-bygger.html",
-    description: "6-step wizard med pyramide-slidere og agent-forslag-banner",
-    status: "pågående",
+    description:
+      "6-step wizard. Naviger til /1, /2, /3, /4, /5, /6 for hvert steg (Player-pick → Periode → Faser → Allokering → Ukentlig → Confirm)",
+    status: "ferdig",
   },
   {
     url: "/daglig-brief-demo",
     title: "CoachHQ — Daglig brief",
     source: "01-daglig-brief-default.html",
     description: "Morgenrapport for coach med dagens fokus og prioriteringer",
-    status: "pågående",
+    status: "ferdig",
   },
   {
     url: "/kalender-demo",
     title: "CoachHQ — Kalender (uke)",
     source: "01-kalender-uke.html",
     description: "Uke-kalender med 7 kolonner og time-blokker",
-    status: "pågående",
+    status: "ferdig",
+  },
+  {
+    url: "/baner-demo",
+    title: "PlayerHQ — Baner",
+    source: "playerhq-A/01-baner.html",
+    description:
+      "Norge-kart med 14 pins + 6 bane-cards (spilte + anbefalte). Tier-gating: Pro for AI-anbefaling",
+    status: "ferdig",
+  },
+  {
+    url: "/mal-detalj-demo",
+    title: "PlayerHQ — Mål-detalj (HCP)",
+    source: "playerhq-A/02-mal-detalj.html",
+    description:
+      "HCP-mål til scratch. Projeksjonsgraf NOV–DES, 5 delmål, siste 6 runder, Pro-låst innsikt",
+    status: "ferdig",
+  },
+  {
+    url: "/leaderboard-demo",
+    title: "PlayerHQ — Leaderboard",
+    source: "playerhq-A/03-mal-leaderboard.html",
+    description: "Venner/Klubb/Globalt-tabs (Globalt Pro-låst). 12 spillere, badges, Markus #7",
+    status: "ferdig",
+  },
+  {
+    url: "/test-detalj-demo",
+    title: "PlayerHQ — Test-detalj",
+    source: "playerhq-A/04-test-detalj.html",
+    description: "Bunker u&d. Trend-graf, attempts-tabell, sticky drawer med protokoll",
+    status: "ferdig",
+  },
+  {
+    url: "/trackman-demo",
+    title: "PlayerHQ — TrackMan-analyse",
+    source: "playerhq-A/05-trackman.html",
+    description: "Pro-only. 8 køller, trajectory-SVG, dispersion-pattern, compare-bars",
+    status: "ferdig",
   },
 ];
 

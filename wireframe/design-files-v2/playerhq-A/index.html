@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PlayerHQ · 5 skjermer — AK Golf</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<style>
+  body { background: var(--surface-app); padding: 64px 48px; }
+  .wrap { max-width: 1320px; margin: 0 auto; }
+  header.intro {
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px;
+    padding-bottom: 48px; border-bottom: 1px solid var(--line);
+    margin-bottom: 48px; align-items: end;
+  }
+  h1.big {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 6vw, 84px);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin: 16px 0 20px;
+  }
+  h1.big em {
+    font-style: italic;
+    color: var(--brand-primary);
+    font-weight: 500;
+  }
+  .intro p {
+    font-size: 16px; line-height: 1.6;
+    color: var(--ink-muted);
+    max-width: 56ch;
+  }
+  .intro-side {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-subtle);
+    line-height: 1.7;
+  }
+  .intro-side .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--line-soft); }
+  .intro-side .row b { color: var(--ink); font-weight: 500; }
+  .intro-side .row:last-child { border-bottom: none; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+  .grid > a:nth-child(5) { grid-column: 1 / -1; }
+
+  .card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
+  }
+  .card-link:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-color: var(--brand-primary);
+  }
+  .card-link .preview {
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #0A1F18 0%, #102C22 100%);
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+  .card-link .preview .deco {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    color: var(--brand-accent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .card-link .preview svg.bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.55; }
+  .card-link .preview .num-badge {
+    position: absolute;
+    top: 20px; left: 24px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--brand-accent);
+    letter-spacing: 0.10em;
+    font-weight: 600;
+    z-index: 2;
+  }
+  .card-link .preview .deco-title {
+    position: absolute;
+    bottom: 20px; left: 24px; right: 24px;
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    z-index: 2;
+  }
+  .card-link .preview .deco-title em {
+    font-style: italic;
+    color: var(--brand-accent);
+    font-weight: 500;
+  }
+  .body {
+    padding: 22px 24px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+    align-items: start;
+  }
+  .body h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .body p { font-size: 13px; line-height: 1.55; color: var(--ink-muted); margin: 0; }
+  .body .arrow {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    color: var(--ink);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .card-link:hover .arrow { background: var(--brand-primary); color: var(--brand-accent); }
+  .body .arrow svg { width: 14px; height: 14px; stroke-width: 2; }
+
+  .tag-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .tag-row span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--surface-alt);
+    color: var(--ink-muted);
+    font-weight: 600;
+  }
+  .tag-row span.primary { background: var(--brand-primary-soft); color: var(--brand-primary); }
+  .tag-row span.accent { background: var(--accent-bg); color: var(--brand-accent-on); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="intro">
+    <div>
+      <div class="eyebrow">PlayerHQ · spiller-app · høyhøyfidelity-utkast · 11. mai 2026</div>
+      <h1 class="big"><em>5 nye skjermer</em><br>for spiller-appen.</h1>
+      <p>Bygget på AK Golfs eksisterende designsystem (Inter Tight / Inter / JetBrains Mono, primær #005840, akktent #D1F843) og spec-malene <span style="font-family: var(--font-mono); font-size: 12px; color: var(--brand-primary);">mal-detalj</span> / <span style="font-family: var(--font-mono); font-size: 12px; color: var(--brand-primary);">mal-leaderboard</span>. Alle skjermer er bygget i samme rammeverk — sidebar, hero-eyebrow + italic-tittel, korthold-eyebrow, og en bento av kort med diagrammer, lister og agent-funn.</p>
+    </div>
+    <div class="intro-side">
+      <div class="row"><span>SPILLER</span><b>Markus Pedersen · 16 år · HCP 12,4</b></div>
+      <div class="row"><span>KLUBB</span><b>GFGK · A2-segment</b></div>
+      <div class="row"><span>TIER</span><b>Pro (utløper 12. juli)</b></div>
+      <div class="row"><span>FONT-PAR</span><b>Inter Tight · Inter · JBM</b></div>
+      <div class="row"><span>SKJERMER</span><b>5 stk · 1440 designbredde</b></div>
+      <div class="row"><span>STATUS</span><b style="color: var(--brand-primary);">Klar for review</b></div>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <a class="card-link" href="01-baner.html">
+      <div class="preview" style="background: linear-gradient(135deg, #0A1F18 0%, #1B4A33 100%);">
+        <svg class="bg" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
+          <circle cx="120" cy="80" r="50" fill="none" stroke="#D1F843" stroke-width="1.5" opacity="0.6"/>
+          <circle cx="120" cy="80" r="28" fill="none" stroke="#D1F843" stroke-width="1.2" opacity="0.4"/>
+          <circle cx="120" cy="80" r="8" fill="#D1F843"/>
+          <circle cx="260" cy="130" r="6" fill="#D1F843" opacity="0.7"/>
+          <circle cx="340" cy="60" r="5" fill="#D1F843" opacity="0.5"/>
+          <path d="M 120 80 L 260 130" stroke="#D1F843" stroke-width="1" stroke-dasharray="3,3" opacity="0.45"/>
+          <path d="M 0 180 Q 100 160 200 175 T 400 165" stroke="#D1F843" stroke-width="1" opacity="0.2" fill="none"/>
+        </svg>
+        <span class="num-badge">SKJERM 01</span>
+        <span class="deco-title"><em>Baner</em> i nærheten</span>
+      </div>
+      <div class="body">
+        <div>
+          <h3>Banevelger med kart og tabs</h3>
+          <p>Hjemmebane GFGK pinned, tre tabs (kart / favoritter / handikap-egnet) og 8 bane-kort med detaljer, status og avstand.</p>
+          <div class="tag-row">
+            <span class="primary">Kart</span>
+            <span>Tabs · 3</span>
+            <span>Bane-kort · 8</span>
+            <span class="accent">A2-egnet</span>
+          </div>
+        </div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+    </a>
+
+    <a class="card-link" href="02-mal-detalj.html">
+      <div class="preview" style="background: linear-gradient(135deg, #102C22 0%, #1B4A33 100%);">
+        <svg class="bg" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
+          <polyline points="40,170 100,150 160,130 220,115 280,95 340,75" fill="none" stroke="#D1F843" stroke-width="2.5" stroke-linecap="round"/>
+          <polyline points="40,170 100,150 160,130 220,115 280,95 340,75 340,200 40,200" fill="#D1F843" opacity="0.10"/>
+          <line x1="20" y1="60" x2="380" y2="60" stroke="#D1F843" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>
+          <circle cx="280" cy="95" r="6" fill="#D1F843"/>
+          <circle cx="340" cy="75" r="5" fill="#D1F843" opacity="0.6"/>
+          <text x="20" y="50" fill="#D1F843" opacity="0.6" font-family="JetBrains Mono" font-size="9" letter-spacing="1">MÅL 10,0</text>
+        </svg>
+        <span class="num-badge">SKJERM 02</span>
+        <span class="deco-title"><em>HCP-mål</em> 10,0 i 2026</span>
+      </div>
+      <div class="body">
+        <div>
+          <h3>Mål-detalj med HCP-trend</h3>
+          <p>Stor trend-graf 12,4 → 10,0 med projeksjon, milepæl-tidslinje, hva som gjenstår, og agent-innsikt fra de siste 30 dagene.</p>
+          <div class="tag-row">
+            <span class="primary">SVG-graf</span>
+            <span>Milepæler · 4</span>
+            <span>Projeksjon</span>
+            <span class="accent">Agent-funn</span>
+          </div>
+        </div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+    </a>
+
+    <a class="card-link" href="03-mal-leaderboard.html">
+      <div class="preview" style="background: linear-gradient(135deg, #0A1F18 0%, #1A3A2A 100%);">
+        <svg class="bg" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
+          <rect x="40" y="40" width="320" height="20" rx="4" fill="#D1F843" opacity="0.10"/>
+          <rect x="40" y="68" width="320" height="20" rx="4" fill="#D1F843" opacity="0.15"/>
+          <rect x="40" y="96" width="320" height="22" rx="4" fill="#D1F843" opacity="0.35"/>
+          <rect x="40" y="126" width="320" height="20" rx="4" fill="#D1F843" opacity="0.12"/>
+          <rect x="40" y="154" width="320" height="20" rx="4" fill="#D1F843" opacity="0.08"/>
+          <text x="48" y="55" fill="#D1F843" font-family="JetBrains Mono" font-size="10" opacity="0.7">1</text>
+          <text x="48" y="83" fill="#D1F843" font-family="JetBrains Mono" font-size="10" opacity="0.8">2</text>
+          <text x="48" y="111" fill="#D1F843" font-family="JetBrains Mono" font-size="12" font-weight="700">7 · DU ★</text>
+          <text x="48" y="141" fill="#D1F843" font-family="JetBrains Mono" font-size="10" opacity="0.55">8</text>
+          <text x="48" y="169" fill="#D1F843" font-family="JetBrains Mono" font-size="10" opacity="0.5">9</text>
+        </svg>
+        <span class="num-badge">SKJERM 03</span>
+        <span class="deco-title"><em>Leaderboard</em> #7 av 24</span>
+      </div>
+      <div class="body">
+        <div>
+          <h3>Mål-leaderboard, klubb-tab</h3>
+          <p>«Din rangering»-banner, filtre på periode/metric, 12 spillere i tabell, badges og delta-pil. Markus er highlighted i radmidten.</p>
+          <div class="tag-row">
+            <span class="primary">Tabell · 12</span>
+            <span>Venner / Klubb / Globalt</span>
+            <span class="accent">Du highlighted</span>
+          </div>
+        </div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+    </a>
+
+    <a class="card-link" href="04-test-detalj.html">
+      <div class="preview" style="background: linear-gradient(135deg, #1A1408 0%, #2A2010 100%);">
+        <svg class="bg" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
+          <circle cx="200" cy="110" r="78" fill="none" stroke="#B8852A" stroke-width="3" opacity="0.35"/>
+          <circle cx="200" cy="110" r="78" fill="none" stroke="#D1F843" stroke-width="3" stroke-dasharray="294 200" transform="rotate(-90 200 110)"/>
+          <text x="200" y="105" text-anchor="middle" fill="#D1F843" font-family="JetBrains Mono" font-size="28" font-weight="600">6/10</text>
+          <text x="200" y="128" text-anchor="middle" fill="#D1F843" opacity="0.6" font-family="JetBrains Mono" font-size="9" letter-spacing="2">MÅL 8/10</text>
+        </svg>
+        <span class="num-badge">SKJERM 04</span>
+        <span class="deco-title"><em>Bunker u&d</em> · sand-test</span>
+      </div>
+      <div class="body">
+        <div>
+          <h3>Test-detalj med protokoll-drawer</h3>
+          <p>Sand-test 10 forsøk: trend, sist/best/mål-statbar, 4-forsøk-tabell med lie-fordeling og coach-notater, agent-funn og høyre drawer med 5-stegs protokoll.</p>
+          <div class="tag-row">
+            <span class="primary">Trend-graf</span>
+            <span>Tabell · 4</span>
+            <span>Lie-prikker</span>
+            <span class="accent">Protokoll-drawer</span>
+          </div>
+        </div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+    </a>
+
+    <a class="card-link" href="05-trackman.html">
+      <div class="preview" style="aspect-ratio: 32/9; background: linear-gradient(135deg, #0A1F18 0%, #102C22 50%, #1B4A33 100%);">
+        <svg class="bg" viewBox="0 0 800 220" preserveAspectRatio="xMidYMid slice">
+          <path d="M 60 200 Q 280 60 540 200" fill="none" stroke="#D1F843" stroke-width="2" opacity="0.20"/>
+          <path d="M 60 200 Q 290 80 560 200" fill="none" stroke="#D1F843" stroke-width="2" opacity="0.40"/>
+          <path d="M 60 200 Q 310 100 580 200" fill="none" stroke="#D1F843" stroke-width="2.5" opacity="0.65"/>
+          <path d="M 60 200 Q 330 110 600 200" fill="none" stroke="#D1F843" stroke-width="3"/>
+          <circle cx="600" cy="200" r="6" fill="#D1F843"/>
+          <line x1="60" y1="200" x2="780" y2="200" stroke="#D1F843" stroke-width="1" opacity="0.4"/>
+          <text x="650" y="195" fill="#D1F843" font-family="JetBrains Mono" font-size="10" font-weight="600">+8 m carry</text>
+        </svg>
+        <span class="num-badge">SKJERM 05 · PRO</span>
+        <span class="deco-title"><em>Min sving</em> · TrackMan over tid</span>
+      </div>
+      <div class="body">
+        <div>
+          <h3>TrackMan-analyse, trend over økter</h3>
+          <p>Pro-tier trendvisning: kølle-tabs (Driver–Putter), trajectory-overlay (mars → nå), 5 KPI-spark-kort, dispersion-heatmap, sammenlikning mot baseline/peer/pro, og agent-funn-drawer fra coach Anders K.</p>
+          <div class="tag-row">
+            <span class="primary">Pro-tier</span>
+            <span>8 kølle-tabs</span>
+            <span>5 KPI-spark</span>
+            <span>Dispersion-heatmap</span>
+            <span class="accent">Coach-anbefaling</span>
+          </div>
+        </div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+    </a>
+
+  </div>
+
+  <footer style="margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 11px; color: var(--ink-subtle); text-transform: uppercase; letter-spacing: 0.08em;">
+    <span>AK Golf · PlayerHQ · v0.5</span>
+    <span>5 skjermer · klar for review</span>
+    <span>11. mai 2026</span>
+  </footer>
+</div>
+
+</body>
+</html>

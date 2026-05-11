@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TrackMan-analyse · PlayerHQ — AK Golf</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<style>
+  .tm-head { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; margin-bottom: 16px; }
+
+  /* Club selector */
+  .club-rail {
+    display: flex; gap: 8px; align-items: center;
+    padding: 12px 16px;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  .club-rail-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-subtle);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-right: 6px;
+  }
+  .club-chip {
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    border: 1px solid transparent;
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .club-chip:hover { background: var(--surface-alt); }
+  .club-chip.active {
+    background: var(--brand-primary);
+    color: var(--brand-accent);
+  }
+  .club-chip .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+  }
+  .club-chip.active .num { opacity: 0.85; color: var(--brand-accent); }
+
+  .tm-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+  }
+
+  .trajectory-card { padding: 22px 24px; margin-bottom: 16px; }
+  .trajectory-legend {
+    display: flex; gap: 6px; align-items: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-subtle);
+    letter-spacing: 0.06em;
+  }
+  .trajectory-legend .swatch {
+    display: inline-block; width: 22px; height: 4px; border-radius: 2px;
+  }
+  .trajectory-svg {
+    width: 100%; height: 320px;
+    display: block;
+    background: linear-gradient(180deg, rgba(135,206,235,0.05) 0%, rgba(135,206,235,0) 60%, rgba(0,88,64,0.04) 100%);
+    border-radius: 10px;
+  }
+
+  /* KPI strip */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .kpi {
+    padding: 16px 18px;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .kpi-head { display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .kpi-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-subtle);
+    font-weight: 700;
+  }
+  .kpi-delta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 6px;
+  }
+  .kpi-delta.up { color: var(--status-success); background: rgba(34,184,103,0.10); }
+  .kpi-delta.down { color: var(--status-info); background: rgba(59,130,246,0.10); }
+  .kpi-delta.flat { color: var(--ink-subtle); background: var(--surface-alt); }
+  .kpi-value {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  .kpi-value small { font-size: 13px; color: var(--ink-subtle); font-weight: 400; }
+  .kpi-sub { font-size: 11px; color: var(--ink-subtle); font-family: var(--font-mono); margin-bottom: 8px; }
+  .kpi-spark { width: 100%; height: 28px; display: block; }
+
+  /* Bento bottom */
+  .tm-bento {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 16px;
+  }
+
+  /* Dispersion */
+  .dispersion-stage {
+    position: relative;
+    background: linear-gradient(180deg, rgba(0,88,64,0.04) 0%, rgba(0,88,64,0.10) 100%);
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 280px;
+    margin-top: 8px;
+  }
+  .fairway-band {
+    position: absolute;
+    top: 16px; bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56%;
+    background: rgba(0,88,64,0.06);
+    border: 1px dashed rgba(0,88,64,0.30);
+    border-radius: 10px;
+  }
+  .center-line {
+    position: absolute;
+    top: 16px; bottom: 16px;
+    left: 50%; width: 1px;
+    background: rgba(0,88,64,0.20);
+  }
+  .target {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--brand-primary);
+    background: rgba(255,255,255,0.9);
+    display: grid; place-items: center;
+    z-index: 5;
+  }
+  .target::after {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--brand-primary);
+  }
+  .hit-dot {
+    position: absolute;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .hit-dot.good { background: var(--brand-primary); }
+  .hit-dot.ok { background: #B8852A; }
+  .hit-dot.bad { background: var(--status-danger); opacity: 0.7; }
+  .axis-label {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--ink-subtle);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+
+  /* Comparison */
+  .compare-card { padding: 22px 24px; }
+  .compare-row { margin-bottom: 18px; }
+  .compare-row:last-child { margin-bottom: 0; }
+  .compare-row-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .compare-row-head strong { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .compare-row-head .val {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .compare-row-head .val.success { color: var(--status-success); }
+  .compare-row-head .val.primary { color: var(--brand-primary); }
+  .compare-row-head .val.warn { color: var(--status-warning); }
+  .compare-row-sub { font-size: 11px; color: var(--ink-subtle); font-family: var(--font-mono); margin-bottom: 8px; }
+  .compare-row-track {
+    height: 6px; border-radius: 999px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .compare-row-track > div { height: 100%; border-radius: 999px; }
+
+  /* Drawer */
+  .drawer {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    align-self: start;
+    position: sticky; top: 20px;
+    overflow: hidden;
+  }
+  .drawer-head { padding: 22px 22px 18px; border-bottom: 1px solid var(--line); }
+  .drawer-section { padding: 16px 22px; border-bottom: 1px solid var(--line-soft); }
+  .drawer-section:last-child { border-bottom: none; }
+  .drawer-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-subtle);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .finding-note {
+    padding: 12px 14px;
+    background: var(--surface-alt);
+    border-left: 3px solid var(--brand-primary);
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .finding-note.warn { border-left-color: #B8852A; background: rgba(184,133,42,0.06); }
+  .finding-note b { color: var(--brand-primary); font-weight: 600; }
+  .finding-note.warn b { color: #6F4F18; }
+
+  /* Action strip */
+  .action-strip {
+    display: flex; gap: 10px; align-items: center;
+    padding: 14px 20px;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .action-strip-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-subtle);
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .action-item {
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    font-size: 12px;
+    color: var(--ink-muted);
+    display: inline-flex; align-items: center; gap: 6px;
+    font-weight: 500;
+  }
+  .action-item b {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .action-item.success { background: rgba(34,184,103,0.10); border-color: rgba(34,184,103,0.25); color: var(--status-success); }
+  .action-item.success b { color: var(--status-success); }
+  .action-item.info { background: rgba(59,130,246,0.10); border-color: rgba(59,130,246,0.20); color: var(--status-info); }
+  .action-item.info b { color: var(--status-info); }
+</style>
+</head>
+<body data-screen-label="05 TrackMan-analyse">
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-mark">AK</div>
+      <div class="sidebar-brand-text"><strong>AK Golf</strong><span>player</span></div>
+    </div>
+    <div>
+      <div class="sidebar-section-label">Treningsdag</div>
+      <nav class="sidebar-nav">
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Hjem</a>
+        <a href="#" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Tren <span class="count">12</span></a>
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Logg</a>
+      </nav>
+    </div>
+    <div>
+      <div class="sidebar-section-label">Mål-data</div>
+      <nav class="sidebar-nav">
+        <a href="01-baner.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Baner <span class="count">8</span></a>
+        <a href="02-mal-detalj.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>HCP-mål</a>
+        <a href="03-mal-leaderboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Leaderboard</a>
+        <a href="04-test-detalj.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Tester <span class="count">14</span></a>
+        <a href="05-trackman.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20"/><path d="M12 2a15 15 0 0 0 0 20"/></svg>TrackMan</a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">MP</div>
+        <div class="sidebar-user-meta"><strong>Markus Pedersen</strong><span>HCP 12,4 · GFGK</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; padding:0 8px; justify-content:space-between;">
+        <span class="tier-badge pro">Pro</span>
+        <span style="font-size:11px; color:var(--ink-subtle); font-family:var(--font-mono);">12. juli</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <div class="tm-head">
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px;">TrackMan · sesong 2026 · trendvisning</div>
+        <h1 class="hero-italic"><em>Min sving</em> over tid</h1>
+        <p class="hero-sub">
+          <span class="tier-badge pro">Pro</span>
+          <span class="dot"></span>
+          <span>Trendvisning på tvers av økter — ikke én enkelt rapport</span>
+          <span class="dot"></span>
+          <span><b style="color:var(--brand-primary);">8 økter</b> denne måneden · <b style="color:var(--brand-primary);">640 slag</b> totalt</span>
+        </p>
+      </div>
+      <div style="display:flex; gap: 8px;">
+        <button class="btn btn-secondary">Last opp ny økt</button>
+        <button class="btn btn-primary">Eksporter til Strokes Gained →</button>
+      </div>
+    </div>
+
+    <!-- Action strip -->
+    <div class="action-strip">
+      <span class="action-strip-label">Sving-status</span>
+      <div class="action-item success"><b>8</b> økter / 30d</div>
+      <div class="action-item"><b>640</b> slag</div>
+      <div class="action-item success"><b>+6 m</b> driver carry / 30d</div>
+      <div class="action-item info"><b>−1,2°</b> launch / 30d</div>
+      <div class="action-item"><b>78 %</b> i target 7i</div>
+    </div>
+
+    <!-- Club selector -->
+    <div class="club-rail">
+      <span class="club-rail-label">Per kølle</span>
+      <button class="club-chip">Driver <span class="num">160 slag</span></button>
+      <button class="club-chip">3W <span class="num">48 slag</span></button>
+      <button class="club-chip">5-jern <span class="num">72 slag</span></button>
+      <button class="club-chip active">7-jern <span class="num">80 slag</span></button>
+      <button class="club-chip">9-jern <span class="num">96 slag</span></button>
+      <button class="club-chip">PW <span class="num">88 slag</span></button>
+      <button class="club-chip">SW <span class="num">64 slag</span></button>
+      <button class="club-chip">Putter <span class="num">32 slag</span></button>
+    </div>
+
+    <div class="tm-layout">
+      <div>
+
+        <!-- Trajectory card -->
+        <section class="card trajectory-card">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">7-jern · trajectory over tid</div>
+              <h3 class="card-title">Hvordan slaget endrer seg</h3>
+            </div>
+            <div class="trajectory-legend">
+              FRA
+              <span class="swatch" style="background: rgba(0,88,64,0.20);"></span>
+              <span class="swatch" style="background: rgba(0,88,64,0.45);"></span>
+              <span class="swatch" style="background: rgba(0,88,64,0.70);"></span>
+              <span class="swatch" style="background: var(--brand-primary);"></span>
+              TIL NÅ
+            </div>
+          </div>
+
+          <svg viewBox="0 0 800 320" preserveAspectRatio="xMidYMid meet" class="trajectory-svg">
+            <!-- Ground -->
+            <line x1="40" y1="280" x2="780" y2="280" stroke="#0A1F18" stroke-width="1.5"/>
+            <text x="40" y="298" fill="#7A7666" font-family="JetBrains Mono" font-size="10">0 m</text>
+            <text x="200" y="298" fill="#7A7666" font-family="JetBrains Mono" font-size="10">60 m</text>
+            <text x="360" y="298" fill="#7A7666" font-family="JetBrains Mono" font-size="10">120 m</text>
+            <text x="520" y="298" fill="#7A7666" font-family="JetBrains Mono" font-size="10">160 m</text>
+            <text x="680" y="298" fill="#7A7666" font-family="JetBrains Mono" font-size="10">200 m</text>
+
+            <!-- Height labels -->
+            <text x="35" y="280" text-anchor="end" fill="#7A7666" font-family="JetBrains Mono" font-size="10">0</text>
+            <text x="35" y="220" text-anchor="end" fill="#7A7666" font-family="JetBrains Mono" font-size="10">8m</text>
+            <text x="35" y="160" text-anchor="end" fill="#7A7666" font-family="JetBrains Mono" font-size="10">16m</text>
+            <text x="35" y="100" text-anchor="end" fill="#7A7666" font-family="JetBrains Mono" font-size="10">24m</text>
+
+            <!-- Trajectories: older to newer -->
+            <path d="M 40 280 Q 280 70 530 280" fill="none" stroke="#005840" stroke-width="2" opacity="0.18"/>
+            <path d="M 40 280 Q 290 90 545 280" fill="none" stroke="#005840" stroke-width="2" opacity="0.30"/>
+            <path d="M 40 280 Q 300 110 555 280" fill="none" stroke="#005840" stroke-width="2" opacity="0.45"/>
+            <path d="M 40 280 Q 310 125 565 280" fill="none" stroke="#005840" stroke-width="2.2" opacity="0.60"/>
+            <path d="M 40 280 Q 320 130 575 280" fill="none" stroke="#005840" stroke-width="2.5" opacity="0.82"/>
+            <path d="M 40 280 Q 330 132 585 280" fill="none" stroke="#005840" stroke-width="3"/>
+
+            <!-- Apex markers -->
+            <circle cx="280" cy="70" r="4" fill="#005840" opacity="0.30"/>
+            <text x="280" y="62" text-anchor="middle" fill="#005840" font-family="JetBrains Mono" font-size="9" opacity="0.6">apex 24 m · 08.03</text>
+            <circle cx="330" cy="132" r="6" fill="#D1F843" stroke="#005840" stroke-width="2.5"/>
+            <text x="330" y="122" text-anchor="middle" fill="#005840" font-family="JetBrains Mono" font-size="9" font-weight="700">apex 18 m · 14.05</text>
+
+            <!-- Landing carry delta -->
+            <circle cx="530" cy="280" r="3" fill="#005840" opacity="0.30"/>
+            <circle cx="585" cy="280" r="5" fill="#005840"/>
+            <line x1="530" y1="288" x2="585" y2="288" stroke="#005840" stroke-width="2" stroke-linecap="round"/>
+            <text x="557" y="312" text-anchor="middle" fill="#005840" font-family="JetBrains Mono" font-size="10" font-weight="700">+8 m carry</text>
+
+            <!-- Wind arrow icon -->
+            <g transform="translate(700, 60)" opacity="0.55">
+              <text x="0" y="0" fill="#7A7666" font-family="JetBrains Mono" font-size="9">VIND ↘ 3 m/s</text>
+            </g>
+          </svg>
+
+          <p style="font-size: 13px; color: var(--ink-muted); margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); line-height: 1.6;">
+            <b style="color: var(--ink);">Hva endret seg:</b> Apex har sunket fra 24 m til 18 m (lavere ball-flight) og carry har økt fra ca 152 m til 162 m. Det er bra — du får mer rull og mindre vind-eksponering. Pro-coach Anders K. har bekreftet retningen 12. mai.
+          </p>
+        </section>
+
+        <!-- KPI strip -->
+        <section class="kpi-strip">
+          <article class="kpi">
+            <div class="kpi-head"><span class="kpi-label">Snitt carry</span><span class="kpi-delta up">+6 m</span></div>
+            <div class="kpi-value">162<small> m</small></div>
+            <div class="kpi-sub">8 økter</div>
+            <svg class="kpi-spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <polyline points="0,28 0,20 25,16 50,12 75,8 100,5 100,28" fill="rgba(0,88,64,0.10)" stroke="none"/>
+              <polyline points="0,20 25,16 50,12 75,8 100,5" fill="none" stroke="#005840" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="100" cy="5" r="2.5" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+            </svg>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi-head"><span class="kpi-label">Launch</span><span class="kpi-delta down">−1,2°</span></div>
+            <div class="kpi-value">17,4<small>°</small></div>
+            <div class="kpi-sub">target 17–18°</div>
+            <svg class="kpi-spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <polyline points="0,28 0,6 25,10 50,14 75,16 100,18 100,28" fill="rgba(59,130,246,0.08)" stroke="none"/>
+              <polyline points="0,6 25,10 50,14 75,16 100,18" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="100" cy="18" r="2.5" fill="#3B82F6"/>
+            </svg>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi-head"><span class="kpi-label">Spin</span><span class="kpi-delta flat">stabilt</span></div>
+            <div class="kpi-value">7 280<small> rpm</small></div>
+            <div class="kpi-sub">i target</div>
+            <svg class="kpi-spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <polyline points="0,28 0,14 25,16 50,12 75,14 100,14 100,28" fill="rgba(122,118,102,0.08)" stroke="none"/>
+              <polyline points="0,14 25,16 50,12 75,14 100,14" fill="none" stroke="#7A7666" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="100" cy="14" r="2.5" fill="#7A7666"/>
+            </svg>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi-head"><span class="kpi-label">Smash</span><span class="kpi-delta up">+0,02</span></div>
+            <div class="kpi-value">1,38</div>
+            <div class="kpi-sub">target 1,38–1,42</div>
+            <svg class="kpi-spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <polyline points="0,28 0,16 25,14 50,12 75,10 100,8 100,28" fill="rgba(0,88,64,0.10)" stroke="none"/>
+              <polyline points="0,16 25,14 50,12 75,10 100,8" fill="none" stroke="#005840" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="100" cy="8" r="2.5" fill="#005840"/>
+            </svg>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi-head"><span class="kpi-label">Dispersion</span><span class="kpi-delta up">−2,1 m</span></div>
+            <div class="kpi-value">±5,2<small> m</small></div>
+            <div class="kpi-sub">snittet inn</div>
+            <svg class="kpi-spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <polyline points="0,28 0,6 25,10 50,14 75,18 100,20 100,28" fill="rgba(0,88,64,0.10)" stroke="none"/>
+              <polyline points="0,6 25,10 50,14 75,18 100,20" fill="none" stroke="#005840" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="100" cy="20" r="2.5" fill="#005840"/>
+            </svg>
+          </article>
+        </section>
+
+        <!-- Bento: Dispersion + Compare -->
+        <section class="tm-bento">
+
+          <!-- Dispersion heatmap -->
+          <article class="card" style="padding: 22px 24px;">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Dispersion-pattern · 7-jern · 80 slag</div>
+                <h3 class="card-title">Hvor lander ballen?</h3>
+              </div>
+              <span class="pill" style="background: var(--brand-primary-soft); color: var(--brand-primary); font-size:10px;">Snittet inn 2,1 m</span>
+            </div>
+
+            <div class="dispersion-stage">
+              <div class="fairway-band"></div>
+              <div class="center-line"></div>
+              <div class="target"></div>
+
+              <!-- Hit dots -->
+              <div class="hit-dot good" style="top: 32%; left: 48%; opacity: 0.65;"></div>
+              <div class="hit-dot good" style="top: 38%; left: 52%; opacity: 0.75;"></div>
+              <div class="hit-dot good" style="top: 42%; left: 50%; opacity: 0.9;"></div>
+              <div class="hit-dot good" style="top: 46%; left: 49%;"></div>
+              <div class="hit-dot good" style="top: 50%; left: 51%;"></div>
+              <div class="hit-dot good" style="top: 53%; left: 48%; opacity: 0.85;"></div>
+              <div class="hit-dot good" style="top: 56%; left: 52%; opacity: 0.7;"></div>
+              <div class="hit-dot good" style="top: 36%; left: 56%; opacity: 0.6;"></div>
+              <div class="hit-dot good" style="top: 60%; left: 46%; opacity: 0.7;"></div>
+              <div class="hit-dot good" style="top: 44%; left: 54%; opacity: 0.85;"></div>
+              <div class="hit-dot good" style="top: 48%; left: 47%;"></div>
+              <div class="hit-dot good" style="top: 52%; left: 53%; opacity: 0.9;"></div>
+              <div class="hit-dot good" style="top: 58%; left: 50%; opacity: 0.8;"></div>
+              <div class="hit-dot good" style="top: 40%; left: 46%; opacity: 0.75;"></div>
+              <div class="hit-dot good" style="top: 33%; left: 53%; opacity: 0.7;"></div>
+              <div class="hit-dot ok" style="top: 26%; left: 44%; opacity: 0.85;"></div>
+              <div class="hit-dot ok" style="top: 64%; left: 56%; opacity: 0.8;"></div>
+              <div class="hit-dot ok" style="top: 28%; left: 60%; opacity: 0.75;"></div>
+              <div class="hit-dot ok" style="top: 68%; left: 42%; opacity: 0.7;"></div>
+              <div class="hit-dot bad" style="top: 22%; left: 38%;"></div>
+              <div class="hit-dot bad" style="top: 70%; left: 62%;"></div>
+
+              <span class="axis-label" style="bottom: 8px; left: 50%; transform: translateX(-50%);">FAIRWAY-MIDT</span>
+              <span class="axis-label" style="top: 8px; left: 14px;">VENSTRE</span>
+              <span class="axis-label" style="top: 8px; right: 14px;">HØYRE</span>
+            </div>
+
+            <div style="display: flex; gap: 18px; margin-top: 14px; font-size: 11px; color: var(--ink-muted);">
+              <span style="display:inline-flex; align-items:center; gap:6px;"><i style="display:inline-block; width:10px; height:10px; background: var(--brand-primary); border-radius: 50%;"></i>I target (78 %)</span>
+              <span style="display:inline-flex; align-items:center; gap:6px;"><i style="display:inline-block; width:10px; height:10px; background: #B8852A; border-radius: 50%;"></i>Akseptabel (16 %)</span>
+              <span style="display:inline-flex; align-items:center; gap:6px;"><i style="display:inline-block; width:10px; height:10px; background: var(--status-danger); border-radius: 50%; opacity: 0.7;"></i>Bom (6 %)</span>
+            </div>
+          </article>
+
+          <!-- Compare card -->
+          <article class="card compare-card">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Sammenlikning · 7-jern</div>
+                <h3 class="card-title">Hvor står du?</h3>
+              </div>
+            </div>
+
+            <div class="compare-row" style="margin-top: 8px;">
+              <div class="compare-row-head"><strong>Mot din baseline</strong><span class="val success">+6 m</span></div>
+              <div class="compare-row-sub">Sesongstart 156 m → nå 162 m</div>
+              <div class="compare-row-track"><div style="width: 100%; background: var(--status-success);"></div></div>
+            </div>
+
+            <div class="compare-row">
+              <div class="compare-row-head"><strong>Mot HCP-jevngamle (A2)</strong><span class="val primary">82. percentil</span></div>
+              <div class="compare-row-sub">A2-snitt 154 m · 82 % under deg</div>
+              <div class="compare-row-track"><div style="width: 82%; background: var(--brand-primary);"></div></div>
+            </div>
+
+            <div class="compare-row">
+              <div class="compare-row-head"><strong>Mot pro-benchmark</strong><span class="val warn">−12 m</span></div>
+              <div class="compare-row-sub">PGA tour-snitt 174 m · gap 12 m</div>
+              <div class="compare-row-track"><div style="width: 93%; background: #B8852A;"></div></div>
+            </div>
+
+            <div style="padding: 12px 14px; background: var(--accent-bg); border-radius: 10px; margin-top: 18px;">
+              <p style="font-size: 12px; line-height: 1.55; color: var(--ink); margin: 0;">For din alder (16) er gapet til pro <b>mindre enn snitt</b> — du henger med i utviklingen.</p>
+            </div>
+          </article>
+        </section>
+
+      </div>
+
+      <!-- Drawer -->
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div class="eyebrow">Agent-funn · oppdatert 14.05</div>
+          <h3 class="card-title">Hva sier dataen?</h3>
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-subtle); margin-top: 4px;">3 funn på tvers av køller</div>
+          <div style="margin-top: 10px; display: flex; gap: 6px;">
+            <span class="pill success" style="font-size: 10px;">På sport</span>
+            <span class="pill" style="background: rgba(59,130,246,0.10); color: #1D4ED8; font-size: 10px;">Coach varslet</span>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Driver — launch-justering</div>
+          <div class="finding-note">
+            <b>Driver launch nedjustert til 12,8°</b> — innenfor target (12–14°). Carry +9 m siste 30d. Hold setup som det er.
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">7-jern — apex-trend</div>
+          <div class="finding-note">
+            Apex sunket fra 24 m til 18 m. Bedre vind-tolerant slag. <b>Smash 1,38</b> — i target.
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Wedge — spin-variasjon</div>
+          <div class="finding-note warn">
+            <b>Spin varierer ±1 200 rpm</b> mellom slag. Coach foreslår: prøv en annen ball-type for bedre konsistens.
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Coach-anbefaling</div>
+          <p style="font-size: 12px; line-height: 1.6; color: var(--ink-muted); padding: 12px 14px; background: var(--surface-alt); border-radius: 10px; font-style: italic; margin: 0;">«Behold setup på driver. Prøv ny ball-type (Pro V1x) for spin-kontroll på 7-jern og wedge — vi ser på data igjen om 2 uker.»
+            <small style="display: block; margin-top: 8px; color: var(--ink-subtle); font-style: normal;">— Anders K., Pro-coach</small>
+          </p>
+        </div>
+
+        <div class="drawer-section" style="display: flex; flex-direction: column; gap: 8px;">
+          <button class="btn btn-primary">Eksporter til Strokes Gained</button>
+          <button class="btn btn-secondary">Last opp ny TrackMan-økt</button>
+          <button class="btn btn-ghost btn-sm" style="background: transparent;">Be om coach-vurdering</button>
+          <button class="btn btn-ghost btn-sm" style="background: transparent;">Se alle 8 økter →</button>
+        </div>
+      </aside>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
