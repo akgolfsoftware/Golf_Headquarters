@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Booking — Coach-velger</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="_shared/arketype-g.css" />
+<style>
+  .b3-filter { display:flex; align-items:center; gap: 10px; flex-wrap: wrap; max-width: 1000px; margin: 0 auto 28px; }
+  .b3-filter .lbl { font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-subtle); margin-right: 8px; }
+  .b3-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 1000px; margin: 0 auto; }
+  .b3-card { padding: 24px 26px; display:flex; gap: 18px; align-items: center; }
+  .b3-card .av { width:64px; height:64px; flex:0 0 64px; font-size: 20px; }
+  .b3-card .body { flex:1; min-width: 0; }
+  .b3-card h3 { font-family:'Instrument Serif'; font-weight:400; font-style:italic; font-size: 22px; line-height: 1.1; margin: 0 0 4px; color: var(--g-fg); letter-spacing:-0.005em; }
+  .b3-card .spec { font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.14em; text-transform:uppercase; color: var(--g-muted); margin-bottom: 12px; }
+  .b3-card .avail { display:flex; align-items:center; gap:8px; font-size: 13px; color: var(--g-fg); }
+  .b3-card .avail b { font-family:'JetBrains Mono'; font-size: 13px; color: var(--g-primary); font-weight:500; }
+  .b3-card .link { font-size: 12px; color: var(--g-muted); margin-top: 4px; }
+  .b3-card .link a { color: var(--g-fg); text-decoration: underline; text-decoration-color: var(--g-subtle); }
+</style>
+</head>
+<body class="g-canvas" data-screen-label="booking · 03 coaches">
+
+<header>
+  <div class="g-label"><span class="dot"></span> BOOKING · 03 COACHES · STEG 2 / 5</div>
+  <h1>Velg <em>coach</em></h1>
+  <p class="sub">Steg 2 av wizarden (coach-variant). 6 coacher med live tilgjengelighet. Klikk = videre til coach-detalj.</p>
+  <div class="meta">
+    <span><b>URL</b> /coaches</span>
+    <span><b>Progress</b> 1 ✓ · 2 aktiv</span>
+    <span><b>Avail</b> grønn / gul / rød</span>
+    <span><b>States</b> Light · Dark · Filter · Hover · Mobile</span>
+  </div>
+</header>
+
+<div class="g-grid">
+
+  <section class="g-cap">
+    <h2 class="cap-title">1 — Lyst, alle 6 coacher</h2>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav"><span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side"><a href="#">Min side →</a></span></div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span><span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Tid</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Info</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Betaling</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Bekreftelse</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="g-hero">
+          <div class="g-eyebrow">PERSONLIG COACHING · 60 MIN · 1 600 KR</div>
+          <h1 class="g-title g-title--md">Velg <em>coach</em></h1>
+          <p class="g-sub">6 coacher tilgjengelig. Grønn prikk = ledig denne uka, gul = noen ledige, rød = fullt.</p>
+        </div>
+        <div class="b3-filter">
+          <span class="lbl">Filter:</span>
+          <span class="g-chip">Spesialitet: Alle <span class="caret">▾</span></span>
+          <span class="g-chip">Anlegg: Alle <span class="caret">▾</span></span>
+          <span class="g-chip">Kun ledige <span class="caret">○</span></span>
+        </div>
+        <div class="b3-grid">
+          <div class="g-card b3-card"><span class="g-avatar av">AK</span><div class="body"><h3>Anders Kristiansen</h3><div class="spec">PGA · Scoring · Mulligan</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>12 ledige</b> tider denne uka</span></div><div class="link"><a href="#">Se profil →</a></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av" style="background:#B8852A">SH</span><div class="body"><h3>Sara Hansen</h3><div class="spec">JUNIOR · TEKNIKK · GFGK</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>8 ledige</b> tider denne uka</span></div><div class="link"><a href="#">Se profil →</a></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">TE</span><div class="body"><h3>Tom Eriksen</h3><div class="spec">PUTT · MENTAL · BOSSUM</div><div class="avail"><span class="g-dot g-dot--warn"></span><span><b>3 ledige</b> tider denne uka</span></div><div class="link"><a href="#">Se profil →</a></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">ML</span><div class="body"><h3>Marius Lund</h3><div class="spec">TRACKMAN-SPESIALIST · MULLIGAN</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>14 ledige</b> tider denne uka</span></div><div class="link"><a href="#">Se profil →</a></div></div></div>
+          <div class="g-card b3-card is-disabled"><span class="g-avatar av" style="background:#B8852A">EB</span><div class="body"><h3>Eva Bakke</h3><div class="spec">LONG GAME · MULLIGAN</div><div class="avail"><span class="g-dot g-dot--danger"></span><span style="color:var(--g-muted)">Fullt denne uka — neste ledig 20. mai</span></div><div class="link"><a href="#">Se profil →</a></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">PH</span><div class="body"><h3>Per Holm</h3><div class="spec">BEGYNNER · GFGK</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>9 ledige</b> tider denne uka</span></div><div class="link"><a href="#">Se profil →</a></div></div></div>
+        </div>
+      </div>
+      <div class="g-footer"><div class="left"><button class="g-btn g-btn--ghost">← Tilbake</button></div><div class="right"><span class="g-mono" style="font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color: var(--g-subtle)">Klikk en coach for å fortsette</span></div></div>
+    </div>
+  </section>
+
+  <section class="g-cap">
+    <h2 class="cap-title">2 — Mørkt tema</h2>
+    <div class="g-frame is-dark" style="margin-top:18px">
+      <div class="g-topnav"><span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side"><a href="#">Min side →</a></span></div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span><span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Tid</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Info</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Betaling</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Bekreftelse</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="g-hero">
+          <div class="g-eyebrow">PERSONLIG COACHING · 60 MIN · 1 600 KR</div>
+          <h1 class="g-title g-title--md">Velg <em>coach</em></h1>
+          <p class="g-sub">6 coacher. Grønn prikk = ledig denne uka.</p>
+        </div>
+        <div class="b3-filter">
+          <span class="lbl">Filter:</span>
+          <span class="g-chip">Spesialitet: Alle <span class="caret">▾</span></span>
+          <span class="g-chip">Anlegg: Alle <span class="caret">▾</span></span>
+          <span class="g-chip">Kun ledige <span class="caret">○</span></span>
+        </div>
+        <div class="b3-grid">
+          <div class="g-card b3-card"><span class="g-avatar av">AK</span><div class="body"><h3>Anders Kristiansen</h3><div class="spec">PGA · SCORING · MULLIGAN</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>12 ledige</b> tider</span></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">SH</span><div class="body"><h3>Sara Hansen</h3><div class="spec">JUNIOR · GFGK</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>8 ledige</b> tider</span></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">TE</span><div class="body"><h3>Tom Eriksen</h3><div class="spec">PUTT · MENTAL · BOSSUM</div><div class="avail"><span class="g-dot g-dot--warn"></span><span><b>3 ledige</b> tider</span></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">ML</span><div class="body"><h3>Marius Lund</h3><div class="spec">TRACKMAN · MULLIGAN</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>14 ledige</b> tider</span></div></div></div>
+          <div class="g-card b3-card is-disabled"><span class="g-avatar av">EB</span><div class="body"><h3>Eva Bakke</h3><div class="spec">LONG GAME · MULLIGAN</div><div class="avail"><span class="g-dot g-dot--danger"></span><span style="color:var(--g-muted)">Fullt — neste 20. mai</span></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">PH</span><div class="body"><h3>Per Holm</h3><div class="spec">BEGYNNER · GFGK</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>9 ledige</b> tider</span></div></div></div>
+        </div>
+      </div>
+      <div class="g-footer"><div class="left"><button class="g-btn g-btn--ghost">← Tilbake</button></div><div class="right"></div></div>
+    </div>
+  </section>
+
+  <section class="g-cap">
+    <h2 class="cap-title">3 — Filter "Kun ledige" aktiv + hover på Anders K</h2>
+    <p>Eva Bakke (rød) er skjult. Anders K-card løftet med lime accent border.</p>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav"><span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side"><a href="#">Min side →</a></span></div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span><span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Tid</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Info</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Betaling</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Bekreftelse</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="g-hero">
+          <div class="g-eyebrow">VISER 5 AV 6 · KUN LEDIGE</div>
+          <h1 class="g-title g-title--md">Velg <em>coach</em></h1>
+        </div>
+        <div class="b3-filter">
+          <span class="lbl">Filter:</span>
+          <span class="g-chip">Spesialitet: Alle <span class="caret">▾</span></span>
+          <span class="g-chip">Anlegg: Alle <span class="caret">▾</span></span>
+          <span class="g-chip is-active">Kun ledige <span class="caret">●</span></span>
+        </div>
+        <div class="b3-grid">
+          <div class="g-card b3-card is-hover"><span class="g-avatar av">AK</span><div class="body"><h3>Anders Kristiansen</h3><div class="spec">PGA · SCORING · MULLIGAN</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>12 ledige</b> tider denne uka</span></div><div class="link"><a href="#">Se profil →</a></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">SH</span><div class="body"><h3>Sara Hansen</h3><div class="spec">JUNIOR · GFGK</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>8 ledige</b> tider</span></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">TE</span><div class="body"><h3>Tom Eriksen</h3><div class="spec">PUTT · BOSSUM</div><div class="avail"><span class="g-dot g-dot--warn"></span><span><b>3 ledige</b> tider</span></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">ML</span><div class="body"><h3>Marius Lund</h3><div class="spec">TRACKMAN · MULLIGAN</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>14 ledige</b> tider</span></div></div></div>
+          <div class="g-card b3-card"><span class="g-avatar av">PH</span><div class="body"><h3>Per Holm</h3><div class="spec">BEGYNNER · GFGK</div><div class="avail"><span class="g-dot g-dot--success"></span><span><b>9 ledige</b> tider</span></div></div></div>
+        </div>
+      </div>
+      <div class="g-footer"><div class="left"><button class="g-btn g-btn--ghost">← Tilbake</button></div><div class="right"></div></div>
+    </div>
+  </section>
+
+  <section class="g-cap">
+    <h2 class="cap-title">4 — Mobil ≤640px — 1-kolonne</h2>
+    <div class="g-frame is-mobile" style="margin-top:18px">
+      <div class="g-topnav" style="padding: 0 16px; height: 52px"><span class="g-brand" style="font-size: 12px"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side" style="font-size: 12px"><a href="#">Min side →</a></span></div>
+      <div style="padding: 14px 16px; border-bottom: 1px solid var(--g-line-soft)">
+        <span class="g-mono" style="font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--g-muted)">Steg 2 av 5</span>
+        <div style="height: 8px; background: var(--g-bg-alt); border-radius: 100px; overflow:hidden; margin-top: 6px"><div style="height:100%; width: 40%; background: var(--g-primary); border-radius: 100px"></div></div>
+      </div>
+      <div style="padding: 20px 16px 12px">
+        <div class="g-eyebrow" style="font-size: 10px">60 MIN · 1 600 KR</div>
+        <h1 class="g-title g-title--sm" style="font-size: 28px">Velg <em>coach</em></h1>
+      </div>
+      <div style="padding: 0 16px 90px; display:flex; flex-direction:column; gap: 12px">
+        <div class="g-card b3-card" style="padding: 16px"><span class="g-avatar av" style="width:48px;height:48px;flex-basis:48px;font-size:14px">AK</span><div class="body"><h3 style="font-size: 18px">Anders Kristiansen</h3><div class="spec" style="font-size:9px">PGA · SCORING</div><div class="avail" style="font-size: 12px"><span class="g-dot g-dot--success"></span><b>12 ledige</b></div></div></div>
+        <div class="g-card b3-card" style="padding: 16px"><span class="g-avatar av" style="width:48px;height:48px;flex-basis:48px;font-size:14px">SH</span><div class="body"><h3 style="font-size: 18px">Sara Hansen</h3><div class="spec" style="font-size:9px">JUNIOR · GFGK</div><div class="avail" style="font-size: 12px"><span class="g-dot g-dot--success"></span><b>8 ledige</b></div></div></div>
+        <div class="g-card b3-card" style="padding: 16px"><span class="g-avatar av" style="width:48px;height:48px;flex-basis:48px;font-size:14px">TE</span><div class="body"><h3 style="font-size: 18px">Tom Eriksen</h3><div class="spec" style="font-size:9px">PUTT · BOSSUM</div><div class="avail" style="font-size: 12px"><span class="g-dot g-dot--warn"></span><b>3 ledige</b></div></div></div>
+        <div class="g-card b3-card" style="padding: 16px"><span class="g-avatar av" style="width:48px;height:48px;flex-basis:48px;font-size:14px">ML</span><div class="body"><h3 style="font-size: 18px">Marius Lund</h3><div class="spec" style="font-size:9px">TRACKMAN</div><div class="avail" style="font-size: 12px"><span class="g-dot g-dot--success"></span><b>14 ledige</b></div></div></div>
+      </div>
+      <div style="position:absolute; left:0; right:0; bottom:0; padding: 12px 16px; background: var(--g-bg); border-top: 1px solid var(--g-line-soft); display:flex; align-items:center; justify-content:space-between"><button class="g-btn g-btn--ghost" style="height: 40px; padding: 0 14px; font-size: 13px">← Tilbake</button><span class="g-mono" style="font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--g-subtle)">Klikk = videre</span></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

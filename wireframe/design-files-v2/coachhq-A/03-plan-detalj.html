@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Plan-detalj · Sommer-toppform Markus</title>
+<link rel="stylesheet" href="../colors_and_type.css" />
+<link rel="stylesheet" href="../coachhq-shell.css" />
+<style>
+  body { min-height: 100vh; }
+
+  /* Gantt-like phase timeline */
+  .timeline-card { padding: 24px 28px; margin-bottom: 16px; }
+  .tl-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .tl-head h3 { font: 600 18px/1.3 var(--font-display); margin: 4px 0 4px; }
+  .tl-head p { font: 400 12px/1.5 var(--font-body); color: var(--ink-muted); margin: 0; max-width: 540px; }
+  .tl-weeks-row { display: grid; grid-template-columns: 80px repeat(8, 1fr); gap: 1px; background: var(--line-soft); padding: 1px; border-radius: 10px; margin-bottom: 12px; }
+  .tl-week { background: var(--surface-card); padding: 10px 0; text-align: center; }
+  .tl-week-num { font: 600 11px/1 var(--font-mono); color: var(--ink-muted); }
+  .tl-week-date { font: 500 10px/1 var(--font-body); color: var(--ink-subtle); margin-top: 4px; }
+  .tl-now-row { display:flex; gap: 1px; padding-left: 80px; margin-top: -12px; position: relative; }
+  .tl-now-indicator { position: absolute; top: -38px; bottom: 0; width: 2px; background: var(--brand-accent); left: calc(80px + (100% - 80px) * 0.30); }
+  .tl-now-indicator::before { content: "I dag · u21"; position: absolute; top: -22px; left: -22px; padding: 3px 8px; background: var(--brand-accent); color: var(--brand-accent-on); font: 600 10px/1 var(--font-mono); border-radius: 6px; white-space: nowrap; }
+
+  .tl-bars { display: grid; grid-template-columns: 80px 1fr; gap: 8px; align-items: center; padding: 4px 0; }
+  .tl-bar-label { font: 600 11px/1 var(--font-body); color: var(--ink-muted); }
+  .tl-bar-track { position: relative; height: 28px; background: var(--surface-alt); border-radius: 8px; overflow: hidden; }
+  .tl-bar-fill { position: absolute; height: 100%; display:flex; align-items: center; padding: 0 10px; color: #fff; font: 600 11px/1 var(--font-body); }
+
+  /* Faser-tab content */
+  .phase-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; }
+
+  .phase-card { padding: 20px 22px; }
+  .phase-card.current { border: 2px solid var(--brand-accent); padding: 19px 21px; }
+  .phase-card-head { display:flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .phase-eyebrow-row { display:flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .phase-num { font: 600 10px/1 var(--font-mono); padding: 4px 8px; border-radius: 6px; background: var(--surface-alt); color: var(--ink-muted); }
+  .phase-card.current .phase-num { background: var(--brand-accent); color: var(--brand-accent-on); }
+  .phase-name { font: 700 22px/1.1 var(--font-display); margin: 0; letter-spacing: var(--tracking-snug); }
+  .phase-dates { font: 500 12px/1 var(--font-mono); color: var(--ink-muted); margin-top: 6px; }
+  .phase-progress { text-align: right; }
+  .phase-progress .pct { font: 600 28px/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+  .phase-progress .pl { font: 500 10px/1 var(--font-body); letter-spacing: 0.10em; text-transform: uppercase; color: var(--ink-subtle); margin-top: 4px; }
+
+  .phase-pyr { display:flex; gap: 4px; height: 8px; border-radius: 4px; overflow: hidden; margin: 14px 0 6px; background: var(--surface-alt); }
+  .phase-pyr-leg { display:flex; gap: 18px; font: 500 11px/1.4 var(--font-body); color: var(--ink-muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .phase-pyr-leg span { display:flex; align-items: center; gap: 6px; }
+  .phase-pyr-leg i { display:inline-block; width: 10px; height: 10px; border-radius: 3px; }
+
+  .phase-sessions { border-top: 1px solid var(--line-soft); padding-top: 12px; display: flex; justify-content: space-between; }
+  .phase-sessions .ses-stat { }
+  .phase-sessions .ses-val { font: 600 16px/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+  .phase-sessions .ses-lbl { font: 500 10px/1.2 var(--font-body); color: var(--ink-subtle); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+  /* Right column: sessions + KPIs */
+  .right-col { display:flex; flex-direction: column; gap: 16px; }
+
+  .session-list-card { padding: 20px 22px; }
+  .session-list-card h3 { font: 600 16px/1.3 var(--font-display); margin: 4px 0 16px; }
+  .ses-row { display: grid; grid-template-columns: 60px 1fr auto; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line-soft); align-items: center; }
+  .ses-row:last-child { border-bottom: 0; }
+  .ses-date { font: 600 11px/1.3 var(--font-mono); color: var(--ink); }
+  .ses-date span { display:block; font: 400 10px/1 var(--font-body); color: var(--ink-muted); margin-top: 4px; }
+  .ses-title { font: 600 13px/1.3 var(--font-body); }
+  .ses-meta { font: 400 11px/1.3 var(--font-body); color: var(--ink-muted); margin-top: 4px; display:flex; gap: 10px; }
+  .ses-meta span { display:inline-flex; gap: 4px; align-items: center; }
+  .ses-status { padding: 4px 10px; border-radius: 100px; font: 500 11px/1 var(--font-body); }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .kpi-card { padding: 14px 16px; }
+  .kpi-card .l { font: 600 10px/1 var(--font-body); letter-spacing: 0.10em; text-transform: uppercase; color: var(--ink-subtle); }
+  .kpi-card .v { font: 600 24px/1 var(--font-mono); font-variant-numeric: tabular-nums; margin: 10px 0 4px; }
+  .kpi-card .s { font: 400 11px/1.3 var(--font-body); color: var(--ink-muted); }
+</style>
+</head>
+<body>
+
+<div class="app" data-screen-label="03 Plan-detalj · Faser">
+
+  <aside class="rail">
+    <div class="rail-logo">AK</div>
+    <div class="rail-btn"><svg class="ic" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+    <div class="rail-btn"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></div>
+    <div class="rail-btn active"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div>
+    <div class="rail-btn"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div>
+    <div class="rail-btn"><svg class="ic" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6"/></svg></div>
+    <div class="rail-spacer"></div>
+    <div class="rail-avatar">AK</div>
+  </aside>
+
+  <nav class="nav">
+    <div style="font: 700 14px/1.2 var(--font-display); padding: 0 8px 4px;">Treningsplaner</div>
+    <div style="font: 400 11px/1 var(--font-body); color: var(--ink-muted); padding: 0 8px 12px;">14 maler · 8 aktive</div>
+
+    <a class="nav-item">Alle planer <span class="nav-count">12</span></a>
+    <a class="nav-item">+ Ny plan</a>
+    <a class="nav-item">Maler <span class="nav-count">14</span></a>
+
+    <div class="nav-section">Aktive planer</div>
+    <a class="nav-item active">Sommer-toppform · Markus</a>
+    <a class="nav-item">Comeback · Joachim</a>
+    <a class="nav-item">Junior-grunnpakke · Lise</a>
+    <a class="nav-item">Vinter-innendørs · Anna</a>
+    <a class="nav-item">Range-grunnpakke · Henrik</a>
+
+    <div class="nav-section">Avsluttet</div>
+    <a class="nav-item" style="opacity:0.6">Vår-oppkjøring · Mads</a>
+  </nav>
+
+  <main class="main">
+
+    <header class="page-head">
+      <span class="page-eyebrow">Treningsplaner · Aktiv · Markus R. Pedersen · Kategori A</span>
+      <h1 class="page-title"><em>Sommer-toppform</em> · 8 ukers periode</h1>
+      <p class="page-lede">9. mai – 1. juli 2026 · Peak Sørlandsåpent (2.–4. juni) · 32 økter totalt. Periodiserings-agent overvåker fasebytter og foreslår justeringer ved avvik &gt; 10 %.</p>
+    </header>
+
+    <!-- Action-strip -->
+    <div class="action-strip">
+      <span class="action-strip-label">Plan-handlinger</span>
+      <button class="action-item action-item-info"><b>13/19</b> økter fullført</button>
+      <button class="action-item action-item-success"><b>92 %</b> adherence</button>
+      <button class="action-item action-item-warn"><b>1</b> agent-justering venter</button>
+      <button class="action-item"><b>21 d</b> til peak</button>
+      <button class="btn btn-ghost" style="margin-left:auto;">Eksporter PDF</button>
+      <button class="btn btn-ghost">Dupliser</button>
+      <button class="btn btn-primary">Rediger plan</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-row">
+      <button class="tab">Oversikt</button>
+      <button class="tab active">Faser <span class="num-pill">5</span></button>
+      <button class="tab">Økter <span class="num-pill">32</span></button>
+      <button class="tab">Pyramide</button>
+      <button class="tab">Progresjon</button>
+      <button class="tab">Notater</button>
+    </div>
+
+    <!-- Timeline strip -->
+    <section class="card timeline-card">
+      <div class="tl-head">
+        <div>
+          <div class="card-label">8-ukers tidslinje · auto-generert av periodiserings-agent</div>
+          <h3>Faseinndeling og pyramide-vekting per uke</h3>
+          <p>Lyse striper viser dominerende pyramide-lag. Klikk en uke for å zoome inn.</p>
+        </div>
+        <span class="pill pill-lime">u21 · Spesifikk</span>
+      </div>
+
+      <div class="tl-weeks-row">
+        <div class="tl-week" style="background:transparent"></div>
+        <div class="tl-week"><div class="tl-week-num">u19</div><div class="tl-week-date">9 mai</div></div>
+        <div class="tl-week"><div class="tl-week-num">u20</div><div class="tl-week-date">16 mai</div></div>
+        <div class="tl-week" style="background: rgba(209,248,67,0.15);"><div class="tl-week-num">u21</div><div class="tl-week-date">23 mai · NÅ</div></div>
+        <div class="tl-week"><div class="tl-week-num">u22</div><div class="tl-week-date">30 mai</div></div>
+        <div class="tl-week"><div class="tl-week-num">u23</div><div class="tl-week-date">2 jun</div></div>
+        <div class="tl-week"><div class="tl-week-num">u24</div><div class="tl-week-date">6 jun</div></div>
+        <div class="tl-week"><div class="tl-week-num">u25</div><div class="tl-week-date">13 jun</div></div>
+        <div class="tl-week"><div class="tl-week-num">u26</div><div class="tl-week-date">20 jun</div></div>
+      </div>
+
+      <div class="tl-bars">
+        <div class="tl-bar-label">Faser</div>
+        <div class="tl-bar-track">
+          <div class="tl-bar-fill" style="left: 0; width: 25%; background: var(--pyr-fys);">Base</div>
+          <div class="tl-bar-fill" style="left: 25%; width: 12.5%; background: var(--pyr-tek);">Forb.</div>
+          <div class="tl-bar-fill" style="left: 37.5%; width: 37.5%; background: var(--pyr-slag); color: var(--brand-accent-on);">Spesifikk · NÅ</div>
+          <div class="tl-bar-fill" style="left: 75%; width: 10%; background: var(--pyr-turn);">Taper</div>
+          <div class="tl-bar-fill" style="left: 85%; width: 15%; background: var(--pyr-spill);">Peak · Sørlandsåpent</div>
+        </div>
+      </div>
+      <div class="tl-bars">
+        <div class="tl-bar-label">SLAG-vekt</div>
+        <div class="tl-bar-track" style="height: 18px;">
+          <div class="tl-bar-fill" style="left: 0; width: 25%; background: rgba(209,248,67,0.25);"></div>
+          <div class="tl-bar-fill" style="left: 25%; width: 12.5%; background: rgba(209,248,67,0.45);"></div>
+          <div class="tl-bar-fill" style="left: 37.5%; width: 37.5%; background: rgba(209,248,67,0.85);"></div>
+          <div class="tl-bar-fill" style="left: 75%; width: 10%; background: rgba(209,248,67,0.55);"></div>
+          <div class="tl-bar-fill" style="left: 85%; width: 15%; background: rgba(209,248,67,0.30);"></div>
+        </div>
+      </div>
+      <div class="tl-bars">
+        <div class="tl-bar-label">SPILL-vekt</div>
+        <div class="tl-bar-track" style="height: 18px;">
+          <div class="tl-bar-fill" style="left: 0; width: 25%; background: rgba(184,133,42,0.20);"></div>
+          <div class="tl-bar-fill" style="left: 25%; width: 12.5%; background: rgba(184,133,42,0.40);"></div>
+          <div class="tl-bar-fill" style="left: 37.5%; width: 37.5%; background: rgba(184,133,42,0.55);"></div>
+          <div class="tl-bar-fill" style="left: 75%; width: 10%; background: rgba(184,133,42,0.75);"></div>
+          <div class="tl-bar-fill" style="left: 85%; width: 15%; background: rgba(184,133,42,1);"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase grid -->
+    <div class="phase-grid">
+
+      <div style="display:flex; flex-direction: column; gap: 14px;">
+
+        <section class="card phase-card">
+          <div class="phase-card-head">
+            <div>
+              <div class="phase-eyebrow-row"><span class="phase-num">Fase 1</span><span class="pill pill-success">Fullført</span></div>
+              <h2 class="phase-name">Base</h2>
+              <div class="phase-dates">9.–22. mai · 2 uker · 8 økter</div>
+            </div>
+            <div class="phase-progress"><div class="pct">100 %</div><div class="pl">Fullført</div></div>
+          </div>
+          <div class="phase-pyr">
+            <div style="width:30%; background:var(--pyr-fys)"></div>
+            <div style="width:35%; background:var(--pyr-tek)"></div>
+            <div style="width:15%; background:var(--pyr-slag)"></div>
+            <div style="width:12%; background:var(--pyr-spill)"></div>
+            <div style="width:8%; background:var(--pyr-turn)"></div>
+          </div>
+          <div class="phase-pyr-leg">
+            <span><i style="background:var(--pyr-fys)"></i>FYS 30 %</span>
+            <span><i style="background:var(--pyr-tek)"></i>TEK 35 %</span>
+            <span><i style="background:var(--pyr-slag)"></i>SLAG 15 %</span>
+            <span><i style="background:var(--pyr-spill)"></i>SPILL 12 %</span>
+            <span><i style="background:var(--pyr-turn)"></i>TURN 8 %</span>
+          </div>
+          <div class="phase-sessions">
+            <div class="ses-stat"><div class="ses-val">8/8</div><div class="ses-lbl">Økter</div></div>
+            <div class="ses-stat"><div class="ses-val">14,2 t</div><div class="ses-lbl">Volum</div></div>
+            <div class="ses-stat"><div class="ses-val">100 %</div><div class="ses-lbl">Adherence</div></div>
+            <div class="ses-stat"><div class="ses-val" style="color:var(--status-success)">+0,4</div><div class="ses-lbl">SG-delta</div></div>
+          </div>
+        </section>
+
+        <section class="card phase-card">
+          <div class="phase-card-head">
+            <div>
+              <div class="phase-eyebrow-row"><span class="phase-num">Fase 2</span><span class="pill pill-success">Fullført</span></div>
+              <h2 class="phase-name">Forberedelse</h2>
+              <div class="phase-dates">23.–29. mai · 1 uke · 4 økter</div>
+            </div>
+            <div class="phase-progress"><div class="pct">100 %</div><div class="pl">Fullført</div></div>
+          </div>
+          <div class="phase-pyr">
+            <div style="width:18%; background:var(--pyr-fys)"></div>
+            <div style="width:32%; background:var(--pyr-tek)"></div>
+            <div style="width:25%; background:var(--pyr-slag)"></div>
+            <div style="width:18%; background:var(--pyr-spill)"></div>
+            <div style="width:7%; background:var(--pyr-turn)"></div>
+          </div>
+          <div class="phase-pyr-leg">
+            <span><i style="background:var(--pyr-fys)"></i>18 %</span>
+            <span><i style="background:var(--pyr-tek)"></i>32 %</span>
+            <span><i style="background:var(--pyr-slag)"></i>25 %</span>
+            <span><i style="background:var(--pyr-spill)"></i>18 %</span>
+            <span><i style="background:var(--pyr-turn)"></i>7 %</span>
+          </div>
+          <div class="phase-sessions">
+            <div class="ses-stat"><div class="ses-val">4/4</div><div class="ses-lbl">Økter</div></div>
+            <div class="ses-stat"><div class="ses-val">7,5 t</div><div class="ses-lbl">Volum</div></div>
+            <div class="ses-stat"><div class="ses-val">100 %</div><div class="ses-lbl">Adherence</div></div>
+            <div class="ses-stat"><div class="ses-val" style="color:var(--status-success)">+0,2</div><div class="ses-lbl">SG-delta</div></div>
+          </div>
+        </section>
+
+        <section class="card phase-card current">
+          <div class="phase-card-head">
+            <div>
+              <div class="phase-eyebrow-row"><span class="phase-num">Fase 3 · AKTIV</span><span class="pill pill-lime">Pågår · u 21</span></div>
+              <h2 class="phase-name">Spesifikk</h2>
+              <div class="phase-dates">30. mai – 1. juni · 3 uker · 12 økter</div>
+            </div>
+            <div class="phase-progress"><div class="pct">64 %</div><div class="pl">På plan</div></div>
+          </div>
+          <div class="phase-pyr">
+            <div style="width:10%; background:var(--pyr-fys)"></div>
+            <div style="width:15%; background:var(--pyr-tek)"></div>
+            <div style="width:35%; background:var(--pyr-slag)"></div>
+            <div style="width:30%; background:var(--pyr-spill)"></div>
+            <div style="width:10%; background:var(--pyr-turn)"></div>
+          </div>
+          <div class="phase-pyr-leg">
+            <span><i style="background:var(--pyr-fys)"></i>FYS 10 %</span>
+            <span><i style="background:var(--pyr-tek)"></i>TEK 15 %</span>
+            <span><i style="background:var(--pyr-slag)"></i><b>SLAG 35 %</b></span>
+            <span><i style="background:var(--pyr-spill)"></i>SPILL 30 %</span>
+            <span><i style="background:var(--pyr-turn)"></i>TURN 10 %</span>
+          </div>
+          <div class="phase-sessions">
+            <div class="ses-stat"><div class="ses-val">7/12</div><div class="ses-lbl">Økter</div></div>
+            <div class="ses-stat"><div class="ses-val">13,8 t</div><div class="ses-lbl">Volum så langt</div></div>
+            <div class="ses-stat"><div class="ses-val">88 %</div><div class="ses-lbl">Adherence</div></div>
+            <div class="ses-stat"><div class="ses-val" style="color:var(--status-success)">+0,2</div><div class="ses-lbl">SG-delta</div></div>
+          </div>
+        </section>
+
+        <section class="card phase-card">
+          <div class="phase-card-head">
+            <div>
+              <div class="phase-eyebrow-row"><span class="phase-num">Fase 4</span><span class="pill pill-muted">Planlagt</span></div>
+              <h2 class="phase-name">Taper</h2>
+              <div class="phase-dates">2.–4. juni · 3 dager · 2 økter</div>
+            </div>
+            <div class="phase-progress"><div class="pct" style="color:var(--ink-muted)">—</div><div class="pl">Starter om 9 d</div></div>
+          </div>
+          <div class="phase-pyr">
+            <div style="width:5%; background:var(--pyr-fys)"></div>
+            <div style="width:10%; background:var(--pyr-tek)"></div>
+            <div style="width:30%; background:var(--pyr-slag)"></div>
+            <div style="width:35%; background:var(--pyr-spill)"></div>
+            <div style="width:20%; background:var(--pyr-turn)"></div>
+          </div>
+          <div class="phase-pyr-leg">
+            <span><i style="background:var(--pyr-spill)"></i>SPILL 35 %</span>
+            <span><i style="background:var(--pyr-slag)"></i>SLAG 30 %</span>
+            <span><i style="background:var(--pyr-turn)"></i>TURN 20 %</span>
+            <span style="color:var(--ink-subtle)">redusert volum</span>
+          </div>
+        </section>
+
+        <section class="card phase-card">
+          <div class="phase-card-head">
+            <div>
+              <div class="phase-eyebrow-row"><span class="phase-num">Fase 5</span><span class="pill pill-muted">Planlagt</span></div>
+              <h2 class="phase-name">Peak</h2>
+              <div class="phase-dates">2.–4. juni · Sørlandsåpent · 3 turneringsrunder</div>
+            </div>
+            <div class="phase-progress"><div class="pct" style="color:var(--ink-muted)">—</div><div class="pl">Mål: top-5</div></div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="right-col">
+        <div class="kpi-row">
+          <div class="card kpi-card">
+            <div class="l">SG total</div>
+            <div class="v" style="color:var(--status-success)">+1,24</div>
+            <div class="s">+0,38 i fase 3</div>
+          </div>
+          <div class="card kpi-card">
+            <div class="l">Volum</div>
+            <div class="v">35,5 t</div>
+            <div class="s">av 52,8 t budsjett</div>
+          </div>
+          <div class="card kpi-card">
+            <div class="l">Adherence</div>
+            <div class="v">92 %</div>
+            <div class="s">13/19 økter</div>
+          </div>
+        </div>
+
+        <section class="card session-list-card">
+          <h3>Kommende økter · denne uka</h3>
+
+          <div class="ses-row">
+            <div class="ses-date">tor 22<span>10:00</span></div>
+            <div>
+              <div class="ses-title">Range · jernspill 100-150 m</div>
+              <div class="ses-meta"><span><i class="ic" style="width:10px;height:10px;background:var(--pyr-slag);border-radius:3px;display:inline-block"></i> SLAG · 90 min</span><span>TrackMan</span></div>
+            </div>
+            <span class="ses-status pill-lime">I dag</span>
+          </div>
+
+          <div class="ses-row">
+            <div class="ses-date">fre 23<span>14:30</span></div>
+            <div>
+              <div class="ses-title">9-hulls scoringsrunde</div>
+              <div class="ses-meta"><span><i style="width:10px;height:10px;background:var(--pyr-spill);border-radius:3px;display:inline-block"></i> SPILL · 2 t</span><span>Bjaavann</span></div>
+            </div>
+            <span class="ses-status pill-muted">Planlagt</span>
+          </div>
+
+          <div class="ses-row">
+            <div class="ses-date">lør 24<span>09:00</span></div>
+            <div>
+              <div class="ses-title">Putte · 6-fots drill</div>
+              <div class="ses-meta"><span><i style="width:10px;height:10px;background:var(--pyr-slag);border-radius:3px;display:inline-block"></i> SLAG · 45 min</span><span>Hjemme-putte</span></div>
+            </div>
+            <span class="ses-status pill-muted">Planlagt</span>
+          </div>
+
+          <div class="ses-row">
+            <div class="ses-date">søn 25<span>11:00</span></div>
+            <div>
+              <div class="ses-title">18-hulls turnerings-sim</div>
+              <div class="ses-meta"><span><i style="width:10px;height:10px;background:var(--pyr-turn);border-radius:3px;display:inline-block"></i> TURN · 4 t</span><span>Bjaavann · gult tee</span></div>
+            </div>
+            <span class="ses-status pill-muted">Planlagt</span>
+          </div>
+
+          <div class="ses-row">
+            <div class="ses-date">man 26<span>08:00</span></div>
+            <div>
+              <div class="ses-title">FYS · mobilitet + rotasjon</div>
+              <div class="ses-meta"><span><i style="width:10px;height:10px;background:var(--pyr-fys);border-radius:3px;display:inline-block"></i> FYS · 60 min</span><span>Egentrening</span></div>
+            </div>
+            <span class="ses-status pill-muted">Planlagt</span>
+          </div>
+        </section>
+      </aside>
+
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

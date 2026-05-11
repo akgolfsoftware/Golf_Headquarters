@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Booking — Info-skjema</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="../_shared/arketype-g.css" />
+<style>
+  .b5-layout { display:grid; grid-template-columns: 1.2fr 0.9fr; gap: 32px; max-width: 1000px; margin: 0 auto; align-items: start; }
+  .b5-form { display:flex; flex-direction:column; gap: 22px; }
+  .b5-section h3 { font-family:'Instrument Serif'; font-weight:400; font-style:italic; font-size: 20px; line-height: 1.1; margin: 0 0 4px; color: var(--g-fg); letter-spacing:-0.005em; }
+  .b5-section p.h { font-size: 12px; color: var(--g-muted); margin: 0 0 14px; }
+  .b5-field { display:flex; flex-direction:column; gap: 6px; margin-bottom: 14px; }
+  .b5-field label { font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-muted); display:flex; justify-content:space-between; align-items:center; }
+  .b5-field label .req { color: var(--g-primary); }
+  .b5-field input, .b5-field textarea, .b5-field select { font-family: 'Inter Tight'; font-size: 14px; padding: 12px 14px; border: 1px solid var(--g-line); background: var(--g-bg); color: var(--g-fg); width: 100%; outline: none; border-radius: 0; }
+  .b5-field input:focus, .b5-field textarea:focus, .b5-field select:focus { border-color: var(--g-fg); }
+  .b5-field input.has-error { border-color: #B83A2E; background: rgba(184,58,46,0.04); }
+  .b5-field .err { font-size: 11px; color: #B83A2E; margin-top: 2px; font-family: 'Inter Tight'; }
+  .b5-field .hint { font-size: 11px; color: var(--g-subtle); }
+  .b5-field textarea { min-height: 84px; resize: vertical; }
+  .b5-row { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .b5-checks { display:flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+  .b5-check { display:flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+  .b5-check input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--g-fg); flex: 0 0 18px; }
+  .b5-check .body { flex:1; font-size: 13px; color: var(--g-fg); line-height: 1.4; }
+  .b5-check .body a { color: var(--g-fg); text-decoration: underline; text-decoration-color: var(--g-subtle); }
+
+  /* Summary side */
+  .b5-sum { background: var(--g-card); border: 1px solid var(--g-line-soft); padding: 22px; position: sticky; top: 16px; }
+  .b5-sum h3 { font-family:'Instrument Serif'; font-weight:400; font-style:italic; font-size: 20px; margin: 0 0 16px; color: var(--g-fg); }
+  .b5-sum .row { display:flex; justify-content: space-between; align-items: baseline; padding: 10px 0; border-bottom: 1px dashed var(--g-line-soft); font-size: 13px; }
+  .b5-sum .row:last-of-type { border-bottom: none; }
+  .b5-sum .row .l { color: var(--g-muted); font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .b5-sum .row .r { color: var(--g-fg); text-align: right; }
+  .b5-sum .row .r em { font-family: 'Instrument Serif'; font-style: italic; font-weight: 400; }
+  .b5-sum .total { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--g-line); display:flex; justify-content:space-between; align-items: baseline; }
+  .b5-sum .total .l { font-family: 'Instrument Serif'; font-style: italic; font-size: 18px; color: var(--g-fg); }
+  .b5-sum .total .r { font-family:'JetBrains Mono'; font-size: 18px; font-weight: 500; color: var(--g-fg); }
+</style>
+</head>
+<body class="g-canvas" data-screen-label="booking · 05 info-skjema">
+
+<header>
+  <div class="g-label"><span class="dot"></span> BOOKING · 05 INFO · STEG 3 / 5</div>
+  <h1>Din <em>info</em></h1>
+  <p class="sub">Steg 3 av 5 — skjema venstre, ordresammendrag høyre. Inkluderer kontaktinfo, HCP, ønsker/mål, og samtykke. 4 states (default, fylt ut, validering-feil, mobil).</p>
+  <div class="meta">
+    <span><b>URL</b> /booking/anders-k/info</span>
+    <span><b>Felt</b> 7 stk + 2 samtykke</span>
+    <span><b>Validering</b> live + på submit</span>
+  </div>
+</header>
+
+<div class="g-grid">
+
+  <section class="g-cap">
+    <h2 class="cap-title">1 — Default tomt skjema</h2>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav"><span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side"><a href="#">Min side →</a></span></div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span><span class="arrow">→</span>
+        <span class="g-step is-done"><span class="num">✓</span>Tid</span><span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">3</span>Info</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Betaling</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Bekreftelse</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="g-hero">
+          <div class="g-eyebrow">ANDERS KRISTIANSEN · TIR 13. MAI · 09:00 · MULLIGAN</div>
+          <h1 class="g-title g-title--md">Din <em>info</em></h1>
+          <p class="g-sub">Vi trenger noen detaljer for å bekrefte timen. HCP og mål hjelper Anders forberede økten.</p>
+        </div>
+        <div class="b5-layout">
+          <form class="b5-form">
+            <div class="b5-section">
+              <h3>Kontakt</h3>
+              <p class="h">Bekreftelse + reminder sendes på e-post og SMS.</p>
+              <div class="b5-row">
+                <div class="b5-field"><label>Fornavn <span class="req">*</span></label><input type="text" placeholder="Lars" /></div>
+                <div class="b5-field"><label>Etternavn <span class="req">*</span></label><input type="text" placeholder="Olsen" /></div>
+              </div>
+              <div class="b5-field"><label>E-post <span class="req">*</span></label><input type="email" placeholder="lars@eksempel.no" /></div>
+              <div class="b5-field"><label>Mobil <span class="req">*</span></label><input type="tel" placeholder="+47 ___ __ ___" /></div>
+            </div>
+            <div class="b5-section">
+              <h3>Spillerprofil</h3>
+              <p class="h">Hjelper Anders skreddersy økten. Du kan hoppe over feltene.</p>
+              <div class="b5-row">
+                <div class="b5-field"><label>Handicap</label><input type="text" placeholder="18.5" /><div class="hint">Valgfritt</div></div>
+                <div class="b5-field"><label>Klubb</label><input type="text" placeholder="Bærum GK" /></div>
+              </div>
+              <div class="b5-field"><label>Hva vil du jobbe med?</label><textarea placeholder="F.eks. avstandskontroll med jernkøllene, putting fra 3–5 meter, eller mental rutine før slag."></textarea><div class="hint">Maks 500 tegn</div></div>
+            </div>
+            <div class="b5-section">
+              <h3>Samtykker</h3>
+              <div class="b5-checks">
+                <label class="b5-check"><input type="checkbox" /><span class="body">Jeg har lest og godtar <a href="#">avbestillingsreglene</a> (gratis avbestilling fram til 24t før, 50% inntil 6t før, deretter full pris).</span></label>
+                <label class="b5-check"><input type="checkbox" /><span class="body">Ja takk, send meg <a href="#">nyhetsbrev</a> med treningstips og kampanjer (valgfritt, du kan melde deg av når som helst).</span></label>
+              </div>
+            </div>
+          </form>
+          <aside class="b5-sum">
+            <h3>Din bestilling</h3>
+            <div class="row"><span class="l">Tjeneste</span><span class="r">Personlig coaching<br>60 min</span></div>
+            <div class="row"><span class="l">Coach</span><span class="r"><em>Anders Kristiansen</em></span></div>
+            <div class="row"><span class="l">Tid</span><span class="r"><em>Tir 13. mai</em><br>09:00 — 10:00</span></div>
+            <div class="row"><span class="l">Sted</span><span class="r">Mulligan Sandvika<br>Indoor bay 3</span></div>
+            <div class="total"><span class="l">Total</span><span class="r">1 600 kr</span></div>
+          </aside>
+        </div>
+      </div>
+      <div class="g-footer">
+        <div class="left"><button class="g-btn g-btn--ghost">← Tilbake til tid</button></div>
+        <div class="right"><button class="g-btn g-btn--primary is-disabled">Fyll ut alle felt →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="g-cap">
+    <h2 class="cap-title">2 — Fylt ut, klar for betaling</h2>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav"><span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side"><a href="#">Min side →</a></span></div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span><span class="arrow">→</span>
+        <span class="g-step is-done"><span class="num">✓</span>Tid</span><span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">3</span>Info</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Betaling</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Bekreftelse</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="g-hero">
+          <div class="g-eyebrow">ANDERS K · TIR 13. MAI · 09:00</div>
+          <h1 class="g-title g-title--md">Din <em>info</em></h1>
+        </div>
+        <div class="b5-layout">
+          <form class="b5-form">
+            <div class="b5-section">
+              <h3>Kontakt</h3>
+              <div class="b5-row">
+                <div class="b5-field"><label>Fornavn <span class="req">*</span></label><input type="text" value="Lars" /></div>
+                <div class="b5-field"><label>Etternavn <span class="req">*</span></label><input type="text" value="Olsen" /></div>
+              </div>
+              <div class="b5-field"><label>E-post <span class="req">*</span></label><input type="email" value="lars.olsen@example.no" /></div>
+              <div class="b5-field"><label>Mobil <span class="req">*</span></label><input type="tel" value="+47 412 88 921" /></div>
+            </div>
+            <div class="b5-section">
+              <h3>Spillerprofil</h3>
+              <div class="b5-row">
+                <div class="b5-field"><label>Handicap</label><input type="text" value="14.2" /></div>
+                <div class="b5-field"><label>Klubb</label><input type="text" value="Asker GK" /></div>
+              </div>
+              <div class="b5-field"><label>Hva vil du jobbe med?</label><textarea>Avstandskontroll med kort jern (PW–8). Treffer for kort fra 100m.</textarea></div>
+            </div>
+            <div class="b5-section">
+              <h3>Samtykker</h3>
+              <div class="b5-checks">
+                <label class="b5-check"><input type="checkbox" checked /><span class="body">Jeg har lest og godtar <a href="#">avbestillingsreglene</a>.</span></label>
+                <label class="b5-check"><input type="checkbox" checked /><span class="body">Ja takk, send meg <a href="#">nyhetsbrev</a> med treningstips.</span></label>
+              </div>
+            </div>
+          </form>
+          <aside class="b5-sum">
+            <h3>Din bestilling</h3>
+            <div class="row"><span class="l">Tjeneste</span><span class="r">Personlig coaching<br>60 min</span></div>
+            <div class="row"><span class="l">Coach</span><span class="r"><em>Anders Kristiansen</em></span></div>
+            <div class="row"><span class="l">Tid</span><span class="r"><em>Tir 13. mai</em><br>09:00 — 10:00</span></div>
+            <div class="row"><span class="l">Sted</span><span class="r">Mulligan Sandvika<br>Indoor bay 3</span></div>
+            <div class="row"><span class="l">Kunde</span><span class="r">Lars Olsen<br>HCP 14.2 · Asker GK</span></div>
+            <div class="total"><span class="l">Total</span><span class="r">1 600 kr</span></div>
+          </aside>
+        </div>
+      </div>
+      <div class="g-footer">
+        <div class="left"><button class="g-btn g-btn--ghost">← Tilbake</button></div>
+        <div class="right"><button class="g-btn g-btn--primary">Til betaling →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="g-cap">
+    <h2 class="cap-title">3 — Validering: ugyldig e-post + manglende samtykke</h2>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav"><span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side"><a href="#">Min side →</a></span></div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span><span class="arrow">→</span>
+        <span class="g-step is-done"><span class="num">✓</span>Tid</span><span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">3</span>Info</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Betaling</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Bekreftelse</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="g-hero">
+          <div class="g-eyebrow">ANDERS K · TIR 13. MAI · 09:00</div>
+          <h1 class="g-title g-title--md">Din <em>info</em></h1>
+          <div style="margin-top: 14px; padding: 12px 16px; background: rgba(184,58,46,0.06); border-left: 3px solid #B83A2E; font-size: 13px; color: #6B1F18;">2 felt mangler eller har feil — se markeringer under.</div>
+        </div>
+        <div class="b5-layout">
+          <form class="b5-form">
+            <div class="b5-section">
+              <h3>Kontakt</h3>
+              <div class="b5-row">
+                <div class="b5-field"><label>Fornavn <span class="req">*</span></label><input type="text" value="Lars" /></div>
+                <div class="b5-field"><label>Etternavn <span class="req">*</span></label><input type="text" value="Olsen" /></div>
+              </div>
+              <div class="b5-field"><label>E-post <span class="req">*</span></label><input type="email" class="has-error" value="lars.olsen@" /><div class="err">↶ E-postadressen ser ufullstendig ut</div></div>
+              <div class="b5-field"><label>Mobil <span class="req">*</span></label><input type="tel" value="+47 412 88 921" /></div>
+            </div>
+            <div class="b5-section">
+              <h3>Samtykker</h3>
+              <div class="b5-checks">
+                <label class="b5-check" style="background: rgba(184,58,46,0.04); padding: 8px 10px; border: 1px solid rgba(184,58,46,0.3);"><input type="checkbox" /><span class="body">Jeg har lest og godtar <a href="#">avbestillingsreglene</a>. <span style="color:#B83A2E; font-size: 11px; display:block; margin-top: 2px;">↶ Påkrevd for å fortsette</span></span></label>
+                <label class="b5-check"><input type="checkbox" /><span class="body">Ja takk, send meg <a href="#">nyhetsbrev</a>.</span></label>
+              </div>
+            </div>
+          </form>
+          <aside class="b5-sum">
+            <h3>Din bestilling</h3>
+            <div class="row"><span class="l">Tjeneste</span><span class="r">Personlig coaching<br>60 min</span></div>
+            <div class="row"><span class="l">Coach</span><span class="r"><em>Anders Kristiansen</em></span></div>
+            <div class="row"><span class="l">Tid</span><span class="r"><em>Tir 13. mai</em><br>09:00 — 10:00</span></div>
+            <div class="total"><span class="l">Total</span><span class="r">1 600 kr</span></div>
+          </aside>
+        </div>
+      </div>
+      <div class="g-footer">
+        <div class="left"><button class="g-btn g-btn--ghost">← Tilbake</button></div>
+        <div class="right"><button class="g-btn g-btn--primary is-disabled">Fiks felt først →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="g-cap">
+    <h2 class="cap-title">4 — Mobil ≤640px: skjema først, sammendrag som accordion</h2>
+    <div class="g-frame is-mobile" style="margin-top:18px">
+      <div class="g-topnav" style="padding: 0 16px; height: 52px"><span class="g-brand" style="font-size: 12px"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side" style="font-size: 12px"><a href="#">Min side →</a></span></div>
+      <div style="padding: 14px 16px; border-bottom: 1px solid var(--g-line-soft)">
+        <span class="g-mono" style="font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--g-muted)">Steg 3 av 5 · Info</span>
+        <div style="height: 8px; background: var(--g-bg-alt); border-radius: 100px; overflow:hidden; margin-top: 6px"><div style="height:100%; width: 60%; background: var(--g-primary); border-radius: 100px"></div></div>
+      </div>
+      <div style="padding: 16px; border-bottom: 1px solid var(--g-line-soft); background: var(--g-bg-alt); display:flex; justify-content:space-between; align-items: center; cursor: pointer;">
+        <div>
+          <div style="font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-muted)">DIN BESTILLING</div>
+          <div style="font-size: 13px; color: var(--g-fg); margin-top: 2px;"><em style="font-family:'Instrument Serif'; font-style: italic;">Anders K</em> · Tir 13. mai · 09:00</div>
+        </div>
+        <div style="font-family:'JetBrains Mono'; font-size: 14px; font-weight: 500; color: var(--g-fg);">1 600 kr <span style="color: var(--g-subtle); margin-left: 6px;">▾</span></div>
+      </div>
+      <div style="padding: 20px 16px 100px">
+        <div class="g-eyebrow" style="font-size: 10px; margin-bottom: 6px">STEG 3 AV 5</div>
+        <h1 class="g-title g-title--sm" style="font-size: 28px; margin-bottom: 16px">Din <em>info</em></h1>
+        <div class="b5-section">
+          <h3 style="font-size: 16px">Kontakt</h3>
+          <div class="b5-field"><label>Fornavn <span class="req">*</span></label><input type="text" placeholder="Lars" /></div>
+          <div class="b5-field"><label>Etternavn <span class="req">*</span></label><input type="text" placeholder="Olsen" /></div>
+          <div class="b5-field"><label>E-post <span class="req">*</span></label><input type="email" placeholder="lars@eksempel.no" /></div>
+          <div class="b5-field"><label>Mobil <span class="req">*</span></label><input type="tel" placeholder="+47 ___ __ ___" /></div>
+        </div>
+        <div class="b5-section" style="margin-top: 14px">
+          <h3 style="font-size: 16px">Samtykker</h3>
+          <div class="b5-checks">
+            <label class="b5-check"><input type="checkbox" /><span class="body" style="font-size: 12px">Jeg godtar <a href="#">avbestillingsreglene</a>.</span></label>
+            <label class="b5-check"><input type="checkbox" /><span class="body" style="font-size: 12px">Nyhetsbrev (valgfritt).</span></label>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute; left:0; right:0; bottom:0; padding: 10px 16px; background: var(--g-bg); border-top: 1px solid var(--g-line);"><button class="g-btn g-btn--primary" style="width: 100%; height: 44px; font-size: 13px">Til betaling →</button></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

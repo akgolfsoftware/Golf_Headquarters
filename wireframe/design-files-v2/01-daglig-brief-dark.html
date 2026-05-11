@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>01 Daglig brief (mørkt) · CoachHQ · AK Golf</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="tokens.css">
+<style>
+/* Daglig brief specific */
+.brief-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.brief-section-num{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.08em;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.brief-section-num::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+.brief-section-num em{font-style:normal;color:var(--ink);font-family:var(--font-tight);font-weight:600;font-size:13px;letter-spacing:-.005em;text-transform:none}
+
+.donut-svg{transform:rotate(-90deg)}
+.donut-row{display:flex;align-items:center;gap:24px}
+.donut-legend{display:flex;flex-direction:column;gap:8px;font-size:12.5px}
+.donut-legend-row{display:flex;align-items:center;gap:10px;color:var(--ink-muted)}
+.donut-legend-row b{color:var(--ink);font-family:var(--font-mono);font-weight:500;width:36px;text-align:right;font-size:12px}
+.donut-legend-row .lbl{flex:1}
+.swatch-pip{width:8px;height:8px;border-radius:2px}
+
+.yest-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.player-attended{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip-att{display:inline-flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;border-radius:9999px;background:var(--success-bg);color:var(--success);font-size:12px;font-weight:500}
+.chip-att .av{width:20px;height:20px;font-size:9.5px}
+.chip-miss{display:inline-flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;border-radius:9999px;background:var(--warning-bg);color:var(--warning);font-size:12px;font-weight:500}
+.chip-miss .av{width:20px;height:20px;font-size:9.5px;background:#B8852A}
+
+.timeline-rail{position:relative;height:56px;background:var(--surface-alt);border-radius:10px;margin:8px 0 16px;overflow:hidden}
+body.dark .timeline-rail{background:#0F1413}
+.timeline-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--line-soft)}
+.timeline-tick span{position:absolute;top:4px;left:6px;font-family:var(--font-mono);font-size:9.5px;color:var(--ink-subtle)}
+.timeline-block{position:absolute;top:22px;bottom:8px;border-radius:6px;padding:0 8px;display:flex;align-items:center;font-size:11px;color:var(--brand-primary-deep);background:rgba(0,88,64,.12);border:1px solid rgba(0,88,64,.22);font-weight:500;overflow:hidden;white-space:nowrap}
+.timeline-block.slag{background:rgba(209,248,67,.35);border-color:rgba(209,248,67,.6);color:var(--brand-accent-on)}
+.timeline-block.fys{background:rgba(22,163,74,.16);border-color:rgba(22,163,74,.3);color:#0E5C2F}
+body.dark .timeline-block{color:#E8E6DF}
+body.dark .timeline-block.slag{color:#D1F843}
+
+.sched-tbl td{padding:12px 16px}
+.sched-time{font-family:var(--font-mono);font-size:13px;font-weight:500;width:64px}
+.sched-loc{color:var(--ink-muted);font-size:12px}
+
+.rec-list{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.rec{display:flex;gap:14px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface-card)}
+body.dark .rec{border-color:#22282A}
+.rec-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--accent-soft);color:var(--brand-accent-on)}
+body.dark .rec-icon{background:rgba(209,248,67,.12);color:#D1F843}
+.rec-icon.primary{background:var(--brand-primary-soft);color:var(--brand-primary)}
+body.dark .rec-icon.primary{background:#102220;color:#7BB39A}
+.rec-icon.warn{background:var(--warning-bg);color:var(--warning)}
+.rec-body{flex:1;min-width:0}
+.rec-title{font-weight:500;font-size:13.5px;color:var(--ink);margin-bottom:2px}
+.rec-meta{font-size:12px;color:var(--ink-muted)}
+
+.attn-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line-soft)}
+.attn-row:last-child{border-bottom:none}
+.attn-row .av{flex-shrink:0}
+.attn-body{flex:1;min-width:0}
+.attn-title{font-size:13.5px;font-weight:500;margin-bottom:2px}
+.attn-meta{font-size:12px;color:var(--ink-muted)}
+.attn-amt{font-family:var(--font-mono);font-size:14px;font-weight:500}
+
+.kpi-spark{height:24px;display:flex;align-items:flex-end;gap:2px;margin-top:8px}
+.kpi-spark span{flex:1;background:var(--ink-subtle);border-radius:1px;opacity:.4}
+.kpi-spark span.high{background:var(--brand-primary);opacity:.7}
+.kpi-spark span.peak{background:var(--brand-accent);opacity:1}
+</style>
+</head>
+<body class="dark">
+<div class="app" data-screen-label="01 Daglig brief — dark">
+
+  <!-- Mørk rail (56px) -->
+  <aside class="rail">
+    <div class="rail-logo">AK</div>
+    <div class="rail-icons">
+      <a href="#" class="rail-ic" title="Hub" aria-label="Hub"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+      <a href="#" class="rail-ic active" title="Brief"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></a>
+      <a href="#" class="rail-ic" title="Spillere"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></a>
+      <a href="#" class="rail-ic" title="Kalender"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></a>
+      <a href="#" class="rail-ic" title="Økonomi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></a>
+      <a href="#" class="rail-ic" title="Analytics"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></a>
+      <a href="#" class="rail-ic" title="Innstillinger"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></a>
+    </div>
+    <div class="rail-bottom">
+      <div class="av rail-avatar" title="Anders Kristiansen">AK</div>
+    </div>
+  </aside>
+
+  <!-- Lys nav (200px) -->
+  <aside class="nav">
+    <div class="nav-head">
+      <div class="nav-head-title">CoachHQ</div>
+      <div class="nav-head-sub">AK Golf · Admin</div>
+    </div>
+    <a href="#" class="nav-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Hub</a>
+    <a href="#" class="nav-item active"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Daglig brief</a>
+    <a href="#" class="nav-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere<span class="badge">38</span></a>
+    <a href="#" class="nav-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Timeplan</a>
+    <a href="#" class="nav-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Godkjenninger<span class="badge">3</span></a>
+    <a href="#" class="nav-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Analytics</a>
+    <a href="#" class="nav-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Økonomi</a>
+    <a href="#" class="nav-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Fasiliteter</a>
+    <a href="#" class="nav-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Rapporter</a>
+    <div class="nav-section">System</div>
+    <a href="#" class="nav-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/></svg>Revisjonslogg</a>
+    <a href="#" class="nav-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Innstillinger</a>
+  </aside>
+
+  <main class="main">
+    <header class="hero">
+      <div>
+        <div class="hero-eyebrow">Onsdag · 11. mai 2026 · uke 19</div>
+        <h1 class="hero-title"><em>Onsdag 11. mai. 6 økter på timeplanen.</em></h1>
+        <div class="hero-sub">Brief generert kl 06:32 · Oppdatert nå · Sendes automatisk til <a href="#" class="btn-link">anders@akgolf.no</a></div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-secondary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Skriv ut</button>
+        <button class="btn btn-secondary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6"/></svg>Settings</button>
+        <button class="btn btn-primary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Send som e-post</button>
+      </div>
+    </header>
+
+    <!-- Seksjon 6 KPI-strip flyttet til toppen for raskt overblikk -->
+    <div class="kpi-strip">
+      <div class="kpi">
+        <div class="kpi-label">Inntekt i går</div>
+        <div class="kpi-value">14 280<span style="font-size:14px;color:var(--ink-muted);font-weight:400"> kr</span></div>
+        <div class="kpi-foot"><span class="delta delta-up">+8,4%</span><span>vs forrige onsdag</span></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Antall økter</div>
+        <div class="kpi-value">7</div>
+        <div class="kpi-foot"><span class="delta delta-up">+1</span><span>5 spillere · 2 grupper</span></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Belegg studio</div>
+        <div class="kpi-value">82<span style="font-size:14px;color:var(--ink-muted);font-weight:400">%</span></div>
+        <div class="kpi-foot"><span class="delta delta-up">+6 pp</span><span>peak 17:00–20:00</span></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Nye approvals</div>
+        <div class="kpi-value">3</div>
+        <div class="kpi-foot"><a href="#" class="btn-link" style="font-size:12px">venter på godkjenning →</a></div>
+      </div>
+    </div>
+
+    <!-- 1. I går -->
+    <section class="section">
+      <div class="brief-section-num"><span>01</span><em>I går · tirsdag 10. mai</em></div>
+      <div class="brief-grid">
+        <div class="card card-pad">
+          <div style="font-size:12px;color:var(--ink-subtle);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">Oppmøte</div>
+          <div style="font-family:var(--font-tight);font-size:22px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px"><span class="num" style="color:var(--success)">5</span> trente · <span class="num" style="color:var(--warning)">1</span> hoppet over</div>
+          <div class="player-attended">
+            <span class="chip-att"><span class="av">MP</span>Markus R</span>
+            <span class="chip-att"><span class="av">HN</span>Henrik N</span>
+            <span class="chip-att"><span class="av">AK</span>Anna K</span>
+            <span class="chip-att"><span class="av">JT</span>Joachim T</span>
+            <span class="chip-att"><span class="av">MR</span>Mads R</span>
+            <span class="chip-miss"><span class="av">LS</span>Lise S — skadet</span>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div class="rec-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+            <div>
+              <div style="font-size:13.5px;font-weight:500">Beste prestasjon</div>
+              <div style="color:var(--ink-muted);font-size:12.5px">Markus Roinaas Pedersen fikk <b class="num" style="color:var(--success)">+2,4 SG-tot</b> på simulator-økt — pitch 50–100 m</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-pad">
+          <div style="font-size:12px;color:var(--ink-subtle);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">Pyramide-fordeling i går</div>
+          <div class="donut-row">
+            <div class="donut">
+              <svg class="donut-svg" width="140" height="140" viewBox="0 0 42 42">
+                <!-- circumference = 2*pi*15.915 ≈ 100 -->
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--line-soft)" stroke-width="6"/>
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--pyr-tek)" stroke-width="6" stroke-dasharray="38 62" stroke-dashoffset="0"/>
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--pyr-slag)" stroke-width="6" stroke-dasharray="22 78" stroke-dashoffset="-38"/>
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--pyr-fys)" stroke-width="6" stroke-dasharray="18 82" stroke-dashoffset="-60"/>
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--pyr-spill)" stroke-width="6" stroke-dasharray="12 88" stroke-dashoffset="-78"/>
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--pyr-turn)" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-90"/>
+              </svg>
+              <div class="donut-center">
+                <div class="donut-center-num">5,2<span style="font-size:11px;color:var(--ink-muted)"> t</span></div>
+                <div class="donut-center-lbl">Total volum</div>
+              </div>
+            </div>
+            <div class="donut-legend" style="flex:1">
+              <div class="donut-legend-row"><span class="swatch-pip" style="background:var(--pyr-tek)"></span><span class="lbl">TEK · Teknikk</span><b>38 %</b></div>
+              <div class="donut-legend-row"><span class="swatch-pip" style="background:var(--pyr-slag)"></span><span class="lbl">SLAG · Slagprogresjon</span><b>22 %</b></div>
+              <div class="donut-legend-row"><span class="swatch-pip" style="background:var(--pyr-fys)"></span><span class="lbl">FYS · Fysisk fundament</span><b>18 %</b></div>
+              <div class="donut-legend-row"><span class="swatch-pip" style="background:var(--pyr-spill)"></span><span class="lbl">SPILL · Banespill</span><b>12 %</b></div>
+              <div class="donut-legend-row"><span class="swatch-pip" style="background:var(--pyr-turn)"></span><span class="lbl">TURN · Turnering</span><b>10 %</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Dagens timeplan -->
+    <section class="section">
+      <div class="brief-section-num"><span>02</span><em>Dagens timeplan · 6 økter</em></div>
+
+      <div class="timeline-rail">
+        <!-- ticks every 2h, 06–22 = 16h span -->
+        <div class="timeline-tick" style="left:0%"><span>06</span></div>
+        <div class="timeline-tick" style="left:12.5%"><span>08</span></div>
+        <div class="timeline-tick" style="left:25%"><span>10</span></div>
+        <div class="timeline-tick" style="left:37.5%"><span>12</span></div>
+        <div class="timeline-tick" style="left:50%"><span>14</span></div>
+        <div class="timeline-tick" style="left:62.5%"><span>16</span></div>
+        <div class="timeline-tick" style="left:75%"><span>18</span></div>
+        <div class="timeline-tick" style="left:87.5%"><span>20</span></div>
+        <div class="timeline-tick" style="left:99%"><span>22</span></div>
+        <!-- events. 09:00–10:30 = (3/16, 1.5/16) -->
+        <div class="timeline-block" style="left:18.75%;width:9.4%">Markus · TEK</div>
+        <div class="timeline-block fys" style="left:31.25%;width:6.25%">Anna · FYS</div>
+        <div class="timeline-block slag" style="left:50%;width:9.4%">Henrik · SLAG</div>
+        <div class="timeline-block" style="left:56.25%;width:9.4%;top:30px">Mads · TEK</div>
+        <div class="timeline-block" style="left:62.5%;width:6.25%;top:38px">Lise · TEK</div>
+        <div class="timeline-block fys" style="left:78%;width:9.4%">Joachim · FYS</div>
+      </div>
+
+      <div class="card card-flush" style="padding:0;border-radius:14px;overflow:hidden">
+        <table class="tbl sched-tbl">
+          <thead><tr><th>Tid</th><th>Spiller</th><th>Type</th><th>Lokasjon</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="sched-time">09:00</td><td><span class="row"><span class="av av-1">MP</span> Markus Roinaas Pedersen</span></td><td><span class="pill pill-info">TEK · Teknikk</span></td><td class="sched-loc">Mulligan · Studio 1</td><td><a href="#" class="btn-link">Åpne →</a></td></tr>
+            <tr><td class="sched-time">11:00</td><td><span class="row"><span class="av av-2">AK</span> Anna Karlsen</span></td><td><span class="pill pill-success">FYS · Fysisk</span></td><td class="sched-loc">WANG · Gym A</td><td><a href="#" class="btn-link">Åpne →</a></td></tr>
+            <tr><td class="sched-time">14:00</td><td><span class="row"><span class="av av-3">HN</span> Henrik Nilsen</span></td><td><span class="pill pill-accent">SLAG · Pitch 50–100</span></td><td class="sched-loc">Mulligan · Studio 2</td><td><a href="#" class="btn-link">Åpne →</a></td></tr>
+            <tr><td class="sched-time">15:00</td><td><span class="row"><span class="av av-4">MR</span> Mads Rønning</span></td><td><span class="pill pill-info">TEK · Driver</span></td><td class="sched-loc">Mulligan · Studio 1</td><td><a href="#" class="btn-link">Åpne →</a></td></tr>
+            <tr><td class="sched-time">16:00</td><td><span class="row"><span class="av av-5">LS</span> Lise Sandberg</span></td><td><span class="pill pill-info">TEK · Putte</span></td><td class="sched-loc">Mulligan · Studio 2</td><td><a href="#" class="btn-link">Åpne →</a></td></tr>
+            <tr><td class="sched-time">18:30</td><td><span class="row"><span class="av av-6">JT</span> Joachim Tangen</span></td><td><span class="pill pill-success">FYS · Stabilitet</span></td><td class="sched-loc">WANG · Gym A</td><td><a href="#" class="btn-link">Åpne →</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:14px;padding:12px 16px;background:var(--warning-bg);border-radius:12px;font-size:13px;color:var(--warning);display:flex;gap:10px;align-items:center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span><b>Travleste vindu:</b> 14:00–17:00 (3 økter samtidig — sjekk Studio 1+2 belegg)</span>
+      </div>
+    </section>
+
+    <!-- 3. Agentenes anbefalinger + 4. Krever oppmerksomhet -->
+    <section class="section">
+      <div class="brief-grid" style="gap:32px;align-items:flex-start">
+        <div>
+          <div class="brief-section-num"><span>03</span><em>Agentenes anbefalinger</em></div>
+          <div class="rec-list">
+            <div class="rec">
+              <div class="rec-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></div>
+              <div class="rec-body">
+                <div class="rec-title">Periodiserings-agent · pauseuke før Sørlandsåpent</div>
+                <div class="rec-meta">Markus R viser tegn på toppform-platå. Anbefaler 6-dagers deload uke 21 før turnering uke 22.</div>
+              </div>
+              <a href="#" class="btn btn-secondary" style="align-self:center">Vurder →</a>
+            </div>
+            <div class="rec">
+              <div class="rec-icon warn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+              <div class="rec-body">
+                <div class="rec-title">Deload-agent · overbelastning hos 2 spillere</div>
+                <div class="rec-meta">Mads R og Henrik N har hatt over 14 t/uke i 3 uker. Foreslår å redusere TEK-volum med 25 % denne uka.</div>
+              </div>
+              <a href="#" class="btn btn-secondary" style="align-self:center">Vurder →</a>
+            </div>
+            <div class="rec">
+              <div class="rec-icon primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M9 9h6v6H9z"/></svg></div>
+              <div class="rec-body">
+                <div class="rec-title">Plan-watcher · justering for Lise S</div>
+                <div class="rec-meta">Skade-rehab uke 6 av 8. Forslag: gradvis re-introdusere FYS-balanseøvelser fra mandag.</div>
+              </div>
+              <a href="#" class="btn btn-secondary" style="align-self:center">Vurder →</a>
+            </div>
+          </div>
+          <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
+            <span class="muted" style="font-size:13px">3 anbefalinger venter på godkjenning</span>
+            <a href="#" class="btn-link">Åpne approvals-kø →</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="brief-section-num"><span>04</span><em>Krever oppmerksomhet</em></div>
+          <div class="card card-pad" style="padding:8px 22px">
+            <div class="attn-row">
+              <span class="av av-md" style="background:var(--warning);color:#fff">2</span>
+              <div class="attn-body">
+                <div class="attn-title">Nye oppgaver i oppfølgings-køen</div>
+                <div class="attn-meta">Begge gjelder foreldre-kommunikasjon · ingen frist passert</div>
+              </div>
+              <a href="#" class="btn-link">Åpne →</a>
+            </div>
+            <div class="attn-row">
+              <span class="av av-md av-3">JT</span>
+              <div class="attn-body">
+                <div class="attn-title">Faktura Joachim Tangen — 21 dager forfalt</div>
+                <div class="attn-meta">Andre påminnelse sendt · trenger manuell oppfølging</div>
+              </div>
+              <span class="attn-amt">2 400 kr</span>
+              <a href="#" class="btn-link">Følg opp →</a>
+            </div>
+            <div class="attn-row">
+              <span class="av av-md av-2">ES</span>
+              <div class="attn-body">
+                <div class="attn-title">Treningsplan utløper · Emma Sørensen</div>
+                <div class="attn-meta">Plan «Sommer-progresjon» · gjeldende t.o.m. 14. mai</div>
+              </div>
+              <span class="pill pill-warning">3 dager</span>
+              <a href="#" class="btn-link">Forleng →</a>
+            </div>
+            <div class="attn-row">
+              <span class="av av-md av-4">LH</span>
+              <div class="attn-body">
+                <div class="attn-title">Treningsplan utløper · Lina Hansen</div>
+                <div class="attn-meta">Plan «Comeback etter skade» · gjeldende t.o.m. 18. mai</div>
+              </div>
+              <span class="pill pill-muted">7 dager</span>
+              <a href="#" class="btn-link">Forleng →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Ukens prioritet -->
+    <section class="section" style="margin-bottom:0">
+      <div class="brief-section-num"><span>05</span><em>Ukens prioritet · uke 19 av 26 i sommer-makrosyklus</em></div>
+      <div class="card card-feature card-pad" style="display:flex;justify-content:space-between;align-items:center;gap:32px">
+        <div style="flex:1">
+          <div style="font-family:var(--font-tight);font-size:18px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px">Fokus: TEK-volum opp <span class="num" style="color:var(--brand-accent-on)">+12 %</span></div>
+          <div class="muted" style="font-size:13.5px">Periodisering: bygge teknisk kapital før konkurranseperioden starter uke 22 (Sørlandsåpent). Reduserer SPILL marginalt for å gi rom.</div>
+          <div style="display:flex;align-items:center;gap:16px;margin-top:14px">
+            <div style="flex:1;height:8px;background:rgba(0,0,0,.06);border-radius:4px;overflow:hidden;position:relative">
+              <div style="position:absolute;inset:0;width:73%;background:linear-gradient(90deg,#D1F843,#C2EE2F);border-radius:4px"></div>
+            </div>
+            <span class="num" style="font-size:13px;color:var(--ink)">uke 19 / 26</span>
+          </div>
+        </div>
+        <a href="#" class="btn btn-secondary">Se neste uke →</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

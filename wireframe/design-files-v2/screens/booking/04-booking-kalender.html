@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Booking — Kalender + tidsluker</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="../_shared/arketype-g.css" />
+<style>
+  .b4-layout { display:grid; grid-template-columns: 1fr 1.1fr; gap: 32px; max-width: 1040px; margin: 0 auto; align-items: start; }
+  .b4-col h3 { font-family:'Instrument Serif'; font-weight:400; font-style:italic; font-size: 22px; line-height: 1.1; margin: 0 0 16px; color: var(--g-fg); letter-spacing:-0.005em; }
+
+  /* Calendar */
+  .b4-cal { background: var(--g-card); border: 1px solid var(--g-line-soft); padding: 20px; }
+  .b4-cal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom: 14px; }
+  .b4-cal-head .mo { font-family:'Instrument Serif'; font-style:italic; font-size: 20px; color: var(--g-fg); }
+  .b4-cal-head .nav { display:flex; gap: 6px; }
+  .b4-cal-head .nav button { width: 28px; height: 28px; border: 1px solid var(--g-line); background: var(--g-bg); color: var(--g-fg); font-size: 12px; cursor: pointer; }
+  .b4-dow { display:grid; grid-template-columns: repeat(7, 1fr); gap: 2px; font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-subtle); margin-bottom: 6px; }
+  .b4-dow span { text-align: center; padding: 4px 0; }
+  .b4-days { display:grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .b4-day { aspect-ratio: 1/1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap: 2px; font-size: 14px; color: var(--g-fg); border: 1px solid transparent; background: transparent; cursor: pointer; position: relative; }
+  .b4-day .n { font-family:'JetBrains Mono'; font-size: 13px; font-weight: 500; }
+  .b4-day .pip { width: 4px; height: 4px; border-radius: 100px; background: var(--g-primary); }
+  .b4-day.is-out { color: var(--g-subtle); }
+  .b4-day.is-out .n { font-weight: 400; opacity: 0.4; }
+  .b4-day.is-full { color: var(--g-subtle); }
+  .b4-day.is-full .n { opacity: 0.4; text-decoration: line-through; text-decoration-thickness: 1px; }
+  .b4-day.is-today { border-color: var(--g-line); }
+  .b4-day.is-active { background: var(--g-fg); color: var(--g-bg); border-color: var(--g-fg); }
+  .b4-day.is-active .pip { background: var(--g-accent); }
+  .b4-day:not(.is-out):not(.is-full):not(.is-active):hover { background: var(--g-bg-alt); }
+  .b4-legend { display:flex; gap: 14px; margin-top: 14px; font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--g-muted); }
+  .b4-legend span { display:inline-flex; align-items:center; gap: 6px; }
+  .b4-legend i { width: 8px; height: 8px; border-radius: 100px; display:inline-block; }
+  .b4-legend i.av { background: var(--g-primary); }
+  .b4-legend i.fu { background: transparent; border: 1px solid var(--g-line); }
+  .b4-legend i.sel { background: var(--g-fg); }
+
+  /* Slots */
+  .b4-slots-head { display:flex; align-items:baseline; justify-content:space-between; margin-bottom: 14px; }
+  .b4-slots-head .date { font-family:'Instrument Serif'; font-style: italic; font-size: 22px; color: var(--g-fg); }
+  .b4-slots-head .cnt { font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-muted); }
+  .b4-tod { font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-subtle); margin: 14px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--g-line-soft); }
+  .b4-tod:first-of-type { margin-top: 0; }
+  .b4-slot-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .b4-slot { padding: 12px 10px; border: 1px solid var(--g-line); background: var(--g-bg); text-align: center; cursor: pointer; transition: 80ms; }
+  .b4-slot .t { font-family:'JetBrains Mono'; font-size: 13px; font-weight: 500; color: var(--g-fg); letter-spacing: 0.02em; }
+  .b4-slot .sub { font-size: 10px; color: var(--g-muted); margin-top: 2px; }
+  .b4-slot:hover:not(.is-disabled):not(.is-active) { background: var(--g-bg-alt); border-color: var(--g-fg); }
+  .b4-slot.is-active { background: var(--g-fg); border-color: var(--g-fg); }
+  .b4-slot.is-active .t, .b4-slot.is-active .sub { color: var(--g-bg); }
+  .b4-slot.is-disabled { opacity: 0.35; cursor: not-allowed; }
+  .b4-slot.is-disabled .t { text-decoration: line-through; text-decoration-thickness: 1px; }
+
+  /* Selected summary */
+  .b4-sum { margin-top: 20px; padding: 16px 18px; background: var(--g-bg-alt); border: 1px solid var(--g-line-soft); display:flex; align-items:center; gap: 14px; }
+  .b4-sum .ic { width: 32px; height: 32px; border-radius: 100px; background: var(--g-primary); display:flex; align-items:center; justify-content:center; color: var(--g-bg); font-family:'JetBrains Mono'; font-size: 11px; font-weight: 600; }
+  .b4-sum .body { flex:1; }
+  .b4-sum .lbl { font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-muted); margin-bottom: 2px; }
+  .b4-sum .val { font-size: 14px; color: var(--g-fg); }
+  .b4-sum .val em { font-family:'Instrument Serif'; font-style: italic; font-weight: 400; }
+
+  .b4-empty { padding: 60px 24px; text-align: center; color: var(--g-muted); font-style: italic; font-family: 'Instrument Serif'; font-size: 18px; }
+</style>
+</head>
+<body class="g-canvas" data-screen-label="booking · 04 kalender + tidsluker">
+
+<header>
+  <div class="g-label"><span class="dot"></span> BOOKING · 04 KALENDER + TIDSLUKER · STEG 2 / 5</div>
+  <h1>Velg <em>tid</em></h1>
+  <p class="sub">Steg 2 av 5 — Kalender venstre, tidsluker høyre. Tider gruppert i morgen/dag/kveld. Sticky bekreft-CTA i footer når en luke er valgt.</p>
+  <div class="meta">
+    <span><b>URL</b> /booking/anders-k/calendar</span>
+    <span><b>Coach</b> Anders K · 60 min · 1 600 kr</span>
+    <span><b>States</b> Tom · Valgt dato · Valgt luke · Mørkt · Mobil · Full uke</span>
+  </div>
+</header>
+
+<div class="g-grid">
+
+  <section class="g-cap">
+    <h2 class="cap-title">1 — Default: ingen dato valgt</h2>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav"><span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side"><a href="#">Min side →</a></span></div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span><span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Tid</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Info</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Betaling</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Bekreftelse</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="g-hero">
+          <div class="g-eyebrow">ANDERS KRISTIANSEN · 60 MIN · 1 600 KR · MULLIGAN</div>
+          <h1 class="g-title g-title--md">Velg <em>tid</em></h1>
+          <p class="g-sub">Velg en dato i kalenderen for å se ledige tidsluker. Grønn prikk markerer dager med ledighet.</p>
+        </div>
+        <div class="b4-layout">
+          <div class="b4-col">
+            <h3>Kalender</h3>
+            <div class="b4-cal">
+              <div class="b4-cal-head">
+                <span class="mo">Mai 2025</span>
+                <div class="nav"><button>‹</button><button>›</button></div>
+              </div>
+              <div class="b4-dow"><span>Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span><span>Lør</span><span>Søn</span></div>
+              <div class="b4-days">
+                <button class="b4-day is-out"><span class="n">28</span></button>
+                <button class="b4-day is-out"><span class="n">29</span></button>
+                <button class="b4-day is-out"><span class="n">30</span></button>
+                <button class="b4-day is-full"><span class="n">1</span></button>
+                <button class="b4-day"><span class="n">2</span><span class="pip"></span></button>
+                <button class="b4-day is-full"><span class="n">3</span></button>
+                <button class="b4-day is-full"><span class="n">4</span></button>
+                <button class="b4-day is-today"><span class="n">5</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">6</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">7</span><span class="pip"></span></button>
+                <button class="b4-day is-full"><span class="n">8</span></button>
+                <button class="b4-day"><span class="n">9</span><span class="pip"></span></button>
+                <button class="b4-day is-full"><span class="n">10</span></button>
+                <button class="b4-day is-full"><span class="n">11</span></button>
+                <button class="b4-day"><span class="n">12</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">13</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">14</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">15</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">16</span><span class="pip"></span></button>
+                <button class="b4-day is-full"><span class="n">17</span></button>
+                <button class="b4-day is-full"><span class="n">18</span></button>
+                <button class="b4-day"><span class="n">19</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">20</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">21</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">22</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">23</span><span class="pip"></span></button>
+                <button class="b4-day is-full"><span class="n">24</span></button>
+                <button class="b4-day is-full"><span class="n">25</span></button>
+                <button class="b4-day"><span class="n">26</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">27</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">28</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">29</span><span class="pip"></span></button>
+                <button class="b4-day"><span class="n">30</span><span class="pip"></span></button>
+                <button class="b4-day is-full"><span class="n">31</span></button>
+                <button class="b4-day is-out"><span class="n">1</span></button>
+                <button class="b4-day is-out"><span class="n">2</span></button>
+              </div>
+              <div class="b4-legend">
+                <span><i class="av"></i>Ledig</span>
+                <span><i class="fu"></i>Fullt</span>
+                <span><i class="sel"></i>Valgt</span>
+              </div>
+            </div>
+          </div>
+          <div class="b4-col">
+            <h3>Tidsluker</h3>
+            <div style="background: var(--g-card); border: 1px solid var(--g-line-soft); padding: 20px; min-height: 360px;">
+              <div class="b4-empty">↶ Velg en dato i kalenderen<br><span style="font-size: 13px; font-family: 'Inter Tight'; font-style: normal; color: var(--g-subtle)">Tider blir vist her</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="g-footer">
+        <div class="left"><button class="g-btn g-btn--ghost">← Tilbake til coacher</button></div>
+        <div class="right"><button class="g-btn g-btn--primary is-disabled">Velg tid først →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="g-cap">
+    <h2 class="cap-title">2 — Valgt dato: 13. mai (ingen luke valgt ennå)</h2>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav"><span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side"><a href="#">Min side →</a></span></div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span><span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Tid</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Info</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Betaling</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Bekreftelse</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="g-hero">
+          <div class="g-eyebrow">ANDERS KRISTIANSEN · 60 MIN · MULLIGAN</div>
+          <h1 class="g-title g-title--md">Velg <em>tid</em></h1>
+        </div>
+        <div class="b4-layout">
+          <div class="b4-col">
+            <h3>Kalender</h3>
+            <div class="b4-cal">
+              <div class="b4-cal-head"><span class="mo">Mai 2025</span><div class="nav"><button>‹</button><button>›</button></div></div>
+              <div class="b4-dow"><span>Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span><span>Lør</span><span>Søn</span></div>
+              <div class="b4-days">
+                <button class="b4-day is-out"><span class="n">28</span></button><button class="b4-day is-out"><span class="n">29</span></button><button class="b4-day is-out"><span class="n">30</span></button>
+                <button class="b4-day is-full"><span class="n">1</span></button><button class="b4-day"><span class="n">2</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">3</span></button><button class="b4-day is-full"><span class="n">4</span></button>
+                <button class="b4-day is-today"><span class="n">5</span><span class="pip"></span></button><button class="b4-day"><span class="n">6</span><span class="pip"></span></button><button class="b4-day"><span class="n">7</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">8</span></button><button class="b4-day"><span class="n">9</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">10</span></button><button class="b4-day is-full"><span class="n">11</span></button>
+                <button class="b4-day"><span class="n">12</span><span class="pip"></span></button><button class="b4-day is-active"><span class="n">13</span><span class="pip"></span></button><button class="b4-day"><span class="n">14</span><span class="pip"></span></button><button class="b4-day"><span class="n">15</span><span class="pip"></span></button><button class="b4-day"><span class="n">16</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">17</span></button><button class="b4-day is-full"><span class="n">18</span></button>
+                <button class="b4-day"><span class="n">19</span><span class="pip"></span></button><button class="b4-day"><span class="n">20</span><span class="pip"></span></button><button class="b4-day"><span class="n">21</span><span class="pip"></span></button><button class="b4-day"><span class="n">22</span><span class="pip"></span></button><button class="b4-day"><span class="n">23</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">24</span></button><button class="b4-day is-full"><span class="n">25</span></button>
+                <button class="b4-day"><span class="n">26</span><span class="pip"></span></button><button class="b4-day"><span class="n">27</span><span class="pip"></span></button><button class="b4-day"><span class="n">28</span><span class="pip"></span></button><button class="b4-day"><span class="n">29</span><span class="pip"></span></button><button class="b4-day"><span class="n">30</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">31</span></button><button class="b4-day is-out"><span class="n">1</span></button>
+              </div>
+              <div class="b4-legend"><span><i class="av"></i>Ledig</span><span><i class="fu"></i>Fullt</span><span><i class="sel"></i>Valgt</span></div>
+            </div>
+          </div>
+          <div class="b4-col">
+            <h3>Tidsluker</h3>
+            <div style="background: var(--g-card); border: 1px solid var(--g-line-soft); padding: 20px;">
+              <div class="b4-slots-head"><span class="date">Tirsdag 13. mai</span><span class="cnt">8 ledige</span></div>
+              <div class="b4-tod">Morgen</div>
+              <div class="b4-slot-grid">
+                <button class="b4-slot"><div class="t">08:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot"><div class="t">09:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot is-disabled"><div class="t">10:00</div><div class="sub">opptatt</div></button>
+                <button class="b4-slot"><div class="t">11:00</div><div class="sub">60 min</div></button>
+              </div>
+              <div class="b4-tod">Dag</div>
+              <div class="b4-slot-grid">
+                <button class="b4-slot"><div class="t">13:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot is-disabled"><div class="t">14:00</div><div class="sub">opptatt</div></button>
+                <button class="b4-slot"><div class="t">15:00</div><div class="sub">60 min</div></button>
+              </div>
+              <div class="b4-tod">Kveld</div>
+              <div class="b4-slot-grid">
+                <button class="b4-slot"><div class="t">17:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot"><div class="t">18:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot"><div class="t">19:00</div><div class="sub">60 min</div></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="g-footer"><div class="left"><button class="g-btn g-btn--ghost">← Tilbake</button></div><div class="right"><button class="g-btn g-btn--primary is-disabled">Velg tid først →</button></div></div>
+    </div>
+  </section>
+
+  <section class="g-cap">
+    <h2 class="cap-title">3 — Luke valgt: 13. mai kl 09:00 — primær-CTA aktiv</h2>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav"><span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side"><a href="#">Min side →</a></span></div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span><span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Tid</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Info</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Betaling</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Bekreftelse</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="g-hero">
+          <div class="g-eyebrow">ANDERS KRISTIANSEN · 60 MIN · MULLIGAN</div>
+          <h1 class="g-title g-title--md">Velg <em>tid</em></h1>
+        </div>
+        <div class="b4-layout">
+          <div class="b4-col">
+            <h3>Kalender</h3>
+            <div class="b4-cal">
+              <div class="b4-cal-head"><span class="mo">Mai 2025</span><div class="nav"><button>‹</button><button>›</button></div></div>
+              <div class="b4-dow"><span>Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span><span>Lør</span><span>Søn</span></div>
+              <div class="b4-days">
+                <button class="b4-day is-out"><span class="n">28</span></button><button class="b4-day is-out"><span class="n">29</span></button><button class="b4-day is-out"><span class="n">30</span></button>
+                <button class="b4-day is-full"><span class="n">1</span></button><button class="b4-day"><span class="n">2</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">3</span></button><button class="b4-day is-full"><span class="n">4</span></button>
+                <button class="b4-day is-today"><span class="n">5</span><span class="pip"></span></button><button class="b4-day"><span class="n">6</span><span class="pip"></span></button><button class="b4-day"><span class="n">7</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">8</span></button><button class="b4-day"><span class="n">9</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">10</span></button><button class="b4-day is-full"><span class="n">11</span></button>
+                <button class="b4-day"><span class="n">12</span><span class="pip"></span></button><button class="b4-day is-active"><span class="n">13</span><span class="pip"></span></button><button class="b4-day"><span class="n">14</span><span class="pip"></span></button><button class="b4-day"><span class="n">15</span><span class="pip"></span></button><button class="b4-day"><span class="n">16</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">17</span></button><button class="b4-day is-full"><span class="n">18</span></button>
+                <button class="b4-day"><span class="n">19</span><span class="pip"></span></button><button class="b4-day"><span class="n">20</span><span class="pip"></span></button><button class="b4-day"><span class="n">21</span><span class="pip"></span></button><button class="b4-day"><span class="n">22</span><span class="pip"></span></button><button class="b4-day"><span class="n">23</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">24</span></button><button class="b4-day is-full"><span class="n">25</span></button>
+                <button class="b4-day"><span class="n">26</span><span class="pip"></span></button><button class="b4-day"><span class="n">27</span><span class="pip"></span></button><button class="b4-day"><span class="n">28</span><span class="pip"></span></button><button class="b4-day"><span class="n">29</span><span class="pip"></span></button><button class="b4-day"><span class="n">30</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">31</span></button><button class="b4-day is-out"><span class="n">1</span></button>
+              </div>
+              <div class="b4-legend"><span><i class="av"></i>Ledig</span><span><i class="fu"></i>Fullt</span><span><i class="sel"></i>Valgt</span></div>
+            </div>
+          </div>
+          <div class="b4-col">
+            <h3>Tidsluker</h3>
+            <div style="background: var(--g-card); border: 1px solid var(--g-line-soft); padding: 20px;">
+              <div class="b4-slots-head"><span class="date">Tirsdag 13. mai</span><span class="cnt">1 valgt · 7 andre ledige</span></div>
+              <div class="b4-tod">Morgen</div>
+              <div class="b4-slot-grid">
+                <button class="b4-slot"><div class="t">08:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot is-active"><div class="t">09:00</div><div class="sub">valgt</div></button>
+                <button class="b4-slot is-disabled"><div class="t">10:00</div><div class="sub">opptatt</div></button>
+                <button class="b4-slot"><div class="t">11:00</div><div class="sub">60 min</div></button>
+              </div>
+              <div class="b4-tod">Dag</div>
+              <div class="b4-slot-grid">
+                <button class="b4-slot"><div class="t">13:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot is-disabled"><div class="t">14:00</div><div class="sub">opptatt</div></button>
+                <button class="b4-slot"><div class="t">15:00</div><div class="sub">60 min</div></button>
+              </div>
+              <div class="b4-tod">Kveld</div>
+              <div class="b4-slot-grid">
+                <button class="b4-slot"><div class="t">17:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot"><div class="t">18:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot"><div class="t">19:00</div><div class="sub">60 min</div></button>
+              </div>
+              <div class="b4-sum">
+                <div class="ic">✓</div>
+                <div class="body">
+                  <div class="lbl">VALGT TID</div>
+                  <div class="val"><em>Tirsdag 13. mai</em> kl 09:00 — 10:00 · 60 min med Anders K</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="g-footer"><div class="left"><button class="g-btn g-btn--ghost">← Tilbake</button></div><div class="right"><button class="g-btn g-btn--primary">Fortsett til info →</button></div></div>
+    </div>
+  </section>
+
+  <section class="g-cap">
+    <h2 class="cap-title">4 — Mørkt tema, luke valgt</h2>
+    <div class="g-frame is-dark" style="margin-top:18px">
+      <div class="g-topnav"><span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side"><a href="#">Min side →</a></span></div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span><span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Tid</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Info</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Betaling</span><span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Bekreftelse</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="g-hero">
+          <div class="g-eyebrow">ANDERS KRISTIANSEN · 60 MIN · MULLIGAN</div>
+          <h1 class="g-title g-title--md">Velg <em>tid</em></h1>
+        </div>
+        <div class="b4-layout">
+          <div class="b4-col">
+            <h3>Kalender</h3>
+            <div class="b4-cal">
+              <div class="b4-cal-head"><span class="mo">Mai 2025</span><div class="nav"><button>‹</button><button>›</button></div></div>
+              <div class="b4-dow"><span>Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span><span>Lør</span><span>Søn</span></div>
+              <div class="b4-days">
+                <button class="b4-day is-out"><span class="n">28</span></button><button class="b4-day is-out"><span class="n">29</span></button><button class="b4-day is-out"><span class="n">30</span></button>
+                <button class="b4-day is-full"><span class="n">1</span></button><button class="b4-day"><span class="n">2</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">3</span></button><button class="b4-day is-full"><span class="n">4</span></button>
+                <button class="b4-day is-today"><span class="n">5</span><span class="pip"></span></button><button class="b4-day"><span class="n">6</span><span class="pip"></span></button><button class="b4-day"><span class="n">7</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">8</span></button><button class="b4-day"><span class="n">9</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">10</span></button><button class="b4-day is-full"><span class="n">11</span></button>
+                <button class="b4-day"><span class="n">12</span><span class="pip"></span></button><button class="b4-day is-active"><span class="n">13</span><span class="pip"></span></button><button class="b4-day"><span class="n">14</span><span class="pip"></span></button><button class="b4-day"><span class="n">15</span><span class="pip"></span></button><button class="b4-day"><span class="n">16</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">17</span></button><button class="b4-day is-full"><span class="n">18</span></button>
+                <button class="b4-day"><span class="n">19</span><span class="pip"></span></button><button class="b4-day"><span class="n">20</span><span class="pip"></span></button><button class="b4-day"><span class="n">21</span><span class="pip"></span></button><button class="b4-day"><span class="n">22</span><span class="pip"></span></button><button class="b4-day"><span class="n">23</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">24</span></button><button class="b4-day is-full"><span class="n">25</span></button>
+                <button class="b4-day"><span class="n">26</span><span class="pip"></span></button><button class="b4-day"><span class="n">27</span><span class="pip"></span></button><button class="b4-day"><span class="n">28</span><span class="pip"></span></button><button class="b4-day"><span class="n">29</span><span class="pip"></span></button><button class="b4-day"><span class="n">30</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">31</span></button><button class="b4-day is-out"><span class="n">1</span></button>
+              </div>
+              <div class="b4-legend"><span><i class="av"></i>Ledig</span><span><i class="fu"></i>Fullt</span><span><i class="sel"></i>Valgt</span></div>
+            </div>
+          </div>
+          <div class="b4-col">
+            <h3>Tidsluker</h3>
+            <div style="background: var(--g-card); border: 1px solid var(--g-line-soft); padding: 20px;">
+              <div class="b4-slots-head"><span class="date">Tirsdag 13. mai</span><span class="cnt">1 valgt</span></div>
+              <div class="b4-tod">Morgen</div>
+              <div class="b4-slot-grid">
+                <button class="b4-slot"><div class="t">08:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot is-active"><div class="t">09:00</div><div class="sub">valgt</div></button>
+                <button class="b4-slot is-disabled"><div class="t">10:00</div><div class="sub">opptatt</div></button>
+                <button class="b4-slot"><div class="t">11:00</div><div class="sub">60 min</div></button>
+              </div>
+              <div class="b4-tod">Dag</div>
+              <div class="b4-slot-grid">
+                <button class="b4-slot"><div class="t">13:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot is-disabled"><div class="t">14:00</div><div class="sub">opptatt</div></button>
+                <button class="b4-slot"><div class="t">15:00</div><div class="sub">60 min</div></button>
+                <button class="b4-slot"><div class="t">16:00</div><div class="sub">60 min</div></button>
+              </div>
+              <div class="b4-sum">
+                <div class="ic">✓</div>
+                <div class="body">
+                  <div class="lbl">VALGT</div>
+                  <div class="val"><em>Tirsdag 13. mai</em> · 09:00 — 10:00</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="g-footer"><div class="left"><button class="g-btn g-btn--ghost">← Tilbake</button></div><div class="right"><button class="g-btn g-btn--primary">Fortsett til info →</button></div></div>
+    </div>
+  </section>
+
+  <section class="g-cap">
+    <h2 class="cap-title">5 — Mobil ≤640px: kalender oppe, tider under, sticky CTA</h2>
+    <div class="g-frame is-mobile" style="margin-top:18px">
+      <div class="g-topnav" style="padding: 0 16px; height: 52px"><span class="g-brand" style="font-size: 12px"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span><span class="g-side" style="font-size: 12px"><a href="#">Min side →</a></span></div>
+      <div style="padding: 14px 16px; border-bottom: 1px solid var(--g-line-soft)">
+        <span class="g-mono" style="font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--g-muted)">Steg 2 av 5 · Velg tid</span>
+        <div style="height: 8px; background: var(--g-bg-alt); border-radius: 100px; overflow:hidden; margin-top: 6px"><div style="height:100%; width: 40%; background: var(--g-primary); border-radius: 100px"></div></div>
+      </div>
+      <div style="padding: 20px 16px 100px">
+        <div class="g-eyebrow" style="font-size: 10px">ANDERS K · 60 MIN</div>
+        <h1 class="g-title g-title--sm" style="font-size: 28px; margin-bottom: 16px">Velg <em>tid</em></h1>
+        <div class="b4-cal" style="padding: 14px">
+          <div class="b4-cal-head"><span class="mo" style="font-size: 16px">Mai 2025</span><div class="nav"><button>‹</button><button>›</button></div></div>
+          <div class="b4-dow"><span>M</span><span>T</span><span>O</span><span>T</span><span>F</span><span>L</span><span>S</span></div>
+          <div class="b4-days">
+            <button class="b4-day is-out"><span class="n">28</span></button><button class="b4-day is-out"><span class="n">29</span></button><button class="b4-day is-out"><span class="n">30</span></button>
+            <button class="b4-day is-full"><span class="n">1</span></button><button class="b4-day"><span class="n">2</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">3</span></button><button class="b4-day is-full"><span class="n">4</span></button>
+            <button class="b4-day is-today"><span class="n">5</span><span class="pip"></span></button><button class="b4-day"><span class="n">6</span><span class="pip"></span></button><button class="b4-day"><span class="n">7</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">8</span></button><button class="b4-day"><span class="n">9</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">10</span></button><button class="b4-day is-full"><span class="n">11</span></button>
+            <button class="b4-day"><span class="n">12</span><span class="pip"></span></button><button class="b4-day is-active"><span class="n">13</span><span class="pip"></span></button><button class="b4-day"><span class="n">14</span><span class="pip"></span></button><button class="b4-day"><span class="n">15</span><span class="pip"></span></button><button class="b4-day"><span class="n">16</span><span class="pip"></span></button><button class="b4-day is-full"><span class="n">17</span></button><button class="b4-day is-full"><span class="n">18</span></button>
+          </div>
+        </div>
+        <div style="margin-top: 16px;">
+          <div class="b4-slots-head"><span class="date" style="font-size: 18px">Tir 13. mai</span><span class="cnt">8 ledige</span></div>
+          <div class="b4-tod">Morgen</div>
+          <div class="b4-slot-grid" style="grid-template-columns: repeat(3, 1fr); gap: 6px;">
+            <button class="b4-slot" style="padding: 10px 6px"><div class="t" style="font-size: 12px">08:00</div></button>
+            <button class="b4-slot is-active" style="padding: 10px 6px"><div class="t" style="font-size: 12px">09:00</div></button>
+            <button class="b4-slot is-disabled" style="padding: 10px 6px"><div class="t" style="font-size: 12px">10:00</div></button>
+            <button class="b4-slot" style="padding: 10px 6px"><div class="t" style="font-size: 12px">11:00</div></button>
+          </div>
+          <div class="b4-tod">Dag</div>
+          <div class="b4-slot-grid" style="grid-template-columns: repeat(3, 1fr); gap: 6px;">
+            <button class="b4-slot" style="padding: 10px 6px"><div class="t" style="font-size: 12px">13:00</div></button>
+            <button class="b4-slot" style="padding: 10px 6px"><div class="t" style="font-size: 12px">15:00</div></button>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute; left:0; right:0; bottom:0; padding: 10px 16px; background: var(--g-bg); border-top: 1px solid var(--g-line); display:flex; flex-direction: column; gap: 6px">
+        <span class="g-mono" style="font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--g-muted)">VALGT: TIR 13. MAI · 09:00 — 10:00</span>
+        <button class="g-btn g-btn--primary" style="width: 100%; height: 44px; font-size: 13px">Fortsett til info →</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

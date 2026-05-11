@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="nb"><head><meta charset="UTF-8"><title>09 · Grupper</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+.deck{display:flex;flex-direction:column;align-items:center;gap:56px;padding:56px 24px 96px}
+.head{max-width:1448px;width:100%;display:flex;flex-direction:column;gap:10px}
+.head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+.head h1{font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.02em;margin:0}
+.head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+.ab{display:flex;flex-direction:column;gap:14px;max-width:1448px;width:100%}
+.ab-label{display:flex;align-items:baseline;gap:14px;color:#3a3935;font-family:var(--font-display);font-weight:500}
+.ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990}.ab-label .ttl{font-size:19px}
+.ab-label .meta{font-size:12px;color:#7a7872;font-style:italic;margin-left:auto;font-family:var(--font-body)}
+.ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:22px;overflow:hidden;box-shadow:0 24px 50px -28px rgba(10,31,24,.18)}
+.ab-frame svg:not([fill]){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.app{display:flex;min-height:920px;background:var(--surface)}.app--md{min-height:680px}.app--sm{min-height:500px}
+.rail{width:56px;background:#0F2A22;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;flex-shrink:0}
+.rail .logo{width:34px;height:34px;border-radius:9px;background:var(--brand-accent);color:#0A1F18;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11px;margin-bottom:6px}
+.rail .ri{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(245,244,238,.6)}.rail .ri.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}.rail .ri svg{width:17px;height:17px}
+.rail .av{margin-top:auto;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+.nav{width:200px;background:#FAFAF7;border-right:1px solid #F0EDE5;padding:18px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+.nav .label{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:6px 10px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13px;color:var(--ink-muted);position:relative}
+.nav-item.active{background:rgba(209,248,67,.30);color:#0A1F18;font-weight:500}
+.nav-item.active::before{content:"";position:absolute;left:-12px;top:6px;bottom:6px;width:3px;background:var(--brand-primary);border-radius:0 3px 3px 0}
+.nav-item .count{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);background:#F0EDE5;padding:2px 6px;border-radius:5px}
+.main{flex:1;padding:24px 28px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px}
+.hero .crumb{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:6px}
+.hero h1{font-family:var(--font-display);font-size:30px;font-weight:400;font-style:italic;letter-spacing:-.02em;margin:0;line-height:1.05}
+.hero h1 .em{font-style:normal;font-weight:600;color:var(--brand-primary)}
+.hero .meta{font-size:13px;color:var(--ink-muted);margin-top:6px;font-family:var(--font-mono)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{padding:14px 18px;background:var(--surface-card);border:1px solid var(--line);border-radius:14px}
+.kpi .h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+.kpi .v{font-family:var(--font-mono);font-size:28px;font-weight:600;line-height:1.05;margin-top:4px}
+.kpi .sub{font-size:11px;color:var(--ink-muted);margin-top:3px;font-family:var(--font-mono)}
+.kpi.acc{background:linear-gradient(135deg,#0F2A22,#163027);color:#F5F4EE;border-color:#274d41}
+.kpi.acc .h{color:rgba(209,248,67,.7)}.kpi.acc .v{color:#F5F4EE}.kpi.acc .sub{color:rgba(245,244,238,.7)}
+.filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.search{display:flex;align-items:center;gap:8px;background:var(--surface-card);border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-size:13px;min-width:260px}
+.search svg{width:14px;height:14px;color:var(--ink-subtle)}.search input{flex:1;border:none;outline:none;background:transparent;font-family:var(--font-body)}
+.chip{padding:6px 11px;border-radius:100px;border:1px solid var(--line);font-size:12px;color:var(--ink-muted);display:inline-flex;align-items:center;gap:6px;background:var(--surface-card)}
+.chip svg{width:11px;height:11px}.chip.act{background:rgba(0,88,64,.10);border-color:var(--brand-primary);color:var(--brand-primary)}
+.btn{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface-card);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
+.btn.sm{padding:5px 10px;font-size:12px}.btn.acc{background:var(--brand-accent);color:#0A1F18;border-color:var(--brand-accent)}
+
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.gc{background:var(--surface-card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s,border-color .15s;cursor:pointer;position:relative}
+.gc:hover{transform:translateY(-2px);box-shadow:0 14px 28px -8px rgba(10,31,24,.16);border-color:var(--brand-primary)}
+.gc.hov{transform:translateY(-3px);box-shadow:0 0 0 1.5px var(--brand-primary),0 18px 30px -10px rgba(10,31,24,.20);border-color:var(--brand-primary)}
+.gc .hero-img{height:180px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.gc .hero-img .initial{font-family:var(--font-display);font-style:italic;font-weight:600;font-size:88px;color:rgba(255,255,255,.92);text-shadow:0 4px 18px rgba(0,0,0,.2);letter-spacing:-.04em}
+.gc .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(0,0,0,.35))}
+.gc .hero-img .type-pill{position:absolute;top:12px;left:12px;font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:rgba(255,255,255,.92);color:#0A1F18;padding:4px 8px;border-radius:5px;z-index:2}
+.gc .hero-img .freq{position:absolute;bottom:12px;right:12px;font-family:var(--font-mono);font-size:10px;font-weight:500;color:#fff;background:rgba(10,31,24,.55);padding:4px 8px;border-radius:5px;z-index:2;backdrop-filter:blur(6px)}
+.hero-wang{background:linear-gradient(135deg,#005840 0%,#0a4a35 60%,#163027 100%)}
+.hero-junior{background:linear-gradient(135deg,#3b5994 0%,#2e4470 60%,#1e2e4a 100%)}
+.hero-damer{background:linear-gradient(135deg,#a14b30 0%,#c26442 60%,#7d3a25 100%)}
+.hero-a1{background:linear-gradient(135deg,#5a3b8a 0%,#7c52b0 60%,#3a2658 100%)}
+.hero-a2{background:linear-gradient(135deg,#2c7d76 0%,#3fa39a 60%,#1b504c 100%)}
+.hero-a3{background:linear-gradient(135deg,#7a5a1a 0%,#9a7a30 60%,#4a3608 100%)}
+.gc .body{padding:18px;display:flex;flex-direction:column;gap:12px;flex:1}
+.gc .body .ttl{font-family:var(--font-display);font-style:italic;font-size:24px;font-weight:400;letter-spacing:-.01em;margin:0;line-height:1.1}
+.gc .body .sb{font-size:13px;color:var(--ink-muted);margin-top:-4px}
+.gc .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+.gc .stats .st{display:flex;flex-direction:column;gap:2px}
+.gc .stats .st .l{font-family:var(--font-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+.gc .stats .st .v{font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--ink)}
+.gc .stats .st .v.big{font-size:20px}
+.gc .stats .st .coach{display:flex;align-items:center;gap:6px}
+.gc .stats .st .coach .ca{width:20px;height:20px;border-radius:50%;font-family:var(--font-display);font-weight:600;font-size:9px;display:flex;align-items:center;justify-content:center;color:#fff}
+.av-grad-anders{background:linear-gradient(135deg,#005840,#1A7D56)}
+.av-grad-sara{background:linear-gradient(135deg,#a14b30,#d2876b)}
+.av-grad-tom{background:linear-gradient(135deg,#3b5994,#5b7cb8)}
+.av-grad-markus{background:linear-gradient(135deg,#5E5C57,#8a8780)}
+.av-stack{display:flex;align-items:center;position:relative}
+.av-stack .ax{width:28px;height:28px;border-radius:50%;border:2px solid var(--surface-card);font-family:var(--font-mono);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;color:#fff;margin-left:-8px;cursor:pointer;position:relative}
+.av-stack .ax:first-child{margin-left:0}
+.av-stack .ax:hover{transform:translateY(-2px);z-index:2}
+.av-stack .ax.more{background:#F0EDE5;color:var(--ink);border-color:var(--surface-card);font-size:10px;cursor:pointer}
+.av-stack .ax .tt{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);background:#0F2A22;color:#F5F4EE;font-family:var(--font-mono);font-size:9px;padding:3px 7px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s}
+.av-stack .ax:hover .tt{opacity:1}
+.gc .acts{display:flex;gap:6px;margin-top:auto}
+.gc .acts .btn{flex:1;justify-content:center}
+
+/* Member popover */
+.mem-pop{position:absolute;background:var(--surface-card);border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 36px -10px rgba(10,31,24,.22);padding:8px;width:240px;z-index:20}
+.mem-pop .lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:5px 8px 6px}
+.mem-pop .row{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:7px;font-size:12.5px}
+.mem-pop .row:hover{background:#F5F2EA}
+.mem-pop .row .a{width:26px;height:26px;border-radius:50%;font-family:var(--font-mono);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;color:#fff}
+.mem-pop .row .n{flex:1;font-weight:500}.mem-pop .row .h{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted)}
+
+/* Dark */
+.dark .ab-frame{border-color:#1c3b32}
+.dark .app{background:#0F2A22;color:#F5F4EE}
+.dark .nav{background:#0B221C;border-right-color:#1c3b32}.dark .nav .label,.dark .nav-item{color:#9D9C95}
+.dark .nav-item.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}.dark .nav-item.active::before{background:var(--brand-accent)}
+.dark .nav-item .count{background:#163027;color:#9D9C95}
+.dark .hero h1{color:#F5F4EE}.dark .hero h1 .em{color:var(--brand-accent)}.dark .hero .crumb,.dark .hero .meta{color:#9D9C95}
+.dark .kpi{background:#163027;border-color:#274d41}.dark .kpi .v{color:#F5F4EE}.dark .kpi .h,.dark .kpi .sub{color:#9D9C95}
+.dark .search,.dark .chip,.dark .btn{background:#163027;border-color:#274d41;color:#F5F4EE}.dark .search input{color:#F5F4EE}
+.dark .gc{background:#163027;border-color:#274d41}
+.dark .gc .body .ttl{color:#F5F4EE}.dark .gc .body .sb{color:#9D9C95}
+.dark .gc .stats .st .v{color:#F5F4EE}.dark .gc:hover,.dark .gc.hov{border-color:var(--brand-accent);box-shadow:0 0 0 1.5px var(--brand-accent),0 14px 28px -8px rgba(0,0,0,.4)}
+.dark .av-stack .ax{border-color:#163027}.dark .av-stack .ax.more{background:#274d41;color:#F5F4EE;border-color:#163027}
+
+/* Mobile */
+.mob-wrap{display:flex;justify-content:center;padding:30px;background:linear-gradient(180deg,#F5F2EA,#EDEAE2)}
+.mob{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden}
+.m-status{display:flex;justify-content:space-between;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;font-weight:500}
+.m-top{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;border-bottom:1px solid var(--line-soft)}
+.m-top .ham{width:32px;height:32px;border-radius:9px;background:#0F2A22;color:#F5F4EE;display:flex;align-items:center;justify-content:center}
+.m-top .avt{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+.m-top .ttl{font-family:var(--font-display);font-size:14px;font-weight:600}
+.m-hero{padding:14px 18px 6px}.m-hero h2{font-family:var(--font-display);font-size:22px;font-weight:600;margin:2px 0 0}
+.m-cards{padding:8px 18px 12px;display:flex;flex-direction:column;gap:12px}
+.m-bot{display:flex;justify-content:space-around;padding:8px 8px 22px;border-top:1px solid var(--line-soft)}
+.m-bot .b{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle);padding:6px}.m-bot .b.sel{color:var(--brand-primary);font-weight:600}.m-bot .b svg{width:18px;height:18px}
+
+.empty-wrap{padding:60px 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;background:linear-gradient(180deg,#F5F2EA,#EDEAE2);border-radius:16px;border:2px dashed var(--line)}
+.empty-wrap .ic{width:80px;height:80px;border-radius:50%;background:var(--surface-card);color:var(--brand-primary);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px -4px rgba(10,31,24,.10)}
+.empty-wrap .ic svg{width:38px;height:38px}
+.empty-wrap h2{font-family:var(--font-display);font-size:22px;font-style:italic;font-weight:400;margin:0}
+.empty-wrap p{font-size:13px;color:var(--ink-muted);margin:0;font-family:var(--font-mono);max-width:380px}
+</style></head>
+<body><div class="deck">
+<header class="head"><span class="eyebrow">Batch 2 · Spec 09 · CoachHQ · Grupper</span><h1>Gruppe-cards · 6 grupper, 42 medlemmer, 8 fellesøkter</h1><p class="sub">6 artboards: lyst 3×2 grid med 180px hero-gradients, mørkt, hover på WANG Toppidrett, «+3»-popover åpen med medlemsliste, empty, mobil 1-kolonne.</p></header>
+
+<!-- 01 LIGHT 3x2 -->
+<section class="ab" data-screen-label="01 Lyst · 3×2 grid"><div class="ab-label"><span class="num">01</span><span class="ttl">Card-grid · 6 grupper 3×2</span><span class="meta">1448 × 920</span></div>
+<div class="ab-frame"><div class="app">
+<aside class="rail"><div class="logo">AK</div><div class="ri"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7"/></svg></div><div class="ri"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/></svg></div><div class="ri active"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><circle cx="17" cy="7" r="4"/><circle cx="13" cy="14" r="4"/></svg></div><div class="av">EH</div></aside>
+<aside class="nav"><div class="label">CoachHQ</div><div class="nav-item">Hub</div><div class="nav-item">Elever<span class="count">38</span></div><div class="nav-item">Planer<span class="count">24</span></div><div class="nav-item">Godkjenninger<span class="count">7</span></div><div class="nav-item">Bookinger<span class="count">47</span></div><div class="nav-item">Økter<span class="count">18</span></div><div class="nav-item">Tjenester<span class="count">12</span></div><div class="nav-item">Lokasjoner<span class="count">5</span></div><div class="nav-item">Team<span class="count">4</span></div><div class="nav-item active">Grupper<span class="count">6</span></div><div class="nav-item">Turneringer</div></aside>
+<main class="main">
+<header class="hero"><div><div class="crumb">CoachHQ · /admin/groups</div><h1><span class="em">6</span> grupper · 42 medlemmer · 8 fellesøkter denne uka</h1><div class="meta">AK Golf Group · uke 19, mai 2026</div></div><button class="btn primary">+ Ny gruppe</button></header>
+<div class="kpis"><div class="kpi acc"><div class="h">Aktive grupper</div><div class="v">6</div><div class="sub">1 skole · 2 klubb · 3 selektert</div></div><div class="kpi"><div class="h">Totale medlemmer</div><div class="v">42</div><div class="sub">38 unike (4 i 2 grupper)</div></div><div class="kpi"><div class="h">Fellesøkter uke 19</div><div class="v">8</div><div class="sub">2 mandag, 1 tirs, 1 ons …</div></div><div class="kpi"><div class="h">Snitt-progress</div><div class="v">71<span style="font-size:14px;color:var(--ink-muted)">%</span></div><div class="sub">basert på milepæl-fullføring</div></div></div>
+<div class="filter"><div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Søk gruppe eller medlem"/></div><span class="chip">Type <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="chip">Coach <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="chip">Status <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span style="flex:1"></span><span class="chip">Sort: Navn ↑</span></div>
+<div class="grid-3">
+
+<div class="gc"><div class="hero-img hero-wang"><span class="type-pill">Skole</span><span class="initial">W</span><span class="freq">Man/Ons/Fre · 08:00</span></div><div class="body"><div><h3 class="ttl">WANG Toppidrett</h3><div class="sb">Skole-gruppe · 3 dager/uke</div></div><div class="stats"><div class="st"><span class="l">Medlemmer</span><span class="v big">6</span></div><div class="st"><span class="l">Snitt-HCP</span><span class="v big">+1.2</span></div><div class="st"><span class="l">Primary-coach</span><span class="v"><span class="coach"><span class="ca av-grad-anders">AK</span>Anders K</span></span></div><div class="st"><span class="l">Neste fellesøkt</span><span class="v">Man 11. mai · 08:00</span></div></div><div class="av-stack"><span class="ax av-grad-anders">EH<span class="tt">Emil Haug</span></span><span class="ax" style="background:linear-gradient(135deg,#a14b30,#d2876b)">SR<span class="tt">Sander R.</span></span><span class="ax" style="background:linear-gradient(135deg,#3b5994,#5b7cb8)">MO<span class="tt">Marius O.</span></span><span class="ax" style="background:linear-gradient(135deg,#5a3b8a,#7c52b0)">TK<span class="tt">Tobias K.</span></span><span class="ax" style="background:linear-gradient(135deg,#2c7d76,#3fa39a)">VL<span class="tt">Viktor L.</span></span><span class="ax more">+1</span></div><div class="acts"><button class="btn primary">Åpne →</button><button class="btn">Planlegg økt</button></div></div></div>
+
+<div class="gc"><div class="hero-img hero-junior"><span class="type-pill">Klubb</span><span class="initial">J</span><span class="freq">Tirs/Tors · 17:00</span></div><div class="body"><div><h3 class="ttl">GFGK Junior</h3><div class="sb">Klubb-gruppe · 14–18 år</div></div><div class="stats"><div class="st"><span class="l">Medlemmer</span><span class="v big">14</span></div><div class="st"><span class="l">Snitt-HCP</span><span class="v big">14.8</span></div><div class="st"><span class="l">Primary-coach</span><span class="v"><span class="coach"><span class="ca av-grad-sara">SH</span>Sara H</span></span></div><div class="st"><span class="l">Neste fellesøkt</span><span class="v">Tirs 12. mai · 17:00</span></div></div><div class="av-stack"><span class="ax" style="background:linear-gradient(135deg,#5a3b8a,#7c52b0)">EM</span><span class="ax" style="background:linear-gradient(135deg,#2c7d76,#3fa39a)">AR</span><span class="ax" style="background:linear-gradient(135deg,#a14b30,#d2876b)">JK</span><span class="ax" style="background:linear-gradient(135deg,#3b5994,#5b7cb8)">NS</span><span class="ax" style="background:linear-gradient(135deg,#7a5a1a,#9a7a30)">OL</span><span class="ax more">+9</span></div><div class="acts"><button class="btn primary">Åpne →</button><button class="btn">Planlegg økt</button></div></div></div>
+
+<div class="gc"><div class="hero-img hero-damer"><span class="type-pill">Klubb</span><span class="initial">D</span><span class="freq">Tors · 18:00</span></div><div class="body"><div><h3 class="ttl">GFGK Damer</h3><div class="sb">Klubb-gruppe · ladies</div></div><div class="stats"><div class="st"><span class="l">Medlemmer</span><span class="v big">8</span></div><div class="st"><span class="l">Snitt-HCP</span><span class="v big">18.2</span></div><div class="st"><span class="l">Primary-coach</span><span class="v"><span class="coach"><span class="ca av-grad-tom">TJ</span>Tom J</span></span></div><div class="st"><span class="l">Neste fellesøkt</span><span class="v">Tors 14. mai · 18:00</span></div></div><div class="av-stack"><span class="ax" style="background:linear-gradient(135deg,#a14b30,#d2876b)">KR</span><span class="ax" style="background:linear-gradient(135deg,#3b5994,#5b7cb8)">IB</span><span class="ax" style="background:linear-gradient(135deg,#5a3b8a,#7c52b0)">HM</span><span class="ax" style="background:linear-gradient(135deg,#2c7d76,#3fa39a)">CN</span><span class="ax" style="background:linear-gradient(135deg,#7a5a1a,#9a7a30)">LP</span><span class="ax more">+3</span></div><div class="acts"><button class="btn primary">Åpne →</button><button class="btn">Planlegg økt</button></div></div></div>
+
+<div class="gc"><div class="hero-img hero-a1"><span class="type-pill">Selektert</span><span class="initial">A1</span><span class="freq">Ons · 16:00</span></div><div class="body"><div><h3 class="ttl">Talent A1</h3><div class="sb">Selektert · topp 4 · u18</div></div><div class="stats"><div class="st"><span class="l">Medlemmer</span><span class="v big">4</span></div><div class="st"><span class="l">Snitt-HCP</span><span class="v big">+0.8</span></div><div class="st"><span class="l">Primary-coach</span><span class="v"><span class="coach"><span class="ca av-grad-anders">AK</span>Anders K</span></span></div><div class="st"><span class="l">Neste fellesøkt</span><span class="v">Ons 13. mai · 16:00</span></div></div><div class="av-stack"><span class="ax av-grad-anders">EH</span><span class="ax" style="background:linear-gradient(135deg,#a14b30,#d2876b)">SR</span><span class="ax" style="background:linear-gradient(135deg,#3b5994,#5b7cb8)">MO</span><span class="ax" style="background:linear-gradient(135deg,#5a3b8a,#7c52b0)">TK</span></div><div class="acts"><button class="btn primary">Åpne →</button><button class="btn">Planlegg økt</button></div></div></div>
+
+<div class="gc"><div class="hero-img hero-a2"><span class="type-pill">Selektert</span><span class="initial">A2</span><span class="freq">Lør · 10:00</span></div><div class="body"><div><h3 class="ttl">Talent A2</h3><div class="sb">Selektert · u16</div></div><div class="stats"><div class="st"><span class="l">Medlemmer</span><span class="v big">5</span></div><div class="st"><span class="l">Snitt-HCP</span><span class="v big">4.6</span></div><div class="st"><span class="l">Primary-coach</span><span class="v"><span class="coach"><span class="ca av-grad-sara">SH</span>Sara H</span></span></div><div class="st"><span class="l">Neste fellesøkt</span><span class="v">Lør 16. mai · 10:00</span></div></div><div class="av-stack"><span class="ax" style="background:linear-gradient(135deg,#2c7d76,#3fa39a)">VL</span><span class="ax" style="background:linear-gradient(135deg,#7a5a1a,#9a7a30)">JF</span><span class="ax" style="background:linear-gradient(135deg,#3b5994,#5b7cb8)">DM</span><span class="ax" style="background:linear-gradient(135deg,#a14b30,#d2876b)">PR</span><span class="ax" style="background:linear-gradient(135deg,#5a3b8a,#7c52b0)">KO</span></div><div class="acts"><button class="btn primary">Åpne →</button><button class="btn">Planlegg økt</button></div></div></div>
+
+<div class="gc"><div class="hero-img hero-a3"><span class="type-pill">Selektert</span><span class="initial">A3</span><span class="freq">Lør · 12:00</span></div><div class="body"><div><h3 class="ttl">Talent A3</h3><div class="sb">Selektert · u14</div></div><div class="stats"><div class="st"><span class="l">Medlemmer</span><span class="v big">5</span></div><div class="st"><span class="l">Snitt-HCP</span><span class="v big">12.4</span></div><div class="st"><span class="l">Primary-coach</span><span class="v"><span class="coach"><span class="ca av-grad-tom">TJ</span>Tom J</span></span></div><div class="st"><span class="l">Neste fellesøkt</span><span class="v">Lør 16. mai · 12:00</span></div></div><div class="av-stack"><span class="ax" style="background:linear-gradient(135deg,#a14b30,#d2876b)">AL</span><span class="ax" style="background:linear-gradient(135deg,#3b5994,#5b7cb8)">JN</span><span class="ax" style="background:linear-gradient(135deg,#5a3b8a,#7c52b0)">EP</span><span class="ax" style="background:linear-gradient(135deg,#2c7d76,#3fa39a)">RH</span><span class="ax" style="background:linear-gradient(135deg,#7a5a1a,#9a7a30)">MD</span></div><div class="acts"><button class="btn primary">Åpne →</button><button class="btn">Planlegg økt</button></div></div></div>
+
+</div>
+</main></div></div></section>
+
+<!-- 02 DARK -->
+<section class="ab dark" data-screen-label="02 Mørkt"><div class="ab-label"><span class="num">02</span><span class="ttl">Mørkt tema · 3 kort</span><span class="meta">1448 × 680</span></div>
+<div class="ab-frame"><div class="app app--md">
+<aside class="rail"><div class="logo">AK</div><div class="ri active"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><circle cx="17" cy="7" r="4"/></svg></div><div class="av">EH</div></aside>
+<aside class="nav"><div class="label">CoachHQ</div><div class="nav-item active">Grupper<span class="count">6</span></div></aside>
+<main class="main">
+<header class="hero"><div><div class="crumb">CoachHQ · grupper</div><h1><span class="em">6</span> grupper · 42 medlemmer</h1></div></header>
+<div class="grid-3">
+<div class="gc"><div class="hero-img hero-wang"><span class="type-pill">Skole</span><span class="initial">W</span></div><div class="body"><h3 class="ttl">WANG Toppidrett</h3><div class="stats"><div class="st"><span class="l">Medl</span><span class="v big">6</span></div><div class="st"><span class="l">HCP</span><span class="v big">+1.2</span></div></div><div class="acts"><button class="btn acc">Åpne →</button></div></div></div>
+<div class="gc"><div class="hero-img hero-junior"><span class="type-pill">Klubb</span><span class="initial">J</span></div><div class="body"><h3 class="ttl">GFGK Junior</h3><div class="stats"><div class="st"><span class="l">Medl</span><span class="v big">14</span></div><div class="st"><span class="l">HCP</span><span class="v big">14.8</span></div></div><div class="acts"><button class="btn acc">Åpne →</button></div></div></div>
+<div class="gc"><div class="hero-img hero-a1"><span class="type-pill">Selektert</span><span class="initial">A1</span></div><div class="body"><h3 class="ttl">Talent A1</h3><div class="stats"><div class="st"><span class="l">Medl</span><span class="v big">4</span></div><div class="st"><span class="l">HCP</span><span class="v big">+0.8</span></div></div><div class="acts"><button class="btn acc">Åpne →</button></div></div></div>
+</div>
+</main></div></div></section>
+
+<!-- 03 HOVER WANG -->
+<section class="ab" data-screen-label="03 Hover · WANG Toppidrett"><div class="ab-label"><span class="num">03</span><span class="ttl">Hover-state på WANG Toppidrett-card</span><span class="meta">1448 × 540</span></div>
+<div class="ab-frame"><div style="padding:24px 32px;background:var(--surface)">
+<div class="grid-3">
+<div class="gc hov"><div class="hero-img hero-wang" style="transform:scale(1.04);transition:transform .4s"><span class="type-pill">Skole</span><span class="initial">W</span><span class="freq">Man/Ons/Fre · 08:00</span></div><div class="body"><div><h3 class="ttl">WANG Toppidrett</h3><div class="sb">Skole-gruppe · 3 dager/uke</div></div><div class="stats"><div class="st"><span class="l">Medlemmer</span><span class="v big">6</span></div><div class="st"><span class="l">Snitt-HCP</span><span class="v big">+1.2</span></div><div class="st"><span class="l">Primary-coach</span><span class="v"><span class="coach"><span class="ca av-grad-anders">AK</span>Anders K</span></span></div><div class="st"><span class="l">Neste fellesøkt</span><span class="v">Man 11. mai · 08:00</span></div></div><div class="av-stack"><span class="ax av-grad-anders">EH</span><span class="ax" style="background:linear-gradient(135deg,#a14b30,#d2876b)">SR</span><span class="ax" style="background:linear-gradient(135deg,#3b5994,#5b7cb8)">MO</span><span class="ax" style="background:linear-gradient(135deg,#5a3b8a,#7c52b0)">TK</span><span class="ax" style="background:linear-gradient(135deg,#2c7d76,#3fa39a)">VL</span><span class="ax more">+1</span></div><div class="acts"><button class="btn primary">Åpne →</button><button class="btn">Planlegg økt</button></div></div></div>
+<div class="gc"><div class="hero-img hero-junior"><span class="type-pill">Klubb</span><span class="initial">J</span></div><div class="body"><h3 class="ttl">GFGK Junior</h3><div class="sb">Klubb · u18</div></div></div>
+<div class="gc"><div class="hero-img hero-damer"><span class="type-pill">Klubb</span><span class="initial">D</span></div><div class="body"><h3 class="ttl">GFGK Damer</h3><div class="sb">Klubb</div></div></div>
+</div>
+<div style="margin-top:14px;padding:10px 14px;background:#FAFAF7;border:1px dashed var(--line);border-radius:10px;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);max-width:520px"><strong style="color:var(--brand-primary)">Hover:</strong> hero-bilde zoomer 1.04x (300ms), card løftes 3px, accent-border 1.5px, skygge 0 18px 30px.</div>
+</div></div></section>
+
+<!-- 04 +3 POPOVER -->
+<section class="ab" data-screen-label="04 Avatar-stack «+3»-popover"><div class="ab-label"><span class="num">04</span><span class="ttl">«+3»-popover åpen · full medlemsliste for GFGK Damer</span><span class="meta">1448 × 540</span></div>
+<div class="ab-frame"><div style="padding:24px 32px;background:var(--surface)">
+<div class="grid-3">
+<div class="gc"><div class="hero-img hero-wang"><span class="type-pill">Skole</span><span class="initial">W</span></div><div class="body"><h3 class="ttl">WANG Toppidrett</h3><div class="sb">Skole · 6 medl</div></div></div>
+<div class="gc" style="position:relative;z-index:2"><div class="hero-img hero-damer"><span class="type-pill">Klubb</span><span class="initial">D</span><span class="freq">Tors · 18:00</span></div><div class="body"><div><h3 class="ttl">GFGK Damer</h3><div class="sb">Klubb-gruppe · ladies</div></div><div class="stats"><div class="st"><span class="l">Medlemmer</span><span class="v big">8</span></div><div class="st"><span class="l">Snitt-HCP</span><span class="v big">18.2</span></div><div class="st"><span class="l">Primary-coach</span><span class="v"><span class="coach"><span class="ca av-grad-tom">TJ</span>Tom J</span></span></div><div class="st"><span class="l">Neste fellesøkt</span><span class="v">Tors 14. mai · 18:00</span></div></div><div class="av-stack"><span class="ax" style="background:linear-gradient(135deg,#a14b30,#d2876b)">KR</span><span class="ax" style="background:linear-gradient(135deg,#3b5994,#5b7cb8)">IB</span><span class="ax" style="background:linear-gradient(135deg,#5a3b8a,#7c52b0)">HM</span><span class="ax" style="background:linear-gradient(135deg,#2c7d76,#3fa39a)">CN</span><span class="ax" style="background:linear-gradient(135deg,#7a5a1a,#9a7a30)">LP</span><span class="ax more" style="background:var(--brand-primary);color:#fff;border-color:var(--surface-card)">+3</span></div><div class="acts"><button class="btn primary">Åpne →</button><button class="btn">Planlegg økt</button></div>
+<div class="mem-pop" style="top:218px;right:18px"><div class="lbl">Alle 8 medlemmer</div>
+<div class="row"><span class="a" style="background:linear-gradient(135deg,#a14b30,#d2876b)">KR</span><span class="n">Kristin Rinde</span><span class="h">HCP 14.2</span></div>
+<div class="row"><span class="a" style="background:linear-gradient(135deg,#3b5994,#5b7cb8)">IB</span><span class="n">Ida Berg</span><span class="h">HCP 16.8</span></div>
+<div class="row"><span class="a" style="background:linear-gradient(135deg,#5a3b8a,#7c52b0)">HM</span><span class="n">Hanne Moe</span><span class="h">HCP 18.4</span></div>
+<div class="row"><span class="a" style="background:linear-gradient(135deg,#2c7d76,#3fa39a)">CN</span><span class="n">Cecilie Nilsen</span><span class="h">HCP 19.1</span></div>
+<div class="row"><span class="a" style="background:linear-gradient(135deg,#7a5a1a,#9a7a30)">LP</span><span class="n">Lise Paulsen</span><span class="h">HCP 20.3</span></div>
+<div class="row" style="background:rgba(209,248,67,.18)"><span class="a" style="background:linear-gradient(135deg,#005840,#1A7D56)">EW</span><span class="n">Elin Wold</span><span class="h">HCP 21.5</span></div>
+<div class="row"><span class="a" style="background:linear-gradient(135deg,#a14b30,#d2876b)">SK</span><span class="n">Siri Krogh</span><span class="h">HCP 22.0</span></div>
+<div class="row"><span class="a" style="background:linear-gradient(135deg,#3b5994,#5b7cb8)">MN</span><span class="n">Maren Nordby</span><span class="h">HCP 23.7</span></div>
+</div>
+</div></div>
+<div class="gc"><div class="hero-img hero-a1"><span class="type-pill">Selektert</span><span class="initial">A1</span></div><div class="body"><h3 class="ttl">Talent A1</h3><div class="sb">u18 · 4 medl</div></div></div>
+</div>
+</div></div></section>
+
+<!-- 05 EMPTY -->
+<section class="ab" data-screen-label="05 Empty"><div class="ab-label"><span class="num">05</span><span class="ttl">Empty · ingen grupper ennå</span><span class="meta">1448 × 500</span></div>
+<div class="ab-frame"><div class="app app--sm">
+<aside class="rail"><div class="logo">AK</div><div class="ri active"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/></svg></div><div class="av">EH</div></aside>
+<aside class="nav"><div class="label">CoachHQ</div><div class="nav-item active">Grupper<span class="count" style="background:rgba(0,88,64,.14);color:var(--brand-primary)">0</span></div></aside>
+<main class="main">
+<header class="hero"><div><div class="crumb">CoachHQ · /admin/groups</div><h1><span class="em">0</span> grupper</h1></div></header>
+<div class="empty-wrap">
+  <div class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><circle cx="17" cy="7" r="4"/><circle cx="13" cy="14" r="4"/></svg></div>
+  <h2>Ingen grupper ennå</h2>
+  <p>Lag din første gruppe for å samle spillere med felles trening — skole-gjenger, klubb-grupper eller selekterte talent-pukker. Du kan planlegge fellesøkter og se aggregert progress.</p>
+  <div style="display:flex;gap:8px;margin-top:8px"><button class="btn">Importer fra Spond</button><button class="btn primary">+ Ny gruppe</button></div>
+</div>
+</main></div></div></section>
+
+<!-- 06 MOBILE -->
+<section class="ab" data-screen-label="06 Mobil"><div class="ab-label"><span class="num">06</span><span class="ttl">Mobil · 1-kolonne, hero 120px</span><span class="meta">392 px</span></div>
+<div class="ab-frame"><div class="mob-wrap"><div class="mob">
+<div class="m-status"><span>09:14</span><span><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="19" height="9" rx="2"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/></svg></span></div>
+<div class="m-top"><div class="ham"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/></svg></div><div class="ttl">Grupper</div><div class="avt">EH</div></div>
+<div class="m-hero"><div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:var(--ink-subtle);text-transform:uppercase">6 grupper · 42 medl</div><h2>Aktive grupper</h2></div>
+<div class="m-cards">
+<div class="gc" style="border-radius:14px"><div class="hero-img hero-wang" style="height:120px"><span class="type-pill">Skole</span><span class="initial" style="font-size:54px">W</span><span class="freq">Man/Ons/Fre · 08:00</span></div><div class="body" style="padding:14px;gap:8px"><div><h3 class="ttl" style="font-size:18px">WANG Toppidrett</h3><div class="sb" style="font-size:11px">6 medl · HCP +1.2 · Anders K</div></div><div class="av-stack"><span class="ax av-grad-anders" style="width:22px;height:22px;font-size:9px">EH</span><span class="ax" style="background:linear-gradient(135deg,#a14b30,#d2876b);width:22px;height:22px;font-size:9px">SR</span><span class="ax" style="background:linear-gradient(135deg,#3b5994,#5b7cb8);width:22px;height:22px;font-size:9px">MO</span><span class="ax more" style="width:22px;height:22px;font-size:9px">+3</span></div><div class="acts"><button class="btn primary sm" style="flex:1;justify-content:center">Åpne →</button><button class="btn sm" style="flex:1;justify-content:center">Planlegg</button></div></div></div>
+
+<div class="gc" style="border-radius:14px"><div class="hero-img hero-junior" style="height:120px"><span class="type-pill">Klubb</span><span class="initial" style="font-size:54px">J</span><span class="freq">Tirs/Tors · 17:00</span></div><div class="body" style="padding:14px;gap:8px"><div><h3 class="ttl" style="font-size:18px">GFGK Junior</h3><div class="sb" style="font-size:11px">14 medl · HCP 14.8 · Sara H</div></div><div class="acts"><button class="btn primary sm" style="flex:1;justify-content:center">Åpne →</button><button class="btn sm" style="flex:1;justify-content:center">Planlegg</button></div></div></div>
+
+<div class="gc" style="border-radius:14px"><div class="hero-img hero-a1" style="height:120px"><span class="type-pill">Selektert</span><span class="initial" style="font-size:48px">A1</span><span class="freq">Ons · 16:00</span></div><div class="body" style="padding:14px;gap:8px"><div><h3 class="ttl" style="font-size:18px">Talent A1</h3><div class="sb" style="font-size:11px">4 medl · HCP +0.8 · Anders K</div></div><div class="acts"><button class="btn primary sm" style="flex:1;justify-content:center">Åpne →</button><button class="btn sm" style="flex:1;justify-content:center">Planlegg</button></div></div></div>
+</div>
+<div class="m-bot"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7"/></svg>Hub</div><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/></svg>Elever</div><div class="b sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><circle cx="17" cy="7" r="4"/><circle cx="13" cy="14" r="4"/></svg>Grupper</div><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Mer</div></div>
+</div></div></div></section>
+
+</div></body></html>

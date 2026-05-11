@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Modal — AvatarUploadModal · 6-D/5</title>
+<link rel="stylesheet" href="_shared/arketype-f.css">
+<style>
+  .stage{position:relative;width:100%;min-height:760px;background:linear-gradient(135deg,#EDEAE2 0%,#F5F2EA 100%);display:flex;align-items:center;justify-content:center;padding:40px}
+  .behind{position:absolute;inset:0;background:linear-gradient(135deg,#EDEAE2 0%,#F5F2EA 100%);filter:blur(1px) brightness(.96);display:flex;align-items:center;justify-content:center;color:var(--ink-subtle);font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  .scrim{position:absolute;inset:0;background:rgba(10,31,24,.40);backdrop-filter:blur(6px)}
+
+  .modal{position:relative;width:540px;background:var(--surface-card);border-radius:18px;box-shadow:0 32px 80px rgba(10,31,24,.30),0 4px 16px rgba(10,31,24,.10);overflow:hidden;border:1px solid var(--line)}
+  .modal-head{display:flex;justify-content:space-between;align-items:flex-start;padding:22px 26px 0;gap:14px}
+  .modal-head .l h2{font-family:var(--font-display);font-size:22px;font-weight:500;letter-spacing:-.02em;color:var(--ink);margin:0 0 4px}
+  .modal-head .l h2 em{font-style:italic;color:var(--ink-muted);font-weight:400;font-size:16px}
+  .modal-head .l .sub{font-size:12px;color:var(--ink-muted);line-height:1.5;max-width:380px}
+  .modal-head .x{width:32px;height:32px;border-radius:8px;background:var(--surface-alt);color:var(--ink-muted);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--font-mono);font-size:16px;flex-shrink:0;border:none}
+  .modal-head .x:hover{background:var(--line);color:var(--ink)}
+
+  .steps{display:flex;gap:6px;padding:14px 26px 0}
+  .step-dot{flex:1;height:3px;border-radius:100px;background:var(--surface-alt)}
+  .step-dot.done{background:var(--brand-primary)}
+  .step-dot.now{background:var(--brand-primary)}
+
+  .modal-body{padding:20px 26px 22px}
+
+  /* Drop-zone */
+  .drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:48px 24px;border:2px dashed var(--line);border-radius:14px;background:var(--surface-alt);color:var(--ink-muted);cursor:pointer;transition:all .15s}
+  .drop:hover{border-color:var(--brand-primary);background:var(--accent-bg)}
+  .drop.active{border-color:var(--brand-primary);background:var(--accent-bg);color:var(--brand-primary)}
+  .drop .ic{width:48px;height:48px;border-radius:50%;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--brand-primary)}
+  .drop.active .ic{background:var(--brand-primary);color:var(--brand-accent);border-color:var(--brand-primary)}
+  .drop .t{font-size:14px;font-weight:500;color:var(--ink)}
+  .drop.active .t{color:var(--brand-primary)}
+  .drop .h{font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono);letter-spacing:.04em}
+  .drop .browse{font-family:var(--font-mono);font-size:11px;color:var(--brand-primary);text-decoration:underline;letter-spacing:.04em}
+
+  .constraints{display:flex;justify-content:center;gap:18px;margin-top:12px;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.04em;text-transform:uppercase}
+  .constraints span{display:inline-flex;align-items:center;gap:4px}
+  .constraints span::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--ink-disabled)}
+
+  /* Crop step */
+  .crop-area{display:grid;grid-template-columns:1fr 180px;gap:18px}
+  .crop-stage{position:relative;width:100%;aspect-ratio:1;background:#0A1F18;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .crop-img{position:absolute;inset:0;background:radial-gradient(circle at 40% 35%,#5b7466 0%,#2b3f37 60%,#0e1d18 100%);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-style:italic;font-size:60px;color:rgba(245,244,238,.45);letter-spacing:-.02em}
+  .crop-circle{position:absolute;inset:14%;border-radius:50%;border:2px solid rgba(255,255,255,.85);box-shadow:0 0 0 9999px rgba(10,31,24,.55);pointer-events:none}
+  .crop-circle::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 38% 32%,#5b7466 0%,#2b3f37 60%,#0e1d18 100%)}
+  .crop-circle::before{content:"";position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(212,210,126,.5)}
+  .crop-handles{position:absolute;inset:14%;pointer-events:none}
+  .crop-handles .h{position:absolute;width:10px;height:10px;background:#fff;border-radius:2px;border:1.5px solid var(--brand-primary)}
+  .crop-handles .h.tl{top:-5px;left:-5px}
+  .crop-handles .h.tr{top:-5px;right:-5px}
+  .crop-handles .h.bl{bottom:-5px;left:-5px}
+  .crop-handles .h.br{bottom:-5px;right:-5px}
+
+  .crop-side{display:flex;flex-direction:column;gap:14px}
+  .crop-side .pv-title{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .pv-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+  .pv-row:last-child{border-bottom:none}
+  .pv-row .av{background:radial-gradient(circle at 38% 32%,#5b7466 0%,#2b3f37 60%,#0e1d18 100%);border:1px solid var(--line);font-family:var(--font-display);color:rgba(245,244,238,.45);font-style:italic;display:flex;align-items:center;justify-content:center}
+  .pv-row .av.xl{width:80px;height:80px;border-radius:50%;font-size:28px}
+  .pv-row .av.md{width:40px;height:40px;border-radius:50%;font-size:14px}
+  .pv-row .av.sm{width:24px;height:24px;border-radius:50%;font-size:9px}
+  .pv-row .av.sq{border-radius:8px;width:32px;height:32px;font-size:11px}
+  .pv-row .lbl{font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono);letter-spacing:.04em}
+
+  /* Sliders */
+  .slider-row{display:grid;grid-template-columns:80px 1fr 48px;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line-soft)}
+  .slider-row .l{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.04em}
+  .slider-row .bar{position:relative;height:5px;background:var(--surface-alt);border-radius:100px;border:1px solid var(--line)}
+  .slider-row .bar .fill{position:absolute;left:0;top:-1px;bottom:-1px;background:var(--brand-primary);border-radius:100px}
+  .slider-row .bar .thumb{position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--brand-primary);top:-6px;transform:translateX(-50%)}
+  .slider-row .v{font-family:var(--font-mono);font-size:12px;color:var(--ink);text-align:right;font-weight:500}
+
+  /* Footer */
+  .modal-foot{padding:14px 26px;background:var(--surface-alt);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .modal-foot .l{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.04em}
+  .modal-foot .r{display:flex;gap:8px}
+
+  /* error */
+  .err-banner{display:flex;gap:10px;padding:12px 14px;background:var(--status-danger-bg);border:1px solid rgba(163,45,45,.20);border-radius:10px;color:var(--status-danger);font-size:12px;line-height:1.5;margin-bottom:14px}
+  .err-banner .ic{width:18px;height:18px;flex-shrink:0;color:var(--status-danger)}
+
+  /* progress */
+  .upl{display:flex;flex-direction:column;gap:8px;padding:14px;background:var(--accent-bg);border:1px solid rgba(0,88,64,.18);border-radius:10px}
+  .upl .row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--ink)}
+  .upl .row .nm{font-weight:500}
+  .upl .row .v{font-family:var(--font-mono);font-size:11px;color:var(--brand-primary)}
+  .upl .bar{height:5px;background:rgba(0,88,64,.15);border-radius:100px;overflow:hidden}
+  .upl .bar .fill{height:100%;background:var(--brand-primary);border-radius:100px;width:62%}
+
+  /* Done state */
+  .done-state{display:flex;flex-direction:column;align-items:center;gap:14px;padding:32px 24px;text-align:center}
+  .done-state .check{width:64px;height:64px;border-radius:50%;background:var(--status-success-bg);color:var(--status-success);display:flex;align-items:center;justify-content:center}
+  .done-state .t{font-family:var(--font-display);font-size:22px;font-weight:500;letter-spacing:-.01em;color:var(--ink);margin:0}
+  .done-state .t em{font-style:italic;color:var(--ink-muted);font-weight:400}
+  .done-state .d{font-size:13px;color:var(--ink-muted);max-width:340px;line-height:1.55}
+
+  /* Mobile bottom-sheet */
+  .mob-stage{position:relative;background:#EDEAE2;height:760px;display:flex;align-items:flex-end;justify-content:center;padding:0}
+  .mob-scrim{position:absolute;inset:0;background:rgba(10,31,24,.45);backdrop-filter:blur(4px)}
+  .mob-sheet{position:relative;width:100%;max-width:380px;background:#fff;border-radius:20px 20px 0 0;padding:18px 20px 32px;display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 60px rgba(10,31,24,.20)}
+  .mob-sheet .grab{align-self:center;width:36px;height:4px;background:var(--line);border-radius:100px}
+</style>
+</head>
+<body>
+
+<div class="deck">
+  <header class="deck-head">
+    <span class="eyebrow">Modal · Mini-batch 6-D · Pakke 5</span>
+    <h1>AvatarUploadModal — drop, crop, ferdig</h1>
+    <p class="sub"><em>Tre steg.</em> Slipp filen. Beskjær til sirkel. Forhåndsvis på fire størrelser før du lagrer.</p>
+    <div class="meta-row">
+      <span><span class="lbl">Trigger:</span> Profil → "Endre bilde" / kameraknapp på avatar</span>
+      <span><span class="lbl">Max:</span> 5 MB · JPG/PNG/WebP · min. 400×400</span>
+      <span><span class="lbl">Output:</span> 4 størrelser, WebP + JPG fallback</span>
+    </div>
+  </header>
+
+  <!-- ============ 01 Drop step ============ -->
+  <section class="ab" data-screen-label="01 Modal — drop">
+    <div class="ab-label"><span class="num">01</span><span class="ttl">Steg 1 — drag aktivt (fil over drop-zone)</span><span class="meta">540 px · default</span></div>
+    <div class="ab-frame" style="padding:0">
+      <div class="stage">
+        <div class="behind">PROFIL-SIDEN BAK — BLURRET</div>
+        <div class="scrim"></div>
+        <div class="modal">
+          <div class="modal-head">
+            <div class="l">
+              <h2>Nytt profilbilde. <em>3 steg.</em></h2>
+              <div class="sub">Slipp bildet eller velg fra maskin. Du beskjærer etterpå. JPG, PNG eller WebP — maks 5 MB.</div>
+            </div>
+            <button class="x">×</button>
+          </div>
+          <div class="steps"><div class="step-dot now"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+          <div class="modal-body">
+            <div class="drop active">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+              <div class="t">Slipp <strong style="color:var(--brand-primary);font-weight:600">portrett-final.jpg</strong> her</div>
+              <div class="h">eller <span class="browse">bla i filer</span></div>
+            </div>
+            <div class="constraints">
+              <span>JPG · PNG · WebP</span>
+              <span>maks 5 MB</span>
+              <span>min. 400 × 400</span>
+              <span>auto-rotert med EXIF</span>
+            </div>
+          </div>
+          <div class="modal-foot">
+            <span class="l">PERSONVERN · BILDE BRUKES KUN INTERNT</span>
+            <div class="r"><button class="btn btn-ghost btn-sm">Avbryt</button><button class="btn btn-primary btn-sm" disabled style="opacity:.55">Neste →</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 Crop step ============ -->
+  <section class="ab" data-screen-label="02 Modal — crop">
+    <div class="ab-label"><span class="num">02</span><span class="ttl">Steg 2 — beskjær til sirkel · zoom + rotasjon · live preview</span><span class="meta">540 px · crop</span></div>
+    <div class="ab-frame" style="padding:0">
+      <div class="stage">
+        <div class="behind">PROFIL-SIDEN BAK — BLURRET</div>
+        <div class="scrim"></div>
+        <div class="modal" style="width:600px">
+          <div class="modal-head">
+            <div class="l">
+              <h2>Beskjær. <em>Til sirkel.</em></h2>
+              <div class="sub">Dra rammen, juster zoom og rotasjon. Forhåndsvisning til høyre viser hvordan avatar ser ut på fire steder.</div>
+            </div>
+            <button class="x">×</button>
+          </div>
+          <div class="steps"><div class="step-dot done"></div><div class="step-dot now"></div><div class="step-dot"></div></div>
+          <div class="modal-body">
+            <div class="crop-area">
+              <div>
+                <div class="crop-stage">
+                  <div class="crop-img">SL</div>
+                  <div class="crop-circle"></div>
+                  <div class="crop-handles">
+                    <div class="h tl"></div><div class="h tr"></div><div class="h bl"></div><div class="h br"></div>
+                  </div>
+                </div>
+                <div class="slider-row"><span class="l">Zoom</span><div class="bar"><div class="fill" style="width:42%"></div><div class="thumb" style="left:42%"></div></div><span class="v">1,4×</span></div>
+                <div class="slider-row"><span class="l">Rotasjon</span><div class="bar"><div class="fill" style="width:52%"></div><div class="thumb" style="left:52%"></div></div><span class="v">+2°</span></div>
+              </div>
+              <div class="crop-side">
+                <span class="pv-title">Forhåndsvisning</span>
+                <div class="pv-row"><div class="av xl">SL</div><span class="lbl">96 PX · PROFIL</span></div>
+                <div class="pv-row"><div class="av md">SL</div><span class="lbl">40 PX · NAV</span></div>
+                <div class="pv-row"><div class="av sm">SL</div><span class="lbl">24 PX · LISTE</span></div>
+                <div class="pv-row"><div class="av sq">SL</div><span class="lbl">32 PX · KOMMENTAR</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-foot">
+            <span class="l">FIL: PORTRETT-FINAL.JPG · 2,1 MB · 1920×2400 → 96 PX</span>
+            <div class="r"><button class="btn btn-ghost btn-sm">← Tilbake</button><button class="btn btn-primary btn-sm">Last opp og lagre →</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 Upload + Done + Error ============ -->
+  <section class="ab" data-screen-label="03 Modal — last opp · feil · ferdig">
+    <div class="ab-label"><span class="num">03</span><span class="ttl">Tre tilstander side om side — opplasting 62% / feil for stor / ferdig</span><span class="meta">3 × 380 · states</span></div>
+    <div class="ab-frame" style="padding:36px 24px;background:linear-gradient(135deg,#EDEAE2 0%,#F5F2EA 100%);display:flex;gap:18px;justify-content:center">
+
+      <!-- Uploading -->
+      <div class="modal" style="width:380px;position:relative">
+        <div class="modal-head">
+          <div class="l"><h2>Laster opp. <em>62%.</em></h2><div class="sub">Komprimerer til 4 størrelser. Cancel via Esc.</div></div>
+          <button class="x">×</button>
+        </div>
+        <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot now"></div></div>
+        <div class="modal-body">
+          <div class="upl">
+            <div class="row"><span class="nm">portrett-final.jpg</span><span class="v">62%</span></div>
+            <div class="bar"><div class="fill"></div></div>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);margin-top:2px">
+              <span>1,3 / 2,1 MB</span><span>~2s igjen</span>
+            </div>
+          </div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)">
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--status-success)">✓ Validert (size, mime, EXIF)</span><span>0,2s</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--status-success)">✓ Beskåret til 96 / 40 / 32 / 24</span><span>0,8s</span></div>
+            <div style="display:flex;justify-content:space-between"><span>○ Lastes opp til CDN</span><span>pågår</span></div>
+            <div style="display:flex;justify-content:space-between;opacity:.4"><span>○ Cache invalidert</span><span>—</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="modal" style="width:380px;position:relative">
+        <div class="modal-head">
+          <div class="l"><h2>Filen er for stor. <em>7,8 MB.</em></h2><div class="sub">Vi tar maks 5 MB — komprimer filen eller velg en annen.</div></div>
+          <button class="x">×</button>
+        </div>
+        <div class="steps"><div class="step-dot now" style="background:var(--status-danger)"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+        <div class="modal-body">
+          <div class="err-banner">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div><strong style="font-weight:600">portrett-raw.heic</strong> er 7,8 MB. <strong>HEIC</strong> støttes ikke direkte — eksporter som JPG eller WebP under 5 MB.</div>
+          </div>
+          <div class="drop" style="padding:24px 16px">
+            <div class="ic" style="width:36px;height:36px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            <div class="t" style="font-size:13px">Prøv en annen fil</div>
+            <div class="h">JPG · PNG · WebP · maks 5 MB</div>
+          </div>
+        </div>
+        <div class="modal-foot"><span class="l">STØTTE: HVORDAN EKSPORTERE FRA IPHONE?</span><div class="r"><button class="btn btn-ghost btn-sm">Avbryt</button></div></div>
+      </div>
+
+      <!-- Done -->
+      <div class="modal" style="width:380px;position:relative">
+        <div class="modal-head" style="padding-bottom:0">
+          <div class="l"><h2 style="visibility:hidden">·</h2></div>
+          <button class="x">×</button>
+        </div>
+        <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div></div>
+        <div class="done-state">
+          <div class="check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h2 class="t">Ferdig. <em>Avatar oppdatert.</em></h2>
+          <p class="d">Bildet er propagert til alle størrelser. Du ser endringen overalt på sekundet — appen, e-poster, foreldre-portalen.</p>
+          <div style="display:flex;gap:10px;align-items:center;padding:12px 16px;background:var(--surface-alt);border-radius:10px;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.04em">
+            <div class="av md" style="width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#5b7466 0%,#2b3f37 60%,#0e1d18 100%);color:rgba(245,244,238,.55);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-style:italic;font-size:12px">SL</div>
+            <span>SARA LARSEN · OPPDATERT 14:32</span>
+          </div>
+        </div>
+        <div class="modal-foot"><span class="l">CACHED I 12 MIN — ANGRE INNEN DET</span><div class="r"><button class="btn btn-ghost btn-sm">Angre</button><button class="btn btn-primary btn-sm">Ferdig</button></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 Mobil bottom-sheet ============ -->
+  <section class="ab" data-screen-label="04 Modal — mobil bottom-sheet">
+    <div class="ab-label"><span class="num">04</span><span class="ttl">Mobil — bottom-sheet med native fil/kamera-velger</span><span class="meta">380 × 760</span></div>
+    <div class="ab-frame" style="padding:0">
+      <div class="mob-stage">
+        <div class="mob-scrim"></div>
+        <div class="mob-sheet">
+          <div class="grab"></div>
+          <h2 style="font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:-.01em;color:var(--ink);margin:0">Nytt profilbilde. <em style="font-style:italic;color:var(--ink-muted);font-weight:400;font-size:15px">Velg kilde.</em></h2>
+
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface-alt);border:1px solid var(--line);border-radius:12px;cursor:pointer;text-align:left">
+              <div style="width:36px;height:36px;border-radius:10px;background:var(--brand-primary);color:var(--brand-accent);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+              <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--ink)">Ta bilde</div><div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)">Bruk frontkamera</div></div>
+              <span style="color:var(--ink-subtle)">›</span>
+            </button>
+            <button style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface-alt);border:1px solid var(--line);border-radius:12px;cursor:pointer;text-align:left">
+              <div style="width:36px;height:36px;border-radius:10px;background:var(--brand-primary);color:var(--brand-accent);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+              <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--ink)">Velg fra biblioteket</div><div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)">JPG · PNG · WebP · maks 5 MB</div></div>
+              <span style="color:var(--ink-subtle)">›</span>
+            </button>
+            <button style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface-alt);border:1px solid var(--line);border-radius:12px;cursor:pointer;text-align:left">
+              <div style="width:36px;height:36px;border-radius:10px;background:var(--ink-muted);color:#fff;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+              <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--ink)">Fjern bilde</div><div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)">Bytt til initialer</div></div>
+              <span style="color:var(--ink-subtle)">›</span>
+            </button>
+          </div>
+
+          <button style="padding:12px;background:transparent;border:none;font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);letter-spacing:.04em;text-transform:uppercase;cursor:pointer">Avbryt</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Vedlegg for Mini-batch 6-A - CoachHQ Settings
+
+Last opp disse HTML-filene i Claude Design som visuelle vedlegg.
+Aapne hver i Finder, eller bruk: Cmd+Shift+G og lim inn stien.
+
+## Hovedskjermer (5 stk)
+
+~/Developer/akgolf-hq/wireframe/screen-deck/coachhq/coach-profil.html
+~/Developer/akgolf-hq/wireframe/screen-deck/coachhq/settings-bruker.html
+~/Developer/akgolf-hq/wireframe/screen-deck/coachhq/settings-sikkerhet.html
+~/Developer/akgolf-hq/wireframe/screen-deck/coachhq/settings-api.html
+~/Developer/akgolf-hq/wireframe/screen-deck/coachhq/tilgjengelighet.html
+
+## Felles layout-referanse (anbefalt)
+
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/cross-cutting/innstillings-layout.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/cross-cutting/sidebar-patterns.html
+
+## Pluss alltid (system-kontekst, engang per ny sesjon)
+
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/branding-style-guide.html
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/design-system-v2.md
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/fonts/  (alle 20 .woff2)
+
+## Pluss mini-batch-spec
+
+~/Developer/akgolf-hq/wireframe/design-batches/batch-6-settings-profile/mini-batches/6-A.md

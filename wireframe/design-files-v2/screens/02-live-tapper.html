@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>02 — Live Tapper · PlayerHQ Range</title>
+<link rel="stylesheet" href="../colors_and_type.css" />
+<style>
+  html, body { margin: 0; padding: 0; background: #0A1F18; color: #fff; overflow: hidden; }
+  .screen {
+    width: 100vw; min-height: 100vh; height: 100vh; background: #0A1F18;
+    display: grid; grid-template-rows: 56px 1fr 120px; position: relative; overflow: hidden;
+  }
+  .screen::before {
+    content: ""; position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%);
+    width: 900px; height: 900px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.05) 0%, rgba(209,248,67,0) 60%);
+    pointer-events: none;
+  }
+
+  /* ── top bar ──────────────────────────────────────────────── */
+  .topbar { display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid rgba(255,255,255,0.06); position: relative; z-index: 2; }
+  .topbar-l, .topbar-r { display: flex; align-items: center; gap: 12px; }
+  .topbar-c { flex: 1; text-align: center; font: 13px/1 'Inter'; color: #9C9990; }
+
+  .mode-pill {
+    display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px;
+    border-radius: 100px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18);
+    font: 600 11px/1 'Inter'; color: rgba(255,255,255,0.92); letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .clock-stamp {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 500 12px/1 'JetBrains Mono'; color: rgba(255,255,255,0.65);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.20); background: transparent;
+    display: inline-flex; align-items: center; justify-content: center; color: #fff; cursor: pointer;
+    transition: background var(--duration-micro) var(--ease-out);
+  }
+  .icon-btn:hover { background: rgba(255,255,255,0.10); }
+
+  /* ── tap zone ─────────────────────────────────────────────── */
+  .tap-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 24px; position: relative; }
+
+  .club-pill {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 10px 22px; border-radius: 100px;
+    border: 2px solid #D1F843; background: rgba(209,248,67,0.08);
+    color: #fff; cursor: pointer;
+    font: 600 14px/1 'Inter'; letter-spacing: -0.01em;
+    transition: background var(--duration-micro) var(--ease-out);
+  }
+  .club-pill:hover { background: rgba(209,248,67,0.14); }
+  .club-pill .club-name { font: 600 15px/1 'Inter'; }
+  .club-pill .club-swap { font: 500 12px/1 'Inter'; color: rgba(255,255,255,0.65); display: inline-flex; align-items: center; gap: 4px; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.20); }
+
+  .big-counter {
+    margin-top: 40px;
+    font: 500 220px/0.9 'JetBrains Mono';
+    font-variant-numeric: tabular-nums;
+    color: #D1F843; letter-spacing: -0.06em;
+    text-shadow: 0 0 40px rgba(209,248,67,0.32);
+  }
+  .counter-sub { margin-top: 12px; font: 400 18px/1 'Inter'; color: rgba(255,255,255,0.65); }
+
+  .mini-stats {
+    margin-top: 32px; display: flex; gap: 32px; align-items: center;
+    padding: 12px 24px; border-radius: 100px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  }
+  .mini-stat { display: inline-flex; align-items: baseline; gap: 6px; font: 500 14px/1 'JetBrains Mono'; color: rgba(255,255,255,0.72); font-variant-numeric: tabular-nums; }
+  .mini-stat .ms-label { color: rgba(255,255,255,0.50); font-weight: 400; }
+  .mini-stat.total { color: #D1F843; }
+  .mini-stat.total .ms-label { color: rgba(209,248,67,0.65); }
+  .ms-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); }
+
+  /* ── floating right-side action stack ─────────────────────── */
+  .floating {
+    position: absolute; right: 32px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 12px; z-index: 3;
+  }
+  .float-btn {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.20);
+    color: #fff; display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background var(--duration-micro) var(--ease-out);
+  }
+  .float-btn:hover { background: rgba(255,255,255,0.10); }
+
+  /* ── bottom: huge TAP button ──────────────────────────────── */
+  .tap-bar { padding: 0 24px 24px 24px; position: relative; z-index: 2; }
+  .tap-button {
+    width: 100%; height: 120px; border-radius: 20px; border: 0;
+    background: linear-gradient(180deg, #D1F843 0%, #C2EE2F 100%);
+    color: #0A1F18; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    box-shadow: 0 0 0 1px rgba(209,248,67,0.5), 0 18px 40px rgba(209,248,67,0.22);
+    transition: transform var(--duration-micro) var(--ease-out);
+  }
+  .tap-button:active { transform: scale(0.985); }
+  .tap-label { font: 700 32px/1 'Inter Tight'; letter-spacing: 0.06em; text-transform: uppercase; }
+  .tap-sub { font: 500 13px/1 'Inter'; color: rgba(10,31,24,0.62); }
+
+  svg.lucide { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  svg.lucide-22 { width: 22px; height: 22px; }
+</style>
+</head>
+<body>
+<div class="screen" data-screen-label="02 Live Tapper">
+
+  <!-- ── Top bar ─────────────────────────────────────────────── -->
+  <div class="topbar">
+    <div class="topbar-l">
+      <div class="mode-pill">Range-mode</div>
+      <div class="clock-stamp">
+        <svg class="lucide" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        14:30 → 14:48
+      </div>
+    </div>
+    <div class="topbar-c">Range, Mulligan Indoor</div>
+    <div class="topbar-r">
+      <button class="icon-btn" aria-label="Lukk">
+        <svg class="lucide" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Center tap zone ─────────────────────────────────────── -->
+  <div class="tap-zone">
+    <button class="club-pill" aria-haspopup="dialog">
+      <svg class="lucide lucide-22" viewBox="0 0 24 24" style="color:#D1F843"><path d="M14 4l-2 8M12 12l-3 8M14 4l5 16M9 20h11"/></svg>
+      <span class="club-name">Driver</span>
+      <span class="club-swap">
+        <svg class="lucide" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        Bytt
+      </span>
+    </button>
+
+    <div class="big-counter">12</div>
+    <div class="counter-sub">ball med driver</div>
+
+    <div class="mini-stats">
+      <div class="mini-stat"><span class="ms-label">Driver</span>12</div>
+      <span class="ms-divider"></span>
+      <div class="mini-stat"><span class="ms-label">7-jern</span>8</div>
+      <span class="ms-divider"></span>
+      <div class="mini-stat"><span class="ms-label">Wedge</span>4</div>
+      <span class="ms-divider"></span>
+      <div class="mini-stat total"><span class="ms-label">Totalt</span>24</div>
+    </div>
+  </div>
+
+  <!-- ── Floating actions ────────────────────────────────────── -->
+  <div class="floating">
+    <button class="float-btn" title="Avslutt">
+      <svg class="lucide lucide-22" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+    </button>
+    <button class="float-btn" title="Pause">
+      <svg class="lucide lucide-22" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+    </button>
+    <button class="float-btn" title="Statistikk">
+      <svg class="lucide lucide-22" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    </button>
+  </div>
+
+  <!-- ── TAP button ──────────────────────────────────────────── -->
+  <div class="tap-bar">
+    <button class="tap-button">
+      <span class="tap-label">Tap</span>
+      <span class="tap-sub">for å logge én ball</span>
+    </button>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Lag-sammenligning · Q2 2026 · CoachHQ</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<style>
+  body { min-width: 1440px; }
+  .main { padding: 32px 40px 48px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 24px; }
+  .tabs button { background: transparent; border: 0; padding: 12px 18px; font-family: var(--font-display); font-size: 14px; font-weight: 500; color: var(--ink-muted); cursor: pointer; position: relative; }
+  .tabs button:hover { color: var(--ink); }
+  .tabs button.is-active { color: var(--ink); }
+  .tabs button.is-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--ink); }
+  .tabs .count { font-family: var(--font-mono); font-size: 11px; color: var(--ink-subtle); margin-left: 6px; }
+
+  .matrix-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px 28px; box-shadow: var(--shadow-card); margin-bottom: 24px; }
+  .matrix-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; }
+  .matrix-head h2 { margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  .matrix-head .meta { font-size: 12px; color: var(--ink-muted); margin-top: 4px; }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: 96px repeat(5, 1fr) 1fr;
+    gap: 0;
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--line);
+  }
+  .matrix > div { background: var(--card); padding: 14px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .m-corner { background: var(--surface-alt) !important; }
+  .m-grp { display: flex; flex-direction: column; gap: 8px; background: var(--surface-alt) !important; }
+  .m-grp .name { font-family: var(--font-display); font-size: 14px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); display: flex; align-items: center; gap: 6px; }
+  .m-grp .sort-ic { color: var(--ink-subtle); }
+  .m-grp .stack { margin-top: 2px; }
+  .m-grp .meta { font-family: var(--font-mono); font-size: 10px; color: var(--ink-subtle); }
+  .m-grp.is-avg { background: var(--ink) !important; }
+  .m-grp.is-avg .name { color: var(--surface); font-style: italic; }
+  .m-grp.is-avg .meta { color: rgba(255,255,255,0.5); }
+
+  .m-fokus { font-family: var(--font-display); font-weight: 600; font-size: 14px; letter-spacing: -0.005em; color: var(--ink); background: var(--surface-alt) !important; display: flex; align-items: center; gap: 10px; }
+  .m-fokus .swatch { width: 8px; height: 28px; border-radius: 2px; }
+  .m-fokus .name { display: flex; flex-direction: column; }
+  .m-fokus .sub { font-family: var(--font-sans); font-size: 11px; color: var(--ink-muted); font-weight: 400; letter-spacing: 0; }
+
+  .m-cell {
+    display: grid; grid-template-columns: 1fr auto; align-items: center;
+    position: relative;
+    cursor: pointer;
+  }
+  .m-cell:hover { background: var(--surface-alt); }
+  .m-cell .val { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 17px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; }
+  .m-cell .delta { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-subtle); }
+  .m-cell.up .delta { color: var(--success); }
+  .m-cell.down .delta { color: var(--danger); }
+  .m-cell .bar {
+    grid-column: 1 / -1;
+    height: 3px; border-radius: 2px;
+    margin-top: 8px;
+    align-self: end;
+  }
+  .m-cell.row-selected { background: rgba(0,88,64,0.04); box-shadow: inset 3px 0 0 var(--brand-primary); }
+
+  /* Tooltip */
+  .tooltip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--surface);
+    padding: 10px 12px; border-radius: 10px;
+    font-size: 12px; line-height: 1.4;
+    width: 220px; z-index: 5;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    pointer-events: none;
+  }
+  .tooltip::after {
+    content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 6px solid transparent; border-top-color: var(--ink);
+  }
+  .tooltip .tt-eyebrow { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55); font-weight: 600; }
+  .tooltip .tt-row { display: flex; justify-content: space-between; margin-top: 4px; font-family: var(--font-mono); font-size: 11px; }
+  .tooltip .tt-row .v { color: var(--accent); font-weight: 500; }
+
+  .compare-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 14px 20px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 16px; }
+  .compare-bar .label { font-size: 12px; color: var(--ink-subtle); margin-right: 4px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+  .compare-chip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 4px 0 10px; border-radius: 999px; background: var(--ink); color: var(--surface); font-size: 12px; font-weight: 500; }
+  .compare-chip .x { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.15); display: grid; place-items: center; cursor: pointer; }
+  .compare-chip.add { background: transparent; color: var(--ink-muted); border: 1px dashed var(--line); padding: 0 12px; }
+
+  /* Stat pills (header) */
+  .stat-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stat-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 999px; font-size: 12px; color: var(--ink); }
+  .stat-pill .mono { font-family: var(--font-mono); }
+  .stat-pill .dim { color: var(--ink-muted); }
+</style>
+</head>
+<body data-screen-label="03 Lag-snitt">
+<div class="shell">
+
+  <aside class="rail">
+    <div class="logo">AK</div>
+    <button class="rail-btn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    <div class="rail-spacer"></div>
+    <div class="rail-avatar">AK</div>
+  </aside>
+
+  <nav class="nav">
+    <div class="nav-title">CoachHQ</div>
+    <a href="#"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Dashbord</a>
+    <a href="#"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg> Treningsplaner</a>
+    <a href="#"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/></svg> Elever <span class="nav-count">142</span></a>
+    <a href="01-kalender-uke.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Kalender</a>
+    <a href="02-kapasitet.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg> Kapasitet</a>
+    <a href="04-meldinger.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Meldinger <span class="nav-count">3</span></a>
+    <a href="#" class="is-active"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg> Lag-snitt</a>
+    <a href="05-oppfolgingsko.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Oppfoelgings-koe <span class="nav-count">7</span></a>
+    <div class="nav-divider"></div>
+    <div class="tier-card"><b>Q2 2026</b><div class="meta">6 grupper · 142 spillere</div></div>
+  </nav>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <span class="page-eyebrow"><span class="dot"></span>/admin/lag-snitt</span>
+        <h1 class="page-title">Lag-sammenligning</h1>
+        <p class="page-hero-fragment italic-edit">Q2 2026. Hvem leverer, hvem henger etter.</p>
+        <div class="stat-pills" style="margin-top: 16px;">
+          <span class="stat-pill"><span class="mono">6</span> grupper</span>
+          <span class="stat-pill">Periode: <span class="mono dim">jan – mai 2026</span></span>
+          <span class="stat-pill">Sist oppdatert: <span class="dim">i dag · 09:12</span></span>
+        </div>
+      </div>
+      <div class="row gap-2">
+        <button class="btn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> jan – mai 2026</button>
+        <button class="btn btn-primary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg> Eksporter rapport</button>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="is-active">Pyramide<span class="count">5×6</span></button>
+      <button>SG<span class="count">5×6</span></button>
+      <button>Tester<span class="count">8 maal</span></button>
+      <button>Plan-adherence<span class="count">%</span></button>
+      <button>Demografi<span class="count">142</span></button>
+    </div>
+
+    <!-- Compare bar -->
+    <div class="compare-bar">
+      <span class="label">Sammenligner</span>
+      <span class="compare-chip">Elite<span class="x"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span>
+      <span class="compare-chip">A-lag<span class="x"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span>
+      <span class="compare-chip">WANG Toppidrett<span class="x"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span>
+      <span class="compare-chip">GFGK Junior<span class="x"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span>
+      <span class="compare-chip">Akademi<span class="x"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span>
+      <span class="compare-chip add"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Legg til gruppe</span>
+      <span style="flex: 1;"></span>
+      <button class="btn btn-sm btn-ghost"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 6 3 12h12l3-12"/><path d="M3 6h18"/></svg> Nullstill</button>
+    </div>
+
+    <!-- Matrix -->
+    <div class="matrix-card">
+      <div class="matrix-head">
+        <div>
+          <h2>Pyramide-fokus per gruppe</h2>
+          <div class="meta">Rader: fokus-omraade · kolonner: gruppe. Klikk en rad for drawer-detalj.</div>
+        </div>
+        <div class="row gap-2">
+          <button class="btn btn-sm btn-ghost"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg> Sortering</button>
+          <button class="btn btn-sm btn-ghost"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12Z"/></svg> Vis snitt-rad</button>
+        </div>
+      </div>
+
+      <div class="matrix">
+        <!-- Header row -->
+        <div class="m-corner"></div>
+
+        <div class="m-grp">
+          <div class="name">Elite <svg class="ic-sm sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></div>
+          <div class="stack">
+            <span class="avatar avatar-sm av-mp">MP</span>
+            <span class="avatar avatar-sm av-hn">HN</span>
+            <span class="avatar avatar-sm av-mr">MR</span>
+            <span class="avatar avatar-sm avatar-more">+9</span>
+          </div>
+          <div class="meta">12 spillere · snitt HCP 4,2</div>
+        </div>
+
+        <div class="m-grp">
+          <div class="name">A-lag <svg class="ic-sm sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></div>
+          <div class="stack">
+            <span class="avatar avatar-sm av-ak">AK</span>
+            <span class="avatar avatar-sm av-mp">MP</span>
+            <span class="avatar avatar-sm av-jt">JT</span>
+            <span class="avatar avatar-sm avatar-more">+10</span>
+          </div>
+          <div class="meta">13 spillere · snitt HCP 8,1</div>
+        </div>
+
+        <div class="m-grp">
+          <div class="name">WANG Toppidrett <svg class="ic-sm sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></div>
+          <div class="stack">
+            <span class="avatar avatar-sm av-mr">MR</span>
+            <span class="avatar avatar-sm av-ek">EK</span>
+            <span class="avatar avatar-sm av-sb">SB</span>
+            <span class="avatar avatar-sm avatar-more">+9</span>
+          </div>
+          <div class="meta">12 spillere · snitt HCP 6,4</div>
+        </div>
+
+        <div class="m-grp">
+          <div class="name">GFGK Junior <svg class="ic-sm sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></div>
+          <div class="stack">
+            <span class="avatar avatar-sm av-mr">MR</span>
+            <span class="avatar avatar-sm av-jt">JT</span>
+            <span class="avatar avatar-sm av-ls">LS</span>
+            <span class="avatar avatar-sm avatar-more">+9</span>
+          </div>
+          <div class="meta">12 spillere · snitt HCP 12,8</div>
+        </div>
+
+        <div class="m-grp">
+          <div class="name">Akademi <svg class="ic-sm sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></div>
+          <div class="stack">
+            <span class="avatar avatar-sm av-jt">JT</span>
+            <span class="avatar avatar-sm av-ls">LS</span>
+            <span class="avatar avatar-sm av-ek">EK</span>
+            <span class="avatar avatar-sm avatar-more">+15</span>
+          </div>
+          <div class="meta">18 spillere · snitt HCP 18,4</div>
+        </div>
+
+        <div class="m-grp is-avg">
+          <div class="name">Snitt</div>
+          <div class="meta">vektet · 67 aktive</div>
+        </div>
+
+        <!-- FYS row -->
+        <div class="m-fokus"><span class="swatch" style="background: var(--pyr-fys);"></span><div class="name">FYS<span class="sub">fysisk fundament</span></div></div>
+        <div class="m-cell"><span class="val">18,2 %</span><span class="delta">−3,8</span><span class="bar" style="background: var(--pyr-fys); width: 45%;"></span></div>
+        <div class="m-cell"><span class="val">22,4 %</span><span class="delta">0</span><span class="bar" style="background: var(--pyr-fys); width: 56%;"></span></div>
+        <div class="m-cell row-selected" style="position: relative;">
+          <span class="val" style="color: var(--brand-primary);">24,3 %</span><span class="delta up">+1,9</span><span class="bar" style="background: var(--pyr-fys); width: 61%;"></span>
+          <div class="tooltip" style="bottom: auto; top: calc(100% + 8px); transform: translateX(-50%) rotate(0);">
+            <div class="tt-eyebrow">WANG · FYS</div>
+            <div class="tt-row"><span>Eksakt</span><span class="v">24,3 %</span></div>
+            <div class="tt-row"><span>vs snitt</span><span class="v">+1,9 pp</span></div>
+            <div class="tt-row"><span>vs Q1</span><span class="v">+4,1 pp</span></div>
+          </div>
+        </div>
+        <div class="m-cell"><span class="val">30,1 %</span><span class="delta up">+7,7</span><span class="bar" style="background: var(--pyr-fys); width: 75%;"></span></div>
+        <div class="m-cell"><span class="val">16,4 %</span><span class="delta">−6,0</span><span class="bar" style="background: var(--pyr-fys); width: 41%;"></span></div>
+        <div class="m-cell" style="background: var(--surface-alt);"><span class="val">22,4 %</span><span class="delta">snitt</span><span class="bar" style="background: var(--ink-muted); width: 56%; opacity: 0.4;"></span></div>
+
+        <!-- TEK row -->
+        <div class="m-fokus"><span class="swatch" style="background: var(--pyr-tek);"></span><div class="name">TEK<span class="sub">teknikk · golfsving</span></div></div>
+        <div class="m-cell"><span class="val">32,1 %</span><span class="delta up">+1,2</span><span class="bar" style="background: var(--pyr-tek); width: 80%;"></span></div>
+        <div class="m-cell"><span class="val">28,2 %</span><span class="delta">−2,7</span><span class="bar" style="background: var(--pyr-tek); width: 70%;"></span></div>
+        <div class="m-cell row-selected"><span class="val" style="color: var(--brand-primary);">26,4 %</span><span class="delta">−4,5</span><span class="bar" style="background: var(--pyr-tek); width: 66%;"></span></div>
+        <div class="m-cell"><span class="val">32,0 %</span><span class="delta up">+1,1</span><span class="bar" style="background: var(--pyr-tek); width: 80%;"></span></div>
+        <div class="m-cell"><span class="val">38,2 %</span><span class="delta up">+7,3</span><span class="bar" style="background: var(--pyr-tek); width: 95%;"></span></div>
+        <div class="m-cell" style="background: var(--surface-alt);"><span class="val">30,9 %</span><span class="delta">snitt</span><span class="bar" style="background: var(--ink-muted); width: 77%; opacity: 0.4;"></span></div>
+
+        <!-- SLAG row -->
+        <div class="m-fokus"><span class="swatch" style="background: var(--pyr-slag);"></span><div class="name">SLAG<span class="sub">slagprogresjon</span></div></div>
+        <div class="m-cell"><span class="val">24,0 %</span><span class="delta up">+1,9</span><span class="bar" style="background: var(--pyr-slag); width: 60%;"></span></div>
+        <div class="m-cell"><span class="val">22,2 %</span><span class="delta">0</span><span class="bar" style="background: var(--pyr-slag); width: 55%;"></span></div>
+        <div class="m-cell row-selected"><span class="val" style="color: var(--brand-primary);">20,1 %</span><span class="delta">−2,0</span><span class="bar" style="background: var(--pyr-slag); width: 50%;"></span></div>
+        <div class="m-cell"><span class="val">18,4 %</span><span class="delta">−3,7</span><span class="bar" style="background: var(--pyr-slag); width: 46%;"></span></div>
+        <div class="m-cell"><span class="val">24,1 %</span><span class="delta up">+2,0</span><span class="bar" style="background: var(--pyr-slag); width: 60%;"></span></div>
+        <div class="m-cell" style="background: var(--surface-alt);"><span class="val">22,1 %</span><span class="delta">snitt</span><span class="bar" style="background: var(--ink-muted); width: 55%; opacity: 0.4;"></span></div>
+
+        <!-- SPILL row -->
+        <div class="m-fokus"><span class="swatch" style="background: var(--pyr-spill);"></span><div class="name">SPILL<span class="sub">banespill · scoring</span></div></div>
+        <div class="m-cell"><span class="val">13,8 %</span><span class="delta">−0,1</span><span class="bar" style="background: var(--pyr-spill); width: 35%;"></span></div>
+        <div class="m-cell"><span class="val">15,9 %</span><span class="delta up">+2,0</span><span class="bar" style="background: var(--pyr-spill); width: 40%;"></span></div>
+        <div class="m-cell row-selected"><span class="val" style="color: var(--brand-primary);">17,8 %</span><span class="delta up">+3,9</span><span class="bar" style="background: var(--pyr-spill); width: 44%;"></span></div>
+        <div class="m-cell"><span class="val">11,8 %</span><span class="delta">−2,1</span><span class="bar" style="background: var(--pyr-spill); width: 30%;"></span></div>
+        <div class="m-cell"><span class="val">11,9 %</span><span class="delta">−2,0</span><span class="bar" style="background: var(--pyr-spill); width: 30%;"></span></div>
+        <div class="m-cell" style="background: var(--surface-alt);"><span class="val">13,9 %</span><span class="delta">snitt</span><span class="bar" style="background: var(--ink-muted); width: 35%; opacity: 0.4;"></span></div>
+
+        <!-- TURN row -->
+        <div class="m-fokus"><span class="swatch" style="background: var(--pyr-turn);"></span><div class="name">TURN<span class="sub">turnering · konkurranse</span></div></div>
+        <div class="m-cell"><span class="val">11,9 %</span><span class="delta up">+1,1</span><span class="bar" style="background: var(--pyr-turn); width: 30%;"></span></div>
+        <div class="m-cell"><span class="val">11,3 %</span><span class="delta up">+0,5</span><span class="bar" style="background: var(--pyr-turn); width: 28%;"></span></div>
+        <div class="m-cell row-selected" style="border-bottom-color: transparent;"><span class="val" style="color: var(--brand-primary);">11,4 %</span><span class="delta up">+0,6</span><span class="bar" style="background: var(--pyr-turn); width: 28%;"></span></div>
+        <div class="m-cell"><span class="val">7,7 %</span><span class="delta">−3,1</span><span class="bar" style="background: var(--pyr-turn); width: 19%;"></span></div>
+        <div class="m-cell"><span class="val">9,4 %</span><span class="delta">−1,4</span><span class="bar" style="background: var(--pyr-turn); width: 24%;"></span></div>
+        <div class="m-cell" style="background: var(--surface-alt);"><span class="val">10,8 %</span><span class="delta">snitt</span><span class="bar" style="background: var(--ink-muted); width: 27%; opacity: 0.4;"></span></div>
+      </div>
+
+      <div style="margin-top: 16px; display: flex; justify-content: space-between; align-items: center; padding: 12px 4px;">
+        <div style="font-size: 12px; color: var(--ink-muted);">
+          <b style="color: var(--ink);">WANG Toppidrett</b> aapnet i drawer · klikk annen rad for aa bytte
+        </div>
+        <button class="btn btn-sm">
+          Aapne WANG-detalj <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Three-column insight cards -->
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 16px;">
+      <div class="card" style="padding: 20px;">
+        <div class="rr-title" style="margin-bottom: 12px;">Observasjon · WANG</div>
+        <h3 style="margin: 0 0 8px; font-family: var(--font-display); font-size: 17px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3;">FYS-tunge sammenlignet med snitt — TEK ligger 4,5 pp under.</h3>
+        <p style="margin: 0 0 12px; font-size: 13px; color: var(--ink-muted); line-height: 1.5;">Hjemmebane-treningen handler om kondisjon foer skole. Foreslaa aa flytte 2 oekter/uke fra FYS til TEK-bloker for aa hente igjen.</p>
+        <div class="row gap-2">
+          <button class="btn btn-sm btn-primary">Foreslaa for coach</button>
+          <button class="btn btn-sm btn-ghost">Lukk</button>
+        </div>
+      </div>
+      <div class="card" style="padding: 20px;">
+        <div class="rr-title" style="margin-bottom: 12px;">Toppspillere · WANG</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="row gap-3"><span class="avatar avatar-md av-mr">MR</span><div style="flex:1;"><div style="font-size: 13px; font-weight: 600;">Markus Roinaas P.</div><div style="font-size: 11px; color: var(--ink-muted);">HCP <span class="mono">4,2</span> · SG <span class="mono">+1,8</span></div></div><span class="pill pill-success">topp 1</span></div>
+          <div class="row gap-3"><span class="avatar avatar-md av-ek">EK</span><div style="flex:1;"><div style="font-size: 13px; font-weight: 600;">Eline Krogh</div><div style="font-size: 11px; color: var(--ink-muted);">HCP <span class="mono">5,8</span> · SG <span class="mono">+1,2</span></div></div><span class="pill pill-success">topp 2</span></div>
+          <div class="row gap-3"><span class="avatar avatar-md av-sb">SB</span><div style="flex:1;"><div style="font-size: 13px; font-weight: 600;">Sondre Berg</div><div style="font-size: 11px; color: var(--ink-muted);">HCP <span class="mono">6,4</span> · SG <span class="mono">+0,9</span></div></div><span class="pill pill-success">topp 3</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding: 20px;">
+        <div class="rr-title" style="margin-bottom: 12px;">Periode-sammendrag</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div><div style="font-size: 11px; color: var(--ink-subtle); text-transform: uppercase; letter-spacing: 0.06em;">SG snitt</div><div class="mono" style="font-size: 24px; font-weight: 500; color: var(--success); letter-spacing: -0.02em;">+0,84</div><div style="font-size: 11px; color: var(--success);">+0,32 vs Q1</div></div>
+          <div><div style="font-size: 11px; color: var(--ink-subtle); text-transform: uppercase; letter-spacing: 0.06em;">HCP snitt</div><div class="mono" style="font-size: 24px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em;">8,9</div><div style="font-size: 11px; color: var(--success);">−1,4 vs Q1</div></div>
+          <div><div style="font-size: 11px; color: var(--ink-subtle); text-transform: uppercase; letter-spacing: 0.06em;">Oekter</div><div class="mono" style="font-size: 24px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em;">412</div><div style="font-size: 11px; color: var(--ink-muted);">jan – mai</div></div>
+          <div><div style="font-size: 11px; color: var(--ink-subtle); text-transform: uppercase; letter-spacing: 0.06em;">Adherence</div><div class="mono" style="font-size: 24px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em;">87 %</div><div style="font-size: 11px; color: var(--success);">+4 pp vs Q1</div></div>
+        </div>
+      </div>
+    </div>
+
+    <footer style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-subtle); display: flex; justify-content: space-between;">
+      <span>AK Golf Platform · CoachHQ · /admin/lag-snitt</span>
+      <span class="mono">Q2 2026 · 142 spillere · sist beregnet 09:12</span>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

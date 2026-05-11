@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:24px;background:var(--surface);display:grid;grid-template-columns:repeat(4,1fr);gap:16px;font-family:'Inter',sans-serif}
+  .cell{display:flex;flex-direction:column}
+  .stage{display:flex;align-items:center;justify-content:center;height:108px;border-radius:14px;border:1px solid var(--line)}
+  .stage img{height:44px;display:block}
+  .light{background:#FAFAF7}
+  .dark{background:#0A0A0A;border-color:transparent}
+  .green{background:#005840;border-color:transparent}
+  .cream{background:#F5F2EA}
+  .lbl{font-size:11px;color:var(--ink-subtle);letter-spacing:.04em;text-transform:uppercase;margin-top:10px;font-weight:500}
+  .sub{font-size:10px;color:var(--ink-subtle);margin-top:2px;font-family:'JetBrains Mono',monospace;text-transform:none;letter-spacing:0}
+</style>
+</head><body>
+  <div class="cell"><div class="stage light"><img src="../assets/logos/ak-golf-logo-primary-on-light.svg" alt=""></div><div class="lbl">Primary · on light</div><div class="sub">default · alle lyse flater</div></div>
+  <div class="cell"><div class="stage dark"><img src="../assets/logos/ak-golf-logo-primary-on-dark.svg" alt=""></div><div class="lbl">Primary · on dark</div><div class="sub">landing hero · CoachHQ rail</div></div>
+  <div class="cell"><div class="stage green"><img src="../assets/logos/ak-golf-logo-white-on-green.svg" alt=""></div><div class="lbl">White · on green</div><div class="sub">brand-fylte flater</div></div>
+  <div class="cell"><div class="stage dark"><img src="../assets/logos/ak-golf-logo-white-on-dark.svg" alt=""></div><div class="lbl">White · on dark</div><div class="sub">når lime-aksent ikke passer</div></div>
+  <div class="cell"><div class="stage cream"><img src="../assets/logos/ak-golf-logo-primary-mono.svg" alt=""></div><div class="lbl">Mono · primary</div><div class="sub">ett-fargs · grønn</div></div>
+  <div class="cell"><div class="stage light"><img src="../assets/logos/ak-golf-logo-black-mono.svg" alt=""></div><div class="lbl">Mono · black</div><div class="sub">print · faks · fallback</div></div>
+  <div class="cell"><div class="stage dark"><img src="../assets/logos/ak-golf-logo-white-mono.svg" alt=""></div><div class="lbl">Mono · white</div><div class="sub">ett-fargs · revers</div></div>
+  <div class="cell"><div class="stage light" style="border-style:dashed"><span style="font-size:10px;color:var(--ink-subtle);font-family:'JetBrains Mono',monospace">min 24px høyde</span></div><div class="lbl">Clear-space</div><div class="sub">aldri mindre enn 24px</div></div>
+</body></html>

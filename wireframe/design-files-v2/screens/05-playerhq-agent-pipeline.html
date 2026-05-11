@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>05 — PlayerHQ Agent Pipeline</title>
+<link rel="stylesheet" href="../colors_and_type.css" />
+<style>
+  html, body { margin: 0; padding: 0; background: var(--surface); color: var(--ink); font-family: var(--font-body); }
+  .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+  /* sidebar */
+  .sb { background: #fff; border-right: 1px solid var(--sidebar-player-border); padding: 24px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .sb-brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 24px 8px; }
+  .sb-brand-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--brand-primary); display: inline-flex; align-items: center; justify-content: center; color: var(--brand-accent); font: 700 13px/1 'Inter Tight'; letter-spacing: -0.02em; }
+  .sb-brand-name { font: 700 14px/1 'Inter Tight'; letter-spacing: -0.01em; color: var(--ink); }
+
+  .sb-section { font: 500 11px/1 'Inter'; letter-spacing: 0.10em; text-transform: uppercase; color: var(--ink-subtle); padding: 12px 8px 4px; }
+  .sb-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 10px;
+    color: var(--ink-muted); font: 500 14px/1 'Inter'; text-decoration: none; cursor: pointer;
+  }
+  .sb-item:hover { background: var(--surface-alt); color: var(--ink); }
+  .sb-item.active { background: rgba(0,88,64,0.08); color: var(--brand-primary); }
+  .sb-item.active svg { color: var(--brand-primary); }
+  .sb-item svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 18px; }
+  .sb-item.sub { padding-left: 38px; font-size: 13px; }
+  .sb-item.sub.active { background: rgba(0,88,64,0.08); color: var(--brand-primary); }
+
+  .sb-avatar-row {
+    margin-top: auto; padding: 12px 8px; display: flex; align-items: center; gap: 10px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .sb-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--brand-primary); color: var(--brand-accent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px/1 'Inter'; }
+  .sb-av-name { font: 600 13px/1 'Inter'; color: var(--ink); }
+  .sb-av-tier { font: 500 11px/1 'Inter'; color: var(--ink-subtle); margin-top: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+  /* main */
+  .main { display: grid; grid-template-rows: auto 1fr auto; min-height: 100vh; }
+  .topbar { padding: 24px 40px 20px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+  .crumb { font: 400 13px/1.4 'Inter'; color: var(--ink-subtle); }
+  .page-title { margin-top: 4px; font: 700 28px/1.1 'Inter Tight'; letter-spacing: -0.02em; color: var(--ink); }
+  .page-sub { margin-top: 4px; font: 400 14px/1.4 'Inter'; color: var(--ink-muted); }
+  .topbar-r { display: flex; align-items: center; gap: 10px; }
+  .last-update { font: 400 12px/1 'JetBrains Mono'; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
+
+  /* board */
+  .board {
+    position: relative; padding: 32px 40px;
+    display: grid; grid-template-columns: 320px 1fr 320px 1fr 320px; align-items: start; gap: 0;
+  }
+  .col { display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 2; }
+  .col.skills { gap: 32px; padding-top: 14px; }
+  .col.agents { gap: 40px; padding-top: 30px; }
+  .col-label {
+    font: 600 12px/1 'Inter'; letter-spacing: 0.10em; text-transform: uppercase;
+    color: var(--ink-subtle); margin-bottom: 4px;
+  }
+  .col-label b { color: var(--ink); font-weight: 700; font-family: 'JetBrains Mono'; }
+
+  /* signal nodes */
+  .node-signal {
+    background: #fff; border: 1px solid var(--line); border-radius: 16px;
+    padding: 14px 16px; display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 12px;
+    box-shadow: var(--shadow-card); position: relative;
+  }
+  .node-signal .ni {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--brand-primary-soft); color: var(--brand-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .node-signal .nn { font: 600 14px/1.3 'Inter'; color: var(--ink); }
+  .node-signal .ns { font: 400 12px/1.3 'Inter'; color: var(--ink-muted); margin-top: 3px; font-family: 'JetBrains Mono'; font-variant-numeric: tabular-nums; }
+  .firing-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #D1F843;
+    box-shadow: 0 0 0 4px rgba(209,248,67,0.25);
+  }
+
+  /* skill nodes */
+  .node-skill {
+    background: var(--surface-alt); border: 1px solid var(--line); border-radius: 16px;
+    padding: 16px 18px;
+  }
+  .node-skill .nn { font: 600 15px/1.3 'Inter'; color: var(--ink); }
+  .node-skill .ns { margin-top: 6px; font: 400 13px/1.3 'Inter'; color: var(--ink-muted); }
+  .node-skill .nm { margin-top: 8px; font: 500 11px/1 'JetBrains Mono'; color: var(--ink-subtle); letter-spacing: 0.02em; }
+
+  /* agent nodes */
+  .node-agent {
+    background: #fff; border: 1px solid var(--line); border-radius: 16px;
+    padding: 18px 20px; box-shadow: var(--shadow-card); position: relative;
+  }
+  .node-agent.active { border: 2px solid var(--brand-accent); padding: 17px 19px; box-shadow: 0 0 0 4px rgba(209,248,67,0.15); }
+  .node-agent .nlabel { font: 600 11px/1 'Inter'; letter-spacing: 0.10em; text-transform: uppercase; color: var(--brand-primary); }
+  .node-agent .nn { margin-top: 6px; font: 600 16px/1.25 'Inter Tight'; color: var(--ink); letter-spacing: -0.01em; }
+  .node-agent .ns { margin-top: 6px; font: 400 13px/1.4 'Inter'; color: var(--ink-muted); }
+  .node-agent .cta { margin-top: 12px; font: 600 12px/1 'Inter'; color: var(--brand-primary); display: inline-flex; gap: 6px; align-items: center; }
+
+  /* SVG line layer */
+  .lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+  .lines path { stroke: rgba(10,31,24,0.08); stroke-width: 1.5; fill: none; }
+  .lines path.active { stroke: #D1F843; stroke-width: 2; stroke-dasharray: 6 5; animation: dash 1.4s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -22; } }
+
+  /* footer */
+  .foot { padding: 16px 40px; border-top: 1px solid var(--line-soft); font: 400 12px/1.4 'Inter'; color: var(--ink-muted); display: flex; align-items: center; justify-content: space-between; }
+  .foot .dot-live { display: inline-flex; align-items: center; gap: 6px; }
+  .foot .dot-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--brand-accent); box-shadow: 0 0 0 3px rgba(209,248,67,0.25); }
+  .foot a { color: var(--brand-primary); text-decoration: none; font-weight: 600; }
+
+  svg.lucide { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+<div class="app" data-screen-label="05 PlayerHQ Agent Pipeline">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────── -->
+  <aside class="sb">
+    <div class="sb-brand">
+      <div class="sb-brand-mark">AK</div>
+      <div class="sb-brand-name">AK Golf · PlayerHQ</div>
+    </div>
+
+    <a class="sb-item"><svg viewBox="0 0 24 24"><path d="M3 12 12 4l9 8M5 10v10h14V10"/></svg>Hjem</a>
+    <a class="sb-item"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Tren</a>
+    <a class="sb-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg>Mål</a>
+    <a class="sb-item active"><svg viewBox="0 0 24 24"><path d="M21 11.5c0 4.7-4 8.5-9 8.5a9.7 9.7 0 0 1-4-.8L3 21l1.4-4.4A8.4 8.4 0 0 1 3 11.5C3 6.8 7 3 12 3s9 3.8 9 8.5Z"/></svg>Coach</a>
+    <a class="sb-item sub active">Agent-pipeline</a>
+    <a class="sb-item sub">Meldinger</a>
+    <a class="sb-item sub">Bookinger</a>
+    <a class="sb-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>Meg</a>
+
+    <div class="sb-avatar-row">
+      <div class="sb-avatar">MP</div>
+      <div>
+        <div class="sb-av-name">Markus R. Pedersen</div>
+        <div class="sb-av-tier">HCP 12,4 · Pro</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────────────── -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="crumb">Coach <span style="opacity:.5">›</span> Agent-pipeline</div>
+        <h1 class="page-title">Agent-pipeline</h1>
+        <div class="page-sub">Hvordan systemet leser deg.</div>
+      </div>
+      <div class="topbar-r">
+        <span class="last-update">Sist oppdatert 14:32</span>
+      </div>
+    </div>
+
+    <!-- ── Pipeline board ──────────────────────────────────── -->
+    <div class="board">
+
+      <!-- ── SVG line layer ──────────────────────────────── -->
+      <svg class="lines" viewBox="0 0 1180 720" preserveAspectRatio="none" aria-hidden="true">
+        <!-- Signals (col1, x≈300) → Skills (col2, x≈480) -->
+        <path d="M300 60 C 390 60, 390 120, 480 120"/>
+        <path class="active" d="M300 140 C 390 140, 390 140, 480 140"/>
+        <path d="M300 220 C 390 220, 390 240, 480 240"/>
+        <path class="active" d="M300 300 C 390 300, 390 240, 480 240"/>
+        <path d="M300 380 C 390 380, 390 360, 480 360"/>
+        <path d="M300 460 C 390 460, 390 480, 480 480"/>
+        <!-- Skills (col2, x≈700) → Agents (col3, x≈880) -->
+        <path class="active" d="M700 140 C 790 140, 790 130, 880 130"/>
+        <path d="M700 240 C 790 240, 790 130, 880 130"/>
+        <path d="M700 360 C 790 360, 790 280, 880 280"/>
+        <path class="active" d="M700 360 C 790 360, 790 290, 880 290"/>
+        <path d="M700 480 C 790 480, 790 440, 880 440"/>
+      </svg>
+
+      <!-- Col 1: Signals -->
+      <div class="col signals">
+        <div class="col-label">Signaler · <b>6</b></div>
+
+        <div class="node-signal">
+          <div class="ni"><svg class="lucide" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8M14 7h7v7"/></svg></div>
+          <div><div class="nn">HCP-utvikling</div><div class="ns">12,4 → 11,8 på 30d</div></div>
+          <span class="firing-dot"></span>
+        </div>
+
+        <div class="node-signal">
+          <div class="ni"><svg class="lucide" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></div>
+          <div><div class="nn">Mål-status</div><div class="ns">70 % mot sesongmål</div></div>
+        </div>
+
+        <div class="node-signal">
+          <div class="ni"><svg class="lucide" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9-6-18-3 9H2"/></svg></div>
+          <div><div class="nn">Trenings-frekvens</div><div class="ns">4 økter denne uka</div></div>
+          <span class="firing-dot"></span>
+        </div>
+
+        <div class="node-signal">
+          <div class="ni"><svg class="lucide" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div><div class="nn">Bane-data</div><div class="ns">5 nye runder logget</div></div>
+        </div>
+
+        <div class="node-signal">
+          <div class="ni"><svg class="lucide" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8 13 6 21l6-3 6 3-2-8"/></svg></div>
+          <div><div class="nn">Test-resultater</div><div class="ns">NGF-batch oppdatert</div></div>
+        </div>
+
+        <div class="node-signal">
+          <div class="ni"><svg class="lucide" viewBox="0 0 24 24"><path d="M20.8 11.5a5.5 5.5 0 0 0-9.8-3.4 5.5 5.5 0 0 0-9.8 3.4C1.2 16 12 22 12 22s10.8-6 8.8-10.5Z"/></svg></div>
+          <div><div class="nn">Helse</div><div class="ns">Søvn-score 76</div></div>
+        </div>
+      </div>
+
+      <div></div>
+
+      <!-- Col 2: Skills -->
+      <div class="col skills">
+        <div class="col-label">Skills · <b>4</b></div>
+
+        <div class="node-skill">
+          <div class="nn">Plan-analyse</div>
+          <div class="ns">Vurderer fremdrift mot mål</div>
+          <div class="nm">Sist: 8m siden</div>
+        </div>
+        <div class="node-skill">
+          <div class="nn">Volum-analyse</div>
+          <div class="ns">Sjekker rep-tetthet over tid</div>
+          <div class="nm">Sist: 15m siden</div>
+        </div>
+        <div class="node-skill">
+          <div class="nn">Talent-projeksjon</div>
+          <div class="ns">Estimerer 6mnd HCP</div>
+          <div class="nm">Sist: 2t siden</div>
+        </div>
+        <div class="node-skill">
+          <div class="nn">Konkurranse-vekting</div>
+          <div class="ns">Topp-form-timing før kamp</div>
+          <div class="nm">Sist: 1d siden</div>
+        </div>
+      </div>
+
+      <div></div>
+
+      <!-- Col 3: Agents / Recommendations -->
+      <div class="col agents">
+        <div class="col-label">Anbefalinger · <b>3</b></div>
+
+        <div class="node-agent active">
+          <div class="nlabel">Plan-justering</div>
+          <div class="nn">Øk putte-volum 20 % neste uke</div>
+          <div class="ns">Basert på lav putte-tetthet siste 14d.</div>
+          <div class="cta">Se forslag <svg class="lucide" viewBox="0 0 24 24" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        </div>
+
+        <div class="node-agent active">
+          <div class="nlabel">Test-påminnelse</div>
+          <div class="nn">NGF-test forfaller om 3 dager</div>
+          <div class="ns">Book tid hos Anders før 14. mai.</div>
+          <div class="cta">Book test <svg class="lucide" viewBox="0 0 24 24" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        </div>
+
+        <div class="node-agent">
+          <div class="nlabel">Coaching-input</div>
+          <div class="nn">Spør Anders om driver-tipp</div>
+          <div class="ns">Driver-presisjon har gått ned 4 %.</div>
+          <div class="cta">Send melding <svg class="lucide" viewBox="0 0 24 24" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="foot">
+      <span><span class="dot-live">Live</span> · Sist oppdatert 14:32</span>
+      <span>Spørsmål? <a href="#anders">Snakk med Anders →</a></span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

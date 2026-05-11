@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Onboarding — Velkomst &amp; rolle · 7-A/1</title>
+<link rel="stylesheet" href="_shared/arketype-g.css">
+<style>
+  .ab-frame{padding:0}
+  .stage-bg{background:linear-gradient(135deg,#EDEAE2 0%,#F5F2EA 100%);padding:36px;min-height:760px;display:flex;align-items:stretch;justify-content:center}
+  .card-wrap{width:100%;max-width:1280px;background:var(--surface);border-radius:20px;overflow:hidden;box-shadow:0 24px 60px -20px rgba(10,31,24,.18)}
+  .meta-strip{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:var(--surface-alt);border-top:1px solid var(--line);font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle)}
+  .meta-strip .right{display:flex;gap:18px}
+  .meta-strip b{color:var(--ink);font-weight:500}
+</style>
+</head>
+<body>
+<div class="deck" data-screen-label="31 Onboarding — Velkomst &amp; rolle">
+
+  <header class="deck-head">
+    <div class="eyebrow">7-A · Onboarding · skjerm 1 av 5</div>
+    <h1>Velkomst &amp; rolle</h1>
+    <p class="sub">Første skjerm i first-run-flowet. Felles inngang for spillere, coacher og foreldre — rollen styrer hvilke steg de møter videre. Kortet er sentrert, narrativ til venstre, valg til høyre. Ingen chrome (rail/nav) ennå; bruker er ikke logget inn.</p>
+    <div class="meta-row">
+      <span><span class="lbl">Rute:</span> /onboarding/velkommen</span>
+      <span><span class="lbl">Auth:</span> Magic-link kvittert</span>
+      <span><span class="lbl">Komponent:</span> &lt;RoleSelector/&gt;</span>
+      <span><span class="lbl">Neste:</span> /onboarding/spiller · /coach · /forelder</span>
+    </div>
+  </header>
+
+  <section class="ab">
+    <div class="ab-label">
+      <span class="num">31 · 7-A/1</span>
+      <span class="ttl">Velkomst &amp; rolle</span>
+      <span class="meta">felles inngang · uten chrome · velg vei</span>
+    </div>
+    <div class="ab-frame">
+      <div class="stage-bg">
+        <div class="card-wrap">
+          <div class="onb">
+            <!-- Narrative pane -->
+            <aside class="onb-side">
+              <div class="onb-brand">
+                <div class="mark">AK</div>
+                <div>AK Golf HQ</div>
+              </div>
+
+              <div>
+                <h2>La oss <em>finne din vei</em> inn i AK Golf HQ.</h2>
+                <p>Vi tilpasser hva du ser, hvilke verktøy som er aktive og hvordan vi spør om samtykke — basert på rollen din. Du kan endre dette senere i innstillinger.</p>
+              </div>
+
+              <div class="quote">
+                «Hver spiller, coach og forelder skal kjenne at HQ-en er bygget for akkurat dem — ikke for et generelt golftilbud.»
+                <span class="who">Andreas Karlsen · Founder</span>
+              </div>
+            </aside>
+
+            <!-- Form pane -->
+            <main class="onb-main">
+              <div class="onb-top">
+                <div class="onb-step">Steg <span class="now">01</span> / 04</div>
+                <div class="onb-progress">
+                  <div class="pd now"></div>
+                  <div class="pd"></div>
+                  <div class="pd"></div>
+                  <div class="pd"></div>
+                </div>
+                <button class="btn btn-ghost btn-sm">Logg ut</button>
+              </div>
+
+              <div>
+                <h1 class="onb-h">Hei Mathilde — <em>hvem er du her som?</em></h1>
+                <p class="onb-sub">Vi gjenkjenner e-posten din (m.bj@vipps.no) — men vi vet ikke ennå om du selv er spiller, coach eller forelder på vegne av en spiller under 18 år. Velg én — du kan koble på flere roller senere.</p>
+              </div>
+
+              <div class="role-grid">
+                <!-- Spiller (active) -->
+                <button class="role-card active">
+                  <div class="ico">
+                    <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5 21c1.5-4 4-6 7-6s5.5 2 7 6"/></svg>
+                  </div>
+                  <span class="tag">Player HQ</span>
+                  <h3 class="ttl">Jeg er spiller</h3>
+                  <p class="dsc">Jeg trener, spiller turneringer og vil følge min egen progresjon i pyramiden.</p>
+                </button>
+
+                <!-- Coach -->
+                <button class="role-card">
+                  <div class="ico">
+                    <svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 19h16M6 19V8l6-4 6 4v11M9 19v-6h6v6"/></svg>
+                  </div>
+                  <span class="tag">Coach HQ</span>
+                  <h3 class="ttl">Jeg er coach</h3>
+                  <p class="dsc">Jeg holder økter, har klienter og bruker AI-agenter til planlegging og oppfølging.</p>
+                </button>
+
+                <!-- Forelder -->
+                <button class="role-card">
+                  <div class="ico">
+                    <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="9" cy="8" r="2.6"/><circle cx="16" cy="9" r="1.8"/><path d="M4 19c.8-3.2 2.8-5 5-5s4.2 1.8 5 5M14 19c.5-1.8 1.6-2.8 3-2.8s2.5 1 3 2.8"/></svg>
+                  </div>
+                  <span class="tag">Foreldre-portal</span>
+                  <h3 class="ttl">Jeg er forelder</h3>
+                  <p class="dsc">Mitt barn (under 18) trener her. Jeg håndterer samtykke, varsler og medlemskap.</p>
+                </button>
+              </div>
+
+              <!-- Secondary affordances -->
+              <div style="display:flex;gap:14px;align-items:center;padding:14px 16px;background:var(--surface-alt);border-radius:12px;border:1px dashed var(--line);font-size:12px;color:var(--ink-muted);line-height:1.55">
+                <div style="width:28px;height:28px;border-radius:8px;background:var(--surface-card);border:1px solid var(--line);color:var(--brand-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16v.01"/></svg>
+                </div>
+                <div style="flex:1">
+                  <b style="color:var(--ink);font-weight:500">Flere roller?</b> En coach kan også være forelder for en juniorspiller — vi kobler på den andre rollen i innstillinger etter onboarding.
+                </div>
+                <a style="font-family:var(--font-mono);font-size:11px;color:var(--brand-primary);letter-spacing:.04em;text-decoration:underline">Les mer</a>
+              </div>
+
+              <div class="onb-foot">
+                <div class="l">Roller-byttet logges i CBAC-historikken (audit-row event=role.assigned)</div>
+                <div class="r">
+                  <button class="btn btn-ghost">Hopp over</button>
+                  <button class="btn btn-primary">Fortsett som spiller →</button>
+                </div>
+              </div>
+            </main>
+          </div>
+
+          <div class="meta-strip">
+            <span>Magic-link: m.bj@vipps.no · verifisert 11.05.2026 14:02</span>
+            <div class="right">
+              <span><b>cookies:</b> kun nødvendige</span>
+              <span><b>språk:</b> NO</span>
+              <span><b>region:</b> NO/EU</span>
+              <span style="color:var(--brand-primary)">● privacy-by-default</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

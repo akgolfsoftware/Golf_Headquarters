@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>CoachHQ — Coaching Board</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="_shared/arketype-e.css" />
+<style>
+  .cb-board {
+    display:grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    width: 100%; height: 100%; padding: 16px 24px;
+  }
+  .cb-col {
+    background: rgba(255,255,255,0.015); border:1px solid rgba(255,255,255,0.04);
+    border-radius: 14px; padding: 14px;
+    display:flex; flex-direction: column; gap: 10px; min-height: 0;
+  }
+  .cb-col-head {
+    display:flex; justify-content: space-between; align-items: baseline;
+    padding: 0 4px 8px; font-family:'Inter Tight';
+  }
+  .cb-col-head .name { display:flex; align-items:center; gap: 10px; font-size: 13px; font-weight: 600; }
+  .cb-col-head .name .dot { width: 8px; height:8px; border-radius:2px; }
+  .cb-col-head .count { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--e-muted); }
+
+  .cb-card {
+    background: var(--e-surface-2); border:1px solid var(--e-border);
+    border-radius: 12px; padding: 14px;
+    display:flex; flex-direction:column; gap: 10px;
+    cursor: grab;
+  }
+  .cb-card:hover { border-color: rgba(209,248,67,0.3); transform: translateY(-2px); }
+  .cb-card .player { display:flex; align-items: center; gap: 8px; font-size: 12px; color: var(--e-muted); }
+  .cb-card .avatar { width: 22px; height:22px; border-radius:999px; background: var(--e-pyr-tek); color: #fff; display:flex; align-items:center; justify-content:center; font-size: 10px; }
+  .cb-card .title { font-family: 'Instrument Serif'; font-style: italic; font-size: 17px; line-height: 1.2; }
+  .cb-card .footer { display:flex; justify-content: space-between; align-items: center; font-size: 11px; }
+  .cb-card .badge {
+    display:inline-flex; align-items:center; gap:4px;
+    font-family: 'JetBrains Mono'; font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 999px;
+    background: rgba(255,255,255,0.04); color: var(--e-muted);
+  }
+  .cb-card .badge.period  { color: var(--e-lime);  border:1px solid rgba(209,248,67,0.25); }
+  .cb-card .badge.deload  { color: var(--e-gold);  border:1px solid rgba(244,196,48,0.3); }
+  .cb-card .badge.escal   { color: var(--e-red);   border:1px solid rgba(229,72,77,0.35); }
+  .cb-card .badge.drill   { color: var(--e-green); border:1px solid rgba(22,163,74,0.35); }
+  .cb-card .ts { color: var(--e-muted-2); font-family:'JetBrains Mono'; }
+
+  .cb-card.is-dragging {
+    transform: rotate(2deg) translateY(-6px);
+    box-shadow: 0 20px 30px -10px rgba(0,0,0,0.6);
+    border-color: var(--e-lime);
+  }
+  .cb-col.is-drop {
+    border-color: var(--e-lime); background: rgba(209,248,67,0.04);
+  }
+  .cb-empty {
+    border: 1px dashed rgba(255,255,255,0.08); border-radius: 10px;
+    padding: 14px; text-align: center; color: var(--e-muted-2); font-size: 12px;
+  }
+  .cb-collapsed-head {
+    background: var(--e-surface); border:1px solid rgba(255,255,255,0.05);
+    border-radius: 10px; padding: 10px 14px;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size: 12px; color: var(--e-muted);
+    cursor: pointer;
+  }
+</style>
+</head>
+<body class="e-canvas">
+
+<header>
+  <div class="e-label"><span class="dot"></span> COACHHQ · /admin/board · ARKETYPE E · KANBAN</div>
+  <h1>Coaching Board</h1>
+  <p class="sub">4-kolonne live operasjonell tavle. Innkommende → Vurderer → I gang → Ferdig. Hvert kort er en agent-anbefaling eller plan-aksjon.</p>
+  <div class="meta">
+    <span><b>Tier</b> Pro coach-tier</span>
+    <span><b>Kolonner</b> 25% hver, 16px gap</span>
+    <span><b>Drag</b> rotert 2deg + skygge</span>
+    <span><b>Default</b> Ferdig collapsed</span>
+  </div>
+</header>
+
+<div class="e-grid">
+
+  <!-- 1. DEFAULT ------------------------------------------------------- -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">1 — Default, 4 kolonner fylt</h2>
+    <p>7 / 4 / 8 / 47-collapsed. Ferdig-kolonnen står som strek nederst.</p>
+    <div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left">
+          <span style="font-size:14px">Coaching Board</span>
+          <span style="color: var(--e-muted); font-size: 12px">Onsdag 10. mai</span>
+        </div>
+        <div class="e-center">23 aktive kort</div>
+        <div class="e-right">
+          <span class="lt-club-chip" style="height:32px">Alle spillere ▾</span>
+          <span class="e-close">×</span>
+        </div>
+      </div>
+
+      <div class="e-stage" style="padding: 0">
+        <div class="cb-board">
+          <!-- Innkommende -->
+          <div class="cb-col">
+            <div class="cb-col-head">
+              <div class="name"><span class="dot" style="background: #3B82F6"></span>Innkommende</div>
+              <div class="count">7</div>
+            </div>
+            <div class="cb-card">
+              <div class="player"><span class="avatar">MR</span>Markus R Pedersen</div>
+              <div class="title">Periodisering: peak uke 28</div>
+              <div class="footer"><span class="badge period">period.</span><span class="ts">2t siden</span></div>
+            </div>
+            <div class="cb-card">
+              <div class="player"><span class="avatar" style="background:var(--e-pyr-slag); color: #0A1F18">LN</span>Lina Næss</div>
+              <div class="title">Pauseuke anbefalt</div>
+              <div class="footer"><span class="badge deload">deload</span><span class="ts">3t siden</span></div>
+            </div>
+            <div class="cb-card">
+              <div class="player"><span class="avatar" style="background:var(--e-pyr-fys)">HN</span>Henrik Nilsen</div>
+              <div class="title">Drill-forslag: lukket clubface</div>
+              <div class="footer"><span class="badge drill">drill</span><span class="ts">4t siden</span></div>
+            </div>
+            <div class="cb-card">
+              <div class="player"><span class="avatar" style="background:var(--e-pyr-spill);color:#0A1F18">EH</span>Eira Holm</div>
+              <div class="title">Eskalering: håndledd-smerte</div>
+              <div class="footer"><span class="badge escal">escal.</span><span class="ts">5t siden</span></div>
+            </div>
+          </div>
+
+          <!-- Vurderer -->
+          <div class="cb-col">
+            <div class="cb-col-head">
+              <div class="name"><span class="dot" style="background: var(--e-gold)"></span>Vurderer</div>
+              <div class="count">4</div>
+            </div>
+            <div class="cb-card">
+              <div class="player"><span class="avatar">MR</span>Markus R Pedersen</div>
+              <div class="title">Volum +2 t/uke</div>
+              <div class="footer"><span class="badge period">period.</span><span class="ts">i går</span></div>
+            </div>
+            <div class="cb-card">
+              <div class="player"><span class="avatar" style="background:var(--e-pyr-slag);color:#0A1F18">LN</span>Lina Næss</div>
+              <div class="title">Endre periodisering</div>
+              <div class="footer"><span class="badge period">period.</span><span class="ts">i går</span></div>
+            </div>
+          </div>
+
+          <!-- I gang -->
+          <div class="cb-col">
+            <div class="cb-col-head">
+              <div class="name"><span class="dot" style="background: var(--e-lime)"></span>I gang</div>
+              <div class="count">8</div>
+            </div>
+            <div class="cb-card">
+              <div class="player"><span class="avatar" style="background:var(--e-pyr-fys)">HN</span>Henrik Nilsen</div>
+              <div class="title">Sommer-toppform-plan</div>
+              <div class="footer"><span class="badge period">period.</span><span class="ts">2d siden</span></div>
+            </div>
+            <div class="cb-card">
+              <div class="player"><span class="avatar">MR</span>Markus R Pedersen</div>
+              <div class="title">Tempo-drill 3:1</div>
+              <div class="footer"><span class="badge drill">drill</span><span class="ts">3d siden</span></div>
+            </div>
+            <div class="cb-card">
+              <div class="player"><span class="avatar" style="background:var(--e-pyr-spill);color:#0A1F18">EH</span>Eira Holm</div>
+              <div class="title">Fysio-vurdering bestilt</div>
+              <div class="footer"><span class="badge escal">escal.</span><span class="ts">5d siden</span></div>
+            </div>
+          </div>
+
+          <!-- Ferdig -->
+          <div class="cb-col" style="background: transparent; border-color: transparent; padding: 14px 0">
+            <div class="cb-col-head">
+              <div class="name"><span class="dot" style="background: var(--e-green)"></span>Ferdig</div>
+              <div class="count">47</div>
+            </div>
+            <div class="cb-collapsed-head">
+              <span>collapsed — 47 fullførte kort</span>
+              <span>▾</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="e-bottombar">
+        <div style="color:var(--e-muted); font-size:13px; flex:1">Filter aktivt: Alle spillere · Alle agenter</div>
+        <button class="e-btn e-btn--ghost-lime">Send agent-feedback →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. HOVER --------------------------------------------------------- -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">2 — Hover på et kort</h2>
+    <p>Lime ring + lift -2px. Subtilt drop-shadow under.</p>
+    <div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left"><span style="font-size:14px">Coaching Board</span></div>
+        <div class="e-center">23 aktive kort</div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+      <div class="e-stage" style="padding: 0">
+        <div class="cb-board">
+          <div class="cb-col">
+            <div class="cb-col-head"><div class="name"><span class="dot" style="background:#3B82F6"></span>Innkommende</div><div class="count">7</div></div>
+            <div class="cb-card" style="border-color: var(--e-lime); transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(209,248,67,0.18)">
+              <div class="player"><span class="avatar">MR</span>Markus R Pedersen</div>
+              <div class="title">Periodisering: peak uke 28</div>
+              <div class="footer"><span class="badge period">period.</span><span class="ts">2t siden</span></div>
+            </div>
+            <div class="cb-card" style="opacity:0.6"><div class="player"><span class="avatar" style="background:var(--e-pyr-slag);color:#0A1F18">LN</span>Lina Næss</div><div class="title">Pauseuke anbefalt</div><div class="footer"><span class="badge deload">deload</span><span class="ts">3t</span></div></div>
+            <div class="cb-card" style="opacity:0.6"><div class="player"><span class="avatar" style="background:var(--e-pyr-fys)">HN</span>Henrik Nilsen</div><div class="title">Drill: lukket clubface</div><div class="footer"><span class="badge drill">drill</span><span class="ts">4t</span></div></div>
+          </div>
+          <div class="cb-col"><div class="cb-col-head"><div class="name"><span class="dot" style="background:var(--e-gold)"></span>Vurderer</div><div class="count">4</div></div>
+            <div class="cb-card" style="opacity:0.6"><div class="player"><span class="avatar">MR</span>Markus R Pedersen</div><div class="title">Volum +2 t/uke</div><div class="footer"><span class="badge period">period.</span><span class="ts">i går</span></div></div>
+          </div>
+          <div class="cb-col"><div class="cb-col-head"><div class="name"><span class="dot" style="background:var(--e-lime)"></span>I gang</div><div class="count">8</div></div>
+            <div class="cb-card" style="opacity:0.6"><div class="player"><span class="avatar" style="background:var(--e-pyr-fys)">HN</span>Henrik Nilsen</div><div class="title">Sommer-toppform-plan</div><div class="footer"><span class="badge period">period.</span><span class="ts">2d</span></div></div>
+          </div>
+          <div class="cb-col" style="background:transparent; border-color: transparent; padding: 14px 0">
+            <div class="cb-col-head"><div class="name"><span class="dot" style="background:var(--e-green)"></span>Ferdig</div><div class="count">47</div></div>
+            <div class="cb-collapsed-head"><span>collapsed — 47 fullførte</span><span>▾</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="e-bottombar"><button class="e-btn e-btn--ghost-lime">Send agent-feedback →</button></div>
+    </div>
+  </section>
+
+  <!-- 3. DRAG ---------------------------------------------------------- -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">3 — Drag i gang, drop-zone highlighted</h2>
+    <p>Kort fra Vurderer dras til I gang. Drop-target får lime border + bg-tint.</p>
+    <div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left"><span style="font-size:14px">Coaching Board</span></div>
+        <div class="e-center">23 aktive kort</div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+      <div class="e-stage" style="padding: 0">
+        <div class="cb-board">
+          <div class="cb-col"><div class="cb-col-head"><div class="name"><span class="dot" style="background:#3B82F6"></span>Innkommende</div><div class="count">7</div></div>
+            <div class="cb-card" style="opacity:0.5"><div class="player"><span class="avatar">MR</span>Markus</div><div class="title">Periodisering: peak uke 28</div><div class="footer"><span class="badge period">period.</span><span class="ts">2t</span></div></div>
+            <div class="cb-card" style="opacity:0.5"><div class="player"><span class="avatar" style="background:var(--e-pyr-slag);color:#0A1F18">LN</span>Lina</div><div class="title">Pauseuke anbefalt</div><div class="footer"><span class="badge deload">deload</span><span class="ts">3t</span></div></div>
+          </div>
+          <div class="cb-col" style="opacity:0.7"><div class="cb-col-head"><div class="name"><span class="dot" style="background:var(--e-gold)"></span>Vurderer</div><div class="count">3</div></div>
+            <div class="cb-empty">Markus R — Volum +2 t/uke (drar) ...</div>
+          </div>
+          <div class="cb-col is-drop"><div class="cb-col-head"><div class="name"><span class="dot" style="background:var(--e-lime)"></span>I gang</div><div class="count" style="color:var(--e-lime)">→ slipp her</div></div>
+            <div class="cb-card is-dragging" style="position:relative">
+              <div class="player"><span class="avatar">MR</span>Markus R Pedersen</div>
+              <div class="title">Volum +2 t/uke</div>
+              <div class="footer"><span class="badge period">period.</span><span class="ts">i går</span></div>
+            </div>
+            <div class="cb-card" style="opacity:0.5"><div class="player"><span class="avatar" style="background:var(--e-pyr-fys)">HN</span>Henrik</div><div class="title">Sommer-toppform</div><div class="footer"><span class="badge period">period.</span><span class="ts">2d</span></div></div>
+          </div>
+          <div class="cb-col" style="background:transparent; border-color: transparent; padding:14px 0">
+            <div class="cb-col-head"><div class="name"><span class="dot" style="background:var(--e-green)"></span>Ferdig</div><div class="count">47</div></div>
+            <div class="cb-collapsed-head"><span>collapsed — 47 fullførte</span><span>▾</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="e-bottombar"><button class="e-btn e-btn--ghost-lime">Send agent-feedback →</button></div>
+    </div>
+  </section>
+
+  <!-- 4. EMPTY KOLONNE ------------------------------------------------- -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">4 — Vurderer er tom</h2>
+    <p>Dashed border + invitasjon "Dra fra venstre →".</p>
+    <div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left"><span style="font-size:14px">Coaching Board</span></div>
+        <div class="e-center">19 aktive kort</div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+      <div class="e-stage" style="padding: 0">
+        <div class="cb-board">
+          <div class="cb-col">
+            <div class="cb-col-head"><div class="name"><span class="dot" style="background:#3B82F6"></span>Innkommende</div><div class="count">7</div></div>
+            <div class="cb-card"><div class="player"><span class="avatar">MR</span>Markus</div><div class="title">Periodisering: peak uke 28</div><div class="footer"><span class="badge period">period.</span><span class="ts">2t</span></div></div>
+            <div class="cb-card"><div class="player"><span class="avatar" style="background:var(--e-pyr-slag);color:#0A1F18">LN</span>Lina</div><div class="title">Pauseuke anbefalt</div><div class="footer"><span class="badge deload">deload</span><span class="ts">3t</span></div></div>
+          </div>
+          <div class="cb-col">
+            <div class="cb-col-head"><div class="name"><span class="dot" style="background:var(--e-gold)"></span>Vurderer</div><div class="count">0</div></div>
+            <div class="cb-empty">Ingen kort her ennå.<br/>Dra fra venstre →</div>
+          </div>
+          <div class="cb-col">
+            <div class="cb-col-head"><div class="name"><span class="dot" style="background:var(--e-lime)"></span>I gang</div><div class="count">8</div></div>
+            <div class="cb-card"><div class="player"><span class="avatar" style="background:var(--e-pyr-fys)">HN</span>Henrik</div><div class="title">Sommer-toppform-plan</div><div class="footer"><span class="badge period">period.</span><span class="ts">2d</span></div></div>
+            <div class="cb-card"><div class="player"><span class="avatar">MR</span>Markus</div><div class="title">Tempo-drill 3:1</div><div class="footer"><span class="badge drill">drill</span><span class="ts">3d</span></div></div>
+          </div>
+          <div class="cb-col" style="background:transparent; border-color: transparent; padding:14px 0">
+            <div class="cb-col-head"><div class="name"><span class="dot" style="background:var(--e-green)"></span>Ferdig</div><div class="count">47</div></div>
+            <div class="cb-collapsed-head"><span>collapsed — 47 fullførte</span><span>▾</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="e-bottombar"><button class="e-btn e-btn--ghost-lime">Send agent-feedback →</button></div>
+    </div>
+  </section>
+
+  <!-- 5. TOM HELE BOARD ------------------------------------------------ -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">5 — Alt er ryddig</h2>
+    <p>Sentrert celebration når alle 3 aktive kolonner er tomme.</p>
+    <div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left"><span style="font-size:14px">Coaching Board</span></div>
+        <div class="e-center">0 aktive kort</div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+      <div class="e-stage" style="padding: 0; flex-direction:column">
+        <div style="display:flex; flex-direction:column; align-items:center; gap: 16px; text-align:center">
+          <div style="width:72px; height:72px; border-radius:999px; background: rgba(209,248,67,0.08); border:1px solid rgba(209,248,67,0.3); display:flex; align-items:center; justify-content:center; font-size: 32px; color: var(--e-lime)">✓</div>
+          <h3 class="e-italic" style="font-size: 44px; margin: 0">Alt er ryddig. Bra jobba.</h3>
+          <p style="color: var(--e-muted); font-size: 14px; margin: 0; max-width: 420px; line-height: 1.5">
+            Ingen aktive kort på boardet. Agenter jobber i bakgrunnen — nye anbefalinger dukker opp i Innkommende når noe trenger din oppmerksomhet.
+          </p>
+        </div>
+      </div>
+      <div class="e-bottombar"><div style="flex:1; color: var(--e-muted); font-size: 13px">47 ferdige denne uka</div><button class="e-btn e-btn--ghost-lime">Send agent-feedback →</button></div>
+    </div>
+  </section>
+
+  <!-- 6. MOBIL --------------------------------------------------------- -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">6 — Mobil, 1 kolonne, swipe-mellom</h2>
+    <p>Vurderer fokusert i midten. Indikator-prikker øverst viser hvilken kolonne du er i.</p>
+    <div class="e-frame e-grain is-mobile" style="margin-top:18px">
+      <div class="e-topbar" style="padding:0 14px">
+        <div class="e-left"><span style="font-size:13px">Vurderer</span></div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+      <div style="position:absolute; top: 60px; left:0; right:0; display:flex; justify-content: center; gap:6px">
+        <span style="width:6px; height:6px; border-radius:999px; background: rgba(255,255,255,0.15)"></span>
+        <span style="width:18px; height:6px; border-radius:999px; background: var(--e-lime)"></span>
+        <span style="width:6px; height:6px; border-radius:999px; background: rgba(255,255,255,0.15)"></span>
+        <span style="width:6px; height:6px; border-radius:999px; background: rgba(255,255,255,0.15)"></span>
+      </div>
+      <div class="e-stage" style="top: 88px; padding: 16px; flex-direction:column; align-items:stretch; gap:10px; bottom: 88px">
+        <div class="cb-card"><div class="player"><span class="avatar">MR</span>Markus R Pedersen</div><div class="title">Volum +2 t/uke</div><div class="footer"><span class="badge period">period.</span><span class="ts">i går</span></div></div>
+        <div class="cb-card"><div class="player"><span class="avatar" style="background:var(--e-pyr-slag);color:#0A1F18">LN</span>Lina Næss</div><div class="title">Endre periodisering</div><div class="footer"><span class="badge period">period.</span><span class="ts">i går</span></div></div>
+        <div class="cb-card"><div class="player"><span class="avatar" style="background:var(--e-pyr-fys)">HN</span>Henrik Nilsen</div><div class="title">Eskalering: håndledd</div><div class="footer"><span class="badge escal">escal.</span><span class="ts">2d</span></div></div>
+      </div>
+      <div class="e-bottombar" style="padding: 0 14px"><button class="e-btn e-btn--ghost-lime" style="flex:1; font-size:13px">Send feedback →</button></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

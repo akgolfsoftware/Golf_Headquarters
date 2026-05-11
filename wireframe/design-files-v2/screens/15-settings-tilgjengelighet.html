@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — Tilgjengelighet · 6-A/5</title>
+<link rel="stylesheet" href="_shared/arketype-f.css">
+<style>
+  .pref-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px}
+  .pref-card{padding:16px;border:1.5px solid var(--line);border-radius:14px;cursor:pointer;background:var(--surface-card);display:flex;flex-direction:column;gap:10px;position:relative}
+  .pref-card.active{border-color:var(--brand-primary);box-shadow:0 0 0 3px rgba(0,88,64,.10)}
+  .pref-card .preview{height:64px;border-radius:8px;background:var(--surface-alt);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);color:var(--ink)}
+  .pref-card .lbl-row{display:flex;justify-content:space-between;align-items:center}
+  .pref-card .nm{font-size:13px;font-weight:500;color:var(--ink)}
+  .pref-card .sz{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)}
+  .pref-card .ck{width:18px;height:18px;border-radius:50%;background:var(--brand-primary);color:#fff;display:flex;align-items:center;justify-content:center;opacity:0}
+  .pref-card.active .ck{opacity:1}
+
+  .contrast-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px}
+  .contrast-card{border:1.5px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column}
+  .contrast-card.active{border-color:var(--brand-primary);box-shadow:0 0 0 3px rgba(0,88,64,.10)}
+  .contrast-card .demo{padding:14px;height:90px;display:flex;flex-direction:column;justify-content:space-between}
+  .contrast-card .demo .title{font-family:var(--font-display);font-size:14px;font-weight:600}
+  .contrast-card .demo .desc{font-size:11px;line-height:1.3}
+  .contrast-card .demo .btn{align-self:flex-start;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600}
+  .contrast-card.std .demo{background:var(--surface-card);color:var(--ink)}
+  .contrast-card.std .demo .desc{color:var(--ink-muted)}
+  .contrast-card.std .demo .btn{background:var(--brand-primary);color:#fff}
+  .contrast-card.med .demo{background:#fff;color:#0A1F18}
+  .contrast-card.med .demo .desc{color:#3A3F3D}
+  .contrast-card.med .demo .btn{background:#004030;color:#fff}
+  .contrast-card.high .demo{background:#fff;color:#000;border-bottom:2px solid #000}
+  .contrast-card.high .demo .desc{color:#000;font-weight:500}
+  .contrast-card.high .demo .btn{background:#000;color:#fff;border:2px solid #000}
+  .contrast-card .lbl{padding:10px 14px;background:var(--surface-alt);border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:center}
+  .contrast-card .nm{font-size:12px;font-weight:500;color:var(--ink)}
+  .contrast-card .ratio{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted)}
+  .contrast-card .ratio .pass{color:#1A7D56;font-weight:600}
+
+  .color-pair{display:flex;align-items:center;gap:10px}
+  .color-pair .sw{width:24px;height:24px;border-radius:6px;border:1px solid var(--line)}
+  .ribbon{display:flex;gap:8px;flex-wrap:wrap}
+  .ribbon span{padding:4px 10px;border-radius:100px;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <header class="deck-head">
+    <span class="eyebrow">CoachHQ · Mini-batch 6-A · Pakke 5</span>
+    <h1>Tilgjengelighet — gjør CoachHQ lesbar for alle</h1>
+    <p class="sub">Tekststørrelse, kontrast, motion-reduce, screen reader-modus, fokus-ring, fargeblindhet-filter. Live preview oppe i hjørnet så du ser hvordan det ser ut før du lagrer.</p>
+    <div class="meta-row">
+      <span><span class="lbl">URL:</span> /admin/settings/tilgjengelighet</span>
+      <span><span class="lbl">Arketype:</span> F — Settings</span>
+      <span><span class="lbl">Live preview:</span> sticky høyre kolonne</span>
+    </div>
+  </header>
+
+  <!-- ============ 01 LIGHT — Default ============ -->
+  <section class="ab" data-screen-label="01 Tilgjengelighet — lyst default">
+    <div class="ab-label"><span class="num">01</span><span class="ttl">Lyst tema — alle preferanser default, live preview-card i høyre kolonne</span><span class="meta">1448 × 1240 · default</span></div>
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item">Spillere</div>
+          <div class="nav-divider"></div>
+          <div class="nav-title" style="padding-top:0">Konto</div>
+          <div class="nav-item">Profil</div>
+          <div class="nav-item active">Innstillinger</div>
+          <div class="nav-foot"><div class="av-sm">AK</div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Anders K.</span><span style="font-size:11px;color:var(--ink-subtle)">Hovedcoach</span></div></div>
+        </aside>
+
+        <main class="main">
+          <header class="page-head">
+            <div class="crumb">Innstillinger <span class="sep">/</span> Tilgjengelighet</div>
+            <h1>Slik leser du CoachHQ best.</h1>
+            <div class="sub">Justeringer her gjelder bare for deg. Spillerne dine har sine egne preferanser.</div>
+          </header>
+
+          <div class="settings">
+            <aside class="subnav">
+              <div class="subnav-title">Innstillinger</div>
+              <div class="subnav-item">Profil</div>
+              <div class="subnav-item">Bruker</div>
+              <div class="subnav-item">Sikkerhet</div>
+              <div class="subnav-item">Varsler</div>
+              <div class="subnav-item">API</div>
+              <div class="subnav-item">Abonnement</div>
+              <div class="subnav-item active">Tilgjengelighet</div>
+            </aside>
+
+            <div class="form-area" style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start">
+
+              <!-- Venstre: preferanser -->
+              <div style="display:flex;flex-direction:column;gap:24px">
+
+                <div class="section">
+                  <div class="section-head"><h2>Tekst</h2><span class="aux">Endrer base-størrelsen i hele appen</span></div>
+                  <div class="field-list">
+                    <div class="pref-grid">
+                      <div class="pref-card"><div class="preview" style="font-size:13px">Aa Anders</div><div class="lbl-row"><span class="nm">Liten</span><span class="sz">14px</span><span class="ck"></span></div></div>
+                      <div class="pref-card active"><div class="preview" style="font-size:16px">Aa Anders</div><div class="lbl-row"><span class="nm">Standard</span><span class="sz">16px</span><span class="ck"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span></div></div>
+                      <div class="pref-card"><div class="preview" style="font-size:21px">Aa Anders</div><div class="lbl-row"><span class="nm">Stor</span><span class="sz">20px</span><span class="ck"></span></div></div>
+                    </div>
+                    <div class="field"><span class="lbl">Linjeavstand</span><span class="val">Komfortabel <span style="color:var(--ink-subtle);margin-left:8px;font-family:var(--font-mono);font-size:11px">1.5×</span></span><a class="edit-link">Endre →</a></div>
+                    <div class="field"><span class="lbl">Dyslexie-vennlig font<span class="hint">OpenDyslexic / Atkinson Hyperlegible</span></span><span class="val"></span><span class="toggle"></span></div>
+                    <div class="field"><span class="lbl">Fet body-tekst</span><span class="val"></span><span class="toggle"></span></div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-head"><h2>Kontrast</h2><span class="aux">WCAG-ratios beregnes for valgt par</span></div>
+                  <div class="field-list">
+                    <div class="contrast-grid">
+                      <div class="contrast-card std active"><div class="demo"><div class="title">Sesjon-rapport</div><div class="desc">38 spillere · 12 økter</div><span class="btn">Åpne →</span></div><div class="lbl"><span class="nm">Standard</span><span class="ratio"><span class="pass">8.4:1</span> AAA</span></div></div>
+                      <div class="contrast-card med"><div class="demo"><div class="title">Sesjon-rapport</div><div class="desc">38 spillere · 12 økter</div><span class="btn">Åpne →</span></div><div class="lbl"><span class="nm">Forsterket</span><span class="ratio"><span class="pass">12.1:1</span> AAA</span></div></div>
+                      <div class="contrast-card high"><div class="demo"><div class="title">Sesjon-rapport</div><div class="desc">38 spillere · 12 økter</div><span class="btn">Åpne →</span></div><div class="lbl"><span class="nm">Maks kontrast</span><span class="ratio"><span class="pass">21:1</span> AAA</span></div></div>
+                    </div>
+                    <div class="field"><span class="lbl">Tykkere borders<span class="hint">2px i stedet for 1px på alle kantlinjer</span></span><span class="val"></span><span class="toggle"></span></div>
+                    <div class="field"><span class="lbl">Underline lenker<span class="hint">Også i tekstavsnitt — alltid</span></span><span class="val"></span><span class="toggle on"></span></div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-head"><h2>Bevegelse</h2></div>
+                  <div class="field-list">
+                    <div class="field"><span class="lbl">Reduser animasjon<span class="hint">Følger systemnivå: prefers-reduced-motion</span></span><span class="val" style="color:var(--ink-muted)">Følger system</span><a class="edit-link">Endre →</a></div>
+                    <div class="field"><span class="lbl">Auto-spill av video</span><span class="val"></span><span class="toggle on"></span></div>
+                    <div class="field"><span class="lbl">Parallax + scrubber-effekter</span><span class="val"></span><span class="toggle on"></span></div>
+                    <div class="field"><span class="lbl">Skjul fartstoter <span class="hint">Subtile push-effekter på cards og knapper</span></span><span class="val"></span><span class="toggle"></span></div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-head"><h2>Skjermleser og fokus</h2></div>
+                  <div class="field-list">
+                    <div class="field"><span class="lbl">Synlig fokus-ring<span class="hint">3px lime-ring rundt fokusert element</span></span><span class="val"></span><span class="toggle on"></span></div>
+                    <div class="field"><span class="lbl">Hopp-til-innhold-lenker</span><span class="val"></span><span class="toggle on"></span></div>
+                    <div class="field"><span class="lbl">Hurtig-kommandoer<span class="hint">⌘K åpner palette med alle handlinger</span></span><span class="val"></span><span class="toggle on"></span></div>
+                    <div class="field"><span class="lbl">Annonser oppdateringer<span class="hint">aria-live for live-data og toasts</span></span><span class="val">Polite <span style="color:var(--ink-subtle);font-family:var(--font-mono);font-size:11px;margin-left:8px">vs assertive</span></span><a class="edit-link">Endre →</a></div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-head"><h2>Farger og kart</h2></div>
+                  <div class="field-list">
+                    <div class="field"><span class="lbl">Fargeblindhet-filter</span><span class="val">Av</span><a class="edit-link">Endre →</a></div>
+                    <div class="field"><span class="lbl">Ikke bare farge<span class="hint">Pyramide-status vises også med tegn (▲ ◆ ●) — ikke kun grønn/oransje/rød</span></span><span class="val"></span><span class="toggle on"></span></div>
+                    <div class="field"><span class="lbl">Datavisualisering — palett</span><div class="val"><div class="color-pair"><span class="sw" style="background:#1A7D56"></span><span class="sw" style="background:#B47B1E"></span><span class="sw" style="background:#A32D2D"></span><span class="sw" style="background:#005840"></span><span class="sw" style="background:#0A1F18"></span></div><span style="color:var(--ink-muted);font-size:12px;margin-left:8px">Brand · standard</span></div><a class="edit-link">Endre →</a></div>
+                  </div>
+                </div>
+
+                <div class="save-bar" style="background:var(--accent-bg);color:#0A1F18">
+                  <span class="dot"></span>
+                  <span class="msg">Alle endringer lagres automatisk for deg</span>
+                  <div class="actions"><button class="btn btn-ghost btn-sm">Tilbakestill til standard</button></div>
+                </div>
+
+              </div>
+
+              <!-- Høyre: Live preview sticky -->
+              <aside style="position:sticky;top:24px;display:flex;flex-direction:column;gap:14px;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow-card)">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.04em">Live preview</span>
+                  <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;background:var(--accent-bg);color:#0A1F18;font-family:var(--font-mono);font-size:10px;font-weight:600"><span style="width:4px;height:4px;background:var(--brand-primary);border-radius:50%"></span>Standard</span>
+                </div>
+                <div style="padding:14px;background:var(--surface-alt);border:1px solid var(--line-soft);border-radius:12px;display:flex;flex-direction:column;gap:8px">
+                  <div style="font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--ink);letter-spacing:-.01em">Linnea, 16</div>
+                  <div style="font-size:13px;color:var(--ink-muted);line-height:1.5">Hadde en god sesjon i går — pyramide-status grønn på fysisk, gul på mental. Sjekk søvn på onsdag.</div>
+                  <div style="display:flex;gap:6px;margin-top:4px"><span class="chip success" style="font-size:10px;padding:2px 8px">▲ Fysisk</span><span class="chip" style="background:var(--status-warning-bg);color:var(--status-warning);font-size:10px;padding:2px 8px">◆ Mental</span></div>
+                  <button style="margin-top:8px;height:36px;padding:0 12px;background:var(--brand-primary);color:#fff;border:0;border-radius:8px;font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer">Åpne sesjon →</button>
+                </div>
+                <div style="font-size:11px;color:var(--ink-subtle);line-height:1.5;padding:0 4px">Det er sånn appen ser ut for deg når du går tilbake til dashbordet.</div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);padding-top:10px;border-top:1px solid var(--line-soft)">
+                  <span>Body 16px</span><span>Kontrast 8.4:1</span><span class="pass" style="color:#1A7D56;font-weight:600">AAA</span>
+                </div>
+              </aside>
+
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 — High contrast applied (large text + max contrast) ============ -->
+  <section class="ab" data-screen-label="02 Tilgjengelighet — maks kontrast + stor tekst">
+    <div class="ab-label"><span class="num">02</span><span class="ttl">Maks kontrast aktiv + stor tekst + fokus-ring synlig — preview oppdaterer live</span><span class="meta">1448 × 920 · state</span></div>
+    <div class="ab-frame">
+      <div class="app app--med">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-divider"></div>
+          <div class="nav-item active">Innstillinger</div>
+        </aside>
+        <main class="main">
+          <header class="page-head">
+            <div class="crumb" style="font-size:14px;color:#000">Innstillinger <span class="sep">/</span> Tilgjengelighet</div>
+            <h1 style="color:#000;letter-spacing:-.02em">Maks kontrast — slik ser det ut nå.</h1>
+          </header>
+
+          <div class="settings">
+            <aside class="subnav">
+              <div class="subnav-item" style="color:#000;font-weight:600">Bruker</div>
+              <div class="subnav-item active" style="background:#000;color:#fff;font-weight:700;border-color:#000">Tilgjengelighet</div>
+            </aside>
+            <div class="form-area" style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start">
+              <div style="display:flex;flex-direction:column;gap:24px">
+                <div class="section" style="border-color:#000;border-width:2px">
+                  <div class="section-head" style="background:#000;color:#fff;border-bottom-color:#000"><h2 style="color:#fff">Tekst</h2></div>
+                  <div class="field-list">
+                    <div class="pref-grid">
+                      <div class="pref-card" style="border-color:#000;border-width:2px"><div class="preview" style="font-size:13px;color:#000">Aa Anders</div><div class="lbl-row"><span class="nm" style="color:#000;font-weight:700">Liten</span><span class="sz" style="color:#000">14px</span></div></div>
+                      <div class="pref-card" style="border-color:#000;border-width:2px"><div class="preview" style="font-size:16px;color:#000">Aa Anders</div><div class="lbl-row"><span class="nm" style="color:#000;font-weight:700">Standard</span><span class="sz" style="color:#000">16px</span></div></div>
+                      <div class="pref-card active" style="border-color:#000;border-width:3px;box-shadow:0 0 0 3px #D1F843"><div class="preview" style="font-size:21px;color:#000">Aa Anders</div><div class="lbl-row"><span class="nm" style="color:#000;font-weight:700">Stor</span><span class="sz" style="color:#000">20px</span><span class="ck" style="background:#000;opacity:1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span></div></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="section" style="border-color:#000;border-width:2px">
+                  <div class="section-head" style="background:#000;color:#fff;border-bottom-color:#000"><h2 style="color:#fff">Kontrast</h2></div>
+                  <div class="field-list">
+                    <div class="contrast-grid">
+                      <div class="contrast-card std" style="border-color:#000;border-width:2px"><div class="demo"><div class="title">Sesjon</div><div class="desc">38 spillere</div></div><div class="lbl" style="background:#fff;border-color:#000"><span class="nm" style="color:#000;font-weight:700">Standard</span><span class="ratio" style="color:#000"><span class="pass" style="color:#000">8.4:1</span></span></div></div>
+                      <div class="contrast-card med" style="border-color:#000;border-width:2px"><div class="demo"><div class="title">Sesjon</div><div class="desc">38 spillere</div></div><div class="lbl" style="background:#fff;border-color:#000"><span class="nm" style="color:#000;font-weight:700">Forsterket</span><span class="ratio" style="color:#000"><span class="pass" style="color:#000">12:1</span></span></div></div>
+                      <div class="contrast-card high active" style="border-color:#000;border-width:3px;box-shadow:0 0 0 3px #D1F843"><div class="demo" style="border-bottom-width:3px"><div class="title">Sesjon</div><div class="desc">38 spillere</div></div><div class="lbl" style="background:#000;border-color:#000"><span class="nm" style="color:#fff;font-weight:700">Maks</span><span class="ratio" style="color:#fff"><span class="pass" style="color:#fff">21:1</span></span></div></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="section" style="border-color:#000;border-width:2px">
+                  <div class="section-head" style="background:#000;color:#fff;border-bottom-color:#000"><h2 style="color:#fff">Skjermleser</h2></div>
+                  <div class="field-list">
+                    <div class="field" style="border-bottom-color:#000"><span class="lbl" style="color:#000;font-weight:600">Synlig fokus-ring</span><span class="val"></span><span class="toggle on" style="background:#000"></span></div>
+                    <div class="field" style="border-bottom-color:#000"><span class="lbl" style="color:#000;font-weight:600">Hopp-til-innhold</span><span class="val"></span><span class="toggle on" style="background:#000"></span></div>
+                  </div>
+                </div>
+              </div>
+
+              <aside style="position:sticky;top:24px;background:#fff;border:3px solid #000;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span style="font-family:var(--font-mono);font-size:11px;color:#000;text-transform:uppercase;letter-spacing:.04em;font-weight:700">Live preview</span>
+                  <span style="padding:2px 8px;border-radius:100px;background:#000;color:#fff;font-family:var(--font-mono);font-size:10px;font-weight:700">Maks kontrast</span>
+                </div>
+                <div style="padding:14px;background:#fff;border:2px solid #000;border-radius:10px;display:flex;flex-direction:column;gap:8px">
+                  <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:#000;letter-spacing:-.01em">Linnea, 16</div>
+                  <div style="font-size:16px;color:#000;line-height:1.5;font-weight:500">Hadde en god sesjon i går — fysisk grønn, mental gul. Sjekk søvn på onsdag.</div>
+                  <div style="display:flex;gap:6px;margin-top:4px"><span style="padding:3px 10px;border:2px solid #000;background:#fff;color:#000;font-size:11px;font-weight:700;border-radius:100px">▲ Fysisk OK</span><span style="padding:3px 10px;border:2px solid #000;background:#000;color:#fff;font-size:11px;font-weight:700;border-radius:100px">◆ Mental obs</span></div>
+                  <button style="margin-top:8px;height:40px;padding:0 14px;background:#000;color:#fff;border:2px solid #000;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;outline:3px solid #D1F843;outline-offset:2px">Åpne sesjon →</button>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:#000;font-weight:700;padding-top:10px;border-top:2px solid #000">
+                  <span>Body 20px</span><span>21:1</span><span>AAA ✓</span>
+                </div>
+                <div style="font-size:11px;color:#000;line-height:1.5;font-weight:500">Fokus-ringen er lime og 3px — du ser akkurat hvor du er.</div>
+              </aside>
+
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 DARK — colorblind filter active ============ -->
+  <section class="ab dark" data-screen-label="03 Tilgjengelighet — mørkt, deuteranopia-filter">
+    <div class="ab-label"><span class="num">03</span><span class="ttl">Mørkt tema — deuteranopia-filter aktivert; pyramide bruker tegn ikke farge</span><span class="meta">1448 × 920 · dark · colorblind</span></div>
+    <div class="ab-frame">
+      <div class="app app--med">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-divider"></div>
+          <div class="nav-item active">Innstillinger</div>
+        </aside>
+        <main class="main">
+          <header class="page-head">
+            <div class="crumb">Innstillinger <span class="sep">/</span> Tilgjengelighet</div>
+            <h1>Fargeblindhet-filter: deuteranopia.</h1>
+            <div class="sub">Pyramide-statusene vises også med tegn (▲ ◆ ●) så ingenting er kun farge.</div>
+          </header>
+
+          <div class="settings">
+            <aside class="subnav">
+              <div class="subnav-item">Bruker</div>
+              <div class="subnav-item active">Tilgjengelighet</div>
+            </aside>
+            <div class="form-area" style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start">
+
+              <div style="display:flex;flex-direction:column;gap:24px">
+                <div class="section">
+                  <div class="section-head"><h2 style="color:#F5F4EE">Farger og kart</h2></div>
+                  <div class="field-list">
+                    <div class="field"><span class="lbl" style="color:#9D9C95">Fargeblindhet-filter</span><span class="val" style="color:#F5F4EE">Deuteranopia <span style="color:#9D9C95;font-family:var(--font-mono);font-size:11px;margin-left:8px">grønn-svekket</span></span><a class="edit-link">Endre →</a></div>
+                    <div class="field"><span class="lbl" style="color:#9D9C95">Ikke bare farge</span><span class="val"></span><span class="toggle on"></span></div>
+                    <div class="field"><span class="lbl" style="color:#9D9C95">Datavisualisering — palett</span>
+                      <div class="val"><div class="color-pair"><span class="sw" style="background:#0066CC;border-color:#274d41"></span><span class="sw" style="background:#FFB000;border-color:#274d41"></span><span class="sw" style="background:#882255;border-color:#274d41"></span><span class="sw" style="background:#117733;border-color:#274d41"></span><span class="sw" style="background:#332288;border-color:#274d41"></span></div><span style="color:#9D9C95;font-size:12px;margin-left:8px">Okabe-Ito · CVD-safe</span></div>
+                      <a class="edit-link">Endre →</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-head"><h2 style="color:#F5F4EE">Slik vises pyramide-status</h2></div>
+                  <div class="field-list">
+                    <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+                      <div style="font-size:13px;color:#9D9C95">Hver status har <em>både</em> farge og tegn — så du kan stole på tegnet alene.</div>
+                      <div class="ribbon">
+                        <span style="background:rgba(0,102,204,.20);color:#5DADF0;border:1px solid rgba(0,102,204,.40)">▲ Fysisk · OK</span>
+                        <span style="background:rgba(255,176,0,.16);color:#FFC857;border:1px solid rgba(255,176,0,.30)">◆ Mental · obs</span>
+                        <span style="background:rgba(136,34,85,.20);color:#D879A8;border:1px solid rgba(136,34,85,.40)">● Teknisk · stopp</span>
+                        <span style="background:rgba(17,119,51,.20);color:#5DD3A8;border:1px solid rgba(17,119,51,.40)">▼ Sosial · bra</span>
+                      </div>
+                      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px;background:#0F2A22;border-radius:10px">
+                        <div style="display:flex;flex-direction:column;gap:4px"><div style="font-family:var(--font-mono);font-size:10px;color:#9D9C95;text-transform:uppercase;letter-spacing:.04em">▲ OK</div><div style="font-family:var(--font-display);font-size:24px;font-weight:600;color:#F5F4EE">32</div><div style="font-size:11px;color:#5DADF0">spillere</div></div>
+                        <div style="display:flex;flex-direction:column;gap:4px"><div style="font-family:var(--font-mono);font-size:10px;color:#9D9C95;text-transform:uppercase;letter-spacing:.04em">◆ obs</div><div style="font-family:var(--font-display);font-size:24px;font-weight:600;color:#F5F4EE">4</div><div style="font-size:11px;color:#FFC857">spillere</div></div>
+                        <div style="display:flex;flex-direction:column;gap:4px"><div style="font-family:var(--font-mono);font-size:10px;color:#9D9C95;text-transform:uppercase;letter-spacing:.04em">● stopp</div><div style="font-family:var(--font-display);font-size:24px;font-weight:600;color:#F5F4EE">1</div><div style="font-size:11px;color:#D879A8">spiller</div></div>
+                        <div style="display:flex;flex-direction:column;gap:4px"><div style="font-family:var(--font-mono);font-size:10px;color:#9D9C95;text-transform:uppercase;letter-spacing:.04em">▼ bra</div><div style="font-family:var(--font-display);font-size:24px;font-weight:600;color:#F5F4EE">1</div><div style="font-size:11px;color:#5DD3A8">spiller</div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <aside style="position:sticky;top:24px;background:#163027;border:1px solid #274d41;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span style="font-family:var(--font-mono);font-size:11px;color:#9D9C95;text-transform:uppercase;letter-spacing:.04em">Live preview</span>
+                  <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;background:rgba(209,248,67,.18);color:var(--brand-accent);font-family:var(--font-mono);font-size:10px;font-weight:600"><span style="width:4px;height:4px;background:var(--brand-accent);border-radius:50%"></span>Deutera. + tegn</span>
+                </div>
+                <div style="padding:14px;background:#0F2A22;border:1px solid #274d41;border-radius:10px;display:flex;flex-direction:column;gap:8px">
+                  <div style="font-family:var(--font-display);font-size:18px;font-weight:600;color:#F5F4EE;letter-spacing:-.01em">Linnea, 16</div>
+                  <div style="font-size:13px;color:#9D9C95;line-height:1.5">God sesjon i går — ▲ fysisk OK, ◆ mental obs. Sjekk søvn onsdag.</div>
+                  <div style="display:flex;gap:6px;margin-top:4px"><span style="padding:3px 10px;border-radius:100px;background:rgba(0,102,204,.20);color:#5DADF0;border:1px solid rgba(0,102,204,.40);font-size:11px;font-weight:600">▲ Fysisk</span><span style="padding:3px 10px;border-radius:100px;background:rgba(255,176,0,.16);color:#FFC857;border:1px solid rgba(255,176,0,.30);font-size:11px;font-weight:600">◆ Mental</span></div>
+                  <button style="margin-top:8px;height:36px;padding:0 12px;background:var(--brand-accent);color:#0A1F18;border:0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Åpne sesjon →</button>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:#9D9C95;padding-top:10px;border-top:1px solid #274d41">
+                  <span>Body 16px</span><span>9.2:1</span><span style="color:var(--brand-accent);font-weight:600">AAA</span>
+                </div>
+              </aside>
+
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

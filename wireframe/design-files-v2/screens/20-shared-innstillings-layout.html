@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Shared — Innstillings-layout (Arketype F) · 6-B/5</title>
+<link rel="stylesheet" href="_shared/arketype-f-player.css">
+<style>
+  body{background:#F0EDE4}
+  .anatomy{position:relative}
+  .anatomy .annot{position:absolute;display:flex;align-items:center;gap:8px;pointer-events:none}
+  .anatomy .annot .pin{width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--brand-accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;font-weight:600;flex-shrink:0}
+  .anatomy .annot .lbl{background:var(--brand-accent);color:var(--ink);padding:5px 10px;border-radius:6px;font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.01em;box-shadow:0 2px 8px rgba(0,0,0,.10);white-space:nowrap}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+  .spec-card{padding:18px 20px;background:var(--surface-card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:10px}
+  .spec-card .ttl{font-size:13px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .spec-card .ttl .num{font-family:var(--font-mono);font-size:10px;background:var(--ink);color:var(--brand-accent);padding:2px 6px;border-radius:4px;letter-spacing:.04em}
+  .spec-card .desc{font-size:12px;color:var(--ink-muted);line-height:1.55}
+  .spec-card .code{font-family:var(--font-mono);font-size:11px;color:var(--brand-primary);background:var(--accent-bg);padding:6px 10px;border-radius:6px;letter-spacing:.02em}
+
+  .tok-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line-soft)}
+  .tok-row:last-child{border-bottom:none}
+  .tok-row .swatch{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);flex-shrink:0}
+  .tok-row .nm{font-size:13px;font-weight:500;color:var(--ink);min-width:140px}
+  .tok-row .val{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.02em;min-width:120px}
+  .tok-row .desc{font-size:12px;color:var(--ink-muted);flex:1}
+
+  .do-dont{padding:18px;border-radius:14px;background:var(--surface-card);border:1px solid var(--line);box-shadow:var(--shadow-card)}
+  .do-dont .badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:6px;margin-bottom:10px}
+  .do-dont.do .badge{background:var(--status-success-bg);color:var(--status-success)}
+  .do-dont.dont .badge{background:var(--status-danger-bg);color:var(--status-danger)}
+  .do-dont .preview{padding:14px;background:var(--surface-alt);border-radius:10px;margin-bottom:10px;min-height:60px}
+  .do-dont .note{font-size:12px;color:var(--ink-muted);line-height:1.55}
+
+  .copy-table{width:100%;border-collapse:collapse}
+  .copy-table th,.copy-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  .copy-table th{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+  .copy-table td{font-size:12px;color:var(--ink);line-height:1.5}
+  .copy-table td.role{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);width:140px}
+  .copy-table td.good{color:var(--status-success)}
+  .copy-table td.bad{color:var(--status-danger);text-decoration:line-through;text-decoration-color:rgba(163,45,45,.3)}
+
+  .recipe-list{counter-reset:rcp;display:flex;flex-direction:column;gap:14px}
+  .recipe{display:flex;gap:14px;padding:16px 18px;background:var(--surface-card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-card);counter-increment:rcp}
+  .recipe::before{content:counter(rcp,decimal-leading-zero);font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--brand-primary);min-width:30px}
+  .recipe .info{flex:1}
+  .recipe .info .h{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
+  .recipe .info .d{font-size:12px;color:var(--ink-muted);line-height:1.5}
+
+  /* miniature wrapper for anatomy */
+  .anatomy-stage{position:relative;background:var(--surface);border-radius:14px;overflow:hidden;border:1px solid var(--line);height:560px}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <header class="deck-head">
+    <span class="eyebrow">Shared · Mini-batch 6-B · Pakke 5</span>
+    <h1>Arketype F — Innstillings-layout</h1>
+    <p class="sub">Anatomi, tokens, komponenter, og copywriting-regler for hver settings-skjerm. Brukt på tvers av PlayerHQ (Profil, Helse, Varsler, Abonnement, Sikkerhet) og CoachHQ (Coach-profil, Bruker, API, Tilgjengelighet).</p>
+    <div class="meta-row">
+      <span><span class="lbl">Arketype:</span> F</span>
+      <span><span class="lbl">CSS:</span> _shared/arketype-f-player.css</span>
+      <span><span class="lbl">Skjermer i bruk:</span> 10</span>
+    </div>
+  </header>
+
+  <!-- ============ 01 Anatomi ============ -->
+  <section class="ab" data-screen-label="01 Anatomi">
+    <div class="ab-label"><span class="num">01</span><span class="ttl">Anatomi — hovedlayout med 6 ankrede regioner</span><span class="meta">1448 × 620 · spec</span></div>
+    <div class="ab-frame" style="padding:36px 48px">
+      <div class="anatomy">
+        <div class="anatomy-stage">
+          <div class="app app--ph" style="height:100%">
+            <aside class="nav" id="anatomy-nav">
+              <div class="nav-logo"><div class="mark">AK</div><div class="n">AK Golf<span class="dim">/spiller</span></div></div>
+              <div class="nav-item">Hub</div>
+              <div class="nav-item">Plan</div>
+              <div class="nav-item">Coach</div>
+              <div class="nav-item">Logg</div>
+              <div class="nav-item">Helse</div>
+              <div class="nav-item active">Meg</div>
+            </aside>
+            <main class="main">
+              <header class="page-head" id="anatomy-head">
+                <div class="crumb">PlayerHQ <span class="sep">/</span> Meg <span class="sep">/</span> Varsler</div>
+                <h1>Bare det du faktisk vil bli forstyrret av.</h1>
+              </header>
+              <div class="settings">
+                <aside class="subnav" id="anatomy-subnav">
+                  <div class="subnav-title">Min konto</div>
+                  <div class="subnav-item">Profil</div>
+                  <div class="subnav-item">Helse</div>
+                  <div class="subnav-item active">Varsler</div>
+                  <div class="subnav-item">Abonnement</div>
+                  <div class="subnav-item">Sikkerhet</div>
+                </aside>
+                <div class="form-area" id="anatomy-form">
+                  <div class="section">
+                    <div class="section-head"><h2>Kategori-tittel</h2><span class="aux">Kontekstuell beskrivelse</span></div>
+                    <div class="field-list">
+                      <div class="field"><span class="lbl">Felt-label<span class="hint">Mikrokopi-forklaring</span></span><span class="val">Verdi</span><span class="toggle on"></span></div>
+                      <div class="field"><span class="lbl">Felt-label</span><span class="val mono">verdi.mono</span><a class="edit-link">Endre</a></div>
+                    </div>
+                  </div>
+                  <div class="save-bar" id="anatomy-save"><span class="dot"></span><span class="msg">N endringer ulagrede</span><div class="actions"><button class="btn btn-ghost btn-sm">Forkast</button><button class="btn btn-primary btn-sm">Lagre</button></div></div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+
+        <!-- Annotations -->
+        <div class="annot" style="top:60px;left:-20px"><div class="pin">A</div><div class="lbl">Global nav — 240px fast</div></div>
+        <div class="annot" style="top:130px;left:300px"><div class="pin">B</div><div class="lbl">Page-head: crumb + H1 + sub</div></div>
+        <div class="annot" style="top:230px;left:260px"><div class="pin">C</div><div class="lbl">Subnav — 200px · sticky</div></div>
+        <div class="annot" style="top:280px;left:540px"><div class="pin">D</div><div class="lbl">Form-area · max-width 720px</div></div>
+        <div class="annot" style="top:360px;left:740px"><div class="pin">E</div><div class="lbl">Section + section-head + field-list</div></div>
+        <div class="annot" style="top:520px;left:520px"><div class="pin">F</div><div class="lbl">Save-bar — sticky bottom, dirty-state</div></div>
+      </div>
+
+      <div class="grid-3" style="margin-top:36px">
+        <div class="spec-card"><div class="ttl"><span class="num">A</span>Global nav</div><div class="desc">Identisk på tvers av alle innstillings-skjermer. Logo + 6 hoved-tabs + footer-avatar. Bredde: 240px. "Meg" er alltid aktiv på pakke 6-B-skjermer.</div><div class="code">.nav · width: var(--nav-w)</div></div>
+        <div class="spec-card"><div class="ttl"><span class="num">B</span>Page-head</div><div class="desc">Crumb (brødsmuler), H1 (instructions, italics, ledende), valgfri sub. Maksimum to setninger. H1 er <em>aldri</em> en tittel som "Innstillinger" — alltid en setning.</div><div class="code">.page-head h1 · Tiempos italic 36px</div></div>
+        <div class="spec-card"><div class="ttl"><span class="num">C</span>Subnav</div><div class="desc">Liste over alle kategorier i ett område (Min konto / Bedrift / Utvikler). Aktiv: brand-primary bakgrunn + grønn tekst. Maks 8 elementer per gruppe.</div><div class="code">.subnav · width: 200px</div></div>
+        <div class="spec-card"><div class="ttl"><span class="num">D</span>Form-area</div><div class="desc">Maks 720px bred for å holde linjelengde lesbar. Padding 32px topp / 28–36px sider. Scroller fritt; subnav er sticky.</div><div class="code">.form-area · max-w 720</div></div>
+        <div class="spec-card"><div class="ttl"><span class="num">E</span>Section + field-list</div><div class="desc">Hver section: section-head (h2 + aux) + field-list. Felt har lbl (med valgfri hint), val (display eller input), og kontrollen (toggle/edit-link/select).</div><div class="code">.section · margin-top 28</div></div>
+        <div class="spec-card"><div class="ttl"><span class="num">F</span>Save-bar</div><div class="desc">Skjult i clean state. Vises som sticky bar i bunn når noen felt er dirty. Inneholder telling, liste over endrede felt (kursivert), forkast + lagre.</div><div class="code">.save-bar · dirty trigger</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 Komponenter ============ -->
+  <section class="ab" data-screen-label="02 Felt-komponenter">
+    <div class="ab-label"><span class="num">02</span><span class="ttl">Felt-komponenter — 9 typer som dekker alle innstillinger</span><span class="meta">1448 × 800 · components</span></div>
+    <div class="ab-frame" style="padding:32px 48px;background:var(--surface)">
+      <div class="grid-2">
+
+        <div class="spec-card">
+          <div class="ttl"><span class="num">.field</span>Display + edit-link</div>
+          <div class="field-list" style="margin:0">
+            <div class="field"><span class="lbl">E-post</span><span class="val mono">markus@example.no</span><a class="edit-link">Endre</a></div>
+            <div class="field"><span class="lbl">Telefon</span><span class="val mono">+47 412 34 567</span><a class="edit-link">Endre</a></div>
+          </div>
+          <div class="desc">Lese-modus med inline edit-link. Standardvalg for tekstfelt som ikke endres ofte.</div>
+        </div>
+
+        <div class="spec-card">
+          <div class="ttl"><span class="num">.field</span>Toggle</div>
+          <div class="field-list" style="margin:0">
+            <div class="field"><span class="lbl">Push-varsler<span class="hint">På denne enheten</span></span><span class="val"></span><span class="toggle on"></span></div>
+            <div class="field"><span class="lbl">E-post-sammendrag</span><span class="val"></span><span class="toggle"></span></div>
+          </div>
+          <div class="desc">På/av-bryter. Tar effekt umiddelbart eller ved Lagre — avgjør per skjerm.</div>
+        </div>
+
+        <div class="spec-card">
+          <div class="ttl"><span class="num">.field</span>Select / chip-velger</div>
+          <div class="field-list" style="margin:0">
+            <div class="field"><span class="lbl">Språk</span><span class="val">Norsk (bokmål)</span><a class="edit-link">▾</a></div>
+            <div class="field"><span class="lbl">Posisjons-spesialisering</span><span class="val" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="chip">Tee</span><span class="chip">Iron</span><span class="chip" style="background:var(--brand-primary);color:var(--brand-accent)">Putting</span></span></div>
+          </div>
+          <div class="desc">Dropdown for store sett, chip-rad for små sett (≤6).</div>
+        </div>
+
+        <div class="spec-card">
+          <div class="ttl"><span class="num">.field</span>Slider</div>
+          <div class="field-list" style="margin:0">
+            <div class="field" style="grid-template-columns:160px 1fr 60px"><span class="lbl">Søvn forrige natt</span><span class="val"><div class="slider"><div class="fill" style="width:70%"></div><div class="knob" style="left:70%"></div></div></span><span class="mono" style="font-size:13px;color:var(--ink);text-align:right">8,4 t</span></div>
+            <div class="field" style="grid-template-columns:160px 1fr 60px"><span class="lbl">Stress nå</span><span class="val"><div class="slider"><div class="fill" style="width:40%"></div><div class="knob" style="left:40%"></div></div></span><span class="mono" style="font-size:13px;color:var(--ink);text-align:right">4/10</span></div>
+          </div>
+          <div class="desc">Brukes til subjektive målinger 0–10 og varighet/tid.</div>
+        </div>
+
+        <div class="spec-card">
+          <div class="ttl"><span class="num">.field</span>Avatar + handlinger</div>
+          <div class="field" style="border-top:none">
+            <span class="lbl">Profilbilde<span class="hint">PNG/JPG · maks 5 MB · 1:1 anbefalt</span></span>
+            <span class="val" style="display:flex;align-items:center;gap:10px">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--brand-primary);color:var(--brand-accent);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px">MP</div>
+              <button class="btn btn-ghost btn-sm">Bytt</button>
+              <button class="btn btn-ghost btn-sm" style="color:var(--status-danger)">Slett</button>
+            </span>
+            <span></span>
+          </div>
+          <div class="desc">Display av kontoens identitets-bilde med bytt/slett-handlinger.</div>
+        </div>
+
+        <div class="spec-card">
+          <div class="ttl"><span class="num">.field</span>Status med pill</div>
+          <div class="field-list" style="margin:0">
+            <div class="field"><span class="lbl">2-faktor autentisering</span><span class="val"></span><span class="chip success">På · Authy</span><a class="edit-link" style="margin-left:8px">Endre</a></div>
+            <div class="field"><span class="lbl">Sist innlogget</span><span class="val mono">For 12 min siden · Trondheim</span></div>
+          </div>
+          <div class="desc">For sikkerhets-status. Pill bærer state-fargen.</div>
+        </div>
+
+        <div class="spec-card">
+          <div class="ttl"><span class="num">.field</span>Destruktiv handling</div>
+          <div class="field-list" style="margin:0">
+            <div class="field"><span class="lbl" style="color:var(--status-danger)">Slett konto<span class="hint">Permanent · kan ikke angres etter 30 dager</span></span><span class="val"></span><button class="btn btn-ghost btn-sm" style="color:var(--status-danger)">Slett konto →</button></div>
+          </div>
+          <div class="desc">Egen section "Farlig sone" nederst. Aldri primary button.</div>
+        </div>
+
+        <div class="spec-card">
+          <div class="ttl"><span class="num">.field</span>Notat / textarea</div>
+          <div class="field" style="border-top:none">
+            <span class="lbl" style="align-self:flex-start;padding-top:6px">Notat<span class="hint">Valgfritt</span></span>
+            <span class="val"><textarea placeholder="Hvordan kjennes det ut i dag?" style="width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;color:var(--ink);background:var(--surface-card)"></textarea></span>
+            <span></span>
+          </div>
+          <div class="desc">For dagslogg, kommentarer, og forklaringer. Auto-resize, ingen tegnsterik.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 Tokens ============ -->
+  <section class="ab" data-screen-label="03 Tokens">
+    <div class="ab-label"><span class="num">03</span><span class="ttl">Designtokens — spacing, layout, typografi for F-arketype</span><span class="meta">1280 × 760 · tokens</span></div>
+    <div class="ab-frame" style="padding:32px 40px;background:var(--surface)">
+      <div class="grid-2">
+
+        <div class="spec-card" style="padding:0">
+          <div class="section-head" style="padding:18px 20px;border-bottom:1px solid var(--line-soft)"><h2 style="font-size:16px;font-style:normal;font-family:var(--font-sans);font-weight:600">Layout-tokens</h2></div>
+          <div class="tok-row"><div class="nm">--nav-w</div><div class="val">240px</div><div class="desc">Global nav-bredde</div></div>
+          <div class="tok-row"><div class="nm">.subnav</div><div class="val">200px</div><div class="desc">Kategori-sidebar</div></div>
+          <div class="tok-row"><div class="nm">.form-area</div><div class="val">max 720px</div><div class="desc">Lesbar linjelengde</div></div>
+          <div class="tok-row"><div class="nm">--gutter-page</div><div class="val">28–36px</div><div class="desc">Padding i form-area</div></div>
+          <div class="tok-row"><div class="nm">--section-gap</div><div class="val">28–32px</div><div class="desc">Mellom sections</div></div>
+          <div class="tok-row"><div class="nm">.field</div><div class="val">grid 160px 1fr auto</div><div class="desc">Felt-radstruktur</div></div>
+        </div>
+
+        <div class="spec-card" style="padding:0">
+          <div class="section-head" style="padding:18px 20px;border-bottom:1px solid var(--line-soft)"><h2 style="font-size:16px;font-style:normal;font-family:var(--font-sans);font-weight:600">Farger</h2></div>
+          <div class="tok-row"><div class="swatch" style="background:#005840"></div><div class="nm">--brand-primary</div><div class="val">#005840</div><div class="desc">Aktiv subnav, links, primær</div></div>
+          <div class="tok-row"><div class="swatch" style="background:#D1F843"></div><div class="nm">--brand-accent</div><div class="val">#D1F843</div><div class="desc">Tekst på mørk grønn</div></div>
+          <div class="tok-row"><div class="swatch" style="background:#24211C"></div><div class="nm">--ink</div><div class="val">#24211C</div><div class="desc">Primær tekst</div></div>
+          <div class="tok-row"><div class="swatch" style="background:#F5F2EA"></div><div class="nm">--surface</div><div class="val">#F5F2EA</div><div class="desc">Side-bakgrunn</div></div>
+          <div class="tok-row"><div class="swatch" style="background:#FFFFFF;border-color:#E5E1D6"></div><div class="nm">--surface-card</div><div class="val">#FFFFFF</div><div class="desc">Kort, modaler</div></div>
+          <div class="tok-row"><div class="swatch" style="background:#3F8B5C"></div><div class="nm">--status-success</div><div class="val">#3F8B5C</div><div class="desc">Bekreftet, aktiv</div></div>
+          <div class="tok-row"><div class="swatch" style="background:#B8852A"></div><div class="nm">--status-warning</div><div class="val">#B8852A</div><div class="desc">OBS, pågående</div></div>
+          <div class="tok-row"><div class="swatch" style="background:#A32D2D"></div><div class="nm">--status-danger</div><div class="val">#A32D2D</div><div class="desc">Destruktivt, blokkert</div></div>
+        </div>
+
+        <div class="spec-card" style="padding:0">
+          <div class="section-head" style="padding:18px 20px;border-bottom:1px solid var(--line-soft)"><h2 style="font-size:16px;font-style:normal;font-family:var(--font-sans);font-weight:600">Typografi</h2></div>
+          <div class="tok-row"><div class="nm" style="font-family:var(--font-display);font-size:24px;font-style:italic;letter-spacing:-.01em">H1</div><div class="val">Tiempos italic 36/40 −.01em</div><div class="desc">.page-head h1</div></div>
+          <div class="tok-row"><div class="nm" style="font-family:var(--font-display);font-size:18px;font-style:italic">H2</div><div class="val">Tiempos italic 22/26</div><div class="desc">.section-head h2</div></div>
+          <div class="tok-row"><div class="nm" style="font-size:13px;font-weight:500">Label</div><div class="val">Inter 13/16 500</div><div class="desc">.field .lbl</div></div>
+          <div class="tok-row"><div class="nm" style="font-size:11px;color:var(--ink-subtle)">Hint</div><div class="val">Inter 11/15 400</div><div class="desc">.field .hint</div></div>
+          <div class="tok-row"><div class="nm" style="font-family:var(--font-mono);font-size:13px">verdi.mono</div><div class="val">JetBrains Mono 13/16</div><div class="desc">.val.mono · ID, datoer, beløp</div></div>
+          <div class="tok-row"><div class="nm" style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em">META-TAG</div><div class="val">Mono 10/13 .08em UC</div><div class="desc">.aux, .crumb-meta</div></div>
+        </div>
+
+        <div class="spec-card" style="padding:0">
+          <div class="section-head" style="padding:18px 20px;border-bottom:1px solid var(--line-soft)"><h2 style="font-size:16px;font-style:normal;font-family:var(--font-sans);font-weight:600">Komponent-radius</h2></div>
+          <div class="tok-row"><div class="swatch" style="background:var(--surface-card);border-radius:6px"></div><div class="nm">--r-pill</div><div class="val">6px</div><div class="desc">chip, badge, tag</div></div>
+          <div class="tok-row"><div class="swatch" style="background:var(--surface-card);border-radius:8px"></div><div class="nm">--r-input</div><div class="val">8px</div><div class="desc">input, textarea</div></div>
+          <div class="tok-row"><div class="swatch" style="background:var(--surface-card);border-radius:10px"></div><div class="nm">--r-btn</div><div class="val">10px</div><div class="desc">button</div></div>
+          <div class="tok-row"><div class="swatch" style="background:var(--surface-card);border-radius:12px"></div><div class="nm">--r-card-sm</div><div class="val">12px</div><div class="desc">field, billing-row</div></div>
+          <div class="tok-row"><div class="swatch" style="background:var(--surface-card);border-radius:14px"></div><div class="nm">--r-card</div><div class="val">14px</div><div class="desc">section, hero-strip</div></div>
+          <div class="tok-row"><div class="swatch" style="background:var(--surface-card);border-radius:16px"></div><div class="nm">--r-card-lg</div><div class="val">16px</div><div class="desc">plan-card, modal-edge</div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 Recipes / States ============ -->
+  <section class="ab" data-screen-label="04 Tilstander">
+    <div class="ab-label"><span class="num">04</span><span class="ttl">7 tilstander hver skjerm må håndtere</span><span class="meta">1280 × 760 · states</span></div>
+    <div class="ab-frame" style="padding:32px 48px;background:var(--surface)">
+      <div class="recipe-list">
+        <div class="recipe">
+          <div class="info">
+            <div class="h">Default / clean</div>
+            <div class="d">Alle felt på lagrede verdier. Save-bar er <em>skjult</em>. Subnav viser aktiv kategori. Bruk dette som referansetilstand i alle skjermbilder.</div>
+          </div>
+        </div>
+        <div class="recipe">
+          <div class="info">
+            <div class="h">Dirty (ikke lagret)</div>
+            <div class="d">Når én eller flere felt avviker fra lagret state: save-bar vises sticky nederst med antall endringer + liste over endrede felt navngitt i kursiv. Dirty felt får accent-bakgrunn (rgba grønn 0.06) og en liten "endret"-chip.</div>
+          </div>
+        </div>
+        <div class="recipe">
+          <div class="info">
+            <div class="h">Loading / lagrer</div>
+            <div class="d">Save-bar knappen får disabled-state og spinner. Hele form-arealet blir 0.6 opacity i 0.4s før success-toast vises øverst.</div>
+          </div>
+        </div>
+        <div class="recipe">
+          <div class="info">
+            <div class="h">Empty-state</div>
+            <div class="d">Brukes når en liste er tom (skader, fakturaer, sesjoner). Sentrert ikon (success-grønn), 14px tittel, 12px beskrivelse, valgfri CTA. Aldri vis tom tabell uten tekst.</div>
+          </div>
+        </div>
+        <div class="recipe">
+          <div class="info">
+            <div class="h">Tier-gate</div>
+            <div class="d">Free-bruker som prøver Pro-funksjon: hele section blurres (6px) med 0.6 opacity, oppå legges en sentrert overlay med 1) lås-ikon, 2) tier-tag, 3) H2-instruksjon, 4) verdi-løfte, 5) pris + CTA. Aldri bare disable knappen — vis hva som låses opp.</div>
+          </div>
+        </div>
+        <div class="recipe">
+          <div class="info">
+            <div class="h">Validerings-feil</div>
+            <div class="d">Per-felt: rød border + rød hint-tekst under (12px). Save-bar erstattes med error-bar (rød) "Rett feltene før du kan lagre" + scroll-to-error.</div>
+          </div>
+        </div>
+        <div class="recipe">
+          <div class="info">
+            <div class="h">Destruktiv bekreftelse</div>
+            <div class="d">Modal med to ledd: 1) advarsel + konsekvenser, 2) input-felt der brukeren må skrive "SLETT" eller kontonavn for å aktivere knappen. Slett-knappen alltid btn-danger, aldri primary.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 Copywriting ============ -->
+  <section class="ab" data-screen-label="05 Copywriting">
+    <div class="ab-label"><span class="num">05</span><span class="ttl">Tone of voice — gjør og ikke gjør</span><span class="meta">1280 × 700 · copy</span></div>
+    <div class="ab-frame" style="padding:32px 40px;background:var(--surface)">
+      <div class="spec-card" style="padding:0;margin-bottom:18px">
+        <div class="section-head" style="padding:18px 20px;border-bottom:1px solid var(--line-soft)"><h2 style="font-size:16px;font-style:normal;font-family:var(--font-sans);font-weight:600">H1 på innstillings-skjermer</h2></div>
+        <table class="copy-table">
+          <thead><tr><th>Skjerm</th><th>Bruk</th><th>Ikke bruk</th></tr></thead>
+          <tbody>
+            <tr><td class="role">Profil</td><td class="good">"Dette er deg på AK Golf."</td><td class="bad">"Profilinnstillinger"</td></tr>
+            <tr><td class="role">Helse</td><td class="good">"Hvordan har du det egentlig?"</td><td class="bad">"Helse-data"</td></tr>
+            <tr><td class="role">Varsler</td><td class="good">"Bare det du faktisk vil bli forstyrret av."</td><td class="bad">"Varselsinnstillinger"</td></tr>
+            <tr><td class="role">Abonnement</td><td class="good">"Du er på Pro siden 12. januar."</td><td class="bad">"Abonnementsdetaljer"</td></tr>
+            <tr><td class="role">Sikkerhet</td><td class="good">"Hvem som kan komme inn — og hvordan."</td><td class="bad">"Sikkerhetsinnstillinger"</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid-2">
+        <div class="do-dont do">
+          <span class="badge">Gjør</span>
+          <div class="preview">
+            <div class="field" style="border:none;padding:8px 0"><span class="lbl">Push-varsler<span class="hint">På denne enheten · iPhone 15</span></span><span class="val"></span><span class="toggle on"></span></div>
+          </div>
+          <div class="note">Hint forklarer <em>kontekst</em> — ikke gjenta label. Si hvor, hvilken enhet, eller når.</div>
+        </div>
+        <div class="do-dont dont">
+          <span class="badge">Ikke gjør</span>
+          <div class="preview">
+            <div class="field" style="border:none;padding:8px 0"><span class="lbl">Push-varsler<span class="hint">Skru av/på push-varsler</span></span><span class="val"></span><span class="toggle on"></span></div>
+          </div>
+          <div class="note">Hint som bare gjentar label er støy. Tomt er bedre enn redundant.</div>
+        </div>
+
+        <div class="do-dont do">
+          <span class="badge">Gjør</span>
+          <div class="preview">
+            <button class="btn btn-primary btn-sm">Send til coach →</button>
+            <button class="btn btn-ghost btn-sm" style="margin-left:6px">Forkast</button>
+          </div>
+          <div class="note">Verb i imperativ, korte. Pil indikerer fremover-handling.</div>
+        </div>
+        <div class="do-dont dont">
+          <span class="badge">Ikke gjør</span>
+          <div class="preview">
+            <button class="btn btn-primary btn-sm">Klikk her for å sende</button>
+            <button class="btn btn-ghost btn-sm" style="margin-left:6px">Avbryt operasjon</button>
+          </div>
+          <div class="note">"Klikk her" og maskinell ordbruk — bryter den varme tonen.</div>
+        </div>
+
+        <div class="do-dont do">
+          <span class="badge">Gjør</span>
+          <div class="preview">
+            <span class="chip success">På · Authy</span>
+            <span class="chip warn" style="margin-left:6px">Utløper om 14 dager</span>
+          </div>
+          <div class="note">Pills viser <em>verdi i kontekst</em>. Si hva som er på, og når.</div>
+        </div>
+        <div class="do-dont dont">
+          <span class="badge">Ikke gjør</span>
+          <div class="preview">
+            <span class="chip success">Aktivert</span>
+            <span class="chip warn" style="margin-left:6px">Advarsel</span>
+          </div>
+          <div class="note">Status-ord uten innhold. "Aktivert" sier ingenting brukeren ikke ser allerede.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 Mapping til skjermer ============ -->
+  <section class="ab" data-screen-label="06 Skjerm-mapping">
+    <div class="ab-label"><span class="num">06</span><span class="ttl">F-arketype i bruk — 10 skjermer på tvers av PlayerHQ + CoachHQ</span><span class="meta">1280 × 480 · mapping</span></div>
+    <div class="ab-frame" style="padding:32px 40px;background:var(--surface)">
+      <div class="grid-4">
+        <div class="spec-card"><div class="ttl"><span class="num">6-A/1</span></div><div style="font-size:14px;font-weight:600;color:var(--ink)">Coach-profil</div><div class="desc">CoachHQ · offentlig + interne notater</div><span class="chip">CoachHQ</span></div>
+        <div class="spec-card"><div class="ttl"><span class="num">6-A/2</span></div><div style="font-size:14px;font-weight:600;color:var(--ink)">Bruker</div><div class="desc">CoachHQ · konto + språk + tidssone</div><span class="chip">CoachHQ</span></div>
+        <div class="spec-card"><div class="ttl"><span class="num">6-A/3</span></div><div style="font-size:14px;font-weight:600;color:var(--ink)">Sikkerhet</div><div class="desc">CoachHQ · 2FA + aktive sesjoner</div><span class="chip">CoachHQ</span></div>
+        <div class="spec-card"><div class="ttl"><span class="num">6-A/4</span></div><div style="font-size:14px;font-weight:600;color:var(--ink)">API + integrasjoner</div><div class="desc">CoachHQ · tokens, webhooks, Strava/Garmin</div><span class="chip">CoachHQ</span></div>
+        <div class="spec-card"><div class="ttl"><span class="num">6-A/5</span></div><div style="font-size:14px;font-weight:600;color:var(--ink)">Tilgjengelighet</div><div class="desc">Shared · skriftstørrelse, kontrast, motion</div><span class="chip">Shared</span></div>
+        <div class="spec-card"><div class="ttl"><span class="num">6-B/1</span></div><div style="font-size:14px;font-weight:600;color:var(--ink)">Min profil</div><div class="desc">PlayerHQ · HCP + utstyr + klubb</div><span class="chip success">PlayerHQ</span></div>
+        <div class="spec-card"><div class="ttl"><span class="num">6-B/2</span></div><div style="font-size:14px;font-weight:600;color:var(--ink)">Helse</div><div class="desc">PlayerHQ · skader, sykdom, daglig logg</div><span class="chip success">PlayerHQ</span></div>
+        <div class="spec-card"><div class="ttl"><span class="num">6-B/3</span></div><div style="font-size:14px;font-weight:600;color:var(--ink)">Varsler</div><div class="desc">PlayerHQ · push/e-post/SMS-matrise</div><span class="chip success">PlayerHQ</span></div>
+        <div class="spec-card"><div class="ttl"><span class="num">6-B/4</span></div><div style="font-size:14px;font-weight:600;color:var(--ink)">Abonnement</div><div class="desc">PlayerHQ · tiers, betaling, fakturaer</div><span class="chip success">PlayerHQ</span></div>
+        <div class="spec-card"><div class="ttl"><span class="num">6-B/5</span></div><div style="font-size:14px;font-weight:600;color:var(--ink)" class="mono">Denne siden</div><div class="desc">Shared · F-arketype spec</div><span class="chip">Shared</span></div>
+      </div>
+
+      <div style="margin-top:24px;padding:16px 20px;background:var(--accent-bg);border:1px solid rgba(0,88,64,.18);border-radius:12px;display:flex;align-items:center;gap:14px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:500;color:var(--ink)">Når du legger til en ny innstillings-skjerm</div>
+          <div style="font-size:12px;color:var(--ink-muted);margin-top:2px">Bruk _shared/arketype-f-player.css. Følg subnav-gruppering. Skriv H1 som setning. Test alle 7 tilstandene fra side 04.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
