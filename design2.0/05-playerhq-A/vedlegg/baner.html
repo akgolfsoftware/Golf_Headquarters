@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Baner · PlayerHQ</title></head>
+<body>
+<div class="app app--player">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>player</em></div>
+    <nav class="app-nav">
+      <a href="#">Hjem</a>
+      <a href="#">Tren</a>
+      <a href="#" class="active">Mål</a>
+      <a href="#">Coach</a>
+      <a href="#">Meg</a>
+    </nav>
+    <div class="app-tier">PRO</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Mål · Bane-bibliotek · 10. mai 2026</span>
+      <h1 class="page-title"><em>Baner</em> — der jeg har spilt og baner som venter</h1>
+      <p class="page-lede">8 norske baner i loggen. 4 nye står på agendaen før Sørlandsåpent og NM Junior.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Bibliotek</span>
+      <button class="action-item action-item-success"><b>8</b> spilte baner</button>
+      <button class="action-item"><b>180</b> norske baner totalt</button>
+      <button class="action-item action-item-info"><b>Bossum</b> mest spilt · 12 runder</button>
+      <button class="action-item"><b>Tyrifjord</b> sist lagt til</button>
+      <button class="btn btn-ghost" style="margin-left:auto;">Importer fra GolfBox</button>
+    </div>
+
+    <div class="chips">
+      <button class="chip active">Mine baner</button>
+      <button class="chip">Alle norske</button>
+      <button class="chip">Sørlandet</button>
+      <button class="chip">Østlandet</button>
+      <button class="chip">Vestlandet</button>
+      <button class="chip">Trøndelag</button>
+      <button class="chip">18-hulls</button>
+      <button class="chip">9-hulls</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:16px; align-items:start;">
+      <section style="background:#F0F5F0; border:1px solid var(--border); border-radius:var(--r-card); height:780px; position:relative; overflow:hidden;">
+        <div style="position:absolute; top:14px; left:14px; right:14px; z-index:5; display:flex; gap:8px;">
+          <div class="search-input" style="flex:1; background:var(--bg-elev); box-shadow:0 2px 10px rgba(0,0,0,0.08);">
+            <span class="search-prefix">SØK</span>
+            <input type="text" placeholder="Søk bane eller region...">
+          </div>
+          <button class="btn btn-ghost" style="background:var(--bg-elev); padding:10px 14px;">Filter</button>
+        </div>
+        <div style="position:absolute; right:14px; bottom:14px; z-index:5; display:flex; flex-direction:column; gap:4px;">
+          <button style="width:34px; height:34px; border-radius:8px; background:var(--bg-elev); border:1px solid var(--border); cursor:pointer; font-size:18px; font-weight:600;">+</button>
+          <button style="width:34px; height:34px; border-radius:8px; background:var(--bg-elev); border:1px solid var(--border); cursor:pointer; font-size:18px; font-weight:600;">−</button>
+        </div>
+        <svg viewBox="0 0 500 780" style="width:100%; height:100%; display:block;" preserveAspectRatio="xMidYMid slice">
+          <path d="M 250 700 Q 220 600 240 500 T 200 300 Q 180 200 160 100" stroke="#C8D4C8" stroke-width="1.5" fill="none" opacity="0.5"/>
+          <path d="M 100 600 Q 200 580 300 600" stroke="#C8D4C8" stroke-width="1" fill="none" opacity="0.4"/>
+          <path d="M 200 720 L 260 720 L 280 650 L 290 580 L 270 520 L 280 460 L 260 400 L 250 340 L 230 280 L 200 220 L 175 160 L 145 100 L 120 60 L 90 40 L 70 70 L 80 130 L 110 200 L 130 270 L 150 340 L 160 410 L 170 480 L 175 550 L 185 620 L 195 690 Z" fill="#DEE9DD" opacity="0.6" stroke="#B8C5BD" stroke-width="1"/>
+          <path d="M 260 720 L 310 720 L 320 600 L 300 500 L 310 400 L 295 320 L 320 220 L 300 100 L 320 60 L 380 40 L 380 720 Z" fill="#D9E5DC" opacity="0.5"/>
+          <text x="100" y="160" font-family="JetBrains Mono" font-size="9" fill="#6B7280" letter-spacing="1.5">NORD-NORGE</text>
+          <text x="120" y="320" font-family="JetBrains Mono" font-size="9" fill="#6B7280" letter-spacing="1.5">TRØNDELAG</text>
+          <text x="135" y="480" font-family="JetBrains Mono" font-size="9" fill="#6B7280" letter-spacing="1.5">VESTLANDET</text>
+          <text x="195" y="610" font-family="JetBrains Mono" font-size="9" fill="#6B7280" letter-spacing="1.5">ØSTLANDET</text>
+          <text x="195" y="700" font-family="JetBrains Mono" font-size="9" fill="#6B7280" letter-spacing="1.5">SØRLANDET</text>
+          <g transform="translate(245 660)">
+            <circle r="18" fill="none" stroke="#D1F843" stroke-width="3"/>
+            <circle r="11" fill="#005840"/>
+            <circle r="4" fill="#D1F843"/>
+            <text y="36" text-anchor="middle" font-family="Inter Tight" font-size="10" font-weight="600" fill="#0A1F17">Bossum · hjem</text>
+          </g>
+          <g transform="translate(225 645)">
+            <circle r="11" fill="#005840"/>
+            <text text-anchor="middle" y="3" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#FAFAF7">2</text>
+          </g>
+          <g transform="translate(230 695)">
+            <circle r="10" fill="#005840"/>
+            <text y="-14" text-anchor="middle" font-family="Inter Tight" font-size="10" fill="#0A1F17">Larvik</text>
+          </g>
+          <g transform="translate(215 705)"><circle r="9" fill="#005840"/></g>
+          <g transform="translate(215 595)">
+            <circle r="10" fill="#005840"/>
+            <text y="-14" text-anchor="middle" font-family="Inter Tight" font-size="10" fill="#0A1F17">Hauger</text>
+          </g>
+          <g transform="translate(225 605)">
+            <circle r="10" fill="#005840"/>
+            <text y="28" text-anchor="middle" font-family="Inter Tight" font-size="10" fill="#0A1F17">Oslo GK</text>
+          </g>
+          <g transform="translate(190 720)">
+            <circle r="10" fill="#FAFAF7" stroke="#005840" stroke-width="2.5" stroke-dasharray="3 2"/>
+            <text y="26" text-anchor="middle" font-family="Inter Tight" font-size="10" fill="#005840" font-weight="600">Bjaavann</text>
+          </g>
+          <g transform="translate(195 555)">
+            <circle r="10" fill="#FAFAF7" stroke="#005840" stroke-width="2.5" stroke-dasharray="3 2"/>
+            <text y="-14" text-anchor="middle" font-family="Inter Tight" font-size="10" fill="#005840" font-weight="600">Tyrifjord</text>
+          </g>
+          <g transform="translate(160 295)">
+            <circle r="10" fill="#FAFAF7" stroke="#005840" stroke-width="2.5" stroke-dasharray="3 2"/>
+            <text y="-14" text-anchor="middle" font-family="Inter Tight" font-size="10" fill="#005840" font-weight="600">Stiklestad</text>
+          </g>
+          <g transform="translate(220 510)">
+            <circle r="10" fill="#FAFAF7" stroke="#005840" stroke-width="2.5" stroke-dasharray="3 2"/>
+            <text y="28" text-anchor="middle" font-family="Inter Tight" font-size="10" fill="#005840" font-weight="600">Atlungstad</text>
+          </g>
+        </svg>
+        <div style="position:absolute; left:14px; bottom:14px; background:var(--bg-elev); padding:10px 14px; border-radius:10px; border:1px solid var(--border); font-size:11px; display:flex; gap:14px; flex-wrap:wrap; max-width:340px;">
+          <span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#005840;margin-right:5px;vertical-align:middle;"></i>Spilt</span>
+          <span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;border:2px dashed #005840;margin-right:5px;vertical-align:middle;"></i>Aldri spilt</span>
+          <span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#D1F843;border:1px solid #0A1F17;margin-right:5px;vertical-align:middle;"></i>Hjem-base</span>
+        </div>
+      </section>
+
+      <section style="display:flex; flex-direction:column; gap:10px; max-height:780px; overflow-y:auto; padding-right:4px;">
+        <div class="card-featured">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div><div class="card-label">Østlandet · Hjem-bane</div><h3><em>Bossum</em></h3><p>Fredrikstad · par 72 · slope 122 · 12 runder</p></div>
+            <span class="pill pill-success">Min beste 73</span>
+          </div>
+          <div style="margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:4px;"><span>Min beste vs par</span><span class="num">+1</span></div>
+            <div style="height:6px; background:var(--border); border-radius:3px; overflow:hidden;"><div style="width:88%; height:100%; background:var(--primary);"></div></div>
+            <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin-top:6px;">SIST SPILT 10.05.2026</div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div><div class="card-label">Østlandet · 18-hulls</div><h3><em>GFGK</em></h3><p>Gamle Fredrikstad · par 71 · slope 119 · 9 runder</p></div>
+            <span class="pill pill-success">Beste 75</span>
+          </div>
+          <div style="margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:4px;"><span>Beste vs par</span><span class="num">+4</span></div>
+            <div style="height:6px; background:var(--border); border-radius:3px; overflow:hidden;"><div style="width:72%; height:100%; background:var(--primary);"></div></div>
+            <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin-top:6px;">SIST SPILT 28.04.2026</div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div><div class="card-label">Østlandet · 18-hulls</div><h3><em>Larvik GK</em></h3><p>Larvik · par 70 · slope 124 · 4 runder</p></div>
+            <span class="pill pill-info">Beste 76</span>
+          </div>
+          <div style="margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:4px;"><span>Beste vs par</span><span class="num">+6</span></div>
+            <div style="height:6px; background:var(--border); border-radius:3px; overflow:hidden;"><div style="width:60%; height:100%; background:var(--primary);"></div></div>
+            <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin-top:6px;">SIST SPILT 12.04.2026</div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div><div class="card-label">Østlandet · 9-hulls</div><h3><em>Sørby</em></h3><p>Sandefjord · par 69 · slope 118 · 3 runder</p></div>
+            <span class="pill pill-info">Beste 74</span>
+          </div>
+          <div style="margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:4px;"><span>Beste vs par</span><span class="num">+5</span></div>
+            <div style="height:6px; background:var(--border); border-radius:3px; overflow:hidden;"><div style="width:55%; height:100%; background:var(--primary);"></div></div>
+            <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin-top:6px;">SIST SPILT 22.03.2026</div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div><div class="card-label">Østlandet · 18-hulls</div><h3><em>Hauger</em></h3><p>Bærum · par 72 · slope 130 · 2 runder</p></div>
+            <span class="pill pill-info">Beste 79</span>
+          </div>
+          <div style="margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:4px;"><span>Beste vs par</span><span class="num">+7</span></div>
+            <div style="height:6px; background:var(--border); border-radius:3px; overflow:hidden;"><div style="width:48%; height:100%; background:var(--primary);"></div></div>
+            <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin-top:6px;">SIST SPILT 18.10.2025</div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div><div class="card-label">Østlandet · 18-hulls</div><h3><em>Oslo GK</em></h3><p>Bogstad · par 73 · slope 132 · 1 runde</p></div>
+            <span class="pill pill-info">Beste 81</span>
+          </div>
+          <div style="margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:4px;"><span>Beste vs par</span><span class="num">+8</span></div>
+            <div style="height:6px; background:var(--border); border-radius:3px; overflow:hidden;"><div style="width:42%; height:100%; background:var(--primary);"></div></div>
+            <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin-top:6px;">SIST SPILT 14.09.2025</div>
+          </div>
+        </div>
+        <div class="card" style="border-color: rgba(184,133,42,0.40); background: rgba(184,133,42,0.05);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div><div class="card-label">Sørlandet · 18-hulls · ny</div><h3><em>Bjaavann</em></h3><p>Kristiansand · par 72 · slope 128</p></div>
+            <span class="pill pill-warning">Aldri spilt</span>
+          </div>
+          <div style="margin-top:10px; padding:10px; background:var(--bg-elev); border-radius:8px; border-left:3px solid var(--pyr-spill);">
+            <div style="font-family:var(--font-mono); font-size:10px; color:#6F4F18; letter-spacing:0.06em; margin-bottom:4px;">PYRAMIDE-RELEVANS</div>
+            <div style="font-size:12px; line-height:1.5;"><b>Sandbase</b> — krever bunker-fokus. Sørlandsåpent <b>02.06</b>.</div>
+          </div>
+        </div>
+        <div class="card" style="border-color: rgba(184,133,42,0.40); background: rgba(184,133,42,0.05);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div><div class="card-label">Østlandet · 18-hulls · NM-vert</div><h3><em>Tyrifjord GK</em></h3><p>Hønefoss · par 71 · slope 121</p></div>
+            <span class="pill pill-warning">Aldri spilt</span>
+          </div>
+          <div style="margin-top:10px; padding:10px; background:var(--bg-elev); border-radius:8px; border-left:3px solid var(--pyr-spill);">
+            <div style="font-family:var(--font-mono); font-size:10px; color:#6F4F18; letter-spacing:0.06em; margin-bottom:4px;">PYRAMIDE-RELEVANS</div>
+            <div style="font-size:12px; line-height:1.5;"><b>NM Junior</b> 12–14.07 — anbefalt 2 sim-runder før</div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div><div class="card-label">Trøndelag · 18-hulls</div><h3><em>Stiklestad GK</em></h3><p>Verdal · par 71 · slope 119</p></div>
+            <span class="pill pill-muted">Aldri spilt</span>
+          </div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin-top:8px;">INGEN PLANLAGT TUR</div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div><div class="card-label">Østlandet · anbefalt</div><h3><em>Atlungstad</em></h3><p>Hamar · par 72 · slope 125</p></div>
+            <span class="pill pill-muted">Aldri spilt</span>
+          </div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin-top:8px;">COACH-FORSLAG · SLOPE LIK BJAAVANN</div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</body></html>

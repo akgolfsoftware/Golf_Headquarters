@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>AIPlanGeneratorModal</title></head>
+<body style="background: rgba(10,31,24,0.5); padding: 60px 40px;">
+<div class="modal" style="background: white; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+    <div>
+      <span class="page-eyebrow">AK Coach AI · genererer på 8 sek</span>
+      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-top: 4px;">AI-generert <em style="color: var(--primary); font-weight: 400;">plan</em></h2>
+    </div>
+    <button style="background: transparent; border: 0; font-size: 24px; cursor: pointer; color: var(--text-secondary);">×</button>
+  </div>
+
+  <p style="color: var(--text-secondary); font-size: 13px; margin: 12px 0 24px;">AI-en bruker spillerens siste 30 dager med data, rundehistorikk og pyramide-fokus til å foreslå en tilpasset plan.</p>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+    <div>
+      <label class="card-label" style="display: block; margin-bottom: 8px;">Spiller</label>
+      <select style="width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 13px; background: var(--bg);">
+        <option>Markus Roinaas Pedersen</option>
+        <option>Julie Steen</option>
+        <option>Aksel Hauger</option>
+      </select>
+    </div>
+    <div>
+      <label class="card-label" style="display: block; margin-bottom: 8px;">Periode-type</label>
+      <select style="width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 13px; background: var(--bg);">
+        <option>Mikrosyklus (4 uker)</option>
+        <option>Mesosyklus (8 uker)</option>
+        <option>Sesong (6 mnd)</option>
+      </select>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 24px;">
+    <label class="card-label" style="display: block; margin-bottom: 8px;">Hovedfokus (svakhet å bedre)</label>
+    <select style="width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 13px; background: var(--bg);">
+      <option>Approach (-1.8 SG · største svakhet)</option>
+      <option>Off the Tee (-0.4 SG)</option>
+      <option>Around the Green (+0.2 SG)</option>
+      <option>Putting (-0.6 SG)</option>
+    </select>
+  </div>
+
+  <div style="background: linear-gradient(135deg, rgba(0,88,64,0.04) 0%, rgba(209,248,67,0.10) 100%); border: 1px solid rgba(0,88,64,0.10); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+    <div style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; border: 3px solid var(--primary); border-top-color: transparent; animation: spin 1s linear infinite; margin-bottom: 12px;"></div>
+    <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px;">Genererer forslag</div>
+    <div style="font-size: 13px; color: var(--text);">Analyserer 47 datapunkter fra siste 30 dager...</div>
+  </div>
+
+  <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 20px; border-top: 1px solid var(--border);">
+    <button class="btn btn-ghost">Avbryt</button>
+    <button class="btn btn-primary" disabled style="opacity: 0.5;">Bruk forslag</button>
+  </div>
+
+</div>
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+</body>
+</html>

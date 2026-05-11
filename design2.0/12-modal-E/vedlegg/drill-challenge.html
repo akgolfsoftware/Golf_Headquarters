@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>DrillChallengeModal</title></head>
+<body style="background: rgba(10,31,24,0.5); padding: 60px 40px;">
+<div class="modal" style="background: white; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+    <div>
+      <span class="page-eyebrow">Engasjer treningskameratene</span>
+      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-top: 4px;">Drill <em style="color: var(--primary); font-weight: 400;">challenge</em></h2>
+    </div>
+    <button style="background: transparent; border: 0; font-size: 24px; cursor: pointer; color: var(--text-secondary);">×</button>
+  </div>
+
+  <div style="display: flex; gap: 4px; margin: 16px 0 24px; border-bottom: 1px solid var(--border);">
+    <button style="background: transparent; border: 0; padding: 12px 18px; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--primary); border-bottom: 2px solid var(--primary); cursor: pointer;">Lag challenge</button>
+    <button style="background: transparent; border: 0; padding: 12px 18px; font-family: inherit; font-size: 13px; color: var(--text-secondary); cursor: pointer;">Bli med (3 åpne)</button>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <label class="card-label" style="display: block; margin-bottom: 8px;">Navn på challenge</label>
+    <input type="text" value="10m putt-mester · uke 20" style="width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 14px; background: var(--bg);">
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <label class="card-label" style="display: block; margin-bottom: 8px;">Drill</label>
+    <select style="width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 13px; background: var(--bg);">
+      <option>10m putts — 20 forsøk · % i kopp</option>
+      <option>140m 7-jern — 15 forsøk · snitt distanse fra fane</option>
+      <option>Bunker fra 8m — 10 forsøk · % opp og inn</option>
+      <option>Driver fairway-treff — 14 forsøk · %</option>
+    </select>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+    <div>
+      <label class="card-label" style="display: block; margin-bottom: 8px;">Varighet</label>
+      <select style="width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 13px; background: var(--bg);">
+        <option>3 dager</option>
+        <option selected>7 dager</option>
+        <option>14 dager</option>
+      </select>
+    </div>
+    <div>
+      <label class="card-label" style="display: block; margin-bottom: 8px;">Tier-tilgang</label>
+      <select style="width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 13px; background: var(--bg);">
+        <option selected>Alle tiers</option>
+        <option>Pro + Elite</option>
+        <option>Bare Elite</option>
+      </select>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <label class="card-label" style="display: block; margin-bottom: 10px;">Inviter deltakere (4 valgt)</label>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: rgba(0,88,64,0.08); border-radius: 20px; font-size: 12px;"><span class="avatar avatar-sm">JS</span> Julie S ×</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: rgba(0,88,64,0.08); border-radius: 20px; font-size: 12px;"><span class="avatar avatar-sm">AH</span> Aksel H ×</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: rgba(0,88,64,0.08); border-radius: 20px; font-size: 12px;"><span class="avatar avatar-sm">EN</span> Emil N ×</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: rgba(0,88,64,0.08); border-radius: 20px; font-size: 12px;"><span class="avatar avatar-sm">SL</span> Selma L ×</span>
+      <button style="padding: 6px 10px; border: 1px dashed var(--border-strong); border-radius: 20px; font-size: 12px; background: transparent; cursor: pointer; color: var(--text-secondary);">+ Legg til</button>
+    </div>
+  </div>
+
+  <div style="background: rgba(209,248,67,0.16); border: 1px solid rgba(184,200,46,0.3); border-radius: 12px; padding: 12px 14px; font-size: 12px; color: #5C6B0E; margin-bottom: 8px;">
+    Vinneren får et <b>Mulligan-gavekort på 500 kr</b>. Resultatene rangeres automatisk.
+  </div>
+
+  <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+    <button class="btn btn-ghost">Avbryt</button>
+    <button class="btn btn-primary">Start challenge →</button>
+  </div>
+
+</div>
+</body>
+</html>

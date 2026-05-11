@@ -1,0 +1,367 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>360-profil · Markus R.</title></head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="#">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="#">Treningsplaner</a>
+      <a href="#" class="active">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="#">Godkjenninger</a>
+      <a href="#">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="#">Analytics</a>
+      <a href="#">Økonomi</a>
+      <a href="#">Fasiliteter</a>
+      <a href="#">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <!-- Header med dash-hero (stor avatar + spillerinfo + 4 quickstats) -->
+    <header class="dash-hero" style="margin-bottom: 24px;">
+      <div class="dash-hero-photo">
+        <div class="dash-hero-avatar" style="width: 96px; height: 96px; font-size: 36px;">M</div>
+        <span class="dash-hero-status"></span>
+      </div>
+      <div class="dash-hero-text">
+        <span class="page-eyebrow">Elever · 360-profil</span>
+        <h1 class="page-title" style="font-size: 36px;"><em>Markus</em> R. Pedersen</h1>
+        <div class="dash-hero-meta" style="margin-top: 8px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+          <span><b>HCP 7,4</b></span>
+          <span class="player-tier tier-pro" style="font-size: 10px;">A2 · PRO</span>
+          <span>· GFGK</span>
+          <span>· siden 2024</span>
+          <span>· alder 17</span>
+          <span class="pill pill-success">På plan</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 18px; align-items: center; padding-left: 16px; border-left: 1px solid var(--border); margin-left: 8px;">
+        <div style="text-align: center;">
+          <div style="font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary);">SG total</div>
+          <div class="num" style="font-size: 20px; font-weight: 600; color: var(--success);">+1,24</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary);">Adherence</div>
+          <div class="num" style="font-size: 20px; font-weight: 600;">92 %</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary);">Plan-progr.</div>
+          <div class="num" style="font-size: 20px; font-weight: 600;">13<span style="color: var(--text-secondary); font-size: 14px;">/19</span></div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary);">Til peak</div>
+          <div class="num" style="font-size: 20px; font-weight: 600; color: var(--primary);">21d</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Action-strip -->
+    <div class="action-strip">
+      <span class="action-strip-label">Spiller-handlinger</span>
+      <button class="action-item action-item-info"><b>3</b> coaching-økter siste uke</button>
+      <button class="action-item action-item-warn"><b>1</b> agent-justering venter</button>
+      <button class="action-item action-item-success"><b>+0,38</b> SG siste 30d</button>
+      <button class="action-item"><b>72 %</b> turnerings-volum (lavt)</button>
+      <button class="btn btn-ghost" style="margin-left: auto;">Send melding</button>
+      <button class="btn btn-primary">Book ny økt</button>
+    </div>
+
+    <!-- Tab-rad -->
+    <div class="chips" style="margin-bottom: 18px;">
+      <button class="chip active">Pyramide</button>
+      <button class="chip">SG</button>
+      <button class="chip">TrackMan</button>
+      <button class="chip">Tester</button>
+      <button class="chip">Plan</button>
+      <button class="chip">Tournaments</button>
+      <button class="chip">Notater</button>
+    </div>
+
+    <div class="cal-with-drawer">
+      <div>
+        <!-- Stort donut + tiers side-ved-side -->
+        <section class="card" style="padding: 22px 26px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px;">
+            <div>
+              <div class="card-label">Pyramide-snitt · uke 21 · Spesifikk-fase</div>
+              <h3 style="margin-top: 4px;">Hvordan tiden fordeles akkurat nå</h3>
+              <p style="font-size: 12px; margin-top: 4px;">Aktuell allokasjon vs. plan-target. Donut viser faktisk siste 7 dager.</p>
+            </div>
+            <span class="pill pill-info">16 t loggført</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 220px 1fr; gap: 36px; align-items: center;">
+            <div class="donut" style="background: conic-gradient(
+              var(--pyr-fys) 0deg 32deg,
+              var(--pyr-tek) 32deg 86deg,
+              #D1F843 86deg 212deg,
+              var(--pyr-spill) 212deg 320deg,
+              var(--pyr-turn) 320deg 360deg
+            ); width: 200px; height: 200px;">
+              <div class="donut-center">
+                <b>92<small style="font-size: 10px;">%</small></b>
+                <small>adherence vs plan</small>
+              </div>
+            </div>
+            <div>
+              <div class="pyr-tiers">
+                <div class="pyr-tier pyr-tier-fys" style="--w: 100%; --p: 9%;"><span>FYS · faktisk 9 % / target 10 %</span><b>9</b></div>
+                <div class="pyr-tier pyr-tier-tek" style="--w: 92%; --p: 15%;"><span>TEK · faktisk 15 % / target 15 %</span><b>15</b></div>
+                <div class="pyr-tier pyr-tier-slag" style="--w: 84%; --p: 35%;"><span>SLAG · faktisk 35 % / target 35 %</span><b>35</b></div>
+                <div class="pyr-tier pyr-tier-spill" style="--w: 76%; --p: 32%;"><span>SPILL · 32 % / target 30 %</span><b>32</b></div>
+                <div class="pyr-tier pyr-tier-turn" style="--w: 68%; --p: 9%;"><span>TURN · 9 % / target 10 %</span><b>9</b></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Heatmap: 12 uker × 5 områder -->
+        <section class="heatmap" style="margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <div class="card-label">Treningsfokus · 12 uker</div>
+              <h3 style="margin-top: 4px;">Hvor har Markus brukt tida?</h3>
+            </div>
+            <span class="pill pill-muted">Hover for detalj</span>
+          </div>
+          <div class="heatmap-rows">
+            <div class="heatmap-row">
+              <span class="heatmap-row-label">FYS</span>
+              <div class="heatmap-cell hm-fys-3"></div>
+              <div class="heatmap-cell hm-fys-3"></div>
+              <div class="heatmap-cell hm-fys-2"></div>
+              <div class="heatmap-cell hm-fys-3"></div>
+              <div class="heatmap-cell hm-fys-2"></div>
+              <div class="heatmap-cell hm-fys-2"></div>
+              <div class="heatmap-cell hm-fys-3"></div>
+              <div class="heatmap-cell hm-fys-2"></div>
+              <div class="heatmap-cell hm-fys-2"></div>
+              <div class="heatmap-cell hm-fys-2"></div>
+              <div class="heatmap-cell hm-fys-1 hm-current-week"></div>
+              <div class="heatmap-cell hm-fys-1"></div>
+              <span class="heatmap-row-total">26 t</span>
+            </div>
+            <div class="heatmap-row">
+              <span class="heatmap-row-label">TEK</span>
+              <div class="heatmap-cell hm-tek-3"></div>
+              <div class="heatmap-cell hm-tek-4"></div>
+              <div class="heatmap-cell hm-tek-3"></div>
+              <div class="heatmap-cell hm-tek-4"></div>
+              <div class="heatmap-cell hm-tek-3"></div>
+              <div class="heatmap-cell hm-tek-3"></div>
+              <div class="heatmap-cell hm-tek-3"></div>
+              <div class="heatmap-cell hm-tek-3"></div>
+              <div class="heatmap-cell hm-tek-4"></div>
+              <div class="heatmap-cell hm-tek-3"></div>
+              <div class="heatmap-cell hm-tek-2 hm-current-week"></div>
+              <div class="heatmap-cell hm-tek-1"></div>
+              <span class="heatmap-row-total">38 t</span>
+            </div>
+            <div class="heatmap-row">
+              <span class="heatmap-row-label">SLAG</span>
+              <div class="heatmap-cell hm-slag-2"></div>
+              <div class="heatmap-cell hm-slag-3"></div>
+              <div class="heatmap-cell hm-slag-2"></div>
+              <div class="heatmap-cell hm-slag-3"></div>
+              <div class="heatmap-cell hm-slag-3"></div>
+              <div class="heatmap-cell hm-slag-2"></div>
+              <div class="heatmap-cell hm-slag-3"></div>
+              <div class="heatmap-cell hm-slag-3"></div>
+              <div class="heatmap-cell hm-slag-3"></div>
+              <div class="heatmap-cell hm-slag-4"></div>
+              <div class="heatmap-cell hm-slag-5 hm-current-week"></div>
+              <div class="heatmap-cell hm-slag-4"></div>
+              <span class="heatmap-row-total">44 t</span>
+            </div>
+            <div class="heatmap-row">
+              <span class="heatmap-row-label">SPILL</span>
+              <div class="heatmap-cell hm-spill-1"></div>
+              <div class="heatmap-cell hm-spill-2"></div>
+              <div class="heatmap-cell hm-spill-2"></div>
+              <div class="heatmap-cell hm-spill-2"></div>
+              <div class="heatmap-cell hm-spill-1"></div>
+              <div class="heatmap-cell hm-spill-2"></div>
+              <div class="heatmap-cell hm-spill-2"></div>
+              <div class="heatmap-cell hm-spill-3"></div>
+              <div class="heatmap-cell hm-spill-3"></div>
+              <div class="heatmap-cell hm-spill-3"></div>
+              <div class="heatmap-cell hm-spill-5 hm-current-week"></div>
+              <div class="heatmap-cell hm-spill-4"></div>
+              <span class="heatmap-row-total">30 t</span>
+            </div>
+            <div class="heatmap-row">
+              <span class="heatmap-row-label">TURN</span>
+              <div class="heatmap-cell hm-empty"></div>
+              <div class="heatmap-cell hm-turn-1"></div>
+              <div class="heatmap-cell hm-empty"></div>
+              <div class="heatmap-cell hm-turn-1"></div>
+              <div class="heatmap-cell hm-empty"></div>
+              <div class="heatmap-cell hm-turn-1"></div>
+              <div class="heatmap-cell hm-turn-1"></div>
+              <div class="heatmap-cell hm-empty"></div>
+              <div class="heatmap-cell hm-turn-2"></div>
+              <div class="heatmap-cell hm-turn-2"></div>
+              <div class="heatmap-cell hm-turn-1 hm-current-week"></div>
+              <div class="heatmap-cell hm-turn-3"></div>
+              <span class="heatmap-row-total">10 t</span>
+            </div>
+          </div>
+          <div class="heatmap-axis">
+            <span></span>
+            <span>u10</span><span>u11</span><span>u12</span><span>u13</span><span>u14</span><span>u15</span><span>u16</span><span>u17</span><span>u18</span><span>u19</span><span style="color: var(--primary); font-weight: 700;">u21</span><span>u22</span>
+            <span>SUM</span>
+          </div>
+        </section>
+
+        <!-- Hvor henger Markus etter -->
+        <section class="card" style="padding: 22px 26px; border-left: 4px solid var(--warning);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+            <div>
+              <div class="card-label" style="color: #B45309;">Hvor henger Markus etter?</div>
+              <h3 style="margin-top: 4px;">TURN er svakest område</h3>
+              <p style="font-size: 13px; margin-top: 6px;">Markus har bare 10 t turneringer/sim-runder siste 12 uker. Plan-target er 18 t. Periodiserings-agent foreslår å øke turneringsvolum før peak.</p>
+            </div>
+            <span class="pill pill-warning" style="font-size: 11px;">Gap: -8 t</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
+            <div style="background: var(--bg); padding: 12px; border-radius: 8px; text-align: center;">
+              <div style="font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--pyr-fys);">FYS</div>
+              <div class="num" style="font-size: 20px; font-weight: 600; margin-top: 4px;">102 %</div>
+              <small style="font-size: 10px; color: var(--success);">over target</small>
+            </div>
+            <div style="background: var(--bg); padding: 12px; border-radius: 8px; text-align: center;">
+              <div style="font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--pyr-tek);">TEK</div>
+              <div class="num" style="font-size: 20px; font-weight: 600; margin-top: 4px;">95 %</div>
+              <small style="font-size: 10px; color: var(--success);">på target</small>
+            </div>
+            <div style="background: var(--bg); padding: 12px; border-radius: 8px; text-align: center;">
+              <div style="font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; color: #5C6B0E;">SLAG</div>
+              <div class="num" style="font-size: 20px; font-weight: 600; margin-top: 4px;">98 %</div>
+              <small style="font-size: 10px; color: var(--success);">på target</small>
+            </div>
+            <div style="background: var(--bg); padding: 12px; border-radius: 8px; text-align: center;">
+              <div style="font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--pyr-spill);">SPILL</div>
+              <div class="num" style="font-size: 20px; font-weight: 600; margin-top: 4px;">88 %</div>
+              <small style="font-size: 10px; color: var(--warning);">noe under</small>
+            </div>
+            <div style="background: rgba(239,68,68,0.05); padding: 12px; border-radius: 8px; text-align: center; box-shadow: inset 0 0 0 2px rgba(239,68,68,0.20);">
+              <div style="font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--pyr-turn);">TURN</div>
+              <div class="num" style="font-size: 20px; font-weight: 600; margin-top: 4px; color: var(--danger);">30 %</div>
+              <small style="font-size: 10px; color: var(--danger);">stort gap</small>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- DRAWER: Akkurat nå -->
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div>
+            <div class="drawer-meta">Akkurat nå · 28.05 14:42</div>
+            <h3>Markus' status</h3>
+            <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
+              <span class="pill pill-success">På plan</span>
+              <span class="pill pill-info">Aktiv siste 7d</span>
+            </div>
+          </div>
+          <button class="drawer-close" title="Lukk">×</button>
+        </div>
+
+        <!-- Akkurat nå-seksjon -->
+        <div class="drawer-section">
+          <div class="drawer-label">Neste opp</div>
+          <div style="background: rgba(0,88,64,0.05); border-left: 3px solid var(--primary); padding: 10px 12px; border-radius: 6px; margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><b style="font-size: 12px;">Pitch + bunker stasjoner</b><span style="font-family: var(--font-mono); font-size: 11px;">i dag 14:00</span></div>
+            <p style="font-size: 11px; line-height: 1.5; color: var(--text-secondary);">Mulligan · gruppe-økt med Joachim T. og Emma S. · 90 min · SLAG/SPILL</p>
+          </div>
+          <div style="background: var(--bg); padding: 10px 12px; border-radius: 6px; margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><b style="font-size: 12px;">Sist runde · Bjaavann sim</b><span style="font-family: var(--font-mono); font-size: 11px;">26.05</span></div>
+            <p style="font-size: 11px; line-height: 1.5; color: var(--text-secondary);">75 slag · SG arg -0,4 · agent flagget bunker som svakhet</p>
+          </div>
+          <div style="background: rgba(245,158,11,0.08); border-left: 3px solid var(--warning); padding: 10px 12px; border-radius: 6px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><b style="font-size: 12px;">Agent-melding</b><span style="font-family: var(--font-mono); font-size: 11px;">09:42</span></div>
+            <p style="font-size: 11px; line-height: 1.5;">«Foreslår +1 sim-runde Bjaavann tor 29.05.»</p>
+          </div>
+        </div>
+
+        <!-- Pyramide-mini -->
+        <div class="drawer-section">
+          <div class="drawer-label">Pyramide-mini · uke 21</div>
+          <div style="display: flex; align-items: flex-end; gap: 14px; padding: 8px 0;">
+            <span class="mini-pyr" style="height: 50px; width: 80px;">
+              <i style="--p: 10%; --c: var(--pyr-fys); width: 14px;"></i>
+              <i style="--p: 15%; --c: var(--pyr-tek); width: 14px;"></i>
+              <i style="--p: 35%; --c: #D1F843; width: 14px;"></i>
+              <i style="--p: 32%; --c: var(--pyr-spill); width: 14px;"></i>
+              <i style="--p: 9%; --c: var(--pyr-turn); width: 14px;"></i>
+            </span>
+            <div style="font-size: 10px; line-height: 1.5; color: var(--text-secondary);">
+              <div style="font-family: var(--font-mono);">FYS 10 · TEK 15</div>
+              <div style="font-family: var(--font-mono);">SLAG 35 · SPILL 32</div>
+              <div style="font-family: var(--font-mono);">TURN 9</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 deltas -->
+        <div class="drawer-section">
+          <div class="drawer-label">Trender siste 30 dager</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="stat-rich" style="padding: 12px 14px;">
+              <div class="stat-rich-head" style="margin-bottom: 4px;">
+                <span class="stat-rich-label" style="font-size: 9px;">Plan-progress</span>
+                <span class="stat-rich-delta stat-rich-delta-up" style="font-size: 10px;">+2 uke</span>
+              </div>
+              <div class="stat-rich-value" style="font-size: 18px;">68 %</div>
+              <div class="stat-rich-spark" style="height: 22px;">
+                <svg class="spark-svg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline class="spark-area" points="0,32 0,28 12,26 24,22 36,18 48,15 60,12 72,10 84,8 100,6 100,32"/><polyline class="spark-line" points="0,28 12,26 24,22 36,18 48,15 60,12 72,10 84,8 100,6"/><circle class="spark-dot-end" cx="100" cy="6" r="2.5"/></svg>
+              </div>
+            </div>
+            <div class="stat-rich" style="padding: 12px 14px;">
+              <div class="stat-rich-head" style="margin-bottom: 4px;">
+                <span class="stat-rich-label" style="font-size: 9px;">SG total</span>
+                <span class="stat-rich-delta stat-rich-delta-up" style="font-size: 10px;">+0,38</span>
+              </div>
+              <div class="stat-rich-value" style="font-size: 18px;">+1,24</div>
+              <div class="stat-rich-spark" style="height: 22px;">
+                <svg class="spark-svg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline class="spark-area" points="0,32 0,22 14,26 28,18 42,20 56,14 70,12 84,8 100,5 100,32"/><polyline class="spark-line" points="0,22 14,26 28,18 42,20 56,14 70,12 84,8 100,5"/><circle class="spark-dot-end" cx="100" cy="5" r="2.5"/></svg>
+              </div>
+            </div>
+            <div class="stat-rich" style="padding: 12px 14px;">
+              <div class="stat-rich-head" style="margin-bottom: 4px;">
+                <span class="stat-rich-label" style="font-size: 9px;">HCP-trend</span>
+                <span class="stat-rich-delta stat-rich-delta-up" style="font-size: 10px;">-0,4</span>
+              </div>
+              <div class="stat-rich-value" style="font-size: 18px;">7,4</div>
+              <div class="stat-rich-spark" style="height: 22px;">
+                <svg class="spark-svg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline class="spark-area" points="0,32 0,8 14,10 28,12 42,11 56,14 70,18 84,20 100,24 100,32"/><polyline class="spark-line" points="0,8 14,10 28,12 42,11 56,14 70,18 84,20 100,24"/><circle class="spark-dot-end" cx="100" cy="24" r="2.5"/></svg>
+              </div>
+            </div>
+            <div class="stat-rich" style="padding: 12px 14px;">
+              <div class="stat-rich-head" style="margin-bottom: 4px;">
+                <span class="stat-rich-label" style="font-size: 9px;">Test-deltas (CMJ + clubhead)</span>
+                <span class="stat-rich-delta stat-rich-delta-flat" style="font-size: 10px;">±0</span>
+              </div>
+              <div class="stat-rich-value" style="font-size: 18px;">52cm <span style="font-size: 12px; color: var(--text-secondary);">/ 102mph</span></div>
+              <div class="stat-rich-spark" style="height: 22px;">
+                <svg class="spark-svg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline class="spark-area" points="0,32 0,18 14,20 28,16 42,18 56,16 70,18 84,16 100,17 100,32"/><polyline class="spark-line" points="0,18 14,20 28,16 42,18 56,16 70,18 84,16 100,17"/><circle class="spark-dot-end" cx="100" cy="17" r="2.5"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="drawer-section" style="display: flex; flex-direction: column; gap: 8px; padding-bottom: 0;">
+          <button class="btn btn-primary">Send melding</button>
+          <button class="btn btn-ghost">Book økt</button>
+          <a class="btn btn-ghost" href="plan-detalj.html" style="text-decoration:none; text-align:center;">Endre plan</a>
+          <button class="btn btn-ghost">Eksporter rapport</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>
