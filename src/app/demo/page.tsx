@@ -81,6 +81,44 @@ const PILOTS: Pilot[] = [
     description: "Pro-only. 8 køller, trajectory-SVG, dispersion-pattern, compare-bars",
     status: "ferdig",
   },
+  {
+    url: "/ny-okt-demo/1",
+    title: "PlayerHQ — Ny økt-wizard (6 steg)",
+    source: "playerhq-C/01-06-ny-okt-steg-*.html",
+    description:
+      "6-step wizard for å logge ny økt: Type → Varighet → Fasilitet → Tid → Øvelser → Sammendrag. Naviger /1 til /6",
+    status: "ferdig",
+  },
+  {
+    url: "/onskeligokt-demo",
+    title: "PlayerHQ — Ønsket økt",
+    source: "playerhq-C/07-onskeligokt.html",
+    description: "Be coach om økt: type, tema, tid (2 alternativer), fasilitet, melding",
+    status: "ferdig",
+  },
+  {
+    url: "/coach-melding-demo",
+    title: "PlayerHQ — Coach-melding (compose)",
+    source: "playerhq-C/08-coach-melding.html",
+    description: "Skriv melding til coach med vedlegg (video, TrackMan-PNG) og plan-link",
+    status: "ferdig",
+  },
+  {
+    url: "/tren-kalender-demo",
+    title: "PlayerHQ — Tren-kalender (uke)",
+    source: "playerhq-C/09-tren-kalender.html",
+    description:
+      "Spillerens egen kalender med 4 KPI, 7-dagers grid, ukentlig pyramide-donut, streak og form-topp",
+    status: "ferdig",
+  },
+  {
+    url: "/treningsdetalj-demo",
+    title: "PlayerHQ — Trening-detalj (post-økt)",
+    source: "playerhq-C/10-treningsdetalj.html",
+    description:
+      "Post-økt detalj: 4 sum-cards, pyramide-bidrag, coach-notat, 5 økt-blokker, opplevd intensitet",
+    status: "ferdig",
+  },
 ];
 
 const SOURCE_MAP = {
