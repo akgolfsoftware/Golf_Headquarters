@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PlanShare — CoachHQ</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/modal.css">
+<style>
+  .share-section { display: flex; flex-direction: column; gap: 12px; }
+  .share-section + .share-section { padding-top: 20px; border-top: 1px solid var(--line); }
+  .share-section h4 {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-subtle);
+    margin: 0;
+  }
+
+  .tabs-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .stab {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    background: var(--surface-alt);
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .stab:hover { color: var(--ink); }
+  .stab.active { background: var(--brand-primary); color: #fff; }
+
+  .recipient-list { display: flex; flex-direction: column; gap: 8px; }
+  .rec-row {
+    display: grid;
+    grid-template-columns: 22px auto 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 14px;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .rec-row.checked { border-color: var(--brand-primary); background: var(--brand-primary-soft); }
+  .rec-row .box {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    border: 1.5px solid var(--line);
+    background: var(--surface-card);
+    display: grid; place-items: center;
+  }
+  .rec-row.checked .box { background: var(--brand-primary); border-color: var(--brand-primary); color: var(--brand-accent); }
+  .rec-row .box svg { width: 12px; height: 12px; stroke-width: 3; }
+  .rec-row .name { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .rec-row .name .relation { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); font-weight: 500; margin-left: 6px; }
+  .rec-row .name .email { display: block; font-family: var(--font-mono); font-size: 11px; color: var(--ink-subtle); margin-top: 2px; font-weight: 500; }
+  .rec-row .last-seen {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .radio-list { display: flex; flex-direction: column; gap: 8px; }
+  .radio-row {
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .radio-row.checked { border-color: var(--brand-primary); background: var(--brand-primary-soft); }
+  .radio-row .circle {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    background: var(--surface-card);
+    display: grid; place-items: center;
+  }
+  .radio-row.checked .circle { border-color: var(--brand-primary); }
+  .radio-row.checked .circle::after {
+    content: ""; width: 10px; height: 10px;
+    border-radius: 50%; background: var(--brand-primary);
+  }
+  .radio-row .name { font-size: 13px; font-weight: 600; color: var(--ink); display: block; }
+  .radio-row .desc { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .radio-row .ic {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--surface-alt);
+    color: var(--ink-muted);
+    display: grid; place-items: center;
+  }
+  .radio-row.checked .ic { background: var(--brand-primary); color: var(--brand-accent); }
+  .radio-row .ic svg { width: 14px; height: 14px; stroke-width: 1.75; }
+
+  .toggle-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px; align-items: center;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+  }
+  .toggle-row.on { border-color: var(--brand-primary); background: var(--brand-primary-soft); }
+  .toggle-row .name { font-size: 13px; font-weight: 600; color: var(--ink); display: block; }
+  .toggle-row .desc { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .switch {
+    width: 36px; height: 20px;
+    background: var(--line);
+    border-radius: 999px;
+    position: relative;
+    transition: background var(--duration-short) var(--ease-out);
+  }
+  .switch::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff;
+    transition: left var(--duration-short) var(--ease-out);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  }
+  .switch.on { background: var(--brand-primary); }
+  .switch.on::after { left: 18px; }
+
+  .date-pick-inline {
+    margin-top: 10px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+  }
+  .date-pick-inline svg { width: 16px; height: 16px; color: var(--ink-subtle); stroke-width: 1.75; }
+  .date-pick-inline .val { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .link-box {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px; align-items: stretch;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 6px 6px 6px 14px;
+  }
+  .link-box .url {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    align-self: center;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .link-box .url b { color: var(--ink); font-weight: 600; }
+  .link-box .copy {
+    background: var(--brand-primary);
+    color: var(--brand-accent);
+    border: none;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-display);
+  }
+  .link-box .copy svg { width: 12px; height: 12px; stroke-width: 2; }
+</style>
+</head>
+<body class="modal-page" data-screen-label="Modal 04 PlanShare">
+
+<div class="app-bg" aria-hidden="true">
+  <div class="rail-1"></div><div class="rail-2"></div>
+  <div class="main"><div class="block"></div><div class="block tall"></div><div class="block"></div><div class="block tall"></div></div>
+</div>
+<div class="backdrop"></div>
+
+<div class="modal w-560" role="dialog" aria-modal="true">
+
+  <header class="m-head">
+    <div>
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        CoachHQ · plan-detalj · del
+      </div>
+      <h2>Del Sommer-toppform</h2>
+      <p>Markus R. Pedersen · 9. mai – 30. juni 2026</p>
+    </div>
+    <button class="m-close" aria-label="Lukk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </header>
+
+  <div class="m-body compact">
+
+    <section class="share-section">
+      <h4>Hvem skal motta?</h4>
+      <div class="tabs-row">
+        <span class="stab active">Foresatte</span>
+        <span class="stab">Annen coach</span>
+        <span class="stab">Spilleren</span>
+        <span class="stab">Ekstern · e-post</span>
+      </div>
+
+      <div class="recipient-list">
+        <label class="rec-row checked">
+          <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="player-avatar sm" style="background: #B8852A; color: #fff;">AP</span>
+          <span>
+            <span class="name">Anne Pedersen <span class="relation">· Mor</span></span>
+            <span class="email">anne.pedersen@gmail.com</span>
+          </span>
+          <span class="last-seen">aktiv i dag</span>
+        </label>
+
+        <label class="rec-row">
+          <span class="box"></span>
+          <span class="player-avatar sm" style="background: var(--ink-muted); color: #fff;">LP</span>
+          <span>
+            <span class="name">Lars Pedersen <span class="relation">· Far</span></span>
+            <span class="email">lars@pedersengruppen.no</span>
+          </span>
+          <span class="last-seen">7 d siden</span>
+        </label>
+
+        <label class="rec-row">
+          <span class="box"></span>
+          <span class="player-avatar sm" style="background: var(--ink-subtle); color: #fff;">EP</span>
+          <span>
+            <span class="name">Emma Pedersen <span class="relation">· Søster (myndig)</span></span>
+            <span class="email">emma.p@uib.no</span>
+          </span>
+          <span class="last-seen">aldri</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="share-section">
+      <h4>Tilgangsnivå</h4>
+      <div class="radio-list">
+
+        <label class="radio-row checked">
+          <span class="circle"></span>
+          <span>
+            <span class="name">Kun lese</span>
+            <span class="desc">Se plan, økter og pyramide · ingen handlinger</span>
+          </span>
+          <span class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+        </label>
+
+        <label class="radio-row">
+          <span class="circle"></span>
+          <span>
+            <span class="name">Kommentere</span>
+            <span class="desc">Lese + skrive kommentarer på økter</span>
+          </span>
+          <span class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </span>
+        </label>
+
+        <label class="radio-row">
+          <span class="circle"></span>
+          <span>
+            <span class="name">Redigere</span>
+            <span class="desc">Full coach-tilgang · kun for annen coach</span>
+          </span>
+          <span class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          </span>
+        </label>
+
+      </div>
+    </section>
+
+    <section class="share-section">
+      <h4>Utløper</h4>
+      <div class="toggle-row on">
+        <span>
+          <span class="name">Lenken utløper etter plan-periode</span>
+          <span class="desc">Tilgang trekkes automatisk når planen er ferdig</span>
+        </span>
+        <span class="switch on"></span>
+      </div>
+      <div class="date-pick-inline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="val">Utløper 30. juni 2026 · kl. 23:59</span>
+      </div>
+    </section>
+
+    <section class="share-section">
+      <h4>Delings-lenke</h4>
+      <div class="link-box">
+        <span class="url">akgolf.app/p/<b>sommer-toppform-mp</b>?t=read</span>
+        <button class="copy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Kopier
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="m-foot">
+    <button class="cancel">Avbryt</button>
+    <div></div>
+    <div class="right">
+      <button class="primary">Send invitasjon →</button>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

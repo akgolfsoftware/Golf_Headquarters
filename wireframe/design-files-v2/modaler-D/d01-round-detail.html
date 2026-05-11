@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RoundDetail — PlayerHQ</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/modal.css">
+<style>
+  .hero-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    padding: 18px 32px 0;
+  }
+  .hero-stat {
+    padding: 14px 16px;
+    background: var(--surface-card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    position: relative;
+  }
+  .hero-stat.good { border-color: rgba(22,163,74,0.35); background: rgba(22,163,74,0.06); }
+  .hero-stat.gold { border-color: rgba(244,196,48,0.45); background: rgba(244,196,48,0.06); }
+  .hs-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-subtle); }
+  .hs-value { font-family: var(--font-display); font-size: 28px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); margin-top: 4px; line-height: 1; }
+  .hs-delta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .hs-delta.up { color: #16A34A; font-weight: 700; }
+  .hs-delta.down { color: #C53030; font-weight: 700; }
+  .hs-delta.gold { color: #B8860B; font-weight: 700; }
+
+  .tabs {
+    display: flex; gap: 0; align-items: stretch;
+    padding: 18px 32px 0;
+    border-bottom: 1px solid var(--line);
+    margin-top: 18px;
+  }
+  .tab {
+    padding: 10px 4px 12px;
+    margin-right: 24px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-subtle);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); border-bottom-color: var(--brand-primary); }
+  [data-theme="dark"] .tab.active { border-bottom-color: var(--brand-accent); }
+
+  /* Scorecard table */
+  .scorecard {
+    margin: 18px 32px 8px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+  }
+  .sc-row {
+    display: grid;
+    grid-template-columns: 56px repeat(7, 1fr);
+    align-items: center;
+  }
+  .sc-row > div { padding: 9px 8px; text-align: center; }
+  .sc-row > div:first-child { text-align: left; padding-left: 14px; font-weight: 700; color: var(--ink-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; }
+  .sc-head {
+    background: var(--surface-alt);
+    border-bottom: 1.5px solid var(--line);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-subtle);
+  }
+  .sc-row.body { border-bottom: 1px solid var(--line); }
+  .sc-row.body:last-child { border-bottom: 0; }
+  .sc-row.subtotal {
+    background: var(--surface-alt);
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .sc-score {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 26px; height: 26px;
+    border-radius: 50%;
+    font-weight: 700;
+  }
+  .sc-score.eagle { background: rgba(244,196,48,0.25); color: #8a6608; }
+  .sc-score.birdie { background: rgba(209,248,67,0.45); color: #4d6107; border: 1.5px solid #b3d83a; }
+  .sc-score.bogey { background: rgba(244,196,48,0.12); color: #a37205; }
+  .sc-score.double { background: rgba(197,48,48,0.15); color: #8a1d1d; }
+  .sc-yes { color: #16A34A; font-weight: 700; }
+  .sc-no { color: var(--ink-subtle); }
+
+  .legend {
+    display: flex; gap: 16px; padding: 6px 32px 18px;
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-subtle);
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body class="modal-page" data-screen-label="Modal D1 RoundDetail">
+
+<div class="app-bg" aria-hidden="true">
+  <div class="rail-1"></div><div class="rail-2"></div>
+  <div class="main"><div class="block"></div><div class="block tall"></div><div class="block"></div><div class="block tall"></div></div>
+</div>
+<div class="backdrop"></div>
+
+<div class="modal w-880" role="dialog" aria-modal="true" style="max-height: calc(100vh - 32px);">
+
+  <header class="m-head">
+    <div>
+      <div class="eyebrow">PlayerHQ · runde-arkiv · Borre Golfklubb</div>
+      <h2>Borre — 1. mai 2026</h2>
+      <p>74 (-1) · 18 hull · 4 t 12 m · hvit tee 5 980 m · vind 4 m/s NV</p>
+    </div>
+    <button class="m-close" aria-label="Lukk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </header>
+
+  <div class="hero-stats">
+    <div class="hero-stat gold">
+      <div class="hs-label">Score</div>
+      <div class="hs-value">74</div>
+      <div class="hs-delta gold">−1 · personlig beste</div>
+    </div>
+    <div class="hero-stat good">
+      <div class="hs-label">Putts</div>
+      <div class="hs-value">28</div>
+      <div class="hs-delta up">−3 vs snitt</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-label">FIR</div>
+      <div class="hs-value">11/14</div>
+      <div class="hs-delta">79 % · godt</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-label">GIR</div>
+      <div class="hs-value">13/18</div>
+      <div class="hs-delta">72 % · over snitt</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <span class="tab active">Scorekort</span>
+    <span class="tab">SG-breakdown</span>
+    <span class="tab">Notater</span>
+    <span class="tab">Bilder · 4</span>
+  </div>
+
+  <div class="m-body" style="padding: 0;">
+
+    <div class="scorecard">
+      <div class="sc-row sc-head">
+        <div>Hull</div><div>Par</div><div>Score</div><div>+/−</div><div>FIR</div><div>GIR</div><div>Putts</div><div>Notat</div>
+      </div>
+      <!-- Front 9 -->
+      <div class="sc-row body"><div>1</div><div>4</div><div><span class="sc-score">4</span></div><div>E</div><div class="sc-yes">✓</div><div class="sc-yes">✓</div><div>2</div><div class="sc-no">—</div></div>
+      <div class="sc-row body"><div>2</div><div>5</div><div><span class="sc-score birdie">4</span></div><div style="color:#4d6107;font-weight:700;">−1</div><div class="sc-yes">✓</div><div class="sc-yes">✓</div><div>1</div><div class="sc-no">draw</div></div>
+      <div class="sc-row body"><div>3</div><div>3</div><div><span class="sc-score">3</span></div><div>E</div><div class="sc-no">—</div><div class="sc-yes">✓</div><div>2</div><div class="sc-no">—</div></div>
+      <div class="sc-row body"><div>4</div><div>4</div><div><span class="sc-score">4</span></div><div>E</div><div class="sc-yes">✓</div><div class="sc-no">·</div><div>1</div><div class="sc-no">up&amp;down</div></div>
+      <div class="sc-row body"><div>5</div><div>4</div><div><span class="sc-score bogey">5</span></div><div style="color:#a37205;font-weight:700;">+1</div><div class="sc-no">·</div><div class="sc-no">·</div><div>2</div><div class="sc-no">venstre-rough</div></div>
+      <div class="sc-row body"><div>6</div><div>5</div><div><span class="sc-score">5</span></div><div>E</div><div class="sc-yes">✓</div><div class="sc-yes">✓</div><div>2</div><div class="sc-no">—</div></div>
+      <div class="sc-row body"><div>7</div><div>4</div><div><span class="sc-score bogey">5</span></div><div style="color:#a37205;font-weight:700;">+1</div><div class="sc-no">·</div><div class="sc-yes">✓</div><div>2</div><div class="sc-no">drive 230 m off-line</div></div>
+      <div class="sc-row body"><div>8</div><div>3</div><div><span class="sc-score birdie">2</span></div><div style="color:#4d6107;font-weight:700;">−1</div><div class="sc-no">—</div><div class="sc-yes">✓</div><div>1</div><div class="sc-no">8-iron 2 m</div></div>
+      <div class="sc-row body"><div>9</div><div>4</div><div><span class="sc-score">4</span></div><div>E</div><div class="sc-yes">✓</div><div class="sc-yes">✓</div><div>2</div><div class="sc-no">—</div></div>
+      <div class="sc-row subtotal"><div>Ut</div><div>36</div><div>36</div><div>E</div><div>6/8</div><div>7/9</div><div>15</div><div></div></div>
+      <!-- Back 9 -->
+      <div class="sc-row body"><div>10</div><div>4</div><div><span class="sc-score">4</span></div><div>E</div><div class="sc-yes">✓</div><div class="sc-yes">✓</div><div>2</div><div class="sc-no">—</div></div>
+      <div class="sc-row body"><div>11</div><div>5</div><div><span class="sc-score">5</span></div><div>E</div><div class="sc-yes">✓</div><div class="sc-yes">✓</div><div>2</div><div class="sc-no">—</div></div>
+      <div class="sc-row body"><div>12</div><div>3</div><div><span class="sc-score bogey">4</span></div><div style="color:#a37205;font-weight:700;">+1</div><div class="sc-no">—</div><div class="sc-no">·</div><div>2</div><div class="sc-no">drive 200 m off-line</div></div>
+      <div class="sc-row body"><div>13</div><div>4</div><div><span class="sc-score">4</span></div><div>E</div><div class="sc-yes">✓</div><div class="sc-yes">✓</div><div>2</div><div class="sc-no">—</div></div>
+      <div class="sc-row body"><div>14</div><div>4</div><div><span class="sc-score birdie">3</span></div><div style="color:#4d6107;font-weight:700;">−1</div><div class="sc-yes">✓</div><div class="sc-yes">✓</div><div>1</div><div class="sc-no">approach 1,5 m</div></div>
+      <div class="sc-row body"><div>15</div><div>4</div><div><span class="sc-score">4</span></div><div>E</div><div class="sc-yes">✓</div><div class="sc-yes">✓</div><div>2</div><div class="sc-no">—</div></div>
+      <div class="sc-row body"><div>16</div><div>5</div><div><span class="sc-score">5</span></div><div>E</div><div class="sc-no">·</div><div class="sc-yes">✓</div><div>2</div><div class="sc-no">—</div></div>
+      <div class="sc-row body"><div>17</div><div>3</div><div><span class="sc-score">3</span></div><div>E</div><div class="sc-no">—</div><div class="sc-yes">✓</div><div>1</div><div class="sc-no">vind hjelp</div></div>
+      <div class="sc-row body"><div>18</div><div>4</div><div><span class="sc-score bogey">5</span></div><div style="color:#a37205;font-weight:700;">+1</div><div class="sc-yes">✓</div><div class="sc-no">·</div><div>2</div><div class="sc-no">3-putt</div></div>
+      <div class="sc-row subtotal"><div>Inn</div><div>36</div><div>37</div><div>+1</div><div>5/6</div><div>6/9</div><div>13</div><div></div></div>
+      <div class="sc-row subtotal" style="background: var(--brand-primary); color: var(--brand-accent);"><div>Total</div><div>71</div><div>74</div><div>−1</div><div>11/14</div><div>13/18</div><div>28</div><div></div></div>
+    </div>
+
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#D1F843;"></span>Birdie</span>
+      <span class="legend-item"><span class="legend-dot" style="background:rgba(244,196,48,0.4);"></span>Bogey</span>
+      <span class="legend-item"><span class="legend-dot" style="background:rgba(197,48,48,0.2);"></span>Double+</span>
+      <span class="legend-item">FIR = fairway treff · GIR = green i regulering</span>
+    </div>
+
+  </div>
+
+  <footer class="m-foot">
+    <button class="ghost">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Eksporter PDF
+    </button>
+    <div></div>
+    <div class="right">
+      <button class="ghost">Sammenlign med …</button>
+      <button class="primary">Send til Anders →</button>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Comparison — PlayerHQ</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/modal.css">
+<style>
+  .pick-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 14px;
+    align-items: stretch;
+    padding-top: 18px;
+  }
+  .pick {
+    padding: 14px 16px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface-card);
+    cursor: pointer;
+  }
+  .pick-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-subtle);
+    margin-bottom: 6px;
+  }
+  .pick-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .pick-title svg { width: 14px; height: 14px; stroke-width: 2; color: var(--ink-subtle); }
+  .pick-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .vs {
+    align-self: center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-subtle);
+    padding: 0 4px;
+    font-weight: 400;
+  }
+
+  .compare-table {
+    margin-top: 22px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .ct-row {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr 1fr 1.3fr;
+    align-items: center;
+  }
+  .ct-row > div { padding: 12px 16px; text-align: right; font-size: 13px; }
+  .ct-row > div:first-child { text-align: left; font-weight: 700; color: var(--ink); }
+  .ct-head {
+    background: var(--surface-alt);
+    border-bottom: 1.5px solid var(--line);
+  }
+  .ct-head > div {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-subtle);
+  }
+  .ct-body { border-bottom: 1px solid var(--line); }
+  .ct-body:last-child { border-bottom: 0; }
+  .ct-row.section-head { background: var(--surface); }
+  .ct-row.section-head > div:first-child {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-subtle);
+    font-weight: 700;
+  }
+
+  .ct-row .label-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-subtle);
+    margin-left: 8px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .diff {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .diff.good { background: rgba(22,163,74,0.12); color: #16A34A; }
+  .diff.bad { background: rgba(197,48,48,0.1); color: #a83232; }
+  .diff.flat { background: var(--surface-alt); color: var(--ink-muted); }
+  .diff svg { width: 11px; height: 11px; stroke-width: 2.4; }
+
+  /* Radar chart */
+  .radar-wrap {
+    margin-top: 22px;
+    padding: 22px 18px 16px;
+    background: var(--surface-alt);
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+  .radar-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .radar-h {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-subtle);
+  }
+  .radar-legend { display: flex; gap: 14px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); }
+  .radar-legend .key { display: inline-flex; align-items: center; gap: 6px; }
+  .radar-legend .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .radar-body { display: flex; justify-content: center; }
+</style>
+</head>
+<body class="modal-page" data-screen-label="Modal D6 Comparison">
+
+<div class="app-bg" aria-hidden="true">
+  <div class="rail-1"></div><div class="rail-2"></div>
+  <div class="main"><div class="block"></div><div class="block tall"></div><div class="block"></div><div class="block tall"></div></div>
+</div>
+<div class="backdrop"></div>
+
+<div class="modal w-880" role="dialog" aria-modal="true" style="max-height: calc(100vh - 32px);">
+
+  <header class="m-head">
+    <div>
+      <div class="eyebrow">PlayerHQ · Sammenlign to runder</div>
+      <h2>Sammenligning</h2>
+      <p>Borre 1. mai vs GFGK 8. mai — side-by-side med diff og SG-radar.</p>
+    </div>
+    <button class="m-close" aria-label="Lukk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </header>
+
+  <div class="m-body">
+
+    <div class="pick-row">
+      <div class="pick">
+        <div class="pick-label">Før</div>
+        <div class="pick-title">Borre · 1. mai 2026
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="pick-meta">74 (−1) · 18 hull · 28 putts · personlig beste</div>
+      </div>
+      <div class="vs">vs</div>
+      <div class="pick">
+        <div class="pick-label">Etter</div>
+        <div class="pick-title">GFGK · 8. mai 2026
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="pick-meta">76 (+5) · 18 hull · 31 putts · vind 7 m/s</div>
+      </div>
+    </div>
+
+    <div class="compare-table">
+      <div class="ct-row ct-head">
+        <div>Metrikk</div>
+        <div>Borre · 1. mai</div>
+        <div>GFGK · 8. mai</div>
+        <div>Diff</div>
+      </div>
+
+      <div class="ct-row section-head"><div>Scoring</div><div></div><div></div><div></div></div>
+
+      <div class="ct-row ct-body">
+        <div>Total score <span class="label-sub">↓ er bedre</span></div>
+        <div>74</div>
+        <div>76</div>
+        <div><span class="diff bad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          +2 · 2,7 %
+        </span></div>
+      </div>
+
+      <div class="ct-row ct-body">
+        <div>Putts <span class="label-sub">↓ er bedre</span></div>
+        <div>28</div>
+        <div>31</div>
+        <div><span class="diff bad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          +3
+        </span></div>
+      </div>
+
+      <div class="ct-row ct-body">
+        <div>FIR <span class="label-sub">↑ er bedre</span></div>
+        <div>11/14</div>
+        <div>9/14</div>
+        <div><span class="diff bad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          −2 · −14 %
+        </span></div>
+      </div>
+
+      <div class="ct-row ct-body">
+        <div>GIR <span class="label-sub">↑ er bedre</span></div>
+        <div>13/18</div>
+        <div>11/18</div>
+        <div><span class="diff bad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          −2
+        </span></div>
+      </div>
+
+      <div class="ct-row section-head"><div>Strokes gained</div><div></div><div></div><div></div></div>
+
+      <div class="ct-row ct-body">
+        <div>SG: Off-tee <span class="label-sub">↑ er bedre</span></div>
+        <div>+0,8</div>
+        <div>+0,4</div>
+        <div><span class="diff bad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          −0,4
+        </span></div>
+      </div>
+
+      <div class="ct-row ct-body">
+        <div>SG: Approach <span class="label-sub">↑ er bedre</span></div>
+        <div>−0,4</div>
+        <div>+0,8</div>
+        <div><span class="diff good">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+          +1,2
+        </span></div>
+      </div>
+
+      <div class="ct-row ct-body">
+        <div>SG: Around-green <span class="label-sub">↑ er bedre</span></div>
+        <div>+0,2</div>
+        <div>+0,3</div>
+        <div><span class="diff good">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+          +0,1
+        </span></div>
+      </div>
+
+      <div class="ct-row ct-body">
+        <div>SG: Putting <span class="label-sub">↑ er bedre</span></div>
+        <div>+1,1</div>
+        <div>−0,3</div>
+        <div><span class="diff bad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          −1,4
+        </span></div>
+      </div>
+
+      <div class="ct-row ct-body" style="background: var(--surface-alt); font-weight: 700;">
+        <div>SG total</div>
+        <div>+1,7</div>
+        <div>+1,2</div>
+        <div><span class="diff bad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          −0,5
+        </span></div>
+      </div>
+    </div>
+
+    <div class="radar-wrap">
+      <div class="radar-head">
+        <div class="radar-h">SG-profil · radar</div>
+        <div class="radar-legend">
+          <span class="key"><span class="dot" style="background:#005840;"></span>Borre 1. mai</span>
+          <span class="key"><span class="dot" style="background:#D1F843;"></span>GFGK 8. mai</span>
+        </div>
+      </div>
+      <div class="radar-body">
+        <svg width="320" height="240" viewBox="-160 -120 320 240" style="overflow: visible;">
+          <!-- Background rings -->
+          <polygon points="0,-90 78,-45 78,45 0,90 -78,45 -78,-45" fill="none" stroke="var(--line)" stroke-width="1"/>
+          <polygon points="0,-60 52,-30 52,30 0,60 -52,30 -52,-30" fill="none" stroke="var(--line)" stroke-width="1"/>
+          <polygon points="0,-30 26,-15 26,15 0,30 -26,15 -26,-15" fill="none" stroke="var(--line)" stroke-width="1"/>
+          <!-- Axes -->
+          <line x1="0" y1="0" x2="0" y2="-90" stroke="var(--line)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="78" y2="-45" stroke="var(--line)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="78" y2="45" stroke="var(--line)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="0" y2="90" stroke="var(--line)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="-78" y2="45" stroke="var(--line)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="-78" y2="-45" stroke="var(--line)" stroke-width="1"/>
+          <!-- Borre polygon -->
+          <polygon points="0,-65 60,-35 70,40 0,80 -25,15 -45,-25"
+            fill="rgba(0,88,64,0.25)" stroke="#005840" stroke-width="2"/>
+          <!-- GFGK polygon -->
+          <polygon points="0,-45 75,-43 50,30 0,30 -55,32 -35,-20"
+            fill="rgba(209,248,67,0.32)" stroke="#86a929" stroke-width="2"/>
+          <!-- Labels -->
+          <text x="0" y="-100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" style="text-transform: uppercase; letter-spacing: 0.06em;">Off-tee</text>
+          <text x="92" y="-48" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor">Approach</text>
+          <text x="92" y="52" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor">Around-green</text>
+          <text x="0" y="106" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor">Putting</text>
+          <text x="-92" y="52" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor">Scrambling</text>
+          <text x="-92" y="-48" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor">Tempo</text>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="m-foot">
+    <button class="cancel">Lukk</button>
+    <div></div>
+    <div class="right">
+      <button class="ghost">Eksporter PDF</button>
+      <button class="primary">Send til Anders →</button>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NewPlan · Steg 3 — CoachHQ</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/modal.css">
+<style>
+  .ex-list { display: flex; flex-direction: column; gap: 6px; }
+  .ex-row {
+    display: grid;
+    grid-template-columns: 20px 36px 1fr auto auto 28px;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    transition: all var(--duration-micro) var(--ease-out);
+  }
+  .ex-row:hover { border-color: var(--ink-subtle); background: var(--surface-card); }
+  .ex-row.dragging {
+    background: var(--brand-primary-soft);
+    border-color: var(--brand-primary);
+    transform: translateX(2px) rotate(0.4deg);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.10);
+  }
+  .ex-drag {
+    color: var(--ink-subtle);
+    display: grid; place-items: center;
+    cursor: grab;
+  }
+  .ex-drag svg { width: 14px; height: 14px; stroke-width: 2; }
+  .ex-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-subtle);
+    font-weight: 600;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .ex-name { font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+  .ex-name .sub { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--ink-subtle); margin-top: 2px; }
+  .cat-pill {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  .cat-pill.fys { background: rgba(22,163,74,0.12); color: #16A34A; }
+  .cat-pill.tek { background: var(--brand-primary-soft); color: var(--brand-primary); }
+  .cat-pill.slag { background: rgba(209,248,67,0.20); color: var(--brand-accent-on); border: 1px solid rgba(184,200,46,0.4); }
+  [data-theme="dark"] .cat-pill.slag { color: var(--brand-accent); }
+  .cat-pill.spill { background: rgba(244,196,48,0.14); color: #B8852A; }
+  .cat-pill.turn { background: var(--surface-alt); color: var(--ink-muted); }
+  .ex-dur {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    min-width: 50px;
+    text-align: right;
+  }
+  .ex-x {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    color: var(--ink-subtle);
+    display: grid; place-items: center;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .ex-x:hover { background: var(--status-danger-bg); color: var(--status-danger); }
+  .ex-x svg { width: 12px; height: 12px; stroke-width: 2; }
+
+  .add-link {
+    margin-top: 10px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    border: 1.5px dashed var(--line);
+    border-radius: 10px;
+    color: var(--brand-primary);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    background: transparent;
+    align-self: flex-start;
+  }
+  .add-link:hover { border-color: var(--brand-primary); background: var(--brand-primary-soft); }
+  .add-link svg { width: 14px; height: 14px; stroke-width: 2; }
+  [data-theme="dark"] .add-link { color: var(--brand-accent); }
+
+  .summary-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--surface-alt);
+    border-radius: 12px;
+  }
+  .summary-row .stat { display: flex; flex-direction: column; gap: 2px; }
+  .summary-row .stat .lbl { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-subtle); font-weight: 700; }
+  .summary-row .stat .val { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--ink); letter-spacing: -0.01em; }
+
+  .ex-section-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .ex-section-head h4 {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0;
+  }
+  .ex-section-head .sub { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); }
+</style>
+</head>
+<body class="modal-page" data-screen-label="Modal 01 NewPlan steg 3">
+
+<div class="app-bg" aria-hidden="true">
+  <div class="rail-1"></div><div class="rail-2"></div>
+  <div class="main"><div class="block"></div><div class="block tall"></div><div class="block"></div><div class="block tall"></div></div>
+</div>
+<div class="backdrop"></div>
+
+<div class="modal w-720" role="dialog" aria-modal="true">
+
+  <header class="m-head">
+    <div>
+      <div class="eyebrow">CoachHQ · /admin/plans · ny plan</div>
+      <h2>Tilpass øvelser</h2>
+      <p>12 økter foreslått basert på mal «Sommer-toppform». Dra for å sortere, fjern de du ikke trenger.</p>
+    </div>
+    <button class="m-close" aria-label="Lukk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </header>
+
+  <div class="stepper">
+    <span class="step-label">Steg 3 av 4</span>
+    <div class="dot done">✓</div>
+    <div class="bar done"></div>
+    <div class="dot done">✓</div>
+    <div class="bar done"></div>
+    <div class="dot active">3</div>
+    <div class="bar"></div>
+    <div class="dot">4</div>
+    <span style="margin-left: 8px;">Tilpass økter</span>
+  </div>
+
+  <div class="m-body compact">
+
+    <div class="summary-row">
+      <div class="stat"><span class="lbl">Antall økter</span><span class="val">12</span></div>
+      <div class="stat"><span class="lbl">Total varighet</span><span class="val">14 t 20m</span></div>
+      <div class="stat"><span class="lbl">Pyramide</span><span class="val" style="color: var(--brand-primary);">40/25/15/15/5</span></div>
+      <div class="stat"><span class="lbl">Fordelt på</span><span class="val">8 uker</span></div>
+    </div>
+
+    <section>
+      <div class="ex-section-head">
+        <h4>Uke 19 — TEK-fokus</h4>
+        <span class="sub">4 økter · 4 t 50m</span>
+      </div>
+      <div class="ex-list">
+
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">01</span>
+          <span class="ex-name">Iron-treff 7-jern <span class="sub">Range · 50 baller · video</span></span>
+          <span class="cat-pill tek">TEK</span>
+          <span class="ex-dur">75 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+
+        <div class="ex-row dragging">
+          <span class="ex-drag" style="color: var(--brand-primary);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">02</span>
+          <span class="ex-name">Driver-konsistens <span class="sub">Range · 35 baller · TrackMan</span></span>
+          <span class="cat-pill slag">SLAG</span>
+          <span class="ex-dur">60 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">03</span>
+          <span class="ex-name">Wedge 30–80m kontroll <span class="sub">Short game-areal · 40 baller</span></span>
+          <span class="cat-pill tek">TEK</span>
+          <span class="ex-dur">60 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">04</span>
+          <span class="ex-name">Styrkeøkt — rotasjon &amp; bein <span class="sub">Gym · 45 min · video lenket</span></span>
+          <span class="cat-pill fys">FYS</span>
+          <span class="ex-dur">45 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+
+      </div>
+    </section>
+
+    <section>
+      <div class="ex-section-head">
+        <h4>Uke 20 — TEK + SLAG</h4>
+        <span class="sub">4 økter · 4 t 45m</span>
+      </div>
+      <div class="ex-list">
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">05</span>
+          <span class="ex-name">Putt 1–3m konvertering <span class="sub">Grønn · stress-drill</span></span>
+          <span class="cat-pill tek">TEK</span>
+          <span class="ex-dur">45 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">06</span>
+          <span class="ex-name">9 hull spillsimulering <span class="sub">Bane · pre-shot rutine</span></span>
+          <span class="cat-pill spill">SPILL</span>
+          <span class="ex-dur">90 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">07</span>
+          <span class="ex-name">Driver — start linje <span class="sub">Range · launch-monitor</span></span>
+          <span class="cat-pill slag">SLAG</span>
+          <span class="ex-dur">60 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">08</span>
+          <span class="ex-name">Mobilitet hofte/skuldre <span class="sub">Hjemme · 30 min app</span></span>
+          <span class="cat-pill fys">FYS</span>
+          <span class="ex-dur">30 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="ex-section-head">
+        <h4>Uke 21 — SLAG-overgang</h4>
+        <span class="sub">4 økter · 4 t 45m</span>
+      </div>
+      <div class="ex-list">
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">09</span>
+          <span class="ex-name">Turneringssimulering — 18 hull <span class="sub">Bane · scorecard</span></span>
+          <span class="cat-pill turn">TURN</span>
+          <span class="ex-dur">3 t 30m</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">10</span>
+          <span class="ex-name">Bunker — out &amp; spin <span class="sub">Short game · 30 baller</span></span>
+          <span class="cat-pill tek">TEK</span>
+          <span class="ex-dur">45 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">11</span>
+          <span class="ex-name">9 hull — pre-shot rutine <span class="sub">Bane · video debrief</span></span>
+          <span class="cat-pill spill">SPILL</span>
+          <span class="ex-dur">90 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="ex-row">
+          <span class="ex-drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg></span>
+          <span class="ex-num">12</span>
+          <span class="ex-name">Hastighet — driver swing speed <span class="sub">SuperSpeed · 3 sets</span></span>
+          <span class="cat-pill fys">FYS</span>
+          <span class="ex-dur">30 min</span>
+          <button class="ex-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <button class="add-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Legg til øvelse
+    </button>
+
+  </div>
+
+  <footer class="m-foot">
+    <button class="cancel">Avbryt</button>
+    <div></div>
+    <div class="right">
+      <button class="back">← Tilbake</button>
+      <button class="primary">Neste — bekreft <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

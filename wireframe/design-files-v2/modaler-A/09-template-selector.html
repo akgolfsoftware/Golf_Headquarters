@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TemplateSelector — CoachHQ</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/modal.css">
+<style>
+  .filter-row {
+    display: flex; gap: 10px; align-items: center;
+    padding: 14px 32px;
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+  }
+  .filter-search {
+    flex: 1;
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px;
+    background: var(--surface-card);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    max-width: 280px;
+  }
+  .filter-search svg { width: 14px; height: 14px; color: var(--ink-subtle); stroke-width: 2; }
+  .filter-search input { background: transparent; border: none; outline: none; font-size: 13px; flex: 1; color: var(--ink); }
+  .filter-search input::placeholder { color: var(--ink-subtle); }
+
+  .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .f-chip {
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--surface-card);
+    color: var(--ink-muted);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
+  }
+  .f-chip:hover { color: var(--ink); border-color: var(--ink-subtle); }
+  .f-chip.active { background: var(--brand-primary); color: var(--brand-accent); border-color: var(--brand-primary); }
+  .filter-divider { width: 1px; height: 16px; background: var(--line); margin: 0 4px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .tmpl {
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--duration-short) var(--ease-out);
+    display: flex; flex-direction: column;
+    min-height: 230px;
+    position: relative;
+  }
+  .tmpl:hover { border-color: var(--ink-subtle); transform: translateY(-2px); box-shadow: var(--shadow-card-hover); }
+  .tmpl.selected { border-color: var(--brand-primary); border-width: 2px; background: var(--brand-primary-soft); }
+  .tmpl.selected::after {
+    content: ""; position: absolute;
+    top: 12px; right: 12px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    color: var(--brand-accent);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D1F843' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 14px;
+  }
+  .tmpl-stripe { height: 4px; display: flex; }
+  .tmpl-stripe span { display: block; height: 100%; }
+  .tmpl-body { padding: 16px 16px 14px; display: flex; flex-direction: column; flex: 1; gap: 10px; }
+  .tmpl-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .tmpl-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .tmpl-foot {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-top: auto;
+  }
+  .tmpl-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tmpl-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 6px;
+    background: var(--surface-card);
+    color: var(--ink-muted);
+    border-radius: 4px;
+    border: 1px solid var(--line);
+  }
+  .tmpl-mini-donut {
+    width: 48px; height: 48px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .tmpl-mini-donut svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .tmpl-preview-link {
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--brand-primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  [data-theme="dark"] .tmpl-preview-link { color: var(--brand-accent); }
+  .tmpl-preview-link:hover { text-decoration: underline; }
+
+  .result-meta {
+    padding: 0 32px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 14px;
+  }
+  .result-meta .count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-subtle);
+    font-weight: 700;
+  }
+  .result-meta .sort {
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted);
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+  }
+  .result-meta .sort svg { width: 12px; height: 12px; stroke-width: 1.75; }
+
+  .m-body.tpl { padding: 18px 32px 28px; }
+</style>
+</head>
+<body class="modal-page" data-screen-label="Modal 06 TemplateSelector">
+
+<div class="app-bg" aria-hidden="true">
+  <div class="rail-1"></div><div class="rail-2"></div>
+  <div class="main"><div class="block"></div><div class="block tall"></div><div class="block"></div><div class="block tall"></div></div>
+</div>
+<div class="backdrop"></div>
+
+<div class="modal w-880" role="dialog" aria-modal="true" style="max-height: calc(100vh - 32px);">
+
+  <header class="m-head">
+    <div>
+      <div class="eyebrow">CoachHQ · maler-bibliotek</div>
+      <h2>Velg plan-mal</h2>
+      <p>9 maler tilgjengelige — valg pre-fyller wizard-steg 3 med øvelser og pyramide.</p>
+    </div>
+    <button class="m-close" aria-label="Lukk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </header>
+
+  <div class="filter-row">
+    <div class="filter-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Søk maler …">
+    </div>
+    <div class="filter-chips">
+      <span class="f-chip active">Alle 9</span>
+      <span class="f-chip">Putte</span>
+      <span class="f-chip">Chip</span>
+      <span class="f-chip">Iron</span>
+      <span class="f-chip">Driver</span>
+      <span class="f-chip">Fullswing</span>
+      <span class="f-chip">Mental</span>
+      <span class="filter-divider"></span>
+      <span class="f-chip">4u</span>
+      <span class="f-chip">6u</span>
+      <span class="f-chip">8u</span>
+      <span class="f-chip">12u</span>
+    </div>
+  </div>
+
+  <div class="result-meta" style="padding-top: 18px;">
+    <span class="count">9 maler</span>
+    <span class="sort">Sorter — populært
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </span>
+  </div>
+
+  <div class="m-body tpl">
+    <div class="grid">
+
+      <!-- 1: Putting Foundation -->
+      <div class="tmpl">
+        <div class="tmpl-stripe">
+          <span style="width: 10%; background: #16A34A;"></span>
+          <span style="width: 60%; background: #005840;"></span>
+          <span style="width: 20%; background: #D1F843;"></span>
+          <span style="width: 10%; background: #F4C430;"></span>
+        </div>
+        <div class="tmpl-body">
+          <div class="tmpl-title">Putting Foundation</div>
+          <div class="tmpl-sub">8 uker · 24 økter · 16 t total</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">PUTTE</span><span class="tmpl-tag">8U</span><span class="tmpl-tag">BEGYNNER</span></div>
+          <div class="tmpl-foot">
+            <span class="tmpl-preview-link">Forhåndsvis →</span>
+            <div class="tmpl-mini-donut">
+              <svg viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" stroke-width="6"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" stroke-width="6" stroke-dasharray="60 40"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#D1F843" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="-60"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-80"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F4C430" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-90"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: Driver Toppform -->
+      <div class="tmpl selected">
+        <div class="tmpl-stripe">
+          <span style="width: 15%; background: #16A34A;"></span>
+          <span style="width: 25%; background: #005840;"></span>
+          <span style="width: 45%; background: #D1F843;"></span>
+          <span style="width: 10%; background: #F4C430;"></span>
+          <span style="width: 5%; background: #5E5C57;"></span>
+        </div>
+        <div class="tmpl-body">
+          <div class="tmpl-title">Driver Toppform</div>
+          <div class="tmpl-sub">6 uker · 22 økter · 18 t total</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">DRIVER</span><span class="tmpl-tag">6U</span><span class="tmpl-tag">AVANSERT</span></div>
+          <div class="tmpl-foot">
+            <span class="tmpl-preview-link">Forhåndsvis →</span>
+            <div class="tmpl-mini-donut">
+              <svg viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" stroke-width="6"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#D1F843" stroke-width="6" stroke-dasharray="45 55"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" stroke-width="6" stroke-dasharray="25 75" stroke-dashoffset="-45"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-70"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F4C430" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-85"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#5E5C57" stroke-width="6" stroke-dasharray="5 95" stroke-dashoffset="-95"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3: Mental Game 4u -->
+      <div class="tmpl">
+        <div class="tmpl-stripe">
+          <span style="width: 5%; background: #16A34A;"></span>
+          <span style="width: 15%; background: #005840;"></span>
+          <span style="width: 20%; background: #D1F843;"></span>
+          <span style="width: 50%; background: #F4C430;"></span>
+          <span style="width: 10%; background: #5E5C57;"></span>
+        </div>
+        <div class="tmpl-body">
+          <div class="tmpl-title">Mental Game 4u</div>
+          <div class="tmpl-sub">4 uker · 12 økter · 8 t total</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">MENTAL</span><span class="tmpl-tag">4U</span><span class="tmpl-tag">MIDDELS</span></div>
+          <div class="tmpl-foot">
+            <span class="tmpl-preview-link">Forhåndsvis →</span>
+            <div class="tmpl-mini-donut">
+              <svg viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" stroke-width="6"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F4C430" stroke-width="6" stroke-dasharray="50 50"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#D1F843" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="-50"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-70"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#5E5C57" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-85"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" stroke-width="6" stroke-dasharray="5 95" stroke-dashoffset="-95"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: Sommer-toppform -->
+      <div class="tmpl">
+        <div class="tmpl-stripe">
+          <span style="width: 15%; background: #16A34A;"></span>
+          <span style="width: 40%; background: #005840;"></span>
+          <span style="width: 25%; background: #D1F843;"></span>
+          <span style="width: 15%; background: #F4C430;"></span>
+          <span style="width: 5%; background: #5E5C57;"></span>
+        </div>
+        <div class="tmpl-body">
+          <div class="tmpl-title">Sommer-toppform</div>
+          <div class="tmpl-sub">8 uker · 32 økter · 24 t total</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">FULLSWING</span><span class="tmpl-tag">8U</span><span class="tmpl-tag">AVANSERT</span></div>
+          <div class="tmpl-foot">
+            <span class="tmpl-preview-link">Forhåndsvis →</span>
+            <div class="tmpl-mini-donut">
+              <svg viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" stroke-width="6"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" stroke-width="6" stroke-dasharray="40 60"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#D1F843" stroke-width="6" stroke-dasharray="25 75" stroke-dashoffset="-40"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-65"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F4C430" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-80"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#5E5C57" stroke-width="6" stroke-dasharray="5 95" stroke-dashoffset="-95"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5: Chip & Pitch -->
+      <div class="tmpl">
+        <div class="tmpl-stripe">
+          <span style="width: 10%; background: #16A34A;"></span>
+          <span style="width: 65%; background: #005840;"></span>
+          <span style="width: 15%; background: #D1F843;"></span>
+          <span style="width: 10%; background: #F4C430;"></span>
+        </div>
+        <div class="tmpl-body">
+          <div class="tmpl-title">Chip &amp; Pitch Pro</div>
+          <div class="tmpl-sub">6 uker · 18 økter · 12 t total</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">CHIP</span><span class="tmpl-tag">6U</span><span class="tmpl-tag">MIDDELS</span></div>
+          <div class="tmpl-foot">
+            <span class="tmpl-preview-link">Forhåndsvis →</span>
+            <div class="tmpl-mini-donut">
+              <svg viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" stroke-width="6"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" stroke-width="6" stroke-dasharray="65 35"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#D1F843" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-65"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F4C430" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-80"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-90"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6: Iron Lab -->
+      <div class="tmpl">
+        <div class="tmpl-stripe">
+          <span style="width: 10%; background: #16A34A;"></span>
+          <span style="width: 55%; background: #005840;"></span>
+          <span style="width: 25%; background: #D1F843;"></span>
+          <span style="width: 10%; background: #F4C430;"></span>
+        </div>
+        <div class="tmpl-body">
+          <div class="tmpl-title">Iron Lab</div>
+          <div class="tmpl-sub">8 uker · 24 økter · 18 t total</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">IRON</span><span class="tmpl-tag">8U</span><span class="tmpl-tag">MIDDELS</span></div>
+          <div class="tmpl-foot">
+            <span class="tmpl-preview-link">Forhåndsvis →</span>
+            <div class="tmpl-mini-donut">
+              <svg viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" stroke-width="6"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" stroke-width="6" stroke-dasharray="55 45"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#D1F843" stroke-width="6" stroke-dasharray="25 75" stroke-dashoffset="-55"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-80"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F4C430" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-90"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7: Turneringsforberedelse -->
+      <div class="tmpl">
+        <div class="tmpl-stripe">
+          <span style="width: 5%; background: #16A34A;"></span>
+          <span style="width: 15%; background: #005840;"></span>
+          <span style="width: 30%; background: #D1F843;"></span>
+          <span style="width: 35%; background: #F4C430;"></span>
+          <span style="width: 15%; background: #5E5C57;"></span>
+        </div>
+        <div class="tmpl-body">
+          <div class="tmpl-title">Turnerings-prep 12u</div>
+          <div class="tmpl-sub">12 uker · 44 økter · 36 t total</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">FULLSWING</span><span class="tmpl-tag">12U</span><span class="tmpl-tag">AVANSERT</span></div>
+          <div class="tmpl-foot">
+            <span class="tmpl-preview-link">Forhåndsvis →</span>
+            <div class="tmpl-mini-donut">
+              <svg viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" stroke-width="6"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F4C430" stroke-width="6" stroke-dasharray="35 65"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#D1F843" stroke-width="6" stroke-dasharray="30 70" stroke-dashoffset="-35"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-65"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#5E5C57" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-80"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" stroke-width="6" stroke-dasharray="5 95" stroke-dashoffset="-95"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8: Vintergrunnlag -->
+      <div class="tmpl">
+        <div class="tmpl-stripe">
+          <span style="width: 45%; background: #16A34A;"></span>
+          <span style="width: 35%; background: #005840;"></span>
+          <span style="width: 15%; background: #D1F843;"></span>
+          <span style="width: 5%; background: #F4C430;"></span>
+        </div>
+        <div class="tmpl-body">
+          <div class="tmpl-title">Vintergrunnlag</div>
+          <div class="tmpl-sub">12 uker · 36 økter · 28 t total</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">FULLSWING</span><span class="tmpl-tag">12U</span><span class="tmpl-tag">BEGYNNER</span></div>
+          <div class="tmpl-foot">
+            <span class="tmpl-preview-link">Forhåndsvis →</span>
+            <div class="tmpl-mini-donut">
+              <svg viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" stroke-width="6"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" stroke-width="6" stroke-dasharray="45 55"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" stroke-width="6" stroke-dasharray="35 65" stroke-dashoffset="-45"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#D1F843" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-80"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F4C430" stroke-width="6" stroke-dasharray="5 95" stroke-dashoffset="-95"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9: Komme tilbake fra skade -->
+      <div class="tmpl">
+        <div class="tmpl-stripe">
+          <span style="width: 40%; background: #16A34A;"></span>
+          <span style="width: 40%; background: #005840;"></span>
+          <span style="width: 15%; background: #D1F843;"></span>
+          <span style="width: 5%; background: #5E5C57;"></span>
+        </div>
+        <div class="tmpl-body">
+          <div class="tmpl-title">Return-to-play 4u</div>
+          <div class="tmpl-sub">4 uker · 16 økter · 10 t total</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">FYS</span><span class="tmpl-tag">4U</span><span class="tmpl-tag">REHAB</span></div>
+          <div class="tmpl-foot">
+            <span class="tmpl-preview-link">Forhåndsvis →</span>
+            <div class="tmpl-mini-donut">
+              <svg viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" stroke-width="6"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" stroke-width="6" stroke-dasharray="40 60"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" stroke-width="6" stroke-dasharray="40 60" stroke-dashoffset="-40"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#D1F843" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-80"/>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#5E5C57" stroke-width="6" stroke-dasharray="5 95" stroke-dashoffset="-95"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="m-foot">
+    <button class="cancel">Avbryt</button>
+    <div></div>
+    <div class="right">
+      <button class="primary">Bruk valgt mal — Driver Toppform →</button>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

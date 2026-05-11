@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TrackManImport — Steg 3</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/modal.css">
+<style>
+  .steps { display: flex; gap: 6px; align-items: center; padding: 14px 32px 0; }
+  .step-dot { width: 24px; height: 24px; border-radius: 50%; display:inline-flex; align-items:center; justify-content:center; font-family: var(--font-mono); font-size: 11px; font-weight: 700; background: var(--surface-card); color: var(--ink-muted); border: 1.5px solid var(--line); }
+  .step-dot.active { background: var(--brand-accent); color: var(--brand-primary); border-color: var(--brand-primary); box-shadow: 0 0 0 3px var(--brand-primary-soft); }
+  .step-dot.done { background: var(--brand-primary); color: var(--brand-accent); border-color: var(--brand-primary); }
+  .step-line { flex: 1; height: 1.5px; background: var(--line); max-width: 60px; }
+  .step-line.done { background: var(--brand-primary); }
+  .step-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-subtle); margin-left: 4px; }
+  .step-label.active { color: var(--brand-primary); }
+  [data-theme="dark"] .step-label.active { color: var(--brand-accent); }
+
+  .verify-tip {
+    margin-top: 18px;
+    padding: 12px 14px;
+    background: var(--brand-primary-soft);
+    border-radius: 10px;
+    display: flex; gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    border: 1px solid rgba(0,88,64,0.12);
+  }
+  [data-theme="dark"] .verify-tip { border-color: rgba(209,248,67,0.18); }
+  .verify-tip svg { width: 16px; height: 16px; stroke-width: 2; flex-shrink: 0; margin-top: 2px; color: var(--brand-primary); }
+  [data-theme="dark"] .verify-tip svg { color: var(--brand-accent); }
+
+  .data-table {
+    margin-top: 16px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .dt-row {
+    display: grid;
+    grid-template-columns: 1.4fr 0.9fr 0.9fr 1.1fr 0.9fr 1fr 0.7fr;
+    align-items: center;
+    font-size: 12px;
+  }
+  .dt-row > div { padding: 11px 12px; text-align: right; color: var(--ink); }
+  .dt-row > div:first-child { text-align: left; font-weight: 700; }
+  .dt-head {
+    background: var(--surface-alt);
+    border-bottom: 1.5px solid var(--line);
+  }
+  .dt-head > div {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-subtle);
+  }
+  .dt-body { border-bottom: 1px solid var(--line); }
+  .dt-body:last-child { border-bottom: 0; }
+  .dt-body:hover { background: var(--surface-alt); }
+  .unit { color: var(--ink-subtle); font-weight: 400; margin-left: 2px; font-size: 10px; }
+  .edit-cell {
+    color: var(--ink-subtle);
+    display: inline-flex; align-items: center; gap: 4px;
+    justify-content: flex-end;
+    cursor: pointer;
+  }
+  .edit-cell svg { width: 12px; height: 12px; stroke-width: 1.75; }
+  .conf-pill {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: rgba(22,163,74,0.12);
+    color: #16A34A;
+  }
+  .conf-pill.mid { background: rgba(244,196,48,0.18); color: #a37205; }
+  .conf-pill.low { background: rgba(197,48,48,0.12); color: #a83232; }
+</style>
+</head>
+<body class="modal-page" data-screen-label="Modal D5 TrackManImport Steg3">
+
+<div class="app-bg" aria-hidden="true">
+  <div class="rail-1"></div><div class="rail-2"></div>
+  <div class="main"><div class="block"></div><div class="block tall"></div><div class="block"></div><div class="block tall"></div></div>
+</div>
+<div class="backdrop"></div>
+
+<div class="modal w-720" role="dialog" aria-modal="true" style="max-height: calc(100vh - 32px);">
+
+  <header class="m-head">
+    <div>
+      <div class="eyebrow">PlayerHQ · TrackMan-import · Steg 3 av 3</div>
+      <h2>Verifiser data før import</h2>
+      <p>14 køller · 168 slag · session 10. mai. Korrigeringer lagres automatisk.</p>
+    </div>
+    <button class="m-close" aria-label="Lukk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </header>
+
+  <div class="steps">
+    <span class="step-dot done">✓</span><span class="step-label">Metode</span>
+    <span class="step-line done"></span>
+    <span class="step-dot done">✓</span><span class="step-label">Last opp</span>
+    <span class="step-line done"></span>
+    <span class="step-dot active">3</span><span class="step-label active">Verifiser</span>
+  </div>
+
+  <div class="m-body">
+
+    <div class="verify-tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <div>Klikk på en celle for å justere snittverdiene før import. CSV-data har 100 % presisjon — endre kun hvis noe ser åpenbart feil ut.</div>
+    </div>
+
+    <div class="data-table">
+      <div class="dt-row dt-head">
+        <div>Kølle</div>
+        <div>Carry <span class="unit">m</span></div>
+        <div>Total <span class="unit">m</span></div>
+        <div>Ball-speed <span class="unit">m/s</span></div>
+        <div>Spin <span class="unit">rpm</span></div>
+        <div>Launch <span class="unit">°</span></div>
+        <div>Slag</div>
+      </div>
+
+      <div class="dt-row dt-body"><div>Driver</div><div>234,5</div><div>252,8</div><div>72,3</div><div>2 580</div><div>13,2</div><div>14</div></div>
+      <div class="dt-row dt-body"><div>3-wood</div><div>212,1</div><div>225,4</div><div>68,7</div><div>3 120</div><div>11,8</div><div>10</div></div>
+      <div class="dt-row dt-body"><div>5-wood</div><div>198,4</div><div>208,0</div><div>65,9</div><div>3 640</div><div>13,1</div><div>8</div></div>
+      <div class="dt-row dt-body"><div>4-iron</div><div>182,7</div><div>189,3</div><div>62,4</div><div>4 280</div><div>14,5</div><div>12</div></div>
+      <div class="dt-row dt-body"><div>5-iron</div><div>172,0</div><div>178,2</div><div>60,1</div><div>4 720</div><div>15,8</div><div>12</div></div>
+      <div class="dt-row dt-body"><div>6-iron</div><div>161,5</div><div>166,8</div><div>57,8</div><div>5 140</div><div>17,2</div><div>14</div></div>
+      <div class="dt-row dt-body"><div>7-iron</div><div>149,8</div><div>154,2</div><div>54,9</div><div>5 680</div><div>18,9</div><div>14</div></div>
+      <div class="dt-row dt-body"><div>8-iron</div><div>138,4</div><div>141,9</div><div>52,1</div><div>6 124</div><div>20,4</div><div>14</div></div>
+      <div class="dt-row dt-body"><div>9-iron</div><div>127,2</div><div>130,1</div><div>49,3</div><div>6 580</div><div>22,1</div><div>14</div></div>
+      <div class="dt-row dt-body"><div>Pitching-wedge</div><div>114,7</div><div>117,0</div><div>46,5</div><div>7 120</div><div>24,8</div><div>14</div></div>
+      <div class="dt-row dt-body"><div>Gap-wedge · 50°</div><div>102,1</div><div>103,8</div><div>43,2</div><div>7 680</div><div>27,5</div><div>10</div></div>
+      <div class="dt-row dt-body"><div>Sand-wedge · 54°</div><div>88,3</div><div>89,4</div><div>40,1</div><div>8 240</div><div>30,2</div><div>10</div></div>
+      <div class="dt-row dt-body"><div>Lob-wedge · 58°</div><div>72,6</div><div>73,2</div><div>36,8</div><div>8 780</div><div>33,4</div><div>10</div></div>
+      <div class="dt-row dt-body"><div>Putter</div><div>—</div><div>—</div><div>—</div><div>—</div><div>—</div><div>12</div></div>
+    </div>
+
+  </div>
+
+  <footer class="m-foot">
+    <button class="cancel">Avbryt</button>
+    <div></div>
+    <div class="right">
+      <button class="ghost">← Tilbake</button>
+      <button class="primary">Importer · 14 køller →</button>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

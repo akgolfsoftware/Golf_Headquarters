@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BulkApprove — CoachHQ</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/modal.css">
+<style>
+  .bulk-list { display: flex; flex-direction: column; gap: 6px; padding-top: 18px; }
+  .bulk-row {
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface-card);
+    overflow: hidden;
+  }
+  .bulk-row.open { border-color: var(--brand-primary); }
+  .bulk-head {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+  .sev-pill {
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .sev-pill.urgent { background: rgba(197,48,48,0.12); color: #a83232; }
+  .sev-pill.warning { background: rgba(244,196,48,0.18); color: #8a6608; }
+  .sev-pill.info { background: rgba(0,88,64,0.1); color: #005840; }
+  [data-theme="dark"] .sev-pill.info { background: rgba(209,248,67,0.15); color: var(--brand-accent); }
+
+  .avatar-sm {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    color: var(--brand-accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 11px;
+    font-style: italic;
+    flex-shrink: 0;
+  }
+  .a-mp { background: #005840; }
+  .a-eh { background: #16A34A; }
+  .a-jt { background: #5E5C57; }
+  .a-il { background: #F4C430; color: #4a3a07; }
+  .a-sn { background: #a83232; }
+
+  .bulk-title-line { min-width: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .player-name { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.005em; }
+  .action-text { font-size: 13px; color: var(--ink-muted); }
+  .agent-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--brand-primary);
+    background: var(--brand-primary-soft);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  [data-theme="dark"] .agent-badge { color: var(--brand-accent); }
+
+  .conf {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .chevron {
+    color: var(--ink-subtle);
+    transition: transform 0.2s ease;
+  }
+  .chevron svg { width: 14px; height: 14px; stroke-width: 2; }
+  .bulk-row.open .chevron { transform: rotate(180deg); color: var(--brand-primary); }
+  [data-theme="dark"] .bulk-row.open .chevron { color: var(--brand-accent); }
+
+  .bulk-detail {
+    padding: 0 14px 14px 56px;
+    border-top: 1px dashed var(--line);
+    margin-top: -1px;
+    padding-top: 14px;
+  }
+  .bulk-detail p { font-size: 13px; line-height: 1.5; color: var(--ink-muted); margin: 0 0 8px; }
+  .bulk-detail .diff {
+    display: flex; gap: 8px; align-items: center;
+    font-family: var(--font-mono); font-size: 12px;
+    margin-top: 6px;
+  }
+  .diff-before { color: var(--ink-subtle); text-decoration: line-through; }
+  .diff-after { color: var(--brand-primary); font-weight: 700; }
+  [data-theme="dark"] .diff-after { color: var(--brand-accent); }
+  .diff-arrow { color: var(--ink-subtle); }
+
+  .field-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-subtle);
+    margin: 22px 0 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .field-label .hint { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--ink-subtle); font-size: 11px; }
+
+  textarea.note {
+    width: 100%;
+    min-height: 88px;
+    padding: 12px 14px;
+    background: var(--surface-card);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+    resize: vertical;
+  }
+  textarea.note:focus { outline: none; border-color: var(--brand-primary); }
+
+  .info-warn {
+    margin-top: 18px;
+    padding: 12px 14px;
+    background: rgba(244,196,48,0.1);
+    border: 1px solid rgba(244,196,48,0.3);
+    border-radius: 10px;
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 12px;
+    color: #8a6608;
+    line-height: 1.5;
+    font-family: var(--font-mono);
+  }
+  .info-warn svg { width: 14px; height: 14px; stroke-width: 2; flex-shrink: 0; margin-top: 2px; }
+</style>
+</head>
+<body class="modal-page" data-screen-label="Modal D7 BulkApprove">
+
+<div class="app-bg" aria-hidden="true">
+  <div class="rail-1"></div><div class="rail-2"></div>
+  <div class="main"><div class="block"></div><div class="block tall"></div><div class="block"></div><div class="block tall"></div></div>
+</div>
+<div class="backdrop"></div>
+
+<div class="modal w-720" role="dialog" aria-modal="true" style="max-height: calc(100vh - 32px);">
+
+  <header class="m-head">
+    <div>
+      <div class="eyebrow">CoachHQ · Approvals · bulk-modus</div>
+      <h2>Godkjenn 5 anbefalinger</h2>
+      <p>Sender til 5 spillere · varsel går ut umiddelbart etter bekreftelse.</p>
+    </div>
+    <button class="m-close" aria-label="Lukk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </header>
+
+  <div class="m-body">
+
+    <div class="bulk-list">
+
+      <div class="bulk-row open">
+        <div class="bulk-head">
+          <span class="sev-pill warning">Warning</span>
+          <span class="avatar-sm a-mp">MP</span>
+          <div class="bulk-title-line">
+            <span class="player-name">Markus R Pedersen</span>
+            <span class="action-text">— Pauseuke anbefalt før Sørlandsåpent</span>
+            <span class="agent-badge">Deload-agent</span>
+          </div>
+          <span class="conf">87 %</span>
+          <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+        <div class="bulk-detail">
+          <p>14 dager trening uten pause. SG-trend flater ut siste 5 dager — anbefaler full deload uke 23 før Sørlandsåpent.</p>
+          <div class="diff">
+            <span class="diff-before">Uke 23 · 4 TEK-økter</span>
+            <span class="diff-arrow">→</span>
+            <span class="diff-after">Uke 23 · 0 økter (pause)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bulk-row">
+        <div class="bulk-head">
+          <span class="sev-pill info">Info</span>
+          <span class="avatar-sm a-eh">EH</span>
+          <div class="bulk-title-line">
+            <span class="player-name">Emma Holm</span>
+            <span class="action-text">— Ny fase klar · gå til SLAG-fokus</span>
+            <span class="agent-badge">Periodisering-agent</span>
+          </div>
+          <span class="conf">92 %</span>
+          <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+      </div>
+
+      <div class="bulk-row">
+        <div class="bulk-head">
+          <span class="sev-pill warning">Warning</span>
+          <span class="avatar-sm a-jt">JT</span>
+          <div class="bulk-title-line">
+            <span class="player-name">Jon Tellefsen</span>
+            <span class="action-text">— TEK-volum bør reduseres 40 % → 28 %</span>
+            <span class="agent-badge">Volum-agent</span>
+          </div>
+          <span class="conf">78 %</span>
+          <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+      </div>
+
+      <div class="bulk-row">
+        <div class="bulk-head">
+          <span class="sev-pill info">Info</span>
+          <span class="avatar-sm a-il">IL</span>
+          <div class="bulk-title-line">
+            <span class="player-name">Ine Larsen</span>
+            <span class="action-text">— Putte-grunnlag ferdig · åpne for green-lesing</span>
+            <span class="agent-badge">Progresjon-agent</span>
+          </div>
+          <span class="conf">89 %</span>
+          <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+      </div>
+
+      <div class="bulk-row">
+        <div class="bulk-head">
+          <span class="sev-pill urgent">Urgent</span>
+          <span class="avatar-sm a-sn">SN</span>
+          <div class="bulk-title-line">
+            <span class="player-name">Sondre Nilsen</span>
+            <span class="action-text">— Skadetegn detektert · pause-økt tirsdag</span>
+            <span class="agent-badge">Health-agent</span>
+          </div>
+          <span class="conf">94 %</span>
+          <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="field-label">
+      Felles merknad <span class="hint">— valgfri, sendes til alle 5</span>
+    </div>
+    <textarea class="note" placeholder="Skriv en kort melding hvis du vil legge til kontekst …"></textarea>
+    <div style="display:flex;justify-content:flex-end;margin-top:4px;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);text-transform:uppercase;letter-spacing:0.05em;">0 / 280</div>
+
+    <div class="info-warn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div>5 spillere får varsel umiddelbart. Du kan ikke angre etter at du har bekreftet.</div>
+    </div>
+
+  </div>
+
+  <footer class="m-foot">
+    <button class="cancel">Avbryt</button>
+    <div></div>
+    <div class="right">
+      <button class="primary">Godkjenn alle · 5 →</button>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
