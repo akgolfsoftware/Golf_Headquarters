@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head><meta charset="UTF-8"><title>PlayerHQ — Statistikk · 9-E/1</title><link rel="stylesheet" href="_shared/arketype-f-player.css">
+<style>
+  .hero-stat{padding:24px;background:linear-gradient(135deg,#005840,#0A3C2F);color:#fff;border-radius:18px;margin-bottom:18px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;position:relative;overflow:hidden}
+  .hero-stat::after{content:"";position:absolute;top:-40px;right:-40px;width:240px;height:240px;background:radial-gradient(circle,rgba(225,206,123,.18),transparent 70%)}
+  .hero-stat .h-kpi{position:relative}
+  .hero-stat .h-kpi .lbl{font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px}
+  .hero-stat .h-kpi .v{font-family:var(--font-display);font-size:36px;font-weight:500;letter-spacing:-.02em;line-height:1}
+  .hero-stat .h-kpi .v small{font-family:var(--font-mono);font-size:12px;color:var(--brand-accent);margin-left:6px;font-weight:500;letter-spacing:.02em}
+  .hero-stat .h-kpi .det{font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,.55);letter-spacing:.04em;margin-top:6px}
+  .hero-stat .h-kpi.main .v{font-size:52px}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+  .panel{background:#fff;border:1px solid #F0EDE5;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px}
+  .panel h3{font-family:var(--font-display);font-size:16px;font-weight:600;margin:0;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:baseline}
+  .panel h3 small{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+  .chart{height:160px;background:#FAFAF7;border-radius:10px;position:relative;padding:14px}
+  .chart svg{width:100%;height:100%;overflow:visible}
+  .chart .gl{stroke:#F0EDE5;stroke-width:1}
+  .chart .ln{fill:none;stroke:var(--brand-primary);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .chart .area{fill:rgba(0,88,64,.10)}
+  .chart .pt{fill:var(--brand-primary)}
+  .chart .pt-hi{fill:#fff;stroke:var(--brand-primary);stroke-width:2.5}
+  .chart .lbl-axis{font-family:var(--font-mono);font-size:9px;fill:var(--ink-subtle);letter-spacing:.04em}
+
+  .bar-chart{display:flex;flex-direction:column;gap:10px}
+  .bar-row{display:grid;grid-template-columns:90px 1fr 60px;gap:10px;align-items:center;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.02em}
+  .bar-row .bar{height:8px;background:#F0EDE5;border-radius:4px;overflow:hidden;position:relative}
+  .bar-row .bar .fl{height:100%;background:var(--brand-primary);border-radius:4px}
+  .bar-row .bar .fl.warn{background:var(--status-warning)}
+  .bar-row .bar .target{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink);border-radius:1px}
+  .bar-row b{font-weight:600;color:var(--ink);text-align:right;font-size:12px}
+  .bar-row b small{color:var(--status-success);font-weight:500;margin-left:4px;font-size:9px}
+
+  .scoring-tbl{display:grid;grid-template-columns:repeat(5,1fr);gap:0;background:#FAFAF7;border-radius:10px;overflow:hidden;border:1px solid #F0EDE5}
+  .scoring-tbl .cell{padding:14px 12px;border-right:1px solid #F0EDE5;border-bottom:1px solid #F0EDE5;text-align:center}
+  .scoring-tbl .cell:nth-child(5n){border-right:none}
+  .scoring-tbl .cell.h{background:#fff;font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .scoring-tbl .cell .v{font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--ink);letter-spacing:-.01em;line-height:1}
+  .scoring-tbl .cell .det{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);margin-top:4px;letter-spacing:.02em}
+  .scoring-tbl .cell.hi{background:rgba(0,88,64,.06)}
+  .scoring-tbl .cell.hi .v{color:var(--brand-primary)}
+
+  .rd-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:8px}
+  .rd-cell{aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;color:#fff}
+  .rd-cell.eag{background:#1A7D56}
+  .rd-cell.bir{background:#2D6B4C}
+  .rd-cell.par{background:#A8B4A6;color:var(--ink)}
+  .rd-cell.bog{background:#E9C36B;color:#5A4514}
+  .rd-cell.dbl{background:#B04444}
+  .rd-cell.empty{background:#F0EDE5}
+
+  .trend-row{display:flex;justify-content:space-between;padding:12px 16px;background:#FAFAF7;border-radius:10px;align-items:center;font-size:13px}
+  .trend-row b{font-weight:600;color:var(--ink)}
+  .trend-row .v{font-family:var(--font-mono);font-weight:600;color:var(--status-success);letter-spacing:.02em}
+  .trend-row .v.dn{color:var(--status-danger)}
+</style></head>
+<body>
+<div class="deck" data-screen-label="53 PlayerHQ — Statistikk &amp; progresjon">
+  <header class="deck-head">
+    <div class="eyebrow">9-E · PlayerHQ utvidelser · skjerm 1 av 5</div>
+    <h1>Min statistikk &amp; sesongtrend</h1>
+    <p class="sub">Markus' egen statistikk-side: rullerende HCP-utvikling, scoring per spilltype, sterke/svake hull-områder, og round-history. Data sync'es fra GolfBox + egen tapping i Live Session.</p>
+    <div class="meta-row"><span><span class="lbl">URL:</span> /meg/stats</span><span><span class="lbl">Datakilder:</span> GolfBox · Live Tapper · Strokes Gained</span></div>
+  </header>
+  <section class="ab">
+    <div class="ab-label"><span class="num">53 · 9-E/1</span><span class="ttl">Statistikk-dashboard for spiller</span><span class="meta">trend · områder · runder</span></div>
+    <div class="ab-frame"><div class="app app--ph">
+      <aside class="nav">
+        <div class="nav-logo"><div class="mark">AK</div><div class="n">AK Golf<span class="dim">/spiller</span></div></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>Hub</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Plan</div>
+        <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Statistikk</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 9V5l-6 7 6 7v-4h6V9z"/></svg>Coach</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Helse</div>
+        <div class="nav-foot"><div class="av-sm">MP<span class="tier">PRO</span></div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Markus P.</span><span style="font-size:11px;color:var(--ink-subtle)">HCP +2,4 · GFGK</span></div></div>
+      </aside>
+      <main class="main">
+        <header class="page-head">
+          <div class="crumb">PlayerHQ <span class="sep">/</span> Statistikk</div>
+          <h1>Slik utvikler du deg.</h1>
+          <p class="sub">Sammendrag fra 28 runder i 2026. Strokes Gained, scoring og HCP-trend. Klikk en runde for full hull-for-hull.</p>
+        </header>
+
+        <div class="hero-stat">
+          <div class="h-kpi main"><div class="lbl">HCP nå</div><div class="v">+2,4<small>↓ 0,8 sesong</small></div><div class="det">14. mai · oppdatert daglig 06:00</div></div>
+          <div class="h-kpi"><div class="lbl">Snitt-score · siste 10</div><div class="v">71,4<small>−1,2</small></div><div class="det">vs sesong 72,6 (28 runder)</div></div>
+          <div class="h-kpi"><div class="lbl">Cut-rate · tour</div><div class="v">82%<small>+8%</small></div><div class="det">9 av 11 cuts klart</div></div>
+          <div class="h-kpi"><div class="lbl">Beste 18-hulls runde</div><div class="v">66<small>−6</small></div><div class="det">Bærum · 04.05 · R3</div></div>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <h3>HCP-trend · 12 mnd <small>rullerende 8 beste</small></h3>
+            <div class="chart">
+              <svg viewBox="0 0 360 130" preserveAspectRatio="none">
+                <line class="gl" x1="0" y1="30" x2="360" y2="30"/><line class="gl" x1="0" y1="65" x2="360" y2="65"/><line class="gl" x1="0" y1="100" x2="360" y2="100"/>
+                <text class="lbl-axis" x="2" y="34">0</text><text class="lbl-axis" x="2" y="69">+2</text><text class="lbl-axis" x="2" y="104">+4</text>
+                <path class="area" d="M20,90 L50,85 L80,75 L110,80 L140,70 L170,72 L200,60 L230,55 L260,52 L290,45 L320,38 L350,30 L350,130 L20,130 Z"/>
+                <path class="ln" d="M20,90 L50,85 L80,75 L110,80 L140,70 L170,72 L200,60 L230,55 L260,52 L290,45 L320,38 L350,30"/>
+                <circle class="pt" cx="20" cy="90" r="3"/><circle class="pt" cx="80" cy="75" r="3"/><circle class="pt" cx="140" cy="70" r="3"/><circle class="pt" cx="200" cy="60" r="3"/><circle class="pt" cx="260" cy="52" r="3"/><circle class="pt-hi" cx="350" cy="30" r="5"/>
+                <text class="lbl-axis" x="20" y="125">jun</text><text class="lbl-axis" x="80" y="125">aug</text><text class="lbl-axis" x="140" y="125">okt</text><text class="lbl-axis" x="200" y="125">des</text><text class="lbl-axis" x="260" y="125">feb</text><text class="lbl-axis" x="320" y="125">apr</text>
+              </svg>
+            </div>
+            <div class="trend-row"><span><b>Trend:</b> stabilt nedover siden sept-2025</span><span class="v">↓ 1,4 HCP-pts på 8 mnd</span></div>
+          </div>
+
+          <div class="panel">
+            <h3>Strokes Gained · vs scratch <small>siste 10 runder</small></h3>
+            <div class="bar-chart">
+              <div class="bar-row"><span>Driving</span><div class="bar"><div class="fl" style="width:78%"></div><div class="target" style="left:60%"></div></div><b>+0,82<small>↑ 0,2</small></b></div>
+              <div class="bar-row"><span>Approach</span><div class="bar"><div class="fl" style="width:64%"></div><div class="target" style="left:60%"></div></div><b>+0,41<small>↑ 0,1</small></b></div>
+              <div class="bar-row"><span>Around green</span><div class="bar"><div class="fl warn" style="width:44%"></div><div class="target" style="left:60%"></div></div><b style="color:var(--status-warning)">−0,22</b></div>
+              <div class="bar-row"><span>Putting</span><div class="bar"><div class="fl" style="width:71%"></div><div class="target" style="left:60%"></div></div><b>+0,18<small>↑ 0,3</small></b></div>
+              <div class="bar-row"><span>Sand</span><div class="bar"><div class="fl warn" style="width:38%"></div><div class="target" style="left:60%"></div></div><b style="color:var(--status-warning)">−0,34</b></div>
+            </div>
+            <div class="trend-row"><span><b>Fokus:</b> around-green &amp; bunker</span><span class="v dn">−0,56 SG totalt</span></div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <h3>Scoring-fordeling · sesong <small>504 hull · 28 runder</small></h3>
+            <div class="scoring-tbl">
+              <div class="cell h">Eagle</div><div class="cell h">Birdie</div><div class="cell h">Par</div><div class="cell h">Bogey</div><div class="cell h">Dbl+</div>
+              <div class="cell hi"><div class="v">8</div><div class="det">1,6%</div></div>
+              <div class="cell hi"><div class="v">92</div><div class="det">18,3%</div></div>
+              <div class="cell"><div class="v">298</div><div class="det">59,1%</div></div>
+              <div class="cell"><div class="v">94</div><div class="det">18,7%</div></div>
+              <div class="cell"><div class="v">12</div><div class="det">2,4%</div></div>
+            </div>
+            <div style="margin-top:6px">
+              <div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px">Siste runde · Bærum R3 · 18 hull</div>
+              <div class="rd-grid">
+                <div class="rd-cell par">P</div><div class="rd-cell bir">B</div><div class="rd-cell par">P</div><div class="rd-cell par">P</div><div class="rd-cell bir">B</div><div class="rd-cell par">P</div><div class="rd-cell bir">B</div><div class="rd-cell par">P</div>
+                <div class="rd-cell bir">B</div><div class="rd-cell par">P</div><div class="rd-cell bog">b</div><div class="rd-cell par">P</div><div class="rd-cell par">P</div><div class="rd-cell bir">B</div><div class="rd-cell par">P</div><div class="rd-cell par">P</div>
+                <div class="rd-cell bir">B</div><div class="rd-cell par">P</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Siste runder <small>klikk for detalj</small></h3>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="display:grid;grid-template-columns:auto 1fr 60px 60px 80px;gap:12px;padding:12px 14px;background:#FAFAF7;border-radius:8px;align-items:center;font-size:12px">
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)">04.05</span>
+                <span><b style="font-weight:600">Bærum GK · R3</b><br><small style="color:var(--ink-subtle);font-family:var(--font-mono);font-size:10px">par 71 · gul tee</small></span>
+                <span style="font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--status-success)">66</span>
+                <span style="font-family:var(--font-mono);color:var(--status-success);font-weight:600">−5</span>
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)">SG +2,8</span>
+              </div>
+              <div style="display:grid;grid-template-columns:auto 1fr 60px 60px 80px;gap:12px;padding:12px 14px;background:#FAFAF7;border-radius:8px;align-items:center;font-size:12px">
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)">02.05</span>
+                <span><b style="font-weight:600">Bærum GK · R2</b><br><small style="color:var(--ink-subtle);font-family:var(--font-mono);font-size:10px">par 71 · gul tee</small></span>
+                <span style="font-family:var(--font-display);font-size:18px;font-weight:600">70</span>
+                <span style="font-family:var(--font-mono);color:var(--status-success);font-weight:600">−1</span>
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)">SG +1,1</span>
+              </div>
+              <div style="display:grid;grid-template-columns:auto 1fr 60px 60px 80px;gap:12px;padding:12px 14px;background:#FAFAF7;border-radius:8px;align-items:center;font-size:12px">
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)">28.04</span>
+                <span><b style="font-weight:600">Kongsberg · R1</b><br><small style="color:var(--ink-subtle);font-family:var(--font-mono);font-size:10px">par 72 · hvit tee · vind 8 m/s</small></span>
+                <span style="font-family:var(--font-display);font-size:18px;font-weight:600">73</span>
+                <span style="font-family:var(--font-mono);color:var(--status-warning);font-weight:600">+1</span>
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)">SG −0,4</span>
+              </div>
+              <div style="display:grid;grid-template-columns:auto 1fr 60px 60px 80px;gap:12px;padding:12px 14px;background:#FAFAF7;border-radius:8px;align-items:center;font-size:12px">
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)">25.04</span>
+                <span><b style="font-weight:600">Drøbak · friv</b><br><small style="color:var(--ink-subtle);font-family:var(--font-mono);font-size:10px">par 70 · rød tee · trening</small></span>
+                <span style="font-family:var(--font-display);font-size:18px;font-weight:600">69</span>
+                <span style="font-family:var(--font-mono);color:var(--status-success);font-weight:600">−1</span>
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)">SG +0,9</span>
+              </div>
+              <div style="display:grid;grid-template-columns:auto 1fr 60px 60px 80px;gap:12px;padding:12px 14px;background:#FAFAF7;border-radius:8px;align-items:center;font-size:12px">
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)">21.04</span>
+                <span><b style="font-weight:600">Asker · Q-school</b><br><small style="color:var(--ink-subtle);font-family:var(--font-mono);font-size:10px">par 72 · CUT spilte</small></span>
+                <span style="font-family:var(--font-display);font-size:18px;font-weight:600">74</span>
+                <span style="font-family:var(--font-mono);color:var(--status-warning);font-weight:600">+2</span>
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)">SG −0,8</span>
+              </div>
+              <button class="btn btn-outline btn-sm" style="align-self:center;margin-top:6px">Vis alle 28 runder →</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div></div>
+  </section>
+</div>
+</body>
+</html>

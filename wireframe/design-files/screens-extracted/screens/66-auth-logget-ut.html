@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head><meta charset="UTF-8"><title>Auth — Logget ut · 9-G/5</title><link rel="stylesheet" href="_shared/arketype-g-auth.css">
+<style>
+  .out-shell{width:100%;max-width:680px;background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-card);text-align:center;padding:48px 48px 36px;position:relative}
+  .out-shell::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--brand-primary),var(--brand-accent),var(--brand-primary))}
+
+  .out-mark{width:64px;height:64px;border-radius:50%;background:rgba(0,88,64,.08);color:var(--brand-primary);display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px;position:relative}
+  .out-mark svg{position:relative}
+  .out-mark::after{content:"";position:absolute;inset:-8px;border:1px dashed rgba(0,88,64,.30);border-radius:50%;animation:spin 12s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .out-shell h1{font-family:var(--font-display);font-size:30px;font-weight:500;letter-spacing:-.02em;margin:0;color:var(--ink);line-height:1.2}
+  .out-shell h1 em{font-style:italic;color:var(--brand-primary)}
+  .out-shell .sub{font-size:14.5px;color:var(--ink-muted);line-height:1.6;margin-top:12px;max-width:480px;margin-left:auto;margin-right:auto}
+
+  .summary{margin-top:28px;padding:20px 22px;background:#FAFAF7;border-radius:14px;text-align:left;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .summary .col{display:flex;flex-direction:column;gap:8px}
+  .summary .col .lbl{font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-subtle)}
+  .summary .col .v{font-size:13.5px;color:var(--ink);font-weight:500}
+  .summary .col .v small{display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-subtle);letter-spacing:.02em;margin-top:2px;font-weight:400}
+  .summary .col.full{grid-column:span 2;padding-top:12px;border-top:1px solid var(--border)}
+
+  .quick-actions{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+  .recent{margin-top:24px;padding:18px 0 0;border-top:1px solid var(--border);text-align:left}
+  .recent-title{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:12px}
+  .recent-list{display:flex;flex-direction:column;gap:6px}
+  .recent-item{display:flex;gap:10px;align-items:center;padding:10px 12px;background:#FAFAF7;border-radius:8px;font-size:13px}
+  .recent-item .ic{width:30px;height:30px;background:#fff;border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--brand-primary);font-family:var(--font-mono);font-weight:700;font-size:10px;letter-spacing:.04em}
+  .recent-item .t{flex:1;color:var(--ink)}
+  .recent-item .t b{font-weight:600}
+  .recent-item .t small{display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-subtle);letter-spacing:.02em;margin-top:1px}
+  .recent-item .when{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-subtle);letter-spacing:.02em}
+
+  .foot-meta{padding:14px 32px;background:#FAFAF7;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.02em;display:flex;justify-content:space-between;text-align:center}
+
+  .login-again-cta{margin-top:22px;padding:20px 22px;background:linear-gradient(135deg,#0A3C2F,#1A1916);color:#fff;border-radius:14px;display:flex;justify-content:space-between;align-items:center;text-align:left}
+  .login-again-cta .info b{font-family:var(--font-display);font-size:16px;font-weight:500;color:#fff;letter-spacing:-.005em;display:block}
+  .login-again-cta .info small{font-family:var(--font-mono);font-size:10.5px;color:rgba(255,255,255,.55);letter-spacing:.02em;margin-top:3px;display:block}
+  .login-again-cta .btn{background:var(--brand-accent);border-color:var(--brand-accent);color:#0A1F18;font-weight:600}
+  .login-again-cta .btn:hover{background:#D4BC5D}
+</style></head>
+<body>
+<div class="deck" data-screen-label="66 Auth — Logget ut">
+  <header class="deck-head">
+    <div class="eyebrow">9-G · Auth &amp; før-login · skjerm 5 av 5</div>
+    <h1>Logget ut · øktsammendrag</h1>
+    <p class="sub">Avslutter siste flow med litt verdighet — viser en kort økt-oppsummering (Anders var inne i 47min, gjorde 12 endringer), tilbyr "logg inn igjen" og lar bruker se de siste fanene de hadde åpne. Underforstått: alle tokens er invalidert, sesjons-cookies slettet, og refresh-rotasjon er kuttet.</p>
+    <div class="meta-row"><span><span class="lbl">URL:</span> /auth/logout/success</span><span><span class="lbl">Token-status:</span> revoked · 0 aktive sesjoner</span><span><span class="lbl">Auto-redirect:</span> 30s → /auth/login</span></div>
+  </header>
+  <section class="ab">
+    <div class="ab-label"><span class="num">66 · 9-G/5</span><span class="ttl">Logget ut · øktsammendrag &amp; gjenta-login</span><span class="meta">sluttkort · siste fane-tråder</span></div>
+    <div class="ab-frame">
+      <div class="out-shell">
+        <div class="out-mark">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </div>
+
+        <h1>Du er <em>trygt logget ut</em>.</h1>
+        <p class="sub">Alle aktive sesjoner er avsluttet, og data lokalt på denne enheten er ryddet. Vi sees igjen — appen husker hvor du var.</p>
+
+        <div class="summary">
+          <div class="col">
+            <span class="lbl">Du var innlogget som</span>
+            <span class="v">Anders Kristoffersen<small>anders@gfgk.no · coach @ GFGK · Pro</small></span>
+          </div>
+          <div class="col">
+            <span class="lbl">Økt-varighet</span>
+            <span class="v">47 min · 22 sek<small>13.05.2026 · 09:01 – 09:48</small></span>
+          </div>
+          <div class="col">
+            <span class="lbl">Endringer denne økten</span>
+            <span class="v">12 oppdateringer<small>3 sesjon-notater · 1 mål-status · 8 video-tags</small></span>
+          </div>
+          <div class="col">
+            <span class="lbl">Auto-redirect</span>
+            <span class="v">Til /auth/login om <b style="color:var(--brand-primary);font-family:var(--font-mono);letter-spacing:.04em">0:27</b><small>eller klikk "Logg inn igjen" under</small></span>
+          </div>
+          <div class="col full">
+            <span class="lbl">Sikkerhet</span>
+            <span class="v" style="font-size:12.5px;color:var(--ink-muted);font-weight:400;line-height:1.6">Refresh-token revokert · device-cookie slettet · siste-aktivitet-stempel logget på sikkerhetsoversikten. Tar du opp samme nettleser senere, må du logge inn på nytt.</span>
+          </div>
+        </div>
+
+        <div class="login-again-cta">
+          <div class="info">
+            <b>Var du midt i noe?</b>
+            <small>3 fane-tråder kan gjenåpnes når du logger inn igjen.</small>
+          </div>
+          <button class="btn">Logg inn igjen →</button>
+        </div>
+
+        <div class="recent">
+          <div class="recent-title">Siste åpne fane-tråder · gjenåpnes ved neste login</div>
+          <div class="recent-list">
+            <div class="recent-item">
+              <div class="ic">CB</div>
+              <div class="t"><b>Coaching Board · Markus P.</b><small>uke 19 · sesjons-plan og video-review</small></div>
+              <div class="when">aktiv i 22m</div>
+            </div>
+            <div class="recent-item">
+              <div class="ic">IN</div>
+              <div class="t"><b>Innboks · Kari Nordby</b><small>tråd om Jonas — utkast lagret</small></div>
+              <div class="when">aktiv i 8m</div>
+            </div>
+            <div class="recent-item">
+              <div class="ic">RP</div>
+              <div class="t"><b>Coach-rapport · april 2026</b><small>utkast for styre-utsendelse</small></div>
+              <div class="when">aktiv i 6m</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="btn btn-outline">Bytt konto</button>
+          <button class="btn btn-outline">Tilbake til akgolf.no</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="margin-top:32px;padding-top:22px;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.02em;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <span><b style="color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em">G · Auth &amp; før-login — fullført</b> · 62 logg inn · 63 reset · 64 BankID · 65 organisasjon · 66 logget ut</span>
+    <span>9-G/5 av 5 · skjerm 66 av 66 · prototype komplett</span>
+  </footer>
+</div>
+</body>
+</html>

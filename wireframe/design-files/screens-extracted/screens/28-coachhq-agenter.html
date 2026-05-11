@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — Agenter · 6-D/3</title>
+<link rel="stylesheet" href="../_shared/arketype-f.css">
+<style>
+  .agt-grid{display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start}
+  .agt-list{background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card);overflow:hidden;position:sticky;top:24px}
+  .agt-list h3{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin:0;padding:14px 16px;border-bottom:1px solid var(--line-soft)}
+  .agt-row{display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line-soft);cursor:pointer}
+  .agt-row:hover{background:var(--surface-alt)}
+  .agt-row.active{background:var(--accent-bg)}
+  .agt-row .ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--brand-accent);font-family:var(--font-display);font-weight:700;font-size:11px}
+  .agt-row .ic.c{background:#005840}
+  .agt-row .ic.p{background:#B8852A;color:#fff}
+  .agt-row .ic.s{background:#A32D2D;color:#fff}
+  .agt-row .ic.r{background:#1A7D56;color:#fff}
+  .agt-row .ic.b{background:#0A1F18}
+  .agt-row .info{min-width:0;display:flex;flex-direction:column;gap:1px}
+  .agt-row .nm{font-size:13px;font-weight:500;color:var(--ink)}
+  .agt-row .st{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.04em;text-transform:uppercase}
+  .agt-row .st.on{color:var(--status-success)}
+  .agt-row .st.paused{color:var(--ink-disabled)}
+  .agt-row .dot{width:6px;height:6px;border-radius:50%;background:var(--status-success)}
+  .agt-row.paused .dot{background:var(--ink-disabled)}
+
+  .agt-detail{background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card);overflow:hidden}
+  .agt-head{padding:24px 28px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+  .agt-head .l h2{font-family:var(--font-display);font-size:28px;font-weight:500;letter-spacing:-.02em;color:var(--ink);margin:0 0 6px;display:flex;align-items:center;gap:12px}
+  .agt-head .l h2 em{font-style:italic;font-weight:400;color:var(--ink-muted);font-size:18px}
+  .agt-head .l .meta{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.04em}
+  .toggle{position:relative;width:46px;height:24px;border-radius:100px;background:var(--status-success);cursor:pointer;flex-shrink:0}
+  .toggle::after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;right:3px;transition:all .15s}
+  .toggle.off{background:var(--ink-disabled)}
+  .toggle.off::after{right:auto;left:3px}
+
+  .agt-tabs{display:flex;padding:0 28px;border-bottom:1px solid var(--line);background:var(--surface-alt)}
+  .agt-tab{padding:12px 14px;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);border-bottom:2px solid transparent;cursor:pointer}
+  .agt-tab.active{color:var(--brand-primary);border-bottom-color:var(--brand-primary)}
+
+  .agt-body{padding:24px 28px;display:flex;flex-direction:column;gap:18px}
+  .blk{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:16px 0;border-bottom:1px solid var(--line-soft)}
+  .blk:last-child{border-bottom:none}
+  .blk .lbl{display:flex;flex-direction:column;gap:3px}
+  .blk .lbl .l{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .blk .lbl .h{font-size:13px;font-weight:500;color:var(--ink)}
+  .blk .lbl .d{font-size:11px;color:var(--ink-subtle);line-height:1.45}
+
+  .slider-row{display:grid;grid-template-columns:1fr 50px;gap:14px;align-items:center}
+  .slider-row .bar{position:relative;height:6px;background:var(--surface-alt);border-radius:100px;border:1px solid var(--line)}
+  .slider-row .bar .fill{position:absolute;left:0;top:-1px;bottom:-1px;background:var(--brand-primary);border-radius:100px}
+  .slider-row .bar .thumb{position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--brand-primary);top:-7px;transform:translateX(-50%);box-shadow:0 2px 6px rgba(0,0,0,.10)}
+  .slider-row .v{font-family:var(--font-mono);font-size:13px;color:var(--ink);text-align:right;font-weight:500}
+
+  .scale-marks{display:flex;justify-content:space-between;margin-top:6px;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)}
+
+  .model-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--surface-alt);border:1px solid var(--line);border-radius:100px;font-family:var(--font-mono);font-size:11px;color:var(--ink);cursor:pointer}
+  .model-pill.active{background:var(--brand-primary);color:var(--brand-accent);border-color:var(--brand-primary)}
+  .model-pill .price{color:var(--ink-subtle);font-size:10px;margin-left:6px}
+  .model-pill.active .price{color:var(--brand-accent);opacity:.7}
+
+  .prompt-box{background:#0A1F18;color:#F5F4EE;padding:16px 18px;border-radius:10px;font-family:var(--font-mono);font-size:12px;line-height:1.65;white-space:pre-wrap;max-height:200px;overflow:auto}
+  .prompt-box .vk{color:#D4D27E}
+  .prompt-box .tk{color:#9DC9B5}
+  .prompt-box .cm{color:#7a8a82}
+
+  .trig-row{display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:13px}
+  .trig-row:last-child{border-bottom:none}
+  .trig-row .cb{width:16px;height:16px;border:1.5px solid var(--brand-primary);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--brand-accent);background:var(--brand-primary)}
+  .trig-row .cb.off{background:#fff;color:transparent;border-color:var(--line)}
+  .trig-row .nm{color:var(--ink)}
+  .trig-row .desc{font-size:11px;color:var(--ink-subtle);margin-top:2px}
+  .trig-row .when{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)}
+
+  .usage-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:18px 28px;background:var(--surface-alt);border-bottom:1px solid var(--line)}
+  .uk{display:flex;flex-direction:column;gap:2px}
+  .uk .l{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .uk .v{font-family:var(--font-mono);font-size:20px;font-weight:500;color:var(--ink)}
+  .uk .d{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)}
+  .uk .d.warn{color:var(--status-warning)}
+
+  .mobil-frame{background:var(--surface);border:1px solid var(--line);border-radius:32px;padding:24px;width:380px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+</style>
+</head>
+<body style="background:var(--surface);margin:0;padding:0">
+<section class="ab" data-screen-label="01 Agenter — lyst">
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail"><div class="mark">SL</div></aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item">Spillere</div>
+          <div class="nav-item">Bookinger</div>
+          <div class="nav-item">Team</div>
+          <div class="nav-item">Grupper</div>
+          <div class="nav-item">Maler</div>
+          <div class="nav-item active">Agenter<span class="count">5</span></div>
+          <div class="nav-foot"><div class="av-sm">SL</div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Sara Larsen</span><span style="font-size:11px;color:var(--ink-subtle)">Hovedcoach</span></div></div>
+        </aside>
+
+        <main class="main">
+          <header class="page-head">
+            <div class="crumb">Coach HQ <span class="sep">/</span> Agenter <span class="sep">/</span> Coach Agent</div>
+            <h1>Agenter. <em style="font-style:italic;font-weight:400;color:var(--ink-muted)">Kollegene du har trent opp.</em></h1>
+            <div class="sub">Fem agenter, hver med eget mandat. Du justerer kreativitet, modell, triggere og når de skal spørre deg før de handler.</div>
+          </header>
+
+          <div class="form-area" style="padding:24px 36px">
+            <div class="agt-grid">
+              <aside class="agt-list">
+                <h3>Mine agenter · 5</h3>
+                <div class="agt-row active"><div class="ic c">CA</div><div class="info"><span class="nm">Coach Agent</span><span class="st on">● aktiv · 2 oppg.</span></div><div class="dot"></div></div>
+                <div class="agt-row"><div class="ic p">PA</div><div class="info"><span class="nm">Periodisering</span><span class="st on">● aktiv</span></div><div class="dot"></div></div>
+                <div class="agt-row"><div class="ic s">SA</div><div class="info"><span class="nm">Skade-Agent</span><span class="st on">● vakt</span></div><div class="dot"></div></div>
+                <div class="agt-row"><div class="ic r">RA</div><div class="info"><span class="nm">Rapport-Agent</span><span class="st on">● auto søn</span></div><div class="dot"></div></div>
+                <div class="agt-row paused"><div class="ic b">BA</div><div class="info"><span class="nm">Booking-Agent</span><span class="st paused">○ pauset</span></div><div class="dot"></div></div>
+                <div style="padding:12px 16px;border-top:1px solid var(--line)"><button class="btn btn-ghost btn-sm" style="width:100%">+ Ny agent (beta)</button></div>
+              </aside>
+
+              <div class="agt-detail">
+                <div class="agt-head">
+                  <div class="l">
+                    <h2><div class="agt-row" style="display:inline-flex;padding:0;border:none"><div class="ic c" style="width:44px;height:44px;border-radius:10px;font-size:15px">CA</div></div>Coach Agent. <em>Skriver, foreslår, oppsummerer.</em></h2>
+                    <div class="meta">SIST OPPGAVE · 2 MIN SIDEN · GENERERTE 12 KOMMENTARER TIL UKERAPPORT · 0 FEIL · v3.2</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:14px"><span style="font-family:var(--font-mono);font-size:11px;color:var(--status-success);letter-spacing:.06em">● AKTIV</span><div class="toggle"></div></div>
+                </div>
+
+                <div class="usage-strip">
+                  <div class="uk"><span class="l">Oppgaver 30d</span><span class="v">847</span><span class="d">↑ 12% vs forr.</span></div>
+                  <div class="uk"><span class="l">Suksess</span><span class="v">99,2%</span><span class="d">7 manuelle overstyringer</span></div>
+                  <div class="uk"><span class="l">Tokens 30d</span><span class="v">1,4M</span><span class="d warn">82% av Pro-kvote</span></div>
+                  <div class="uk"><span class="l">Snitt latency</span><span class="v">3,2s</span><span class="d">95p: 8,1s</span></div>
+                </div>
+
+                <div class="agt-tabs">
+                  <div class="agt-tab active">Konfig</div>
+                  <div class="agt-tab">System-prompt</div>
+                  <div class="agt-tab">Triggere · 4</div>
+                  <div class="agt-tab">Verktøy · 6</div>
+                  <div class="agt-tab">Audit · 847</div>
+                </div>
+
+                <div class="agt-body">
+                  <div class="blk">
+                    <div class="lbl"><span class="l">Modell</span><span class="h">Hvilken motor.</span><span class="d">Bytt kun hvis du ser kvalitets-fall. Pro-tier inkluderer GPT-5; Claude koster ekstra.</span></div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                      <span class="model-pill active">GPT-5 <span class="price">· inkl.</span></span>
+                      <span class="model-pill">GPT-5 mini <span class="price">· raskere</span></span>
+                      <span class="model-pill">Claude Sonnet 4.5 <span class="price">· +400 kr/mnd</span></span>
+                      <span class="model-pill" style="opacity:.5;cursor:not-allowed">Lokal (Llama 3.3) <span class="price">· kun Elite</span></span>
+                    </div>
+                  </div>
+
+                  <div class="blk">
+                    <div class="lbl"><span class="l">Kreativitet</span><span class="h">Temperatur 0,4.</span><span class="d">Lav = rapport-tone. Høy = mer personlig variasjon. Anbefalt 0,3–0,5 for kommentarer.</span></div>
+                    <div>
+                      <div class="slider-row">
+                        <div class="bar"><div class="fill" style="width:40%"></div><div class="thumb" style="left:40%"></div></div>
+                        <div class="v">0,4</div>
+                      </div>
+                      <div class="scale-marks"><span>Streng</span><span>Naturlig</span><span>Kreativ</span></div>
+                    </div>
+                  </div>
+
+                  <div class="blk">
+                    <div class="lbl"><span class="l">Initiativ</span><span class="h">Når spør den deg?</span><span class="d">Lav = den spør om alt. Høy = den sender ut uten godkjenning innenfor mandat.</span></div>
+                    <div>
+                      <div class="slider-row">
+                        <div class="bar"><div class="fill" style="width:65%"></div><div class="thumb" style="left:65%"></div></div>
+                        <div class="v">0,65</div>
+                      </div>
+                      <div class="scale-marks"><span>Spør alltid</span><span>Spør ved tvil</span><span>Autonom</span></div>
+                    </div>
+                  </div>
+
+                  <div class="blk">
+                    <div class="lbl"><span class="l">Tone</span><span class="h">Personlighet.</span><span class="d">Bestemmer how den ordlegger seg når den skriver til spillere.</span></div>
+                    <div>
+                      <div class="slider-row">
+                        <div class="bar"><div class="fill" style="width:55%"></div><div class="thumb" style="left:55%"></div></div>
+                        <div class="v">0,55</div>
+                      </div>
+                      <div class="scale-marks"><span>Saklig</span><span>Varm</span><span>Personlig</span></div>
+                    </div>
+                  </div>
+
+                  <div class="blk">
+                    <div class="lbl"><span class="l">Lengde-bias</span><span class="h">Hvor mye den skriver.</span><span class="d">Lav = stikkord. Høy = full prosa. Pre-økt påminnelser har egen kortere bias.</span></div>
+                    <div>
+                      <div class="slider-row">
+                        <div class="bar"><div class="fill" style="width:35%"></div><div class="thumb" style="left:35%"></div></div>
+                        <div class="v">0,35</div>
+                      </div>
+                      <div class="scale-marks"><span>Kort</span><span>Balansert</span><span>Detaljert</span></div>
+                    </div>
+                  </div>
+
+                  <div class="blk">
+                    <div class="lbl"><span class="l">Tilgang til</span><span class="h">Hva den får lese.</span><span class="d">Agentens kunnskapsgrunnlag — verktøy/scopes den får kalle.</span></div>
+                    <div style="display:flex;flex-direction:column;gap:0">
+                      <div class="trig-row"><div class="cb">✓</div><div><div class="nm">Spillerprofiler (lese)</div><div class="desc">HCP, økt-historikk, mål — alle spillere du eier</div></div><div class="when">scope: <code style="font-family:var(--font-mono);font-size:11px">player.read</code></div></div>
+                      <div class="trig-row"><div class="cb">✓</div><div><div class="nm">Plan-templates</div><div class="desc">Lese og foreslå nye versjoner</div></div><div class="when">scope: <code style="font-family:var(--font-mono);font-size:11px">plan.read|write</code></div></div>
+                      <div class="trig-row"><div class="cb">✓</div><div><div class="nm">E-post-maler (variabel-fyll)</div><div class="desc">Fyller {{coach.kommentar}} på utgående e-post</div></div><div class="when">scope: <code style="font-family:var(--font-mono);font-size:11px">email.fill</code></div></div>
+                      <div class="trig-row"><div class="cb off">·</div><div><div class="nm">Booking-API</div><div class="desc">Booke/avbestille — krever Booking-Agent</div></div><div class="when">av</div></div>
+                      <div class="trig-row"><div class="cb off">·</div><div><div class="nm">Faktura-tilgang</div><div class="desc">Vil ikke kunne se beløp eller sende fakturaer</div></div><div class="when">av</div></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="padding:14px 28px;border-top:1px solid var(--line);background:var(--surface-alt);display:flex;justify-content:space-between;align-items:center">
+                  <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)">SISTE LAGRING 11. MAI 14:32 · KONFIG v3.2 · 5 PARAMETRE ENDRET I DENNE ØKTEN</span>
+                  <div style="display:flex;gap:8px">
+                    <button class="btn btn-ghost btn-sm">Tilbakestill til standard</button>
+                    <button class="btn btn-ghost btn-sm">Test med eksempel</button>
+                    <button class="btn btn-primary btn-sm">Lagre v3.3</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 DARK — Prompt-redigering ============ -->
+</body>
+</html>

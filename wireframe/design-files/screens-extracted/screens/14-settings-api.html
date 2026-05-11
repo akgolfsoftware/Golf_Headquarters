@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — API + integrasjoner · 6-A/4</title>
+<link rel="stylesheet" href="../_shared/arketype-f.css">
+<style>
+  .key-list{display:flex;flex-direction:column}
+  .key-row{display:grid;grid-template-columns:1fr 220px 140px 100px;gap:16px;align-items:center;padding:16px 24px;border-top:1px solid var(--line-soft)}
+  .key-row:first-child{border-top:0}
+  .key-row .name-col{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .key-row .key-name{font-size:14px;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .key-row .key-tok{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);background:var(--surface-alt);border:1px solid var(--line-soft);border-radius:6px;padding:4px 8px;width:fit-content}
+  .key-row .key-tok .dot{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.4}
+  .key-row .key-tok button{width:18px;height:18px;border:0;background:transparent;color:var(--ink-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .key-row .scope{font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+  .key-row .meta-col{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);text-align:right;line-height:1.5}
+  .key-row .meta-col .v{color:var(--ink);font-weight:500}
+  .key-row .actions{display:flex;gap:6px;justify-content:flex-end}
+
+  .integ-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:18px}
+  .integ-card{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+  .integ-card .head{display:flex;align-items:center;gap:12px}
+  .integ-card .logo{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font-display);font-weight:700;font-size:16px;color:#fff}
+  .integ-card .logo.tm{background:#0066FF}
+  .integ-card .logo.fl{background:#000}
+  .integ-card .logo.gs{background:#1A7D56}
+  .integ-card .logo.zp{background:#6259CA}
+  .integ-card .logo.ng{background:#D7263D}
+  .integ-card .logo.cb{background:#F4A261}
+  .integ-card .info{flex:1;display:flex;flex-direction:column;gap:2px}
+  .integ-card .info .nm{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--ink)}
+  .integ-card .info .desc{font-size:12px;color:var(--ink-muted)}
+  .integ-card .status-pill{padding:2px 8px;border-radius:100px;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+  .integ-card .status-pill.on{background:var(--status-success-bg);color:#1A7D56}
+  .integ-card .status-pill.off{background:var(--surface-alt);color:var(--ink-muted);border:1px solid var(--line-soft)}
+  .integ-card .status-pill .d{width:5px;height:5px;border-radius:50%;background:currentColor}
+  .integ-card .body{font-size:12px;color:var(--ink-muted);line-height:1.5;border-top:1px solid var(--line-soft);padding-top:12px;margin-top:auto}
+  .integ-card .body .row{display:flex;justify-content:space-between;padding:3px 0}
+  .integ-card .body .row .l{color:var(--ink-subtle)}
+  .integ-card .body .row .v{color:var(--ink);font-family:var(--font-mono);font-weight:500}
+  .integ-card .foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line-soft);padding-top:12px}
+
+  .webhook-card{background:var(--surface-alt);border:1px solid var(--line-soft);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px}
+  .webhook-card.failing{background:rgba(229,72,77,.06);border-color:rgba(229,72,77,.30)}
+  .webhook-card .url{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
+  .webhook-card .url .u{font-family:var(--font-mono);font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .webhook-card .url .e{font-size:11px;color:var(--ink-muted);font-family:var(--font-mono)}
+  .webhook-card .events{display:flex;gap:4px;flex-wrap:wrap;max-width:280px}
+  .webhook-card .events .e{padding:1px 6px;border-radius:4px;font-family:var(--font-mono);font-size:9px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;background:var(--surface-card);border:1px solid var(--line-soft);color:var(--ink-muted)}
+  .webhook-card .status-block{text-align:right;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);line-height:1.4;flex-shrink:0;min-width:110px}
+  .webhook-card .status-block .ok{color:#1A7D56;font-weight:600}
+  .webhook-card .status-block .err{color:#A32D2D;font-weight:600}
+
+  /* Modal: new API key */
+  .modal-form{display:flex;flex-direction:column;gap:18px}
+  .mf-row{display:flex;flex-direction:column;gap:6px}
+  .mf-row label{font-size:12px;color:var(--ink-muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+  .mf-row input,.mf-row select{height:40px;padding:0 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface-card);font-family:var(--font-body);font-size:14px;color:var(--ink)}
+  .mf-row input:focus,.mf-row select:focus{outline:none;border-color:var(--brand-primary);box-shadow:0 0 0 3px rgba(0,88,64,.10)}
+  .scope-list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .scope-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-top:1px solid var(--line-soft)}
+  .scope-row:first-child{border-top:0}
+  .scope-row .cb{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--line);background:var(--surface-card);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .scope-row .cb.on{background:var(--brand-primary);border-color:var(--brand-primary);color:#fff}
+  .scope-row .text{flex:1;display:flex;flex-direction:column;gap:2px}
+  .scope-row .text .t{font-size:13px;color:var(--ink);font-weight:500}
+  .scope-row .text .d{font-size:11px;color:var(--ink-subtle)}
+  .scope-row .mono{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)}
+</style>
+</head>
+<body style="background:var(--surface);margin:0;padding:0">
+<section class="ab" data-screen-label="01 API + integrasjoner — lyst">
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item">Spillere</div>
+          <div class="nav-divider"></div>
+          <div class="nav-title" style="padding-top:0">Konto</div>
+          <div class="nav-item">Profil</div>
+          <div class="nav-item active">Innstillinger</div>
+          <div class="nav-foot"><div class="av-sm">AK</div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Anders K.</span><span style="font-size:11px;color:var(--ink-subtle)">Hovedcoach</span></div></div>
+        </aside>
+
+        <main class="main">
+          <header class="page-head">
+            <div class="crumb">Innstillinger <span class="sep">/</span> API</div>
+            <h1>API-nøkler og integrasjoner</h1>
+            <div class="sub">Koble på Trackman, FlightScope, Garmin eller egne verktøy. CoachHQ snakker med dem alle.</div>
+          </header>
+
+          <div class="settings">
+            <aside class="subnav">
+              <div class="subnav-title">Innstillinger</div>
+              <div class="subnav-item">Profil</div>
+              <div class="subnav-item">Bruker</div>
+              <div class="subnav-item">Sikkerhet</div>
+              <div class="subnav-item">Varsler</div>
+              <div class="subnav-item active">API <span class="count">3</span></div>
+              <div class="subnav-item">Abonnement</div>
+              <div class="subnav-item">Tilgjengelighet</div>
+            </aside>
+
+            <div class="form-area">
+
+              <div class="section">
+                <div class="section-head"><h2>API-nøkler</h2><span class="desc">Brukes av eksterne verktøy for å lese data fra CoachHQ</span><div style="margin-left:auto"><button class="btn btn-primary btn-sm"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Ny nøkkel</button></div></div>
+                <div class="key-list">
+                  <div class="key-row">
+                    <div class="name-col">
+                      <span class="key-name">iOS-appen <span class="chip" style="font-size:10px;padding:2px 8px;background:var(--accent-bg);color:#0A1F18">Read + Write</span></span>
+                      <span class="key-tok">sk_live_a4f9 <span class="dot"></span> •••••• <span class="dot"></span> 7bX2<button><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span>
+                    </div>
+                    <span class="scope">sesjoner · spillere · agent.read</span>
+                    <span class="meta-col">Brukt <span class="v">14 min siden</span><br>Opprettet 18.02.2026</span>
+                    <span class="actions"><button class="btn btn-ghost btn-sm">⋯</button></span>
+                  </div>
+                  <div class="key-row">
+                    <div class="name-col">
+                      <span class="key-name">Zapier-bro <span class="chip" style="font-size:10px;padding:2px 8px;background:var(--surface-alt);color:var(--ink-muted)">Read only</span></span>
+                      <span class="key-tok">sk_live_z1Pp <span class="dot"></span> •••••• <span class="dot"></span> mK8N<button><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span>
+                    </div>
+                    <span class="scope">sesjoner.read · bookinger.read</span>
+                    <span class="meta-col">Brukt <span class="v">2t siden</span><br>Opprettet 03.01.2026</span>
+                    <span class="actions"><button class="btn btn-ghost btn-sm">⋯</button></span>
+                  </div>
+                  <div class="key-row">
+                    <div class="name-col">
+                      <span class="key-name" style="color:var(--ink-muted)">Test-nøkkel (lokal) <span class="chip" style="font-size:10px;padding:2px 8px;background:var(--status-warning-bg);color:var(--status-warning)">Utløper 02.06</span></span>
+                      <span class="key-tok">sk_test_e2dF <span class="dot"></span> •••••• <span class="dot"></span> 9pQ4<button><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span>
+                    </div>
+                    <span class="scope">alt</span>
+                    <span class="meta-col">Brukt <span class="v">12 dager siden</span><br>Opprettet 14.04.2026</span>
+                    <span class="actions"><button class="btn btn-ghost btn-sm">⋯</button></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-head"><h2>Integrasjoner</h2><span class="desc">3 av 6 tilkoblet</span></div>
+                <div class="field-list">
+                  <div class="integ-grid">
+                    <div class="integ-card">
+                      <div class="head">
+                        <div class="logo tm">TM</div>
+                        <div class="info"><span class="nm">Trackman 4</span><span class="desc">Launch monitor · simulator</span></div>
+                        <span class="status-pill on"><span class="d"></span>Tilkoblet</span>
+                      </div>
+                      <div class="body"><div class="row"><span class="l">Konto</span><span class="v">anders@trackman.com</span></div><div class="row"><span class="l">Siste sync</span><span class="v">9 min siden</span></div><div class="row"><span class="l">Sesjoner i mai</span><span class="v">38</span></div></div>
+                      <div class="foot"><span style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)">v3.2.1 · OAuth</span><button class="btn btn-ghost btn-sm">Innstillinger →</button></div>
+                    </div>
+                    <div class="integ-card">
+                      <div class="head">
+                        <div class="logo fl">FL</div>
+                        <div class="info"><span class="nm">FlightScope Mevo+</span><span class="desc">Bærbar launch monitor</span></div>
+                        <span class="status-pill on"><span class="d"></span>Tilkoblet</span>
+                      </div>
+                      <div class="body"><div class="row"><span class="l">Enhet</span><span class="v">MEVO-A4F2X</span></div><div class="row"><span class="l">Siste sync</span><span class="v">2t siden</span></div><div class="row"><span class="l">Sesjoner i mai</span><span class="v">12</span></div></div>
+                      <div class="foot"><span style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)">FW 2.14 · Bluetooth</span><button class="btn btn-ghost btn-sm">Innstillinger →</button></div>
+                    </div>
+                    <div class="integ-card">
+                      <div class="head">
+                        <div class="logo gs">G</div>
+                        <div class="info"><span class="nm">Garmin Connect</span><span class="desc">Klokke + helsedata</span></div>
+                        <span class="status-pill on"><span class="d"></span>Tilkoblet · 8 spillere</span>
+                      </div>
+                      <div class="body"><div class="row"><span class="l">Auto-sync</span><span class="v">Daglig 06:00</span></div><div class="row"><span class="l">Datapunkter</span><span class="v">Søvn · HRV · Stress</span></div><div class="row"><span class="l">Siste sync</span><span class="v">i dag 06:02</span></div></div>
+                      <div class="foot"><span style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)">OAuth 2 · Read-only</span><button class="btn btn-ghost btn-sm">Innstillinger →</button></div>
+                    </div>
+                    <div class="integ-card">
+                      <div class="head">
+                        <div class="logo zp">Z</div>
+                        <div class="info"><span class="nm">Zapier</span><span class="desc">3000+ koblinger</span></div>
+                        <span class="status-pill off"><span class="d"></span>Ikke tilkoblet</span>
+                      </div>
+                      <div class="body" style="color:var(--ink-muted)">Send sesjons-summer til Slack, Sheets, Notion eller egen CRM når en sesjon er fullført.</div>
+                      <div class="foot"><span style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)">12 maler tilgjengelig</span><button class="btn btn-primary btn-sm">Koble til →</button></div>
+                    </div>
+                    <div class="integ-card">
+                      <div class="head">
+                        <div class="logo ng">NG</div>
+                        <div class="info"><span class="nm">NGF Golfbox</span><span class="desc">Handicap · turneringer</span></div>
+                        <span class="status-pill off"><span class="d"></span>Ikke tilkoblet</span>
+                      </div>
+                      <div class="body" style="color:var(--ink-muted)">Hent inn turneringsresultater og oppdaterte handicap-tall for alle 38 spillere automatisk.</div>
+                      <div class="foot"><span style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)">Krever NGF-kobling</span><button class="btn btn-primary btn-sm">Koble til →</button></div>
+                    </div>
+                    <div class="integ-card">
+                      <div class="head">
+                        <div class="logo cb">C</div>
+                        <div class="info"><span class="nm">Calendly</span><span class="desc">Booking-system</span></div>
+                        <span class="status-pill off"><span class="d"></span>Ikke tilkoblet</span>
+                      </div>
+                      <div class="body" style="color:var(--ink-muted)">Lar spillere booke seg inn på ledige slots direkte i Calendly — pushes til CoachHQ-bookinger.</div>
+                      <div class="foot"><span style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)">2-veis sync</span><button class="btn btn-primary btn-sm">Koble til →</button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-head"><h2>Webhooks</h2><span class="desc">CoachHQ poster events til disse URLene</span><div style="margin-left:auto"><button class="btn btn-ghost btn-sm">+ Nytt endepunkt</button></div></div>
+                <div class="field-list" style="padding:18px;gap:10px;display:flex;flex-direction:column;background:transparent;border:0;box-shadow:none">
+                  <div class="webhook-card">
+                    <div class="url"><span class="u">https://hooks.akgolf.no/coachhq/sessions</span><span class="e">Egen Heroku-app</span></div>
+                    <div class="events"><span class="e">session.done</span><span class="e">session.shared</span><span class="e">player.updated</span></div>
+                    <div class="status-block"><span class="ok">● 200 OK</span><br>4 min siden · 99.7% suksess</div>
+                  </div>
+                  <div class="webhook-card failing">
+                    <div class="url"><span class="u">https://akgolf.zapier-hook.com/v2/sessions</span><span class="e">Zapier bro · feiler 3 ganger på rad</span></div>
+                    <div class="events"><span class="e">session.done</span><span class="e">booking.created</span></div>
+                    <div class="status-block"><span class="err">● 502 timeout</span><br>2t siden · 41% suksess</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 — Modal: New API Key with reveal-once ============ -->
+</body>
+</html>

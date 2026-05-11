@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Shared — Agent Pipeline Overview</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="../_shared/arketype-e.css" />
+<style>
+  /* Pipeline-board ------------------------------------------------------ */
+  .po-board {
+    position: relative;
+    width: 1120px; height: 520px;
+    margin: 0 auto;
+    padding: 28px 0 0;
+  }
+  /* Connector-SVG ligger BAK alle bokser */
+  .po-wires { position: absolute; inset: 28px 0 0; z-index: 0; pointer-events: none; }
+  .po-wires path { fill: none; stroke: var(--e-border); stroke-width: 1.5; }
+  .po-wires path.is-active {
+    stroke: var(--e-lime); stroke-width: 1.5;
+    stroke-dasharray: 6 6;
+    animation: po-flow 1.4s linear infinite;
+    filter: drop-shadow(0 0 6px rgba(209,248,67,0.4));
+  }
+  @keyframes po-flow { from { stroke-dashoffset: 0 } to { stroke-dashoffset: -24 } }
+  .po-wires circle { fill: var(--e-bg); stroke: var(--e-border); stroke-width: 1.5; }
+  .po-wires circle.is-active { fill: var(--e-lime); stroke: var(--e-lime); }
+
+  /* Kolonner ----------------------------------------------------------- */
+  .po-col {
+    position: absolute; top: 28px;
+    display: flex; flex-direction: column; gap: 18px;
+    z-index: 2;
+  }
+  .po-col.is-signal { left: 0;    width: 240px; }
+  .po-col.is-skill  { left: 380px; width: 240px; }
+  .po-col.is-agent  { left: 760px; width: 240px; }
+
+  .po-col-label {
+    position: absolute; top: 0;
+    font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--e-muted);
+    display: inline-flex; align-items: center; gap: 8px;
+    z-index: 3;
+  }
+  .po-col-label .num {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--e-border);
+    border-radius: 999px; padding: 2px 8px; font-size: 9px;
+  }
+
+  /* Signal-node -------------------------------------------------------- */
+  .po-sig {
+    display: flex; align-items: center; gap: 10px;
+    height: 36px; padding: 0 14px;
+    background: var(--e-bg);
+    border: 1px solid var(--e-border); border-radius: 999px;
+    font-size: 12px; color: var(--e-fg);
+  }
+  .po-sig .dot {
+    width: 22px; height: 22px; border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--e-border);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; flex: 0 0 22px;
+  }
+  .po-sig .name { flex: 1; font-weight: 500; }
+  .po-sig .src { font-family:'JetBrains Mono'; font-size: 9px; color: var(--e-muted); letter-spacing: 0.06em; }
+  .po-sig.is-active {
+    border-color: rgba(209,248,67,0.45);
+    box-shadow: 0 0 0 3px rgba(209,248,67,0.06);
+  }
+  .po-sig.is-active .dot { border-color: var(--e-lime); color: var(--e-lime); }
+
+  /* Skill-box ---------------------------------------------------------- */
+  .po-skill {
+    height: 72px; padding: 12px 16px;
+    background: var(--e-bg);
+    border: 1px solid var(--e-border); border-radius: 12px;
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+  }
+  .po-skill h4 { margin: 0; font-size: 13px; font-weight: 600; color: var(--e-fg); }
+  .po-skill p  { margin: 0; font-size: 11px; color: var(--e-muted); line-height: 1.35; }
+  .po-skill.is-active {
+    border-color: rgba(209,248,67,0.45);
+    background: rgba(209,248,67,0.03);
+    box-shadow: 0 0 0 3px rgba(209,248,67,0.06);
+  }
+
+  /* Agent-box (samme stripe som skill, men med rund avatar) ------------ */
+  .po-agent {
+    height: 72px; padding: 12px 14px;
+    background: var(--e-bg);
+    border: 1px solid var(--e-border); border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .po-agent .avatar {
+    width: 40px; height: 40px; border-radius: 999px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--e-border);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 16px; flex: 0 0 40px;
+  }
+  .po-agent .meta { flex: 1; }
+  .po-agent .lbl {
+    font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--e-fg); font-weight: 600;
+  }
+  .po-agent .since {
+    font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.04em;
+    color: var(--e-muted); margin-top: 2px;
+  }
+  .po-agent.is-active {
+    border-color: rgba(209,248,67,0.45);
+    background: rgba(209,248,67,0.03);
+    box-shadow: 0 0 0 3px rgba(209,248,67,0.06);
+  }
+  .po-agent.is-active .avatar {
+    border-color: var(--e-lime); color: var(--e-lime);
+    background: rgba(209,248,67,0.08);
+  }
+  .po-agent.is-active .lbl { color: var(--e-lime); }
+
+  /* Footer state-toggles ----------------------------------------------- */
+  .po-states {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--e-border); border-radius: 999px; padding: 3px;
+  }
+  .po-states button {
+    background: transparent; border: 0; color: var(--e-muted);
+    font-family: 'Inter Tight'; font-size: 12px; padding: 6px 14px;
+    border-radius: 999px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .po-states button.is-active {
+    background: var(--e-surface-2); color: var(--e-fg);
+    box-shadow: inset 0 0 0 1px var(--e-border);
+  }
+  .po-states button .ring { width: 6px; height: 6px; border-radius: 999px; background: var(--e-muted); }
+  .po-states button.is-active .ring { background: var(--e-lime); box-shadow: 0 0 6px var(--e-lime); }
+
+  .po-tooltip {
+    position: absolute; background: var(--e-surface);
+    border: 1px solid var(--e-border); border-radius: 10px;
+    padding: 12px 14px; font-size: 12px; color: var(--e-fg);
+    box-shadow: 0 12px 24px -8px rgba(0,0,0,0.5);
+    z-index: 6; max-width: 240px;
+  }
+  .po-tooltip h5 { margin: 0 0 4px; font-size: 12px; font-weight: 600; }
+  .po-tooltip p  { margin: 0; color: var(--e-muted); line-height: 1.4; }
+</style>
+</head>
+<body style="background:var(--surface);margin:0;padding:0">
+<div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left"><span style="font-size:14px">Agent-pipeline — System Overview</span></div>
+        <div class="e-center">
+          <span style="font-family:'JetBrains Mono'; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color: var(--e-muted)">Sist oppdatert 14:32 · 3 aktive ruter</span>
+        </div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+
+      <div class="e-stage e-grid-pattern" style="overflow:auto">
+        <div class="po-board">
+          <div class="po-col-label" style="left: 0">Signal-lag <span class="num">8</span></div>
+          <div class="po-col-label" style="left: 380px">Skill-lag <span class="num">5</span></div>
+          <div class="po-col-label" style="left: 760px">Agent-lag <span class="num">5</span></div>
+
+          <!-- Wires BEHIND boxes -->
+          <svg class="po-wires" viewBox="0 0 1120 492" preserveAspectRatio="none">
+            <!-- Signal → Skill -->
+            <path class="is-active" d="M 240 18 C 310 18, 310 36, 380 36"/>
+            <path class="is-active" d="M 240 18 C 310 18, 310 126, 380 126"/>
+            <path d="M 240 72 C 310 72, 310 36, 380 36" opacity="0.35"/>
+            <path class="is-active" d="M 240 126 C 310 126, 310 216, 380 216"/>
+            <path d="M 240 180 C 310 180, 310 306, 380 306" opacity="0.35"/>
+            <path d="M 240 234 C 310 234, 310 396, 380 396" opacity="0.35"/>
+            <path class="is-active" d="M 240 288 C 310 288, 310 126, 380 126"/>
+            <path d="M 240 342 C 310 342, 310 306, 380 306" opacity="0.35"/>
+            <path d="M 240 396 C 310 396, 310 396, 380 396" opacity="0.35"/>
+            <!-- Skill → Agent -->
+            <path class="is-active" d="M 620 36 C 690 36, 690 36, 760 36"/>
+            <path class="is-active" d="M 620 126 C 690 126, 690 126, 760 126"/>
+            <path class="is-active" d="M 620 216 C 690 216, 690 396, 760 396"/>
+            <path d="M 620 306 C 690 306, 690 216, 760 216" opacity="0.35"/>
+            <path d="M 620 396 C 690 396, 690 306, 760 306" opacity="0.35"/>
+            <!-- Connector caps -->
+            <circle cx="240" cy="18"  r="3" class="is-active"/>
+            <circle cx="240" cy="126" r="3" class="is-active"/>
+            <circle cx="240" cy="288" r="3" class="is-active"/>
+            <circle cx="380" cy="36"  r="3" class="is-active"/>
+            <circle cx="380" cy="126" r="3" class="is-active"/>
+            <circle cx="380" cy="216" r="3" class="is-active"/>
+            <circle cx="620" cy="36"  r="3" class="is-active"/>
+            <circle cx="620" cy="126" r="3" class="is-active"/>
+            <circle cx="620" cy="216" r="3" class="is-active"/>
+            <circle cx="760" cy="36"  r="3" class="is-active"/>
+            <circle cx="760" cy="126" r="3" class="is-active"/>
+            <circle cx="760" cy="396" r="3" class="is-active"/>
+          </svg>
+
+          <div class="po-col is-signal">
+            <div class="po-sig is-active"><span class="dot">⌖</span><span class="name">TrackMan</span><span class="src">DATA</span></div>
+            <div class="po-sig"><span class="dot">H</span><span class="name">GolfBox HCP</span><span class="src">API</span></div>
+            <div class="po-sig is-active"><span class="dot">⚏</span><span class="name">Deepgram</span><span class="src">AUDIO</span></div>
+            <div class="po-sig"><span class="dot">☾</span><span class="name">Søvn-tracker</span><span class="src">OURA</span></div>
+            <div class="po-sig"><span class="dot">▭</span><span class="name">ScoreCard</span><span class="src">RUNDE</span></div>
+            <div class="po-sig is-active"><span class="dot">⏱</span><span class="name">Live Session</span><span class="src">ØKT</span></div>
+            <div class="po-sig"><span class="dot">♡</span><span class="name">Helse-input</span><span class="src">MANUAL</span></div>
+            <div class="po-sig"><span class="dot">✎</span><span class="name">Coach-note</span><span class="src">MANUAL</span></div>
+          </div>
+
+          <div class="po-col is-skill">
+            <div class="po-skill is-active"><h4>Tech-analyse</h4><p>Køllebane, ball-flight, distanse</p></div>
+            <div class="po-skill is-active"><h4>Volum-analyse</h4><p>Rep-tetthet, tretthet</p></div>
+            <div class="po-skill is-active"><h4>Mønster-analyse</h4><p>Trender på tvers av økter</p></div>
+            <div class="po-skill"><h4>Risiko-deteksjon</h4><p>Skader, overload-signaler</p></div>
+            <div class="po-skill"><h4>Konkurranse-vekting</h4><p>Topp-form-timing</p></div>
+          </div>
+
+          <div class="po-col is-agent">
+            <div class="po-agent is-active"><span class="avatar">🎯</span><div class="meta"><div class="lbl">Drill-agent</div><div class="since">Sist anbefalt 2 min siden</div></div></div>
+            <div class="po-agent is-active"><span class="avatar">📅</span><div class="meta"><div class="lbl">Periodisering</div><div class="since">Sist anbefalt 14 min siden</div></div></div>
+            <div class="po-agent"><span class="avatar">🔋</span><div class="meta"><div class="lbl">Deload</div><div class="since">Sist anbefalt 3 t siden</div></div></div>
+            <div class="po-agent"><span class="avatar">📨</span><div class="meta"><div class="lbl">Brief</div><div class="since">Sist anbefalt 6 t siden</div></div></div>
+            <div class="po-agent is-active"><span class="avatar">⚠</span><div class="meta"><div class="lbl">Eskalering</div><div class="since">Akkurat nå</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="e-bottombar" style="gap: 16px">
+        <span class="po-states">
+          <button class="is-active"><span class="ring"></span>Live</button>
+          <button>Trigger</button>
+          <button>Pause</button>
+          <button>Replay</button>
+          <button>Debug</button>
+        </span>
+        <span style="flex:1"></span>
+        <button class="e-btn e-btn--ghost-lime">Send agent-feedback →</button>
+      </div>
+    </div>
+</body>
+</html>

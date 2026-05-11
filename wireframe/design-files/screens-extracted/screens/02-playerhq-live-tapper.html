@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>PlayerHQ — Live Tapper</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="../_shared/arketype-e.css" />
+<style>
+  .lt-counter { font-size: 144px; }
+  .lt-clock { font-family:'JetBrains Mono'; font-size:13px; color: var(--e-muted); }
+  .lt-club-chip {
+    display:inline-flex; align-items:center; gap:8px;
+    height:32px; padding: 0 14px; border-radius: 999px;
+    background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+    font-family: 'JetBrains Mono'; font-size: 12px; letter-spacing:0.08em;
+  }
+  .lt-sheet {
+    position:absolute; left:0; right:0; bottom:0;
+    background: #0E1815; border-top: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px 24px 0 0; padding: 16px 16px 24px;
+    box-shadow: 0 -30px 60px -20px rgba(0,0,0,0.7);
+    z-index: 10;
+  }
+  .lt-sheet-handle { width: 40px; height:4px; border-radius: 999px; background: rgba(255,255,255,0.15); margin: 0 auto 16px; }
+  .lt-club-row {
+    height: 64px; display:flex; align-items:center; justify-content:space-between;
+    padding: 0 20px; border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px; font-size: 15px;
+  }
+  .lt-club-row.is-selected { border-color: var(--e-lime); background: rgba(209,248,67,0.04); }
+  .lt-overlay {
+    position:absolute; inset:0; backdrop-filter: blur(2px);
+    background: rgba(0,0,0,0.55);
+    display:flex; align-items:center; justify-content:center;
+    z-index: 20;
+  }
+  .lt-card {
+    background: var(--e-surface); border: 1px solid var(--e-border);
+    border-radius: 20px; padding: 32px; max-width: 440px; text-align:center;
+  }
+</style>
+</head>
+<body style="background:var(--surface);margin:0;padding:0">
+<div class="e-frame is-black" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left">
+          <span class="lt-club-chip">DRIVER ▾</span>
+        </div>
+        <div class="lt-clock">00:00</div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+      <div class="e-stage">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:32px">
+          <span class="e-pyr e-pyr--range" style="opacity:0.55">RANGE · DRIVER</span>
+          <div class="e-counter lt-counter" style="opacity:0.45">0</div>
+          <div style="font-size: 14px; color: var(--e-muted); animation: pulse-fade 1.8s infinite">Tap +1 for hver rep ↓</div>
+        </div>
+      </div>
+      <div class="e-bottombar">
+        <button class="e-btn e-btn--ghost" style="flex:0 0 auto; opacity:0.4">↺ Angre</button>
+        <button class="e-btn e-btn--primary e-btn--xl" style="flex:1 1 0">+1 rep</button>
+        <button class="e-btn e-btn--secondary" style="flex:0 0 auto">Avslutt</button>
+      </div>
+    </div>
+</body>
+</html>

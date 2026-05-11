@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — Grupper · 6-D/1</title>
+<link rel="stylesheet" href="../_shared/arketype-f.css">
+<style>
+  .grp-grid{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start}
+
+  .grp-tree{background:var(--surface-card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow-card);position:sticky;top:24px}
+  .grp-tree h3{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin:0 0 10px;padding:0 6px}
+
+  .tree-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--ink)}
+  .tree-item:hover{background:var(--surface-alt)}
+  .tree-item.active{background:var(--accent-bg);color:var(--brand-primary);font-weight:500}
+  .tree-item .chev{color:var(--ink-subtle);width:12px;font-family:var(--font-mono);font-size:10px;flex-shrink:0}
+  .tree-item .ic{width:18px;height:18px;border-radius:5px;background:var(--brand-primary);color:var(--brand-accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:9px;flex-shrink:0}
+  .tree-item .ic.elite{background:#B8852A;color:#fff}
+  .tree-item .ic.pro{background:#005840;color:var(--brand-accent)}
+  .tree-item .ic.fys{background:#A32D2D;color:#fff}
+  .tree-item .ic.club{background:#9C9990;color:#fff}
+  .tree-item .ic.sub{background:transparent;color:var(--ink-subtle);border:1px dashed var(--line);font-family:var(--font-mono)}
+  .tree-item .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tree-item .ct{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);font-weight:400}
+  .tree-item.indent{padding-left:34px}
+  .tree-item.indent2{padding-left:56px}
+
+  .tree-add{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px dashed var(--line);border-radius:8px;color:var(--ink-subtle);font-size:12px;cursor:pointer;margin-top:6px}
+  .tree-add:hover{border-color:var(--brand-primary);color:var(--brand-primary)}
+  .tree-add svg{width:14px;height:14px}
+
+  /* Right panel */
+  .grp-detail{background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card);overflow:hidden}
+  .grp-detail .head{padding:22px 26px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+  .grp-detail .head .left h2{font-family:var(--font-display);font-size:26px;font-weight:500;letter-spacing:-.02em;color:var(--ink);margin:0 0 6px;display:flex;align-items:center;gap:10px}
+  .grp-detail .head .left h2 em{font-style:italic;font-weight:400;color:var(--ink-muted);font-size:18px}
+  .grp-detail .head .left .breadcrumb{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+  .grp-detail .head .left .meta{font-size:13px;color:var(--ink-muted)}
+  .grp-detail .head .actions{display:flex;gap:8px;flex-shrink:0}
+
+  .grp-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:18px 26px;border-bottom:1px solid var(--line);background:var(--surface-alt)}
+  .gkpi{display:flex;flex-direction:column;gap:2px}
+  .gkpi .l{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .gkpi .v{font-family:var(--font-mono);font-size:22px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
+  .gkpi .d{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)}
+  .gkpi .d.up{color:var(--status-success)}
+  .gkpi .d.warn{color:var(--status-warning)}
+
+  /* Roster */
+  .roster{padding:18px 26px}
+  .roster-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .roster-head h3{font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--ink);margin:0;font-style:italic;letter-spacing:-.01em}
+  .roster-head .ct{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+
+  .player-row{display:grid;grid-template-columns:32px 40px 1fr 100px 100px 120px 80px 28px;gap:14px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line-soft);font-size:13px;cursor:grab;background:var(--surface-card);border-radius:0}
+  .player-row:hover{background:rgba(245,242,234,.5)}
+  .player-row.dragging{opacity:.6;cursor:grabbing;background:var(--accent-bg);border:1px dashed var(--brand-primary);border-radius:10px}
+  .player-row .drag{color:var(--ink-disabled);display:flex;justify-content:center}
+  .player-row .drag svg{width:14px;height:14px}
+  .player-row .nm{font-weight:500;color:var(--ink)}
+  .player-row .nm .age{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);margin-left:6px;font-weight:400}
+  .player-row .hcp{font-family:var(--font-mono);font-size:13px;color:var(--ink);text-align:right}
+  .player-row .hcp.down{color:var(--status-success)}
+  .player-row .last{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)}
+  .player-row .coach{display:flex;align-items:center;gap:6px}
+  .player-row .coach .av-xs{width:22px;height:22px;font-size:9px}
+
+  /* Drop zone */
+  .drop-zone{display:flex;align-items:center;justify-content:center;padding:24px;border:2px dashed var(--brand-primary);border-radius:14px;background:var(--accent-bg);color:var(--brand-primary);font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;margin:14px 0;gap:8px}
+  .drop-zone svg{width:18px;height:18px}
+
+  /* Subgroup chips */
+  .sub-row{display:flex;flex-wrap:wrap;gap:8px;padding:18px 26px;border-bottom:1px solid var(--line)}
+  .sub-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px 5px 8px;border-radius:100px;background:var(--surface);border:1px solid var(--line);font-size:12px;color:var(--ink);cursor:pointer}
+  .sub-chip.active{background:var(--brand-primary);color:var(--brand-accent);border-color:var(--brand-primary)}
+  .sub-chip .dot-ic{width:6px;height:6px;border-radius:50%;background:var(--brand-primary)}
+  .sub-chip.active .dot-ic{background:var(--brand-accent)}
+  .sub-chip .ct-pill{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);background:var(--surface-alt);padding:1px 6px;border-radius:6px}
+  .sub-chip.active .ct-pill{background:rgba(255,255,255,.15);color:var(--brand-accent)}
+  .sub-chip .x{color:var(--ink-subtle);width:14px;height:14px;display:flex;align-items:center;justify-content:center}
+  .sub-chip:hover .x{color:var(--status-danger)}
+  .sub-chip-new{background:transparent;border:1px dashed var(--line);color:var(--ink-subtle);cursor:pointer}
+  .sub-chip-new:hover{border-color:var(--brand-primary);color:var(--brand-primary)}
+
+  .hcp-pill{font-family:var(--font-mono);font-size:10px;font-weight:600;padding:2px 6px;border-radius:6px;background:var(--accent-bg);color:var(--brand-primary)}
+
+  /* Mobile */
+  .mobil-frame{background:var(--surface);border:1px solid var(--line);border-radius:32px;padding:24px;width:380px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+  .mob-grp{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow-card)}
+  .mob-grp .nm-row{display:flex;align-items:center;gap:10px}
+  .mob-grp .nm-row .nm{font-weight:500;color:var(--ink);font-size:14px;flex:1}
+  .mob-grp .nm-row .ct{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+  .mob-grp .meta{font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)}
+</style>
+</head>
+<body style="background:var(--surface);margin:0;padding:0">
+<section class="ab" data-screen-label="01 Grupper — lyst">
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="mark">SL</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item">Spillere<span class="count">38</span></div>
+          <div class="nav-item">Bookinger<span class="count">12</span></div>
+          <div class="nav-item">Team<span class="count">7</span></div>
+          <div class="nav-item active">Grupper<span class="count">9</span></div>
+          <div class="nav-item">Maler</div>
+          <div class="nav-item">Agenter</div>
+          <div class="nav-foot"><div class="av-sm">SL</div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Sara Larsen</span><span style="font-size:11px;color:var(--ink-subtle)">Hovedcoach</span></div></div>
+        </aside>
+
+        <main class="main">
+          <header class="page-head">
+            <div class="crumb">Coach HQ <span class="sep">/</span> Grupper <span class="sep">/</span> Elite</div>
+            <h1>Grupper. <em style="font-style:italic;font-weight:400;color:var(--ink-muted)">Hvem som hører hvor.</em></h1>
+            <div class="sub">38 spillere · 9 grupper · 14 sub-grupper. Dra og slipp navn mellom grupper i venstre tre.</div>
+          </header>
+
+          <div class="form-area" style="padding:24px 36px">
+            <div class="grp-grid">
+              <aside class="grp-tree">
+                <h3>Grupper</h3>
+                <div class="tree-item"><span class="chev">▾</span><div class="ic club">GF</div><span class="nm">GFGK</span><span class="ct">24</span></div>
+                <div class="tree-item indent active"><span class="chev">▾</span><div class="ic elite">EL</div><span class="nm">Elite</span><span class="ct">12</span></div>
+                <div class="tree-item indent2" style="font-size:12px;color:var(--ink-muted)"><div class="ic sub">·</div><span class="nm">Turnering S26</span><span class="ct">8</span></div>
+                <div class="tree-item indent2" style="font-size:12px;color:var(--ink-muted)"><div class="ic sub">·</div><span class="nm">Vinter-team</span><span class="ct">4</span></div>
+                <div class="tree-item indent2" style="font-size:12px;color:var(--ink-muted)"><div class="ic sub">·</div><span class="nm">Fys-prosjekt</span><span class="ct">3</span></div>
+                <div class="tree-item indent"><span class="chev">▸</span><div class="ic pro">PR</div><span class="nm">Pro</span><span class="ct">7</span></div>
+                <div class="tree-item indent"><span class="chev">▸</span><div class="ic">A</div><span class="nm">Amatør</span><span class="ct">5</span></div>
+                <div class="tree-item"><span class="chev">▾</span><div class="ic club">WG</div><span class="nm">WANG</span><span class="ct">11</span></div>
+                <div class="tree-item indent"><span class="chev">▸</span><div class="ic pro">PR</div><span class="nm">Pro</span><span class="ct">8</span></div>
+                <div class="tree-item indent"><span class="chev">▸</span><div class="ic">J</div><span class="nm">Junior</span><span class="ct">3</span></div>
+                <div class="tree-item"><span class="chev">▾</span><div class="ic club">BG</div><span class="nm">Bossum GK</span><span class="ct">3</span></div>
+                <div class="tree-item indent" style="opacity:.55"><span class="chev"></span><div class="ic fys">FY</div><span class="nm">Fys-rehab</span><span class="ct">3</span></div>
+                <div class="tree-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Ny gruppe</div>
+              </aside>
+
+              <div class="grp-detail">
+                <div class="head">
+                  <div class="left">
+                    <div class="breadcrumb">GFGK / Elite</div>
+                    <h2>Elite. <em>12 spillere.</em></h2>
+                    <div class="meta">Hovedcoach: deg · Co-coach: Tom Nilsen · Standard plan-template: <code style="font-family:var(--font-mono);font-size:12px;background:var(--surface-alt);padding:2px 6px;border-radius:5px">elite-uke-v2</code></div>
+                  </div>
+                  <div class="actions">
+                    <button class="btn btn-ghost btn-sm">Rediger</button>
+                    <button class="btn btn-primary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Legg til spiller</button>
+                  </div>
+                </div>
+
+                <div class="grp-kpis">
+                  <div class="gkpi"><span class="l">Spillere</span><span class="v">12</span><span class="d">av 15 maks</span></div>
+                  <div class="gkpi"><span class="l">Snitt HCP</span><span class="v">+2,4</span><span class="d up">↓ 0,3 / 30d</span></div>
+                  <div class="gkpi"><span class="l">Plan-compl. 30d</span><span class="v">78%</span><span class="d up">+12% vs forr.</span></div>
+                  <div class="gkpi"><span class="l">Aktive nå</span><span class="v">9</span><span class="d warn">3 mer enn 7d siden økt</span></div>
+                </div>
+
+                <div class="sub-row">
+                  <span class="sub-chip active"><span class="dot-ic"></span>Alle<span class="ct-pill">12</span></span>
+                  <span class="sub-chip"><span class="dot-ic" style="background:#B8852A"></span>Turnering S26<span class="ct-pill">8</span></span>
+                  <span class="sub-chip"><span class="dot-ic" style="background:#005840"></span>Vinter-team<span class="ct-pill">4</span></span>
+                  <span class="sub-chip"><span class="dot-ic" style="background:#A32D2D"></span>Fys-prosjekt<span class="ct-pill">3</span></span>
+                  <span class="sub-chip sub-chip-new"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Ny sub-gruppe</span>
+                </div>
+
+                <div class="roster">
+                  <div class="roster-head">
+                    <h3>Spillerne</h3>
+                    <span class="ct">12 totalt · sortert på HCP ↓</span>
+                    <div style="margin-left:auto;display:flex;gap:6px">
+                      <span class="chip mono">↓ HCP</span>
+                      <button class="btn btn-ghost btn-xs">Eksporter CSV</button>
+                    </div>
+                  </div>
+
+                  <div style="display:grid;grid-template-columns:32px 40px 1fr 100px 100px 120px 80px 28px;gap:14px;padding:8px 16px;background:var(--surface-alt);border-bottom:1px solid var(--line);font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle)">
+                    <div></div><div></div><div>Spiller</div><div style="text-align:right">HCP</div><div>Sub-gr.</div><div>Coach</div><div>Siste økt</div><div></div>
+                  </div>
+
+                  <div class="player-row">
+                    <div class="drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg></div>
+                    <div class="av av-sm" style="background:#005840">EM</div>
+                    <div class="nm">Erik Markussen<span class="age">· 17</span></div>
+                    <div class="hcp down">+0,8</div>
+                    <div><span class="hcp-pill" style="background:rgba(184,133,42,.10);color:#7a4e0e">Turn S26</span></div>
+                    <div class="coach"><div class="av-xs" style="background:var(--brand-primary)">SL</div><span style="font-size:11px;color:var(--ink-muted)">Sara</span></div>
+                    <div class="last">i dag</div>
+                    <div style="text-align:center;color:var(--ink-subtle)">›</div>
+                  </div>
+
+                  <div class="player-row">
+                    <div class="drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg></div>
+                    <div class="av av-sm" style="background:#A32D2D">MR</div>
+                    <div class="nm">Markus R. Pedersen<span class="age">· 16</span></div>
+                    <div class="hcp">+1,2</div>
+                    <div><span class="hcp-pill" style="background:rgba(184,133,42,.10);color:#7a4e0e">Turn S26</span></div>
+                    <div class="coach"><div class="av-xs" style="background:var(--brand-primary)">SL</div><span style="font-size:11px;color:var(--ink-muted)">Sara</span></div>
+                    <div class="last">i går</div>
+                    <div style="text-align:center;color:var(--ink-subtle)">›</div>
+                  </div>
+
+                  <div class="player-row dragging">
+                    <div class="drag" style="color:var(--brand-primary)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg></div>
+                    <div class="av av-sm" style="background:#7a4e0e">ES</div>
+                    <div class="nm">Emma Solberg<span class="age">· 15</span> <span style="font-family:var(--font-mono);font-size:10px;color:var(--brand-primary);margin-left:6px;letter-spacing:.04em">DRAGGING</span></div>
+                    <div class="hcp">+1,6</div>
+                    <div><span class="hcp-pill" style="background:rgba(184,133,42,.10);color:#7a4e0e">Turn S26</span></div>
+                    <div class="coach"><div class="av-xs" style="background:#B8852A">TN</div><span style="font-size:11px;color:var(--ink-muted)">Tom</span></div>
+                    <div class="last">2 d</div>
+                    <div></div>
+                  </div>
+
+                  <div class="drop-zone">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    Slipp <strong style="font-weight:600">Emma Solberg</strong> her — flyttes til <strong style="font-weight:600">Vinter-team</strong>
+                  </div>
+
+                  <div class="player-row">
+                    <div class="drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg></div>
+                    <div class="av av-sm" style="background:#0A1F18">LB</div>
+                    <div class="nm">Lina Berg<span class="age">· 17</span></div>
+                    <div class="hcp">+2,1</div>
+                    <div><span class="hcp-pill" style="background:rgba(0,88,64,.10);color:var(--brand-primary)">Vinter</span></div>
+                    <div class="coach"><div class="av-xs" style="background:var(--brand-primary)">SL</div><span style="font-size:11px;color:var(--ink-muted)">Sara</span></div>
+                    <div class="last">3 d</div>
+                    <div style="text-align:center;color:var(--ink-subtle)">›</div>
+                  </div>
+
+                  <div class="player-row">
+                    <div class="drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg></div>
+                    <div class="av av-sm" style="background:#B8852A">JH</div>
+                    <div class="nm">Jonas Halvorsen<span class="age">· 18</span></div>
+                    <div class="hcp">+2,4</div>
+                    <div><span class="hcp-pill" style="background:rgba(163,45,45,.08);color:var(--status-danger)">Fys</span></div>
+                    <div class="coach"><div class="av-xs" style="background:#B8852A">TN</div><span style="font-size:11px;color:var(--ink-muted)">Tom</span></div>
+                    <div class="last warn" style="color:var(--status-warning)">9 d</div>
+                    <div style="text-align:center;color:var(--ink-subtle)">›</div>
+                  </div>
+
+                  <div class="player-row">
+                    <div class="drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg></div>
+                    <div class="av av-sm" style="background:#9C9990">SE</div>
+                    <div class="nm">Sigrid Eide<span class="age">· 16</span></div>
+                    <div class="hcp">+2,8</div>
+                    <div><span class="hcp-pill" style="background:rgba(184,133,42,.10);color:#7a4e0e">Turn S26</span></div>
+                    <div class="coach"><div class="av-xs" style="background:var(--brand-primary)">SL</div><span style="font-size:11px;color:var(--ink-muted)">Sara</span></div>
+                    <div class="last">4 d</div>
+                    <div style="text-align:center;color:var(--ink-subtle)">›</div>
+                  </div>
+
+                  <div class="player-row">
+                    <div class="drag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg></div>
+                    <div class="av av-sm" style="background:#005840">AT</div>
+                    <div class="nm">Andreas Tønnessen<span class="age">· 17</span></div>
+                    <div class="hcp">+3,1</div>
+                    <div><span class="hcp-pill" style="background:rgba(0,88,64,.10);color:var(--brand-primary)">Vinter</span></div>
+                    <div class="coach"><div class="av-xs" style="background:#005840">LH</div><span style="font-size:11px;color:var(--ink-muted)">Lars</span></div>
+                    <div class="last">i dag</div>
+                    <div style="text-align:center;color:var(--ink-subtle)">›</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 DARK ============ -->
+</body>
+</html>

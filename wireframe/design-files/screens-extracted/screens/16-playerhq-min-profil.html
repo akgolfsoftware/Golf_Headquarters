@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>PlayerHQ — Min profil · 6-B/1</title>
+<link rel="stylesheet" href="../_shared/arketype-f-player.css">
+<style>
+  /* Profile-spesifikt */
+  .profile-grid{display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start}
+  .id-card{position:sticky;top:0;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:var(--shadow-card)}
+  .id-card .name{font-family:var(--font-display);font-size:22px;font-weight:500;letter-spacing:-.01em;color:var(--ink);text-align:center;margin:0}
+  .id-card .tier{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:6px;background:var(--brand-primary);color:var(--brand-accent)}
+  .id-card .tier.free{background:#E8E5DC;color:var(--ink-muted)}
+  .id-card .cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-muted);padding:3px 10px;background:var(--accent-bg);border:1px solid rgba(0,88,64,.18);border-radius:100px}
+  .id-card .cat-pill strong{font-family:var(--font-mono);color:var(--ink);font-weight:600}
+  .id-card .id-stats{width:100%;display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--line-soft);margin-top:6px}
+  .id-stat{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--ink-muted)}
+  .id-stat .v{font-family:var(--font-mono);font-size:13px;color:var(--ink);font-weight:500}
+  .id-card .pub-link{font-size:12px;color:var(--brand-primary);font-weight:500;margin-top:8px;text-decoration:none}
+  .id-card .avatar-edit{position:absolute;bottom:-2px;right:-2px;width:32px;height:32px;border-radius:50%;background:var(--brand-primary);color:#fff;display:flex;align-items:center;justify-content:center;border:3px solid var(--surface-card);cursor:pointer}
+  .id-card .avatar-wrap{position:relative}
+
+  .parent-row{display:grid;grid-template-columns:36px 1fr auto auto;gap:12px;align-items:center;padding:14px 24px;border-bottom:1px solid var(--line-soft);min-height:64px}
+  .parent-row:last-child{border-bottom:none}
+  .parent-row .av-md{width:36px;height:36px;font-size:13px}
+  .parent-row .info{display:flex;flex-direction:column;gap:1px}
+  .parent-row .info .n{font-size:13px;font-weight:500;color:var(--ink)}
+  .parent-row .info .r{font-size:11px;color:var(--ink-subtle)}
+  .parent-row .access{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);padding:4px 8px;background:var(--surface-alt);border:1px solid var(--line);border-radius:6px}
+  .parent-row .access.full{background:var(--status-success-bg);color:var(--status-success);border-color:rgba(26,125,86,.2)}
+  .parent-row .access.partial{background:var(--status-warning-bg);color:var(--status-warning);border-color:rgba(184,133,42,.25)}
+
+  .empty-state{padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+  .empty-state svg{width:36px;height:36px;color:var(--ink-disabled);margin-bottom:4px}
+  .empty-state .t{font-size:14px;font-weight:500;color:var(--ink)}
+  .empty-state .d{font-size:12px;color:var(--ink-muted);max-width:280px}
+
+  /* Tooltip */
+  .tooltip-wrap{position:relative;display:inline-flex;align-items:center;gap:6px;cursor:help}
+  .tooltip-wrap .tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--ink);color:#F5F4EE;padding:10px 14px;border-radius:10px;font-size:12px;width:220px;line-height:1.5;box-shadow:0 12px 32px -8px rgba(10,31,24,.4);z-index:10;font-family:var(--font-body)}
+  .tooltip-wrap .tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink)}
+  .tooltip-wrap .tip strong{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-accent);margin-bottom:4px}
+
+  .sync-row{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;color:var(--ink-muted)}
+
+  /* Mobile-specific */
+  .m-avatar{display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 0 4px}
+  .m-avatar .av-lg{box-shadow:0 8px 24px -8px rgba(0,88,64,.3)}
+  .m-avatar .nm{font-family:var(--font-display);font-size:20px;font-weight:500;color:var(--ink)}
+  .m-avatar .meta{display:flex;gap:8px;align-items:center}
+</style>
+</head>
+<body style="background:var(--surface);margin:0;padding:0">
+<section class="ab" data-screen-label="01 Min profil — lyst junior">
+    <div class="ab-frame">
+      <div class="app app--ph">
+        <aside class="nav">
+          <div class="nav-logo"><div class="mark">AK</div><div class="n">AK Golf<span class="dim">/spiller</span></div></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>Hub</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Plan &amp; økter</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Coach<span class="count">2</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/></svg>Logg</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Helse</div>
+          <div class="nav-divider"></div>
+          <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Meg</div>
+          <div class="nav-foot"><div class="av-sm">MP<span class="tier">PRO</span></div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Markus P.</span><span style="font-size:11px;color:var(--ink-subtle)">HCP +2,4 · GFGK</span></div></div>
+        </aside>
+
+        <main class="main">
+          <header class="page-head">
+            <div class="crumb">PlayerHQ <span class="sep">/</span> Meg <span class="sep">/</span> Profil</div>
+            <h1>Min profil — slik andre ser deg.</h1>
+            <p class="sub">Bilde, navn og kontaktinfo. Foreldrene dine har egen tilgang nederst.</p>
+          </header>
+
+          <div class="settings">
+            <aside class="subnav">
+              <div class="subnav-title">Min konto</div>
+              <div class="subnav-item active">Profil</div>
+              <div class="subnav-item">Helse</div>
+              <div class="subnav-item">Varsler</div>
+              <div class="subnav-item">Abonnement</div>
+              <div class="subnav-item">Sikkerhet</div>
+              <div class="subnav-item">Personvern</div>
+            </aside>
+
+            <div class="form-area">
+              <div class="profile-grid">
+                <!-- LEFT: ID card -->
+                <div class="id-card">
+                  <div class="avatar-wrap">
+                    <div class="av av-xl">MP</div>
+                    <div class="avatar-edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></div>
+                  </div>
+                  <h2 class="name">Markus Røinaas Pedersen</h2>
+                  <div style="display:flex;gap:8px;align-items:center"><span class="tier">PRO</span><span class="cat-pill">Kategori <strong>A</strong></span></div>
+                  <div class="id-stats">
+                    <div class="id-stat"><span>HCP</span><span class="v">+2,4</span></div>
+                    <div class="id-stat"><span>Klubb</span><span class="v" style="font-family:var(--font-body);font-size:12px">GFGK</span></div>
+                    <div class="id-stat"><span>Coach</span><span class="v" style="font-family:var(--font-body);font-size:12px">Anders K.</span></div>
+                    <div class="id-stat"><span>Alder</span><span class="v">17 år</span></div>
+                  </div>
+                  <a class="pub-link">Se min offentlige profil →</a>
+                </div>
+
+                <!-- RIGHT: Form sections -->
+                <div style="display:flex;flex-direction:column;gap:28px;min-width:0">
+
+                  <div class="section">
+                    <div class="section-head"><h2>Personalia</h2><span class="aux">Hvem du er</span></div>
+                    <div class="field-list">
+                      <div class="field"><span class="lbl">Fullt navn</span><span class="val">Markus Røinaas Pedersen</span><a class="edit-link">Endre →</a></div>
+                      <div class="field"><span class="lbl">Visningsnavn<span class="hint">Slik andre ser deg</span></span><span class="val">Markus</span><a class="edit-link">Endre →</a></div>
+                      <div class="field"><span class="lbl">E-post</span><span class="val val-mono">markus@example.no <span class="chip success" style="font-size:10px;padding:2px 8px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Verifisert</span></span><a class="edit-link">Endre →</a></div>
+                      <div class="field"><span class="lbl">Mobil</span><span class="val val-mono">+47 412 34 567</span><a class="edit-link">Endre →</a></div>
+                      <div class="field"><span class="lbl">Fødselsdato</span><span class="val">8. august 2008 <span style="color:var(--ink-subtle);font-size:12px;margin-left:8px">17 år</span></span><span class="readonly-tag">Read-only</span></div>
+                      <div class="field"><span class="lbl">Adresse</span><span class="val">Storgata 14, 1378 Nesbru</span><a class="edit-link">Endre →</a></div>
+                    </div>
+                  </div>
+
+                  <div class="section">
+                    <div class="section-head"><h2>Golf-info</h2><span class="aux">Sync'es fra GolfBox</span></div>
+                    <div class="field-list">
+                      <div class="field"><span class="lbl">HCP</span><span class="val"><span class="val-mono" style="font-size:15px;font-weight:500">+2,4</span><span class="sync-row"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Sist sync 14:32</span></span><a class="edit-link">Sync nå →</a></div>
+                      <div class="field"><span class="lbl">GolfBox-ID</span><span class="val val-mono">NO-2008-MRP-1402</span><span class="readonly-tag">Synced</span></div>
+                      <div class="field"><span class="lbl">Hjemklubb</span><span class="val">Grini-Fossum Golfklubb <span style="color:var(--ink-subtle);font-size:12px;margin-left:6px">GFGK</span></span><a class="edit-link">Endre →</a></div>
+                      <div class="field"><span class="lbl">Sekundær-klubb</span><span class="val">Bossum GK</span><a class="edit-link">Endre →</a></div>
+                      <div class="field"><span class="lbl">Dominant hånd</span><span class="val">Høyre</span><a class="edit-link">Endre →</a></div>
+                      <div class="field"><span class="lbl">Kjønn</span><span class="val">Mann</span><a class="edit-link">Endre →</a></div>
+                      <div class="field"><span class="lbl">Spiller-kategori</span><span class="val"><span class="cat-pill" style="font-size:12px">Kategori <strong>A</strong></span></span><span class="readonly-tag">Endres av coach</span></div>
+                    </div>
+                  </div>
+
+                  <div class="section">
+                    <div class="section-head"><h2>Foreldre / foresatte</h2><span class="desc">Foreldrene dine kan se og styre kontoen din. Du er under 18.</span></div>
+                    <div class="field-list">
+                      <div class="parent-row">
+                        <div class="av av-md" style="background:linear-gradient(135deg,#A32D2D,#7a1f1f)">AP</div>
+                        <div class="info"><span class="n">Anne Pedersen <span style="color:var(--ink-subtle);font-weight:400">· mor</span></span><span class="r">anne.pedersen@example.no · +47 901 23 456</span></div>
+                        <span class="access full">Full innsyn</span>
+                        <a class="edit-link">Endre →</a>
+                      </div>
+                      <div class="parent-row">
+                        <div class="av av-md" style="background:linear-gradient(135deg,#005840,#0A1F18);color:var(--brand-accent)">TP</div>
+                        <div class="info"><span class="n">Tor Pedersen <span style="color:var(--ink-subtle);font-weight:400">· far</span></span><span class="r">tor.p@example.no · +47 932 11 008</span></div>
+                        <span class="access partial">Kun fakturaer</span>
+                        <a class="edit-link">Endre →</a>
+                      </div>
+                      <div class="parent-row" style="background:var(--surface-alt);cursor:pointer">
+                        <div style="width:36px;height:36px;border-radius:50%;background:transparent;border:1.5px dashed var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink-subtle)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+                        <div class="info"><span class="n" style="color:var(--brand-primary)">Legg til foresatt</span><span class="r">Maks 3. Krever bekreftelse fra coach.</span></div>
+                        <span></span><span></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="section">
+                    <div class="section-head"><h2>Personvern</h2><span class="aux">Hva andre kan se</span></div>
+                    <div class="field-list">
+                      <div class="field"><span class="lbl">Vis HCP på leaderboard<span class="hint">Klubbkamerater og coach</span></span><span class="val"></span><span class="toggle on"></span></div>
+                      <div class="field"><span class="lbl">Vis runde-historikk for klubbkamerater</span><span class="val"></span><span class="toggle on"></span></div>
+                      <div class="field"><span class="lbl">Coach kan dele runder eksternt<span class="hint">Andre coacher i nettverket kan se anonymiserte data</span></span><span class="val"></span><span class="toggle"></span></div>
+                    </div>
+                  </div>
+
+                  <div class="farezone">
+                    <div class="farezone-head"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg><h3>Farlig sone</h3></div>
+                    <div class="farezone-item">
+                      <div class="info"><span class="t">Eksporter alle mine data</span><span class="d">Du får alt — runder, helse, meldinger. Tar 2–5 minutter.</span></div>
+                      <button class="btn btn-ghost btn-sm">Be om eksport →</button>
+                    </div>
+                    <div class="farezone-item">
+                      <div class="info"><span class="t">Be om sletting av konto</span><span class="d">Sender forespørsel til coach Anders. Du må være 18 for å gjøre dette selv.</span></div>
+                      <button class="btn btn-destructive-ghost btn-sm">Be om sletting →</button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 Mørkt — Voksen (uten foreldre) ============ -->
+</body>
+</html>

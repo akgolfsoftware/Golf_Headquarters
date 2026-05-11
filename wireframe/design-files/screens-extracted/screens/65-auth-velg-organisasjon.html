@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head><meta charset="UTF-8"><title>Auth — Velg organisasjon · 9-G/4</title><link rel="stylesheet" href="_shared/arketype-g-auth.css">
+<style>
+  .org-shell{width:100%;max-width:920px;background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-card)}
+  .org-head{padding:28px 32px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+  .org-head .b{display:flex;gap:10px;align-items:center}
+  .org-head .b .mark{width:36px;height:36px;border-radius:8px;background:var(--brand-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:14px}
+  .org-head .b .nm{font-family:var(--font-display);font-size:16px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
+  .org-head .b .nm small{display:block;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.04em;margin-top:1px}
+  .org-head .who{display:flex;align-items:center;gap:10px;padding:6px 8px 6px 6px;background:#FAFAF7;border-radius:24px;border:1px solid var(--border)}
+  .org-head .who .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+  .org-head .who .info{line-height:1.2}
+  .org-head .who .info b{font-size:13px;font-weight:600;color:var(--ink)}
+  .org-head .who .info small{display:block;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.02em;margin-top:1px}
+  .org-head .who .logout{padding:5px 10px;background:#fff;border:1px solid var(--border);border-radius:14px;font-size:11px;color:var(--ink-muted);font-weight:500;cursor:pointer}
+
+  .org-title{padding:28px 32px 6px}
+  .org-title h1{font-family:var(--font-display);font-size:28px;font-weight:500;letter-spacing:-.02em;margin:0;color:var(--ink);line-height:1.2}
+  .org-title p{font-size:14px;color:var(--ink-muted);margin-top:8px;line-height:1.55}
+
+  .org-search{margin:14px 32px 0;padding:11px 14px;background:#FAFAF7;border:1px solid var(--border);border-radius:10px;display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-muted)}
+  .org-search svg{flex-shrink:0;color:var(--ink-subtle)}
+  .org-search input{flex:1;background:transparent;border:none;outline:none;font-family:var(--font-body);font-size:13px;color:var(--ink)}
+  .org-search kbd{font-family:var(--font-mono);font-size:10px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--ink-subtle)}
+
+  .org-section{padding:22px 32px 6px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-subtle);display:flex;justify-content:space-between;align-items:baseline}
+  .org-section small{font-weight:500;color:var(--ink-subtle);letter-spacing:.02em;font-size:10px}
+
+  .org-list{padding:0 24px}
+  .org{display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:14px 10px;border-radius:10px;cursor:pointer;transition:background .15s}
+  .org:hover{background:#FAFAF7}
+  .org.active{background:var(--accent-bg);outline:1.5px solid var(--brand-primary);outline-offset:-1.5px}
+  .org .crest{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,#0A3C2F,#1A7D56);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:14px;flex-shrink:0;letter-spacing:-.01em}
+  .org .crest.b{background:linear-gradient(135deg,#7d5814,#B8852A)}
+  .org .crest.r{background:linear-gradient(135deg,#5e2b2b,#B04444)}
+  .org .crest.s{background:linear-gradient(135deg,#3a4f5c,#5a7180)}
+  .org .crest.p{background:linear-gradient(135deg,#39134C,#6A2C8A)}
+  .org .meta{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .org .meta b{font-size:14.5px;font-weight:600;color:var(--ink);letter-spacing:-.005em}
+  .org .meta small{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-subtle);letter-spacing:.02em}
+  .org .badges{display:flex;gap:5px;flex-wrap:wrap}
+  .org .badge{padding:3px 7px;border-radius:5px;font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+  .org .badge.role-coach{background:rgba(0,88,64,.10);color:var(--brand-primary)}
+  .org .badge.role-player{background:rgba(184,133,42,.10);color:#7d5814}
+  .org .badge.role-admin{background:rgba(57,19,76,.10);color:#39134C}
+  .org .badge.role-parent{background:rgba(176,68,68,.10);color:var(--status-danger)}
+  .org .badge.tier{background:#1A1916;color:#fff}
+  .org .badge.sso{background:#FAFAF7;color:var(--ink-muted);border:1px solid var(--border)}
+  .org .chev{color:var(--ink-subtle);font-family:var(--font-mono);font-size:12px}
+  .org.active .chev{color:var(--brand-primary)}
+
+  .org-stats{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.02em;text-align:right;line-height:1.5}
+  .org-stats b{color:var(--ink);font-weight:600;font-family:var(--font-body);font-size:11.5px;letter-spacing:0}
+
+  .org-actions{padding:18px 32px 22px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);margin-top:14px;background:#FAFAF7}
+  .org-actions .l{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.02em;line-height:1.5}
+  .org-actions .l b{color:var(--ink);font-weight:600;font-family:var(--font-body);font-size:12px}
+  .org-actions .actions{display:flex;gap:8px}
+</style></head>
+<body>
+<div class="deck" data-screen-label="65 Auth — Velg organisasjon">
+  <header class="deck-head">
+    <div class="eyebrow">9-G · Auth &amp; før-login · skjerm 4 av 5</div>
+    <h1>Velg organisasjon · multi-tilhørighet</h1>
+    <p class="sub">Mange brukere har flere roller på tvers av klubber: en coach hos GFGK kan også være forelder i Bærum og spiller-medlem i Asker. Etter login viser vi alle tilhørigheter — med rolle, tier, og SSO-modus. Hurtig-bytte tilgjengelig fra app-headeren senere.</p>
+    <div class="meta-row"><span><span class="lbl">URL:</span> /auth/welcome</span><span><span class="lbl">Cache:</span> sist valgte org sparkes til toppen</span><span><span class="lbl">Tastatur:</span> 1-9 = velg · / = søk</span></div>
+  </header>
+  <section class="ab">
+    <div class="ab-label"><span class="num">65 · 9-G/4</span><span class="ttl">Velg organisasjon &amp; rolle</span><span class="meta">multi-tenant · rolle-bytte</span></div>
+    <div class="ab-frame">
+      <div class="org-shell">
+        <div class="org-head">
+          <div class="b">
+            <div class="mark">AK</div>
+            <div class="nm">AK Golf<span>velg organisasjon</span></div>
+          </div>
+          <div class="who">
+            <div class="av">AK</div>
+            <div class="info"><b>Anders Kristoffersen</b><small>anders@gfgk.no · siste login 13.05</small></div>
+            <div class="logout">Logg ut</div>
+          </div>
+        </div>
+
+        <div class="org-title">
+          <h1>Hvilken organisasjon vil du jobbe i?</h1>
+          <p>Du har 5 tilhørigheter på 4 klubber + 1 personlig coach-virksomhet. Velg én — du kan bytte når som helst fra app-headeren.</p>
+        </div>
+
+        <div class="org-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input value="" placeholder="Søk klubb, virksomhet eller rolle…">
+          <kbd>/</kbd>
+        </div>
+
+        <div class="org-section">Mest brukt<small>siste 30 dager</small></div>
+        <div class="org-list">
+          <div class="org active">
+            <div class="crest">GF</div>
+            <div class="meta">
+              <b>Gjøvik &amp; Fjellhamar Golfklubb</b>
+              <small>gfgk.no · 14 aktive spillere · medlem siden 2019</small>
+            </div>
+            <div class="badges">
+              <span class="badge role-coach">Hovedcoach</span>
+              <span class="badge tier">Pro</span>
+              <span class="badge sso">SAML SSO</span>
+            </div>
+            <div class="chev">⌘ ↵</div>
+          </div>
+          <div class="org">
+            <div class="crest p">AK</div>
+            <div class="meta">
+              <b>AK Golf · personlig virksomhet</b>
+              <small>akgolf.no · 4 eksterne spillere · org.nr 928 451 002</small>
+            </div>
+            <div class="badges">
+              <span class="badge role-coach">Eier</span>
+              <span class="badge tier">Pro</span>
+            </div>
+            <div class="chev">→</div>
+          </div>
+        </div>
+
+        <div class="org-section">Andre tilhørigheter<small>3 organisasjoner</small></div>
+        <div class="org-list">
+          <div class="org">
+            <div class="crest b">BG</div>
+            <div class="meta">
+              <b>Bærum Golfklubb</b>
+              <small>barumgk.no · 4 spillere som assistent-coach</small>
+            </div>
+            <div class="badges">
+              <span class="badge role-coach">Assistent</span>
+              <span class="badge sso">Google SSO</span>
+            </div>
+            <div class="chev">→</div>
+          </div>
+          <div class="org">
+            <div class="crest r">AS</div>
+            <div class="meta">
+              <b>Asker Golfklubb</b>
+              <small>askergolf.no · Markus' (sønn) hjemmeklubb</small>
+            </div>
+            <div class="badges">
+              <span class="badge role-parent">Forelder</span>
+              <span class="badge sso">BankID-link</span>
+            </div>
+            <div class="chev">→</div>
+          </div>
+          <div class="org">
+            <div class="crest s">NG</div>
+            <div class="meta">
+              <b>Norges Golfforbund</b>
+              <small>golfforbundet.no · trener-lisens nivå 3</small>
+            </div>
+            <div class="badges">
+              <span class="badge role-admin">Innsyn</span>
+              <span class="badge sso">FEIDE</span>
+            </div>
+            <div class="chev">→</div>
+          </div>
+        </div>
+
+        <div class="org-actions">
+          <div class="l"><b>Mangler en organisasjon?</b><br>Be klubb-admin om å invitere deg, eller koble til via invitasjon-lenke.</div>
+          <div class="actions">
+            <button class="btn btn-outline btn-sm">Koble til ny klubb</button>
+            <button class="btn btn-sm">Fortsett til GFGK →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

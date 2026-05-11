@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Auth — Logg inn</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:64px;padding:64px 24px 96px}
+  .ab{display:flex;flex-direction:column;gap:16px;max-width:1448px;width:100%}
+  .ab-label{display:flex;align-items:baseline;gap:16px;color:#3a3935;font-family:var(--font-display);font-weight:500}
+  .ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990}
+  .ab-label .ttl{font-size:20px;letter-spacing:-.01em}
+  .ab-label .meta{font-family:var(--font-body);font-size:13px;color:#7a7872;font-style:italic;font-weight:400;margin-left:auto}
+  .ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:24px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(10,31,24,.18),0 2px 4px rgba(10,31,24,.04)}
+
+  .deck-head{max-width:1448px;width:100%;display:flex;flex-direction:column;gap:12px;padding:0 4px;margin-bottom:8px}
+  .deck-head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+  .deck-head h1{font-family:var(--font-display);font-size:36px;font-weight:600;letter-spacing:-.02em;margin:0}
+  .deck-head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+
+  /* Auth layout */
+  .auth{display:grid;grid-template-columns:1fr 1fr;min-height:880px;background:var(--surface)}
+  .auth--short{min-height:740px}
+  .brand{position:relative;background:var(--secondary,#0F2A22);color:#F5F4EE;padding:56px 64px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+  .brand::before{content:"";position:absolute;top:48px;right:48px;width:140px;height:140px;border-radius:50%;background:var(--brand-accent);box-shadow:0 0 0 24px rgba(209,248,67,.10),0 0 0 60px rgba(209,248,67,.04)}
+  .brand .top{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:-.01em;z-index:2}
+  .brand .top .mark{width:32px;height:32px;border-radius:8px;background:var(--brand-accent);color:#0A1F18;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;font-family:var(--font-display)}
+  .brand .mid{z-index:2;max-width:480px}
+  .brand h2{font-family:'Instrument Serif',var(--font-display);font-size:56px;font-weight:400;font-style:italic;line-height:1.05;letter-spacing:-.02em;margin:0;color:#F5F4EE}
+  .brand h2 .em{font-style:normal;color:var(--brand-accent);font-weight:500}
+  .brand .lede{font-size:18px;line-height:1.5;color:rgba(245,244,238,.78);margin-top:18px;max-width:380px}
+  .brand .foot{display:flex;flex-direction:column;gap:6px;font-family:var(--font-mono);font-size:11px;color:rgba(245,244,238,.5);letter-spacing:.04em;text-transform:uppercase;z-index:2}
+  .brand .foot .kvp{display:flex;justify-content:space-between;max-width:380px}
+  .brand .foot .kvp .v{color:rgba(245,244,238,.85);text-transform:none;letter-spacing:0;font-family:var(--font-body)}
+
+  .formwrap{display:flex;align-items:center;justify-content:center;padding:56px 48px}
+  .form{width:100%;max-width:440px;display:flex;flex-direction:column;gap:18px}
+  .form .crumb{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .form h1{font-family:var(--font-display);font-size:32px;font-weight:600;letter-spacing:-.02em;margin:0;line-height:1.1;color:var(--ink)}
+  .form h1 .em{font-weight:400;font-style:italic;color:var(--brand-primary)}
+  .form .sub{font-size:14px;color:var(--ink-muted);line-height:1.5}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}
+  .input{position:relative}
+  .input input{width:100%;height:48px;padding:0 14px 0 42px;border:1px solid var(--line);border-radius:12px;background:var(--surface-card);font-family:var(--font-body);font-size:15px;color:var(--ink);outline:none;transition:border-color .15s}
+  .input input::placeholder{color:var(--ink-disabled)}
+  .input input:hover{border-color:#C7C3B7}
+  .input .lic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-subtle);width:18px;height:18px}
+  .input .ric{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--ink-subtle);width:18px;height:18px;cursor:pointer;padding:6px}
+  .input .ric:hover{color:var(--ink)}
+  .input.focus input{border-color:var(--brand-primary);box-shadow:0 0 0 4px rgba(0,88,64,.12)}
+  .input.error input{border-color:var(--status-danger,#EF4444);box-shadow:0 0 0 4px rgba(239,68,68,.10)}
+  .input.error .lic{color:var(--status-danger,#EF4444)}
+  .errmsg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--status-danger,#EF4444);font-weight:500;margin-top:2px}
+  .errmsg svg{width:14px;height:14px;flex-shrink:0}
+  .row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+  .check{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink-muted)}
+  .check .bx{width:18px;height:18px;border:1.5px solid var(--line);border-radius:5px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:center;justify-content:center}
+  .check.on .bx{background:var(--brand-primary);border-color:var(--brand-primary);color:#fff}
+  .check.on .bx svg{width:12px;height:12px}
+  .link{color:var(--brand-primary);font-weight:500;text-decoration:none;cursor:pointer}
+  .link:hover{text-decoration:underline}
+  .cta{height:50px;border:none;border-radius:12px;background:var(--brand-primary);color:#fff;font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:-.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;transition:transform .12s,background .15s}
+  .cta:hover{background:#004532;transform:translateY(-1px);box-shadow:0 6px 14px -4px rgba(0,88,64,.4)}
+  .cta:disabled{background:#C7C3B7;color:#FAFAF7;cursor:not-allowed;box-shadow:none;transform:none}
+  .cta.loading{background:#005840;cursor:wait;pointer-events:none}
+  .cta .spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .divider{display:flex;align-items:center;gap:12px;color:var(--ink-subtle);font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+  .ssogroup{display:flex;flex-direction:column;gap:8px}
+  .sso{height:46px;border:1px solid var(--line);border-radius:11px;background:var(--surface-card);font-size:14px;color:var(--ink);font-weight:500;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font-family:var(--font-body)}
+  .sso:hover{border-color:#C7C3B7;background:#FAFAF7}
+  .sso svg{width:18px;height:18px}
+  .sso.loading{color:var(--ink-subtle);cursor:wait;pointer-events:none}
+  .sso.loading .spin{width:14px;height:14px;border:2px solid #E8E5DC;border-top-color:var(--brand-primary);border-radius:50%;animation:spin 0.7s linear infinite}
+  .signup-line{text-align:center;font-size:13px;color:var(--ink-muted);margin-top:6px}
+  .toast{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:11px;background:#FDECEC;border:1px solid rgba(239,68,68,.30);color:#7C1D1D;font-size:13px;line-height:1.4}
+  .toast.err svg{width:18px;height:18px;color:var(--status-danger,#EF4444);flex-shrink:0;margin-top:1px}
+  .toast .ts{flex:1}
+  .toast .ts strong{display:block;font-weight:600;color:#7C1D1D;margin-bottom:2px}
+  .toast .tx{color:var(--ink-subtle);cursor:pointer;padding:2px}
+
+  /* DARK */
+  .dark .ab-frame{border-color:#1c3b32}
+  .dark .auth{background:#0F2A22}
+  .dark .brand{background:#0A1F18}
+  .dark .formwrap{background:#0F2A22}
+  .dark .form h1{color:#F5F4EE}
+  .dark .form h1 .em{color:var(--brand-accent)}
+  .dark .form .sub,.dark .form .crumb,.dark .signup-line,.dark .check{color:#9D9C95}
+  .dark .lbl{color:#9D9C95}
+  .dark .input input{background:#163027;border-color:#274d41;color:#F5F4EE}
+  .dark .input input::placeholder{color:#7a8580}
+  .dark .input .lic,.dark .input .ric{color:#9D9C95}
+  .dark .input.focus input{border-color:var(--brand-accent);box-shadow:0 0 0 4px rgba(209,248,67,.18)}
+  .dark .divider{color:#7a8580}
+  .dark .divider::before,.dark .divider::after{background:#274d41}
+  .dark .sso{background:#163027;border-color:#274d41;color:#F5F4EE}
+  .dark .sso:hover{background:#1f3d33;border-color:#3a6253}
+  .dark .check .bx{background:#163027;border-color:#274d41}
+  .dark .cta{background:var(--brand-accent);color:#0A1F18}
+  .dark .cta:hover{background:#C2EE2F;box-shadow:0 6px 14px -4px rgba(209,248,67,.3)}
+  .dark .link{color:var(--brand-accent)}
+
+  /* MOBILE */
+  .mobile-wrap{display:flex;justify-content:center;padding:32px;background:linear-gradient(180deg,#F5F2EA 0,#EDEAE2 100%)}
+  .mobile{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden;min-height:820px;display:flex;flex-direction:column}
+  .m-status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;color:var(--ink);font-weight:500}
+  .m-brand{background:#0F2A22;color:#F5F4EE;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden}
+  .m-brand::before{content:"";position:absolute;top:-10px;right:-20px;width:90px;height:90px;border-radius:50%;background:var(--brand-accent);opacity:.95}
+  .m-brand .top{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:600;font-size:13px;z-index:2}
+  .m-brand .top .mark{width:26px;height:26px;border-radius:7px;background:var(--brand-accent);color:#0A1F18;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px}
+  .m-form{padding:28px 24px 24px;display:flex;flex-direction:column;gap:16px;flex:1}
+  .m-form h1{font-family:var(--font-display);font-size:26px;font-weight:600;letter-spacing:-.02em;margin:0;line-height:1.1}
+  .m-form h1 .em{font-weight:400;font-style:italic;color:var(--brand-primary)}
+  .m-form .sub{font-size:13px;color:var(--ink-muted)}
+
+</style>
+</head>
+<body style="background:var(--surface);margin:0;padding:0">
+<section class="ab" data-screen-label="01 Lyst · idle">
+    <div class="ab-frame">
+      <div class="auth">
+        <aside class="brand">
+          <div class="top"><div class="mark">AK</div><span>AK Golf Platform</span></div>
+          <div class="mid">
+            <h2>Velkommen <span class="em">tilbake.</span></h2>
+            <p class="lede">For spillere som vil bli bedre, og coaches som hjelper dem dit. Logg inn for å fortsette der du slapp.</p>
+          </div>
+          <div class="foot">
+            <div class="kvp"><span>Versjon</span><span class="v">v0.34 · sesong 26</span></div>
+            <div class="kvp"><span>Status</span><span class="v" style="color:var(--brand-accent)">● Alle systemer ok</span></div>
+            <div class="kvp"><span>Support</span><span class="v">support@akgolf.no</span></div>
+          </div>
+        </aside>
+        <div class="formwrap">
+          <form class="form" onsubmit="return false">
+            <div class="crumb">Logg inn</div>
+            <h1>Logg inn på <span class="em">AK Golf</span>.</h1>
+            <p class="sub">Bruk e-post + passord. Eller fortsett med SSO.</p>
+            <div class="field">
+              <label class="lbl">E-post</label>
+              <div class="input">
+                <svg class="lic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+                <input type="email" placeholder="din@epost.no">
+              </div>
+            </div>
+            <div class="field">
+              <label class="lbl">Passord</label>
+              <div class="input">
+                <svg class="lic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input type="password" placeholder="••••••••">
+                <svg class="ric" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+            </div>
+            <div class="row">
+              <label class="check"><span class="bx"></span><span>Husk meg</span></label>
+              <a class="link">Glemt passord?</a>
+            </div>
+            <button class="cta" disabled>Logg inn <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            <div class="divider"><span>eller</span></div>
+            <div class="ssogroup">
+              <button class="sso" type="button"><svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Fortsett med Google</button>
+              <button class="sso" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" fill="#F25022"/><rect x="13" y="3" width="8" height="8" fill="#7FBA00"/><rect x="3" y="13" width="8" height="8" fill="#00A4EF"/><rect x="13" y="13" width="8" height="8" fill="#FFB900"/></svg>Fortsett med Microsoft</button>
+              <button class="sso" type="button"><svg viewBox="0 0 24 24" fill="#0A1F18"><path d="M17.05 12.04c-.03-2.93 2.4-4.34 2.5-4.41-1.36-1.99-3.49-2.27-4.24-2.3-1.81-.18-3.53 1.06-4.45 1.06-.93 0-2.34-1.04-3.85-1.01-1.98.03-3.8 1.15-4.83 2.92-2.06 3.57-.53 8.86 1.49 11.77.99 1.42 2.16 3.02 3.69 2.96 1.48-.06 2.04-.96 3.83-.96 1.79 0 2.3.96 3.87.93 1.6-.03 2.6-1.45 3.58-2.87 1.13-1.65 1.59-3.25 1.62-3.34-.04-.02-3.1-1.19-3.13-4.75zM14.31 4.32c.82-.99 1.37-2.37 1.22-3.74-1.18.05-2.6.78-3.45 1.77-.76.88-1.43 2.28-1.25 3.63 1.31.1 2.65-.67 3.48-1.66z"/></svg>Fortsett med Apple</button>
+            </div>
+            <div class="signup-line">Har du ikke konto? <a class="link">Opprett konto →</a></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 FOCUS email -->
+</body>
+</html>

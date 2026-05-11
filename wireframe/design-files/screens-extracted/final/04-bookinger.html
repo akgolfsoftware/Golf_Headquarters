@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head><meta charset="UTF-8"><title>04 · Bookinger</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+.deck{display:flex;flex-direction:column;align-items:center;gap:56px;padding:56px 24px 96px}
+.head{max-width:1448px;width:100%;display:flex;flex-direction:column;gap:10px}
+.head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+.head h1{font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.02em;margin:0}
+.head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+.ab{display:flex;flex-direction:column;gap:14px;max-width:1448px;width:100%}
+.ab-label{display:flex;align-items:baseline;gap:14px;color:#3a3935;font-family:var(--font-display);font-weight:500}
+.ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990}
+.ab-label .ttl{font-size:19px}
+.ab-label .meta{font-size:12px;color:#7a7872;font-style:italic;margin-left:auto;font-family:var(--font-body)}
+.ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:22px;overflow:hidden;box-shadow:0 24px 50px -28px rgba(10,31,24,.18)}
+.ab-frame svg:not([fill]){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.app{display:flex;min-height:900px;background:var(--surface)}.app--md{min-height:640px}.app--sm{min-height:500px}
+.rail{width:56px;background:#0F2A22;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;flex-shrink:0}
+.rail .logo{width:34px;height:34px;border-radius:9px;background:var(--brand-accent);color:#0A1F18;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11px;margin-bottom:6px}
+.rail .ri{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(245,244,238,.6)}.rail .ri.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}.rail .ri svg{width:17px;height:17px}
+.rail .av{margin-top:auto;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+.nav{width:200px;background:#FAFAF7;border-right:1px solid #F0EDE5;padding:18px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+.nav .label{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:6px 10px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13px;color:var(--ink-muted);position:relative}
+.nav-item.active{background:rgba(209,248,67,.30);color:#0A1F18;font-weight:500}
+.nav-item.active::before{content:"";position:absolute;left:-12px;top:6px;bottom:6px;width:3px;background:var(--brand-primary);border-radius:0 3px 3px 0}
+.nav-item .count{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);background:#F0EDE5;padding:2px 6px;border-radius:5px}
+.main{flex:1;padding:24px 28px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px}
+.hero .crumb{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:6px}
+.hero h1{font-family:var(--font-display);font-size:30px;font-weight:400;font-style:italic;letter-spacing:-.02em;margin:0;line-height:1.05}
+.hero h1 .em{font-style:normal;font-weight:600;color:var(--brand-primary)}
+.hero .meta{font-size:13px;color:var(--ink-muted);margin-top:6px;font-family:var(--font-mono)}
+.toggle{display:flex;background:var(--surface-card);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.toggle .opt{padding:6px 12px;border-radius:7px;font-size:12px;font-weight:500;color:var(--ink-muted);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.toggle .opt.act{background:var(--brand-primary);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{padding:14px 18px;background:var(--surface-card);border:1px solid var(--line);border-radius:14px}
+.kpi .h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+.kpi .v{font-family:var(--font-mono);font-size:28px;font-weight:600;line-height:1.05;margin-top:4px}.kpi .v .u{font-size:13px;color:var(--ink-subtle);font-weight:500}
+.kpi .sub{font-size:11px;color:var(--ink-muted);margin-top:3px;font-family:var(--font-mono)}
+.kpi.acc{background:linear-gradient(135deg,#0F2A22,#163027);color:#F5F4EE;border-color:#274d41}
+.kpi.acc .h{color:rgba(209,248,67,.7)}.kpi.acc .v{color:#F5F4EE}.kpi.acc .sub{color:rgba(245,244,238,.7)}
+.filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.search{display:flex;align-items:center;gap:8px;background:var(--surface-card);border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-size:13px;min-width:260px}
+.search svg{width:14px;height:14px;color:var(--ink-subtle)}.search input{flex:1;border:none;outline:none;background:transparent}
+.chip{padding:6px 11px;border-radius:100px;border:1px solid var(--line);font-size:12px;color:var(--ink-muted);display:inline-flex;align-items:center;gap:6px;background:var(--surface-card)}
+.chip svg{width:11px;height:11px}
+.btn{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface-card);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
+.btn.sm{padding:6px 10px;font-size:12px}
+.nav-week{display:flex;align-items:center;gap:8px}
+.nav-week .arr{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface-card);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-muted)}
+.nav-week .lbl{font-family:var(--font-display);font-size:14px;font-weight:600;padding:0 8px}
+.nav-week .today{padding:5px 11px;border-radius:8px;border:1px solid var(--line);font-size:12px;font-family:var(--font-mono);cursor:pointer;background:var(--surface-card)}
+
+/* CAL */
+.cal-card{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-card);display:flex;flex-direction:column;flex:1}
+.cal-head{display:grid;grid-template-columns:60px repeat(7,1fr);border-bottom:1px solid var(--line)}
+.cal-head .gut{}
+.cal-head .day{padding:10px 8px;text-align:center;border-left:1px solid var(--line-soft)}
+.cal-head .day .nm{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+.cal-head .day .nu{font-family:var(--font-mono);font-size:18px;font-weight:600;margin-top:2px;color:var(--ink)}
+.cal-head .day.today{background:rgba(209,248,67,.18)}.cal-head .day.today .nu{color:var(--brand-primary)}
+.cal-body{position:relative;display:grid;grid-template-columns:60px repeat(7,1fr);min-height:560px}
+.cal-times{display:flex;flex-direction:column;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);border-right:1px solid var(--line-soft)}
+.cal-times .t{height:46px;display:flex;align-items:flex-start;justify-content:flex-end;padding:2px 8px}
+.cal-col{border-left:1px solid var(--line-soft);position:relative;display:flex;flex-direction:column}
+.cal-col .slot{height:46px;border-bottom:1px dashed var(--line-soft)}
+.cal-col .slot.hov{background:rgba(209,248,67,.10);border:1px dashed var(--brand-primary);display:flex;align-items:center;justify-content:center;color:var(--brand-primary)}
+.cal-col .slot.hov svg{width:14px;height:14px}
+.evt{position:absolute;left:4px;right:4px;border-radius:7px;padding:6px 8px;font-size:11px;font-weight:500;line-height:1.25;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;gap:1px;border:1px solid transparent}
+.evt:hover{transform:translateY(-1px);box-shadow:0 6px 16px -4px rgba(10,31,24,.18)}
+.evt .ttl{font-weight:600}
+.evt .sub{font-family:var(--font-mono);font-size:9px;opacity:.75}
+.evt.coach{background:rgba(209,248,67,.45);color:#3d4d0f;border-color:rgba(166,189,40,.5)}
+.evt.fac{background:rgba(0,88,64,.14);color:var(--brand-primary);border-color:rgba(0,88,64,.25)}
+.evt.gf{background:rgba(166,101,30,.18);color:#7a4910;border-color:rgba(166,101,30,.35)}
+.evt.grp{background:rgba(122,153,140,.22);color:#3d5048;border-color:rgba(122,153,140,.4)}
+.now-line{position:absolute;left:0;right:0;height:0;border-top:2px solid #EF4444;z-index:5}
+.now-line::before{content:"";position:absolute;left:-5px;top:-5px;width:8px;height:8px;border-radius:50%;background:#EF4444}
+.now-line .lbl{position:absolute;left:6px;top:-13px;background:#EF4444;color:#fff;font-family:var(--font-mono);font-size:9px;padding:1px 5px;border-radius:4px;font-weight:600}
+
+.legend{display:flex;gap:14px;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);align-items:center}
+.legend .it{display:inline-flex;align-items:center;gap:5px}
+.legend .it .sw{width:10px;height:10px;border-radius:3px}
+
+/* Popover */
+.pop{position:absolute;background:var(--surface-card);border:1px solid var(--line);border-radius:12px;padding:14px;width:280px;box-shadow:0 20px 40px -10px rgba(10,31,24,.30);z-index:20}
+.pop::after{content:"";position:absolute;left:18px;top:-7px;width:12px;height:12px;background:var(--surface-card);border:1px solid var(--line);border-bottom:none;border-right:none;transform:rotate(45deg)}
+.pop .hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.pop .hd .tt{font-family:var(--font-display);font-size:15px;font-weight:600}
+.pop .hd .x{color:var(--ink-subtle);cursor:pointer}
+.pop .dr{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);display:flex;gap:6px;margin-bottom:8px}
+.pop .meta-rows{display:flex;flex-direction:column;gap:6px;font-size:12px;margin-bottom:12px}
+.pop .meta-rows .r{display:flex;justify-content:space-between}
+.pop .meta-rows .r .k{color:var(--ink-subtle);text-transform:uppercase;font-family:var(--font-mono);font-size:10px}
+.pop .acts{display:flex;gap:6px}
+
+/* Table */
+.list-card{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-card)}
+.ttable{width:100%;font-size:13px;border-collapse:collapse}
+.ttable th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);padding:10px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
+.ttable td{padding:10px 16px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+.ttable tr:hover td{background:#FAFAF7}
+.av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:10px;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-right:7px}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:100px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.pill.coach{background:rgba(209,248,67,.45);color:#3d4d0f}.pill.fac{background:rgba(0,88,64,.14);color:var(--brand-primary)}.pill.gf{background:rgba(166,101,30,.18);color:#7a4910}.pill.grp{background:rgba(122,153,140,.22);color:#3d5048}
+.pill.ok{background:rgba(0,88,64,.12);color:var(--brand-primary)}.pill.wait{background:rgba(166,101,30,.16);color:#7a4910}.pill.cx{background:rgba(239,68,68,.12);color:#b73838}
+.mono{font-family:var(--font-mono);font-size:12px}
+
+/* Dark */
+.dark .ab-frame{border-color:#1c3b32}
+.dark .app,.dark .cal-body,.dark .cal-card{background:#0F2A22;color:#F5F4EE}
+.dark .nav{background:#0B221C;border-right-color:#1c3b32}.dark .nav .label,.dark .nav-item{color:#9D9C95}
+.dark .nav-item.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}.dark .nav-item.active::before{background:var(--brand-accent)}
+.dark .nav-item .count{background:#163027;color:#9D9C95}
+.dark .hero h1{color:#F5F4EE}.dark .hero h1 .em{color:var(--brand-accent)}.dark .hero .crumb,.dark .hero .meta{color:#9D9C95}
+.dark .kpi{background:#163027;border-color:#274d41}.dark .kpi .v{color:#F5F4EE}.dark .kpi .h,.dark .kpi .sub{color:#9D9C95}
+.dark .search,.dark .chip,.dark .btn,.dark .cal-card,.dark .toggle,.dark .nav-week .arr,.dark .nav-week .today{background:#163027;border-color:#274d41;color:#F5F4EE}.dark .search input{color:#F5F4EE}
+.dark .cal-head{border-bottom-color:#274d41}.dark .cal-head .day{border-left-color:#1c3b32}.dark .cal-head .day .nm{color:#7a8580}.dark .cal-head .day .nu{color:#F5F4EE}
+.dark .cal-head .day.today{background:rgba(209,248,67,.10)}.dark .cal-head .day.today .nu{color:var(--brand-accent)}
+.dark .cal-times{color:#7a8580;border-right-color:#1c3b32}
+.dark .cal-col{border-left-color:#1c3b32}.dark .cal-col .slot{border-bottom-color:#1c3b32}
+.dark .legend{color:#9D9C95}
+
+/* Mobile */
+.mob-wrap{display:flex;justify-content:center;padding:30px;background:linear-gradient(180deg,#F5F2EA,#EDEAE2)}
+.mob{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden}
+.m-status{display:flex;justify-content:space-between;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;font-weight:500}
+.m-top{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;border-bottom:1px solid var(--line-soft)}
+.m-top .ham,.m-top .avt{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.m-top .ham{background:#0F2A22;color:#F5F4EE}.m-top .avt{border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px}
+.m-top .ttl{font-family:var(--font-display);font-size:14px;font-weight:600}
+.m-day-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 18px}
+.m-day-nav .d{font-family:var(--font-display);font-size:18px;font-weight:600}
+.m-day-nav .arr{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink-muted)}
+.m-day{padding:0 18px 16px}
+.m-cal{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.m-row{display:flex;border-bottom:1px solid var(--line-soft);min-height:40px}.m-row:last-child{border-bottom:none}
+.m-row .t{width:48px;padding:6px;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);border-right:1px solid var(--line-soft);text-align:right}
+.m-row .e{flex:1;padding:4px}
+.m-row .e .evt-m{padding:6px 8px;border-radius:7px;font-size:11px;font-weight:500}
+.m-bot{display:flex;justify-content:space-around;padding:8px 8px 22px;border-top:1px solid var(--line-soft)}
+.m-bot .b{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle);padding:6px}
+.m-bot .b.sel{color:var(--brand-primary);font-weight:600}.m-bot .b svg{width:18px;height:18px}
+
+.empty-grid{position:relative}
+.empty-msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--ink-muted);font-family:var(--font-mono);font-size:13px;padding:16px 22px;background:rgba(245,244,238,.92);border:1px dashed var(--line);border-radius:14px;backdrop-filter:blur(4px)}
+.empty-msg .pl{font-family:var(--font-display);font-size:18px;font-style:italic;color:var(--ink);margin-bottom:4px}
+</style></head>
+<body style="background:var(--surface);margin:0;padding:0">
+<section class="ab" data-screen-label="01 Kalender lyst"><div class="ab-frame"><div class="app">
+<aside class="rail"><div class="logo">AK</div><div class="ri"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7"/></svg></div><div class="ri"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/></svg></div><div class="ri active"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></div><div class="av">EH</div></aside>
+<aside class="nav"><div class="label">CoachHQ</div><div class="nav-item">Hub</div><div class="nav-item">Elever<span class="count">38</span></div><div class="nav-item">Planer<span class="count">24</span></div><div class="nav-item">Godkjenninger<span class="count">7</span></div><div class="nav-item active">Bookinger<span class="count">47</span></div><div class="nav-item">Økter</div></aside>
+<main class="main">
+<header class="hero"><div><div class="crumb">CoachHQ · /admin/bookings</div><h1><span class="em">47</span> bookinger · uke 19</h1><div class="meta">73 % belegg studio · 6 t ledig i kveld</div></div><div style="display:flex;align-items:center;gap:10px"><div class="nav-week"><span class="arr"><svg width="14" height="14" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></span><span class="today">I dag</span><span class="lbl">11. – 17. mai</span><span class="arr"><svg width="14" height="14" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div><div class="toggle"><span class="opt act"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Kalender</span><span class="opt">Liste</span></div><button class="btn primary">+ Ny booking</button></div></header>
+<div class="filter"><div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Søk spiller eller fasilitet"/></div><span class="chip">Type <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="chip">Fasilitet <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="chip">Coach <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><div style="flex:1"></div><div class="legend"><span class="it"><span class="sw" style="background:rgba(209,248,67,.6)"></span>Coaching</span><span class="it"><span class="sw" style="background:rgba(0,88,64,.5)"></span>Fasilitet</span><span class="it"><span class="sw" style="background:rgba(166,101,30,.5)"></span>Greenfee</span><span class="it"><span class="sw" style="background:rgba(122,153,140,.5)"></span>Gruppe</span></div></div>
+<div class="cal-card">
+<div class="cal-head"><div class="gut"></div>
+<div class="day"><div class="nm">Man</div><div class="nu">11</div></div>
+<div class="day"><div class="nm">Tir</div><div class="nu">12</div></div>
+<div class="day today"><div class="nm">Ons</div><div class="nu">13</div></div>
+<div class="day"><div class="nm">Tor</div><div class="nu">14</div></div>
+<div class="day"><div class="nm">Fre</div><div class="nu">15</div></div>
+<div class="day"><div class="nm">Lør</div><div class="nu">16</div></div>
+<div class="day"><div class="nm">Søn</div><div class="nu">17</div></div>
+</div>
+<div class="cal-body">
+<div class="cal-times"><div class="t">07:00</div><div class="t">08:00</div><div class="t">09:00</div><div class="t">10:00</div><div class="t">11:00</div><div class="t">12:00</div><div class="t">13:00</div><div class="t">14:00</div><div class="t">15:00</div><div class="t">16:00</div><div class="t">17:00</div><div class="t">18:00</div></div>
+<div class="cal-col"><div class="evt coach" style="top:46px;height:44px"><span class="ttl">1:1 Markus R</span><span class="sub">Anders K · Studio 1</span></div><div class="evt fac" style="top:138px;height:44px"><span class="ttl">Studio 2 · Emma</span><span class="sub">09:00–10:00</span></div><div class="evt grp" style="top:368px;height:62px"><span class="ttl">WANG team</span><span class="sub">13:00–14:30 · 6 sp</span></div><div class="evt coach" style="top:506px;height:44px"><span class="ttl">1:1 Lina H</span><span class="sub">Sara · Studio 1</span></div></div>
+<div class="cal-col"><div class="evt fac" style="top:92px;height:62px"><span class="ttl">Studio 1 · Pia V</span><span class="sub">08:00–09:30</span></div><div class="evt coach" style="top:230px;height:44px"><span class="ttl">1:1 Henrik S</span><span class="sub">Anders K</span></div><div class="evt gf" style="top:414px;height:88px"><span class="ttl">18 hull · GFGK</span><span class="sub">14:00–16:00</span></div><div class="evt coach" style="top:552px;height:44px"><span class="ttl">1:1 Kristian</span><span class="sub">Tom</span></div></div>
+<div class="cal-col" style="position:relative"><div class="evt fac" style="top:46px;height:44px"><span class="ttl">Studio 3 · Sara</span><span class="sub">07:00–08:00</span></div><div class="evt coach" style="top:230px;height:62px"><span class="ttl">1:1 Markus R</span><span class="sub">Anders K · 10:00</span></div><div class="evt fac" style="top:368px;height:44px"><span class="ttl">Studio 1 · Joachim</span><span class="sub">13:00–14:00</span></div><div class="evt coach" style="top:460px;height:44px"><span class="ttl">1:1 Emma S</span><span class="sub">Sara</span></div><div class="now-line" style="top:506px"><span class="lbl">14:36</span></div></div>
+<div class="cal-col"><div class="evt coach" style="top:138px;height:44px"><span class="ttl">1:1 Joachim</span><span class="sub">Anders K</span></div><div class="evt grp" style="top:276px;height:62px"><span class="ttl">Junior gruppe</span><span class="sub">11:00–12:30 · 4 sp</span></div><div class="evt fac" style="top:414px;height:44px"><span class="ttl">Studio 2 · Ellen</span><span class="sub">14:00–15:00</span></div><div class="evt coach" style="top:552px;height:44px"><span class="ttl">1:1 Sara K</span><span class="sub">Tom</span></div></div>
+<div class="cal-col"><div class="evt fac" style="top:46px;height:44px"><span class="ttl">Studio 4 · Henrik</span></div><div class="evt coach" style="top:230px;height:44px"><span class="ttl">1:1 Pia V</span><span class="sub">Sara · 10:00</span></div><div class="evt fac" style="top:322px;height:62px"><span class="ttl">Studio 1 · Lina</span><span class="sub">12:00–13:30</span></div><div class="evt gf" style="top:460px;height:88px"><span class="ttl">9 hull · Sole</span><span class="sub">14:00–16:00</span></div></div>
+<div class="cal-col"><div class="evt gf" style="top:138px;height:88px"><span class="ttl">18 hull · Bossum</span><span class="sub">08:00–10:00</span></div><div class="evt coach" style="top:276px;height:62px"><span class="ttl">1:1 Markus</span><span class="sub">Anders · 11:00</span></div><div class="evt grp" style="top:414px;height:62px"><span class="ttl">Talent-camp</span><span class="sub">14:00–15:30</span></div></div>
+<div class="cal-col"><div class="evt gf" style="top:184px;height:88px"><span class="ttl">18 hull · Asker</span><span class="sub">09:00–11:00</span></div><div class="evt grp" style="top:368px;height:62px"><span class="ttl">Damegruppe</span><span class="sub">13:00–14:30</span></div></div>
+</div></div>
+</main></div></div></section>
+
+<!-- 02 LIST LIGHT -->
+</body>
+</html>

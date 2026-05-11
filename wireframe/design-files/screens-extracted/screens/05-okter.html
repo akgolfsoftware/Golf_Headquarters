@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — Økter · Pakke 5</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:64px;padding:64px 24px 96px}
+  .ab{display:flex;flex-direction:column;gap:16px;max-width:1448px;width:100%}
+  .ab-label{display:flex;align-items:baseline;gap:16px;color:#3a3935;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em}
+  .ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990;font-weight:500}
+  .ab-label .ttl{font-size:20px}
+  .ab-label .meta{font-family:var(--font-body);font-size:13px;color:#7a7872;font-style:italic;font-weight:400;margin-left:auto}
+  .ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:24px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(10,31,24,.18),0 2px 4px rgba(10,31,24,.04)}
+  .ab-frame svg:not([fill]):not(.donut){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  .deck-head{max-width:1448px;width:100%;display:flex;flex-direction:column;gap:12px;padding:0 4px;margin-bottom:8px}
+  .deck-head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+  .deck-head h1{font-family:var(--font-display);font-size:36px;font-weight:600;letter-spacing:-.02em;margin:0;color:var(--ink)}
+  .deck-head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+  .deck-head .meta-row{display:flex;gap:24px;flex-wrap:wrap;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono);margin-top:8px}
+  .deck-head .meta-row .lbl{color:var(--ink);font-weight:500}
+
+  /* shell — same as p4 */
+  .app{display:flex;min-height:980px;background:var(--surface)}
+  .app--med{min-height:760px}
+  .app--short{min-height:560px}
+  .rail{width:56px;background:var(--sidebar-coach-rail-bg);display:flex;flex-direction:column;align-items:center;padding:18px 0;gap:12px;flex-shrink:0}
+  .rail .mark{width:40px;height:40px;border-radius:12px;background:var(--brand-primary);display:flex;align-items:center;justify-content:center;color:var(--brand-accent);font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:4px}
+  .rail-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);position:relative}
+  .rail-icon.active{background:rgba(255,255,255,.08);color:var(--brand-accent)}
+  .rail-icon.bottom{margin-top:auto}
+  .nav{width:220px;background:var(--sidebar-coach-nav-bg);border-right:1px solid var(--line);padding:24px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+  .nav-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:0 12px 16px;display:flex;align-items:center;gap:8px}
+  .nav-title .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-accent)}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:14px;color:var(--ink-muted);cursor:pointer}
+  .nav-item:hover{background:var(--surface-alt);color:var(--ink)}
+  .nav-item.active{background:var(--sidebar-coach-active);color:var(--ink);font-weight:500}
+  .nav-item .count{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+  .nav-divider{height:1px;background:var(--line-soft);margin:16px 8px}
+  .nav-foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:13px;color:var(--ink-muted)}
+  .nav-foot .av-sm{width:28px;height:28px;border-radius:50%;background:var(--brand-primary);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+
+  .main{flex:1;padding:32px 36px 40px;min-width:0;display:flex;flex-direction:column;gap:20px}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+  .head h1{font-family:var(--font-display);font-size:30px;font-weight:400;font-style:italic;letter-spacing:-.02em;color:var(--ink);margin:0;line-height:1.1}
+  .head .crumb{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px}
+  .head .crumb .sep{margin:0 8px;color:var(--ink-disabled)}
+  .head-actions{display:flex;gap:8px;align-items:center}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;height:40px;white-space:nowrap}
+  .btn-primary{background:var(--brand-primary);color:#fff}
+  .btn-primary:hover{background:var(--brand-primary-hover)}
+  .btn-ghost{background:var(--surface-card);color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{background:var(--surface-alt)}
+  .btn-accent{background:var(--brand-accent);color:var(--brand-accent-on);font-weight:600}
+
+  .seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:3px;height:40px}
+  .seg button{background:transparent;border:none;padding:0 14px;font-size:13px;font-weight:500;color:var(--ink-muted);border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .seg button.on{background:var(--surface-card);color:var(--ink);box-shadow:0 1px 2px rgba(15,31,24,.06)}
+
+  /* KPI */
+  .kpi-strip{display:grid;grid-template-columns:.9fr 1.6fr .9fr .9fr;gap:14px}
+  .kpi{padding:18px 20px;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card)}
+  .kpi .lbl{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px}
+  .kpi .val{font-family:var(--font-mono);font-size:30px;font-weight:500;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .kpi .delta{font-family:var(--font-mono);font-size:12px;color:var(--status-success);margin-top:8px;display:inline-flex;align-items:center;gap:4px}
+  .kpi .delta.warn{color:var(--status-warning)}
+
+  /* pyramide bar */
+  .pyr-row{display:flex;height:8px;border-radius:4px;overflow:hidden;margin-top:4px}
+  .pyr-row .seg{height:100%}
+  .pyr-legend{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;font-size:10px;font-family:var(--font-mono);color:var(--ink-muted)}
+  .pyr-legend .dt{display:inline-flex;align-items:center;gap:5px}
+  .pyr-legend .dt .sw{width:10px;height:10px;border-radius:3px}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--status-danger);position:relative}
+  .live-dot::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--status-danger);opacity:.4;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{transform:scale(1);opacity:.4}100%{transform:scale(1.8);opacity:0}}
+
+  /* filter */
+  .filter{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 14px;background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card)}
+  .search{flex:1;min-width:280px;display:flex;align-items:center;gap:10px;padding:0 14px;height:40px;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink-muted)}
+  .search input{flex:1;border:none;outline:none;background:transparent;font:inherit;font-size:14px;color:var(--ink)}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:100px;font-size:13px;color:var(--ink-muted);background:var(--surface);border:1px solid var(--line);cursor:pointer}
+  .chip:hover{background:var(--surface-alt);color:var(--ink)}
+  .chip.active{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+  .chip .ct{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+  .chip.active .ct{color:rgba(245,244,238,.7)}
+  .chip.fys{background:rgba(0,88,64,.08);color:var(--pyr-fys);border-color:rgba(0,88,64,.2)}
+  .chip.tek{background:rgba(26,125,86,.08);color:var(--pyr-tek);border-color:rgba(26,125,86,.2)}
+  .chip.slag{background:var(--accent-bg);color:#0A1F18;border-color:rgba(168,204,35,.4)}
+  .chip.spill{background:var(--status-warning-bg);color:var(--status-warning);border-color:rgba(184,133,42,.2)}
+  .kbd{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:var(--surface-alt)}
+
+  /* tier banner */
+  .tier-banner{display:flex;align-items:center;gap:14px;padding:14px 18px;background:linear-gradient(90deg,#003B2A 0%,#005840 100%);color:#F5F4EE;border-radius:16px;position:relative;overflow:hidden;box-shadow:0 12px 24px rgba(0,59,42,.18)}
+  .tier-banner::before{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(209,248,67,.20) 0%,transparent 70%)}
+  .tier-banner .icn{width:40px;height:40px;border-radius:10px;background:rgba(209,248,67,.16);display:flex;align-items:center;justify-content:center;color:var(--brand-accent);flex-shrink:0}
+  .tier-banner .copy{flex:1;position:relative}
+  .tier-banner .copy .h{font-family:var(--font-display);font-size:16px;font-weight:600;color:#F5F4EE;letter-spacing:-.01em}
+  .tier-banner .copy .h .pro-pill{display:inline-block;background:var(--brand-accent);color:#0A1F18;font-family:var(--font-mono);font-size:10px;font-weight:700;padding:1px 7px;border-radius:5px;margin-right:8px;letter-spacing:.04em;vertical-align:middle}
+  .tier-banner .copy .d{font-size:12px;color:rgba(245,244,238,.7);margin-top:2px}
+  .tier-banner .actions{display:flex;gap:8px;position:relative}
+  .tier-banner .x{position:absolute;right:12px;top:12px;color:rgba(245,244,238,.5);cursor:pointer;width:24px;height:24px;display:flex;align-items:center;justify-content:center;z-index:2}
+  .tier-banner .upgrade{background:var(--brand-accent);color:#0A1F18;border:none;padding:0 14px;height:36px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+
+  /* WEEK NAV */
+  .weeknav{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card)}
+  .weeknav .iconbtn{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--surface-card);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+  .weeknav .today{padding:0 14px;height:32px;border:1px solid var(--line);border-radius:9px;background:var(--surface-card);font-size:12px;font-weight:500;display:inline-flex;align-items:center;cursor:pointer}
+  .weeknav .week-label{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-.01em}
+  .weeknav .week-label .muted{color:var(--ink-subtle);font-weight:400;font-family:var(--font-body);font-size:13px;margin-left:6px}
+  .weeknav .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .live-badge{display:inline-flex;align-items:center;gap:6px;padding:0 10px;height:32px;border:1px solid var(--status-danger);border-radius:9px;background:var(--status-danger-bg);color:var(--status-danger);font-size:12px;font-weight:600;font-family:var(--font-mono)}
+
+  /* CALENDAR */
+  .cal{background:var(--surface-card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-card)}
+  .cal-grid{display:grid;grid-template-columns:64px repeat(7,1fr);position:relative}
+  .cal-corner{background:var(--surface);border-right:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);height:60px}
+  .cal-day{padding:10px 12px;border-right:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);background:var(--surface);height:60px}
+  .cal-day:last-child{border-right:none}
+  .cal-day.today{background:linear-gradient(180deg,var(--accent-bg) 0%,var(--surface) 100%)}
+  .cal-day .dy{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .cal-day .dt{font-family:var(--font-mono);font-size:18px;font-weight:500;color:var(--ink);margin-top:2px;line-height:1}
+  .cal-day.today .dt{color:var(--brand-primary)}
+  .cal-day .small{font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono);margin-top:2px}
+
+  .cal-time{position:relative;border-right:1px solid var(--line-soft);background:var(--surface)}
+  .cal-time .t{position:absolute;left:0;right:0;text-align:right;padding-right:8px;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);transform:translateY(-6px)}
+  .cal-col{position:relative;border-right:1px solid var(--line-soft);background:repeating-linear-gradient(to bottom,transparent 0,transparent 32px,rgba(229,227,221,.5) 32px,rgba(229,227,221,.5) 33px,transparent 33px,transparent 64px,var(--line-soft) 64px,var(--line-soft) 65px)}
+  .cal-col:last-child{border-right:none}
+  .cal-col.today{background-color:rgba(209,248,67,.04)}
+
+  /* session block with pyramide-stripes */
+  .sess{position:absolute;left:6px;right:6px;border-radius:9px;overflow:hidden;cursor:pointer;display:flex;background:var(--surface-card);border:1px solid var(--line);box-shadow:0 1px 2px rgba(15,31,24,.06)}
+  .sess:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(10,31,24,.14);border-color:rgba(0,88,64,.30);outline:2px solid rgba(209,248,67,.30);outline-offset:1px}
+  .sess.live{border-color:var(--status-danger);background:linear-gradient(90deg,rgba(163,45,45,.05) 0%,#fff 60%)}
+  .sess .stripes{display:flex;flex-direction:column;width:6px;flex-shrink:0}
+  .sess .stripes .s{width:100%}
+  .sess .body{flex:1;padding:6px 8px;display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden}
+  .sess .body .t{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)}
+  .sess .body .who{font-weight:600;font-size:12px;color:var(--ink);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sess .body .meta{font-size:10px;color:var(--ink-muted);display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+  .sess .body .meta .ex{display:inline-flex;align-items:center;gap:2px;font-family:var(--font-mono)}
+  .sess.live .body .who::before{content:"●";color:var(--status-danger);margin-right:4px;font-size:10px;animation:pulse 1.6s infinite}
+  .sess.locked{opacity:.55;background:repeating-linear-gradient(45deg,#fff 0,#fff 8px,var(--surface-alt) 8px,var(--surface-alt) 9px)}
+  .sess.locked::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.3)}
+  .sess.locked .lock{position:absolute;top:6px;right:6px;width:18px;height:18px;background:var(--surface-card);border:1px solid var(--line);border-radius:5px;display:flex;align-items:center;justify-content:center;color:var(--ink-muted);z-index:2}
+
+  /* now line */
+  .nowline{position:absolute;left:0;right:0;height:0;border-top:2px solid var(--status-danger);z-index:5}
+  .nowline::before{content:"";position:absolute;left:-5px;top:-5px;width:8px;height:8px;border-radius:50%;background:var(--status-danger);box-shadow:0 0 0 3px rgba(163,45,45,.2)}
+  .nowline .t{position:absolute;right:6px;top:-22px;font-family:var(--font-mono);font-size:10px;background:var(--status-danger);color:#fff;padding:2px 6px;border-radius:6px;font-weight:600}
+
+  /* legend foot */
+  .cal-foot{display:flex;align-items:center;gap:14px;padding:12px 18px;border-top:1px solid var(--line-soft);background:var(--surface);font-size:12px;color:var(--ink-muted)}
+  .cal-foot .lg{display:inline-flex;align-items:center;gap:6px}
+  .cal-foot .lg .sw{width:14px;height:14px;border-radius:4px}
+
+  /* QUICK POPOVER for session */
+  .popover{position:absolute;width:380px;background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-pop);padding:18px;z-index:20;font-size:13px}
+  .popover::before{content:"";position:absolute;left:-7px;top:30px;width:14px;height:14px;background:var(--surface-card);border-left:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+  .popover h4{font-family:var(--font-display);font-size:18px;font-weight:600;margin:0 0 4px}
+  .popover .sub{font-size:12px;color:var(--ink-muted);font-family:var(--font-mono);margin-bottom:14px}
+  .donut-wrap{display:flex;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);margin-bottom:12px}
+  .donut{width:96px;height:96px;flex-shrink:0;position:relative}
+  .donut .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--font-mono);text-align:center}
+  .donut .center .v{font-size:18px;font-weight:600;color:var(--ink)}
+  .donut .center .l{font-size:9px;color:var(--ink-subtle);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+  .donut-list{flex:1;display:flex;flex-direction:column;gap:4px}
+  .donut-list .r{display:flex;align-items:center;gap:8px;font-size:12px;font-family:var(--font-mono)}
+  .donut-list .r .sw{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+  .donut-list .r .l{color:var(--ink);font-weight:500;flex:1}
+  .donut-list .r .v{color:var(--ink-muted)}
+  .pop-actions{display:flex;gap:6px;margin-top:8px}
+  .pop-actions .btn{flex:1;height:36px;justify-content:center;font-size:12px}
+
+  /* empty */
+  .empty-cal{padding:96px 32px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;background:repeating-linear-gradient(45deg,var(--surface) 0,var(--surface) 12px,var(--surface-alt) 12px,var(--surface-alt) 13px)}
+  .empty-cal h3{font-family:var(--font-display);font-size:22px;font-weight:600;margin:0;font-style:italic}
+  .empty-cal p{font-size:14px;color:var(--ink-muted);margin:0;max-width:420px}
+
+  /* MOBILE */
+  .mobile-wrap{display:flex;justify-content:center;padding:32px;background:linear-gradient(180deg,#F5F2EA 0,#EDEAE2 100%)}
+  .mobile{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden}
+  .m-status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;color:var(--ink);font-weight:500}
+  .m-status .right{display:flex;gap:6px}
+  .m-head{padding:8px 20px 14px;border-bottom:1px solid var(--line-soft)}
+  .m-head .crumb{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:6px}
+  .m-head h1{font-family:var(--font-display);font-size:24px;font-weight:400;font-style:italic;margin:0;line-height:1.2}
+  .m-daynav{display:flex;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid var(--line-soft)}
+  .m-daynav .iconbtn{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+  .m-daynav .lbl{flex:1;text-align:center;font-family:var(--font-display);font-size:16px;font-weight:600}
+  .m-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+  .m-card{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface-card);display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+  .m-card .top{display:flex;align-items:center;gap:8px}
+  .m-card .top .when{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+  .m-card .who{font-weight:600;font-size:14px}
+  .m-card .meta{font-size:12px;color:var(--ink-muted)}
+  .m-card .pyr-bottom{display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:2px}
+  .m-card .pyr-bottom .s{height:100%}
+  .m-card .pyr-stack{display:flex;flex-wrap:wrap;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--ink-muted)}
+  .m-card .pyr-stack .pp{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border-radius:5px;background:var(--surface-alt)}
+  .m-card .pyr-stack .pp .sw{width:8px;height:8px;border-radius:2px}
+
+  /* dark */
+  .dark .ab-frame{border-color:#1c3b32}
+  .dark .app{background:#0F2A22}
+  .dark .nav{background:#0F2A22;border-right-color:#1c3b32}
+  .dark .nav-item{color:#9D9C95}
+  .dark .nav-item:hover{background:#163027;color:#F5F4EE}
+  .dark .nav-item.active{background:rgba(209,248,67,.14);color:#F5F4EE}
+  .dark .nav-divider{background:#1c3b32}
+  .dark .nav-foot .av-sm{background:var(--brand-accent);color:#0A1F18}
+  .dark .head h1{color:#F5F4EE}
+  .dark .head .crumb{color:#9D9C95}
+  .dark .btn-ghost{background:#163027;color:#F5F4EE;border-color:#274d41}
+  .dark .seg{background:#0F2A22;border-color:#274d41}
+  .dark .seg button.on{background:#21433A;color:#F5F4EE}
+  .dark .kpi{background:#163027;border-color:#274d41}
+  .dark .kpi .val{color:#F5F4EE}
+  .dark .filter{background:#163027;border-color:#274d41}
+  .dark .search{background:#0F2A22;border-color:#274d41;color:#9D9C95}
+  .dark .search input{color:#F5F4EE}
+  .dark .kbd{background:#0F2A22;border-color:#274d41;color:#9D9C95}
+  .dark .chip{background:#0F2A22;color:#9D9C95;border-color:#274d41}
+  .dark .chip.active{background:var(--brand-accent);color:#0A1F18;border-color:var(--brand-accent)}
+  .dark .weeknav{background:#163027;border-color:#274d41}
+  .dark .weeknav .iconbtn,.dark .weeknav .today{background:#0F2A22;border-color:#274d41;color:#F5F4EE}
+  .dark .weeknav .week-label{color:#F5F4EE}
+  .dark .cal{background:#163027;border-color:#274d41}
+  .dark .cal-corner,.dark .cal-day,.dark .cal-time{background:#0F2A22;border-right-color:#274d41;border-bottom-color:#274d41}
+  .dark .cal-day .dy{color:#9D9C95}
+  .dark .cal-day .dt{color:#F5F4EE}
+  .dark .cal-day.today{background:linear-gradient(180deg,rgba(209,248,67,.16) 0%,#0F2A22 100%)}
+  .dark .cal-col{background:repeating-linear-gradient(to bottom,transparent 0,transparent 32px,rgba(39,77,65,.4) 32px,rgba(39,77,65,.4) 33px,transparent 33px,transparent 64px,#274d41 64px,#274d41 65px)}
+  .dark .cal-foot{background:#0F2A22;border-top-color:#274d41;color:#9D9C95}
+  .dark .sess{background:#163027;border-color:#274d41}
+  .dark .sess .body .who{color:#F5F4EE}
+  .dark .sess .body .meta{color:#9D9C95}
+</style>
+</head>
+<body style="background:var(--surface);margin:0;padding:0">
+<section class="ab" data-screen-label="01 Uke-kalender — lyst">
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item">Spillere<span class="count">42</span></div>
+          <div class="nav-item">Treningsplaner<span class="count">76</span></div>
+          <div class="nav-item">Godkjenninger<span class="count">7</span></div>
+          <div class="nav-item">Bookinger<span class="count">47</span></div>
+          <div class="nav-item active">Økter<span class="count">18</span></div>
+          <div class="nav-divider"></div>
+          <div class="nav-item">Analyser</div>
+          <div class="nav-foot"><div class="av-sm">AK</div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Anders K.</span><span style="font-size:11px;color:var(--ink-subtle)">Hovedcoach</span></div></div>
+        </aside>
+
+        <main class="main">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Økter</div>
+              <h1>Atten økter denne uka.</h1>
+            </div>
+            <div class="head-actions">
+              <div class="seg">
+                <button class="on"><svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Uke-kalender</button>
+                <button><svg width="14" height="14" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>Liste</button>
+              </div>
+              <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Ny økt</button>
+            </div>
+          </header>
+
+          <div class="kpi-strip">
+            <div class="kpi"><div class="lbl">Økter denne uka</div><div class="val">18</div><span class="delta">+3 vs forrige uke</span></div>
+            <div class="kpi">
+              <div class="lbl">Snitt-pyramide</div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><div class="val" style="font-size:24px">TEK <span style="color:var(--pyr-tek)">32 %</span></div><span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)">5 fokus</span></div>
+              <div class="pyr-row"><div class="seg" style="background:var(--pyr-tek);width:32%"></div><div class="seg" style="background:var(--pyr-slag);width:24%"></div><div class="seg" style="background:var(--pyr-fys);width:18%"></div><div class="seg" style="background:var(--pyr-spill);width:14%"></div><div class="seg" style="background:var(--pyr-turn);width:12%"></div></div>
+              <div class="pyr-legend">
+                <span class="dt"><span class="sw" style="background:var(--pyr-tek)"></span>TEK 32</span>
+                <span class="dt"><span class="sw" style="background:var(--pyr-slag)"></span>SLAG 24</span>
+                <span class="dt"><span class="sw" style="background:var(--pyr-fys)"></span>FYS 18</span>
+                <span class="dt"><span class="sw" style="background:var(--pyr-spill)"></span>SPILL 14</span>
+                <span class="dt"><span class="sw" style="background:var(--pyr-turn)"></span>TURN 12</span>
+              </div>
+            </div>
+            <div class="kpi"><div class="lbl">Live nå</div><div style="display:flex;align-items:center;gap:10px"><div class="val">1</div><span class="live-dot"></span></div><span class="delta" style="color:var(--status-danger)">Anders K + Markus R</span></div>
+            <div class="kpi"><div class="lbl">Forfaller</div><div class="val">2</div><span class="delta warn">Ikke gjennomført</span></div>
+          </div>
+
+          <div class="filter">
+            <div class="search">
+              <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input placeholder="Søk spiller, gruppe eller dato">
+              <span class="kbd">⌘K</span>
+            </div>
+            <span class="chip fys">FYS <span class="ct">3</span></span>
+            <span class="chip tek active" style="background:var(--pyr-tek);color:#fff;border-color:var(--pyr-tek)">TEK <span class="ct" style="color:rgba(255,255,255,.7)">7</span></span>
+            <span class="chip slag">SLAG <span class="ct">5</span></span>
+            <span class="chip spill">SPILL <span class="ct">2</span></span>
+            <span class="chip">1:1</span>
+            <span class="chip">Gruppe</span>
+            <span class="chip">Coach: Anders K</span>
+          </div>
+
+          <div class="weeknav">
+            <button class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="today">I dag</button>
+            <button class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <span class="week-label">Uke 19 <span class="muted">· 11.–17. mai 2026</span></span>
+            <div class="right">
+              <span class="live-badge"><span class="live-dot"></span>1 LIVE NÅ</span>
+              <button class="btn btn-ghost" style="height:32px;padding:0 12px;font-size:12px"><svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>Pyramide-vekt ▾</button>
+            </div>
+          </div>
+
+          <div class="cal">
+            <div class="cal-grid">
+              <div class="cal-corner"></div>
+              <div class="cal-day"><div class="dy">Man</div><div class="dt">11</div><div class="small">3 økter</div></div>
+              <div class="cal-day"><div class="dy">Tir</div><div class="dt">12</div><div class="small">3 økter</div></div>
+              <div class="cal-day today"><div class="dy">Ons</div><div class="dt">13</div><div class="small">3 økter · 1 live</div></div>
+              <div class="cal-day"><div class="dy">Tor</div><div class="dt">14</div><div class="small">2 økter</div></div>
+              <div class="cal-day"><div class="dy">Fre</div><div class="dt">15</div><div class="small">3 økter</div></div>
+              <div class="cal-day"><div class="dy">Lør</div><div class="dt">16</div><div class="small">2 økter</div></div>
+              <div class="cal-day"><div class="dy">Søn</div><div class="dt">17</div><div class="small">2 økter</div></div>
+
+              <div class="cal-time" style="height:608px">
+                <span class="t" style="top:0">06:00</span>
+                <span class="t" style="top:32px">07:00</span>
+                <span class="t" style="top:64px">08:00</span>
+                <span class="t" style="top:96px">09:00</span>
+                <span class="t" style="top:128px">10:00</span>
+                <span class="t" style="top:160px">11:00</span>
+                <span class="t" style="top:192px">12:00</span>
+                <span class="t" style="top:224px">13:00</span>
+                <span class="t" style="top:256px">14:00</span>
+                <span class="t" style="top:288px">15:00</span>
+                <span class="t" style="top:320px">16:00</span>
+                <span class="t" style="top:352px">17:00</span>
+                <span class="t" style="top:384px">18:00</span>
+                <span class="t" style="top:416px">19:00</span>
+                <span class="t" style="top:448px">20:00</span>
+              </div>
+
+              <!-- MON -->
+              <div class="cal-col" style="height:608px">
+                <div class="sess" style="top:64px;height:84px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-tek);height:50%"></div><div class="s" style="background:var(--pyr-slag);height:30%"></div><div class="s" style="background:var(--pyr-fys);height:20%"></div></div>
+                  <div class="body"><span class="t">08:00–09:30</span><span class="who">WANG Toppidrett</span><span class="meta">Range · 8 stk · 6 øvelser</span></div>
+                </div>
+                <div class="sess" style="top:192px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-fys);height:100%"></div></div>
+                  <div class="body"><span class="t">12:00–13:00</span><span class="who">FYS gruppe</span><span class="meta">Studio 4 · 4 stk</span></div>
+                </div>
+                <div class="sess" style="top:352px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-tek);height:60%"></div><div class="s" style="background:var(--pyr-slag);height:40%"></div></div>
+                  <div class="body"><span class="t">17:00–18:00</span><span class="who">1:1 Markus R</span><span class="meta">Studio 2 · TEK + SLAG</span></div>
+                </div>
+              </div>
+              <!-- TUE -->
+              <div class="cal-col" style="height:608px">
+                <div class="sess" style="top:96px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-slag);height:70%"></div><div class="s" style="background:var(--pyr-tek);height:30%"></div></div>
+                  <div class="body"><span class="t">09:00–10:00</span><span class="who">1:1 Henrik N</span><span class="meta">Bås 4 · putting</span></div>
+                </div>
+                <div class="sess" style="top:224px;height:96px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-spill);height:50%"></div><div class="s" style="background:var(--pyr-tek);height:30%"></div><div class="s" style="background:var(--pyr-slag);height:20%"></div></div>
+                  <div class="body"><span class="t">13:00–14:30</span><span class="who">1:1 Emma S</span><span class="meta">Bossum · banespill</span></div>
+                </div>
+                <div class="sess" style="top:384px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-fys);height:100%"></div></div>
+                  <div class="body"><span class="t">18:00–19:00</span><span class="who">FYS junior</span><span class="meta">5 stk</span></div>
+                </div>
+              </div>
+              <!-- WED today -->
+              <div class="cal-col today" style="height:608px">
+                <div class="sess" style="top:64px;height:84px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-tek);height:60%"></div><div class="s" style="background:var(--pyr-slag);height:25%"></div><div class="s" style="background:var(--pyr-spill);height:15%"></div></div>
+                  <div class="body"><span class="t">08:00–09:30</span><span class="who">WANG TEK-fokus</span><span class="meta">Range · 8 stk</span></div>
+                </div>
+                <div class="sess live" style="top:228px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-tek);height:100%"></div></div>
+                  <div class="body"><span class="t">13:15–14:15</span><span class="who">1:1 Markus R</span><span class="meta">Studio 1 · 4 av 6 øv</span></div>
+                </div>
+                <div class="sess" style="top:352px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-spill);height:60%"></div><div class="s" style="background:var(--pyr-slag);height:40%"></div></div>
+                  <div class="body"><span class="t">17:00–18:00</span><span class="who">1:1 Mads R</span><span class="meta">Bossum · oppfølging</span></div>
+                </div>
+                <div class="nowline" style="top:246px"><span class="t">13:42 LIVE</span></div>
+              </div>
+              <!-- THU -->
+              <div class="cal-col" style="height:608px">
+                <div class="sess" style="top:96px;height:96px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-fys);height:100%"></div></div>
+                  <div class="body"><span class="t">09:00–10:30</span><span class="who">FYS gruppe Pro</span><span class="meta">Studio 4 · 5 stk</span></div>
+                </div>
+                <div class="sess" style="top:288px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-turn);height:60%"></div><div class="s" style="background:var(--pyr-spill);height:40%"></div></div>
+                  <div class="body"><span class="t">15:00–16:00</span><span class="who">1:1 Lina H</span><span class="meta">Turnerings-prep</span></div>
+                </div>
+              </div>
+              <!-- FRI -->
+              <div class="cal-col" style="height:608px">
+                <div class="sess" style="top:64px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-tek);height:60%"></div><div class="s" style="background:var(--pyr-slag);height:40%"></div></div>
+                  <div class="body"><span class="t">08:00–09:00</span><span class="who">1:1 Markus R</span><span class="meta">Studio 2 · siste før helg</span></div>
+                </div>
+                <div class="sess" style="top:224px;height:84px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-slag);height:70%"></div><div class="s" style="background:var(--pyr-tek);height:30%"></div></div>
+                  <div class="body"><span class="t">13:00–14:30</span><span class="who">U16 SLAG</span><span class="meta">Range · 8 stk</span></div>
+                </div>
+                <div class="sess" style="top:384px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-fys);height:100%"></div></div>
+                  <div class="body"><span class="t">18:00–19:00</span><span class="who">FYS · alle</span><span class="meta">Studio 4</span></div>
+                </div>
+              </div>
+              <!-- SAT -->
+              <div class="cal-col" style="height:608px">
+                <div class="sess" style="top:64px;height:120px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-turn);height:80%"></div><div class="s" style="background:var(--pyr-spill);height:20%"></div></div>
+                  <div class="body"><span class="t">08:00–10:00</span><span class="who">Junior-cup prep</span><span class="meta">GFGK · 12 stk</span></div>
+                </div>
+                <div class="sess" style="top:288px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-spill);height:50%"></div><div class="s" style="background:var(--pyr-tek);height:30%"></div><div class="s" style="background:var(--pyr-slag);height:20%"></div></div>
+                  <div class="body"><span class="t">15:00–16:00</span><span class="who">1:1 Emma S</span><span class="meta">Bossum</span></div>
+                </div>
+              </div>
+              <!-- SUN -->
+              <div class="cal-col" style="height:608px">
+                <div class="sess" style="top:128px;height:96px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-spill);height:60%"></div><div class="s" style="background:var(--pyr-slag);height:40%"></div></div>
+                  <div class="body"><span class="t">10:00–11:30</span><span class="who">Familie-økt</span><span class="meta">Range · 4 stk</span></div>
+                </div>
+                <div class="sess" style="top:288px;height:60px">
+                  <div class="stripes"><div class="s" style="background:var(--pyr-fys);height:100%"></div></div>
+                  <div class="body"><span class="t">15:00–16:00</span><span class="who">FYS · selvstr.</span><span class="meta">Markus R</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="cal-foot">
+              <span class="lg"><span class="sw" style="background:var(--pyr-fys)"></span>FYS</span>
+              <span class="lg"><span class="sw" style="background:var(--pyr-tek)"></span>TEK</span>
+              <span class="lg"><span class="sw" style="background:var(--pyr-slag)"></span>SLAG</span>
+              <span class="lg"><span class="sw" style="background:var(--pyr-spill)"></span>SPILL</span>
+              <span class="lg"><span class="sw" style="background:var(--pyr-turn)"></span>TURN</span>
+              <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px">Stripene viser pyramide-fordeling · klikk for detaljer</span>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 02 DARK                                                 -->
+  <!-- ====================================================== -->
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — Sikkerhet · 6-A/3</title>
+<link rel="stylesheet" href="../_shared/arketype-f.css">
+<style>
+  .twofa-card{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:24px;background:var(--surface-alt);border-radius:14px;border:1px solid var(--line-soft)}
+  .qr{width:200px;height:200px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;position:relative}
+  .qr svg{width:100%;height:100%;display:block}
+  .qr .center-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;color:#0A1F18;font-size:11px;border:2px solid #0A1F18}
+  .recovery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-family:var(--font-mono);font-size:13px;color:var(--ink)}
+  .recovery-grid span{padding:8px 10px;background:var(--surface-card);border:1px solid var(--line-soft);border-radius:6px;display:flex;align-items:center;gap:8px}
+  .recovery-grid .idx{color:var(--ink-disabled);font-size:10px;width:14px}
+  .recovery-grid .strike{text-decoration:line-through;color:var(--ink-disabled)}
+  .sess-list{display:flex;flex-direction:column}
+  .sess-row{display:grid;grid-template-columns:32px 1fr auto auto;gap:14px;align-items:center;padding:16px 24px;border-top:1px solid var(--line-soft)}
+  .sess-row:first-child{border-top:0}
+  .sess-icon{width:32px;height:32px;border-radius:8px;background:var(--surface-alt);display:flex;align-items:center;justify-content:center;color:var(--ink-muted)}
+  .sess-icon svg{width:16px;height:16px}
+  .sess-row.current .sess-icon{background:var(--accent-bg);color:var(--brand-primary)}
+  .sess-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .sess-info .t1{font-size:14px;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .sess-info .t1 .tag{padding:1px 6px;border-radius:4px;background:var(--accent-bg);color:#0A1F18;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+  .sess-info .t2{font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono)}
+  .sess-meta{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);text-align:right;line-height:1.4}
+  .sess-meta .now{color:var(--brand-primary);font-weight:600}
+  .sess-meta .stale{color:var(--status-warning)}
+  .hist-list{display:flex;flex-direction:column;font-family:var(--font-mono);font-size:12px}
+  .hist-row{display:grid;grid-template-columns:140px 1fr 130px 110px;gap:14px;align-items:center;padding:10px 24px;border-top:1px solid var(--line-soft)}
+  .hist-row:first-child{border-top:0}
+  .hist-row .time{color:var(--ink-muted)}
+  .hist-row .ip{color:var(--ink)}
+  .hist-row .loc{color:var(--ink-muted)}
+  .hist-row .stat{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:100px;font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;justify-self:start}
+  .hist-row .stat.ok{background:var(--status-success-bg);color:#1A7D56}
+  .hist-row .stat.fail{background:#FCEBEB;color:#A32D2D}
+  .hist-row .stat .d{width:5px;height:5px;border-radius:50%;background:currentColor}
+  .panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:18px 24px;align-items:start}
+  .mini-stat{padding:18px;background:var(--surface-alt);border-radius:12px;border:1px solid var(--line-soft);display:flex;flex-direction:column;gap:4px}
+  .mini-stat .lbl{font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.04em;font-family:var(--font-mono)}
+  .mini-stat .v{font-family:var(--font-display);font-size:30px;font-weight:600;color:var(--ink);letter-spacing:-.02em;display:flex;align-items:baseline;gap:8px}
+  .mini-stat .v .u{font-family:var(--font-mono);font-size:12px;font-weight:400;color:var(--ink-muted);letter-spacing:0;text-transform:lowercase}
+  .mini-stat .d{font-size:11px;color:var(--ink-subtle);margin-top:2px}
+</style>
+</head>
+<body style="background:var(--surface);margin:0;padding:0">
+<section class="ab" data-screen-label="01 Sikkerhet — lyst default">
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item">Spillere</div>
+          <div class="nav-divider"></div>
+          <div class="nav-title" style="padding-top:0">Konto</div>
+          <div class="nav-item">Profil</div>
+          <div class="nav-item active">Innstillinger</div>
+          <div class="nav-foot"><div class="av-sm">AK</div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Anders K.</span><span style="font-size:11px;color:var(--ink-subtle)">Hovedcoach</span></div></div>
+        </aside>
+
+        <main class="main">
+          <header class="page-head">
+            <div class="crumb">Innstillinger <span class="sep">/</span> Sikkerhet</div>
+            <h1>Hvem er logget inn akkurat nå?</h1>
+            <div class="sub">Kontoen din virker grei. Sjekk likevel listen — første gang du ser en rar IP er ofte siste sjanse.</div>
+          </header>
+
+          <div class="settings">
+            <aside class="subnav">
+              <div class="subnav-title">Innstillinger</div>
+              <div class="subnav-item">Profil</div>
+              <div class="subnav-item">Bruker</div>
+              <div class="subnav-item active">Sikkerhet</div>
+              <div class="subnav-item">Varsler</div>
+              <div class="subnav-item">API <span class="count">3</span></div>
+            </aside>
+
+            <div class="form-area">
+
+              <div class="section">
+                <div class="section-head"><h2>Oversikt</h2></div>
+                <div class="panel-grid">
+                  <div class="mini-stat"><span class="lbl">Score</span><span class="v">82<span class="u">/ 100</span></span><span class="d">2FA aktiv, sterkt passord, ikke verifisert e-post</span></div>
+                  <div class="mini-stat"><span class="lbl">Aktive økter</span><span class="v">3<span class="u">enheter</span></span><span class="d">macOS, iOS, iPad — alle dine</span></div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-head"><h2>To-faktor</h2><span class="aux">Aktiv via SMS</span></div>
+                <div class="field-list">
+                  <div class="field"><span class="lbl">SMS-kode</span><span class="val"><span class="chip success" style="padding:3px 10px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Aktiv · +47 ••• ••• 67</span></span><a class="edit-link">Endre →</a></div>
+                  <div class="field"><span class="lbl">Authenticator-app<span class="hint">Anbefalt — Authy, 1Password</span></span><span class="val" style="color:var(--ink-muted)">Ikke konfigurert</span><a class="edit-link">Sett opp →</a></div>
+                  <div class="field"><span class="lbl">Sikkerhetsnøkkel<span class="hint">YubiKey, fysiske USB-nøkler</span></span><span class="val" style="color:var(--ink-muted)">Ikke konfigurert</span><a class="edit-link">Legg til →</a></div>
+                  <div class="field"><span class="lbl">Recovery-koder<span class="hint">10 engangskoder — sist generert 14. mars</span></span>
+                    <div class="val">
+                      <div class="recovery-grid" style="width:100%;max-width:380px">
+                        <span><span class="idx">01</span>K4P9-X2RM</span>
+                        <span><span class="idx">02</span>9HQT-N7DV</span>
+                        <span class="strike"><span class="idx">03</span>R3W5-MJ8B</span>
+                        <span><span class="idx">04</span>2X8F-PCQK</span>
+                        <span><span class="idx">05</span>L7VN-K4HW</span>
+                        <span><span class="idx">06</span>3MZP-T9XB</span>
+                      </div>
+                    </div>
+                    <a class="edit-link">Regenerer →</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-head"><h2>Aktive økter</h2><span class="desc">3 enheter er logget inn akkurat nå</span><div style="margin-left:auto"><button class="btn btn-destructive-ghost btn-sm">Logg ut alle andre</button></div></div>
+                <div class="sess-list">
+                  <div class="sess-row current">
+                    <div class="sess-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg></div>
+                    <div class="sess-info">
+                      <span class="t1">MacBook Pro · Safari 17 <span class="tag">Denne enheten</span></span>
+                      <span class="t2">macOS 14.5 · Oslo, NO · 84.215.142.018</span>
+                    </div>
+                    <span class="sess-meta"><span class="now">● Aktiv nå</span><br>Sist innlogg 09:14</span>
+                    <button class="btn btn-ghost btn-sm" disabled style="opacity:.4">—</button>
+                  </div>
+                  <div class="sess-row">
+                    <div class="sess-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+                    <div class="sess-info">
+                      <span class="t1">iPhone 15 · CoachHQ-app</span>
+                      <span class="t2">iOS 17.4 · Oslo, NO · 84.215.142.018</span>
+                    </div>
+                    <span class="sess-meta">Aktiv 14 min siden<br>Innlogget 12. mai</span>
+                    <button class="btn btn-ghost btn-sm">Logg ut →</button>
+                  </div>
+                  <div class="sess-row">
+                    <div class="sess-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/></svg></div>
+                    <div class="sess-info">
+                      <span class="t1">iPad Pro · Safari</span>
+                      <span class="t2">iPadOS 17.4 · Bærum, NO · 178.232.014.092</span>
+                    </div>
+                    <span class="sess-meta"><span class="stale">Aktiv 4 dager siden</span><br>Innlogget 28. april</span>
+                    <button class="btn btn-ghost btn-sm">Logg ut →</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-head"><h2>Innloggings-historikk</h2><span class="desc">Siste 7 dager</span><div style="margin-left:auto"><a class="edit-link">Se alle →</a></div></div>
+                <div class="hist-list">
+                  <div class="hist-row"><span class="time">14. mai · 09:14</span><span class="ip">84.215.142.018</span><span class="loc">Oslo, NO</span><span class="stat ok"><span class="d"></span>OK</span></div>
+                  <div class="hist-row"><span class="time">13. mai · 21:42</span><span class="ip">84.215.142.018</span><span class="loc">Oslo, NO</span><span class="stat ok"><span class="d"></span>OK</span></div>
+                  <div class="hist-row"><span class="time">12. mai · 08:31</span><span class="ip">178.232.014.092</span><span class="loc">Bærum, NO</span><span class="stat ok"><span class="d"></span>OK</span></div>
+                  <div class="hist-row"><span class="time">11. mai · 19:08</span><span class="ip">192.168.043.122</span><span class="loc">Trondheim, NO</span><span class="stat fail"><span class="d"></span>Feilet 2FA</span></div>
+                  <div class="hist-row"><span class="time">10. mai · 14:55</span><span class="ip">84.215.142.018</span><span class="loc">Oslo, NO</span><span class="stat ok"><span class="d"></span>OK</span></div>
+                  <div class="hist-row"><span class="time">08. mai · 11:02</span><span class="ip">84.215.142.018</span><span class="loc">Oslo, NO</span><span class="stat ok"><span class="d"></span>OK</span></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

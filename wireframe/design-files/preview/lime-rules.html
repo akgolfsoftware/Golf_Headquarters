@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:24px;background:var(--surface);display:flex;gap:16px}
+  .col{flex:1;padding:18px;border-radius:18px;border:1px solid}
+  .do{background:#E5F1EA;border-color:#1A7D56}
+  .dont{background:#FAE3E3;border-color:#A32D2D}
+  .h{display:flex;align-items:center;gap:8px;font-family:'Inter Tight';font-size:14px;font-weight:600;margin-bottom:10px}
+  .do .h{color:#1A7D56} .dont .h{color:#A32D2D}
+  ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px}
+  li{font-family:'Inter';font-size:12px;color:#0A1F18;padding-left:14px;position:relative;line-height:1.4}
+  .do li:before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:#1A7D56}
+  .dont li:before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;background:#A32D2D}
+</style></head><body>
+  <div class="col do"><div class="h">✓ Lime DO</div>
+    <ul><li>CTA-knapper</li><li>Active pills · uke-nav</li><li>Streak: dagens dag</li><li>Progress-fill gradient</li><li>Positive delta (+2,3)</li></ul>
+  </div>
+  <div class="col dont"><div class="h">✗ Lime DON'T</div>
+    <ul><li>Store bakgrunnsflater</li><li>Tekst-farge</li><li>Alle badges i lime</li><li>Gradienter med lime</li><li>Ikoner i lime</li></ul>
+  </div>
+</body></html>

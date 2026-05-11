@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head><meta charset="UTF-8"><title>Auth — BankID · 9-G/3</title><link rel="stylesheet" href="_shared/arketype-g-auth.css">
+<style>
+  .bankid-host{background:#F5F1EC;display:flex;align-items:center;justify-content:center;padding:24px}
+  .bankid-card{width:100%;max-width:440px;background:#fff;border-radius:14px;box-shadow:0 24px 64px -32px rgba(57,19,76,.30);overflow:hidden;border:1px solid #E8E2DA}
+  .bid-head{background:#39134C;color:#fff;padding:18px 22px;display:flex;justify-content:space-between;align-items:center}
+  .bid-head .logo{display:flex;align-items:center;gap:10px}
+  .bid-head .logo .m{background:#fff;color:#39134C;padding:3px 7px;border-radius:4px;font-family:var(--font-mono);font-weight:700;font-size:13px;letter-spacing:.02em}
+  .bid-head .logo .nm{font-family:var(--font-display);font-size:14px;font-weight:500;letter-spacing:-.01em}
+  .bid-head .sec{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.06em;text-transform:uppercase}
+  .bid-head .sec::before{content:"🔒";font-size:11px}
+
+  .bid-body{padding:30px 28px}
+  .bid-merchant{display:flex;gap:12px;align-items:center;padding:14px;background:#FAF7F2;border-radius:10px;margin-bottom:22px}
+  .bid-merchant .mlogo{width:42px;height:42px;background:#1A1916;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:15px}
+  .bid-merchant b{font-weight:600;color:#1A1916;font-size:14px}
+  .bid-merchant small{display:block;font-family:var(--font-mono);font-size:10px;color:#6B6457;letter-spacing:.02em;margin-top:2px}
+
+  .bid-action{text-align:center;padding:8px 0 14px}
+  .bid-action h2{font-family:var(--font-display);font-size:22px;font-weight:500;color:#1A1916;letter-spacing:-.02em;line-height:1.3;margin:0}
+  .bid-action p{font-size:13px;color:#6B6457;line-height:1.55;margin-top:8px;max-width:340px;margin-left:auto;margin-right:auto}
+
+  .bid-fnr{margin-top:18px;padding:14px 16px;background:#fff;border:1.5px solid #39134C;border-radius:10px;display:flex;flex-direction:column;gap:6px}
+  .bid-fnr label{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#39134C}
+  .bid-fnr input{border:none;outline:none;font-family:var(--font-mono);font-size:18px;color:#1A1916;letter-spacing:.06em;background:transparent;padding:0;font-weight:500}
+  .bid-fnr .det{font-family:var(--font-mono);font-size:10px;color:#6B6457;letter-spacing:.02em;margin-top:2px}
+
+  .bid-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:14px}
+  .bid-tab{padding:11px 12px;background:#FAF7F2;border:1px solid #E8E2DA;border-radius:9px;font-size:12px;font-weight:600;color:#6B6457;text-align:center;cursor:pointer;display:flex;flex-direction:column;gap:2px;align-items:center}
+  .bid-tab.act{background:#39134C;color:#fff;border-color:#39134C}
+  .bid-tab small{font-family:var(--font-mono);font-size:9px;font-weight:500;letter-spacing:.04em;opacity:.7;text-transform:uppercase}
+
+  .bid-mobile{margin-top:18px;padding:18px;background:#FAF7F2;border:1px solid #E8E2DA;border-radius:10px;display:flex;gap:14px;align-items:center}
+  .bid-mobile .phone{width:46px;height:46px;background:#39134C;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(57,19,76,.4)}50%{box-shadow:0 0 0 10px rgba(57,19,76,0)}}
+  .bid-mobile .info{flex:1}
+  .bid-mobile .info b{font-weight:600;color:#1A1916;font-size:13px;display:block;margin-bottom:2px}
+  .bid-mobile .info small{font-family:var(--font-mono);font-size:10px;color:#6B6457;letter-spacing:.02em;line-height:1.5;display:block}
+  .bid-mobile .timer{font-family:var(--font-mono);font-size:13px;font-weight:600;color:#39134C;letter-spacing:.04em;background:#fff;padding:6px 10px;border-radius:6px}
+
+  .bid-action-btn{margin-top:18px;display:flex;flex-direction:column;gap:6px}
+  .bid-action-btn .btn-bid{padding:14px 16px;background:#39134C;color:#fff;border:none;border-radius:10px;font-family:var(--font-body);font-size:14px;font-weight:600;cursor:pointer;letter-spacing:-.005em}
+  .bid-action-btn .btn-cancel{padding:11px 16px;background:transparent;color:#6B6457;border:none;font-size:12px;cursor:pointer;font-weight:500;text-decoration:underline}
+
+  .bid-foot{padding:14px 22px;background:#FAF7F2;border-top:1px solid #E8E2DA;display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10px;color:#6B6457;letter-spacing:.04em}
+  .bid-foot a{color:#39134C;text-decoration:underline;font-weight:600}
+
+  .trust-strip{position:absolute;top:14px;right:14px;display:flex;gap:6px;font-family:var(--font-mono);font-size:9px;color:#6B6457;letter-spacing:.06em;text-transform:uppercase;background:#fff;padding:4px 9px;border-radius:5px;border:1px solid #E8E2DA;align-items:center}
+  .trust-strip::before{content:"";width:6px;height:6px;border-radius:50%;background:#2D6B4C}
+
+  .ctx-callout{margin-top:18px;padding:14px;border-left:3px solid var(--brand-primary);background:rgba(0,88,64,.04);border-radius:0 8px 8px 0;font-size:12px;color:var(--ink-muted);line-height:1.55}
+  .ctx-callout b{color:var(--brand-primary);font-weight:600;display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+</style></head>
+<body>
+<div class="deck" data-screen-label="64 Auth — BankID">
+  <header class="deck-head">
+    <div class="eyebrow">9-G · Auth &amp; før-login · skjerm 3 av 5</div>
+    <h1>BankID-autentisering · ekstern flow</h1>
+    <p class="sub">Tredjepart-host i AK Golf-omslag. Brukes for: foreldre-samtykke (U18), klubb-admin med sensitive rettigheter, og første-gangs aktivering av Pro-tier. Fnr + mobil-konfirmasjon eller BankID på mobil (QR). Personnummer maskeres etter input.</p>
+    <div class="meta-row"><span><span class="lbl">URL:</span> /auth/bankid?ctx=samtykke</span><span><span class="lbl">Tilbake-URL:</span> /onboarding/forelder/4</span><span><span class="lbl">Token-utløp:</span> 90s</span></div>
+  </header>
+  <section class="ab">
+    <div class="ab-label"><span class="num">64 · 9-G/3</span><span class="ttl">BankID — fnr + mobil-bekreftelse</span><span class="meta">eIDAS · høyt sikkerhetsnivå</span></div>
+    <div class="ab-frame">
+      <div class="auth" style="grid-template-columns:1fr 1.3fr">
+        <aside class="auth-side">
+          <div class="brand">
+            <div class="mark">AK</div>
+            <div class="nm">AK Golf<span class="dim">/ identitets-bekreftelse</span></div>
+          </div>
+          <div class="hero">
+            <div class="eye">Hvorfor BankID?</div>
+            <h2>Du gir <em>samtykke på vegne av</em> et mindreårig barn.</h2>
+            <p>Norsk lov krever sterk identifisering når foreldre samtykker til behandling av barns data. BankID gir oss kryptografisk bevis på at det er deg — uten at vi lagrer fnr eller passord.</p>
+
+            <div style="margin-top:24px;padding:16px;background:rgba(225,206,123,.08);border:1px solid rgba(225,206,123,.20);border-radius:10px">
+              <div style="font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--brand-accent);margin-bottom:10px">Hva vi henter inn</div>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:rgba(255,255,255,.85);line-height:1.5">
+                <li style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--brand-accent)">✓</span><span><b style="color:#fff;font-weight:600">Fullt navn</b> — for samtykke-loggen</span></li>
+                <li style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--brand-accent)">✓</span><span><b style="color:#fff;font-weight:600">Fødselsår</b> — kun året, ikke dato</span></li>
+                <li style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--brand-accent)">✓</span><span><b style="color:#fff;font-weight:600">Tidsstempel + IP</b> — for revisjon</span></li>
+                <li style="display:flex;gap:8px;align-items:flex-start"><span style="color:#ffd0d0">✕</span><span style="opacity:.7"><b style="color:rgba(255,255,255,.65);font-weight:600">IKKE fnr</b> — kun hash lagres</span></li>
+              </ul>
+            </div>
+
+            <div class="ctx-callout" style="background:rgba(255,255,255,.05);border-color:var(--brand-accent);color:rgba(255,255,255,.75);margin-top:18px">
+              <b style="color:var(--brand-accent)">Tilbake-flyt</b>
+              Etter signering går du tilbake til <code style="font-family:var(--font-mono);font-size:11px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px;color:#fff">/onboarding/forelder/4</code>. Tar normalt 20–40 sekunder.
+            </div>
+          </div>
+          <div class="foot">
+            <span>Levert av <b style="color:#fff">BankID v2 · Vipps MobilePay AS</b></span>
+            <a>Personvern →</a>
+          </div>
+        </aside>
+
+        <div class="auth-main" style="padding:0;background:#F5F1EC;position:relative">
+          <div class="trust-strip">🔒 Sikker · ssl/tls 1.3</div>
+          <div class="bankid-host">
+            <div class="bankid-card">
+              <div class="bid-head">
+                <div class="logo">
+                  <div class="m">BankID</div>
+                  <div class="nm">Personlig pålogging</div>
+                </div>
+                <div class="sec">eIDAS Høy</div>
+              </div>
+
+              <div class="bid-body">
+                <div class="bid-merchant">
+                  <div class="mlogo">AK</div>
+                  <div>
+                    <b>AK Golf AS (org.nr 928 451 002)</b>
+                    <small>ber om samtykke for Eira H. (f. 2009) · GDPR art. 8</small>
+                  </div>
+                </div>
+
+                <div class="bid-action">
+                  <h2>Bekreft identitet</h2>
+                  <p>Du gir samtykke til behandling av data for ditt barn. Velg BankID-metode under.</p>
+                </div>
+
+                <div class="bid-fnr">
+                  <label>Personnummer (11 siffer)</label>
+                  <input type="text" value="14•••• ••642">
+                  <div class="det">Tastet inn · maskert · sendes kryptert til BankID</div>
+                </div>
+
+                <div class="bid-tabs">
+                  <div class="bid-tab act">BankID på mobil<small>anbefalt</small></div>
+                  <div class="bid-tab">BankID-brikke<small>kodebrikke</small></div>
+                </div>
+
+                <div class="bid-mobile">
+                  <div class="phone">📱</div>
+                  <div class="info">
+                    <b>Sjekk mobilen din nå.</b>
+                    <small>En melding er sendt til mobilnummer på +47 9•• •• 218. Bekreft i BankID-appen.</small>
+                  </div>
+                  <div class="timer">0:47</div>
+                </div>
+
+                <div class="bid-action-btn">
+                  <button class="btn-bid">Jeg har bekreftet i appen →</button>
+                  <button class="btn-cancel">Avbryt og gå tilbake</button>
+                </div>
+              </div>
+
+              <div class="bid-foot">
+                <span>Token #BID-7e2a44f3 · 90s</span>
+                <a>Hjelp · 815 11 030</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

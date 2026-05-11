@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Shared — Periodiserings-Agent</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="../_shared/arketype-e.css" />
+<style>
+  .pa-layer {
+    background: var(--e-surface); border:1px solid var(--e-border);
+    border-radius: 16px; margin-bottom: 18px;
+  }
+  .pa-layer-h {
+    display:flex; align-items:center; gap: 14px; padding: 18px 22px;
+    cursor: pointer; user-select:none;
+  }
+  .pa-layer-h .tag {
+    font-family:'JetBrains Mono'; font-size: 11px; letter-spacing:0.16em;
+    text-transform: uppercase; color: var(--e-muted);
+    background: rgba(255,255,255,0.04); padding: 4px 10px; border-radius: 6px;
+  }
+  .pa-layer-h .title { font-family:'Instrument Serif'; font-style: italic; font-size: 22px; color: var(--e-fg); }
+  .pa-layer-h .summary { flex:1; color: var(--e-muted); font-size: 13px; text-align: right; padding-right: 12px; }
+  .pa-layer-h .chev { color: var(--e-muted); font-size: 14px; transition: transform .15s; }
+  .pa-layer.is-open .chev { transform: rotate(180deg); }
+  .pa-layer.is-open { border-color: rgba(209,248,67,0.35); }
+  .pa-layer-body { padding: 0 22px 22px 22px; }
+  .pa-connect {
+    height: 24px; width: 2px; background: var(--e-border);
+    margin: 0 auto; position:relative;
+  }
+  .pa-connect::after {
+    content:'↓'; position:absolute; left:50%; bottom:-2px; transform:translateX(-50%);
+    color: var(--e-muted); font-size: 12px;
+    background: var(--e-bg); padding: 0 4px;
+  }
+
+  /* L2 pyramide stacked bar */
+  .pyr-bar { display:flex; height: 64px; border-radius: 12px; overflow:hidden; }
+  .pyr-bar > div {
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap: 2px; color: var(--e-fg);
+    font-family:'JetBrains Mono'; font-size: 11px; letter-spacing: 0.08em;
+  }
+
+  /* L3 volum bars */
+  .vol-bars { display:flex; align-items:flex-end; gap: 16px; height: 200px; padding: 0 12px; }
+  .vol-bar { flex:1; display:flex; flex-direction:column; align-items:center; gap: 6px; }
+  .vol-bar .val { font-family:'JetBrains Mono'; font-size: 10px; color: var(--e-muted); }
+  .vol-bar .bar { width: 100%; border-radius: 6px; }
+  .vol-bar .wk  { font-family:'JetBrains Mono'; font-size: 9px; color: var(--e-muted); letter-spacing:0.08em; }
+
+  /* L4 timeline */
+  .tl-track {
+    display:grid; grid-template-columns: repeat(12, 1fr); height: 72px;
+    border:1px solid var(--e-border); border-radius: 10px; overflow:hidden;
+  }
+  .tl-seg { border-right: 1px solid var(--e-border); position:relative; padding: 6px 8px; }
+  .tl-seg:last-child { border-right: 0; }
+  .tl-seg .lbl { font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.1em; color: var(--e-muted); }
+  .tl-seg.build { background: rgba(43,79,66,0.5); }
+  .tl-seg.peak  { background: rgba(209,248,67,0.12); }
+  .tl-seg.dload { background: rgba(244,196,48,0.10); }
+  .tl-pin {
+    position:absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    width: 12px; height: 12px; border-radius:999px; background: var(--e-burgundy); border:2px solid var(--e-bg);
+  }
+
+  .pa-statusrow {
+    display:flex; align-items:center; gap: 16px; padding: 0 32px;
+    color: var(--e-muted); font-size: 14px;
+    border-top:1px solid var(--e-border);
+    height: 88px;
+  }
+  .pa-statusrow strong { color: var(--e-lime); font-weight: 500; }
+
+  .gate-blur { filter: blur(6px); opacity: 0.55; pointer-events:none; user-select:none; }
+</style>
+</head>
+<body style="background:var(--surface);margin:0;padding:0">
+<div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left">
+          <span style="font-size: 14px">Periodiserings-Agent</span>
+          <span style="display:inline-flex; align-items:center; gap:8px; margin-left: 12px">
+            <span class="e-avatar" style="width:24px; height:24px; font-size:9px">MR</span>
+            <span style="color: var(--e-muted); font-size: 12px">Markus R</span>
+          </span>
+        </div>
+        <div class="e-center"><span style="color: var(--e-muted); font-size: 12px">Anbefaling generert 14:32 · Ikke godkjent ennå</span></div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+      <div class="e-stage e-grid-pattern" style="padding: 36px 80px">
+        <div style="width:100%; max-width: 780px; margin: 0 auto">
+          <div class="pa-layer"><div class="pa-layer-h">
+            <span class="tag">L1 Mål</span><span class="title">Sesong-mål</span>
+            <span class="summary">Sørlandsåpent 14. juli — toppform uke 28</span><span class="chev">▾</span>
+          </div></div>
+          <div class="pa-connect"></div>
+          <div class="pa-layer"><div class="pa-layer-h">
+            <span class="tag">L2 Pyramide</span><span class="title">Fordeling</span>
+            <span class="summary">TEK 40% · SLAG 25% · FYS 15% · SPILL 12% · TURN 8%</span><span class="chev">▾</span>
+          </div></div>
+          <div class="pa-connect"></div>
+          <div class="pa-layer"><div class="pa-layer-h">
+            <span class="tag">L3 Volum</span><span class="title">Timer per uke</span>
+            <span class="summary">14 t/uke · oppbygning fra 11 t</span><span class="chev">▾</span>
+          </div></div>
+          <div class="pa-connect"></div>
+          <div class="pa-layer"><div class="pa-layer-h">
+            <span class="tag">L4 Periodisering</span><span class="title">Tidslinje</span>
+            <span class="summary">Mai: oppbygning · Juni: peak · Uke 28: peak</span><span class="chev">▾</span>
+          </div></div>
+        </div>
+      </div>
+      <div class="e-bottombar" style="gap: 12px">
+        <button class="e-btn e-btn--ghost-lime" style="flex:1">Avslå med årsak</button>
+        <button class="e-btn e-btn--ghost-lime" style="flex:1">Detaljer →</button>
+        <button class="e-btn e-btn--lime" style="flex:1">Aksepter anbefaling</button>
+      </div>
+    </div>
+</body>
+</html>

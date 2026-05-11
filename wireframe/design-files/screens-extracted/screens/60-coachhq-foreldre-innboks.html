@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head><meta charset="UTF-8"><title>CoachHQ — Foreldre-innboks · 9-F/3</title><link rel="stylesheet" href="_shared/arketype-f-coach.css">
+<style>
+  .inb-layout{display:grid;grid-template-columns:260px 1fr 320px;gap:18px;align-items:start;height:760px}
+  .col{background:#fff;border:1px solid var(--coach-border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;height:100%}
+  .col-head{padding:14px 16px;border-bottom:1px solid var(--coach-border);display:flex;justify-content:space-between;align-items:center;background:#FAFAF7}
+  .col-head h4{font-family:var(--font-display);font-size:13px;font-weight:600;margin:0;letter-spacing:-.01em;color:var(--coach-ink)}
+  .col-head small{font-family:var(--font-mono);font-size:10px;color:var(--coach-ink-subtle);letter-spacing:.04em}
+
+  .filter-list{flex:1;overflow:auto;padding:8px}
+  .filter-list .f{padding:7px 10px;font-size:13px;color:var(--coach-ink-muted);border-radius:7px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:1px}
+  .filter-list .f.active{background:var(--accent-bg);color:var(--brand-primary);font-weight:500}
+  .filter-list .f small{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em}
+  .filter-list .sec{padding:10px 10px 4px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--coach-ink-subtle)}
+
+  .thread-list{flex:1;overflow:auto}
+  .thread{padding:14px 16px;border-bottom:1px solid var(--coach-border);display:flex;gap:12px;cursor:pointer}
+  .thread:hover{background:#FAFAF7}
+  .thread.active{background:var(--accent-bg)}
+  .thread.unread{position:relative}
+  .thread.unread::before{content:"";position:absolute;left:6px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand-primary)}
+  .thread .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#7d5814,#B8852A);color:#fff;font-family:var(--font-display);font-weight:600;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .thread .av.k{background:linear-gradient(135deg,#3a4f5c,#5a7180)}
+  .thread .av.r{background:linear-gradient(135deg,#5e2b2b,#B04444)}
+  .thread .av.g{background:linear-gradient(135deg,#005840,#1A7D56)}
+  .thread .meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+  .thread .top-row{display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .thread .top-row b{font-size:13px;font-weight:600;color:var(--coach-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .thread.unread .top-row b{font-weight:700}
+  .thread .top-row .tm{font-family:var(--font-mono);font-size:10px;color:var(--coach-ink-subtle);letter-spacing:.02em;flex-shrink:0}
+  .thread .sub{font-size:12px;color:var(--coach-ink);font-weight:500;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .thread.unread .sub{color:var(--coach-ink)}
+  .thread .prev{font-size:11.5px;color:var(--coach-ink-subtle);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .thread .tags{display:flex;gap:4px;margin-top:4px}
+  .thread .tags .t{padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+  .thread .tags .t.player{background:rgba(0,88,64,.10);color:var(--brand-primary)}
+  .thread .tags .t.urg{background:rgba(176,68,68,.10);color:var(--status-danger)}
+  .thread .tags .t.bill{background:rgba(184,133,42,.10);color:#7d5814}
+  .thread .tags .t.draft{background:#F0EDE5;color:var(--coach-ink-muted)}
+
+  .reader{display:flex;flex-direction:column;height:100%}
+  .reader-head{padding:18px 22px;border-bottom:1px solid var(--coach-border)}
+  .reader-head .sub-ttl{font-family:var(--font-display);font-size:20px;font-weight:600;margin:0;letter-spacing:-.01em;color:var(--coach-ink)}
+  .reader-head .who-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+  .reader-head .who-info{display:flex;gap:10px;align-items:center}
+  .reader-head .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7d5814,#B8852A);color:#fff;font-family:var(--font-display);font-weight:600;font-size:12px;display:flex;align-items:center;justify-content:center}
+  .reader-head .who-name{font-size:13px;color:var(--coach-ink);line-height:1.3}
+  .reader-head .who-name b{font-weight:600}
+  .reader-head .who-name small{display:block;font-family:var(--font-mono);font-size:10px;color:var(--coach-ink-subtle);letter-spacing:.02em;margin-top:2px}
+  .reader-head .actions{display:flex;gap:6px}
+
+  .reader-body{flex:1;padding:22px;overflow:auto;display:flex;flex-direction:column;gap:18px}
+  .msg{display:flex;gap:12px}
+  .msg .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7d5814,#B8852A);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .msg.me .av{background:linear-gradient(135deg,#005840,#1A7D56)}
+  .msg .bubble{flex:1;padding:14px 16px;background:#FAFAF7;border-radius:12px;font-size:13.5px;color:var(--coach-ink);line-height:1.55}
+  .msg.me .bubble{background:var(--accent-bg)}
+  .msg .from{font-family:var(--font-mono);font-size:10px;color:var(--coach-ink-subtle);letter-spacing:.04em;margin-bottom:4px;display:flex;justify-content:space-between}
+  .msg .from b{font-weight:600;color:var(--coach-ink);font-family:var(--font-body);font-size:12px;letter-spacing:0}
+
+  .composer{border-top:1px solid var(--coach-border);padding:16px 22px;display:flex;flex-direction:column;gap:10px;background:#FAFAF7}
+  .composer .tools{display:flex;gap:6px;align-items:center}
+  .composer .tools .t{padding:5px 9px;background:#fff;border:1px solid var(--coach-border);border-radius:6px;font-family:var(--font-mono);font-size:10px;color:var(--coach-ink-muted);letter-spacing:.04em;font-weight:600;text-transform:uppercase;cursor:pointer}
+  .composer .tools .t.ai{background:#1A1916;color:#fff;border-color:#1A1916}
+  .composer .body{padding:12px;background:#fff;border:1px solid var(--coach-border);border-radius:10px;font-size:13px;color:var(--coach-ink);min-height:80px;line-height:1.5}
+  .composer .body .draft{color:var(--coach-ink-subtle);font-style:italic;display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;margin-bottom:6px;font-weight:600;text-transform:uppercase;color:var(--brand-primary);font-style:normal}
+  .composer .send-row{display:flex;justify-content:space-between;align-items:center}
+  .composer .send-row small{font-family:var(--font-mono);font-size:10px;color:var(--coach-ink-subtle);letter-spacing:.02em}
+
+  .side-card{background:#fff;border:1px solid var(--coach-border);border-radius:12px;padding:16px;margin-bottom:14px}
+  .side-card h4{font-family:var(--font-display);font-size:11px;font-weight:600;margin:0 0 12px;letter-spacing:.10em;text-transform:uppercase;color:var(--coach-ink-subtle)}
+
+  .player-card{padding:12px;background:#FAFAF7;border-radius:8px;display:flex;gap:10px;align-items:center;margin-bottom:10px}
+  .player-card .av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .player-card b{font-size:13px;font-weight:600;color:var(--coach-ink)}
+  .player-card small{display:block;font-family:var(--font-mono);font-size:10px;color:var(--coach-ink-subtle);letter-spacing:.02em;margin-top:2px}
+
+  .ctx-row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--coach-border);font-size:12px}
+  .ctx-row:last-child{border-bottom:none}
+  .ctx-row .l{color:var(--coach-ink-muted)}
+  .ctx-row b{font-family:var(--font-mono);font-weight:600;color:var(--coach-ink);letter-spacing:.02em}
+  .ctx-row b.warn{color:var(--status-warning)}
+
+  .quick-list{display:flex;flex-direction:column;gap:4px}
+  .quick-list .q{padding:8px 10px;background:#FAFAF7;border:1px solid var(--coach-border);border-radius:7px;font-size:12px;color:var(--coach-ink);cursor:pointer;line-height:1.4}
+  .quick-list .q b{font-weight:600;color:var(--brand-primary);display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+</style></head>
+<body>
+<div class="deck" data-screen-label="60 CoachHQ — Foreldre-innboks">
+  <header class="deck-head">
+    <div class="eyebrow">9-F · Klubb-coach portefølje · skjerm 3 av 4</div>
+    <h1>Foreldre-kommunikasjon · innboks</h1>
+    <p class="sub">Toveis meldinger med foreldre — for U18-spillere går all kommunikasjon offisielt via foreldre. Agent kan utkast-foreslå svar basert på spillerens framdrift. Tråder kobles til spiller-profil.</p>
+    <div class="meta-row"><span><span class="lbl">URL:</span> /coach/innboks</span><span><span class="lbl">Sak-typer:</span> framdrift · samtykke · billing · forespørsel</span></div>
+  </header>
+  <section class="ab">
+    <div class="ab-label"><span class="num">60 · 9-F/3</span><span class="ttl">Foreldre-innboks · tråd-vy</span><span class="meta">trådliste · samtale · agent-utkast</span></div>
+    <div class="ab-frame"><div class="app app--coach">
+      <aside class="nav">
+        <div class="nav-logo"><div class="mark">AK</div><div class="n">AK Golf<span class="dim">/coach</span></div></div>
+        <div class="nav-item">Portefølje</div>
+        <div class="nav-item">Sesjon-planlegger</div>
+        <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Innboks<span class="count" style="background:var(--status-danger);color:#fff">3</span></div>
+        <div class="nav-item">Coach-rapport</div>
+        <div class="nav-item">Innstillinger</div>
+        <div class="nav-foot"><div class="av-sm">AK</div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--coach-ink);font-weight:500">Anders K.</span><span style="font-size:11px;color:var(--coach-ink-subtle)">Hovedcoach · GFGK</span></div></div>
+      </aside>
+      <main class="main">
+        <header class="page-head">
+          <div class="crumb">CoachHQ <span class="sep">/</span> Innboks</div>
+          <h1>Foreldre-kommunikasjon.</h1>
+          <p class="sub">3 uleste tråder · 1 venter på svar &gt; 24t · 2 fakturaforespørsler.</p>
+        </header>
+
+        <div class="inb-layout">
+          <div class="col">
+            <div class="col-head"><h4>Filtre</h4><small>42 åpne</small></div>
+            <div class="filter-list">
+              <div class="f active">Innboks<small>14</small></div>
+              <div class="f">Venter svar &gt; 24t<small>1</small></div>
+              <div class="f">Utkast<small>3</small></div>
+              <div class="f">Arkiv</div>
+              <div class="sec">Type</div>
+              <div class="f">Framdrift / coaching<small>8</small></div>
+              <div class="f">Samtykke / GDPR<small>2</small></div>
+              <div class="f">Billing<small>2</small></div>
+              <div class="f">Praktisk / RSVP<small>2</small></div>
+              <div class="sec">Spiller</div>
+              <div class="f">Markus P.<small>3</small></div>
+              <div class="f">Eira H.<small>2</small></div>
+              <div class="f">Jonas N.<small>1</small></div>
+              <div class="f">Mathilde B.<small>2</small></div>
+              <div class="f">Vis alle 18 →</div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="col-head"><h4>Tråder · 14</h4><small>sorter: nyeste</small></div>
+            <div class="thread-list">
+              <div class="thread active unread">
+                <div class="av k">KN</div>
+                <div class="meta">
+                  <div class="top-row"><b>Kari Nordby</b><span class="tm">10:14</span></div>
+                  <div class="sub">Bekymring for Jonas — fortsatt nedstemt</div>
+                  <div class="prev">Hei Anders, Jonas har vært mer stille enn vanlig etter cuten i april. Vi lurer på om…</div>
+                  <div class="tags"><span class="t player">Jonas N.</span><span class="t urg">venter 2 dgr</span></div>
+                </div>
+              </div>
+              <div class="thread unread">
+                <div class="av">IP</div>
+                <div class="meta">
+                  <div class="top-row"><b>Inger Pedersen</b><span class="tm">09:42</span></div>
+                  <div class="sub">Faktura for april — kan vi splitte i to?</div>
+                  <div class="prev">Hei! Vi ser at april-fakturaen er på 4 800 kr. Er det mulig å dele opp i to…</div>
+                  <div class="tags"><span class="t player">Markus P.</span><span class="t bill">billing</span></div>
+                </div>
+              </div>
+              <div class="thread unread">
+                <div class="av g">SH</div>
+                <div class="meta">
+                  <div class="top-row"><b>Stine Hopstad</b><span class="tm">i går 21:08</span></div>
+                  <div class="sub">Re: Eira's framdrift uke 19</div>
+                  <div class="prev">Tusen takk for ukerapporten — Eira er kjempemotivert! Spørsmål om sommeren…</div>
+                  <div class="tags"><span class="t player">Eira H.</span></div>
+                </div>
+              </div>
+              <div class="thread">
+                <div class="av r">EB</div>
+                <div class="meta">
+                  <div class="top-row"><b>Eivind Bjerke</b><span class="tm">i går 18:30</span></div>
+                  <div class="sub">RSVP Klubbmesterskap 25.05</div>
+                  <div class="prev">Mathilde stiller. Trenger hun shuttle eller kommer hun selv?</div>
+                  <div class="tags"><span class="t player">Mathilde B.</span></div>
+                </div>
+              </div>
+              <div class="thread">
+                <div class="av k">TK</div>
+                <div class="meta">
+                  <div class="top-row"><b>Tone Karlsen</b><span class="tm">13.05 14:22</span></div>
+                  <div class="sub">Re: Kongsberg R2 påmelding</div>
+                  <div class="prev">Ja, vi betaler påmeldingen direkte til klubben. Sender bekreftelse.</div>
+                  <div class="tags"><span class="t player">Sondre K.</span></div>
+                </div>
+              </div>
+              <div class="thread">
+                <div class="av g">PL</div>
+                <div class="meta">
+                  <div class="top-row"><b>Pia Lund</b><span class="tm">12.05 11:08</span></div>
+                  <div class="sub">Erik · status etter fysio</div>
+                  <div class="prev">Mia sier 9 dager til retur. Sender treningsplan for de neste 7 dagene…</div>
+                  <div class="tags"><span class="t player">Erik L.</span></div>
+                </div>
+              </div>
+              <div class="thread">
+                <div class="av">IP</div>
+                <div class="meta">
+                  <div class="top-row"><b>Inger Pedersen</b><span class="tm">10.05 19:14</span></div>
+                  <div class="sub">Re: Sesong-plan 2026 sendt</div>
+                  <div class="prev">Mottatt og signert. Markus er klar for sesong-start!</div>
+                  <div class="tags"><span class="t player">Markus P.</span></div>
+                </div>
+              </div>
+              <div class="thread">
+                <div class="av k">EH</div>
+                <div class="meta">
+                  <div class="top-row"><b>Erlend Hopstad</b><span class="tm">08.05 17:00</span></div>
+                  <div class="sub">Samtykke fornying GDPR</div>
+                  <div class="prev">BankID-signert. Bekreftelse vedlagt.</div>
+                  <div class="tags"><span class="t player">Eira H.</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="reader">
+              <div class="reader-head">
+                <h2 class="sub-ttl">Bekymring for Jonas — fortsatt nedstemt</h2>
+                <div class="who-row">
+                  <div class="who-info">
+                    <div class="av">KN</div>
+                    <div class="who-name"><b>Kari Nordby</b><small>Mor til Jonas Nordby (U16 G · GFGK)</small></div>
+                  </div>
+                  <div class="actions">
+                    <button class="btn btn-outline btn-sm">Arkiver</button>
+                    <button class="btn btn-outline btn-sm">Marker</button>
+                  </div>
+                </div>
+              </div>
+              <div class="reader-body">
+                <div class="msg">
+                  <div class="av">KN</div>
+                  <div>
+                    <div class="from"><b>Kari Nordby</b><span>12. mai · 18:42</span></div>
+                    <div class="bubble">Hei Anders! Bare en kort lapp — Jonas har vært mer stille enn vanlig etter cuten på Asker. Han har avlyst to range-økter, og snakker minst mulig om golf hjemme. Vet ikke om dette er en fase, eller om vi bør gjøre noe annet.</div>
+                  </div>
+                </div>
+                <div class="msg me">
+                  <div class="av">AK</div>
+                  <div>
+                    <div class="from"><b>Anders K. (deg)</b><span>13. mai · 09:14</span></div>
+                    <div class="bubble">Takk for at du melder fra Kari — det er viktig. Jeg har sett det samme i appen (lite aktivitet siste 10 dager). La meg ta en kort samtale med Jonas først, og så ringes vi to senere i uka. Stemmer det at han har skole-eksamen om to uker?</div>
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="av">KN</div>
+                  <div>
+                    <div class="from"><b>Kari Nordby</b><span>i dag · 10:14</span></div>
+                    <div class="bubble">Ja, eksamen 28.–30. mai i fire fag. Pluss at vennegjengen drar på fest 25.05 (klubbmesterskap-dato). Tror det er kombinasjonen som sliter på ham. Hvis det er noe vi som foreldre kan tilrettelegge for fram til da, si fra.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="composer">
+                <div class="tools">
+                  <div class="t ai">✨ Foreslå svar</div>
+                  <div class="t">📎 Vedlegg</div>
+                  <div class="t">📅 Foreslå tid</div>
+                  <div class="t">🔗 Spiller-data</div>
+                </div>
+                <div class="body">
+                  <span class="draft">✨ Agent-utkast · klikk for å redigere</span>
+                  Tusen takk Kari. Da gjør vi følgende: jeg booker en kort 1-til-1 samtale med Jonas torsdag 16.05 (15 min, ingen agenda), og vi senker treningsvolumet til 1 økt/uke fram til 30.05 — fokus på det som gir glede, ikke teknikk. Klubbmesterskap er frivillig; han skal kjenne at det er ok å droppe det. Vi tar telefonen onsdag kveld om det passer for dere?
+                </div>
+                <div class="send-row">
+                  <small>Generert basert på Jonas' aktivitet + bookinger · agent v2.4</small>
+                  <div style="display:flex;gap:6px">
+                    <button class="btn btn-outline btn-sm">Lagre utkast</button>
+                    <button class="btn btn-sm">Send svar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:18px">
+          <div class="side-card">
+            <h4>Spiller-kontekst</h4>
+            <div class="player-card"><div class="av j" style="background:linear-gradient(135deg,#7d5814,#B8852A)">JN</div><div><b>Jonas Nordby</b><small>U16 G · HCP 12,4 · GFGK</small></div></div>
+            <div class="ctx-row"><span class="l">Mål-framdrift</span><b class="warn">18% (risk)</b></div>
+            <div class="ctx-row"><span class="l">HCP trend</span><b class="warn">↑ 0,8</b></div>
+            <div class="ctx-row"><span class="l">Siste sesjon</span><b>03.05 · 10 dgr</b></div>
+            <div class="ctx-row"><span class="l">Tier</span><b>Basic</b></div>
+            <div style="margin-top:10px"><button class="btn btn-outline btn-sm" style="width:100%">Åpne spiller-profil →</button></div>
+          </div>
+
+          <div class="side-card">
+            <h4>Hurtigsvar · maler</h4>
+            <div class="quick-list">
+              <div class="q"><b>Avlyst sesjon</b>"Hei, vi tar igjen onsdag samme tid. Ingen ekstra fakturering."</div>
+              <div class="q"><b>RSVP-bekreftelse</b>"Mottatt! Spilleren står på listen. Detaljer kommer 48t før."</div>
+              <div class="q"><b>Foreslå 1-til-1 prat</b>"Skal vi ta en kort telefon? Foreslår onsdag 19:00."</div>
+              <div class="q"><b>Ukerapport-link</b>"Her er ukerapporten — automatisk hver fredag."</div>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <h4>Innboks-statistikk · 30d</h4>
+            <div class="ctx-row"><span class="l">Mottatt</span><b>62 meldinger</b></div>
+            <div class="ctx-row"><span class="l">Svart innen 24t</span><b style="color:var(--status-success)">94%</b></div>
+            <div class="ctx-row"><span class="l">Med agent-utkast</span><b>41 (66%)</b></div>
+            <div class="ctx-row"><span class="l">Eskaler til klubb</span><b>0</b></div>
+            <div class="ctx-row"><span class="l">Foreldre-NPS</span><b style="color:var(--status-success)">+62</b></div>
+          </div>
+        </div>
+
+      </main>
+    </div></div>
+  </section>
+</div>
+</body>
+</html>

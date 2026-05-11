@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:28px;background:var(--surface);display:flex;flex-direction:column;gap:14px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;padding:4px 12px;border-radius:100px;font-family:'Inter';font-size:12px;font-weight:500;letter-spacing:.02em}
+  .week{padding:6px 16px;border-radius:100px;font-family:'Inter';font-size:13px;font-weight:500;border:none;cursor:pointer;background:#F5F2EA;color:#5E5C57}
+  .week.active{background:#D1F843;color:#0A1F18}
+  .lbl{font-family:'Inter';font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-subtle);min-width:60px}
+</style></head><body>
+  <div class="row"><div class="lbl">Badges</div>
+    <span class="pill" style="background:#F5F2EA;color:#5E5C57">Default</span>
+    <span class="pill" style="background:#ECFCC0;color:#0A1F18">Accent</span>
+    <span class="pill" style="background:#E5F1EA;color:#1A7D56">Success</span>
+    <span class="pill" style="background:#FFF0D6;color:#B8852A">Warning</span>
+    <span class="pill" style="background:#FAE3E3;color:#A32D2D">Danger</span>
+  </div>
+  <div class="row"><div class="lbl">Week</div>
+    <button class="week">W1</button><button class="week">W2</button><button class="week active">W3</button><button class="week">W4</button><button class="week">W5</button><button class="week">W6</button>
+  </div>
+</body></html>
