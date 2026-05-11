@@ -2,6 +2,54 @@
 
 Gå gjennom denne før domenet pekes mot Vercel-produksjon.
 
+---
+
+## 🌙 Anders' kveld-todo (12. mai 2026)
+
+To manuelle handlinger som ikke kan automatiseres:
+
+### 1. Opprett Stripe webhook (2 min)
+
+1. Gå til https://dashboard.stripe.com/webhooks/create
+2. **Endpoint URL:** `https://akgolf-hq.vercel.app/api/stripe/webhook`
+3. **Description:** `akgolf-hq prod`
+4. **Events** — huk av disse 5:
+   - `checkout.session.completed`
+   - `checkout.session.expired`
+   - `customer.subscription.created`
+   - `customer.subscription.updated`
+   - `customer.subscription.deleted`
+5. Klikk **Add endpoint**
+6. På detalj-siden: kopier **Signing secret** (`whsec_…`)
+7. Push til Vercel:
+   ```bash
+   cd ~/Developer/akgolf-hq
+   printf '%s' 'whsec_DIN_VERDI_HER' | vercel env add STRIPE_WEBHOOK_SECRET production --force
+   vercel --prod --yes
+   ```
+
+### 2. DNS for akgolf.no (Hyp.net)
+
+**Anbefalt: A-record-metoden** (behold dagens nameservers):
+
+Logg inn på https://hyp.net → DNS-styring for `akgolf.no`:
+
+| Type | Navn | Verdi | TTL |
+|---|---|---|---|
+| A | `@` | `76.76.21.21` | 3600 |
+| CNAME | `www` | `cname.vercel-dns.com` | 3600 |
+
+Erstatt eventuelle eksisterende A-records på `@`. Bevar MX-records (e-post).
+
+Etter endring (10–60 min): https://akgolf.no skal peke mot prod-deployet.
+Verifiser med:
+```bash
+vercel domains inspect akgolf.no
+curl -I https://akgolf.no
+```
+
+---
+
 ## 0. Forutsetninger (Anders må ha klart)
 
 - [ ] Vercel-prosjekt linket til `akgolf-hq` repo
