@@ -1,76 +1,313 @@
+/**
+ * PlayerHQ · Meg · Hjelp
+ *
+ * Migrert til endelig design (wireframe/design-files-v2/final/11-hjelp.html).
+ * Search-driven hjelp-senter med stort søkefelt, kategori-grid, populære artikler
+ * og mørk kontakt-card. Italic Instrument Serif hero "Hva lurer du på?".
+ */
+import {
+  Sparkles,
+  Dumbbell,
+  Headphones,
+  Calendar,
+  Settings,
+  Search,
+  ChevronRight,
+  MessageCircle,
+  Mail,
+  Users,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
 
-const FAQ: { sporsmaal: string; svar: string }[] = [
+type Kategori = {
+  slug: string;
+  navn: string;
+  artikler: number;
+  ikon: LucideIcon;
+  ikonBg: string;
+  ikonFg: string;
+};
+
+const KATEGORIER: Kategori[] = [
   {
-    sporsmaal: "Hva er pyramide-systemet?",
-    svar: "AK Golf-pyramiden består av fem områder: FYS (fysisk), TEK (teknisk), SLAG (slag — korthold/pitch/putt), SPILL (spill — banetilpasning) og TURN (turnering). Treningsplanen din fordeler tid mellom disse for å bygge balansert utvikling.",
+    slug: "komme-i-gang",
+    navn: "Komme i gang",
+    artikler: 8,
+    ikon: Sparkles,
+    ikonBg: "bg-primary/10",
+    ikonFg: "text-primary",
   },
   {
-    sporsmaal: "Hvordan fungerer AI-coach?",
-    svar: "AI-coach bruker profilen din (HCP, ambisjon, hjemmeklubb), aktive treningsplaner og siste 5 runder som kontekst når den svarer. Den er en støtte, ikke erstatning for menneskelig coach. Krever Pro-abonnement.",
+    slug: "trening",
+    navn: "Trening",
+    artikler: 14,
+    ikon: Dumbbell,
+    ikonBg: "bg-[#3b5994]/15",
+    ikonFg: "text-[#3b5994]",
   },
   {
-    sporsmaal: "Hva betyr SG-tallene?",
-    svar: "Strokes Gained (SG) måler hvor mange slag du sparer eller taper sammenlignet med en referanse-spiller. Positive tall = bedre enn snitt. Vi splitter på OTT (drives), APP (innspill), ARG (rundt green) og PUTT.",
+    slug: "coaching",
+    navn: "Coaching",
+    artikler: 12,
+    ikon: Headphones,
+    ikonBg: "bg-[#F4C430]/20",
+    ikonFg: "text-[#7a5a08]",
   },
   {
-    sporsmaal: "Kan jeg endre HCP manuelt?",
-    svar: "Ja — gå til Profil og oppdater HCP-feltet. I v2 kobles dette automatisk til norsk handicap-system.",
+    slug: "booking",
+    navn: "Booking + betaling",
+    artikler: 9,
+    ikon: Calendar,
+    ikonBg: "bg-[#a14b30]/15",
+    ikonFg: "text-[#a14b30]",
   },
   {
-    sporsmaal: "Hvordan kansellerer jeg Pro-abonnementet?",
-    svar: "Gå til Abonnement → 'Administrer abonnement'. Du blir sendt til Stripe Customer Portal hvor du kan kansellere når som helst.",
+    slug: "konto",
+    navn: "Kontoinnstillinger",
+    artikler: 6,
+    ikon: Settings,
+    ikonBg: "bg-secondary",
+    ikonFg: "text-foreground",
+  },
+];
+
+const POPULAERE = [
+  {
+    tittel: "Hva er pyramide-systemet?",
+    kategori: "Trening",
+    min: 5,
   },
   {
-    sporsmaal: "Hva er Streak?",
-    svar: "Antall dager på rad du har fullført minst én treningsøkt. Vi måler over siste 14 dager. Achievements (STREAK_7, STREAK_14) låses opp automatisk.",
+    tittel: "Slik bytter du coach",
+    kategori: "Coaching",
+    min: 2,
   },
+  {
+    tittel: "Hva betyr SG-tallene?",
+    kategori: "Runder",
+    min: 4,
+  },
+  {
+    tittel: "Hvordan oppgrader til Pro?",
+    kategori: "Konto",
+    min: 2,
+  },
+  {
+    tittel: "Logg din første runde",
+    kategori: "Komme i gang",
+    min: 3,
+  },
+];
+
+const FORESLAATT = [
+  "Pyramide",
+  "Logg runde",
+  "Bytt coach",
+  "Oppgrader til Pro",
 ];
 
 export default async function HelpPage() {
   await requirePortalUser();
+  const totalArtikler = KATEGORIER.reduce((sum, k) => sum + k.artikler, 0);
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow="PlayerHQ · Meg · Hjelp"
-        titleLead="Svar når du"
-        titleItalic="trenger dem"
-        sub="Vanlige spørsmål. Trenger du noe annet, send e-post."
-      />
-
-      <ul className="space-y-3">
-        {FAQ.map((q, i) => (
-          <li
-            key={i}
-            className="rounded-lg border border-border bg-card p-5"
-          >
-            <details>
-              <summary className="cursor-pointer font-medium text-foreground">
-                {q.sporsmaal}
-              </summary>
-              <p className="mt-3 text-sm text-muted-foreground">{q.svar}</p>
-            </details>
-          </li>
-        ))}
-      </ul>
-
-      <section className="rounded-lg border border-border bg-card p-6">
-        <h3 className="font-display text-base font-semibold tracking-tight">
-          Kontakt support
-        </h3>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Får du ikke svar i FAQ-en? Send e-post til support, så svarer vi
-          innen 24 timer på hverdager.
-        </p>
-        <a
-          href="mailto:support@akgolf.no"
-          className="mt-4 inline-block rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+    <div className="mx-auto max-w-4xl space-y-12">
+      {/* Hero med stort søkefelt */}
+      <section className="flex flex-col items-center gap-6 pt-4 text-center">
+        <span
+          aria-hidden="true"
+          className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground"
         >
-          support@akgolf.no
-        </a>
+          PlayerHQ · /meg/hjelp
+        </span>
+        <h1 className="font-display text-5xl font-normal italic leading-tight tracking-tight">
+          <span className="not-italic font-semibold">Hva</span> lurer du på?
+        </h1>
+        <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
+          Søk i hjelp-artikler, eller spør direkte. Vi svarer innen 24 timer på
+          hverdager.
+        </p>
+
+        <div className="relative w-full max-w-xl">
+          <Search
+            size={20}
+            strokeWidth={1.75}
+            aria-hidden="true"
+            className="pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground"
+          />
+          <input
+            type="search"
+            aria-label="Søk i hjelp-artikler"
+            placeholder="Søk hjelp-artikler eller skriv et spørsmål..."
+            className="w-full rounded-lg border-[1.5px] border-border bg-card px-6 py-4 pl-14 text-base text-foreground outline-none transition-all focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,88,64,0.10)]"
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {FORESLAATT.map((s) => (
+            <button
+              key={s}
+              type="button"
+              className="rounded-full border border-border bg-card px-4 py-2 text-sm text-foreground transition-colors hover:border-primary hover:text-primary"
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Kategorier */}
+      <section className="space-y-4">
+        <div className="flex items-baseline justify-between">
+          <h2 className="font-display text-2xl font-medium italic tracking-tight">
+            Kategorier
+          </h2>
+          <span className="font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground">
+            {totalArtikler} artikler totalt
+          </span>
+        </div>
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {KATEGORIER.map((k) => {
+            const Ikon = k.ikon;
+            return (
+              <li
+                key={k.slug}
+                className="group flex cursor-pointer flex-col gap-2 rounded-lg border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
+              >
+                <div
+                  className={`grid h-10 w-10 place-items-center rounded-md ${k.ikonBg} ${k.ikonFg}`}
+                >
+                  <Ikon size={20} strokeWidth={1.75} aria-hidden="true" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-semibold tracking-tight">
+                    {k.navn}
+                  </h3>
+                  <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground">
+                    {k.artikler} artikler
+                  </div>
+                </div>
+                <div className="mt-auto flex justify-end pt-2 text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                  Åpne →
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      {/* Populære artikler */}
+      <section className="space-y-4">
+        <div className="flex items-baseline justify-between">
+          <h2 className="font-display text-2xl font-medium italic tracking-tight">
+            Populære artikler
+          </h2>
+          <span className="font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground">
+            Mest leste denne måneden
+          </span>
+        </div>
+        <ul className="overflow-hidden rounded-lg border border-border bg-card">
+          {POPULAERE.map((a, i) => (
+            <li
+              key={a.tittel}
+              className="flex items-center gap-4 border-b border-border/60 px-4 py-4 transition-colors last:border-0 hover:bg-muted/30"
+            >
+              <span className="w-8 font-mono text-xs font-semibold text-muted-foreground">
+                {(i + 1).toString().padStart(2, "0")}
+              </span>
+              <span className="flex-1 text-sm font-medium text-foreground">
+                {a.tittel}
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground">
+                {a.kategori} · {a.min} min
+              </span>
+              <ChevronRight
+                size={16}
+                strokeWidth={1.75}
+                className="text-muted-foreground"
+                aria-hidden="true"
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Kontakt — mørk card */}
+      <section className="rounded-lg bg-gradient-to-br from-[#0F2A22] to-[#163027] p-8 text-[#F5F4EE]">
+        <h2 className="text-center font-display text-2xl font-normal italic leading-tight tracking-tight text-[#F5F4EE]">
+          <span className="not-italic font-semibold">Trenger du</span> mer hjelp?
+        </h2>
+        <p className="mt-2 text-center font-mono text-xs text-[#F5F4EE]/70">
+          Vi er her — velg det som passer deg
+        </p>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <KontaktCard
+            ikon={MessageCircle}
+            tittel="Chat med oss"
+            sub="Svar innen 24 timer på hverdager"
+            cta="Start chat →"
+          />
+          <KontaktCard
+            ikon={Mail}
+            tittel="Send e-post"
+            sub="support@akgolf.no · svar innen 24t"
+            cta="Skriv e-post →"
+            href="mailto:support@akgolf.no"
+          />
+          <KontaktCard
+            ikon={Users}
+            tittel="Be coachen din"
+            sub="Send melding direkte til din coach"
+            cta="Åpne meldinger →"
+          />
+        </div>
       </section>
     </div>
+  );
+}
+
+function KontaktCard({
+  ikon: Ikon,
+  tittel,
+  sub,
+  cta,
+  href,
+}: {
+  ikon: LucideIcon;
+  tittel: string;
+  sub: string;
+  cta: string;
+  href?: string;
+}) {
+  const innhold = (
+    <>
+      <div className="grid h-9 w-9 place-items-center rounded-md bg-[#D1F843]/15 text-[#D1F843]">
+        <Ikon size={18} strokeWidth={1.75} aria-hidden="true" />
+      </div>
+      <h4 className="font-display text-base font-semibold text-[#F5F4EE]">
+        {tittel}
+      </h4>
+      <p className="font-mono text-[11px] leading-snug text-[#F5F4EE]/60">
+        {sub}
+      </p>
+      <span className="mt-auto inline-flex items-center text-xs font-semibold text-[#D1F843]">
+        {cta}
+      </span>
+    </>
+  );
+
+  const className =
+    "flex flex-col gap-2 rounded-md border border-[#F5F4EE]/10 bg-[#F5F4EE]/[0.04] p-4 transition-colors hover:border-[#D1F843]/40 hover:bg-[#F5F4EE]/[0.08]";
+
+  return href ? (
+    <a href={href} className={className}>
+      {innhold}
+    </a>
+  ) : (
+    <button type="button" className={`${className} text-left`}>
+      {innhold}
+    </button>
   );
 }

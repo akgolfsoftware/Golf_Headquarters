@@ -1,45 +1,30 @@
 /**
  * CoachHQ — Elever (spillerliste)
- * Produksjons-design migrert fra /elever-demo.
+ * Design migrert fra wireframe/design-files-v2/final/02-elever.html.
  *
- * Datakilde: Prisma. Henter alle PLAYER-brukere med aggregert statistikk
- * (runder, tester, aktive planer, siste innlogging, klubb og tier).
- *
- * Designet matcher demo-fila 1:1 — KPI-strip, filter-bar, tabell, side-rail.
+ * Tabell med Spiller / Kat / Tier / HCP / Status / Siste økt. KPI-strip
+ * øverst med Aktive / Pro+Elite / Inaktive / Skadet.
  */
 
 import Link from "next/link";
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  ChevronDown,
-  Download,
-  Filter,
-  ListFilter,
-  MessageCircle,
-  MoreHorizontal,
-  Plus,
-  Search,
-  UserPlus,
-  Users,
-} from "lucide-react";
+import { Search, UserPlus, Users } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
-// leggTilSpiller importeres når "Ny spiller"-modalen kobles på
-// import { leggTilSpiller } from "./actions";
 
-type Search = { tier?: string; q?: string; status?: string; sort?: string };
+type SearchParams = { tier?: string; q?: string; status?: string; sort?: string };
 
 type Status = "ok" | "warn" | "dan" | "ferie";
 
-type PlayerWithCount = {
+type Tier = "GRATIS" | "PRO" | "ELITE";
+
+type PlayerRow = {
   id: string;
   name: string;
   email: string;
   hcp: number | null;
-  tier: "GRATIS" | "PRO" | "ELITE";
+  tier: Tier;
   homeClub: string | null;
   lastLoginAt: Date | null;
   _count: {
@@ -50,24 +35,56 @@ type PlayerWithCount = {
   groupMemberships: { group: { name: string } }[];
 };
 
+type Category = "A" | "B" | "C" | "D";
+
+// Deriverer HCP-kategori. A=elite, B=lavt, C=medium, D=høyt.
+function deriveCategory(hcp: number | null): Category {
+  if (hcp === null) return "D";
+  if (hcp <= 4) return "A";
+  if (hcp <= 10) return "B";
+  if (hcp <= 18) return "C";
+  return "D";
+}
+
+const CAT_STYLE: Record<Category, string> = {
+  A: "bg-[rgba(209,248,67,0.30)] text-[#3d4d0f]",
+  B: "bg-[rgba(166,101,30,0.16)] text-[#7a4910]",
+  C: "bg-[rgba(122,153,140,0.20)] text-[#3d5048]",
+  D: "bg-[rgba(156,153,144,0.20)] text-[#5a5852]",
+};
+
+const TIER_STYLE: Record<Tier, string> = {
+  GRATIS: "bg-secondary text-muted-foreground",
+  PRO: "bg-[rgba(0,88,64,0.14)] text-primary",
+  ELITE: "bg-[#0F2A22] text-accent",
+};
+
+const TIER_LABEL: Record<Tier, string> = {
+  GRATIS: "Free",
+  PRO: "Pro",
+  ELITE: "Elite",
+};
+
 export default async function ElverListe({
   searchParams,
 }: {
-  searchParams: Promise<Search>;
+  searchParams: Promise<SearchParams>;
 }) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const params = await searchParams;
 
   const where: {
     role: "PLAYER";
-    tier?: "GRATIS" | "PRO" | "ELITE";
+    tier?: Tier;
     OR?: {
       name?: { contains: string; mode: "insensitive" };
       email?: { contains: string; mode: "insensitive" };
     }[];
   } = { role: "PLAYER" };
 
-  if (params.tier === "GRATIS" || params.tier === "PRO") where.tier = params.tier;
+  if (params.tier === "GRATIS" || params.tier === "PRO" || params.tier === "ELITE") {
+    where.tier = params.tier;
+  }
   if (params.q) {
     const q = params.q;
     where.OR = [
@@ -104,297 +121,156 @@ export default async function ElverListe({
     take: 200,
   });
 
-  const players = playersRaw as PlayerWithCount[];
+  const players = playersRaw as PlayerRow[];
 
-  // Status-beregning per spiller basert på siste innlogging.
-  // ok: < 3 dgr, warn: 3–7 dgr, dan: > 7 dgr, ferie: tier=GRATIS uten plan og inaktiv
+  // Status-beregning per spiller
   const naa = Date.now();
   const dgrSiden = (d: Date | null) =>
     d ? Math.floor((naa - d.getTime()) / (1000 * 60 * 60 * 24)) : 999;
 
-  const beregnStatus = (p: PlayerWithCount): { status: Status; label: string } => {
+  const beregnStatus = (p: PlayerRow): { status: Status; label: string } => {
     const d = dgrSiden(p.lastLoginAt);
-    if (d > 10 && p._count.trainingPlans === 0) return { status: "dan", label: "Inaktiv" };
-    if (d > 7) return { status: "dan", label: "Inaktiv" };
-    if (d >= 3) return { status: "warn", label: "Forsinket" };
-    return { status: "ok", label: "På plan" };
+    if (d > 30) return { status: "dan", label: "Inaktiv" };
+    if (d > 7) return { status: "warn", label: "Forsinket" };
+    return { status: "ok", label: "Aktiv" };
   };
 
-  // Filter på status hvis valgt
-  const statusFilter = params.status as Status | "alle" | undefined;
-  const synlige = players
-    .map((p) => ({ ...p, _statusInfo: beregnStatus(p) }))
-    .filter((p) => {
-      if (!statusFilter || statusFilter === "alle") return true;
-      return p._statusInfo.status === statusFilter;
-    });
+  const synlige = players.map((p) => ({
+    ...p,
+    _statusInfo: beregnStatus(p),
+    _category: deriveCategory(p.hcp),
+  }));
 
   // KPI-beregninger
   const total = players.length;
-  const aktiveDenneUka = players.filter((p) => dgrSiden(p.lastLoginAt) <= 7).length;
-  const snittHcp =
-    players.filter((p) => p.hcp != null).length > 0
-      ? players
-          .filter((p) => p.hcp != null)
-          .reduce((acc, p) => acc + (p.hcp ?? 0), 0) /
-        players.filter((p) => p.hcp != null).length
-      : null;
-  const paaPlan = players.filter((p) => beregnStatus(p).status === "ok").length;
-  const trengerOppfolging = players.filter((p) => {
-    const s = beregnStatus(p).status;
-    return s === "warn" || s === "dan";
-  }).length;
-  const proCount = players.filter((p) => p.tier === "PRO").length;
-  const gratisCount = players.filter((p) => p.tier === "GRATIS").length;
-  const proPct = total > 0 ? Math.round((proCount / total) * 100) : 0;
-  const gratisPct = total > 0 ? 100 - proPct : 0;
-
-  // Status-tellinger for chip-pills
-  const stOk = players.filter((p) => beregnStatus(p).status === "ok").length;
-  const stWarn = players.filter((p) => beregnStatus(p).status === "warn").length;
-  const stDan = players.filter((p) => beregnStatus(p).status === "dan").length;
-  const stFerie = players.filter((p) => beregnStatus(p).status === "ferie").length;
-
-  // Oppfølging-rail (3-4 spillere som trenger oppmerksomhet)
-  const oppfolging = players
-    .map((p) => ({ p, info: beregnStatus(p), d: dgrSiden(p.lastLoginAt) }))
-    .filter((x) => x.info.status === "warn" || x.info.status === "dan")
-    .sort((a, b) => b.d - a.d)
-    .slice(0, 4);
+  const aktive = synlige.filter((p) => p._statusInfo.status === "ok").length;
+  const inaktiveOver30 = players.filter(
+    (p) => dgrSiden(p.lastLoginAt) > 30,
+  ).length;
+  const proEliteCount = players.filter(
+    (p) => p.tier === "PRO" || p.tier === "ELITE",
+  ).length;
+  const proEliteAndel =
+    total > 0 ? Math.round((proEliteCount / total) * 100) : 0;
+  // Skadet — krever explicit felt; bruker dan-status som proxy
+  const skadet = synlige.filter((p) => p._statusInfo.status === "dan").length;
 
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · Spillere"
-        titleLead="Mine"
-        titleItalic="elever"
-        sub={`${total} spillere registrert · ${aktiveDenneUka} aktive denne uka`}
+        eyebrow="CoachHQ · /admin/elever"
+        titleLead={String(total)}
+        titleItalic="spillere"
+        sub={`AK Golf · ${proEliteCount} Pro/Elite · ${aktive} aktive denne uka`}
         actions={
-          <>
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              <Download size={14} strokeWidth={1.5} />
-              Eksport
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              <UserPlus size={14} strokeWidth={1.5} />
-              Inviter
-            </button>
-            <NySpillerButton />
-          </>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            <UserPlus size={14} strokeWidth={1.75} />
+            Ny spiller
+          </button>
         }
       />
 
-      {/* KPI strip */}
-      <div className="grid gap-3.5 grid-cols-[1.4fr_1fr_1fr_1fr]">
-        <KpiFeature
-          label="Aktive spillere"
+      {/* KPI-strip */}
+      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+        <KpiAccent
+          label="Aktive"
           value={String(total)}
-          delta={`${aktiveDenneUka} aktive denne uka`}
+          sub={total > 0 ? `${aktive} aktive denne uka` : "Ingen spillere"}
         />
         <Kpi
-          label="Snitt-HCP"
-          value={snittHcp != null ? snittHcp.toFixed(1).replace(".", ",") : "—"}
-          delta={total > 0 ? `${players.filter((p) => p.hcp != null).length} av ${total} har HCP` : "Ingen data"}
-          deltaTone="good"
-          deltaDown
+          label="Pro + Elite"
+          value={String(proEliteCount)}
+          unit={`/ ${total}`}
+          sub={`${proEliteAndel} % betalende`}
         />
         <Kpi
-          label="På plan"
-          value={String(paaPlan)}
-          suffix={`/ ${total}`}
-          delta={total > 0 ? `${Math.round((paaPlan / total) * 100)} % compliance` : "—"}
+          label="Inaktive > 30 d"
+          value={String(inaktiveOver30)}
+          sub={inaktiveOver30 > 0 ? "Krever oppfølging" : "Alt under kontroll"}
+          tone={inaktiveOver30 > 0 ? "warn" : undefined}
         />
         <Kpi
-          label="Trenger oppfølging"
-          value={String(trengerOppfolging)}
-          valueTone={trengerOppfolging > 0 ? "warning" : undefined}
-          delta={trengerOppfolging > 0 ? "Krever handling" : "Alt under kontroll"}
-          deltaTone={trengerOppfolging > 0 ? "bad" : undefined}
+          label="Forsinket"
+          value={String(skadet)}
+          sub={skadet > 0 ? "Trenger oppmerksomhet" : "Ingen"}
+          tone={skadet > 0 ? "bad" : undefined}
         />
       </div>
 
       {/* Filter */}
       <form className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
-          <Search size={14} strokeWidth={1.5} />
+        <label className="flex flex-1 min-w-[280px] items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
+          <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
             name="q"
             defaultValue={params.q ?? ""}
-            placeholder="Søk på navn, klubb, e-post…"
+            placeholder="Søk spiller, e-post eller HCP"
             className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
-          <span className="rounded-sm border border-border bg-background px-1.5 py-0.5 font-mono text-[10px]">
-            ⌘K
-          </span>
         </label>
-        <StatusChip name="alle" current={statusFilter} count={total} label="Alle" preserveQ={params.q} preserveSort={params.sort} />
-        <StatusChip name="ok" current={statusFilter} count={stOk} label="På plan" preserveQ={params.q} preserveSort={params.sort} />
-        <StatusChip name="warn" current={statusFilter} count={stWarn} label="Forsinket" preserveQ={params.q} preserveSort={params.sort} />
-        <StatusChip name="dan" current={statusFilter} count={stDan} label="Inaktiv" preserveQ={params.q} preserveSort={params.sort} />
-        <StatusChip name="ferie" current={statusFilter} count={stFerie} label="Ferie" preserveQ={params.q} preserveSort={params.sort} />
-        <button
-          type="submit"
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-[12px] font-medium text-muted-foreground hover:bg-secondary"
-          aria-label="Anvend filter"
-        >
-          <Filter size={14} strokeWidth={1.5} />
-        </button>
+        <FilterChip label="Kategori" />
+        <FilterChip label="Tier" />
+        <FilterChip label="Status" />
+        <FilterChip label="Coach" />
+        <FilterChip label="Sort: HCP" />
       </form>
 
-      {/* Body grid */}
+      {/* Body */}
       {total === 0 ? (
         <EmptyState
           icon={Users}
           titleItalic="Ingen spillere"
           titleTrail="registrert ennå"
           sub="Legg til din første spiller for å komme i gang. Du kan invitere via e-post eller opprette manuelt."
-          cta={<NySpillerButton variant="cta" />}
+          cta={
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              <UserPlus size={16} strokeWidth={1.75} />
+              Ny spiller
+            </button>
+          }
         />
       ) : (
-        <div className="grid grid-cols-[1fr_340px] items-start gap-5">
-          {/* Table */}
-          <div className="overflow-hidden rounded-lg border border-border bg-card">
-            <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-2.5 text-[12px]">
-              <div className="flex items-center gap-2.5 text-muted-foreground">
-                <span className="inline-block h-3.5 w-3.5 rounded-sm border border-border bg-card" />
-                <span>
-                  Viser <b className="font-medium text-foreground">{synlige.length} av {total}</b> spillere
-                </span>
-              </div>
-              <div className="flex items-center gap-3 text-muted-foreground">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-1 text-[11px] hover:text-foreground"
-                >
-                  Sorter:{" "}
-                  <span className="font-medium text-foreground">
-                    {"name" in orderBy
-                      ? "Navn, A–Å"
-                      : "hcp" in orderBy && orderBy.hcp === "desc"
-                        ? "HCP, høy til lav"
-                        : "hcp" in orderBy
-                          ? "HCP, lav til høy"
-                          : "Sist innlogget"}
-                  </span>
-                  <ChevronDown size={12} strokeWidth={1.5} />
-                </button>
-                <span className="h-4 w-px bg-border" />
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-1 text-[11px] hover:text-foreground"
-                >
-                  <ListFilter size={13} strokeWidth={1.5} />
-                  Kolonner
-                </button>
-              </div>
-            </div>
-
-            {/* Header row */}
-            <div className="grid grid-cols-[32px_1.6fr_90px_70px_120px_110px_110px_80px] gap-3 border-b border-border px-4 py-2.5 font-mono text-[9px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-              <span />
-              <span>Spiller</span>
-              <span className="text-right">HCP</span>
-              <span>Tier</span>
-              <span>Pyramide-fokus</span>
-              <span>Sist økt</span>
-              <span>Status</span>
-              <span className="text-right">Handling</span>
-            </div>
-
-            {synlige.map((p) => (
-              <PlayerRow key={p.id} player={p} />
-            ))}
+        <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+          <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-2.5 font-mono text-[11px] text-muted-foreground">
+            <span>
+              Viser <b className="font-semibold text-foreground">{synlige.length}</b> av {total} spillere
+            </span>
+            <span className="text-foreground">
+              Sortert: {"name" in orderBy
+                ? "Navn ↑"
+                : "hcp" in orderBy && orderBy.hcp === "desc"
+                  ? "HCP høy → lav"
+                  : "hcp" in orderBy
+                    ? "HCP lav → høy"
+                    : "Sist innlogget"}
+            </span>
           </div>
-
-          {/* Side-rail */}
-          <aside className="flex flex-col gap-4">
-            <section className="rounded-lg border border-border bg-card p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-display text-[12px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-                  Trenger oppfølging
-                </h3>
-                <span className="rounded-full bg-[rgba(184,133,42,0.12)] px-2 py-0.5 font-mono text-[10px] font-semibold text-[#7d5814]">
-                  {trengerOppfolging}
-                </span>
-              </div>
-              <p className="mt-1.5 text-[12px] leading-snug text-muted-foreground">
-                Spillere som har sklidd unna programmet eller mangler kontakt &gt; 5 dager.
-              </p>
-              <div className="mt-3 flex flex-col gap-2">
-                {oppfolging.length === 0 ? (
-                  <p className="text-[12px] text-muted-foreground">
-                    Ingen krever oppfølging akkurat nå.
-                  </p>
-                ) : (
-                  oppfolging.map((x) => (
-                    <Link
-                      key={x.p.id}
-                      href={`/admin/elever/${x.p.id}`}
-                      className="grid grid-cols-[28px_1fr_auto] items-start gap-2.5 rounded-md border border-border bg-background p-2.5 transition-colors hover:bg-secondary"
-                    >
-                      <div
-                        className="grid h-7 w-7 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
-                        style={{ background: avatarBg(x.p.name) }}
-                      >
-                        {initials(x.p.name)}
-                      </div>
-                      <div className="text-[12px] leading-snug">
-                        <div className="font-medium text-foreground">{x.p.name}</div>
-                        <div className="text-[11px] text-muted-foreground">
-                          {x.info.status === "dan"
-                            ? `Inaktiv ${x.d} dgr. ${x.p._count.trainingPlans === 0 ? "Mangler aktiv plan." : ""}`
-                            : `Forsinket ${x.d} dgr siden siste innlogging.`}
-                        </div>
-                      </div>
-                      <span className="font-mono text-[10px] text-muted-foreground">
-                        {x.d}d
-                      </span>
-                    </Link>
-                  ))
-                )}
-              </div>
-              {trengerOppfolging > oppfolging.length && (
-                <Link
-                  href={`/admin/elever?status=warn`}
-                  className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border px-3 py-2 text-[12px] font-medium text-foreground hover:bg-secondary"
-                >
-                  Se alle {trengerOppfolging}
-                  <ArrowUpRight size={13} strokeWidth={1.5} />
-                </Link>
-              )}
-            </section>
-
-            <section className="rounded-lg border border-border bg-card p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-display text-[12px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-                  Tier-fordeling
-                </h3>
-                <span className="font-mono text-[10px] text-muted-foreground">
-                  {total} totalt
-                </span>
-              </div>
-              <div className="mt-3 flex h-2 overflow-hidden rounded-full bg-border">
-                <span className="bg-primary" style={{ width: `${proPct}%` }} />
-                <span className="bg-muted-foreground" style={{ width: `${gratisPct}%` }} />
-              </div>
-              <div className="mt-3 flex flex-col gap-1.5 text-[12px]">
-                <LegendRow color="var(--color-primary)" name="Pro" count={String(proCount)} pct={`${proPct} %`} />
-                <LegendRow
-                  color="var(--color-muted-foreground)"
-                  name="Gratis"
-                  count={String(gratisCount)}
-                  pct={`${gratisPct} %`}
-                />
-              </div>
-            </section>
-          </aside>
+          <table className="w-full text-[13px]">
+            <thead className="border-b border-border bg-secondary/30 text-left">
+              <tr>
+                <Th className="w-10"></Th>
+                <Th>Spiller</Th>
+                <Th>Kat</Th>
+                <Th>Tier</Th>
+                <Th className="text-right">HCP</Th>
+                <Th>Status</Th>
+                <Th>Siste økt</Th>
+                <Th></Th>
+              </tr>
+            </thead>
+            <tbody>
+              {synlige.map((p) => (
+                <PlayerTableRow key={p.id} player={p} />
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
@@ -403,80 +279,124 @@ export default async function ElverListe({
 
 // ----------------- Komponenter -----------------
 
-function NySpillerButton({ variant = "header" }: { variant?: "header" | "cta" }) {
-  const cls =
-    variant === "cta"
-      ? "inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-      : "inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90";
-  // MVP: knappen er en placeholder for et fremtidig "Ny spiller"-skjema/modal.
-  // Server action `leggTilSpiller` i actions.ts er klar for når modalen kobles på.
-  return (
-    <button type="button" className={cls}>
-      <Plus size={variant === "cta" ? 16 : 14} strokeWidth={1.5} />
-      Ny spiller
-    </button>
-  );
-}
-
-function StatusChip({
-  name,
-  current,
-  count,
-  label,
-  preserveQ,
-  preserveSort,
+function PlayerTableRow({
+  player,
 }: {
-  name: "alle" | "ok" | "warn" | "dan" | "ferie";
-  current?: string;
-  count: number;
-  label: string;
-  preserveQ?: string;
-  preserveSort?: string;
+  player: PlayerRow & {
+    _statusInfo: { status: Status; label: string };
+    _category: Category;
+  };
 }) {
-  const active = (current ?? "alle") === name;
-  const params = new URLSearchParams();
-  if (name !== "alle") params.set("status", name);
-  if (preserveQ) params.set("q", preserveQ);
-  if (preserveSort) params.set("sort", preserveSort);
-  const href = `/admin/elever${params.toString() ? `?${params.toString()}` : ""}`;
+  const p = player;
+  const statusStyle: Record<Status, { bg: string; dot: string }> = {
+    ok: {
+      bg: "bg-[rgba(0,88,64,0.12)] text-primary",
+      dot: "bg-primary",
+    },
+    warn: {
+      bg: "bg-[rgba(166,101,30,0.16)] text-[#7a4910]",
+      dot: "bg-[#A6651E]",
+    },
+    dan: {
+      bg: "bg-[rgba(239,68,68,0.14)] text-[#b73838]",
+      dot: "bg-[#EF4444]",
+    },
+    ferie: {
+      bg: "bg-secondary text-muted-foreground",
+      dot: "bg-muted-foreground",
+    },
+  };
+
+  const hcpDisplay =
+    p.hcp !== null ? (p.hcp <= 0 ? `+${Math.abs(p.hcp).toFixed(1).replace(".", ",")}` : p.hcp.toFixed(1).replace(".", ",")) : "—";
+  const sistInn = formatSidenDato(p.lastLoginAt);
+  const erOver = p._statusInfo.status === "dan";
+
   return (
-    <Link
-      href={href}
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium ${
-        active
-          ? "border-foreground bg-foreground text-background"
-          : "border-border bg-card text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      {label}
-      <span className="font-mono text-[10px] font-semibold tabular-nums opacity-70">
-        {count}
-      </span>
-    </Link>
+    <tr className="border-b border-border/60 last:border-0 hover:bg-secondary/30">
+      <td className="px-4 py-3">
+        <span className="inline-block h-3.5 w-3.5 rounded-sm border border-border bg-card" />
+      </td>
+      <td className="px-4 py-3">
+        <Link
+          href={`/admin/elever/${p.id}`}
+          className="flex items-center gap-2.5 hover:text-primary"
+        >
+          <div
+            className="grid h-8 w-8 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
+            style={{ background: avatarBg(p.name) }}
+          >
+            {initials(p.name)}
+          </div>
+          <div className="leading-tight">
+            <div className="font-medium text-foreground">{p.name}</div>
+            <div className="font-mono text-[10px] text-muted-foreground">
+              {p.email}
+            </div>
+          </div>
+        </Link>
+      </td>
+      <td className="px-4 py-3">
+        <span
+          className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${CAT_STYLE[p._category]}`}
+        >
+          {p._category}
+        </span>
+      </td>
+      <td className="px-4 py-3">
+        <span
+          className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${TIER_STYLE[p.tier]}`}
+        >
+          {TIER_LABEL[p.tier]}
+        </span>
+      </td>
+      <td className="px-4 py-3 text-right font-mono text-[13px] font-semibold tabular-nums">
+        {hcpDisplay}
+      </td>
+      <td className="px-4 py-3">
+        <span
+          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] ${statusStyle[p._statusInfo.status].bg}`}
+        >
+          <span
+            className={`inline-block h-1.5 w-1.5 rounded-full ${statusStyle[p._statusInfo.status].dot}`}
+          />
+          {p._statusInfo.label}
+        </span>
+      </td>
+      <td className="px-4 py-3">
+        <span
+          className={`font-mono text-[12px] ${erOver ? "font-medium text-[#b73838]" : "text-muted-foreground"}`}
+        >
+          {sistInn}
+        </span>
+      </td>
+      <td className="px-4 py-3 text-right text-muted-foreground">⋯</td>
+    </tr>
   );
 }
 
-function KpiFeature({
+function KpiAccent({
   label,
   value,
-  delta,
+  sub,
 }: {
   label: string;
   value: string;
-  delta: string;
+  sub?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-[#1A1916] to-[#2a2823] p-4 text-white">
-      <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-white/55">
+    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-[#0F2A22] to-[#163027] p-4 text-white">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[rgba(209,248,67,0.70)]">
         {label}
       </div>
-      <div className="font-display text-[32px] font-medium leading-none tracking-tight">
+      <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-white">
         {value}
       </div>
-      <div className="inline-flex items-center gap-1 font-mono text-[10px] tracking-[0.02em] text-[#D1F843]">
-        <ArrowUpRight size={11} strokeWidth={1.5} />
-        {delta}
-      </div>
+      {sub && (
+        <div className="font-mono text-[11px] text-[rgba(245,244,238,0.7)]">
+          {sub}
+        </div>
+      )}
     </div>
   );
 }
@@ -484,200 +404,65 @@ function KpiFeature({
 function Kpi({
   label,
   value,
-  suffix,
-  delta,
-  deltaTone,
-  deltaDown,
-  valueTone,
+  unit,
+  sub,
+  tone,
 }: {
   label: string;
   value: string;
-  suffix?: string;
-  delta: string;
-  deltaTone?: "good" | "bad";
-  deltaDown?: boolean;
-  valueTone?: "warning";
+  unit?: string;
+  sub?: string;
+  tone?: "warn" | "bad";
 }) {
   return (
     <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-      <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
       <div
-        className={`font-display text-[32px] font-medium leading-none tracking-tight ${
-          valueTone === "warning" ? "text-[#B8852A]" : "text-foreground"
+        className={`font-mono text-[28px] font-semibold leading-none tabular-nums ${
+          tone === "warn"
+            ? "text-[#a16808]"
+            : tone === "bad"
+              ? "text-[#b73838]"
+              : "text-foreground"
         }`}
       >
         {value}
-        {suffix && (
-          <span className="ml-1.5 font-sans text-[14px] font-normal text-muted-foreground">
-            {suffix}
+        {unit && (
+          <span className="ml-1 text-[13px] font-medium text-muted-foreground">
+            {unit}
           </span>
         )}
       </div>
-      <div
-        className={`inline-flex items-center gap-1 font-mono text-[10px] tracking-[0.02em] ${
-          deltaTone === "good"
-            ? "text-[#1A7D56]"
-            : deltaTone === "bad"
-              ? "text-[#A32D2D]"
-              : "text-muted-foreground"
-        }`}
-      >
-        {deltaTone === "good" && deltaDown ? (
-          <ArrowDownRight size={11} strokeWidth={1.5} />
-        ) : deltaTone === "bad" ? (
-          <ArrowUpRight size={11} strokeWidth={1.5} />
-        ) : null}
-        {delta}
-      </div>
+      {sub && (
+        <div className="font-mono text-[11px] text-muted-foreground">{sub}</div>
+      )}
     </div>
   );
 }
 
-function PlayerRow({
-  player,
-}: {
-  player: PlayerWithCount & { _statusInfo: { status: Status; label: string } };
-}) {
-  const p = player;
-  const tierStyle: Record<"PRO" | "GRATIS" | "ELITE", string> = {
-    PRO: "bg-primary/10 text-primary",
-    GRATIS: "bg-secondary text-muted-foreground",
-    ELITE: "bg-accent/30 text-accent-foreground",
-  };
-  const pillStyle: Record<Status, string> = {
-    ok: "bg-[rgba(45,107,76,0.12)] text-[#1A7D56]",
-    warn: "bg-[rgba(184,133,42,0.12)] text-[#7d5814]",
-    dan: "bg-[rgba(176,68,68,0.10)] text-[#A32D2D]",
-    ferie: "bg-secondary text-muted-foreground",
-  };
-  const dotColor: Record<Status, string> = {
-    ok: "bg-[#1A7D56]",
-    warn: "bg-[#B8852A]",
-    dan: "bg-[#A32D2D]",
-    ferie: "bg-muted-foreground",
-  };
-  const pyrColors = ["#005840", "#1A7D56", "#D1F843", "#B8852A", "#5E5C57"];
-
-  // Pyramide-fokus: deriveres fra antall runder/tester/planer som proxy.
-  // Liten visualisering med 5 bars (FYS/TEK/SLAG/SPILL/TURN).
-  const pyr = derivePyr(p);
-
-  // Klubb og gruppe-meta
-  const gruppe = p.groupMemberships[0]?.group.name;
-  const meta = [
-    p.homeClub ?? null,
-    gruppe ?? null,
-    `${p._count.rounds + p._count.testResults} aktiviteter`,
-  ]
-    .filter(Boolean)
-    .join(" · ");
-
-  // HCP-delta — vi har ikke historikk i denne foundation-fasen, så vis "—"
-  const hcpDisplay = p.hcp != null ? p.hcp.toFixed(1).replace(".", ",") : "—";
-
-  // Sist innlogget — relativ formattering
-  const sistInn = formatSidenDato(p.lastLoginAt);
-
-  const tierLabel = p.tier === "PRO" ? "Pro" : p.tier === "ELITE" ? "Elite" : "Gratis";
-  const tierDot =
-    p.tier === "PRO"
-      ? "bg-primary"
-      : p.tier === "ELITE"
-        ? "bg-accent"
-        : "bg-muted-foreground";
-
+function FilterChip({ label }: { label: string }) {
   return (
-    <Link
-      href={`/admin/elever/${p.id}`}
-      className="grid cursor-pointer grid-cols-[32px_1.6fr_90px_70px_120px_110px_110px_80px] items-center gap-3 border-b border-border px-4 py-3 text-[12px] last:border-b-0 hover:bg-secondary/40"
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] text-muted-foreground">
+      {label}
+    </span>
+  );
+}
+
+function Th({
+  children,
+  className = "",
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <th
+      className={`px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground ${className}`}
     >
-      <span className="inline-block h-3.5 w-3.5 rounded-sm border border-border bg-card" />
-      <div className="flex items-center gap-2.5">
-        <div
-          className="grid h-8 w-8 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
-          style={{ background: avatarBg(p.name) }}
-        >
-          {initials(p.name)}
-        </div>
-        <div className="leading-tight">
-          <div className="font-medium text-foreground">{p.name}</div>
-          <div className="font-mono text-[10px] tracking-[0.02em] text-muted-foreground">
-            {meta || p.email}
-          </div>
-        </div>
-      </div>
-      <div className="text-right">
-        <div className="font-mono text-[13px] font-semibold tabular-nums">{hcpDisplay}</div>
-        <div className="font-mono text-[10px] font-medium text-muted-foreground">—</div>
-      </div>
-      <div>
-        <span
-          className={`inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.04em] ${tierStyle[p.tier]}`}
-        >
-          <span className={`inline-block h-1.5 w-1.5 rounded-full ${tierDot}`} />
-          {tierLabel}
-        </span>
-      </div>
-      <div className="flex items-end gap-1">
-        {pyr.map((h, i) => (
-          <span
-            key={i}
-            className="block w-2.5 rounded-[2px]"
-            style={{ background: pyrColors[i], height: `${h}px` }}
-          />
-        ))}
-      </div>
-      <div className="font-mono text-[11px] tabular-nums text-muted-foreground">
-        {sistInn}
-      </div>
-      <div>
-        <span
-          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${pillStyle[p._statusInfo.status]}`}
-        >
-          <span className={`inline-block h-1.5 w-1.5 rounded-full ${dotColor[p._statusInfo.status]}`} />
-          {p._statusInfo.label}
-        </span>
-      </div>
-      <div className="flex justify-end gap-1">
-        <span
-          className="grid h-7 w-7 place-items-center rounded-md border border-border bg-card text-muted-foreground"
-          aria-label="Send melding"
-        >
-          <MessageCircle size={13} strokeWidth={1.5} />
-        </span>
-        <span
-          className="grid h-7 w-7 place-items-center rounded-md border border-border bg-card text-muted-foreground"
-          aria-label="Mer"
-        >
-          <MoreHorizontal size={13} strokeWidth={1.5} />
-        </span>
-      </div>
-    </Link>
-  );
-}
-
-function LegendRow({
-  color,
-  name,
-  count,
-  pct,
-}: {
-  color: string;
-  name: string;
-  count: string;
-  pct: string;
-}) {
-  return (
-    <div className="flex items-center gap-2">
-      <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: color }} />
-      <span className="flex-1 text-foreground">{name}</span>
-      <span className="font-mono text-[11px] tabular-nums text-foreground">{count}</span>
-      <span className="w-12 text-right font-mono text-[11px] tabular-nums text-muted-foreground">
-        {pct}
-      </span>
-    </div>
+      {children}
+    </th>
   );
 }
 
@@ -691,16 +476,13 @@ function initials(name: string): string {
 }
 
 function avatarBg(name: string): string {
-  // Deterministisk farge basert på navn-hash
   const palette = [
-    "#005840",
-    "#1A7D56",
-    "#B8852A",
-    "#A32D2D",
-    "#5E5C57",
-    "#3a5d8a",
-    "#7d4f9a",
-    "#2c4a6b",
+    "linear-gradient(135deg,#005840,#1A7D56)",
+    "linear-gradient(135deg,#A6651E,#7A4910)",
+    "linear-gradient(135deg,#7A998C,#56796D)",
+    "linear-gradient(135deg,#A32D2D,#7C2020)",
+    "linear-gradient(135deg,#1A7D56,#005840)",
+    "linear-gradient(135deg,#3b5994,#5b7cb8)",
   ];
   let h = 0;
   for (let i = 0; i < name.length; i++) {
@@ -709,29 +491,21 @@ function avatarBg(name: string): string {
   return palette[h % palette.length];
 }
 
-function derivePyr(p: PlayerWithCount): number[] {
-  // Lite visuelt — bruker antall planer/runder/tester som proxy for "aktivitet"
-  // og fyller 5 bars med stigende verdier basert på data.
-  const a = Math.min(20, 6 + p._count.trainingPlans * 4);
-  const b = Math.min(20, 4 + p._count.rounds);
-  const c = Math.min(20, 2 + p._count.testResults * 3);
-  const d = Math.max(2, Math.min(20, a - 4));
-  const e = Math.max(2, Math.min(20, b - 4));
-  return [a, b, c, d, e];
-}
-
 function formatSidenDato(d: Date | null): string {
   if (!d) return "aldri";
   const ms = Date.now() - d.getTime();
   const min = Math.floor(ms / 60000);
   if (min < 60) return `${min} min siden`;
   const t = Math.floor(min / 60);
-  if (t < 24) return `${t} t siden`;
+  if (t < 24) {
+    if (t < 6) return "i dag";
+    return `for ${t} t siden`;
+  }
   const dgr = Math.floor(t / 24);
   if (dgr === 1) return "i går";
-  if (dgr < 7) return `${dgr} dgr`;
+  if (dgr < 7) return `for ${dgr} d siden`;
   const uker = Math.floor(dgr / 7);
-  if (uker < 4) return `${uker} uker`;
+  if (uker < 4) return `for ${uker} uker siden`;
   const mnd = Math.floor(dgr / 30);
-  return `${mnd} mnd`;
+  return `for ${mnd} mnd siden`;
 }

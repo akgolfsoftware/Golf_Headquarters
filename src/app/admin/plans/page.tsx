@@ -1,14 +1,14 @@
 /**
- * CoachHQ — Treningsplaner (oversikt)
- * Produksjons-design migrert fra /plan-templates-demo (kort-grid + søk/filter).
+ * CoachHQ — Treningsplaner
+ * Design migrert fra wireframe/design-files-v2/final/01-treningsplaner.html.
  *
- * Datakilde: Prisma. Henter alle TrainingPlan for COACH/ADMIN, med tilhørende
- * spiller og sesjons-status. Filterchips fungerer på server via searchParams.
+ * Kanban-view med 3 kolonner: Aktiv / Pause / Arkivert. Plan-kort inneholder
+ * spiller-avatar, plan-tittel, periode, progress-bar og AI-badge. KPI-strip
+ * øverst. Filter med søk + chips.
  */
 
 import Link from "next/link";
 import {
-  ArrowRight,
   ClipboardList,
   Plus,
   Search,
@@ -23,13 +23,16 @@ type Search = { q?: string; status?: string };
 
 type PlanStatus = "aktiv" | "pause" | "arkiv";
 
-// Pyramide-mini-stripes — fast 5-felt fordeling som mirror av plan-templates-demo
-const PYR_COLOR: Record<"fys" | "tek" | "slag" | "spill" | "turn", string> = {
-  fys: "#005840",
-  tek: "#1A7D56",
-  slag: "#D1F843",
-  spill: "#B8852A",
-  turn: "#5E5C57",
+const STATUS_LABEL: Record<PlanStatus, string> = {
+  aktiv: "Aktiv",
+  pause: "Pause",
+  arkiv: "Arkivert",
+};
+
+const STATUS_DOT: Record<PlanStatus, string> = {
+  aktiv: "bg-primary",
+  pause: "bg-[#A6651E]",
+  arkiv: "bg-muted-foreground",
 };
 
 export default async function AdminPlansList({
@@ -72,10 +75,7 @@ export default async function AdminPlansList({
 
   // Filtrering
   const q = (params.q ?? "").trim().toLowerCase();
-  const statusFilter = (params.status ?? "alle") as "alle" | PlanStatus;
-
   const synlige = plans.filter((p) => {
-    if (statusFilter !== "alle" && p._status !== statusFilter) return false;
     if (q) {
       const matchNavn = p.name.toLowerCase().includes(q);
       const matchSpiller = p.user.name.toLowerCase().includes(q);
@@ -84,111 +84,158 @@ export default async function AdminPlansList({
     return true;
   });
 
+  const aktivPlans = synlige.filter((p) => p._status === "aktiv");
+  const pausePlans = synlige.filter((p) => p._status === "pause");
+
+  // KPI-beregninger
+  const pct = (p: PlanWithStatus) => {
+    const t = p.sessions.length;
+    if (t === 0) return 0;
+    const f = p.sessions.filter((s) => s.status === "COMPLETED").length;
+    return Math.round((f / t) * 100);
+  };
+  const snittPct =
+    aktivCount > 0
+      ? Math.round(
+          plans
+            .filter((p) => p._status === "aktiv")
+            .reduce((acc, p) => acc + pct(p), 0) / aktivCount,
+        )
+      : 0;
+  const totalSpillere = await prisma.user.count({ where: { role: "PLAYER" } });
+
+  // Forfaller denne uka
+  const enUkeFram = new Date();
+  enUkeFram.setDate(enUkeFram.getDate() + 7);
+  const forfaller = plans.filter(
+    (p) =>
+      p._status === "aktiv" &&
+      p.endDate &&
+      p.endDate.getTime() <= enUkeFram.getTime(),
+  ).length;
+
+  const totaltErTomt = totalCount === 0;
+
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · Treningsplaner"
-        titleLead="Mine"
-        titleItalic="planer"
-        sub={`${totalCount} planer totalt · ${aktivCount} aktive · ${pauseCount} på pause`}
+        eyebrow="CoachHQ · /admin/plans"
+        titleLead="Treningsplaner —"
+        titleItalic={`${aktivCount} aktive`}
+        sub={`${totalSpillere} spillere · ${forfaller} forfaller denne uka · ${arkivCount} arkivert`}
         actions={
           <>
             <Link
               href="/admin/plans/templates"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
             >
-              <Sparkles size={14} strokeWidth={1.5} />
+              <Sparkles size={14} strokeWidth={1.75} />
               Maler
             </Link>
             <Link
               href="/admin/plans/new"
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
-              <Plus size={14} strokeWidth={1.5} />
+              <Plus size={14} strokeWidth={1.75} />
               Ny plan
             </Link>
           </>
         }
       />
 
-      {/* Filter bar */}
+      {/* KPI-strip */}
+      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+        <KpiAccent
+          label="Aktive planer"
+          value={String(aktivCount)}
+          unit={`/ ${totalSpillere}`}
+          sub={
+            totalSpillere > 0
+              ? `${Math.round((aktivCount / totalSpillere) * 100)} % av spillere har plan`
+              : "Ingen spillere"
+          }
+        />
+        <Kpi
+          label="Snitt progress"
+          value={String(snittPct)}
+          unit="%"
+          sub={`Over ${aktivCount} aktive planer`}
+        />
+        <Kpi
+          label="Forfaller denne uka"
+          value={String(forfaller)}
+          sub={
+            forfaller === 0 ? "Ingen krever handling" : "Krever oppfølging"
+          }
+          tone={forfaller > 0 ? "warn" : undefined}
+        />
+        <Kpi
+          label="Pause + arkiv"
+          value={`${pauseCount + arkivCount}`}
+          unit={`/ ${totalCount}`}
+          sub={`${pauseCount} på pause · ${arkivCount} arkivert`}
+        />
+      </div>
+
+      {/* Filter */}
       <form className="flex flex-wrap items-center gap-2">
-        <label className="relative max-w-[360px] flex-1">
-          <Search
-            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            strokeWidth={1.5}
-          />
+        <label className="flex flex-1 min-w-[280px] items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
+          <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
             name="q"
             defaultValue={params.q ?? ""}
-            placeholder="Søk på plan-navn eller spiller …"
-            className="w-full rounded-md border border-border bg-card px-4 py-2 pl-10 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            placeholder="Søk plan eller spiller"
+            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </label>
-        <span className="px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-          Status
-        </span>
-        <StatusChip
-          name="alle"
-          current={statusFilter}
-          count={totalCount}
-          label="Alle"
-          preserveQ={params.q}
-        />
-        <StatusChip
-          name="aktiv"
-          current={statusFilter}
-          count={aktivCount}
-          label="Aktive"
-          preserveQ={params.q}
-        />
-        <StatusChip
-          name="pause"
-          current={statusFilter}
-          count={pauseCount}
-          label="Pause"
-          preserveQ={params.q}
-        />
-        <StatusChip
-          name="arkiv"
-          current={statusFilter}
-          count={arkivCount}
-          label="Arkivert"
-          preserveQ={params.q}
-        />
+        <FilterChip label="Coach" />
+        <FilterChip label="Periode" />
+        <FilterChip label="Type" />
+        <FilterChip label="Sort: Sist endret" />
       </form>
 
       {/* Body */}
-      {synlige.length === 0 ? (
+      {totaltErTomt ? (
         <EmptyState
           icon={ClipboardList}
-          titleItalic="Ingen planer"
-          titleTrail={
-            totalCount === 0 ? "registrert ennå" : "som matcher filteret"
-          }
-          sub={
-            totalCount === 0
-              ? "Bygg den første treningsplanen for en spiller — start fra en mal eller fra bunn."
-              : "Justér søk eller filterstatus for å se flere planer."
-          }
+          titleItalic="Lag din første"
+          titleTrail="plan"
+          sub="Treningsplaner samler øvelser, mål og periode i én tråd per spiller. Start fra mal eller la AI bygge én utfra spiller-data."
           cta={
-            totalCount === 0 ? (
+            <div className="flex gap-2">
+              <Link
+                href="/admin/plans/templates"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground hover:bg-secondary"
+              >
+                <Sparkles size={16} strokeWidth={1.75} />
+                Bruk mal
+              </Link>
               <Link
                 href="/admin/plans/new"
                 className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
               >
-                <Plus size={16} strokeWidth={1.5} />
-                Ny plan
+                <Plus size={16} strokeWidth={1.75} />
+                Manuell plan
               </Link>
-            ) : undefined
+            </div>
           }
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {synlige.map((p) => (
-            <PlanCard key={p.id} plan={p} />
-          ))}
+        <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-[1.4fr_1fr_0.5fr]">
+          <Column status="aktiv" count={aktivPlans.length} plans={aktivPlans} />
+          <Column
+            status="pause"
+            count={pausePlans.length}
+            plans={pausePlans}
+            tone="pause"
+          />
+          <Column
+            status="arkiv"
+            count={arkivCount}
+            plans={[]}
+            collapsed
+          />
         </div>
       )}
     </div>
@@ -197,182 +244,195 @@ export default async function AdminPlansList({
 
 // ----------------- Komponenter -----------------
 
-type PlanCardProps = {
-  plan: {
-    id: string;
-    name: string;
-    startDate: Date;
-    endDate: Date | null;
-    user: { id: string; name: string };
-    sessions: { id: string; status: string }[];
-    _status: PlanStatus;
-  };
+type PlanCardData = {
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date | null;
+  user: { id: string; name: string };
+  sessions: { id: string; status: string }[];
+  _status: PlanStatus;
 };
 
-function PlanCard({ plan }: PlanCardProps) {
-  const fullført = plan.sessions.filter((s) => s.status === "COMPLETED").length;
-  const totalt = plan.sessions.length;
-  const pct = totalt > 0 ? Math.round((fullført / totalt) * 100) : 0;
+function Column({
+  status,
+  count,
+  plans,
+  tone,
+  collapsed,
+}: {
+  status: PlanStatus;
+  count: number;
+  plans: PlanCardData[];
+  tone?: "pause";
+  collapsed?: boolean;
+}) {
+  return (
+    <section
+      className={`flex flex-col gap-2.5 rounded-2xl border border-border p-3.5 ${
+        tone === "pause" ? "bg-[#FAF6EF]" : "bg-background"
+      } ${collapsed ? "min-h-[64px]" : "min-h-[520px]"}`}
+    >
+      <header className="flex items-center justify-between border-b border-border pb-2">
+        <h3 className="inline-flex items-center gap-2 font-display text-sm font-semibold text-foreground">
+          <span
+            className={`inline-block h-2 w-2 rounded-full ${STATUS_DOT[status]}`}
+          />
+          {STATUS_LABEL[status]}
+        </h3>
+        <span className="rounded-sm bg-card px-2 py-0.5 font-mono text-[11px] font-semibold text-muted-foreground">
+          {count}
+        </span>
+      </header>
+      {!collapsed && plans.length > 0 && (
+        <div className="flex flex-col gap-2.5">
+          {plans.map((p) => (
+            <PlanCard key={p.id} plan={p} />
+          ))}
+        </div>
+      )}
+      {!collapsed && plans.length === 0 && (
+        <p className="py-6 text-center font-mono text-[11px] text-muted-foreground">
+          Ingen planer her
+        </p>
+      )}
+    </section>
+  );
+}
 
-  // Pyramide-stripes — fast 5-felt visuell stripe (illustrativ for v1)
-  const stripes: { key: keyof typeof PYR_COLOR; value: number }[] = [
-    { key: "fys", value: 20 },
-    { key: "tek", value: 30 },
-    { key: "slag", value: 25 },
-    { key: "spill", value: 20 },
-    { key: "turn", value: 5 },
-  ];
+function PlanCard({ plan }: { plan: PlanCardData }) {
+  const total = plan.sessions.length;
+  const fullfort = plan.sessions.filter((s) => s.status === "COMPLETED").length;
+  const pct = total > 0 ? Math.round((fullfort / total) * 100) : 0;
+  const done = pct >= 100;
 
-  const periode = `${formatDato(plan.startDate)}${plan.endDate ? ` – ${formatDato(plan.endDate)}` : " – løpende"}`;
+  // Periode-pill med eventuell warn/over
+  const periodeText = formatPeriode(plan.startDate, plan.endDate);
+  const periodeTone = perioderTone(plan.endDate);
 
   return (
     <Link
       href={`/admin/plans/${plan.id}`}
-      className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-all hover:-translate-y-0.5 hover:shadow-md"
+      className="group flex cursor-pointer flex-col gap-2 rounded-lg border border-border bg-card p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
     >
-      {/* Topp: spiller + status */}
-      <div className="flex items-center justify-between border-b border-border bg-secondary/30 px-4 py-3">
-        <div className="flex items-center gap-2.5">
-          <div
-            className="grid h-9 w-9 place-items-center rounded-full font-mono text-[11px] font-semibold text-white"
-            style={{ background: avatarBg(plan.user.name) }}
-          >
-            {initials(plan.user.name)}
-          </div>
-          <div className="leading-tight">
-            <div className="text-[13px] font-medium text-foreground">
-              {plan.user.name}
-            </div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-              Spiller
-            </div>
-          </div>
-        </div>
-        <StatusPill status={plan._status} />
-      </div>
-
-      {/* Plan-info */}
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        <div>
-          <h3 className="font-display text-[18px] font-semibold leading-tight tracking-tight text-foreground group-hover:text-primary">
-            {plan.name}
-          </h3>
-          <div className="mt-1 font-mono text-[11px] tabular-nums text-muted-foreground">
-            {periode}
-          </div>
-        </div>
-
-        {/* Progress */}
-        <div>
-          <div className="mb-1.5 flex items-end justify-between">
-            <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-              Fremdrift
-            </span>
-            <span className="font-mono text-[11px] tabular-nums text-foreground">
-              <b className="font-semibold">{fullført}</b>
-              <span className="text-muted-foreground"> / {totalt}</span>
-              <span className="ml-2 text-muted-foreground">{pct} %</span>
-            </span>
-          </div>
-          <div className="h-2 overflow-hidden rounded-sm bg-secondary">
-            <div
-              className="h-full bg-primary transition-[width]"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Pyramide-mini-stripes */}
-        <div>
-          <div className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-            Pyramide-fordeling
-          </div>
-          <div className="flex h-2 gap-0.5 overflow-hidden rounded-sm bg-secondary">
-            {stripes.map((s) => (
-              <div
-                key={s.key}
-                style={{ width: `${s.value}%`, background: PYR_COLOR[s.key] }}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="flex items-center justify-between border-t border-border bg-background px-4 py-2.5 text-[11px] font-medium text-muted-foreground">
-        <span>
-          <b className="font-mono font-semibold tabular-nums text-foreground">
-            {totalt}
-          </b>{" "}
-          økter
+      <header className="flex items-center gap-2">
+        <span
+          className="grid h-6 w-6 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
+          style={{ background: avatarBg(plan.user.name) }}
+        >
+          {initials(plan.user.name)}
         </span>
-        <span className="inline-flex items-center gap-1 text-foreground transition-transform group-hover:translate-x-0.5">
-          Åpne
-          <ArrowRight size={12} strokeWidth={1.5} />
+        <span className="flex-1 text-[13px] font-medium text-foreground">
+          {plan.user.name}
         </span>
-      </div>
-    </Link>
-  );
-}
-
-function StatusPill({ status }: { status: PlanStatus }) {
-  const style: Record<PlanStatus, string> = {
-    aktiv: "bg-[rgba(45,107,76,0.12)] text-[#1A7D56]",
-    pause: "bg-[rgba(184,133,42,0.12)] text-[#7d5814]",
-    arkiv: "bg-secondary text-muted-foreground",
-  };
-  const dot: Record<PlanStatus, string> = {
-    aktiv: "bg-[#1A7D56]",
-    pause: "bg-[#B8852A]",
-    arkiv: "bg-muted-foreground",
-  };
-  const label: Record<PlanStatus, string> = {
-    aktiv: "Aktiv",
-    pause: "Pause",
-    arkiv: "Arkivert",
-  };
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${style[status]}`}
-    >
-      <span className={`inline-block h-1.5 w-1.5 rounded-full ${dot[status]}`} />
-      {label[status]}
-    </span>
-  );
-}
-
-function StatusChip({
-  name,
-  current,
-  count,
-  label,
-  preserveQ,
-}: {
-  name: "alle" | PlanStatus;
-  current: "alle" | PlanStatus;
-  count: number;
-  label: string;
-  preserveQ?: string;
-}) {
-  const active = current === name;
-  const params = new URLSearchParams();
-  if (name !== "alle") params.set("status", name);
-  if (preserveQ) params.set("q", preserveQ);
-  const href = `/admin/plans${params.toString() ? `?${params.toString()}` : ""}`;
-  return (
-    <Link
-      href={href}
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors ${
-        active
-          ? "border-foreground bg-foreground text-background"
-          : "border-border bg-card text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      {label}
-      <span className="font-mono text-[10px] font-semibold tabular-nums opacity-70">
-        {count}
+        <span className="text-muted-foreground" aria-hidden="true">⋯</span>
+      </header>
+      <h4 className="font-display text-[14px] italic leading-tight text-foreground">
+        {plan.name}
+      </h4>
+      <span
+        className={`self-start rounded-sm px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] ${
+          periodeTone === "warn"
+            ? "bg-[rgba(245,158,11,0.15)] text-[#a16808]"
+            : periodeTone === "over"
+              ? "bg-[rgba(239,68,68,0.14)] text-[#b73838]"
+              : "bg-secondary text-muted-foreground"
+        }`}
+      >
+        {periodeText}
       </span>
+      <div className="mt-0.5 h-1 overflow-hidden rounded-sm bg-secondary">
+        <div
+          className={`h-full transition-[width] ${done ? "bg-accent" : "bg-primary"}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <div className="flex items-center justify-between">
+        <span
+          className={`font-mono text-[11px] font-semibold ${done ? "text-primary" : "text-muted-foreground"}`}
+        >
+          {pct} % · {fullfort}/{total} økter
+        </span>
+      </div>
     </Link>
+  );
+}
+
+function KpiAccent({
+  label,
+  value,
+  unit,
+  sub,
+}: {
+  label: string;
+  value: string;
+  unit?: string;
+  sub?: string;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-[#0F2A22] to-[#163027] p-4 text-white">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[rgba(209,248,67,0.70)]">
+        {label}
+      </div>
+      <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-white">
+        {value}
+        {unit && (
+          <span className="ml-1 text-[13px] font-medium text-[rgba(245,244,238,0.5)]">
+            {unit}
+          </span>
+        )}
+      </div>
+      {sub && (
+        <div className="font-mono text-[11px] text-[rgba(245,244,238,0.7)]">
+          {sub}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Kpi({
+  label,
+  value,
+  unit,
+  sub,
+  tone,
+}: {
+  label: string;
+  value: string;
+  unit?: string;
+  sub?: string;
+  tone?: "warn";
+}) {
+  return (
+    <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+        {label}
+      </div>
+      <div
+        className={`font-mono text-[28px] font-semibold leading-none tabular-nums ${
+          tone === "warn" ? "text-[#a16808]" : "text-foreground"
+        }`}
+      >
+        {value}
+        {unit && (
+          <span className="ml-1 text-[13px] font-medium text-muted-foreground">
+            {unit}
+          </span>
+        )}
+      </div>
+      {sub && (
+        <div className="font-mono text-[11px] text-muted-foreground">{sub}</div>
+      )}
+    </div>
+  );
+}
+
+function FilterChip({ label }: { label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] text-muted-foreground">
+      {label}
+    </span>
   );
 }
 
@@ -387,14 +447,12 @@ function initials(name: string): string {
 
 function avatarBg(name: string): string {
   const palette = [
-    "#005840",
-    "#1A7D56",
-    "#B8852A",
-    "#A32D2D",
-    "#5E5C57",
-    "#3a5d8a",
-    "#7d4f9a",
-    "#2c4a6b",
+    "linear-gradient(135deg,#005840,#1A7D56)",
+    "linear-gradient(135deg,#A6651E,#7A4910)",
+    "linear-gradient(135deg,#7A998C,#56796D)",
+    "linear-gradient(135deg,#A32D2D,#7C2020)",
+    "linear-gradient(135deg,#1A7D56,#005840)",
+    "linear-gradient(135deg,#3b5994,#5b7cb8)",
   ];
   let h = 0;
   for (let i = 0; i < name.length; i++) {
@@ -405,8 +463,29 @@ function avatarBg(name: string): string {
 
 function formatDato(d: Date): string {
   return d.toLocaleDateString("nb-NO", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "2-digit",
+    day: "numeric",
+    month: "short",
   });
+}
+
+function formatPeriode(start: Date, end: Date | null): string {
+  if (!end) return `${formatDato(start)} – løpende`;
+  const naa = Date.now();
+  if (end.getTime() < naa) {
+    return `${formatDato(start)} – ${formatDato(end)}`;
+  }
+  const dagerIgjen = Math.ceil((end.getTime() - naa) / (1000 * 60 * 60 * 24));
+  if (dagerIgjen <= 7 && dagerIgjen > 0) {
+    return `${formatDato(start)} – ${formatDato(end)} · ${dagerIgjen} d`;
+  }
+  return `${formatDato(start)} – ${formatDato(end)}`;
+}
+
+function perioderTone(end: Date | null): "warn" | "over" | null {
+  if (!end) return null;
+  const naa = Date.now();
+  if (end.getTime() < naa) return "over";
+  const dagerIgjen = Math.ceil((end.getTime() - naa) / (1000 * 60 * 60 * 24));
+  if (dagerIgjen <= 7) return "warn";
+  return null;
 }
