@@ -21,7 +21,7 @@ const prisma = new PrismaClient({ adapter });
 const LOCATIONS = [
   {
     name: "Gamle Fredrikstad GK",
-    address: "Bossumveien 6, 1605 Fredrikstad",
+    address: "Torsnesveien 16, Fredrikstad",
     facilities: [
       "Performance Studio",
       "Driving Range 1. etg",
@@ -35,6 +35,11 @@ const LOCATIONS = [
     name: "Mulligan Indoor Golf",
     address: "Stabburveien 18, 1617 Fredrikstad",
     facilities: ["Sim 1", "Sim 2", "Sim 3", "Sim 4"],
+  },
+  {
+    name: "WANG Toppidrett Fredrikstad",
+    address: "Fredrikstad", // TODO: bekreft eksakt adresse
+    facilities: ["Idrettshall", "Klasserom"],
   },
 ] as const;
 
@@ -214,6 +219,70 @@ const COURSES = [
   { name: "GFGK 9-hullsbane", par: 35, rating: 35.4, slope: 122 },
 ] as const;
 
+// ---------- Coacher (placeholder authId — settes når bruker logger inn første gang) ----------
+
+const COACHES = [
+  {
+    authId: "pending-anders-akgolf-no",
+    email: "anders@akgolf.no",
+    name: "Anders Kristiansen",
+    role: "ADMIN",
+    tier: "PRO",
+    homeClub: "Gamle Fredrikstad GK",
+    ambition: "Head Coach AK Golf Group",
+  },
+  {
+    authId: "pending-markus-akgolf-no",
+    email: "markus@akgolf.no",
+    name: "Markus Røinås Pedersen",
+    role: "COACH",
+    tier: "PRO",
+    homeClub: "Gamle Fredrikstad GK",
+    ambition: "Sportslig leder junior GFGK",
+  },
+  {
+    authId: "pending-leder-gfgkjunior-no",
+    email: "leder@gfgkjunior.no",
+    name: "Espen Kjølberg",
+    role: "ADMIN",
+    tier: "PRO",
+    homeClub: "Gamle Fredrikstad GK",
+    ambition: "Juniorleder GFGK (organisering)",
+  },
+] as const;
+
+// ---------- Grupper ----------
+// Gruppene representerer treningsklassene. Spillere kobles via GroupMember.
+// coachId settes etter at COACHES er seedet (Anders/Markus eier gruppene).
+
+const GROUPS = [
+  {
+    name: "GFGK Junior Mini U10",
+    level: "A1",
+    coachEmail: "markus@akgolf.no",
+  },
+  {
+    name: "GFGK Junior Basis U13",
+    level: "A2",
+    coachEmail: "markus@akgolf.no",
+  },
+  {
+    name: "GFGK Junior Utvikling U15",
+    level: "A3",
+    coachEmail: "markus@akgolf.no",
+  },
+  {
+    name: "GFGK Junior Elite U19",
+    level: "A4",
+    coachEmail: "anders@akgolf.no",
+  },
+  {
+    name: "WANG Toppidrett Fredrikstad",
+    level: "A5",
+    coachEmail: "anders@akgolf.no",
+  },
+] as const;
+
 // ---------- Seed ----------
 
 async function seedLocations() {
@@ -315,6 +384,56 @@ async function seedCourses() {
   }
 }
 
+async function seedCoaches() {
+  console.log("\n[seed] Coacher (Users med ADMIN/COACH-rolle)");
+  for (const c of COACHES) {
+    await prisma.user.upsert({
+      where: { email: c.email },
+      update: {
+        name: c.name,
+        role: c.role as "ADMIN" | "COACH" | "PLAYER" | "PARENT",
+        tier: c.tier as "GRATIS" | "PRO" | "ELITE",
+        homeClub: c.homeClub,
+        ambition: c.ambition,
+      },
+      create: {
+        authId: c.authId,
+        email: c.email,
+        name: c.name,
+        role: c.role as "ADMIN" | "COACH" | "PLAYER" | "PARENT",
+        tier: c.tier as "GRATIS" | "PRO" | "ELITE",
+        homeClub: c.homeClub,
+        ambition: c.ambition,
+      },
+    });
+    console.log(`  · ${c.email} (${c.role})`);
+  }
+}
+
+async function seedGroups() {
+  console.log("\n[seed] Grupper");
+  for (const g of GROUPS) {
+    const coach = await prisma.user.findUnique({ where: { email: g.coachEmail } });
+    if (!coach) {
+      console.warn(`  ! Coach ikke funnet: ${g.coachEmail} — hopper over ${g.name}`);
+      continue;
+    }
+    const existing = await prisma.group.findFirst({ where: { name: g.name } });
+    if (existing) {
+      await prisma.group.update({
+        where: { id: existing.id },
+        data: { level: g.level, coachId: coach.id },
+      });
+      console.log(`  · ${g.name} (coach: ${coach.name})`);
+    } else {
+      await prisma.group.create({
+        data: { name: g.name, level: g.level, coachId: coach.id },
+      });
+      console.log(`  + ${g.name} (coach: ${coach.name})`);
+    }
+  }
+}
+
 async function main() {
   console.log("AK Golf HQ seed");
   console.log("================");
@@ -323,6 +442,8 @@ async function main() {
   await seedServiceTypes();
   await seedEmailTemplates();
   await seedCourses();
+  await seedCoaches();
+  await seedGroups();
 
   console.log("\n[seed] Ferdig.");
 }
