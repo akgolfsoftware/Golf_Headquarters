@@ -38,10 +38,16 @@ export function PageHeader({
   actions,
 }: Props) {
   return (
-    <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <header
+      role="banner"
+      className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+    >
       <div>
         {eyebrow && (
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <span
+            aria-hidden="true"
+            className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+          >
             {eyebrow}
           </span>
         )}
@@ -59,7 +65,13 @@ export function PageHeader({
         )}
       </div>
       {actions && (
-        <div className="flex items-center gap-2">{actions}</div>
+        <div
+          role="group"
+          aria-label="Sidehandlinger"
+          className="flex items-center gap-2"
+        >
+          {actions}
+        </div>
       )}
     </header>
   );

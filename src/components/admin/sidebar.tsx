@@ -18,13 +18,16 @@ const NAV = [
 export function AdminSidebar() {
   const path = usePathname();
   return (
-    <aside className="flex w-56 shrink-0 flex-col bg-[var(--color-coach-sidebar)] text-white">
+    <aside
+      aria-label="CoachHQ sidemeny"
+      className="flex w-56 shrink-0 flex-col bg-[var(--color-coach-sidebar)] text-white"
+    >
       <div className="px-6 py-8 font-display text-lg font-bold leading-tight tracking-tight">
         AK Golf
         <br />
         <em className="font-normal text-accent md:italic">coach</em>
       </div>
-      <nav className="flex-1 space-y-1 px-3">
+      <nav aria-label="Hovednavigasjon" className="flex-1 space-y-1 px-3">
         {NAV.map((n) => {
           const aktiv =
             path === n.href || (n.href !== "/admin" && path.startsWith(n.href));
@@ -32,7 +35,8 @@ export function AdminSidebar() {
             <Link
               key={n.href}
               href={n.href}
-              className={`block rounded-md px-3 py-2 text-sm transition-colors ${
+              aria-current={aktiv ? "page" : undefined}
+              className={`block rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-coach-sidebar)] ${
                 aktiv
                   ? "bg-white/10 font-semibold text-white"
                   : "text-white/70 hover:bg-white/5 hover:text-white"
@@ -43,7 +47,10 @@ export function AdminSidebar() {
           );
         })}
       </nav>
-      <div className="m-3 rounded-md bg-accent/10 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-accent">
+      <div
+        aria-hidden="true"
+        className="m-3 rounded-md bg-accent/10 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-accent"
+      >
         CoachHQ
       </div>
     </aside>

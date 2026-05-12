@@ -25,8 +25,15 @@ export function EmptyState({
   cta,
 }: Props) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-card/40 px-8 py-16 text-center">
-      <div className="mb-5 grid h-14 w-14 place-items-center rounded-full bg-secondary text-muted-foreground">
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-card/40 px-8 py-16 text-center"
+    >
+      <div
+        aria-hidden="true"
+        className="mb-5 grid h-14 w-14 place-items-center rounded-full bg-secondary text-muted-foreground"
+      >
         <Icon size={24} strokeWidth={1.5} />
       </div>
       <h3 className="font-display text-lg font-semibold leading-tight tracking-tight">

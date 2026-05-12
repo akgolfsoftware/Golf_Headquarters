@@ -50,8 +50,15 @@ export function LoginForm() {
     // Hvis ingen feil: Supabase redirecter til Google. Ingen videre handling her.
   }
 
+  const errorId = "login-form-error";
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      aria-describedby={error ? errorId : undefined}
+      className="space-y-4"
+    >
       <div>
         <label
           htmlFor="email"
@@ -61,12 +68,17 @@ export function LoginForm() {
         </label>
         <input
           id="email"
+          name="email"
           type="email"
           autoComplete="email"
+          inputMode="email"
           required
+          aria-required="true"
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="navn@eksempel.no"
         />
       </div>
@@ -80,50 +92,63 @@ export function LoginForm() {
         </label>
         <input
           id="password"
+          name="password"
           type="password"
           autoComplete="current-password"
           required
+          aria-required="true"
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 focus-visible:ring-2 focus-visible:ring-ring"
         />
       </div>
 
       <div className="flex items-center justify-between pt-2 text-xs">
-        <label className="inline-flex items-center gap-2 text-muted-foreground">
-          <input type="checkbox" className="accent-primary" /> Husk meg
+        <label htmlFor="remember-me" className="inline-flex items-center gap-2 text-muted-foreground">
+          <input
+            id="remember-me"
+            name="remember-me"
+            type="checkbox"
+            className="accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          />{" "}
+          Husk meg
         </label>
         <Link
           href="/auth/forgot-password"
-          className="font-medium text-primary hover:underline"
+          className="font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:rounded-sm"
         >
           Glemt passord?
         </Link>
       </div>
 
-      {error && (
-        <div
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
-          {error}
-        </div>
-      )}
+      <div role="alert" aria-live="polite" aria-atomic="true" id={errorId}>
+        {error && (
+          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+      </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+        aria-busy={loading || undefined}
+        className="w-full rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         {loading ? "Logger inn…" : "Logg inn"}
       </button>
 
       <div className="relative pt-2">
-        <div className="absolute inset-0 flex items-center">
+        <div aria-hidden="true" className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center">
-          <span className="bg-card px-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <span
+            aria-hidden="true"
+            className="bg-card px-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+          >
             eller
           </span>
         </div>
@@ -133,7 +158,9 @@ export function LoginForm() {
         type="button"
         onClick={loggInnGoogle}
         disabled={loading}
-        className="flex w-full items-center justify-center gap-3 rounded-md border border-input bg-card px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-60"
+        aria-busy={loading || undefined}
+        aria-label="Logg inn med Google"
+        className="flex w-full items-center justify-center gap-3 rounded-md border border-input bg-card px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <GoogleLogo />
         Logg inn med Google
@@ -141,7 +168,10 @@ export function LoginForm() {
 
       <p className="pt-4 text-center text-sm text-muted-foreground">
         Har du ikke konto?{" "}
-        <Link href="/auth/signup" className="font-medium text-primary hover:underline">
+        <Link
+          href="/auth/signup"
+          className="font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:rounded-sm"
+        >
           Registrer deg
         </Link>
       </p>
@@ -151,7 +181,7 @@ export function LoginForm() {
 
 function GoogleLogo() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
       <path
         d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"
         fill="#4285F4"
