@@ -1,3 +1,13 @@
+/**
+ * PRODUKSJON — PlayerHQ Hjem (/portal)
+ * Endelig design migrert fra wireframe/design-files-v2 (jf. /360-demo).
+ *
+ * Hovedhero: DashHero (italic Instrument Serif, profilbilde, hilsen).
+ * Innhold: 8 dashboard-komponenter i 8pt-grid med semantiske tokens.
+ * Auth: requirePortalUser() — åpent for PLAYER/PARENT, redirect ellers.
+ */
+
+import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -12,25 +22,20 @@ import { StreakBars } from "@/components/portal/streak-bars";
 import { SgFordelingCard } from "@/components/portal/sg-fordeling-card";
 import { SistRegistrertCard } from "@/components/portal/sist-registrert-card";
 import { PlanActionsCard } from "@/components/portal/plan-actions-card";
+import {
+  SkeletonKpi,
+  SkeletonCard,
+} from "@/components/shared/loading-skeleton";
+
+type PortalUser = Awaited<ReturnType<typeof requirePortalUser>>;
 
 export default async function PortalHjem() {
   const user = await requirePortalUser();
 
-  // Rolle-basert redirect: coacher/admin går til CoachHQ, gjester til kalender.
-  // /portal er bare for PLAYER og PARENT.
+  // Rolle-basert redirect: coacher/admin -> CoachHQ, gjester -> kalender.
+  // /portal er forbeholdt PLAYER og PARENT.
   if (user.role === "COACH" || user.role === "ADMIN") redirect("/admin");
   if (user.role === "GUEST") redirect("/admin/calendar");
-
-  const data = await getDashboardData(user);
-
-  // Pyramide-uke som prosent av målfordeling (krude tall — antar 240 min/uke som mål)
-  const ukeMaal = 240;
-  const ukeMinutter = totalMinutter(data.pyramideUke);
-  const pyrUkeProsent = Math.min(100, Math.round((ukeMinutter / ukeMaal) * 100));
-
-  const streakAktivAntall = aktivStreak(data.streak14);
-
-  const kanStarteLive = user.tier !== "GRATIS";
 
   return (
     <div className="space-y-8">
@@ -43,6 +48,29 @@ export default async function PortalHjem() {
         ambition={user.ambition}
       />
 
+      <Suspense fallback={<DashboardSkeleton />}>
+        <DashboardSeksjoner user={user} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function DashboardSeksjoner({ user }: { user: PortalUser }) {
+  const data = await getDashboardData(user);
+
+  // Pyramide-uke som prosent av målfordeling (240 min/uke som mål)
+  const ukeMaal = 240;
+  const ukeMinutter = totalMinutter(data.pyramideUke);
+  const pyrUkeProsent = Math.min(
+    100,
+    Math.round((ukeMinutter / ukeMaal) * 100),
+  );
+
+  const streakAktivAntall = aktivStreak(data.streak14);
+  const kanStarteLive = user.tier !== "GRATIS";
+
+  return (
+    <div className="space-y-8">
       <KpiStrip
         hcp={user.hcp}
         sgTotal={data.sgAggregate.total}
@@ -52,16 +80,19 @@ export default async function PortalHjem() {
 
       <PlanActionsCard actions={data.pendingActions} />
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5 lg:gap-8">
         <div className="lg:col-span-3">
-          <DagensFokusCard session={data.dagensSesjon} kanStarte={kanStarteLive} />
+          <DagensFokusCard
+            session={data.dagensSesjon}
+            kanStarte={kanStarteLive}
+          />
         </div>
         <div className="lg:col-span-2">
           <PyramideCard data={data.pyramide14d} />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         <StreakBars streak={data.streak14} />
         <SgFordelingCard sg={data.sgAggregate} />
         <SistRegistrertCard items={data.sisteRegistrerte} />
@@ -73,6 +104,28 @@ export default async function PortalHjem() {
           tier={user.tier}
         />
       )}
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-8">
+      <SkeletonKpi count={4} />
+      <SkeletonCard height="h-24" />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5 lg:gap-8">
+        <div className="lg:col-span-3">
+          <SkeletonCard height="h-64" />
+        </div>
+        <div className="lg:col-span-2">
+          <SkeletonCard height="h-64" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        <SkeletonCard height="h-48" />
+        <SkeletonCard height="h-48" />
+        <SkeletonCard height="h-48" />
+      </div>
     </div>
   );
 }
@@ -96,7 +149,7 @@ function CoachMeldingCard({
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Siste coach-melding
           </span>
-          <h3 className="mt-2 font-display text-lg font-semibold leading-snug">
+          <h3 className="mt-2 font-display text-lg font-semibold leading-snug text-foreground">
             {tekst}
           </h3>
           <p className="mt-2 font-mono text-[11px] text-muted-foreground">
@@ -108,8 +161,12 @@ function CoachMeldingCard({
           </p>
         </div>
         <Link
-          href={tier === "GRATIS" ? "/portal/meg/abonnement" : "/portal/coach/ai"}
-          className="shrink-0 rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground hover:border-border"
+          href={
+            tier === "GRATIS"
+              ? "/portal/meg/abonnement"
+              : "/portal/coach/ai"
+          }
+          className="shrink-0 rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-border hover:bg-secondary"
         >
           Svar →
         </Link>

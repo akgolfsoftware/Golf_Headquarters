@@ -73,5 +73,6 @@ export async function completeSession(input: SessionLogInput) {
 
   revalidatePath("/portal");
   revalidatePath("/portal/tren");
-  redirect("/portal/tren");
+  revalidatePath(`/portal/tren/${input.sessionId}`);
+  redirect(`/portal/tren/${input.sessionId}`);
 }

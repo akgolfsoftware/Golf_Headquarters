@@ -14,17 +14,7 @@ export default function TrenLayout({
 }) {
   return (
     <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Tren
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Min</em> trening
-        </h1>
-      </header>
-
       <SubNav items={ITEMS} />
-
       <div>{children}</div>
     </div>
   );
