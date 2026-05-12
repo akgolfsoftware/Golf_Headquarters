@@ -251,6 +251,57 @@ const COACHES = [
   },
 ] as const;
 
+// ---------- Coach-tilgjengelighet ----------
+// weekday: 0=mandag, 1=tirsdag, 2=onsdag, 3=torsdag, 4=fredag, 5=lørdag, 6=søndag
+
+const COACH_AVAILABILITY: ReadonlyArray<{
+  coachEmail: string;
+  weekday: number;
+  startTime: string;
+  endTime: string;
+  note?: string;
+}> = [
+  // Anders Kristiansen — personlig coaching utenom WANG-gruppe (M/O/F 08-10)
+  // og GFGK Junior Elite (ti/to 16-18 fast booket i gruppe)
+  { coachEmail: "anders@akgolf.no", weekday: 0, startTime: "12:00", endTime: "20:00" },
+  { coachEmail: "anders@akgolf.no", weekday: 1, startTime: "13:00", endTime: "20:00" },
+  { coachEmail: "anders@akgolf.no", weekday: 2, startTime: "12:00", endTime: "20:00" },
+  { coachEmail: "anders@akgolf.no", weekday: 3, startTime: "13:00", endTime: "20:00" },
+  { coachEmail: "anders@akgolf.no", weekday: 4, startTime: "12:00", endTime: "14:00" },
+
+  // Markus Røinås Pedersen — personlig coaching utenom GFGK Junior-grupper
+  // (ti/to 16-20 fast booket i gruppe)
+  { coachEmail: "markus@akgolf.no", weekday: 1, startTime: "12:00", endTime: "16:00" },
+  { coachEmail: "markus@akgolf.no", weekday: 3, startTime: "12:00", endTime: "16:00" },
+];
+
+// ---------- Gruppe-treningstider ----------
+// Brukes til å vise faste tider i kalenderen + filtrere ut fra
+// coach-tilgjengelighet ved booking.
+
+const GROUP_SCHEDULE: ReadonlyArray<{
+  groupName: string;
+  weekday: number;
+  startTime: string;
+  endTime: string;
+}> = [
+  // WANG Toppidrett — gruppetrening
+  { groupName: "WANG Toppidrett Fredrikstad", weekday: 0, startTime: "08:00", endTime: "10:00" }, // Mandag
+  { groupName: "WANG Toppidrett Fredrikstad", weekday: 2, startTime: "08:00", endTime: "10:00" }, // Onsdag
+  { groupName: "WANG Toppidrett Fredrikstad", weekday: 4, startTime: "08:00", endTime: "10:00" }, // Fredag
+
+  // GFGK Junior — tirsdag og torsdag
+  { groupName: "GFGK Junior Elite U19", weekday: 1, startTime: "16:00", endTime: "18:00" },
+  { groupName: "GFGK Junior Mini U10", weekday: 1, startTime: "18:00", endTime: "19:00" },
+  { groupName: "GFGK Junior Utvikling U15", weekday: 1, startTime: "19:00", endTime: "20:00" },
+  { groupName: "GFGK Junior Basis U13", weekday: 1, startTime: "19:00", endTime: "20:00" }, // delt slot
+
+  { groupName: "GFGK Junior Elite U19", weekday: 3, startTime: "16:00", endTime: "18:00" },
+  { groupName: "GFGK Junior Mini U10", weekday: 3, startTime: "18:00", endTime: "19:00" },
+  { groupName: "GFGK Junior Utvikling U15", weekday: 3, startTime: "19:00", endTime: "20:00" },
+  { groupName: "GFGK Junior Basis U13", weekday: 3, startTime: "19:00", endTime: "20:00" }, // delt slot
+];
+
 // ---------- Grupper ----------
 // Gruppene representerer treningsklassene. Spillere kobles via GroupMember.
 // coachId settes etter at COACHES er seedet (Anders/Markus eier gruppene).
@@ -410,6 +461,44 @@ async function seedCoaches() {
   }
 }
 
+async function seedCoachAvailability() {
+  console.log("\n[seed] CoachAvailability (uke-mal)");
+  // Slett gamle records og bygg på nytt — idempotent
+  for (const a of COACH_AVAILABILITY) {
+    const coach = await prisma.user.findUnique({
+      where: { email: a.coachEmail },
+    });
+    if (!coach) {
+      console.warn(`  ! Coach ikke funnet: ${a.coachEmail}`);
+      continue;
+    }
+    const existing = await prisma.coachAvailability.findFirst({
+      where: {
+        coachId: coach.id,
+        weekday: a.weekday,
+        startTime: a.startTime,
+      },
+    });
+    if (existing) {
+      await prisma.coachAvailability.update({
+        where: { id: existing.id },
+        data: { endTime: a.endTime, active: true },
+      });
+    } else {
+      await prisma.coachAvailability.create({
+        data: {
+          coachId: coach.id,
+          weekday: a.weekday,
+          startTime: a.startTime,
+          endTime: a.endTime,
+        },
+      });
+    }
+    const dag = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"][a.weekday];
+    console.log(`  · ${a.coachEmail} ${dag} ${a.startTime}-${a.endTime}`);
+  }
+}
+
 async function seedGroups() {
   console.log("\n[seed] Grupper");
   for (const g of GROUPS) {
@@ -444,8 +533,12 @@ async function main() {
   await seedCourses();
   await seedCoaches();
   await seedGroups();
+  await seedCoachAvailability();
 
   console.log("\n[seed] Ferdig.");
+  console.log("\nMerk: GROUP_SCHEDULE (faste treningstider) er definert i koden");
+  console.log("men ikke seeded til DB enda — krever ny GroupSchedule-modell.");
+  console.log("Brukes som referanse i kalender-UI-en inntil videre.");
 }
 
 main()
