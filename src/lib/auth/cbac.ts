@@ -41,6 +41,12 @@ const ROLE_CAPABILITIES: Record<UserRole, Capability[]> = {
     Capability.CREATE_BOOKING,
   ],
   ADMIN: Object.values(Capability),
+  GUEST: [
+    // Read-only — kan se egen profil + fasilitet/booking-oversikt.
+    // Fasilitet/booking-tilgang håndheves via allow-lister på relevante
+    // admin-pages (calendar/facilities/bookings).
+    Capability.VIEW_OWN_PROFILE,
+  ],
 };
 
 export function can(role: UserRole, capability: Capability): boolean {

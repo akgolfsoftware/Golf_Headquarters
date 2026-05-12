@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getAdminHubData } from "@/lib/admin-hub-data";
 import { HubKpiStrip } from "@/components/admin/hub-kpi-strip";
@@ -7,7 +8,9 @@ import { SpillerlisteCard } from "@/components/admin/spillerliste-card";
 import { AktivitetsFeed } from "@/components/admin/aktivitets-feed";
 
 export default async function AdminHub() {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN", "GUEST"] });
+  // GUEST har read-only-tilgang — send direkte til fasilitet-kalender
+  if (user.role === "GUEST") redirect("/admin/calendar");
   const data = await getAdminHubData(user);
 
   const fornavn = user.name.split(" ")[0] ?? user.name;

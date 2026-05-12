@@ -10,7 +10,7 @@ const STATUS_FARGE: Record<string, string> = {
 };
 
 export default async function Bookinger() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requirePortalUser({ allow: ["COACH", "ADMIN", "GUEST"] });
 
   const idag = new Date();
   idag.setHours(0, 0, 0, 0);

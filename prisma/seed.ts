@@ -293,6 +293,15 @@ const COACHES = [
     homeClub: "Gamle Fredrikstad GK",
     ambition: "Juniorleder GFGK (organisering)",
   },
+  {
+    authId: "pending-njo-gfgk-no",
+    email: "njo@gfgk.no",
+    name: "NJO (GFGK)",
+    role: "GUEST",
+    tier: "PRO",
+    homeClub: "Gamle Fredrikstad GK",
+    ambition: "Read-only — fasilitet-booking-oversikt GFGK",
+  },
 ] as const;
 
 // ---------- Coach-tilgjengelighet ----------

@@ -33,7 +33,7 @@ export default async function AdminKalender({
 }: {
   searchParams: Promise<Search>;
 }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requirePortalUser({ allow: ["COACH", "ADMIN", "GUEST"] });
   const params = await searchParams;
 
   let maned = new Date();

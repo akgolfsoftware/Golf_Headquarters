@@ -3,7 +3,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 
 export default async function FacilitiesAdmin() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requirePortalUser({ allow: ["COACH", "ADMIN", "GUEST"] });
 
   const facilities = await prisma.facility.findMany({
     include: {
