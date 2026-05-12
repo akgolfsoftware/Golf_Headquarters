@@ -13,8 +13,6 @@ const FORDELER = [
   },
   {
     tittel: "Egen branding",
-    tickst:
-      "Custom domene (din-klubb.no), egne farger, logo i e-postmaler — alt under klubbens identitet.",
     tekst:
       "Custom domene (din-klubb.no), egne farger, logo i e-postmaler — alt under klubbens identitet.",
   },

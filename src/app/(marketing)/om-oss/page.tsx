@@ -83,7 +83,7 @@ export default function OmOss() {
             Selskapet
           </h2>
           <dl className="mt-6 space-y-4 text-sm">
-            <Rad label="Org.nummer" value="924 567 890" />
+            <Rad label="Org.nummer" value="927 248 581" />
             <Rad label="Adresse" value="AK Golf Group AS, Fredrikstad, Norge" />
             <Rad label="E-post" value="hei@akgolf.no" />
             <Rad label="Holding" value="Skarpnord Invest AS" />

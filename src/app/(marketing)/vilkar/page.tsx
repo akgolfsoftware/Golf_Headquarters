@@ -34,7 +34,7 @@ export default function Vilkar() {
           <Section title="1. Tjenestebeskrivelse">
             <p>
               AK Golf («Tjenesten») er en SaaS-plattform for golfspillere og
-              coacher levert av AK Golf Group AS, org.nr. 932&nbsp;341&nbsp;860,
+              coacher levert av AK Golf Group AS, org.nr. 927&nbsp;248&nbsp;581,
               Bossumveien 6, 1605 Fredrikstad («vi», «oss», «AK Golf»).
             </p>
             <p>

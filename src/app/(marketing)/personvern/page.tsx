@@ -32,7 +32,7 @@ export default function Personvern() {
         <article className="mt-12 space-y-8 text-base leading-relaxed text-foreground">
           <Section title="1. Behandlingsansvarlig">
             <p>
-              AK Golf Group AS, org.nr. 932&nbsp;341&nbsp;860, Bossumveien 6,
+              AK Golf Group AS, org.nr. 927&nbsp;248&nbsp;581, Bossumveien 6,
               1605 Fredrikstad, er behandlingsansvarlig for personopplysninger
               som registreres i AK Golf-tjenesten.
             </p>
