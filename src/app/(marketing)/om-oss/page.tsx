@@ -9,74 +9,36 @@ export default function OmOss() {
             Om oss
           </span>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-            <em className="font-normal text-primary md:italic">Bygget</em> av en coach for coacher
+            <em className="font-normal text-primary md:italic">Personlig</em>{" "}
+            coaching, bygd på data
           </h1>
         </header>
 
         <div className="mt-12 space-y-6 text-base leading-relaxed text-foreground">
           <p>
-            AK Golf er bygget av Anders Kristiansen — golfcoach, gründer og
-            CEO i AK Golf Group AS. Etter å ha jobbet med både elite-spillere
-            og klubb-amatører i over et tiår, så han et tomrom: ingen
-            plattform kombinerte planlegging, AI, SG-tracking og direkte coach-kontakt
-            i én sømløs opplevelse.
+            AK Golf Academy drives av Anders Kristiansen — golfcoach, gründer og
+            CEO i AK Golf Group AS. Etter mer enn et tiår med spillere på alle
+            nivåer, fra klubbamatører til konkurranseutøvere, har Anders bygget
+            en coaching-praksis som kombinerer tett personlig oppfølging med
+            målbar fremgang.
           </p>
 
           <p>
             <em className="text-primary not-italic md:italic">
-              «Spillere har ikke tid til å hoppe mellom fem ulike apper.
-              Coacher har ikke tid til å bygge planer i Excel.
-              Vi bygde løsningen vi selv ønsket vi hadde.»
+              «Coaching skal ikke være magi. Det skal være tydelig: hva vi
+              jobber med, hvorfor vi jobber med det, og hvordan du ser at det
+              virker. Det er det Academy er bygget rundt.»
             </em>
           </p>
 
           <p>
-            Plattformen drives av AK Golf-pyramiden — et balansert system som
-            sørger for at treningstiden fordeles riktig mellom fysikk, teknikk,
-            slag, spill og turneringserfaring. Hver plan, hver økt og hver
-            agent-anbefaling refererer tilbake til pyramiden.
+            Kjernen er AK Golf-pyramiden — et balansert system som sørger for
+            at treningstiden fordeles riktig mellom fysikk, teknikk, slag,
+            spill og turneringserfaring. Til daglig støttes coachingen av
+            PlayerHQ, spillerportalen som holder plan, runder og statistikk
+            samlet på ett sted.
           </p>
         </div>
-
-        <section className="mt-16 rounded-2xl border border-border bg-card p-8">
-          <h2 className="font-display text-2xl font-semibold tracking-tight">
-            Tallene
-          </h2>
-          <dl className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-            <div>
-              <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                Modeller
-              </dt>
-              <dd className="mt-1 font-display text-3xl font-semibold tabular-nums">
-                34
-              </dd>
-            </div>
-            <div>
-              <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                Ruter
-              </dt>
-              <dd className="mt-1 font-display text-3xl font-semibold tabular-nums">
-                70+
-              </dd>
-            </div>
-            <div>
-              <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                Agenter
-              </dt>
-              <dd className="mt-1 font-display text-3xl font-semibold tabular-nums">
-                8
-              </dd>
-            </div>
-            <div>
-              <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                AI-modeller
-              </dt>
-              <dd className="mt-1 font-display text-3xl font-semibold tabular-nums">
-                3
-              </dd>
-            </div>
-          </dl>
-        </section>
 
         <section className="mt-12">
           <h2 className="font-display text-2xl font-semibold tracking-tight">
@@ -92,10 +54,10 @@ export default function OmOss() {
 
         <div className="mt-16 text-center">
           <Link
-            href="/auth/signup"
+            href="/booking"
             className="inline-block rounded-md bg-primary px-6 py-3 text-base font-semibold text-primary-foreground"
           >
-            Prøv plattformen gratis →
+            Book første time →
           </Link>
         </div>
       </div>

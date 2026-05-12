@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 const NAV = [
-  { href: "/funksjoner", label: "Funksjoner" },
-  { href: "/forsta", label: "Slik fungerer det" },
-  { href: "/priser", label: "Priser" },
-  { href: "/blog", label: "Blogg" },
+  { href: "/coaching", label: "Coaching" },
+  { href: "/treningsfilosofi", label: "Slik trener vi" },
+  { href: "/playerhq", label: "PlayerHQ" },
+  { href: "/om-oss", label: "Om oss" },
 ];
 
 export function MarketingHeader() {

@@ -2,7 +2,11 @@ import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Lås Turbopack-root til denne katalogen — uten dette feiler CSS-resolve
+  // og dev-server kan havne i compile/render-loop (jf. CLAUDE.md gotcha).
+  turbopack: {
+    root: import.meta.dirname,
+  },
 };
 
 // Sentry wrapping — kjører bare med upload av source-maps hvis
