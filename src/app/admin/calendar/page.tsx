@@ -29,6 +29,12 @@ import {
   ukenummer,
   sammeDag,
 } from "@/lib/uke-helpers";
+import {
+  CalendarWeekGrid,
+  type DagPayload,
+  type Ev,
+  type Stripe,
+} from "@/components/admin/calendar-week-grid";
 
 // ---------- Konstanter ----------
 
@@ -39,17 +45,6 @@ const TIMES = [
 ];
 const SLOT_PX = 56; // 1 time
 const GRID_START_HOUR = 6;
-const GRID_TOTAL_PX = TIMES.length * SLOT_PX; // 17 * 56 = 952
-
-const DAGER_LANGE = [
-  "Mandag",
-  "Tirsdag",
-  "Onsdag",
-  "Torsdag",
-  "Fredag",
-  "Lørdag",
-  "Søndag",
-];
 
 // Faste gruppetider (regelbasert). weekday: 0=mandag.
 type FastGruppe = {
@@ -145,34 +140,62 @@ export default async function AdminCalendar({
   };
   if (filter === "mine") bookingsFilter.userId = user.id;
 
-  const [bookings, availability] = await Promise.all([
-    prisma.booking.findMany({
-      where: bookingsFilter,
-      select: {
-        id: true,
-        startAt: true,
-        endAt: true,
-        status: true,
-        user: { select: { id: true, name: true } },
-        serviceType: { select: { name: true } },
-        location: { select: { name: true } },
-      },
-      orderBy: { startAt: "asc" },
-    }),
-    prisma.coachAvailability.findMany({
-      where:
-        user.role === "ADMIN"
-          ? { active: true }
-          : { coachId: user.id, active: true },
-      select: {
-        id: true,
-        coachId: true,
-        weekday: true,
-        startTime: true,
-        endTime: true,
-      },
-    }),
-  ]);
+  const kanBooke = user.role !== "GUEST";
+
+  const [bookings, availability, spillere, serviceTypes, locations] =
+    await Promise.all([
+      prisma.booking.findMany({
+        where: bookingsFilter,
+        select: {
+          id: true,
+          startAt: true,
+          endAt: true,
+          status: true,
+          user: { select: { id: true, name: true } },
+          serviceType: { select: { name: true } },
+          location: { select: { name: true } },
+        },
+        orderBy: { startAt: "asc" },
+      }),
+      prisma.coachAvailability.findMany({
+        where:
+          user.role === "ADMIN"
+            ? { active: true }
+            : { coachId: user.id, active: true },
+        select: {
+          id: true,
+          coachId: true,
+          weekday: true,
+          startTime: true,
+          endTime: true,
+        },
+      }),
+      kanBooke
+        ? prisma.user.findMany({
+            where: { role: "PLAYER" },
+            select: { id: true, name: true, email: true },
+            orderBy: { name: "asc" },
+          })
+        : Promise.resolve(
+            [] as { id: string; name: string; email: string }[],
+          ),
+      kanBooke
+        ? prisma.serviceType.findMany({
+            where: { active: true },
+            select: { id: true, name: true, durationMin: true },
+            orderBy: { durationMin: "asc" },
+          })
+        : Promise.resolve(
+            [] as { id: string; name: string; durationMin: number }[],
+          ),
+      kanBooke
+        ? prisma.location.findMany({
+            where: { active: true },
+            select: { id: true, name: true },
+            orderBy: { name: "asc" },
+          })
+        : Promise.resolve([] as { id: string; name: string }[]),
+    ]);
 
   // Format helpers
   const datoFormatter = new Intl.DateTimeFormat("nb-NO", {
@@ -182,14 +205,6 @@ export default async function AdminCalendar({
   const periodeTekst = `${datoFormatter.format(dager[0])} – ${datoFormatter.format(dager[6])} ${ukeStart.getFullYear()}`;
 
   // Build events-per-day
-  type Ev = {
-    kind: "booking" | "group";
-    top: number;
-    height: number;
-    timeLabel: string;
-    title: string;
-    sub?: string;
-  };
   const eventsPerDag: Ev[][] = dager.map(() => []);
 
   // Bookings → events
@@ -208,6 +223,8 @@ export default async function AdminCalendar({
       timeLabel: `${b.startAt.toTimeString().slice(0, 5)} – ${b.endAt.toTimeString().slice(0, 5)}`,
       title: `${b.user.name} · ${b.serviceType.name}`,
       sub: b.location.name,
+      startHour: clampedStart,
+      endHour: clampedEnd,
     });
   }
 
@@ -220,11 +237,12 @@ export default async function AdminCalendar({
       timeLabel: `${String(Math.floor(g.startHour)).padStart(2, "0")}:00 – ${String(Math.floor(g.endHour)).padStart(2, "0")}:00`,
       title: g.title,
       sub: g.sub,
+      startHour: g.startHour,
+      endHour: g.endHour,
     });
   }
 
   // CoachAvailability stripes per day (lyse striper i bakgrunnen)
-  type Stripe = { top: number; height: number };
   const stripesPerDag: Stripe[][] = dager.map((dag) => {
     const wd = (dag.getDay() + 6) % 7; // 0=mandag
     const matching = availability.filter((a) => a.weekday === wd);
@@ -238,17 +256,8 @@ export default async function AdminCalendar({
       .filter((x): x is Stripe => x !== null);
   });
 
-  // Nå-linje
-  const todayIdx = dager.findIndex((d) => sammeDag(d, now));
+  // Nå-time (sendes til klient for rendering av nå-linje)
   const nowHour = hourFromDate(now);
-  const nowVisible =
-    todayIdx >= 0 &&
-    nowHour >= GRID_START_HOUR &&
-    nowHour <= GRID_START_HOUR + TIMES.length;
-  const nowTop = nowVisible ? topForHour(nowHour) : 0;
-  const nowLabel = nowVisible
-    ? `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`
-    : "";
 
   // Naviger frem/tilbake/i dag
   const forrigeIso = isoUkeKey(ukeShift(ukeStart, -1));
@@ -256,7 +265,20 @@ export default async function AdminCalendar({
 
   // Sum events
   const totalEvents = eventsPerDag.reduce((sum, e) => sum + e.length, 0);
-  const kanBooke = user.role !== "GUEST";
+
+  // Bygg payload til klient-grid. Bruk Y-M-D-key for tidsone-trygg sammenlikning.
+  function dateKey(d: Date): string {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  }
+  const dagPayloads: DagPayload[] = dager.map((d, i) => ({
+    dateKey: dateKey(d),
+    year: d.getFullYear(),
+    month: d.getMonth() + 1,
+    dayOfMonth: d.getDate(),
+    events: eventsPerDag[i],
+    stripes: stripesPerDag[i],
+  }));
+  const todayDateKey = dateKey(now);
 
   return (
     <div className="space-y-6">
@@ -372,143 +394,15 @@ export default async function AdminCalendar({
           }
         />
       ) : (
-        <div className="overflow-x-auto">
-          <div
-            className="relative grid min-w-[860px] overflow-hidden rounded-lg border border-border bg-card"
-            style={{ gridTemplateColumns: "64px repeat(7, 1fr)" }}
-          >
-            {/* Header rad */}
-            <div className="border-b border-r border-border bg-card px-3 py-2" />
-            {dager.map((d, i) => {
-              const erIdag = sammeDag(d, now);
-              const erHelg = i >= 5;
-              return (
-                <div
-                  key={d.toISOString()}
-                  className={`flex flex-col gap-0.5 border-b border-border px-3 py-2 ${
-                    erIdag
-                      ? "bg-accent"
-                      : erHelg
-                        ? "bg-secondary"
-                        : "bg-card"
-                  } ${i < 6 ? "border-r" : ""}`}
-                >
-                  <span
-                    className={`font-mono text-[10px] font-semibold uppercase tracking-[0.08em] ${
-                      erIdag ? "text-accent-foreground" : "text-muted-foreground"
-                    }`}
-                  >
-                    {DAGER_LANGE[i]}
-                  </span>
-                  <span
-                    className={`font-display text-lg font-semibold leading-none tracking-tight ${
-                      erIdag ? "text-accent-foreground" : "text-foreground"
-                    }`}
-                  >
-                    {d.getDate()}
-                    {erIdag && (
-                      <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-                    )}
-                  </span>
-                  <span className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-                    {eventsPerDag[i].length}{" "}
-                    {eventsPerDag[i].length === 1 ? "økt" : "økter"}
-                  </span>
-                </div>
-              );
-            })}
-
-            {/* Tids-kolonne */}
-            <div className="border-r border-border bg-card">
-              {TIMES.map((t, i) => (
-                <div
-                  key={t}
-                  className={`h-14 border-b border-border pr-2 pt-1 text-right font-mono text-[10px] ${
-                    i % 2 === 1 ? "text-muted-foreground/50" : "text-muted-foreground"
-                  }`}
-                >
-                  {t}
-                </div>
-              ))}
-            </div>
-
-            {/* Dag-kolonner */}
-            {dager.map((d, i) => {
-              const erIdag = sammeDag(d, now);
-              const erHelg = i >= 5;
-              const events = eventsPerDag[i];
-              const stripes = stripesPerDag[i];
-              return (
-                <div
-                  key={d.toISOString()}
-                  className={`relative ${
-                    erHelg && !erIdag ? "bg-secondary/30" : ""
-                  } ${i < 6 ? "border-r border-border" : ""}`}
-                  style={{ minHeight: GRID_TOTAL_PX }}
-                >
-                  {/* Time-slot lines */}
-                  {TIMES.map((_, j) => (
-                    <div
-                      key={j}
-                      className={`h-14 ${
-                        j % 2 === 1
-                          ? "border-b border-dashed border-border"
-                          : "border-b border-border"
-                      }`}
-                    />
-                  ))}
-
-                  {/* Availability-striper (under events) */}
-                  {stripes.map((s, idx) => (
-                    <div
-                      key={`stripe-${idx}`}
-                      className="absolute inset-x-1 rounded-sm bg-primary/5"
-                      style={{ top: s.top, height: s.height }}
-                    />
-                  ))}
-
-                  {/* Events */}
-                  {events.map((ev, idx) => (
-                    <div
-                      key={`ev-${idx}`}
-                      className={`absolute inset-x-1.5 flex flex-col gap-0.5 overflow-hidden rounded-md border px-2.5 py-1.5 shadow-sm ${
-                        ev.kind === "group"
-                          ? "border-primary/20 bg-primary/8"
-                          : "border-accent/40 bg-accent/15"
-                      }`}
-                      style={{ top: ev.top, height: ev.height }}
-                    >
-                      <span className="font-mono text-[10px] text-muted-foreground">
-                        {ev.timeLabel}
-                      </span>
-                      <span className="text-xs font-semibold leading-tight text-foreground">
-                        {ev.title}
-                      </span>
-                      {ev.sub && (
-                        <span className="text-[11px] leading-tight text-muted-foreground">
-                          {ev.sub}
-                        </span>
-                      )}
-                    </div>
-                  ))}
-
-                  {/* Nå-linje */}
-                  {erIdag && nowVisible && (
-                    <div
-                      className="pointer-events-none absolute inset-x-0 z-10 h-px bg-destructive"
-                      style={{ top: nowTop }}
-                    >
-                      <span className="absolute -left-1 -top-1 h-2 w-2 rounded-full bg-destructive" />
-                      <span className="absolute -top-2 right-1 rounded bg-card px-1 font-mono text-[9px] font-semibold text-destructive">
-                        {nowLabel}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <CalendarWeekGrid
+          dager={dagPayloads}
+          todayDateKey={todayDateKey}
+          nowHour={nowHour}
+          spillere={spillere}
+          serviceTypes={serviceTypes}
+          locations={locations}
+          kanBooke={kanBooke}
+        />
       )}
 
       {/* Legend */}

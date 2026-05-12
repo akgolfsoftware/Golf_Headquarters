@@ -14,6 +14,8 @@ import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { PyramidArea, SessionStatus } from "@/generated/prisma/client";
 import { PlanActions } from "./plan-actions";
+import { DraggableSessions, type DraggableSession } from "./draggable-sessions";
+import { EditSessionModal } from "./edit-session-modal";
 
 /**
  * Anti-AI farger: kun 3 lime-relaterte aksentpunkter
@@ -27,14 +29,6 @@ const PYR_COLOR: Record<PyramidArea, string> = {
   SLAG: "var(--color-pyr-slag, #D1F843)",
   SPILL: "var(--color-pyr-spill, #B8852A)",
   TURN: "var(--color-pyr-turn, #5E5C57)",
-};
-
-const STATUS_LABEL: Record<SessionStatus, string> = {
-  PLANNED: "Planlagt",
-  ACTIVE: "Pågår",
-  COMPLETED: "Fullført",
-  SKIPPED: "Hoppet over",
-  CANCELLED: "Avlyst",
 };
 
 export default async function AdminPlanDetalj({
@@ -69,10 +63,19 @@ export default async function AdminPlanDetalj({
   const totTimer = (totMinutter / 60).toFixed(1).replace(".", ",");
   const fordeling = prosentPerArea(aggregateByArea(plan.sessions));
 
-  const now = new Date();
-  const kommende = plan.sessions
-    .filter((s) => s.scheduledAt >= now && s.status !== "COMPLETED")
-    .slice(0, 8);
+  // Serialiserbar liste av alle ikke-fullførte økter, til drag-and-drop
+  const draggableSessions: DraggableSession[] = plan.sessions
+    .filter((s) => s.status !== "COMPLETED")
+    .map((s) => ({
+      id: s.id,
+      scheduledAt: s.scheduledAt.toISOString(),
+      durationMin: s.durationMin,
+      title: s.title,
+      pyramidArea: s.pyramidArea,
+      status: s.status,
+      drillCount: s.drills.length,
+      rationale: s.rationale ?? null,
+    }));
 
   // Faser = grupper økter per kalenderuke i planens varighet
   const faser = buildFaser(plan.sessions);
@@ -323,41 +326,24 @@ export default async function AdminPlanDetalj({
             </div>
           </section>
 
-          {/* Kommende økter */}
+          {/* Kommende økter — drag-and-drop for å flytte mellom uker */}
           <section className="rounded-lg border border-border bg-card p-6">
-            <h3 className="mb-4 font-display text-[16px] font-semibold leading-snug">
-              Kommende økter
-            </h3>
-
-            {kommende.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                Ingen planlagte økter framover.
-              </p>
-            ) : (
-              kommende.map((s, i) => (
-                <SessionRow
-                  key={s.id}
-                  href={`/portal/tren/${s.id}`}
-                  date={s.scheduledAt.toLocaleDateString("nb-NO", {
-                    weekday: "short",
-                    day: "2-digit",
-                  })}
-                  time={s.scheduledAt.toLocaleTimeString("nb-NO", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                  title={s.title}
-                  layer={s.pyramidArea}
-                  duration={`${s.durationMin} min`}
-                  meta={`${s.drills.length} drills`}
-                  status={{
-                    label: STATUS_LABEL[s.status],
-                    tone: s.status === "ACTIVE" ? "lime" : "muted",
-                  }}
-                  last={i === kommende.length - 1}
-                />
-              ))
-            )}
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <div>
+                <h3 className="font-display text-[16px] font-semibold leading-snug">
+                  Kommende økter
+                </h3>
+                <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  Dra for å flytte · Rediger med blyant-ikon
+                </span>
+              </div>
+              <EditSessionModal
+                mode={{ kind: "create", planId: plan.id }}
+                triggerVariant="primary"
+                triggerLabel="Legg til økt"
+              />
+            </div>
+            <DraggableSessions sessions={draggableSessions} />
           </section>
         </aside>
       </div>

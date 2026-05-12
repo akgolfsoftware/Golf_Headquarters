@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const TILBUD = [
@@ -38,8 +39,8 @@ const PYRAMIDE = [
 export default function Hjem() {
   return (
     <div>
-      <section className="bg-gradient-to-b from-background to-secondary/40 px-6 py-20 sm:py-28">
-        <div className="mx-auto max-w-4xl text-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-background to-secondary/40 px-6 py-20 sm:py-28">
+        <div className="relative z-10 mx-auto max-w-4xl text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             AK Golf Academy
           </span>

@@ -67,6 +67,16 @@ enum SubscriptionStatus {
   TRIALING
 }
 
+enum PlanStatus {
+  DRAFT           // Coach jobber på planen
+  PENDING_PLAYER  // Sendt til spiller for godkjenning
+  ACCEPTED        // Spiller har godtatt, klar til å starte
+  REJECTED        // Spiller ba om endring (se playerComment)
+  ACTIVE          // Pågående
+  PAUSED          // Midlertidig pause
+  ARCHIVED        // Ferdig eller avsluttet
+}
+
 // ---------- Models ----------
 
 model User {
@@ -224,23 +234,30 @@ model Booking {
 // ---------- PlayerHQ-modeller (Fase 1.5) ----------
 
 model TrainingPlan {
-  id          String    @id @default(cuid())
+  id          String     @id @default(cuid())
   userId      String
   name        String
   startDate   DateTime
   endDate     DateTime?
-  isActive    Boolean   @default(true)
+  isActive    Boolean    @default(true)
+  // Status-enum for godkjennings-flyt mellom coach og spiller.
+  // DRAFT → PENDING_PLAYER → ACCEPTED → ACTIVE → ARCHIVED.
+  // REJECTED hvis spiller ber om endring (se playerComment).
+  status      PlanStatus @default(DRAFT)
+  // Kommentar fra spiller ved REJECTED.
+  playerComment String?
   // Coach-id (User med role=COACH) hvis plan opprettet av coach. Ikke FK i v1
   // for å holde det enkelt — modelleres som relasjon i Fase 1.9.
   createdById String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessions    TrainingPlanSession[]
   planActions PlanAction[]
 
   @@index([userId, isActive])
+  @@index([status])
   @@map("training_plans")
 }
 
