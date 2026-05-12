@@ -270,7 +270,7 @@ const COACHES = [
     authId: "pending-anders-akgolf-no",
     email: "anders@akgolf.no",
     name: "Anders Kristiansen",
-    role: "ADMIN",
+    role: "COACH",
     tier: "PRO",
     homeClub: "Gamle Fredrikstad GK",
     ambition: "Head Coach AK Golf Group",
