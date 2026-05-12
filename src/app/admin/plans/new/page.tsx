@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 import { PlanWizard } from "./wizard";
 
 export default async function NyPlanPage() {
@@ -18,17 +20,16 @@ export default async function NyPlanPage() {
         href="/admin/plans"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Plans
+        <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
+        Plans
       </Link>
 
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Ny plan
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Bygg</em> ny plan
-        </h1>
-      </header>
+      <PageHeader
+        eyebrow="Treningsplaner · Ny plan"
+        titleLead="Bygg"
+        titleItalic="ny plan"
+        sub="Wizard med 6 steg — spiller, periode, faser, allokering, økt-skjema og bekreft."
+      />
 
       <PlanWizard spillere={spillere} />
     </div>
