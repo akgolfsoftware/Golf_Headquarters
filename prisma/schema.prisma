@@ -192,10 +192,15 @@ model Booking {
   status        BookingStatus @default(PENDING)
   notes         String?
   // Pris låst ved booking (i øre, ikke Float). Refusjonsbeløp baseres på dette.
+  // For credit-baserte bookinger fra Academy-abonnement: priceOre = 0.
   priceOre      Int           @default(0)
   // Stripe-tracking. CheckoutSession før betaling, PaymentIntent etter.
+  // Null for credit-baserte abonnement-bookinger.
   stripeCheckoutSessionId String?
   stripePaymentIntentId   String?
+  // Hvis booking er trukket fra Academy-abonnement, peker dette tilbake til
+  // Subscription. Brukes for credit-tilbakeføring ved avbestilling >24t.
+  subscriptionId String?
   // Kontakt-info for bookinger gjort av ikke-innloggede kunder (gjest-flow).
   guestName     String?
   guestEmail    String?
@@ -204,13 +209,15 @@ model Booking {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  user        User        @relation(fields: [userId], references: [id])
-  serviceType ServiceType @relation(fields: [serviceTypeId], references: [id])
-  location    Location    @relation(fields: [locationId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
+  serviceType  ServiceType   @relation(fields: [serviceTypeId], references: [id])
+  location     Location      @relation(fields: [locationId], references: [id])
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([startAt])
   @@index([stripeCheckoutSessionId])
+  @@index([subscriptionId])
   @@map("bookings")
 }
 
@@ -557,10 +564,18 @@ model Subscription {
   currentPeriodEnd     DateTime?
   stripeSubscriptionId String?            @unique
   stripeCustomerId     String?
+  // Coaching-abonnement (Performance / Performance Pro):
+  // monthlyCredits = antall coaching-timer pakken gir per måned (2 eller 4).
+  // creditsRemaining = saldo for inneværende periode. Resettes via webhook
+  // når currentPeriodEnd ruller (Stripe-drevet, ingen cron-job).
+  // Credits utløper ved månedsskifte (ingen carryover).
+  monthlyCredits       Int                @default(0)
+  creditsRemaining     Int                @default(0)
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings Booking[]
 
   @@map("subscriptions")
 }

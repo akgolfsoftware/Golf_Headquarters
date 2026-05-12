@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
-import { stripeKlient } from "@/lib/stripe";
 import {
-  type Tier,
+  stripeKlient,
+  creditsForPriceId,
+  tierForPriceId,
+} from "@/lib/stripe";
+import {
   type SubscriptionStatus,
 } from "@/generated/prisma/client";
 
@@ -33,8 +36,27 @@ async function syncSubscription(stripeSub: Stripe.Subscription) {
   }
 
   const status = mapStripeStatus(stripeSub.status);
-  const tier: Tier = status === "ACTIVE" ? "PRO" : "GRATIS";
+  const priceId = stripeSub.items.data[0]?.price?.id ?? null;
+  // Inaktive abonnement skal alltid være GRATIS-tier uavhengig av pris-ID.
+  const tier = status === "ACTIVE" ? tierForPriceId(priceId) : "GRATIS";
+  const monthlyCredits = status === "ACTIVE" ? creditsForPriceId(priceId) : 0;
   const periodEnd = stripeSub.items.data[0]?.current_period_end;
+  const newPeriodEnd = periodEnd ? new Date(periodEnd * 1000) : null;
+
+  // Avgjør om vi skal resette credits-saldoen.
+  // Reset hvis:
+  //   - abonnement opprettes for første gang, ELLER
+  //   - faktureringsperioden har rullet (currentPeriodEnd har endret seg)
+  // Eksisterende abonnement med uendret periode beholder gjenværende saldo.
+  const existing = await prisma.subscription.findUnique({
+    where: { userId },
+    select: { currentPeriodEnd: true },
+  });
+
+  const periodRolled =
+    !existing?.currentPeriodEnd ||
+    (newPeriodEnd &&
+      existing.currentPeriodEnd.getTime() !== newPeriodEnd.getTime());
 
   await prisma.subscription.upsert({
     where: { userId },
@@ -47,13 +69,19 @@ async function syncSubscription(stripeSub: Stripe.Subscription) {
         typeof stripeSub.customer === "string"
           ? stripeSub.customer
           : stripeSub.customer.id,
-      currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
+      currentPeriodEnd: newPeriodEnd,
+      monthlyCredits,
+      creditsRemaining: monthlyCredits,
     },
     update: {
       tier,
       status,
       stripeSubscriptionId: stripeSub.id,
-      currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
+      currentPeriodEnd: newPeriodEnd,
+      monthlyCredits,
+      // Bare reset saldo hvis periode har rullet. Ellers behold (kunden har
+      // kanskje brukt credits midt i perioden).
+      ...(periodRolled ? { creditsRemaining: monthlyCredits } : {}),
     },
   });
 
