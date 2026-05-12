@@ -1,5 +1,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AdminSidebar } from "./sidebar";
+import { GlobalSearchModal } from "./global-search-modal";
 import { UserMenu } from "@/components/shared/user-menu";
 
 export async function AdminShell({
@@ -41,6 +42,7 @@ export async function AdminShell({
           {children}
         </main>
       </div>
+      <GlobalSearchModal />
     </div>
   );
 }

@@ -191,15 +191,19 @@ export function Conversation({
         </div>
         <button
           type="button"
-          className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-secondary"
-          aria-label="Ring"
+          disabled
+          title="Kommer snart"
+          aria-label="Ring (kommer snart)"
+          className="grid h-8 w-8 cursor-not-allowed place-items-center rounded-md text-muted-foreground opacity-50"
         >
           <Phone size={16} strokeWidth={1.5} />
         </button>
         <button
           type="button"
-          className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-secondary"
-          aria-label="Mer"
+          disabled
+          title="Kommer snart"
+          aria-label="Mer (kommer snart)"
+          className="grid h-8 w-8 cursor-not-allowed place-items-center rounded-md text-muted-foreground opacity-50"
         >
           <MoreVertical size={16} strokeWidth={1.5} />
         </button>
@@ -308,21 +312,27 @@ export function Conversation({
           <div className="mt-2 flex items-center gap-1.5">
             <button
               type="button"
-              className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-secondary"
-              aria-label="Legg ved fil"
+              disabled
+              title="Kommer snart"
+              aria-label="Legg ved fil (kommer snart)"
+              className="grid h-8 w-8 cursor-not-allowed place-items-center rounded-md text-muted-foreground opacity-50"
             >
               <Paperclip size={16} strokeWidth={1.5} />
             </button>
             <button
               type="button"
-              className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-secondary"
-              aria-label="Bilde"
+              disabled
+              title="Kommer snart"
+              aria-label="Bilde (kommer snart)"
+              className="grid h-8 w-8 cursor-not-allowed place-items-center rounded-md text-muted-foreground opacity-50"
             >
               <ImageIcon size={16} strokeWidth={1.5} />
             </button>
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-secondary"
+              disabled
+              title="Kommer snart"
+              className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-medium text-muted-foreground opacity-50"
             >
               <Calendar size={14} strokeWidth={1.5} />
               Plan

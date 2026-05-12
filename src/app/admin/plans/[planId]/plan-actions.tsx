@@ -22,6 +22,7 @@ import {
   slettPlan,
   lagreSomMal,
   kopierPlan,
+  sendTilSpiller,
 } from "./actions";
 import { dupliserPlan } from "../actions";
 
@@ -91,6 +92,31 @@ export function PlanActions({
     });
   }
 
+  function sendSpiller() {
+    if (
+      !confirm(
+        "Sende planen til spiller for godkjenning? Spilleren får varsling og kan godta eller be om endring.",
+      )
+    ) {
+      return;
+    }
+    startTransition(async () => {
+      await sendTilSpiller(planId);
+      router.refresh();
+    });
+  }
+
+  function rediger() {
+    // Plan-detalj-siden har inline redigering: drag-and-drop pluss
+    // EditSessionModal pr. økt. "Rediger" scroller derfor til økt-listen
+    // og fokuserer "Legg til økt"-knappen.
+    if (typeof window === "undefined") return;
+    const target = document.getElementById("plan-okter");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
   function eksportPdf() {
     // Åpne PDF-en i nytt vindu — nettleseren håndterer Content-Disposition
     // og laster ned med filnavnet vi setter i route-handleren.
@@ -115,6 +141,7 @@ export function PlanActions({
         {isActive && (
           <button
             type="button"
+            onClick={sendSpiller}
             disabled={pending}
             className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
           >
@@ -125,6 +152,7 @@ export function PlanActions({
 
         <button
           type="button"
+          onClick={rediger}
           disabled={pending}
           className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
         >

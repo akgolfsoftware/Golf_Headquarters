@@ -10,12 +10,12 @@ import {
   DollarSign,
   MessageSquare,
   Plus,
-  Search,
   TrendingUp,
   Users,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getAdminHubData } from "@/lib/admin-hub-data";
+import { SearchTriggerButton } from "@/components/admin/search-trigger-button";
 
 const ICON_STROKE = 1.75;
 
@@ -146,13 +146,7 @@ export default async function AdminHub() {
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <button
-            type="button"
-            className="inline-flex h-10 items-center gap-2 rounded-md border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-          >
-            <Search className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
-            Søk overalt
-          </button>
+          <SearchTriggerButton />
           <Link
             href="/admin/calendar"
             className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"

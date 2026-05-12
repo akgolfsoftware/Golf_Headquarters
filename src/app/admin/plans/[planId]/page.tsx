@@ -346,7 +346,10 @@ export default async function AdminPlanDetalj({
           </section>
 
           {/* Kommende økter — drag-and-drop for å flytte mellom uker */}
-          <section className="rounded-lg border border-border bg-card p-6">
+          <section
+            id="plan-okter"
+            className="scroll-mt-6 rounded-lg border border-border bg-card p-6"
+          >
             <div className="mb-4 flex items-center justify-between gap-2">
               <div>
                 <h3 className="font-display text-[16px] font-semibold leading-snug">

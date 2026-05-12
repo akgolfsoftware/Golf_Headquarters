@@ -18,6 +18,33 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { startOfWeek, ukenummer } from "@/lib/uke-helpers";
+
+function isoUkeKey(d: Date): string {
+  // "2026-W21"
+  return `${d.getFullYear()}-W${String(ukenummer(d)).padStart(2, "0")}`;
+}
+
+function ukeFromIso(value: string): Date | null {
+  // "2026-W21" → mandag i ISO-uke 21 / 2026
+  const m = value.match(/^(\d{4})-W(\d{1,2})$/);
+  if (!m) return null;
+  const year = Number(m[1]);
+  const week = Number(m[2]);
+  // ISO-uke 1 inneholder torsdag 4. januar
+  const jan4 = new Date(year, 0, 4);
+  const jan4Day = jan4.getDay() || 7;
+  const monday = new Date(jan4);
+  monday.setDate(jan4.getDate() - (jan4Day - 1) + (week - 1) * 7);
+  monday.setHours(0, 0, 0, 0);
+  return monday;
+}
+
+function ukeShift(start: Date, deltaWeeks: number): Date {
+  const d = new Date(start);
+  d.setDate(d.getDate() + deltaWeeks * 7);
+  return d;
+}
 
 type Status = "Ny" | "Aktiv" | "Fokus" | "Pause";
 
@@ -72,8 +99,15 @@ const STATUS_BESKRIVELSE: Record<Status, string> = {
   Pause: "Ingen pålogging på 30+ dager",
 };
 
-export default async function CoachingBoard() {
+type Search = { uke?: string };
+
+export default async function CoachingBoard({
+  searchParams,
+}: {
+  searchParams: Promise<Search>;
+}) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const params = await searchParams;
 
   const players = await prisma.user.findMany({
     where: { role: "PLAYER" },
@@ -96,13 +130,14 @@ export default async function CoachingBoard() {
   };
   for (const p of players) grupper[bestemStatus(p)].push(p);
 
-  // Beregn ukenummer for "denne uka"
+  // Beregn ukenummer for valgt uke (ISO-uke fra searchParams, default = denne uka)
   const idag = new Date();
-  const onsdag = new Date(idag);
-  const start = new Date(idag);
-  start.setDate(idag.getDate() - ((idag.getDay() + 6) % 7));
+  const referansedag = params.uke ? (ukeFromIso(params.uke) ?? idag) : idag;
+  const start = startOfWeek(referansedag);
   const slutt = new Date(start);
   slutt.setDate(start.getDate() + 6);
+  const forrigeIso = isoUkeKey(ukeShift(start, -1));
+  const nesteIso = isoUkeKey(ukeShift(start, 1));
 
   return (
     <div className="space-y-8">
@@ -114,13 +149,19 @@ export default async function CoachingBoard() {
         sub="Auto-klassifisering basert på siste aktivitet og aktive planer. Klikk på en spiller for å se profilen."
         actions={
           <div className="inline-flex items-center gap-2">
-            <button
-              type="button"
+            <Link
+              href={`/admin/board?uke=${forrigeIso}`}
               aria-label="Forrige uke"
-              className="grid h-8 w-8 place-items-center rounded-md border border-border bg-card text-muted-foreground hover:text-foreground"
+              className="grid h-8 w-8 place-items-center rounded-md border border-border bg-card text-muted-foreground transition-colors hover:text-foreground"
             >
               <ChevronLeft size={14} strokeWidth={1.75} />
-            </button>
+            </Link>
+            <Link
+              href="/admin/board"
+              className="rounded-md border border-border bg-card px-3 py-1.5 font-mono text-[11px] font-medium text-foreground transition-colors hover:bg-secondary"
+            >
+              I dag
+            </Link>
             <span className="font-display text-sm font-semibold">
               {start.toLocaleDateString("nb-NO", {
                 day: "numeric",
@@ -132,13 +173,13 @@ export default async function CoachingBoard() {
                 month: "short",
               })}
             </span>
-            <button
-              type="button"
+            <Link
+              href={`/admin/board?uke=${nesteIso}`}
               aria-label="Neste uke"
-              className="grid h-8 w-8 place-items-center rounded-md border border-border bg-card text-muted-foreground hover:text-foreground"
+              className="grid h-8 w-8 place-items-center rounded-md border border-border bg-card text-muted-foreground transition-colors hover:text-foreground"
             >
               <ChevronRight size={14} strokeWidth={1.75} />
-            </button>
+            </Link>
           </div>
         }
       />

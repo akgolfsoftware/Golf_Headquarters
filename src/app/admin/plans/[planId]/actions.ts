@@ -67,6 +67,35 @@ async function krevAdmin() {
 }
 
 /**
+ * Send plan til spiller for godkjenning — status PENDING_PLAYER.
+ * Brukes når coach er ferdig med utkastet og vil at spilleren skal vurdere
+ * planen før den aktiveres.
+ */
+export async function sendTilSpiller(planId: string) {
+  const user = await krevCoach();
+  const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
+  if (!plan) throw new Error("not-found");
+
+  await prisma.trainingPlan.update({
+    where: { id: planId },
+    data: { status: "PENDING_PLAYER", playerComment: null },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: user.id,
+      action: "plan.sendToPlayer",
+      target: planId,
+      metadata: { planName: plan.name, userId: plan.userId },
+    },
+  });
+
+  revalidatePath("/admin/plans");
+  revalidatePath(`/admin/plans/${planId}`);
+  revalidatePath(`/portal/spiller/plans/${planId}`);
+}
+
+/**
  * Godkjenn plan — settes aktiv og synlig for spilleren.
  */
 export async function godkjennPlan(planId: string) {
