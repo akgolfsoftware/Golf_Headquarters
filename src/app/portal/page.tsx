@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getDashboardData } from "@/lib/dashboard-data";
 import { aktivStreak } from "@/lib/streak";
@@ -14,6 +15,12 @@ import { PlanActionsCard } from "@/components/portal/plan-actions-card";
 
 export default async function PortalHjem() {
   const user = await requirePortalUser();
+
+  // Rolle-basert redirect: coacher/admin går til CoachHQ, gjester til kalender.
+  // /portal er bare for PLAYER og PARENT.
+  if (user.role === "COACH" || user.role === "ADMIN") redirect("/admin");
+  if (user.role === "GUEST") redirect("/admin/calendar");
+
   const data = await getDashboardData(user);
 
   // Pyramide-uke som prosent av målfordeling (krude tall — antar 240 min/uke som mål)

@@ -19,10 +19,10 @@ const admin = createClient(supabaseUrl, serviceRoleKey, {
 });
 
 const USERS = [
-  { email: "anders@akgolf.no", password: "AndersGolf2026!" },
-  { email: "markus@akgolf.no", password: "MarkusGolf2026!" },
-  { email: "leder@gfgkjunior.no", password: "EspenGFGK2026!" },
-  { email: "njo@gfgk.no", password: "NjoGFGK2026!" },
+  { email: "anders@akgolf.no", password: "Beta2026Anders" },
+  { email: "markus@akgolf.no", password: "Beta2026Markus" },
+  { email: "leder@gfgkjunior.no", password: "Beta2026Espen" },
+  { email: "njo@gfgk.no", password: "Beta2026Njo" },
 ] as const;
 
 async function main() {

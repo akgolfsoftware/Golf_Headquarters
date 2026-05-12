@@ -60,8 +60,9 @@ export default function Coaching() {
             gir fremgang
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground">
-            To pakker, samme tilnærming: strukturert trening, dokumentert plan,
-            data fra hver økt. Du velger hvor tett du vil ha oppfølgingen.
+            Som abonnent får du 2 eller 4 coaching-timer hver måned. Du booker
+            dem selv fra PlayerHQ når det passer deg — og får en plan,
+            statistikk og oppfølging mellom øktene.
           </p>
         </header>
 
