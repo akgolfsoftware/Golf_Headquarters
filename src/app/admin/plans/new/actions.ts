@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
+import type { PlanTemplatePayload } from "../template-payload";
 
 /**
  * Periodiserings-fase brukt i Plan-wizard. Mappes til pyramidArea-vekter
@@ -40,6 +41,11 @@ export type OpprettPlanInput = {
   faser: PlanFase[];
   allokering: AllokeringVekter;
   ukeSkjema: UkeSkjema;
+  /**
+   * Hvis true: planen sendes direkte til spilleren for godkjenning
+   * (status = PENDING_PLAYER). Default false → planen lagres som DRAFT.
+   */
+  sendTilSpiller?: boolean;
 };
 
 type ValideringResultat =
@@ -172,6 +178,9 @@ export async function opprettPlan(input: OpprettPlanInput): Promise<ValideringRe
   }
 
   // Lag plan + sessions i samme transaksjon
+  // sendTilSpiller=true → PENDING_PLAYER (synlig for spiller, venter på godkjenning)
+  // sendTilSpiller=false → DRAFT (coach jobber videre)
+  const status = input.sendTilSpiller ? "PENDING_PLAYER" : "DRAFT";
   const plan = await prisma.trainingPlan.create({
     data: {
       userId: input.spillerId,
@@ -179,6 +188,7 @@ export async function opprettPlan(input: OpprettPlanInput): Promise<ValideringRe
       startDate: start,
       endDate: slutt,
       isActive: true,
+      status,
       createdById: user.id,
       sessions: {
         create: Array.from({ length: totalOkter }, (_, i) => {
@@ -203,4 +213,48 @@ export async function opprettPlan(input: OpprettPlanInput): Promise<ValideringRe
   revalidatePath("/admin/plans");
   revalidatePath(`/admin/plans/${plan.id}`);
   return { ok: true, planId: plan.id };
+}
+
+/**
+ * Hent en mal-payload som plain JSON, til bruk for å forhåndsfylle wizard-stegene.
+ * Returnerer null hvis malen ikke finnes eller er inaktiv.
+ */
+export type MalForhandsutfylling = {
+  templateId: string;
+  navn: string;
+  weeks: number;
+  allokering: AllokeringVekter;
+  ukeSkjema: UkeSkjema;
+};
+
+export async function hentMalForhandsutfylling(
+  templateId: string,
+): Promise<MalForhandsutfylling | null> {
+  const user = await getCurrentUser();
+  if (!user) return null;
+  if (user.role !== "COACH" && user.role !== "ADMIN") return null;
+
+  const mal = await prisma.planTemplate.findUnique({
+    where: { id: templateId },
+  });
+  if (!mal || !mal.active) return null;
+
+  const payload = mal.payload as unknown as PlanTemplatePayload;
+
+  if (
+    !payload ||
+    typeof payload !== "object" ||
+    !payload.allokering ||
+    !payload.ukeSkjema
+  ) {
+    return null;
+  }
+
+  return {
+    templateId: mal.id,
+    navn: mal.name,
+    weeks: mal.weeks,
+    allokering: payload.allokering,
+    ukeSkjema: payload.ukeSkjema,
+  };
 }

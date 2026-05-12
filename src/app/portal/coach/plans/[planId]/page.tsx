@@ -18,6 +18,7 @@ import {
   PYR_LABEL,
 } from "@/lib/pyramide";
 import type { PyramidArea } from "@/generated/prisma/client";
+import { PlayerPlanActions } from "./player-plan-actions";
 
 // 5-fase-stripen — semantisk navngitt fra perioderings-skissen
 // (generell → spesifikk → taper → toppform → restitusjon).
@@ -201,7 +202,27 @@ export default async function CoachPlanDetalj({
         sub={`Coachet av ${coachNavn} · ${fmtDatoLang(plan.startDate)}${
           plan.endDate ? ` – ${fmtDatoLang(plan.endDate)}` : ""
         } · Fase ${fasenIdx + 1} av ${FASER.length}`}
+        actions={
+          erEier && (plan.status === "ACCEPTED" || plan.status === "ACTIVE") ? (
+            <PlayerPlanActions
+              planId={plan.id}
+              status={plan.status}
+              playerComment={plan.playerComment}
+              acceptedAt={plan.updatedAt}
+            />
+          ) : undefined
+        }
       />
+
+      {erEier &&
+        (plan.status === "PENDING_PLAYER" || plan.status === "REJECTED") && (
+          <PlayerPlanActions
+            planId={plan.id}
+            status={plan.status}
+            playerComment={plan.playerComment}
+            acceptedAt={plan.updatedAt}
+          />
+        )}
 
       {/* Hero-stat-pills */}
       <div className="flex flex-wrap items-center gap-2">

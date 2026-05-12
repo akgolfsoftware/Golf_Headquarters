@@ -8,11 +8,18 @@ import { PlanWizard } from "./wizard";
 export default async function NyPlanPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const spillere = await prisma.user.findMany({
-    where: { role: "PLAYER" },
-    select: { id: true, name: true, hcp: true },
-    orderBy: { name: "asc" },
-  });
+  const [spillere, maler] = await Promise.all([
+    prisma.user.findMany({
+      where: { role: "PLAYER" },
+      select: { id: true, name: true, hcp: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.planTemplate.findMany({
+      where: { active: true },
+      select: { id: true, name: true, description: true, weeks: true },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -31,7 +38,7 @@ export default async function NyPlanPage() {
         sub="Wizard med 6 steg — spiller, periode, faser, allokering, økt-skjema og bekreft."
       />
 
-      <PlanWizard spillere={spillere} />
+      <PlanWizard spillere={spillere} maler={maler} />
     </div>
   );
 }

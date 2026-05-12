@@ -16,6 +16,7 @@ import type { PyramidArea, SessionStatus } from "@/generated/prisma/client";
 import { PlanActions } from "./plan-actions";
 import { DraggableSessions, type DraggableSession } from "./draggable-sessions";
 import { EditSessionModal } from "./edit-session-modal";
+import { RejectedBanner } from "./rejected-banner";
 
 /**
  * Anti-AI farger: kun 3 lime-relaterte aksentpunkter
@@ -53,6 +54,13 @@ export default async function AdminPlanDetalj({
     },
   });
   if (!plan) notFound();
+
+  // Liste over alle spillere — brukes av Kopier-plan-modal
+  const spillere = await prisma.user.findMany({
+    where: { role: "PLAYER" },
+    select: { id: true, name: true, hcp: true, homeClub: true },
+    orderBy: { name: "asc" },
+  });
 
   // ── Avledet data ────────────────────────────────────────────────
   const totalt = plan.sessions.length;
@@ -116,9 +124,20 @@ export default async function AdminPlanDetalj({
             planId={plan.id}
             isActive={plan.isActive}
             isAdmin={me.role === "ADMIN"}
+            originalPlanNavn={plan.name}
+            originalUserId={plan.userId}
+            spillere={spillere}
           />
         }
       />
+
+      {plan.status === "REJECTED" && plan.playerComment && (
+        <RejectedBanner
+          planId={plan.id}
+          playerComment={plan.playerComment}
+          playerName={plan.user.name}
+        />
+      )}
 
       {/* ── Fase-bar ───────────────────────────────────────────── */}
       {faser.length > 0 && (

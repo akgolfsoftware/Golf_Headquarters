@@ -2,8 +2,9 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, LayoutTemplate, X } from "lucide-react";
 import {
+  hentMalForhandsutfylling,
   opprettPlan,
   PLAN_FASE_LABELS,
   type AllokeringVekter,
@@ -16,6 +17,13 @@ type Spiller = {
   id: string;
   name: string;
   hcp: number | null;
+};
+
+export type MalListeElement = {
+  id: string;
+  name: string;
+  description: string | null;
+  weeks: number;
 };
 
 const STEG_NAVN = [
@@ -51,11 +59,19 @@ function isoOm(uker: number): string {
   return d.toISOString().slice(0, 10);
 }
 
-export function PlanWizard({ spillere }: { spillere: Spiller[] }) {
+export function PlanWizard({
+  spillere,
+  maler = [],
+}: {
+  spillere: Spiller[];
+  maler?: MalListeElement[];
+}) {
   const router = useRouter();
   const [steg, setSteg] = useState<StegNr>(1);
   const [pending, startTransition] = useTransition();
   const [serverFeil, setServerFeil] = useState<string | null>(null);
+  const [malModalOpen, setMalModalOpen] = useState(false);
+  const [valgtMalNavn, setValgtMalNavn] = useState<string | null>(null);
 
   // State per steg
   const [spillerId, setSpillerId] = useState<string>("");
@@ -119,7 +135,7 @@ export function PlanWizard({ spillere }: { spillere: Spiller[] }) {
     if (steg > 1) setSteg((steg - 1) as StegNr);
   }
 
-  function sendInn() {
+  function sendInn(sendTilSpiller: boolean) {
     setServerFeil(null);
     const input: OpprettPlanInput = {
       spillerId,
@@ -129,6 +145,7 @@ export function PlanWizard({ spillere }: { spillere: Spiller[] }) {
       faser,
       allokering,
       ukeSkjema,
+      sendTilSpiller,
     };
     startTransition(async () => {
       const res = await opprettPlan(input);
@@ -155,8 +172,56 @@ export function PlanWizard({ spillere }: { spillere: Spiller[] }) {
     setAllokering((prev) => ({ ...prev, [omrade]: value }));
   }
 
+  function velgMal(malId: string) {
+    setServerFeil(null);
+    startTransition(async () => {
+      const data = await hentMalForhandsutfylling(malId);
+      if (!data) {
+        setServerFeil("Kunne ikke laste malen.");
+        return;
+      }
+      setAllokering(data.allokering);
+      setUkeSkjema(data.ukeSkjema);
+      // Beregn ny sluttdato basert på mal-uker
+      const start = new Date(startDato);
+      const slutt = new Date(start.getTime() + data.weeks * 7 * 24 * 60 * 60 * 1000);
+      setSluttDato(slutt.toISOString().slice(0, 10));
+      setValgtMalNavn(data.navn);
+      setMalModalOpen(false);
+    });
+  }
+
   return (
     <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-3">
+        <div>
+          {valgtMalNavn ? (
+            <p className="text-sm text-foreground">
+              <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Mal lastet
+              </span>{" "}
+              <span className="font-display italic">{valgtMalNavn}</span>
+              <span className="ml-2 text-xs text-muted-foreground">
+                — endre detaljene fritt før du oppretter planen.
+              </span>
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Start fra blank — eller forhåndsfyll wizarden fra en eksisterende mal.
+            </p>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => setMalModalOpen(true)}
+          disabled={pending || maler.length === 0}
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <LayoutTemplate className="h-3.5 w-3.5" strokeWidth={1.8} />
+          {maler.length === 0 ? "Ingen maler tilgjengelig" : "Start fra mal"}
+        </button>
+      </div>
+
       <ProgressStripe current={steg} />
 
       <div className="rounded-2xl border border-border bg-card px-6 py-6">
@@ -239,15 +304,118 @@ export function PlanWizard({ spillere }: { spillere: Spiller[] }) {
             <ChevronRight className="h-4 w-4" strokeWidth={1.8} />
           </button>
         ) : (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => sendInn(false)}
+              disabled={pending}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {pending ? "Lagrer…" : "Lagre utkast"}
+            </button>
+            <button
+              type="button"
+              onClick={() => sendInn(true)}
+              disabled={pending}
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <Check className="h-4 w-4" strokeWidth={2} />
+              {pending ? "Sender…" : "Send til spiller"}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {malModalOpen && (
+        <StartFraMalModal
+          maler={maler}
+          pending={pending}
+          onClose={() => setMalModalOpen(false)}
+          onVelg={velgMal}
+        />
+      )}
+    </div>
+  );
+}
+
+/* =========================================================
+   Start fra mal — modal
+   ========================================================= */
+
+function StartFraMalModal({
+  maler,
+  pending,
+  onClose,
+  onVelg,
+}: {
+  maler: MalListeElement[];
+  pending: boolean;
+  onClose: () => void;
+  onVelg: (id: string) => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-2xl rounded-2xl border border-border bg-card p-6 shadow-2xl"
+      >
+        <div className="mb-5 flex items-start justify-between">
+          <div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Start fra mal
+            </div>
+            <h3 className="mt-1 font-display text-xl leading-tight tracking-tight">
+              Velg en{" "}
+              <span className="font-display italic text-primary">eksisterende mal</span>
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Allokering, økt-skjema og varighet forhåndsfylles. Du kan endre alt før
+              du oppretter planen.
+            </p>
+          </div>
           <button
             type="button"
-            onClick={sendInn}
-            disabled={pending}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            onClick={onClose}
+            className="rounded-md p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
+            aria-label="Lukk"
           >
-            <Check className="h-4 w-4" strokeWidth={2} />
-            {pending ? "Oppretter…" : "Opprett plan"}
+            <X className="h-4 w-4" strokeWidth={1.5} />
           </button>
+        </div>
+
+        {maler.length === 0 ? (
+          <p className="rounded-md border border-border bg-secondary/40 px-4 py-6 text-center text-sm text-muted-foreground">
+            Ingen maler er lagret ennå. Lagre en eksisterende plan som mal først.
+          </p>
+        ) : (
+          <div className="max-h-[60vh] space-y-2 overflow-y-auto">
+            {maler.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => onVelg(m.id)}
+                disabled={pending}
+                className="flex w-full items-start justify-between gap-3 rounded-lg border border-border bg-background p-4 text-left transition-colors hover:border-primary hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="truncate font-display text-base font-semibold text-foreground">
+                    {m.name}
+                  </div>
+                  {m.description && (
+                    <div className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                      {m.description}
+                    </div>
+                  )}
+                </div>
+                <div className="shrink-0 rounded-full bg-accent px-2.5 py-1 font-mono text-[10px] font-semibold tabular-nums text-accent-foreground">
+                  {m.weeks} uker
+                </div>
+              </button>
+            ))}
+          </div>
         )}
       </div>
     </div>
