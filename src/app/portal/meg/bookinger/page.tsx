@@ -6,8 +6,21 @@ import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { CancelButton } from "./cancel-button";
 
-export default async function MineBookinger() {
+type Props = {
+  searchParams: Promise<{ ny?: string }>;
+};
+
+export default async function MineBookinger({ searchParams }: Props) {
+  const { ny } = await searchParams;
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+
+  const subscription = await prisma.subscription.findUnique({
+    where: { userId: user.id },
+    select: { monthlyCredits: true },
+  });
+  const erAcademyKunde =
+    subscription && subscription.monthlyCredits > 0 ? true : false;
+  const nyBookingHref = erAcademyKunde ? "/portal/booking/ny" : "/booking";
 
   const bookings = await prisma.booking.findMany({
     where: { userId: user.id },
@@ -38,7 +51,7 @@ export default async function MineBookinger() {
         sub="Kommende økter, tidligere besøk og avbestillingsmuligheter."
         actions={
           <Link
-            href="/booking"
+            href={nyBookingHref}
             className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
             <CalendarPlus className="h-4 w-4" strokeWidth={1.75} />
@@ -46,6 +59,12 @@ export default async function MineBookinger() {
           </Link>
         }
       />
+
+      {ny === "1" && (
+        <div className="rounded-md border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
+          Bookingen din er bekreftet. Du finner den under «Kommende» nedenfor.
+        </div>
+      )}
 
       {bookings.length === 0 ? (
         <EmptyState
@@ -100,6 +119,7 @@ type BookingRowData = {
   startAt: Date;
   status: string;
   priceOre: number;
+  subscriptionId: string | null;
   serviceType: { name: string; durationMin: number };
   location: { name: string };
 };
@@ -142,9 +162,15 @@ function BookingRad({
         </div>
         <div className="flex flex-col items-end gap-1">
           <StatusBadge status={booking.status} />
-          <span className="font-mono text-sm tabular-nums text-muted-foreground">
-            {booking.priceOre / 100} kr
-          </span>
+          {booking.subscriptionId ? (
+            <span className="rounded-full bg-accent/30 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-accent-foreground">
+              Abonnement
+            </span>
+          ) : (
+            <span className="font-mono text-sm tabular-nums text-muted-foreground">
+              {booking.priceOre / 100} kr
+            </span>
+          )}
         </div>
       </div>
 
