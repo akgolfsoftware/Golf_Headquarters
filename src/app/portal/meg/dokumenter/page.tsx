@@ -1,5 +1,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 
 const KIND_LABEL: Record<string, string> = {
   CONTRACT: "Kontrakt",
@@ -27,14 +28,12 @@ export default async function DokumenterPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-          Dokumenter
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Kontrakter, kvitteringer og veiledninger som er knyttet til din konto.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="PlayerHQ · Meg · Dokumenter"
+        titleLead="Det som er"
+        titleItalic="signert"
+        sub="Kontrakter, kvitteringer og veiledninger som er knyttet til din konto."
+      />
 
       {documents.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">

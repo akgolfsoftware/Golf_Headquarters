@@ -1,8 +1,10 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { lesPreferences } from "@/lib/preferences";
 import { ProfilForm } from "@/app/portal/meg/profil-form";
 
 export default async function CoachProfil() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const prefs = lesPreferences(user);
 
   return (
     <div className="space-y-6">
@@ -27,7 +29,11 @@ export default async function CoachProfil() {
           ambition: user.ambition,
           homeClub: user.homeClub,
           email: user.email,
+          tier: user.tier,
+          avatarUrl: user.avatarUrl,
         }}
+        prefs={prefs}
+        parents={[]}
       />
     </div>
   );

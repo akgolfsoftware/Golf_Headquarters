@@ -1,19 +1,37 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
+import { lesPreferences } from "@/lib/preferences";
+import { PageHeader } from "@/components/shared/page-header";
 import { ProfilForm } from "./profil-form";
 
 export default async function MegProfil() {
   const user = await requirePortalUser();
+  const prefs = lesPreferences(user);
+
+  const parents = await prisma.parentRelation.findMany({
+    where: { childId: user.id },
+    include: {
+      parent: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          avatarUrl: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "asc" },
+  });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-          Personalia
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Endringer her vises i portalen og hos coach.
-        </p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="PlayerHQ · Min profil"
+        titleLead="Slik andre"
+        titleItalic="ser deg"
+        sub="Bilde, navn og kontaktinfo. Endringer her synes for coach og — om du er under 18 — for foresatte."
+      />
 
       <ProfilForm
         initial={{
@@ -24,7 +42,18 @@ export default async function MegProfil() {
           ambition: user.ambition,
           homeClub: user.homeClub,
           email: user.email,
+          tier: user.tier,
+          avatarUrl: user.avatarUrl,
         }}
+        prefs={prefs}
+        parents={parents.map((p) => ({
+          id: p.id,
+          name: p.parent.name,
+          email: p.parent.email,
+          phone: p.parent.phone,
+          relationship: p.relationship,
+          approved: p.approved,
+        }))}
       />
     </div>
   );

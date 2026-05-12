@@ -2,30 +2,64 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { oppdaterProfil } from "./actions";
+import {
+  Pencil,
+  Check,
+  AlertTriangle,
+  Plus,
+  Mail,
+  Phone,
+} from "lucide-react";
+import type { Tier } from "@/generated/prisma/client";
+import type { UserPreferences } from "@/lib/preferences";
+import { oppdaterProfil, oppdaterPreferences } from "./actions";
 
-type Props = {
-  initial: {
-    name: string;
-    phone: string | null;
-    hcp: number | null;
-    playingYears: number | null;
-    ambition: string | null;
-    homeClub: string | null;
-    email: string;
-  };
+type ProfilInitial = {
+  name: string;
+  phone: string | null;
+  hcp: number | null;
+  playingYears: number | null;
+  ambition: string | null;
+  homeClub: string | null;
+  email: string;
+  tier: Tier;
+  avatarUrl: string | null;
 };
 
-export function ProfilForm({ initial }: Props) {
+type Parent = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  relationship: string;
+  approved: boolean;
+};
+
+type Props = {
+  initial: ProfilInitial;
+  prefs: UserPreferences;
+  parents: Parent[];
+};
+
+export function ProfilForm({ initial, prefs, parents }: Props) {
   const router = useRouter();
+
+  // Personalia + golf-info state
   const [name, setName] = useState(initial.name);
   const [phone, setPhone] = useState(initial.phone ?? "");
+  const [homeClub, setHomeClub] = useState(initial.homeClub ?? "");
   const [hcp, setHcp] = useState(initial.hcp != null ? String(initial.hcp) : "");
   const [playingYears, setPlayingYears] = useState(
-    initial.playingYears != null ? String(initial.playingYears) : ""
+    initial.playingYears != null ? String(initial.playingYears) : "",
   );
   const [ambition, setAmbition] = useState(initial.ambition ?? "");
-  const [homeClub, setHomeClub] = useState(initial.homeClub ?? "");
+
+  // Personvern state (local, persisted via oppdaterPreferences)
+  const [notifEpost, setNotifEpost] = useState(prefs.notif.epost);
+  const [notifPush, setNotifPush] = useState(prefs.notif.push);
+  const [notifPaaminnelse, setNotifPaaminnelse] = useState(
+    prefs.notif.paaminnelse,
+  );
 
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -54,119 +88,494 @@ export function ProfilForm({ initial }: Props) {
     });
   }
 
+  function togglePref(
+    felt: "epost" | "push" | "paaminnelse",
+    nyVerdi: boolean,
+  ) {
+    if (felt === "epost") setNotifEpost(nyVerdi);
+    if (felt === "push") setNotifPush(nyVerdi);
+    if (felt === "paaminnelse") setNotifPaaminnelse(nyVerdi);
+    startTransition(async () => {
+      try {
+        await oppdaterPreferences({
+          notif: {
+            ...prefs.notif,
+            [felt]: nyVerdi,
+          },
+        });
+      } catch {
+        // Revert ved feil
+        if (felt === "epost") setNotifEpost(!nyVerdi);
+        if (felt === "push") setNotifPush(!nyVerdi);
+        if (felt === "paaminnelse") setNotifPaaminnelse(!nyVerdi);
+      }
+    });
+  }
+
+  const initialer = name
+    .split(" ")
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
   return (
-    <form onSubmit={lagre} className="space-y-5">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Felt label="Navn">
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className={inputCss}
-          />
-        </Felt>
-        <Felt label="E-post (kan ikke endres)">
-          <input
-            type="email"
-            value={initial.email}
-            disabled
-            className={`${inputCss} cursor-not-allowed bg-muted text-muted-foreground`}
-          />
-        </Felt>
-        <Felt label="Mobil">
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+47 …"
-            className={inputCss}
-          />
-        </Felt>
-        <Felt label="Hjemmeklubb">
-          <input
-            type="text"
-            value={homeClub}
-            onChange={(e) => setHomeClub(e.target.value)}
-            placeholder="f.eks. Gamle Fredrikstad GK"
-            className={inputCss}
-          />
-        </Felt>
-        <Felt label="HCP">
-          <input
-            type="number"
-            step="0.1"
-            value={hcp}
-            onChange={(e) => setHcp(e.target.value)}
-            className={inputCss}
-          />
-        </Felt>
-        <Felt label="År med golf">
-          <input
-            type="number"
-            step="1"
-            value={playingYears}
-            onChange={(e) => setPlayingYears(e.target.value)}
-            className={inputCss}
-          />
-        </Felt>
-      </div>
-
-      <Felt label="Ambisjon (maks 280 tegn)">
-        <textarea
-          value={ambition}
-          onChange={(e) => setAmbition(e.target.value.slice(0, 280))}
-          rows={3}
-          className={inputCss}
-        />
-        <span className="mt-1 block text-right font-mono text-[10px] text-muted-foreground">
-          {ambition.length} / 280
-        </span>
-      </Felt>
-
-      {error && (
-        <div
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
-        >
-          {error}
+    <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[280px_1fr]">
+      {/* LEFT — ID-kort */}
+      <aside className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm lg:sticky lg:top-8">
+        <div className="relative">
+          <div className="grid h-24 w-24 place-items-center overflow-hidden rounded-full bg-primary text-primary-foreground">
+            {initial.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={initial.avatarUrl}
+                alt={name}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <span className="font-display text-[36px] font-semibold leading-none">
+                {initialer || "?"}
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            aria-label="Endre profilbilde"
+            className="absolute -bottom-0.5 -right-0.5 grid h-8 w-8 place-items-center rounded-full border-[3px] border-card bg-primary text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            <Pencil className="h-3.5 w-3.5" strokeWidth={1.5} />
+          </button>
         </div>
-      )}
 
-      <div className="flex items-center gap-3">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
-        >
-          {pending ? "Lagrer…" : "Lagre profil"}
-        </button>
-        {lagret && (
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
-            Lagret ✓
+        <h2 className="text-center font-display text-[22px] font-medium leading-tight tracking-tight text-foreground">
+          {name || "Uten navn"}
+        </h2>
+
+        <div className="flex items-center gap-2">
+          <span className="rounded-md bg-primary px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-foreground">
+            {initial.tier === "PRO" ? "PRO" : "GRATIS"}
           </span>
+        </div>
+
+        <div className="mt-2 w-full space-y-1.5 border-t border-border pt-4">
+          <IdStat
+            label="HCP"
+            value={initial.hcp != null ? String(initial.hcp) : "—"}
+            mono
+          />
+          <IdStat label="Klubb" value={initial.homeClub ?? "—"} />
+          <IdStat
+            label="Spilleår"
+            value={
+              initial.playingYears != null ? String(initial.playingYears) : "—"
+            }
+            mono
+          />
+        </div>
+      </aside>
+
+      {/* RIGHT — seksjoner */}
+      <div className="flex min-w-0 flex-col gap-8">
+        <form onSubmit={lagre} className="flex flex-col gap-8">
+          {/* Personalia */}
+          <Section title="Personalia" aux="Hvem du er">
+            <FieldRow label="Fullt navn">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className={inputCss}
+              />
+            </FieldRow>
+
+            <FieldRow
+              label="E-post"
+              hint="Kan ikke endres"
+              badge={{ icon: Mail, text: "Innlogging" }}
+            >
+              <input
+                type="email"
+                value={initial.email}
+                disabled
+                className={`${inputCss} cursor-not-allowed bg-muted text-muted-foreground`}
+              />
+            </FieldRow>
+
+            <FieldRow
+              label="Mobil"
+              badge={phone ? { icon: Phone, text: "Kontakt" } : undefined}
+            >
+              <input
+                type="tel"
+                inputMode="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+47 …"
+                className={inputCss}
+              />
+            </FieldRow>
+
+            <FieldRow label="Fødselsår" hint="Brukes for U18-flagg">
+              <input
+                type="text"
+                value="—"
+                disabled
+                className={`${inputCss} cursor-not-allowed bg-muted text-muted-foreground`}
+              />
+            </FieldRow>
+          </Section>
+
+          {/* Golf-info */}
+          <Section title="Golf-info" aux="Synces til coach">
+            <FieldRow label="Hjemmeklubb">
+              <input
+                type="text"
+                value={homeClub}
+                onChange={(e) => setHomeClub(e.target.value)}
+                placeholder="f.eks. Gamle Fredrikstad GK"
+                className={inputCss}
+              />
+            </FieldRow>
+
+            <FieldRow label="HCP">
+              <input
+                type="number"
+                step="0.1"
+                value={hcp}
+                onChange={(e) => setHcp(e.target.value)}
+                className={`${inputCss} font-mono`}
+              />
+            </FieldRow>
+
+            <FieldRow label="År med golf">
+              <input
+                type="number"
+                step="1"
+                min="0"
+                value={playingYears}
+                onChange={(e) => setPlayingYears(e.target.value)}
+                className={`${inputCss} font-mono`}
+              />
+            </FieldRow>
+
+            <FieldRow
+              label="Ambisjon"
+              hint="Maks 280 tegn"
+            >
+              <textarea
+                value={ambition}
+                onChange={(e) => setAmbition(e.target.value.slice(0, 280))}
+                rows={3}
+                className={inputCss}
+              />
+              <span className="mt-1 block text-right font-mono text-[10px] text-muted-foreground">
+                {ambition.length} / 280
+              </span>
+            </FieldRow>
+          </Section>
+
+          {/* Save-row spans both sections */}
+          {error && (
+            <div
+              role="alert"
+              className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
+            >
+              {error}
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            <button
+              type="submit"
+              disabled={pending}
+              className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+            >
+              {pending ? "Lagrer…" : "Lagre profil"}
+            </button>
+            {lagret && (
+              <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
+                <Check className="h-3 w-3" strokeWidth={1.5} />
+                Lagret
+              </span>
+            )}
+          </div>
+        </form>
+
+        {/* Foreldre / foresatte — kun hvis det finnes relasjoner */}
+        {parents.length > 0 && (
+          <Section
+            title="Foreldre / foresatte"
+            desc="Foresatte med tilgang til kontoen din."
+          >
+            {parents.map((p) => (
+              <ParentRow key={p.id} parent={p} />
+            ))}
+            <div className="grid grid-cols-[36px_1fr_auto] items-center gap-3 bg-secondary/60 px-6 py-4">
+              <div className="grid h-9 w-9 place-items-center rounded-full border border-dashed border-border text-muted-foreground">
+                <Plus className="h-4 w-4" strokeWidth={1.5} />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[13px] font-medium text-muted-foreground">
+                  Legg til foresatt
+                </span>
+                <span className="text-[11px] text-muted-foreground/80">
+                  Krever bekreftelse fra coach.
+                </span>
+              </div>
+              <span />
+            </div>
+          </Section>
         )}
+
+        {/* Personvern */}
+        <Section title="Personvern" aux="Hva andre kan se">
+          <ToggleRow
+            label="E-postvarsler"
+            hint="Booking-bekreftelser, ukerapport og viktige meldinger"
+            on={notifEpost}
+            onChange={(v) => togglePref("epost", v)}
+          />
+          <ToggleRow
+            label="Push-varsler"
+            hint="Påminnelser før økt og live-session"
+            on={notifPush}
+            onChange={(v) => togglePref("push", v)}
+          />
+          <ToggleRow
+            label="Daglig påminnelse"
+            hint="Hjelp meg å holde streaken"
+            on={notifPaaminnelse}
+            onChange={(v) => togglePref("paaminnelse", v)}
+          />
+        </Section>
+
+        {/* Farlig sone */}
+        <section className="rounded-xl border border-destructive/30 bg-destructive/5 p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <AlertTriangle
+              className="h-4 w-4 text-destructive"
+              strokeWidth={1.5}
+            />
+            <h3 className="font-display text-[15px] font-semibold text-foreground">
+              Farlig sone
+            </h3>
+          </div>
+          <DangerItem
+            title="Eksporter alle mine data"
+            desc="Du får alt — runder, helse, meldinger. Tar 2–5 minutter."
+            cta="Be om eksport"
+          />
+          <DangerItem
+            title="Slett konto"
+            desc="Sender forespørsel til coach. Du må være 18 for å gjøre dette selv."
+            cta="Be om sletting"
+            destructive
+          />
+        </section>
       </div>
-    </form>
+    </div>
   );
 }
 
-const inputCss =
-  "w-full rounded-md border border-input bg-card px-3 py-2.5 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
+// ============================================================================
+// Sub-komponenter
+// ============================================================================
 
-function Felt({
+const inputCss =
+  "w-full rounded-md border border-input bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
+
+function IdStat({
   label,
-  children,
+  value,
+  mono = false,
 }: {
   label: string;
+  value: string;
+  mono?: boolean;
+}) {
+  return (
+    <div className="flex items-baseline justify-between py-1 text-[12px] text-muted-foreground">
+      <span>{label}</span>
+      <span
+        className={`font-medium text-foreground ${
+          mono ? "font-mono text-[13px]" : "text-[12px]"
+        }`}
+      >
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function Section({
+  title,
+  aux,
+  desc,
+  children,
+}: {
+  title: string;
+  aux?: string;
+  desc?: string;
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
+    <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <header className="flex items-baseline justify-between gap-4 border-b border-border px-6 py-4">
+        <h2 className="font-display text-[15px] font-semibold text-foreground">
+          {title}
+        </h2>
+        {aux && (
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            {aux}
+          </span>
+        )}
+        {desc && (
+          <span className="max-w-[420px] text-right text-[12px] text-muted-foreground">
+            {desc}
+          </span>
+        )}
+      </header>
+      <div className="flex flex-col">{children}</div>
+    </section>
+  );
+}
+
+type FieldRowProps = {
+  label: string;
+  hint?: string;
+  badge?: { icon: React.ComponentType<{ className?: string; strokeWidth?: number }>; text: string };
+  children: React.ReactNode;
+};
+
+function FieldRow({ label, hint, badge, children }: FieldRowProps) {
+  const BadgeIcon = badge?.icon;
+  return (
+    <div className="grid grid-cols-1 items-start gap-3 border-b border-border/60 px-6 py-4 last:border-b-0 sm:grid-cols-[180px_1fr]">
+      <div className="flex flex-col gap-1">
+        <span className="text-[12px] font-medium text-muted-foreground">
+          {label}
+        </span>
+        {hint && (
+          <span className="text-[11px] text-muted-foreground/70">{hint}</span>
+        )}
+        {badge && BadgeIcon && (
+          <span className="mt-1 inline-flex w-fit items-center gap-1 rounded-sm bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+            <BadgeIcon className="h-2.5 w-2.5" strokeWidth={1.5} />
+            {badge.text}
+          </span>
+        )}
+      </div>
+      <div className="min-w-0">{children}</div>
+    </div>
+  );
+}
+
+function ParentRow({ parent }: { parent: Parent }) {
+  const initials = parent.name
+    .split(" ")
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  return (
+    <div className="grid grid-cols-[36px_1fr_auto] items-center gap-3 border-b border-border/60 px-6 py-4 last:border-b-0">
+      <div className="grid h-9 w-9 place-items-center rounded-full bg-primary/80 text-[12px] font-semibold text-primary-foreground">
+        {initials || "?"}
+      </div>
+      <div className="flex min-w-0 flex-col">
+        <span className="truncate text-[13px] font-medium text-foreground">
+          {parent.name}{" "}
+          <span className="font-normal text-muted-foreground/70">
+            · {parent.relationship.toLowerCase()}
+          </span>
+        </span>
+        <span className="truncate text-[11px] text-muted-foreground/80">
+          {parent.email}
+          {parent.phone ? ` · ${parent.phone}` : ""}
+        </span>
+      </div>
+      <span
+        className={`rounded-md border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.06em] ${
+          parent.approved
+            ? "border-primary/20 bg-primary/10 text-primary"
+            : "border-border bg-secondary text-muted-foreground"
+        }`}
+      >
+        {parent.approved ? "Bekreftet" : "Avventer"}
       </span>
-      {children}
-    </label>
+    </div>
+  );
+}
+
+function ToggleRow({
+  label,
+  hint,
+  on,
+  onChange,
+}: {
+  label: string;
+  hint?: string;
+  on: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="grid grid-cols-[1fr_auto] items-center gap-4 border-b border-border/60 px-6 py-4 last:border-b-0">
+      <span className="flex flex-col text-[13px] text-foreground">
+        {label}
+        {hint && (
+          <span className="text-[11px] text-muted-foreground">{hint}</span>
+        )}
+      </span>
+      <button
+        type="button"
+        onClick={() => onChange(!on)}
+        aria-pressed={on}
+        role="switch"
+        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+          on ? "bg-primary" : "bg-secondary"
+        }`}
+      >
+        <span
+          className={`absolute h-4 w-4 rounded-full bg-card shadow transition-transform ${
+            on ? "translate-x-[18px]" : "translate-x-0.5"
+          }`}
+        />
+      </button>
+    </div>
+  );
+}
+
+function DangerItem({
+  title,
+  desc,
+  cta,
+  destructive = false,
+}: {
+  title: string;
+  desc: string;
+  cta: string;
+  destructive?: boolean;
+}) {
+  return (
+    <div className="flex flex-col items-start justify-between gap-3 border-t border-destructive/20 py-4 first:border-t-0 first:pt-0 sm:flex-row sm:items-center sm:gap-6">
+      <div className="flex min-w-0 flex-col">
+        <span className="text-[13px] font-medium text-foreground">{title}</span>
+        <span className="text-[12px] text-muted-foreground">{desc}</span>
+      </div>
+      <button
+        type="button"
+        className={`whitespace-nowrap rounded-md border px-3 py-2 text-[12px] font-medium transition-colors ${
+          destructive
+            ? "border-destructive/30 text-destructive hover:bg-destructive/10"
+            : "border-border text-foreground hover:bg-secondary"
+        }`}
+      >
+        {cta} →
+      </button>
+    </div>
   );
 }

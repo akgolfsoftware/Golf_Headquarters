@@ -1,5 +1,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
+import { PageHeader } from "@/components/shared/page-header";
 import { NotifToggles } from "./notif-toggles";
 
 export default async function InnstillingerPage() {
@@ -8,14 +9,12 @@ export default async function InnstillingerPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-          Innstillinger
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Endringer lagres automatisk.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="PlayerHQ · Meg · Innstillinger"
+        titleLead="Slik portalen"
+        titleItalic="oppfører seg"
+        sub="Endringer lagres automatisk."
+      />
 
       <NotifToggles initial={prefs} />
     </div>

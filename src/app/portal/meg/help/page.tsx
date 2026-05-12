@@ -1,4 +1,5 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { PageHeader } from "@/components/shared/page-header";
 
 const FAQ: { sporsmaal: string; svar: string }[] = [
   {
@@ -32,14 +33,12 @@ export default async function HelpPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-          Hjelp & support
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Vanlige spørsmål. Trenger du noe annet, send e-post.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="PlayerHQ · Meg · Hjelp"
+        titleLead="Svar når du"
+        titleItalic="trenger dem"
+        sub="Vanlige spørsmål. Trenger du noe annet, send e-post."
+      />
 
       <ul className="space-y-3">
         {FAQ.map((q, i) => (

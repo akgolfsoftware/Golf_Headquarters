@@ -1,5 +1,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 import { UpgradeButton, ManageButton } from "./upgrade-button";
 
 type Search = { ok?: string; cancelled?: string };
@@ -21,6 +22,11 @@ export default async function AbonnementPage({
 
   return (
     <div className="space-y-6">
+      <PageHeader
+        eyebrow="PlayerHQ · Meg · Abonnement"
+        titleLead="Det du betaler for,"
+        titleItalic="og hva du får"
+      />
       {params.ok === "1" && (
         <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground">
           Velkommen til Pro! Endringen kan ta noen sekunder før den synes overalt.

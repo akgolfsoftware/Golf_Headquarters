@@ -1,5 +1,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
+import { PageHeader } from "@/components/shared/page-header";
 import { HelseForm } from "./helse-form";
 
 export default async function HelsePage() {
@@ -8,15 +9,12 @@ export default async function HelsePage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-          Helse
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Manuelle helse-data brukes til å justere treningsbelastning. Apple
-          Health og Garmin-integrasjoner kommer i v2.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="PlayerHQ · Meg · Helse"
+        titleLead="Kroppen din,"
+        titleItalic="dataen din"
+        sub="Manuelle helse-data brukes til å justere treningsbelastning. Apple Health og Garmin-integrasjoner kommer i v2."
+      />
 
       <section className="rounded-lg border border-border bg-card p-6">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
