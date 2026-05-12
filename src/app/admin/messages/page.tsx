@@ -1,130 +1,194 @@
 import Link from "next/link";
+import { Inbox } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
+import { MessagesInbox } from "./_components/messages-inbox";
+import { Conversation } from "./_components/conversation";
+import { ContextPanel } from "./_components/context-panel";
 
 type ChatMelding = { role?: string; content?: string; ts?: string };
 
-export default async function AdminMessages() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+type Search = { thread?: string; filter?: string };
 
-  const sesjoner = await prisma.coachingSession.findMany({
+function initialer(navn: string): string {
+  return navn
+    .split(/\s+/)
+    .map((d) => d[0] ?? "")
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+export default async function AdminMessages({
+  searchParams,
+}: {
+  searchParams: Promise<Search>;
+}) {
+  const me = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const params = await searchParams;
+  const aktivtFilter = (params.filter ?? "alle") as "alle" | "ulest" | "merkede";
+
+  const alleTråder = await prisma.coachingSession.findMany({
     include: {
-      user: { select: { id: true, name: true } },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          tier: true,
+          createdAt: true,
+        },
+      },
       coach: { select: { id: true, name: true } },
     },
     orderBy: { updatedAt: "desc" },
     take: 100,
   });
 
-  const direct = sesjoner.filter((s) => s.kind === "DIRECT");
-  const ai = sesjoner.filter((s) => s.kind === "AI");
+  // Vi viser kun DIRECT-tråder i innboksen — AI-samtaler vises på elev-siden.
+  const tråder = alleTråder.filter((t) => t.kind === "DIRECT");
+
+  const beriket = tråder.map((t) => {
+    const meldinger = Array.isArray(t.messages)
+      ? (t.messages as ChatMelding[])
+      : [];
+    const siste = meldinger[meldinger.length - 1];
+    const sistFraSpiller = siste?.role === "user";
+    return {
+      id: t.id,
+      userId: t.user.id,
+      userName: t.user.name,
+      userInitials: initialer(t.user.name),
+      userTier: t.user.tier as string,
+      preview: siste?.content ?? "Ingen meldinger ennå",
+      sisteRolle: siste?.role ?? null,
+      tidspunkt: t.updatedAt,
+      meldingerAntall: meldinger.length,
+      ulest: sistFraSpiller, // forenklet: ulest hvis siste melding ikke er fra coach
+      fromMe: siste?.role === "coach",
+    };
+  });
+
+  const antallUlest = beriket.filter((t) => t.ulest).length;
+  const antallTotal = beriket.length;
+
+  // Filtrer etter aktivt filter
+  const filtrerte =
+    aktivtFilter === "ulest"
+      ? beriket.filter((t) => t.ulest)
+      : beriket;
+
+  // Finn aktiv tråd — fra query-param eller første i listen
+  const aktivId = params.thread ?? filtrerte[0]?.id ?? null;
+  const aktivTråd = aktivId
+    ? alleTråder.find((t) => t.id === aktivId)
+    : null;
+
+  const aktivMeldinger: ChatMelding[] = aktivTråd
+    ? Array.isArray(aktivTråd.messages)
+      ? (aktivTråd.messages as ChatMelding[])
+      : []
+    : [];
+
+  // Context-data for høyrepanel
+  const aktivSpiller = aktivTråd?.user ?? null;
+  const aktivSpillerHcp = aktivSpiller
+    ? await prisma.user.findUnique({
+        where: { id: aktivSpiller.id },
+        select: { hcp: true, homeClub: true },
+      })
+    : null;
 
   return (
     <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Meldinger
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Coaching</em>-tråder
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Alle samtaler på tvers av spillere, sortert etter siste oppdatering.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="CoachHQ · Meldinger"
+        titleLead="Min"
+        titleItalic="innboks"
+        sub={
+          antallTotal > 0
+            ? `${antallTotal} ${antallTotal === 1 ? "samtale" : "samtaler"}${antallUlest > 0 ? ` · ${antallUlest} ${antallUlest === 1 ? "ulest" : "uleste"}` : ""}`
+            : "Ingen samtaler ennå"
+        }
+      />
 
-      <section>
-        <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
-          Direkte ({direct.length})
-        </h3>
-        {direct.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-            Ingen direkte-samtaler.
-          </p>
-        ) : (
-          <ul className="divide-y divide-border rounded-lg border border-border bg-card">
-            {direct.map((s) => {
-              const meldinger = Array.isArray(s.messages)
-                ? (s.messages as ChatMelding[])
-                : [];
-              const siste = meldinger[meldinger.length - 1];
-              return (
-                <li key={s.id} className="px-4 py-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <Link
-                      href={`/admin/elever/${s.user.id}`}
-                      className="font-medium text-foreground hover:text-primary"
-                    >
-                      {s.user.name}
-                    </Link>
-                    <span className="font-mono text-[10px] text-muted-foreground">
-                      {s.updatedAt.toLocaleDateString("nb-NO", {
-                        day: "2-digit",
-                        month: "2-digit",
-                      })}{" "}
-                      ·{" "}
-                      {s.updatedAt.toLocaleTimeString("nb-NO", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                  </div>
-                  {siste?.content && (
-                    <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.10em]">
-                        {siste.role}:{" "}
-                      </span>
-                      {siste.content}
-                    </p>
-                  )}
-                  <div className="mt-1 font-mono text-[10px] text-muted-foreground">
-                    {meldinger.length} meldinger
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+      {antallTotal === 0 ? (
+        <EmptyState
+          icon={Inbox}
+          titleItalic="Tomt"
+          titleTrail="i innboksen"
+          sub="Når spillere eller foreldre sender meldinger, dukker de opp her. Du kan også starte en tråd fra en elev-profil."
+          cta={
+            <Link
+              href="/admin/elever"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Til spillerlisten
+            </Link>
+          }
+        />
+      ) : (
+        <div
+          className="grid overflow-hidden rounded-lg border border-border bg-card"
+          style={{
+            gridTemplateColumns: "300px 1fr 320px",
+            height: "calc(100vh - 240px)",
+            minHeight: "640px",
+          }}
+        >
+          {/* Venstre: innboks */}
+          <MessagesInbox
+            tråder={filtrerte}
+            aktivId={aktivId}
+            aktivtFilter={aktivtFilter}
+            antallAlle={beriket.length}
+            antallUlest={antallUlest}
+          />
 
-      <section>
-        <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
-          AI-coach ({ai.length})
-        </h3>
-        {ai.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-            Ingen AI-samtaler.
-          </p>
-        ) : (
-          <ul className="divide-y divide-border rounded-lg border border-border bg-card">
-            {ai.slice(0, 20).map((s) => {
-              const meldinger = Array.isArray(s.messages)
-                ? (s.messages as ChatMelding[])
-                : [];
-              return (
-                <li
-                  key={s.id}
-                  className="flex items-center justify-between px-4 py-3 text-sm"
-                >
-                  <Link
-                    href={`/admin/elever/${s.user.id}`}
-                    className="font-medium text-foreground hover:text-primary"
-                  >
-                    {s.user.name}
-                  </Link>
-                  <span className="font-mono text-xs text-muted-foreground">
-                    {meldinger.length} meldinger ·{" "}
-                    {s.updatedAt.toLocaleDateString("nb-NO", {
-                      day: "2-digit",
-                      month: "2-digit",
-                    })}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+          {/* Midten: samtale */}
+          {aktivTråd && aktivSpiller ? (
+            <Conversation
+              threadId={aktivTråd.id}
+              spillerNavn={aktivSpiller.name}
+              spillerInitialer={initialer(aktivSpiller.name)}
+              spillerId={aktivSpiller.id}
+              spillerTier={aktivSpiller.tier as string}
+              meldinger={aktivMeldinger}
+              meId={me.id}
+              meName={me.name}
+              meInitialer={initialer(me.name)}
+            />
+          ) : (
+            <div className="flex items-center justify-center border-l border-border bg-background">
+              <p className="text-sm text-muted-foreground">
+                Velg en samtale fra listen
+              </p>
+            </div>
+          )}
+
+          {/* Høyre: context-panel */}
+          {aktivTråd && aktivSpiller ? (
+            <ContextPanel
+              spiller={{
+                id: aktivSpiller.id,
+                navn: aktivSpiller.name,
+                initialer: initialer(aktivSpiller.name),
+                tier: aktivSpiller.tier as string,
+                hcp: aktivSpillerHcp?.hcp ?? null,
+                homeClub: aktivSpillerHcp?.homeClub ?? null,
+                medlemsSiden: aktivSpiller.createdAt,
+              }}
+              meldingerAntall={aktivMeldinger.length}
+              sistOppdatert={aktivTråd.updatedAt}
+            />
+          ) : (
+            <div className="border-l border-border bg-secondary/40" />
+          )}
+        </div>
+      )}
     </div>
   );
 }
