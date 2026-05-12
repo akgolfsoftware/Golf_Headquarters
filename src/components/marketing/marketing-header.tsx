@@ -38,10 +38,10 @@ export function MarketingHeader() {
             Logg inn
           </Link>
           <Link
-            href="/auth/signup"
+            href="/booking"
             className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
-            Prøv gratis
+            Book time
           </Link>
         </div>
       </div>
