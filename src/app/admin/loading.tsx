@@ -1,12 +1,12 @@
 import {
+  SkeletonCard,
   SkeletonHero,
   SkeletonKpi,
-  SkeletonCard,
 } from "@/components/shared/loading-skeleton";
 
-export default function PortalLoading() {
+export default function AdminLoading() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-8">
       <SkeletonHero />
       <SkeletonKpi count={4} />
       <SkeletonCard />

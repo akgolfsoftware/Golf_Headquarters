@@ -4,7 +4,7 @@ import {
   SkeletonCard,
 } from "@/components/shared/loading-skeleton";
 
-export default function PortalLoading() {
+export default function MalLoading() {
   return (
     <div className="space-y-6">
       <SkeletonHero />

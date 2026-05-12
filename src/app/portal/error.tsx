@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
+import { AlertTriangle } from "lucide-react";
 
 export default function PortalError({
   error,
@@ -14,28 +16,36 @@ export default function PortalError({
   }, [error]);
 
   return (
-    <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-8 text-center">
-      <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-destructive">
-        Noe gikk galt
-      </span>
-      <h2 className="mt-3 font-display text-2xl font-semibold leading-tight tracking-tight text-foreground">
-        Vi støtte på en feil
+    <div className="flex flex-col items-center justify-center rounded-lg border border-destructive/30 bg-destructive/5 px-8 py-16 text-center">
+      <div className="mb-5 grid h-14 w-14 place-items-center rounded-full bg-secondary text-destructive">
+        <AlertTriangle size={24} strokeWidth={1.5} />
+      </div>
+      <h2 className="font-display text-lg font-semibold leading-tight tracking-tight">
+        <em className="font-normal italic text-primary">Noe gikk galt</em>
       </h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Prøv på nytt. Hvis problemet vedvarer, gi beskjed til support.
+      <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+        Vi støtte på en feil. Prøv på nytt, eller gå tilbake til hjem.
       </p>
       {error.digest && (
         <p className="mt-2 font-mono text-[10px] text-muted-foreground">
           ref {error.digest}
         </p>
       )}
-      <button
-        type="button"
-        onClick={reset}
-        className="mt-5 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
-      >
-        Prøv igjen
-      </button>
+      <div className="mt-6 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={reset}
+          className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+        >
+          Last på nytt
+        </button>
+        <Link
+          href="/portal"
+          className="rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground"
+        >
+          Gå til hjem
+        </Link>
+      </div>
     </div>
   );
 }
