@@ -120,21 +120,31 @@ export async function POST(req: Request) {
             typeof session.payment_intent === "string"
               ? session.payment_intent
               : session.payment_intent?.id ?? null;
-          await prisma.booking.update({
+          const result = await prisma.booking.updateMany({
             where: { id: bookingId },
             data: {
               status: "CONFIRMED",
               stripePaymentIntentId: paymentIntentId,
             },
           });
-          // Send bekreftelses-e-post (best-effort, ikke feil hvis Resend nede)
-          try {
-            const { sendBookingConfirmation } = await import(
-              "@/lib/email/booking-emails"
+          if (result.count === 0) {
+            console.warn(
+              "[stripe-webhook] checkout.session.completed: ukjent bookingId",
+              bookingId
             );
-            await sendBookingConfirmation(bookingId);
-          } catch (err) {
-            console.error("[stripe-webhook] booking-confirmation-email failed", err);
+          } else {
+            // Send bekreftelses-e-post (best-effort, ikke feil hvis Resend nede)
+            try {
+              const { sendBookingConfirmation } = await import(
+                "@/lib/email/booking-emails"
+              );
+              await sendBookingConfirmation(bookingId);
+            } catch (err) {
+              console.error(
+                "[stripe-webhook] booking-confirmation-email failed",
+                err
+              );
+            }
           }
         }
         break;
@@ -143,10 +153,16 @@ export async function POST(req: Request) {
         const session = event.data.object as Stripe.Checkout.Session;
         const bookingId = session.metadata?.bookingId;
         if (bookingId) {
-          await prisma.booking.update({
+          const result = await prisma.booking.updateMany({
             where: { id: bookingId },
             data: { status: "CANCELLED" },
           });
+          if (result.count === 0) {
+            console.warn(
+              "[stripe-webhook] checkout.session.expired: ukjent bookingId",
+              bookingId
+            );
+          }
         }
         break;
       }
