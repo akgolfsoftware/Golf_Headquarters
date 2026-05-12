@@ -24,8 +24,13 @@ export default async function AbonnementPage({
     <div className="space-y-6">
       <PageHeader
         eyebrow="PlayerHQ · Meg · Abonnement"
-        titleLead="Det du betaler for,"
-        titleItalic="og hva du får"
+        titleLead="Din plan, betaling og"
+        titleItalic="faktura"
+        sub={
+          erPro
+            ? "Du er på Pro. Du ser planen din, neste belastning og fakturahistorikken her."
+            : "Du står på Gratis-planen. Oppgrader til Pro for AI-coach, egendefinerte økter og direkte kontakt med coach."
+        }
       />
       {params.ok === "1" && (
         <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground">

@@ -1,6 +1,17 @@
+/**
+ * PlayerHQ · Mål · Runder
+ *
+ * Migrert til produksjonsdesign med PageHeader (italic Instrument Serif),
+ * semantiske tokens og 8pt-grid. EmptyState når ingen runder finnes.
+ */
+
+import { Flag } from "lucide-react";
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { formatSg } from "@/lib/sg";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 import { NyRundeModal } from "./ny-runde-modal";
 
 export default async function RunderPage() {
@@ -16,30 +27,44 @@ export default async function RunderPage() {
     prisma.courseDefinition.findMany({ orderBy: { name: "asc" } }),
   ]);
 
+  const subTekst =
+    rounds.length === 0
+      ? "Ingen registrerte runder ennå."
+      : `Siste ${rounds.length} runder, sortert etter dato.`;
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-            Mine runder
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {rounds.length === 0
-              ? "Ingen registrerte runder ennå."
-              : `Siste ${rounds.length} runder, sortert etter dato.`}
-          </p>
-        </div>
-        <NyRundeModal courses={courses.map((c) => ({ id: c.id, name: c.name, par: c.par }))} />
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="PlayerHQ · Runder"
+        titleLead="Mine"
+        titleItalic="runder"
+        sub={subTekst}
+        actions={
+          <NyRundeModal
+            courses={courses.map((c) => ({
+              id: c.id,
+              name: c.name,
+              par: c.par,
+            }))}
+          />
+        }
+      />
 
       {courses.length === 0 && (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-          Ingen baner finnes i databasen. En administrator må opprette baner før du kan
-          registrere runder.
+        <div className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
+          Ingen baner finnes i databasen. En administrator må opprette baner før
+          du kan registrere runder.
         </div>
       )}
 
-      {rounds.length > 0 && (
+      {rounds.length === 0 ? (
+        <EmptyState
+          icon={Flag}
+          titleItalic="Ingen runder"
+          titleTrail="ennå"
+          sub="Registrer din første runde for å se score, til-par og SG over tid. Du trenger en bane i databasen for å komme i gang."
+        />
+      ) : (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-muted/40 text-left">
@@ -67,7 +92,9 @@ export default async function RunderPage() {
                     </Td>
                     <Td>{r.course.name}</Td>
                     <Td className="text-right tabular-nums">{r.score}</Td>
-                    <Td className="text-right tabular-nums">{formatSg(r.sgTotal)}</Td>
+                    <Td className="text-right tabular-nums">
+                      {formatSg(r.sgTotal)}
+                    </Td>
                     <Td className="text-right tabular-nums">
                       <span
                         className={
@@ -102,7 +129,7 @@ function Th({
 }) {
   return (
     <th
-      className={`px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground ${className}`}
+      className={`px-4 py-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground ${className}`}
     >
       {children}
     </th>
@@ -116,5 +143,5 @@ function Td({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <td className={`px-4 py-3 text-foreground ${className}`}>{children}</td>;
+  return <td className={`px-4 py-4 text-foreground ${className}`}>{children}</td>;
 }

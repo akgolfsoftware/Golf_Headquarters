@@ -1,5 +1,16 @@
+/**
+ * PlayerHQ · Mål · Leaderboard
+ *
+ * Migrert til produksjonsdesign med PageHeader (italic Instrument Serif),
+ * semantiske tokens og 8pt-grid. EmptyState når ingen rangering finnes.
+ */
+
+import { Trophy } from "lucide-react";
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export default async function LeaderboardPage() {
   const user = await requirePortalUser();
@@ -39,20 +50,22 @@ export default async function LeaderboardPage() {
     .slice(0, 25);
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-          Leaderboard · siste 30 dager
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Pro-brukere rangert etter snitt SG-total. Venn-rangering kommer senere.
-        </p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="PlayerHQ · Leaderboard · siste 30 dager"
+        titleLead="Hvordan står"
+        titleItalic="du"
+        titleTrail="mot andre?"
+        sub="Pro-brukere rangert etter snitt SG-total siste 30 dager. Venn-rangering kommer senere."
+      />
 
       {rangering.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen Pro-brukere har registrert SG-data ennå.
-        </div>
+        <EmptyState
+          icon={Trophy}
+          titleItalic="Ingen rangering"
+          titleTrail="ennå"
+          sub="Ingen Pro-brukere har registrert SG-data ennå. Når flere har spilt runder dukker rangeringen opp her."
+        />
       ) : (
         <ol className="overflow-hidden rounded-lg border border-border bg-card">
           {rangering.map((r, i) => {
@@ -60,7 +73,7 @@ export default async function LeaderboardPage() {
             return (
               <li
                 key={r.id}
-                className={`flex items-center gap-4 border-b border-border/60 px-4 py-3 last:border-0 ${
+                className={`flex items-center gap-4 border-b border-border/60 px-4 py-4 last:border-0 ${
                   erMeg ? "bg-primary/5" : ""
                 }`}
               >
@@ -71,7 +84,8 @@ export default async function LeaderboardPage() {
                   <div className="font-medium text-foreground">{r.navn}</div>
                   <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     {r.antallRunder} runder
-                    {r.hcp != null && ` · HCP ${r.hcp.toFixed(1).replace(".", ",")}`}
+                    {r.hcp != null &&
+                      ` · HCP ${r.hcp.toFixed(1).replace(".", ",")}`}
                   </div>
                 </div>
                 <span className="font-display text-base font-semibold tabular-nums text-foreground">

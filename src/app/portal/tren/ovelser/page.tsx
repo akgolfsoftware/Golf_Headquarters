@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Dumbbell } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { ExerciseCard } from "@/components/portal/exercise-card";
@@ -7,6 +8,8 @@ import {
   LPhase,
   type Prisma,
 } from "@/generated/prisma/client";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 type Search = { area?: string; phase?: string };
 
@@ -62,16 +65,16 @@ export default async function OvelserPage({
     return `/portal/tren/ovelser${qs ? "?" + qs : ""}`;
   }
 
+  const harAktiveFiltre = valgtArea !== "ALLE" || valgtPhase !== "ALLE";
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-          Øvelser ({exercises.length})
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Bibliotek av drills sortert etter pyramide-område og L-fase.
-        </p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="PlayerHQ · Trening · Bibliotek"
+        titleLead="Drills"
+        titleItalic="og øvelser"
+        sub={`${exercises.length} øvelse${exercises.length === 1 ? "" : "r"} sortert etter pyramide-område og L-fase. Tilpasset deg.`}
+      />
 
       <div className="space-y-3">
         <FilterRad
@@ -89,9 +92,26 @@ export default async function OvelserPage({
       </div>
 
       {exercises.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen øvelser matcher filtrene.
-        </div>
+        <EmptyState
+          icon={Dumbbell}
+          titleItalic="Ingen øvelser"
+          titleTrail={harAktiveFiltre ? "matcher filtrene" : "i biblioteket ennå"}
+          sub={
+            harAktiveFiltre
+              ? "Prøv å endre eller fjerne filtrene for å se flere øvelser."
+              : "Coachen din legger til øvelser etter hvert. Sjekk innom igjen senere."
+          }
+          cta={
+            harAktiveFiltre ? (
+              <Link
+                href="/portal/tren/ovelser"
+                className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+              >
+                Nullstill filtre
+              </Link>
+            ) : undefined
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {exercises.map((e) => (
@@ -125,10 +145,10 @@ function FilterRad({
           <Link
             key={o.value}
             href={bygglenke(o.value)}
-            className={`rounded-full px-3 py-1 text-xs transition-colors ${
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
               aktiv
                 ? "bg-primary text-primary-foreground"
-                : "border border-input bg-card text-foreground hover:border-border"
+                : "border border-input bg-card text-foreground hover:border-border hover:bg-secondary"
             }`}
           >
             {o.label}

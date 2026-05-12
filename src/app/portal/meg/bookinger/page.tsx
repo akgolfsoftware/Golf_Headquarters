@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { CalendarPlus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 import { CancelButton } from "./cancel-button";
 
 export default async function MineBookinger() {
@@ -27,31 +30,38 @@ export default async function MineBookinger() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Mine bestillinger
-          </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-            <em className="font-normal text-primary md:italic">Booking</em>er
-          </h1>
-        </div>
-        <Link
-          href="/booking"
-          className="rounded-md border border-input bg-card px-4 py-2 text-sm font-semibold hover:border-border"
-        >
-          + Ny booking
-        </Link>
-      </header>
+      <PageHeader
+        eyebrow="PlayerHQ · Meg · Bookinger"
+        titleLead="Dine"
+        titleItalic="timer"
+        titleTrail="og kvitteringer"
+        sub="Kommende økter, tidligere besøk og avbestillingsmuligheter."
+        actions={
+          <Link
+            href="/booking"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          >
+            <CalendarPlus className="h-4 w-4" strokeWidth={1.75} />
+            Ny booking
+          </Link>
+        }
+      />
 
       {bookings.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-8 text-center text-sm text-muted-foreground">
-          Du har ingen bookinger ennå.{" "}
-          <Link href="/booking" className="text-primary underline">
-            Book din første økt
-          </Link>
-          .
-        </div>
+        <EmptyState
+          icon={CalendarPlus}
+          titleItalic="Ingen bookinger"
+          titleTrail="ennå"
+          sub="Book din første økt med en av våre coacher — du finner tilgjengelige tider under Booking."
+          cta={
+            <Link
+              href="/booking"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            >
+              Book første økt
+            </Link>
+          }
+        />
       ) : (
         <>
           {kommende.length > 0 && (

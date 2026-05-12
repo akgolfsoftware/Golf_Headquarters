@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import {
@@ -10,6 +11,8 @@ import {
   ManedKalender,
   type Aktivitet,
 } from "@/components/portal/maned-kalender";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 type Search = { maned?: string };
 
@@ -99,53 +102,75 @@ export default async function KalenderPage({
   const formatManed = (d: Date) =>
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 
+  const aktivitetCount = sessions.length + runder.length + tester.length;
+  const manedTittel = `${MND_NAVN[maned.getMonth()]} ${maned.getFullYear()}`;
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-          {MND_NAVN[maned.getMonth()]} {maned.getFullYear()}
-        </h2>
-        <div className="flex gap-2">
-          <Link
-            href={`/portal/tren/kalender?maned=${formatManed(forrigeMnd)}`}
-            className="rounded-md border border-input bg-card px-3 py-2 text-sm hover:border-border"
-          >
-            ←
-          </Link>
-          <Link
-            href="/portal/tren/kalender"
-            className="rounded-md border border-input bg-card px-3 py-2 text-sm hover:border-border"
-          >
-            I dag
-          </Link>
-          <Link
-            href={`/portal/tren/kalender?maned=${formatManed(nesteMnd)}`}
-            className="rounded-md border border-input bg-card px-3 py-2 text-sm hover:border-border"
-          >
-            →
-          </Link>
-        </div>
-      </div>
-
-      <div className="flex gap-4 text-xs">
-        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary" /> Trening
-        </span>
-        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-          <span className="h-1.5 w-1.5 rounded-full bg-pyr-spill" /> Runde
-        </span>
-        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-          <span className="h-1.5 w-1.5 rounded-full bg-destructive" /> Test
-        </span>
-      </div>
-
-      <ManedKalender
-        maned={maned}
-        aktiviteterPerDag={aktiviteterPerDag}
-        bygglenke={(dato) =>
-          `/portal/tren?dato=${dato.toISOString().split("T")[0]}`
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="PlayerHQ · Trening · Kalender"
+        titleLead={MND_NAVN[maned.getMonth()]}
+        titleItalic={String(maned.getFullYear())}
+        sub={`${aktivitetCount} aktivitet${aktivitetCount === 1 ? "" : "er"} planlagt denne måneden — coach-økter, runder, tester.`}
+        actions={
+          <div className="inline-flex gap-1 rounded-md border border-border bg-card p-1">
+            <Link
+              href={`/portal/tren/kalender?maned=${formatManed(forrigeMnd)}`}
+              className="inline-flex items-center gap-1 rounded-sm px-2 py-1.5 text-xs font-medium text-foreground hover:bg-secondary"
+            >
+              <ChevronLeft size={14} strokeWidth={1.5} />
+              Forrige
+            </Link>
+            <Link
+              href="/portal/tren/kalender"
+              className="rounded-sm bg-foreground px-2 py-1.5 text-xs font-medium text-background"
+            >
+              I dag
+            </Link>
+            <Link
+              href={`/portal/tren/kalender?maned=${formatManed(nesteMnd)}`}
+              className="inline-flex items-center gap-1 rounded-sm px-2 py-1.5 text-xs font-medium text-foreground hover:bg-secondary"
+            >
+              Neste
+              <ChevronRight size={14} strokeWidth={1.5} />
+            </Link>
+          </div>
         }
       />
+
+      {aktivitetCount === 0 ? (
+        <EmptyState
+          icon={CalendarDays}
+          titleItalic="Ingen aktiviteter"
+          titleTrail={`i ${manedTittel}`}
+          sub="Snakk med coachen din for å få planlagt økter, eller bla videre til en annen måned."
+        />
+      ) : (
+        <>
+          <div className="flex flex-wrap gap-4 text-xs">
+            <span className="inline-flex items-center gap-2 text-muted-foreground">
+              <span className="h-2 w-2 rounded-full bg-primary" />
+              Trening
+            </span>
+            <span className="inline-flex items-center gap-2 text-muted-foreground">
+              <span className="h-2 w-2 rounded-full bg-accent" />
+              Runde
+            </span>
+            <span className="inline-flex items-center gap-2 text-muted-foreground">
+              <span className="h-2 w-2 rounded-full bg-destructive" />
+              Test
+            </span>
+          </div>
+
+          <ManedKalender
+            maned={maned}
+            aktiviteterPerDag={aktiviteterPerDag}
+            bygglenke={(dato) =>
+              `/portal/tren?dato=${dato.toISOString().split("T")[0]}`
+            }
+          />
+        </>
+      )}
     </div>
   );
 }

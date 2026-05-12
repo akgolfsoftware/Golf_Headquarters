@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { ArrowLeft, Sparkles, Workflow } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export default async function AgentPipelinePage() {
   const user = await requirePortalUser();
@@ -30,32 +33,29 @@ export default async function AgentPipelinePage() {
         href="/portal"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Hjem
+        <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
+        Hjem
       </Link>
 
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Agent-pipeline
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Hva</em> agentene ser
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          Innsikt i hvordan AK Golf-agentene tolker dataene dine. Signaler er
-          aggregater (SG, pyramide, streak). Plan-actions er konkrete forslag
-          du kan godkjenne eller avvise.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="PlayerHQ · Agent-pipeline"
+        titleLead="Hvordan"
+        titleItalic="systemet"
+        titleTrail="leser deg"
+        sub="Innsikt i hvordan AK Golf-agentene tolker dataene dine. Signaler er aggregater (SG, pyramide, streak). Plan-actions er konkrete forslag du kan godkjenne eller avvise."
+      />
 
       <section>
         <h2 className="mb-3 font-display text-lg font-semibold tracking-tight">
           Signaler (siste 30)
         </h2>
         {signals.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-            Ingen signaler ennå. Registrer en runde eller test så agentene har
-            data å jobbe med.
-          </p>
+          <EmptyState
+            icon={Workflow}
+            titleItalic="Ingen signaler"
+            titleTrail="ennå"
+            sub="Registrer en runde eller test så agentene har data å jobbe med."
+          />
         ) : (
           <div className="overflow-hidden rounded-lg border border-border bg-card">
             <table className="w-full text-sm">
@@ -98,9 +98,12 @@ export default async function AgentPipelinePage() {
           Plan-actions
         </h2>
         {planActions.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-            Ingen forslag fra agentene ennå. Kommer typisk etter mandag-cron.
-          </p>
+          <EmptyState
+            icon={Sparkles}
+            titleItalic="Ingen forslag"
+            titleTrail="fra agentene ennå"
+            sub="Kommer typisk etter mandag-cron — når uken er ferdig regnet."
+          />
         ) : (
           <ul className="space-y-2">
             {planActions.map((a) => {

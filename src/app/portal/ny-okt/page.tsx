@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { Lock } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 import { NyOktWizard } from "./wizard";
 
 export default async function NyOktPage() {
@@ -9,27 +12,27 @@ export default async function NyOktPage() {
   if (user.tier === "GRATIS") {
     return (
       <div className="space-y-6">
-        <header>
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Ny økt
-          </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-            <em className="font-normal text-primary md:italic">Krever</em> Pro
-          </h1>
-        </header>
+        <PageHeader
+          eyebrow="PlayerHQ · Ny økt"
+          titleLead="Lag din"
+          titleItalic="egen"
+          titleTrail="økt"
+          sub="Bygg dine egne treningsøkter med valgfrie drills — en av Pro-fordelene."
+        />
 
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6">
-          <p className="text-sm text-muted-foreground">
-            Egendefinerte økter er en del av Pro-abonnementet (300 kr/mnd).
-            Oppgrader for å designe dine egne treningsøkter med valgfrie drills.
-          </p>
-          <Link
-            href="/portal/meg/abonnement"
-            className="mt-4 inline-block rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
-          >
-            Se Pro-fordeler
-          </Link>
-        </div>
+        <EmptyState
+          icon={Lock}
+          titleItalic="Krever Pro"
+          sub="Egendefinerte økter er en del av Pro-abonnementet (300 kr/mnd). Oppgrader for å designe dine egne treningsøkter med valgfrie drills."
+          cta={
+            <Link
+              href="/portal/meg/abonnement"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            >
+              Se Pro-fordeler
+            </Link>
+          }
+        />
       </div>
     );
   }
@@ -40,17 +43,13 @@ export default async function NyOktPage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Ny økt
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Egendefinert</em> trening
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Bygg din egen økt på 5 steg.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="PlayerHQ · Ny økt"
+        titleLead="Lag din"
+        titleItalic="egen"
+        titleTrail="økt"
+        sub="Sett sammen en økt utenfor coach-planen din — på 5 raske steg."
+      />
 
       <NyOktWizard exercises={exercises} />
     </div>

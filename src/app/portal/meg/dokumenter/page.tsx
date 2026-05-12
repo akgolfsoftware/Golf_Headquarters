@@ -1,6 +1,8 @@
+import { FileText } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 const KIND_LABEL: Record<string, string> = {
   CONTRACT: "Kontrakt",
@@ -36,9 +38,12 @@ export default async function DokumenterPage() {
       />
 
       {documents.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen dokumenter ennå.
-        </div>
+        <EmptyState
+          icon={FileText}
+          titleItalic="Ingen dokumenter"
+          titleTrail="ennå"
+          sub="Kontrakter, kvitteringer og veiledninger dukker opp her når de signeres eller utstedes."
+        />
       ) : (
         Object.entries(grupper).map(([kind, items]) => (
           <section key={kind}>

@@ -1,5 +1,16 @@
+/**
+ * PlayerHQ · Mål · Baner
+ *
+ * Migrert til produksjonsdesign med PageHeader (italic Instrument Serif),
+ * semantiske tokens og 8pt-grid. EmptyState når ingen baner finnes.
+ */
+
+import { MapPinned } from "lucide-react";
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export default async function BanerPage() {
   const user = await requirePortalUser();
@@ -13,9 +24,13 @@ export default async function BanerPage() {
   ]);
 
   // Aggreger SG per bane for innlogget bruker
-  const sgPerBane = new Map<string, { antall: number; sgSum: number; sgCount: number }>();
+  const sgPerBane = new Map<
+    string,
+    { antall: number; sgSum: number; sgCount: number }
+  >();
   for (const r of runder) {
-    const eksisterende = sgPerBane.get(r.courseId) ?? { antall: 0, sgSum: 0, sgCount: 0 };
+    const eksisterende =
+      sgPerBane.get(r.courseId) ?? { antall: 0, sgSum: 0, sgCount: 0 };
     eksisterende.antall += 1;
     if (r.sgTotal != null) {
       eksisterende.sgSum += r.sgTotal;
@@ -24,18 +39,19 @@ export default async function BanerPage() {
     sgPerBane.set(r.courseId, eksisterende);
   }
 
+  const subTekst =
+    courses.length === 0
+      ? "Ingen baner i databasen ennå."
+      : `${courses.length} baner registrert. Statistikk vises for dine runder.`;
+
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-          Baner
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {courses.length === 0
-            ? "Ingen baner i databasen ennå."
-            : `${courses.length} baner registrert. Statistikk vises for dine runder.`}
-        </p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="PlayerHQ · Baner"
+        titleLead="Banebibliotek"
+        titleItalic="og resultater"
+        sub={subTekst}
+      />
 
       {user.role === "ADMIN" && (
         <div className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
@@ -44,8 +60,15 @@ export default async function BanerPage() {
         </div>
       )}
 
-      {courses.length > 0 && (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {courses.length === 0 ? (
+        <EmptyState
+          icon={MapPinned}
+          titleItalic="Ingen baner"
+          titleTrail="registrert"
+          sub="Når baner er importert eller lagt inn av administrator dukker de opp her — med dine SG-snitt per bane."
+        />
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {courses.map((c) => {
             const stats = sgPerBane.get(c.id);
             const sgSnitt =
@@ -58,12 +81,12 @@ export default async function BanerPage() {
                 <div className="font-display text-base font-semibold text-foreground">
                   {c.name}
                 </div>
-                <div className="mt-1 flex gap-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                <div className="mt-2 flex gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   <span>par {c.par}</span>
                   {c.rating && <span>rating {c.rating}</span>}
                   {c.slope && <span>slope {c.slope}</span>}
                 </div>
-                <div className="mt-3 flex justify-between border-t border-border pt-3 text-xs">
+                <div className="mt-4 flex justify-between border-t border-border pt-4 text-xs">
                   <span className="text-muted-foreground">
                     {stats?.antall ?? 0} runder
                   </span>

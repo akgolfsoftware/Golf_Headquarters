@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 import { OnskeligOktForm } from "./form";
 
 type Search = { sent?: string };
@@ -25,21 +27,17 @@ export default async function OnskeligOktPage({
         href="/portal"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Hjem
+        <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
+        Hjem
       </Link>
 
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Forespørsel
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Be om</em> en ekstra økt
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          Si fra hva du vil jobbe med — coachen din ser forespørselen i CoachHQ
-          og setter opp en tid som passer.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="PlayerHQ · Forespørsel"
+        titleLead="Be om en"
+        titleItalic="ekstra"
+        titleTrail="økt"
+        sub="Si fra hva du vil jobbe med — coachen din ser forespørselen i CoachHQ og setter opp en tid som passer."
+      />
 
       {params.sent === "1" && (
         <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground">

@@ -11,17 +11,7 @@ const ITEMS = [
 export default function MalLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Mål
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Mine</em> mål og resultater
-        </h1>
-      </header>
-
       <SubNav items={ITEMS} />
-
       <div>{children}</div>
     </div>
   );

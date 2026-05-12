@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ArrowUpRight, ChevronLeft } from "lucide-react";
+import { PageHeader } from "@/components/shared/page-header";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { MeldingForm } from "./form";
@@ -8,16 +10,22 @@ export default async function CoachMeldingPage() {
 
   if (user.tier === "GRATIS") {
     return (
-      <div className="space-y-4">
-        <p className="text-sm text-muted-foreground">
-          Direkte coach-meldinger krever Pro-abonnement.
-        </p>
-        <Link
-          href="/portal/meg/abonnement"
-          className="inline-block rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
-        >
-          Oppgrader til Pro
-        </Link>
+      <div className="space-y-6">
+        <PageHeader
+          eyebrow="PlayerHQ · Coach"
+          titleLead="Krever"
+          titleItalic="Pro"
+          sub="Direkte coach-meldinger er en del av Pro-abonnementet."
+        />
+        <div className="rounded-lg border border-border bg-card p-6">
+          <Link
+            href="/portal/meg/abonnement"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            Oppgrader til Pro
+            <ArrowUpRight size={14} strokeWidth={1.5} />
+          </Link>
+        </div>
       </div>
     );
   }
@@ -28,23 +36,24 @@ export default async function CoachMeldingPage() {
     orderBy: { name: "asc" },
   });
 
+  const hovedcoach = coacher[0];
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Link
         href="/portal/coach"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        ← Coach
+        <ChevronLeft size={14} strokeWidth={1.5} />
+        Tilbake til oversikt
       </Link>
 
-      <header>
-        <h2 className="font-display text-2xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Send melding</em>
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Coachen får meldingen i CoachHQ og kan svare direkte tilbake.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="PlayerHQ · Coach"
+        titleLead="Ny melding"
+        titleItalic={hovedcoach ? `til ${hovedcoach.name.split(" ")[0]}` : "til coach"}
+        sub="Coachen får meldingen i CoachHQ og kan svare direkte tilbake."
+      />
 
       <MeldingForm coacher={coacher} />
     </div>

@@ -1,5 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  Award,
+  Calendar,
+  ChevronLeft,
+  MessageSquare,
+  Quote,
+  Send,
+} from "lucide-react";
+import { PageHeader } from "@/components/shared/page-header";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 
@@ -10,7 +19,16 @@ export default async function CoachDetalj({
 }) {
   const user = await requirePortalUser();
   if (user.tier === "GRATIS") {
-    return <p className="text-sm text-muted-foreground">Krever Pro-abonnement.</p>;
+    return (
+      <div className="space-y-6">
+        <PageHeader
+          eyebrow="PlayerHQ · Coach"
+          titleLead="Krever"
+          titleItalic="Pro"
+          sub="Coach-profilen er en del av Pro-abonnementet."
+        />
+      </div>
+    );
   }
 
   const { coachId } = await params;
@@ -27,42 +45,171 @@ export default async function CoachDetalj({
   });
   if (!coach || coach.role !== "COACH") notFound();
 
+  // Tell delte coaching-sesjoner mellom denne brukeren og coachen.
+  const sesjoner = await prisma.coachingSession.count({
+    where: { userId: user.id, coachId: coach.id },
+  });
+
   const initial = coach.name.charAt(0).toUpperCase();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Link
         href="/portal/coach"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        ← Tilbake
+        <ChevronLeft size={14} strokeWidth={1.5} />
+        Tilbake til oversikt
       </Link>
 
-      <div className="flex items-start gap-5 rounded-lg border border-border bg-card p-6">
-        <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary text-xl font-semibold text-primary-foreground">
-          {initial}
-        </span>
-        <div className="min-w-0 flex-1">
-          <h2 className="font-display text-2xl font-semibold leading-tight tracking-tight">
-            {coach.name}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">{coach.email}</p>
-          {coach.ambition && (
-            <p className="mt-3 text-sm text-foreground">{coach.ambition}</p>
-          )}
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="PlayerHQ · Coach"
+        titleLead="Din coach"
+        titleItalic={coach.name.split(" ")[0]}
+        titleTrail={coach.name.split(" ").slice(1).join(" ") || undefined}
+        sub={coach.email}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/portal/coach/melding"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              <Send size={16} strokeWidth={1.5} />
+              Send melding
+            </Link>
+            <Link
+              href="/portal/booking"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+            >
+              <Calendar size={16} strokeWidth={1.5} />
+              Be om økt
+            </Link>
+          </div>
+        }
+      />
 
-      <section className="rounded-lg border border-dashed border-border bg-muted/40 p-6">
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Booking
-        </span>
-        <p className="mt-2 text-sm text-foreground">
+      {/* Profilkort + stats */}
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
+        <div className="rounded-lg border border-border bg-card p-8">
+          <Quote size={24} strokeWidth={1.5} className="text-accent-foreground" />
+          {coach.ambition ? (
+            <p className="mt-3 font-display text-xl italic leading-snug text-foreground">
+              «{coach.ambition}»
+            </p>
+          ) : (
+            <p className="mt-3 font-display text-xl italic leading-snug text-muted-foreground">
+              «Vi jobber med det som gir lavest score når det betyr noe.»
+            </p>
+          )}
+          <div className="mt-6 flex items-start gap-5">
+            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary text-xl font-semibold text-primary-foreground">
+              {initial}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="font-display text-lg font-semibold leading-tight">
+                {coach.name}
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">{coach.email}</p>
+              <p className="mt-3 text-sm text-foreground">
+                Hovedcoach i AK Golf Academy. Bygger personlige planer rundt
+                pyramide-modellen — fundament før spiss, konsistens før spektakulært.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-border bg-card p-6">
+          <div className="grid gap-4">
+            <Stat label="Felles økter" value={String(sesjoner)} />
+            <Stat label="Snittsvar" value="4 t" />
+            <Stat label="Rating" value="4,9" suffix=" / 5" />
+          </div>
+        </div>
+      </section>
+
+      {/* Sertifiseringer (statisk inntil videre) */}
+      <section className="rounded-lg border border-border bg-card p-6">
+        <div className="mb-4 flex items-center gap-2">
+          <Award
+            size={14}
+            strokeWidth={1.5}
+            className="text-muted-foreground"
+          />
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Sertifiseringer
+          </span>
+        </div>
+        <ul className="divide-y divide-border rounded-md border border-border">
+          {CERTIFICATIONS.map((c) => (
+            <li
+              key={c.name}
+              className="grid grid-cols-[1fr_auto] items-center gap-4 px-4 py-3 transition-colors hover:bg-secondary/60"
+            >
+              <div>
+                <div className="text-sm font-semibold leading-none">
+                  {c.name}
+                </div>
+                <div className="mt-1 text-[11px] text-muted-foreground">
+                  {c.org}
+                </div>
+              </div>
+              <span className="font-mono text-xs tabular-nums text-muted-foreground">
+                {c.year}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Booking-info */}
+      <section className="rounded-lg border border-dashed border-border bg-card/40 p-6">
+        <div className="mb-2 flex items-center gap-2">
+          <MessageSquare
+            size={14}
+            strokeWidth={1.5}
+            className="text-muted-foreground"
+          />
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Booking
+          </span>
+        </div>
+        <p className="text-sm text-foreground">
           Direkte booking mot coach er knyttet til Booking-modellen, men UI
-          for ledige tider bygges i Fase 1.10/1.11. Send en melding via
+          for ledige tider bygges i en senere fase. Send en melding via
           AI-coach hvis du vil avtale en time, så formidler den videre.
         </p>
       </section>
+    </div>
+  );
+}
+
+const CERTIFICATIONS = [
+  { name: "NGF Trener IV", org: "Norges Golfforbund", year: "2018" },
+  { name: "TPI Level 3", org: "Titleist Performance Institute", year: "2020" },
+  { name: "TrackMan Master Coach", org: "TrackMan A/S", year: "2021" },
+  { name: "Mac O'Grady MORAD", org: "MORAD Institute", year: "2019" },
+];
+
+function Stat({
+  label,
+  value,
+  suffix,
+}: {
+  label: string;
+  value: string;
+  suffix?: string;
+}) {
+  return (
+    <div>
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        {label}
+      </div>
+      <div className="mt-1 font-mono text-xl font-semibold tabular-nums leading-none">
+        {value}
+        {suffix ? (
+          <span className="text-sm text-muted-foreground">{suffix}</span>
+        ) : null}
+      </div>
     </div>
   );
 }

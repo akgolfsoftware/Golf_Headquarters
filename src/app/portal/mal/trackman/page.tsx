@@ -1,5 +1,16 @@
+/**
+ * PlayerHQ · Mål · TrackMan
+ *
+ * Migrert til produksjonsdesign med PageHeader (italic Instrument Serif),
+ * semantiske tokens og 8pt-grid. EmptyState når ingen økter finnes.
+ */
+
+import { Activity } from "lucide-react";
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 import { CsvImportModal } from "./csv-import-modal";
 
 export default async function TrackManPage() {
@@ -11,23 +22,30 @@ export default async function TrackManPage() {
     take: 50,
   });
 
-  return (
-    <div className="space-y-4">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-            TrackMan-økter
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {sessions.length === 0
-              ? "Ingen økter ennå. Eksporter CSV fra TrackMan og last opp."
-              : `Siste ${sessions.length} økter.`}
-          </p>
-        </div>
-        <CsvImportModal />
-      </div>
+  const subTekst =
+    sessions.length === 0
+      ? "Ingen økter ennå. Eksporter CSV fra TrackMan og last opp."
+      : `Siste ${sessions.length} økter.`;
 
-      {sessions.length > 0 && (
+  return (
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="PlayerHQ · TrackMan"
+        titleLead="Min"
+        titleItalic="sving"
+        titleTrail="over tid"
+        sub={subTekst}
+        actions={<CsvImportModal />}
+      />
+
+      {sessions.length === 0 ? (
+        <EmptyState
+          icon={Activity}
+          titleItalic="Ingen økter"
+          titleTrail="lastet opp"
+          sub="Eksporter CSV fra TrackMan-økten din og last opp. Per-kølle-snitt og dispersion beregnes automatisk."
+        />
+      ) : (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-muted/40 text-left">
@@ -56,7 +74,7 @@ export default async function TrackManPage() {
                     </a>
                   </Td>
                   <Td>
-                    <span className="rounded-sm bg-muted px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                    <span className="rounded-sm bg-muted px-2 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                       {s.source}
                     </span>
                   </Td>
@@ -80,7 +98,7 @@ function Th({
 }) {
   return (
     <th
-      className={`px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground ${className}`}
+      className={`px-4 py-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground ${className}`}
     >
       {children}
     </th>
@@ -94,5 +112,5 @@ function Td({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <td className={`px-4 py-3 text-foreground ${className}`}>{children}</td>;
+  return <td className={`px-4 py-4 text-foreground ${className}`}>{children}</td>;
 }

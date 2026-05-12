@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/shared/page-header";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AiChat } from "./chat";
@@ -7,9 +8,14 @@ export default async function AiCoachPage() {
   const user = await requirePortalUser();
   if (user.tier === "GRATIS") {
     return (
-      <p className="text-sm text-muted-foreground">
-        AI-coach krever Pro-abonnement.
-      </p>
+      <div className="space-y-6">
+        <PageHeader
+          eyebrow="PlayerHQ · AI-coach"
+          titleLead="Krever"
+          titleItalic="Pro"
+          sub="AI-coach er en del av Pro-abonnementet."
+        />
+      </div>
     );
   }
 
@@ -20,24 +26,32 @@ export default async function AiCoachPage() {
   });
 
   const initialMessages: ChatMelding[] = sisteSesjon
-    ? (Array.isArray(sisteSesjon.messages)
-        ? (sisteSesjon.messages as unknown[])
-            .filter(
-              (m): m is ChatMelding =>
-                typeof m === "object" &&
-                m !== null &&
-                "role" in m &&
-                "content" in m &&
-                ((m as { role: string }).role === "user" ||
-                  (m as { role: string }).role === "assistant"),
-            )
-        : [])
+    ? Array.isArray(sisteSesjon.messages)
+      ? (sisteSesjon.messages as unknown[])
+          .filter(
+            (m): m is ChatMelding =>
+              typeof m === "object" &&
+              m !== null &&
+              "role" in m &&
+              "content" in m &&
+              ((m as { role: string }).role === "user" ||
+                (m as { role: string }).role === "assistant"),
+          )
+      : []
     : [];
 
   return (
-    <AiChat
-      sessionId={sisteSesjon?.id ?? null}
-      initialMessages={initialMessages}
-    />
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="PlayerHQ · AI-coach"
+        titleLead="Spør om"
+        titleItalic="hva som helst"
+        sub="Personlig analyse basert på din profil, plan og siste runder. AI-coachen kjenner deg."
+      />
+      <AiChat
+        sessionId={sisteSesjon?.id ?? null}
+        initialMessages={initialMessages}
+      />
+    </div>
   );
 }

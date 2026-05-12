@@ -1,7 +1,10 @@
 import Link from "next/link";
+import { Target } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 const PYR_LABEL: Record<PyramidArea, string> = {
   FYS: "Fysisk",
@@ -12,11 +15,11 @@ const PYR_LABEL: Record<PyramidArea, string> = {
 };
 
 const PYR_BG: Record<PyramidArea, string> = {
-  FYS: "bg-pyr-fys/15 text-pyr-fys",
-  TEK: "bg-pyr-tek/15 text-pyr-tek",
-  SLAG: "bg-pyr-slag/30 text-foreground",
-  SPILL: "bg-pyr-spill/15 text-pyr-spill",
-  TURN: "bg-pyr-turn/15 text-pyr-turn",
+  FYS: "bg-secondary text-muted-foreground",
+  TEK: "bg-secondary text-muted-foreground",
+  SLAG: "bg-accent/30 text-accent-foreground",
+  SPILL: "bg-secondary text-muted-foreground",
+  TURN: "bg-secondary text-muted-foreground",
 };
 
 export default async function TesterPage() {
@@ -48,21 +51,25 @@ export default async function TesterPage() {
     }
   }
 
+  const totalResultater = mineResultater.length;
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
-          Tester ({tests.length})
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Standardiserte tester for å måle progresjon over tid.
-        </p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="PlayerHQ · Trening · Tester"
+        titleLead="Mål"
+        titleItalic="progresjonen"
+        titleTrail="din"
+        sub={`${tests.length} standardisert${tests.length === 1 ? "" : "e"} test${tests.length === 1 ? "" : "er"} — ${totalResultater} resultat${totalResultater === 1 ? "" : "er"} logget så langt.`}
+      />
 
       {tests.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen tester registrert i databasen.
-        </div>
+        <EmptyState
+          icon={Target}
+          titleItalic="Ingen tester"
+          titleTrail="er klare ennå"
+          sub="Tester legges inn av coachen din. Sjekk innom igjen senere."
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {tests.map((t) => {
@@ -71,10 +78,10 @@ export default async function TesterPage() {
               <Link
                 key={t.id}
                 href={`/portal/tren/tester/${t.id}`}
-                className="block rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md"
+                className="group block rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-display text-base font-semibold leading-tight text-foreground">
+                  <h3 className="font-display text-lg font-semibold leading-tight tracking-tight text-foreground">
                     {t.name}
                   </h3>
                   <span
@@ -87,21 +94,26 @@ export default async function TesterPage() {
                 </div>
 
                 {t.description && (
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {t.description}
                   </p>
                 )}
 
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-xs">
+                <div className="mt-4 flex items-center justify-between border-t border-border pt-4 text-xs">
                   <span className="text-muted-foreground">
                     {stats?.antall ?? 0} resultat{stats?.antall === 1 ? "" : "er"}
                   </span>
                   {stats ? (
-                    <span className="tabular-nums font-semibold text-foreground">
-                      Siste: {stats.score.toFixed(1).replace(".", ",")}
+                    <span className="font-mono font-semibold tabular-nums text-foreground">
+                      Siste:{" "}
+                      <span className="text-primary">
+                        {stats.score.toFixed(1).replace(".", ",")}
+                      </span>
                     </span>
                   ) : (
-                    <span className="text-muted-foreground">Ikke tatt</span>
+                    <span className="font-mono text-muted-foreground">
+                      Ikke tatt
+                    </span>
                   )}
                 </div>
               </Link>

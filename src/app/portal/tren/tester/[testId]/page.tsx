@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft, ClipboardList } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 const PYR_LABEL: Record<PyramidArea, string> = {
   FYS: "Fysisk",
@@ -38,60 +41,91 @@ export default async function TestDetalj({
     : 100;
   const span = Math.max(maxScore - minScore, 1);
 
+  const snitt =
+    resultater.length > 0
+      ? resultater.reduce((s, r) => s + r.score, 0) / resultater.length
+      : 0;
+  const best = resultater.length > 0 ? maxScore : 0;
+  const siste = resultater.length > 0 ? resultater[resultater.length - 1] : null;
+
+  // Split test name for italic display — last word goes italic
+  const navnOrd = test.name.trim().split(" ");
+  const titleItalic = navnOrd.length > 1 ? navnOrd[navnOrd.length - 1] : test.name;
+  const titleLead =
+    navnOrd.length > 1 ? navnOrd.slice(0, -1).join(" ") : undefined;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Link
         href="/portal/tren/tester"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Alle tester
+        <ArrowLeft size={14} strokeWidth={1.5} />
+        Alle tester
       </Link>
 
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Test · {PYR_LABEL[test.pyramidArea]}
-        </span>
-        <h2 className="mt-2 font-display text-2xl font-semibold leading-tight tracking-tight">
-          {test.name}
-        </h2>
-        {test.description && (
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            {test.description}
-          </p>
-        )}
-      </header>
+      <PageHeader
+        eyebrow={`PlayerHQ · Trening · ${PYR_LABEL[test.pyramidArea]}`}
+        titleLead={titleLead}
+        titleItalic={titleItalic}
+        sub={test.description ?? undefined}
+      />
+
+      {resultater.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <StatCard
+            label="Siste"
+            value={siste!.score.toFixed(1).replace(".", ",")}
+            sub={siste!.takenAt.toLocaleDateString("nb-NO", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })}
+          />
+          <StatCard
+            label="Best"
+            value={best.toFixed(1).replace(".", ",")}
+            sub={`${resultater.length} forsøk`}
+            highlight
+          />
+          <StatCard
+            label="Snitt"
+            value={snitt.toFixed(1).replace(".", ",")}
+            sub="Over alle forsøk"
+          />
+        </div>
+      )}
 
       <section className="rounded-lg border border-border bg-card p-6">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Scoring-regel
         </span>
-        <p className="mt-2 text-sm text-foreground">{test.scoringRule}</p>
+        <p className="mt-2 text-sm leading-relaxed text-foreground">
+          {test.scoringRule}
+        </p>
       </section>
 
       <section className="rounded-lg border border-border bg-card p-6">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Min historikk ({resultater.length})
-          </span>
-          {resultater.length > 0 && (
+          <div>
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Snitt:{" "}
-              <span className="tabular-nums text-foreground">
-                {(
-                  resultater.reduce((s, r) => s + r.score, 0) /
-                  resultater.length
-                )
-                  .toFixed(1)
-                  .replace(".", ",")}
-              </span>
+              Min historikk
             </span>
-          )}
+            <h3 className="mt-1 font-display text-lg font-semibold leading-tight tracking-tight">
+              {resultater.length} forsøk
+            </h3>
+          </div>
         </div>
 
         {resultater.length === 0 ? (
-          <p className="mt-4 text-sm text-muted-foreground">
-            Du har ikke tatt denne testen ennå.
-          </p>
+          <div className="mt-6">
+            <EmptyState
+              icon={ClipboardList}
+              titleItalic="Ingen forsøk"
+              titleTrail="ennå"
+              sub="Du har ikke tatt denne testen. Avtal en test med coachen din for å starte å måle progresjonen."
+            />
+          </div>
         ) : (
           <>
             <div className="mt-4 h-32 w-full">
@@ -112,6 +146,7 @@ export default async function TestDetalj({
                       y2={y2}
                       stroke="hsl(var(--primary))"
                       strokeWidth={2}
+                      strokeLinecap="round"
                     />
                   );
                 })}
@@ -133,7 +168,10 @@ export default async function TestDetalj({
 
             <ul className="mt-4 divide-y divide-border">
               {[...resultater].reverse().map((r) => (
-                <li key={r.id} className="flex items-center justify-between py-3">
+                <li
+                  key={r.id}
+                  className="flex items-center justify-between py-4"
+                >
                   <div>
                     <div className="font-mono text-xs text-muted-foreground">
                       {r.takenAt.toLocaleDateString("nb-NO", {
@@ -143,12 +181,12 @@ export default async function TestDetalj({
                       })}
                     </div>
                     {r.notes && (
-                      <div className="mt-0.5 text-xs text-muted-foreground">
+                      <div className="mt-1 text-xs italic text-muted-foreground">
                         {r.notes}
                       </div>
                     )}
                   </div>
-                  <div className="font-display text-base font-semibold tabular-nums text-foreground">
+                  <div className="font-display text-lg font-semibold tabular-nums text-foreground">
                     {r.score.toFixed(1).replace(".", ",")}
                   </div>
                 </li>
@@ -157,6 +195,34 @@ export default async function TestDetalj({
           </>
         )}
       </section>
+    </div>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  sub,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  sub: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-4">
+      <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        {label}
+      </div>
+      <div
+        className={`mt-2 font-mono text-3xl font-semibold tabular-nums leading-none ${
+          highlight ? "text-primary" : "text-foreground"
+        }`}
+      >
+        {value}
+      </div>
+      <div className="mt-2 text-xs text-muted-foreground">{sub}</div>
     </div>
   );
 }

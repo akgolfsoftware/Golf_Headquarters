@@ -1,7 +1,18 @@
+/**
+ * PlayerHQ · Mål · TrackMan-økt-detalj
+ *
+ * Migrert til produksjonsdesign med PageHeader (italic Instrument Serif),
+ * semantiske tokens og 8pt-grid. EmptyState når per-kølle-stats mangler.
+ */
+
 import Link from "next/link";
+import { ArrowLeft, Wrench } from "lucide-react";
 import { notFound } from "next/navigation";
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 import { DispersionPlot } from "./dispersion-plot";
 
 export default async function TrackManDetalj({
@@ -16,7 +27,11 @@ export default async function TrackManDetalj({
     where: { id },
   });
   if (!sesjon) notFound();
-  if (sesjon.userId !== user.id && user.role !== "ADMIN" && user.role !== "COACH") {
+  if (
+    sesjon.userId !== user.id &&
+    user.role !== "ADMIN" &&
+    user.role !== "COACH"
+  ) {
     notFound();
   }
 
@@ -47,31 +62,28 @@ export default async function TrackManDetalj({
     ? (sesjon.rawJson as Record<string, string>[])
     : [];
 
+  const datoTekst = sesjon.recordedAt.toLocaleDateString("nb-NO", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Link
         href="/portal/mal/trackman"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Alle TrackMan-økter
+        <ArrowLeft className="h-4 w-4" />
+        Alle TrackMan-økter
       </Link>
 
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          TrackMan · {sesjon.source}
-        </span>
-        <h2 className="mt-2 font-display text-2xl font-semibold leading-tight tracking-tight">
-          Økt{" "}
-          {sesjon.recordedAt.toLocaleDateString("nb-NO", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          })}
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {sesjon.shotCount} slag registrert.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow={`PlayerHQ · TrackMan · ${sesjon.source}`}
+        titleLead="Økt"
+        titleItalic={datoTekst}
+        sub={`${sesjon.shotCount} slag registrert.`}
+      />
 
       <section className="rounded-lg border border-border bg-card p-6">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -87,20 +99,24 @@ export default async function TrackManDetalj({
           Per kølle (snitt-distanse)
         </span>
         {klubbStats.length === 0 ? (
-          <p className="mt-3 text-sm text-muted-foreground">
-            Per-kølle-statistikk beregnes når trackman-agenten kjører. Trigges
-            automatisk ved CSV-import.
-          </p>
+          <div className="mt-4">
+            <EmptyState
+              icon={Wrench}
+              titleItalic="Beregner"
+              titleTrail="per kølle"
+              sub="Per-kølle-statistikk beregnes når trackman-agenten kjører. Trigges automatisk ved CSV-import."
+            />
+          </div>
         ) : (
-          <ul className="mt-3 divide-y divide-border">
+          <ul className="mt-4 divide-y divide-border">
             {klubbStats.map((s) => (
               <li
                 key={s.klubb}
-                className="flex items-center justify-between py-2.5 text-sm"
+                className="flex items-center justify-between py-4 text-sm"
               >
                 <div>
                   <span className="font-medium text-foreground">{s.klubb}</span>
-                  <span className="ml-3 font-mono text-[10px] text-muted-foreground">
+                  <span className="ml-4 font-mono text-[10px] text-muted-foreground">
                     {s.antallSlag} slag
                   </span>
                 </div>
