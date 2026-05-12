@@ -316,14 +316,17 @@ model SessionDrill {
 }
 
 model TrainingPlanSessionLog {
-  id          String    @id @default(cuid())
-  sessionId   String    @unique
-  startedAt   DateTime
-  completedAt DateTime?
-  csAchieved  Int?
-  notes       String?
-  rating      Int? // 1-5
-  createdAt   DateTime  @default(now())
+  id            String    @id @default(cuid())
+  sessionId     String    @unique
+  startedAt     DateTime
+  completedAt   DateTime?
+  csAchieved    Int?
+  notes         String? // Spillerens egne notater fra live-økt
+  rating        Int? // 1-5, spillerens mood/rating
+  coachFeedback String? // Coachens tilbakemelding på fullført økt
+  coachFeedbackAt   DateTime?
+  coachFeedbackById String?
+  createdAt     DateTime  @default(now())
 
   session TrainingPlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 

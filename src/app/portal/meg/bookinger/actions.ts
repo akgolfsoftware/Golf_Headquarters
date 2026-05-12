@@ -15,13 +15,15 @@ export async function cancelBooking(bookingId: string) {
   });
   if (!booking) throw new Error("not-found");
 
-  if (booking.userId !== user.id && user.role !== "ADMIN" && user.role !== "COACH") {
+  const erStaff = user.role === "ADMIN" || user.role === "COACH";
+  if (booking.userId !== user.id && !erStaff) {
     throw new Error("forbidden");
   }
   if (booking.status === "CANCELLED") return;
 
   const tidTilStart = booking.startAt.getTime() - Date.now();
-  const kanRefunderes = tidTilStart > 24 * 60 * 60 * 1000;
+  // Spillere: 24t-regel. Staff (COACH/ADMIN) kan refundere uansett tid.
+  const kanRefunderes = erStaff || tidTilStart > 24 * 60 * 60 * 1000;
 
   // Refunder via Stripe hvis berettiget og PaymentIntent finnes.
   if (kanRefunderes && booking.stripePaymentIntentId) {
@@ -60,4 +62,5 @@ export async function cancelBooking(bookingId: string) {
 
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/admin/bookings");
+  revalidatePath("/admin/calendar");
 }

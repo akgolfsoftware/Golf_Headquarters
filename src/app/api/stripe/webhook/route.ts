@@ -194,6 +194,45 @@ export async function POST(req: Request) {
         }
         break;
       }
+      case "payment_intent.succeeded": {
+        const intent = event.data.object as Stripe.PaymentIntent;
+        // Logger kun — booking-confirmation skjer via checkout.session.completed.
+        console.log(
+          "[stripe-webhook] payment_intent.succeeded",
+          intent.id,
+          intent.amount,
+          intent.currency,
+        );
+        break;
+      }
+      case "charge.refunded": {
+        const charge = event.data.object as Stripe.Charge;
+        const paymentIntentId =
+          typeof charge.payment_intent === "string"
+            ? charge.payment_intent
+            : charge.payment_intent?.id ?? null;
+        if (!paymentIntentId) {
+          console.warn(
+            "[stripe-webhook] charge.refunded uten payment_intent",
+            charge.id,
+          );
+          break;
+        }
+        const result = await prisma.booking.updateMany({
+          where: {
+            stripePaymentIntentId: paymentIntentId,
+            status: { not: "CANCELLED" },
+          },
+          data: { status: "CANCELLED" },
+        });
+        if (result.count === 0) {
+          console.warn(
+            "[stripe-webhook] charge.refunded: ingen aktiv booking matchet",
+            paymentIntentId,
+          );
+        }
+        break;
+      }
       default:
         // Ignorer andre events for nå
         break;

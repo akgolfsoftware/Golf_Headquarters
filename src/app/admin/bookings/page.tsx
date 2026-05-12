@@ -13,6 +13,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { AdminCancelAction } from "./cancel-action";
 
 type BookingType = "coach" | "fac" | "gf" | "grp";
 
@@ -284,7 +285,12 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
                   </span>
                 </Td>
                 <Td className="text-right">
-                  <span className="text-muted-foreground">⋯</span>
+                  <AdminCancelAction
+                    bookingId={b.id}
+                    status={b.status}
+                    startAt={b.startAt}
+                    playerName={b.user.name}
+                  />
                 </Td>
               </tr>
             );

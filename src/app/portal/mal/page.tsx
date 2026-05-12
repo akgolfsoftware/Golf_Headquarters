@@ -37,13 +37,13 @@ import { aggregateByArea, prosentPerArea } from "@/lib/pyramide";
 import type { PyramidArea, Goal } from "@/generated/prisma/client";
 import { NyGoalModal } from "./ny-goal-modal";
 
-// Pyramide-farger fra designet (hardkodet — designkrav, ringer i 5 ulike fagfarger).
+// Pyramide-farger fra designet (CSS-vars fra @theme).
 const PYR_COLOR: Record<PyramidArea, string> = {
-  FYS: "#A32D2D",
-  TEK: "#7A998C",
-  SLAG: "#A6651E",
-  SPILL: "#264E3B",
-  TURN: "#0A1F18",
+  FYS: "var(--color-pyr-fys)",
+  TEK: "var(--color-pyr-tek)",
+  SLAG: "var(--color-pyr-slag)",
+  SPILL: "var(--color-pyr-spill)",
+  TURN: "var(--color-pyr-turn)",
 };
 
 const PYR_REKKEFOLGE: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
@@ -221,7 +221,7 @@ function HcpTrend({
 
   return (
     <section
-      className="relative overflow-hidden rounded-2xl p-6 text-[#F5F4EE] md:p-8"
+      className="relative overflow-hidden rounded-2xl p-6 text-white md:p-8"
       style={{
         background:
           "linear-gradient(135deg, #0F2A22 0%, #163027 60%, #0A1F18 100%)",
@@ -239,8 +239,7 @@ function HcpTrend({
       <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col gap-1">
           <span
-            className="font-mono text-[11px] uppercase tracking-[0.08em]"
-            style={{ color: "rgba(209,248,67,0.7)" }}
+            className="font-mono text-[11px] uppercase tracking-[0.08em] text-accent/70"
           >
             Handicap-trend · 12 mnd
           </span>
@@ -248,8 +247,7 @@ function HcpTrend({
             <span>{naa != null ? formatHcp(naa) : "—"}</span>
             {endring != null && (
               <span
-                className="text-base font-semibold"
-                style={{ color: "#D1F843" }}
+                className="text-base font-semibold text-accent"
               >
                 {endring < 0 ? "↓" : endring > 0 ? "↑" : ""}{" "}
                 {endring > 0 ? "+" : ""}
@@ -258,8 +256,7 @@ function HcpTrend({
             )}
           </div>
           <p
-            className="mt-1 text-sm"
-            style={{ color: "rgba(245,244,238,0.65)" }}
+            className="mt-1 text-sm text-white/65"
           >
             {harData
               ? "Sammenstilt fra loggførte runder siste år."
@@ -284,8 +281,7 @@ function HcpTrend({
       <div className="relative z-10 mt-6">
         <HcpChart punkter={punkter} isFree={isFree} />
         <div
-          className="mt-2 flex justify-between px-1 font-mono text-[10px]"
-          style={{ color: "rgba(245,244,238,0.4)" }}
+          className="mt-2 flex justify-between px-1 font-mono text-[10px] text-white/40"
         >
           {xLabels(punkter).map((l, i) => (
             <span key={i}>{l}</span>
@@ -308,14 +304,12 @@ function Stat({
   return (
     <div className="flex flex-col">
       <span
-        className="font-mono text-[10px] uppercase tracking-[0.06em]"
-        style={{ color: "rgba(245,244,238,0.5)" }}
+        className="font-mono text-[10px] uppercase tracking-[0.06em] text-white/50"
       >
         {label}
       </span>
       <span
-        className="mt-0.5 font-mono text-xl font-semibold tabular-nums"
-        style={{ color: highlight ? "#D1F843" : "#F5F4EE" }}
+        className={`mt-0.5 font-mono text-xl font-semibold tabular-nums ${highlight ? "text-accent" : "text-white"}`}
       >
         {value}
       </span>
@@ -333,11 +327,7 @@ function HcpChart({
   if (punkter.length < 2) {
     return (
       <div
-        className="flex h-40 items-center justify-center rounded-md font-mono text-xs"
-        style={{
-          background: "rgba(255,255,255,0.04)",
-          color: "rgba(245,244,238,0.4)",
-        }}
+        className="flex h-40 items-center justify-center rounded-md bg-white/5 font-mono text-xs text-white/40"
       >
         Ikke nok data ennå.
       </div>
@@ -396,12 +386,12 @@ function HcpChart({
           strokeWidth="1"
         />
         {/* area */}
-        <path d={areaPath} fill="rgba(209,248,67,0.10)" />
+        <path d={areaPath} fill="hsl(var(--accent) / 0.10)" />
         {/* line */}
         <path
           d={path}
           fill="none"
-          stroke="#D1F843"
+          stroke="hsl(var(--accent))"
           strokeWidth="2.5"
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -411,7 +401,7 @@ function HcpChart({
           <path
             d={proj}
             fill="none"
-            stroke="#D1F843"
+            stroke="hsl(var(--accent))"
             strokeWidth="2"
             strokeDasharray="6 4"
             opacity="0.55"
@@ -424,7 +414,7 @@ function HcpChart({
             cx={p.x}
             cy={p.y}
             r={i === pts.length - 1 ? 5 : 3}
-            fill="#D1F843"
+            fill="hsl(var(--accent))"
             stroke={i === pts.length - 1 ? "#0F2A22" : undefined}
             strokeWidth={i === pts.length - 1 ? 2 : 0}
           />
@@ -433,29 +423,23 @@ function HcpChart({
 
       {isFree && (
         <div
-          className="absolute inset-y-0 right-0 flex flex-col items-center justify-center gap-2 border-l border-dashed px-6 backdrop-blur-sm"
+          className="absolute inset-y-0 right-0 flex flex-col items-center justify-center gap-2 border-l border-dashed border-accent/30 px-6 backdrop-blur-sm"
           style={{
             width: "38%",
             background: "rgba(15,42,34,0.6)",
-            borderColor: "rgba(209,248,67,0.3)",
           }}
         >
           <span
-            className="grid h-9 w-9 place-items-center rounded-md"
-            style={{ background: "#D1F843", color: "#0A1F18" }}
+            className="grid h-9 w-9 place-items-center rounded-md bg-accent text-accent-foreground"
           >
             <Lock className="h-4 w-4" strokeWidth={2} />
           </span>
-          <span className="font-display text-sm italic text-[#F5F4EE]">
+          <span className="font-display text-sm italic text-white">
             Projeksjon — Pro
           </span>
           <Link
             href="/portal/meg/abonnement"
-            className="inline-flex items-center gap-1 rounded-full px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.06em]"
-            style={{
-              background: "rgba(209,248,67,0.16)",
-              color: "#D1F843",
-            }}
+            className="inline-flex items-center gap-1 rounded-full bg-accent/15 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent"
           >
             Oppgrader <ArrowRight className="h-3 w-3" strokeWidth={2} />
           </Link>
@@ -496,8 +480,7 @@ function HcpMaalCard({
         </span>
         {goal && (
           <span
-            className="ml-auto rounded-sm px-2 py-0.5 font-mono text-[10px] font-semibold"
-            style={{ background: "#D1F843", color: "#0A1F18" }}
+            className="ml-auto rounded-sm bg-accent px-2 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground"
           >
             Sesong
           </span>
@@ -742,7 +725,7 @@ function FerdighetMaalCard({
             className="absolute inset-y-0 left-0 rounded-sm"
             style={{
               width: `${prosent}%`,
-              background: "linear-gradient(90deg, #1A7D56 0%, #005840 100%)",
+              background: "linear-gradient(90deg, var(--color-pyr-tek) 0%, var(--color-pyr-fys) 100%)",
             }}
           />
         </div>
@@ -946,8 +929,7 @@ function LockOverlay({ label, cta }: { label: string; cta: string }) {
       className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-2xl bg-card/86 backdrop-blur-sm transition-colors hover:bg-card/95"
     >
       <span
-        className="grid h-10 w-10 place-items-center rounded-md"
-        style={{ background: "#0F2A22", color: "#D1F843" }}
+        className="grid h-10 w-10 place-items-center rounded-md bg-foreground text-accent"
       >
         <Lock className="h-5 w-5" strokeWidth={2} />
       </span>
@@ -955,8 +937,7 @@ function LockOverlay({ label, cta }: { label: string; cta: string }) {
         {label}
       </span>
       <span
-        className="inline-flex items-center gap-1 rounded-full px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.04em]"
-        style={{ background: "#D1F843", color: "#0A1F18" }}
+        className="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-accent-foreground"
       >
         {cta}
         <ArrowRight className="h-3 w-3" strokeWidth={2} />

@@ -271,6 +271,82 @@ export async function oppdaterOkt(sessionId: string, data: OktData) {
 }
 
 /**
+ * Send coach-feedback på en fullført live-økt.
+ *
+ * Lagrer feedback på TrainingPlanSessionLog.coachFeedback + audit-log.
+ * Ingen e-post i v1 — spilleren ser tilbakemeldingen i portal/tren/[sessionId].
+ */
+export async function sendOktFeedback(
+  sessionId: string,
+  text: string,
+): Promise<{ ok: true } | { ok: false; feil: string }> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, feil: "unauthenticated" };
+  if (user.role !== "COACH" && user.role !== "ADMIN") {
+    return { ok: false, feil: "forbidden" };
+  }
+
+  const trimmed = text.trim();
+  if (trimmed.length < 2) {
+    return { ok: false, feil: "Tilbakemeldingen er for kort." };
+  }
+  if (trimmed.length > 2000) {
+    return { ok: false, feil: "Tilbakemeldingen er for lang (maks 2000 tegn)." };
+  }
+
+  const session = await prisma.trainingPlanSession.findUnique({
+    where: { id: sessionId },
+    select: {
+      id: true,
+      planId: true,
+      title: true,
+      status: true,
+      plan: { select: { userId: true, createdById: true } },
+      log: { select: { id: true } },
+    },
+  });
+  if (!session) return { ok: false, feil: "Fant ikke økten." };
+  if (session.status !== "COMPLETED" || !session.log) {
+    return { ok: false, feil: "Økten er ikke fullført ennå." };
+  }
+  if (
+    user.role !== "ADMIN" &&
+    session.plan.createdById &&
+    session.plan.createdById !== user.id
+  ) {
+    return { ok: false, feil: "Du har ikke tilgang til denne planen." };
+  }
+
+  const now = new Date();
+  await prisma.trainingPlanSessionLog.update({
+    where: { sessionId },
+    data: {
+      coachFeedback: trimmed,
+      coachFeedbackAt: now,
+      coachFeedbackById: user.id,
+    },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: user.id,
+      action: "plan.session.feedback",
+      target: sessionId,
+      metadata: {
+        planId: session.planId,
+        playerUserId: session.plan.userId,
+        sessionTitle: session.title,
+        feedbackLength: trimmed.length,
+      },
+    },
+  });
+
+  revalidatePath(`/admin/plans/${session.planId}`);
+  revalidatePath(`/portal/tren/${sessionId}`);
+  return { ok: true };
+}
+
+/**
  * Slett en økt permanent. Drills og log slettes via cascade.
  */
 export async function slettOkt(sessionId: string) {

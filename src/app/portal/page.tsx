@@ -92,13 +92,13 @@ const PYR_LABEL_KORT: Record<PyramidArea, string> = {
   TURN: "TURN",
 };
 
-// Pyramide-farger fra designet (hardkodede hex - designkrav).
+// Pyramide-farger fra designet (CSS-vars fra @theme).
 const PYR_COLOR: Record<PyramidArea, string> = {
-  FYS: "#A32D2D",
-  TEK: "#7A998C",
-  SLAG: "#A6651E",
-  SPILL: "#264E3B",
-  TURN: "#0A1F18",
+  FYS: "var(--color-pyr-fys)",
+  TEK: "var(--color-pyr-tek)",
+  SLAG: "var(--color-pyr-slag)",
+  SPILL: "var(--color-pyr-spill)",
+  TURN: "var(--color-pyr-turn)",
 };
 
 export default async function PortalHjem() {
@@ -217,8 +217,8 @@ function Hero({ user }: { user: PortalUser }) {
           <span
             className="absolute -bottom-1 -right-1 rounded-sm border-2 border-background px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase tracking-wider"
             style={{
-              background: isFree ? "hsl(var(--secondary))" : "#D1F843",
-              color: isFree ? "hsl(var(--muted-foreground))" : "#0A1F18",
+              background: isFree ? "hsl(var(--secondary))" : "hsl(var(--accent))",
+              color: isFree ? "hsl(var(--muted-foreground))" : "hsl(var(--accent-foreground))",
             }}
           >
             {isFree ? "Free" : "Pro"}
@@ -311,16 +311,15 @@ function KpiStrip({
             "linear-gradient(135deg, #005840 0%, #003B2A 100%)",
         }}
       >
-        <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-[#F5F4EE]/70">
+        <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-white/70">
           <Trophy className="h-3.5 w-3.5" strokeWidth={1.75} />
           Handicap
         </div>
-        <div className="font-mono text-5xl font-medium leading-none tabular-nums tracking-tight text-[#F5F4EE]">
+        <div className="font-mono text-5xl font-medium leading-none tabular-nums tracking-tight text-white">
           {hcp != null ? hcp.toFixed(1).replace(".", ",") : "—"}
         </div>
         <div
-          className="mt-auto flex items-center gap-1 font-mono text-xs"
-          style={{ color: "#D1F843" }}
+          className="mt-auto flex items-center gap-1 font-mono text-xs text-accent"
         >
           <span>Nåverdi · oppdatert i dag</span>
         </div>
@@ -338,8 +337,8 @@ function KpiStrip({
             color:
               sgTotal != null
                 ? sgTotal >= 0
-                  ? "#1A7D56"
-                  : "#A32D2D"
+                  ? "var(--color-pyr-tek)"
+                  : "hsl(var(--destructive))"
                 : "hsl(var(--foreground))",
           }}
         >
@@ -437,12 +436,12 @@ function StreakStrip({ streak }: { streak: boolean[] }) {
             className={`flex h-7 flex-1 items-center justify-center rounded-sm font-mono text-[9px] font-semibold uppercase tracking-wider ${cls}`}
             style={{
               background: isToday
-                ? "#D1F843"
+                ? "hsl(var(--accent))"
                 : on
                   ? "hsl(var(--primary))"
                   : "hsl(var(--secondary))",
               color: isToday
-                ? "#0A1F18"
+                ? "hsl(var(--accent-foreground))"
                 : on
                   ? "hsl(var(--primary-foreground))"
                   : "hsl(var(--muted-foreground))",
@@ -462,15 +461,14 @@ function LockOverlay({ label, cta }: { label: string; cta: string }) {
       href="/portal/meg/abonnement"
       className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-xl bg-card/90 backdrop-blur-sm transition-colors hover:bg-card/95"
     >
-      <span className="grid h-10 w-10 place-items-center rounded-md bg-foreground text-[#D1F843]">
+      <span className="grid h-10 w-10 place-items-center rounded-md bg-foreground text-accent">
         <Lock className="h-5 w-5" strokeWidth={2} />
       </span>
       <span className="font-display text-sm font-semibold italic text-foreground">
         {label}
       </span>
       <span
-        className="inline-flex items-center gap-1 rounded-full px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.04em]"
-        style={{ background: "#D1F843", color: "#0A1F18" }}
+        className="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-accent-foreground"
       >
         {cta} →
       </span>
@@ -491,10 +489,9 @@ function DagensFokus({
 }) {
   if (!session) {
     return (
-      <article className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border bg-gradient-to-br from-[#FAFAF7] to-[#F5F2EA] px-6 py-10 text-center dark:from-card dark:to-card">
+      <article className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border bg-gradient-to-br from-background to-secondary px-6 py-10 text-center dark:from-card dark:to-card">
         <span
-          className="grid h-14 w-14 place-items-center rounded-2xl"
-          style={{ background: "#D1F843", color: "#0A1F18" }}
+          className="grid h-14 w-14 place-items-center rounded-2xl bg-accent text-accent-foreground"
         >
           <Zap className="h-6 w-6" strokeWidth={1.75} />
         </span>
@@ -533,7 +530,7 @@ function DagensFokus({
   const isFree = tier === "GRATIS";
 
   return (
-    <article className="relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-[#FAFAF7] to-[#F5F2EA] p-6 shadow-sm md:flex-row md:items-end md:justify-between md:gap-8 md:p-8 dark:from-card dark:to-card">
+    <article className="relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-background to-secondary p-6 shadow-sm md:flex-row md:items-end md:justify-between md:gap-8 md:p-8 dark:from-card dark:to-card">
       {/* Vertikal aksent-stripe */}
       <span
         aria-hidden
@@ -664,8 +661,7 @@ function PyramideProgresjon({
           Pyramide-progresjon
         </span>
         <span
-          className="ml-auto rounded-sm px-2 py-0.5 font-mono text-[10px] font-semibold"
-          style={{ background: "#D1F843", color: "#0A1F18" }}
+          className="ml-auto rounded-sm bg-accent px-2 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground"
         >
           PRO
         </span>
@@ -779,8 +775,7 @@ function SgFordeling({
           SG-fordeling
         </span>
         <span
-          className="ml-auto rounded-sm px-2 py-0.5 font-mono text-[10px] font-semibold"
-          style={{ background: "#D1F843", color: "#0A1F18" }}
+          className="ml-auto rounded-sm bg-accent px-2 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground"
         >
           PRO
         </span>
@@ -821,8 +816,8 @@ function SgRowItem({ k, v }: SgRow) {
           color:
             v != null
               ? isNeg
-                ? "#A32D2D"
-                : "#1A7D56"
+                ? "hsl(var(--destructive))"
+                : "var(--color-pyr-tek)"
               : "hsl(var(--muted-foreground))",
         }}
       >
@@ -833,7 +828,7 @@ function SgRowItem({ k, v }: SgRow) {
           className="absolute inset-y-0 left-0 rounded-sm"
           style={{
             width: `${bredde}%`,
-            background: isNeg ? "#A32D2D" : "hsl(var(--primary))",
+            background: isNeg ? "hsl(var(--destructive))" : "hsl(var(--primary))",
           }}
         />
       </span>
@@ -907,10 +902,10 @@ function SistRegistrertRow({ item }: { item: SistRegistrert }) {
 
   const iconBg =
     item.type === "round"
-      ? { bg: "rgba(38,78,59,0.18)", fg: "#264E3B", icon: Flag }
+      ? { bg: "var(--color-pyr-spill-track)", fg: "var(--color-pyr-spill)", icon: Flag }
       : item.type === "test"
-        ? { bg: "rgba(166,101,30,0.18)", fg: "#A6651E", icon: Target }
-        : { bg: "rgba(122,153,140,0.18)", fg: "#36685A", icon: Dumbbell };
+        ? { bg: "var(--color-pyr-slag-track)", fg: "var(--color-pyr-fys)", icon: Target }
+        : { bg: "var(--color-pyr-tek-track)", fg: "var(--color-pyr-tek)", icon: Dumbbell };
 
   const Ic = iconBg.icon;
 
@@ -1012,8 +1007,7 @@ function CoachMelding({
         href={
           tier === "GRATIS" ? "/portal/meg/abonnement" : "/portal/coach/ai"
         }
-        className="relative z-10 inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold"
-        style={{ background: "#D1F843", color: "#0A1F18" }}
+        className="relative z-10 inline-flex shrink-0 items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground"
       >
         <MessageSquare className="h-3.5 w-3.5" strokeWidth={2} />
         Svar

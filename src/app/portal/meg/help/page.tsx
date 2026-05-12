@@ -43,24 +43,24 @@ const KATEGORIER: Kategori[] = [
     navn: "Trening",
     artikler: 14,
     ikon: Dumbbell,
-    ikonBg: "bg-[#3b5994]/15",
-    ikonFg: "text-[#3b5994]",
+    ikonBg: "bg-pyr-tek/15",
+    ikonFg: "text-pyr-tek",
   },
   {
     slug: "coaching",
     navn: "Coaching",
     artikler: 12,
     ikon: Headphones,
-    ikonBg: "bg-[#F4C430]/20",
-    ikonFg: "text-[#7a5a08]",
+    ikonBg: "bg-pyr-slag/30",
+    ikonFg: "text-pyr-spill",
   },
   {
     slug: "booking",
     navn: "Booking + betaling",
     artikler: 9,
     ikon: Calendar,
-    ikonBg: "bg-[#a14b30]/15",
-    ikonFg: "text-[#a14b30]",
+    ikonBg: "bg-destructive/15",
+    ikonFg: "text-destructive",
   },
   {
     slug: "konto",
@@ -140,7 +140,7 @@ export default async function HelpPage() {
             type="search"
             aria-label="Søk i hjelp-artikler"
             placeholder="Søk hjelp-artikler eller skriv et spørsmål..."
-            className="w-full rounded-lg border-[1.5px] border-border bg-card px-6 py-4 pl-14 text-base text-foreground outline-none transition-all focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,88,64,0.10)]"
+            className="w-full rounded-lg border-[1.5px] border-border bg-card px-6 py-4 pl-14 text-base text-foreground outline-none transition-all focus:border-primary focus:shadow-[0_0_0_4px_var(--color-pyr-fys-track)]"
           />
         </div>
 
@@ -234,11 +234,11 @@ export default async function HelpPage() {
       </section>
 
       {/* Kontakt — mørk card */}
-      <section className="rounded-lg bg-gradient-to-br from-[#0F2A22] to-[#163027] p-8 text-[#F5F4EE]">
-        <h2 className="text-center font-display text-2xl font-normal italic leading-tight tracking-tight text-[#F5F4EE]">
+      <section className="rounded-lg bg-gradient-to-br from-[#0F2A22] to-[#163027] p-8 text-white">
+        <h2 className="text-center font-display text-2xl font-normal italic leading-tight tracking-tight text-white">
           <span className="not-italic font-semibold">Trenger du</span> mer hjelp?
         </h2>
-        <p className="mt-2 text-center font-mono text-xs text-[#F5F4EE]/70">
+        <p className="mt-2 text-center font-mono text-xs text-white/70">
           Vi er her — velg det som passer deg
         </p>
 
@@ -283,23 +283,23 @@ function KontaktCard({
 }) {
   const innhold = (
     <>
-      <div className="grid h-9 w-9 place-items-center rounded-md bg-[#D1F843]/15 text-[#D1F843]">
+      <div className="grid h-9 w-9 place-items-center rounded-md bg-accent/15 text-accent">
         <Ikon size={18} strokeWidth={1.75} aria-hidden="true" />
       </div>
-      <h4 className="font-display text-base font-semibold text-[#F5F4EE]">
+      <h4 className="font-display text-base font-semibold text-white">
         {tittel}
       </h4>
-      <p className="font-mono text-[11px] leading-snug text-[#F5F4EE]/60">
+      <p className="font-mono text-[11px] leading-snug text-white/60">
         {sub}
       </p>
-      <span className="mt-auto inline-flex items-center text-xs font-semibold text-[#D1F843]">
+      <span className="mt-auto inline-flex items-center text-xs font-semibold text-accent">
         {cta}
       </span>
     </>
   );
 
   const className =
-    "flex flex-col gap-2 rounded-md border border-[#F5F4EE]/10 bg-[#F5F4EE]/[0.04] p-4 transition-colors hover:border-[#D1F843]/40 hover:bg-[#F5F4EE]/[0.08]";
+    "flex flex-col gap-2 rounded-md border border-white/10 bg-white/[0.04] p-4 transition-colors hover:border-accent/40 hover:bg-white/[0.08]";
 
   return href ? (
     <a href={href} className={className}>

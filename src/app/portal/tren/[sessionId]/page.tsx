@@ -242,15 +242,41 @@ export default async function SessionDetalj({
         </section>
       )}
 
-      {/* Coach-notat */}
-      {session.log?.notes && (
+      {/* Coach-feedback fra fullført live-økt */}
+      {session.log?.coachFeedback && (
         <section className="grid grid-cols-[auto_1fr] items-start gap-4 rounded-xl bg-primary p-6 text-primary-foreground">
           <div className="grid h-11 w-11 place-items-center rounded-full bg-[var(--color-accent)] text-[14px] font-semibold text-accent-foreground">
             <MessageSquare className="h-5 w-5" strokeWidth={2} />
           </div>
           <div>
             <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.08em] opacity-70">
-              Coach-notat
+              Coach-feedback
+              {session.log.coachFeedbackAt && (
+                <>
+                  {" · "}
+                  {session.log.coachFeedbackAt.toLocaleDateString("nb-NO", {
+                    day: "2-digit",
+                    month: "short",
+                  })}
+                </>
+              )}
+            </div>
+            <div className="mt-1.5 font-display text-[18px] italic leading-[1.4]">
+              «{session.log.coachFeedback}»
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Spillerens egen notat fra live-økt */}
+      {session.log?.notes && (
+        <section className="grid grid-cols-[auto_1fr] items-start gap-4 rounded-xl border border-border bg-card p-6">
+          <div className="grid h-11 w-11 place-items-center rounded-full bg-secondary text-[14px] font-semibold text-foreground">
+            <MessageSquare className="h-5 w-5" strokeWidth={2} />
+          </div>
+          <div>
+            <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+              Din egen kommentar
             </div>
             <div className="mt-1.5 font-display text-[18px] italic leading-[1.4]">
               «{session.log.notes}»

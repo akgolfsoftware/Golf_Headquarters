@@ -42,7 +42,7 @@ const godkjenninger: Godkjenning[] = [
   {
     id: "1",
     initials: "JT",
-    bgColor: "#A32D2D",
+    bgColor: "hsl(var(--destructive))",
     title: "Eskalering — Joachim Tangen, skade-flagg",
     source: "Escalation-agent · for 14 min",
     severity: "urgent",
@@ -51,7 +51,7 @@ const godkjenninger: Godkjenning[] = [
   {
     id: "2",
     initials: "MR",
-    bgColor: "#005840",
+    bgColor: "hsl(var(--primary))",
     title: "Pauseuke før Sørlandsåpent",
     source: "Deload-agent · for 2t",
     severity: "warn",
@@ -60,7 +60,7 @@ const godkjenninger: Godkjenning[] = [
   {
     id: "3",
     initials: "ES",
-    bgColor: "#1A7D56",
+    bgColor: "var(--color-pyr-tek)",
     title: "TEK-volum: 40 % → 28 %",
     source: "Periodisering · i går 16:42",
     severity: "info",
@@ -69,21 +69,21 @@ const godkjenninger: Godkjenning[] = [
 ];
 
 const meldinger: Melding[] = [
-  { id: "1", initials: "MR", bgColor: "#005840", name: "Markus R", time: "07:14" },
+  { id: "1", initials: "MR", bgColor: "hsl(var(--primary))", name: "Markus R", time: "07:14" },
   { id: "2", initials: "ES", bgColor: "#A6651E", name: "Emma S", time: "06:58" },
   { id: "3", initials: "JT", bgColor: "#264E3B", name: "Joachim T", time: "i går", muted: true },
 ];
 
 const sevDotClass: Record<Godkjenning["severity"], string> = {
   urgent: "bg-destructive",
-  warn: "bg-[#B8852A]",
-  info: "bg-[#1A7D56]",
+  warn: "bg-pyr-spill",
+  info: "bg-pyr-tek",
 };
 
 const tagClass: Record<Godkjenning["tag"], string> = {
   Urgent: "bg-accent text-accent-foreground",
-  Warning: "bg-[#B8852A]/15 text-[#8A5E1A]",
-  Info: "bg-[#1A7D56]/15 text-[#1A7D56]",
+  Warning: "bg-pyr-spill/15 text-[#8A5E1A]",
+  Info: "bg-pyr-tek/15 text-pyr-tek",
 };
 
 export default async function AdminHub() {
@@ -120,10 +120,10 @@ export default async function AdminHub() {
             <span className="text-muted-foreground/60">·</span>
             <span>{dagDel}</span>
             <span className="text-muted-foreground/60">·</span>
-            <span className="inline-flex items-center gap-1.5 font-mono text-[#1A7D56]">
+            <span className="inline-flex items-center gap-1.5 font-mono text-pyr-tek">
               <span className="relative inline-flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1A7D56] opacity-60" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#1A7D56]" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-pyr-tek opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-pyr-tek" />
               </span>
               {liveNa} LIVE NÅ
             </span>
@@ -182,14 +182,14 @@ export default async function AdminHub() {
               <span>{Math.max(0, totalSpillere - data.kpi.aktiveSpillere)} inaktive</span>
               <div className="flex">
                 {[
-                  { l: "M", c: "#1A7D56" },
+                  { l: "M", c: "var(--color-pyr-tek)" },
                   { l: "E", c: "#A6651E" },
                   { l: "J", c: "#264E3B" },
-                  { l: "L", c: "#A32D2D" },
+                  { l: "L", c: "hsl(var(--destructive))" },
                 ].map((a, i) => (
                   <div
                     key={a.l}
-                    className="font-display flex h-6 w-6 items-center justify-center rounded-full border-2 border-[#0B2018] text-[10px] font-semibold text-white"
+                    className="font-display flex h-6 w-6 items-center justify-center rounded-full border-2 border-foreground text-[10px] font-semibold text-white"
                     style={{ background: a.c, marginLeft: i === 0 ? 0 : -6 }}
                   >
                     {a.l}
@@ -209,7 +209,7 @@ export default async function AdminHub() {
             <TrendingUp className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
             Snitt SG-trend (30 d)
           </div>
-          <div className="font-mono text-[32px] font-medium leading-none tabular-nums text-[#1A7D56]">
+          <div className="font-mono text-[32px] font-medium leading-none tabular-nums text-pyr-tek">
             +0,42
           </div>
           <div className="mt-2">
@@ -217,15 +217,15 @@ export default async function AdminHub() {
               <path
                 d="M0,28 L20,30 L40,26 L60,28 L80,22 L100,18 L120,22 L140,16 L160,12 L180,10 L200,6"
                 fill="none"
-                stroke="#1A7D56"
+                stroke="var(--color-pyr-tek)"
                 strokeWidth="2"
               />
               <path
                 d="M0,28 L20,30 L40,26 L60,28 L80,22 L100,18 L120,22 L140,16 L160,12 L180,10 L200,6 L200,40 L0,40 Z"
-                fill="#1A7D56"
+                fill="var(--color-pyr-tek)"
                 opacity="0.12"
               />
-              <circle cx="200" cy="6" r="3" fill="#1A7D56" />
+              <circle cx="200" cy="6" r="3" fill="var(--color-pyr-tek)" />
             </svg>
           </div>
           <div className="mt-auto flex items-center justify-between pt-2 font-mono text-[11px] text-muted-foreground">
@@ -242,13 +242,13 @@ export default async function AdminHub() {
           </div>
           <div className="flex items-center gap-4">
             <svg width="64" height="64" viewBox="0 0 36 36" className="shrink-0">
-              <circle cx="18" cy="18" r="14" fill="none" stroke="#EFEDE6" strokeWidth="5" />
+              <circle cx="18" cy="18" r="14" fill="none" stroke="hsl(var(--secondary))" strokeWidth="5" />
               <circle
                 cx="18"
                 cy="18"
                 r="14"
                 fill="none"
-                stroke="#005840"
+                stroke="hsl(var(--primary))"
                 strokeWidth="5"
                 strokeDasharray="64.2 87.96"
                 transform="rotate(-90 18 18)"
@@ -259,7 +259,7 @@ export default async function AdminHub() {
               <div className="font-mono text-[32px] font-medium leading-none tabular-nums text-foreground">
                 73 %
               </div>
-              <div className="mt-1 inline-flex items-center gap-1 font-mono text-xs text-[#1A7D56]">
+              <div className="mt-1 inline-flex items-center gap-1 font-mono text-xs text-pyr-tek">
                 <TrendingUp className="h-3 w-3" strokeWidth={2.5} />
                 +8 pt
               </div>
@@ -281,13 +281,13 @@ export default async function AdminHub() {
             182 400
             <span className="ml-1 text-[13px] text-muted-foreground">kr</span>
           </div>
-          <div className="inline-flex items-center gap-1 font-mono text-xs text-[#1A7D56]">
+          <div className="inline-flex items-center gap-1 font-mono text-xs text-pyr-tek">
             <TrendingUp className="h-3 w-3" strokeWidth={2.5} />
             +12 % vs forrige måned
           </div>
           <div className="mt-auto flex items-center justify-between pt-2 font-mono text-[11px] text-muted-foreground">
             <span>Mai · 13 dager</span>
-            <span className="text-[#B8852A]">3 200 kr utestående</span>
+            <span className="text-pyr-spill">3 200 kr utestående</span>
           </div>
         </div>
       </section>
@@ -404,7 +404,7 @@ export default async function AdminHub() {
           </div>
           <div className="mt-auto flex items-center gap-3 pt-2">
             <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-secondary">
-              <div className="h-full rounded-full bg-[#B8852A]" style={{ width: "11%" }} />
+              <div className="h-full rounded-full bg-pyr-spill" style={{ width: "11%" }} />
             </div>
             <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
               4 av {totalSpillere}
@@ -437,11 +437,11 @@ export default async function AdminHub() {
             5 SG-baseline, 2 fysiske · gjennomsnitt om 3 dager.
           </div>
           <div className="mt-2 flex gap-1">
-            <span className="h-1.5 w-6 rounded-full bg-[#1A7D56]" />
-            <span className="h-1.5 w-6 rounded-full bg-[#1A7D56]" />
-            <span className="h-1.5 w-6 rounded-full bg-[#B8852A]" />
-            <span className="h-1.5 w-6 rounded-full bg-[#B8852A]" />
-            <span className="h-1.5 w-6 rounded-full bg-[#B8852A]" />
+            <span className="h-1.5 w-6 rounded-full bg-pyr-tek" />
+            <span className="h-1.5 w-6 rounded-full bg-pyr-tek" />
+            <span className="h-1.5 w-6 rounded-full bg-pyr-spill" />
+            <span className="h-1.5 w-6 rounded-full bg-pyr-spill" />
+            <span className="h-1.5 w-6 rounded-full bg-pyr-spill" />
             <span className="h-1.5 w-6 rounded-full bg-destructive" />
             <span className="h-1.5 w-6 rounded-full bg-destructive" />
           </div>
@@ -466,7 +466,7 @@ export default async function AdminHub() {
             </span>
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="font-mono text-[24px] font-semibold leading-none tabular-nums text-[#B8852A]">
+            <span className="font-mono text-[24px] font-semibold leading-none tabular-nums text-pyr-spill">
               3 200
             </span>
             <span className="text-xs text-muted-foreground">kr</span>
@@ -476,7 +476,7 @@ export default async function AdminHub() {
           </div>
           <div className="mt-1 flex gap-1.5">
             {[
-              { l: "LH", c: "#A32D2D" },
+              { l: "LH", c: "hsl(var(--destructive))" },
               { l: "SV", c: "#A6651E" },
               { l: "HN", c: "#264E3B" },
             ].map((a) => (

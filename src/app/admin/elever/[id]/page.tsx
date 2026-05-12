@@ -31,27 +31,27 @@ const PYR_META: Record<
   { color: string; name: string; sub: string }
 > = {
   FYS: {
-    color: "var(--color-pyr-fys,#005840)",
+    color: "var(--color-pyr-fys)",
     name: "FYS · fysisk fundament",
     sub: "Mobilitet, styrke, rotasjon",
   },
   TEK: {
-    color: "var(--color-pyr-tek,#1A7D56)",
+    color: "var(--color-pyr-tek)",
     name: "TEK · teknikk",
     sub: "Sving-arbeid, video",
   },
   SLAG: {
-    color: "var(--color-pyr-slag,#D1F843)",
+    color: "var(--color-pyr-slag)",
     name: "SLAG · slagprogresjon",
     sub: "Range, sand, putte",
   },
   SPILL: {
-    color: "var(--color-pyr-spill,#B8852A)",
+    color: "var(--color-pyr-spill)",
     name: "SPILL · banespill",
     sub: "9- og 18-hulls",
   },
   TURN: {
-    color: "var(--color-pyr-turn,#5E5C57)",
+    color: "var(--color-pyr-turn)",
     name: "TURN · turnering",
     sub: "Konkurransepuls",
   },
@@ -110,6 +110,17 @@ export default async function Profil360({
               title: true,
               pyramidArea: true,
               durationMin: true,
+              log: {
+                select: {
+                  csAchieved: true,
+                  rating: true,
+                  notes: true,
+                  startedAt: true,
+                  completedAt: true,
+                  coachFeedback: true,
+                  coachFeedbackAt: true,
+                },
+              },
             },
             orderBy: { scheduledAt: "desc" },
           },
@@ -147,8 +158,16 @@ export default async function Profil360({
       pyramidArea: s.pyramidArea,
       durationMin: s.durationMin,
       planName: p.name,
+      planId: p.id,
+      log: s.log,
     }))
   );
+
+  // Siste 5 fullførte live-økter (har log = ble kjørt via LiveTapper)
+  const livecompleted = allSessions
+    .filter((s) => s.status === "COMPLETED" && s.log != null)
+    .sort((a, b) => b.scheduledAt.getTime() - a.scheduledAt.getTime())
+    .slice(0, 5);
 
   const completedSessions = allSessions.filter((s) => s.status === "COMPLETED");
   const plannedSessions = allSessions.filter(
@@ -217,7 +236,7 @@ export default async function Profil360({
   const donutGradient =
     donutStops.length > 0
       ? `conic-gradient(${donutStops.join(", ")})`
-      : "conic-gradient(var(--color-secondary,#F1EEE5) 0deg 360deg)";
+      : "conic-gradient(hsl(var(--secondary)) 0deg 360deg)";
 
   // Heatmap: 12 uker tilbake, 5 lag, summer min/uke
   const weeks: number[] = [];
@@ -505,12 +524,12 @@ export default async function Profil360({
           </div>
           <div className="hidden items-center gap-4 text-[11px] font-medium text-muted-foreground sm:flex">
             <LegendCell
-              color="var(--surface-alt,#F1EEE5)"
-              border="var(--line-soft,#EFEDE6)"
+              color="hsl(var(--secondary))"
+              border="hsl(var(--border))"
               label="0 t"
             />
-            <LegendCell color="rgba(0,88,64,0.25)" label="1 t" />
-            <LegendCell color="var(--brand-primary,#005840)" label="3 t+" />
+            <LegendCell color="var(--color-pyr-fys-track)" label="1 t" />
+            <LegendCell color="hsl(var(--primary))" label="3 t+" />
           </div>
         </div>
         <div className="mt-3.5 grid grid-cols-[48px_repeat(12,1fr)] gap-1.5">
@@ -571,6 +590,118 @@ export default async function Profil360({
               </li>
             ))}
           </ol>
+        )}
+      </section>
+
+      {/* Siste live-økter — fullførte med rep-logging fra LiveTapper */}
+      <section className="rounded-lg border border-border bg-card px-6 py-5">
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Live-økter · rep-logget i appen
+            </div>
+            <h3 className="mt-1 font-display text-[18px] font-semibold leading-snug">
+              Siste live-økter
+            </h3>
+            <p className="mt-1 text-[12px] leading-[1.5] text-muted-foreground">
+              Hva som faktisk ble logget — godkjente reps, varighet og fokus.
+            </p>
+          </div>
+          {livecompleted.length > 0 && (
+            <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+              {livecompleted.length}{" "}
+              {livecompleted.length === 1 ? "økt" : "økter"}
+            </span>
+          )}
+        </div>
+
+        {livecompleted.length === 0 ? (
+          <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
+            Spilleren har ikke fullført en live-økt ennå.
+          </p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {livecompleted.map((s) => {
+              const dato = s.scheduledAt.toLocaleDateString("nb-NO", {
+                day: "2-digit",
+                month: "short",
+              });
+              const varighet =
+                s.log?.completedAt && s.log?.startedAt
+                  ? Math.max(
+                      1,
+                      Math.round(
+                        (s.log.completedAt.getTime() -
+                          s.log.startedAt.getTime()) /
+                          60000,
+                      ),
+                    )
+                  : null;
+              const harFeedback = !!s.log?.coachFeedback;
+              return (
+                <li
+                  key={s.id}
+                  className="grid grid-cols-[72px_1fr_auto] items-center gap-3 py-3"
+                >
+                  <div>
+                    <div className="font-mono text-[12px] font-semibold leading-tight tabular-nums">
+                      {dato}
+                    </div>
+                    <div className="mt-0.5 font-mono text-[10px] text-muted-foreground tabular-nums">
+                      {varighet != null
+                        ? `${varighet} min`
+                        : `${s.durationMin} min planlagt`}
+                    </div>
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="h-2 w-2 shrink-0 rounded-sm"
+                        style={{
+                          background: `var(--color-pyr-${s.pyramidArea.toLowerCase()}, var(--color-primary))`,
+                        }}
+                      />
+                      <Link
+                        href={`/portal/tren/${s.id}`}
+                        className="truncate text-[13px] font-medium text-foreground hover:text-primary"
+                      >
+                        {s.title}
+                      </Link>
+                    </div>
+                    <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-muted-foreground tabular-nums">
+                      <span>{s.pyramidArea}</span>
+                      {s.log?.csAchieved != null && (
+                        <>
+                          <span>·</span>
+                          <span className="text-foreground">
+                            {s.log.csAchieved} % godkjent
+                          </span>
+                        </>
+                      )}
+                      {s.log?.rating != null && (
+                        <>
+                          <span>·</span>
+                          <span>{s.log.rating}/5</span>
+                        </>
+                      )}
+                      {harFeedback && (
+                        <>
+                          <span>·</span>
+                          <span className="text-primary">Feedback sendt</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <Link
+                    href={`/admin/plans/${s.planId}#plan-okter`}
+                    className="shrink-0 rounded-md border border-border bg-transparent px-2.5 py-1 font-mono text-[11px] font-medium text-foreground transition-colors hover:bg-secondary"
+                  >
+                    Plan
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         )}
       </section>
 
@@ -678,8 +809,8 @@ function Pill({
 }) {
   const styles: Record<NonNullable<typeof tone>, string> = {
     info: "bg-primary/10 text-primary",
-    success: "bg-[#E5F1EA] text-[#1A7D56]",
-    warning: "bg-[#FFF0D6] text-[#B8852A]",
+    success: "bg-pyr-tek/10 text-pyr-tek",
+    warning: "bg-pyr-spill/15 text-pyr-spill",
     muted: "bg-secondary text-muted-foreground",
   };
   return (
@@ -709,7 +840,7 @@ function QuickStat({
       </div>
       <div
         className={`mt-1.5 font-mono text-[22px] font-semibold leading-none tabular-nums ${
-          highlight ? "text-[var(--status-success,#1A7D56)]" : ""
+          highlight ? "text-pyr-tek" : ""
         }`}
       >
         {value}
@@ -735,7 +866,7 @@ function Donut({
     >
       <div
         className="absolute inset-9 rounded-full bg-card"
-        style={{ boxShadow: "inset 0 0 0 1px var(--line-soft, #EFEDE6)" }}
+        style={{ boxShadow: "inset 0 0 0 1px hsl(var(--border))" }}
       />
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
         <div className="font-mono text-[32px] font-medium leading-none tabular-nums">
@@ -767,7 +898,7 @@ function TierRow({
   return (
     <div
       className={`grid grid-cols-[36px_1fr_auto] items-center gap-3 py-2 ${
-        last ? "" : "border-b border-[var(--line-soft,#EFEDE6)]"
+        last ? "" : "border-b border-border"
       }`}
     >
       <div
@@ -809,7 +940,7 @@ function StatRich({
 }) {
   const deltaStyle =
     deltaTone === "up"
-      ? "bg-[#E5F1EA] text-[#1A7D56]"
+      ? "bg-pyr-tek/10 text-pyr-tek"
       : "bg-secondary text-muted-foreground";
   return (
     <div className="rounded-lg border border-border bg-card p-5">
@@ -826,7 +957,7 @@ function StatRich({
       <div
         className={`mt-3.5 mb-1.5 font-mono text-[28px] font-medium leading-none tabular-nums -tracking-tight ${
           valueColor === "success"
-            ? "text-[var(--status-success,#1A7D56)]"
+            ? "text-pyr-tek"
             : ""
         }`}
       >
@@ -873,43 +1004,43 @@ function HmRow({
 }) {
   const colorFor = (lvl: number) => {
     if (lvl === 0)
-      return "bg-[var(--surface-alt,#F1EEE5)] border border-[var(--line-soft,#EFEDE6)]";
+      return "bg-secondary border border-border";
     if (tier === "FYS") {
       return [
-        "bg-[rgba(22,163,74,0.10)]",
-        "bg-[rgba(22,163,74,0.25)]",
-        "bg-[rgba(22,163,74,0.55)]",
-        "bg-[#16A34A]",
+        "bg-pyr-fys/10",
+        "bg-pyr-fys/25",
+        "bg-pyr-fys/55",
+        "bg-pyr-fys",
       ][lvl - 1];
     }
     if (tier === "SLAG") {
       return [
-        "bg-[rgba(209,248,67,0.20)]",
-        "bg-[rgba(209,248,67,0.40)]",
-        "bg-[rgba(209,248,67,0.55)]",
+        "bg-pyr-slag/20",
+        "bg-pyr-slag/40",
+        "bg-pyr-slag/55",
         "bg-accent",
       ][lvl - 1];
     }
     if (tier === "SPILL") {
       return [
-        "bg-[rgba(184,133,42,0.10)]",
-        "bg-[rgba(184,133,42,0.25)]",
-        "bg-[rgba(184,133,42,0.55)]",
-        "bg-[var(--color-pyr-spill,#B8852A)]",
+        "bg-pyr-spill/10",
+        "bg-pyr-spill/25",
+        "bg-pyr-spill/55",
+        "bg-pyr-spill",
       ][lvl - 1];
     }
     if (tier === "TURN") {
       return [
-        "bg-[rgba(94,92,87,0.10)]",
-        "bg-[rgba(94,92,87,0.25)]",
-        "bg-[rgba(94,92,87,0.55)]",
-        "bg-[var(--color-pyr-turn,#5E5C57)]",
+        "bg-pyr-turn/10",
+        "bg-pyr-turn/25",
+        "bg-pyr-turn/55",
+        "bg-pyr-turn",
       ][lvl - 1];
     }
     return [
-      "bg-[rgba(0,88,64,0.10)]",
-      "bg-[rgba(0,88,64,0.25)]",
-      "bg-[rgba(0,88,64,0.50)]",
+      "bg-primary/10",
+      "bg-primary/25",
+      "bg-primary/50",
       "bg-primary",
     ][lvl - 1];
   };
