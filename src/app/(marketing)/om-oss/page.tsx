@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function OmOss() {
@@ -13,6 +14,18 @@ export default function OmOss() {
             coaching, bygd på data
           </h1>
         </header>
+
+        <div className="mt-12 overflow-hidden rounded-2xl border border-border">
+          <Image
+            src="/images/akademy/walking-bag.jpg"
+            alt="To golfere går mot fairway med bag i bløt morgensol"
+            width={1920}
+            height={1280}
+            priority
+            sizes="(max-width: 1024px) 100vw, 768px"
+            className="h-auto w-full object-cover"
+          />
+        </div>
 
         <div className="mt-12 space-y-6 text-base leading-relaxed text-foreground">
           <p>

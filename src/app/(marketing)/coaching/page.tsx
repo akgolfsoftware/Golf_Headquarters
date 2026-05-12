@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -65,6 +66,18 @@ export default function Coaching() {
             statistikk og oppfølging mellom øktene.
           </p>
         </header>
+
+        <div className="mt-12 overflow-hidden rounded-2xl border border-border">
+          <Image
+            src="/images/akademy/coaching-tripod.jpg"
+            alt="Coaching utendørs med kamera og data-tripod på driving range"
+            width={1920}
+            height={1280}
+            priority
+            sizes="(max-width: 1024px) 100vw, 1024px"
+            className="h-auto w-full object-cover"
+          />
+        </div>
 
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
           {PAKKER.map((p) => (

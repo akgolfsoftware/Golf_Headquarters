@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -66,6 +67,18 @@ export default function Treningsfilosofi() {
           </p>
         </header>
 
+        <div className="mt-12 overflow-hidden rounded-2xl border border-border">
+          <Image
+            src="/images/akademy/putting-vann.jpg"
+            alt="To spillere på putting-grønn med vann-refleksjon i forgrunnen"
+            width={1920}
+            height={1280}
+            priority
+            sizes="(max-width: 1024px) 100vw, 1024px"
+            className="h-auto w-full object-cover"
+          />
+        </div>
+
         <section className="mt-16">
           <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             Prinsipp 1
@@ -133,6 +146,17 @@ export default function Treningsfilosofi() {
             problemet sitter i drives, i innspillene, rundt grønnen eller på
             putten — og planen oppdateres deretter.
           </p>
+
+          <div className="mt-10 overflow-hidden rounded-2xl border border-border">
+            <Image
+              src="/images/akademy/bunker-shot.jpg"
+              alt="Nærbilde av spiller midt i bunker-shot med sand som spruter"
+              width={1920}
+              height={1280}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              className="h-auto w-full object-cover"
+            />
+          </div>
         </section>
 
         <section className="mt-20">

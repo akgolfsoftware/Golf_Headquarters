@@ -72,6 +72,20 @@ export default function Hjem() {
             Performance fra 1 200 kr/mnd · PlayerHQ inkludert for alle Academy-kunder
           </p>
         </div>
+
+        <div className="relative z-10 mx-auto mt-16 max-w-5xl">
+          <div className="overflow-hidden rounded-2xl border border-border shadow-lg">
+            <Image
+              src="/images/akademy/utslag-fairway.jpg"
+              alt="To golfere på utslag på fairway i solskinn"
+              width={1920}
+              height={1280}
+              priority
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              className="h-auto w-full object-cover"
+            />
+          </div>
+        </div>
       </section>
 
       <section className="border-y border-border bg-card px-6 py-16">
@@ -156,34 +170,46 @@ export default function Hjem() {
       </section>
 
       <section className="border-y border-border bg-card px-6 py-16">
-        <div className="mx-auto max-w-4xl">
-          <div className="rounded-2xl border border-primary/20 bg-primary/5 p-8 sm:p-12">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="rounded-full bg-primary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary-foreground">
-                Inkludert
-              </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                BETA
-              </span>
+        <div className="mx-auto max-w-5xl">
+          <div className="grid grid-cols-1 gap-8 rounded-2xl border border-primary/20 bg-primary/5 p-8 sm:p-12 md:grid-cols-[1fr_1.2fr] md:items-center">
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="rounded-full bg-primary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary-foreground">
+                  Inkludert
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  BETA
+                </span>
+              </div>
+              <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight">
+                PlayerHQ —{" "}
+                <em className="font-normal text-primary md:italic">
+                  spillerportalen
+                </em>{" "}
+                du får på kjøpet
+              </h2>
+              <p className="mt-4 text-base text-muted-foreground">
+                Treningsplaner, statistikk, runde-registrering og AI-coach i én
+                app. Gratis for alle Academy-kunder. Ikke-kunder kan prøve
+                gratis i beta-perioden — første betaling 1. juni 2026.
+              </p>
+              <Link
+                href="/playerhq"
+                className="mt-6 inline-block text-sm font-medium text-primary hover:underline"
+              >
+                Se hva PlayerHQ inneholder →
+              </Link>
             </div>
-            <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight">
-              PlayerHQ —{" "}
-              <em className="font-normal text-primary md:italic">
-                spillerportalen
-              </em>{" "}
-              du får på kjøpet
-            </h2>
-            <p className="mt-4 text-base text-muted-foreground">
-              Treningsplaner, statistikk, runde-registrering og AI-coach i én
-              app. Gratis for alle Academy-kunder. Ikke-kunder kan prøve gratis
-              i beta-perioden — første betaling 1. juni 2026.
-            </p>
-            <Link
-              href="/playerhq"
-              className="mt-6 inline-block text-sm font-medium text-primary hover:underline"
-            >
-              Se hva PlayerHQ inneholder →
-            </Link>
+            <div className="overflow-hidden rounded-xl border border-border">
+              <Image
+                src="/images/akademy/putting-data.jpg"
+                alt="Putting med målepinner og data-instrumenter på grønnen"
+                width={1920}
+                height={1280}
+                sizes="(max-width: 768px) 100vw, 600px"
+                className="h-auto w-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
