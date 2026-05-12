@@ -44,31 +44,75 @@ const LOCATIONS = [
 ] as const;
 
 // ---------- ServiceTypes ----------
-// Pris i ØRE (Int). 650 kr = 65000 øre.
+// Pris i ØRE (Int). 600 kr = 60000 øre.
+// Coach-spesifikk pris: slug-prefiks anders-/markus- per coach.
 
 const SERVICE_TYPES = [
+  // --- Anders Kristiansen ---
   {
-    slug: "pro-time-30-min",
-    name: "Pro-time 30 min",
-    priceOre: 65000,
-    durationMin: 30,
-    description: "30 minutter én-til-én med Pro. Fokus på ett tema.",
+    slug: "anders-flex-20",
+    name: "Flex 20 min — Anders",
+    priceOre: 60000,
+    durationMin: 20,
+    description: "Kort fokus-økt med Anders. Ett tema, raskt inn og ut.",
   },
   {
-    slug: "pro-time-60-min",
-    name: "Pro-time 60 min",
-    priceOre: 119000,
-    durationMin: 60,
-    description: "Full time én-til-én med Pro. Tek, taktikk eller mental.",
+    slug: "anders-flex-50",
+    name: "Flex 50 min — Anders",
+    priceOre: 150000,
+    durationMin: 50,
+    description: "Standard coaching-økt med Anders. Tek, taktikk eller mental.",
   },
   {
-    slug: "trackman-analyse-60-min",
-    name: "Trackman-analyse 60 min",
-    priceOre: 149000,
+    slug: "anders-flex-90",
+    name: "Flex 90 min — Anders",
+    priceOre: 250000,
+    durationMin: 90,
+    description: "Utvidet coaching-økt med Anders. Dybde-analyse + praksis.",
+  },
+  {
+    slug: "anders-performance",
+    name: "Performance — Anders",
+    priceOre: 130000,
     durationMin: 60,
     description:
-      "Full analyse på Trackman med dispersjon, klubbdata og 3D-bane-flight.",
+      "Strukturert performance-økt med Anders. Trackman + analyse + plan.",
   },
+  {
+    slug: "anders-performance-pro",
+    name: "Performance Pro — Anders",
+    priceOre: 230000,
+    durationMin: 90,
+    description:
+      "Full performance-økt med Anders. Trackman + video + dispersjon + skriftlig plan.",
+  },
+
+  // --- Markus Røinås Pedersen ---
+  {
+    slug: "markus-flex-20",
+    name: "Flex 20 min — Markus",
+    priceOre: 30000,
+    durationMin: 20,
+    description: "Kort fokus-økt med Markus. Ett tema, raskt inn og ut.",
+  },
+  {
+    slug: "markus-performance",
+    name: "Performance — Markus",
+    priceOre: 70000,
+    durationMin: 60,
+    description:
+      "Strukturert performance-økt med Markus. Trackman + analyse + plan.",
+  },
+  {
+    slug: "markus-performance-pro",
+    name: "Performance Pro — Markus",
+    priceOre: 130000,
+    durationMin: 90,
+    description:
+      "Full performance-økt med Markus. Trackman + video + dispersjon + skriftlig plan.",
+  },
+
+  // --- Gruppe-tjenester (institusjonelle, ikke 1:1) ---
   {
     slug: "gruppe-oekt",
     name: "Gruppe-økt",
@@ -372,6 +416,24 @@ async function seedLocations() {
 
 async function seedServiceTypes() {
   console.log("\n[seed] ServiceTypes");
+
+  // Deaktiver gamle service-types som ikke lenger er i seed-arrayen
+  const seedSlugs = SERVICE_TYPES.map((st) => st.slug);
+  const existing = await prisma.serviceType.findMany({
+    where: { active: true },
+    select: { slug: true },
+  });
+  const obsolete = existing
+    .filter((e) => !seedSlugs.includes(e.slug))
+    .map((e) => e.slug);
+  if (obsolete.length > 0) {
+    await prisma.serviceType.updateMany({
+      where: { slug: { in: obsolete } },
+      data: { active: false },
+    });
+    for (const slug of obsolete) console.log(`  − deaktivert ${slug}`);
+  }
+
   for (const st of SERVICE_TYPES) {
     await prisma.serviceType.upsert({
       where: { slug: st.slug },
