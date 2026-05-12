@@ -1,5 +1,8 @@
+import { Activity, Bot } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 import { ManualTrigger } from "./manual-trigger";
 
 const AGENT_INFO: Record<string, { navn: string; trigger: string; beskrivelse: string }> = {
@@ -62,35 +65,35 @@ export default async function AgentsAdmin() {
   }
 
   return (
-    <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Agenter
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Agent</em>-pipeline
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {signalsCount} signaler · {planActionsCount} plan-actions totalt.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Agenter"
+        titleLead="Agent"
+        titleItalic="pipeline"
+        sub={`${signalsCount} signaler · ${planActionsCount} plan-actions totalt.`}
+      />
 
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {Object.entries(AGENT_INFO).map(([slug, info]) => {
           const stats = perAgent.get(slug);
           return (
             <article
               key={slug}
-              className="rounded-lg border border-border bg-card p-5"
+              className="rounded-lg border border-border bg-card p-6"
             >
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <h3 className="font-display text-base font-semibold text-foreground">
-                    {info.navn}
-                  </h3>
-                  <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                    {info.trigger}
-                  </p>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-secondary text-primary">
+                    <Bot size={20} strokeWidth={1.5} />
+                  </span>
+                  <div>
+                    <h3 className="font-display text-base font-semibold text-foreground">
+                      {info.navn}
+                    </h3>
+                    <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                      {info.trigger}
+                    </p>
+                  </div>
                 </div>
                 {stats && (
                   <div className="text-right font-mono text-[10px] uppercase tracking-[0.10em]">
@@ -101,7 +104,7 @@ export default async function AgentsAdmin() {
                   </div>
                 )}
               </div>
-              <p className="mt-3 text-sm text-muted-foreground">{info.beskrivelse}</p>
+              <p className="mt-4 text-sm text-muted-foreground">{info.beskrivelse}</p>
               {stats && (
                 <p className="mt-2 font-mono text-[10px] text-muted-foreground">
                   Snitt-tid: {Math.round(stats.totalDuration / Math.max(stats.ok + stats.error, 1))} ms
@@ -115,17 +118,20 @@ export default async function AgentsAdmin() {
       {user.role === "ADMIN" && <ManualTrigger />}
 
       <section>
-        <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
+        <h3 className="mb-4 font-display text-lg font-semibold tracking-tight">
           Siste 30 kjøringer
         </h3>
         {recentRuns.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-            Ingen agent-kjøringer ennå.
-          </div>
+          <EmptyState
+            icon={Activity}
+            titleItalic="Ingen kjøringer"
+            titleTrail="ennå"
+            sub="Agentene kjøres automatisk ved nye signaler. Trigger manuelt over for å teste."
+          />
         ) : (
           <div className="overflow-hidden rounded-lg border border-border bg-card">
             <table className="w-full text-sm">
-              <thead className="border-b border-border bg-muted/40 text-left">
+              <thead className="border-b border-border bg-secondary/40 text-left">
                 <tr>
                   <Th>Agent</Th>
                   <Th>Status</Th>

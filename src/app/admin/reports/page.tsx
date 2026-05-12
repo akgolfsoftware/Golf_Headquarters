@@ -1,4 +1,6 @@
+import { Download } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { PageHeader } from "@/components/shared/page-header";
 
 const RAPPORTER = [
   {
@@ -31,24 +33,19 @@ export default async function Rapporter() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   return (
-    <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Rapporter
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Eksport</em>-rapporter
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          CSV-eksport for regnskap, analyse og oppfølging.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Rapporter"
+        titleItalic="Eksport"
+        titleTrail="-rapporter"
+        sub="CSV-eksport for regnskap, analyse og oppfølging."
+      />
 
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {RAPPORTER.map((r) => (
           <li
             key={r.id}
-            className="flex flex-col rounded-lg border border-border bg-card p-5"
+            className="flex flex-col rounded-lg border border-border bg-card p-6"
           >
             <h3 className="font-display text-base font-semibold text-foreground">
               {r.navn}
@@ -59,8 +56,9 @@ export default async function Rapporter() {
             <a
               href={r.href}
               download
-              className="mt-4 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+              className="mt-4 inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
+              <Download size={16} strokeWidth={1.5} />
               Last ned CSV
             </a>
           </li>

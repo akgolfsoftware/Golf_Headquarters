@@ -1,5 +1,8 @@
+import { CreditCard } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export default async function FinanceAdmin() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -20,20 +23,15 @@ export default async function FinanceAdmin() {
   const yearlyRevenue = monthlyRevenue * 12;
 
   return (
-    <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Økonomi
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Inntekt</em> & abonnement
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Estimater basert på aktive abonnement. Faktiske beløp i Stripe Dashboard.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Økonomi"
+        titleItalic="Inntekt"
+        titleTrail="& abonnement"
+        sub="Estimater basert på aktive abonnement. Faktiske beløp i Stripe Dashboard."
+      />
 
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Stat
           label="Månedlig inntekt"
           value={`${monthlyRevenue.toLocaleString("nb-NO")} kr`}
@@ -56,18 +54,21 @@ export default async function FinanceAdmin() {
         />
       </section>
 
-      <section>
-        <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
+      <section className="space-y-4">
+        <h3 className="font-display text-lg font-semibold tracking-tight">
           Siste abonnement-endringer
         </h3>
         {alleSubs.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-            Ingen abonnementer ennå.
-          </div>
+          <EmptyState
+            icon={CreditCard}
+            titleItalic="Ingen abonnementer"
+            titleTrail="ennå"
+            sub="Når spillere starter Pro-abonnement vises endringene her."
+          />
         ) : (
           <div className="overflow-hidden rounded-lg border border-border bg-card">
             <table className="w-full text-sm">
-              <thead className="border-b border-border bg-muted/40 text-left">
+              <thead className="border-b border-border bg-secondary/40 text-left">
                 <tr>
                   <Th>Spiller</Th>
                   <Th>Tier</Th>
@@ -80,7 +81,7 @@ export default async function FinanceAdmin() {
                 {alleSubs.map((s) => (
                   <tr
                     key={s.id}
-                    className="border-b border-border/60 last:border-0 hover:bg-muted/30"
+                    className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
                   >
                     <Td>
                       <span className="font-medium">{s.user.name}</span>
@@ -93,7 +94,7 @@ export default async function FinanceAdmin() {
                         className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
                           s.tier === "PRO"
                             ? "bg-primary/10 text-primary"
-                            : "bg-muted text-muted-foreground"
+                            : "bg-secondary text-muted-foreground"
                         }`}
                       >
                         {s.tier}
@@ -106,7 +107,7 @@ export default async function FinanceAdmin() {
                             ? "bg-primary/10 text-primary"
                             : s.status === "PAST_DUE"
                             ? "bg-destructive/15 text-destructive"
-                            : "bg-muted text-muted-foreground"
+                            : "bg-secondary text-muted-foreground"
                         }`}
                       >
                         {s.status}
@@ -152,10 +153,10 @@ function Stat({
       <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </div>
-      <div className="mt-1 font-display text-2xl font-semibold tabular-nums text-foreground">
+      <div className="mt-2 font-display text-2xl font-semibold tabular-nums text-foreground">
         {value}
       </div>
-      {sub && <div className="mt-0.5 text-[11px] text-muted-foreground">{sub}</div>}
+      {sub && <div className="mt-1 text-[11px] text-muted-foreground">{sub}</div>}
     </div>
   );
 }

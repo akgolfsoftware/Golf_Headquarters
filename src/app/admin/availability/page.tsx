@@ -1,8 +1,19 @@
+import { CalendarClock } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 import { SlotForm } from "./slot-form";
 
-const DAGER = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+const DAGER = [
+  "Mandag",
+  "Tirsdag",
+  "Onsdag",
+  "Torsdag",
+  "Fredag",
+  "Lørdag",
+  "Søndag",
+];
 
 export default async function AvailabilityAdmin() {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -20,105 +31,134 @@ export default async function AvailabilityAdmin() {
   }
 
   const minSlots = slots.filter((s) => s.coachId === coach.id);
+  const aktiveMin = minSlots.filter((s) => s.active).length;
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Tilgjengelighet
-          </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-            <em className="font-normal text-primary md:italic">Coach</em>-tilgjengelighet
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Ukentlige tidsvinduer for når du er bookbar.
-          </p>
-        </div>
-        <SlotForm triggerLabel="+ Legg til tidsvindu" />
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Tilgjengelighet"
+        titleLead="Når er du"
+        titleItalic="bookbar"
+        sub={
+          minSlots.length > 0
+            ? `${aktiveMin} aktive tidsvinduer i uka · spillere kan booke innenfor disse.`
+            : "Ukentlige tidsvinduer for når spillere kan booke deg."
+        }
+        actions={<SlotForm triggerLabel="+ Legg til tidsvindu" />}
+      />
 
-      {slots.length === 0 && (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen tidsvinduer registrert ennå.
-        </div>
-      )}
+      {slots.length === 0 ? (
+        <EmptyState
+          icon={CalendarClock}
+          titleItalic="Ingen"
+          titleTrail="tidsvinduer ennå"
+          sub="Legg til ukentlige tidsvinduer — for eksempel «Tirsdag 16:00–20:00» — så kan spillere booke seg inn der."
+        />
+      ) : (
+        <>
+          {minSlots.length > 0 && (
+            <section className="space-y-4">
+              <h2 className="font-display text-lg font-semibold tracking-tight text-foreground">
+                Min uke
+              </h2>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-7">
+                {DAGER.map((dag, i) => {
+                  const slotter = minSlots.filter((s) => s.weekday === i);
+                  return (
+                    <div
+                      key={i}
+                      className="rounded-lg border border-border bg-card p-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                          {dag}
+                        </span>
+                        <SlotForm defaultWeekday={i} triggerLabel="+" />
+                      </div>
+                      {slotter.length === 0 ? (
+                        <p className="mt-4 text-xs text-muted-foreground">—</p>
+                      ) : (
+                        <ul className="mt-4 space-y-2">
+                          {slotter.map((s) => (
+                            <li
+                              key={s.id}
+                              className="flex items-center justify-between gap-2 text-xs"
+                            >
+                              <span
+                                className={`font-mono tabular-nums ${
+                                  s.active
+                                    ? "text-foreground"
+                                    : "text-muted-foreground line-through"
+                                }`}
+                              >
+                                {s.startTime}–{s.endTime}
+                              </span>
+                              <SlotForm
+                                initial={{
+                                  id: s.id,
+                                  weekday: s.weekday,
+                                  startTime: s.startTime,
+                                  endTime: s.endTime,
+                                  active: s.active,
+                                }}
+                                triggerLabel="Endre"
+                              />
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
 
-      {minSlots.length > 0 && (
-        <section>
-          <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
-            Min uke
-          </h3>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-7">
-            {DAGER.map((dag, i) => {
-              const slotter = minSlots.filter((s) => s.weekday === i);
-              return (
-                <div
-                  key={i}
-                  className="rounded-lg border border-border bg-card p-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                      {dag}
-                    </span>
-                    <SlotForm defaultWeekday={i} triggerLabel="+" />
-                  </div>
-                  {slotter.length === 0 ? (
-                    <p className="mt-2 text-xs text-muted-foreground">—</p>
-                  ) : (
-                    <ul className="mt-2 space-y-1.5">
-                      {slotter.map((s) => (
-                        <li
-                          key={s.id}
-                          className="flex items-center justify-between gap-1 text-xs"
-                        >
-                          <span className={`font-mono tabular-nums ${s.active ? "text-foreground" : "text-muted-foreground line-through"}`}>
-                            {s.startTime}–{s.endTime}
-                          </span>
-                          <SlotForm
-                            initial={{
-                              id: s.id,
-                              weekday: s.weekday,
-                              startTime: s.startTime,
-                              endTime: s.endTime,
-                              active: s.active,
-                            }}
-                            triggerLabel="Endre"
-                          />
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {coach.role === "ADMIN" && grupper.size > 1 && (
-        <section>
-          <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
-            Andre coacher (admin-view)
-          </h3>
-          <div className="space-y-4">
-            {Array.from(grupper.entries())
-              .filter(([, items]) => items[0].coachId !== coach.id)
-              .map(([navn, items]) => (
-                <div key={navn} className="rounded-lg border border-border bg-card p-4">
-                  <div className="font-medium text-foreground">{navn}</div>
-                  <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                    {items.map((s) => (
-                      <li key={s.id} className="font-mono tabular-nums">
-                        {DAGER[s.weekday]} {s.startTime}–{s.endTime}
-                        {!s.active && " (inaktiv)"}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-          </div>
-        </section>
+          {coach.role === "ADMIN" && grupper.size > 1 && (
+            <section className="space-y-4">
+              <h2 className="font-display text-lg font-semibold tracking-tight text-foreground">
+                Andre coacher
+                <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  Admin-view
+                </span>
+              </h2>
+              <div className="space-y-4">
+                {Array.from(grupper.entries())
+                  .filter(([, items]) => items[0].coachId !== coach.id)
+                  .map(([navn, items]) => (
+                    <div
+                      key={navn}
+                      className="rounded-lg border border-border bg-card p-6"
+                    >
+                      <div className="font-display text-base font-semibold text-foreground">
+                        {navn}
+                      </div>
+                      <ul className="mt-4 space-y-2 text-sm">
+                        {items.map((s) => (
+                          <li
+                            key={s.id}
+                            className="flex items-center gap-3 font-mono tabular-nums text-muted-foreground"
+                          >
+                            <span className="text-foreground">
+                              {DAGER[s.weekday]}
+                            </span>
+                            <span>
+                              {s.startTime}–{s.endTime}
+                            </span>
+                            {!s.active && (
+                              <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                                Inaktiv
+                              </span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+              </div>
+            </section>
+          )}
+        </>
       )}
     </div>
   );

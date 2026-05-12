@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 import { ApprovalActions } from "./approval-actions";
 
 const ACTION_LABEL: Record<string, string> = {
@@ -29,32 +32,29 @@ export default async function Approvals() {
   });
 
   return (
-    <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Godkjenninger
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Plan</em>-forslag
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {actions.length} ventende forslag fra agentene.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Godkjenninger"
+        titleItalic="Plan"
+        titleTrail="-forslag"
+        sub={`${actions.length} ventende forslag fra agentene.`}
+      />
 
       {actions.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen ventende forslag. Kommer typisk etter mandag-cron eller etter
-          ny aktivitet.
-        </div>
+        <EmptyState
+          icon={CheckCircle2}
+          titleItalic="Ingen ventende"
+          titleTrail="forslag"
+          sub="Forslag kommer typisk etter mandag-cron eller etter ny aktivitet."
+        />
       ) : (
-        <ul className="space-y-3">
+        <ul className="space-y-4">
           {actions.map((a) => {
             const sugg = a.suggestion as { forklaring?: string } | null;
             return (
               <li
                 key={a.id}
-                className="rounded-lg border border-border bg-card p-5"
+                className="rounded-lg border border-border bg-card p-6"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
@@ -83,7 +83,7 @@ export default async function Approvals() {
                   </span>
                 </div>
                 {sugg?.forklaring && (
-                  <p className="mt-3 text-sm text-foreground">{sugg.forklaring}</p>
+                  <p className="mt-4 text-sm text-foreground">{sugg.forklaring}</p>
                 )}
                 <div className="mt-4">
                   <ApprovalActions actionId={a.id} />

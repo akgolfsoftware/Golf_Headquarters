@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 import { CoachAiChat } from "./chat";
 
 export default async function CoachAiPage({
@@ -59,17 +60,12 @@ export default async function CoachAiPage({
         ← {player.name} · 360-profil
       </Link>
 
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          AI-coach for {player.name}
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Analyser</em> spilleren
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          AI har full tilgang til spillerens HCP, ambisjon, runder og aktive plan.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow={`AI-coach for ${player.name}`}
+        titleItalic="Analyser"
+        titleTrail="spilleren"
+        sub="AI har full tilgang til spillerens HCP, ambisjon, runder og aktive plan."
+      />
 
       <CoachAiChat
         playerName={player.name}

@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export default async function OppfolgingsKo() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -38,29 +41,27 @@ export default async function OppfolgingsKo() {
     .sort((a, b) => b.grunner.length - a.grunner.length);
 
   return (
-    <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Oppfølgingskø
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Spillere</em> som trenger oppfølging
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {oppfølging.length} spillere matcher minst ett follow-up-kriterie.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Oppfølgingskø"
+        titleItalic="Spillere"
+        titleTrail="som trenger oppfølging"
+        sub={`${oppfølging.length} spillere matcher minst ett follow-up-kriterie.`}
+      />
 
       {oppfølging.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen spillere trenger oppfølging akkurat nå.
-        </div>
+        <EmptyState
+          icon={CheckCircle2}
+          titleItalic="Alt under"
+          titleTrail="kontroll"
+          sub="Ingen spillere trenger oppfølging akkurat nå."
+        />
       ) : (
         <ul className="space-y-2">
           {oppfølging.map(({ player, grunner }) => (
             <li
               key={player.id}
-              className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-4"
+              className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4"
             >
               <Link
                 href={`/admin/elever/${player.id}`}
@@ -68,7 +69,7 @@ export default async function OppfolgingsKo() {
               >
                 {player.name}
               </Link>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {grunner.map((g, i) => (
                   <span
                     key={i}

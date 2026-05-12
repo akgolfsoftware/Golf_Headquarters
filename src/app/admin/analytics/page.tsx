@@ -1,5 +1,8 @@
+import { BarChart3 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export default async function Analytics() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -44,78 +47,85 @@ export default async function Analytics() {
     else bins[4]++;
   }
   const maxBin = Math.max(...bins, 1);
+  const harData = totalUsers > 0;
 
   const proPercent = totalUsers > 0 ? Math.round((proUsers / totalUsers) * 100) : 0;
   const aktivPercent =
     totalUsers > 0 ? Math.round((activeUsers30d / totalUsers) * 100) : 0;
 
   return (
-    <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Analytics
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Plattform</em>-statistikk
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Aggregerte tall siste 30 dager.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Analytics"
+        titleItalic="Plattform"
+        titleTrail="-statistikk"
+        sub="Aggregerte tall siste 30 dager."
+      />
 
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat
-          label="Totalt spillere"
-          value={String(totalUsers)}
-          sub="Alle PLAYER-konti"
+      {!harData ? (
+        <EmptyState
+          icon={BarChart3}
+          titleItalic="Ingen data"
+          titleTrail="ennå"
+          sub="Statistikk vises når spillere er registrert og har aktivitet."
         />
-        <Stat
-          label="Aktive (30d)"
-          value={String(activeUsers30d)}
-          sub={`${aktivPercent}% av totalt`}
-        />
-        <Stat
-          label="Pro-abonnenter"
-          value={String(proUsers)}
-          sub={`${proPercent}% konvertert`}
-        />
-        <Stat
-          label="Pending approvals"
-          value={String(pendingApprovals)}
-          sub="Krever handling"
-        />
-      </section>
+      ) : (
+        <>
+          <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <Stat
+              label="Totalt spillere"
+              value={String(totalUsers)}
+              sub="Alle PLAYER-konti"
+            />
+            <Stat
+              label="Aktive (30d)"
+              value={String(activeUsers30d)}
+              sub={`${aktivPercent}% av totalt`}
+            />
+            <Stat
+              label="Pro-abonnenter"
+              value={String(proUsers)}
+              sub={`${proPercent}% konvertert`}
+            />
+            <Stat
+              label="Pending approvals"
+              value={String(pendingApprovals)}
+              sub="Krever handling"
+            />
+          </section>
 
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="Runder (30d)" value={String(totalRounds30d)} />
-        <Stat label="Økter loggført (30d)" value={String(totalSessions30d)} />
-        <Stat label="Tester (30d)" value={String(totalTests30d)} />
-        <Stat label="AI-chat-sesjoner" value={String(aiChatSessions)} />
-      </section>
+          <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <Stat label="Runder (30d)" value={String(totalRounds30d)} />
+            <Stat label="Økter loggført (30d)" value={String(totalSessions30d)} />
+            <Stat label="Tester (30d)" value={String(totalTests30d)} />
+            <Stat label="AI-chat-sesjoner" value={String(aiChatSessions)} />
+          </section>
 
-      <section className="rounded-lg border border-border bg-card p-6">
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          HCP-fordeling
-        </span>
-        <div className="mt-4 space-y-2">
-          {bins.map((count, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <span className="w-16 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                {binLabels[i]}
-              </span>
-              <div className="relative h-5 flex-1 overflow-hidden rounded-sm bg-border/40">
-                <div
-                  className="h-full bg-primary"
-                  style={{ width: `${(count / maxBin) * 100}%` }}
-                />
-              </div>
-              <span className="w-10 text-right font-mono text-xs tabular-nums">
-                {count}
-              </span>
+          <section className="rounded-lg border border-border bg-card p-6">
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              HCP-fordeling
+            </span>
+            <div className="mt-4 space-y-2">
+              {bins.map((count, i) => (
+                <div key={i} className="flex items-center gap-4">
+                  <span className="w-16 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                    {binLabels[i]}
+                  </span>
+                  <div className="relative h-5 flex-1 overflow-hidden rounded-sm bg-secondary">
+                    <div
+                      className="h-full bg-primary"
+                      style={{ width: `${(count / maxBin) * 100}%` }}
+                    />
+                  </div>
+                  <span className="w-10 text-right font-mono text-xs tabular-nums">
+                    {count}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
+          </section>
+        </>
+      )}
     </div>
   );
 }
@@ -134,10 +144,10 @@ function Stat({
       <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </div>
-      <div className="mt-1 font-display text-2xl font-semibold tabular-nums text-foreground">
+      <div className="mt-2 font-display text-2xl font-semibold tabular-nums text-foreground">
         {value}
       </div>
-      {sub && <div className="mt-0.5 text-[11px] text-muted-foreground">{sub}</div>}
+      {sub && <div className="mt-1 text-[11px] text-muted-foreground">{sub}</div>}
     </div>
   );
 }

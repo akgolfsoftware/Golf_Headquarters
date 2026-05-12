@@ -1,5 +1,8 @@
+import { Mic } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 const STATUS_FARGE: Record<string, string> = {
   PROCESSING: "bg-accent/30 text-foreground",
@@ -18,27 +21,22 @@ export default async function RecordingAdmin() {
   const harDeepgramKey = !!process.env.DEEPGRAM_API_KEY;
 
   return (
-    <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Sesjon-opptak
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Coaching</em>-opptak
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Last opp lyd-fil → automatisk transkripsjon (Deepgram) → AI-summering.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Sesjon-opptak"
+        titleItalic="Coaching"
+        titleTrail="-opptak"
+        sub="Last opp lyd-fil → automatisk transkripsjon (Deepgram) → AI-summering."
+      />
 
       {!harDeepgramKey && (
-        <div className="rounded-lg border border-accent/40 bg-accent/5 p-5">
+        <div className="rounded-lg border border-accent/40 bg-accent/5 p-6">
           <h3 className="font-display text-base font-semibold tracking-tight">
             Deepgram ikke konfigurert
           </h3>
           <p className="mt-2 text-sm text-muted-foreground">
             Automatisk transkripsjon krever en{" "}
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
+            <code className="rounded bg-secondary px-1 py-0.5 font-mono text-xs">
               DEEPGRAM_API_KEY
             </code>{" "}
             i .env.local. Inntil videre kan opptak lastes opp manuelt og
@@ -47,7 +45,7 @@ export default async function RecordingAdmin() {
         </div>
       )}
 
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <h3 className="font-display text-base font-semibold tracking-tight">
           Opplastet av {user.name}
         </h3>
@@ -57,20 +55,23 @@ export default async function RecordingAdmin() {
         </p>
       </section>
 
-      <section>
-        <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
+      <section className="space-y-4">
+        <h3 className="font-display text-lg font-semibold tracking-tight">
           Siste 30 opptak
         </h3>
         {recordings.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-            Ingen opptak registrert ennå.
-          </div>
+          <EmptyState
+            icon={Mic}
+            titleItalic="Ingen opptak"
+            titleTrail="registrert"
+            sub="Opptak fra coaching-økter dukker opp her etter opplasting."
+          />
         ) : (
           <ul className="space-y-2">
             {recordings.map((r) => (
               <li
                 key={r.id}
-                className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-4"
+                className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4"
               >
                 <span className="font-mono text-xs text-muted-foreground">
                   {r.createdAt.toLocaleDateString("nb-NO", {
@@ -81,7 +82,7 @@ export default async function RecordingAdmin() {
                 </span>
                 <span
                   className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
-                    STATUS_FARGE[r.status] ?? "bg-muted text-muted-foreground"
+                    STATUS_FARGE[r.status] ?? "bg-secondary text-muted-foreground"
                   }`}
                 >
                   {r.status}
@@ -104,7 +105,7 @@ export default async function RecordingAdmin() {
                     <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                       Vis transkripsjon
                     </summary>
-                    <pre className="mt-2 whitespace-pre-wrap rounded-md bg-muted/50 p-3 text-xs text-foreground">
+                    <pre className="mt-2 whitespace-pre-wrap rounded-md bg-secondary/50 p-4 text-xs text-foreground">
                       {r.transcript}
                     </pre>
                   </details>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft, Activity } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import {
   getBriefData,
@@ -6,6 +7,8 @@ import {
   bygBriefUserPrompt,
 } from "@/lib/admin-brief";
 import { anthropicKlient, COACH_MODEL } from "@/lib/anthropic";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export const dynamic = "force-dynamic";
 
@@ -31,33 +34,31 @@ export default async function DagligBrief() {
     aiFeil = err instanceof Error ? err.message : "AI-brief utilgjengelig.";
   }
 
+  const eyebrow = new Date().toLocaleDateString("nb-NO", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Link
         href="/admin"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Hub
+        <ArrowLeft size={16} strokeWidth={1.5} />
+        Hub
       </Link>
 
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          {new Date().toLocaleDateString("nb-NO", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Daglig</em> brief
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          AI-generert oppsummering av dagen. Genereres på nytt ved hvert besøk.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow={eyebrow}
+        titleItalic="Daglig"
+        titleTrail="brief"
+        sub="AI-generert oppsummering av dagen. Genereres på nytt ved hvert besøk."
+      />
 
-      <section className="rounded-2xl border border-primary/30 bg-primary/5 p-6">
+      <section className="rounded-lg border border-primary/30 bg-primary/5 p-8">
         {aiBrief ? (
           <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-foreground">
             {aiBrief}
@@ -110,14 +111,17 @@ export default async function DagligBrief() {
         </Card>
       </section>
 
-      <section>
-        <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
+      <section className="space-y-4">
+        <h3 className="font-display text-lg font-semibold tracking-tight">
           Nyligste runder
         </h3>
         {data.nyligeRunder.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-            Ingen registrerte runder siste 24 timer.
-          </p>
+          <EmptyState
+            icon={Activity}
+            titleItalic="Ingen runder"
+            titleTrail="siste 24 timer"
+            sub="Når spillere registrerer runder dukker de opp her."
+          />
         ) : (
           <ul className="divide-y divide-border rounded-lg border border-border bg-card">
             {data.nyligeRunder.map((r, i) => (
@@ -127,7 +131,7 @@ export default async function DagligBrief() {
               >
                 <div>
                   <span className="font-medium text-foreground">{r.spiller}</span>
-                  <span className="ml-3 text-muted-foreground">{r.bane}</span>
+                  <span className="ml-2 text-muted-foreground">{r.bane}</span>
                 </div>
                 <span className="font-mono text-sm tabular-nums text-foreground">
                   {r.sgTotal != null
@@ -145,7 +149,7 @@ export default async function DagligBrief() {
 
 function Card({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <div className="rounded-lg border border-border bg-card p-6">
       <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </span>

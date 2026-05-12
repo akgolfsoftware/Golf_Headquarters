@@ -1,12 +1,15 @@
 import Link from "next/link";
+import { Calendar } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 const STATUS_FARGE: Record<string, string> = {
   CONFIRMED: "bg-primary/10 text-primary",
   PENDING: "bg-accent/30 text-foreground",
-  CANCELLED: "bg-muted text-muted-foreground",
-  COMPLETED: "bg-muted text-muted-foreground",
+  CANCELLED: "bg-secondary text-muted-foreground",
+  COMPLETED: "bg-secondary text-muted-foreground",
 };
 
 export default async function Bookinger() {
@@ -29,37 +32,41 @@ export default async function Bookinger() {
   const tidligere = bookings.filter((b) => b.startAt < idag);
 
   return (
-    <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Bookinger
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Alle</em> bookinger
-        </h1>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Bookinger"
+        titleItalic="Alle"
+        titleTrail="bookinger"
+        sub={`${bookings.length} bookinger totalt · ${kommende.length} kommende.`}
+      />
 
-      <section>
-        <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
+      <section className="space-y-4">
+        <h3 className="font-display text-lg font-semibold tracking-tight">
           Kommende ({kommende.length})
         </h3>
         {kommende.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-            Ingen kommende bookinger.
-          </p>
+          <EmptyState
+            icon={Calendar}
+            titleItalic="Ingen kommende"
+            titleTrail="bookinger"
+            sub="Nye bookinger dukker opp her så snart de er bekreftet."
+          />
         ) : (
           <BookingTable rows={kommende} />
         )}
       </section>
 
-      <section>
-        <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
+      <section className="space-y-4">
+        <h3 className="font-display text-lg font-semibold tracking-tight">
           Tidligere ({tidligere.length})
         </h3>
         {tidligere.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-            Ingen tidligere bookinger.
-          </p>
+          <EmptyState
+            icon={Calendar}
+            titleItalic="Ingen tidligere"
+            titleTrail="bookinger"
+            sub="Historikk vises her etter første gjennomførte time."
+          />
         ) : (
           <BookingTable rows={tidligere.slice(0, 30)} />
         )}
@@ -82,7 +89,7 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-card">
       <table className="w-full text-sm">
-        <thead className="border-b border-border bg-muted/40 text-left">
+        <thead className="border-b border-border bg-secondary/40 text-left">
           <tr>
             <Th>Dato</Th>
             <Th>Tid</Th>
@@ -96,7 +103,7 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
           {rows.map((b) => (
             <tr
               key={b.id}
-              className="border-b border-border/60 last:border-0 hover:bg-muted/30"
+              className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
             >
               <Td>
                 {b.startAt.toLocaleDateString("nb-NO", {
@@ -129,7 +136,7 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
               <Td>
                 <span
                   className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
-                    STATUS_FARGE[b.status] ?? "bg-muted text-muted-foreground"
+                    STATUS_FARGE[b.status] ?? "bg-secondary text-muted-foreground"
                   }`}
                 >
                   {b.status}

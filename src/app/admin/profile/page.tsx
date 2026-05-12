@@ -1,24 +1,21 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
 import { ProfilForm } from "@/app/portal/meg/profil-form";
+import { PageHeader } from "@/components/shared/page-header";
 
 export default async function CoachProfil() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const prefs = lesPreferences(user);
 
   return (
-    <div className="space-y-6">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Profil
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Min</em> coach-profil
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Vises til spillere når de ser tilknyttet coach.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Konto · Profil"
+        titleLead="Profilen"
+        titleItalic="din"
+        titleTrail="— slik spillerne ser deg"
+        sub="Endringer du gjør her vises i PlayerHQ og på offentlig coach-profil innen 5 minutter."
+      />
 
       <ProfilForm
         initial={{

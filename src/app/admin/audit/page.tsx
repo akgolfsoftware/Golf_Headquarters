@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { ArrowLeft, FileSearch, ShieldOff } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 
 type Search = { action?: string; actor?: string };
 
@@ -12,8 +15,19 @@ export default async function AuditLogPage({
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   if (user.role !== "ADMIN") {
     return (
-      <div className="rounded-lg border border-border bg-card p-6 text-center text-sm text-muted-foreground">
-        Audit-logg er kun tilgjengelig for ADMIN.
+      <div className="space-y-8">
+        <PageHeader
+          eyebrow="CoachHQ · Revisjonslogg"
+          titleItalic="Audit"
+          titleTrail="-logg"
+          sub="Krever ADMIN-tilgang."
+        />
+        <EmptyState
+          icon={ShieldOff}
+          titleItalic="Kun for"
+          titleTrail="administratorer"
+          sub="Audit-logg er kun tilgjengelig for ADMIN-rollen."
+        />
       </div>
     );
   }
@@ -31,29 +45,27 @@ export default async function AuditLogPage({
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Link
         href="/admin/settings"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Innstillinger
+        <ArrowLeft size={16} strokeWidth={1.5} />
+        Innstillinger
       </Link>
 
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Revisjonslogg
-        </span>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Audit</em>-logg
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {logs.length} siste hendelser{params.action && ` (filtrert på "${params.action}")`}.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="CoachHQ · Revisjonslogg"
+        titleItalic="Audit"
+        titleTrail="-logg"
+        sub={`${logs.length} siste hendelser${
+          params.action ? ` (filtrert på "${params.action}")` : ""
+        }.`}
+      />
 
-      <form className="flex flex-wrap items-end gap-3">
-        <label className="flex-1 min-w-[200px]">
-          <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+      <form className="flex flex-wrap items-end gap-4">
+        <label className="min-w-[240px] flex-1">
+          <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Action contains
           </span>
           <input
@@ -61,25 +73,27 @@ export default async function AuditLogPage({
             name="action"
             defaultValue={params.action ?? ""}
             placeholder="api_key, plan, user.role.changed…"
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
           />
         </label>
         <button
           type="submit"
-          className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           Filtrer
         </button>
       </form>
 
       {logs.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen logg-rader matcher filtrene.
-        </div>
+        <EmptyState
+          icon={FileSearch}
+          titleItalic="Ingen treff"
+          sub="Ingen logg-rader matcher filtrene."
+        />
       ) : (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
           <table className="w-full text-sm">
-            <thead className="border-b border-border bg-muted/40 text-left">
+            <thead className="border-b border-border bg-secondary/40 text-left">
               <tr>
                 <Th>Tid</Th>
                 <Th>Actor</Th>
@@ -91,7 +105,7 @@ export default async function AuditLogPage({
               {logs.map((l) => (
                 <tr
                   key={l.id}
-                  className="border-b border-border/60 last:border-0 hover:bg-muted/30"
+                  className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
                 >
                   <Td className="font-mono text-[10px] text-muted-foreground">
                     {l.createdAt.toLocaleString("nb-NO", {
@@ -104,7 +118,7 @@ export default async function AuditLogPage({
                   </Td>
                   <Td>{l.actor?.name ?? "—"}</Td>
                   <Td>
-                    <code className="rounded bg-muted px-2 py-0.5 font-mono text-xs">
+                    <code className="rounded bg-secondary px-2 py-0.5 font-mono text-xs">
                       {l.action}
                     </code>
                   </Td>

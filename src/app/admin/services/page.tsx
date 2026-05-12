@@ -1,5 +1,8 @@
+import { Package } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 import { ServiceForm } from "./service-form";
 
 export default async function ServicesAdmin() {
@@ -9,31 +12,29 @@ export default async function ServicesAdmin() {
     orderBy: [{ active: "desc" }, { name: "asc" }],
   });
 
+  const aktive = services.filter((s) => s.active).length;
+
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Tjenester
-          </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-            <em className="font-normal text-primary md:italic">Service</em>-typer
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {services.length} tjenester — {services.filter((s) => s.active).length} aktive.
-          </p>
-        </div>
-        <ServiceForm triggerLabel="+ Ny tjeneste" />
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="CoachHQ · Tjenester"
+        titleLead="Service"
+        titleItalic="typer"
+        sub={`${services.length} tjenester — ${aktive} aktive.`}
+        actions={<ServiceForm triggerLabel="+ Ny tjeneste" />}
+      />
 
       {services.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-          Ingen tjenester definert. Klikk «+ Ny tjeneste» for å starte.
-        </div>
+        <EmptyState
+          icon={Package}
+          titleItalic="Ingen tjenester"
+          titleTrail="definert"
+          sub="Klikk «+ Ny tjeneste» øverst for å starte. Tjenester vises i booking-katalogen."
+        />
       ) : (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
           <table className="w-full text-sm">
-            <thead className="border-b border-border bg-muted/40 text-left">
+            <thead className="border-b border-border bg-secondary/40 text-left">
               <tr>
                 <Th>Navn</Th>
                 <Th>Beskrivelse</Th>
@@ -47,7 +48,7 @@ export default async function ServicesAdmin() {
               {services.map((s) => (
                 <tr
                   key={s.id}
-                  className="border-b border-border/60 last:border-0 hover:bg-muted/30"
+                  className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
                 >
                   <Td>
                     <span className="font-medium text-foreground">{s.name}</span>
@@ -57,8 +58,8 @@ export default async function ServicesAdmin() {
                       {s.description ?? "—"}
                     </span>
                   </Td>
-                  <Td className="text-right tabular-nums">{s.durationMin} min</Td>
-                  <Td className="text-right tabular-nums">
+                  <Td className="text-right tabular-nums font-mono text-[13px]">{s.durationMin} min</Td>
+                  <Td className="text-right tabular-nums font-mono text-[13px]">
                     {(s.priceOre / 100).toFixed(0)} kr
                   </Td>
                   <Td>
@@ -66,7 +67,7 @@ export default async function ServicesAdmin() {
                       className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
                         s.active
                           ? "bg-primary/10 text-primary"
-                          : "bg-muted text-muted-foreground"
+                          : "bg-secondary text-muted-foreground"
                       }`}
                     >
                       {s.active ? "Aktiv" : "Inaktiv"}
