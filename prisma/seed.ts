@@ -267,7 +267,7 @@ const COACH_AVAILABILITY: ReadonlyArray<{
   { coachEmail: "anders@akgolf.no", weekday: 1, startTime: "13:00", endTime: "20:00" },
   { coachEmail: "anders@akgolf.no", weekday: 2, startTime: "12:00", endTime: "20:00" },
   { coachEmail: "anders@akgolf.no", weekday: 3, startTime: "13:00", endTime: "20:00" },
-  { coachEmail: "anders@akgolf.no", weekday: 4, startTime: "12:00", endTime: "14:00" },
+  { coachEmail: "anders@akgolf.no", weekday: 4, startTime: "10:00", endTime: "14:00" },
 
   // Markus Røinås Pedersen — personlig coaching utenom GFGK Junior-grupper
   // (ti/to 16-20 fast booket i gruppe)
@@ -463,7 +463,26 @@ async function seedCoaches() {
 
 async function seedCoachAvailability() {
   console.log("\n[seed] CoachAvailability (uke-mal)");
-  // Slett gamle records og bygg på nytt — idempotent
+
+  // Samle alle unike coach-emails i seed-dataen
+  const seedCoachEmails = Array.from(
+    new Set(COACH_AVAILABILITY.map((a) => a.coachEmail)),
+  );
+
+  // Slett ALLE eksisterende availability-records for disse coachene først,
+  // bygg på nytt fra COACH_AVAILABILITY. Dette unngår duplikater når
+  // start/sluttider endres mellom seed-kjøringer.
+  for (const email of seedCoachEmails) {
+    const coach = await prisma.user.findUnique({ where: { email } });
+    if (!coach) continue;
+    const deleted = await prisma.coachAvailability.deleteMany({
+      where: { coachId: coach.id },
+    });
+    if (deleted.count > 0) {
+      console.log(`  · Slettet ${deleted.count} gamle records for ${email}`);
+    }
+  }
+
   for (const a of COACH_AVAILABILITY) {
     const coach = await prisma.user.findUnique({
       where: { email: a.coachEmail },
@@ -472,30 +491,16 @@ async function seedCoachAvailability() {
       console.warn(`  ! Coach ikke funnet: ${a.coachEmail}`);
       continue;
     }
-    const existing = await prisma.coachAvailability.findFirst({
-      where: {
+    await prisma.coachAvailability.create({
+      data: {
         coachId: coach.id,
         weekday: a.weekday,
         startTime: a.startTime,
+        endTime: a.endTime,
       },
     });
-    if (existing) {
-      await prisma.coachAvailability.update({
-        where: { id: existing.id },
-        data: { endTime: a.endTime, active: true },
-      });
-    } else {
-      await prisma.coachAvailability.create({
-        data: {
-          coachId: coach.id,
-          weekday: a.weekday,
-          startTime: a.startTime,
-          endTime: a.endTime,
-        },
-      });
-    }
     const dag = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"][a.weekday];
-    console.log(`  · ${a.coachEmail} ${dag} ${a.startTime}-${a.endTime}`);
+    console.log(`  + ${a.coachEmail} ${dag} ${a.startTime}-${a.endTime}`);
   }
 }
 
