@@ -418,7 +418,7 @@ async function seedServiceTypes() {
   console.log("\n[seed] ServiceTypes");
 
   // Deaktiver gamle service-types som ikke lenger er i seed-arrayen
-  const seedSlugs = SERVICE_TYPES.map((st) => st.slug);
+  const seedSlugs: string[] = SERVICE_TYPES.map((st) => st.slug);
   const existing = await prisma.serviceType.findMany({
     where: { active: true },
     select: { slug: true },
