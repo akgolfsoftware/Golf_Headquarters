@@ -13,13 +13,19 @@ import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { Serwist } from "serwist";
 
-declare global {
-  interface WorkerGlobalScope extends SerwistGlobalConfig {
-    __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
-  }
-}
+// ServiceWorker-typene ligger i 'webworker'-lib som ikke er aktivert i prosjektets
+// tsconfig (vi har 'dom' for app-koden). Bruk minimal type-skisse i stedet.
+type SwScope = {
+  __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
+  addEventListener(type: string, handler: (event: any) => void): void;
+  registration: { showNotification(title: string, options: object): Promise<void> };
+  clients: {
+    matchAll(opts: object): Promise<Array<{ url: string; focus(): Promise<void> }>>;
+    openWindow(url: string): Promise<unknown>;
+  };
+} & SerwistGlobalConfig;
 
-declare const self: ServiceWorkerGlobalScope;
+declare const self: SwScope;
 
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,

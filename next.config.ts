@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
+import withSerwistInit from "@serwist/next";
 
 const nextConfig: NextConfig = {
   // Lås Turbopack-root til denne katalogen — uten dette feiler CSS-resolve
@@ -9,9 +10,21 @@ const nextConfig: NextConfig = {
   },
 };
 
+// PWA service worker via Serwist. Genererer /sw.js fra src/app/sw.ts.
+// Disabled i dev for å unngå caching-overraskelser ved HMR.
+const withSerwist = withSerwistInit({
+  swSrc: "src/app/sw.ts",
+  swDest: "public/sw.js",
+  cacheOnNavigation: true,
+  reloadOnOnline: true,
+  disable: process.env.NODE_ENV === "development",
+});
+
+const withPwa = withSerwist(nextConfig);
+
 // Sentry wrapping — kjører bare med upload av source-maps hvis
 // SENTRY_AUTH_TOKEN er satt (i prod via Vercel). Lokalt er den no-op.
-export default withSentryConfig(nextConfig, {
+export default withSentryConfig(withPwa, {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
@@ -24,5 +37,4 @@ export default withSentryConfig(nextConfig, {
 
   // Don't tunnel — bruker direkte Sentry-CDN (ingen ad-blocker som blokkerer akgolf.no).
   tunnelRoute: undefined,
-
 });

@@ -252,7 +252,7 @@ export default async function ElverListe({
                     : "Sist innlogget"}
             </span>
           </div>
-          <table className="w-full text-[13px]">
+          <table className="hidden w-full text-[13px] sm:table">
             <thead className="border-b border-border bg-secondary/30 text-left">
               <tr>
                 <Th className="w-10"></Th>
@@ -271,6 +271,11 @@ export default async function ElverListe({
               ))}
             </tbody>
           </table>
+          <ul className="divide-y divide-border sm:hidden">
+            {synlige.map((p) => (
+              <PlayerMobileCard key={p.id} player={p} />
+            ))}
+          </ul>
         </div>
       )}
     </div>
@@ -372,6 +377,63 @@ function PlayerTableRow({
       </td>
       <td className="px-4 py-3 text-right text-muted-foreground">⋯</td>
     </tr>
+  );
+}
+
+function PlayerMobileCard({
+  player,
+}: {
+  player: PlayerRow & {
+    _statusInfo: { status: Status; label: string };
+    _category: Category;
+  };
+}) {
+  const p = player;
+  const hcpDisplay =
+    p.hcp !== null
+      ? p.hcp <= 0
+        ? `+${Math.abs(p.hcp).toFixed(1).replace(".", ",")}`
+        : p.hcp.toFixed(1).replace(".", ",")
+      : "—";
+  const sistInn = formatSidenDato(p.lastLoginAt);
+
+  return (
+    <li>
+      <Link
+        href={`/admin/elever/${p.id}`}
+        className="flex min-h-16 items-center gap-3 px-4 py-3 hover:bg-secondary/40"
+      >
+        <div
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full font-mono text-[11px] font-semibold text-white"
+          style={{ background: avatarBg(p.name) }}
+        >
+          {initials(p.name)}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <div className="truncate font-medium text-foreground">{p.name}</div>
+            <span className="shrink-0 font-mono text-sm font-semibold tabular-nums text-foreground">
+              {hcpDisplay}
+            </span>
+          </div>
+          <div className="mt-1 flex flex-wrap items-center gap-1.5">
+            <span
+              className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${CAT_STYLE[p._category]}`}
+            >
+              {p._category}
+            </span>
+            <span
+              className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${TIER_STYLE[p.tier]}`}
+            >
+              {TIER_LABEL[p.tier]}
+            </span>
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {sistInn}
+            </span>
+          </div>
+        </div>
+      </Link>
+    </li>
   );
 }
 

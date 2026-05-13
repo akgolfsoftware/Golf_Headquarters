@@ -5,6 +5,8 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
 import type { PlanTemplatePayload } from "../template-payload";
+import type { PlanForslag, OktType } from "@/lib/ai-plan/schema";
+import { AI_PLAN_MODEL } from "@/lib/ai-plan/generate";
 
 /**
  * Periodiserings-fase brukt i Plan-wizard. Mappes til pyramidArea-vekter
@@ -257,4 +259,155 @@ export async function hentMalForhandsutfylling(
     allokering: payload.allokering,
     ukeSkjema: payload.ukeSkjema,
   };
+}
+
+/* =========================================================
+   AI-plan — lagre forslag som TrainingPlan
+   ========================================================= */
+
+export type OpprettAiPlanInput = {
+  spillerId: string;
+  startDato: string;
+  generationId: string;
+  forslag: PlanForslag;
+  sendTilSpiller: boolean;
+};
+
+const OKT_TYPE_TIL_PYR: Record<OktType, PyramidArea> = {
+  RANGE: "TEK",
+  NARESPILL: "SLAG",
+  PUTTING: "SLAG",
+  SPILL: "SPILL",
+  FYSISK: "FYS",
+  MENTAL: "TURN",
+};
+
+const DAG_TIL_OFFSET: Record<string, number> = {
+  MAN: 0,
+  TIR: 1,
+  ONS: 2,
+  TOR: 3,
+  FRE: 4,
+  LOR: 5,
+  SON: 6,
+};
+
+export async function opprettPlanFraAiForslag(
+  input: OpprettAiPlanInput,
+): Promise<ValideringResultat> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, feil: "unauthenticated" };
+  if (user.role !== "COACH" && user.role !== "ADMIN") {
+    return { ok: false, feil: "forbidden" };
+  }
+
+  const { spillerId, startDato, generationId, forslag, sendTilSpiller } = input;
+
+  if (!spillerId) return { ok: false, feil: "Mangler spillerId." };
+  if (!generationId) return { ok: false, feil: "Mangler generationId." };
+  if (!forslag || !Array.isArray(forslag.okter) || forslag.okter.length === 0) {
+    return { ok: false, feil: "Forslaget har ingen økter." };
+  }
+
+  const start = new Date(startDato);
+  if (Number.isNaN(start.getTime())) {
+    return { ok: false, feil: "Ugyldig startdato." };
+  }
+  const slutt = new Date(
+    start.getTime() + forslag.periodeUker * 7 * 24 * 60 * 60 * 1000,
+  );
+
+  // Hent ExerciseDefinition matched on name (case-insensitive) for å kunne
+  // opprette SessionDrill-rader der mulig.
+  const drillNavn = Array.from(
+    new Set(
+      forslag.okter.flatMap((o) =>
+        o.drills.map((d) => d.navn.trim().toLowerCase()),
+      ),
+    ),
+  );
+  const exDefs = drillNavn.length
+    ? await prisma.exerciseDefinition.findMany({
+        where: { name: { in: drillNavn, mode: "insensitive" } },
+        select: { id: true, name: true },
+      })
+    : [];
+  const exDefByName = new Map(
+    exDefs.map((e) => [e.name.toLowerCase(), e.id] as const),
+  );
+
+  const status = sendTilSpiller ? "PENDING_PLAYER" : "DRAFT";
+
+  const plan = await prisma.trainingPlan.create({
+    data: {
+      userId: spillerId,
+      name: forslag.navn,
+      startDate: start,
+      endDate: slutt,
+      isActive: true,
+      status,
+      createdById: user.id,
+      aiGenerated: true,
+      aiGenerationId: generationId,
+      aiModel: AI_PLAN_MODEL,
+      sessions: {
+        create: forslag.okter.map((okt) => {
+          const dagOffset = DAG_TIL_OFFSET[okt.dag] ?? 0;
+          const scheduledAt = new Date(
+            start.getTime() +
+              ((okt.uke - 1) * 7 + dagOffset) * 24 * 60 * 60 * 1000,
+          );
+          const pyr = OKT_TYPE_TIL_PYR[okt.type];
+          const rationale = okt.drills
+            .map((d) => {
+              const detaljer = [
+                d.antallSet ? `${d.antallSet} sett` : null,
+                d.antallRep ? `${d.antallRep} rep` : null,
+                d.varighetMin ? `${d.varighetMin} min` : null,
+              ]
+                .filter(Boolean)
+                .join(" · ");
+              return `${d.navn}${detaljer ? ` (${detaljer})` : ""}${
+                d.notat ? ` — ${d.notat}` : ""
+              }`;
+            })
+            .join("\n");
+
+          const drillsCreate = okt.drills
+            .map((d) => {
+              const exId = exDefByName.get(d.navn.trim().toLowerCase());
+              if (!exId) return null;
+              const repsSets = [
+                d.antallSet ? `${d.antallSet}x` : "",
+                d.antallRep ? `${d.antallRep}` : "",
+              ]
+                .join("")
+                .trim() || "—";
+              return {
+                exerciseId: exId,
+                repsSets,
+                notes: d.notat ?? null,
+              };
+            })
+            .filter((x): x is NonNullable<typeof x> => x !== null);
+
+          return {
+            scheduledAt,
+            durationMin: okt.varighetMin,
+            title: `${okt.fokus}`,
+            rationale,
+            pyramidArea: pyr,
+            status: "PLANNED" as const,
+            drills: drillsCreate.length
+              ? { create: drillsCreate.map((d, i) => ({ ...d, orderIndex: i })) }
+              : undefined,
+          };
+        }),
+      },
+    },
+  });
+
+  revalidatePath("/admin/plans");
+  revalidatePath(`/admin/plans/${plan.id}`);
+  return { ok: true, planId: plan.id };
 }

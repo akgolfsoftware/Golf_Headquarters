@@ -140,6 +140,11 @@ export default async function Profil360({
         orderBy: { recordedAt: "desc" },
         take: 10,
       },
+      parentRelations: {
+        include: {
+          parent: { select: { id: true, name: true, email: true, phone: true } },
+        },
+      },
     },
   });
 
@@ -770,6 +775,41 @@ export default async function Profil360({
             </ul>
           )}
         </div>
+      </section>
+
+      {/* Foreldre — read-only liste over koblede foresatte */}
+      <section
+        aria-labelledby="foreldre-h"
+        className="rounded-xl border border-border bg-card p-6"
+      >
+        <h2
+          id="foreldre-h"
+          className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+        >
+          Foreldre · {player.parentRelations.length}
+        </h2>
+        {player.parentRelations.length === 0 ? (
+          <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
+            Ingen foresatte er koblet til spilleren.
+          </p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {player.parentRelations.map((rel) => (
+              <li key={rel.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-[13px]">
+                <div>
+                  <div className="font-semibold">{rel.parent.name}</div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                    {rel.relationship}
+                  </div>
+                </div>
+                <div className="text-right text-xs text-muted-foreground">
+                  <div>{rel.parent.email}</div>
+                  {rel.parent.phone ? <div>{rel.parent.phone}</div> : null}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </div>
   );

@@ -51,3 +51,8 @@ next-env.d.ts
 ruvector.db
 .claude/scheduled_tasks.lock
 agentdb.rvf*
+
+# Serwist-generert service worker (bygges ved next build)
+/public/sw.js
+/public/sw.js.map
+/public/swe-worker-*.js

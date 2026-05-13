@@ -14,13 +14,19 @@
 import { config } from "dotenv";
 config({ path: ".env.local" });
 
+// Verifiser at miljøvariabel er lastet før Prisma importeres.
+if (!process.env.DATABASE_URL) {
+  console.error("DATABASE_URL mangler etter dotenv-load");
+  process.exit(1);
+}
+
 import Stripe from "stripe";
-import {
-  recordPaymentIntent,
-  recordCheckoutSession,
-  recordInvoice,
-  recordChargeRefund,
-} from "../src/lib/payments/record";
+
+// Lazy-import via require for å sikre at dotenv har kjørt før PrismaPg initialiseres.
+// (ESM `import` hoistes — selv `await import()` på toppen vil kjøre etter at modulen er parset.)
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const record: typeof import("../src/lib/payments/record") = require("../src/lib/payments/record");
+const { recordPaymentIntent, recordCheckoutSession, recordInvoice, recordChargeRefund } = record;
 
 const SECRET = process.env.STRIPE_SECRET_KEY;
 if (!SECRET) {

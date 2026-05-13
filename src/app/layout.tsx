@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
-import { InstallBanner } from "@/components/install-banner";
+import { InstallPrompt } from "@/components/portal/install-prompt";
+import { SwRegister } from "@/components/sw-register";
 import "./globals.css";
 
 // Inter — UI og brødtekst (variable font)
@@ -68,6 +69,7 @@ export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  viewportFit: "cover" as const,
 };
 
 export default function RootLayout({
@@ -82,7 +84,8 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         {children}
-        <InstallBanner />
+        <InstallPrompt />
+        <SwRegister />
       </body>
     </html>
   );

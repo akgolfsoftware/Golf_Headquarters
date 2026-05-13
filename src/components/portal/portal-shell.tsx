@@ -2,6 +2,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PortalSidebar } from "./sidebar";
 import { BottomNav } from "./bottom-nav";
 import { UserMenu } from "@/components/shared/user-menu";
+import { ViewModeToggle } from "@/components/shared/view-mode-toggle";
 
 export async function PortalShell({
   children,
@@ -35,7 +36,12 @@ export async function PortalShell({
               PlayerHQ
             </div>
           </div>
-          <UserMenu name={user.name} email={user.email} avatarUrl={user.avatarUrl} />
+          <div className="flex items-center gap-3">
+            {(user.role === "ADMIN" || user.role === "COACH") && (
+              <ViewModeToggle current="player" />
+            )}
+            <UserMenu name={user.name} email={user.email} avatarUrl={user.avatarUrl} />
+          </div>
         </header>
         <main
           id="portal-main"

@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getViewMode } from "@/lib/view-mode";
 import {
   getDashboardData,
   type SistRegistrert,
@@ -107,8 +108,12 @@ export default async function PortalHjem() {
   const user = await requirePortalUser();
 
   // Rolle-basert redirect: coacher/admin -> CoachHQ, gjester -> kalender.
-  // /portal er forbeholdt PLAYER og PARENT.
-  if (user.role === "COACH" || user.role === "ADMIN") redirect("/admin");
+  // /portal er forbeholdt PLAYER og PARENT — men ADMIN/COACH kan velge
+  // "vis som spiller" via view-mode-toggle for å inspisere PlayerHQ.
+  const viewMode = await getViewMode();
+  if (user.role === "COACH" || user.role === "ADMIN") {
+    if (viewMode !== "player") redirect("/admin");
+  }
   if (user.role === "GUEST") redirect("/admin/calendar");
 
   // Hent abonnement-info for QuickActions-widget

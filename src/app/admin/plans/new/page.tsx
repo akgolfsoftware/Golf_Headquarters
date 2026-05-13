@@ -4,6 +4,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { PlanWizard } from "./wizard";
+import { AiPlanPanel } from "./ai-panel";
 
 export default async function NyPlanPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -37,6 +38,8 @@ export default async function NyPlanPage() {
         titleItalic="ny plan"
         sub="Wizard med 6 steg — spiller, periode, faser, allokering, økt-skjema og bekreft."
       />
+
+      <AiPlanPanel spillere={spillere} />
 
       <PlanWizard spillere={spillere} maler={maler} />
     </div>

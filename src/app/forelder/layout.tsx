@@ -1,56 +1,49 @@
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { AdminSidebar } from "./sidebar";
-import { AdminMobileDrawer } from "./mobile-drawer";
-import { GlobalSearchModal } from "./global-search-modal";
-import { UserMenu } from "@/components/shared/user-menu";
-import { ViewModeToggle } from "@/components/shared/view-mode-toggle";
+// Foreldreportal — shell med sidebar og header.
+// Beskyttet for kun PARENT-rollen.
 
-export async function AdminShell({
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { ForelderSidebar } from "@/components/forelder/sidebar";
+import { UserMenu } from "@/components/shared/user-menu";
+
+export default async function ForelderLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["PARENT"] });
 
   return (
     <div className="flex min-h-screen bg-background">
       <a
-        href="#admin-main"
+        href="#forelder-main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         Hopp til hovedinnhold
       </a>
       <div className="hidden lg:flex">
-        <AdminSidebar />
+        <ForelderSidebar />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
         <header
           role="banner"
           className="flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 sm:px-8 sm:py-4"
         >
-          <div className="flex items-center gap-3">
-            <AdminMobileDrawer />
-            <div
-              aria-label={`CoachHQ, rolle ${user.role}`}
-              className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
-            >
-              CoachHQ · {user.role}
-            </div>
+          <div
+            aria-label="Foreldreportal"
+            className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+          >
+            Foreldreportal
           </div>
-          <div className="flex items-center gap-3">
-            <ViewModeToggle current="coach" />
-            <UserMenu name={user.name} email={user.email} avatarUrl={user.avatarUrl} />
-          </div>
+          <UserMenu name={user.name} email={user.email} avatarUrl={user.avatarUrl} />
         </header>
         <main
-          id="admin-main"
+          id="forelder-main"
           tabIndex={-1}
           className="flex-1 px-4 py-6 focus:outline-none sm:px-8"
         >
           {children}
         </main>
       </div>
-      <GlobalSearchModal />
     </div>
   );
 }
