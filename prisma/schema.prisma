@@ -138,6 +138,7 @@ model User {
   apiKeys           ApiKey[]
   auditLogs         AuditLog[]
   coachAvailability CoachAvailability[]
+  serviceTypes      ServiceType[]      @relation("CoachServiceTypes")
 
   @@map("users")
 }
@@ -170,11 +171,16 @@ model ServiceType {
   durationMin Int
   description String?
   active      Boolean  @default(true)
+  // Coach som tilbyr tjenesten. Null = felles (gruppe, WANG).
+  // Erstatter slug-prefiks-konvensjonen i UI med ekte DB-relasjon.
+  coachUserId String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   bookings Booking[]
+  coach    User?     @relation("CoachServiceTypes", fields: [coachUserId], references: [id], onDelete: SetNull)
 
+  @@index([coachUserId])
   @@map("service_types")
 }
 

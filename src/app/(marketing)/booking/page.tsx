@@ -10,36 +10,20 @@ export const metadata: Metadata = {
 
 type SearchParams = Promise<{ lokasjon?: string; trener?: string }>;
 
-// Coach-mapping basert på slug-prefiks. Når ServiceType får coachUserId-FK
-// (planlagt M5+), hentes dette fra DB i stedet.
-const COACH_PER_PREFIX: Record<string, string> = {
-  "anders-": "anders",
-  "markus-": "markus",
-};
-
-// Tjenester uten coach-prefiks tilbys av begge / alle.
-function getCoachForService(slug: string): string | null {
-  for (const [prefix, coach] of Object.entries(COACH_PER_PREFIX)) {
-    if (slug.startsWith(prefix)) return coach;
-  }
-  return null; // Gruppe-økter etc.
-}
-
 // Lokasjon-mapping. Trackman-tjenester foregår på Mulligan, alt annet på GFGK.
+// Når ServiceType får locationId-FK (V1.5+), leses dette fra DB.
 function getLocationForService(slug: string): string {
   if (slug.includes("trackman") || slug.includes("mulligan")) return "mulligan";
   return "gfgk";
 }
 
-const COACHES: Record<string, { id: string; navn: string; tittel: string }> = {
-  anders: {
-    id: "anders",
-    navn: "Anders Kristiansen",
+// Coach-display-info per User-ID. Brukes for tittel/beskrivelse i UI.
+// Navn hentes fra DB via ServiceType.coach.
+const COACH_BIOS: Record<string, { tittel: string }> = {
+  "anders@akgolf.no": {
     tittel: "Head Coach · 15+ år erfaring · WANG Toppidrett",
   },
-  markus: {
-    id: "markus",
-    navn: "Markus R. Pedersen",
+  "markus@akgolf.no": {
     tittel: "Assistent-coach · spillerutvikling",
   },
 };
@@ -72,6 +56,9 @@ export default async function BookingLanding({
   const services = await prisma.serviceType.findMany({
     where: { active: true, priceOre: { gt: 0 } },
     orderBy: { priceOre: "asc" },
+    include: {
+      coach: { select: { id: true, name: true, email: true } },
+    },
   });
 
   // Hvilke lokasjoner finnes representert?
@@ -81,6 +68,24 @@ export default async function BookingLanding({
   const lokasjonValg = aktiveLokasjoner
     .map((id) => LOCATIONS[id])
     .filter(Boolean);
+
+  // Hvilke trenere har minst én aktiv tjeneste? (deduplisert)
+  const treneresMap = new Map<
+    string,
+    { id: string; navn: string; tittel: string }
+  >();
+  for (const s of services) {
+    if (s.coach && !treneresMap.has(s.coach.id)) {
+      treneresMap.set(s.coach.id, {
+        id: s.coach.id,
+        navn: s.coach.name,
+        tittel: COACH_BIOS[s.coach.email]?.tittel ?? "Coach",
+      });
+    }
+  }
+  const trenere = Array.from(treneresMap.values()).sort((a, b) =>
+    a.navn.localeCompare(b.navn),
+  );
 
   return (
     <div className="px-6 py-16">
@@ -103,7 +108,13 @@ export default async function BookingLanding({
           <StegIndikator
             stegNo={lokasjon ? (trener ? 3 : 2) : 1}
             lokasjon={lokasjon ? LOCATIONS[lokasjon]?.navn : null}
-            trener={trener ? COACHES[trener]?.navn : null}
+            trener={
+              trener === "alle"
+                ? "Gruppe"
+                : trener
+                  ? (trenere.find((t) => t.id === trener)?.navn ?? null)
+                  : null
+            }
           />
         </div>
 
@@ -156,11 +167,11 @@ export default async function BookingLanding({
             </div>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              {Object.values(COACHES).map((c) => {
+              {trenere.map((c) => {
                 // Sjekk at coachen har tjenester på valgt lokasjon
                 const harTjenester = services.some(
                   (s) =>
-                    getCoachForService(s.slug) === c.id &&
+                    s.coach?.id === c.id &&
                     getLocationForService(s.slug) === lokasjon,
                 );
                 if (!harTjenester) return null;
@@ -192,7 +203,7 @@ export default async function BookingLanding({
             {/* Felles tjenester (gruppe, WANG) — vis hvis lokasjonen har dem */}
             {services.some(
               (s) =>
-                getCoachForService(s.slug) === null &&
+                s.coach === null &&
                 getLocationForService(s.slug) === lokasjon,
             ) && (
               <div className="mt-6">
@@ -240,9 +251,8 @@ export default async function BookingLanding({
               {services
                 .filter((s) => {
                   if (getLocationForService(s.slug) !== lokasjon) return false;
-                  const coach = getCoachForService(s.slug);
-                  if (trener === "alle") return coach === null;
-                  return coach === trener;
+                  if (trener === "alle") return s.coach === null;
+                  return s.coach?.id === trener;
                 })
                 .map((s) => (
                   <Link

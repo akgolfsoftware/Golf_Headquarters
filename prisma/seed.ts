@@ -45,7 +45,8 @@ const LOCATIONS = [
 
 // ---------- ServiceTypes ----------
 // Pris i ØRE (Int). 600 kr = 60000 øre.
-// Coach-spesifikk pris: slug-prefiks anders-/markus- per coach.
+// coachEmail: kobles til User.id via lookup i seed-funksjonen.
+// Markus tilbyr KUN Flex (drop-in) per beslutning okt 2026.
 
 const SERVICE_TYPES = [
   // --- Anders Kristiansen ---
@@ -55,6 +56,7 @@ const SERVICE_TYPES = [
     priceOre: 60000,
     durationMin: 20,
     description: "Kort fokus-økt med Anders. Ett tema, raskt inn og ut.",
+    coachEmail: "anders@akgolf.no",
   },
   {
     slug: "anders-flex-50",
@@ -62,6 +64,7 @@ const SERVICE_TYPES = [
     priceOre: 150000,
     durationMin: 50,
     description: "Standard coaching-økt med Anders. Tek, taktikk eller mental.",
+    coachEmail: "anders@akgolf.no",
   },
   {
     slug: "anders-flex-90",
@@ -69,6 +72,7 @@ const SERVICE_TYPES = [
     priceOre: 250000,
     durationMin: 90,
     description: "Utvidet coaching-økt med Anders. Dybde-analyse + praksis.",
+    coachEmail: "anders@akgolf.no",
   },
   {
     slug: "anders-performance",
@@ -77,6 +81,7 @@ const SERVICE_TYPES = [
     durationMin: 60,
     description:
       "Strukturert performance-økt med Anders. Trackman + analyse + plan.",
+    coachEmail: "anders@akgolf.no",
   },
   {
     slug: "anders-performance-pro",
@@ -85,31 +90,25 @@ const SERVICE_TYPES = [
     durationMin: 90,
     description:
       "Full performance-økt med Anders. Trackman + video + dispersjon + skriftlig plan.",
+    coachEmail: "anders@akgolf.no",
   },
 
-  // --- Markus Røinås Pedersen ---
+  // --- Markus Røinås Pedersen (kun drop-in Flex) ---
   {
     slug: "markus-flex-20",
     name: "Flex 20 min — Markus",
     priceOre: 30000,
     durationMin: 20,
     description: "Kort fokus-økt med Markus. Ett tema, raskt inn og ut.",
+    coachEmail: "markus@akgolf.no",
   },
   {
-    slug: "markus-performance",
-    name: "Performance — Markus",
-    priceOre: 70000,
-    durationMin: 60,
-    description:
-      "Strukturert performance-økt med Markus. Trackman + analyse + plan.",
-  },
-  {
-    slug: "markus-performance-pro",
-    name: "Performance Pro — Markus",
-    priceOre: 130000,
-    durationMin: 90,
-    description:
-      "Full performance-økt med Markus. Trackman + video + dispersjon + skriftlig plan.",
+    slug: "markus-flex-50",
+    name: "Flex 50 min — Markus",
+    priceOre: 80000,
+    durationMin: 50,
+    description: "Standard drop-in-økt med Markus. Tek eller spill.",
+    coachEmail: "markus@akgolf.no",
   },
 
   // --- Gruppe-tjenester (institusjonelle, ikke 1:1) ---
@@ -119,6 +118,7 @@ const SERVICE_TYPES = [
     priceOre: 39000,
     durationMin: 60,
     description: "Inntil 6 spillere. Egnet for nivåtilpasset trening.",
+    coachEmail: null,
   },
   {
     slug: "wang-oekt",
@@ -127,6 +127,7 @@ const SERVICE_TYPES = [
     durationMin: 90,
     description:
       "Intern økt for WANG Toppidrett-spillere. Tilknyttes Group, ikke booking.",
+    coachEmail: null,
   },
 ] as const;
 
@@ -444,6 +445,21 @@ async function seedServiceTypes() {
   }
 
   for (const st of SERVICE_TYPES) {
+    // Slå opp coach-ID hvis coachEmail er satt
+    let coachUserId: string | null = null;
+    if (st.coachEmail) {
+      const coach = await prisma.user.findUnique({
+        where: { email: st.coachEmail },
+        select: { id: true },
+      });
+      if (coach) coachUserId = coach.id;
+      else {
+        console.warn(
+          `  ! Coach ikke funnet: ${st.coachEmail} — ${st.slug} får null coach`,
+        );
+      }
+    }
+
     await prisma.serviceType.upsert({
       where: { slug: st.slug },
       update: {
@@ -452,6 +468,7 @@ async function seedServiceTypes() {
         durationMin: st.durationMin,
         description: st.description,
         active: true,
+        coachUserId,
       },
       create: {
         slug: st.slug,
@@ -459,9 +476,11 @@ async function seedServiceTypes() {
         priceOre: st.priceOre,
         durationMin: st.durationMin,
         description: st.description,
+        coachUserId,
       },
     });
-    console.log(`  · ${st.slug} (${st.priceOre / 100} kr)`);
+    const coachLabel = st.coachEmail ?? "(felles)";
+    console.log(`  · ${st.slug} (${st.priceOre / 100} kr · ${coachLabel})`);
   }
 }
 
