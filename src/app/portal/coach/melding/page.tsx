@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 import { MeldingForm } from "./form";
 
 export default async function CoachMeldingPage() {
@@ -56,40 +57,36 @@ export default async function CoachMeldingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-[860px] px-6 py-8">
-        <header className="mb-7 flex items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/portal/coach"
-              className="inline-flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Tilbake
-            </Link>
-            <div>
-              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                PlayerHQ · Ny melding
-              </span>
-              <h1 className="mt-1 font-display text-[24px] font-semibold italic leading-tight -tracking-[0.01em]">
-                Ny melding{" "}
-                <em className="font-medium italic">til {fornavn}</em>
-              </h1>
-            </div>
-          </div>
-          {hovedcoach && (
-            <div className="flex items-center gap-3 rounded-full border border-border bg-card px-3 py-2">
-              <div className="grid h-8 w-8 place-items-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
-                {initialer}
-              </div>
-              <div className="text-[12.5px] leading-tight">
-                <div className="font-semibold">{hovedcoach.name}</div>
-                <div className="font-mono text-[11px] text-muted-foreground">
-                  {/* TODO: hent reell svartid og online-status */}
-                  Hovedcoach
+        <div className="mb-7 space-y-4">
+          <Link
+            href="/portal/coach"
+            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Tilbake
+          </Link>
+          <PageHeader
+            eyebrow="PlayerHQ · Ny melding"
+            titleLead="Ny melding"
+            titleItalic={`til ${fornavn}`}
+            sub="Skriv direkte til coachen din. Svartid typisk innen 4 timer på hverdager."
+            actions={
+              hovedcoach ? (
+                <div className="flex items-center gap-3 rounded-full border border-border bg-card px-3 py-2">
+                  <div className="grid h-8 w-8 place-items-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+                    {initialer}
+                  </div>
+                  <div className="text-[12.5px] leading-tight">
+                    <div className="font-semibold">{hovedcoach.name}</div>
+                    <div className="font-mono text-[11px] text-muted-foreground">
+                      Hovedcoach
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
-        </header>
+              ) : undefined
+            }
+          />
+        </div>
 
         <MeldingForm coacher={coacher} />
       </div>

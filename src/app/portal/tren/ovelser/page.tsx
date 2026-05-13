@@ -15,6 +15,7 @@ import {
   type Prisma,
 } from "@/generated/prisma/client";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PageHeader } from "@/components/shared/page-header";
 
 type Search = { area?: string; phase?: string };
 
@@ -83,7 +84,7 @@ export default async function OvelserPage({
   return (
     <div className="space-y-8">
       {/* Hero */}
-      <header>
+      <div>
         <Link
           href="/portal/tren"
           className="mb-4 inline-flex items-center gap-1 font-mono text-[12px] font-medium text-muted-foreground hover:text-foreground"
@@ -99,18 +100,12 @@ export default async function OvelserPage({
             </div>
           </div>
           <div className="min-w-0 flex-1">
-            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              PlayerHQ · Trening · Bibliotek
-            </span>
-            <h1 className="mt-1 font-display text-[22px] sm:text-[28px] md:text-[36px] italic font-medium leading-[1.05] tracking-tight">
-              Drills og øvelser
-            </h1>
-            <p className="mt-1 text-[13px] text-muted-foreground">
-              {exercises.length} øvelse{exercises.length === 1 ? "" : "r"} sortert
-              etter pyramide-område og L-fase
-              {fornavn ? `, ${fornavn}.` : "."}
-            </p>
-
+            <PageHeader
+              eyebrow="PlayerHQ · Trening · Bibliotek"
+              titleLead="Drills og"
+              titleItalic="øvelser"
+              sub={`${exercises.length} øvelse${exercises.length === 1 ? "" : "r"} sortert etter pyramide-område og L-fase${fornavn ? `, ${fornavn}.` : "."}`}
+            />
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <StatPill label="Totalt" value={String(totalAlle)} />
               <StatPill
@@ -128,7 +123,7 @@ export default async function OvelserPage({
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Insight-banner */}
       {harAktiveFiltre && (

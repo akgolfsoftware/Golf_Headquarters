@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 
 type Status = "risk" | "watch" | "check" | "ok";
 
@@ -163,38 +164,35 @@ export default async function OppfolgingsKo() {
     <div className="min-h-screen bg-background text-foreground">
       <div className="px-8 py-8 pb-12 lg:px-10">
         {/* Header */}
-        <header className="mb-6 flex items-start justify-between gap-6">
-          <div>
-            <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-              /admin/oppfølging
-            </span>
-            <h1 className="mt-2 max-w-[640px] font-display text-[22px] sm:text-[28px] md:text-[36px] font-bold italic leading-[1.1] tracking-tight">
-              <em className="font-normal italic">Hvem trenger en samtale denne uka.</em>
-            </h1>
-            <p className="mt-2 font-display text-[15px] italic text-muted-foreground">
-              Plattformen flagger — du bestemmer.
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/admin/settings"
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              <Settings className="h-4 w-4" />
-              Justere regler
-            </Link>
-            <button
-              type="button"
-              disabled
-              title="Kommer i v2"
-              className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
-            >
-              <Sparkles className="h-4 w-4" />
-              Generer AI-aksjoner
-            </button>
-          </div>
-        </header>
+        <div className="mb-6">
+          <PageHeader
+            eyebrow="CoachHQ · Oppfølgings-kø"
+            titleLead="Hvem trenger en"
+            titleItalic="samtale"
+            titleTrail="denne uka."
+            sub="Plattformen flagger — du bestemmer."
+            actions={
+              <>
+                <Link
+                  href="/admin/settings"
+                  className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+                >
+                  <Settings className="h-4 w-4" />
+                  Justere regler
+                </Link>
+                <button
+                  type="button"
+                  disabled
+                  title="Kommer i v2"
+                  className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Generer AI-aksjoner
+                </button>
+              </>
+            }
+          />
+        </div>
 
         {/* Top stats */}
         <section

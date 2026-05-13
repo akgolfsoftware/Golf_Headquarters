@@ -10,7 +10,7 @@
  */
 
 import Link from "next/link";
-import { ExternalLink, TrendingUp, TrendingDown, Trophy } from "lucide-react";
+import { ExternalLink, TrendingUp, TrendingDown, Trophy, Flag } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
@@ -29,17 +29,7 @@ const KATEGORI_INFO: Record<string, { tier: string; pts: string }> = {
   I: { tier: "Junior Region/Klubb", pts: "<50" },
 };
 
-function flagEmoji(country: string): string {
-  const code = country.toLowerCase();
-  if (code === "us") return "🇺🇸";
-  if (code === "no") return "🇳🇴";
-  if (code === "za") return "🇿🇦";
-  if (code === "gb") return "🇬🇧";
-  if (code === "se") return "🇸🇪";
-  if (code === "dk") return "🇩🇰";
-  if (code === "fi") return "🇫🇮";
-  return "🏳️";
-}
+// Lande-koder vises som mono-tekst badge + Flag-ikon (CLAUDE.md: ingen emoji).
 
 export default async function WagrBenchmarkPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -203,10 +193,11 @@ function PlayerTable({ rows }: { rows: SnapshotRow[] }) {
               <Td className="font-mono">{r.rank}</Td>
               <Td>{renderMove(r.moveDelta)}</Td>
               <Td>
-                <span className="text-base" aria-label={r.country}>
-                  {flagEmoji(r.country)}
-                </span>
-                <span className="ml-2 font-mono text-[10px] uppercase text-muted-foreground">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-secondary/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground"
+                  aria-label={r.country}
+                >
+                  <Flag size={10} strokeWidth={1.75} />
                   {r.country}
                 </span>
               </Td>

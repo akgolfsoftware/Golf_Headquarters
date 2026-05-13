@@ -8,6 +8,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 import { OnskeligOktForm } from "./form";
 
 type Search = { sent?: string };
@@ -41,23 +42,19 @@ export default async function OnskeligOktPage({
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-[820px] px-6 py-8">
-        <header className="mb-8 flex items-end justify-between gap-6">
-          <div>
-            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              /portal/onskeligokt
-            </span>
-            <h1 className="mt-2 font-display text-4xl italic leading-[1.1] tracking-tight">
-              <em className="font-medium italic">
-                Be om økt med{" "}
-                <span className="text-primary">{standardFornavn}</span>
-              </em>
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {standardFornavn} svarer typisk innen 4 timer på hverdager.
-            </p>
-          </div>
-          {standardCoach && <CoachPill name={standardCoach.name} initials={initials} />}
-        </header>
+        <div className="mb-8">
+          <PageHeader
+            eyebrow="PlayerHQ · Ønskelig økt"
+            titleLead="Be om økt med"
+            titleItalic={standardFornavn}
+            sub={`${standardFornavn} svarer typisk innen 4 timer på hverdager.`}
+            actions={
+              standardCoach ? (
+                <CoachPill name={standardCoach.name} initials={initials} />
+              ) : undefined
+            }
+          />
+        </div>
 
         {params.sent === "1" && (
           <div className="mb-6 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">

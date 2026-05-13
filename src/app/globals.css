@@ -127,6 +127,20 @@
   --color-player-sidebar: #0A1F18;
   --color-coach-content: #F0F2F0;
   --color-player-content: #F5F7F5;
+
+  /* ---------- Avatar-/dekorative gradient-tokens ----------
+   * 8 deterministiske gradient-paletter for avatar-, gruppe- og
+   * mal-identitet. Matchet til AK-paletten (forest, lime, ochre, cream).
+   * Brukes via bg-[image:var(--gradient-avatar-N)] eller inline style.
+   */
+  --gradient-avatar-1: linear-gradient(135deg, #005840 0%, #1A7D56 100%);
+  --gradient-avatar-2: linear-gradient(135deg, #1A7D56 0%, #4A9670 100%);
+  --gradient-avatar-3: linear-gradient(135deg, #B8852A 0%, #D4A04A 100%);
+  --gradient-avatar-4: linear-gradient(135deg, #006B4F 0%, #D1F843 100%);
+  --gradient-avatar-5: linear-gradient(135deg, #29261B 0%, #5E5C57 100%);
+  --gradient-avatar-6: linear-gradient(135deg, #A6651E 0%, #7A4910 100%);
+  --gradient-avatar-7: linear-gradient(135deg, #2C7D76 0%, #3FA39A 100%);
+  --gradient-avatar-8: linear-gradient(135deg, #5A3B8A 0%, #7C52B0 100%);
 }
 
 /* ---------- Base ---------- */

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { PageHeader } from "@/components/shared/page-header";
 import { Setup2FA } from "@/app/portal/meg/sikkerhet/setup-2fa";
 
 export default async function AdminSecurityPage() {
@@ -24,19 +25,13 @@ export default async function AdminSecurityPage() {
         Innstillinger
       </Link>
 
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Innstillinger · Sikkerhet
-        </span>
-        <h1 className="mt-2 font-display text-[22px] sm:text-[28px] md:text-[36px] font-medium italic leading-[1.1] tracking-tight">
-          Hvem er <em className="italic text-primary">logget inn</em> akkurat
-          nå?
-        </h1>
-        <p className="mt-2 max-w-[640px] text-[13px] text-muted-foreground">
-          Kontoen din virker grei. Sjekk likevel listen — første gang du ser en
-          rar IP er ofte siste sjanse.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="Innstillinger · Sikkerhet"
+        titleLead="Hvem er"
+        titleItalic="logget inn"
+        titleTrail="akkurat nå?"
+        sub="Kontoen din virker grei. Sjekk likevel listen — første gang du ser en rar IP er ofte siste sjanse."
+      />
 
       <Section title="Oversikt">
         <div className="grid grid-cols-2 gap-4 p-5">

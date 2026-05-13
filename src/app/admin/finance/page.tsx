@@ -8,6 +8,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PageHeader } from "@/components/shared/page-header";
 
 export const dynamic = "force-dynamic";
 
@@ -90,30 +91,21 @@ export default async function FinanceAdmin() {
   return (
     <div className="space-y-8">
       {/* HERO */}
-      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <span
-            aria-hidden="true"
-            className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
-          >
-            Økonomi · {eyebrowMonth}
-          </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold italic leading-tight tracking-tight sm:text-4xl">
-            Økonomi —{" "}
-            <em className="font-normal italic text-primary">pulsen</em> i
-            driften.
-          </h1>
-          <p className="mt-2 font-mono text-xs text-muted-foreground">
-            Estimater basert på aktive abonnement · Faktiske beløp i Stripe
-          </p>
-        </div>
-        <div className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm">
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Periode
-          </span>
-          <span className="font-medium">Inneværende måned</span>
-        </div>
-      </header>
+      <PageHeader
+        eyebrow={`Økonomi · ${eyebrowMonth}`}
+        titleLead="Økonomi —"
+        titleItalic="pulsen"
+        titleTrail="i driften."
+        sub="Estimater basert på aktive abonnement · Faktiske beløp i Stripe"
+        actions={
+          <div className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm">
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Periode
+            </span>
+            <span className="font-medium">Inneværende måned</span>
+          </div>
+        }
+      />
 
       {/* KPI STRIP */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

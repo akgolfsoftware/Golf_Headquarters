@@ -13,15 +13,15 @@ import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { GroupForm } from "./group-form";
 
-// Bevisst dekorativ palett — faste gradient-paletter for stabil gruppe-identitet i grid.
-// TODO: konsolider farge — 6 varianter for visuell variasjon mellom grupper.
+// Faste gradient-paletter for stabil gruppe-identitet i grid.
+// Refererer til CSS-tokens definert i src/app/globals.css (--gradient-avatar-1..8).
 const HERO_GRADIENTS = [
-  "from-[#005840] via-[#0a4a35] to-foreground/90",
-  "from-[#3b5994] via-[#2e4470] to-[#1e2e4a]",
-  "from-[#a14b30] via-[#c26442] to-[#7d3a25]",
-  "from-[#5a3b8a] via-[#7c52b0] to-[#3a2658]",
-  "from-[#2c7d76] via-[#3fa39a] to-[#1b504c]",
-  "from-[#7a5a1a] via-[#9a7a30] to-[#4a3608]",
+  "var(--gradient-avatar-1)",
+  "var(--gradient-avatar-7)",
+  "var(--gradient-avatar-3)",
+  "var(--gradient-avatar-8)",
+  "var(--gradient-avatar-2)",
+  "var(--gradient-avatar-6)",
 ] as const;
 
 function levelTypeLabel(level: string | null): string {
@@ -159,7 +159,8 @@ export default async function Grupper() {
                 >
                   {/* Hero-image med gradient */}
                   <div
-                    className={`relative flex h-44 items-center justify-center overflow-hidden bg-gradient-to-br ${gradient}`}
+                    className="relative flex h-44 items-center justify-center overflow-hidden"
+                    style={{ backgroundImage: gradient }}
                   >
                     <span
                       className="absolute left-3 top-3 rounded-sm bg-white/90 px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.06em] text-foreground"

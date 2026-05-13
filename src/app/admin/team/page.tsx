@@ -295,15 +295,15 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-// Bevisst dekorativ palett — deterministisk avatar-gradient per navn-hash.
-// TODO: konsolider farge — vurder å flytte til src/lib/avatar-colors.ts som delt utility.
+// Deterministisk avatar-gradient per navn-hash.
+// Refererer til CSS-tokens definert i src/app/globals.css (--gradient-avatar-1..8).
 function avatarBg(name: string): string {
   const palette = [
-    "linear-gradient(135deg,#005840,#1A7D56)",
-    "linear-gradient(135deg,#a14b30,#d2876b)",
-    "linear-gradient(135deg,#3b5994,#5b7cb8)",
-    "linear-gradient(135deg,#5E5C57,#8a8780)",
-    "linear-gradient(135deg,#A6651E,#7A4910)",
+    "var(--gradient-avatar-1)",
+    "var(--gradient-avatar-3)",
+    "var(--gradient-avatar-7)",
+    "var(--gradient-avatar-5)",
+    "var(--gradient-avatar-6)",
   ];
   let h = 0;
   for (let i = 0; i < name.length; i++) {

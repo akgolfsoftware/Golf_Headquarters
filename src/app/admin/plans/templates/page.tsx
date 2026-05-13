@@ -23,17 +23,17 @@ const DEFAULT_PYR: { key: PyrKey; value: number }[] = [
   { key: "turn", value: 5 },
 ];
 
-// Bevisst dekorativ palett — 8 gradient-varianter for stabil mal-identitet i kort-grid.
-// TODO: konsolider farge — vurder å eksponere som --color-template-gradient-N tokens.
+// 8 gradient-varianter for stabil mal-identitet i kort-grid.
+// Refererer til CSS-tokens definert i src/app/globals.css (--gradient-avatar-1..8).
 const GRADIENTS = [
-  "linear-gradient(135deg, #005840 0%, #006B4F 100%)",
-  "linear-gradient(135deg, #2D7A5C 0%, #4A9670 100%)",
-  "linear-gradient(135deg, #B8852A 0%, #D4A04A 100%)",
-  "linear-gradient(135deg, #16A34A 0%, #4FB872 100%)",
-  "linear-gradient(135deg, #29261B 0%, #5E5C57 100%)",
-  "linear-gradient(135deg, #006B4F 0%, #D1F843 100%)",
-  "linear-gradient(135deg, #DC2626 0%, #F87171 100%)",
-  "linear-gradient(135deg, #4A2D6A 0%, #7A5BAA 100%)",
+  "var(--gradient-avatar-1)",
+  "var(--gradient-avatar-2)",
+  "var(--gradient-avatar-3)",
+  "var(--gradient-avatar-4)",
+  "var(--gradient-avatar-5)",
+  "var(--gradient-avatar-6)",
+  "var(--gradient-avatar-7)",
+  "var(--gradient-avatar-8)",
 ];
 
 type TemplatePayload = {

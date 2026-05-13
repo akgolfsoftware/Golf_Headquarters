@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 import { AiChat } from "./chat";
 import { ChatToolbar } from "./chat-toolbar";
 import type { ChatMelding } from "@/lib/anthropic";
@@ -79,7 +80,15 @@ export default async function AiCoachPage({
   const fornavn = user.name?.split(" ")[0] ?? "deg";
 
   return (
-    <div className="grid min-h-[calc(100vh-64px)] grid-rows-[auto_1fr] bg-background text-foreground">
+    <div className="grid min-h-[calc(100vh-64px)] grid-rows-[auto_auto_1fr] bg-background text-foreground">
+      <div className="border-b border-border bg-card px-8 pt-6 pb-4">
+        <PageHeader
+          eyebrow="PlayerHQ · AI-coach"
+          titleLead="AI om"
+          titleItalic={fornavn}
+          sub="Personlig kontekst basert på profil og siste aktivitet."
+        />
+      </div>
       <header className="flex items-center justify-between gap-4 border-b border-border bg-card px-8 py-3.5">
         <div className="flex items-center gap-3.5">
           <div className="relative grid h-11 w-11 place-items-center rounded-full bg-primary text-primary-foreground">
@@ -89,15 +98,11 @@ export default async function AiCoachPage({
             </span>
           </div>
           <div>
-            <div className="text-[16px] font-semibold leading-none">
-              AI om{" "}
-              <em className="font-display font-semibold italic text-primary">
-                {fornavn}
-              </em>
+            <div className="text-[14px] font-semibold leading-none">
+              {fornavn}
             </div>
-            <div className="mt-1 font-mono text-[12px] tabular-nums text-muted-foreground">
-              {/* TODO: erstatt med ekte kontekst-stats */}
-              Personlig kontekst basert på profil og siste aktivitet
+            <div className="mt-1 font-mono text-[11px] tabular-nums text-muted-foreground">
+              AI-coach · personlig kontekst
             </div>
           </div>
         </div>

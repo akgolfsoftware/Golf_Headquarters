@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarCheck, AlertCircle } from "lucide-react";
+import { CalendarCheck, AlertCircle, CheckCircle2 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
@@ -30,8 +30,9 @@ export default async function CalendarSettings({
       />
 
       {ok === "1" && (
-        <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
-          ✓ Google Calendar er koblet til.
+        <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
+          <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-primary" strokeWidth={1.75} />
+          <span>Google Calendar er koblet til.</span>
         </div>
       )}
       {error && (

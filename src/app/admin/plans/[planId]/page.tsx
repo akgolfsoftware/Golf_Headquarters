@@ -27,11 +27,11 @@ import { AddSessionModal } from "@/components/admin/add-session-wizard";
  *  3) pyr-fargene som data-koder (FYS/TEK/SLAG/SPILL/TURN)
  */
 const PYR_COLOR: Record<PyramidArea, string> = {
-  FYS: "var(--color-pyr-fys, #005840)",
-  TEK: "var(--color-pyr-tek, #1A7D56)",
-  SLAG: "var(--color-pyr-slag, #D1F843)",
-  SPILL: "var(--color-pyr-spill, #B8852A)",
-  TURN: "var(--color-pyr-turn, #5E5C57)",
+  FYS: "var(--color-pyr-fys)",
+  TEK: "var(--color-pyr-tek)",
+  SLAG: "var(--color-pyr-slag)",
+  SPILL: "var(--color-pyr-spill)",
+  TURN: "var(--color-pyr-turn)",
 };
 
 export default async function AdminPlanDetalj({

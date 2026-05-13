@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, MoreHorizontal } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 import { CreateApiKeyModal } from "./create-key-modal";
 import { RevokeButton } from "./revoke-button";
 import { CopyPrefixButton } from "./copy-prefix-button";
@@ -46,19 +47,12 @@ export default async function AdminApiKeysPage() {
         Innstillinger
       </Link>
 
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Innstillinger · API
-        </span>
-        <h1 className="mt-2 font-display text-[22px] sm:text-[28px] md:text-[36px] font-medium italic leading-[1.1] tracking-tight">
-          <em className="italic text-primary">API-nøkler</em> og integrasjoner
-        </h1>
-        <p className="mt-2 max-w-[640px] text-[13px] text-muted-foreground">
-          Generer nøkler for eksterne verktøy som skal lese eller skrive data
-          fra CoachHQ. {aktive} aktiv{aktive === 1 ? "" : "e"} · {keys.length}{" "}
-          totalt.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="Innstillinger · API"
+        titleItalic="API-nøkler"
+        titleTrail="og integrasjoner"
+        sub={`Generer nøkler for eksterne verktøy som skal lese eller skrive data fra CoachHQ. ${aktive} aktiv${aktive === 1 ? "" : "e"} · ${keys.length} totalt.`}
+      />
 
       <section className="rounded-lg border border-border bg-card">
         <header className="flex items-center gap-3 border-b border-border px-6 py-4">

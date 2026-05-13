@@ -20,6 +20,7 @@ import {
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 import { dagerIUken, startOfWeek, ukenummer } from "@/lib/uke-helpers";
 import type { PyramidArea } from "@/generated/prisma/client";
 
@@ -199,21 +200,14 @@ export default async function KalenderPage({
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-[1400px] px-6 py-8">
-        <header className="mb-6">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            /portal/tren/kalender · {subTekst}
-          </span>
-          <h1 className="mt-2 font-display text-3xl sm:text-4xl md:text-5xl italic leading-[1.1] tracking-tight">
-            Uke <em className="italic text-primary">{uke}</em>
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            <em className="font-display italic">
-              «{aktivitetCount} {aktivitetCount === 1 ? "aktivitet" : "aktiviteter"}{" "}
-              denne uka, {fornavn}.»
-            </em>{" "}
-            — alt i én oversikt: coach-økter, selvtrening, runder, tester.
-          </p>
-        </header>
+        <div className="mb-6">
+          <PageHeader
+            eyebrow={`PlayerHQ · Trening · Kalender · ${subTekst}`}
+            titleLead="Uke"
+            titleItalic={String(uke)}
+            sub={`${aktivitetCount} ${aktivitetCount === 1 ? "aktivitet" : "aktiviteter"} denne uka, ${fornavn}. Alt i én oversikt: coach-økter, selvtrening, runder, tester.`}
+          />
+        </div>
 
         <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <KpiCard

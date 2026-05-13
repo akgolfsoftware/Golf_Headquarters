@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronRight, FileText, Key, Shield, User } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { PageHeader } from "@/components/shared/page-header";
 
 type Item = {
   href: string;
@@ -46,19 +47,12 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="space-y-8">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          CoachHQ · Innstillinger
-        </span>
-        <h1 className="mt-2 font-display text-[22px] sm:text-[28px] md:text-[36px] font-medium italic leading-[1.1] tracking-tight">
-          Kontoen din.{" "}
-          <em className="italic text-primary">Slik den fungerer.</em>
-        </h1>
-        <p className="mt-2 max-w-[640px] text-[13px] text-muted-foreground">
-          Profil, sikkerhet, API-nøkler og revisjonslogg samlet på ett sted.
-          Endringer trer i kraft umiddelbart.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="CoachHQ · Innstillinger"
+        titleLead="Kontoen din."
+        titleItalic="Slik den fungerer."
+        sub="Profil, sikkerhet, API-nøkler og revisjonslogg samlet på ett sted. Endringer trer i kraft umiddelbart."
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {ITEMS.map((it) => {
