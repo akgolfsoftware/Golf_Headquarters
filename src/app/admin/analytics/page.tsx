@@ -93,7 +93,7 @@ export default async function Analytics() {
           >
             Analytics · {eyebrowDate}
           </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          <h1 className="mt-2 font-display text-3xl font-semibold italic leading-tight tracking-tight sm:text-4xl">
             Analytics —{" "}
             <em className="font-normal italic text-primary">
               hvordan stallen

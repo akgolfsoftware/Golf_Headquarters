@@ -21,6 +21,7 @@ import {
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { avatarBg } from "@/lib/avatar-colors";
 
 type Tab = "venner" | "klubb" | "globalt";
 
@@ -38,8 +39,6 @@ type Rad = {
   me: boolean;
   medal?: "gold" | "silver" | "bronze";
 };
-
-const AVATAR_BG = ["#1A7D56", "#005840", "#B8852A", "#4A6B5C", "#7A6B4A", "#6B4A6B"];
 
 function initialer(navn: string) {
   return navn
@@ -86,7 +85,7 @@ export default async function LeaderboardPage({
         name: b.name,
         sub: `${b.homeClub ?? "—"} · Pro`,
         initials: initialer(b.name),
-        avatarBg: AVATAR_BG[i % AVATAR_BG.length],
+        avatarBg: avatarBg(b.name),
         hcp:
           b.hcp != null
             ? (b.hcp >= 0 ? "+" : "") + b.hcp.toFixed(1).replace(".", ",")
@@ -155,7 +154,7 @@ function Head({
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Mål · Leaderboard · siste 30 dager
         </div>
-        <h1 className="mt-2 font-display text-4xl leading-[1.1] tracking-tight">
+        <h1 className="mt-2 font-display text-4xl italic leading-[1.1] tracking-tight">
           <em className="font-medium italic">
             {minRank != null
               ? `#${minRank} av ${total} i klubben, ${fornavn}.`
@@ -213,7 +212,8 @@ function YourRank({
     <div
       className="relative grid grid-cols-[auto_auto_1fr_auto] items-center gap-6 overflow-hidden rounded-lg px-8 py-6 text-card"
       style={{
-        background: "linear-gradient(135deg, #0A1F18 0%, #102C22 100%)",
+        background:
+          "linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--card)) 100%)",
       }}
     >
       <div

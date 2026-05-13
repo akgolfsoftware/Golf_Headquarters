@@ -169,7 +169,7 @@ export default async function OppfolgingsKo() {
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
               /admin/oppfølging
             </span>
-            <h1 className="mt-2 max-w-[640px] font-display text-[36px] font-bold leading-[1.1] tracking-tight">
+            <h1 className="mt-2 max-w-[640px] font-display text-[36px] font-bold italic leading-[1.1] tracking-tight">
               <em className="font-normal italic">Hvem trenger en samtale denne uka.</em>
             </h1>
             <p className="mt-2 font-display text-[15px] italic text-muted-foreground">

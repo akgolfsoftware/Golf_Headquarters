@@ -125,7 +125,8 @@ export default async function StatistikkPage({
                 Alle runder
               </h2>
             </header>
-            <div className="overflow-x-auto">
+            {/* Desktop: tabell */}
+            <div className="hidden overflow-x-auto sm:block">
               <table className="w-full text-sm">
                 <thead className="bg-secondary/40">
                   <tr>
@@ -158,6 +159,32 @@ export default async function StatistikkPage({
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobil: kort */}
+            <div className="space-y-3 p-4 sm:hidden">
+              {denne.slice(0, 20).map((r) => (
+                <div
+                  key={r.id}
+                  className="rounded-lg border border-border bg-card p-4"
+                >
+                  <div className="flex items-baseline justify-between">
+                    <div className="font-semibold text-foreground">
+                      {r.playedAt.toLocaleDateString("nb-NO", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </div>
+                    <div className="font-mono text-sm tabular-nums text-muted-foreground">
+                      Score {r.score}
+                    </div>
+                  </div>
+                  <div className="mt-2 font-mono text-[11px] tabular-nums text-foreground">
+                    SG Total: {formatSg(r.sgTotal)}
+                  </div>
+                </div>
+              ))}
             </div>
             {denne.length > 20 && (
               <div className="border-t border-border px-5 py-3 text-center">

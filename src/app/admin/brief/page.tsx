@@ -78,7 +78,7 @@ export default async function DagligBrief() {
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               {eyebrow} · uke {ukeNr}
             </div>
-            <h1 className="mt-2 font-display text-[36px] font-semibold leading-[1.1] tracking-tight">
+            <h1 className="mt-2 font-display text-[36px] font-semibold italic leading-[1.1] tracking-tight">
               <em className="italic">
                 {idag.toLocaleDateString("nb-NO", {
                   weekday: "long",
@@ -198,7 +198,8 @@ export default async function DagligBrief() {
             </div>
           ) : (
             <div className="overflow-hidden rounded-xl border border-border bg-card">
-              <table className="w-full">
+              <div className="overflow-x-auto">
+              <table className="w-full min-w-[420px]">
                 <thead>
                   <tr className="border-b border-border bg-secondary/40">
                     <th className="px-4 py-3 text-left font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
@@ -238,6 +239,7 @@ export default async function DagligBrief() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
         </section>

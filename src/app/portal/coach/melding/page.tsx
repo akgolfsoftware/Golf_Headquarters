@@ -16,7 +16,7 @@ export default async function CoachMeldingPage() {
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             PlayerHQ · Coach
           </span>
-          <h1 className="font-display text-3xl font-semibold leading-tight -tracking-[0.01em]">
+          <h1 className="font-display text-3xl font-semibold italic leading-tight -tracking-[0.01em]">
             Krever <em className="italic font-medium text-primary">Pro</em>
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -69,7 +69,7 @@ export default async function CoachMeldingPage() {
               <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 PlayerHQ · Ny melding
               </span>
-              <h1 className="mt-1 font-display text-[24px] font-semibold leading-tight -tracking-[0.01em]">
+              <h1 className="mt-1 font-display text-[24px] font-semibold italic leading-tight -tracking-[0.01em]">
                 Ny melding{" "}
                 <em className="font-medium italic">til {fornavn}</em>
               </h1>

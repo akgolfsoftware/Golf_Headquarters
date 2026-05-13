@@ -167,7 +167,7 @@ export default async function AuditLogPage({
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               CoachHQ · Sikkerhet · Capability audit.read
             </div>
-            <h1 className="mt-2 font-display text-[36px] leading-[1.1] tracking-tight">
+            <h1 className="mt-2 font-display text-[36px] italic leading-[1.1] tracking-tight">
               <em className="font-normal italic">
                 {total7d.toLocaleString("nb-NO")} hendelser siste 7 dager. Alt logget.
               </em>

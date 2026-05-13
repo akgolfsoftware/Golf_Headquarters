@@ -27,7 +27,7 @@ const PYR_LABEL: Record<PyramidArea, string> = {
 const PYR_PILL: Record<PyramidArea, string> = {
   FYS: "bg-[rgba(0,88,64,0.13)] text-[var(--color-pyr-fys)]",
   TEK: "bg-[rgba(26,125,86,0.13)] text-[var(--color-pyr-tek)]",
-  SLAG: "bg-[rgba(184,133,42,0.13)] text-[#B8852A]",
+  SLAG: "bg-[rgba(184,133,42,0.13)] text-[var(--color-pyr-spill)]",
   SPILL: "bg-[rgba(184,133,42,0.13)] text-[var(--color-pyr-spill)]",
   TURN: "bg-[rgba(94,92,87,0.13)] text-[var(--color-pyr-turn)]",
 };
@@ -169,7 +169,7 @@ export default async function SessionDetalj({
               Start live
             </Link>
           ) : session.status === "COMPLETED" ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(60,142,109,0.13)] px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] text-[#1A7D56]">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(60,142,109,0.13)] px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--color-pyr-tek)]">
               <Check className="h-3 w-3" strokeWidth={3} />
               Gjennomført
             </span>
@@ -451,7 +451,7 @@ function DrillBlock({
           </div>
         </div>
         {fullfort && (
-          <span className="grid h-7 w-7 place-items-center rounded-full bg-[#1A7D56] text-white">
+          <span className="grid h-7 w-7 place-items-center rounded-full bg-[var(--color-pyr-tek)] text-white">
             <Check className="h-3.5 w-3.5" strokeWidth={3} />
           </span>
         )}

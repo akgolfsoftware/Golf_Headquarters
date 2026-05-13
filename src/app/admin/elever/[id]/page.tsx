@@ -339,7 +339,7 @@ export default async function Profil360({
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Elever · 360-profil
           </span>
-          <h1 className="mt-1 font-display text-[36px] font-bold leading-[1.1] tracking-tight">
+          <h1 className="mt-1 font-display text-[36px] font-bold italic leading-[1.1] tracking-tight">
             <em className="font-medium italic">
               {player.name.split(" ")[0]}
             </em>

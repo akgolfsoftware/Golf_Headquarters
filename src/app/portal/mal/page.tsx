@@ -224,7 +224,7 @@ function HcpTrend({
       className="relative overflow-hidden rounded-2xl p-6 text-white md:p-8"
       style={{
         background:
-          "linear-gradient(135deg, #0F2A22 0%, #163027 60%, #0A1F18 100%)",
+          "linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card)) 60%, hsl(var(--foreground)) 100%)",
       }}
     >
       <span
@@ -415,7 +415,7 @@ function HcpChart({
             cy={p.y}
             r={i === pts.length - 1 ? 5 : 3}
             fill="hsl(var(--accent))"
-            stroke={i === pts.length - 1 ? "#0F2A22" : undefined}
+            stroke={i === pts.length - 1 ? "currentColor" : undefined}
             strokeWidth={i === pts.length - 1 ? 2 : 0}
           />
         ))}

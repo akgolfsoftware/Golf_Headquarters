@@ -72,7 +72,7 @@ export default async function TurneringDetalj({
               {tournament.format}
               {tournament.course && ` · ${tournament.course.name}`}
             </div>
-            <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
+            <h1 className="mt-2 font-display text-3xl font-semibold italic leading-tight tracking-tight">
               <em className="font-normal italic text-accent">{titleLead}</em>
               {titleTrail && ` ${titleTrail}`}
             </h1>

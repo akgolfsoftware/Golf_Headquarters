@@ -181,7 +181,8 @@ type SnapshotRow = {
 function PlayerTable({ rows }: { rows: SnapshotRow[] }) {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-card">
-      <table className="w-full text-sm">
+      <div className="overflow-x-auto">
+      <table className="w-full min-w-[640px] text-sm">
         <thead className="border-b border-border bg-secondary/40">
           <tr>
             <Th>Rank</Th>
@@ -235,6 +236,7 @@ function PlayerTable({ rows }: { rows: SnapshotRow[] }) {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

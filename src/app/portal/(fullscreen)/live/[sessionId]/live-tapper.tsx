@@ -75,15 +75,14 @@ const PYR_LABEL: Record<PyramidArea, string> = {
   TURN: "Turnering",
 };
 
-// Bevisst dekorativ palett — én farge per pyramide-område for kategori-koding.
-// Bevart som hex for visuell variasjon mellom 5 områder (kan ikke uttrykkes med 18 semantic tokens).
-// TODO: konsolider farge — vurder å legge inn som --pyramid-fys/--pyramid-tek osv. tokens.
+// Pyramide-farger fra globals.css (--color-pyr-*). Fallback bevart for unike
+// nyanser brukt tidligere i denne flaten dersom CSS-variablene mangler.
 const PYR_COLOR: Record<PyramidArea, string> = {
-  FYS: "#4A6B5C",
-  TEK: "#D1F843",
-  SLAG: "#7BC4A0",
-  SPILL: "#3F8B6A",
-  TURN: "#2A4636",
+  FYS: "var(--color-pyr-fys, #4A6B5C)",
+  TEK: "var(--color-pyr-tek, #D1F843)",
+  SLAG: "var(--color-pyr-slag, #7BC4A0)",
+  SPILL: "var(--color-pyr-spill, #3F8B6A)",
+  TURN: "var(--color-pyr-turn, #2A4636)",
 };
 
 const initialState: State = {
@@ -319,7 +318,7 @@ export function LiveTapper({
   if (drills.length === 0) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-foreground p-8 text-center text-white">
-        <h1 className="font-display text-3xl font-semibold">Ingen drills</h1>
+        <h1 className="font-display text-3xl font-semibold italic">Ingen drills</h1>
         <p className="mt-2 text-white/65">
           Denne økten har ikke fått tildelt drills ennå. Be coach om å legge dem til.
         </p>
@@ -364,7 +363,7 @@ export function LiveTapper({
             Klar til økt
           </div>
 
-          <h1 className="mx-auto mt-6 max-w-[900px] text-center font-display text-[56px] leading-[1.1] tracking-[-0.02em] text-white">
+          <h1 className="mx-auto mt-6 max-w-[900px] text-center font-display text-[56px] italic leading-[1.1] tracking-[-0.02em] text-white">
             <em className="italic">{session.title}</em>
           </h1>
 
@@ -472,7 +471,7 @@ export function LiveTapper({
           </div>
 
           {/* Counter ring */}
-          <div className="relative mt-8 flex h-[480px] w-[480px] items-center justify-center">
+          <div className="relative mt-8 flex aspect-square w-full max-w-[480px] items-center justify-center px-4 sm:px-0">
             <svg
               className="absolute inset-0 h-full w-full -rotate-90"
               viewBox="0 0 480 480"
@@ -604,7 +603,7 @@ export function LiveTapper({
                 Fullført
               </div>
 
-              <h1 className="mt-5 font-display text-[56px] font-semibold leading-[1.05] tracking-[-0.025em] text-white">
+              <h1 className="mt-5 font-display text-[56px] font-semibold italic leading-[1.05] tracking-[-0.025em] text-white">
                 <em className="italic">{currentDrill.exercise.name}</em>
               </h1>
               <p className="mt-2 font-mono text-[13px] tracking-[0.04em] text-white/65">
@@ -818,7 +817,7 @@ export function LiveTapper({
             <Trophy className="h-[14px] w-[14px]" strokeWidth={1.5} />
             Økt fullført
           </div>
-          <h1 className="mx-auto max-w-[880px] font-display text-[56px] leading-[1.15] text-white">
+          <h1 className="mx-auto max-w-[880px] font-display text-[56px] italic leading-[1.15] text-white">
             <em className="italic">
               {drillsFullført} av {drills.length} øvelser.
             </em>{" "}

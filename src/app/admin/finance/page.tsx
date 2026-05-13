@@ -98,7 +98,7 @@ export default async function FinanceAdmin() {
           >
             Økonomi · {eyebrowMonth}
           </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          <h1 className="mt-2 font-display text-3xl font-semibold italic leading-tight tracking-tight sm:text-4xl">
             Økonomi —{" "}
             <em className="font-normal italic text-primary">pulsen</em> i
             driften.

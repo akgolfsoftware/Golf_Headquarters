@@ -203,7 +203,7 @@ export default async function KalenderPage({
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             /portal/tren/kalender · {subTekst}
           </span>
-          <h1 className="mt-2 font-display text-5xl leading-[1.1] tracking-tight">
+          <h1 className="mt-2 font-display text-5xl italic leading-[1.1] tracking-tight">
             Uke <em className="italic text-primary">{uke}</em>
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">

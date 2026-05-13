@@ -130,7 +130,8 @@ export default async function AgentsAdmin() {
           />
         ) : (
           <div className="overflow-hidden rounded-lg border border-border bg-card">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[480px] text-sm">
               <thead className="border-b border-border bg-secondary/40 text-left">
                 <tr>
                   <Th>Agent</Th>
@@ -172,6 +173,7 @@ export default async function AgentsAdmin() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         )}
       </section>

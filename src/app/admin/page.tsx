@@ -181,6 +181,7 @@ export default async function AdminHub() {
             <div className="flex items-center justify-between pt-3 font-mono text-[11px] text-background/55">
               <span>{Math.max(0, totalSpillere - data.kpi.aktiveSpillere)} inaktive</span>
               <div className="flex">
+                {/* TODO: konsolider farge — dekorative avatar-bakgrunner. Vurder å bruke avatarBg() fra @/lib/avatar-colors. */}
                 {[
                   { l: "M", c: "var(--color-pyr-tek)" },
                   { l: "E", c: "#A6651E" },
@@ -475,6 +476,7 @@ export default async function AdminHub() {
             3 spillere · sist purret 8. mai
           </div>
           <div className="mt-1 flex gap-1.5">
+            {/* TODO: konsolider farge — dekorative avatar-bakgrunner. Vurder å bruke avatarBg() fra @/lib/avatar-colors. */}
             {[
               { l: "LH", c: "hsl(var(--destructive))" },
               { l: "SV", c: "#A6651E" },

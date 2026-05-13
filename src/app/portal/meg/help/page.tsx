@@ -202,7 +202,7 @@ export default async function HelpPage() {
       </section>
 
       {/* Kontakt — mørk card */}
-      <section className="rounded-lg bg-gradient-to-br from-[#0F2A22] to-[#163027] p-8 text-white">
+      <section className="rounded-lg bg-gradient-to-br from-foreground to-card p-8 text-white">
         <h2 className="text-center font-display text-2xl font-normal italic leading-tight tracking-tight text-white">
           <span className="not-italic font-semibold">Trenger du</span> mer hjelp?
         </h2>

@@ -24,7 +24,7 @@ export default async function AiCoachPage({
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             PlayerHQ · AI-coach
           </span>
-          <h1 className="font-display text-3xl font-semibold leading-tight -tracking-[0.01em]">
+          <h1 className="font-display text-3xl font-semibold italic leading-tight -tracking-[0.01em]">
             Krever <em className="italic font-medium text-primary">Pro</em>
           </h1>
           <p className="text-sm text-muted-foreground">

@@ -46,7 +46,7 @@ export default async function OnskeligOktPage({
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               /portal/onskeligokt
             </span>
-            <h1 className="mt-2 font-display text-4xl leading-[1.1] tracking-tight">
+            <h1 className="mt-2 font-display text-4xl italic leading-[1.1] tracking-tight">
               <em className="font-medium italic">
                 Be om økt med{" "}
                 <span className="text-primary">{standardFornavn}</span>

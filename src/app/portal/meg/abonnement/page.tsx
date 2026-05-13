@@ -174,7 +174,8 @@ export default async function AbonnementPage({
 
       {/* Sammenligning */}
       <Section title="Sammenlign planer" aux={erPro ? "Pro er din nåværende" : "Gratis er din nåværende"}>
-        <div className="overflow-x-auto">
+        {/* Desktop: tabell */}
+        <div className="hidden overflow-x-auto sm:block">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
@@ -240,6 +241,34 @@ export default async function AbonnementPage({
               />
             </tbody>
           </table>
+        </div>
+
+        {/* Mobil: stack av planer */}
+        <div className="space-y-4 p-4 sm:hidden">
+          <PlanKort
+            navn="Gratis"
+            pris="0 kr"
+            current={!erPro}
+            features={[
+              "1 aktiv treningsplan",
+              "30 dagers coaching-historikk",
+              "5 coach-meldinger / mnd",
+            ]}
+          />
+          <PlanKort
+            navn="Pro"
+            pris="300 kr/mnd"
+            current={erPro}
+            badge={erPro ? "Din plan" : "Anbefalt"}
+            features={[
+              "3 aktive treningsplaner",
+              "Ubegrenset coaching-historikk",
+              "AI-anbefalinger fra coach-agenten",
+              "TrackMan-import",
+              "Helse + restitusjon",
+              "50 coach-meldinger / mnd",
+            ]}
+          />
         </div>
       </Section>
 
@@ -378,6 +407,47 @@ function Feature({ children }: { children: React.ReactNode }) {
     <div className="flex items-center gap-2.5 text-sm text-foreground">
       <Check className="h-4 w-4 flex-shrink-0 text-primary" strokeWidth={1.5} />
       {children}
+    </div>
+  );
+}
+
+function PlanKort({
+  navn,
+  pris,
+  features,
+  current = false,
+  badge,
+}: {
+  navn: string;
+  pris: string;
+  features: string[];
+  current?: boolean;
+  badge?: string;
+}) {
+  return (
+    <div
+      className={`rounded-lg border p-4 ${
+        current ? "border-primary bg-primary/5" : "border-border bg-card"
+      }`}
+    >
+      <div className="flex items-baseline justify-between">
+        <div className="font-display text-base font-semibold text-foreground">
+          {navn}
+        </div>
+        {badge && (
+          <span className="rounded-full bg-accent px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-accent-foreground">
+            {badge}
+          </span>
+        )}
+      </div>
+      <div className="mt-1 font-mono text-sm tabular-nums text-muted-foreground">
+        {pris}
+      </div>
+      <div className="mt-3 space-y-2">
+        {features.map((f) => (
+          <Feature key={f}>{f}</Feature>
+        ))}
+      </div>
     </div>
   );
 }

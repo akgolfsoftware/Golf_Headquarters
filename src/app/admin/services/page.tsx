@@ -167,7 +167,8 @@ export default async function ServicesAdmin() {
               Sortert: Aktiv → Navn ↑
             </span>
           </div>
-          <table className="w-full text-[13px]">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px] text-[13px]">
             <thead className="border-b border-border bg-secondary/30 text-left">
               <tr>
                 <Th>Tjeneste</Th>
@@ -243,6 +244,7 @@ export default async function ServicesAdmin() {
               })}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

@@ -57,8 +57,11 @@ export default async function AgentPipelinePage() {
             sub="Registrer en runde eller test så agentene har data å jobbe med."
           />
         ) : (
-          <div className="overflow-hidden rounded-lg border border-border bg-card">
-            <table className="w-full text-sm">
+          <>
+          {/* Desktop: tabell */}
+          <div className="hidden overflow-hidden rounded-lg border border-border bg-card sm:block">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[420px] text-sm">
               <thead className="border-b border-border bg-muted/40 text-left">
                 <tr>
                   <Th>Type</Th>
@@ -89,7 +92,36 @@ export default async function AgentPipelinePage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
+
+          {/* Mobil: kort */}
+          <div className="space-y-3 sm:hidden">
+            {signals.map((s) => (
+              <div
+                key={s.id}
+                className="rounded-lg border border-border bg-card p-4"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="rounded-sm bg-muted px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                    {s.kind}
+                  </span>
+                  <span className="font-mono text-sm tabular-nums text-foreground">
+                    {s.value != null ? s.value.toFixed(2).replace(".", ",") : "—"}
+                  </span>
+                </div>
+                <div className="mt-2 font-mono text-[10px] text-muted-foreground">
+                  {s.computedAt.toLocaleString("nb-NO", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+          </>
         )}
       </section>
 

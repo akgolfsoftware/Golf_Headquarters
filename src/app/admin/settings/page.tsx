@@ -50,7 +50,7 @@ export default async function AdminSettingsPage() {
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           CoachHQ · Innstillinger
         </span>
-        <h1 className="mt-2 font-display text-[36px] font-medium leading-[1.1] tracking-tight">
+        <h1 className="mt-2 font-display text-[36px] font-medium italic leading-[1.1] tracking-tight">
           Kontoen din.{" "}
           <em className="italic text-primary">Slik den fungerer.</em>
         </h1>

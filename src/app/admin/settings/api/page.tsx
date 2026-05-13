@@ -50,7 +50,7 @@ export default async function AdminApiKeysPage() {
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Innstillinger · API
         </span>
-        <h1 className="mt-2 font-display text-[36px] font-medium leading-[1.1] tracking-tight">
+        <h1 className="mt-2 font-display text-[36px] font-medium italic leading-[1.1] tracking-tight">
           <em className="italic text-primary">API-nøkler</em> og integrasjoner
         </h1>
         <p className="mt-2 max-w-[640px] text-[13px] text-muted-foreground">
