@@ -21,8 +21,8 @@ function formatSg(v: number | null | undefined): string {
 function vsParClass(diff: number): string {
   if (diff < 0) return "bg-primary/12 text-primary";
   if (diff === 0) return "bg-secondary text-muted-foreground";
-  if (diff <= 5) return "bg-[#F4C430]/20 text-[#5a4408]";
-  return "bg-[#a14b30]/15 text-[#a14b30]";
+  if (diff <= 5) return "bg-accent/30 text-accent-foreground";
+  return "bg-destructive/15 text-destructive";
 }
 
 export default async function RunderPage() {
@@ -255,7 +255,7 @@ export default async function RunderPage() {
                           r.sgTotal != null && r.sgTotal > 0
                             ? "text-primary"
                             : r.sgTotal != null && r.sgTotal < 0
-                              ? "text-[#a14b30]"
+                              ? "text-destructive"
                               : "text-muted-foreground"
                         }`}
                       >

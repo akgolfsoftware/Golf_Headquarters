@@ -31,10 +31,10 @@ const FASER = [
 ] as const;
 
 const TYPE_TAG_KLASSE: Record<PyramidArea | "TEST", string> = {
-  FYS: "bg-[#E5F1EA] text-[#16A34A]",
-  TEK: "bg-primary/10 text-primary",
+  FYS: "bg-primary/10 text-primary",
+  TEK: "bg-primary/15 text-primary",
   SLAG: "bg-accent/30 text-foreground",
-  SPILL: "bg-[#FBF1D9] text-[#B8852A]",
+  SPILL: "bg-accent/20 text-accent-foreground",
   TURN: "bg-secondary text-muted-foreground",
   TEST: "bg-destructive/10 text-destructive",
 };

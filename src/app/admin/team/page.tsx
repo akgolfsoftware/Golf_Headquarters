@@ -167,7 +167,7 @@ function CoachCard({ member }: { member: TeamMember }) {
           className={`rounded-sm px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.04em] ${
             isAdmin
               ? "bg-primary/15 text-primary"
-              : "bg-[rgba(91,124,184,0.18)] text-[#3b5994]"
+              : "bg-secondary text-muted-foreground"
           }`}
         >
           {roleLabel}

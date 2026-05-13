@@ -22,18 +22,18 @@ const PYR_LABEL: Record<PyramidArea, string> = {
 };
 
 const PYR_PILL: Record<PyramidArea, string> = {
-  FYS: "bg-[#16A34A]/15 text-[#0f7536]",
+  FYS: "bg-primary/10 text-primary",
   TEK: "bg-primary/12 text-primary",
   SLAG: "bg-accent/40 text-accent-foreground",
-  SPILL: "bg-[#F4C430]/20 text-[#7a5a08]",
+  SPILL: "bg-accent/20 text-accent-foreground",
   TURN: "bg-secondary text-muted-foreground",
 };
 
 const PYR_DOT: Record<PyramidArea, string> = {
-  FYS: "bg-[#16A34A]",
+  FYS: "bg-primary/80",
   TEK: "bg-primary",
   SLAG: "bg-accent-foreground",
-  SPILL: "bg-[#7a5a08]",
+  SPILL: "bg-accent",
   TURN: "bg-muted-foreground",
 };
 
