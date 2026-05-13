@@ -47,6 +47,7 @@ type Props = {
   locations: LocationOption[];
   facilities?: FacilityOption[];
   defaultLocationId?: string;
+  defaultFacilityId?: string;
 };
 
 export function QuickAddSessionModal({
@@ -57,6 +58,7 @@ export function QuickAddSessionModal({
   locations,
   facilities = [],
   defaultLocationId,
+  defaultFacilityId,
 }: Props) {
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -75,14 +77,15 @@ export function QuickAddSessionModal({
     return proTime?.id ?? serviceTypes[0].id;
   }, [serviceTypes]);
 
-  // Default location: "Mulligan Borre" hvis funnet, ellers defaultLocationId, ellers første.
+  // Default location: hvis defaultLocationId er gitt, bruk den.
+  // Ellers "Mulligan Borre" hvis funnet. Ellers første.
   const defaultLocId = useMemo(() => {
     if (locations.length === 0) return "";
+    if (defaultLocationId) return defaultLocationId;
     const mulligan = locations.find((l) =>
       l.name.toLowerCase().includes("mulligan"),
     );
     if (mulligan) return mulligan.id;
-    if (defaultLocationId) return defaultLocationId;
     return locations[0].id;
   }, [locations, defaultLocationId]);
 
@@ -99,7 +102,7 @@ export function QuickAddSessionModal({
     const st = serviceTypes.find((s) => s.id === defaultServiceTypeId);
     return st?.durationMin ?? 60;
   });
-  const [facilityId, setFacilityId] = useState<string>("");
+  const [facilityId, setFacilityId] = useState<string>(defaultFacilityId ?? "");
   const [notater, setNotater] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -119,7 +122,7 @@ export function QuickAddSessionModal({
     setLocationId(defaultLocId);
     const st = serviceTypes.find((s) => s.id === defaultServiceTypeId);
     setVarighetMin(st?.durationMin ?? 60);
-    setFacilityId("");
+    setFacilityId(defaultFacilityId ?? "");
     setNotater("");
     setError(null);
     setSuccess(null);

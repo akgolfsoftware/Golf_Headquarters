@@ -4,18 +4,51 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { FacilityQuickAdd } from "./facility-quick-add";
 
 const DAGER = ["Ma", "Ti", "On", "To", "Fr", "Lø", "Sø"];
 
 export default async function FacilitiesAdmin() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN", "GUEST"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN", "GUEST"] });
+  const kanBooke = user.role !== "GUEST";
 
-  const facilities = await prisma.facility.findMany({
-    include: {
-      location: { select: { id: true, name: true, active: true } },
-    },
-    orderBy: [{ location: { name: "asc" } }, { name: "asc" }],
-  });
+  const [facilities, spillere, serviceTypes, locations] = await Promise.all([
+    prisma.facility.findMany({
+      include: {
+        location: { select: { id: true, name: true, active: true } },
+      },
+      orderBy: [{ location: { name: "asc" } }, { name: "asc" }],
+    }),
+    kanBooke
+      ? prisma.user.findMany({
+          where: { role: "PLAYER" },
+          select: { id: true, name: true, email: true },
+          orderBy: { name: "asc" },
+        })
+      : Promise.resolve([] as { id: string; name: string; email: string }[]),
+    kanBooke
+      ? prisma.serviceType.findMany({
+          where: { active: true },
+          select: { id: true, name: true, durationMin: true },
+          orderBy: { durationMin: "asc" },
+        })
+      : Promise.resolve(
+          [] as { id: string; name: string; durationMin: number }[],
+        ),
+    kanBooke
+      ? prisma.location.findMany({
+          where: { active: true },
+          select: { id: true, name: true },
+          orderBy: { name: "asc" },
+        })
+      : Promise.resolve([] as { id: string; name: string }[]),
+  ]);
+
+  const facilityOptions = facilities.map((f) => ({
+    id: f.id,
+    name: f.name,
+    locationId: f.location.id,
+  }));
 
   // Beregn neste 7 dager fra i dag (mandag-mandag-uke)
   const idag = new Date();
@@ -122,7 +155,22 @@ export default async function FacilitiesAdmin() {
 
                 <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {items.map((f) => (
-                    <li key={f.id}>
+                    <li key={f.id} className="relative">
+                      {kanBooke && f.active && (
+                        <div className="absolute right-4 top-4 z-10">
+                          <FacilityQuickAdd
+                            facility={{
+                              id: f.id,
+                              name: f.name,
+                              locationId: f.location.id,
+                            }}
+                            spillere={spillere}
+                            serviceTypes={serviceTypes}
+                            locations={locations}
+                            facilities={facilityOptions}
+                          />
+                        </div>
+                      )}
                       <Link
                         href={`/admin/facilities/${f.id}`}
                         className="block rounded-lg border border-border bg-card p-5 transition-all hover:border-primary hover:shadow-sm"
@@ -141,15 +189,11 @@ export default async function FacilitiesAdmin() {
                               {f.name}
                             </span>
                           </div>
-                          <span
-                            className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
-                              f.active
-                                ? "bg-primary/10 text-primary"
-                                : "bg-secondary text-muted-foreground"
-                            }`}
-                          >
-                            {f.active ? "Aktiv" : "Inaktiv"}
-                          </span>
+                          {!f.active && (
+                            <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                              Inaktiv
+                            </span>
+                          )}
                         </div>
 
                         {/* Uke-strip */}
