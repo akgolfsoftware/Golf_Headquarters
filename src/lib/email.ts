@@ -12,7 +12,7 @@ export function resendKlient(): Resend {
   return _klient;
 }
 
-export const FRA_EPOST = process.env.RESEND_FROM_EMAIL ?? "AK Golf <hei@akgolf.no>";
+export const FRA_EPOST = process.env.RESEND_FROM_EMAIL ?? "AK Golf <post@akgolf.no>";
 
 export type LeadEpostInput = {
   email: string;

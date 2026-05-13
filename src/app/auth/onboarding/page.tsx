@@ -1,4 +1,5 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 import { OnboardingWizard } from "./onboarding-wizard";
 
 export default async function OnboardingPage() {

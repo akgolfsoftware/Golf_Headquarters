@@ -46,12 +46,21 @@ function formaterPris(ore: number): string {
   return `${ore / 100} kr`;
 }
 
+// Feature-flag: skru av offentlig booking inntil Google Calendar 2-way sync
+// er på plass. Forhindrer dobbel-booking mot Anders sin private kalender.
+// Sett BOOKING_ACTIVE=true i Vercel når sync er live.
+const BOOKING_ACTIVE = process.env.BOOKING_ACTIVE === "true";
+
 export default async function BookingLanding({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
   const { lokasjon, trener } = await searchParams;
+
+  if (!BOOKING_ACTIVE) {
+    return <BookingPaused />;
+  }
 
   const services = await prisma.serviceType.findMany({
     where: { active: true, priceOre: { gt: 0 } },
@@ -300,7 +309,7 @@ export default async function BookingLanding({
             Ingen tjenester er tilgjengelig akkurat nå.
             <br />
             <a
-              href="mailto:hei@akgolf.no"
+              href="mailto:post@akgolf.no"
               className="mt-2 inline-block text-primary underline"
             >
               Ta kontakt
@@ -357,5 +366,34 @@ function StegIndikator({
         );
       })}
     </ol>
+  );
+}
+
+function BookingPaused() {
+  return (
+    <div className="px-6 py-16 sm:py-20">
+      <div className="mx-auto max-w-2xl text-center">
+        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
+          Booking
+        </span>
+        <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+          Booking er midlertidig{" "}
+          <em className="font-normal text-primary md:italic">pauset</em>
+        </h1>
+        <p className="mt-5 text-base text-muted-foreground">
+          Vi gjør klar Google Calendar-integrasjon slik at du aldri risikerer
+          å booke en time som ikke er ledig. Bookingen åpner igjen om kort tid.
+        </p>
+        <p className="mt-3 text-base text-muted-foreground">
+          Vil du booke en time akkurat nå? Send oss en e-post:
+        </p>
+        <a
+          href="mailto:post@akgolf.no?subject=Booking-foresp%C3%B8rsel"
+          className="mt-6 inline-block rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90"
+        >
+          Skriv til post@akgolf.no
+        </a>
+      </div>
+    </div>
   );
 }

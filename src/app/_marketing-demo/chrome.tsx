@@ -205,7 +205,7 @@ export function MarketingContactBlocks() {
       <ContactCard
         Icon={Mail}
         label="E-post"
-        primary="hei@akgolf.no"
+        primary="post@akgolf.no"
         secondary="Svar innen 24 timer"
       />
       <ContactCard

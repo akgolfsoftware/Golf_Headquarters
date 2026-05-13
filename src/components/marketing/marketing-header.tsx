@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 
 const NAV = [
   { href: "/coaching", label: "Coaching" },
@@ -11,11 +12,8 @@ export function MarketingHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link
-          href="/"
-          className="font-display text-xl font-bold tracking-tight"
-        >
-          AK <em className="font-normal text-primary not-italic md:italic">Golf</em>
+        <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
+          <AkGolfLogo width={56} />
         </Link>
 
         <nav className="hidden items-center gap-8 sm:flex">

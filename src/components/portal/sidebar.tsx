@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Tier } from "@/generated/prisma/client";
+import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 
 const NAV = [
   { href: "/portal", label: "Hjem" },
@@ -19,10 +20,13 @@ export function PortalSidebar({ tier }: { tier: Tier }) {
       aria-label="PlayerHQ sidemeny"
       className="flex w-56 shrink-0 flex-col bg-[var(--color-player-sidebar)] text-white"
     >
-      <div className="px-6 py-8 font-display text-lg font-bold leading-tight tracking-tight">
-        AK Golf
-        <br />
-        <em className="font-normal text-accent md:italic">player</em>
+      <div className="px-6 py-8">
+        <Link href="/portal" aria-label="AK Golf — PlayerHQ" className="inline-flex flex-col gap-2">
+          <AkGolfLogo variant="white" width={48} />
+          <span className="font-display text-base font-bold leading-none tracking-tight">
+            <em className="font-normal text-accent md:italic">player</em>
+          </span>
+        </Link>
       </div>
       <nav aria-label="Hovednavigasjon" className="flex-1 space-y-1 px-3">
         {NAV.map((n) => {

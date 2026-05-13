@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 
 export default function CheckEmailPage() {
   return (

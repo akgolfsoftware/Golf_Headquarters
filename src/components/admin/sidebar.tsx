@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 
 type NavItem = { href: string; label: string };
 
@@ -72,10 +73,13 @@ export function AdminSidebar() {
       aria-label="CoachHQ sidemeny"
       className="flex w-56 shrink-0 flex-col bg-[var(--color-coach-sidebar)] text-white"
     >
-      <div className="px-6 py-8 font-display text-lg font-bold leading-tight tracking-tight">
-        AK Golf
-        <br />
-        <em className="font-normal text-accent md:italic">coach</em>
+      <div className="px-6 py-8">
+        <Link href="/admin" aria-label="AK Golf — CoachHQ" className="inline-flex flex-col gap-2">
+          <AkGolfLogo variant="white" width={48} />
+          <span className="font-display text-base font-bold leading-none tracking-tight">
+            <em className="font-normal text-accent md:italic">coach</em>
+          </span>
+        </Link>
       </div>
       <nav
         aria-label="Hovednavigasjon"

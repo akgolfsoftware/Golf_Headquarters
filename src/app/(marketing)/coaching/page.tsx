@@ -185,10 +185,10 @@ export default function Coaching() {
           <p className="text-sm text-muted-foreground">
             Spørsmål om hvilken pakke som passer for deg?{" "}
             <a
-              href="mailto:hei@akgolf.no"
+              href="mailto:post@akgolf.no"
               className="text-primary hover:underline"
             >
-              hei@akgolf.no
+              post@akgolf.no
             </a>
           </p>
         </div>

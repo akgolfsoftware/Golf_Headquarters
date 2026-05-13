@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 
 export function MarketingFooter() {
   return (
@@ -6,11 +7,8 @@ export function MarketingFooter() {
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
           <div>
-            <Link
-              href="/"
-              className="font-display text-lg font-bold tracking-tight"
-            >
-              AK <em className="font-normal text-primary not-italic md:italic">Golf</em>
+            <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
+              <AkGolfLogo width={48} />
             </Link>
             <p className="mt-3 text-sm text-muted-foreground">
               Personlig coaching og fremgang i én pakke.
@@ -65,10 +63,10 @@ export function MarketingFooter() {
             <ul className="mt-3 space-y-2 text-sm">
               <li>
                 <a
-                  href="mailto:hei@akgolf.no"
+                  href="mailto:post@akgolf.no"
                   className="text-foreground hover:text-primary"
                 >
-                  hei@akgolf.no
+                  post@akgolf.no
                 </a>
               </li>
               <li>

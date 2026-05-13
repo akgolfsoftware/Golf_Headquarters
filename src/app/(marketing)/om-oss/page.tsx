@@ -60,8 +60,7 @@ export default function OmOss() {
           <dl className="mt-6 space-y-4 text-sm">
             <Rad label="Org.nummer" value="927 248 581" />
             <Rad label="Adresse" value="AK Golf Group AS, Fredrikstad, Norge" />
-            <Rad label="E-post" value="hei@akgolf.no" />
-            <Rad label="Holding" value="Skarpnord Invest AS" />
+            <Rad label="E-post" value="post@akgolf.no" />
           </dl>
         </section>
 

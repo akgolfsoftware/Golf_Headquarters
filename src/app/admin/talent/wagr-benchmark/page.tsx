@@ -66,6 +66,14 @@ export default async function WagrBenchmarkPage() {
         titleLead="Kalibrer mot"
         titleItalic="verdens beste"
         sub={`Snapshot fra wagr.com · uke ${getIsoWeek(snapshotDato)}/${snapshotDato.getFullYear()}. NGF-kategori (A-L) beregnes fra Pts Avg.`}
+        actions={
+          <Link
+            href="/admin/talent/wagr-import"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            + Importer spiller
+          </Link>
+        }
       />
 
       {/* Kategori-forklaring */}
