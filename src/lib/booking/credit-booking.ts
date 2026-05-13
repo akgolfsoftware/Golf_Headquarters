@@ -141,6 +141,17 @@ export async function createCreditBooking(
     console.error("[credit-booking] calendar push failed", err);
   }
 
+  // Best-effort: send bekreftelses-e-post (samme mal som drop-in,
+  // men priceFormatted/paymentRef varierer basert på subscriptionId)
+  try {
+    const { sendBookingConfirmation } = await import(
+      "@/lib/email/booking-emails"
+    );
+    await sendBookingConfirmation(result.id);
+  } catch (err) {
+    console.error("[credit-booking] confirmation-email failed", err);
+  }
+
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/portal");
 

@@ -90,14 +90,24 @@ async function sendBooking(
   const tpl = await hentTemplate(slug);
   const cancelDeadline = new Date(booking.startAt.getTime() - 24 * 60 * 60_000);
 
+  // Credit-baserte bookinger (fra Academy-abonnement) skal ikke vise pris,
+  // men en melding om at den er trukket fra abonnementet.
+  const erCreditBooking = !!booking.subscriptionId;
+  const priceFormatted = erCreditBooking
+    ? "Inkludert i abonnement"
+    : `${booking.priceOre / 100} kr`;
+  const paymentRef = erCreditBooking
+    ? "Trukket fra månedlig saldo"
+    : (booking.stripePaymentIntentId ?? "");
+
   const vars: Record<string, string> = {
     name: navn,
     serviceTypeName: booking.serviceType.name,
     date: formatDato(booking.startAt),
     time: formatTid(booking.startAt),
     location: booking.location.name,
-    priceFormatted: `${booking.priceOre / 100} kr`,
-    paymentRef: booking.stripePaymentIntentId ?? "",
+    priceFormatted,
+    paymentRef,
     cancelDeadline: `${formatDato(cancelDeadline)} kl ${formatTid(cancelDeadline)}`,
     bookingId: booking.id,
     appUrl: APP_URL,

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SubscribeButton } from "@/components/marketing/subscribe-button";
 
 export const metadata: Metadata = {
   title: "Coaching — AK Golf Academy",
@@ -8,8 +9,22 @@ export const metadata: Metadata = {
     "Performance og Performance Pro: personlig golf-coaching med Anders Kristiansen. PlayerHQ inkludert. Fra 1 200 kr/mnd.",
 };
 
-const PAKKER = [
+type Plan = "performance" | "performance_pro";
+
+const PAKKER: Array<{
+  plan: Plan;
+  navn: string;
+  pris: string;
+  enhet: string;
+  okter: string;
+  beskrivelse: string;
+  egnet: string;
+  inkludert: string[];
+  cta: string;
+  fremhevet: boolean;
+}> = [
   {
+    plan: "performance",
     navn: "Performance",
     pris: "1 200 kr",
     enhet: "/ mnd",
@@ -28,6 +43,7 @@ const PAKKER = [
     fremhevet: false,
   },
   {
+    plan: "performance_pro",
     navn: "Performance Pro",
     pris: "2 220 kr",
     enhet: "/ mnd",
@@ -123,16 +139,18 @@ export default function Coaching() {
                 ))}
               </ul>
 
-              <Link
-                href="/booking"
-                className={`mt-8 inline-block w-full rounded-md px-6 py-3 text-center text-sm font-semibold ${
-                  p.fremhevet
-                    ? "bg-primary text-primary-foreground"
-                    : "border border-input bg-background text-foreground hover:border-border"
-                }`}
-              >
-                {p.cta}
-              </Link>
+              <div className="mt-8">
+                <SubscribeButton
+                  plan={p.plan}
+                  className={`w-full rounded-md px-6 py-3 text-center text-sm font-semibold transition-opacity disabled:opacity-60 ${
+                    p.fremhevet
+                      ? "bg-primary text-primary-foreground hover:opacity-90"
+                      : "border border-input bg-background text-foreground hover:border-border"
+                  }`}
+                >
+                  {p.cta}
+                </SubscribeButton>
+              </div>
             </article>
           ))}
         </div>
