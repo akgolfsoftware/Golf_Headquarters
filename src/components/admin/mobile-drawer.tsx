@@ -85,14 +85,14 @@ export function AdminMobileDrawer() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Åpne meny"
-        className="grid h-11 w-11 place-items-center rounded-md border border-border bg-card text-foreground hover:border-input lg:hidden"
+        className="grid h-11 w-11 place-items-center rounded-md border border-border bg-card text-foreground hover:border-input md:hidden"
       >
         <Menu width={20} height={20} aria-hidden />
       </button>
 
       {open && (
         <div
-          className="fixed inset-0 z-50 bg-foreground/40 lg:hidden"
+          className="fixed inset-0 z-50 bg-foreground/40 md:hidden"
           onClick={() => setOpen(false)}
           aria-hidden
         >

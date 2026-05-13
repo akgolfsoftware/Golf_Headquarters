@@ -64,7 +64,7 @@ export function AdminSidebar() {
   return (
     <aside
       aria-label="CoachHQ sidemeny"
-      className="flex w-56 shrink-0 flex-col bg-[var(--color-coach-sidebar)] text-white"
+      className="flex w-52 shrink-0 flex-col bg-[var(--color-coach-sidebar)] text-white lg:w-64"
     >
       <div className="px-6 py-8">
         <Link href="/admin" aria-label="AK Golf — CoachHQ" className="inline-flex flex-col gap-2">

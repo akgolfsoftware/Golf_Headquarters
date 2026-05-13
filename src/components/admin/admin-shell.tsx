@@ -27,7 +27,7 @@ export async function AdminShell({
       >
         Hopp til hovedinnhold
       </a>
-      <div className="hidden lg:flex">
+      <div className="hidden md:flex">
         <AdminSidebar />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">

@@ -139,7 +139,7 @@ export function PortalSidebar({
   return (
     <aside
       aria-label="PlayerHQ sidemeny"
-      className="flex w-56 shrink-0 flex-col bg-[var(--color-player-sidebar)] text-white"
+      className="flex w-52 shrink-0 flex-col bg-[var(--color-player-sidebar)] text-white lg:w-64"
     >
       <div className="px-6 py-8">
         <Link

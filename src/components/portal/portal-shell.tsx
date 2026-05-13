@@ -32,7 +32,7 @@ export async function PortalShell({
       >
         Hopp til hovedinnhold
       </a>
-      <div className="hidden lg:flex">
+      <div className="hidden md:flex">
         <PortalSidebar tier={user.tier} varslerUlest={varslerUlest} />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
@@ -62,7 +62,7 @@ export async function PortalShell({
         <main
           id="portal-main"
           tabIndex={-1}
-          className="flex-1 px-4 py-6 pb-24 focus:outline-none sm:px-8 lg:pb-6"
+          className="flex-1 px-4 py-6 pb-24 focus:outline-none sm:px-8 md:pb-6"
         >
           {children}
         </main>
