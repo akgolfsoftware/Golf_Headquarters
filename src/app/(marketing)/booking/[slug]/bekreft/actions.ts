@@ -89,8 +89,8 @@ export async function createBookingCheckout(input: BookingFormInput) {
     },
     success_url: `${appUrl}/booking/kvittering/${booking.id}?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${appUrl}/booking/${service.slug}`,
-    // Hold slot i 15 min
-    expires_at: Math.floor(Date.now() / 1000) + 15 * 60,
+    // Hold slot i 30 min (Stripe-minimum for expires_at)
+    expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
   });
 
   await prisma.booking.update({
