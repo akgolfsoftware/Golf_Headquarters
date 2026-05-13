@@ -11,6 +11,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Daglig",
     items: [
       { href: "/admin", label: "Hub" },
+      { href: "/admin/agencyos", label: "AgencyOS" },
       { href: "/admin/calendar", label: "Kalender" },
     ],
   },
