@@ -68,34 +68,42 @@ export default async function FacilitiesAdmin() {
               </div>
               <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((f) => (
-                  <li
-                    key={f.id}
-                    className="rounded-lg border border-border bg-card p-6"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-start gap-3">
+                  <li key={f.id}>
+                    <Link
+                      href={`/admin/facilities/${f.id}`}
+                      className="block rounded-lg border border-border bg-card p-6 transition-all hover:border-primary hover:shadow-sm"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-start gap-3">
+                          <span
+                            className={`mt-1.5 inline-block h-2 w-2 rounded-full ${
+                              f.active ? "bg-primary" : "bg-muted-foreground/40"
+                            }`}
+                          />
+                          <span className="font-display text-[14px] font-semibold text-foreground">
+                            {f.name}
+                          </span>
+                        </div>
                         <span
-                          className={`mt-1.5 inline-block h-2 w-2 rounded-full ${
-                            f.active ? "bg-primary" : "bg-muted-foreground/40"
+                          className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
+                            f.active
+                              ? "bg-primary/10 text-primary"
+                              : "bg-secondary text-muted-foreground"
                           }`}
-                        />
-                        <span className="font-display text-[14px] font-semibold text-foreground">
-                          {f.name}
+                        >
+                          {f.active ? "Aktiv" : "Inaktiv"}
                         </span>
                       </div>
-                      <span
-                        className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
-                          f.active
-                            ? "bg-primary/10 text-primary"
-                            : "bg-secondary text-muted-foreground"
-                        }`}
-                      >
-                        {f.active ? "Aktiv" : "Inaktiv"}
-                      </span>
-                    </div>
-                    <div className="mt-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                      Kapasitet: <span className="text-foreground">{f.capacity}</span>
-                    </div>
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                          Kapasitet:{" "}
+                          <span className="text-foreground">{f.capacity}</span>
+                        </span>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
+                          Se kalender →
+                        </span>
+                      </div>
+                    </Link>
                   </li>
                 ))}
               </ul>
