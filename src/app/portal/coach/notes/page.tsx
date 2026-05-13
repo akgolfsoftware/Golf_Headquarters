@@ -236,13 +236,13 @@ export default async function CoachNotes() {
                 </div>
               </div>
             </div>
-            <a
-              href="#"
+            <Link
+              href={`/portal/coach/notes/${sisteNotat.sesjonId}`}
               className="mt-6 inline-flex items-center gap-1 text-[12px] font-medium text-foreground hover:underline"
             >
               Åpne sesjonen
               <ArrowUpRight size={12} strokeWidth={1.5} />
-            </a>
+            </Link>
           </div>
         </section>
       </div>
