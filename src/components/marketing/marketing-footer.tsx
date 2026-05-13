@@ -53,6 +53,31 @@ export function MarketingFooter() {
                   Om oss
                 </Link>
               </li>
+              <li>
+                <Link href="/anlegg" className="text-foreground hover:text-primary">
+                  Anlegg
+                </Link>
+              </li>
+              <li>
+                <Link href="/coacher" className="text-foreground hover:text-primary">
+                  Coacher
+                </Link>
+              </li>
+              <li>
+                <Link href="/blogg" className="text-foreground hover:text-primary">
+                  Blogg
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="text-foreground hover:text-primary">
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link href="/kontakt" className="text-foreground hover:text-primary">
+                  Kontakt
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -89,6 +114,9 @@ export function MarketingFooter() {
             </Link>
             <Link href="/vilkar" className="hover:text-foreground">
               Vilkår
+            </Link>
+            <Link href="/cookies" className="hover:text-foreground">
+              Cookies
             </Link>
           </div>
         </div>

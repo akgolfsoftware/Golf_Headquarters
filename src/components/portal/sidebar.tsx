@@ -67,6 +67,7 @@ const NAV: NavGroup[] = [
     items: [
       { href: "/portal/meg", label: "Profil" },
       { href: "/portal/meg/helse", label: "Helse" },
+      { href: "/portal/meg/utstyrsbag", label: "Utstyrsbag" },
       { href: "/portal/meg/foreldre", label: "Foreldre" },
       { href: "/portal/meg/abonnement", label: "Abonnement" },
       { href: "/portal/meg/innstillinger", label: "Innstillinger" },

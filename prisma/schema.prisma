@@ -178,6 +178,13 @@ model User {
   videosAsPlayer SessionVideo[] @relation("VideoPlayer")
   videosAsCoach  SessionVideo[] @relation("VideoCoach")
 
+  // Drill-challenges (M14)
+  ownedChallenges     DrillChallenge[]       @relation("ChallengeOwner")
+  challengeParticipations ChallengeParticipant[]
+
+  // Equipment bag (M18)
+  equipmentBag EquipmentBag?
+
   @@map("users")
 }
 
@@ -781,6 +788,66 @@ enum PaymentType {
   OTHER
 }
 
+// Drill-challenge (M14): spillere kan utfordre hverandre på et drill
+// over en periode. Achievements gis ved seier.
+model DrillChallenge {
+  id          String   @id @default(cuid())
+  ownerId     String
+  drillId     String?  // ExerciseDefinition (optional — fritt-form-utfordring tillatt)
+  name        String
+  description String?
+  startAt     DateTime?
+  endAt       DateTime?
+  // ACTIVE | ENDED
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner        User                   @relation("ChallengeOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  participants ChallengeParticipant[]
+
+  @@index([ownerId, status])
+  @@index([endAt])
+  @@map("drill_challenges")
+}
+
+model ChallengeParticipant {
+  id          String   @id @default(cuid())
+  challengeId String
+  userId      String
+  joinedAt    DateTime @default(now())
+  score       Float?
+  rank        Int?
+  notes       String?
+
+  challenge DrillChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([challengeId, userId])
+  @@index([userId])
+  @@map("challenge_participants")
+}
+
+// Spillerens kølle-utstyr (M18). Fritekst-felter for nå (ikke enum).
+model EquipmentBag {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  driver       String?
+  fairwayWoods String?
+  hybrids      String?
+  irons        String?
+  wedges       String?
+  putter       String?
+  ball         String?
+  bag          String?
+  notes        String?
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("equipment_bags")
+}
+
 // Coaching-videoer: opptak fra økter, drill-demo, swing-analyse etc.
 // Lagres i Supabase Storage-bucket 'coaching-videos' (private). UI viser
 // via signert URL eller streaming-endpoint.
@@ -910,11 +977,33 @@ model Group {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  coach   User?         @relation("CoachOfGroup", fields: [coachId], references: [id], onDelete: SetNull)
-  members GroupMember[]
+  coach     User?           @relation("CoachOfGroup", fields: [coachId], references: [id], onDelete: SetNull)
+  members   GroupMember[]
+  schedules GroupSchedule[]
 
   @@index([coachId])
   @@map("groups")
+}
+
+// Gruppe-treningstider (Bonus). Brukes for å planlegge faste eller
+// ad-hoc gruppe-økter — WANG Toppidrett, GFGK Junior osv.
+model GroupSchedule {
+  id          String   @id @default(cuid())
+  groupId     String
+  title       String
+  description String?
+  startAt     DateTime
+  endAt       DateTime
+  location    String?
+  // WEEKLY | NONE — for repeterende økter
+  recurring   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId, startAt])
+  @@map("group_schedules")
 }
 
 model GroupMember {
