@@ -67,7 +67,7 @@ export function PlanActionsCard({ actions }: { actions: PlanAction[] }) {
                   type="button"
                   onClick={() => handle(a.id, true)}
                   disabled={pending}
-                  className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+                  className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
                 >
                   Godkjenn
                 </button>
@@ -75,7 +75,7 @@ export function PlanActionsCard({ actions }: { actions: PlanAction[] }) {
                   type="button"
                   onClick={() => handle(a.id, false)}
                   disabled={pending}
-                  className="rounded-md border border-input bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:border-border disabled:opacity-60"
+                  className="rounded-md border border-input bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
                 >
                   Avvis
                 </button>

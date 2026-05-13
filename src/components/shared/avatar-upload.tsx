@@ -89,7 +89,7 @@ export function AvatarUpload({ name, avatarUrl }: Props) {
           onClick={() => inputRef.current?.click()}
           disabled={pending}
           aria-label="Bytt profilbilde"
-          className="absolute -bottom-1 -right-1 inline-flex h-7 w-7 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="absolute -bottom-1 -right-1 inline-flex h-7 w-7 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
         >
           <Camera className="h-3.5 w-3.5" strokeWidth={1.75} />
         </button>
@@ -108,7 +108,7 @@ export function AvatarUpload({ name, avatarUrl }: Props) {
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={pending}
-          className="inline-flex items-center gap-1.5 rounded-md border border-input bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:border-primary hover:text-primary disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-md border border-input bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:border-primary hover:text-primary active:border-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
         >
           <Camera className="h-3.5 w-3.5" strokeWidth={1.75} />
           {pending ? "Laster opp …" : previewUrl ? "Bytt bilde" : "Last opp bilde"}
@@ -118,7 +118,7 @@ export function AvatarUpload({ name, avatarUrl }: Props) {
             type="button"
             onClick={slett}
             disabled={pending}
-            className="inline-flex items-center gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/20 disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/20 active:bg-destructive/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive disabled:opacity-50"
           >
             <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
             Slett

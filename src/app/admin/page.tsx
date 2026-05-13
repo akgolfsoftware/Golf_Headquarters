@@ -170,7 +170,7 @@ export default async function AdminHub() {
               <Users className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
               Aktive spillere i dag
             </div>
-            <div className="font-mono text-[42px] font-medium leading-none tracking-[-0.02em] tabular-nums">
+            <div className="font-mono text-[24px] sm:text-[32px] md:text-[42px] font-medium leading-none tracking-[-0.02em] tabular-nums">
               {data.kpi.aktiveSpillere}
               <span className="ml-2 text-lg text-background/55">/ {totalSpillere}</span>
             </div>

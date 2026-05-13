@@ -28,7 +28,7 @@ export default async function AdminSecurityPage() {
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Innstillinger · Sikkerhet
         </span>
-        <h1 className="mt-2 font-display text-[36px] font-medium italic leading-[1.1] tracking-tight">
+        <h1 className="mt-2 font-display text-[22px] sm:text-[28px] md:text-[36px] font-medium italic leading-[1.1] tracking-tight">
           Hvem er <em className="italic text-primary">logget inn</em> akkurat
           nå?
         </h1>

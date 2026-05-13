@@ -25,7 +25,7 @@ export function GoalsCard({ goals }: { goals: Goal[] }) {
             <li key={g.id} className="py-3">
               <Link
                 href={`/portal/mal/goal/${g.id}`}
-                className="block hover:text-primary"
+                className="block hover:text-primary active:text-primary/80 focus-visible:underline focus-visible:outline-none"
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-medium text-foreground">{g.title}</span>

@@ -69,7 +69,7 @@ export function NotificationBell({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-card text-foreground transition-colors hover:border-primary hover:text-primary"
+        className="relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-card text-foreground transition-colors hover:border-primary hover:text-primary active:border-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-label={`Varsler${ulest > 0 ? ` (${ulest} uleste)` : ""}`}
       >
         <Bell className="h-4 w-4" strokeWidth={1.75} />
@@ -89,7 +89,7 @@ export function NotificationBell({
                 type="button"
                 onClick={markerAlleLest}
                 disabled={pending}
-                className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline disabled:opacity-50"
+                className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline active:text-primary/80 focus-visible:underline focus-visible:outline-none disabled:opacity-50"
               >
                 {pending ? "..." : "Marker alle lest"}
               </button>
@@ -155,7 +155,7 @@ export function NotificationBell({
           <div className="border-t border-border bg-secondary/30 px-4 py-2 text-center">
             <Link
               href={basePath}
-              className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
+              className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline active:text-primary/80 focus-visible:underline focus-visible:outline-none"
               onClick={() => setOpen(false)}
             >
               Se alle varsler →

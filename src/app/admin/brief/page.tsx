@@ -78,7 +78,7 @@ export default async function DagligBrief() {
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               {eyebrow} · uke {ukeNr}
             </div>
-            <h1 className="mt-2 font-display text-[36px] font-semibold italic leading-[1.1] tracking-tight">
+            <h1 className="mt-2 font-display text-[22px] sm:text-[28px] md:text-[36px] font-semibold italic leading-[1.1] tracking-tight">
               <em className="italic">
                 {idag.toLocaleDateString("nb-NO", {
                   weekday: "long",

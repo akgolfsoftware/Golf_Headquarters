@@ -109,21 +109,21 @@ export function DagensFokusCard({
         {kanStarte ? (
           <Link
             href={`/portal/live/${session.id}`}
-            className="rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            className="rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Start økt →
           </Link>
         ) : (
           <Link
             href="/portal/meg/abonnement"
-            className="rounded-md border border-input bg-card px-5 py-2.5 text-sm font-medium text-foreground hover:border-border"
+            className="rounded-md border border-input bg-card px-5 py-2.5 text-sm font-medium text-foreground hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Live Session krever Pro
           </Link>
         )}
         <Link
           href={`/portal/tren?dato=${session.scheduledAt.toISOString().split("T")[0]}`}
-          className="rounded-md border border-input bg-card px-5 py-2.5 text-sm font-medium text-foreground hover:border-border"
+          className="rounded-md border border-input bg-card px-5 py-2.5 text-sm font-medium text-foreground hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Se i plan
         </Link>

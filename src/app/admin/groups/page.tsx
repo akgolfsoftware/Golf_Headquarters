@@ -168,7 +168,7 @@ export default async function Grupper() {
                       {type}
                     </span>
                     <span
-                      className="font-display text-7xl font-semibold italic leading-none text-white/90"
+                      className="font-display text-4xl sm:text-5xl md:text-7xl font-semibold italic leading-none text-white/90"
                       style={{ textShadow: "0 4px 18px rgba(0,0,0,0.2)" }}
                       aria-hidden="true"
                     >

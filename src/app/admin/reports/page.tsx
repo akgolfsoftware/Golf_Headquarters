@@ -83,7 +83,7 @@ export default async function Rapporter() {
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               CoachHQ · Mal-katalog
             </div>
-            <h1 className="mt-2 font-display text-[36px] italic leading-[1.1] tracking-tight">
+            <h1 className="mt-2 font-display text-[22px] sm:text-[28px] md:text-[36px] italic leading-[1.1] tracking-tight">
               <em className="font-normal italic">Hva trenger du å rapportere?</em>
             </h1>
             <p className="mt-2 text-[13.5px] text-muted-foreground">

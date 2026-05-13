@@ -1220,7 +1220,7 @@ function SummaryStat({
         {label}
       </div>
       <div
-        className={`mt-2 font-mono text-[48px] font-medium leading-none tracking-[-0.02em] tabular-nums ${
+        className={`mt-2 font-mono text-[26px] sm:text-[34px] md:text-[48px] font-medium leading-none tracking-[-0.02em] tabular-nums ${
           highlight ? "text-accent" : "text-white"
         }`}
       >

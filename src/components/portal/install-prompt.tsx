@@ -132,7 +132,7 @@ export function InstallPrompt() {
             <button
               type="button"
               onClick={installer}
-              className="mt-3 inline-flex min-h-11 items-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+              className="mt-3 inline-flex min-h-11 items-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Legg til på startskjerm
             </button>
@@ -142,7 +142,7 @@ export function InstallPrompt() {
           type="button"
           onClick={lukk}
           aria-label="Lukk"
-          className="-mr-1 -mt-1 grid h-11 w-11 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="-mr-1 -mt-1 grid h-11 w-11 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground active:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <X width={16} height={16} aria-hidden />
         </button>
