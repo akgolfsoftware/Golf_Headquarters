@@ -13,7 +13,9 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { CoachFilter } from "@/components/admin/coach-filter";
 import { AdminCancelAction } from "./cancel-action";
+import type { Prisma } from "@/generated/prisma/client";
 
 type BookingType = "coach" | "fac" | "gf" | "grp";
 
@@ -54,16 +56,47 @@ const TYPE_STYLE: Record<BookingType, string> = {
   grp: "bg-[rgba(122,153,140,0.22)] text-[#3d5048]",
 };
 
-export default async function Bookinger() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN", "GUEST"] });
+type SearchParams = Promise<{ coach?: string }>;
+
+export default async function Bookinger({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const { coach: coachParam } = await searchParams;
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN", "GUEST"] });
 
   const idag = new Date();
   idag.setHours(0, 0, 0, 0);
 
+  // Coach-filter:
+  // - ADMIN: 'alle' = ingen filter, ellers spesifikk coachUserId
+  // - COACH: alltid kun egne bookinger
+  // - GUEST (read-only): alle
+  const coachFilter: Prisma.BookingWhereInput = (() => {
+    if (user.role === "COACH") {
+      return { serviceType: { coachUserId: user.id } };
+    }
+    if (user.role === "ADMIN" && coachParam && coachParam !== "alle") {
+      return { serviceType: { coachUserId: coachParam } };
+    }
+    return {};
+  })();
+
+  // Hent alle coaches (User med role=COACH eller ADMIN som har services)
+  const coaches = await prisma.user.findMany({
+    where: { serviceTypes: { some: { active: true } } },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
+
   const bookings = await prisma.booking.findMany({
+    where: coachFilter,
     include: {
       user: { select: { id: true, name: true } },
-      serviceType: { select: { name: true } },
+      serviceType: {
+        select: { name: true, coach: { select: { id: true, name: true } } },
+      },
       location: { select: { name: true } },
     },
     orderBy: { startAt: "desc" },
@@ -116,7 +149,7 @@ export default async function Bookinger() {
       </div>
 
       {/* Filter */}
-      <form className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
           <Search size={14} strokeWidth={1.75} />
           <input
@@ -126,11 +159,13 @@ export default async function Bookinger() {
             className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </label>
-        <FilterChip label="Type" />
-        <FilterChip label="Fasilitet" />
-        <FilterChip label="Coach" />
+        {user.role === "ADMIN" && (
+          <CoachFilter
+            coaches={coaches.map((c) => ({ id: c.id, navn: c.name }))}
+          />
+        )}
         <Legend />
-      </form>
+      </div>
 
       {/* Body */}
       {bookings.length === 0 ? (

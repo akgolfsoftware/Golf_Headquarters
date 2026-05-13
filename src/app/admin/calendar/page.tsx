@@ -22,6 +22,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
+import { CoachFilter } from "@/components/admin/coach-filter";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   startOfWeek,
@@ -112,7 +113,7 @@ function ukeShift(start: Date, deltaWeeks: number): Date {
 
 // ---------- Page ----------
 
-type Search = { uke?: string; filter?: string };
+type Search = { uke?: string; filter?: string; coach?: string };
 
 export default async function AdminCalendar({
   searchParams,
@@ -125,6 +126,15 @@ export default async function AdminCalendar({
   // Filter: "alle" (default) eller "mine"
   const filter = params.filter === "mine" ? "mine" : "alle";
 
+  // Coach-filter for ADMIN. COACH ser alltid kun egen kalender.
+  const coachParam = params.coach;
+  const valgtCoachId =
+    user.role === "COACH"
+      ? user.id
+      : coachParam && coachParam !== "alle"
+        ? coachParam
+        : null;
+
   // Beregn uke-vindu (mandag-start)
   const now = new Date();
   const referansedag = params.uke ? (ukeFromIso(params.uke) ?? now) : now;
@@ -134,15 +144,20 @@ export default async function AdminCalendar({
   const ukeNr = ukenummer(ukeStart);
   const dager = dagerIUken(ukeStart);
 
-  // Bookings i uke-vinduet
-  const bookingsFilter: { startAt: { gte: Date; lt: Date }; userId?: string } = {
+  // Bookings i uke-vinduet, evt. filtrert på coach via serviceType-relasjon
+  const bookingsFilter: {
+    startAt: { gte: Date; lt: Date };
+    userId?: string;
+    serviceType?: { coachUserId: string };
+  } = {
     startAt: { gte: ukeStart, lt: ukeSlutt },
   };
   if (filter === "mine") bookingsFilter.userId = user.id;
+  if (valgtCoachId) bookingsFilter.serviceType = { coachUserId: valgtCoachId };
 
   const kanBooke = user.role !== "GUEST";
 
-  const [bookings, availability, spillere, serviceTypes, locations] =
+  const [bookings, availability, spillere, serviceTypes, locations, coachListe] =
     await Promise.all([
       prisma.booking.findMany({
         where: bookingsFilter,
@@ -158,10 +173,9 @@ export default async function AdminCalendar({
         orderBy: { startAt: "asc" },
       }),
       prisma.coachAvailability.findMany({
-        where:
-          user.role === "ADMIN"
-            ? { active: true }
-            : { coachId: user.id, active: true },
+        where: valgtCoachId
+          ? { coachId: valgtCoachId, active: true }
+          : { active: true },
         select: {
           id: true,
           coachId: true,
@@ -191,6 +205,13 @@ export default async function AdminCalendar({
       kanBooke
         ? prisma.location.findMany({
             where: { active: true },
+            select: { id: true, name: true },
+            orderBy: { name: "asc" },
+          })
+        : Promise.resolve([] as { id: string; name: string }[]),
+      user.role === "ADMIN"
+        ? prisma.user.findMany({
+            where: { serviceTypes: { some: { active: true } } },
             select: { id: true, name: true },
             orderBy: { name: "asc" },
           })
@@ -298,6 +319,15 @@ export default async function AdminCalendar({
           ) : undefined
         }
       />
+
+      {/* Coach-velger for ADMIN */}
+      {user.role === "ADMIN" && coachListe.length > 0 && (
+        <div className="rounded-lg border border-border bg-card p-3">
+          <CoachFilter
+            coaches={coachListe.map((c) => ({ id: c.id, navn: c.name }))}
+          />
+        </div>
+      )}
 
       {/* Toolbar: uke-nav + Uke/Maaned-toggle + filter */}
       <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-3">

@@ -3,6 +3,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { CoachFilter } from "@/components/admin/coach-filter";
 import { SlotForm } from "./slot-form";
 
 const DAGER = [
@@ -15,14 +16,39 @@ const DAGER = [
   "Søndag",
 ];
 
-export default async function AvailabilityAdmin() {
+type SearchParams = Promise<{ coach?: string }>;
+
+export default async function AvailabilityAdmin({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const { coach: coachParam } = await searchParams;
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
+  // ADMIN: filter via ?coach=<id>. COACH: alltid kun egne slots.
+  const valgtCoachId =
+    coach.role === "COACH"
+      ? coach.id
+      : coachParam && coachParam !== "alle"
+        ? coachParam
+        : null;
+
   const slots = await prisma.coachAvailability.findMany({
-    where: coach.role === "ADMIN" ? {} : { coachId: coach.id },
+    where: valgtCoachId ? { coachId: valgtCoachId } : {},
     include: { coach: { select: { name: true } } },
     orderBy: [{ coachId: "asc" }, { weekday: "asc" }, { startTime: "asc" }],
   });
+
+  // Hent coach-liste for filter-dropdown
+  const coachListe =
+    coach.role === "ADMIN"
+      ? await prisma.user.findMany({
+          where: { role: { in: ["COACH", "ADMIN"] } },
+          select: { id: true, name: true },
+          orderBy: { name: "asc" },
+        })
+      : [];
 
   const grupper = new Map<string, typeof slots>();
   for (const s of slots) {
@@ -46,6 +72,14 @@ export default async function AvailabilityAdmin() {
         }
         actions={<SlotForm triggerLabel="+ Legg til tidsvindu" />}
       />
+
+      {coach.role === "ADMIN" && coachListe.length > 0 && (
+        <div className="rounded-lg border border-border bg-card p-3">
+          <CoachFilter
+            coaches={coachListe.map((c) => ({ id: c.id, navn: c.name }))}
+          />
+        </div>
+      )}
 
       {slots.length === 0 ? (
         <EmptyState
