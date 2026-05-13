@@ -1,9 +1,21 @@
+import { Check, AlertTriangle } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { UpgradeButton, ManageButton } from "./upgrade-button";
 
 type Search = { ok?: string; cancelled?: string };
+
+const NOK = new Intl.NumberFormat("nb-NO");
+
+function formatDato(d: Date | null | undefined) {
+  if (!d) return null;
+  return d.toLocaleDateString("nb-NO", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
 
 export default async function AbonnementPage({
   searchParams,
@@ -19,9 +31,10 @@ export default async function AbonnementPage({
 
   const erPro = user.tier === "PRO";
   const periodEnd = subscription?.currentPeriodEnd;
+  const aktivSiden = subscription?.createdAt;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         eyebrow="PlayerHQ · Meg · Abonnement"
         titleLead="Din plan, betaling og"
@@ -32,9 +45,10 @@ export default async function AbonnementPage({
             : "Du står på Gratis-planen. Oppgrader til Pro for AI-coach, egendefinerte økter og direkte kontakt med coach."
         }
       />
+
       {params.ok === "1" && (
         <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground">
-          Velkommen til Pro! Endringen kan ta noen sekunder før den synes overalt.
+          Velkommen til Pro. Endringen kan ta noen sekunder før den synes overalt.
         </div>
       )}
       {params.cancelled === "1" && (
@@ -43,60 +57,325 @@ export default async function AbonnementPage({
         </div>
       )}
 
-      <section className="rounded-lg border border-border bg-card p-6">
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Nåværende abonnement
-        </span>
-        <div className="mt-3 flex items-baseline gap-3">
-          <span className="font-display text-3xl font-semibold tracking-tight">
-            {user.tier === "PRO" ? "Pro" : "Gratis"}
-          </span>
-          {erPro && (
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
-              {subscription?.status ?? "Aktiv"}
+      {/* Hero plan-kort */}
+      <div className="relative grid gap-8 overflow-hidden rounded-2xl border border-border bg-card p-8 shadow-sm lg:grid-cols-[1fr_300px]">
+        <div className="pointer-events-none absolute right-0 top-0 hidden h-full w-[300px] lg:block bg-gradient-to-br from-primary/5 to-accent/10" />
+        <div className="relative z-10">
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="rounded-md bg-primary px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary-foreground">
+              {erPro ? "Pro" : "Gratis"}
             </span>
-          )}
+            {erPro && (
+              <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-primary">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                {subscription?.status ?? "Aktiv"}
+                {aktivSiden && <> · siden {formatDato(aktivSiden)}</>}
+              </span>
+            )}
+          </div>
+          <h2 className="mb-2 font-display text-3xl font-medium italic leading-none tracking-tight text-foreground">
+            {erPro ? "Pro" : "Gratis"}
+          </h2>
+          <div className="mb-6 font-mono text-base text-foreground">
+            <span className="text-2xl font-medium">{erPro ? "300" : "0"}</span>{" "}
+            <span className="text-sm text-muted-foreground">
+              {erPro ? "kr/mnd · faktureres månedlig" : "kr · gratis-tier"}
+            </span>
+          </div>
+          <div className="mb-6 flex flex-col gap-2">
+            {(erPro
+              ? [
+                  "Ubegrenset bruk av AI-coach (Claude)",
+                  "Lag egendefinerte økter med Live Session",
+                  "Direkte kontakt med tilknyttet coach",
+                  "Full SG-analyse og pyramide-progresjon",
+                  "Coach-laget treningsplaner",
+                ]
+              : [
+                  "Basis treningsplan",
+                  "Begrenset coaching-historikk",
+                  "Bookinger og kvitteringer",
+                ]
+            ).map((t) => (
+              <Feature key={t}>{t}</Feature>
+            ))}
+          </div>
+          {erPro ? <ManageButton /> : <UpgradeButton />}
         </div>
-        {erPro ? (
-          <p className="mt-2 text-sm text-muted-foreground">
-            300 kr per måned ·{" "}
-            {periodEnd
-              ? `neste betaling ${periodEnd.toLocaleDateString("nb-NO", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                })}`
-              : "abonnement aktivt"}
-          </p>
-        ) : (
-          <p className="mt-2 text-sm text-muted-foreground">
-            Du har full tilgang til basis-funksjoner. Oppgrader for AI-coach,
-            egendefinerte økter og direkte kontakt med tilknyttet coach.
-          </p>
-        )}
-      </section>
 
-      <section className="space-y-3">
-        {erPro ? (
-          <ManageButton />
-        ) : (
-          <>
-            <h3 className="font-display text-lg font-semibold tracking-tight">
-              Oppgrader til Pro
-            </h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>· Ubegrenset bruk av AI-coach (Claude)</li>
-              <li>· Lag egendefinerte økter med Live Session-tapper</li>
-              <li>· Direkte kontakt med tilknyttet coach</li>
-              <li>· Full SG-analyse og pyramide-progresjon</li>
-              <li>· Coach-laget treningsplaner</li>
-            </ul>
-            <div className="pt-2">
-              <UpgradeButton />
+        <div className="relative z-10 flex flex-col justify-center gap-4 border-border lg:border-l lg:pl-6">
+          <div>
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Neste belastning
+            </span>
+            <div className="mt-2 font-mono text-sm font-medium text-foreground">
+              {erPro && periodEnd ? (
+                <>
+                  {formatDato(periodEnd)}
+                  <span className="mt-1 block text-xl font-semibold text-primary">
+                    {NOK.format(30000 / 100)} kr
+                  </span>
+                </>
+              ) : (
+                <span className="text-muted-foreground">—</span>
+              )}
             </div>
-          </>
+          </div>
+          <div>
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Årspris ved årlig
+            </span>
+            <div className="mt-2 font-mono text-sm text-muted-foreground">
+              {erPro ? "3 000 kr/år · spar 600 kr" : "Tilgjengelig som Pro"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Sammenligning */}
+      <Section title="Sammenlign planer" aux={erPro ? "Pro er din nåværende" : "Gratis er din nåværende"}>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="w-[34%] bg-secondary/60 px-6 py-4 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                  Funksjon
+                </th>
+                <th className="px-4 py-4">
+                  <ColHead name="Gratis" price="0" unit="kr" current={!erPro} />
+                </th>
+                <th className="px-4 py-4">
+                  <ColHead
+                    name="Pro"
+                    price="300"
+                    unit="kr/mnd"
+                    badge={erPro ? "Din plan" : "Anbefalt"}
+                    current={erPro}
+                  />
+                </th>
+              </tr>
+            </thead>
+            <tbody className="text-sm">
+              <CompareRow
+                feature="Aktive treningsplaner"
+                desc="Hvor mange planer du kan jobbe på parallelt"
+                free={<Num>1</Num>}
+                pro={<Num>3</Num>}
+                erPro={erPro}
+              />
+              <CompareRow
+                feature="Coaching-historikk"
+                desc="Hvor langt tilbake du kan se notater og runder"
+                free={<Num>30 dager</Num>}
+                pro={<Num>Ubegrenset</Num>}
+                erPro={erPro}
+              />
+              <CompareRow
+                feature="AI-anbefalinger"
+                desc="Foreslåtte øvelser fra coach-agenten"
+                free={<Dash />}
+                pro={<CheckMark />}
+                erPro={erPro}
+              />
+              <CompareRow
+                feature="TrackMan-import"
+                desc="Sync data fra dine økter automatisk"
+                free={<Dash />}
+                pro={<CheckMark />}
+                erPro={erPro}
+              />
+              <CompareRow
+                feature="Helse + restitusjon"
+                desc="Søvn, skader, daglig logg"
+                free={<Dash />}
+                pro={<CheckMark />}
+                erPro={erPro}
+              />
+              <CompareRow
+                feature="1:1 coach-melding"
+                desc="Direktemeldinger til coach"
+                free={<Num>5 / mnd</Num>}
+                pro={<Num>50 / mnd</Num>}
+                erPro={erPro}
+              />
+            </tbody>
+          </table>
+        </div>
+      </Section>
+
+      {/* Faktura-historikk — TODO: kobles til Invoice-modell senere */}
+      <Section title="Faktura-historikk" aux="Kommer i v2">
+        <div className="px-6 py-10 text-center text-sm text-muted-foreground">
+          Fakturahistorikk vises her når Stripe-integrasjonen er ferdig.
+          {/* TODO: kobles til Invoice-modell senere */}
+        </div>
+      </Section>
+
+      {/* Farlig sone */}
+      {erPro && (
+        <section className="rounded-xl border border-destructive/30 bg-destructive/5 p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <AlertTriangle
+              className="h-4 w-4 text-destructive"
+              strokeWidth={1.5}
+            />
+            <h3 className="font-display text-base font-semibold text-foreground">
+              Farlig sone
+            </h3>
+          </div>
+          <DangerRow
+            title="Kanseller abonnement"
+            desc={
+              periodEnd
+                ? `Du beholder Pro ut perioden (til ${formatDato(periodEnd)}). Deretter går du tilbake til Gratis.`
+                : "Du beholder Pro ut perioden. Deretter går du tilbake til Gratis."
+            }
+            cta="Kanseller"
+          />
+        </section>
+      )}
+    </div>
+  );
+}
+
+function Section({
+  title,
+  aux,
+  children,
+}: {
+  title: string;
+  aux?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <header className="flex items-baseline justify-between border-b border-border px-6 py-4">
+        <h2 className="font-display text-base font-semibold text-foreground">
+          {title}
+        </h2>
+        {aux && (
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            {aux}
+          </span>
         )}
-      </section>
+      </header>
+      <div>{children}</div>
+    </section>
+  );
+}
+
+function Feature({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2.5 text-sm text-foreground">
+      <Check className="h-4 w-4 flex-shrink-0 text-primary" strokeWidth={1.5} />
+      {children}
+    </div>
+  );
+}
+
+function ColHead({
+  name,
+  price,
+  unit,
+  badge,
+  current = false,
+}: {
+  name: string;
+  price: string;
+  unit: string;
+  badge?: string;
+  current?: boolean;
+}) {
+  return (
+    <div
+      className={`flex flex-col items-center gap-2 rounded-md px-3 py-3 ${
+        current ? "border-b-2 border-primary bg-primary/10" : "border-b border-border bg-card"
+      }`}
+    >
+      {badge && (
+        <span
+          className={`rounded-sm px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] ${
+            current ? "bg-primary text-primary-foreground" : "bg-foreground text-background"
+          }`}
+        >
+          {badge}
+        </span>
+      )}
+      <span className="font-display text-xl font-semibold italic leading-none tracking-tight text-foreground">
+        {name}
+      </span>
+      <span className="font-mono text-sm text-muted-foreground">
+        <span className="text-xl font-medium text-foreground">{price}</span>{" "}
+        {unit}
+      </span>
+    </div>
+  );
+}
+
+function CompareRow({
+  feature,
+  desc,
+  free,
+  pro,
+  erPro,
+}: {
+  feature: string;
+  desc: string;
+  free: React.ReactNode;
+  pro: React.ReactNode;
+  erPro: boolean;
+}) {
+  return (
+    <tr className="border-b border-border/60 last:border-b-0">
+      <td className="bg-secondary/60 px-6 py-4 align-middle font-medium text-foreground">
+        {feature}
+        <span className="mt-0.5 block text-[11px] font-normal text-muted-foreground">
+          {desc}
+        </span>
+      </td>
+      <td className={`px-4 py-4 text-center ${!erPro ? "bg-primary/10" : ""}`}>{free}</td>
+      <td className={`px-4 py-4 text-center ${erPro ? "bg-primary/10" : ""}`}>{pro}</td>
+    </tr>
+  );
+}
+
+function Num({ children }: { children: React.ReactNode }) {
+  return <span className="font-mono text-sm text-foreground">{children}</span>;
+}
+
+function Dash() {
+  return <span className="font-mono text-muted-foreground/60">—</span>;
+}
+
+function CheckMark() {
+  return (
+    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/15 text-primary">
+      <Check className="h-3 w-3" strokeWidth={1.5} />
+    </span>
+  );
+}
+
+function DangerRow({
+  title,
+  desc,
+  cta,
+}: {
+  title: string;
+  desc: string;
+  cta: string;
+}) {
+  return (
+    <div className="flex flex-col items-start justify-between gap-3 border-t border-destructive/20 py-4 first:border-t-0 first:pt-0 sm:flex-row sm:items-center sm:gap-6">
+      <div className="flex min-w-0 flex-col">
+        <span className="text-sm font-medium text-foreground">{title}</span>
+        <span className="text-xs text-muted-foreground">{desc}</span>
+      </div>
+      <button
+        type="button"
+        className="whitespace-nowrap rounded-md border border-destructive/30 px-3 py-2 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10"
+      >
+        {cta} →
+      </button>
     </div>
   );
 }

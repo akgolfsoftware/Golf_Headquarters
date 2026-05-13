@@ -1,8 +1,13 @@
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+/**
+ * PlayerHQ · Be om økt
+ *
+ * Endelig design fra wireframe/design-files-v2/playerhq-C/07-onskeligokt.html.
+ * Datakilde: User (coacher fra DB). Plassholdere markert med // TODO for
+ * fasilitet-katalog, økt-typer (CoachingSession-typer) og pris-info.
+ */
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
 import { OnskeligOktForm } from "./form";
 
 type Search = { sent?: string };
@@ -21,31 +26,64 @@ export default async function OnskeligOktPage({
     orderBy: { name: "asc" },
   });
 
+  const standardCoach = coacher[0] ?? null;
+  const standardFornavn = standardCoach
+    ? standardCoach.name.split(" ")[0]
+    : "coachen";
+  const initials = standardCoach
+    ? standardCoach.name
+        .split(/\s+/)
+        .map((p) => p[0]?.toUpperCase() ?? "")
+        .join("")
+        .slice(0, 2)
+    : "AK";
+
   return (
-    <div className="space-y-6">
-      <Link
-        href="/portal"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-        Hjem
-      </Link>
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto max-w-[820px] px-6 py-8">
+        <header className="mb-8 flex items-end justify-between gap-6">
+          <div>
+            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              /portal/onskeligokt
+            </span>
+            <h1 className="mt-2 font-display text-4xl leading-[1.1] tracking-tight">
+              <em className="font-medium italic">
+                Be om økt med{" "}
+                <span className="text-primary">{standardFornavn}</span>
+              </em>
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {standardFornavn} svarer typisk innen 4 timer på hverdager.
+            </p>
+          </div>
+          {standardCoach && <CoachPill name={standardCoach.name} initials={initials} />}
+        </header>
 
-      <PageHeader
-        eyebrow="PlayerHQ · Forespørsel"
-        titleLead="Be om en"
-        titleItalic="ekstra"
-        titleTrail="økt"
-        sub="Si fra hva du vil jobbe med — coachen din ser forespørselen i CoachHQ og setter opp en tid som passer."
-      />
+        {params.sent === "1" && (
+          <div className="mb-6 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">
+            Forespørsel sendt. Du får varsel når coachen har satt opp en tid.
+          </div>
+        )}
 
-      {params.sent === "1" && (
-        <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground">
-          Forespørsel sendt. Du får varsel når coachen har satt opp en tid.
-        </div>
-      )}
+        <OnskeligOktForm coacher={coacher} />
+      </div>
+    </div>
+  );
+}
 
-      <OnskeligOktForm coacher={coacher} />
+function CoachPill({ name, initials }: { name: string; initials: string }) {
+  const fornavn = name.split(" ")[0];
+  return (
+    <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-2 py-2">
+      <div className="grid h-8 w-8 place-items-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+        {initials}
+      </div>
+      <div className="text-xs leading-tight">
+        <div className="font-semibold text-foreground">{fornavn}</div>
+        <div className="text-[10px] text-muted-foreground">Hovedcoach</div>
+      </div>
+      <span className="h-2 w-2 rounded-full bg-primary" aria-label="Online" />
+      <span className="pr-2 text-[10px] font-semibold text-primary">Online</span>
     </div>
   );
 }

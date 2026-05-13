@@ -50,3 +50,4 @@ next-env.d.ts
 /playwright/.cache/
 ruvector.db
 .claude/scheduled_tasks.lock
+agentdb.rvf*
