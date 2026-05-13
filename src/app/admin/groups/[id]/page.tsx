@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Users } from "lucide-react";
+import { Users, Calendar } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { GroupForm } from "../group-form";
 import { MemberForm, RemoveMemberButton } from "./member-form";
+import { ScheduleForm, DeleteScheduleButton } from "./schedule-form";
 
 export default async function GruppeDetalj({
   params,
@@ -16,7 +17,7 @@ export default async function GruppeDetalj({
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
-  const [group, coaches, alleSpillere] = await Promise.all([
+  const [group, coaches, alleSpillere, schedules] = await Promise.all([
     prisma.group.findUnique({
       where: { id },
       include: {
@@ -38,6 +39,10 @@ export default async function GruppeDetalj({
       where: { role: "PLAYER" },
       orderBy: { name: "asc" },
       select: { id: true, name: true },
+    }),
+    prisma.groupSchedule.findMany({
+      where: { groupId: id },
+      orderBy: { startAt: "asc" },
     }),
   ]);
 
@@ -146,6 +151,87 @@ export default async function GruppeDetalj({
                     memberId={m.id}
                     memberName={m.user.name ?? "medlem"}
                   />
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      <section>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-display text-lg font-semibold tracking-tight">
+            Treningsplan ({schedules.length})
+          </h2>
+          <ScheduleForm groupId={group.id} triggerLabel="+ Ny treningstid" />
+        </div>
+
+        {schedules.length === 0 ? (
+          <EmptyState
+            icon={Calendar}
+            titleItalic="Ingen"
+            titleTrail="treningstider satt opp"
+            sub="Klikk «+ Ny treningstid» for å legge til en fast eller engangs treningsøkt."
+          />
+        ) : (
+          <ul className="space-y-2">
+            {schedules.map((s) => {
+              const dato = s.startAt.toLocaleDateString("nb-NO", {
+                weekday: "short",
+                day: "2-digit",
+                month: "short",
+              });
+              const start = s.startAt.toLocaleTimeString("nb-NO", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              const slutt = s.endAt.toLocaleTimeString("nb-NO", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              return (
+                <li
+                  key={s.id}
+                  className="flex flex-wrap items-start gap-4 rounded-md border border-border bg-card p-4"
+                >
+                  <div className="flex min-w-0 flex-1 flex-col gap-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-medium text-foreground">{s.title}</span>
+                      {s.recurring === "WEEKLY" && (
+                        <span className="rounded-full bg-accent/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-accent-foreground">
+                          Ukentlig
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-mono text-xs tabular-nums text-muted-foreground">
+                      {dato} · {start}–{slutt}
+                      {s.location && ` · ${s.location}`}
+                    </span>
+                    {s.description && (
+                      <p className="text-sm text-muted-foreground">{s.description}</p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <ScheduleForm
+                      groupId={group.id}
+                      triggerLabel="Rediger"
+                      triggerStyle="link"
+                      initial={{
+                        id: s.id,
+                        title: s.title,
+                        description: s.description,
+                        startAt: s.startAt.toISOString(),
+                        endAt: s.endAt.toISOString(),
+                        location: s.location,
+                        recurring: s.recurring,
+                      }}
+                    />
+                    <DeleteScheduleButton
+                      groupId={group.id}
+                      scheduleId={s.id}
+                      title={s.title}
+                    />
+                  </div>
                 </li>
               );
             })}

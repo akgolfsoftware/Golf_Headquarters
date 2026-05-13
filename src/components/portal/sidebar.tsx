@@ -57,6 +57,7 @@ const NAV: NavGroup[] = [
       { href: "/portal/booking/ny", label: "Book økt" },
     ],
   },
+  { type: "link", href: "/portal/utfordringer", label: "Utfordringer" },
   { type: "link", href: "/portal/meg/bookinger", label: "Bookinger" },
   { type: "link", href: "/portal/varsler", label: "Varsler", badge: true },
   {
