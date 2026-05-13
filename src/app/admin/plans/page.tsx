@@ -371,19 +371,19 @@ function KpiAccent({
 }) {
   return (
     <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[rgba(209,248,67,0.70)]">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent/70">
         {label}
       </div>
       <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-white">
         {value}
         {unit && (
-          <span className="ml-1 text-[13px] font-medium text-[rgba(245,244,238,0.5)]">
+          <span className="ml-1 text-[13px] font-medium text-background/55">
             {unit}
           </span>
         )}
       </div>
       {sub && (
-        <div className="font-mono text-[11px] text-[rgba(245,244,238,0.7)]">
+        <div className="font-mono text-[11px] text-background/70">
           {sub}
         </div>
       )}

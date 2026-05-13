@@ -70,8 +70,8 @@ const godkjenninger: Godkjenning[] = [
 
 const meldinger: Melding[] = [
   { id: "1", initials: "MR", bgColor: "hsl(var(--primary))", name: "Markus R", time: "07:14" },
-  { id: "2", initials: "ES", bgColor: "#A6651E", name: "Emma S", time: "06:58" },
-  { id: "3", initials: "JT", bgColor: "#264E3B", name: "Joachim T", time: "i går", muted: true },
+  { id: "2", initials: "ES", bgColor: "var(--color-pyr-spill)", name: "Emma S", time: "06:58" },
+  { id: "3", initials: "JT", bgColor: "var(--color-pyr-fys)", name: "Joachim T", time: "i går", muted: true },
 ];
 
 const sevDotClass: Record<Godkjenning["severity"], string> = {

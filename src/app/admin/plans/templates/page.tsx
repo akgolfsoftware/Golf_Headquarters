@@ -23,6 +23,8 @@ const DEFAULT_PYR: { key: PyrKey; value: number }[] = [
   { key: "turn", value: 5 },
 ];
 
+// Bevisst dekorativ palett — 8 gradient-varianter for stabil mal-identitet i kort-grid.
+// TODO: konsolider farge — vurder å eksponere som --color-template-gradient-N tokens.
 const GRADIENTS = [
   "linear-gradient(135deg, #005840 0%, #006B4F 100%)",
   "linear-gradient(135deg, #2D7A5C 0%, #4A9670 100%)",

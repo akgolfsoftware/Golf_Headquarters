@@ -112,7 +112,7 @@ export default async function Approvals() {
       {/* KPI-strip */}
       <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
         <KpiAccent label="Venter" value={String(totalCount)}>
-          <div className="mt-2 flex flex-wrap gap-2 font-mono text-[10px] text-[rgba(245,244,238,0.7)]">
+          <div className="mt-2 flex flex-wrap gap-2 font-mono text-[10px] text-background/70">
             <SevDot tone="danger" label={`${urgCount} urg`} />
             <SevDot tone="warn" label={`${warnCount} warn`} />
             <SevDot tone="info" label={`${infoCount} info`} />
@@ -301,7 +301,7 @@ function KpiAccent({
 }) {
   return (
     <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[rgba(209,248,67,0.70)]">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent/70">
         {label}
       </div>
       <div className="font-mono text-[28px] font-semibold leading-none tabular-nums">
