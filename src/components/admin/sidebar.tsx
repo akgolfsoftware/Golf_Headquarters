@@ -54,6 +54,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
       { href: "/admin/team", label: "Team" },
       { href: "/admin/integrasjoner", label: "Integrasjoner" },
       { href: "/admin/settings", label: "Innstillinger" },
+      { href: "/admin/settings/tilgang", label: "Tilgang & roller" },
     ],
   },
 ];

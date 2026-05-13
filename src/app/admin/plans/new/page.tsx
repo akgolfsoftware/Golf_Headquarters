@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { PlanWizard } from "./wizard";
 import { AiPlanPanel } from "./ai-panel";
+import { AiPlanForslagButton } from "@/components/admin/ai-plan-forslag-button";
 
 export default async function NyPlanPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -37,6 +38,7 @@ export default async function NyPlanPage() {
         titleLead="Bygg"
         titleItalic="ny plan"
         sub="Wizard med 6 steg — spiller, periode, faser, allokering, økt-skjema og bekreft."
+        actions={<AiPlanForslagButton />}
       />
 
       <AiPlanPanel spillere={spillere} />
