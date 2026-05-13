@@ -16,7 +16,10 @@ import {
   ChevronLeft,
   ChevronRight,
   CalendarRange,
+  Download,
   Plus,
+  RefreshCw,
+  SlidersHorizontal,
   Users,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -286,6 +289,31 @@ export default async function AdminCalendar({
 
   // Sum events
   const totalEvents = eventsPerDag.reduce((sum, e) => sum + e.length, 0);
+  const idagIdx = dager.findIndex((d) => sammeDag(d, now));
+  const idagAntall = idagIdx >= 0 ? eventsPerDag[idagIdx].length : 0;
+  const idagDato = idagIdx >= 0 ? dager[idagIdx] : null;
+  const idagFormat = idagDato
+    ? new Intl.DateTimeFormat("nb-NO", {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+      }).format(idagDato)
+    : "Ikke i denne uka";
+
+  // Booking-typer per dag (for KPI-stripen)
+  let coachingTeller = 0;
+  let bookingTeller = 0;
+  let gruppeTeller = 0;
+  if (idagIdx >= 0) {
+    for (const ev of eventsPerDag[idagIdx]) {
+      if (ev.kind === "booking") {
+        bookingTeller += 1;
+        coachingTeller += 1;
+      } else if (ev.kind === "group") {
+        gruppeTeller += 1;
+      }
+    }
+  }
 
   // Bygg payload til klient-grid. Bruk Y-M-D-key for tidsone-trygg sammenlikning.
   function dateKey(d: Date): string {
@@ -309,16 +337,66 @@ export default async function AdminCalendar({
         titleItalic="kalender"
         sub={`${periodeTekst} · ${totalEvents} ${totalEvents === 1 ? "økt" : "økter"} denne uka`}
         actions={
-          kanBooke ? (
-            <Link
-              href="/admin/bookings/ny"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
             >
-              <Plus className="h-4 w-4" /> Ny økt
-            </Link>
-          ) : undefined
+              <Download className="h-4 w-4" /> Eksporter
+            </button>
+            {kanBooke && (
+              <Link
+                href="/admin/bookings/ny"
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                <Plus className="h-4 w-4" /> Ny økt
+              </Link>
+            )}
+          </div>
         }
       />
+
+      {/* KPI-stripe */}
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-lg bg-primary p-4 text-primary-foreground lg:col-span-1">
+          <div className="font-mono text-[10px] uppercase tracking-[0.10em] opacity-70">
+            I dag · {idagFormat}
+          </div>
+          <div className="mt-2 flex items-baseline gap-3">
+            <div className="font-mono text-[28px] font-medium tabular-nums leading-none">
+              {idagAntall}{" "}
+              <small className="text-[14px] opacity-70">
+                {idagAntall === 1 ? "økt" : "økter"}
+              </small>
+            </div>
+          </div>
+          <div className="mt-2.5 flex gap-2.5 text-[12px] opacity-80">
+            <span>
+              <b className="font-mono font-medium text-accent">{coachingTeller}</b>{" "}
+              coaching
+            </span>
+            <span>
+              <b className="font-mono font-medium text-accent">{bookingTeller}</b>{" "}
+              {bookingTeller === 1 ? "booking" : "bookinger"}
+            </span>
+            <span>
+              <b className="font-mono font-medium text-accent">{gruppeTeller}</b>{" "}
+              {gruppeTeller === 1 ? "gruppe" : "grupper"}
+            </span>
+          </div>
+        </div>
+        <Kpi label="Events denne uka" value={String(totalEvents)} />
+        <Kpi
+          label="Uke-nummer"
+          value={String(ukeNr)}
+          meta={`${ukeNr}/52`}
+        />
+        <Kpi
+          label="Konflikter"
+          value="0"
+          meta="Ingen overlapp"
+        />
+      </section>
 
       {/* Coach-velger for ADMIN */}
       {user.role === "ADMIN" && coachListe.length > 0 && (
@@ -328,6 +406,24 @@ export default async function AdminCalendar({
           />
         </div>
       )}
+
+      {/* Chip-row */}
+      <div className="flex flex-wrap items-center gap-2">
+        <Chip active>
+          Alle typer <Count>{totalEvents}</Count>
+        </Chip>
+        <Chip>
+          Coaching <Count>{bookings.length}</Count>
+        </Chip>
+        <Chip>
+          Gruppe <Count>{FASTE_GRUPPER.length}</Count>
+        </Chip>
+        <Chip>Tilgjengelig</Chip>
+        <span className="mx-1 h-5 w-px bg-border" />
+        <Chip>
+          <SlidersHorizontal className="h-3 w-3" /> Filtre
+        </Chip>
+      </div>
 
       {/* Toolbar: uke-nav + Uke/Maaned-toggle + filter */}
       <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-3">
@@ -424,15 +520,25 @@ export default async function AdminCalendar({
           }
         />
       ) : (
-        <CalendarWeekGrid
-          dager={dagPayloads}
-          todayDateKey={todayDateKey}
-          nowHour={nowHour}
-          spillere={spillere}
-          serviceTypes={serviceTypes}
-          locations={locations}
-          kanBooke={kanBooke}
-        />
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_304px]">
+          <CalendarWeekGrid
+            dager={dagPayloads}
+            todayDateKey={todayDateKey}
+            nowHour={nowHour}
+            spillere={spillere}
+            serviceTypes={serviceTypes}
+            locations={locations}
+            kanBooke={kanBooke}
+          />
+          <aside className="sticky top-6 hidden flex-col gap-4 lg:flex">
+            <CalendarTogglesCard
+              coachingAntall={bookings.length}
+              gruppeAntall={FASTE_GRUPPER.length}
+            />
+            <SyncCard />
+            <PyramideLegendCard />
+          </aside>
+        </div>
       )}
 
       {/* Legend */}
@@ -455,6 +561,162 @@ export default async function AdminCalendar({
             Gjest-tilgang · kun visning
           </span>
         )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Helpers ---------------- */
+
+function Kpi({
+  label,
+  value,
+  meta,
+}: {
+  label: string;
+  value: string;
+  meta?: string;
+}) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-4">
+      <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        {label}
+      </div>
+      <div className="mt-2 font-mono text-[28px] font-medium tabular-nums leading-none text-foreground">
+        {value}
+      </div>
+      {meta && (
+        <div className="mt-2.5 text-[12px] text-muted-foreground">{meta}</div>
+      )}
+    </div>
+  );
+}
+
+function Chip({
+  children,
+  active,
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+}) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-medium transition-colors ${
+        active
+          ? "border-foreground bg-foreground text-background"
+          : "border-border bg-card text-foreground hover:bg-secondary"
+      }`}
+    >
+      {children}
+    </span>
+  );
+}
+
+function Count({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="ml-0.5 font-mono text-[11px] opacity-60">{children}</span>
+  );
+}
+
+function CalendarTogglesCard({
+  coachingAntall,
+  gruppeAntall,
+}: {
+  coachingAntall: number;
+  gruppeAntall: number;
+}) {
+  const rows: { swatch: string; label: string; count: number }[] = [
+    {
+      swatch: "border border-accent/40 bg-accent/15",
+      label: "Coaching · 1:1",
+      count: coachingAntall,
+    },
+    {
+      swatch: "border border-primary/20 bg-primary/10",
+      label: "Gruppe-økter",
+      count: gruppeAntall,
+    },
+    {
+      swatch: "bg-primary/5",
+      label: "Tilgjengelig",
+      count: 0,
+    },
+  ];
+  return (
+    <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+      <div className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+        Vis kalendere
+      </div>
+      <div>
+        {rows.map((r, i) => (
+          <div
+            key={r.label}
+            className={`flex items-center gap-2.5 py-2 text-[13px] text-foreground ${
+              i > 0 ? "border-t border-border" : ""
+            }`}
+          >
+            <span className={`h-2.5 w-2.5 flex-shrink-0 rounded-sm ${r.swatch}`} />
+            <span>{r.label}</span>
+            <span className="ml-auto font-mono text-[11px] text-muted-foreground">
+              {r.count}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SyncCard() {
+  return (
+    <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+        <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+        Sist synket · —
+      </div>
+      <div className="mt-1.5 mb-0.5 font-display text-[15px] font-semibold">
+        Google Calendar
+      </div>
+      <div className="mb-3 text-[12px] text-muted-foreground">
+        {/* TODO: koble mot google-calendar-sync */}
+        Sync-status kommer i v2.
+      </div>
+      <button
+        type="button"
+        className="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+      >
+        <RefreshCw className="h-3.5 w-3.5" /> Synk nå
+      </button>
+    </div>
+  );
+}
+
+function PyramideLegendCard() {
+  const items: { label: string; tone: string }[] = [
+    { label: "FYS", tone: "bg-primary" },
+    { label: "TEK", tone: "bg-primary/70" },
+    { label: "SLAG", tone: "bg-accent" },
+    { label: "SPILL", tone: "bg-foreground/60" },
+    { label: "TURN", tone: "bg-muted-foreground" },
+  ];
+  return (
+    <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+      <div className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+        Pyramide-stripe
+      </div>
+      <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+        {items.map((it) => (
+          <div
+            key={it.label}
+            className="flex items-center gap-2 text-[12px] text-muted-foreground"
+          >
+            <span className={`inline-block h-4 w-2 rounded-sm ${it.tone}`} />
+            {it.label}
+          </div>
+        ))}
+      </div>
+      <div className="mt-2.5 text-[11px] leading-[1.4] text-muted-foreground">
+        Stripe-segmenter viser fokus-fordeling per økt.
       </div>
     </div>
   );

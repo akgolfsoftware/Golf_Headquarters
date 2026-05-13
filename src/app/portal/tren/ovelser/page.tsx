@@ -1,5 +1,11 @@
+/**
+ * PlayerHQ · Trening · Bibliotek
+ *
+ * Endelig design — inspirert av treningsdetalj-demo (playerhq-C/10).
+ * Hero med italic display, filter-strip og pyramide-fordelt grid.
+ */
 import Link from "next/link";
-import { Dumbbell } from "lucide-react";
+import { ChevronRight, Dumbbell, LayoutGrid, TrendingUp } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { ExerciseCard } from "@/components/portal/exercise-card";
@@ -8,7 +14,6 @@ import {
   LPhase,
   type Prisma,
 } from "@/generated/prisma/client";
-import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 
 type Search = { area?: string; phase?: string };
@@ -36,7 +41,7 @@ export default async function OvelserPage({
 }: {
   searchParams: Promise<Search>;
 }) {
-  await requirePortalUser();
+  const user = await requirePortalUser();
   const params = await searchParams;
 
   const valgtArea =
@@ -52,10 +57,17 @@ export default async function OvelserPage({
   if (valgtArea !== "ALLE") where.pyramidArea = valgtArea;
   if (valgtPhase !== "ALLE") where.lPhase = valgtPhase;
 
-  const exercises = await prisma.exerciseDefinition.findMany({
-    where,
-    orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
-  });
+  const [exercises, totalAlle, perArea] = await Promise.all([
+    prisma.exerciseDefinition.findMany({
+      where,
+      orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
+    }),
+    prisma.exerciseDefinition.count(),
+    prisma.exerciseDefinition.groupBy({
+      by: ["pyramidArea"],
+      _count: { _all: true },
+    }),
+  ]);
 
   function bygglenke(area: string, phase: string): string {
     const sp = new URLSearchParams();
@@ -66,31 +78,105 @@ export default async function OvelserPage({
   }
 
   const harAktiveFiltre = valgtArea !== "ALLE" || valgtPhase !== "ALLE";
+  const fornavn = user.name?.split(" ")[0] ?? null;
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        eyebrow="PlayerHQ · Trening · Bibliotek"
-        titleLead="Drills"
-        titleItalic="og øvelser"
-        sub={`${exercises.length} øvelse${exercises.length === 1 ? "" : "r"} sortert etter pyramide-område og L-fase. Tilpasset deg.`}
-      />
+      {/* Hero */}
+      <header>
+        <Link
+          href="/portal/tren"
+          className="mb-4 inline-flex items-center gap-1 font-mono text-[12px] font-medium text-muted-foreground hover:text-foreground"
+        >
+          <ChevronRight size={14} strokeWidth={1.5} className="rotate-180" />
+          Trening
+        </Link>
 
-      <div className="space-y-3">
-        <FilterRad
-          label="Område"
-          options={PYR_OMRADER}
-          valgt={valgtArea}
-          bygglenke={(v) => bygglenke(v, valgtPhase)}
-        />
-        <FilterRad
-          label="L-fase"
-          options={L_FASER}
-          valgt={valgtPhase}
-          bygglenke={(v) => bygglenke(valgtArea, v)}
-        />
-      </div>
+        <div className="flex flex-wrap items-start gap-6">
+          <div className="relative shrink-0">
+            <div className="grid h-16 w-16 place-items-center rounded-full bg-primary font-mono text-primary-foreground ring-4 ring-accent">
+              <Dumbbell size={26} strokeWidth={1.5} />
+            </div>
+          </div>
+          <div className="min-w-0 flex-1">
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              PlayerHQ · Trening · Bibliotek
+            </span>
+            <h1 className="mt-1 font-display text-[36px] italic font-medium leading-[1.05] tracking-tight">
+              Drills og øvelser
+            </h1>
+            <p className="mt-1 text-[13px] text-muted-foreground">
+              {exercises.length} øvelse{exercises.length === 1 ? "" : "r"} sortert
+              etter pyramide-område og L-fase
+              {fornavn ? `, ${fornavn}.` : "."}
+            </p>
 
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <StatPill label="Totalt" value={String(totalAlle)} />
+              <StatPill
+                label="Treff"
+                value={String(exercises.length)}
+                tone={harAktiveFiltre ? "accent" : "muted"}
+              />
+              {perArea.slice(0, 3).map((p) => (
+                <StatPill
+                  key={p.pyramidArea}
+                  label={p.pyramidArea}
+                  value={String(p._count._all)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Insight-banner */}
+      {harAktiveFiltre && (
+        <div className="flex items-center gap-3 rounded-md border border-accent/50 bg-accent/15 px-5 py-4">
+          <TrendingUp size={18} strokeWidth={1.5} className="text-foreground" />
+          <p className="text-[14px] text-foreground">
+            Filtrerer på{" "}
+            <b>
+              {valgtArea !== "ALLE" ? labelOf(PYR_OMRADER, valgtArea) : "alle områder"}
+            </b>{" "}
+            ·{" "}
+            <b>
+              {valgtPhase !== "ALLE" ? labelOf(L_FASER, valgtPhase) : "alle L-faser"}
+            </b>
+            . Viser {exercises.length} av {totalAlle} øvelser.
+          </p>
+        </div>
+      )}
+
+      {/* Filter-strip */}
+      <section className="rounded-lg border border-border bg-card p-6">
+        <div className="mb-4 flex items-center gap-2">
+          <LayoutGrid
+            size={16}
+            strokeWidth={1.5}
+            className="text-muted-foreground"
+          />
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Filtrer
+          </span>
+        </div>
+        <div className="space-y-3">
+          <FilterRad
+            label="Område"
+            options={PYR_OMRADER}
+            valgt={valgtArea}
+            bygglenke={(v) => bygglenke(v, valgtPhase)}
+          />
+          <FilterRad
+            label="L-fase"
+            options={L_FASER}
+            valgt={valgtPhase}
+            bygglenke={(v) => bygglenke(valgtArea, v)}
+          />
+        </div>
+      </section>
+
+      {/* Resultat-grid */}
       {exercises.length === 0 ? (
         <EmptyState
           icon={Dumbbell}
@@ -105,7 +191,7 @@ export default async function OvelserPage({
             harAktiveFiltre ? (
               <Link
                 href="/portal/tren/ovelser"
-                className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+                className="inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
               >
                 Nullstill filtre
               </Link>
@@ -113,13 +199,52 @@ export default async function OvelserPage({
           }
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {exercises.map((e) => (
-            <ExerciseCard key={e.id} exercise={e} />
-          ))}
+        <div>
+          <div className="mb-3 flex items-center justify-between">
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              {exercises.length} øvelse{exercises.length === 1 ? "" : "r"}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {exercises.map((e) => (
+              <ExerciseCard key={e.id} exercise={e} />
+            ))}
+          </div>
         </div>
       )}
     </div>
+  );
+}
+
+function labelOf(
+  options: { value: string; label: string }[],
+  v: string,
+): string {
+  return options.find((o) => o.value === v)?.label ?? v;
+}
+
+function StatPill({
+  label,
+  value,
+  tone = "muted",
+}: {
+  label: string;
+  value: string;
+  tone?: "muted" | "accent";
+}) {
+  const styles: Record<NonNullable<typeof tone>, string> = {
+    muted: "bg-secondary text-foreground border-border",
+    accent: "bg-accent/30 text-foreground border-accent/40",
+  };
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] ${styles[tone]}`}
+    >
+      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+        {label}
+      </span>
+      <span className="font-mono font-semibold tabular-nums">{value}</span>
+    </span>
   );
 }
 
