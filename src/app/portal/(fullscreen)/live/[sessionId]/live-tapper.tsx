@@ -363,7 +363,7 @@ export function LiveTapper({
             Klar til økt
           </div>
 
-          <h1 className="mx-auto mt-6 max-w-[900px] text-center font-display text-[56px] italic leading-[1.1] tracking-[-0.02em] text-white">
+          <h1 className="mx-auto mt-6 max-w-[900px] text-center font-display text-[28px] sm:text-[40px] md:text-[56px] italic leading-[1.1] tracking-[-0.02em] text-white">
             <em className="italic">{session.title}</em>
           </h1>
 
@@ -603,7 +603,7 @@ export function LiveTapper({
                 Fullført
               </div>
 
-              <h1 className="mt-5 font-display text-[56px] font-semibold italic leading-[1.05] tracking-[-0.025em] text-white">
+              <h1 className="mt-5 font-display text-[28px] sm:text-[40px] md:text-[56px] font-semibold italic leading-[1.05] tracking-[-0.025em] text-white">
                 <em className="italic">{currentDrill.exercise.name}</em>
               </h1>
               <p className="mt-2 font-mono text-[13px] tracking-[0.04em] text-white/65">
