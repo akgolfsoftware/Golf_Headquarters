@@ -7,6 +7,7 @@ import { stripeKlient } from "@/lib/stripe";
 import { audit } from "@/lib/audit";
 import { pushBookingToCalendar, removeFromCalendar } from "@/lib/google-calendar";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
+import { notify } from "@/lib/notifications";
 
 export async function cancelBooking(bookingId: string) {
   const user = await getCurrentUser();
@@ -95,6 +96,19 @@ export async function cancelBooking(bookingId: string) {
   } catch (err) {
     console.error("[cancel-booking] e-post-feil", err);
   }
+
+  // In-app-varsel til spilleren som eier bookingen
+  const tidStr = booking.startAt.toLocaleString("nb-NO", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+  await notify({
+    userId: booking.userId,
+    type: "booking",
+    title: "Booking avbestilt",
+    body: `${tidStr}. ${creditRefunded ? "Credit returnert." : kanRefunderes ? "Refusjon underveis." : "Mindre enn 24t — ingen refusjon."}`,
+    link: "/portal/meg/bookinger",
+  });
 
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/admin/bookings");
@@ -197,6 +211,19 @@ export async function rescheduleBooking(input: {
   } catch (err) {
     console.error("[reschedule] confirmation-email failed", err);
   }
+
+  // In-app-varsel
+  const nyTidStr = newStart.toLocaleString("nb-NO", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+  await notify({
+    userId: booking.userId,
+    type: "booking",
+    title: "Booking flyttet",
+    body: `Ny tid: ${nyTidStr}.`,
+    link: "/portal/meg/bookinger",
+  });
 
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/admin/bookings");

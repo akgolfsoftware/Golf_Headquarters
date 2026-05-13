@@ -1,8 +1,10 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import { PortalSidebar } from "./sidebar";
 import { BottomNav } from "./bottom-nav";
 import { UserMenu } from "@/components/shared/user-menu";
 import { ViewModeToggle } from "@/components/shared/view-mode-toggle";
+import { NotificationBell } from "@/components/shared/notification-bell";
 
 export async function PortalShell({
   children,
@@ -11,6 +13,12 @@ export async function PortalShell({
 }) {
   // PARENT-rollen tilhører /forelder, ikke /portal.
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN", "GUEST"] });
+
+  const notifications = await prisma.notification.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+  });
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -40,6 +48,10 @@ export async function PortalShell({
             {(user.role === "ADMIN" || user.role === "COACH") && (
               <ViewModeToggle current="player" />
             )}
+            <NotificationBell
+              notifications={notifications}
+              basePath="/portal/varsler"
+            />
             <UserMenu name={user.name} email={user.email} avatarUrl={user.avatarUrl} />
           </div>
         </header>

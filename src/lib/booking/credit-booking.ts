@@ -6,6 +6,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
 import { pushBookingToCalendar } from "@/lib/google-calendar";
+import { notify } from "@/lib/notifications";
 
 export type CreditBookingInput = {
   serviceTypeId: string;
@@ -151,6 +152,19 @@ export async function createCreditBooking(
   } catch (err) {
     console.error("[credit-booking] confirmation-email failed", err);
   }
+
+  // In-app-varsel
+  const tidStr = startAt.toLocaleString("nb-NO", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+  await notify({
+    userId: user.id,
+    type: "booking",
+    title: `Booking bekreftet — ${service.name}`,
+    body: `${tidStr}. Trukket fra månedlig saldo (${subscription.creditsRemaining - 1} igjen).`,
+    link: "/portal/meg/bookinger",
+  });
 
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/portal");

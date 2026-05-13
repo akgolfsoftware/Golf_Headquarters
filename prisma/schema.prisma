@@ -171,6 +171,9 @@ model User {
   playerInvitations   ParentInvitation[] @relation("PlayerInvitations")
   acceptedInvitations ParentInvitation[] @relation("AcceptedInvitations")
 
+  // In-app varsler
+  notifications Notification[]
+
   @@map("users")
 }
 
@@ -772,6 +775,27 @@ enum PaymentType {
   SUBSCRIPTION
   INVOICE
   OTHER
+}
+
+// In-app varsler. Brukes for booking-bekreftelser, plan-godkjenninger,
+// achievements, coach-meldinger osv. Vises i Bell-dropdown og /portal/varsler.
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  // Type-tag for ikon/farge i UI (booking, plan, achievement, melding, system, ...)
+  type      String
+  title     String
+  body      String?
+  // Klikkbar destinasjon (relativ URL eller absolutt)
+  link      String?
+  // Når brukeren markerte den som lest. Null = ulest.
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+  @@map("notifications")
 }
 
 // Google Calendar 2-way sync per coach.

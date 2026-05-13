@@ -1,9 +1,11 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import { AdminSidebar } from "./sidebar";
 import { AdminMobileDrawer } from "./mobile-drawer";
 import { GlobalSearchModal } from "./global-search-modal";
 import { UserMenu } from "@/components/shared/user-menu";
 import { ViewModeToggle } from "@/components/shared/view-mode-toggle";
+import { NotificationBell } from "@/components/shared/notification-bell";
 
 export async function AdminShell({
   children,
@@ -11,6 +13,11 @@ export async function AdminShell({
   children: React.ReactNode;
 }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const notifications = await prisma.notification.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+  });
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -39,6 +46,10 @@ export async function AdminShell({
           </div>
           <div className="flex items-center gap-3">
             <ViewModeToggle current="coach" />
+            <NotificationBell
+              notifications={notifications}
+              basePath="/portal/varsler"
+            />
             <UserMenu name={user.name} email={user.email} avatarUrl={user.avatarUrl} />
           </div>
         </header>
