@@ -8,6 +8,16 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: import.meta.dirname,
   },
+  images: {
+    remotePatterns: [
+      // Supabase Storage (profilbilder)
+      {
+        protocol: "https",
+        hostname: "eljkjqvggsmnbbszzbpj.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
+  },
 };
 
 // PWA service worker via Serwist. Genererer /sw.js fra src/app/sw.ts.

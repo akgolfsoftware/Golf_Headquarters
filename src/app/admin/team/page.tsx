@@ -166,7 +166,7 @@ function CoachCard({ member }: { member: TeamMember }) {
         <span
           className={`rounded-sm px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.04em] ${
             isAdmin
-              ? "bg-[rgba(0,88,64,0.14)] text-primary"
+              ? "bg-primary/15 text-primary"
               : "bg-[rgba(91,124,184,0.18)] text-[#3b5994]"
           }`}
         >
@@ -239,7 +239,7 @@ function Kpi({
     <div
       className={`flex flex-col gap-1.5 rounded-lg border p-4 ${
         accent
-          ? "border-transparent bg-gradient-to-br from-[#0F2A22] to-[#163027] text-white"
+          ? "border-transparent bg-gradient-to-br from-foreground to-foreground/90 text-white"
           : "border-border bg-card"
       }`}
     >
@@ -296,6 +296,8 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+// Bevisst dekorativ palett — deterministisk avatar-gradient per navn-hash.
+// TODO: konsolider farge — vurder å flytte til src/lib/avatar-colors.ts som delt utility.
 function avatarBg(name: string): string {
   const palette = [
     "linear-gradient(135deg,#005840,#1A7D56)",

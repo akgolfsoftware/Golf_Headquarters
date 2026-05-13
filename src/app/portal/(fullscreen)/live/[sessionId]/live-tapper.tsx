@@ -75,6 +75,9 @@ const PYR_LABEL: Record<PyramidArea, string> = {
   TURN: "Turnering",
 };
 
+// Bevisst dekorativ palett — én farge per pyramide-område for kategori-koding.
+// Bevart som hex for visuell variasjon mellom 5 områder (kan ikke uttrykkes med 18 semantic tokens).
+// TODO: konsolider farge — vurder å legge inn som --pyramid-fys/--pyramid-tek osv. tokens.
 const PYR_COLOR: Record<PyramidArea, string> = {
   FYS: "#4A6B5C",
   TEK: "#D1F843",
@@ -315,14 +318,14 @@ export function LiveTapper({
 
   if (drills.length === 0) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#0A1F18] p-8 text-center text-white">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-foreground p-8 text-center text-white">
         <h1 className="font-display text-3xl font-semibold">Ingen drills</h1>
         <p className="mt-2 text-white/65">
           Denne økten har ikke fått tildelt drills ennå. Be coach om å legge dem til.
         </p>
         <Link
           href="/portal/tren"
-          className="mt-6 inline-block rounded-full bg-accent px-6 py-3 text-sm font-semibold text-[#0A1F18] hover:bg-[#C2EE2F]"
+          className="mt-6 inline-block rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground hover:bg-accent/90"
         >
           Tilbake til plan
         </Link>
@@ -336,7 +339,7 @@ export function LiveTapper({
 
   if (state.phase === "intro") {
     return (
-      <div className="relative grid h-screen w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-[#0A1F18] text-white">
+      <div className="relative grid h-screen w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-foreground text-white">
         <RadialAccent />
 
         <TopBar
@@ -407,7 +410,7 @@ export function LiveTapper({
             type="button"
             onClick={handleStart}
             disabled={pending}
-            className="inline-flex h-[72px] flex-1 items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-[#0A1F18] transition-transform hover:bg-[#C2EE2F] active:scale-[0.99] disabled:opacity-60"
+            className="inline-flex h-[72px] flex-1 items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99] disabled:opacity-60"
             style={{
               boxShadow:
                 "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -415,7 +418,7 @@ export function LiveTapper({
           >
             {pending ? "Starter…" : "Start økt"}
             <ArrowRight className="h-[22px] w-[22px]" strokeWidth={2} />
-            <span className="ml-2 inline-flex items-center rounded-md border border-[#0A1F18]/25 bg-[#0A1F18]/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-[#0A1F18]">
+            <span className="ml-2 inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
               space
             </span>
           </button>
@@ -436,7 +439,7 @@ export function LiveTapper({
     const pyrColor = PYR_COLOR[currentDrill.exercise.pyramidArea];
 
     return (
-      <div className="relative grid h-screen w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-[#0A1F18] text-white">
+      <div className="relative grid h-screen w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-foreground text-white">
         <RadialAccent />
 
         <TopBar
@@ -457,13 +460,7 @@ export function LiveTapper({
 
         <div className="relative z-[1] flex flex-col items-center justify-center">
           {/* Klubb-pill */}
-          <div
-            className="inline-flex items-center gap-2.5 rounded-full border-2 px-4 py-2"
-            style={{
-              borderColor: "#1A7D56",
-              background: "rgba(26,125,86,0.10)",
-            }}
-          >
+          <div className="inline-flex items-center gap-2.5 rounded-full border-2 border-primary/70 bg-primary/10 px-4 py-2">
             <span
               className="h-2 w-2 rounded-full"
               style={{ background: pyrColor }}
@@ -494,7 +491,7 @@ export function LiveTapper({
                 r={ringRadius}
                 fill="none"
                 strokeWidth="4"
-                stroke="var(--accent, #D1F843)"
+                stroke="var(--accent)"
                 strokeLinecap="round"
                 strokeDasharray={ringCircumference}
                 strokeDashoffset={dashOffset}
@@ -548,7 +545,7 @@ export function LiveTapper({
           <button
             type="button"
             onClick={() => handleLogRep(true)}
-            className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-[#0A1F18] transition-transform hover:bg-[#C2EE2F] active:scale-[0.99]"
+            className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
             style={{
               boxShadow:
                 "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -556,7 +553,7 @@ export function LiveTapper({
           >
             <Check className="h-[22px] w-[22px]" strokeWidth={2} />
             Logg rep
-            <span className="ml-2 inline-flex items-center rounded-md border border-[#0A1F18]/25 bg-[#0A1F18]/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-[#0A1F18]">
+            <span className="ml-2 inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
               space
             </span>
           </button>
@@ -578,7 +575,7 @@ export function LiveTapper({
     const lastNextDrill = isLastDrill ? null : drills[state.drillIndex + 1];
 
     return (
-      <div className="relative grid h-screen w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-[#0A1F18] text-white">
+      <div className="relative grid h-screen w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-foreground text-white">
         <TopBar
           left={
             <>
@@ -737,7 +734,7 @@ export function LiveTapper({
           <button
             type="button"
             onClick={isLastDrill ? handleFinishSession : handleStartNextDrill}
-            className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-[#0A1F18] transition-transform hover:bg-[#C2EE2F] active:scale-[0.99]"
+            className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
             style={{
               boxShadow:
                 "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -745,7 +742,7 @@ export function LiveTapper({
           >
             {isLastDrill ? "Se oppsummering" : "Start neste øvelse"}
             <ArrowRight className="h-[22px] w-[22px]" strokeWidth={2} />
-            <span className="ml-2 inline-flex items-center rounded-md border border-[#0A1F18]/25 bg-[#0A1F18]/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-[#0A1F18]">
+            <span className="ml-2 inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
               enter
             </span>
           </button>
@@ -796,7 +793,7 @@ export function LiveTapper({
   const drillsFullført = resultsRef.current.length;
 
   return (
-    <div className="relative min-h-screen w-screen grid-rows-[56px_1fr_104px] overflow-y-auto bg-[#0A1F18] text-white md:grid md:h-screen md:overflow-hidden">
+    <div className="relative min-h-screen w-screen grid-rows-[56px_1fr_104px] overflow-y-auto bg-foreground text-white md:grid md:h-screen md:overflow-hidden">
       <TopBar
         left={
           <>
@@ -928,7 +925,7 @@ export function LiveTapper({
         {/* Feedback */}
         <div className="mt-6 flex flex-wrap items-center gap-5 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-5">
           <div className="flex items-center gap-3">
-            <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#2A4636] font-mono text-[14px] font-semibold text-white">
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-secondary font-mono text-[14px] font-semibold text-white">
               AK
             </div>
             <div>
@@ -994,7 +991,7 @@ export function LiveTapper({
           type="button"
           onClick={handleSaveAndExit}
           disabled={pending}
-          className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-[#0A1F18] transition-transform hover:bg-[#C2EE2F] active:scale-[0.99] disabled:opacity-60"
+          className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99] disabled:opacity-60"
           style={{
             boxShadow:
               "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",

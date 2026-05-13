@@ -41,8 +41,10 @@ const CATEGORY_LABEL: Record<Category, string> = {
   event: "Event",
 };
 
+// Bevisst dekorativ kategori-palett — 5 distinkte tjeneste-typer trenger visuell separasjon.
+// TODO: konsolider farge — vurder dedikerte --color-cat-* tokens hvis paletten utvides.
 const CATEGORY_STYLE: Record<Category, { bg: string; dot: string }> = {
-  coach: { bg: "bg-[rgba(0,88,64,0.12)] text-primary", dot: "bg-primary" },
+  coach: { bg: "bg-primary/15 text-primary", dot: "bg-primary" },
   studio: {
     bg: "bg-[rgba(91,124,184,0.15)] text-[#3b5994]",
     dot: "bg-[#3b5994]",
@@ -301,7 +303,7 @@ function KpiAccent({
   sub?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-[#0F2A22] to-[#163027] p-4 text-white">
+    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[rgba(209,248,67,0.70)]">
         {label}
       </div>

@@ -391,7 +391,7 @@ export default async function Profil360({
           Spiller-handlinger
         </span>
         <Link
-          href={`/admin/meldinger?to=${player.id}`}
+          href={`/admin/innboks?tab=meldinger&to=${player.id}`}
           className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           <MessageSquare size={14} strokeWidth={1.5} />

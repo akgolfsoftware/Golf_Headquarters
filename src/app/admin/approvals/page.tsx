@@ -113,9 +113,9 @@ export default async function Approvals() {
       <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
         <KpiAccent label="Venter" value={String(totalCount)}>
           <div className="mt-2 flex flex-wrap gap-2 font-mono text-[10px] text-[rgba(245,244,238,0.7)]">
-            <SevDot color="#EF4444" label={`${urgCount} urg`} />
-            <SevDot color="#A6651E" label={`${warnCount} warn`} />
-            <SevDot color="#9C9990" label={`${infoCount} info`} />
+            <SevDot tone="danger" label={`${urgCount} urg`} />
+            <SevDot tone="warn" label={`${warnCount} warn`} />
+            <SevDot tone="info" label={`${infoCount} info`} />
           </div>
         </KpiAccent>
         <Kpi
@@ -155,7 +155,7 @@ export default async function Approvals() {
       {/* Inbox */}
       {actions.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-border bg-card px-8 py-20 text-center">
-          <div className="grid h-24 w-24 place-items-center rounded-[28px] bg-[rgba(209,248,67,0.30)] text-foreground">
+          <div className="grid h-24 w-24 place-items-center rounded-[28px] bg-accent/30 text-foreground">
             <CheckCircle2 size={48} strokeWidth={1.75} />
           </div>
           <h3 className="font-display text-3xl font-normal italic">
@@ -236,13 +236,13 @@ export default async function Approvals() {
 function SevPill({ severity }: { severity: Severity }) {
   const styles: Record<Severity, { bg: string; dot: string; label: string }> = {
     urg: {
-      bg: "bg-[rgba(239,68,68,0.14)] text-[#b73838]",
-      dot: "bg-[#EF4444]",
+      bg: "bg-destructive/15 text-destructive",
+      dot: "bg-destructive",
       label: "Urgent",
     },
     warn: {
-      bg: "bg-[rgba(166,101,30,0.16)] text-[#7a4910]",
-      dot: "bg-[#A6651E]",
+      bg: "bg-accent/30 text-accent-foreground",
+      dot: "bg-accent",
       label: "Warning",
     },
     info: {
@@ -262,13 +262,22 @@ function SevPill({ severity }: { severity: Severity }) {
   );
 }
 
-function SevDot({ color, label }: { color: string; label: string }) {
+function SevDot({
+  tone,
+  label,
+}: {
+  tone: "danger" | "warn" | "info";
+  label: string;
+}) {
+  const dotClass =
+    tone === "danger"
+      ? "bg-destructive"
+      : tone === "warn"
+        ? "bg-accent"
+        : "bg-muted-foreground";
   return (
     <span className="inline-flex items-center gap-1">
-      <span
-        className="inline-block h-1.5 w-1.5 rounded-full"
-        style={{ background: color }}
-      />
+      <span className={`inline-block h-1.5 w-1.5 rounded-full ${dotClass}`} />
       {label}
     </span>
   );
@@ -291,7 +300,7 @@ function KpiAccent({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-[#0F2A22] to-[#163027] p-4 text-white">
+    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[rgba(209,248,67,0.70)]">
         {label}
       </div>
@@ -351,6 +360,8 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+// Bevisst dekorativ palett — deterministisk avatar-gradient per navn-hash.
+// TODO: konsolider farge — vurder å flytte til src/lib/avatar-colors.ts som delt utility.
 function avatarBg(name: string): string {
   const palette = [
     "linear-gradient(135deg,#005840,#1A7D56)",

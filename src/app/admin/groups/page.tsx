@@ -13,10 +13,10 @@ import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { GroupForm } from "./group-form";
 
-// Faste gradient-paletter — sykler basert på gruppe-indeks så hver
-// gruppe får en stabil identitet i grid-en.
+// Bevisst dekorativ palett — faste gradient-paletter for stabil gruppe-identitet i grid.
+// TODO: konsolider farge — 6 varianter for visuell variasjon mellom grupper.
 const HERO_GRADIENTS = [
-  "from-[#005840] via-[#0a4a35] to-[#163027]",
+  "from-[#005840] via-[#0a4a35] to-foreground/90",
   "from-[#3b5994] via-[#2e4470] to-[#1e2e4a]",
   "from-[#a14b30] via-[#c26442] to-[#7d3a25]",
   "from-[#5a3b8a] via-[#7c52b0] to-[#3a2658]",
@@ -79,14 +79,14 @@ export default async function Grupper() {
 
       {/* KPI-strip */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-lg border border-[#274d41] bg-gradient-to-br from-[#0F2A22] to-[#163027] p-4 text-[#F5F4EE]">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[#D1F843]/70">
+        <div className="rounded-lg border border-foreground/40 bg-gradient-to-br from-foreground to-foreground/90 p-4 text-background">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent/70">
             Aktive grupper
           </div>
           <div className="mt-2 font-mono text-3xl font-semibold leading-none">
             {groups.length}
           </div>
-          <div className="mt-2 font-mono text-[11px] text-[#F5F4EE]/70">
+          <div className="mt-2 font-mono text-[11px] text-background/70">
             {antallSkole} skole · {antallKlubb} klubb · {antallSelektert}{" "}
             selektert
           </div>

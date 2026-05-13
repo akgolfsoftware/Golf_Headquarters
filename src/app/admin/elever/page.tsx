@@ -46,17 +46,20 @@ function deriveCategory(hcp: number | null): Category {
   return "D";
 }
 
+// Kategori- og tier-badges: bruker semantic tokens med opacity for ulike toner.
+// TODO: konsolider farge — kategori-fargene var differensiert (lime/oransje/grønn/grå),
+// nå mappet til accent/destructive/primary/muted som closest tokens.
 const CAT_STYLE: Record<Category, string> = {
-  A: "bg-[rgba(209,248,67,0.30)] text-[#3d4d0f]",
-  B: "bg-[rgba(166,101,30,0.16)] text-[#7a4910]",
-  C: "bg-[rgba(122,153,140,0.20)] text-[#3d5048]",
-  D: "bg-[rgba(156,153,144,0.20)] text-[#5a5852]",
+  A: "bg-accent/30 text-accent-foreground",
+  B: "bg-destructive/15 text-destructive",
+  C: "bg-primary/15 text-primary",
+  D: "bg-muted text-muted-foreground",
 };
 
 const TIER_STYLE: Record<Tier, string> = {
   GRATIS: "bg-secondary text-muted-foreground",
-  PRO: "bg-[rgba(0,88,64,0.14)] text-primary",
-  ELITE: "bg-[#0F2A22] text-accent",
+  PRO: "bg-primary/15 text-primary",
+  ELITE: "bg-foreground text-accent",
 };
 
 const TIER_LABEL: Record<Tier, string> = {
@@ -293,18 +296,19 @@ function PlayerTableRow({
   };
 }) {
   const p = player;
+  // TODO: konsolider farge — warn (oransje) finnes ikke som token, bruker accent.
   const statusStyle: Record<Status, { bg: string; dot: string }> = {
     ok: {
-      bg: "bg-[rgba(0,88,64,0.12)] text-primary",
+      bg: "bg-primary/15 text-primary",
       dot: "bg-primary",
     },
     warn: {
-      bg: "bg-[rgba(166,101,30,0.16)] text-[#7a4910]",
-      dot: "bg-[#A6651E]",
+      bg: "bg-accent/30 text-accent-foreground",
+      dot: "bg-accent",
     },
     dan: {
-      bg: "bg-[rgba(239,68,68,0.14)] text-[#b73838]",
-      dot: "bg-[#EF4444]",
+      bg: "bg-destructive/15 text-destructive",
+      dot: "bg-destructive",
     },
     ferie: {
       bg: "bg-secondary text-muted-foreground",
@@ -370,7 +374,7 @@ function PlayerTableRow({
       </td>
       <td className="px-4 py-3">
         <span
-          className={`font-mono text-[12px] ${erOver ? "font-medium text-[#b73838]" : "text-muted-foreground"}`}
+          className={`font-mono text-[12px] ${erOver ? "font-medium text-destructive" : "text-muted-foreground"}`}
         >
           {sistInn}
         </span>
@@ -447,15 +451,15 @@ function KpiAccent({
   sub?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-[#0F2A22] to-[#163027] p-4 text-white">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[rgba(209,248,67,0.70)]">
+    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-background">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent/70">
         {label}
       </div>
-      <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-white">
+      <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-background">
         {value}
       </div>
       {sub && (
-        <div className="font-mono text-[11px] text-[rgba(245,244,238,0.7)]">
+        <div className="font-mono text-[11px] text-background/70">
           {sub}
         </div>
       )}
@@ -484,9 +488,9 @@ function Kpi({
       <div
         className={`font-mono text-[28px] font-semibold leading-none tabular-nums ${
           tone === "warn"
-            ? "text-[#a16808]"
+            ? "text-accent-foreground"
             : tone === "bad"
-              ? "text-[#b73838]"
+              ? "text-destructive"
               : "text-foreground"
         }`}
       >
@@ -537,6 +541,10 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+// Bevisst dekorativ palett — deterministisk avatar-gradient per navn-hash.
+// TODO: konsolider farge — disse er differensierte for visuell variasjon mellom 6 buckets.
+// Bevisst dekorativ palett — deterministisk avatar-gradient per navn-hash.
+// TODO: konsolider farge — vurder å flytte til src/lib/avatar-colors.ts som delt utility.
 function avatarBg(name: string): string {
   const palette = [
     "linear-gradient(135deg,#005840,#1A7D56)",

@@ -82,7 +82,7 @@ const sevDotClass: Record<Godkjenning["severity"], string> = {
 
 const tagClass: Record<Godkjenning["tag"], string> = {
   Urgent: "bg-accent text-accent-foreground",
-  Warning: "bg-pyr-spill/15 text-[#8A5E1A]",
+  Warning: "bg-pyr-spill/15 text-accent-foreground",
   Info: "bg-pyr-tek/15 text-pyr-tek",
 };
 
@@ -160,25 +160,25 @@ export default async function AdminHub() {
       {/* KPI-STRIP */}
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         {/* Featured: aktive spillere */}
-        <div className="relative overflow-hidden rounded-2xl border border-transparent bg-[linear-gradient(135deg,#005840_0%,#003B2A_100%)] p-6 text-[#F5F4EE] shadow-sm">
+        <div className="relative overflow-hidden rounded-2xl border border-transparent bg-[linear-gradient(135deg,#005840_0%,#003B2A_100%)] p-6 text-background shadow-sm">
           <div
             aria-hidden
             className="pointer-events-none absolute -bottom-8 -right-8 h-36 w-36 rounded-full bg-[radial-gradient(circle,rgba(209,248,67,0.18)_0%,transparent_70%)]"
           />
           <div className="relative space-y-2">
-            <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.06em] text-[#F5F4EE]/65">
+            <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.06em] text-background/65">
               <Users className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
               Aktive spillere i dag
             </div>
             <div className="font-mono text-[42px] font-medium leading-none tracking-[-0.02em] tabular-nums">
               {data.kpi.aktiveSpillere}
-              <span className="ml-2 text-lg text-[#F5F4EE]/55">/ {totalSpillere}</span>
+              <span className="ml-2 text-lg text-background/55">/ {totalSpillere}</span>
             </div>
             <div className="inline-flex items-center gap-1 font-mono text-xs text-accent">
               <TrendingUp className="h-3 w-3" strokeWidth={2.5} />
               +4 vs i går
             </div>
-            <div className="flex items-center justify-between pt-3 font-mono text-[11px] text-[#F5F4EE]/55">
+            <div className="flex items-center justify-between pt-3 font-mono text-[11px] text-background/55">
               <span>{Math.max(0, totalSpillere - data.kpi.aktiveSpillere)} inaktive</span>
               <div className="flex">
                 {[
@@ -195,7 +195,7 @@ export default async function AdminHub() {
                     {a.l}
                   </div>
                 ))}
-                <span className="ml-2 self-center font-mono text-[11px] text-[#F5F4EE]/55">
+                <span className="ml-2 self-center font-mono text-[11px] text-background/55">
                   +{Math.max(0, totalSpillere - data.kpi.aktiveSpillere - 4)}
                 </span>
               </div>
@@ -334,7 +334,7 @@ export default async function AdminHub() {
             ))}
           </div>
           <Link
-            href="/admin/godkjenninger"
+            href="/admin/innboks?tab=godkjennelser"
             className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium text-primary"
           >
             Åpne agent-inbox
@@ -374,7 +374,7 @@ export default async function AdminHub() {
             ))}
           </div>
           <Link
-            href="/admin/meldinger"
+            href="/admin/innboks?tab=meldinger"
             className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium text-primary"
           >
             Åpne innboks
@@ -446,7 +446,7 @@ export default async function AdminHub() {
             <span className="h-1.5 w-6 rounded-full bg-destructive" />
           </div>
           <Link
-            href="/admin/tester"
+            href="/admin/elever"
             className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium text-primary"
           >
             Planlegg tester

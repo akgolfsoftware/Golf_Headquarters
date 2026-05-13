@@ -20,9 +20,9 @@ import type { Prisma } from "@/generated/prisma/client";
 type BookingType = "coach" | "fac" | "gf" | "grp";
 
 const STATUS_STYLE: Record<string, string> = {
-  CONFIRMED: "bg-[rgba(0,88,64,0.12)] text-primary",
-  PENDING: "bg-[rgba(166,101,30,0.16)] text-[#7a4910]",
-  CANCELLED: "bg-[rgba(239,68,68,0.12)] text-[#b73838]",
+  CONFIRMED: "bg-primary/15 text-primary",
+  PENDING: "bg-accent/30 text-accent-foreground",
+  CANCELLED: "bg-destructive/15 text-destructive",
   COMPLETED: "bg-secondary text-muted-foreground",
 };
 
@@ -50,10 +50,10 @@ const TYPE_LABEL: Record<BookingType, string> = {
 };
 
 const TYPE_STYLE: Record<BookingType, string> = {
-  coach: "bg-[rgba(209,248,67,0.45)] text-[#3d4d0f]",
-  fac: "bg-[rgba(0,88,64,0.14)] text-primary",
-  gf: "bg-[rgba(166,101,30,0.18)] text-[#7a4910]",
-  grp: "bg-[rgba(122,153,140,0.22)] text-[#3d5048]",
+  coach: "bg-accent/50 text-accent-foreground",
+  fac: "bg-primary/15 text-primary",
+  gf: "bg-accent/30 text-accent-foreground",
+  grp: "bg-primary/15 text-primary",
 };
 
 type SearchParams = Promise<{ coach?: string }>;
@@ -243,7 +243,79 @@ function Section({
 function BookingTable({ rows }: { rows: BookingRow[] }) {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-      <table className="w-full text-[13px]">
+      <div className="space-y-2 p-4 sm:hidden">
+        {rows.map((b) => {
+          const type = deriveType(b.serviceType.name);
+          return (
+            <div
+              key={b.id}
+              className="rounded-lg border border-border bg-card p-4"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="font-mono text-xs tabular-nums text-muted-foreground">
+                    {b.startAt.toLocaleDateString("nb-NO", {
+                      day: "2-digit",
+                      month: "short",
+                    })}
+                    {" · "}
+                    {b.startAt.toLocaleTimeString("nb-NO", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                    –
+                    {b.endAt.toLocaleTimeString("nb-NO", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+                  <Link
+                    href={`/admin/elever/${b.user.id}`}
+                    className="mt-1 block font-semibold text-foreground hover:text-primary"
+                  >
+                    {b.user.name}
+                  </Link>
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    {b.location.name} · {b.serviceType.name}
+                  </div>
+                </div>
+                <span
+                  className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] ${
+                    STATUS_STYLE[b.status] ?? "bg-secondary text-muted-foreground"
+                  }`}
+                >
+                  {STATUS_LABEL[b.status] ?? b.status}
+                </span>
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-1">
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${TYPE_STYLE[type]}`}
+                >
+                  {TYPE_LABEL[type]}
+                </span>
+                {b.subscriptionId ? (
+                  <span className="rounded-full bg-accent/30 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-accent-foreground">
+                    Abo
+                  </span>
+                ) : b.priceOre > 0 ? (
+                  <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+                    Drop-in
+                  </span>
+                ) : null}
+              </div>
+              <div className="mt-2 flex justify-end">
+                <AdminCancelAction
+                  bookingId={b.id}
+                  status={b.status}
+                  startAt={b.startAt}
+                  playerName={b.user.name}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <table className="hidden w-full text-[13px] sm:table">
         <thead className="border-b border-border bg-secondary/40 text-left">
           <tr>
             <Th>Dato</Th>
@@ -387,7 +459,7 @@ function KpiAccent({
   sub?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-[#0F2A22] to-[#163027] p-4 text-white">
+    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[rgba(209,248,67,0.70)]">
         {label}
       </div>
@@ -462,6 +534,8 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+// Bevisst dekorativ palett — deterministisk avatar-gradient per navn-hash.
+// TODO: konsolider farge — vurder å flytte til src/lib/avatar-colors.ts som delt utility.
 function avatarBg(name: string): string {
   const palette = [
     "linear-gradient(135deg,#005840,#1A7D56)",

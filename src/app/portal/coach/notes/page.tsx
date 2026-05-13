@@ -4,6 +4,7 @@
  * Endelig design (basert på coaching-detail-demo). Hero med ringed avatar,
  * stat-pills, quote-card og notat-liste. Pro-tier kreves.
  */
+import Link from "next/link";
 import {
   MessageCircle,
   Play,
@@ -98,10 +99,13 @@ export default async function CoachNotes() {
     <div className="space-y-8">
       {/* Hero */}
       <header>
-        <button className="mb-4 inline-flex items-center gap-1 font-mono text-[12px] font-medium text-muted-foreground hover:text-foreground">
+        <Link
+          href="/portal/coach"
+          className="mb-4 inline-flex items-center gap-1 font-mono text-[12px] font-medium text-muted-foreground hover:text-foreground"
+        >
           <ChevronRight size={14} strokeWidth={1.5} className="rotate-180" />
           Coach
-        </button>
+        </Link>
 
         <div className="flex flex-wrap items-start gap-6">
           <div className="relative shrink-0">
@@ -133,14 +137,20 @@ export default async function CoachNotes() {
             </div>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-2">
-            <button className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90">
+            <Link
+              href="/portal/coach/melding"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+            >
               <Play size={16} strokeWidth={1.5} />
               Svar coach
-            </button>
-            <button className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
+            </Link>
+            <Link
+              href="/portal/coach/melding?type=vurdering"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+            >
               <Edit3 size={16} strokeWidth={1.5} />
               Be om vurdering
-            </button>
+            </Link>
           </div>
         </div>
       </header>

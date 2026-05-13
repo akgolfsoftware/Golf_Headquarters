@@ -8,11 +8,11 @@ import { EmptyState } from "@/components/shared/empty-state";
 type PyrKey = "fys" | "tek" | "slag" | "spill" | "turn";
 
 const PYR_COLOR: Record<PyrKey, string> = {
-  fys: "var(--color-pyr-fys, #005840)",
-  tek: "var(--color-pyr-tek, #1A7D56)",
-  slag: "var(--color-pyr-slag, #D1F843)",
-  spill: "var(--color-pyr-spill, #B8852A)",
-  turn: "var(--color-pyr-turn, #5E5C57)",
+  fys: "var(--color-pyr-fys)",
+  tek: "var(--color-pyr-tek)",
+  slag: "var(--color-pyr-slag)",
+  spill: "var(--color-pyr-spill)",
+  turn: "var(--color-pyr-turn)",
 };
 
 const DEFAULT_PYR: { key: PyrKey; value: number }[] = [
@@ -127,10 +127,13 @@ export default async function PlanTemplates() {
               </span>
             </Chip>
             <span className="ml-auto" />
-            <button className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90">
+            <Link
+              href="/admin/plans/templates/ny"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            >
               <Plus className="h-4 w-4" strokeWidth={1.5} />
               Ny mal fra bunn
-            </button>
+            </Link>
           </div>
 
           {/* Grid */}
@@ -287,9 +290,12 @@ export default async function PlanTemplates() {
                         </b>
                       </span>
                     </div>
-                    <button className="inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2 text-[12px] font-semibold text-primary-foreground transition-opacity hover:opacity-90">
+                    <Link
+                      href={`/admin/plans/new?templateId=${t.id}`}
+                      className="inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2 text-[12px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                    >
                       Bruk mal
-                    </button>
+                    </Link>
                   </div>
                 </article>
               );

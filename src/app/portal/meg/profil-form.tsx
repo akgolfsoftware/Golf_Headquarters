@@ -148,7 +148,7 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
           </button>
         </div>
 
-        <h2 className="text-center font-display text-[22px] font-medium leading-tight tracking-tight text-foreground">
+        <h2 className="text-center font-display text-[22px] font-medium italic leading-tight tracking-tight text-foreground">
           {name || "Uten navn"}
         </h2>
 

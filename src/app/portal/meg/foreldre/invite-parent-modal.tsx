@@ -61,7 +61,7 @@ function InviteModal({ onClose }: { onClose: () => void }) {
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               PlayerHQ · Foreldre
             </div>
-            <h2 className="mt-1 font-display text-2xl">
+            <h2 className="mt-1 font-display text-2xl italic">
               Inviter <em className="italic">forelder</em>
             </h2>
           </div>

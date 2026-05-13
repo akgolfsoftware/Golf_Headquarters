@@ -31,7 +31,7 @@ const STATUS_LABEL: Record<PlanStatus, string> = {
 
 const STATUS_DOT: Record<PlanStatus, string> = {
   aktiv: "bg-primary",
-  pause: "bg-[#A6651E]",
+  pause: "bg-accent",
   arkiv: "bg-muted-foreground",
 };
 
@@ -270,7 +270,7 @@ function Column({
   return (
     <section
       className={`flex flex-col gap-2.5 rounded-2xl border border-border p-3.5 ${
-        tone === "pause" ? "bg-[#FAF6EF]" : "bg-background"
+        tone === "pause" ? "bg-secondary" : "bg-background"
       } ${collapsed ? "min-h-[64px]" : "min-h-[520px]"}`}
     >
       <header className="flex items-center justify-between border-b border-border pb-2">
@@ -333,9 +333,9 @@ function PlanCard({ plan }: { plan: PlanCardData }) {
       <span
         className={`self-start rounded-sm px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] ${
           periodeTone === "warn"
-            ? "bg-[rgba(245,158,11,0.15)] text-[#a16808]"
+            ? "bg-accent/30 text-accent-foreground"
             : periodeTone === "over"
-              ? "bg-[rgba(239,68,68,0.14)] text-[#b73838]"
+              ? "bg-destructive/15 text-destructive"
               : "bg-secondary text-muted-foreground"
         }`}
       >
@@ -370,7 +370,7 @@ function KpiAccent({
   sub?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-[#0F2A22] to-[#163027] p-4 text-white">
+    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[rgba(209,248,67,0.70)]">
         {label}
       </div>
@@ -411,7 +411,7 @@ function Kpi({
       </div>
       <div
         className={`font-mono text-[28px] font-semibold leading-none tabular-nums ${
-          tone === "warn" ? "text-[#a16808]" : "text-foreground"
+          tone === "warn" ? "text-accent-foreground" : "text-foreground"
         }`}
       >
         {value}
@@ -445,6 +445,8 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+// Bevisst dekorativ palett — deterministisk avatar-gradient per navn-hash.
+// TODO: konsolider farge — vurder å flytte til src/lib/avatar-colors.ts som delt utility.
 function avatarBg(name: string): string {
   const palette = [
     "linear-gradient(135deg,#005840,#1A7D56)",

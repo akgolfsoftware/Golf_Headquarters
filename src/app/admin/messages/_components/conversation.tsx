@@ -2,11 +2,6 @@
 
 import { useState, useRef, useTransition } from "react";
 import {
-  Phone,
-  MoreVertical,
-  Paperclip,
-  Image as ImageIcon,
-  Calendar,
   Sparkles,
   Send,
   Check,
@@ -189,6 +184,7 @@ export function Conversation({
             </a>
           </div>
         </div>
+        {/* V2: ring/mer-funksjoner kommer
         <button
           type="button"
           disabled
@@ -207,6 +203,7 @@ export function Conversation({
         >
           <MoreVertical size={16} strokeWidth={1.5} />
         </button>
+        */}
       </div>
 
       {/* Meldingsstrøm */}
@@ -310,6 +307,7 @@ export function Conversation({
             disabled={isPending}
           />
           <div className="mt-2 flex items-center gap-1.5">
+            {/* V2: vedlegg/bilde/plan-funksjoner kommer
             <button
               type="button"
               disabled
@@ -337,6 +335,7 @@ export function Conversation({
               <Calendar size={14} strokeWidth={1.5} />
               Plan
             </button>
+            */}
             <button
               type="button"
               onClick={generereAiUtkast}

@@ -421,10 +421,13 @@ export default async function Talent() {
                   Placeholder — kobles mot StatsCache for ekte SG-data per
                   distanse.
                 </p>
-                <button className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-[12px] font-semibold text-accent-foreground">
+                <Link
+                  href={`/admin/plans/new?spillerId=${valgt.id}`}
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-[12px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+                >
                   Planlegg test
                   <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
-                </button>
+                </Link>
               </div>
 
               {/* Mini-stats — TODO: koble mot StatsCache */}

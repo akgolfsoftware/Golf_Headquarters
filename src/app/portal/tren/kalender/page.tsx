@@ -347,9 +347,9 @@ export default async function KalenderPage({
 
           <div className="flex flex-col gap-4">
             <RailCard label="Ukens pyramide">
-              {/* TODO: aggreger faktisk fra PyramidArea per session */}
+              {/* TODO v2: pyramide-aggregering fra PyramidArea per session */}
               <div className="mt-2 text-sm text-muted-foreground">
-                Aggregering kommer snart.
+                Ingen data for denne uken.
               </div>
             </RailCard>
 
