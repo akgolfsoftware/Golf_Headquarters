@@ -16,6 +16,7 @@ export type OpprettOktInput = {
   spillerId: string;
   serviceTypeId: string;
   locationId: string;
+  facilityId?: string;
   startAt: Date | string;
   varighetMin: number;
   notater?: string;
@@ -63,11 +64,27 @@ export async function opprettOktPaaTid(
   if (!serviceType) throw new Error("Tjeneste finnes ikke");
   if (!location) throw new Error("Lokasjon finnes ikke");
 
+  // Verifiser facility hvis sendt (må tilhøre samme lokasjon)
+  let facilityId: string | null = null;
+  if (data.facilityId) {
+    const facility = await prisma.facility.findUnique({
+      where: { id: data.facilityId },
+      select: { id: true, locationId: true, active: true },
+    });
+    if (!facility) throw new Error("Fasilitet finnes ikke");
+    if (facility.locationId !== location.id) {
+      throw new Error("Fasilitet hører ikke til valgt lokasjon");
+    }
+    if (!facility.active) throw new Error("Fasilitet er inaktiv");
+    facilityId = facility.id;
+  }
+
   const booking = await prisma.booking.create({
     data: {
       userId: spiller.id,
       serviceTypeId: serviceType.id,
       locationId: location.id,
+      facilityId,
       startAt,
       endAt,
       status: "CONFIRMED",

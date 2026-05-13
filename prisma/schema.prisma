@@ -225,6 +225,10 @@ model Booking {
   // Brukes til oppdater/slett ved endring/avbestilling. Null hvis Calendar
   // ikke er koblet, eller hvis push feilet (best-effort sync).
   googleEventId  String?
+  // Hvilken fasilitet (rom/range/simulator) bookingen tar opp. Optional —
+  // ikke alle bookinger er koblet til en spesifikk fasilitet (drop-in kan
+  // være "et sted på lokasjonen"). Brukes for tetthet-visning i kalender.
+  facilityId     String?
   // Kontakt-info for bookinger gjort av ikke-innloggede kunder (gjest-flow).
   guestName     String?
   guestEmail    String?
@@ -237,11 +241,13 @@ model Booking {
   serviceType  ServiceType   @relation(fields: [serviceTypeId], references: [id])
   location     Location      @relation(fields: [locationId], references: [id])
   subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  facility     Facility?     @relation(fields: [facilityId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([startAt])
   @@index([stripeCheckoutSessionId])
   @@index([subscriptionId])
+  @@index([facilityId])
   @@map("bookings")
 }
 
@@ -786,7 +792,8 @@ model Facility {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  location Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  bookings Booking[]
 
   @@index([locationId, active])
   @@map("facilities")

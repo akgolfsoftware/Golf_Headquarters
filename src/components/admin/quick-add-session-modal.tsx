@@ -22,6 +22,12 @@ export type LocationOption = {
   name: string;
 };
 
+export type FacilityOption = {
+  id: string;
+  name: string;
+  locationId: string;
+};
+
 export type QuickAddSlot = {
   /** ISO-streng (UTC) for valgt start-tidspunkt. Brukes for å unngå tidsone-glipp serverside. */
   startIso: string;
@@ -39,6 +45,7 @@ type Props = {
   spillere: SpillerOption[];
   serviceTypes: ServiceTypeOption[];
   locations: LocationOption[];
+  facilities?: FacilityOption[];
   defaultLocationId?: string;
 };
 
@@ -48,6 +55,7 @@ export function QuickAddSessionModal({
   spillere,
   serviceTypes,
   locations,
+  facilities = [],
   defaultLocationId,
 }: Props) {
   const router = useRouter();
@@ -91,9 +99,16 @@ export function QuickAddSessionModal({
     const st = serviceTypes.find((s) => s.id === defaultServiceTypeId);
     return st?.durationMin ?? 60;
   });
+  const [facilityId, setFacilityId] = useState<string>("");
   const [notater, setNotater] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Facilities for valgt lokasjon
+  const facilityValg = useMemo(
+    () => facilities.filter((f) => f.locationId === locationId),
+    [facilities, locationId],
+  );
 
   const slotKey = slot?.startIso ?? null;
   if (slotKey !== aktivSlotKey) {
@@ -104,9 +119,19 @@ export function QuickAddSessionModal({
     setLocationId(defaultLocId);
     const st = serviceTypes.find((s) => s.id === defaultServiceTypeId);
     setVarighetMin(st?.durationMin ?? 60);
+    setFacilityId("");
     setNotater("");
     setError(null);
     setSuccess(null);
+  }
+
+  // Reset facility-valg når lokasjon endres
+  if (
+    facilityId &&
+    facilityValg.length > 0 &&
+    !facilityValg.some((f) => f.id === facilityId)
+  ) {
+    setFacilityId("");
   }
 
   // Vis/skjul dialog via slot.
@@ -169,6 +194,7 @@ export function QuickAddSessionModal({
           spillerId,
           serviceTypeId,
           locationId,
+          facilityId: facilityId || undefined,
           startAt: slot.startIso,
           varighetMin,
           notater: notater.trim() || undefined,
@@ -322,6 +348,29 @@ export function QuickAddSessionModal({
                   ))}
                 </select>
               </div>
+              {facilityValg.length > 0 && (
+                <div>
+                  <label
+                    htmlFor="quick-add-facility"
+                    className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+                  >
+                    Fasilitet (valgfritt)
+                  </label>
+                  <select
+                    id="quick-add-facility"
+                    value={facilityId}
+                    onChange={(e) => setFacilityId(e.target.value)}
+                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                  >
+                    <option value="">Ingen spesifikk</option>
+                    {facilityValg.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div>
                 <label
                   htmlFor="quick-add-varighet"

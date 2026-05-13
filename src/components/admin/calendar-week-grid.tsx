@@ -3,6 +3,7 @@
 import { useState } from "react";
 import {
   QuickAddSessionModal,
+  type FacilityOption,
   type LocationOption,
   type QuickAddSlot,
   type ServiceTypeOption,
@@ -62,6 +63,7 @@ type Props = {
   spillere: SpillerOption[];
   serviceTypes: ServiceTypeOption[];
   locations: LocationOption[];
+  facilities?: FacilityOption[];
   /** Hvis innlogget bruker har lov til å booke (alle unntatt GUEST). */
   kanBooke: boolean;
 };
@@ -82,6 +84,7 @@ export function CalendarWeekGrid({
   spillere,
   serviceTypes,
   locations,
+  facilities = [],
   kanBooke,
 }: Props) {
   const [slot, setSlot] = useState<QuickAddSlot | null>(null);
@@ -276,6 +279,7 @@ export function CalendarWeekGrid({
         spillere={spillere}
         serviceTypes={serviceTypes}
         locations={locations}
+        facilities={facilities}
       />
     </>
   );

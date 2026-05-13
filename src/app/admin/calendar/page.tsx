@@ -160,7 +160,7 @@ export default async function AdminCalendar({
 
   const kanBooke = user.role !== "GUEST";
 
-  const [bookings, availability, spillere, serviceTypes, locations, coachListe] =
+  const [bookings, availability, spillere, serviceTypes, locations, coachListe, facilities] =
     await Promise.all([
       prisma.booking.findMany({
         where: bookingsFilter,
@@ -219,6 +219,15 @@ export default async function AdminCalendar({
             orderBy: { name: "asc" },
           })
         : Promise.resolve([] as { id: string; name: string }[]),
+      kanBooke
+        ? prisma.facility.findMany({
+            where: { active: true },
+            select: { id: true, name: true, locationId: true },
+            orderBy: { name: "asc" },
+          })
+        : Promise.resolve(
+            [] as { id: string; name: string; locationId: string }[],
+          ),
     ]);
 
   // Format helpers
@@ -528,6 +537,7 @@ export default async function AdminCalendar({
             spillere={spillere}
             serviceTypes={serviceTypes}
             locations={locations}
+            facilities={facilities}
             kanBooke={kanBooke}
           />
           <aside className="sticky top-6 hidden flex-col gap-4 lg:flex">
