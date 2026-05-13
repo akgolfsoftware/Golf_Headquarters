@@ -35,12 +35,21 @@ export function MarketingHeader() {
           >
             Logg inn
           </Link>
-          <Link
-            href="/booking"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
-          >
-            Book time
-          </Link>
+          {process.env.BOOKING_ACTIVE === "true" ? (
+            <Link
+              href="/booking"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            >
+              Book time
+            </Link>
+          ) : (
+            <a
+              href="mailto:post@akgolf.no?subject=Booking-foresp%C3%B8rsel"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            >
+              Kontakt oss
+            </a>
+          )}
         </div>
       </div>
     </header>

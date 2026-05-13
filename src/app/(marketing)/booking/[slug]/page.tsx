@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getAvailableSlots } from "@/lib/booking/availability";
 import { SlotPicker } from "./slot-picker";
+
+const BOOKING_ACTIVE = process.env.BOOKING_ACTIVE === "true";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -29,6 +31,8 @@ function toDateInput(d: Date): string {
 }
 
 export default async function ServiceBookingPage({ params, searchParams }: Props) {
+  if (!BOOKING_ACTIVE) redirect("/booking");
+
   const { slug } = await params;
   const { dato } = await searchParams;
 
