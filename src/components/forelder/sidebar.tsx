@@ -10,6 +10,7 @@ const NAV = [
   { href: "/forelder/ukerapport", label: "Ukerapport" },
   { href: "/forelder/fakturaer", label: "Fakturaer" },
   { href: "/forelder/varsler", label: "Varsler" },
+  { href: "/forelder/samtykke", label: "Samtykker" },
 ];
 
 export function ForelderSidebar() {
