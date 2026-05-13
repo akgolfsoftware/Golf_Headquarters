@@ -61,6 +61,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
       { href: "/admin/agents", label: "AI-agenter" },
       { href: "/admin/email-templates", label: "E-postmaler" },
       { href: "/admin/team", label: "Team" },
+      { href: "/admin/settings/calendar", label: "Google Calendar" },
       { href: "/admin/settings", label: "Innstillinger" },
     ],
   },

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
+import { pushBookingToCalendar } from "@/lib/google-calendar";
 
 export type CreditBookingInput = {
   serviceTypeId: string;
@@ -132,6 +133,13 @@ export async function createCreditBooking(
       startAt: startAt.toISOString(),
     },
   });
+
+  // Best-effort: push til coachens Google Calendar (oppdaterer Booking.googleEventId)
+  try {
+    await pushBookingToCalendar(result.id);
+  } catch (err) {
+    console.error("[credit-booking] calendar push failed", err);
+  }
 
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/portal");

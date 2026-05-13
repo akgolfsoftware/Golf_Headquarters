@@ -6,6 +6,7 @@ import {
   creditsForPriceId,
   tierForPriceId,
 } from "@/lib/stripe";
+import { pushBookingToCalendar } from "@/lib/google-calendar";
 import {
   type SubscriptionStatus,
 } from "@/generated/prisma/client";
@@ -170,6 +171,15 @@ export async function POST(req: Request) {
             } catch (err) {
               console.error(
                 "[stripe-webhook] booking-confirmation-email failed",
+                err
+              );
+            }
+            // Push til coachens Google Calendar (best-effort)
+            try {
+              await pushBookingToCalendar(bookingId);
+            } catch (err) {
+              console.error(
+                "[stripe-webhook] calendar-push failed",
                 err
               );
             }

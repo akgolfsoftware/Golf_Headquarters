@@ -8,6 +8,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { getCalendarBusy } from "@/lib/google-calendar";
 
 export type Slot = {
   start: Date;
@@ -59,6 +60,23 @@ export async function getAvailableSlots(
     select: { startAt: true, endAt: true },
   });
 
+  // Hent travle tider fra Google Calendar per coach (parallelt).
+  // Hvis en coach ikke har koblet Calendar, returneres tom liste.
+  const uniqueCoachIds = Array.from(
+    new Set(
+      availability
+        .filter((av) => av.coach && (av.coach.role === "COACH" || av.coach.role === "ADMIN"))
+        .map((av) => av.coach.id),
+    ),
+  );
+  const busyPerCoach = new Map<string, { start: Date; end: Date }[]>();
+  await Promise.all(
+    uniqueCoachIds.map(async (coachId) => {
+      const busy = await getCalendarBusy(coachId, dayStart, dayEnd);
+      busyPerCoach.set(coachId, busy);
+    }),
+  );
+
   const slots: Slot[] = [];
   const now = new Date();
 
@@ -66,6 +84,7 @@ export async function getAvailableSlots(
     if (!av.coach || (av.coach.role !== "COACH" && av.coach.role !== "ADMIN")) {
       continue;
     }
+    const coachBusy = busyPerCoach.get(av.coach.id) ?? [];
 
     const [startH, startM] = av.startTime.split(":").map(Number);
     const [endH, endM] = av.endTime.split(":").map(Number);
@@ -80,12 +99,18 @@ export async function getAvailableSlots(
 
       // Filtrer ut historiske slots.
       if (cursor.getTime() > now.getTime()) {
-        // Sjekk konflikt med eksisterende bookinger.
-        const conflict = existing.some(
+        // Sjekk konflikt med eksisterende bookinger ELLER Calendar-busy.
+        const bookingConflict = existing.some(
           (b) =>
             cursor.getTime() < b.endAt.getTime() &&
             slotEnd.getTime() > b.startAt.getTime(),
         );
+        const calendarConflict = coachBusy.some(
+          (cb) =>
+            cursor.getTime() < cb.end.getTime() &&
+            slotEnd.getTime() > cb.start.getTime(),
+        );
+        const conflict = bookingConflict || calendarConflict;
         if (!conflict) {
           slots.push({
             start: new Date(cursor),
@@ -127,6 +152,13 @@ export async function isSlotStillAvailable(
       status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
     },
   });
+  if (conflict) return false;
 
-  return !conflict;
+  // Sjekk også Google Calendar for ekstern busy-time (privat avtale)
+  const busy = await getCalendarBusy(coachId, startAt, endAt);
+  if (busy.some((b) => startAt < b.end && endAt > b.start)) {
+    return false;
+  }
+
+  return true;
 }

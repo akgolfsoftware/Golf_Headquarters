@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
 import { audit } from "@/lib/audit";
+import { removeFromCalendar } from "@/lib/google-calendar";
 
 export async function cancelBooking(bookingId: string) {
   const user = await getCurrentUser();
@@ -12,6 +13,7 @@ export async function cancelBooking(bookingId: string) {
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
+    include: { serviceType: { select: { coachUserId: true } } },
   });
   if (!booking) throw new Error("not-found");
 
@@ -44,6 +46,18 @@ export async function cancelBooking(bookingId: string) {
     where: { id: bookingId },
     data: { status: "CANCELLED" },
   });
+
+  // Slett event fra Google Calendar hvis pushet (best-effort)
+  if (booking.googleEventId && booking.serviceType.coachUserId) {
+    try {
+      await removeFromCalendar(
+        booking.serviceType.coachUserId,
+        booking.googleEventId,
+      );
+    } catch (err) {
+      console.error("[cancel-booking] calendar-remove failed", err);
+    }
+  }
 
   await audit({
     actorId: user.id,

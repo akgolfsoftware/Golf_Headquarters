@@ -139,6 +139,7 @@ model User {
   auditLogs         AuditLog[]
   coachAvailability CoachAvailability[]
   serviceTypes      ServiceType[]      @relation("CoachServiceTypes")
+  googleCalendar    GoogleCalendarConnection?
 
   // WAGR-snapshot (om spilleren er registrert i World Amateur Golf Ranking)
   wagrSnapshot      WagrSnapshot?
@@ -220,6 +221,10 @@ model Booking {
   // Hvis booking er trukket fra Academy-abonnement, peker dette tilbake til
   // Subscription. Brukes for credit-tilbakeføring ved avbestilling >24t.
   subscriptionId String?
+  // Google Calendar event-ID hvis booking er pushet til coachens kalender.
+  // Brukes til oppdater/slett ved endring/avbestilling. Null hvis Calendar
+  // ikke er koblet, eller hvis push feilet (best-effort sync).
+  googleEventId  String?
   // Kontakt-info for bookinger gjort av ikke-innloggede kunder (gjest-flow).
   guestName     String?
   guestEmail    String?
@@ -607,6 +612,35 @@ model Subscription {
   bookings Booking[]
 
   @@map("subscriptions")
+}
+
+// Google Calendar 2-way sync per coach.
+// Refresh-token er krypter via GOOGLE_TOKEN_ENCRYPTION_KEY før lagring.
+// channelId + resourceId brukes for push-notifikasjons-kanal (V1.5).
+model GoogleCalendarConnection {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  // Google-konto e-post (typisk akgolfgroup@gmail.com eller anders' personlige)
+  googleEmail          String
+  // Hvilken kalender brukes som primær (default: "primary")
+  calendarId           String   @default("primary")
+  // OAuth refresh-token (kryptert via AES-256-GCM)
+  refreshTokenCipher   String
+  // Tidsstempel siste vellykkede sync (busy-times pull)
+  lastSyncAt           DateTime?
+  // Push-notifications (V1.5 — webhook fra Google ved Calendar-endring)
+  channelId            String?
+  resourceId           String?
+  channelExpiresAt     DateTime?
+  // Sync-status: ACTIVE | PAUSED | ERROR
+  status               String   @default("ACTIVE")
+  lastError            String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("google_calendar_connections")
 }
 
 // ---------- CoachHQ-modeller (Fase 2.1) ----------
