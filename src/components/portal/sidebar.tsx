@@ -52,6 +52,7 @@ const NAV: NavGroup[] = [
       { href: "/portal/coach/plans", label: "Planer" },
       { href: "/portal/coach/melding", label: "Meldinger" },
       { href: "/portal/coach/notes", label: "Notater" },
+      { href: "/portal/coach/videoer", label: "Videoer" },
       { href: "/portal/coach/ai", label: "AI-coach" },
       { href: "/portal/booking/ny", label: "Book økt" },
     ],

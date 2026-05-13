@@ -48,6 +48,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Verktøy",
     items: [
       { href: "/admin/agents", label: "AI-agenter" },
+      { href: "/admin/videoer", label: "Videoer" },
       { href: "/admin/recording", label: "Sesjonsopptak" },
       { href: "/admin/email-templates", label: "E-postmaler" },
       { href: "/admin/team", label: "Team" },
