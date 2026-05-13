@@ -711,39 +711,233 @@ export function LiveShell({
             <Divider />
             <MiniStat label="Streak" value={state.currentStreak} />
           </div>
+
+          {/* Idle-hint før første rep */}
+          {showIdle && (
+            <div className="mt-8 inline-flex items-center gap-2 font-mono text-[12px] text-white/55">
+              <MousePointerClick className="h-4 w-4" strokeWidth={1.5} />
+              <span>
+                Tap for å logge{" "}
+                <strong className="font-semibold text-white">rep</strong>
+              </span>
+              <span className="opacity-50">·</span>
+              <span>X for bom</span>
+            </div>
+          )}
+
+          {/* Offline-kø chip */}
+          {showOfflineBanner && state.repsLogged > 0 && (
+            <div className="mt-6 inline-flex items-center gap-2.5 rounded-full border border-[#F4C430]/30 bg-[#F4C430]/[0.08] px-4 py-2 text-[#F4C430]">
+              <RotateCw className="h-[14px] w-[14px]" strokeWidth={1.5} />
+              <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] tabular-nums">
+                {state.repsLogged} reps i kø
+              </span>
+            </div>
+          )}
         </div>
 
-        <BottomBar cols="grid-cols-[200px_200px_1fr]">
+        {showPauseOverlay ? (
+          <BottomBar cols="grid-cols-[200px_1fr]">
+            <button
+              type="button"
+              onClick={() => dispatch({ type: "TOGGLE_PAUSE" })}
+              className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl text-[16px] font-medium text-white/85 transition-colors hover:bg-white/[0.06]"
+            >
+              <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
+              Avbryt pause
+            </button>
+            <button
+              type="button"
+              onClick={() => dispatch({ type: "TOGGLE_PAUSE" })}
+              className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
+              style={{
+                boxShadow:
+                  "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
+              }}
+            >
+              <Play className="h-[22px] w-[22px]" strokeWidth={2} fill="currentColor" />
+              Fortsett økt
+              <span className="ml-2 inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
+                space
+              </span>
+            </button>
+          </BottomBar>
+        ) : (
+          <BottomBar cols="grid-cols-[160px_160px_160px_1fr]">
+            <button
+              type="button"
+              onClick={() => dispatch({ type: "TOGGLE_PAUSE" })}
+              className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/15 bg-transparent text-[15px] font-medium text-white/85 transition-colors hover:bg-white/[0.06]"
+            >
+              <Pause className="h-[18px] w-[18px]" strokeWidth={1.5} />
+              Pause
+            </button>
+            <button
+              type="button"
+              onClick={handleCompleteDrill}
+              className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/15 bg-transparent text-[15px] font-medium text-white/75 transition-colors hover:bg-white/[0.04]"
+            >
+              <SkipForward className="h-[18px] w-[18px]" strokeWidth={1.5} />
+              Hopp over
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLogRep(false)}
+              className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-transparent text-[16px] font-medium text-white transition-colors hover:bg-white/[0.06]"
+            >
+              <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
+              Bom (X)
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLogRep(true)}
+              className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
+              style={{
+                boxShadow:
+                  "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
+              }}
+            >
+              <Check className="h-[22px] w-[22px]" strokeWidth={2} />
+              Logg rep
+              <span className="ml-2 inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
+                space
+              </span>
+            </button>
+          </BottomBar>
+        )}
+      </div>
+    );
+  }
+
+  // ===========================================================================
+  // SCREEN 2.5 — FERDIG (drill fullført, pre-between)
+  // ===========================================================================
+
+  if (state.phase === "ferdig" && currentDrill) {
+    const ringRadius = 228;
+    const ringCircumference = 2 * Math.PI * ringRadius;
+    const approvedPct =
+      state.repsLogged > 0
+        ? Math.round((state.approved / state.repsLogged) * 100)
+        : 0;
+
+    return (
+      <div className="relative grid h-screen h-[100dvh] w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-foreground text-white">
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{
+            width: 760,
+            height: 760,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(209,248,67,0.10) 0%, rgba(209,248,67,0) 65%)",
+          }}
+        />
+
+        <TopBar
+          left={
+            <>
+              <LivePill label="Live" />
+              <span className="font-mono text-[12px] font-medium uppercase tracking-[0.10em] text-white/85">
+                Øvelse {state.drillIndex + 1} av {drills.length} ·{" "}
+                {PYR_LABEL[currentDrill.exercise.pyramidArea]}
+              </span>
+            </>
+          }
+          center={
+            <ProgressDots total={drills.length} current={state.drillIndex} />
+          }
+          right={
+            <>
+              <span className="font-mono text-[11px] uppercase tracking-[0.10em] text-accent tabular-nums">
+                Fullført
+              </span>
+              <CloseButton />
+            </>
+          }
+        />
+
+        <div className="relative z-[1] flex flex-col items-center justify-center">
+          <div className="inline-flex items-center gap-2.5 rounded-full border-2 border-accent/35 bg-accent/[0.08] px-4 py-2">
+            <span className="h-2 w-2 rounded-full bg-accent" />
+            <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.10em] text-accent">
+              {PYR_LABEL[currentDrill.exercise.pyramidArea]} ·{" "}
+              {currentDrill.exercise.name} · Fullført
+            </span>
+          </div>
+
+          <div className="relative mt-8 flex aspect-square w-full max-w-[480px] items-center justify-center px-4 sm:px-0">
+            <svg
+              className="absolute inset-0 h-full w-full -rotate-90"
+              viewBox="0 0 480 480"
+            >
+              <circle
+                cx="240"
+                cy="240"
+                r={ringRadius}
+                fill="none"
+                strokeWidth="4"
+                stroke="rgba(255,255,255,0.08)"
+              />
+              <circle
+                cx="240"
+                cy="240"
+                r={ringRadius}
+                fill="none"
+                strokeWidth="6"
+                stroke="var(--accent)"
+                strokeLinecap="round"
+                strokeDasharray={ringCircumference}
+                strokeDashoffset={0}
+                style={{ filter: "drop-shadow(0 0 16px rgba(209,248,67,0.55))" }}
+              />
+            </svg>
+            <div className="flex flex-col items-center">
+              <div
+                className="font-mono text-[200px] font-medium leading-[0.9] tracking-[-0.05em] tabular-nums text-accent"
+                style={{ textShadow: "0 0 40px rgba(209,248,67,0.45)" }}
+              >
+                {state.repsLogged}
+              </div>
+              <div className="mt-3 font-mono text-[14px] font-medium uppercase tracking-[0.16em] text-accent">
+                av {targetReps} reps · 100 %
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 flex items-stretch gap-8">
+            <MiniStat label="Godkjent" value={state.approved} highlight />
+            <Divider />
+            <MiniStat label="Mislykket" value={state.failed} dim />
+            <Divider />
+            <MiniStat label="Snitt" value={approvedPct} />
+          </div>
+
+          <div className="mt-10 inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-white/55">
+            <Clock className="h-3.5 w-3.5" strokeWidth={1.5} />
+            Øvelses-sammendrag om 0,8 s
+          </div>
+        </div>
+
+        <BottomBar cols="grid-cols-[200px_1fr]">
+          <Link
+            href="/portal/tren"
+            className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl text-[16px] font-medium text-white/85 transition-colors hover:bg-white/[0.06]"
+          >
+            <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
+            Avslutt økt
+          </Link>
           <button
             type="button"
             onClick={handleCompleteDrill}
-            className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/15 bg-transparent text-[15px] font-medium text-white/75 transition-colors hover:bg-white/[0.04]"
-          >
-            <SkipForward className="h-[18px] w-[18px]" strokeWidth={1.5} />
-            Hopp over
-          </button>
-          <button
-            type="button"
-            onClick={() => handleLogRep(false)}
-            className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-transparent text-[16px] font-medium text-white transition-colors hover:bg-white/[0.06]"
-          >
-            <Pause className="h-[18px] w-[18px]" strokeWidth={1.5} />
-            Bom (X)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleLogRep(true)}
             className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
             style={{
               boxShadow:
                 "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
             }}
           >
-            <Check className="h-[22px] w-[22px]" strokeWidth={2} />
-            Logg rep
-            <span className="ml-2 inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
-              space
-            </span>
+            Til sammendrag
+            <ArrowRight className="h-[22px] w-[22px]" strokeWidth={2} />
           </button>
         </BottomBar>
       </div>
@@ -979,9 +1173,12 @@ export function LiveShell({
   let donutOffset = 0;
 
   const drillsFullført = resultsRef.current.length;
+  const showAchievement = state.summaryVariant === "achievement";
+  const showConfetti = state.summaryVariant === "confetti";
 
   return (
     <div className="relative min-h-screen min-h-dvh w-screen grid-rows-[56px_1fr_104px] overflow-y-auto bg-foreground text-white md:grid md:h-screen md:h-[100dvh] md:overflow-hidden">
+      {showConfetti && <ConfettiLayer />}
       <TopBar
         left={
           <>
@@ -1015,7 +1212,15 @@ export function LiveShell({
           <p className="mt-4 font-mono text-[13px] tracking-[0.08em] text-white/65 tabular-nums">
             {totalReps} reps totalt · {totalApproved} godkjent · {approvalPct} %
           </p>
+          {showConfetti && (
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/15 px-4 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+              <Trophy className="h-[14px] w-[14px]" strokeWidth={1.5} />
+              Personlig rekord!
+            </div>
+          )}
         </div>
+
+        {showAchievement && <AchievementBanner bestStreak={bestStreakOverall} />}
 
         {/* Body grid */}
         <div className="grid grid-cols-1 items-stretch gap-8 md:grid-cols-[360px_1fr]">
@@ -1446,5 +1651,103 @@ function MoodButton({
     >
       {icon}
     </button>
+  );
+}
+
+function PausePill() {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-full bg-[rgba(244,196,48,0.14)] px-3 py-1.5">
+      <span className="h-2 w-2 rounded-full bg-[#F4C430]" />
+      <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-[#F4C430]">
+        Pause
+      </span>
+    </div>
+  );
+}
+
+function AchievementBanner({ bestStreak }: { bestStreak: number }) {
+  return (
+    <div
+      className="relative mb-6 overflow-hidden rounded-2xl border border-accent/45 px-6 py-6 md:px-8"
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(209,248,67,0.16), rgba(209,248,67,0.06))",
+      }}
+    >
+      <div className="pointer-events-none absolute -right-4 -top-6 opacity-10">
+        <Award className="h-[200px] w-[200px] text-accent" strokeWidth={0.5} />
+      </div>
+
+      <div className="relative z-[1] flex flex-wrap items-center gap-6">
+        <div
+          className="grid h-[72px] w-[72px] flex-shrink-0 place-items-center rounded-2xl bg-accent"
+          style={{
+            boxShadow:
+              "inset 0 0 0 1px rgba(255,255,255,0.4), 0 14px 32px rgba(209,248,67,0.30)",
+          }}
+        >
+          <Award className="h-8 w-8 text-accent-foreground" strokeWidth={2} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-accent">
+            Ny milepæl
+          </div>
+          <div className="font-display text-[24px] font-semibold leading-[1.15] tracking-[-0.015em] text-white md:text-[28px]">
+            Beste streak · {bestStreak} reps på rad
+          </div>
+          <p className="mt-2 text-[14px] leading-[1.5] text-white/70">
+            Coach varsles automatisk når du setter en ny personlig rekord.
+          </p>
+        </div>
+        <button
+          type="button"
+          className="inline-flex h-11 items-center gap-2 rounded-full border border-white/10 bg-black/25 px-4 font-display text-[13px] font-medium text-white transition-colors hover:bg-black/35"
+        >
+          <Share2 className="h-[15px] w-[15px]" strokeWidth={1.5} />
+          Del
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Statisk konfetti-lag — ingen animasjon (vi unngår CSS-keyframes for nå).
+const CONFETTI_DOTS = [
+  { left: "8%", top: "20%", bg: "#D1F843", rot: 540 },
+  { left: "14%", top: "20%", bg: "#16A34A", rot: -420 },
+  { left: "22%", top: "20%", bg: "#D1F843", rot: -380 },
+  { left: "28%", top: "20%", bg: "#F4C430", rot: 480 },
+  { left: "34%", top: "20%", bg: "#D1F843", rot: -520 },
+  { left: "40%", top: "20%", bg: "#FFFFFF", rot: 240 },
+  { left: "52%", top: "20%", bg: "#D1F843", rot: 600 },
+  { left: "62%", top: "20%", bg: "#F4C430", rot: 280 },
+  { left: "68%", top: "20%", bg: "#16A34A", rot: -420 },
+  { left: "78%", top: "20%", bg: "#FFFFFF", rot: -300 },
+  { left: "84%", top: "20%", bg: "#D1F843", rot: 480 },
+  { left: "94%", top: "20%", bg: "#D1F843", rot: 360 },
+  { left: "12%", top: "10%", bg: "#D1F843", rot: 520 },
+  { left: "30%", top: "12%", bg: "#FFFFFF", rot: -380 },
+  { left: "50%", top: "14%", bg: "#F4C430", rot: 320 },
+  { left: "70%", top: "12%", bg: "#16A34A", rot: -460 },
+  { left: "88%", top: "8%", bg: "#D1F843", rot: 540 },
+];
+
+function ConfettiLayer() {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-[5] overflow-hidden">
+      {CONFETTI_DOTS.map((c, i) => (
+        <span
+          key={i}
+          className="absolute block h-3.5 w-2 rounded-sm"
+          style={{
+            left: c.left,
+            top: c.top,
+            background: c.bg,
+            opacity: 0.85,
+            transform: `rotate(${c.rot}deg)`,
+          }}
+        />
+      ))}
+    </div>
   );
 }

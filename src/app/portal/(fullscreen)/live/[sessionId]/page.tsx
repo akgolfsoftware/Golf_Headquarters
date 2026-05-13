@@ -1,14 +1,16 @@
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { LiveTapper } from "./live-tapper";
+import { LiveShell } from "./live-shell";
 
 export default async function LiveSessionPage({
   params,
 }: {
   params: Promise<{ sessionId: string }>;
 }) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({
+    allow: ["PLAYER", "COACH", "ADMIN"],
+  });
   const { sessionId } = await params;
 
   if (user.tier === "GRATIS") {
@@ -33,5 +35,5 @@ export default async function LiveSessionPage({
     redirect("/portal/tren");
   }
 
-  return <LiveTapper session={session} drills={session.drills} />;
+  return <LiveShell session={session} drills={session.drills} />;
 }
