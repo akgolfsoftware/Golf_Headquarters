@@ -175,11 +175,19 @@ function BookingRad({
       </div>
 
       {kommende && kanAvbestille && (
-        <div className="mt-4 flex items-center gap-3 border-t border-border/50 pt-3">
+        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border/50 pt-3">
+          {kanRefunderes && (
+            <Link
+              href={`/portal/meg/bookinger/reschedule/${booking.id}`}
+              className="rounded-md border border-input bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:border-primary hover:text-primary"
+            >
+              Bytt tid
+            </Link>
+          )}
           <CancelButton bookingId={booking.id} canRefund={kanRefunderes} />
           {!kanRefunderes && (
             <span className="text-xs text-muted-foreground">
-              Mindre enn 24 t igjen — ingen refusjon.
+              Mindre enn 24 t igjen — ingen refusjon eller flytting.
             </span>
           )}
         </div>
