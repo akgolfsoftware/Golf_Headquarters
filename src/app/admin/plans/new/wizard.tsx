@@ -428,7 +428,7 @@ function StartFraMalModal({
 
 function ProgressStripe({ current }: { current: StegNr }) {
   return (
-    <div className="grid grid-cols-6 gap-2.5">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
       {STEG_NAVN.map((navn, idx) => {
         const num = (idx + 1) as StegNr;
         const state: "done" | "current" | "todo" =

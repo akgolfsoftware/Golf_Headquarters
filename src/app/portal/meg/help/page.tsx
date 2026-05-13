@@ -114,7 +114,7 @@ export default async function HelpPage() {
         >
           PlayerHQ · /meg/hjelp
         </span>
-        <h1 className="font-display text-5xl font-normal italic leading-tight tracking-tight">
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal italic leading-tight tracking-tight">
           <span className="not-italic font-semibold">Hva</span> lurer du på?
         </h1>
         <p className="max-w-md text-sm leading-relaxed text-muted-foreground">

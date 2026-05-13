@@ -317,7 +317,7 @@ export function LiveTapper({
 
   if (drills.length === 0) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-foreground p-8 text-center text-white">
+      <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center bg-foreground p-8 text-center text-white">
         <h1 className="font-display text-3xl font-semibold italic">Ingen drills</h1>
         <p className="mt-2 text-white/65">
           Denne økten har ikke fått tildelt drills ennå. Be coach om å legge dem til.
@@ -338,7 +338,7 @@ export function LiveTapper({
 
   if (state.phase === "intro") {
     return (
-      <div className="relative grid h-screen w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-foreground text-white">
+      <div className="relative grid h-screen h-[100dvh] w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-foreground text-white">
         <RadialAccent />
 
         <TopBar
@@ -438,7 +438,7 @@ export function LiveTapper({
     const pyrColor = PYR_COLOR[currentDrill.exercise.pyramidArea];
 
     return (
-      <div className="relative grid h-screen w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-foreground text-white">
+      <div className="relative grid h-screen h-[100dvh] w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-foreground text-white">
         <RadialAccent />
 
         <TopBar
@@ -574,7 +574,7 @@ export function LiveTapper({
     const lastNextDrill = isLastDrill ? null : drills[state.drillIndex + 1];
 
     return (
-      <div className="relative grid h-screen w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-foreground text-white">
+      <div className="relative grid h-screen h-[100dvh] w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-foreground text-white">
         <TopBar
           left={
             <>
@@ -792,7 +792,7 @@ export function LiveTapper({
   const drillsFullført = resultsRef.current.length;
 
   return (
-    <div className="relative min-h-screen w-screen grid-rows-[56px_1fr_104px] overflow-y-auto bg-foreground text-white md:grid md:h-screen md:overflow-hidden">
+    <div className="relative min-h-screen min-h-dvh w-screen grid-rows-[56px_1fr_104px] overflow-y-auto bg-foreground text-white md:grid md:h-screen md:h-[100dvh] md:overflow-hidden">
       <TopBar
         left={
           <>

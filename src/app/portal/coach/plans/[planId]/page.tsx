@@ -306,7 +306,7 @@ export default async function CoachPlanDetalj({
                 />
               ))}
             </div>
-            <div className="mt-3 grid grid-cols-5 text-center font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+            <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 text-center font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
               {FASER.map((f, i) => (
                 <span
                   key={f.key}
@@ -332,7 +332,7 @@ export default async function CoachPlanDetalj({
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Pyramide-fordeling
             </div>
-            <div className="mt-3 grid grid-cols-5 gap-2">
+            <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
               {PYR_REKKEFOLGE.map((omr) => (
                 <div
                   key={omr}

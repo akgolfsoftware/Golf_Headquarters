@@ -223,7 +223,7 @@ function YourRank({
             "radial-gradient(circle at 80% 50%, rgba(209,248,67,0.18), transparent 60%)",
         }}
       />
-      <div className="relative z-10 font-mono text-6xl font-medium leading-none tracking-tight text-accent">
+      <div className="relative z-10 font-mono text-3xl sm:text-5xl md:text-6xl font-medium leading-none tracking-tight text-accent">
         #{meg.rank}
         <span className="ml-2 text-2xl font-normal text-card/40">/ {total}</span>
       </div>

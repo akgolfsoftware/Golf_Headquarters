@@ -192,7 +192,7 @@ export default async function AuditLogPage({
         </header>
 
         {/* KPI strip */}
-        <div className="mb-6 grid grid-cols-4 gap-4">
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <Kpi
             label="Hendelser · 7d"
             value={total7d.toLocaleString("nb-NO")}

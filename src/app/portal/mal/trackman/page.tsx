@@ -80,7 +80,7 @@ export default async function TrackManPage() {
             <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               TrackMan · sesong {new Date().getFullYear()} · trendvisning
             </div>
-            <h1 className="font-display text-[36px] font-medium italic leading-[1.1] tracking-tight">
+            <h1 className="font-display text-[22px] sm:text-[28px] md:text-[36px] font-medium italic leading-[1.1] tracking-tight">
               <em className="italic">Min sving</em> over tid
             </h1>
             <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-muted-foreground">

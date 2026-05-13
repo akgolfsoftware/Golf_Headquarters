@@ -111,7 +111,7 @@ export default async function Rapporter() {
         </header>
 
         {/* KPI strip */}
-        <div className="mb-6 grid grid-cols-4 gap-4">
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <Kpi label="Maler tilgjengelig" value={String(EKSPORTER.length)} foot="i 1 kategori" />
           <Kpi label="Format" value="CSV" foot="Excel-kompatibel" />
           <Kpi label="Planlagte leveranser" value={String(planlagte.length)} foot="ingen aktive ennå" />

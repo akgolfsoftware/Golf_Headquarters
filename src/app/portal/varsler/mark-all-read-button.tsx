@@ -20,7 +20,7 @@ export function MarkAllReadButton() {
       type="button"
       onClick={handle}
       disabled={pending}
-      className="inline-flex items-center gap-1.5 rounded-md border border-input bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:border-primary hover:text-primary disabled:opacity-50"
+      className="inline-flex items-center gap-1.5 rounded-md border border-input bg-card min-h-11 px-3 text-sm font-medium text-foreground hover:border-primary hover:text-primary disabled:opacity-50"
     >
       <CheckCheck className="h-3.5 w-3.5" strokeWidth={1.75} />
       {pending ? "Markerer …" : "Marker alle lest"}

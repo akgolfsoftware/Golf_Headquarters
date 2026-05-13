@@ -34,7 +34,7 @@ export function CancelButton({
       type="button"
       onClick={avbestille}
       disabled={pending}
-      className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-1.5 text-xs font-medium text-destructive hover:border-destructive/50 disabled:opacity-60"
+      className="rounded-md border border-destructive/30 bg-destructive/5 min-h-11 px-3 text-sm font-medium text-destructive hover:border-destructive/50 disabled:opacity-60"
     >
       {pending ? "Avbestiller…" : canRefund ? "Avbestill (refusjon)" : "Avbestill"}
     </button>

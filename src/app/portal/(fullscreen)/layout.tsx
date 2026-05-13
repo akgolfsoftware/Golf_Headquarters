@@ -7,5 +7,5 @@ export default function FullscreenLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="min-h-screen bg-background">{children}</div>;
+  return <div className="min-h-screen min-h-dvh bg-background">{children}</div>;
 }

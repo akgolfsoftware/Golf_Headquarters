@@ -22,7 +22,7 @@ export function MarketingHeader() {
             <Link
               key={n.href}
               href={n.href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground active:text-foreground/80 focus-visible:underline focus-visible:outline-none"
             >
               {n.label}
             </Link>
@@ -32,21 +32,21 @@ export function MarketingHeader() {
         <div className="flex items-center gap-3">
           <Link
             href="/auth/login"
-            className="hidden text-sm text-muted-foreground hover:text-foreground sm:block"
+            className="hidden text-sm text-muted-foreground hover:text-foreground active:text-foreground/80 focus-visible:underline focus-visible:outline-none sm:block"
           >
             Logg inn
           </Link>
           {process.env.BOOKING_ACTIVE === "true" ? (
             <Link
               href="/booking"
-              className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Book time
             </Link>
           ) : (
             <a
               href="mailto:post@akgolf.no?subject=Booking-foresp%C3%B8rsel"
-              className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Kontakt oss
             </a>

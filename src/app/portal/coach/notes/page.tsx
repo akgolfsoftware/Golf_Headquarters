@@ -117,7 +117,7 @@ export default async function CoachNotes() {
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               PlayerHQ · Coach · Notater
             </span>
-            <h1 className="mt-1 font-display text-[36px] italic font-medium leading-[1.05] tracking-tight">
+            <h1 className="mt-1 font-display text-[22px] sm:text-[28px] md:text-[36px] italic font-medium leading-[1.05] tracking-tight">
               {notater.length} notater fra coach
             </h1>
             <p className="mt-1 text-[13px] text-muted-foreground">

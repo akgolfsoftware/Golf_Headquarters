@@ -274,7 +274,7 @@ export default async function OppfolgingsKo() {
         </div>
 
         {/* Board */}
-        <section className="grid grid-cols-4 items-start gap-4">
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 items-start gap-4">
           {cols.map((col) => (
             <Column key={col.status} col={col} />
           ))}

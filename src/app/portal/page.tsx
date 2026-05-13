@@ -324,7 +324,7 @@ function KpiStrip({
           <Trophy className="h-3.5 w-3.5" strokeWidth={1.75} />
           Handicap
         </div>
-        <div className="font-mono text-5xl font-medium leading-none tabular-nums tracking-tight text-white">
+        <div className="font-mono text-3xl sm:text-4xl md:text-5xl font-medium leading-none tabular-nums tracking-tight text-white">
           {hcp != null ? hcp.toFixed(1).replace(".", ",") : "—"}
         </div>
         <div
@@ -680,7 +680,7 @@ function PyramideProgresjon({
       </h3>
 
       <div
-        className={`mt-5 grid grid-cols-5 gap-2 ${locked ? "blur-[3px] opacity-50" : ""}`}
+        className={`mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 ${locked ? "blur-[3px] opacity-50" : ""}`}
       >
         {PYR_REKKEFOLGE.map((area) => (
           <PyramideRing
