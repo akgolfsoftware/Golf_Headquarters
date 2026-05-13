@@ -298,7 +298,7 @@ function UkeStrip({
   idag: Date;
 }) {
   return (
-    <div className="mt-5 grid grid-cols-7 gap-1">
+    <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-1">
       {dager.map((d, i) => {
         const count = telling[i] ?? 0;
         const erIdag =

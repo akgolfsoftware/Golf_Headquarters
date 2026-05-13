@@ -78,7 +78,7 @@ export function LeadForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+          className="rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
         >
           {pending ? "Sender…" : cta}
         </button>

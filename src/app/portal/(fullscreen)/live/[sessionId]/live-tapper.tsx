@@ -817,7 +817,7 @@ export function LiveTapper({
             <Trophy className="h-[14px] w-[14px]" strokeWidth={1.5} />
             Økt fullført
           </div>
-          <h1 className="mx-auto max-w-[880px] font-display text-[56px] italic leading-[1.15] text-white">
+          <h1 className="mx-auto max-w-[880px] font-display text-[28px] sm:text-[40px] md:text-[56px] italic leading-[1.15] text-white">
             <em className="italic">
               {drillsFullført} av {drills.length} øvelser.
             </em>{" "}
