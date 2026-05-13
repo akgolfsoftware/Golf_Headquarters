@@ -5,14 +5,38 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { FacilityQuickAdd } from "./facility-quick-add";
+import { MultiFacilityWeek } from "./multi-facility-week";
+
+function startOfWeek(d: Date): Date {
+  const copy = new Date(d);
+  copy.setHours(0, 0, 0, 0);
+  const day = copy.getDay(); // 0=søn, 1=man
+  const diff = (day + 6) % 7; // antall dager tilbake til mandag
+  copy.setDate(copy.getDate() - diff);
+  return copy;
+}
 
 const DAGER = ["Ma", "Ti", "On", "To", "Fr", "Lø", "Sø"];
 
-export default async function FacilitiesAdmin() {
+type SearchParams = Promise<{ uke?: string }>;
+
+export default async function FacilitiesAdmin({
+  searchParams,
+}: {
+  searchParams?: SearchParams;
+}) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN", "GUEST"] });
   const kanBooke = user.role !== "GUEST";
+  const params = searchParams ? await searchParams : {};
 
-  const [facilities, spillere, serviceTypes, locations] = await Promise.all([
+  // Beregn uke-vindu (mandag-start)
+  const referansedag = params.uke ? new Date(params.uke) : new Date();
+  if (isNaN(referansedag.getTime())) referansedag.setTime(Date.now());
+  const ukeStart = startOfWeek(referansedag);
+  const ukeSlutt = new Date(ukeStart);
+  ukeSlutt.setDate(ukeStart.getDate() + 7);
+
+  const [facilities, spillere, serviceTypes, locations, ukebookings] = await Promise.all([
     prisma.facility.findMany({
       include: {
         location: { select: { id: true, name: true, active: true } },
@@ -42,6 +66,23 @@ export default async function FacilitiesAdmin() {
           orderBy: { name: "asc" },
         })
       : Promise.resolve([] as { id: string; name: string }[]),
+    prisma.booking.findMany({
+      where: {
+        startAt: { gte: ukeStart, lt: ukeSlutt },
+        status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
+      },
+      select: {
+        id: true,
+        startAt: true,
+        endAt: true,
+        status: true,
+        facilityId: true,
+        locationId: true,
+        user: { select: { id: true, name: true } },
+        serviceType: { select: { name: true } },
+      },
+      orderBy: { startAt: "asc" },
+    }),
   ]);
 
   const facilityOptions = facilities.map((f) => ({
@@ -50,36 +91,24 @@ export default async function FacilitiesAdmin() {
     locationId: f.location.id,
   }));
 
-  // Beregn neste 7 dager fra i dag (mandag-mandag-uke)
-  const idag = new Date();
-  idag.setHours(0, 0, 0, 0);
+  // Bruker mandag-ukestart fra Promise.all + bygger dag-liste for uke-strip-tellingen
   const dager: Date[] = [];
   for (let i = 0; i < 7; i++) {
-    const d = new Date(idag);
-    d.setDate(idag.getDate() + i);
+    const d = new Date(ukeStart);
+    d.setDate(ukeStart.getDate() + i);
     dager.push(d);
   }
-  const ukeStart = dager[0];
-  const ukeSlutt = new Date(dager[6]);
-  ukeSlutt.setHours(23, 59, 59, 999);
+  const idag = new Date();
+  idag.setHours(0, 0, 0, 0);
 
-  // Hent bookinger per lokasjon for de neste 7 dagene
   const lokasjonIds = Array.from(new Set(facilities.map((f) => f.location.id)));
-  const bookings = await prisma.booking.findMany({
-    where: {
-      startAt: { gte: ukeStart, lte: ukeSlutt },
-      status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
-      locationId: { in: lokasjonIds },
-    },
-    select: { startAt: true, locationId: true },
-  });
 
-  // Telle bookinger per (lokasjonId, dato-index 0-6)
+  // Telle bookinger per (lokasjonId, dato-index 0-6) for uke-strip på kort
   const tellingPerLokasjon = new Map<string, number[]>();
   for (const locId of lokasjonIds) {
     tellingPerLokasjon.set(locId, [0, 0, 0, 0, 0, 0, 0]);
   }
-  for (const b of bookings) {
+  for (const b of ukebookings) {
     const dagIdx = dager.findIndex(
       (d) =>
         d.getFullYear() === b.startAt.getFullYear() &&
@@ -131,8 +160,41 @@ export default async function FacilitiesAdmin() {
             const ukeTelling =
               tellingPerLokasjon.get(locId) ?? [0, 0, 0, 0, 0, 0, 0];
             const ukeSum = ukeTelling.reduce((a, b) => a + b, 0);
+            const locName = items[0].location.name;
+            const locFacilities = items
+              .filter((f) => f.active)
+              .map((f) => ({
+                id: f.id,
+                name: f.name,
+                locationId: f.location.id,
+                capacity: f.capacity,
+              }));
+            const locBookings = ukebookings
+              .filter((b) => b.locationId === locId)
+              .map((b) => ({
+                id: b.id,
+                startAt: b.startAt.toISOString(),
+                endAt: b.endAt.toISOString(),
+                status: b.status,
+                facilityId: b.facilityId,
+                user: b.user,
+                serviceType: b.serviceType,
+              }));
             return (
-              <section key={locId}>
+              <section key={locId} className="space-y-6">
+                {locFacilities.length > 0 && (
+                  <MultiFacilityWeek
+                    locationName={locName}
+                    facilities={locFacilities}
+                    bookings={locBookings}
+                    ukeStartIso={ukeStart.toISOString()}
+                    spillere={spillere}
+                    serviceTypes={serviceTypes}
+                    locations={locations}
+                    facilityOptions={facilityOptions}
+                    kanBooke={kanBooke}
+                  />
+                )}
                 <div className="mb-4 flex items-end justify-between">
                   <div>
                     <h3 className="font-display text-lg font-semibold tracking-tight">

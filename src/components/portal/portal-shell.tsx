@@ -1,6 +1,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PortalSidebar } from "./sidebar";
-import { MobileDrawer } from "./mobile-drawer";
+import { BottomNav } from "./bottom-nav";
 import { UserMenu } from "@/components/shared/user-menu";
 
 export async function PortalShell({
@@ -8,7 +8,8 @@ export async function PortalShell({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await requirePortalUser();
+  // PARENT-rollen tilhører /forelder, ikke /portal.
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN", "GUEST"] });
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -27,7 +28,6 @@ export async function PortalShell({
           className="flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 sm:px-8 sm:py-4"
         >
           <div className="flex items-center gap-3">
-            <MobileDrawer tier={user.tier} />
             <div
               aria-label="PlayerHQ"
               className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
@@ -40,11 +40,12 @@ export async function PortalShell({
         <main
           id="portal-main"
           tabIndex={-1}
-          className="flex-1 px-4 py-6 focus:outline-none sm:px-8"
+          className="flex-1 px-4 py-6 pb-24 focus:outline-none sm:px-8 lg:pb-6"
         >
           {children}
         </main>
       </div>
+      <BottomNav />
     </div>
   );
 }

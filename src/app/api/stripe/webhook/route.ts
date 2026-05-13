@@ -10,6 +10,12 @@ import { pushBookingToCalendar } from "@/lib/google-calendar";
 import {
   type SubscriptionStatus,
 } from "@/generated/prisma/client";
+import {
+  recordPaymentIntent,
+  recordCheckoutSession,
+  recordInvoice,
+  recordChargeRefund,
+} from "@/lib/payments/record";
 
 export const runtime = "nodejs";
 
@@ -134,6 +140,7 @@ export async function POST(req: Request) {
       }
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
+        await recordCheckoutSession(session);
         if (session.subscription) {
           const subId =
             typeof session.subscription === "string"
@@ -204,19 +211,24 @@ export async function POST(req: Request) {
         }
         break;
       }
-      case "payment_intent.succeeded": {
+      case "payment_intent.succeeded":
+      case "payment_intent.payment_failed":
+      case "payment_intent.canceled": {
         const intent = event.data.object as Stripe.PaymentIntent;
-        // Logger kun — booking-confirmation skjer via checkout.session.completed.
-        console.log(
-          "[stripe-webhook] payment_intent.succeeded",
-          intent.id,
-          intent.amount,
-          intent.currency,
-        );
+        await recordPaymentIntent(intent);
+        break;
+      }
+      case "invoice.paid":
+      case "invoice.payment_succeeded":
+      case "invoice.payment_failed":
+      case "invoice.finalized": {
+        const invoice = event.data.object as Stripe.Invoice;
+        await recordInvoice(invoice);
         break;
       }
       case "charge.refunded": {
         const charge = event.data.object as Stripe.Charge;
+        await recordChargeRefund(charge);
         const paymentIntentId =
           typeof charge.payment_intent === "string"
             ? charge.payment_intent

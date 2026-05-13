@@ -1,5 +1,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AdminSidebar } from "./sidebar";
+import { AdminMobileDrawer } from "./mobile-drawer";
 import { GlobalSearchModal } from "./global-search-modal";
 import { UserMenu } from "@/components/shared/user-menu";
 
@@ -26,11 +27,14 @@ export async function AdminShell({
           role="banner"
           className="flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 sm:px-8 sm:py-4"
         >
-          <div
-            aria-label={`CoachHQ, rolle ${user.role}`}
-            className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
-          >
-            CoachHQ · {user.role}
+          <div className="flex items-center gap-3">
+            <AdminMobileDrawer />
+            <div
+              aria-label={`CoachHQ, rolle ${user.role}`}
+              className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+            >
+              CoachHQ · {user.role}
+            </div>
           </div>
           <UserMenu name={user.name} email={user.email} avatarUrl={user.avatarUrl} />
         </header>

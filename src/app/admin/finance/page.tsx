@@ -2,7 +2,6 @@ import type { LucideIcon } from "lucide-react";
 import {
   AlertCircle,
   Banknote,
-  Clock,
   CreditCard,
   Users,
 } from "lucide-react";
@@ -15,24 +14,73 @@ export const dynamic = "force-dynamic";
 export default async function FinanceAdmin() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const [aktive, pastDue, cancelled, alleSubs, totalProBrukere] =
-    await Promise.all([
-      prisma.subscription.count({ where: { status: "ACTIVE", tier: "PRO" } }),
-      prisma.subscription.count({ where: { status: "PAST_DUE" } }),
-      prisma.subscription.count({ where: { status: "CANCELLED" } }),
-      prisma.subscription.findMany({
-        include: { user: { select: { name: true, email: true } } },
-        orderBy: { updatedAt: "desc" },
-        take: 50,
-      }),
-      prisma.user.count({ where: { role: "PLAYER", tier: "PRO" } }),
-    ]);
+  const trettiDagerSiden = new Date();
+  trettiDagerSiden.setDate(trettiDagerSiden.getDate() - 30);
 
-  // Beregnet inntekt: aktive Pro × 300 kr/mnd
+  const [
+    aktive,
+    pastDue,
+    cancelled,
+    alleSubs,
+    totalProBrukere,
+    inntektSiste30Agg,
+    antallTransaksjoner30,
+    failedCount,
+    refundedAgg,
+    sistePayments,
+  ] = await Promise.all([
+    prisma.subscription.count({ where: { status: "ACTIVE", tier: "PRO" } }),
+    prisma.subscription.count({ where: { status: "PAST_DUE" } }),
+    prisma.subscription.count({ where: { status: "CANCELLED" } }),
+    prisma.subscription.findMany({
+      include: { user: { select: { name: true, email: true } } },
+      orderBy: { updatedAt: "desc" },
+      take: 50,
+    }),
+    prisma.user.count({ where: { role: "PLAYER", tier: "PRO" } }),
+    prisma.payment.aggregate({
+      where: {
+        status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] },
+        paidAt: { gte: trettiDagerSiden },
+      },
+      _sum: { amountOre: true, amountRefundedOre: true },
+    }),
+    prisma.payment.count({
+      where: {
+        status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] },
+        paidAt: { gte: trettiDagerSiden },
+      },
+    }),
+    prisma.payment.count({
+      where: { status: "FAILED", createdAt: { gte: trettiDagerSiden } },
+    }),
+    prisma.payment.aggregate({
+      where: {
+        status: { in: ["REFUNDED", "PARTIALLY_REFUNDED"] },
+        refundedAt: { gte: trettiDagerSiden },
+      },
+      _sum: { amountRefundedOre: true },
+      _count: true,
+    }),
+    prisma.payment.findMany({
+      where: { status: { in: ["SUCCEEDED", "REFUNDED", "PARTIALLY_REFUNDED"] } },
+      include: { user: { select: { name: true, email: true } } },
+      orderBy: { paidAt: "desc" },
+      take: 25,
+    }),
+  ]);
+
+  const bruttoOre = inntektSiste30Agg._sum.amountOre ?? 0;
+  const refundOre = inntektSiste30Agg._sum.amountRefundedOre ?? 0;
+  const nettoOre30 = bruttoOre - refundOre;
+  const inntekt30Kr = Math.round(nettoOre30 / 100);
+
+  // MRR fra aktive Pro × 300 kr (samme antagelse som før — alle Pro = 300/mnd)
   const monthlyRevenue = aktive * 300;
   const yearlyRevenue = monthlyRevenue * 12;
   const snittPerSpiller =
     totalProBrukere > 0 ? Math.round(monthlyRevenue / totalProBrukere) : 0;
+  const refundCount = refundedAgg._count ?? 0;
 
   const eyebrowMonth = new Date().toLocaleDateString("nb-NO", {
     month: "long",
@@ -71,7 +119,7 @@ export default async function FinanceAdmin() {
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <HeroKpi
           icon={Banknote}
-          label="Inntekt MTD"
+          label="MRR (Pro abo)"
           value={`${monthlyRevenue.toLocaleString("nb-NO")}`}
           unit="kr"
           sub={`${aktive} aktive Pro · ${yearlyRevenue.toLocaleString(
@@ -79,25 +127,115 @@ export default async function FinanceAdmin() {
           )} kr / år`}
         />
         <Kpi
+          icon={CreditCard}
+          label="Inntekt 30d (netto)"
+          value={`${inntekt30Kr.toLocaleString("nb-NO")}`}
+          unit="kr"
+          sub={`${antallTransaksjoner30} transaksjoner · ${Math.round(refundOre / 100).toLocaleString("nb-NO")} kr refundert`}
+        />
+        <Kpi
           icon={Users}
-          label="Snitt per spiller"
+          label="Snitt per Pro-spiller"
           value={`${snittPerSpiller.toLocaleString("nb-NO")}`}
           unit="kr"
           sub={`${totalProBrukere} Pro-spillere totalt`}
         />
         <Kpi
-          icon={Clock}
-          label="Past due"
-          value={String(pastDue)}
-          sub="Krever oppfølging"
-          tone={pastDue > 0 ? "warn" : "neutral"}
-        />
-        <Kpi
           icon={AlertCircle}
-          label="Kansellerte"
-          value={String(cancelled)}
-          sub="Totalt avsluttede"
+          label="Failed / refund 30d"
+          value={`${failedCount} / ${refundCount}`}
+          sub={`${pastDue} past due · ${cancelled} kansellert`}
+          tone={failedCount > 0 || pastDue > 0 ? "warn" : "neutral"}
         />
+      </section>
+
+      {/* SISTE BETALINGER */}
+      <section className="space-y-3">
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <h3 className="font-display text-lg font-semibold tracking-tight">
+            Siste{" "}
+            <em className="font-normal italic text-primary">betalinger</em>
+          </h3>
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            {sistePayments.length} rader · fra Stripe via Payment-modell
+          </span>
+        </div>
+
+        {sistePayments.length === 0 ? (
+          <EmptyState
+            icon={Banknote}
+            titleItalic="Ingen betalinger"
+            titleTrail="enda"
+            sub="Stripe-events sendes automatisk via webhook. Kjør scripts/reimport-stripe.ts for historikk."
+          />
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+            <table className="w-full text-sm">
+              <thead className="border-b border-border bg-secondary/40 text-left">
+                <tr>
+                  <Th>Dato</Th>
+                  <Th>Bruker</Th>
+                  <Th>Type</Th>
+                  <Th>Beløp</Th>
+                  <Th>Status</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {sistePayments.map((p) => {
+                  const beloepKr = (p.amountOre / 100).toLocaleString("no-NO");
+                  const refundKr =
+                    p.amountRefundedOre > 0
+                      ? ` (− ${(p.amountRefundedOre / 100).toLocaleString("no-NO")})`
+                      : "";
+                  return (
+                    <tr
+                      key={p.id}
+                      className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
+                    >
+                      <Td className="font-mono text-xs text-muted-foreground">
+                        {(p.paidAt ?? p.createdAt).toLocaleDateString("nb-NO", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "2-digit",
+                        })}
+                      </Td>
+                      <Td>
+                        {p.user ? (
+                          <div className="min-w-0">
+                            <div className="truncate font-medium text-foreground">
+                              {p.user.name}
+                            </div>
+                            <div className="truncate font-mono text-[10px] text-muted-foreground">
+                              {p.user.email}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="font-mono text-[11px] text-muted-foreground">
+                            ukjent kunde
+                          </span>
+                        )}
+                      </Td>
+                      <Td>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                          {p.type.toLowerCase()}
+                        </span>
+                      </Td>
+                      <Td className="font-mono tabular-nums">
+                        {beloepKr} kr
+                        <span className="text-muted-foreground">
+                          {refundKr}
+                        </span>
+                      </Td>
+                      <Td>
+                        <PaymentStatusPill status={p.status} />
+                      </Td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       {/* TABELL */}
@@ -387,6 +525,34 @@ function StatusPill({ status }: { status: string }) {
     PAUSED: {
       label: "Pauset",
       className: "bg-secondary text-muted-foreground",
+    },
+  };
+  const c = config[status] ?? {
+    label: status,
+    className: "bg-secondary text-muted-foreground",
+  };
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${c.className}`}
+    >
+      <span
+        aria-hidden="true"
+        className="h-1.5 w-1.5 rounded-full bg-current opacity-70"
+      />
+      {c.label}
+    </span>
+  );
+}
+
+function PaymentStatusPill({ status }: { status: string }) {
+  const config: Record<string, { label: string; className: string }> = {
+    SUCCEEDED: { label: "Betalt", className: "bg-primary/10 text-primary" },
+    PENDING: { label: "Venter", className: "bg-secondary text-muted-foreground" },
+    FAILED: { label: "Feilet", className: "bg-destructive/15 text-destructive" },
+    REFUNDED: { label: "Refundert", className: "bg-secondary text-muted-foreground" },
+    PARTIALLY_REFUNDED: {
+      label: "Delvis refundert",
+      className: "bg-accent/30 text-accent-foreground",
     },
   };
   const c = config[status] ?? {
