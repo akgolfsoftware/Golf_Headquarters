@@ -92,7 +92,13 @@ export default async function Bookinger({
 
   const bookings = await prisma.booking.findMany({
     where: coachFilter,
-    include: {
+    select: {
+      id: true,
+      startAt: true,
+      endAt: true,
+      status: true,
+      priceOre: true,
+      subscriptionId: true,
       user: { select: { id: true, name: true } },
       serviceType: {
         select: { name: true, coach: { select: { id: true, name: true } } },
@@ -208,6 +214,8 @@ type BookingRow = {
   startAt: Date;
   endAt: Date;
   status: string;
+  priceOre: number;
+  subscriptionId: string | null;
   user: { id: string; name: string };
   serviceType: { name: string };
   location: { name: string };
@@ -304,11 +312,22 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
                   </div>
                 </Td>
                 <Td>
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${TYPE_STYLE[type]}`}
-                  >
-                    {TYPE_LABEL[type]}
-                  </span>
+                  <div className="flex flex-wrap items-center gap-1">
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${TYPE_STYLE[type]}`}
+                    >
+                      {TYPE_LABEL[type]}
+                    </span>
+                    {b.subscriptionId ? (
+                      <span className="rounded-full bg-accent/30 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-accent-foreground">
+                        Abo
+                      </span>
+                    ) : b.priceOre > 0 ? (
+                      <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+                        Drop-in
+                      </span>
+                    ) : null}
+                  </div>
                 </Td>
                 <Td>
                   <span
