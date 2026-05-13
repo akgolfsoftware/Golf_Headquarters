@@ -42,6 +42,8 @@ import { aktivStreak } from "@/lib/streak";
 import { totalMinutter, prosentPerArea } from "@/lib/pyramide";
 import { formatSg } from "@/lib/sg";
 import { PlanActionsCard } from "@/components/portal/plan-actions-card";
+import { QuickActions } from "@/components/portal/quick-actions";
+import { prisma } from "@/lib/prisma";
 import {
   SkeletonKpi,
   SkeletonCard,
@@ -109,9 +111,24 @@ export default async function PortalHjem() {
   if (user.role === "COACH" || user.role === "ADMIN") redirect("/admin");
   if (user.role === "GUEST") redirect("/admin/calendar");
 
+  // Hent abonnement-info for QuickActions-widget
+  const subscription = await prisma.subscription.findUnique({
+    where: { userId: user.id },
+    select: { monthlyCredits: true, creditsRemaining: true, status: true },
+  });
+  const erAcademyKunde =
+    subscription?.status === "ACTIVE" &&
+    (subscription?.monthlyCredits ?? 0) > 0;
+
   return (
     <div className="space-y-6 md:space-y-8">
       <Hero user={user} />
+
+      <QuickActions
+        erAcademyKunde={erAcademyKunde}
+        creditsRemaining={subscription?.creditsRemaining}
+        monthlyCredits={subscription?.monthlyCredits}
+      />
 
       <Suspense fallback={<DashboardSkeleton />}>
         <DashboardSeksjoner user={user} />

@@ -3,9 +3,10 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
 const ITEMS = [
   { href: "/portal/coach", label: "Oversikt" },
-  { href: "/portal/coach/ai", label: "AI-coach" },
-  { href: "/portal/coach/notes", label: "Notater" },
   { href: "/portal/coach/plans", label: "Planer" },
+  { href: "/portal/coach/melding", label: "Meldinger" },
+  { href: "/portal/coach/notes", label: "Notater" },
+  { href: "/portal/coach/ai", label: "AI-coach" },
 ];
 
 export default async function CoachLayout({

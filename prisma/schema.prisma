@@ -140,6 +140,9 @@ model User {
   coachAvailability CoachAvailability[]
   serviceTypes      ServiceType[]      @relation("CoachServiceTypes")
 
+  // WAGR-snapshot (om spilleren er registrert i World Amateur Golf Ranking)
+  wagrSnapshot      WagrSnapshot?
+
   @@map("users")
 }
 
@@ -803,4 +806,43 @@ model Lead {
   @@index([email])
   @@index([source, status])
   @@map("leads")
+}
+
+// WAGR (World Amateur Golf Ranking) snapshot — referansespillere + AK Golf-spillere
+// med ekte data fra wagr.com. Snapshot tas periodisk (manuelt eller via cron).
+// Brukes for å beregne NGF-kategori og benchmarke AK Golf-spillere mot peer-gruppe.
+model WagrSnapshot {
+  id             String   @id @default(cuid())
+  // URL-slug fra wagr.com (eks "mathias-aase-41993" eller "michael-alexander-mjaaseth-XXXXX")
+  wagrPlayerSlug String   @unique
+  fullName       String
+  // ISO 2-letter country code (no, us, gb, etc.)
+  country        String
+  // Aktuell WAGR-ranking
+  rank           Int
+  // Move siden forrige uke (negativ = ned, positiv = opp). Null hvis ny.
+  moveDelta      Int?
+  // WAGR Pts Avg (poeng-snitt over counting events siste 104 uker)
+  ptsAvg         Float
+  // Divisor brukt i WAGR-beregningen
+  divisor        Float
+  // Aggregat-stats fra spillerens profil
+  wins           Int      @default(0)
+  top10s         Int      @default(0)
+  bestRank       Int?
+  countingEvents Int      @default(0)
+  // Beregnet NGF-kategori (A-L) fra ptsAvg. Oppdateres ved snapshot.
+  ngfCategory    String?
+  // Hvis koblet til en AK Golf-spiller via email-matching eller manuell kobling
+  userId         String?  @unique
+  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  // Når snapshotet ble tatt (manuell eller cron)
+  snapshotAt     DateTime @default(now())
+  // Metadata: ev. graduationYear, school, hometown, social-media-handles
+  metadata       Json?
+
+  @@index([country, rank])
+  @@index([ngfCategory])
+  @@index([userId])
+  @@map("wagr_snapshots")
 }
