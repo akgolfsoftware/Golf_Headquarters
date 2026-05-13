@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   BarChart3,
   DollarSign,
@@ -90,16 +91,18 @@ export default async function Rapporter() {
             </p>
           </div>
           <div className="flex gap-2">
-            <button
-              type="button"
+            <Link
+              href="/admin/audit"
               className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <History className="h-4 w-4" />
               Historikk
-            </button>
+            </Link>
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              disabled
+              title="Kommer i v2"
+              className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
             >
               <Plus className="h-4 w-4" />
               Planlegg ny
@@ -169,7 +172,9 @@ export default async function Rapporter() {
             <div className="border-t border-border px-5 py-4">
               <button
                 type="button"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+                disabled
+                title="Kommer i v2"
+                className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] font-medium text-foreground opacity-50"
               >
                 <Plus className="h-4 w-4" />
                 Planlegg ny leveranse
@@ -297,7 +302,9 @@ function ReportCard({ report }: { report: ReportTemplate }) {
         </a>
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[12.5px] font-medium text-foreground transition-colors hover:bg-secondary"
+          disabled
+          title="Kommer i v2"
+          className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md px-3 py-1.5 text-[12.5px] font-medium text-foreground opacity-50"
         >
           Planlegg →
         </button>

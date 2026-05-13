@@ -6,11 +6,11 @@
  * dispersion + sammenlikning. Per-slag-data er TODO; KPI-paneler viser
  * placeholder inntil schema utvides.
  */
+import Link from "next/link";
 import {
   Activity,
   ArrowRight,
   Lock,
-  Upload,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -105,7 +105,9 @@ export default async function TrackManPage() {
             <CsvImportModal />
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground hover:opacity-90"
+              disabled
+              title="Kommer i v2"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-60"
             >
               Eksporter til Strokes Gained
               <ArrowRight className="h-3.5 w-3.5" />
@@ -155,7 +157,9 @@ export default async function TrackManPage() {
               <button
                 key={c}
                 type="button"
-                className="inline-flex items-center gap-2 whitespace-nowrap rounded-md px-4 py-2 text-[13px] font-medium text-muted-foreground hover:bg-secondary"
+                disabled
+                title="Per-klubb-data kommer i v2"
+                className="inline-flex items-center gap-2 whitespace-nowrap rounded-md px-4 py-2 text-[13px] font-medium text-muted-foreground opacity-60"
               >
                 {c}
                 <span className="font-mono text-[11px] tabular-nums opacity-70">
@@ -356,19 +360,13 @@ export default async function TrackManPage() {
             </div>
 
             <div className="flex flex-col gap-2 px-6 py-4">
-              <button
-                type="button"
-                className="inline-flex items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground hover:opacity-90"
-              >
-                <Upload className="h-3.5 w-3.5" />
-                Last opp ny økt
-              </button>
-              <button
-                type="button"
-                className="rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium hover:bg-secondary"
+              <CsvImportModal />
+              <Link
+                href="/portal/coach/melding?type=trackman-vurdering"
+                className="rounded-md border border-border bg-card px-4 py-2 text-center text-[13px] font-medium hover:bg-secondary"
               >
                 Be om coach-vurdering
-              </button>
+              </Link>
             </div>
           </aside>
         </div>

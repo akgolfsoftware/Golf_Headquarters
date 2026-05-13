@@ -55,8 +55,11 @@ export default async function SikkerhetPage() {
       </Section>
 
       {/* Aktive økter — TODO: kobles til Supabase auth sessions senere */}
-      <Section title="Aktive økter" aux="Kommer i v2">
-        <div className="flex items-center gap-3 px-6 py-5">
+      <Section title="Aktive økter" v2 aux="Kommer i v2">
+        <div
+          aria-disabled="true"
+          className="flex cursor-not-allowed items-center gap-3 px-6 py-5 opacity-50"
+        >
           <div className="grid h-9 w-9 place-items-center rounded-md bg-secondary text-muted-foreground">
             <Monitor className="h-4 w-4" strokeWidth={1.5} />
           </div>
@@ -65,7 +68,7 @@ export default async function SikkerhetPage() {
               Denne enheten
             </div>
             <div className="font-mono text-xs text-muted-foreground">
-              Detaljert sesjons-liste tilgjengelig i v2
+              Detaljert sesjons-liste tilgjengelig i v2 — se og logg ut andre enheter
             </div>
           </div>
           <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
@@ -76,14 +79,17 @@ export default async function SikkerhetPage() {
       </Section>
 
       {/* Innloggings-historikk — TODO: kobles til reell login-historikk senere */}
-      <Section title="Innloggings-historikk" aux="Siste 7 dager · v2">
-        <div className="flex items-center gap-3 px-6 py-5">
+      <Section title="Innloggings-historikk" v2 aux="Siste 7 dager">
+        <div
+          aria-disabled="true"
+          className="flex cursor-not-allowed items-center gap-3 px-6 py-5 opacity-50"
+        >
           <ShieldCheck
             className="h-4 w-4 text-muted-foreground"
             strokeWidth={1.5}
           />
           <p className="text-sm text-muted-foreground">
-            Detaljert innloggings-historikk vises her i v2.
+            Full innloggings-historikk med IP, enhet og tidspunkt vises her i v2.
           </p>
         </div>
       </Section>
@@ -94,18 +100,27 @@ export default async function SikkerhetPage() {
 function Section({
   title,
   aux,
+  v2,
   children,
 }: {
   title: string;
   aux?: string;
+  v2?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
       <header className="flex items-baseline justify-between gap-3 border-b border-border px-6 py-4">
-        <h2 className="font-display text-base font-semibold text-foreground">
-          {title}
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="font-display text-base font-semibold text-foreground">
+            {title}
+          </h2>
+          {v2 && (
+            <span className="rounded-full border border-border bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              v2
+            </span>
+          )}
+        </div>
         {aux && (
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             {aux}

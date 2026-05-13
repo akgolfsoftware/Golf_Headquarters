@@ -334,10 +334,13 @@ function Chip({
 }) {
   return (
     <button
+      type="button"
+      disabled={!active}
+      title={active ? undefined : "Filter kommer i v2"}
       className={`inline-flex items-center rounded-full border px-4 py-2 text-[12px] font-medium transition-colors ${
         active
           ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-card text-muted-foreground hover:bg-secondary"
+          : "cursor-not-allowed border-border bg-card text-muted-foreground opacity-60"
       }`}
     >
       {children}

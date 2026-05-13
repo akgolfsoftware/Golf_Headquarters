@@ -12,6 +12,7 @@ import { TabStrip } from "@/components/admin/tab-strip";
 import LocationsPage from "@/app/admin/locations/page";
 import FacilitiesPage from "@/app/admin/facilities/page";
 import AvailabilityPage from "@/app/admin/availability/page";
+import { LocationForm } from "@/app/admin/locations/location-form";
 
 type TabKey = "lokasjoner" | "fasiliteter" | "tilgjengelighet";
 
@@ -45,6 +46,7 @@ export default async function AnleggPage({
         titleLead="Anlegg og"
         titleItalic="tilgjengelighet"
         sub="Lokasjoner, fasiliteter og trener-tilgjengelighet samlet."
+        actions={<LocationForm triggerLabel="+ Ny lokasjon" />}
       />
       <TabStrip basePath="/admin/anlegg" tabs={TABS} active={tab} />
       <div>

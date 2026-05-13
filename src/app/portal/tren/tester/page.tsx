@@ -190,12 +190,12 @@ export default async function TesterPage() {
           titleTrail="er klare ennå"
           sub="Tester legges inn av coachen din. Sjekk innom igjen senere."
           cta={
-            <button
-              type="button"
+            <Link
+              href="/portal/coach/melding?type=ny-test"
               className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
             >
               <Plus size={12} strokeWidth={1.75} /> Be coach legge til
-            </button>
+            </Link>
           }
         />
       ) : (

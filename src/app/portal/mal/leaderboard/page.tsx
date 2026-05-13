@@ -7,6 +7,7 @@
  * vi har streak/session-tracking på plass. Plassholdere markert med // TODO.
  */
 
+import Link from "next/link";
 import {
   ArrowRight,
   ChevronDown,
@@ -20,6 +21,8 @@ import {
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+
+type Tab = "venner" | "klubb" | "globalt";
 
 type Rad = {
   id: string;
@@ -46,8 +49,14 @@ function initialer(navn: string) {
     .slice(0, 2);
 }
 
-export default async function LeaderboardPage() {
+export default async function LeaderboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
   const user = await requirePortalUser();
+  const sp = await searchParams;
+  const tab: Tab = sp?.tab === "venner" || sp?.tab === "globalt" ? sp.tab : "klubb";
 
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
@@ -106,7 +115,7 @@ export default async function LeaderboardPage() {
 
   return (
     <div className="space-y-6">
-      <Head fornavn={fornavn} minRank={minRank} total={total} />
+      <Head fornavn={fornavn} minRank={minRank} total={total} tab={tab} />
       {meg && <YourRank meg={meg} fornavn={user.name} hcp={meg.hcp} total={total} />}
       <Filters />
       {rangering.length === 0 ? (
@@ -133,10 +142,12 @@ function Head({
   fornavn,
   minRank,
   total,
+  tab,
 }: {
   fornavn: string;
   minRank: number | null;
   total: number;
+  tab: Tab;
 }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-6">
@@ -159,24 +170,29 @@ function Head({
         </div>
       </div>
       <div className="flex gap-1 border-b border-border">
-        {[
-          { name: "Venner" },
-          { name: "Klubb", active: true },
-          { name: "Globalt", pro: true },
-        ].map((t) => (
-          <button
-            key={t.name}
-            type="button"
-            className={`relative inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
-              t.active
-                ? "text-foreground after:absolute after:bottom-[-1px] after:left-0 after:right-0 after:h-0.5 after:bg-primary"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {t.name}
-            {t.pro && <Lock className="h-4 w-4 text-muted-foreground" />}
-          </button>
-        ))}
+        {(
+          [
+            { key: "venner", name: "Venner" },
+            { key: "klubb", name: "Klubb" },
+            { key: "globalt", name: "Globalt", pro: true },
+          ] as { key: Tab; name: string; pro?: boolean }[]
+        ).map((t) => {
+          const active = t.key === tab;
+          return (
+            <Link
+              key={t.key}
+              href={`/portal/mal/leaderboard?tab=${t.key}`}
+              className={`relative inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
+                active
+                  ? "text-foreground after:absolute after:bottom-[-1px] after:left-0 after:right-0 after:h-0.5 after:bg-primary"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t.name}
+              {t.pro && <Lock className="h-4 w-4 text-muted-foreground" />}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
@@ -297,10 +313,12 @@ function Chip({
   return (
     <button
       type="button"
+      disabled={!active}
+      title={active ? undefined : "Kommer i v2"}
       className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
         active
           ? "bg-primary text-primary-foreground"
-          : "border border-border bg-card text-muted-foreground hover:bg-secondary"
+          : "border border-border bg-card text-muted-foreground opacity-60"
       }`}
     >
       {children}
@@ -400,12 +418,13 @@ function RowEl({ r }: { r: Rad }) {
         <Badge type="test" />
         <Badge type="momentum" />
       </div>
-      <button
-        type="button"
+      <Link
+        href={`/portal/coach/${r.id}`}
+        aria-label={`Vis ${r.name}`}
         className="grid h-8 w-8 place-items-center rounded-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
       >
         <ArrowRight className="h-4 w-4" />
-      </button>
+      </Link>
     </div>
   );
 }
@@ -441,13 +460,17 @@ function Pagination({ total, vist }: { total: number; vist: number }) {
       <div className="flex gap-2">
         <button
           type="button"
-          className="rounded-md px-3 py-2 text-xs font-medium hover:bg-secondary"
+          disabled
+          title="Kommer i v2"
+          className="rounded-md px-3 py-2 text-xs font-medium opacity-50"
         >
           ← Forrige
         </button>
         <button
           type="button"
-          className="rounded-md border border-border bg-card px-3 py-2 text-xs font-medium hover:bg-secondary"
+          disabled
+          title="Kommer i v2"
+          className="rounded-md border border-border bg-card px-3 py-2 text-xs font-medium opacity-50"
         >
           Vis flere →
         </button>

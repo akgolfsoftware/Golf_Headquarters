@@ -167,13 +167,13 @@ export default async function ElverListe({
         titleItalic="spillere"
         sub={`AK Golf · ${proEliteCount} Pro/Elite · ${aktive} aktive denne uka`}
         actions={
-          <button
-            type="button"
+          <Link
+            href="/admin/elever/ny"
             className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             <UserPlus size={14} strokeWidth={1.75} />
             Ny spiller
-          </button>
+          </Link>
         }
       />
 
@@ -231,13 +231,13 @@ export default async function ElverListe({
           titleTrail="registrert ennå"
           sub="Legg til din første spiller for å komme i gang. Du kan invitere via e-post eller opprette manuelt."
           cta={
-            <button
-              type="button"
+            <Link
+              href="/admin/elever/ny"
               className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               <UserPlus size={16} strokeWidth={1.75} />
               Ny spiller
-            </button>
+            </Link>
           }
         />
       ) : (

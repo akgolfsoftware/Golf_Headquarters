@@ -349,7 +349,9 @@ export default async function AdminCalendar({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+              disabled
+              title="Kommer i v2"
+              className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground opacity-50"
             >
               <Download className="h-4 w-4" /> Eksporter
             </button>
@@ -693,7 +695,9 @@ function SyncCard() {
       </div>
       <button
         type="button"
-        className="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+        disabled
+        title="Kommer i v2"
+        className="inline-flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-[12px] font-medium text-foreground opacity-50"
       >
         <RefreshCw className="h-3.5 w-3.5" /> Synk nå
       </button>

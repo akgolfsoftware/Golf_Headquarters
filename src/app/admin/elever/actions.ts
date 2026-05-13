@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import type { Prisma } from "@/generated/prisma/client";
 
 async function krevCoach() {
   const user = await getCurrentUser();
@@ -121,4 +122,97 @@ export async function leggTilSpiller(
 
   revalidatePath("/admin/elever");
   return { ok: true, userId: ny.id };
+}
+
+export type OppdaterSpillerResult = {
+  ok: boolean;
+  error?: string;
+  fieldErrors?: Record<string, string>;
+};
+
+export async function oppdaterSpiller(
+  userId: string,
+  formData: FormData,
+): Promise<OppdaterSpillerResult> {
+  const me = await krevCoach();
+
+  const navn = String(formData.get("navn") ?? "").trim();
+  const epost = String(formData.get("epost") ?? "").trim().toLowerCase();
+  const phone = String(formData.get("phone") ?? "").trim();
+  const klubb = String(formData.get("klubb") ?? "").trim();
+  const hcpRaw = String(formData.get("hcp") ?? "").trim();
+  const ambition = String(formData.get("ambition") ?? "").trim();
+  const alderRaw = String(formData.get("alder") ?? "").trim();
+
+  const alder = alderRaw === "" ? null : Number(alderRaw);
+  if (alderRaw !== "" && Number.isNaN(alder)) {
+    return { ok: false, error: "Alder må være et tall" };
+  }
+
+  const hcp = hcpRaw === "" ? null : Number(hcpRaw.replace(",", "."));
+  if (hcpRaw !== "" && Number.isNaN(hcp)) {
+    return { ok: false, error: "Handicap må være et tall" };
+  }
+
+  const v = validate({
+    navn,
+    epost,
+    alder,
+    klubb: klubb || null,
+    gruppe: null,
+  });
+  if (!v.ok) {
+    return { ok: false, fieldErrors: v.fieldErrors };
+  }
+
+  const eksisterende = await prisma.user.findFirst({
+    where: { email: epost, NOT: { id: userId } },
+  });
+  if (eksisterende) {
+    return {
+      ok: false,
+      fieldErrors: { epost: "En annen bruker har allerede denne e-posten" },
+    };
+  }
+
+  const eksisterendeBruker = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { preferences: true },
+  });
+  const existingPrefs =
+    eksisterendeBruker?.preferences &&
+    typeof eksisterendeBruker.preferences === "object" &&
+    !Array.isArray(eksisterendeBruker.preferences)
+      ? (eksisterendeBruker.preferences as Record<string, unknown>)
+      : {};
+  const nyPrefs: Record<string, unknown> = { ...existingPrefs };
+  if (alder !== null) nyPrefs.alder = alder;
+  else delete nyPrefs.alder;
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      name: navn,
+      email: epost,
+      phone: phone || null,
+      homeClub: klubb || null,
+      hcp,
+      ambition: ambition || null,
+      preferences:
+        Object.keys(nyPrefs).length > 0
+          ? (nyPrefs as Prisma.InputJsonValue)
+          : undefined,
+    },
+  });
+
+  await audit({
+    actorId: me.id,
+    action: "user.updated",
+    target: `User:${userId}`,
+    metadata: { email: epost },
+  });
+
+  revalidatePath(`/admin/elever/${userId}`);
+  revalidatePath("/admin/elever");
+  return { ok: true };
 }

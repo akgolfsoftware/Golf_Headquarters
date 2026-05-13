@@ -46,6 +46,49 @@ export function UpgradeButton({ disabled = false }: { disabled?: boolean }) {
   );
 }
 
+export function CancelButton() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleClick() {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? `HTTP ${res.status}`);
+      }
+      const { url } = await res.json();
+      window.location.href = url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kunne ikke åpne portal.");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col items-end gap-2">
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={loading}
+        className="whitespace-nowrap rounded-md border border-destructive/30 px-3 py-2 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-60"
+      >
+        {loading ? "Åpner…" : "Kanseller →"}
+      </button>
+      {error && (
+        <div
+          role="alert"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+        >
+          {error}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function ManageButton() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

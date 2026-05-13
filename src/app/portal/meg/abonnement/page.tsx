@@ -1,14 +1,27 @@
-import { Check, AlertTriangle } from "lucide-react";
+import { Check, AlertTriangle, ExternalLink, Receipt } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProKampanjeBanner } from "@/components/shared/pro-kampanje-banner";
 import { PRO_KAMPANJE_INFO } from "@/lib/feature-flags";
-import { UpgradeButton, ManageButton } from "./upgrade-button";
+import { UpgradeButton, ManageButton, CancelButton } from "./upgrade-button";
 
 type Search = { ok?: string; cancelled?: string };
 
 const NOK = new Intl.NumberFormat("nb-NO");
+
+function fakturaTypeLabel(t: "BOOKING" | "SUBSCRIPTION" | "INVOICE" | "OTHER") {
+  switch (t) {
+    case "SUBSCRIPTION":
+      return "Abonnement";
+    case "BOOKING":
+      return "Booking";
+    case "INVOICE":
+      return "Faktura";
+    default:
+      return "Annet";
+  }
+}
 
 function formatDato(d: Date | null | undefined) {
   if (!d) return null;
@@ -37,6 +50,21 @@ export default async function AbonnementPage({
 
   const subscription = await prisma.subscription.findUnique({
     where: { userId: user.id },
+  });
+
+  // Faktura-historikk: siste 12 vellykkede betalinger
+  const fakturaer = await prisma.payment.findMany({
+    where: { userId: user.id, status: "SUCCEEDED" },
+    orderBy: { paidAt: "desc" },
+    take: 12,
+    select: {
+      id: true,
+      paidAt: true,
+      amountOre: true,
+      type: true,
+      stripeInvoiceId: true,
+      description: true,
+    },
   });
 
   const erPro = faktiskTier === "PRO";
@@ -215,12 +243,81 @@ export default async function AbonnementPage({
         </div>
       </Section>
 
-      {/* Faktura-historikk — TODO: kobles til Invoice-modell senere */}
-      <Section title="Faktura-historikk" aux="Kommer i v2">
-        <div className="px-6 py-10 text-center text-sm text-muted-foreground">
-          Fakturahistorikk vises her når Stripe-integrasjonen er ferdig.
-          {/* TODO: kobles til Invoice-modell senere */}
-        </div>
+      {/* Faktura-historikk */}
+      <Section
+        title="Faktura-historikk"
+        aux={fakturaer.length > 0 ? `Siste ${fakturaer.length}` : "Ingen betalinger"}
+      >
+        {fakturaer.length === 0 ? (
+          <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+            <div className="mb-4 grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
+              <Receipt className="h-5 w-5" strokeWidth={1.5} />
+            </div>
+            <p className="font-display text-base font-semibold text-foreground">
+              Ingen betalinger registrert
+            </p>
+            <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+              Når du har gjort en betaling — abonnement, booking eller faktura —
+              vises kvitteringer her.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="px-6 py-3 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                    Dato
+                  </th>
+                  <th className="px-6 py-3 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                    Type
+                  </th>
+                  <th className="px-6 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                    Beløp
+                  </th>
+                  <th className="px-6 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                    Kvittering
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="text-sm">
+                {fakturaer.map((f) => (
+                  <tr key={f.id} className="border-b border-border/60 last:border-b-0">
+                    <td className="px-6 py-3 font-mono text-xs tabular-nums text-foreground">
+                      {formatDato(f.paidAt) ?? "—"}
+                    </td>
+                    <td className="px-6 py-3 text-foreground">
+                      {fakturaTypeLabel(f.type)}
+                      {f.description && (
+                        <span className="mt-0.5 block text-[11px] text-muted-foreground">
+                          {f.description}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-3 text-right font-mono text-sm tabular-nums text-foreground">
+                      {NOK.format(f.amountOre / 100)} kr
+                    </td>
+                    <td className="px-6 py-3 text-right">
+                      {f.stripeInvoiceId ? (
+                        <a
+                          href={`https://invoice.stripe.com/i/${f.stripeInvoiceId}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                        >
+                          Vis
+                          <ExternalLink className="h-3 w-3" strokeWidth={1.5} />
+                        </a>
+                      ) : (
+                        <span className="font-mono text-xs text-muted-foreground">—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Section>
 
       {/* Farlig sone */}
@@ -242,7 +339,7 @@ export default async function AbonnementPage({
                 ? `Du beholder Pro ut perioden (til ${formatDato(periodEnd)}). Deretter går du tilbake til Gratis.`
                 : "Du beholder Pro ut perioden. Deretter går du tilbake til Gratis."
             }
-            cta="Kanseller"
+            action={<CancelButton />}
           />
         </section>
       )}
@@ -370,11 +467,11 @@ function CheckMark() {
 function DangerRow({
   title,
   desc,
-  cta,
+  action,
 }: {
   title: string;
   desc: string;
-  cta: string;
+  action: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col items-start justify-between gap-3 border-t border-destructive/20 py-4 first:border-t-0 first:pt-0 sm:flex-row sm:items-center sm:gap-6">
@@ -382,12 +479,7 @@ function DangerRow({
         <span className="text-sm font-medium text-foreground">{title}</span>
         <span className="text-xs text-muted-foreground">{desc}</span>
       </div>
-      <button
-        type="button"
-        className="whitespace-nowrap rounded-md border border-destructive/30 px-3 py-2 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10"
-      >
-        {cta} →
-      </button>
+      {action}
     </div>
   );
 }

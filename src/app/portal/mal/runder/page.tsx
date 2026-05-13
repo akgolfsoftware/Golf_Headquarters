@@ -5,7 +5,7 @@
  * Pro-versjon med 4 KPI-kort (snitt, vs par, beste, SG total), filter-row,
  * og tabell med tee-pill, score, vs-par-pill, SG og detaljer-link.
  */
-import { Flag, Search, ChevronDown, Plus, Download } from "lucide-react";
+import { Flag, Search, ChevronDown, Download } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
@@ -112,18 +112,21 @@ export default async function RunderPage() {
           sub="Logg din første 18-hulls runde manuelt, eller koble til GolfBox for å importere automatisk fra din historikk."
           cta={
             <div className="flex flex-col items-center gap-3 sm:flex-row">
-              <button
-                type="button"
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
-              >
-                <Plus size={12} strokeWidth={1.75} /> Logg din første runde
-              </button>
+              <NyRundeModal
+                courses={courses.map((c) => ({
+                  id: c.id,
+                  name: c.name,
+                  par: c.par,
+                }))}
+              />
               <span className="font-mono text-[11px] text-muted-foreground">
                 eller
               </span>
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground"
+                disabled
+                title="Kommer i v2 — GolfBox-integrasjon"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground opacity-60"
               >
                 <Download size={12} strokeWidth={1.75} /> Importer fra GolfBox
               </button>
@@ -197,7 +200,9 @@ export default async function RunderPage() {
             <div className="ml-auto inline-flex gap-2">
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-transparent px-4 py-2 text-xs font-semibold text-foreground"
+                disabled
+                title="Kommer i v2 — GolfBox-integrasjon"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-transparent px-4 py-2 text-xs font-semibold text-foreground opacity-60"
               >
                 <Download size={12} strokeWidth={1.75} /> Importer fra GolfBox
               </button>

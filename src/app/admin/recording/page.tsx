@@ -9,19 +9,12 @@
  * Roller: COACH, ADMIN.
  */
 
-import {
-  Check,
-  CircleDot,
-  Loader2,
-  Mic,
-  Pause,
-  Square,
-  X,
-} from "lucide-react";
+import { Check, CircleDot, Loader2, Mic } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { RecordingControls } from "./recording-controls";
 
 type PipelineStatus = "done" | "active" | "idle";
 
@@ -138,10 +131,12 @@ export default async function RecordingAdmin() {
       )}
 
       {/* Live recording frame */}
-      <div className="overflow-hidden rounded-lg border border-border bg-card">
-        {/* Topbar */}
-        <div className="flex items-center justify-between border-b border-border bg-secondary px-4 py-3">
-          <div className="flex items-center gap-3">
+      <RecordingControls
+        harAktivt={harAktivt}
+        aktivStatus={aktivt?.status ?? null}
+        aktivId={aktivt?.id ?? null}
+        topbar={
+          <>
             {harAktivt && aktivt.status === "PROCESSING" ? (
               <span className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-destructive">
                 <span className="relative flex h-1.5 w-1.5">
@@ -156,24 +151,17 @@ export default async function RecordingAdmin() {
                 Ingen aktiv økt
               </span>
             )}
-          </div>
-          <div className="flex items-center gap-2 text-[13px] text-foreground">
-            <span className="grid h-5 w-5 place-items-center rounded-full bg-primary font-mono text-[9px] font-semibold text-primary-foreground">
-              {(user.name ?? "?").trim().charAt(0).toUpperCase()}
-            </span>
-            <span className="font-medium">{user.name}</span>
-            <span className="text-muted-foreground">— coach</span>
-          </div>
-          <button
-            aria-label="Lukk"
-            className="grid h-7 w-7 place-items-center rounded-sm text-muted-foreground hover:bg-card hover:text-foreground"
-          >
-            <X className="h-4 w-4" strokeWidth={1.5} />
-          </button>
-        </div>
-
-        {/* Stage */}
-        <div className="relative grid min-h-[480px] grid-rows-[auto_auto_1fr] items-start gap-8 px-8 pt-12 pb-32">
+            <div className="ml-auto flex items-center gap-2 text-[13px] text-foreground">
+              <span className="grid h-5 w-5 place-items-center rounded-full bg-primary font-mono text-[9px] font-semibold text-primary-foreground">
+                {(user.name ?? "?").trim().charAt(0).toUpperCase()}
+              </span>
+              <span className="font-medium">{user.name}</span>
+              <span className="text-muted-foreground">— coach</span>
+            </div>
+          </>
+        }
+        stage={
+          <div className="relative grid min-h-[480px] grid-rows-[auto_auto_1fr] items-start gap-8 px-8 pt-12 pb-32">
           {/* Pipeline */}
           <div className="flex items-center justify-center gap-6">
             {pipeline.map((step, i) => (
@@ -235,25 +223,8 @@ export default async function RecordingAdmin() {
             )}
           </div>
         </div>
-
-        {/* Bottombar */}
-        <div className="flex items-center gap-3 border-t border-border bg-secondary px-4 py-4">
-          <button
-            disabled={!harAktivt || aktivt.status !== "PROCESSING"}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
-          >
-            <Pause className="h-4 w-4" strokeWidth={1.5} />
-            Pause opptak
-          </button>
-          <button
-            disabled={!harAktivt || aktivt.status !== "PROCESSING"}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
-          >
-            <Square className="h-4 w-4" strokeWidth={1.5} fill="currentColor" />
-            Avslutt og analyser
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Meta-strip under frame */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

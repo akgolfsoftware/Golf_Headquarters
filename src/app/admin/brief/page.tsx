@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Activity,
   AlertTriangle,
@@ -5,11 +6,11 @@ import {
   CheckCircle2,
   LayoutGrid,
   Mail,
-  Printer,
   Settings,
   Star,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { PrintButton } from "@/components/shared/print-button";
 import {
   getBriefData,
   bygBriefSystemPrompt,
@@ -100,23 +101,19 @@ export default async function DagligBrief() {
             </div>
           </div>
           <div className="flex shrink-0 gap-2">
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground hover:bg-secondary"
-            >
-              <Printer className="h-4 w-4" />
-              Skriv ut
-            </button>
-            <button
-              type="button"
+            <PrintButton />
+            <Link
+              href="/admin/settings"
               className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground hover:bg-secondary"
             >
               <Settings className="h-4 w-4" />
               Innstillinger
-            </button>
+            </Link>
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground hover:opacity-90"
+              disabled
+              title="Kommer i v2"
+              className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
             >
               <Mail className="h-4 w-4" />
               Send som e-post

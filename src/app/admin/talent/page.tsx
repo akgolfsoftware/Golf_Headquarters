@@ -325,10 +325,13 @@ export default async function Talent() {
               {SORT_OPTIONS.map((o) => (
                 <button
                   key={o.label}
+                  type="button"
+                  disabled={!o.active}
+                  title={o.active ? undefined : "Sortering kommer i v2"}
                   className={`rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors ${
                     o.active
                       ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-muted-foreground hover:bg-secondary/70"
+                      : "cursor-not-allowed bg-secondary text-muted-foreground opacity-60"
                   }`}
                 >
                   {o.label}

@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { ArrowLeft, Copy, MoreHorizontal } from "lucide-react";
+import { ArrowLeft, MoreHorizontal } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { CreateApiKeyModal } from "./create-key-modal";
 import { RevokeButton } from "./revoke-button";
+import { CopyPrefixButton } from "./copy-prefix-button";
 
 function formatDate(d: Date) {
   return d.toLocaleDateString("nb-NO", {
@@ -116,13 +117,7 @@ export default async function AdminApiKeysPage() {
                     </div>
                     <div className="inline-flex w-fit items-center gap-2 rounded-sm border border-border bg-secondary px-2 py-1 font-mono text-[12px] text-muted-foreground">
                       {k.prefix}…
-                      <button
-                        type="button"
-                        className="inline-flex h-4 w-4 items-center justify-center text-muted-foreground hover:text-foreground"
-                        aria-label="Kopier prefix"
-                      >
-                        <Copy className="h-3 w-3" strokeWidth={1.5} />
-                      </button>
+                      <CopyPrefixButton prefix={k.prefix} />
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-1">

@@ -405,7 +405,7 @@ export default async function Profil360({
           Lag plan
         </Link>
         <Link
-          href={`/admin/booking?player=${player.id}`}
+          href={`/admin/bookings/ny?player=${player.id}`}
           className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           <CalendarPlus size={14} strokeWidth={1.5} />

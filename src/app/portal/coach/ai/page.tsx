@@ -1,11 +1,18 @@
 import Link from "next/link";
-import { ArrowUpRight, Download, Plus, Sparkles } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AiChat } from "./chat";
+import { ChatToolbar } from "./chat-toolbar";
 import type { ChatMelding } from "@/lib/anthropic";
 
-export default async function AiCoachPage() {
+export default async function AiCoachPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ ny?: string }>;
+}) {
+  const sp = await searchParams;
+  const startNy = sp?.ny === "1";
   const user = await requirePortalUser({
     allow: ["PLAYER", "COACH", "ADMIN", "PARENT"],
   });
@@ -38,10 +45,12 @@ export default async function AiCoachPage() {
   }
 
   // Finn aktiv eller siste AI-sesjon, eller la chat opprette ny
-  const sisteSesjon = await prisma.coachingSession.findFirst({
-    where: { userId: user.id, kind: "AI" },
-    orderBy: { updatedAt: "desc" },
-  });
+  const sisteSesjon = startNy
+    ? null
+    : await prisma.coachingSession.findFirst({
+        where: { userId: user.id, kind: "AI" },
+        orderBy: { updatedAt: "desc" },
+      });
 
   const initialMessages: ChatMelding[] = sisteSesjon
     ? Array.isArray(sisteSesjon.messages)
@@ -92,22 +101,7 @@ export default async function AiCoachPage() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            className="inline-flex h-10 items-center gap-1.5 rounded-md border border-border bg-card px-3.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
-          >
-            <Download size={14} strokeWidth={1.5} />
-            Eksporter chat
-          </button>
-          <button
-            type="button"
-            className="grid h-10 w-10 place-items-center rounded-md border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary"
-            aria-label="Ny chat"
-          >
-            <Plus size={18} strokeWidth={1.5} />
-          </button>
-        </div>
+        <ChatToolbar messages={initialMessages} />
       </header>
 
       <AiChat

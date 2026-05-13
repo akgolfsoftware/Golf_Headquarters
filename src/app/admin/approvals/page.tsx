@@ -103,7 +103,9 @@ export default async function Approvals() {
         actions={
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            disabled
+            title="Kommer i v2"
+            className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
           >
             Send agent-feedback →
           </button>

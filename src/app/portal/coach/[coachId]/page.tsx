@@ -78,7 +78,7 @@ export default async function CoachDetalj({
               Send melding
             </Link>
             <Link
-              href="/portal/booking"
+              href={`/portal/booking/ny?coachId=${coachId}`}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <Calendar size={16} strokeWidth={1.5} />

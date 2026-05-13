@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { AlertTriangle, Edit, ExternalLink, ImagePlus } from "lucide-react";
+import { AlertTriangle, ExternalLink, ImagePlus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { EditProfileForm } from "./edit-form";
 
 type Field = { label: string; value: string; mono?: boolean };
 
@@ -31,25 +32,55 @@ export default async function AdminProfilePage() {
     },
   ];
 
-  // TODO: lagre profesjonelle felt (bio, sertifiseringer, språk, klubber) i User
-  const bio = user.ambition ?? "Legg til en kort bio som vises på offentlig profil.";
-  const certifications: string[] = []; // TODO
-  const languages: string[] = ["Norsk"]; // TODO
-  const clubs: string[] = user.homeClub ? [user.homeClub] : []; // TODO
+  const prefs =
+    user.preferences &&
+    typeof user.preferences === "object" &&
+    !Array.isArray(user.preferences)
+      ? (user.preferences as Record<string, unknown>)
+      : {};
+
+  function asStringArray(v: unknown, fallback: string[]): string[] {
+    if (Array.isArray(v)) return v.filter((s): s is string => typeof s === "string");
+    return fallback;
+  }
+
+  const bioStored = user.ambition ?? "";
+  const bio = bioStored || "Legg til en kort bio som vises på offentlig profil.";
+  const certifications = asStringArray(prefs.certifications, []);
+  const languages = asStringArray(prefs.languages, ["Norsk"]);
+  const clubs = asStringArray(
+    prefs.clubs,
+    user.homeClub ? [user.homeClub] : [],
+  );
 
   return (
     <div className="space-y-8">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          CoachHQ · Konto · Profil
-        </span>
-        <h1 className="mt-2 font-display text-[36px] font-medium leading-[1.1] tracking-tight">
-          Profilen din.{" "}
-          <em className="italic text-primary">Slik den ser ut</em> for spillerne.
-        </h1>
-        <p className="mt-2 text-[13px] text-muted-foreground">
-          Endringer du gjør her vises på akgolf.no/coach innen 5 minutter.
-        </p>
+      <header className="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            CoachHQ · Konto · Profil
+          </span>
+          <h1 className="mt-2 font-display text-[36px] font-medium leading-[1.1] tracking-tight">
+            Profilen din.{" "}
+            <em className="italic text-primary">Slik den ser ut</em> for spillerne.
+          </h1>
+          <p className="mt-2 text-[13px] text-muted-foreground">
+            Endringer du gjør her vises på akgolf.no/coach innen 5 minutter.
+          </p>
+        </div>
+        <EditProfileForm
+          initial={{
+            navn: user.name,
+            epost: user.email,
+            phone: user.phone ?? "",
+            hcp: user.hcp != null ? String(user.hcp).replace(".", ",") : "",
+            homeClub: user.homeClub ?? "",
+            bio: bioStored,
+            certifications: certifications.join(", "),
+            languages: languages.join(", "),
+            clubs: clubs.join(", "),
+          }}
+        />
       </header>
 
       <div className="grid grid-cols-[320px_1fr] items-start gap-8">
@@ -58,13 +89,6 @@ export default async function AdminProfilePage() {
             <div className="grid h-24 w-24 place-items-center rounded-full bg-primary font-display text-[32px] font-semibold text-primary-foreground">
               {initials(user.name) || "AK"}
             </div>
-            <button
-              type="button"
-              className="absolute -bottom-1 right-8 inline-flex items-center gap-1 rounded-full border border-border bg-card px-2 py-1 text-[11px]"
-            >
-              <Edit size={11} strokeWidth={1.5} />
-              Endre
-            </button>
           </div>
           <div className="mt-1 text-center">
             <div className="font-display text-[24px] font-semibold tracking-tight">
@@ -117,12 +141,7 @@ export default async function AdminProfilePage() {
                 </small>
               </div>
               <div className="text-[14px] leading-relaxed">{bio}</div>
-              <button
-                type="button"
-                className="cursor-pointer text-[12px] font-medium text-primary"
-              >
-                Endre
-              </button>
+              <span aria-hidden />
             </div>
             <ChipRow
               label="Sertifiseringer"
@@ -195,12 +214,7 @@ function FieldRow({ label, value, mono }: Field) {
         {label}
       </span>
       <span className={`text-[14px] ${mono ? "font-mono" : ""}`}>{value}</span>
-      <button
-        type="button"
-        className="cursor-pointer text-[12px] font-medium text-primary"
-      >
-        Endre
-      </button>
+      <span aria-hidden />
     </div>
   );
 }
@@ -241,12 +255,7 @@ function ChipRow({
           ))
         )}
       </div>
-      <button
-        type="button"
-        className="cursor-pointer text-[12px] font-medium text-primary"
-      >
-        Endre
-      </button>
+      <span aria-hidden />
     </div>
   );
 }

@@ -56,13 +56,13 @@ export default async function TeamAdmin() {
         titleTrail={`· ${totalSpillere} spillere fordelt`}
         sub={`AK Golf Group · Snitt ${snittSpillere} spillere per coach.`}
         actions={
-          <button
-            type="button"
+          <Link
+            href="/admin/team/inviter"
             className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             <UserPlus size={14} strokeWidth={1.75} />
             Inviter coach
-          </button>
+          </Link>
         }
       />
 
@@ -115,13 +115,13 @@ export default async function TeamAdmin() {
           titleTrail="så langt"
           sub="Inviter din første coach — de får en e-post med oppsett-link og kan logge inn umiddelbart."
           cta={
-            <button
-              type="button"
+            <Link
+              href="/admin/team/inviter"
               className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               <UserPlus size={16} strokeWidth={1.75} />
               Inviter coach
-            </button>
+            </Link>
           }
         />
       ) : (
@@ -133,9 +133,8 @@ export default async function TeamAdmin() {
       )}
 
       <p className="text-[12px] text-muted-foreground">
-        Invitering av nye coacher skjer i v2 via Supabase Auth admin API.
-        Foreløpig: opprett bruker direkte i Supabase Auth og oppdater rolle i
-        Prisma Studio.
+        Inviterte coacher får en e-post med innloggingslink. Authentisering går
+        via Supabase Auth ved første innlogging.
       </p>
     </div>
   );

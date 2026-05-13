@@ -1,12 +1,19 @@
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
 import { PageHeader } from "@/components/shared/page-header";
 import { NotifToggles } from "./notif-toggles";
+import { requestAccountDeletion, requestDataExport } from "./actions";
 
-export default async function InnstillingerPage() {
+export default async function InnstillingerPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ ok?: string }>;
+}) {
   const user = await requirePortalUser();
   const prefs = lesPreferences(user);
+  const sp = await searchParams;
+  const ok = sp?.ok;
 
   return (
     <div className="space-y-8">
@@ -54,17 +61,33 @@ export default async function InnstillingerPage() {
             Farlig sone
           </h3>
         </div>
-        <DangerRow
-          title="Eksporter alle mine data (GDPR)"
-          desc="Du får en zip med alt. Tar 2–10 minutter."
-          cta="Be om eksport"
-        />
-        <DangerRow
-          title="Slett konto"
-          desc="Sender forespørsel til coach. Permanent — kan ikke angres."
-          cta="Be om sletting"
-          destructive
-        />
+        {ok === "eksport" && (
+          <div className="mb-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-foreground">
+            <CheckCircle2 className="h-4 w-4 text-primary" strokeWidth={1.5} />
+            Forespørsel om eksport mottatt. Du får svar på e-post.
+          </div>
+        )}
+        {ok === "sletting" && (
+          <div className="mb-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-foreground">
+            <CheckCircle2 className="h-4 w-4 text-primary" strokeWidth={1.5} />
+            Forespørsel om sletting mottatt. Du får svar på e-post.
+          </div>
+        )}
+        <form action={requestDataExport}>
+          <DangerRow
+            title="Eksporter alle mine data (GDPR)"
+            desc="Du får en zip med alt. Tar 2–10 minutter."
+            cta="Be om eksport"
+          />
+        </form>
+        <form action={requestAccountDeletion}>
+          <DangerRow
+            title="Slett konto"
+            desc="Sender forespørsel til coach. Permanent — kan ikke angres."
+            cta="Be om sletting"
+            destructive
+          />
+        </form>
       </section>
     </div>
   );
@@ -149,7 +172,7 @@ function DangerRow({
         <span className="text-xs text-muted-foreground">{desc}</span>
       </div>
       <button
-        type="button"
+        type="submit"
         className={`whitespace-nowrap rounded-md border px-3 py-2 text-xs font-medium transition-colors ${
           destructive
             ? "border-destructive/30 text-destructive hover:bg-destructive/10"

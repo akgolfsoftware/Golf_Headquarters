@@ -134,12 +134,12 @@ export default async function Bookinger({
         titleTrail={`· ${kommende.length} kommende`}
         sub={`${denneUka.length} denne uka · ${confirmed} bekreftet · ${pending} venter.`}
         actions={
-          <button
-            type="button"
+          <Link
+            href="/admin/bookings/ny"
             className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             + Ny booking
-          </button>
+          </Link>
         }
       />
 

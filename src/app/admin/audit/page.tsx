@@ -1,7 +1,6 @@
 import {
   Bot,
   ChevronDown,
-  Copy,
   Download,
   Pencil,
   Plus,
@@ -14,6 +13,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { CopyButton } from "@/components/shared/copy-button";
 
 type Search = { action?: string; actor?: string };
 
@@ -178,16 +178,12 @@ export default async function AuditLogPage({
             </p>
           </div>
           <div className="flex gap-2">
+            <CopyButton label="Kopier filter-link" />
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              <Copy className="h-4 w-4" />
-              Kopier filter-link
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              disabled
+              title="Kommer i v2"
+              className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
             >
               <Download className="h-4 w-4" />
               Eksporter

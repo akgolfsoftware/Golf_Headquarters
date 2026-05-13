@@ -11,7 +11,6 @@ import {
   Headphones,
   Calendar,
   Settings,
-  Search,
   ChevronRight,
   MessageCircle,
   Mail,
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { HelpSearch } from "./help-search";
 
 type Kategori = {
   slug: string;
@@ -100,13 +100,6 @@ const POPULAERE = [
   },
 ];
 
-const FORESLAATT = [
-  "Pyramide",
-  "Logg runde",
-  "Bytt coach",
-  "Oppgrader til Pro",
-];
-
 export default async function HelpPage() {
   await requirePortalUser();
   const totalArtikler = KATEGORIER.reduce((sum, k) => sum + k.artikler, 0);
@@ -129,32 +122,7 @@ export default async function HelpPage() {
           hverdager.
         </p>
 
-        <div className="relative w-full max-w-xl">
-          <Search
-            size={20}
-            strokeWidth={1.75}
-            aria-hidden="true"
-            className="pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground"
-          />
-          <input
-            type="search"
-            aria-label="Søk i hjelp-artikler"
-            placeholder="Søk hjelp-artikler eller skriv et spørsmål..."
-            className="w-full rounded-lg border-[1.5px] border-border bg-card px-6 py-4 pl-14 text-base text-foreground outline-none transition-all focus:border-primary focus:shadow-[0_0_0_4px_var(--color-pyr-fys-track)]"
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {FORESLAATT.map((s) => (
-            <button
-              key={s}
-              type="button"
-              className="rounded-full border border-border bg-card px-4 py-2 text-sm text-foreground transition-colors hover:border-primary hover:text-primary"
-            >
-              {s}
-            </button>
-          ))}
-        </div>
+        <HelpSearch />
       </section>
 
       {/* Kategorier */}

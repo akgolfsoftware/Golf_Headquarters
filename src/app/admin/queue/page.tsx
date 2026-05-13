@@ -177,16 +177,18 @@ export default async function OppfolgingsKo() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
+            <Link
+              href="/admin/settings"
               className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <Settings className="h-4 w-4" />
               Justere regler
-            </button>
+            </Link>
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              disabled
+              title="Kommer i v2"
+              className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
             >
               <Sparkles className="h-4 w-4" />
               Generer AI-aksjoner
@@ -255,7 +257,9 @@ export default async function OppfolgingsKo() {
           </span>
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+            disabled
+            title="Sortering kommer i v2"
+            className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-foreground opacity-60"
           >
             Risiko + tid siden flagget
             <ChevronDown className="h-3.5 w-3.5" />
@@ -479,10 +483,12 @@ function SegBtn({ active, children }: { active?: boolean; children: React.ReactN
   return (
     <button
       type="button"
+      disabled={!active}
+      title={active ? undefined : "Visning kommer i v2"}
       className={`px-3 py-1 text-[12px] font-medium transition-colors ${
         active
           ? "bg-foreground text-background"
-          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+          : "cursor-not-allowed text-muted-foreground opacity-60"
       }`}
     >
       {children}
