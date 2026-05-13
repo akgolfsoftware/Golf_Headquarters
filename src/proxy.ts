@@ -5,9 +5,25 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { updateSession } from "@/lib/supabase/proxy";
 
+// Permanent redirects fra gamle ruter til ny samle-side /admin/innboks.
+const INNBOKS_REDIRECTS: Record<string, string> = {
+  "/admin/queue": "oppfolging",
+  "/admin/approvals": "godkjennelser",
+  "/admin/messages": "meldinger",
+};
+
 export async function proxy(request: NextRequest) {
   const response = await updateSession(request);
   const path = request.nextUrl.pathname;
+
+  // Sidemeny-redirect for samle-sider (kun eksakt match — dyperuter består).
+  const innboksTab = INNBOKS_REDIRECTS[path];
+  if (innboksTab) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/admin/innboks";
+    url.searchParams.set("tab", innboksTab);
+    return NextResponse.redirect(url);
+  }
 
   const erBeskyttet =
     path.startsWith("/portal") || path.startsWith("/admin");
