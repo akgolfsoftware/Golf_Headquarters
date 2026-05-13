@@ -38,7 +38,7 @@ export function AktivitetsFeed({ items }: { items: AktivitetsItem[] }) {
               <div className="min-w-0 flex-1">
                 <Link
                   href={`/admin/elever/${it.brukerId}`}
-                  className="font-medium text-foreground hover:text-primary"
+                  className="font-medium text-foreground hover:text-primary active:text-primary/80 focus-visible:underline focus-visible:outline-none"
                 >
                   {it.brukerNavn}
                 </Link>

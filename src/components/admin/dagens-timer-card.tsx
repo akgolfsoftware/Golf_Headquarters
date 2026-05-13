@@ -17,7 +17,7 @@ export function DagensTimerCard({ timer }: { timer: DagensTime[] }) {
         </span>
         <Link
           href="/admin/bookings"
-          className="text-xs text-primary hover:underline"
+          className="text-xs text-primary hover:underline active:text-primary/80 focus-visible:underline focus-visible:outline-none"
         >
           Alle →
         </Link>
@@ -35,7 +35,7 @@ export function DagensTimerCard({ timer }: { timer: DagensTime[] }) {
                 <div className="min-w-0 flex-1">
                   <Link
                     href={`/admin/elever/${t.userId}`}
-                    className="font-medium text-foreground hover:text-primary"
+                    className="font-medium text-foreground hover:text-primary active:text-primary/80 focus-visible:underline focus-visible:outline-none"
                   >
                     {t.userName}
                   </Link>

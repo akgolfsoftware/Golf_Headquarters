@@ -216,7 +216,7 @@ export function CalendarWeekGrid({
                       type="button"
                       onClick={() => aapneSlot(dag, i, hour)}
                       aria-label={`Opprett økt ${DAGER_LANGE[i]} kl ${tLabel}`}
-                      className={`block h-14 w-full cursor-pointer text-left transition-colors hover:bg-primary/8 focus:bg-primary/10 focus:outline-none ${baseLinjer}`}
+                      className={`block h-14 w-full cursor-pointer text-left transition-colors hover:bg-primary/8 active:bg-primary/15 focus-visible:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring ${baseLinjer}`}
                     />
                   );
                 })}

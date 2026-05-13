@@ -38,10 +38,10 @@ export function UkeStripe({
           <Link
             key={dato.toISOString()}
             href={bygglenke(dato)}
-            className={`relative rounded-lg border p-3 text-left transition-colors ${
+            className={`relative rounded-lg border p-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               aktiv
                 ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                : "border-border bg-card hover:border-input"
+                : "border-border bg-card hover:border-input active:border-input/80"
             }`}
           >
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">

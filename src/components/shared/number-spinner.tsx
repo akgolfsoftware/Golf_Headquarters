@@ -137,7 +137,7 @@ export function NumberSpinner({
         aria-label="Reduser"
         onClick={() => setValue(value - step)}
         disabled={value <= min}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-input bg-card text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-input bg-card text-foreground transition-colors hover:bg-secondary active:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40"
       >
         <ChevronDown className="h-5 w-5" strokeWidth={1.5} />
       </button>
@@ -198,7 +198,7 @@ export function NumberSpinner({
         aria-label="Øk"
         onClick={() => setValue(value + step)}
         disabled={value >= max}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-input bg-card text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-input bg-card text-foreground transition-colors hover:bg-secondary active:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40"
       >
         <ChevronUp className="h-5 w-5" strokeWidth={1.5} />
       </button>

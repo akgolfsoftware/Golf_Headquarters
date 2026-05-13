@@ -85,7 +85,7 @@ export function AdminMobileDrawer() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Åpne meny"
-        className="grid h-11 w-11 place-items-center rounded-md border border-border bg-card text-foreground hover:border-input md:hidden"
+        className="grid h-11 w-11 place-items-center rounded-md border border-border bg-card text-foreground hover:border-input active:border-input/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:hidden"
       >
         <Menu width={20} height={20} aria-hidden />
       </button>
@@ -118,7 +118,7 @@ export function AdminMobileDrawer() {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Lukk meny"
-                className="grid h-11 w-11 place-items-center rounded-md text-white/70 hover:bg-white/10 hover:text-white"
+                className="grid h-11 w-11 place-items-center rounded-md text-white/70 hover:bg-white/10 hover:text-white active:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
               >
                 <X width={20} height={20} aria-hidden />
               </button>

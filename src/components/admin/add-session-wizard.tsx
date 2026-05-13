@@ -388,7 +388,7 @@ export function AddSessionWizard({
             <button
               type="button"
               onClick={() => setOpprettDrillAapen(true)}
-              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-4 py-3 text-sm font-medium hover:border-border"
+              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-4 py-3 text-sm font-medium hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Plus className="h-4 w-4" strokeWidth={1.5} />
               Ny drill
@@ -547,7 +547,7 @@ export function AddSessionWizard({
             type="button"
             onClick={tilbake}
             disabled={pending}
-            className="rounded-md border border-input bg-card px-5 py-3 text-sm font-medium text-foreground hover:border-border disabled:opacity-60"
+            className="rounded-md border border-input bg-card px-5 py-3 text-sm font-medium text-foreground hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
           >
             Tilbake
           </button>
@@ -557,7 +557,7 @@ export function AddSessionWizard({
             type="button"
             onClick={onCancel}
             disabled={pending}
-            className="rounded-md border border-input bg-card px-5 py-3 text-sm font-medium text-muted-foreground hover:border-border"
+            className="rounded-md border border-input bg-card px-5 py-3 text-sm font-medium text-muted-foreground hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Avbryt
           </button>
@@ -566,7 +566,7 @@ export function AddSessionWizard({
           type="button"
           onClick={neste}
           disabled={pending}
-          className="ml-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="ml-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
         >
           {pending
             ? "Lagrer…"
@@ -606,7 +606,7 @@ export function AddSessionModal({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+        className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <Plus className="h-4 w-4" strokeWidth={1.5} />
         {triggerLabel}
@@ -626,7 +626,7 @@ export function AddSessionModal({
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Lukk"
-            className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary"
+            className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary active:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="h-5 w-5" strokeWidth={1.5} />
           </button>
@@ -812,7 +812,7 @@ function NyDrillSkjema({
           <button
             type="button"
             onClick={onAvbryt}
-            className="rounded-md border border-input bg-card px-4 py-2 text-sm font-medium hover:border-border"
+            className="rounded-md border border-input bg-card px-4 py-2 text-sm font-medium hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Avbryt
           </button>
@@ -820,7 +820,7 @@ function NyDrillSkjema({
             type="button"
             onClick={() => navn.trim() && onLagre(navn.trim(), beskrivelse.trim())}
             disabled={!navn.trim()}
-            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
           >
             Opprett
           </button>

@@ -243,7 +243,7 @@ export function QuickAddSessionModal({
               onClick={lukk}
               disabled={pending}
               aria-label="Lukk"
-              className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground active:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <X className="h-4 w-4" strokeWidth={1.5} />
             </button>
@@ -281,7 +281,7 @@ export function QuickAddSessionModal({
                           setSpillerId(s.id);
                           setSpillerSok(s.name);
                         }}
-                        className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm hover:bg-secondary"
+                        className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm hover:bg-secondary active:bg-secondary/80 focus-visible:outline-none focus-visible:bg-secondary"
                       >
                         <span className="font-medium text-popover-foreground">
                           {s.name}
@@ -437,14 +437,14 @@ export function QuickAddSessionModal({
               type="button"
               onClick={lukk}
               disabled={pending}
-              className="rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-60"
+              className="rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
             >
               Avbryt
             </button>
             <button
               type="submit"
               disabled={pending || !!success}
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
             >
               {pending && (
                 <Loader2

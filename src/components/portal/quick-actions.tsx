@@ -63,7 +63,7 @@ function ActionCard({
   return (
     <Link
       href={href}
-      className="group flex items-center gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/40"
+      className="group flex items-center gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/40 active:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
         <Icon className="h-5 w-5" strokeWidth={1.75} />

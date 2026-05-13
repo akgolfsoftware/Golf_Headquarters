@@ -71,7 +71,7 @@ export function AiPlanForslagButton({ playerId, fokusOmrader }: Props) {
             <button
               type="button"
               onClick={() => setApen(false)}
-              className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:bg-secondary"
+              className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:bg-secondary active:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Lukk"
             >
               <X className="h-4 w-4" strokeWidth={1.8} />
@@ -99,7 +99,7 @@ export function AiPlanForslagButton({ playerId, fokusOmrader }: Props) {
               <button
                 type="button"
                 onClick={() => setApen(false)}
-                className="rounded-md border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary"
+                className="rounded-md border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary active:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Lukk
               </button>

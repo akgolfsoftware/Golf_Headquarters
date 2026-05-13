@@ -67,7 +67,7 @@ export function ManedKalender({
             <Link
               key={key}
               href={bygglenke(d)}
-              className={`relative min-h-[80px] border-b border-r border-border p-2 transition-colors hover:bg-muted/40 ${
+              className={`relative min-h-[80px] border-b border-r border-border p-2 transition-colors hover:bg-muted/40 active:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring ${
                 utenforManed ? "bg-muted/20 text-muted-foreground" : ""
               } ${erIdag ? "bg-primary/5" : ""}`}
             >

@@ -46,7 +46,7 @@ export function HubKpiStrip({
         <Link
           key={k.label}
           href={k.href}
-          className="group rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary"
+          className="group rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary active:border-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             {k.label}
