@@ -22,9 +22,21 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
-import type { PyramidArea, SessionStatus } from "@/generated/prisma/client";
+import type {
+  LPhase,
+  PyramidArea,
+  SessionEnvironment,
+  SessionStatus,
+  SkillArea,
+} from "@/generated/prisma/client";
 import { flyttOkt } from "./actions";
 import { EditSessionModal } from "./edit-session-modal";
+import {
+  ENVIRONMENT_LABEL,
+  LPHASE_LABEL,
+  PYRAMIDE_LABEL,
+  SKILL_AREA_LABEL,
+} from "@/lib/labels/taxonomy";
 
 // ────────────────────────────────────────────────────────────────
 // Typer
@@ -36,6 +48,9 @@ export type DraggableSession = {
   durationMin: number;
   title: string;
   pyramidArea: PyramidArea;
+  skillArea: SkillArea | null;
+  environment: SessionEnvironment | null;
+  lPhase: LPhase | null;
   status: SessionStatus;
   drillCount: number;
   rationale: string | null;
@@ -349,14 +364,29 @@ function SessionContent({
         <div className="truncate text-[13px] font-semibold leading-tight">
           {session.title}
         </div>
-        <div className="mt-1 flex flex-wrap gap-2 text-[11px] text-muted-foreground">
+        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-2">
             <i
               className="inline-block h-2 w-2 rounded-sm"
               style={{ background: PYR_COLOR[session.pyramidArea] }}
             />
-            {session.pyramidArea} · {session.durationMin} min
+            {PYRAMIDE_LABEL[session.pyramidArea]} · {session.durationMin} min
           </span>
+          {session.skillArea && (
+            <span className="rounded-sm bg-secondary px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+              {SKILL_AREA_LABEL[session.skillArea]}
+            </span>
+          )}
+          {session.environment && (
+            <span className="rounded-sm bg-secondary px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+              {ENVIRONMENT_LABEL[session.environment]}
+            </span>
+          )}
+          {session.lPhase && (
+            <span className="rounded-sm bg-secondary px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+              {LPHASE_LABEL[session.lPhase]}
+            </span>
+          )}
           <span>{session.drillCount} drills</span>
         </div>
       </div>

@@ -5,7 +5,20 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { triggerPeriodiseringsAgent } from "@/lib/agents/triggers";
-import type { PyramidArea } from "@/generated/prisma/client";
+import type {
+  LPhase,
+  PyramidArea,
+  SessionEnvironment,
+  SkillArea,
+} from "@/generated/prisma/client";
+
+export type AdHocDrill = {
+  exerciseId: string;
+  sets?: number;
+  reps?: number;
+  csTarget?: number;
+  notes?: string;
+};
 
 export type NyOktInput = {
   title: string;
@@ -13,8 +26,21 @@ export type NyOktInput = {
   scheduledAt: string; // ISO
   durationMin: number;
   rationale?: string;
-  exerciseIds: string[];
+  skillArea?: SkillArea;
+  environment?: SessionEnvironment;
+  lPhase?: LPhase;
+  // Ny strukturert form (foretrukket).
+  drills?: AdHocDrill[];
+  // Bakoverkompatibilitet — gammel form med bare IDer.
+  exerciseIds?: string[];
 };
+
+function repsSetsString(sets?: number, reps?: number): string {
+  if (sets && reps) return `${sets}x${reps}`;
+  if (reps) return `${reps}`;
+  if (sets) return `${sets} sett`;
+  return "3x10";
+}
 
 export async function createAdHocSession(input: NyOktInput) {
   const user = await getCurrentUser();
@@ -23,11 +49,17 @@ export async function createAdHocSession(input: NyOktInput) {
   if (user.tier === "GRATIS") {
     throw new Error("upgrade-required");
   }
-  if (input.exerciseIds.length === 0) {
+
+  // Normaliser drills til strukturert form
+  const drills: AdHocDrill[] =
+    input.drills && input.drills.length > 0
+      ? input.drills
+      : (input.exerciseIds ?? []).map((id) => ({ exerciseId: id }));
+
+  if (drills.length === 0) {
     throw new Error("no-drills");
   }
 
-  // Sørg for at brukeren har en aktiv plan — opprett "Egne økter" hvis ikke.
   let plan = await prisma.trainingPlan.findFirst({
     where: { userId: user.id, isActive: true, name: "Egne økter" },
   });
@@ -52,10 +84,17 @@ export async function createAdHocSession(input: NyOktInput) {
       title: input.title,
       rationale: input.rationale ?? null,
       pyramidArea: input.pyramidArea,
+      skillArea: input.skillArea ?? null,
+      environment: input.environment ?? null,
+      lPhase: input.lPhase ?? null,
       drills: {
-        create: input.exerciseIds.map((exerciseId, idx) => ({
-          exerciseId,
-          repsSets: "3x10",
+        create: drills.map((d, idx) => ({
+          exerciseId: d.exerciseId,
+          repsSets: repsSetsString(d.sets, d.reps),
+          sets: d.sets ?? null,
+          reps: d.reps ?? null,
+          csTarget: d.csTarget ?? null,
+          notes: d.notes ?? null,
           orderIndex: idx,
         })),
       },

@@ -18,6 +18,7 @@ import { DraggableSessions, type DraggableSession } from "./draggable-sessions";
 import { EditSessionModal } from "./edit-session-modal";
 import { RejectedBanner } from "./rejected-banner";
 import { FeedbackModal } from "./feedback-modal";
+import { AddSessionModal } from "@/components/admin/add-session-wizard";
 
 /**
  * Anti-AI farger: kun 3 lime-relaterte aksentpunkter
@@ -56,6 +57,11 @@ export default async function AdminPlanDetalj({
   });
   if (!plan) notFound();
 
+  // Alle drills for wizard
+  const exercises = await prisma.exerciseDefinition.findMany({
+    orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
+  });
+
   // Liste over alle spillere — brukes av Kopier-plan-modal
   const spillere = await prisma.user.findMany({
     where: { role: "PLAYER" },
@@ -81,6 +87,9 @@ export default async function AdminPlanDetalj({
       durationMin: s.durationMin,
       title: s.title,
       pyramidArea: s.pyramidArea,
+      skillArea: s.skillArea ?? null,
+      environment: s.environment ?? null,
+      lPhase: s.lPhase ?? null,
       status: s.status,
       drillCount: s.drills.length,
       rationale: s.rationale ?? null,
@@ -474,9 +483,9 @@ export default async function AdminPlanDetalj({
                   Dra for å flytte · Rediger med blyant-ikon
                 </span>
               </div>
-              <EditSessionModal
-                mode={{ kind: "create", planId: plan.id }}
-                triggerVariant="primary"
+              <AddSessionModal
+                planId={plan.id}
+                exercises={exercises}
                 triggerLabel="Legg til økt"
               />
             </div>

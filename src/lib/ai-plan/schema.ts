@@ -10,6 +10,46 @@ export type OktType =
   | "FYSISK"
   | "MENTAL";
 
+export type SkillAreaTag =
+  | "TEE_TOTAL"
+  | "TILNAERMING"
+  | "AROUND_GREEN"
+  | "PUTTING"
+  | "SPILL";
+
+export type EnvironmentTag =
+  | "RANGE"
+  | "BANE"
+  | "STUDIO"
+  | "HJEM"
+  | "SIMULATOR";
+
+export type LPhaseTag = "KROPP" | "ARM" | "KOLLE" | "BALL" | "AUTO";
+
+export const SKILL_AREAS: readonly SkillAreaTag[] = [
+  "TEE_TOTAL",
+  "TILNAERMING",
+  "AROUND_GREEN",
+  "PUTTING",
+  "SPILL",
+] as const;
+
+export const ENVIRONMENTS: readonly EnvironmentTag[] = [
+  "RANGE",
+  "BANE",
+  "STUDIO",
+  "HJEM",
+  "SIMULATOR",
+] as const;
+
+export const LPHASES: readonly LPhaseTag[] = [
+  "KROPP",
+  "ARM",
+  "KOLLE",
+  "BALL",
+  "AUTO",
+] as const;
+
 export const OKT_DAGER: readonly OktDag[] = [
   "MAN",
   "TIR",
@@ -31,6 +71,14 @@ export const OKT_TYPER: readonly OktType[] = [
 
 export type PlanForslagDrill = {
   navn: string;
+  /** Antall sett (foretrukket strukturert form). */
+  sets?: number;
+  /** Antall reps per sett. */
+  reps?: number;
+  /** CS-mål i prosent (0-100). */
+  csTarget?: number;
+  notes?: string;
+  // Bakoverkompatibilitet
   antallRep?: number;
   antallSet?: number;
   varighetMin?: number;
@@ -43,6 +91,12 @@ export type PlanForslagOkt = {
   type: OktType;
   varighetMin: number;
   fokus: string;
+  /** SG-område økten jobber med. */
+  skillArea: SkillAreaTag;
+  /** Hvor økten foregår. */
+  environment: EnvironmentTag;
+  /** Mac O'Grady-læringsfase. */
+  lPhase: LPhaseTag;
   drills: PlanForslagDrill[];
 };
 
@@ -76,22 +130,35 @@ export const PLAN_FORSLAG_TOOL_SCHEMA = {
           type: { type: "string", enum: OKT_TYPER },
           varighetMin: { type: "integer", minimum: 15, maximum: 360 },
           fokus: { type: "string" },
+          skillArea: { type: "string", enum: SKILL_AREAS },
+          environment: { type: "string", enum: ENVIRONMENTS },
+          lPhase: { type: "string", enum: LPHASES },
           drills: {
             type: "array",
             items: {
               type: "object",
               properties: {
                 navn: { type: "string" },
-                antallRep: { type: "integer" },
-                antallSet: { type: "integer" },
-                varighetMin: { type: "integer" },
-                notat: { type: "string" },
+                sets: { type: "integer", minimum: 1, maximum: 20 },
+                reps: { type: "integer", minimum: 1, maximum: 100 },
+                csTarget: { type: "integer", minimum: 0, maximum: 100 },
+                notes: { type: "string" },
               },
               required: ["navn"],
             },
           },
         },
-        required: ["uke", "dag", "type", "varighetMin", "fokus", "drills"],
+        required: [
+          "uke",
+          "dag",
+          "type",
+          "varighetMin",
+          "fokus",
+          "skillArea",
+          "environment",
+          "lPhase",
+          "drills",
+        ],
       },
     },
   },
@@ -131,6 +198,15 @@ export function validerPlanForslag(input: unknown): {
       return { ok: false, feil: `Økt ${i}: ugyldig varighetMin.` };
     }
     if (typeof e.fokus !== "string") return { ok: false, feil: `Økt ${i}: mangler fokus.` };
+    const skillArea = typeof e.skillArea === "string" && SKILL_AREAS.includes(e.skillArea as SkillAreaTag)
+      ? (e.skillArea as SkillAreaTag)
+      : "TEE_TOTAL";
+    const environment = typeof e.environment === "string" && ENVIRONMENTS.includes(e.environment as EnvironmentTag)
+      ? (e.environment as EnvironmentTag)
+      : "RANGE";
+    const lPhase = typeof e.lPhase === "string" && LPHASES.includes(e.lPhase as LPhaseTag)
+      ? (e.lPhase as LPhaseTag)
+      : "AUTO";
     if (!Array.isArray(e.drills)) return { ok: false, feil: `Økt ${i}: drills mangler.` };
     const drills: PlanForslagDrill[] = [];
     for (let j = 0; j < e.drills.length; j++) {
@@ -140,6 +216,10 @@ export function validerPlanForslag(input: unknown): {
       if (typeof d.navn !== "string") return { ok: false, feil: `Økt ${i} drill ${j}: mangler navn.` };
       drills.push({
         navn: d.navn,
+        sets: typeof d.sets === "number" ? d.sets : (typeof d.antallSet === "number" ? d.antallSet : undefined),
+        reps: typeof d.reps === "number" ? d.reps : (typeof d.antallRep === "number" ? d.antallRep : undefined),
+        csTarget: typeof d.csTarget === "number" ? d.csTarget : undefined,
+        notes: typeof d.notes === "string" ? d.notes : (typeof d.notat === "string" ? d.notat : undefined),
         antallRep: typeof d.antallRep === "number" ? d.antallRep : undefined,
         antallSet: typeof d.antallSet === "number" ? d.antallSet : undefined,
         varighetMin: typeof d.varighetMin === "number" ? d.varighetMin : undefined,
@@ -152,6 +232,9 @@ export function validerPlanForslag(input: unknown): {
       type: e.type as OktType,
       varighetMin: e.varighetMin,
       fokus: e.fokus,
+      skillArea,
+      environment,
+      lPhase,
       drills,
     });
   }

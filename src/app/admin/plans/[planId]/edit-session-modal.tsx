@@ -123,7 +123,15 @@ export function EditSessionModal({
         if (mode.kind === "edit") {
           await oppdaterOkt(mode.sessionId, dataFelles);
         } else {
-          await leggTilOkt(mode.planId, dataFelles);
+          await leggTilOkt({
+            planId: mode.planId,
+            title: dataFelles.title,
+            scheduledAt: dataFelles.scheduledAt.toISOString(),
+            durationMin: dataFelles.durationMin,
+            pyramidArea: dataFelles.pyramidArea,
+            rationale: dataFelles.rationale,
+            drills: [],
+          });
         }
         lukk();
         router.refresh();

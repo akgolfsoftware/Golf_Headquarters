@@ -360,15 +360,18 @@ export async function opprettPlanFraAiForslag(
           const pyr = OKT_TYPE_TIL_PYR[okt.type];
           const rationale = okt.drills
             .map((d) => {
+              const sets = d.sets ?? d.antallSet;
+              const reps = d.reps ?? d.antallRep;
               const detaljer = [
-                d.antallSet ? `${d.antallSet} sett` : null,
-                d.antallRep ? `${d.antallRep} rep` : null,
-                d.varighetMin ? `${d.varighetMin} min` : null,
+                sets ? `${sets} sett` : null,
+                reps ? `${reps} rep` : null,
+                d.csTarget ? `CS ${d.csTarget}%` : null,
               ]
                 .filter(Boolean)
                 .join(" · ");
+              const note = d.notes ?? d.notat;
               return `${d.navn}${detaljer ? ` (${detaljer})` : ""}${
-                d.notat ? ` — ${d.notat}` : ""
+                note ? ` — ${note}` : ""
               }`;
             })
             .join("\n");
@@ -377,16 +380,23 @@ export async function opprettPlanFraAiForslag(
             .map((d) => {
               const exId = exDefByName.get(d.navn.trim().toLowerCase());
               if (!exId) return null;
-              const repsSets = [
-                d.antallSet ? `${d.antallSet}x` : "",
-                d.antallRep ? `${d.antallRep}` : "",
-              ]
-                .join("")
-                .trim() || "—";
+              const sets = d.sets ?? d.antallSet ?? null;
+              const reps = d.reps ?? d.antallRep ?? null;
+              const repsSets =
+                sets && reps
+                  ? `${sets}x${reps}`
+                  : reps
+                    ? `${reps}`
+                    : sets
+                      ? `${sets} sett`
+                      : "—";
               return {
                 exerciseId: exId,
                 repsSets,
-                notes: d.notat ?? null,
+                sets,
+                reps,
+                csTarget: d.csTarget ?? null,
+                notes: d.notes ?? d.notat ?? null,
               };
             })
             .filter((x): x is NonNullable<typeof x> => x !== null);
@@ -397,6 +407,9 @@ export async function opprettPlanFraAiForslag(
             title: `${okt.fokus}`,
             rationale,
             pyramidArea: pyr,
+            skillArea: okt.skillArea ?? null,
+            environment: okt.environment ?? null,
+            lPhase: okt.lPhase ?? null,
             status: "PLANNED" as const,
             drills: drillsCreate.length
               ? { create: drillsCreate.map((d, i) => ({ ...d, orderIndex: i })) }

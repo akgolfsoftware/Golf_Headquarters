@@ -4,7 +4,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
-import type { PyramidArea } from "@/generated/prisma/client";
+import type {
+  PyramidArea,
+  SkillArea,
+  SessionEnvironment,
+  LPhase,
+} from "@/generated/prisma/client";
 import type { PlanTemplatePayload } from "../template-payload";
 
 type OktData = {
@@ -13,7 +18,38 @@ type OktData = {
   durationMin: number;
   pyramidArea: PyramidArea;
   rationale?: string;
+  skillArea?: SkillArea;
+  environment?: SessionEnvironment;
+  lPhase?: LPhase;
 };
+
+export type DrillInput = {
+  exerciseId: string;
+  sets?: number;
+  reps?: number;
+  csTarget?: number;
+  notes?: string;
+};
+
+export type LeggTilOktInput = {
+  planId: string;
+  scheduledAt: string; // ISO
+  durationMin: number;
+  title: string;
+  rationale?: string;
+  pyramidArea: PyramidArea;
+  skillArea?: SkillArea;
+  environment?: SessionEnvironment;
+  lPhase?: LPhase;
+  drills: DrillInput[];
+};
+
+function repsSetsString(sets?: number, reps?: number): string {
+  if (sets && reps) return `${sets}x${reps}`;
+  if (reps) return `${reps}`;
+  if (sets) return `${sets} sett`;
+  return "—";
+}
 
 async function krevCoach() {
   const user = await getCurrentUser();
@@ -250,6 +286,9 @@ export async function oppdaterOkt(sessionId: string, data: OktData) {
       scheduledAt: data.scheduledAt,
       durationMin: data.durationMin,
       pyramidArea: data.pyramidArea,
+      skillArea: data.skillArea ?? null,
+      environment: data.environment ?? null,
+      lPhase: data.lPhase ?? null,
       rationale: data.rationale ?? null,
     },
   });
@@ -461,19 +500,34 @@ export async function kopierPlan(
 }
 
 /**
- * Opprett en ny økt på en plan.
+ * Opprett en ny økt på en plan. Støtter både enkelt-form (uten drills/extras)
+ * og strukturert form (med skillArea, environment, lPhase, drills).
  */
-export async function leggTilOkt(planId: string, data: OktData) {
-  const { user } = await krevPlanRettighet(planId);
+export async function leggTilOkt(input: LeggTilOktInput) {
+  const { user } = await krevPlanRettighet(input.planId);
+
+  const drillsCreate = (input.drills ?? []).map((d, idx) => ({
+    exerciseId: d.exerciseId,
+    repsSets: repsSetsString(d.sets, d.reps),
+    sets: d.sets ?? null,
+    reps: d.reps ?? null,
+    csTarget: d.csTarget ?? null,
+    notes: d.notes ?? null,
+    orderIndex: idx,
+  }));
 
   const session = await prisma.trainingPlanSession.create({
     data: {
-      planId,
-      title: data.title,
-      scheduledAt: data.scheduledAt,
-      durationMin: data.durationMin,
-      pyramidArea: data.pyramidArea,
-      rationale: data.rationale ?? null,
+      planId: input.planId,
+      title: input.title,
+      scheduledAt: new Date(input.scheduledAt),
+      durationMin: input.durationMin,
+      pyramidArea: input.pyramidArea,
+      skillArea: input.skillArea ?? null,
+      environment: input.environment ?? null,
+      lPhase: input.lPhase ?? null,
+      rationale: input.rationale ?? null,
+      drills: drillsCreate.length ? { create: drillsCreate } : undefined,
     },
   });
 
@@ -482,12 +536,39 @@ export async function leggTilOkt(planId: string, data: OktData) {
       actorId: user.id,
       action: "plan.session.create",
       target: session.id,
-      metadata: { planId, title: data.title },
+      metadata: {
+        planId: input.planId,
+        title: input.title,
+        drillCount: drillsCreate.length,
+      },
     },
   });
 
-  revalidatePath(`/admin/plans/${planId}`);
+  revalidatePath(`/admin/plans/${input.planId}`);
   return session.id;
+}
+
+/**
+ * Opprett en ny ExerciseDefinition fra wizard (inline). Kun coach/admin.
+ */
+export async function opprettExerciseDefinition(data: {
+  name: string;
+  description?: string;
+  pyramidArea: PyramidArea;
+  lPhase: LPhase;
+}) {
+  await krevCoach();
+  const navn = data.name.trim();
+  if (navn.length < 2) throw new Error("Navn må være minst 2 tegn.");
+  const ny = await prisma.exerciseDefinition.create({
+    data: {
+      name: navn,
+      description: data.description?.trim() || null,
+      pyramidArea: data.pyramidArea,
+      lPhase: data.lPhase,
+    },
+  });
+  return ny;
 }
 
 /**

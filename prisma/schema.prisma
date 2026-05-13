@@ -60,6 +60,22 @@ enum LPhase {
   AUTO
 }
 
+enum SkillArea {
+  TEE_TOTAL
+  TILNAERMING
+  AROUND_GREEN
+  PUTTING
+  SPILL
+}
+
+enum SessionEnvironment {
+  RANGE
+  BANE
+  STUDIO
+  HJEM
+  SIMULATOR
+}
+
 enum SubscriptionStatus {
   ACTIVE
   PAST_DUE
@@ -370,6 +386,9 @@ model TrainingPlanSession {
   title       String
   rationale   String?
   pyramidArea PyramidArea
+  skillArea   SkillArea?
+  environment SessionEnvironment?
+  lPhase      LPhase?
   status      SessionStatus @default(PLANNED)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -405,6 +424,8 @@ model SessionDrill {
   sessionId  String
   exerciseId String
   repsSets   String
+  sets       Int?
+  reps       Int?
   csTarget   Int?
   notes      String?
   orderIndex Int     @default(0)

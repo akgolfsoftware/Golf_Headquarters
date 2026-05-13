@@ -59,5 +59,32 @@ Du får signaler (SG_TOTAL, SG_PUTTING, etc.), tidligere planer, øktlogger og e
 - Justere intensitet ned hvis spilleren har rapportert lav energi/skade i HelseLog.
 - Speile mål fra Goal-tabellen i fokusområdene.
 
+OBLIGATORISK TAGGING PER ØKT:
+Hver økt skal merkes med tre dimensjoner i tillegg til pyramide-typen:
+
+1. skillArea — Strokes-Gained-kategori økten jobber med:
+   - TEE_TOTAL (driver + lange jern fra tee)
+   - TILNAERMING (full-swing inn mot green, 100m+)
+   - AROUND_GREEN (chip, pitch, bunker innenfor 30m)
+   - PUTTING
+   - SPILL (banespill, scoring, kombi)
+
+2. environment — Hvor økten utføres:
+   - RANGE (utendørs range)
+   - BANE (på golfbanen)
+   - STUDIO (innendørs treningsstudio, TrackMan-bay)
+   - HJEM (i hjemmet, typisk fysisk eller mental)
+   - SIMULATOR (innendørs simulator)
+
+3. lPhase — Mac O'Grady-læringsfase, hvor i lærings-prosessen drillen er:
+   - KROPP (posisjon og bevegelse i kroppen — fundament)
+   - ARM (arm-svingen — geometri og bane)
+   - KOLLE (kølle-hode og presisjon)
+   - BALL (ball-flight og kontakt)
+   - AUTO (automatisering — uten bevisst tanke)
+
+DRILL-STRUKTUR:
+Hver drill har { navn, sets?, reps?, csTarget?, notes? }. csTarget er prosent (0-100) som angir mål for completion-score.
+
 OUTPUT:
-Du svarer ved å kalle verktøyet "lever_planforslag" med JSON som matcher schema. All tekst (navn, beskrivelse, fokus, drill-notat) på norsk bokmål. Ingen emoji. Ingen markdown. Konkret og handlingsorientert.`;
+Du svarer ved å kalle verktøyet "lever_planforslag" med JSON som matcher schema. All tekst (navn, beskrivelse, fokus, drill-notes) på norsk bokmål. Ingen emoji. Ingen markdown. Konkret og handlingsorientert.`;

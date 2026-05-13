@@ -4,7 +4,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
-import { NyOktWizard } from "./wizard";
+import { AddSessionWizard } from "@/components/admin/add-session-wizard";
 
 export default async function NyOktPage() {
   const user = await requirePortalUser();
@@ -51,7 +51,7 @@ export default async function NyOktPage() {
         sub="Sett sammen en økt utenfor coach-planen din — på 5 raske steg."
       />
 
-      <NyOktWizard exercises={exercises} />
+      <AddSessionWizard adHoc exercises={exercises} />
     </div>
   );
 }

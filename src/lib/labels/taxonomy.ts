@@ -1,0 +1,81 @@
+// Sentral mapping fra enum-verdier til norske visnings-labels.
+// Brukes overalt der enum-verdier vises (chips, valg, oppsummeringer).
+
+import type {
+  PyramidArea,
+  SkillArea,
+  SessionEnvironment,
+  LPhase,
+} from "@/generated/prisma/client";
+
+export const PYRAMIDE_LABEL: Record<PyramidArea, string> = {
+  FYS: "Fysisk",
+  TEK: "Teknisk",
+  SLAG: "Slag",
+  SPILL: "Spill",
+  TURN: "Turnering",
+};
+
+export const SKILL_AREA_LABEL: Record<SkillArea, string> = {
+  TEE_TOTAL: "Tee total",
+  TILNAERMING: "Tilnærming",
+  AROUND_GREEN: "Around-Green",
+  PUTTING: "Putting",
+  SPILL: "Spill",
+};
+
+export const ENVIRONMENT_LABEL: Record<SessionEnvironment, string> = {
+  RANGE: "Range",
+  BANE: "Bane",
+  STUDIO: "Studio",
+  HJEM: "Hjem",
+  SIMULATOR: "Simulator",
+};
+
+export const LPHASE_LABEL: Record<LPhase, string> = {
+  KROPP: "Kropp",
+  ARM: "Arm",
+  KOLLE: "Kølle",
+  BALL: "Ball",
+  AUTO: "Automatisering",
+};
+
+export const LPHASE_BESKRIVELSE: Record<LPhase, string> = {
+  KROPP: "Posisjon og bevegelse i kroppen — fundament",
+  ARM: "Arm-svingen — geometri og bane",
+  KOLLE: "Kølle-hode og presisjon",
+  BALL: "Ball-flight og kontakt",
+  AUTO: "Automatisering — uten bevisst tanke",
+};
+
+export const PYRAMIDE_REKKEFOLGE: PyramidArea[] = [
+  "FYS",
+  "TEK",
+  "SLAG",
+  "SPILL",
+  "TURN",
+];
+
+export const SKILL_AREA_REKKEFOLGE: SkillArea[] = [
+  "TEE_TOTAL",
+  "TILNAERMING",
+  "AROUND_GREEN",
+  "PUTTING",
+  "SPILL",
+];
+
+export const ENVIRONMENT_REKKEFOLGE: SessionEnvironment[] = [
+  "RANGE",
+  "BANE",
+  "STUDIO",
+  "HJEM",
+  "SIMULATOR",
+];
+
+export const LPHASE_REKKEFOLGE: LPhase[] = [
+  "KROPP",
+  "ARM",
+  "KOLLE",
+  "BALL",
+  "AUTO",
+];
