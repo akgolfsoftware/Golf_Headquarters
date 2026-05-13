@@ -47,6 +47,22 @@ export async function cancelBooking(bookingId: string) {
     data: { status: "CANCELLED" },
   });
 
+  // Credit-tilbakeføring: hvis bookingen var trukket fra Academy-abonnement
+  // OG den er avbestilt med refundabel-rett (>24t for spillere, alltid for staff)
+  // — øk creditsRemaining med 1.
+  let creditRefunded = false;
+  if (booking.subscriptionId && kanRefunderes) {
+    try {
+      await prisma.subscription.update({
+        where: { id: booking.subscriptionId },
+        data: { creditsRemaining: { increment: 1 } },
+      });
+      creditRefunded = true;
+    } catch (err) {
+      console.error("[cancel-booking] credit-refund failed", err);
+    }
+  }
+
   // Slett event fra Google Calendar hvis pushet (best-effort)
   if (booking.googleEventId && booking.serviceType.coachUserId) {
     try {
@@ -61,9 +77,14 @@ export async function cancelBooking(bookingId: string) {
 
   await audit({
     actorId: user.id,
-    action: "booking.cancelled",
+    action: creditRefunded ? "booking.cancelled.credit-refunded" : "booking.cancelled",
     target: `Booking:${bookingId}`,
-    metadata: { refunded: kanRefunderes },
+    metadata: {
+      stripeRefunded: kanRefunderes && !!booking.stripePaymentIntentId,
+      creditRefunded,
+      subscriptionId: booking.subscriptionId,
+      tidTilStartMs: tidTilStart,
+    },
   });
 
   // Send avbestillings-e-post (best-effort)
