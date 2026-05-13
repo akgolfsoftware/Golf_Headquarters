@@ -33,11 +33,12 @@ const TYPE_LABEL: Record<FacilityType, string> = {
   hybrid: "Hybrid",
 };
 
+// Type-pills: kategori-koding for 4 fasilitets-typer. Mappet til semantic tokens.
 const TYPE_STYLE: Record<FacilityType, string> = {
-  indoor: "bg-[rgba(91,124,184,0.18)] text-[#3b5994]",
-  bane: "bg-[rgba(22,163,74,0.16)] text-[#0f7536]",
-  range: "bg-[rgba(244,196,48,0.24)] text-[#7a5a08]",
-  hybrid: "bg-[rgba(0,88,64,0.14)] text-primary",
+  indoor: "bg-secondary text-muted-foreground",
+  bane: "bg-primary/15 text-primary",
+  range: "bg-accent/30 text-accent-foreground",
+  hybrid: "bg-primary/10 text-primary",
 };
 
 export default async function LocationsAdmin() {
@@ -262,7 +263,7 @@ function KpiAccent({
   sub?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-[#0F2A22] to-[#163027] p-4 text-white">
+    <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-foreground p-4 text-background dark:bg-card">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[rgba(209,248,67,0.70)]">
         {label}
       </div>

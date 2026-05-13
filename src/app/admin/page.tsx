@@ -160,7 +160,7 @@ export default async function AdminHub() {
       {/* KPI-STRIP */}
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         {/* Featured: aktive spillere */}
-        <div className="relative overflow-hidden rounded-2xl border border-transparent bg-[linear-gradient(135deg,#005840_0%,#003B2A_100%)] p-6 text-background shadow-sm">
+        <div className="relative overflow-hidden rounded-2xl border border-transparent bg-gradient-to-br from-primary to-primary/80 p-6 text-background shadow-sm">
           <div
             aria-hidden
             className="pointer-events-none absolute -bottom-8 -right-8 h-36 w-36 rounded-full bg-[radial-gradient(circle,rgba(209,248,67,0.18)_0%,transparent_70%)]"
@@ -295,7 +295,7 @@ export default async function AdminHub() {
       {/* BENTO */}
       <section className="grid gap-4 md:grid-cols-2">
         {/* Godkjenninger */}
-        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-[linear-gradient(135deg,#FAFAF7_0%,#F5F2EA_100%)] p-6 shadow-sm dark:bg-card dark:bg-none">
+        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-gradient-to-br from-background to-secondary/40 p-6 shadow-sm dark:bg-card dark:bg-none">
           <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-secondary text-foreground">
               <Check className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />

@@ -20,6 +20,10 @@ export async function PortalShell({
     take: 10,
   });
 
+  const varslerUlest = await prisma.notification
+    .count({ where: { userId: user.id, readAt: null } })
+    .catch(() => 0);
+
   return (
     <div className="flex min-h-screen bg-background">
       <a
@@ -29,7 +33,7 @@ export async function PortalShell({
         Hopp til hovedinnhold
       </a>
       <div className="hidden lg:flex">
-        <PortalSidebar tier={user.tier} />
+        <PortalSidebar tier={user.tier} varslerUlest={varslerUlest} />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
         <header

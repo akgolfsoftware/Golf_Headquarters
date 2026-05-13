@@ -378,12 +378,7 @@ function HeroKpi({
   // Mørk hero-KPI med gradient — én av de tre "lime" highlight-punktene.
   return (
     <div
-      className="relative overflow-hidden rounded-xl border p-5 shadow-sm sm:col-span-2 lg:col-span-1"
-      style={{
-        background:
-          "linear-gradient(135deg, #0F2A22 0%, #163027 60%, #0A1F18 100%)",
-        borderColor: "#274d41",
-      }}
+      className="relative overflow-hidden rounded-xl border border-foreground/40 bg-foreground p-5 shadow-sm sm:col-span-2 lg:col-span-1 dark:bg-card"
     >
       <div
         className="flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.06em]"
@@ -394,8 +389,7 @@ function HeroKpi({
       </div>
       <div className="mt-2 flex items-baseline gap-2">
         <span
-          className="font-mono text-4xl font-semibold tabular-nums"
-          style={{ color: "#F5F4EE" }}
+          className="font-mono text-4xl font-semibold tabular-nums text-background"
         >
           {value}
         </span>
@@ -480,10 +474,7 @@ function Avatar({ name }: { name: string | null }) {
   return (
     <div
       aria-hidden="true"
-      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full font-display text-[11px] font-semibold text-white"
-      style={{
-        background: "linear-gradient(135deg, #005840 0%, #1A7D56 100%)",
-      }}
+      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 font-display text-[11px] font-semibold text-white"
     >
       {initials}
     </div>

@@ -318,11 +318,7 @@ function KpiStrip({
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
       {/* HCP - dark gradient */}
       <article
-        className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl p-5 text-white"
-        style={{
-          background:
-            "linear-gradient(135deg, #005840 0%, #003B2A 100%)",
-        }}
+        className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-primary/80 p-5 text-white"
       >
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-white/70">
           <Trophy className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -547,11 +543,7 @@ function DagensFokus({
       {/* Vertikal aksent-stripe */}
       <span
         aria-hidden
-        className="absolute inset-y-0 left-0 w-1.5"
-        style={{
-          background:
-            "linear-gradient(180deg, #D1F843 0%, #005840 100%)",
-        }}
+        className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-accent to-primary"
       />
 
       <div className="flex-1 pl-2">
@@ -977,10 +969,7 @@ function CoachMelding({
 
   return (
     <article
-      className="relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl px-6 py-5 text-[#F5F4EE] sm:flex-row sm:items-center sm:gap-5"
-      style={{
-        background: "linear-gradient(135deg, #0F2A22 0%, #163027 100%)",
-      }}
+      className="relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl bg-foreground px-6 py-5 text-background sm:flex-row sm:items-center sm:gap-5 dark:bg-card"
     >
       <span
         aria-hidden
@@ -991,11 +980,7 @@ function CoachMelding({
         }}
       />
       <span
-        className="relative z-10 grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 font-display text-sm font-semibold text-white"
-        style={{
-          background: "linear-gradient(135deg, #7A998C, #36685A)",
-          borderColor: "rgba(209,248,67,0.3)",
-        }}
+        className="relative z-10 grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-accent/30 bg-gradient-to-br from-muted-foreground to-primary font-display text-sm font-semibold text-white"
       >
         {navnInit}
       </span>
@@ -1012,7 +997,7 @@ function CoachMelding({
             {naar}
           </span>
         </p>
-        <p className="mt-1 font-display text-lg font-normal italic leading-snug text-[#F5F4EE]">
+        <p className="mt-1 font-display text-lg font-normal italic leading-snug text-background">
           «{tekst}»
         </p>
       </div>

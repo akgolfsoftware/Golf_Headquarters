@@ -2,6 +2,8 @@ import { Check, AlertTriangle } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
+import { ProKampanjeBanner } from "@/components/shared/pro-kampanje-banner";
+import { PRO_KAMPANJE_INFO } from "@/lib/feature-flags";
 import { UpgradeButton, ManageButton } from "./upgrade-button";
 
 type Search = { ok?: string; cancelled?: string };
@@ -25,11 +27,19 @@ export default async function AbonnementPage({
   const user = await requirePortalUser();
   const params = await searchParams;
 
+  // Hent FAKTISK tier direkte fra DB — `user.tier` er overstyrt mens
+  // PRO-kampanjen er aktiv (se lib/feature-flags.ts).
+  const faktisk = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { tier: true },
+  });
+  const faktiskTier = faktisk?.tier ?? "GRATIS";
+
   const subscription = await prisma.subscription.findUnique({
     where: { userId: user.id },
   });
 
-  const erPro = user.tier === "PRO";
+  const erPro = faktiskTier === "PRO";
   const periodEnd = subscription?.currentPeriodEnd;
   const aktivSiden = subscription?.createdAt;
 
@@ -53,9 +63,11 @@ export default async function AbonnementPage({
       )}
       {params.cancelled === "1" && (
         <div className="rounded-md border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
-          Oppgraderingen ble avbrutt. Du står fortsatt på {user.tier}.
+          Oppgraderingen ble avbrutt. Du står fortsatt på {faktiskTier}.
         </div>
       )}
+
+      {PRO_KAMPANJE_INFO.aktiv && <ProKampanjeBanner />}
 
       {/* Hero plan-kort */}
       <div className="relative grid gap-8 overflow-hidden rounded-2xl border border-border bg-card p-8 shadow-sm lg:grid-cols-[1fr_300px]">

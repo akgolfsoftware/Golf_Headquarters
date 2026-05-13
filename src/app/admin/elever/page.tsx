@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Search, UserPlus, Users } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { avatarBg } from "@/lib/avatar-colors";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 
@@ -539,26 +540,6 @@ function initials(name: string): string {
   if (parts.length === 0) return "?";
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
-// Bevisst dekorativ palett — deterministisk avatar-gradient per navn-hash.
-// TODO: konsolider farge — disse er differensierte for visuell variasjon mellom 6 buckets.
-// Bevisst dekorativ palett — deterministisk avatar-gradient per navn-hash.
-// TODO: konsolider farge — vurder å flytte til src/lib/avatar-colors.ts som delt utility.
-function avatarBg(name: string): string {
-  const palette = [
-    "linear-gradient(135deg,#005840,#1A7D56)",
-    "linear-gradient(135deg,#A6651E,#7A4910)",
-    "linear-gradient(135deg,#7A998C,#56796D)",
-    "linear-gradient(135deg,#A32D2D,#7C2020)",
-    "linear-gradient(135deg,#1A7D56,#005840)",
-    "linear-gradient(135deg,#3b5994,#5b7cb8)",
-  ];
-  let h = 0;
-  for (let i = 0; i < name.length; i++) {
-    h = (h * 31 + name.charCodeAt(i)) >>> 0;
-  }
-  return palette[h % palette.length];
 }
 
 function formatSidenDato(d: Date | null): string {

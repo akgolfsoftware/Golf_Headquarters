@@ -1,22 +1,8 @@
-import { SubNav } from "@/components/portal/sub-nav";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-
-const ITEMS = [
-  { href: "/portal/coach", label: "Oversikt" },
-  { href: "/portal/coach/plans", label: "Planer" },
-  { href: "/portal/coach/melding", label: "Meldinger" },
-  { href: "/portal/coach/notes", label: "Notater" },
-  { href: "/portal/coach/ai", label: "AI-coach" },
-];
-
-export default async function CoachLayout({
+export default function CoachLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await requirePortalUser();
-  const visSubNav = user.tier !== "GRATIS";
-
   return (
     <div className="space-y-6">
       <header>
@@ -27,8 +13,6 @@ export default async function CoachLayout({
           <em className="font-normal text-primary md:italic">Min</em> coach
         </h1>
       </header>
-
-      {visSubNav && <SubNav items={ITEMS} />}
 
       <div>{children}</div>
     </div>

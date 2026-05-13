@@ -79,14 +79,14 @@ const KOLONNER: Status[] = ["Ny", "Aktiv", "Fokus", "Pause"];
 
 // Pyramide-fargene fra Økter-designet — brukes som status-stripe per spiller-card.
 const STATUS_STRIPE: Record<Status, string> = {
-  Ny: "bg-[#16A34A]", // FYS-grønn
+  Ny: "bg-primary/80", // FYS-grønn
   Aktiv: "bg-primary", // TEK-grønn (mørk)
   Fokus: "bg-accent", // SLAG-lime
   Pause: "bg-muted-foreground", // TURN-grå
 };
 
 const STATUS_PILL: Record<Status, string> = {
-  Ny: "bg-[#16A34A]/15 text-[#0f7536]",
+  Ny: "bg-primary/10 text-primary",
   Aktiv: "bg-primary/12 text-primary",
   Fokus: "bg-accent/40 text-accent-foreground",
   Pause: "bg-secondary text-muted-foreground",
@@ -186,14 +186,14 @@ export default async function CoachingBoard({
 
       {/* KPI-strip */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-lg border border-[#274d41] bg-gradient-to-br from-[#0F2A22] to-[#163027] p-4 text-[#F5F4EE]">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[#D1F843]/70">
+        <div className="rounded-lg border border-foreground/40 bg-foreground p-4 text-background dark:bg-card">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent/70">
             Spillere totalt
           </div>
           <div className="mt-2 font-mono text-3xl font-semibold leading-none">
             {players.length}
           </div>
-          <div className="mt-2 font-mono text-[11px] text-[#F5F4EE]/70">
+          <div className="mt-2 font-mono text-[11px] text-background/70">
             i aktiv portefølje
           </div>
         </div>
