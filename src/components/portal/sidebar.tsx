@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { Tier } from "@/generated/prisma/client";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
+import { FEATURES } from "@/lib/features";
 
 type NavLink = { type: "link"; href: string; label: string; badge?: boolean };
 type NavDropdown = {
@@ -40,7 +41,9 @@ const NAV: NavGroup[] = [
       { href: "/portal/mal/runder", label: "Runder" },
       { href: "/portal/mal/trackman", label: "TrackMan" },
       { href: "/portal/mal/baner", label: "Baner" },
-      { href: "/portal/mal/leaderboard", label: "Leaderboard" },
+      ...(FEATURES.LEADERBOARD
+        ? [{ href: "/portal/mal/leaderboard", label: "Leaderboard" }]
+        : []),
     ],
   },
   {

@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
+import { FEATURES } from "@/lib/features";
 
 type NavItem = { href: string; label: string };
 
-const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
+const ALL_NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   {
     label: "Daglig",
     items: [
@@ -42,6 +43,14 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     ],
   },
   {
+    label: "Talent",
+    items: [
+      { href: "/admin/talent", label: "Talent" },
+      { href: "/admin/talent/wagr-benchmark", label: "WAGR-benchmark" },
+      { href: "/admin/talent/wagr-import", label: "WAGR-import" },
+    ],
+  },
+  {
     label: "Økonomi",
     items: [{ href: "/admin/finance", label: "Økonomi" }],
   },
@@ -59,6 +68,11 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     ],
   },
 ];
+
+// Talent-gruppen er bak FEATURES.TALENT-flagget — skjules når flagget er av.
+const NAV_GROUPS = ALL_NAV_GROUPS.filter(
+  (g) => g.label !== "Talent" || FEATURES.TALENT,
+);
 
 export function AdminSidebar() {
   const path = usePathname();
