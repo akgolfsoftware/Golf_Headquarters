@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { anthropicKlient, COACH_MODEL } from "@/lib/anthropic";
 import { rateLimit } from "@/lib/rate-limit";
+import { bygCoachSystemPrompt } from "@/lib/ai-plan/coach-prompt";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -26,65 +27,25 @@ type RequestBody = {
 };
 
 function bygSystemPrompt(playerName: string, ctx: PlayerContext): string {
-  const profil = [
-    `Spiller: ${playerName}`,
-    ctx.hcp != null ? `HCP: ${ctx.hcp.toFixed(1).replace(".", ",")}` : null,
-    ctx.playingYears != null ? `Spilt i ${ctx.playingYears} år` : null,
-    ctx.homeClub ? `Hjemmeklubb: ${ctx.homeClub}` : null,
-    ctx.ambition ? `Ambisjon: ${ctx.ambition}` : null,
-    `Tier: ${ctx.tier}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  const runder =
-    ctx.sisteRunder.length > 0
-      ? ctx.sisteRunder
-          .map(
-            (r) =>
-              `- ${r.dato} · ${r.bane} · score ${r.score}${
-                r.sgTotal != null ? ` · SG ${r.sgTotal >= 0 ? "+" : ""}${r.sgTotal.toFixed(1)}` : ""
-              }`
-          )
-          .join("\n")
-      : "Ingen registrerte runder.";
-
-  const plan = ctx.aktivPlan
-    ? `${ctx.aktivPlan.navn} (${ctx.aktivPlan.fullført}/${ctx.aktivPlan.antallSesjoner} økter fullført)`
-    : "Ingen aktiv plan";
-
-  const tester =
-    ctx.sisteTester.length > 0
-      ? ctx.sisteTester
-          .map((t) => `- ${t.dato} · ${t.navn} · ${t.score.toFixed(1).replace(".", ",")}`)
-          .join("\n")
-      : "Ingen tester.";
-
-  return `Du er AI-assistent for en AK Golf-coach som analyserer en spiller.
-
-Du følger AK Golf-pyramidens fem områder: FYS (fysisk), TEK (teknisk),
-SLAG (slag), SPILL (spill), TURN (turnering).
-
-Tone: faglig, kortfattet, handlingsorientert. Snakk norsk bokmål.
-Ingen emoji. Maks 200 ord per svar med mindre coach ber om mer.
-
-Spilleren du analyserer:
-${profil}
-
-Aktiv plan: ${plan}
-
-Siste runder:
-${runder}
-
-Siste tester:
-${tester}
-
-Retningslinjer:
-- Gi konkrete observasjoner basert på dataene
-- Når coach spør om "neste økt": foreslå pyramide-område + spesifikke drills
-- Når coach spør om analyse: pek på tendenser i SG-tallene
-- Si tydelig hvis du mangler data for å svare presist
-- Aldri foreslå at coachen "snakker med spilleren" uten konkret innhold`;
+  return bygCoachSystemPrompt({
+    mottaker: "coach",
+    spillerNavn: playerName,
+    hcp: ctx.hcp,
+    ambition: ctx.ambition,
+    homeClub: ctx.homeClub,
+    tier: ctx.tier,
+    playingYears: ctx.playingYears,
+    aktivePlaner: ctx.aktivPlan
+      ? [
+          {
+            navn: ctx.aktivPlan.navn,
+            meta: `(${ctx.aktivPlan.fullført}/${ctx.aktivPlan.antallSesjoner} økter fullført)`,
+          },
+        ]
+      : [],
+    sisteRunder: ctx.sisteRunder,
+    sisteTester: ctx.sisteTester,
+  });
 }
 
 export async function POST(req: Request) {
