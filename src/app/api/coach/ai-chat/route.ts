@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   }
 
   // Rate-limit: 10 meldinger per minutt per bruker
-  const rl = rateLimit({
+  const rl = await rateLimit({
     key: `ai-chat:${user.id}`,
     max: 10,
     windowMs: 60_000,

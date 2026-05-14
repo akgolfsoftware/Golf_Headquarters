@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Building2 } from "lucide-react";
+import { Building2, Search } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
@@ -129,6 +129,16 @@ export default async function FacilitiesAdmin({
 
   const aktive = facilities.filter((f) => f.active).length;
   const lokasjoner = grupper.size;
+  const ukeSumTotal = ukebookings.length;
+  const totalKapasitet = facilities.reduce((s, f) => s + (f.capacity || 0), 0);
+  // Belegg-snitt: bookinger per fasilitet per uke, normalisert mot ca. 30 timer
+  const beleggSnitt =
+    facilities.length > 0
+      ? Math.min(
+          100,
+          Math.round((ukeSumTotal / Math.max(1, facilities.length)) * 4),
+        )
+      : 0;
 
   return (
     <div className="space-y-8">
@@ -138,6 +148,54 @@ export default async function FacilitiesAdmin({
         titleItalic="fasiliteter"
         sub={`${facilities.length} fasiliteter på ${lokasjoner} lokasjoner — ${aktive} aktive. Studio, range, putting, simulatorer.`}
       />
+
+      {/* KPI-strip */}
+      {facilities.length > 0 && (
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <FacilityKpi
+            label="Aktive fasiliteter"
+            value={String(aktive)}
+            sub={`av ${facilities.length} totalt`}
+          />
+          <FacilityKpi
+            label="Lokasjoner"
+            value={String(lokasjoner)}
+            sub="parent-anlegg"
+          />
+          <FacilityKpi
+            label="Bookinger uke"
+            value={String(ukeSumTotal)}
+            sub="neste 7 dager"
+          />
+          <FacilityKpi
+            label="Snitt-belegg"
+            value={`${beleggSnitt} %`}
+            sub={`total kapasitet ${totalKapasitet}`}
+          />
+        </div>
+      )}
+
+      {/* Filter / søk */}
+      {facilities.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-3">
+          <label className="flex h-10 min-w-[240px] flex-1 items-center gap-2 rounded-md border border-border bg-background px-4 text-sm text-muted-foreground">
+            <Search size={14} strokeWidth={1.75} />
+            <input
+              type="search"
+              placeholder="Søk fasilitet"
+              className="flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground"
+            />
+          </label>
+          {Array.from(grupper.values()).map((items) => (
+            <span
+              key={items[0].location.id}
+              className="inline-flex items-center rounded-full border border-border bg-background px-4 py-2 text-[12px] text-muted-foreground hover:bg-secondary"
+            >
+              {items[0].location.name} · {items.length}
+            </span>
+          ))}
+        </div>
+      )}
 
       {facilities.length === 0 ? (
         <EmptyState
@@ -283,6 +341,30 @@ export default async function FacilitiesAdmin({
             );
           })}
         </div>
+      )}
+    </div>
+  );
+}
+
+function FacilityKpi({
+  label,
+  value,
+  sub,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+}) {
+  return (
+    <div className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+        {label}
+      </div>
+      <div className="font-mono text-[28px] font-medium leading-none tabular-nums text-foreground">
+        {value}
+      </div>
+      {sub && (
+        <div className="font-mono text-[11px] text-muted-foreground">{sub}</div>
       )}
     </div>
   );

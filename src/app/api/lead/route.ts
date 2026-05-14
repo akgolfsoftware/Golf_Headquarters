@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     req.headers.get("x-forwarded-for")?.split(",")[0] ??
     req.headers.get("x-real-ip") ??
     "unknown";
-  const rl = rateLimit({ key: `lead:${ip}`, max: 5, windowMs: 60_000 });
+  const rl = await rateLimit({ key: `lead:${ip}`, max: 5, windowMs: 60_000 });
   if (!rl.ok) {
     return NextResponse.json({ error: "rate-limited" }, { status: 429 });
   }

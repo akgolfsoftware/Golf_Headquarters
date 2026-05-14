@@ -93,7 +93,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
-  const rl = rateLimit({
+  const rl = await rateLimit({
     key: `coach-ai:${coach.id}`,
     max: 20,
     windowMs: 60_000,
