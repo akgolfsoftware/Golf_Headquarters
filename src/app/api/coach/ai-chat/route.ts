@@ -53,6 +53,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "no-messages" }, { status: 400 });
   }
 
+  // Lengde-validering — hindrer at en angriper tømmer Anthropic-budsjettet.
+  const MAX_MELDINGER = 50;
+  const MAX_TEGN_PER_MELDING = 4000;
+  if (body.messages.length > MAX_MELDINGER) {
+    return NextResponse.json(
+      { error: "too-many-messages", limit: MAX_MELDINGER },
+      { status: 413 }
+    );
+  }
+  for (const m of body.messages) {
+    if (typeof m.content !== "string" || m.content.length > MAX_TEGN_PER_MELDING) {
+      return NextResponse.json(
+        { error: "message-too-long", limit: MAX_TEGN_PER_MELDING },
+        { status: 413 }
+      );
+    }
+  }
+
   // Hent kontekst for system-prompt
   const [aktivePlaner, sisteRunder] = await Promise.all([
     prisma.trainingPlan.findMany({
