@@ -48,7 +48,7 @@ export default async function Kvittering({ params }: Props) {
                 Bekreftet
               </span>
               <h1 className="mt-4 font-display text-4xl font-semibold leading-tight tracking-tight">
-                <em className="font-normal text-primary md:italic">Takk</em> for bestillingen
+                <em className="font-normal italic text-primary">Takk</em> for bestillingen
               </h1>
               <p className="mt-4 text-base text-muted-foreground">
                 Vi har sendt bekreftelse til{" "}

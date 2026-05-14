@@ -53,7 +53,7 @@ export default async function BekreftPage({ params, searchParams }: Props) {
             Bekreft
           </span>
           <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-            <em className="font-normal text-primary md:italic">Bekreft</em> bestilling
+            <em className="font-normal italic text-primary">Bekreft</em> bestilling
           </h1>
         </header>
 

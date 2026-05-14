@@ -104,7 +104,7 @@ export default async function BookingLanding({
             Booking
           </span>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-            <em className="font-normal text-primary md:italic">Book</em> en økt
+            <em className="font-normal italic text-primary">Book</em> en økt
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
             Velg lokasjon, trener og tjeneste — finn ledig tid og betal trygt
@@ -378,7 +378,7 @@ function BookingPaused() {
         </span>
         <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
           Booking er midlertidig{" "}
-          <em className="font-normal text-primary md:italic">pauset</em>
+          <em className="font-normal italic text-primary">pauset</em>
         </h1>
         <p className="mt-6 text-base text-muted-foreground">
           Vi gjør klar Google Calendar-integrasjon slik at du aldri risikerer

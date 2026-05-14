@@ -86,7 +86,7 @@ export default function FaqSide() {
           </span>
           <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
             Ofte{" "}
-            <em className="font-normal text-primary md:italic">stilte</em>{" "}
+            <em className="font-normal italic text-primary">stilte</em>{" "}
             spørsmål
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">

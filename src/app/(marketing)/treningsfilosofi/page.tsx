@@ -57,7 +57,7 @@ export default function Treningsfilosofi() {
             Slik trener vi
           </span>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-            <em className="font-normal text-primary md:italic">Trening</em> som er
+            <em className="font-normal italic text-primary">Trening</em> som er
             balansert, målbar og din egen.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground">

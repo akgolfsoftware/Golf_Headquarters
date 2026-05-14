@@ -17,7 +17,7 @@ export default function CookiesSide() {
             Juridisk
           </span>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-            <em className="font-normal text-primary md:italic">Cookies</em> og
+            <em className="font-normal italic text-primary">Cookies</em> og
             sporing
           </h1>
           <p className="mt-4 font-mono text-xs text-muted-foreground">

@@ -66,7 +66,7 @@ export default function PlayerHQ() {
               PlayerHQ
             </span>
             <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-              <em className="font-normal text-primary md:italic">Din</em>{" "}
+              <em className="font-normal italic text-primary">Din</em>{" "}
               spillerportal
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground">
@@ -85,7 +85,7 @@ export default function PlayerHQ() {
               Funksjoner
             </span>
             <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-              <em className="font-normal text-primary md:italic">Hva</em> får du
+              <em className="font-normal italic text-primary">Hva</em> får du
             </h2>
           </div>
 
@@ -116,7 +116,7 @@ export default function PlayerHQ() {
             </span>
             <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
               Hvordan{" "}
-              <em className="font-normal text-primary md:italic">prises</em>{" "}
+              <em className="font-normal italic text-primary">prises</em>{" "}
               PlayerHQ?
             </h2>
           </div>
@@ -173,7 +173,7 @@ export default function PlayerHQ() {
       <section className="bg-primary/5 px-6 py-20 text-center">
         <div className="mx-auto max-w-3xl">
           <h2 className="font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-            <em className="font-normal text-primary md:italic">Klar</em> til å
+            <em className="font-normal italic text-primary">Klar</em> til å
             prøve?
           </h2>
           <p className="mt-4 text-base text-muted-foreground">

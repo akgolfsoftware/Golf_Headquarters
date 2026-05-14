@@ -16,7 +16,7 @@ export default function Personvern() {
             Juridisk
           </span>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-            <em className="font-normal text-primary md:italic">Personvern</em>-erklæring
+            <em className="font-normal italic text-primary">Personvern</em>-erklæring
           </h1>
           <p className="mt-4 font-mono text-xs text-muted-foreground">
             Sist oppdatert: {SIST_OPPDATERT}

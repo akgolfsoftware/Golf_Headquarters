@@ -73,7 +73,7 @@ export default function Coaching() {
             Coaching
           </span>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-            <em className="font-normal text-primary md:italic">Coaching</em> som
+            <em className="font-normal italic text-primary">Coaching</em> som
             gir fremgang
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground">
