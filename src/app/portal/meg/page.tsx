@@ -111,7 +111,7 @@ export default async function MegProfil() {
         <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           Hurtigvalg
         </h2>
-        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
           <Hurtigvalg
             href="/portal/meg/utstyrsbag"
             icon={Briefcase}
@@ -219,7 +219,7 @@ function Hurtigvalg({
   return (
     <Link
       href={href}
-      className="group flex items-start gap-3 rounded-md border border-border bg-card p-4 transition-colors hover:border-primary/40 hover:bg-secondary/40"
+      className="group flex items-start gap-4 rounded-md border border-border bg-card p-4 transition-colors hover:border-primary/40 hover:bg-secondary/40"
     >
       <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-secondary text-foreground">
         <Icon className="h-4 w-4" strokeWidth={1.75} />

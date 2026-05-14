@@ -150,7 +150,7 @@ export default async function BookingLanding({
                     <p className="mt-1 text-sm text-muted-foreground">
                       {l.sted}
                     </p>
-                    <span className="mt-3 inline-block text-sm font-medium text-primary group-hover:underline">
+                    <span className="mt-4 inline-block text-sm font-medium text-primary group-hover:underline">
                       Velg →
                     </span>
                   </div>
@@ -163,7 +163,7 @@ export default async function BookingLanding({
         {/* Steg 2: Velg trener */}
         {lokasjon && !trener && (
           <section className="mt-10">
-            <div className="flex items-baseline justify-between gap-3">
+            <div className="flex items-baseline justify-between gap-4">
               <h2 className="font-display text-2xl font-semibold tracking-tight">
                 2. Velg trener
               </h2>
@@ -200,7 +200,7 @@ export default async function BookingLanding({
                       <p className="mt-1 text-sm text-muted-foreground">
                         {c.tittel}
                       </p>
-                      <span className="mt-3 inline-block text-sm font-medium text-primary group-hover:underline">
+                      <span className="mt-4 inline-block text-sm font-medium text-primary group-hover:underline">
                         Se tjenester →
                       </span>
                     </div>
@@ -231,7 +231,7 @@ export default async function BookingLanding({
                       Felles økter med flere spillere — uten valg av spesifikk
                       trener.
                     </p>
-                    <span className="mt-3 inline-block text-sm font-medium text-primary group-hover:underline">
+                    <span className="mt-4 inline-block text-sm font-medium text-primary group-hover:underline">
                       Se gruppe-tilbud →
                     </span>
                   </div>
@@ -244,7 +244,7 @@ export default async function BookingLanding({
         {/* Steg 3: Velg tjeneste */}
         {lokasjon && trener && (
           <section className="mt-10">
-            <div className="flex items-baseline justify-between gap-3">
+            <div className="flex items-baseline justify-between gap-4">
               <h2 className="font-display text-2xl font-semibold tracking-tight">
                 3. Velg tjeneste
               </h2>
@@ -336,14 +336,14 @@ function StegIndikator({
     { nr: 3, navn: "Tjeneste", verdi: null },
   ];
   return (
-    <ol className="flex flex-wrap items-center gap-3 text-sm">
+    <ol className="flex flex-wrap items-center gap-4 text-sm">
       {steg.map((s, i) => {
         const aktiv = s.nr === stegNo;
         const ferdig = s.nr < stegNo;
         return (
-          <li key={s.nr} className="flex items-center gap-3">
+          <li key={s.nr} className="flex items-center gap-4">
             <div
-              className={`flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.10em] ${
+              className={`flex items-center gap-2 rounded-full border px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.10em] ${
                 aktiv
                   ? "border-primary bg-primary text-primary-foreground"
                   : ferdig
@@ -380,16 +380,16 @@ function BookingPaused() {
           Booking er midlertidig{" "}
           <em className="font-normal text-primary md:italic">pauset</em>
         </h1>
-        <p className="mt-5 text-base text-muted-foreground">
+        <p className="mt-6 text-base text-muted-foreground">
           Vi gjør klar Google Calendar-integrasjon slik at du aldri risikerer
           å booke en time som ikke er ledig. Bookingen åpner igjen om kort tid.
         </p>
-        <p className="mt-3 text-base text-muted-foreground">
+        <p className="mt-4 text-base text-muted-foreground">
           Vil du booke en time akkurat nå? Send oss en e-post:
         </p>
         <a
           href="mailto:post@akgolf.no?subject=Booking-foresp%C3%B8rsel"
-          className="mt-6 inline-block rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          className="mt-6 inline-block rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
         >
           Skriv til post@akgolf.no
         </a>

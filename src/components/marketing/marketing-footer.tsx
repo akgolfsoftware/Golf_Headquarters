@@ -10,7 +10,7 @@ export function MarketingFooter() {
             <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
               <AkGolfLogo width={48} />
             </Link>
-            <p className="mt-3 text-sm text-muted-foreground">
+            <p className="mt-4 text-sm text-muted-foreground">
               Personlig coaching og fremgang i én pakke.
             </p>
           </div>
@@ -19,7 +19,7 @@ export function MarketingFooter() {
             <h4 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Academy
             </h4>
-            <ul className="mt-3 space-y-2 text-sm">
+            <ul className="mt-4 space-y-2 text-sm">
               <li>
                 <Link href="/coaching" className="text-foreground hover:text-primary active:text-primary/80 focus-visible:underline focus-visible:outline-none">
                   Coaching
@@ -47,7 +47,7 @@ export function MarketingFooter() {
             <h4 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Selskap
             </h4>
-            <ul className="mt-3 space-y-2 text-sm">
+            <ul className="mt-4 space-y-2 text-sm">
               <li>
                 <Link href="/om-oss" className="text-foreground hover:text-primary active:text-primary/80 focus-visible:underline focus-visible:outline-none">
                   Om oss
@@ -85,7 +85,7 @@ export function MarketingFooter() {
             <h4 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Kontakt
             </h4>
-            <ul className="mt-3 space-y-2 text-sm">
+            <ul className="mt-4 space-y-2 text-sm">
               <li>
                 <a
                   href="mailto:post@akgolf.no"
@@ -106,7 +106,7 @@ export function MarketingFooter() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
           <span>© {new Date().getFullYear()} AK Golf Group AS · Org.nr 927 248 581</span>
           <div className="flex gap-4">
             <Link href="/personvern" className="hover:text-foreground active:text-foreground/80 focus-visible:underline focus-visible:outline-none">

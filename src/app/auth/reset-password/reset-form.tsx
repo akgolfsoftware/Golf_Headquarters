@@ -69,7 +69,7 @@ export function ResetForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="w-full rounded-md bg-primary px-4 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         {pending ? "Lagrer…" : "Lagre nytt passord"}
       </button>
@@ -78,7 +78,7 @@ export function ResetForm() {
 }
 
 const input =
-  "w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-md border border-input bg-card px-4 py-4 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (

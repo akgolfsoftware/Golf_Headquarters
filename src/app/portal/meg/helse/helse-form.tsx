@@ -67,11 +67,11 @@ export function HelseForm({ initial }: { initial: Helsedata }) {
         </Felt>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+          className="rounded-md bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-60"
         >
           {pending ? "Lagrer…" : "Lagre"}
         </button>
@@ -86,7 +86,7 @@ export function HelseForm({ initial }: { initial: Helsedata }) {
 }
 
 const input =
-  "w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (

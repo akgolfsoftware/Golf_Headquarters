@@ -40,7 +40,7 @@ export function SlotGrid({ slots, serviceSlug }: Props) {
           <h3 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             {coachName}
           </h3>
-          <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+          <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
             {slots.map((s) => {
               const iso = s.start.toISOString();
               const klokke = s.start.toLocaleTimeString("nb-NO", {
@@ -53,7 +53,7 @@ export function SlotGrid({ slots, serviceSlug }: Props) {
                   href={`/portal/booking/ny/bekreft?service=${serviceSlug}&start=${encodeURIComponent(
                     iso,
                   )}&coach=${coachId}`}
-                  className="rounded-md border border-border bg-card px-3 py-2 text-center font-mono text-sm tabular-nums text-foreground transition-colors hover:border-primary hover:bg-primary/5"
+                  className="rounded-md border border-border bg-card px-4 py-2 text-center font-mono text-sm tabular-nums text-foreground transition-colors hover:border-primary hover:bg-primary/5"
                 >
                   {klokke}
                 </Link>

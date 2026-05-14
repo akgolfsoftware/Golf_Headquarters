@@ -38,7 +38,7 @@ export function NotifToggles({ initial }: { initial: UserPreferences }) {
 
   return (
     <div className="space-y-6">
-      <section className="space-y-3">
+      <section className="space-y-4">
         <h3 className="font-display text-lg font-semibold tracking-tight">
           Notifikasjoner
         </h3>
@@ -65,7 +65,7 @@ export function NotifToggles({ initial }: { initial: UserPreferences }) {
         />
       </section>
 
-      <section className="space-y-3">
+      <section className="space-y-4">
         <h3 className="font-display text-lg font-semibold tracking-tight">
           Språk
         </h3>

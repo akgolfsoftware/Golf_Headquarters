@@ -62,13 +62,13 @@ export default async function InnstillingerPage({
           </h3>
         </div>
         {ok === "eksport" && (
-          <div className="mb-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-foreground">
+          <div className="mb-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">
             <CheckCircle2 className="h-4 w-4 text-primary" strokeWidth={1.5} />
             Forespørsel om eksport mottatt. Du får svar på e-post.
           </div>
         )}
         {ok === "sletting" && (
-          <div className="mb-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-foreground">
+          <div className="mb-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">
             <CheckCircle2 className="h-4 w-4 text-primary" strokeWidth={1.5} />
             Forespørsel om sletting mottatt. Du får svar på e-post.
           </div>
@@ -136,7 +136,7 @@ function FieldRow({
     <div className="grid grid-cols-[180px_1fr_auto] items-center gap-4 border-b border-border/60 px-6 py-4 last:border-b-0">
       <span className="text-xs text-muted-foreground">{label}</span>
       <span
-        className={`flex items-center gap-3 text-sm text-foreground ${
+        className={`flex items-center gap-4 text-sm text-foreground ${
           mono ? "font-mono" : ""
         }`}
       >
@@ -166,14 +166,14 @@ function DangerRow({
   destructive?: boolean;
 }) {
   return (
-    <div className="flex flex-col items-start justify-between gap-3 border-t border-destructive/20 py-4 first:border-t-0 first:pt-0 sm:flex-row sm:items-center sm:gap-6">
+    <div className="flex flex-col items-start justify-between gap-4 border-t border-destructive/20 py-4 first:border-t-0 first:pt-0 sm:flex-row sm:items-center sm:gap-6">
       <div className="flex min-w-0 flex-col">
         <span className="text-sm font-medium text-foreground">{title}</span>
         <span className="text-xs text-muted-foreground">{desc}</span>
       </div>
       <button
         type="submit"
-        className={`whitespace-nowrap rounded-md border px-3 py-2 text-xs font-medium transition-colors ${
+        className={`whitespace-nowrap rounded-md border px-4 py-2 text-xs font-medium transition-colors ${
           destructive
             ? "border-destructive/30 text-destructive hover:bg-destructive/10"
             : "border-border text-foreground hover:bg-secondary"

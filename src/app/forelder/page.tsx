@@ -81,7 +81,7 @@ export default async function ForelderHjem() {
               {b.child.name.split(" ").slice(1).join(" ")}
             </h2>
 
-            <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
+            <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
               <div>
                 <dt className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   <CalendarDays className="h-3 w-3" strokeWidth={1.5} />

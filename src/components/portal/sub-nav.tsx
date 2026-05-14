@@ -21,7 +21,7 @@ export function SubNav({ items }: { items: SubNavItem[] }) {
           <Link
             key={item.href}
             href={item.href}
-            className={`relative px-4 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:underline ${
+            className={`relative px-4 py-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:underline ${
               aktiv
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground active:text-foreground/80"

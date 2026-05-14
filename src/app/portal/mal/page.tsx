@@ -243,7 +243,7 @@ function HcpTrend({
           >
             Handicap-trend · 12 mnd
           </span>
-          <div className="flex items-baseline gap-3 font-mono text-5xl font-medium leading-none tabular-nums tracking-tight md:text-6xl">
+          <div className="flex items-baseline gap-4 font-mono text-5xl font-medium leading-none tabular-nums tracking-tight md:text-6xl">
             <span>{naa != null ? formatHcp(naa) : "—"}</span>
             {endring != null && (
               <span
@@ -439,7 +439,7 @@ function HcpChart({
           </span>
           <Link
             href="/portal/meg/abonnement"
-            className="inline-flex items-center gap-1 rounded-full bg-accent/15 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent"
+            className="inline-flex items-center gap-1 rounded-full bg-accent/15 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent"
           >
             Oppgrader <ArrowRight className="h-3 w-3" strokeWidth={2} />
           </Link>
@@ -467,7 +467,7 @@ function HcpMaalCard({
       : null;
 
   return (
-    <article className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <article className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <Target
@@ -561,7 +561,7 @@ function ScoreMaalCard({
   const prosent = Math.min(100, (oppnaadd / total) * 100);
 
   return (
-    <article className="relative flex flex-col gap-3 rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <article className="relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <Star
@@ -664,7 +664,7 @@ function FerdighetMaalCard({
     verdi != null && maal > 0 ? Math.min(100, (verdi / (maal * 100 + 50)) * 100) : null;
 
   return (
-    <article className="relative flex flex-col gap-3 rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <article className="relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <Trophy
@@ -767,7 +767,7 @@ function PyramideStatus({
   isFree: boolean;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm md:p-7">
+    <section className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm md:p-8">
       <header className="flex items-center justify-between gap-4">
         <h3 className="font-display text-xl font-semibold tracking-tight text-foreground">
           Pyramide-status
@@ -816,7 +816,7 @@ function PyramideRing({
   const color = PYR_COLOR[area];
 
   return (
-    <div className="flex flex-col items-center gap-2 rounded-md p-3 transition-colors hover:bg-secondary/40">
+    <div className="flex flex-col items-center gap-2 rounded-md p-4 transition-colors hover:bg-secondary/40">
       <span className="relative h-24 w-24">
         <svg
           viewBox="0 0 36 36"
@@ -903,7 +903,7 @@ function QuickLink({
     return (
       <Link
         href="/portal/meg/abonnement"
-        className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+        className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
       >
         {innhold}
       </Link>
@@ -913,7 +913,7 @@ function QuickLink({
   return (
     <Link
       href={href}
-      className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+      className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
     >
       {innhold}
     </Link>
@@ -937,7 +937,7 @@ function LockOverlay({ label, cta }: { label: string; cta: string }) {
         {label}
       </span>
       <span
-        className="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-accent-foreground"
+        className="inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-accent-foreground"
       >
         {cta}
         <ArrowRight className="h-3 w-3" strokeWidth={2} />

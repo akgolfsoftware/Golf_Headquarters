@@ -80,7 +80,7 @@ export default async function GoalDetalj({
         }
         actions={
           <span
-            className={`rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${
+            className={`rounded-full px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${
               goal.status === "ACHIEVED"
                 ? "bg-primary/10 text-primary"
                 : goal.status === "ABANDONED"

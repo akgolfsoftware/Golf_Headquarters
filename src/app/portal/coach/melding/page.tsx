@@ -13,7 +13,7 @@ export default async function CoachMeldingPage() {
   if (user.tier === "GRATIS") {
     return (
       <div className="mx-auto max-w-[860px] space-y-6 px-6 py-8">
-        <div className="space-y-3">
+        <div className="space-y-4">
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             PlayerHQ · Coach
           </span>
@@ -27,7 +27,7 @@ export default async function CoachMeldingPage() {
         <div className="rounded-lg border border-border bg-card p-6">
           <Link
             href="/portal/meg/abonnement"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             Oppgrader til Pro
             <ArrowUpRight size={14} strokeWidth={1.5} />
@@ -57,7 +57,7 @@ export default async function CoachMeldingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-[860px] px-6 py-8">
-        <div className="mb-7 space-y-4">
+        <div className="mb-8 space-y-4">
           <Link
             href="/portal/coach"
             className="inline-flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
@@ -72,7 +72,7 @@ export default async function CoachMeldingPage() {
             sub="Skriv direkte til coachen din. Svartid typisk innen 4 timer på hverdager."
             actions={
               hovedcoach ? (
-                <div className="flex items-center gap-3 rounded-full border border-border bg-card px-3 py-2">
+                <div className="flex items-center gap-4 rounded-full border border-border bg-card px-4 py-2">
                   <div className="grid h-8 w-8 place-items-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
                     {initialer}
                   </div>

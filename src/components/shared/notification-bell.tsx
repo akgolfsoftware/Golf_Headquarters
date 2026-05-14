@@ -82,7 +82,7 @@ export function NotificationBell({
 
       {open && (
         <div className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between border-b border-border px-4 py-4">
             <span className="font-display text-sm font-semibold">Varsler</span>
             {ulest > 0 && (
               <button
@@ -106,7 +106,7 @@ export function NotificationBell({
                 const Icon = ikonForType(n.type);
                 const innhold = (
                   <div
-                    className={`flex items-start gap-3 px-4 py-3 transition-colors hover:bg-secondary/40 ${
+                    className={`flex items-start gap-4 px-4 py-4 transition-colors hover:bg-secondary/40 ${
                       !n.readAt ? "bg-primary/5" : ""
                     }`}
                   >

@@ -169,7 +169,7 @@ export default async function SessionDetalj({
               Start live
             </Link>
           ) : session.status === "COMPLETED" ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(60,142,109,0.13)] px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--color-pyr-tek)]">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(60,142,109,0.13)] px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--color-pyr-tek)]">
               <Check className="h-3 w-3" strokeWidth={3} />
               Gjennomført
             </span>
@@ -214,7 +214,7 @@ export default async function SessionDetalj({
       {/* KPI-rad: kun fullført */}
       {kpiData && (
         <section>
-          <div className="mb-3 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
+          <div className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
             Resultat
           </div>
           <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
@@ -287,7 +287,7 @@ export default async function SessionDetalj({
 
       {/* Øvelser */}
       <section>
-        <div className="mb-3 flex items-baseline justify-between">
+        <div className="mb-4 flex items-baseline justify-between">
           <div className="font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
             Økt-skjelett · {session.drills.length}{" "}
             {session.drills.length === 1 ? "øvelse" : "øvelser"}
@@ -301,7 +301,7 @@ export default async function SessionDetalj({
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {session.drills.map((drill, index) => (
               <DrillBlock
                 key={drill.id}
@@ -323,7 +323,7 @@ export default async function SessionDetalj({
 
       {/* Forrige / neste */}
       {(forrige || neste) && (
-        <nav className="grid grid-cols-2 gap-3 border-t border-border pt-6">
+        <nav className="grid grid-cols-2 gap-4 border-t border-border pt-6">
           <div>
             {forrige ? (
               <Link
@@ -433,7 +433,7 @@ function DrillBlock({
 }) {
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
-      <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3.5 border-b border-border bg-secondary px-4 py-3">
+      <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3.5 border-b border-border bg-secondary px-4 py-4">
         <span className="font-mono text-[11px] font-semibold tabular-nums text-muted-foreground">
           {String(index).padStart(2, "0")}
         </span>

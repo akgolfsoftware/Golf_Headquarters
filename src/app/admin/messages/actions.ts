@@ -44,35 +44,65 @@ export async function sendMelding(
     return { ok: false, error: "Mangler thread-ID" };
   }
 
-  const tråd = await prisma.coachingSession.findUnique({
-    where: { id: threadId },
-    select: { id: true, messages: true, coachId: true },
-  });
-  if (!tråd) {
-    return { ok: false, error: "Tråd ikke funnet" };
-  }
-  // Coach må eie tråden, eller være ADMIN
-  if (tråd.coachId !== me.id && me.role !== "ADMIN") {
-    return { ok: false, error: "Ikke tilgang til denne tråden" };
-  }
-
-  const eksisterende: ChatMelding[] = Array.isArray(tråd.messages)
-    ? (tråd.messages as unknown as ChatMelding[])
-    : [];
-
   const ny: ChatMelding = {
     role: "coach",
     content: trimmet,
     ts: new Date().toISOString(),
   };
 
-  await prisma.coachingSession.update({
-    where: { id: threadId },
-    data: {
-      messages: [...eksisterende, ny] as unknown as object,
-    },
-  });
+  // Atomic append: read + write i samme transaksjon på Serializable-nivå
+  // for å unngå race condition der to samtidige coach-svar overskriver
+  // hverandre (read-modify-write på messages-JSON).
+  // Postgres vil avbryte den ene transaksjonen med 40001 ved konflikt;
+  // vi retry-er da inntil 3 ganger.
+  const MAX_FORSØK = 3;
+  let sisteFeil: unknown = null;
+  for (let forsøk = 0; forsøk < MAX_FORSØK; forsøk++) {
+    try {
+      const utfall = await prisma.$transaction(
+        async (tx) => {
+          const tråd = await tx.coachingSession.findUnique({
+            where: { id: threadId },
+            select: { id: true, messages: true, coachId: true },
+          });
+          if (!tråd) return { ok: false as const, error: "Tråd ikke funnet" };
+          if (tråd.coachId !== me.id && me.role !== "ADMIN") {
+            return { ok: false as const, error: "Ikke tilgang til denne tråden" };
+          }
+          const eksisterende: ChatMelding[] = Array.isArray(tråd.messages)
+            ? (tråd.messages as unknown as ChatMelding[])
+            : [];
+          await tx.coachingSession.update({
+            where: { id: threadId },
+            data: {
+              messages: [...eksisterende, ny] as unknown as object,
+            },
+          });
+          return { ok: true as const };
+        },
+        { isolationLevel: "Serializable" },
+      );
 
-  revalidatePath("/admin/messages");
-  return { ok: true };
+      if (!utfall.ok) return { ok: false, error: utfall.error };
+      revalidatePath("/admin/messages");
+      return { ok: true };
+    } catch (err) {
+      sisteFeil = err;
+      // Postgres serialization failure (40001) eller deadlock (40P01)
+      // → vent kort og retry
+      const kode = (err as { code?: string } | null)?.code;
+      if (kode === "40001" || kode === "40P01") {
+        await new Promise((r) => setTimeout(r, 25 * (forsøk + 1)));
+        continue;
+      }
+      throw err;
+    }
+  }
+  return {
+    ok: false,
+    error:
+      sisteFeil instanceof Error
+        ? `Kunne ikke lagre melding: ${sisteFeil.message}`
+        : "Kunne ikke lagre melding etter flere forsøk",
+  };
 }

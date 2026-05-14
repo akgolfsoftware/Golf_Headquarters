@@ -54,7 +54,7 @@ export function ScoreForm({ challengeId, currentScore, currentNotes }: Props) {
             value={score}
             onChange={(e) => setScore(e.target.value)}
             placeholder="F.eks. 42"
-            className="w-full rounded-md border border-input bg-card px-3 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            className="w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
           />
         </label>
         <label className="block">
@@ -66,7 +66,7 @@ export function ScoreForm({ challengeId, currentScore, currentNotes }: Props) {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Kort kommentar"
-            className="w-full rounded-md border border-input bg-card px-3 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            className="w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
           />
         </label>
       </div>
@@ -84,7 +84,7 @@ export function ScoreForm({ challengeId, currentScore, currentNotes }: Props) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
+          className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
         >
           {pending ? "Lagrer…" : currentScore != null ? "Oppdater score" : "Registrer score"}
         </button>

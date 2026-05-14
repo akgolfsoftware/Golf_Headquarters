@@ -47,10 +47,10 @@ export function ExerciseCard({ exercise }: { exercise: ExerciseDefinition }) {
       </div>
 
       {exercise.description && (
-        <p className="mt-3 text-sm text-muted-foreground">{exercise.description}</p>
+        <p className="mt-4 text-sm text-muted-foreground">{exercise.description}</p>
       )}
 
-      <div className="mt-3 flex flex-wrap gap-3 border-t border-border pt-3 font-mono text-[11px] text-muted-foreground">
+      <div className="mt-4 flex flex-wrap gap-4 border-t border-border pt-4 font-mono text-[11px] text-muted-foreground">
         {exercise.defaultRepsSets && <span>{exercise.defaultRepsSets}</span>}
         {(exercise.csMin != null || exercise.csMax != null) && (
           <span>

@@ -14,7 +14,7 @@ const FARGE: Record<SistRegistrert["type"], string> = {
 
 export function SistRegistrertCard({ items }: { items: SistRegistrert[] }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <div className="rounded-lg border border-border bg-card p-6">
       <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         Sist registrert
       </span>
@@ -25,11 +25,11 @@ export function SistRegistrertCard({ items }: { items: SistRegistrert[] }) {
           under Mål.
         </p>
       ) : (
-        <ul className="mt-3 divide-y divide-border">
+        <ul className="mt-4 divide-y divide-border">
           {items.map((it, i) => (
             <li
               key={i}
-              className="flex items-start gap-3 py-2.5 text-sm first:pt-0 last:pb-0"
+              className="flex items-start gap-4 py-2.5 text-sm first:pt-0 last:pb-0"
             >
               <span
                 className={`shrink-0 rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${FARGE[it.type]}`}

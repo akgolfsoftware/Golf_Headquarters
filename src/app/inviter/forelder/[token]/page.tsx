@@ -42,13 +42,13 @@ export default async function AksepterInvitasjonPage({
         </h1>
 
         {status === "ugyldig" ? (
-          <p className="mt-6 rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <p className="mt-6 rounded-md bg-destructive/10 px-4 py-4 text-sm text-destructive">
             Invitasjonen finnes ikke. Be spilleren sende en ny.
           </p>
         ) : null}
 
         {status === "brukt" ? (
-          <p className="mt-6 rounded-md bg-muted px-4 py-3 text-sm text-muted-foreground">
+          <p className="mt-6 rounded-md bg-muted px-4 py-4 text-sm text-muted-foreground">
             Invitasjonen er allerede brukt. Gå til{" "}
             <a href="/auth/login" className="font-semibold text-primary underline">
               innloggingen
@@ -58,7 +58,7 @@ export default async function AksepterInvitasjonPage({
         ) : null}
 
         {status === "utlopt" && invitation ? (
-          <p className="mt-6 rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <p className="mt-6 rounded-md bg-destructive/10 px-4 py-4 text-sm text-destructive">
             Invitasjonen utløp {NB.format(invitation.expiresAt)}. Be spilleren sende en ny.
           </p>
         ) : null}

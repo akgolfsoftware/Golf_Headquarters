@@ -17,7 +17,7 @@ export default function PortalError({
 
   return (
     <div className="flex flex-col items-center justify-center rounded-lg border border-destructive/30 bg-destructive/5 px-8 py-16 text-center">
-      <div className="mb-5 grid h-14 w-14 place-items-center rounded-full bg-secondary text-destructive">
+      <div className="mb-6 grid h-14 w-14 place-items-center rounded-full bg-secondary text-destructive">
         <AlertTriangle size={24} strokeWidth={1.5} />
       </div>
       <h2 className="font-display text-lg font-semibold leading-tight tracking-tight">
@@ -31,17 +31,17 @@ export default function PortalError({
           ref {error.digest}
         </p>
       )}
-      <div className="mt-6 flex items-center gap-3">
+      <div className="mt-6 flex items-center gap-4">
         <button
           type="button"
           onClick={reset}
-          className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+          className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground"
         >
           Last på nytt
         </button>
         <Link
           href="/portal"
-          className="rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground"
+          className="rounded-full border border-border bg-card px-6 py-2.5 text-sm font-semibold text-foreground"
         >
           Gå til hjem
         </Link>

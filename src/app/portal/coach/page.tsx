@@ -71,7 +71,7 @@ export default async function CoachOversikt() {
             href={`/portal/coach/${hovedcoach.id}`}
             className="group rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary font-mono text-base font-semibold text-primary-foreground">
                 {hovedcoach.name.charAt(0).toUpperCase()}
               </div>
@@ -97,7 +97,7 @@ export default async function CoachOversikt() {
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Direkte coach
             </span>
-            <p className="mt-3 text-sm text-muted-foreground">
+            <p className="mt-4 text-sm text-muted-foreground">
               Ingen coacher er registrert i plattformen enda.
             </p>
           </div>
@@ -119,7 +119,7 @@ export default async function CoachOversikt() {
       {/* Andre coacher */}
       {andreCoacher.length > 0 && (
         <section>
-          <div className="mb-3 flex items-center gap-2">
+          <div className="mb-4 flex items-center gap-2">
             <Users size={14} strokeWidth={1.5} className="text-muted-foreground" />
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Andre coacher du har tilgang til
@@ -156,7 +156,7 @@ export default async function CoachOversikt() {
 
       {/* Siste samtaler */}
       <section>
-        <div className="mb-3 flex items-center gap-2">
+        <div className="mb-4 flex items-center gap-2">
           <MessageSquare size={14} strokeWidth={1.5} className="text-muted-foreground" />
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Siste samtaler
@@ -176,13 +176,13 @@ export default async function CoachOversikt() {
               return (
                 <li
                   key={s.id}
-                  className="flex items-center justify-between px-4 py-3 text-sm"
+                  className="flex items-center justify-between px-4 py-4 text-sm"
                 >
                   <div>
                     <span className="font-medium text-foreground">
                       {s.kind === "AI" ? "AI-coach" : "Direkte"}
                     </span>
-                    <span className="ml-3 text-muted-foreground">
+                    <span className="ml-4 text-muted-foreground">
                       {meldinger} meldinger
                     </span>
                   </div>
@@ -204,7 +204,7 @@ export default async function CoachOversikt() {
 
 function StatPill({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-foreground">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-4 py-1 text-xs font-medium text-foreground">
       {label}
     </span>
   );
@@ -229,7 +229,7 @@ function Paywall() {
         </p>
         <Link
           href="/portal/meg/abonnement"
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           Oppgrader til Pro
           <ArrowUpRight size={16} strokeWidth={1.5} />

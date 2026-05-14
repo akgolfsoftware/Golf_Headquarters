@@ -93,7 +93,7 @@ export default async function BekreftCreditBookingPage({
         <h2 className="font-display text-lg font-semibold tracking-tight">
           Oppsummering
         </h2>
-        <dl className="mt-4 space-y-3 text-sm">
+        <dl className="mt-4 space-y-4 text-sm">
           <Rad label="Tjeneste" value={service.name} />
           <Rad label="Coach" value={coachUser.name ?? "Coach"} />
           <Rad label="Dato" value={dato} />
@@ -116,7 +116,7 @@ export default async function BekreftCreditBookingPage({
 
 function Rad({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/40 pb-3 last:border-0 last:pb-0">
+    <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/40 pb-4 last:border-0 last:pb-0">
       <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </dt>

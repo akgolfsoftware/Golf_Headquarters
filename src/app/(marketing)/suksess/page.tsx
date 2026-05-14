@@ -90,7 +90,7 @@ export default function SuksessSide() {
                   <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                     HCP-utvikling
                   </p>
-                  <p className="mt-2 flex items-baseline justify-center gap-3 font-mono text-xl text-foreground lg:justify-start">
+                  <p className="mt-2 flex items-baseline justify-center gap-4 font-mono text-xl text-foreground lg:justify-start">
                     <span>{c.hcpFra}</span>
                     <TrendingDown
                       className="h-4 w-4 text-primary"
@@ -123,20 +123,20 @@ export default function SuksessSide() {
           <h2 className="font-display text-3xl font-semibold tracking-tight">
             Vil du være neste suksesshistorie?
           </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="mt-4 text-muted-foreground">
             Vi tar imot et begrenset antall nye spillere hver sesong.
           </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/coaching"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Les om coaching
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
             <Link
               href="/kontakt"
-              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
+              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
             >
               Snakk med oss
             </Link>

@@ -111,7 +111,7 @@ export default function KontaktSide() {
               </p>
               <Link
                 href="/booking"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-[14px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-4 text-[14px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
               >
                 Book direkte
                 <ArrowRight className="h-4 w-4" strokeWidth={2} />

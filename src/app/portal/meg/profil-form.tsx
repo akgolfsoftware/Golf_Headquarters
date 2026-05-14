@@ -286,7 +286,7 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
             </div>
           )}
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <button
               type="submit"
               disabled={pending}
@@ -312,7 +312,7 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
             {parents.map((p) => (
               <ParentRow key={p.id} parent={p} />
             ))}
-            <div className="grid grid-cols-[36px_1fr_auto] items-center gap-3 bg-secondary/60 px-6 py-4">
+            <div className="grid grid-cols-[36px_1fr_auto] items-center gap-4 bg-secondary/60 px-6 py-4">
               <div className="grid h-9 w-9 place-items-center rounded-full border border-dashed border-border text-muted-foreground">
                 <Plus className="h-4 w-4" strokeWidth={1.5} />
               </div>
@@ -384,7 +384,7 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
 // ============================================================================
 
 const inputCss =
-  "w-full rounded-md border border-input bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function IdStat({
   label,
@@ -452,7 +452,7 @@ type FieldRowProps = {
 function FieldRow({ label, hint, badge, children }: FieldRowProps) {
   const BadgeIcon = badge?.icon;
   return (
-    <div className="grid grid-cols-1 items-start gap-3 border-b border-border/60 px-6 py-4 last:border-b-0 sm:grid-cols-[180px_1fr]">
+    <div className="grid grid-cols-1 items-start gap-4 border-b border-border/60 px-6 py-4 last:border-b-0 sm:grid-cols-[180px_1fr]">
       <div className="flex flex-col gap-1">
         <span className="text-[12px] font-medium text-muted-foreground">
           {label}
@@ -482,7 +482,7 @@ function ParentRow({ parent }: { parent: Parent }) {
     .toUpperCase();
 
   return (
-    <div className="grid grid-cols-[36px_1fr_auto] items-center gap-3 border-b border-border/60 px-6 py-4 last:border-b-0">
+    <div className="grid grid-cols-[36px_1fr_auto] items-center gap-4 border-b border-border/60 px-6 py-4 last:border-b-0">
       <div className="grid h-9 w-9 place-items-center rounded-full bg-primary/80 text-[12px] font-semibold text-primary-foreground">
         {initials || "?"}
       </div>
@@ -561,14 +561,14 @@ function DangerItem({
   destructive?: boolean;
 }) {
   return (
-    <div className="flex flex-col items-start justify-between gap-3 border-t border-destructive/20 py-4 first:border-t-0 first:pt-0 sm:flex-row sm:items-center sm:gap-6">
+    <div className="flex flex-col items-start justify-between gap-4 border-t border-destructive/20 py-4 first:border-t-0 first:pt-0 sm:flex-row sm:items-center sm:gap-6">
       <div className="flex min-w-0 flex-col">
         <span className="text-[13px] font-medium text-foreground">{title}</span>
         <span className="text-[12px] text-muted-foreground">{desc}</span>
       </div>
       <button
         type="button"
-        className={`whitespace-nowrap rounded-md border px-3 py-2 text-[12px] font-medium transition-colors ${
+        className={`whitespace-nowrap rounded-md border px-4 py-2 text-[12px] font-medium transition-colors ${
           destructive
             ? "border-destructive/30 text-destructive hover:bg-destructive/10"
             : "border-border text-foreground hover:bg-secondary"

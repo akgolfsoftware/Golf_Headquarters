@@ -26,12 +26,12 @@ export function GoalActions({ goalId }: { goalId: string }) {
   }
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap gap-4">
       <button
         type="button"
         onClick={fullfor}
         disabled={pending}
-        className="rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="rounded-md bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         Marker som oppnådd
       </button>
@@ -39,7 +39,7 @@ export function GoalActions({ goalId }: { goalId: string }) {
         type="button"
         onClick={slett}
         disabled={pending}
-        className="rounded-md border border-destructive/30 bg-destructive/5 px-5 py-2.5 text-sm font-medium text-destructive hover:border-destructive/50 disabled:opacity-60"
+        className="rounded-md border border-destructive/30 bg-destructive/5 px-6 py-2.5 text-sm font-medium text-destructive hover:border-destructive/50 disabled:opacity-60"
       >
         Slett mål
       </button>

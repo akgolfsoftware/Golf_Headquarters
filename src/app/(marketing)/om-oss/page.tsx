@@ -9,8 +9,8 @@ export default function OmOss() {
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             Om oss
           </span>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-            <em className="font-normal text-primary md:italic">Personlig</em>{" "}
+          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
+            <em className="font-normal italic text-primary">Personlig</em>{" "}
             coaching, bygd på data
           </h1>
         </header>
@@ -67,7 +67,7 @@ export default function OmOss() {
         <div className="mt-16 text-center">
           <Link
             href="/booking"
-            className="inline-block rounded-md bg-primary px-6 py-3 text-base font-semibold text-primary-foreground"
+            className="inline-block rounded-md bg-primary px-6 py-4 text-base font-semibold text-primary-foreground"
           >
             Book første time →
           </Link>
@@ -79,7 +79,7 @@ export default function OmOss() {
 
 function Rad({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/40 pb-3 last:border-0 last:pb-0">
+    <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/40 pb-4 last:border-0 last:pb-0">
       <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </dt>

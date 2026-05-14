@@ -84,7 +84,7 @@ export default function Hjem() {
           }}
         />
         <div className="mx-auto max-w-7xl px-6 pt-20 pb-24 md:pt-28 md:pb-32">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-muted-foreground">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-muted-foreground">
             <span className="grid h-5 w-5 place-items-center rounded-full bg-accent text-accent-foreground">
               <Sparkles className="h-3 w-3" strokeWidth={2} />
             </span>
@@ -194,10 +194,10 @@ export default function Hjem() {
         <div className="grid grid-cols-1 gap-8 rounded-2xl border border-primary/20 bg-primary/5 p-8 sm:p-12 md:grid-cols-[1fr_1.2fr] md:items-center">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-primary px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary-foreground">
+              <span className="rounded-full bg-primary px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary-foreground">
                 Inkludert
               </span>
-              <span className="rounded-full bg-secondary px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              <span className="rounded-full bg-secondary px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Beta
               </span>
             </div>
@@ -215,7 +215,7 @@ export default function Hjem() {
             </p>
             <Link
               href="/playerhq"
-              className="mt-8 inline-flex items-center gap-2 text-[14px] font-semibold text-primary hover:gap-3"
+              className="mt-8 inline-flex items-center gap-2 text-[14px] font-semibold text-primary hover:gap-4"
             >
               Se hva PlayerHQ inneholder
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
@@ -344,7 +344,7 @@ function SectionHeader({
 }) {
   return (
     <div className="max-w-3xl">
-      <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+      <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         <CircleDot className="h-3 w-3 text-primary" strokeWidth={2} />
         {tag}
       </div>

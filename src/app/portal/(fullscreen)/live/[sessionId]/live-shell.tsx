@@ -462,7 +462,7 @@ export function LiveShell({
         </p>
         <Link
           href="/portal/tren"
-          className="mt-6 inline-block rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground hover:bg-accent/90"
+          className="mt-6 inline-block rounded-full bg-accent px-6 py-4 text-sm font-semibold text-accent-foreground hover:bg-accent/90"
         >
           Tilbake til plan
         </Link>
@@ -497,7 +497,7 @@ export function LiveShell({
         />
 
         <section className="relative z-[1] mx-auto flex w-full max-w-[1100px] flex-col items-center justify-center px-8 pt-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+          <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
             Klar til økt
           </div>
 
@@ -515,7 +515,7 @@ export function LiveShell({
             {drills.map((d, i) => (
               <li
                 key={d.id}
-                className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3.5"
+                className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-3.5"
               >
                 <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/55 tabular-nums">
                   {String(i + 1).padStart(2, "0")}
@@ -547,7 +547,7 @@ export function LiveShell({
             type="button"
             onClick={handleStart}
             disabled={pending}
-            className="inline-flex h-[72px] flex-1 items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99] disabled:opacity-60"
+            className="inline-flex h-[72px] flex-1 items-center justify-center gap-4 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99] disabled:opacity-60"
             style={{
               boxShadow:
                 "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -697,7 +697,7 @@ export function LiveShell({
               >
                 {state.repsLogged}
               </div>
-              <div className="mt-3 font-mono text-[14px] font-medium uppercase tracking-[0.16em] text-white/55">
+              <div className="mt-4 font-mono text-[14px] font-medium uppercase tracking-[0.16em] text-white/55">
                 av {targetReps} reps
               </div>
             </div>
@@ -749,7 +749,7 @@ export function LiveShell({
             <button
               type="button"
               onClick={() => dispatch({ type: "TOGGLE_PAUSE" })}
-              className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
+              className="inline-flex h-[72px] items-center justify-center gap-4 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
               style={{
                 boxShadow:
                   "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -791,7 +791,7 @@ export function LiveShell({
             <button
               type="button"
               onClick={() => handleLogRep(true)}
-              className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
+              className="inline-flex h-[72px] items-center justify-center gap-4 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
               style={{
                 boxShadow:
                   "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -899,7 +899,7 @@ export function LiveShell({
               >
                 {state.repsLogged}
               </div>
-              <div className="mt-3 font-mono text-[14px] font-medium uppercase tracking-[0.16em] text-accent">
+              <div className="mt-4 font-mono text-[14px] font-medium uppercase tracking-[0.16em] text-accent">
                 av {targetReps} reps · 100 %
               </div>
             </div>
@@ -930,7 +930,7 @@ export function LiveShell({
           <button
             type="button"
             onClick={handleCompleteDrill}
-            className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
+            className="inline-flex h-[72px] items-center justify-center gap-4 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
             style={{
               boxShadow:
                 "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -981,19 +981,19 @@ export function LiveShell({
           <div className="grid w-full max-w-[1120px] grid-cols-[1.1fr_1fr] items-center gap-16">
             {/* LEFT — done summary */}
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
+              <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
                 <CheckCircle2 className="h-[14px] w-[14px]" strokeWidth={1.5} />
                 Fullført
               </div>
 
-              <h1 className="mt-5 font-display text-[28px] sm:text-[40px] md:text-[56px] font-semibold italic leading-[1.05] tracking-[-0.025em] text-white">
+              <h1 className="mt-6 font-display text-[28px] sm:text-[40px] md:text-[56px] font-semibold italic leading-[1.05] tracking-[-0.025em] text-white">
                 <em className="italic">{currentDrill.exercise.name}</em>
               </h1>
               <p className="mt-2 font-mono text-[13px] tracking-[0.04em] text-white/65">
                 {last?.repsLogged ?? 0} reps logget · {approvalPct} % godkjent
               </p>
 
-              <div className="mt-8 grid max-w-[520px] grid-cols-3 gap-3">
+              <div className="mt-8 grid max-w-[520px] grid-cols-3 gap-4">
                 <StatCard label="Reps" value={String(last?.repsLogged ?? 0)} />
                 <StatCard
                   label="Godkjent"
@@ -1014,7 +1014,7 @@ export function LiveShell({
                 {isLastDrill ? "Klar til oppsummering" : "Neste øvelse"}
               </div>
 
-              <div className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] p-7">
+              <div className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] p-8">
                 {isLastDrill ? (
                   <div className="flex items-center gap-6">
                     <div className="inline-flex h-32 w-32 flex-shrink-0 items-center justify-center rounded-full border border-accent/30 bg-accent/10">
@@ -1116,7 +1116,7 @@ export function LiveShell({
           <button
             type="button"
             onClick={isLastDrill ? handleFinishSession : handleStartNextDrill}
-            className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
+            className="inline-flex h-[72px] items-center justify-center gap-4 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
             style={{
               boxShadow:
                 "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -1199,7 +1199,7 @@ export function LiveShell({
       <section className="relative z-[1] mx-auto flex w-full max-w-[1240px] flex-col px-8 pt-12 pb-8 md:px-16">
         {/* Hero */}
         <div className="mb-10 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
             <Trophy className="h-[14px] w-[14px]" strokeWidth={1.5} />
             Økt fullført
           </div>
@@ -1225,8 +1225,8 @@ export function LiveShell({
         {/* Body grid */}
         <div className="grid grid-cols-1 items-stretch gap-8 md:grid-cols-[360px_1fr]">
           {/* Donut */}
-          <div className="rounded-xl border border-white/10 bg-white/[0.04] p-7">
-            <div className="mb-5 font-mono text-[10px] uppercase tracking-[0.20em] text-white/55">
+          <div className="rounded-xl border border-white/10 bg-white/[0.04] p-8">
+            <div className="mb-6 font-mono text-[10px] uppercase tracking-[0.20em] text-white/55">
               Pyramide-fordeling
             </div>
 
@@ -1290,7 +1290,7 @@ export function LiveShell({
           </div>
 
           {/* Stat 2x2 */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <SummaryStat
               label="Reps totalt"
               value={totalReps}
@@ -1316,8 +1316,8 @@ export function LiveShell({
         </div>
 
         {/* Feedback */}
-        <div className="mt-6 flex flex-wrap items-center gap-5 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-5">
-          <div className="flex items-center gap-3">
+        <div className="mt-6 flex flex-wrap items-center gap-6 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-6">
+          <div className="flex items-center gap-4">
             <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-secondary font-mono text-[14px] font-semibold text-white">
               AK
             </div>
@@ -1384,7 +1384,7 @@ export function LiveShell({
           type="button"
           onClick={handleSaveAndExit}
           disabled={pending}
-          className="inline-flex h-[72px] items-center justify-center gap-3 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99] disabled:opacity-60"
+          className="inline-flex h-[72px] items-center justify-center gap-4 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99] disabled:opacity-60"
           style={{
             boxShadow:
               "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -1428,7 +1428,7 @@ function TopBar({
 }) {
   return (
     <header className="relative z-10 grid grid-cols-3 items-center border-b border-white/[0.06] px-6">
-      <div className="flex items-center gap-3">{left}</div>
+      <div className="flex items-center gap-4">{left}</div>
       <div className="flex items-center justify-center">{center}</div>
       <div className="flex items-center justify-end gap-4">{right}</div>
     </header>
@@ -1454,7 +1454,7 @@ function BottomBar({
 function LivePill({ label, muted = false }: { label: string; muted?: boolean }) {
   if (muted) {
     return (
-      <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5">
+      <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5">
         <span className="h-2 w-2 rounded-full bg-white/60" />
         <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-white/65">
           {label}
@@ -1463,7 +1463,7 @@ function LivePill({ label, muted = false }: { label: string; muted?: boolean }) 
     );
   }
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-accent/35 bg-accent/10 px-3 py-1.5">
+    <div className="inline-flex items-center gap-2 rounded-full border border-accent/35 bg-accent/10 px-4 py-1.5">
       <span className="relative h-2 w-2 rounded-full bg-accent shadow-[0_0_0_4px_rgba(209,248,67,0.18)]" />
       <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-accent">
         {label}
@@ -1494,7 +1494,7 @@ function ProgressDots({
   completed?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-4">
       <div className="flex items-center gap-1.5">
         {Array.from({ length: total }).map((_, i) => {
           if (i < current) {
@@ -1656,7 +1656,7 @@ function MoodButton({
 
 function PausePill() {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full bg-[rgba(244,196,48,0.14)] px-3 py-1.5">
+    <div className="inline-flex items-center gap-2 rounded-full bg-[rgba(244,196,48,0.14)] px-4 py-1.5">
       <span className="h-2 w-2 rounded-full bg-[#F4C430]" />
       <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-[#F4C430]">
         Pause

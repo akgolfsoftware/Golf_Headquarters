@@ -24,7 +24,7 @@ export function SgFordelingCard({ sg }: { sg: SgAggregate }) {
   return (
     <Link
       href="/portal/mal"
-      className="group block rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md"
+      className="group block rounded-lg border border-border bg-card p-6 transition-shadow hover:shadow-md"
     >
       <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         SG-fordeling · 30d
@@ -35,12 +35,12 @@ export function SgFordelingCard({ sg }: { sg: SgAggregate }) {
           Ingen runder de siste 30 dagene.
         </p>
       ) : (
-        <div className="mt-3 space-y-2">
+        <div className="mt-4 space-y-2">
           {FELT.map((f) => {
             const verdi = sg[f.key];
             const erPositiv = verdi != null && verdi >= 0;
             return (
-              <div key={f.key} className="flex items-center gap-3 text-xs">
+              <div key={f.key} className="flex items-center gap-4 text-xs">
                 <span className="w-10 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   {f.label}
                 </span>
@@ -75,7 +75,7 @@ export function SgFordelingCard({ sg }: { sg: SgAggregate }) {
         </div>
       )}
 
-      <p className="mt-3 text-xs text-muted-foreground group-hover:text-foreground">
+      <p className="mt-4 text-xs text-muted-foreground group-hover:text-foreground">
         Se alle runder →
       </p>
     </Link>

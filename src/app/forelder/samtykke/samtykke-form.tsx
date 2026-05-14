@@ -53,7 +53,7 @@ export function SamtykkeForm({ childId, samtykker, eksisterende }: Props) {
       {samtykker.map((s) => (
         <label
           key={s.key}
-          className="flex cursor-pointer items-start gap-4 px-5 py-4 transition-colors hover:bg-secondary/30"
+          className="flex cursor-pointer items-start gap-4 px-6 py-4 transition-colors hover:bg-secondary/30"
         >
           <input
             type="checkbox"
@@ -72,7 +72,7 @@ export function SamtykkeForm({ childId, samtykker, eksisterende }: Props) {
         </label>
       ))}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-secondary/20 px-5 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-secondary/20 px-6 py-4">
         {success ? (
           <span className="inline-flex items-center gap-1.5 text-sm text-primary">
             <CheckCircle2 className="h-4 w-4" strokeWidth={1.75} />

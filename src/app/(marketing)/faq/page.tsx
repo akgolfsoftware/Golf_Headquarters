@@ -102,7 +102,7 @@ export default function FaqSide() {
               <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
                 {kat.kategori}
               </h2>
-              <div className="mt-4 space-y-3">
+              <div className="mt-4 space-y-4">
                 {kat.punkter.map((p) => (
                   <details
                     key={p.q}
@@ -131,20 +131,20 @@ export default function FaqSide() {
           <h2 className="font-display text-3xl font-semibold tracking-tight">
             Fant du ikke svar?
           </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="mt-4 text-muted-foreground">
             Skriv til oss — vi svarer som regel samme dag.
           </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a
               href="mailto:post@akgolf.no"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Mail className="h-4 w-4" aria-hidden="true" />
               post@akgolf.no
             </a>
             <Link
               href="/kontakt"
-              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
+              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
             >
               Kontaktskjema
             </Link>

@@ -59,7 +59,7 @@ export default async function SamtykkePage() {
         sub="Du kan endre samtykker når som helst. Endringer logges i revisjonsloggen."
       />
 
-      <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4">
+      <div className="flex items-start gap-4 rounded-lg border border-primary/30 bg-primary/5 p-4">
         <Shield className="h-5 w-5 flex-shrink-0 text-primary" strokeWidth={1.75} />
         <div className="text-sm">
           <p className="font-semibold text-foreground">
@@ -86,7 +86,7 @@ export default async function SamtykkePage() {
               key={r.id}
               className="rounded-lg border border-border bg-card"
             >
-              <header className="border-b border-border px-5 py-3">
+              <header className="border-b border-border px-6 py-4">
                 <h2 className="font-display text-base font-semibold tracking-tight">
                   {r.child.name}
                 </h2>
@@ -110,7 +110,7 @@ export default async function SamtykkePage() {
         <h3 className="mb-2 font-display text-base font-semibold tracking-tight text-foreground">
           Slik håndterer vi data
         </h3>
-        <ul className="space-y-2 list-disc pl-5">
+        <ul className="space-y-2 list-disc pl-6">
           <li>
             Data lagres innenfor EU/EØS via Supabase (Frankfurt-region).
           </li>

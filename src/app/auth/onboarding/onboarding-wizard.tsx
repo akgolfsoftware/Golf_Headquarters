@@ -65,7 +65,7 @@ export function OnboardingWizard() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+      <div className="mb-6 flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
         <span>
           Steg {step} av {TOTAL_STEPS}
         </span>
@@ -145,7 +145,7 @@ export function OnboardingWizard() {
               onChange={(e) => setAmbition(e.target.value.slice(0, 280))}
               rows={3}
               placeholder="f.eks. ned til single-HCP innen sommeren 2027"
-              className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
+              className="w-full rounded-md border border-input bg-card px-4 py-4 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
             />
             <div className="mt-1 text-right font-mono text-[10px] text-muted-foreground">
               {ambition.length} / 280
@@ -177,19 +177,19 @@ export function OnboardingWizard() {
       {error && (
         <div
           role="alert"
-          className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-4 text-sm text-destructive"
         >
           {error}
         </div>
       )}
 
-      <div className="mt-8 flex gap-3">
+      <div className="mt-8 flex gap-4">
         {step > 1 && (
           <button
             type="button"
             onClick={tilbake}
             disabled={pending}
-            className="rounded-md border border-input bg-card px-5 py-3 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-60"
+            className="rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-60"
           >
             Tilbake
           </button>
@@ -198,7 +198,7 @@ export function OnboardingWizard() {
           type="button"
           onClick={neste}
           disabled={pending}
-          className="flex-1 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="flex-1 rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {pending
             ? "Lagrer…"
@@ -279,7 +279,7 @@ function Felt({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
+        className="w-full rounded-md border border-input bg-card px-4 py-4 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
       />
     </div>
   );

@@ -275,7 +275,7 @@ export default async function TrenPlanPage() {
       ) : (
         <>
           {/* KPI-strip */}
-          <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <KpiCard
               label="Denne uka"
               value={String(okterDenneUka)}
@@ -323,7 +323,7 @@ export default async function TrenPlanPage() {
           {/* Aktiv plan */}
           {aktivPlan && (
             <section className="rounded-lg border border-border bg-card p-6">
-              <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     Aktiv plan
@@ -353,7 +353,7 @@ export default async function TrenPlanPage() {
           )}
 
           {/* Kommende økter */}
-          <section className="space-y-3">
+          <section className="space-y-4">
             <div className="flex items-baseline justify-between">
               <h2 className="font-display text-lg font-semibold tracking-tight">
                 Kommende økter
@@ -370,7 +370,7 @@ export default async function TrenPlanPage() {
                 </p>
                 <Link
                   href="/portal/ny-okt"
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90"
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90"
                 >
                   <Plus size={14} strokeWidth={1.75} />
                   Start ny økt
@@ -385,7 +385,7 @@ export default async function TrenPlanPage() {
                     <li key={s.id}>
                       <Link
                         href={`/portal/tren/${s.id}`}
-                        className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:bg-secondary/50"
+                        className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-lg border border-border bg-card px-4 py-4 transition-colors hover:bg-secondary/50"
                       >
                         <div className="flex w-14 flex-col items-center rounded-md bg-secondary/60 px-2 py-2 text-center">
                           <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -435,7 +435,7 @@ export default async function TrenPlanPage() {
 
           {/* Siste fullførte */}
           {fullforte.length > 0 && (
-            <section className="space-y-3">
+            <section className="space-y-4">
               <div className="flex items-baseline justify-between">
                 <h2 className="font-display text-lg font-semibold tracking-tight">
                   Siste fullførte
@@ -453,7 +453,7 @@ export default async function TrenPlanPage() {
                     <li key={s.id}>
                       <Link
                         href={`/portal/tren/${s.id}`}
-                        className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:bg-secondary/50"
+                        className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-lg border border-border bg-card px-4 py-4 transition-colors hover:bg-secondary/50"
                       >
                         <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 text-primary">
                           <CheckCircle2 size={18} strokeWidth={1.75} />
@@ -496,7 +496,7 @@ export default async function TrenPlanPage() {
 
           {/* Footer-status hvis ingen aktiv plan, men det finnes økter */}
           {!aktivPlan && (
-            <div className="rounded-lg border border-dashed border-border bg-card/40 px-5 py-4 text-sm text-muted-foreground">
+            <div className="rounded-lg border border-dashed border-border bg-card/40 px-6 py-4 text-sm text-muted-foreground">
               Du har ingen aktiv treningsplan. Opprett en økt via{" "}
               <Link
                 href="/portal/ny-okt"

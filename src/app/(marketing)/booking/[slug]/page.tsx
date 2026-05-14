@@ -74,7 +74,7 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
             {service.name}
           </h1>
           {service.description && (
-            <p className="mt-3 text-base text-muted-foreground">
+            <p className="mt-4 text-base text-muted-foreground">
               {service.description}
             </p>
           )}
@@ -102,7 +102,7 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
           <h2 className="font-display text-lg font-semibold tracking-tight">
             Velg dag
           </h2>
-          <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
+          <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
             {dager.map((d) => {
               const isoDate = toDateInput(d);
               const erValgt = isoDate === toDateInput(valgtDato);
@@ -115,7 +115,7 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
                 <Link
                   key={isoDate}
                   href={`/booking/${slug}?dato=${isoDate}`}
-                  className={`flex flex-col rounded-lg border px-4 py-3 text-center text-sm transition-colors ${
+                  className={`flex flex-col rounded-lg border px-4 py-4 text-center text-sm transition-colors ${
                     erValgt
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border bg-card hover:border-primary/40"

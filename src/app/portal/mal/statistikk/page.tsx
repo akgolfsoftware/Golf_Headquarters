@@ -66,7 +66,7 @@ export default async function StatistikkPage({
             <Link
               key={p.key}
               href={`/portal/mal/statistikk?periode=${p.key}`}
-              className={`rounded-sm px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.10em] transition-colors ${
+              className={`rounded-sm px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.10em] transition-colors ${
                 aktiv
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -96,7 +96,7 @@ export default async function StatistikkPage({
       ) : (
         <>
           {/* SG-kort */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
             <SgKort label="SG Total" naa={sg.total} forrige={sgForrige.total} primary />
             <SgKort label="OTT" naa={sg.ott} forrige={sgForrige.ott} />
             <SgKort label="APP" naa={sg.app} forrige={sgForrige.app} />
@@ -120,7 +120,7 @@ export default async function StatistikkPage({
 
           {/* Runde-tabell */}
           <section className="rounded-lg border border-border bg-card">
-            <header className="border-b border-border px-5 py-3">
+            <header className="border-b border-border px-6 py-4">
               <h2 className="font-display text-base font-semibold tracking-tight">
                 Alle runder
               </h2>
@@ -162,7 +162,7 @@ export default async function StatistikkPage({
             </div>
 
             {/* Mobil: kort */}
-            <div className="space-y-3 p-4 sm:hidden">
+            <div className="space-y-4 p-4 sm:hidden">
               {denne.slice(0, 20).map((r) => (
                 <div
                   key={r.id}
@@ -187,7 +187,7 @@ export default async function StatistikkPage({
               ))}
             </div>
             {denne.length > 20 && (
-              <div className="border-t border-border px-5 py-3 text-center">
+              <div className="border-t border-border px-6 py-4 text-center">
                 <Link
                   href="/portal/mal/runder"
                   className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"

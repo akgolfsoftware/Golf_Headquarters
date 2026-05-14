@@ -251,7 +251,7 @@ export default async function CoachPlanDetalj({
 
       {/* Insight-banner */}
       {total > 0 && gjennomforing >= 50 && (
-        <div className="flex items-center gap-3 rounded-md border border-accent/50 bg-accent/15 px-5 py-4">
+        <div className="flex items-center gap-4 rounded-md border border-accent/50 bg-accent/15 px-6 py-4">
           <TrendingUp
             size={18}
             strokeWidth={1.5}
@@ -306,7 +306,7 @@ export default async function CoachPlanDetalj({
                 />
               ))}
             </div>
-            <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 text-center font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 text-center font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
               {FASER.map((f, i) => (
                 <span
                   key={f.key}
@@ -320,7 +320,7 @@ export default async function CoachPlanDetalj({
             </div>
           </div>
 
-          <div className="mt-5 flex items-center justify-between rounded-md bg-secondary/60 px-4 py-3">
+          <div className="mt-6 flex items-center justify-between rounded-md bg-secondary/60 px-4 py-4">
             <span className="text-[12px] text-muted-foreground">Fremdrift</span>
             <span className="font-mono text-[14px] font-semibold tabular-nums">
               {Math.round(faseAndelPct)} %
@@ -332,11 +332,11 @@ export default async function CoachPlanDetalj({
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Pyramide-fordeling
             </div>
-            <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
               {PYR_REKKEFOLGE.map((omr) => (
                 <div
                   key={omr}
-                  className="rounded-md border border-border bg-secondary/40 p-3 text-center"
+                  className="rounded-md border border-border bg-secondary/40 p-4 text-center"
                 >
                   <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                     {PYR_LABEL[omr]}
@@ -353,7 +353,7 @@ export default async function CoachPlanDetalj({
         {/* Coach-quote */}
         <section className="col-span-12 rounded-lg border border-border bg-card p-6 lg:col-span-4">
           <Quote size={20} strokeWidth={1.5} className="text-accent" />
-          <p className="mt-3 font-display text-[18px] italic leading-snug text-foreground">
+          <p className="mt-4 font-display text-[18px] italic leading-snug text-foreground">
             {sisteCoachMelding?.content
               ? `«${sisteCoachMelding.content}»`
               : `«${coachNavn.split(" ")[0]} har lagt opp denne planen for deg. Følg fasene — det er der utviklingen ligger.»`}
@@ -406,7 +406,7 @@ export default async function CoachPlanDetalj({
               {kommende.map((s, i) => (
                 <li
                   key={s.id}
-                  className="grid grid-cols-[120px_1fr_auto_auto] items-center gap-4 px-4 py-3 transition-colors hover:bg-secondary/60"
+                  className="grid grid-cols-[120px_1fr_auto_auto] items-center gap-4 px-4 py-4 transition-colors hover:bg-secondary/60"
                 >
                   <span
                     className={`font-mono text-[11px] uppercase tracking-[0.08em] ${
@@ -459,7 +459,7 @@ export default async function CoachPlanDetalj({
               sub="Sett mål for handicap, scoring-snitt eller SG-områder, så følger vi dem opp i planen."
             />
           ) : (
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {maal.slice(0, 6).map((m) => (
                 <Goal
                   key={m.id}
@@ -517,7 +517,7 @@ function StatPill({
   };
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] ${styles[tone]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1 text-[12px] ${styles[tone]}`}
     >
       <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
         {label}

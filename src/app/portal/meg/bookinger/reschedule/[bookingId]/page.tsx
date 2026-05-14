@@ -83,7 +83,7 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
         <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           1. Velg ny dato
         </h2>
-        <div className="mt-3">
+        <div className="mt-4">
           <RescheduleDatoVelger
             valgtDato={valgtDato}
             bookingId={booking.id}
@@ -96,7 +96,7 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
         <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           2. Velg tid
         </h2>
-        <div className="mt-3">
+        <div className="mt-4">
           {slots.length === 0 ? (
             <div className="rounded-md border border-border bg-card p-6 text-center text-sm text-muted-foreground">
               Ingen ledige tider på valgt dato. Prøv en annen dag.

@@ -102,10 +102,10 @@ export default async function CoachProfilSide({
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
               Coach
             </span>
-            <h1 className="mt-3 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+            <h1 className="mt-4 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
               {c.navn}
             </h1>
-            <p className="mt-3 flex items-center gap-2 text-base text-muted-foreground">
+            <p className="mt-4 flex items-center gap-2 text-base text-muted-foreground">
               <GraduationCap className="h-5 w-5" aria-hidden="true" />
               {c.tittel}
             </p>
@@ -129,13 +129,13 @@ export default async function CoachProfilSide({
       <section className="px-6 py-8">
         <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2">
           <div className="rounded-2xl border border-border bg-card p-8">
-            <h2 className="flex items-center gap-3 font-display text-xl font-semibold tracking-tight">
+            <h2 className="flex items-center gap-4 font-display text-xl font-semibold tracking-tight">
               <Trophy className="h-5 w-5 text-primary" aria-hidden="true" />
               Erfaring
             </h2>
-            <ul className="mt-6 space-y-3 text-sm text-foreground">
+            <ul className="mt-6 space-y-4 text-sm text-foreground">
               {c.erfaring.map((e) => (
-                <li key={e} className="flex gap-3">
+                <li key={e} className="flex gap-4">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                   {e}
                 </li>
@@ -144,16 +144,16 @@ export default async function CoachProfilSide({
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-8">
-            <h2 className="flex items-center gap-3 font-display text-xl font-semibold tracking-tight">
+            <h2 className="flex items-center gap-4 font-display text-xl font-semibold tracking-tight">
               <GraduationCap
                 className="h-5 w-5 text-primary"
                 aria-hidden="true"
               />
               Spesialiteter
             </h2>
-            <ul className="mt-6 space-y-3 text-sm text-foreground">
+            <ul className="mt-6 space-y-4 text-sm text-foreground">
               {c.spesialiteter.map((s) => (
-                <li key={s} className="flex gap-3">
+                <li key={s} className="flex gap-4">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                   {s}
                 </li>
@@ -168,20 +168,20 @@ export default async function CoachProfilSide({
           <h2 className="font-display text-3xl font-semibold tracking-tight">
             Book med {c.navn.split(" ")[0]}
           </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="mt-4 text-muted-foreground">
             Velg tid som passer deg — bekreftelse på e-post umiddelbart.
           </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/booking"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Book time
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
             <a
               href="mailto:post@akgolf.no"
-              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
+              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
             >
               <Mail className="h-4 w-4" aria-hidden="true" />
               Send melding

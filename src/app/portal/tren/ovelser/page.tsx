@@ -127,7 +127,7 @@ export default async function OvelserPage({
 
       {/* Insight-banner */}
       {harAktiveFiltre && (
-        <div className="flex items-center gap-3 rounded-md border border-accent/50 bg-accent/15 px-5 py-4">
+        <div className="flex items-center gap-4 rounded-md border border-accent/50 bg-accent/15 px-6 py-4">
           <TrendingUp size={18} strokeWidth={1.5} className="text-foreground" />
           <p className="text-[14px] text-foreground">
             Filtrerer på{" "}
@@ -155,7 +155,7 @@ export default async function OvelserPage({
             Filtrer
           </span>
         </div>
-        <div className="space-y-3">
+        <div className="space-y-4">
           <FilterRad
             label="Område"
             options={PYR_OMRADER}
@@ -186,7 +186,7 @@ export default async function OvelserPage({
             harAktiveFiltre ? (
               <Link
                 href="/portal/tren/ovelser"
-                className="inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
+                className="inline-flex items-center rounded-full bg-primary px-6 py-2.5 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
               >
                 Nullstill filtre
               </Link>
@@ -195,7 +195,7 @@ export default async function OvelserPage({
         />
       ) : (
         <div>
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               {exercises.length} øvelse{exercises.length === 1 ? "" : "r"}
             </span>
@@ -233,7 +233,7 @@ function StatPill({
   };
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] ${styles[tone]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1 text-[12px] ${styles[tone]}`}
     >
       <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
         {label}
@@ -265,7 +265,7 @@ function FilterRad({
           <Link
             key={o.value}
             href={bygglenke(o.value)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+            className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
               aktiv
                 ? "bg-primary text-primary-foreground"
                 : "border border-input bg-card text-foreground hover:border-border hover:bg-secondary"

@@ -1,6 +1,7 @@
 import { Mail, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/shared/page-header";
 import { TemplateForm } from "./template-form";
 
 export default async function EmailTemplatesAdmin() {
@@ -24,22 +25,12 @@ export default async function EmailTemplatesAdmin() {
 
   return (
     <div className="space-y-8">
-      <header>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          CoachHQ · Maler
-        </span>
-        <h1 className="mt-2 font-display text-[22px] sm:text-[28px] md:text-[36px] font-medium italic leading-[1.1] tracking-tight">
-          Maler.{" "}
-          <em className="italic text-primary">
-            {templates.length} e-post{templates.length === 1 ? "" : "er"} du
-            sender ofte.
-          </em>
-        </h1>
-        <p className="mt-2 max-w-[680px] text-[13px] text-muted-foreground">
-          Slug-baserte maler brukes av agent-pipeline for automatiske e-poster.
-          {aktive} aktiv{aktive === 1 ? "" : "e"} · {templates.length} totalt.
-        </p>
-      </header>
+      <PageHeader
+        eyebrow="CoachHQ · Maler"
+        titleLead="Maler."
+        titleItalic={`${templates.length} e-post${templates.length === 1 ? "" : "er"} du sender ofte.`}
+        sub={`Slug-baserte maler brukes av agent-pipeline for automatiske e-poster. ${aktive} aktiv${aktive === 1 ? "" : "e"} · ${templates.length} totalt.`}
+      />
 
       {templates.length === 0 ? (
         <div className="rounded-lg border border-border bg-card">

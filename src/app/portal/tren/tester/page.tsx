@@ -202,7 +202,7 @@ export default async function TesterPage() {
         <div className="overflow-hidden rounded-lg border border-border bg-card">
           {/* Tabell-header */}
           <div
-            className="hidden border-b border-border bg-muted/40 px-6 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid"
+            className="hidden border-b border-border bg-muted/40 px-6 py-4 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid"
             style={{
               gridTemplateColumns: "1.7fr 1fr 0.9fr 1fr 110px",
               gap: "14px",
@@ -262,7 +262,7 @@ export default async function TesterPage() {
                     <div className="font-mono text-xs text-muted-foreground tabular-nums">
                       {stats ? `${stats.antall} forsøk` : "Ingen forsøk"}
                     </div>
-                    <span className="inline-flex w-fit items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90">
+                    <span className="inline-flex w-fit items-center gap-1 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90">
                       Ta test →
                     </span>
                   </Link>

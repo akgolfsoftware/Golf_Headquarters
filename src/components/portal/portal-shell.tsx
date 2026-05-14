@@ -38,9 +38,9 @@ export async function PortalShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <header
           role="banner"
-          className="flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 sm:px-8 sm:py-4"
+          className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-4 sm:px-8 sm:py-4"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <div
               aria-label="PlayerHQ"
               className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
@@ -48,7 +48,7 @@ export async function PortalShell({
               PlayerHQ
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {(user.role === "ADMIN" || user.role === "COACH") && (
               <ViewModeToggle current="player" />
             )}

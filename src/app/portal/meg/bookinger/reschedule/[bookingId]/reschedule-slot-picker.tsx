@@ -53,7 +53,7 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
           <h3 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             {coachSlots[0].coachName}
           </h3>
-          <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+          <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
             {coachSlots.map((s) => {
               const aktiv = valgt?.start === s.start;
               const klokke = new Date(s.start).toLocaleTimeString("nb-NO", {
@@ -65,7 +65,7 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
                   key={s.start}
                   type="button"
                   onClick={() => setValgt(s)}
-                  className={`rounded-md border px-3 py-2 text-center font-mono text-sm tabular-nums transition-colors ${
+                  className={`rounded-md border px-4 py-2 text-center font-mono text-sm tabular-nums transition-colors ${
                     aktiv
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card text-foreground hover:border-primary"
@@ -85,7 +85,7 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-card p-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-md border border-border bg-card p-4">
         <p className="text-sm text-muted-foreground">
           {valgt
             ? `Valgt: ${new Date(valgt.start).toLocaleString("nb-NO", { dateStyle: "medium", timeStyle: "short" })} (${valgt.coachName})`

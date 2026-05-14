@@ -30,14 +30,14 @@ export function UpgradeButton({ disabled = false }: { disabled?: boolean }) {
         type="button"
         onClick={handleClick}
         disabled={loading || disabled}
-        className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         {loading ? "Åpner Stripe…" : "Oppgrader til Pro · 300 kr/mnd"}
       </button>
       {error && (
         <div
           role="alert"
-          className="mt-3 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
         >
           {error}
         </div>
@@ -73,14 +73,14 @@ export function CancelButton() {
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className="whitespace-nowrap rounded-md border border-destructive/30 px-3 py-2 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-60"
+        className="whitespace-nowrap rounded-md border border-destructive/30 px-4 py-2 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-60"
       >
         {loading ? "Åpner…" : "Kanseller →"}
       </button>
       {error && (
         <div
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-xs text-destructive"
         >
           {error}
         </div>
@@ -116,14 +116,14 @@ export function ManageButton() {
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className="rounded-md border border-input bg-card px-5 py-3 text-sm font-medium text-foreground hover:border-border disabled:opacity-60"
+        className="rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-border disabled:opacity-60"
       >
         {loading ? "Åpner…" : "Administrer abonnement"}
       </button>
       {error && (
         <div
           role="alert"
-          className="mt-3 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
         >
           {error}
         </div>

@@ -40,7 +40,7 @@ export function NotificationItem({
   const Icon = IKON_MAP[type] ?? Info;
   const inner = (
     <div
-      className={`flex items-start gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/40 ${
+      className={`flex items-start gap-4 rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/40 ${
         !readAt ? "border-primary/30 bg-primary/5" : ""
       }`}
     >

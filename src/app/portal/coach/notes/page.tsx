@@ -139,14 +139,14 @@ export default async function CoachNotes() {
           <div className="flex shrink-0 flex-col items-end gap-2">
             <Link
               href="/portal/coach/melding"
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2.5 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
             >
               <Play size={16} strokeWidth={1.5} />
               Svar coach
             </Link>
             <Link
               href="/portal/coach/melding?type=vurdering"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <Edit3 size={16} strokeWidth={1.5} />
               Be om vurdering
@@ -157,7 +157,7 @@ export default async function CoachNotes() {
 
       {/* Insight-banner */}
       {nyeIUken > 0 && (
-        <div className="flex items-center gap-3 rounded-md border border-accent/50 bg-accent/15 px-5 py-4">
+        <div className="flex items-center gap-4 rounded-md border border-accent/50 bg-accent/15 px-6 py-4">
           <TrendingUp size={18} strokeWidth={1.5} className="text-foreground" />
           <p className="text-[14px] text-foreground">
             Du har <b>{nyeIUken} nye notater</b> denne uka. Les og svar for å
@@ -180,13 +180,13 @@ export default async function CoachNotes() {
             </span>
           </div>
 
-          <ul className="space-y-3">
+          <ul className="space-y-4">
             {notater.map((n, i) => (
               <article
                 key={`${n.sesjonId}-${i}`}
                 className="rounded-lg border border-border bg-card p-6 transition-shadow hover:shadow-md"
               >
-                <header className="flex items-start gap-3">
+                <header className="flex items-start gap-4">
                   <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary font-mono text-xs font-semibold text-primary-foreground">
                     {n.coachInitial}
                   </div>
@@ -220,7 +220,7 @@ export default async function CoachNotes() {
         <section className="col-span-12 lg:col-span-4">
           <div className="sticky top-6 rounded-lg border border-border bg-card p-6">
             <Quote size={20} strokeWidth={1.5} className="text-accent" />
-            <p className="mt-3 font-display text-[18px] italic leading-snug text-foreground">
+            <p className="mt-4 font-display text-[18px] italic leading-snug text-foreground">
               «{truncate(sisteNotat.content, 180)}»
             </p>
             <div className="mt-4 flex items-center gap-2">
@@ -265,7 +265,7 @@ function StatPill({
   };
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] ${styles[tone]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1 text-[12px] ${styles[tone]}`}
     >
       <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
         {label}

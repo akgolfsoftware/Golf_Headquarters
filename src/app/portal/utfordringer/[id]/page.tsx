@@ -91,7 +91,7 @@ export default async function UtfordringDetalj({
               <form action={bliMedAction}>
                 <button
                   type="submit"
-                  className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   Bli med
                 </button>
@@ -112,7 +112,7 @@ export default async function UtfordringDetalj({
       />
 
       {utfordring.description && (
-        <section className="rounded-lg border border-border bg-card p-5">
+        <section className="rounded-lg border border-border bg-card p-6">
           <p className="text-sm text-foreground">{utfordring.description}</p>
         </section>
       )}

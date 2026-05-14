@@ -10,19 +10,19 @@ const TYPE_LABEL: Record<string, string> = {
 
 export function GoalsCard({ goals }: { goals: Goal[] }) {
   return (
-    <section className="rounded-lg border border-border bg-card p-5">
+    <section className="rounded-lg border border-border bg-card p-6">
       <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         Mine mål
       </span>
 
       {goals.length === 0 ? (
-        <p className="mt-3 text-sm text-muted-foreground">
+        <p className="mt-4 text-sm text-muted-foreground">
           Ingen aktive mål. Sett ett, så kan agentene følge med på fremgangen din.
         </p>
       ) : (
-        <ul className="mt-3 divide-y divide-border">
+        <ul className="mt-4 divide-y divide-border">
           {goals.map((g) => (
-            <li key={g.id} className="py-3">
+            <li key={g.id} className="py-4">
               <Link
                 href={`/portal/mal/goal/${g.id}`}
                 className="block hover:text-primary active:text-primary/80 focus-visible:underline focus-visible:outline-none"

@@ -81,7 +81,7 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
           <select
             value={coachId}
             onChange={(e) => setCoachId(e.target.value)}
-            className="w-full rounded-xl border border-input bg-card px-4 py-3 text-[14px] font-semibold text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            className="w-full rounded-xl border border-input bg-card px-4 py-4 text-[14px] font-semibold text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
           >
             {coacher.map((c) => (
               <option key={c.id} value={c.id}>
@@ -91,7 +91,7 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
           </select>
         </label>
       ) : valgtCoach ? (
-        <div className="mb-4 flex items-center gap-3 rounded-xl border border-border bg-card p-3">
+        <div className="mb-4 flex items-center gap-4 rounded-xl border border-border bg-card p-4">
           <div className="grid h-10 w-10 place-items-center rounded-full bg-primary text-[13px] font-semibold text-primary-foreground">
             {valgtInitialer}
           </div>
@@ -115,7 +115,7 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
         <input
           value={emne}
           onChange={(e) => setEmne(e.target.value.slice(0, 120))}
-          className="w-full rounded-md border border-input bg-card px-4 py-3 text-[15px] font-semibold text-foreground outline-none focus:ring-2 focus:ring-ring"
+          className="w-full rounded-md border border-input bg-card px-4 py-4 text-[15px] font-semibold text-foreground outline-none focus:ring-2 focus:ring-ring"
           placeholder="Emne (valgfritt)"
         />
         <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -125,7 +125,7 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
 
       {/* Toolbar + textarea */}
       <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <div className="flex items-center gap-0.5 border-b border-border bg-secondary px-3 py-2">
+        <div className="flex items-center gap-0.5 border-b border-border bg-secondary px-4 py-2">
           <ToolbarKnapp label="Fet">
             <Bold className="h-4 w-4" />
           </ToolbarKnapp>
@@ -161,7 +161,7 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
           onChange={(e) => setContent(e.target.value.slice(0, 2000))}
           rows={10}
           placeholder="Skriv direkte til coachen din…"
-          className="min-h-[220px] w-full resize-none bg-card px-5 py-4 text-[14.5px] leading-[1.6] text-foreground outline-none placeholder:text-muted-foreground"
+          className="min-h-[220px] w-full resize-none bg-card px-6 py-4 text-[14.5px] leading-[1.6] text-foreground outline-none placeholder:text-muted-foreground"
         />
       </div>
       <div className="mt-2 text-right font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -178,7 +178,7 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
       )}
 
       {/* Footer */}
-      <div className="mt-6 flex items-center justify-between border-t border-border pt-5">
+      <div className="mt-6 flex items-center justify-between border-t border-border pt-6">
         <button
           type="button"
           onClick={() => {

@@ -71,7 +71,7 @@ export function Setup2FA() {
 
   if (!enroll) {
     return (
-      <div className="space-y-3 rounded-lg border border-border bg-card p-6">
+      <div className="space-y-4 rounded-lg border border-border bg-card p-6">
         <p className="text-sm text-muted-foreground">
           Beskytt kontoen din med tofaktor-autentisering. Du trenger en TOTP-app
           (Google Authenticator, 1Password, Authy).
@@ -80,7 +80,7 @@ export function Setup2FA() {
           type="button"
           onClick={start}
           disabled={pending}
-          className="rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+          className="rounded-md bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-60"
         >
           {pending ? "Starter…" : "Aktiver 2FA"}
         </button>
@@ -101,7 +101,7 @@ export function Setup2FA() {
       <p className="text-sm text-muted-foreground">
         Skann QR-koden med autentiseringsappen din, eller skriv inn secret manuelt.
       </p>
-      <div className="flex flex-col items-center gap-3">
+      <div className="flex flex-col items-center gap-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={enroll.qrCode}
@@ -110,7 +110,7 @@ export function Setup2FA() {
           height={200}
           className="rounded-md border border-border"
         />
-        <code className="break-all rounded-md bg-muted px-3 py-2 font-mono text-xs text-muted-foreground">
+        <code className="break-all rounded-md bg-muted px-4 py-2 font-mono text-xs text-muted-foreground">
           {enroll.secret}
         </code>
       </div>
@@ -126,7 +126,7 @@ export function Setup2FA() {
           maxLength={6}
           value={code}
           onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))}
-          className="w-full rounded-md border border-input bg-card px-4 py-3 text-center text-lg font-mono tabular-nums tracking-widest outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-4 text-center text-lg font-mono tabular-nums tracking-widest outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
           placeholder="000000"
         />
       </label>
@@ -144,7 +144,7 @@ export function Setup2FA() {
         type="button"
         onClick={verify}
         disabled={pending || code.length !== 6}
-        className="w-full rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="w-full rounded-md bg-primary px-4 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         {pending ? "Bekrefter…" : "Bekreft og aktiver"}
       </button>

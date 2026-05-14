@@ -85,10 +85,10 @@ export default async function MineBookinger({ searchParams }: Props) {
         <>
           {kommende.length > 0 && (
             <section>
-              <h2 className="mb-3 font-display text-lg font-semibold tracking-tight">
+              <h2 className="mb-4 font-display text-lg font-semibold tracking-tight">
                 Kommende ({kommende.length})
               </h2>
-              <ul className="space-y-3">
+              <ul className="space-y-4">
                 {kommende.map((b) => (
                   <BookingRad key={b.id} booking={b} kommende />
                 ))}
@@ -98,10 +98,10 @@ export default async function MineBookinger({ searchParams }: Props) {
 
           {tidligere.length > 0 && (
             <section>
-              <h2 className="mb-3 font-display text-lg font-semibold tracking-tight">
+              <h2 className="mb-4 font-display text-lg font-semibold tracking-tight">
                 Tidligere ({tidligere.length})
               </h2>
-              <ul className="space-y-3">
+              <ul className="space-y-4">
                 {tidligere.slice(0, 20).map((b) => (
                   <BookingRad key={b.id} booking={b} />
                 ))}
@@ -136,8 +136,8 @@ function BookingRad({
   const kanAvbestille = booking.status !== "CANCELLED" && tidTilStart > 0;
 
   return (
-    <li className="rounded-lg border border-border bg-card p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <li className="rounded-lg border border-border bg-card p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h3 className="font-display text-base font-semibold text-foreground">
             {booking.serviceType.name}
@@ -175,11 +175,11 @@ function BookingRad({
       </div>
 
       {kommende && kanAvbestille && (
-        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border/50 pt-3">
+        <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-border/50 pt-4">
           {kanRefunderes && (
             <Link
               href={`/portal/meg/bookinger/reschedule/${booking.id}`}
-              className="rounded-md border border-input bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:border-primary hover:text-primary"
+              className="rounded-md border border-input bg-background px-4 py-1.5 text-xs font-medium text-foreground hover:border-primary hover:text-primary"
             >
               Bytt tid
             </Link>

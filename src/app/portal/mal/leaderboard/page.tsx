@@ -292,7 +292,7 @@ function Filters() {
       <Chip active>Snitt SG</Chip>
       <Chip>Runder</Chip>
       <div className="h-4 w-px bg-border" />
-      <div className="inline-flex max-w-[200px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-3 py-2">
+      <div className="inline-flex max-w-[200px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-4 py-2">
         <Search className="h-4 w-4 text-muted-foreground" />
         <input
           placeholder="Søk spiller …"
@@ -315,7 +315,7 @@ function Chip({
       type="button"
       disabled={!active}
       title={active ? undefined : "Kommer i v2"}
-      className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+      className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
         active
           ? "bg-primary text-primary-foreground"
           : "border border-border bg-card text-muted-foreground opacity-60"
@@ -374,7 +374,7 @@ function RowEl({ r }: { r: Rad }) {
           <Trophy className={`h-5 w-5 ${medalColor}`} strokeWidth={1.5} />
         )}
       </div>
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 items-center gap-4">
         <div
           className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-full font-display text-sm font-semibold text-card"
           style={{ background: r.avatarBg }}
@@ -462,7 +462,7 @@ function Pagination({ total, vist }: { total: number; vist: number }) {
           type="button"
           disabled
           title="Kommer i v2"
-          className="rounded-md px-3 py-2 text-xs font-medium opacity-50"
+          className="rounded-md px-4 py-2 text-xs font-medium opacity-50"
         >
           ← Forrige
         </button>
@@ -470,7 +470,7 @@ function Pagination({ total, vist }: { total: number; vist: number }) {
           type="button"
           disabled
           title="Kommer i v2"
-          className="rounded-md border border-border bg-card px-3 py-2 text-xs font-medium opacity-50"
+          className="rounded-md border border-border bg-card px-4 py-2 text-xs font-medium opacity-50"
         >
           Vis flere →
         </button>

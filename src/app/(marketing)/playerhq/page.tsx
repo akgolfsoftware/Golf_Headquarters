@@ -69,7 +69,7 @@ export default function PlayerHQ() {
               <em className="font-normal text-primary md:italic">Din</em>{" "}
               spillerportal
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground">
+            <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground">
               Treningsplaner, statistikk, runde-registrering og AI-coach — alt
               samlet i én app. Bygget av AK Golf Academy for å støtte coaching
               mellom øktene.
@@ -84,7 +84,7 @@ export default function PlayerHQ() {
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               Funksjoner
             </span>
-            <h2 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+            <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
               <em className="font-normal text-primary md:italic">Hva</em> får du
             </h2>
           </div>
@@ -98,7 +98,7 @@ export default function PlayerHQ() {
                 <span className="rounded-full bg-primary/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
                   {f.label}
                 </span>
-                <h3 className="mt-3 font-display text-xl font-semibold leading-tight">
+                <h3 className="mt-4 font-display text-xl font-semibold leading-tight">
                   {f.tittel}
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground">{f.tekst}</p>
@@ -114,7 +114,7 @@ export default function PlayerHQ() {
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               Pris
             </span>
-            <h2 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+            <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
               Hvordan{" "}
               <em className="font-normal text-primary md:italic">prises</em>{" "}
               PlayerHQ?
@@ -180,16 +180,16 @@ export default function PlayerHQ() {
             Bli Academy-kunde for full coaching-pakke, eller signe opp gratis
             for kun PlayerHQ.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/coaching"
-              className="rounded-md bg-primary px-6 py-3 text-base font-semibold text-primary-foreground"
+              className="rounded-md bg-primary px-6 py-4 text-base font-semibold text-primary-foreground"
             >
               Bli Academy-kunde
             </Link>
             <Link
               href="/auth/signup"
-              className="rounded-md border border-input bg-card px-6 py-3 text-base font-medium text-foreground hover:border-border"
+              className="rounded-md border border-input bg-card px-6 py-4 text-base font-medium text-foreground hover:border-border"
             >
               Prøv PlayerHQ gratis →
             </Link>

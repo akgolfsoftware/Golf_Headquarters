@@ -58,7 +58,7 @@ export default async function SikkerhetPage() {
       <Section title="Aktive økter" v2 aux="Kommer i v2">
         <div
           aria-disabled="true"
-          className="flex cursor-not-allowed items-center gap-3 px-6 py-5 opacity-50"
+          className="flex cursor-not-allowed items-center gap-4 px-6 py-6 opacity-50"
         >
           <div className="grid h-9 w-9 place-items-center rounded-md bg-secondary text-muted-foreground">
             <Monitor className="h-4 w-4" strokeWidth={1.5} />
@@ -82,7 +82,7 @@ export default async function SikkerhetPage() {
       <Section title="Innloggings-historikk" v2 aux="Siste 7 dager">
         <div
           aria-disabled="true"
-          className="flex cursor-not-allowed items-center gap-3 px-6 py-5 opacity-50"
+          className="flex cursor-not-allowed items-center gap-4 px-6 py-6 opacity-50"
         >
           <ShieldCheck
             className="h-4 w-4 text-muted-foreground"
@@ -110,7 +110,7 @@ function Section({
 }) {
   return (
     <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-      <header className="flex items-baseline justify-between gap-3 border-b border-border px-6 py-4">
+      <header className="flex items-baseline justify-between gap-4 border-b border-border px-6 py-4">
         <div className="flex items-center gap-2">
           <h2 className="font-display text-base font-semibold text-foreground">
             {title}
@@ -144,7 +144,7 @@ function MiniStat({
   sub: string;
 }) {
   return (
-    <div className="rounded-md border border-border bg-secondary/40 p-5">
+    <div className="rounded-md border border-border bg-secondary/40 p-6">
       <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </div>

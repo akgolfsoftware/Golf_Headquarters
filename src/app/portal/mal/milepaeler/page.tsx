@@ -98,19 +98,19 @@ export default async function MilepaelerPage() {
 
       {/* Aktive mål */}
       <section className="rounded-lg border border-border bg-card">
-        <header className="flex items-center justify-between border-b border-border px-5 py-3">
+        <header className="flex items-center justify-between border-b border-border px-6 py-4">
           <h2 className="font-display text-base font-semibold tracking-tight">
             Aktive mål ({aktiveMål.length})
           </h2>
         </header>
         {aktiveMål.length === 0 ? (
-          <div className="px-5 py-8 text-center text-sm text-muted-foreground">
+          <div className="px-6 py-8 text-center text-sm text-muted-foreground">
             Ingen aktive mål — sett deg et nytt under «Mål → Nytt mål».
           </div>
         ) : (
           <ul className="divide-y divide-border">
             {aktiveMål.map((g) => (
-              <li key={g.id} className="flex items-start gap-3 px-5 py-3">
+              <li key={g.id} className="flex items-start gap-4 px-6 py-4">
                 <span className="mt-0.5 inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
                   <Target className="h-3.5 w-3.5" strokeWidth={1.75} />
                 </span>
@@ -153,14 +153,14 @@ export default async function MilepaelerPage() {
       {/* Oppnådde mål */}
       {oppnådde.length > 0 && (
         <section className="rounded-lg border border-border bg-card">
-          <header className="border-b border-border px-5 py-3">
+          <header className="border-b border-border px-6 py-4">
             <h2 className="font-display text-base font-semibold tracking-tight">
               Oppnådde mål ({oppnådde.length})
             </h2>
           </header>
           <ul className="divide-y divide-border">
             {oppnådde.map((g) => (
-              <li key={g.id} className="flex items-center gap-3 px-5 py-3">
+              <li key={g.id} className="flex items-center gap-4 px-6 py-4">
                 <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-primary" strokeWidth={1.75} />
                 <span className="flex-1 text-sm">{g.title}</span>
                 <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -178,7 +178,7 @@ export default async function MilepaelerPage() {
 
       {/* Achievements */}
       <section className="rounded-lg border border-border bg-card">
-        <header className="border-b border-border px-5 py-3">
+        <header className="border-b border-border px-6 py-4">
           <h2 className="font-display text-base font-semibold tracking-tight">
             Achievements ({achievements.length})
           </h2>
@@ -191,7 +191,7 @@ export default async function MilepaelerPage() {
             sub="Registrer din første runde, test eller fullfør en streak for å låse opp."
           />
         ) : (
-          <ul className="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3">
             {achievements.map((a) => {
               const def = ACHIEVEMENT_LABELS[a.kind] ?? {
                 tittel: a.kind,
@@ -201,7 +201,7 @@ export default async function MilepaelerPage() {
               return (
                 <li
                   key={a.id}
-                  className="flex items-start gap-3 rounded-md border border-border bg-background p-3"
+                  className="flex items-start gap-4 rounded-md border border-border bg-background p-4"
                 >
                   <span className="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-accent/30 text-accent-foreground">
                     <Ikon className="h-4 w-4" strokeWidth={1.75} />
@@ -249,7 +249,7 @@ function KpiKort({
   sub?: string;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="flex items-center gap-2">
         <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-primary">
           <Ikon className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -258,7 +258,7 @@ function KpiKort({
           {label}
         </span>
       </div>
-      <div className="mt-3 font-display text-3xl font-semibold tabular-nums">
+      <div className="mt-4 font-display text-3xl font-semibold tabular-nums">
         {verdi}
       </div>
       {sub && (

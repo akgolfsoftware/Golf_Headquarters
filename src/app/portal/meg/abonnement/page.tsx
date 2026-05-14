@@ -85,12 +85,12 @@ export default async function AbonnementPage({
       />
 
       {params.ok === "1" && (
-        <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground">
+        <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-4 text-sm text-foreground">
           Velkommen til Pro. Endringen kan ta noen sekunder før den synes overalt.
         </div>
       )}
       {params.cancelled === "1" && (
-        <div className="rounded-md border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
+        <div className="rounded-md border border-border bg-muted px-4 py-4 text-sm text-muted-foreground">
           Oppgraderingen ble avbrutt. Du står fortsatt på {faktiskTier}.
         </div>
       )}
@@ -295,16 +295,16 @@ export default async function AbonnementPage({
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="px-6 py-3 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                  <th className="px-6 py-4 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                     Dato
                   </th>
-                  <th className="px-6 py-3 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                  <th className="px-6 py-4 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                     Type
                   </th>
-                  <th className="px-6 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                  <th className="px-6 py-4 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                     Beløp
                   </th>
-                  <th className="px-6 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                  <th className="px-6 py-4 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                     Kvittering
                   </th>
                 </tr>
@@ -312,10 +312,10 @@ export default async function AbonnementPage({
               <tbody className="text-sm">
                 {fakturaer.map((f) => (
                   <tr key={f.id} className="border-b border-border/60 last:border-b-0">
-                    <td className="px-6 py-3 font-mono text-xs tabular-nums text-foreground">
+                    <td className="px-6 py-4 font-mono text-xs tabular-nums text-foreground">
                       {formatDato(f.paidAt) ?? "—"}
                     </td>
-                    <td className="px-6 py-3 text-foreground">
+                    <td className="px-6 py-4 text-foreground">
                       {fakturaTypeLabel(f.type)}
                       {f.description && (
                         <span className="mt-0.5 block text-[11px] text-muted-foreground">
@@ -323,10 +323,10 @@ export default async function AbonnementPage({
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-3 text-right font-mono text-sm tabular-nums text-foreground">
+                    <td className="px-6 py-4 text-right font-mono text-sm tabular-nums text-foreground">
                       {NOK.format(f.amountOre / 100)} kr
                     </td>
-                    <td className="px-6 py-3 text-right">
+                    <td className="px-6 py-4 text-right">
                       {f.stripeInvoiceId ? (
                         <a
                           href={`https://invoice.stripe.com/i/${f.stripeInvoiceId}`}
@@ -443,7 +443,7 @@ function PlanKort({
       <div className="mt-1 font-mono text-sm tabular-nums text-muted-foreground">
         {pris}
       </div>
-      <div className="mt-3 space-y-2">
+      <div className="mt-4 space-y-2">
         {features.map((f) => (
           <Feature key={f}>{f}</Feature>
         ))}
@@ -467,7 +467,7 @@ function ColHead({
 }) {
   return (
     <div
-      className={`flex flex-col items-center gap-2 rounded-md px-3 py-3 ${
+      className={`flex flex-col items-center gap-2 rounded-md px-4 py-4 ${
         current ? "border-b-2 border-primary bg-primary/10" : "border-b border-border bg-card"
       }`}
     >
@@ -544,7 +544,7 @@ function DangerRow({
   action: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-start justify-between gap-3 border-t border-destructive/20 py-4 first:border-t-0 first:pt-0 sm:flex-row sm:items-center sm:gap-6">
+    <div className="flex flex-col items-start justify-between gap-4 border-t border-destructive/20 py-4 first:border-t-0 first:pt-0 sm:flex-row sm:items-center sm:gap-6">
       <div className="flex min-w-0 flex-col">
         <span className="text-sm font-medium text-foreground">{title}</span>
         <span className="text-xs text-muted-foreground">{desc}</span>

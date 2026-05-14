@@ -60,7 +60,7 @@ export default function Treningsfilosofi() {
             <em className="font-normal text-primary md:italic">Trening</em> som er
             balansert, målbar og din egen.
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground">
+          <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground">
             Vi tror ikke på trening-flavor-of-the-week. Hver spiller får en plan
             basert på tre prinsipper: balansert pyramide, data-drevet retning,
             og individualisering på alvor.
@@ -83,7 +83,7 @@ export default function Treningsfilosofi() {
           <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             Prinsipp 1
           </span>
-          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight">
+          <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight">
             Pyramide-systemet
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
@@ -91,11 +91,11 @@ export default function Treningsfilosofi() {
             for at tiden din fordeles riktig.
           </p>
 
-          <div className="mt-8 space-y-3">
+          <div className="mt-8 space-y-4">
             {PYRAMIDE.map((p) => (
               <article
                 key={p.kort}
-                className="flex items-start gap-4 rounded-md border border-border bg-card p-5"
+                className="flex items-start gap-4 rounded-md border border-border bg-card p-6"
               >
                 <span className="mt-1 inline-flex h-10 w-12 flex-shrink-0 items-center justify-center rounded-md bg-primary/10 font-mono text-[11px] uppercase tracking-[0.10em] text-primary">
                   {p.kort}
@@ -115,7 +115,7 @@ export default function Treningsfilosofi() {
           <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             Prinsipp 2
           </span>
-          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight">
+          <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight">
             Data forteller hvor du skal trene
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
@@ -163,7 +163,7 @@ export default function Treningsfilosofi() {
           <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             Prinsipp 3
           </span>
-          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight">
+          <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight">
             Ingen plan er kopi av en annen
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
@@ -188,16 +188,16 @@ export default function Treningsfilosofi() {
             Book en intro-time, eller velg en av coaching-pakkene våre med
             månedlig oppfølging.
           </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/booking"
-              className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
+              className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground"
             >
               Book intro-time
             </Link>
             <Link
               href="/coaching"
-              className="rounded-md border border-input bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-border"
+              className="rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-border"
             >
               Se coaching-pakker →
             </Link>

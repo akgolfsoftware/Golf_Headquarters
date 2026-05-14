@@ -34,8 +34,8 @@ export function PlayerVideoCard({
   }
 
   return (
-    <li className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4">
-      <div className="flex items-start gap-3">
+    <li className="flex flex-col gap-4 rounded-lg border border-border bg-card p-4">
+      <div className="flex items-start gap-4">
         <span className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
           <Video className="h-4 w-4" strokeWidth={1.75} />
         </span>
@@ -72,7 +72,7 @@ export function PlayerVideoCard({
         <button
           type="button"
           onClick={spillAv}
-          className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90"
+          className="inline-flex items-center gap-1 rounded-md bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90"
         >
           <Play className="h-3 w-3" strokeWidth={1.75} />
           Åpne

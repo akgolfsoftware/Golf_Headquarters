@@ -15,7 +15,7 @@ export function AvbrytInvitasjonKnapp({ id }: { id: string }) {
           await avbrytInvitasjon(id);
         });
       }}
-      className="rounded-md min-h-11 px-3 text-sm font-semibold text-destructive hover:bg-destructive/10 disabled:opacity-50"
+      className="rounded-md min-h-11 px-4 text-sm font-semibold text-destructive hover:bg-destructive/10 disabled:opacity-50"
     >
       {pending ? "Avbryter…" : "Avbryt"}
     </button>
@@ -34,7 +34,7 @@ export function FjernForelderKnapp({ linkId }: { linkId: string }) {
           await fjernForelderTilgang(linkId);
         });
       }}
-      className="rounded-md min-h-11 px-3 text-sm font-semibold text-destructive hover:bg-destructive/10 disabled:opacity-50"
+      className="rounded-md min-h-11 px-4 text-sm font-semibold text-destructive hover:bg-destructive/10 disabled:opacity-50"
     >
       {pending ? "Fjerner…" : "Fjern tilgang"}
     </button>

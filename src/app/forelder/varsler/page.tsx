@@ -33,7 +33,7 @@ export default async function Varsler() {
             {barn.map((b) => (
               <li key={b.child.id} className="px-6 py-4">
                 <div className="font-display text-base font-semibold">{b.child.name}</div>
-                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <ToggleRad label="Ny økt planlagt" disabled />
                   <ToggleRad label="Økt fullført" disabled />
                   <ToggleRad label="Ny faktura" disabled />
@@ -53,7 +53,7 @@ export default async function Varsler() {
 
 function ToggleRad({ label, disabled }: { label: string; disabled?: boolean }) {
   return (
-    <label className="flex items-center justify-between gap-3 rounded-md bg-muted px-4 py-2 text-sm">
+    <label className="flex items-center justify-between gap-4 rounded-md bg-muted px-4 py-2 text-sm">
       <span>{label}</span>
       <input
         type="checkbox"

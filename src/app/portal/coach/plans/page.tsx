@@ -107,7 +107,7 @@ function PlanColumn({
   const dotCls = tone === "primary" ? "bg-primary" : "bg-muted-foreground/50";
   return (
     <section>
-      <header className="mb-4 flex items-center gap-3">
+      <header className="mb-4 flex items-center gap-4">
         <span className={`h-2.5 w-2.5 rounded-full ${dotCls}`} />
         <div>
           <h2 className="font-display text-base font-semibold leading-none">
@@ -118,7 +118,7 @@ function PlanColumn({
           </p>
         </div>
       </header>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">{children}</div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">{children}</div>
     </section>
   );
 }
@@ -151,7 +151,7 @@ function PlanCardEl({ plan }: { plan: Plan }) {
         </span>
       </div>
 
-      <h3 className="mt-3 font-display text-lg italic font-medium leading-snug text-foreground">
+      <h3 className="mt-4 font-display text-lg italic font-medium leading-snug text-foreground">
         <Link href={`/portal/coach/plans/${plan.id}`} className="hover:text-primary">
           {plan.name}
         </Link>
@@ -186,12 +186,12 @@ function PlanCardEl({ plan }: { plan: Plan }) {
           </div>
         </div>
       ) : (
-        <p className="mt-3 text-sm text-foreground">
+        <p className="mt-4 text-sm text-foreground">
           {fullført} / {total} økter fullført
         </p>
       )}
 
-      <footer className="mt-4 flex items-center border-t border-border pt-3">
+      <footer className="mt-4 flex items-center border-t border-border pt-4">
         <Link
           href={`/portal/coach/plans/${plan.id}`}
           className="inline-flex items-center gap-1 text-xs font-medium text-foreground hover:underline"

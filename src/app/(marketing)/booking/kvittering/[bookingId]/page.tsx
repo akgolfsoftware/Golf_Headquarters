@@ -76,7 +76,7 @@ export default async function Kvittering({ params }: Props) {
 
         <section className="mt-12 rounded-2xl border border-border bg-card p-6">
           <h2 className="font-display text-lg font-semibold">Detaljer</h2>
-          <dl className="mt-4 grid gap-3 text-sm">
+          <dl className="mt-4 grid gap-4 text-sm">
             <Rad label="Bestilling" value={`#${booking.id.slice(-8)}`} />
             <Rad label="Tjeneste" value={booking.serviceType.name} />
             <Rad label="Dato" value={dato} />
@@ -89,16 +89,16 @@ export default async function Kvittering({ params }: Props) {
           </dl>
         </section>
 
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <div className="mt-8 flex flex-wrap justify-center gap-4">
           <Link
             href="/portal/meg/bookinger"
-            className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            className="rounded-full bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
             Mine bestillinger
           </Link>
           <Link
             href="/booking"
-            className="rounded-full border border-input bg-card px-6 py-3 text-sm font-semibold hover:border-border"
+            className="rounded-full border border-input bg-card px-6 py-4 text-sm font-semibold hover:border-border"
           >
             Book en til
           </Link>

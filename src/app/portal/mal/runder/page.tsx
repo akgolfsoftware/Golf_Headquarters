@@ -111,7 +111,7 @@ export default async function RunderPage() {
           titleTrail="logget ennå"
           sub="Logg din første 18-hulls runde manuelt, eller koble til GolfBox for å importere automatisk fra din historikk."
           cta={
-            <div className="flex flex-col items-center gap-3 sm:flex-row">
+            <div className="flex flex-col items-center gap-4 sm:flex-row">
               <NyRundeModal
                 courses={courses.map((c) => ({
                   id: c.id,
@@ -212,7 +212,7 @@ export default async function RunderPage() {
           {/* Tabell */}
           <div className="overflow-hidden rounded-lg border border-border bg-card">
             <div
-              className="hidden border-b border-border bg-muted/40 px-6 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid"
+              className="hidden border-b border-border bg-muted/40 px-6 py-4 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid"
               style={{
                 gridTemplateColumns:
                   "100px 1.4fr 70px 80px 80px 80px",

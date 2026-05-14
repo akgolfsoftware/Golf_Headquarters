@@ -40,7 +40,7 @@ export function AksepterForm({ token, email }: { token: string; email: string })
       />
 
       {error ? (
-        <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <div className="rounded-md bg-destructive/10 px-4 py-2 text-sm text-destructive">
           {error}
         </div>
       ) : null}
@@ -48,7 +48,7 @@ export function AksepterForm({ token, email }: { token: string; email: string })
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+        className="w-full rounded-full bg-primary px-4 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
       >
         {pending ? "Oppretter konto…" : "Godta og opprett konto"}
       </button>
@@ -89,7 +89,7 @@ function Felt({
         placeholder={placeholder}
         defaultValue={defaultValue}
         disabled={disabled}
-        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:bg-muted disabled:text-muted-foreground"
+        className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:bg-muted disabled:text-muted-foreground"
       />
     </label>
   );

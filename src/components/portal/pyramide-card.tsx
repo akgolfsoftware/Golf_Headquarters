@@ -36,7 +36,7 @@ export function PyramideCard({
             const pct = prosent[omr];
             const min = data[omr];
             return (
-              <div key={omr} className="flex items-center gap-3">
+              <div key={omr} className="flex items-center gap-4">
                 <span className="w-12 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   {omr}
                 </span>

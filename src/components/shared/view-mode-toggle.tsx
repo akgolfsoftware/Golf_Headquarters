@@ -40,7 +40,7 @@ export function ViewModeToggle({ current, className = "" }: Props) {
       type="button"
       onClick={bytt}
       disabled={pending}
-      className={`inline-flex items-center gap-2 rounded-md border border-input bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary hover:text-primary active:border-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 ${className}`}
+      className={`inline-flex items-center gap-2 rounded-md border border-input bg-card px-4 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary hover:text-primary active:border-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 ${className}`}
       aria-label={label}
     >
       <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />

@@ -34,7 +34,7 @@ export function RescheduleDatoVelger({ valgtDato, bookingId, dager }: Props) {
             key={iso}
             href={`/portal/meg/bookinger/reschedule/${bookingId}?dato=${iso}`}
             scroll={false}
-            className={`flex min-w-[64px] flex-col items-center rounded-md border px-3 py-2 transition-colors ${
+            className={`flex min-w-[64px] flex-col items-center rounded-md border px-4 py-2 transition-colors ${
               aktiv
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-card hover:border-primary/40"

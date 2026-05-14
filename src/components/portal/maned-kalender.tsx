@@ -49,7 +49,7 @@ export function ManedKalender({
         {["man", "tir", "ons", "tor", "fre", "lør", "søn"].map((d) => (
           <div
             key={d}
-            className="px-3 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+            className="px-4 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
           >
             {d}
           </div>

@@ -55,8 +55,8 @@ export default async function TrackManPage() {
           titleTrail="importert ennå"
           sub="Importer din første økt for å se carry-trend, smash-utvikling og klubb-sammenligning over tid."
           cta={
-            <div className="space-y-3">
-              <div className="rounded-md bg-secondary p-3 text-left font-mono text-[11px] leading-relaxed text-muted-foreground">
+            <div className="space-y-4">
+              <div className="rounded-md bg-secondary p-4 text-left font-mono text-[11px] leading-relaxed text-muted-foreground">
                 <strong className="text-foreground">
                   Hvordan eksportere fra TrackMan:
                 </strong>
@@ -116,7 +116,7 @@ export default async function TrackManPage() {
         </div>
 
         {/* Action-strip */}
-        <div className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-card px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-card px-4 py-4">
           <span className="mr-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
             Sving-status
           </span>
@@ -147,7 +147,7 @@ export default async function TrackManPage() {
         </div>
 
         {/* Klubb-rail — TODO: per-slag per klubb */}
-        <div className="flex items-center gap-2 overflow-x-auto rounded-md border border-border bg-card px-4 py-3">
+        <div className="flex items-center gap-2 overflow-x-auto rounded-md border border-border bg-card px-4 py-4">
           <span className="mr-1 shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
             Per kølle
           </span>
@@ -174,7 +174,7 @@ export default async function TrackManPage() {
           <div className="space-y-4">
             {/* Trajectory-card — TODO: bygg fra rawJson */}
             <section className="rounded-lg border border-border bg-card p-6">
-              <div className="mb-3 flex items-start justify-between">
+              <div className="mb-4 flex items-start justify-between">
                 <div>
                   <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     7-jern · trajectory over tid
@@ -199,7 +199,7 @@ export default async function TrackManPage() {
             </section>
 
             {/* KPI-strip — viser det vi har, resten er TODO */}
-            <section className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+            <section className="grid grid-cols-2 gap-4 lg:grid-cols-5">
               <KpiCard
                 label="Slag totalt"
                 value={totalSlag.toLocaleString("nb-NO")}
@@ -236,8 +236,8 @@ export default async function TrackManPage() {
 
             {/* Bento bottom — Dispersion + Compare (TODO: ekte data) */}
             <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1.25fr_1fr]">
-              <article className="rounded-lg border border-border bg-card px-6 py-5">
-                <div className="mb-3">
+              <article className="rounded-lg border border-border bg-card px-6 py-6">
+                <div className="mb-4">
                   <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     Dispersion-pattern · 7-jern
                   </div>
@@ -252,8 +252,8 @@ export default async function TrackManPage() {
                   </p>
                 </div>
               </article>
-              <article className="rounded-lg border border-border bg-card px-6 py-5">
-                <div className="mb-3">
+              <article className="rounded-lg border border-border bg-card px-6 py-6">
+                <div className="mb-4">
                   <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     Sammenlikning · 7-jern
                   </div>
@@ -272,7 +272,7 @@ export default async function TrackManPage() {
 
             {/* Sesjons-tabell — den virkelige dataen vi har nå */}
             <section className="overflow-hidden rounded-lg border border-border bg-card">
-              <div className="border-b border-border bg-secondary/60 px-6 py-3">
+              <div className="border-b border-border bg-secondary/60 px-6 py-4">
                 <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   Alle økter · nyeste først
                 </div>
@@ -318,7 +318,7 @@ export default async function TrackManPage() {
 
           {/* Drawer — agent-funn (TODO: ekte agent) */}
           <aside className="sticky top-5 self-start overflow-hidden rounded-lg border border-border bg-card">
-            <div className="border-b border-border px-6 py-5">
+            <div className="border-b border-border px-6 py-6">
               <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Agent-funn
                 {sisteOkt
@@ -340,7 +340,7 @@ export default async function TrackManPage() {
               <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                 Volum
               </div>
-              <div className="rounded-md border-l-[3px] border-l-primary bg-secondary px-4 py-3 text-[12px] leading-relaxed">
+              <div className="rounded-md border-l-[3px] border-l-primary bg-secondary px-4 py-4 text-[12px] leading-relaxed">
                 Du har logget{" "}
                 <b className="font-semibold text-primary">
                   {slag30d.toLocaleString("nb-NO")} slag
@@ -354,7 +354,7 @@ export default async function TrackManPage() {
               <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                 Per-klubb funn
               </div>
-              <div className="rounded-md border-l-[3px] border-l-border bg-secondary/40 px-4 py-3 text-[12px] italic leading-relaxed text-muted-foreground">
+              <div className="rounded-md border-l-[3px] border-l-border bg-secondary/40 px-4 py-4 text-[12px] italic leading-relaxed text-muted-foreground">
                 Agent-funn per klubb vises når per-slag-data er importert.
               </div>
             </div>

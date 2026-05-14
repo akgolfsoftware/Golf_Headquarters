@@ -82,7 +82,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
       />
 
       {isFree && (
-        <div className="flex items-start gap-3 rounded-md border border-accent/40 bg-accent/10 p-4">
+        <div className="flex items-start gap-4 rounded-md border border-accent/40 bg-accent/10 p-4">
           <Lock
             className="mt-0.5 h-4 w-4 shrink-0 text-accent-foreground"
             strokeWidth={1.75}
@@ -101,7 +101,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
       )}
 
       <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+        <div className="flex flex-wrap items-center justify-between gap-4 text-sm">
           <div className="flex items-center gap-2">
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
               Saldo
@@ -126,7 +126,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
         <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           1. Velg tjeneste
         </h2>
-        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {services.map((s) => {
             const active = s.id === valgtService.id;
             return (
@@ -141,7 +141,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
                     : "border-border bg-card hover:border-primary/40"
                 }`}
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="font-display text-base font-semibold tracking-tight">
                       {s.name}
@@ -167,7 +167,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
         <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           2. Velg dato
         </h2>
-        <div className="mt-3">
+        <div className="mt-4">
           <DatoVelger
             valgtDato={valgtDato}
             serviceSlug={valgtService.slug}
@@ -177,11 +177,11 @@ export default async function NyBookingPage({ searchParams }: Props) {
       </section>
 
       {aktivtSteg === 3 && (
-        <section className="rounded-2xl border border-border bg-card p-5">
+        <section className="rounded-2xl border border-border bg-card p-6">
           <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             Oppsummering — bekreft før booking
           </h2>
-          <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-4">
+          <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-4">
             <div>
               <dt className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                 Tjeneste
@@ -226,7 +226,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
         <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           3. Velg tid
         </h2>
-        <div className="mt-3">
+        <div className="mt-4">
           {slots.length === 0 ? (
             <div className="rounded-md border border-border bg-card p-6 text-center text-sm text-muted-foreground">
               <CalendarDays className="mx-auto h-5 w-5" strokeWidth={1.75} />
@@ -269,7 +269,7 @@ function BruktOppView({ resetAt }: { resetAt: Date | null }) {
         </p>
         <Link
           href="/booking"
-          className="mt-6 inline-block rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
+          className="mt-6 inline-block rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground"
         >
           Book drop-in mot betaling →
         </Link>
@@ -291,7 +291,7 @@ function StegIndikator({
         const erAktivt = s.nr === aktivt;
         const erFerdig = s.ferdig;
         return (
-          <li key={s.nr} className="flex flex-1 items-center gap-2 sm:gap-3">
+          <li key={s.nr} className="flex flex-1 items-center gap-2 sm:gap-4">
             <span
               className={`grid h-8 w-8 shrink-0 place-items-center rounded-full font-mono text-xs font-semibold ${
                 erFerdig

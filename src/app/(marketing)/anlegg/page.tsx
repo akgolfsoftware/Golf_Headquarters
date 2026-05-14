@@ -33,20 +33,30 @@ export default async function AnleggListe() {
 
   return (
     <div>
-      <section className="bg-gradient-to-b from-background to-secondary/40 px-6 py-20 sm:py-28">
-        <div className="mx-auto max-w-4xl text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-            Anlegg
-          </span>
-          <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
-            Tren på{" "}
-            <em className="font-normal text-primary md:italic">våre</em>{" "}
-            fasiliteter
+      <section className="border-b border-border bg-secondary/40 px-6 py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+            Anlegg · AK Golf Group
+          </div>
+          <h1 className="mt-4 max-w-3xl font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+            To anlegg —{" "}
+            <em className="font-normal italic text-primary">året rundt</em>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            AK Golf Academy holder til på to anlegg i Fredrikstad — utendørs
-            bane og innendørs simulatorer — slik at vi kan trene hele året.
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Innendørs på Mulligan i Horten når været ikke samarbeider, utendørs
+            på GFGK Bossum i sesongen. Samme coacher, samme plan, sømløs
+            booking.
           </p>
+          <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-primary" strokeWidth={1.5} />
+              Horten + Fredrikstad
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <ArrowRight className="h-4 w-4 text-primary" strokeWidth={1.5} />
+              Booking åpen 24/7
+            </span>
+          </div>
         </div>
       </section>
 
@@ -97,7 +107,7 @@ export default async function AnleggListe() {
                           : "fasiliteter"}{" "}
                         tilgjengelig
                       </p>
-                      <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-3">
+                      <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-4">
                         Se anlegget
                         <ArrowRight
                           className="h-4 w-4 transition-transform"

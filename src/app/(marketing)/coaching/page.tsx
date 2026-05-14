@@ -76,7 +76,7 @@ export default function Coaching() {
             <em className="font-normal text-primary md:italic">Coaching</em> som
             gir fremgang
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground">
+          <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground">
             Som abonnent får du 2 eller 4 coaching-timer hver måned. Du booker
             dem selv fra PlayerHQ når det passer deg — og får en plan,
             statistikk og oppfølging mellom øktene.
@@ -106,7 +106,7 @@ export default function Coaching() {
               }`}
             >
               {p.fremhevet && (
-                <span className="absolute -top-3 left-8 rounded-full bg-primary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary-foreground">
+                <span className="absolute -top-3 left-8 rounded-full bg-primary px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary-foreground">
                   Mest valgt
                 </span>
               )}
@@ -130,9 +130,9 @@ export default function Coaching() {
                 {p.egnet}
               </p>
 
-              <ul className="mt-6 space-y-3 text-sm text-foreground">
+              <ul className="mt-6 space-y-4 text-sm text-foreground">
                 {p.inkludert.map((i) => (
-                  <li key={i} className="flex items-start gap-3">
+                  <li key={i} className="flex items-start gap-4">
                     <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
                     <span>{i}</span>
                   </li>
@@ -142,7 +142,7 @@ export default function Coaching() {
               <div className="mt-8">
                 <SubscribeButton
                   plan={p.plan}
-                  className={`w-full rounded-md px-6 py-3 text-center text-sm font-semibold transition-opacity disabled:opacity-60 ${
+                  className={`w-full rounded-md px-6 py-4 text-center text-sm font-semibold transition-opacity disabled:opacity-60 ${
                     p.fremhevet
                       ? "bg-primary text-primary-foreground hover:opacity-90"
                       : "border border-input bg-background text-foreground hover:border-border"
@@ -159,24 +159,24 @@ export default function Coaching() {
           <h2 className="font-display text-2xl font-semibold tracking-tight">
             Hva inkluderer en økt?
           </h2>
-          <p className="mt-3 text-sm text-muted-foreground">
+          <p className="mt-4 text-sm text-muted-foreground">
             Hver økt er strukturert rundt det du jobber med akkurat nå. Anders
             bygger neste steg basert på data fra forrige økt og målene dine.
           </p>
           <ul className="mt-6 grid grid-cols-1 gap-4 text-sm text-foreground sm:grid-cols-2">
-            <li className="flex items-start gap-3">
+            <li className="flex items-start gap-4">
               <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
               <span>20 min fokusert trening med Anders</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li className="flex items-start gap-4">
               <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
               <span>Klare fokuspunkter og drills å øve på</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li className="flex items-start gap-4">
               <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
               <span>Trackman-data lagret automatisk</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li className="flex items-start gap-4">
               <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
               <span>Plan oppdateres i PlayerHQ</span>
             </li>
@@ -187,13 +187,13 @@ export default function Coaching() {
           <h2 className="font-display text-xl font-semibold tracking-tight">
             Ikke klar for abonnement?
           </h2>
-          <p className="mt-3 text-sm text-muted-foreground">
+          <p className="mt-4 text-sm text-muted-foreground">
             Du kan også booke enkelt-timer uten binding. Pro-time 30 min eller
             60 min, Trackman-økt eller gruppeøkt — se hva som er ledig.
           </p>
           <Link
             href="/booking"
-            className="mt-5 inline-block rounded-md border border-input bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-border"
+            className="mt-6 inline-block rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-border"
           >
             Se ledige tider →
           </Link>

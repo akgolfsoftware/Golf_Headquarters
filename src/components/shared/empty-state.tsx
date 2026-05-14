@@ -32,7 +32,7 @@ export function EmptyState({
     >
       <div
         aria-hidden="true"
-        className="mb-5 grid h-14 w-14 place-items-center rounded-full bg-secondary text-muted-foreground"
+        className="mb-6 grid h-14 w-14 place-items-center rounded-full bg-secondary text-muted-foreground"
       >
         <Icon size={24} strokeWidth={1.5} />
       </div>
@@ -43,7 +43,7 @@ export function EmptyState({
       {sub && (
         <p className="mt-2 max-w-sm text-sm text-muted-foreground">{sub}</p>
       )}
-      {cta && <div className="mt-5">{cta}</div>}
+      {cta && <div className="mt-6">{cta}</div>}
     </div>
   );
 }

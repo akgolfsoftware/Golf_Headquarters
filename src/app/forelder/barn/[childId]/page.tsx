@@ -112,7 +112,7 @@ export default async function BarnProfil({
         ) : (
           <ul className="divide-y divide-border">
             {barn.goals.map((g) => (
-              <li key={g.id} className="px-6 py-3 text-sm">
+              <li key={g.id} className="px-6 py-4 text-sm">
                 <div className="font-semibold">{g.title}</div>
                 <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   {g.type}
@@ -137,7 +137,7 @@ export default async function BarnProfil({
         ) : (
           <ul className="divide-y divide-border">
             {barn.rounds.map((r) => (
-              <li key={r.id} className="flex items-center justify-between gap-4 px-6 py-3 text-sm">
+              <li key={r.id} className="flex items-center justify-between gap-4 px-6 py-4 text-sm">
                 <div className="font-semibold">{NB_DATO.format(r.playedAt)}</div>
                 <div className="font-mono text-xs text-muted-foreground">
                   Score {r.score}

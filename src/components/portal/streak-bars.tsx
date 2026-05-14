@@ -5,7 +5,7 @@ export function StreakBars({ streak }: { streak: boolean[] }) {
   const aktiv = aktivStreak(streak);
 
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="flex items-baseline justify-between">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Streak · siste 14 dager
@@ -29,7 +29,7 @@ export function StreakBars({ streak }: { streak: boolean[] }) {
         ))}
       </div>
 
-      <p className="mt-3 text-xs text-muted-foreground">
+      <p className="mt-4 text-xs text-muted-foreground">
         {antall} av 14 dager med fullført økt.
       </p>
     </div>

@@ -38,7 +38,7 @@ export function UkeStripe({
           <Link
             key={dato.toISOString()}
             href={bygglenke(dato)}
-            className={`relative rounded-lg border p-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+            className={`relative rounded-lg border p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               aktiv
                 ? "border-primary bg-primary/5 ring-2 ring-primary/20"
                 : "border-border bg-card hover:border-input active:border-input/80"

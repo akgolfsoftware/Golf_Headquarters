@@ -21,7 +21,7 @@ export default async function AiCoachPage({
   if (user.tier === "GRATIS") {
     return (
       <div className="mx-auto max-w-[720px] space-y-6 px-6 py-8">
-        <div className="space-y-3">
+        <div className="space-y-4">
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             PlayerHQ · AI-coach
           </span>
@@ -35,7 +35,7 @@ export default async function AiCoachPage({
         <div className="rounded-lg border border-border bg-card p-6">
           <Link
             href="/portal/meg/abonnement"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             Oppgrader til Pro
             <ArrowUpRight size={14} strokeWidth={1.5} />

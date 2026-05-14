@@ -153,7 +153,7 @@ export function PortalSidebar({
           </span>
         </Link>
       </div>
-      <nav aria-label="Hovednavigasjon" className="flex-1 space-y-1 px-3">
+      <nav aria-label="Hovednavigasjon" className="flex-1 space-y-1 px-4">
         {NAV.map((n) => {
           if (n.type === "link") {
             const aktiv =
@@ -165,7 +165,7 @@ export function PortalSidebar({
                 key={n.href}
                 href={n.href}
                 aria-current={aktiv ? "page" : undefined}
-                className={`flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
+                className={`flex items-center justify-between rounded-md px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
                   aktiv
                     ? "bg-white/10 font-semibold text-white"
                     : "text-white/70 hover:bg-white/5 hover:text-white"
@@ -195,7 +195,7 @@ export function PortalSidebar({
                 onClick={() => toggle(n.label)}
                 aria-expanded={isOpen}
                 aria-controls={panelId}
-                className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
+                className={`flex w-full items-center justify-between rounded-md px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
                   inGroup
                     ? "bg-white/5 font-semibold text-white"
                     : "text-white/70 hover:bg-white/5 hover:text-white"
@@ -215,7 +215,7 @@ export function PortalSidebar({
               <div
                 id={panelId}
                 hidden={!isOpen}
-                className="mt-1 space-y-1 pl-3"
+                className="mt-1 space-y-1 pl-4"
               >
                 {n.items.map((it) => {
                   const aktiv =
@@ -227,7 +227,7 @@ export function PortalSidebar({
                       key={it.href}
                       href={it.href}
                       aria-current={aktiv ? "page" : undefined}
-                      className={`block rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
+                      className={`block rounded-md px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
                         aktiv
                           ? "bg-white/10 font-semibold text-white"
                           : "text-white/60 hover:bg-white/5 hover:text-white"
@@ -244,7 +244,7 @@ export function PortalSidebar({
       </nav>
       <div
         aria-label={`Abonnement: ${tier}`}
-        className="m-3 rounded-md bg-accent/10 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-accent"
+        className="m-4 rounded-md bg-accent/10 px-4 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-accent"
       >
         {tier}
       </div>

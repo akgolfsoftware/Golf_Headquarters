@@ -79,12 +79,12 @@ export default async function Fakturaer() {
                         : "Ubetalt"}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
                     <span className="font-mono text-sm font-semibold tabular-nums">
                       {ore(p.amountOre)}
                     </span>
                     <span
-                      className={`rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${st.klasse}`}
+                      className={`rounded-full px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${st.klasse}`}
                     >
                       {st.tekst}
                     </span>

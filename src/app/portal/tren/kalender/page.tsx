@@ -259,7 +259,7 @@ export default async function KalenderPage({
                 type="button"
                 disabled
                 title="Filter kommer i v2"
-                className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground opacity-60"
+                className="rounded-full border border-border bg-card px-4 py-1 text-xs font-medium text-foreground opacity-60"
               >
                 {t}
               </button>

@@ -78,7 +78,7 @@ export function LoginForm() {
           aria-describedby={error ? errorId : undefined}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 focus-visible:ring-2 focus-visible:ring-ring"
+          className="w-full rounded-md border border-input bg-card px-4 py-4 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="navn@eksempel.no"
         />
       </div>
@@ -101,7 +101,7 @@ export function LoginForm() {
           aria-describedby={error ? errorId : undefined}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 focus-visible:ring-2 focus-visible:ring-ring"
+          className="w-full rounded-md border border-input bg-card px-4 py-4 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 focus-visible:ring-2 focus-visible:ring-ring"
         />
       </div>
 
@@ -125,7 +125,7 @@ export function LoginForm() {
 
       <div role="alert" aria-live="polite" aria-atomic="true" id={errorId}>
         {error && (
-          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-4 text-sm text-destructive">
             {error}
           </div>
         )}
@@ -135,7 +135,7 @@ export function LoginForm() {
         type="submit"
         disabled={loading}
         aria-busy={loading || undefined}
-        className="w-full rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="w-full rounded-md bg-primary px-4 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         {loading ? "Logger inn…" : "Logg inn"}
       </button>
@@ -147,7 +147,7 @@ export function LoginForm() {
         <div className="relative flex justify-center">
           <span
             aria-hidden="true"
-            className="bg-card px-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+            className="bg-card px-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
           >
             eller
           </span>
@@ -160,7 +160,7 @@ export function LoginForm() {
         disabled={loading}
         aria-busy={loading || undefined}
         aria-label="Logg inn med Google"
-        className="flex w-full items-center justify-center gap-3 rounded-md border border-input bg-card px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="flex w-full items-center justify-center gap-4 rounded-md border border-input bg-card px-4 py-4 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <GoogleLogo />
         Logg inn med Google

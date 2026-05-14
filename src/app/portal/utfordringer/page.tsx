@@ -38,7 +38,7 @@ export default async function UtfordringerListe() {
         actions={
           <Link
             href="/portal/utfordringer/ny"
-            className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             + Ny utfordring
           </Link>
@@ -61,7 +61,7 @@ export default async function UtfordringerListe() {
             cta={
               <Link
                 href="/portal/utfordringer/ny"
-                className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
               >
                 + Ny utfordring
               </Link>
@@ -118,9 +118,9 @@ function UtfordringKort({ u, brukerId }: { u: UtfordringForKort; brukerId: strin
     <li>
       <Link
         href={`/portal/utfordringer/${u.id}`}
-        className="block rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary/40"
+        className="block rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
       >
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-4">
           <h3 className="font-display text-base font-semibold leading-tight tracking-tight">
             {u.name}
           </h3>
@@ -135,7 +135,7 @@ function UtfordringKort({ u, brukerId }: { u: UtfordringForKort; brukerId: strin
             {u.description}
           </p>
         )}
-        <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-4">
+        <dl className="mt-4 grid grid-cols-2 gap-4 border-t border-border pt-4">
           <div>
             <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Deltakere

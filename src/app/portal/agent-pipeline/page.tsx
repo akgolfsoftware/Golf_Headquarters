@@ -46,7 +46,7 @@ export default async function AgentPipelinePage() {
       />
 
       <section>
-        <h2 className="mb-3 font-display text-lg font-semibold tracking-tight">
+        <h2 className="mb-4 font-display text-lg font-semibold tracking-tight">
           Signaler (siste 30)
         </h2>
         {signals.length === 0 ? (
@@ -96,7 +96,7 @@ export default async function AgentPipelinePage() {
           </div>
 
           {/* Mobil: kort */}
-          <div className="space-y-3 sm:hidden">
+          <div className="space-y-4 sm:hidden">
             {signals.map((s) => (
               <div
                 key={s.id}
@@ -126,7 +126,7 @@ export default async function AgentPipelinePage() {
       </section>
 
       <section>
-        <h2 className="mb-3 font-display text-lg font-semibold tracking-tight">
+        <h2 className="mb-4 font-display text-lg font-semibold tracking-tight">
           Plan-actions
         </h2>
         {planActions.length === 0 ? (
@@ -176,7 +176,7 @@ export default async function AgentPipelinePage() {
 
       {user.role === "ADMIN" && runs.length > 0 && (
         <section>
-          <h2 className="mb-3 font-display text-lg font-semibold tracking-tight">
+          <h2 className="mb-4 font-display text-lg font-semibold tracking-tight">
             Siste agent-kjøringer (admin)
           </h2>
           <div className="overflow-hidden rounded-lg border border-border bg-card">
@@ -229,7 +229,7 @@ export default async function AgentPipelinePage() {
 function Th({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <th
-      className={`px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground ${className}`}
+      className={`px-4 py-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground ${className}`}
     >
       {children}
     </th>
@@ -237,5 +237,5 @@ function Th({ children, className = "" }: { children: React.ReactNode; className
 }
 
 function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <td className={`px-4 py-3 ${className}`}>{children}</td>;
+  return <td className={`px-4 py-4 ${className}`}>{children}</td>;
 }

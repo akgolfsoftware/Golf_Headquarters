@@ -40,7 +40,7 @@ export function PageHeader({
   return (
     <header
       role="banner"
-      className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+      className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
     >
       <div>
         {eyebrow && (

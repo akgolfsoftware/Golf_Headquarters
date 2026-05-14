@@ -9,8 +9,8 @@ export function ProKampanjeBanner() {
   if (!PRO_KAMPANJE_INFO.aktiv) return null;
 
   return (
-    <div className="rounded-md border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-foreground">
-      <div className="flex items-start gap-3">
+    <div className="rounded-md border border-accent/40 bg-accent/10 px-4 py-4 text-sm text-foreground">
+      <div className="flex items-start gap-4">
         <Gift size={18} strokeWidth={1.75} className="mt-0.5 shrink-0 text-primary" />
         <div>
           <div className="font-semibold">

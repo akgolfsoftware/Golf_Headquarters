@@ -39,7 +39,7 @@ export function SesjonDetalj({
   });
 
   return (
-    <article className="space-y-5 rounded-lg border border-border bg-card p-6">
+    <article className="space-y-6 rounded-lg border border-border bg-card p-6">
       <header className="space-y-2">
         <div className="flex items-center gap-2">
           <span
@@ -67,13 +67,13 @@ export function SesjonDetalj({
         </span>
         <ul className="mt-2 divide-y divide-border rounded-md border border-border">
           {drills.length === 0 ? (
-            <li className="px-4 py-3 text-sm text-muted-foreground">
+            <li className="px-4 py-4 text-sm text-muted-foreground">
               Ingen drills lagt til ennå.
             </li>
           ) : (
             drills.map((d) => (
-              <li key={d.id} className="px-4 py-3">
-                <div className="flex items-start justify-between gap-3">
+              <li key={d.id} className="px-4 py-4">
+                <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <div className="font-medium text-foreground">
                       {d.exercise.name}
@@ -94,20 +94,20 @@ export function SesjonDetalj({
         </ul>
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-4">
         {kanStarte ? (
           <Link
             href={`/portal/live/${session.id}`}
-            className="rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="rounded-md bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Start økt →
           </Link>
         ) : (
-          <span className="rounded-md border border-dashed border-border px-5 py-2.5 text-sm text-muted-foreground">
+          <span className="rounded-md border border-dashed border-border px-6 py-2.5 text-sm text-muted-foreground">
             Live Session krever Pro
           </span>
         )}
-        <span className="rounded-md border border-input bg-card px-5 py-2.5 text-sm text-muted-foreground">
+        <span className="rounded-md border border-input bg-card px-6 py-2.5 text-sm text-muted-foreground">
           Status: {session.status}
         </span>
       </div>

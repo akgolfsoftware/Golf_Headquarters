@@ -49,7 +49,7 @@ export function SlotPicker({
                 <Link
                   key={slot.start + slot.coachId}
                   href={`/booking/${slug}/bekreft?${params.toString()}`}
-                  className="rounded-md border border-input bg-card px-3 py-2 text-center font-mono text-sm tabular-nums transition-colors hover:border-primary hover:text-primary"
+                  className="rounded-md border border-input bg-card px-4 py-2 text-center font-mono text-sm tabular-nums transition-colors hover:border-primary hover:text-primary"
                 >
                   {tid}
                 </Link>

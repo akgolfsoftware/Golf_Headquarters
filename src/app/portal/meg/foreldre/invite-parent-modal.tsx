@@ -85,7 +85,7 @@ function InviteModal({ onClose }: { onClose: () => void }) {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               placeholder="forelder@eksempel.no"
             />
           </label>
@@ -97,7 +97,7 @@ function InviteModal({ onClose }: { onClose: () => void }) {
             <select
               value={relation}
               onChange={(e) => setRelation(e.target.value as Relation)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {RELATIONS.map((r) => (
                 <option key={r.value} value={r.value}>
@@ -108,7 +108,7 @@ function InviteModal({ onClose }: { onClose: () => void }) {
           </label>
 
           {error ? (
-            <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <div className="rounded-md bg-destructive/10 px-4 py-2 text-sm text-destructive">
               {error}
             </div>
           ) : null}

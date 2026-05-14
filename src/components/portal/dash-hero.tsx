@@ -57,7 +57,7 @@ export function DashHero({
     .join(" · ");
 
   return (
-    <header className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+    <header className="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
       <span className="relative shrink-0">
         <span className="grid h-20 w-20 place-items-center overflow-hidden rounded-full bg-primary text-2xl font-semibold text-primary-foreground">
           {avatarUrl ? (
@@ -89,7 +89,7 @@ export function DashHero({
           </p>
         )}
         {meta && (
-          <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.10em] text-foreground/70">
+          <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.10em] text-foreground/70">
             {meta}
           </p>
         )}

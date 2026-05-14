@@ -16,7 +16,7 @@ function SubmitKnapp() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+      className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
     >
       <Send className="h-4 w-4" aria-hidden="true" />
       {pending ? "Sender ..." : "Send melding"}
@@ -28,7 +28,7 @@ export function KontaktForm() {
   const [state, formAction] = useActionState(sendKontaktMelding, INITIAL);
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form action={formAction} className="space-y-6">
       <div>
         <label
           htmlFor="navn"
@@ -42,11 +42,11 @@ export function KontaktForm() {
           type="text"
           required
           autoComplete="name"
-          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
+          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
         />
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label
             htmlFor="epost"
@@ -60,7 +60,7 @@ export function KontaktForm() {
             type="email"
             required
             autoComplete="email"
-            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
+            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
         <div>
@@ -76,7 +76,7 @@ export function KontaktForm() {
             name="telefon"
             type="tel"
             autoComplete="tel"
-            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
+            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
       </div>
@@ -93,7 +93,7 @@ export function KontaktForm() {
           name="tema"
           required
           defaultValue=""
-          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
+          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
         >
           <option value="" disabled>
             Velg tema
@@ -116,7 +116,7 @@ export function KontaktForm() {
           name="melding"
           required
           rows={5}
-          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
+          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
         />
       </div>
 

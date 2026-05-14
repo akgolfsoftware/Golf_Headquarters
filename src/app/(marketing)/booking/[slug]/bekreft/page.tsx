@@ -58,7 +58,7 @@ export default async function BekreftPage({ params, searchParams }: Props) {
         </header>
 
         <section className="mt-8 rounded-2xl border border-border bg-card p-6">
-          <dl className="grid gap-3 text-sm">
+          <dl className="grid gap-4 text-sm">
             <Rad label="Tjeneste" value={service.name} />
             <Rad label="Dato" value={dato} />
             <Rad label="Klokkeslett" value={`${klokkeslett} (${service.durationMin} min)`} />

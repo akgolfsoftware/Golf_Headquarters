@@ -68,7 +68,7 @@ export default async function DokumenterPage() {
       ) : (
         <>
           {/* Søk/filter-felt — TODO: kobles til faktisk søk senere */}
-          <div className="flex items-center gap-3 rounded-md border border-border bg-card px-4 py-3">
+          <div className="flex items-center gap-4 rounded-md border border-border bg-card px-4 py-4">
             <Search
               className="h-4 w-4 text-muted-foreground"
               strokeWidth={1.5}

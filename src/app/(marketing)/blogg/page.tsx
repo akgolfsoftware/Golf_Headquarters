@@ -61,7 +61,7 @@ export default function BloggListe() {
       <section className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-6 py-20 md:py-24">
           <div className="flex flex-col items-start gap-6">
-            <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
               <Sparkles className="h-4 w-4" strokeWidth={1.5} />
               AK Golf · Blogg
             </span>
@@ -142,10 +142,10 @@ export default function BloggListe() {
               </div>
               <div className="flex flex-col justify-center gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-accent-foreground">
+                  <span className="rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-accent-foreground">
                     Utvalgt
                   </span>
-                  <span className="rounded-full bg-secondary px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  <span className="rounded-full bg-secondary px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                     {metaFor(featured.slug).category}
                   </span>
                 </div>
@@ -168,7 +168,7 @@ export default function BloggListe() {
                     {metaFor(featured.slug).readMinutes} min
                   </span>
                 </div>
-                <span className="mt-4 inline-flex items-center gap-2 text-[14px] font-semibold text-primary group-hover:gap-3">
+                <span className="mt-4 inline-flex items-center gap-2 text-[14px] font-semibold text-primary group-hover:gap-4">
                   Les hele saken
                   <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
                 </span>

@@ -74,8 +74,8 @@ export default async function AnleggDetalj({
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
               Anlegg
             </span>
-            <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-              {loc.name}
+            <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
+              <em className="font-normal italic text-primary">{loc.name}</em>
             </h1>
             <p className="mt-4 flex items-center gap-2 text-base text-muted-foreground">
               <MapPin className="h-5 w-5" aria-hidden="true" />
@@ -88,15 +88,15 @@ export default async function AnleggDetalj({
       <section className="px-6 py-16">
         <div className="mx-auto grid max-w-5xl gap-8 sm:grid-cols-2">
           <div className="rounded-2xl border border-border bg-card p-8">
-            <h2 className="flex items-center gap-3 font-display text-2xl font-semibold tracking-tight">
+            <h2 className="flex items-center gap-4 font-display text-2xl font-semibold tracking-tight">
               <Clock className="h-5 w-5 text-primary" aria-hidden="true" />
               Åpningstider
             </h2>
-            <ul className="mt-6 space-y-3 text-sm">
+            <ul className="mt-6 space-y-4 text-sm">
               {APNINGSTIDER.map((a) => (
                 <li
                   key={a.dag}
-                  className="flex items-center justify-between border-b border-border pb-3 last:border-0 last:pb-0"
+                  className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0"
                 >
                   <span className="text-foreground">{a.dag}</span>
                   <span className="font-mono text-muted-foreground">
@@ -118,7 +118,7 @@ export default async function AnleggDetalj({
                     className="mx-auto h-10 w-10 text-primary"
                     aria-hidden="true"
                   />
-                  <p className="mt-3 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  <p className="mt-4 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
                     Kart
                   </p>
                   <p className="mt-2 max-w-xs px-6 text-sm text-foreground">
@@ -134,9 +134,9 @@ export default async function AnleggDetalj({
       <section className="px-6 py-16">
         <div className="mx-auto max-w-5xl">
           <h2 className="font-display text-3xl font-semibold tracking-tight">
-            <em className="font-normal text-primary md:italic">Fasiliteter</em>
+            <em className="font-normal italic text-primary">Fasiliteter</em>
           </h2>
-          <p className="mt-3 max-w-2xl text-muted-foreground">
+          <p className="mt-4 max-w-2xl text-muted-foreground">
             Hver fasilitet på {loc.name} kan bookes individuelt — fra korte
             øvelsesøkter til lengre coachingøkter.
           </p>
@@ -155,7 +155,7 @@ export default async function AnleggDetalj({
                   <h3 className="font-display text-lg font-semibold tracking-tight">
                     {f.name}
                   </h3>
-                  <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                  <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
                     <Users className="h-4 w-4" aria-hidden="true" />
                     Kapasitet: {f.capacity}
                   </p>
@@ -171,21 +171,21 @@ export default async function AnleggDetalj({
           <h2 className="font-display text-3xl font-semibold tracking-tight">
             Klar for å trene hos oss?
           </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="mt-4 text-muted-foreground">
             Book en time på {loc.name} eller ta kontakt for å høre om hva som
             passer best for deg.
           </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/booking"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Book på dette anlegget
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
             <Link
               href="/anlegg"
-              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
+              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
             >
               Se alle anlegg
             </Link>

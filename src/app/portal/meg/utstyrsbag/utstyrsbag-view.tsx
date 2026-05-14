@@ -66,7 +66,7 @@ export function UtstyrsbagView({ initial, finnes }: Props) {
           <button
             type="button"
             onClick={() => setRedigerer(true)}
-            className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
+            className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
           >
             Sett opp utstyrsbag
           </button>
@@ -96,9 +96,9 @@ export function UtstyrsbagView({ initial, finnes }: Props) {
           return (
             <div
               key={f.key}
-              className="rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary/40"
+              className="rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-4">
                 <div
                   aria-hidden="true"
                   className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-full bg-secondary text-primary"

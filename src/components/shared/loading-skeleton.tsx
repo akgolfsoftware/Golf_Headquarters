@@ -13,7 +13,7 @@ export function SkeletonHero() {
       aria-busy="true"
       aria-live="polite"
       aria-label="Laster innhold"
-      className="space-y-3"
+      className="space-y-4"
     >
       <div aria-hidden="true" className="h-3 w-32 animate-pulse rounded bg-secondary" />
       <div aria-hidden="true" className="h-9 w-72 animate-pulse rounded bg-secondary" />
@@ -30,7 +30,7 @@ export function SkeletonKpi({ count = 4 }: { count?: number }) {
       aria-busy="true"
       aria-live="polite"
       aria-label="Laster KPI-er"
-      className="grid gap-3"
+      className="grid gap-4"
       style={{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}
     >
       {Array.from({ length: count }).map((_, i) => (
@@ -72,7 +72,7 @@ export function SkeletonList({ rows = 5 }: { rows?: number }) {
         <div
           key={i}
           aria-hidden="true"
-          className="flex items-center gap-3 rounded-md border border-border bg-card p-4"
+          className="flex items-center gap-4 rounded-md border border-border bg-card p-4"
         >
           <div className="h-10 w-10 animate-pulse rounded-full bg-secondary" />
           <div className="flex-1 space-y-2">
@@ -103,7 +103,7 @@ export function SkeletonTable({
     >
       <div
         aria-hidden="true"
-        className="grid gap-3 border-b border-border p-3"
+        className="grid gap-4 border-b border-border p-4"
         style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
       >
         {Array.from({ length: cols }).map((_, i) => (
@@ -117,7 +117,7 @@ export function SkeletonTable({
         <div
           key={r}
           aria-hidden="true"
-          className="grid gap-3 border-b border-border last:border-0 p-3"
+          className="grid gap-4 border-b border-border last:border-0 p-4"
           style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
         >
           {Array.from({ length: cols }).map((_, c) => (

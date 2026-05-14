@@ -94,13 +94,13 @@ export default async function BloggPost({
           <h2 className="font-display text-2xl font-semibold tracking-tight">
             Les flere innlegg
           </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="mt-4 text-muted-foreground">
             Tanker fra coachene om trening, struktur og hva som faktisk
             flytter scoren.
           </p>
           <Link
             href="/blogg"
-            className="mt-8 inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
+            className="mt-8 inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Til oversikten

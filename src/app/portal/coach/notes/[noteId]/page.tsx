@@ -116,14 +116,14 @@ export default async function NoteDetalj({
                 {fokusFragmenter.map((f, i) => (
                   <blockquote
                     key={i}
-                    className="my-6 border-l-2 border-accent pl-5 font-display text-[18px] italic leading-snug text-foreground"
+                    className="my-6 border-l-2 border-accent pl-6 font-display text-[18px] italic leading-snug text-foreground"
                   >
                     «{f}»
                   </blockquote>
                 ))}
 
                 {ovrigeMeldinger.length > 0 && (
-                  <div className="mt-6 space-y-3 border-t border-border pt-6">
+                  <div className="mt-6 space-y-4 border-t border-border pt-6">
                     <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                       Samtale-kontekst
                     </div>
@@ -150,7 +150,7 @@ export default async function NoteDetalj({
             {sesjon.kind === "DIRECT" && (
               <Link
                 href="/portal/coach/melding"
-                className="block rounded-lg border border-border bg-card p-5 transition-colors hover:bg-secondary/40"
+                className="block rounded-lg border border-border bg-card p-6 transition-colors hover:bg-secondary/40"
               >
                 <div className="flex items-center gap-2">
                   <Quote
@@ -162,7 +162,7 @@ export default async function NoteDetalj({
                     Knyttet til samtale
                   </span>
                 </div>
-                <div className="mt-3">
+                <div className="mt-4">
                   <div className="text-[14px] font-semibold leading-snug">
                     Direkte coach-tråd
                   </div>
@@ -178,8 +178,8 @@ export default async function NoteDetalj({
             )}
 
             {/* Coach-info */}
-            <div className="rounded-lg border border-border bg-card p-5">
-              <div className="flex items-center gap-3">
+            <div className="rounded-lg border border-border bg-card p-6">
+              <div className="flex items-center gap-4">
                 <div className="grid h-10 w-10 place-items-center rounded-full bg-primary font-mono text-[12px] font-semibold text-primary-foreground">
                   {coachInitialer}
                 </div>
@@ -203,8 +203,8 @@ export default async function NoteDetalj({
             </div>
 
             {/* Tags */}
-            <div className="rounded-lg border border-border bg-card p-5">
-              <div className="mb-3 flex items-center gap-2">
+            <div className="rounded-lg border border-border bg-card p-6">
+              <div className="mb-4 flex items-center gap-2">
                 <Tag
                   size={14}
                   strokeWidth={1.5}
@@ -218,7 +218,7 @@ export default async function NoteDetalj({
                 {TAGS.map((t) => (
                   <span
                     key={t}
-                    className="rounded-full border border-border bg-secondary px-3 py-1 text-[11px] font-medium text-foreground"
+                    className="rounded-full border border-border bg-secondary px-4 py-1 text-[11px] font-medium text-foreground"
                   >
                     {t}
                   </span>
@@ -227,8 +227,8 @@ export default async function NoteDetalj({
             </div>
 
             {/* Relaterte notater */}
-            <div className="rounded-lg border border-border bg-card p-5">
-              <div className="mb-3 flex items-center gap-2">
+            <div className="rounded-lg border border-border bg-card p-6">
+              <div className="mb-4 flex items-center gap-2">
                 <MessageCircle
                   size={14}
                   strokeWidth={1.5}

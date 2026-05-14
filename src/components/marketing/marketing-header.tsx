@@ -29,7 +29,7 @@ export function MarketingHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <Link
             href="/auth/login"
             className="hidden text-sm text-muted-foreground hover:text-foreground active:text-foreground/80 focus-visible:underline focus-visible:outline-none sm:block"

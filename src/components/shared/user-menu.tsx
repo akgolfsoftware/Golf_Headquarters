@@ -31,7 +31,7 @@ export function UserMenu({ name, email, avatarUrl }: Props) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex items-center gap-3 rounded-full border border-border bg-card px-1 py-1 pr-3 text-sm transition-colors hover:border-ring active:border-ring/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="flex items-center gap-4 rounded-full border border-border bg-card px-1 py-1 pr-4 text-sm transition-colors hover:border-ring active:border-ring/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-primary text-xs font-semibold text-primary-foreground">
           {avatarUrl ? (
@@ -54,7 +54,7 @@ export function UserMenu({ name, email, avatarUrl }: Props) {
           role="menu"
           className="absolute right-0 z-50 mt-2 w-60 rounded-lg border border-border bg-card p-2 shadow-lg"
         >
-          <div className="px-3 py-2">
+          <div className="px-4 py-2">
             <div className="text-sm font-semibold text-foreground">{name}</div>
             <div className="text-xs text-muted-foreground">{email}</div>
           </div>
@@ -62,7 +62,7 @@ export function UserMenu({ name, email, avatarUrl }: Props) {
           <form action={logout}>
             <button
               type="submit"
-              className="block w-full rounded-md px-3 py-2 text-left text-sm text-foreground hover:bg-secondary active:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="block w-full rounded-md px-4 py-2 text-left text-sm text-foreground hover:bg-secondary active:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Logg ut
             </button>

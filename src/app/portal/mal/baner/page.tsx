@@ -41,7 +41,7 @@ export default async function BanerPage() {
       />
 
       <section className="rounded-lg border border-border bg-card p-6">
-        <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        <div className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Hva som kommer i V2
         </div>
         <ul className="space-y-2 text-sm text-foreground">

@@ -24,10 +24,10 @@ export default async function Ukerapport() {
           <Mail className="h-3 w-3" strokeWidth={1.5} />
           Abonnement
         </div>
-        <p className="mt-3 text-sm">
+        <p className="mt-4 text-sm">
           Du mottar ukerapport for:
         </p>
-        <ul className="mt-3 space-y-2">
+        <ul className="mt-4 space-y-2">
           {barn.map((b) => (
             <li key={b.child.id} className="rounded-md bg-muted px-4 py-2 text-sm">
               <span className="font-semibold">{b.child.name}</span>{" "}

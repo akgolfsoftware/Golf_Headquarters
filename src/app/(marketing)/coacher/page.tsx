@@ -110,7 +110,7 @@ export default async function CoacherSide() {
               <p className="mt-4 text-base leading-relaxed text-foreground">
                 {c.bio}
               </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-3">
+              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-4">
                 Les mer
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </span>

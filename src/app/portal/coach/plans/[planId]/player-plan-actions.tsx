@@ -100,7 +100,7 @@ function PendingCta({ planId }: { planId: string }) {
           </p>
 
           {feil && (
-            <div className="mt-3 rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-[12px] text-destructive">
+            <div className="mt-4 rounded-md border border-destructive/40 bg-destructive/5 px-4 py-2 text-[12px] text-destructive">
               {feil}
             </div>
           )}
@@ -110,7 +110,7 @@ function PendingCta({ planId }: { planId: string }) {
               type="button"
               onClick={godta}
               disabled={pending}
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               <CheckCircle size={16} strokeWidth={1.5} />
               Godta plan
@@ -119,7 +119,7 @@ function PendingCta({ planId }: { planId: string }) {
               type="button"
               onClick={() => setModalAapen(true)}
               disabled={pending}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
             >
               <MessageSquare size={16} strokeWidth={1.5} />
               Be om endring
@@ -148,7 +148,7 @@ function PendingCta({ planId }: { planId: string }) {
 
 function AcceptedBadge({ acceptedAt }: { acceptedAt: Date | null }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-[12px] font-medium text-primary">
+    <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-[12px] font-medium text-primary">
       <CheckCircle size={14} strokeWidth={1.5} />
       Godtatt{acceptedAt ? ` ${fmtDatoLang(acceptedAt)}` : ""}
     </div>
@@ -183,8 +183,8 @@ function RejectedBanner({
   }
 
   return (
-    <section className="rounded-lg border border-destructive/40 bg-destructive/5 p-5">
-      <div className="flex items-start gap-3">
+    <section className="rounded-lg border border-destructive/40 bg-destructive/5 p-6">
+      <div className="flex items-start gap-4">
         <AlertCircle
           size={20}
           strokeWidth={1.5}
@@ -199,13 +199,13 @@ function RejectedBanner({
             planen som den er.
           </p>
           {playerComment && (
-            <blockquote className="mt-3 rounded-md border-l-2 border-destructive/60 bg-card px-4 py-3 font-display text-[14px] italic leading-snug text-foreground">
+            <blockquote className="mt-4 rounded-md border-l-2 border-destructive/60 bg-card px-4 py-4 font-display text-[14px] italic leading-snug text-foreground">
               «{playerComment}»
             </blockquote>
           )}
 
           {feil && (
-            <div className="mt-3 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
+            <div className="mt-4 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-2 text-[12px] text-destructive">
               {feil}
             </div>
           )}
@@ -297,7 +297,7 @@ function BeOmEndringModal({
         </button>
       </div>
 
-      <div className="space-y-4 px-6 py-5">
+      <div className="space-y-4 px-6 py-6">
         <div>
           <label
             htmlFor="kommentar"
@@ -313,7 +313,7 @@ function BeOmEndringModal({
             rows={5}
             maxLength={2000}
             placeholder="Skriv kort hva du vil ha endret — antall økter, fokus, tidspunkt…"
-            className="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] leading-[1.5] text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2 text-[13px] leading-[1.5] text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
           />
           <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
             <span>Minst 5 tegn. Coachen din får denne meldingen.</span>
@@ -324,13 +324,13 @@ function BeOmEndringModal({
         </div>
 
         {feil && (
-          <div className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-[12px] text-destructive">
+          <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-2 text-[12px] text-destructive">
             {feil}
           </div>
         )}
       </div>
 
-      <div className="flex items-center justify-end gap-2 border-t border-border bg-secondary/40 px-6 py-3">
+      <div className="flex items-center justify-end gap-2 border-t border-border bg-secondary/40 px-6 py-4">
         <button
           type="button"
           onClick={onLukk}

@@ -49,7 +49,7 @@ export default async function HelsePage() {
 
       {/* Integrasjoner */}
       <Section title="Integrasjoner" aux="Apple Health, Garmin · v2">
-        <div className="grid grid-cols-1 gap-3 p-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2">
           <Integration
             navn="Apple Health"
             beskrivelse="iOS Health-data automatisk"
@@ -69,7 +69,7 @@ export default async function HelsePage() {
           <button
             type="button"
             disabled
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground opacity-60"
             title="Tilgjengelig i v2"
           >
             <Plus className="h-3 w-3" strokeWidth={1.5} />
@@ -77,7 +77,7 @@ export default async function HelsePage() {
           </button>
         }
       >
-        <div className="flex flex-col items-center gap-3 px-6 py-10 text-center">
+        <div className="flex flex-col items-center gap-4 px-6 py-10 text-center">
           <div className="grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
             <Activity className="h-5 w-5" strokeWidth={1.5} />
           </div>
@@ -105,7 +105,7 @@ export default async function HelsePage() {
             v2
           </span>
         </header>
-        <div className="flex items-center gap-3 px-6 py-5">
+        <div className="flex items-center gap-4 px-6 py-6">
           <AlertTriangle
             className="h-4 w-4 flex-shrink-0 text-muted-foreground"
             strokeWidth={1.5}
@@ -133,8 +133,8 @@ function Section({
 }) {
   return (
     <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-      <header className="flex items-center justify-between gap-3 border-b border-border px-6 py-4">
-        <div className="flex items-baseline gap-3">
+      <header className="flex items-center justify-between gap-4 border-b border-border px-6 py-4">
+        <div className="flex items-baseline gap-4">
           <h2 className="font-display text-base font-semibold text-foreground">
             {title}
           </h2>
@@ -167,7 +167,7 @@ function Kpi({
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </div>
-      <div className="mt-3 font-mono text-3xl font-medium leading-none tracking-tight text-foreground">
+      <div className="mt-4 font-mono text-3xl font-medium leading-none tracking-tight text-foreground">
         {value}
         {unit && (
           <span className="ml-1 text-sm text-muted-foreground/70">{unit}</span>

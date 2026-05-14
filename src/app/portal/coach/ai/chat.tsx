@@ -100,7 +100,7 @@ export function AiChat({
         <div className="mx-auto flex max-w-[720px] flex-col gap-6">
           {meldinger.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="mb-5 grid h-14 w-14 place-items-center rounded-full bg-secondary text-accent-foreground">
+              <div className="mb-6 grid h-14 w-14 place-items-center rounded-full bg-secondary text-accent-foreground">
                 <Sparkles size={24} strokeWidth={1.5} />
               </div>
               <h3 className="font-display text-2xl font-semibold leading-tight -tracking-[0.01em]">
@@ -117,7 +117,7 @@ export function AiChat({
                     key={forslag}
                     type="button"
                     onClick={() => settForslag(forslag)}
-                    className="rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+                    className="rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
                   >
                     {forslag}
                   </button>
@@ -133,7 +133,7 @@ export function AiChat({
       </div>
 
       {feil && (
-        <div className="border-t border-border bg-card px-8 pt-3">
+        <div className="border-t border-border bg-card px-8 pt-4">
           <div
             role="alert"
             className="mx-auto max-w-[720px] rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
@@ -178,7 +178,7 @@ export function AiChat({
                 key={forslag}
                 type="button"
                 onClick={() => settForslag(forslag)}
-                className="rounded-full border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+                className="rounded-full border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
               >
                 {forslag}
               </button>
@@ -200,9 +200,9 @@ function Boble({
   const erBruker = melding.role === "user";
   if (erBruker) {
     return (
-      <div className="grid grid-cols-[1fr_36px] justify-items-end gap-3">
+      <div className="grid grid-cols-[1fr_36px] justify-items-end gap-4">
         <div>
-          <div className="max-w-[92%] rounded-2xl rounded-br-sm border border-primary/10 bg-primary/[0.06] px-4 py-3 text-[15px] leading-[1.55] text-foreground">
+          <div className="max-w-[92%] rounded-2xl rounded-br-sm border border-primary/10 bg-primary/[0.06] px-4 py-4 text-[15px] leading-[1.55] text-foreground">
             {melding.content}
           </div>
         </div>
@@ -213,17 +213,17 @@ function Boble({
     );
   }
   return (
-    <div className="grid grid-cols-[36px_1fr] gap-3">
+    <div className="grid grid-cols-[36px_1fr] gap-4">
       <div className="grid h-9 w-9 place-items-center rounded-full bg-primary text-accent">
         <Sparkles size={16} strokeWidth={1.5} fill="currentColor" />
       </div>
       <div>
         {melding.content ? (
-          <div className="max-w-[92%] rounded-2xl rounded-bl-sm border border-border bg-card px-4 py-3 text-[15px] leading-[1.55] text-foreground">
+          <div className="max-w-[92%] rounded-2xl rounded-bl-sm border border-border bg-card px-4 py-4 text-[15px] leading-[1.55] text-foreground">
             <p className="whitespace-pre-wrap">{melding.content}</p>
           </div>
         ) : (
-          <div className="inline-flex gap-1 rounded-2xl rounded-bl-sm border border-border bg-card px-4 py-3">
+          <div className="inline-flex gap-1 rounded-2xl rounded-bl-sm border border-border bg-card px-4 py-4">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-muted-foreground" />
             <span
               className="h-1.5 w-1.5 animate-pulse rounded-full bg-muted-foreground"

@@ -72,14 +72,14 @@ export default async function CoachDetalj({
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/portal/coach/melding"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Send size={16} strokeWidth={1.5} />
               Send melding
             </Link>
             <Link
               href={`/portal/booking/ny?coachId=${coachId}`}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <Calendar size={16} strokeWidth={1.5} />
               Be om økt
@@ -93,15 +93,15 @@ export default async function CoachDetalj({
         <div className="rounded-lg border border-border bg-card p-8">
           <Quote size={24} strokeWidth={1.5} className="text-accent-foreground" />
           {coach.ambition ? (
-            <p className="mt-3 font-display text-xl italic leading-snug text-foreground">
+            <p className="mt-4 font-display text-xl italic leading-snug text-foreground">
               «{coach.ambition}»
             </p>
           ) : (
-            <p className="mt-3 font-display text-xl italic leading-snug text-muted-foreground">
+            <p className="mt-4 font-display text-xl italic leading-snug text-muted-foreground">
               «Vi jobber med det som gir lavest score når det betyr noe.»
             </p>
           )}
-          <div className="mt-6 flex items-start gap-5">
+          <div className="mt-6 flex items-start gap-6">
             <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary text-xl font-semibold text-primary-foreground">
               {initial}
             </div>
@@ -110,7 +110,7 @@ export default async function CoachDetalj({
                 {coach.name}
               </div>
               <p className="mt-1 text-sm text-muted-foreground">{coach.email}</p>
-              <p className="mt-3 text-sm text-foreground">
+              <p className="mt-4 text-sm text-foreground">
                 Hovedcoach i AK Golf Academy. Bygger personlige planer rundt
                 pyramide-modellen — fundament før spiss, konsistens før spektakulært.
               </p>
@@ -143,7 +143,7 @@ export default async function CoachDetalj({
           {CERTIFICATIONS.map((c) => (
             <li
               key={c.name}
-              className="grid grid-cols-[1fr_auto] items-center gap-4 px-4 py-3 transition-colors hover:bg-secondary/60"
+              className="grid grid-cols-[1fr_auto] items-center gap-4 px-4 py-4 transition-colors hover:bg-secondary/60"
             >
               <div>
                 <div className="text-sm font-semibold leading-none">

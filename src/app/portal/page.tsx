@@ -220,7 +220,7 @@ function Hero({ user }: { user: PortalUser }) {
 
   return (
     <header className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
-      <div className="flex min-w-0 items-start gap-4 sm:gap-5">
+      <div className="flex min-w-0 items-start gap-4 sm:gap-6">
         <span className="relative shrink-0">
           <span className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-primary text-xl font-semibold text-primary-foreground md:h-20 md:w-20 md:text-2xl">
             {user.avatarUrl ? (
@@ -256,7 +256,7 @@ function Hero({ user }: { user: PortalUser }) {
               {user.ambition ? "Vi bygger videre." : "Klar for dagen?"}
             </span>
           </h1>
-          <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+          <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
             <span>{klokke}</span>
             {user.homeClub && (
               <>
@@ -315,10 +315,10 @@ function KpiStrip({
   const pyramideLocked = isFree;
 
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
       {/* HCP - dark gradient */}
       <article
-        className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-primary/80 p-5 text-white"
+        className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-primary/80 p-6 text-white"
       >
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-white/70">
           <Trophy className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -335,7 +335,7 @@ function KpiStrip({
       </article>
 
       {/* SG total */}
-      <article className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-5">
+      <article className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-6">
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
           <Star className="h-3.5 w-3.5" strokeWidth={1.75} />
           SG total
@@ -362,7 +362,7 @@ function KpiStrip({
       </article>
 
       {/* Streak */}
-      <article className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-5">
+      <article className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-6">
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
           <Zap className="h-3.5 w-3.5" strokeWidth={1.75} />
           Streak
@@ -379,7 +379,7 @@ function KpiStrip({
       </article>
 
       {/* Pyramide-mini */}
-      <article className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-5">
+      <article className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-6">
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
           <Target className="h-3.5 w-3.5" strokeWidth={1.75} />
           Pyramide
@@ -477,7 +477,7 @@ function LockOverlay({ label, cta }: { label: string; cta: string }) {
         {label}
       </span>
       <span
-        className="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-accent-foreground"
+        className="inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-accent-foreground"
       >
         {cta} →
       </span>
@@ -498,7 +498,7 @@ function DagensFokus({
 }) {
   if (!session) {
     return (
-      <article className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border bg-gradient-to-br from-background to-secondary px-6 py-10 text-center dark:from-card dark:to-card">
+      <article className="flex flex-col items-center gap-4 rounded-2xl border-2 border-dashed border-border bg-gradient-to-br from-background to-secondary px-6 py-10 text-center dark:from-card dark:to-card">
         <span
           className="grid h-14 w-14 place-items-center rounded-2xl bg-accent text-accent-foreground"
         >
@@ -514,14 +514,14 @@ function DagensFokus({
         <div className="mt-2 flex flex-wrap justify-center gap-2">
           <Link
             href="/portal/ny-okt"
-            className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             <Plus className="h-4 w-4" strokeWidth={2} />
             Sett opp første økt
           </Link>
           <Link
             href="/portal/tren"
-            className="inline-flex h-11 items-center gap-2 rounded-full border border-input bg-card px-5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+            className="inline-flex h-11 items-center gap-2 rounded-full border border-input bg-card px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
           >
             Se planen
           </Link>
@@ -547,7 +547,7 @@ function DagensFokus({
       />
 
       <div className="flex-1 pl-2">
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-4">
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-primary">
             Dagens fokus
           </span>
@@ -556,7 +556,7 @@ function DagensFokus({
             {klokke} · {session.durationMin} min
           </span>
         </div>
-        <h2 className="mt-3 font-display text-3xl font-normal italic leading-[1.1] tracking-tight text-foreground md:text-[34px]">
+        <h2 className="mt-4 font-display text-3xl font-normal italic leading-[1.1] tracking-tight text-foreground md:text-[34px]">
           {session.title.split(" — ")[0] ?? session.title}
           {session.title.includes(" — ") && (
             <span className="not-italic font-semibold">
@@ -566,7 +566,7 @@ function DagensFokus({
           )}
         </h2>
         {session.rationale && (
-          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
+          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
             {session.rationale}
           </p>
         )}
@@ -576,7 +576,7 @@ function DagensFokus({
             {visibleDrills.map((d) => (
               <span
                 key={d.id}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 font-mono text-xs font-medium text-foreground"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 font-mono text-xs font-medium text-foreground"
               >
                 <span
                   className="h-1.5 w-1.5 rounded-full"
@@ -588,10 +588,10 @@ function DagensFokus({
           </div>
         )}
 
-        <div className="mt-5 flex flex-wrap items-center gap-2">
+        <div className="mt-6 flex flex-wrap items-center gap-2">
           <Link
             href={fokusUrl}
-            className={`inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-semibold transition-colors ${
+            className={`inline-flex h-11 items-center gap-2 rounded-full px-6 text-sm font-semibold transition-colors ${
               kanStarte
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : "border border-input bg-card text-foreground hover:bg-secondary"
@@ -671,7 +671,7 @@ function PyramideProgresjon({
           PRO
         </span>
       </header>
-      <h3 className="mt-3 font-display text-xl font-semibold leading-tight tracking-tight text-foreground">
+      <h3 className="mt-4 font-display text-xl font-semibold leading-tight tracking-tight text-foreground">
         {locked
           ? "Lås opp full disiplin-oversikt."
           : allOver50
@@ -680,7 +680,7 @@ function PyramideProgresjon({
       </h3>
 
       <div
-        className={`mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 ${locked ? "blur-[3px] opacity-50" : ""}`}
+        className={`mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 ${locked ? "blur-[3px] opacity-50" : ""}`}
       >
         {PYR_REKKEFOLGE.map((area) => (
           <PyramideRing
@@ -786,7 +786,7 @@ function SgFordeling({
         </span>
       </header>
       <h3
-        className={`mt-3 font-display text-xl font-semibold leading-tight tracking-tight text-foreground ${locked ? "blur-[2px]" : ""}`}
+        className={`mt-4 font-display text-xl font-semibold leading-tight tracking-tight text-foreground ${locked ? "blur-[2px]" : ""}`}
       >
         {sg.total != null
           ? `${formatSg(sg.total)} mot benchmark.`
@@ -794,7 +794,7 @@ function SgFordeling({
       </h3>
 
       <div
-        className={`mt-5 grid grid-cols-2 gap-4 ${locked ? "blur-[2px] opacity-50" : ""}`}
+        className={`mt-6 grid grid-cols-2 gap-4 ${locked ? "blur-[2px] opacity-50" : ""}`}
       >
         {rows.map((row) => (
           <SgRowItem key={row.k} k={row.k} v={row.v} />
@@ -915,7 +915,7 @@ function SistRegistrertRow({ item }: { item: SistRegistrert }) {
   const Ic = iconBg.icon;
 
   return (
-    <li className="grid grid-cols-[80px_36px_1fr_auto] items-center gap-3 border-b border-border/60 px-6 py-3.5 transition-colors last:border-0 hover:bg-secondary/40 sm:gap-4">
+    <li className="grid grid-cols-[80px_36px_1fr_auto] items-center gap-4 border-b border-border/60 px-6 py-3.5 transition-colors last:border-0 hover:bg-secondary/40 sm:gap-4">
       <span className="font-mono text-[11px] text-muted-foreground">
         {datoLabel}
       </span>
@@ -969,7 +969,7 @@ function CoachMelding({
 
   return (
     <article
-      className="relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl bg-foreground px-6 py-5 text-background sm:flex-row sm:items-center sm:gap-5 dark:bg-card"
+      className="relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl bg-foreground px-6 py-6 text-background sm:flex-row sm:items-center sm:gap-6 dark:bg-card"
     >
       <span
         aria-hidden
