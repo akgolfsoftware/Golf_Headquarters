@@ -24,7 +24,6 @@ import {
   Plus,
   Star,
   Target,
-  Trophy,
   Zap,
   Lock,
   Play,
@@ -152,7 +151,8 @@ async function DashboardSeksjoner({ user }: { user: PortalUser }) {
   return (
     <div className="space-y-6 md:space-y-8">
       <KpiStrip
-        hcp={user.hcp}
+        snittScore={data.sgAggregate.snittScore}
+        rundeAntall={data.sgAggregate.rundeAntall}
         sgTotal={data.sgAggregate.total}
         streak14={data.streak14}
         streakAktiv={streakAktivAntall}
@@ -263,7 +263,7 @@ function Hero({ user }: { user: PortalUser }) {
           className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
         >
           <Plus className="h-4 w-4" strokeWidth={2} />
-          Logg runde
+          Logg trening
         </Link>
       </div>
     </header>
@@ -273,7 +273,8 @@ function Hero({ user }: { user: PortalUser }) {
 // --- KPI ----------------------------------------------------------------
 
 function KpiStrip({
-  hcp,
+  snittScore,
+  rundeAntall,
   sgTotal,
   streak14,
   streakAktiv,
@@ -282,7 +283,8 @@ function KpiStrip({
   ukeMinutter,
   tier,
 }: {
-  hcp: number | null;
+  snittScore: number | null;
+  rundeAntall: number;
   sgTotal: number | null;
   streak14: boolean[];
   streakAktiv: number;
@@ -297,21 +299,23 @@ function KpiStrip({
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-      {/* HCP - dark gradient */}
+      {/* Snittscore - dark gradient */}
       <article
         className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-primary/80 p-6 text-white"
       >
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-white/70">
-          <Trophy className="h-3.5 w-3.5" strokeWidth={1.75} />
-          Handicap
+          <Flag className="h-3.5 w-3.5" strokeWidth={1.75} />
+          Snittscore
         </div>
         <div className="font-mono text-3xl sm:text-4xl md:text-5xl font-medium leading-none tabular-nums tracking-tight text-white">
-          {hcp != null ? hcp.toFixed(1).replace(".", ",") : "—"}
+          {snittScore != null ? Math.round(snittScore) : "—"}
         </div>
-        <div
-          className="mt-auto flex items-center gap-1 font-mono text-xs text-accent"
-        >
-          <span>Nåverdi · oppdatert i dag</span>
+        <div className="mt-auto flex items-center gap-1 font-mono text-xs text-accent">
+          <span>
+            {rundeAntall > 0
+              ? `Snitt siste ${rundeAntall} ${rundeAntall === 1 ? "runde" : "runder"}`
+              : "Ingen runder registrert"}
+          </span>
         </div>
       </article>
 
@@ -366,28 +370,29 @@ function KpiStrip({
           Pyramide
         </div>
         <div
-          className={`mt-1 flex items-end gap-1.5 ${pyramideLocked ? "blur-[2px]" : ""}`}
+          className={`mt-2 flex flex-col gap-1.5 ${pyramideLocked ? "blur-[2px]" : ""}`}
         >
-          {PYR_REKKEFOLGE.map((area, idx) => {
-            const size = 38 - idx * 4;
-            return (
+          {PYR_REKKEFOLGE.map((area) => (
+            <div key={area} className="flex items-center gap-2">
               <span
-                key={area}
-                className="flex flex-col items-center justify-center rounded-full text-[8px] font-bold leading-tight text-white"
-                style={{
-                  background: PYR_COLOR[area],
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  fontFamily: "var(--font-geist-mono)",
-                }}
+                className="w-8 shrink-0 font-mono text-[9px] font-semibold text-muted-foreground"
               >
-                <span>{PYR_LABEL_KORT[area]}</span>
-                <span className="text-[7px] font-medium">
-                  {pyramide[area]}
-                </span>
+                {PYR_LABEL_KORT[area]}
               </span>
-            );
-          })}
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${Math.min(pyramide[area], 100)}%`,
+                    background: PYR_COLOR[area],
+                  }}
+                />
+              </div>
+              <span className="w-6 shrink-0 text-right font-mono text-[9px] tabular-nums text-muted-foreground">
+                {pyramide[area]}%
+              </span>
+            </div>
+          ))}
         </div>
         {!pyramideLocked && (
           <div className="mt-auto font-mono text-xs text-muted-foreground">
