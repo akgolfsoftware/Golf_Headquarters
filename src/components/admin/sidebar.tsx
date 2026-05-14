@@ -14,6 +14,7 @@ const ALL_NAV_GROUPS: { label: string; items: NavItem[] }[] = [
       { href: "/admin", label: "Hub" },
       { href: "/admin/agencyos", label: "AgencyOS" },
       { href: "/admin/calendar", label: "Kalender" },
+      { href: "/admin/foresporsler", label: "Forespørsler" },
     ],
   },
   {

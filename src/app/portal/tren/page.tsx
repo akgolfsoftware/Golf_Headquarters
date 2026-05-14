@@ -8,6 +8,7 @@
 
 import Link from "next/link";
 import {
+  Bell,
   Calendar,
   CheckCircle2,
   ChevronRight,
@@ -94,6 +95,35 @@ export default async function TrenPlanPage() {
   const now = new Date();
   const ukestart = startOfIsoWeek(now);
   const ukeslutt = endOfIsoWeek(now);
+
+  // Hent planer som venter på spillerens godkjenning
+  const pendingRaw = await prisma.trainingPlan.findMany({
+    where: { userId: user.id, status: "PENDING_PLAYER" },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      startDate: true,
+      endDate: true,
+      createdById: true,
+      _count: { select: { sessions: true } },
+    },
+  });
+
+  // Hent coach-navn for planene som har createdById
+  const coachIds = [...new Set(pendingRaw.map((p) => p.createdById).filter(Boolean))] as string[];
+  const coacher = coachIds.length
+    ? await prisma.user.findMany({
+        where: { id: { in: coachIds } },
+        select: { id: true, name: true },
+      })
+    : [];
+  const coachMap = Object.fromEntries(coacher.map((c) => [c.id, c.name]));
+
+  const pendingPlaner = pendingRaw.map((p) => ({
+    ...p,
+    coachNavn: p.createdById ? (coachMap[p.createdById] ?? null) : null,
+  }));
 
   // Hent spillerens aktive plan og økter
   const aktivPlan = await prisma.trainingPlan.findFirst({
@@ -246,6 +276,44 @@ export default async function TrenPlanPage() {
           </>
         }
       />
+
+      {/* Planer som venter på godkjenning */}
+      {pendingPlaner.length > 0 && (
+        <section className="space-y-3">
+          {pendingPlaner.map((plan) => (
+            <Link
+              key={plan.id}
+              href={`/portal/coach/plans/${plan.id}`}
+              className="group flex items-start gap-4 rounded-xl border border-primary/40 bg-primary/5 px-5 py-4 transition-colors hover:bg-primary/10"
+            >
+              <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary/15 text-primary">
+                <Bell className="h-4 w-4" strokeWidth={1.75} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-primary px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-primary-foreground">
+                    Ny plan
+                  </span>
+                  <p className="font-semibold text-foreground">{plan.name}</p>
+                </div>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {plan.coachNavn ?? "Coach"} har sendt deg en treningsplan
+                  {plan.endDate
+                    ? ` · ${formaterDag(plan.startDate)} – ${formaterDag(plan.endDate)}`
+                    : ""}
+                  {" · "}
+                  {plan._count.sessions} økt{plan._count.sessions === 1 ? "" : "er"}
+                </p>
+              </div>
+              <ChevronRight
+                size={16}
+                strokeWidth={1.5}
+                className="mt-1 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+              />
+            </Link>
+          ))}
+        </section>
+      )}
 
       {ingenPlanOgIngenOkter ? (
         <EmptyState

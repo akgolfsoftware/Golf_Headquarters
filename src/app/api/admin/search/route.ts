@@ -57,6 +57,7 @@ const ROUTES: Omit<SearchRoute, "id">[] = [
   { label: "Plans", description: "Treningsplaner og periodisering", href: "/admin/plans" },
   { label: "Kalender", description: "Uke-kalender og timebooking", href: "/admin/calendar" },
   { label: "Bookinger", description: "Alle bookinger og status", href: "/admin/bookings" },
+  { label: "Forespørsler", description: "Økt-forespørsler fra spillere", href: "/admin/foresporsler" },
   { label: "Økonomi", description: "Inntekt, utestående og fakturaer", href: "/admin/finance" },
   { label: "Innstillinger", description: "Personlig og system-innstillinger", href: "/admin/innstillinger" },
   { label: "Godkjenninger", description: "Plan-aksjoner og agent-inbox", href: "/admin/godkjenninger" },
