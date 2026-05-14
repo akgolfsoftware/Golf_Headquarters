@@ -107,7 +107,7 @@ export function FeedbackModal({
             aria-labelledby="feedback-modal-title"
             className="w-full max-w-lg rounded-lg border border-border bg-card p-6 shadow-xl"
           >
-            <div className="mb-4 flex items-start justify-between gap-3">
+            <div className="mb-4 flex items-start justify-between gap-4">
               <div>
                 <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   Coach-feedback · {playerName}
@@ -154,7 +154,7 @@ export function FeedbackModal({
               maxLength={2000}
               rows={6}
               placeholder="Skriv kort hva du så, hva som var bra og hva som er fokus til neste økt."
-              className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
+              className="w-full resize-none rounded-md border border-input bg-background px-4 py-2 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
             />
             <div className="mt-1.5 flex items-center justify-between font-mono text-[10px] text-muted-foreground">
               <span>Maks 2000 tegn</span>
@@ -164,13 +164,13 @@ export function FeedbackModal({
             {feil && (
               <p
                 role="alert"
-                className="mt-3 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-[12px] text-destructive"
+                className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-[12px] text-destructive"
               >
                 {feil}
               </p>
             )}
 
-            <div className="mt-5 flex items-center justify-end gap-2">
+            <div className="mt-6 flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setOpen(false)}

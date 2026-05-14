@@ -98,7 +98,7 @@ export default async function FinanceAdmin() {
         titleTrail="i driften."
         sub="Estimater basert på aktive abonnement · Faktiske beløp i Stripe"
         actions={
-          <div className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm">
+          <div className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm">
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Periode
             </span>
@@ -142,8 +142,8 @@ export default async function FinanceAdmin() {
       </section>
 
       {/* SISTE BETALINGER */}
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-baseline justify-between gap-3">
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-4">
           <h3 className="font-display text-lg font-semibold tracking-tight">
             Siste{" "}
             <em className="font-normal italic text-primary">betalinger</em>
@@ -231,8 +231,8 @@ export default async function FinanceAdmin() {
       </section>
 
       {/* TABELL */}
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-baseline justify-between gap-3">
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-4">
           <h3 className="font-display text-lg font-semibold tracking-tight">
             Siste{" "}
             <em className="font-normal italic text-primary">
@@ -272,7 +272,7 @@ export default async function FinanceAdmin() {
                       className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
                     >
                       <Td>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-4">
                           <Avatar name={s.user.name} />
                           <div className="min-w-0">
                             <div className="truncate font-medium text-foreground">
@@ -318,7 +318,7 @@ export default async function FinanceAdmin() {
                   key={s.id}
                   className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4 shadow-sm"
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-4">
                     <Avatar name={s.user.name} />
                     <div className="min-w-0 flex-1">
                       <div className="truncate font-medium text-foreground">
@@ -370,7 +370,7 @@ function HeroKpi({
   // Mørk hero-KPI med gradient — én av de tre "lime" highlight-punktene.
   return (
     <div
-      className="relative overflow-hidden rounded-xl border border-foreground/40 bg-foreground p-5 shadow-sm sm:col-span-2 lg:col-span-1 dark:bg-card"
+      className="relative overflow-hidden rounded-xl border border-foreground/40 bg-foreground p-6 shadow-sm sm:col-span-2 lg:col-span-1 dark:bg-card"
     >
       <div
         className="flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.06em]"
@@ -557,7 +557,7 @@ function PaymentStatusPill({ status }: { status: string }) {
 
 function Th({ children }: { children: React.ReactNode }) {
   return (
-    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+    <th className="px-4 py-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
       {children}
     </th>
   );
@@ -570,5 +570,5 @@ function Td({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <td className={`px-4 py-3 ${className}`}>{children}</td>;
+  return <td className={`px-4 py-4 ${className}`}>{children}</td>;
 }

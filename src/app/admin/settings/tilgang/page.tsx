@@ -36,7 +36,7 @@ export default async function TilgangPage() {
         sub="Hvilke handlinger hver rolle kan utføre i plattformen."
       />
 
-      <div className="flex items-start gap-3 rounded-lg border border-border bg-secondary/40 p-4">
+      <div className="flex items-start gap-4 rounded-lg border border-border bg-secondary/40 p-4">
         <Info
           className="h-5 w-5 shrink-0 text-muted-foreground"
           strokeWidth={1.8}
@@ -54,13 +54,13 @@ export default async function TilgangPage() {
             <table className="w-full min-w-[640px] text-sm">
               <thead className="border-b border-border bg-secondary/40 text-left">
                 <tr>
-                  <th className="px-4 py-3 text-left font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  <th className="px-4 py-4 text-left font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     Capability
                   </th>
                   {ROLLER.map((rolle) => (
                     <th
                       key={rolle}
-                      className="px-4 py-3 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+                      className="px-4 py-4 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
                     >
                       {rolle}
                     </th>
@@ -73,7 +73,7 @@ export default async function TilgangPage() {
                     key={cap}
                     className="border-b border-border/60 last:border-0"
                   >
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-4 py-4 text-sm">
                       <div className="font-semibold">
                         {CAPABILITY_BESKRIVELSE[cap]}
                       </div>
@@ -86,7 +86,7 @@ export default async function TilgangPage() {
                       return (
                         <td
                           key={rolle}
-                          className="px-4 py-3 text-center"
+                          className="px-4 py-4 text-center"
                           aria-label={ok ? "Tillatt" : "Ikke tillatt"}
                         >
                           {ok ? (
@@ -112,7 +112,7 @@ export default async function TilgangPage() {
       </section>
 
       <section className="rounded-lg border border-border bg-card p-6">
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-4">
           <Shield
             className="h-5 w-5 shrink-0 text-primary"
             strokeWidth={1.8}

@@ -76,7 +76,7 @@ export default async function CaddieTabPage() {
         titleItalic="assistent"
         sub="Regler, kilder og direkte chat. Caddie holder dagen din i drift."
         actions={
-          <span className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card px-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <span className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card px-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             <span className="h-2 w-2 rounded-full bg-primary" /> Aktiv · siste sync nettopp
           </span>
         }
@@ -85,7 +85,7 @@ export default async function CaddieTabPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Chat */}
         <section className="rounded-lg border border-border bg-card lg:col-span-2">
-          <div className="flex items-baseline justify-between border-b border-border px-5 py-3">
+          <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
             <h2 className="flex items-center gap-2 font-display text-base font-semibold tracking-tight">
               <MessageCircle className="h-4 w-4 text-primary" /> Direkte med <em>Caddie</em>
             </h2>
@@ -100,7 +100,7 @@ export default async function CaddieTabPage() {
         <aside className="space-y-6">
           {/* Regler */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-5 py-3">
+            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
               <h3 className="font-display text-sm font-semibold tracking-tight">
                 Regler
               </h3>
@@ -110,7 +110,7 @@ export default async function CaddieTabPage() {
             </div>
             <ul className="divide-y divide-border">
               {REGLER.map((r) => (
-                <li key={r.id} className="flex items-center gap-3 px-5 py-3">
+                <li key={r.id} className="flex items-center gap-4 px-6 py-4">
                   <div className="min-w-0 flex-1">
                     <div className="text-xs text-foreground">{r.txt}</div>
                   </div>
@@ -142,14 +142,14 @@ export default async function CaddieTabPage() {
                 </li>
               ))}
             </ul>
-            <div className="border-t border-border px-5 py-3 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <div className="border-t border-border px-6 py-4 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Regelmotor kommer V1.5
             </div>
           </section>
 
           {/* Kilder */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-5 py-3">
+            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
               <h3 className="font-display text-sm font-semibold tracking-tight">Tilkoblinger</h3>
               <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 ADMIN
@@ -157,7 +157,7 @@ export default async function CaddieTabPage() {
             </div>
             <ul className="divide-y divide-border">
               {kilder.map((k) => (
-                <li key={k.app} className="flex items-center gap-3 px-5 py-3">
+                <li key={k.app} className="flex items-center gap-4 px-6 py-4">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-secondary">
                     <k.icon className="h-4 w-4 text-foreground" />
                   </div>
@@ -178,7 +178,7 @@ export default async function CaddieTabPage() {
             </ul>
           </section>
 
-          <section className="rounded-lg border border-accent/30 bg-accent/5 p-5">
+          <section className="rounded-lg border border-accent/30 bg-accent/5 p-6">
             <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-accent-foreground">
               <Sparkles className="h-3 w-3" /> Snart
             </div>

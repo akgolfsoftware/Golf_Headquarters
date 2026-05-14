@@ -124,7 +124,7 @@ export default async function ForelderHjem() {
           aria-labelledby="krever-oppmerksomhet"
           className="rounded-xl border border-destructive/30 bg-destructive/5 p-4"
         >
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-4">
             <AlertTriangle
               className="h-5 w-5 flex-shrink-0 text-destructive"
               strokeWidth={1.75}
@@ -299,7 +299,7 @@ export default async function ForelderHjem() {
                 return (
                   <li
                     key={p.id}
-                    className="flex items-center justify-between gap-4 px-6 py-3 text-sm"
+                    className="flex items-center justify-between gap-4 px-6 py-4 text-sm"
                   >
                     <div className="min-w-0">
                       <div className="truncate font-semibold">
@@ -310,12 +310,12 @@ export default async function ForelderHjem() {
                         {NB_KORT.format(p.createdAt)}
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                       <span className="font-mono text-sm font-semibold tabular-nums">
                         {ore(p.amountOre)}
                       </span>
                       <span
-                        className={`rounded-full px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
+                        className={`rounded-full px-4 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
                           betalt
                             ? "bg-primary/10 text-primary"
                             : failed

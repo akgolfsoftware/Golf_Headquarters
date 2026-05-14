@@ -193,7 +193,7 @@ export function PlanWizard({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-card px-4 py-4">
         <div>
           {valgtMalNavn ? (
             <p className="text-sm text-foreground">
@@ -215,7 +215,7 @@ export function PlanWizard({
           type="button"
           onClick={() => setMalModalOpen(true)}
           disabled={pending || maler.length === 0}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-4 py-2 text-xs font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
         >
           <LayoutTemplate className="h-3.5 w-3.5" strokeWidth={1.8} />
           {maler.length === 0 ? "Ingen maler tilgjengelig" : "Start fra mal"}
@@ -277,7 +277,7 @@ export function PlanWizard({
       </div>
 
       {(stegFeil || serverFeil) && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+        <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-4 text-sm text-destructive">
           {serverFeil ?? stegFeil}
         </div>
       )}
@@ -362,7 +362,7 @@ function StartFraMalModal({
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-2xl rounded-2xl border border-border bg-card p-6 shadow-2xl"
       >
-        <div className="mb-5 flex items-start justify-between">
+        <div className="mb-6 flex items-start justify-between">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Start fra mal
@@ -398,7 +398,7 @@ function StartFraMalModal({
                 type="button"
                 onClick={() => onVelg(m.id)}
                 disabled={pending}
-                className="flex w-full items-start justify-between gap-3 rounded-lg border border-border bg-background p-4 text-left transition-colors hover:border-primary hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex w-full items-start justify-between gap-4 rounded-lg border border-border bg-background p-4 text-left transition-colors hover:border-primary hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-display text-base font-semibold text-foreground">
@@ -438,7 +438,7 @@ function ProgressStripe({ current }: { current: StegNr }) {
         return (
           <div
             key={navn}
-            className={`relative rounded-lg bg-card px-3 py-2.5 ${
+            className={`relative rounded-lg bg-card px-4 py-2.5 ${
               isCurrent ? "border-2 border-accent" : "border border-border"
             }`}
           >
@@ -490,7 +490,7 @@ function Steg1Spiller({
   onVelg: (id: string) => void;
 }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Steg 1
@@ -521,7 +521,7 @@ function Steg1Spiller({
               key={sp.id}
               type="button"
               onClick={() => onVelg(sp.id)}
-              className={`flex items-center gap-3 rounded-lg p-3 text-left transition-colors ${
+              className={`flex items-center gap-4 rounded-lg p-4 text-left transition-colors ${
                 valgt
                   ? "border-2 border-accent bg-accent/10"
                   : "border border-border hover:bg-secondary"
@@ -577,7 +577,7 @@ function Steg2Periode({
   antallUker: number;
 }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Steg 2
@@ -627,7 +627,7 @@ function Steg2Periode({
         </div>
       </div>
 
-      <div className="rounded-md border border-border bg-secondary/40 px-4 py-3 text-sm">
+      <div className="rounded-md border border-border bg-secondary/40 px-4 py-4 text-sm">
         <span className="font-medium text-muted-foreground">Varighet: </span>
         <span className="font-mono font-semibold tabular-nums">
           {antallUker} {antallUker === 1 ? "uke" : "uker"}
@@ -649,7 +649,7 @@ function Steg3Faser({
   onToggle: (f: PlanFase) => void;
 }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Steg 3
@@ -737,7 +737,7 @@ function Steg4Allokering({
 }) {
   const ok = sum === 100;
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Steg 4
@@ -756,9 +756,9 @@ function Steg4Allokering({
           return (
             <div
               key={key}
-              className="border-b border-border py-3 last:border-b-0"
+              className="border-b border-border py-4 last:border-b-0"
             >
-              <div className="grid grid-cols-[100px_1fr_60px] items-center gap-3">
+              <div className="grid grid-cols-[100px_1fr_60px] items-center gap-4">
                 <div>
                   <div className="text-sm font-semibold leading-none">{navn}</div>
                   <div className="mt-1 text-xs leading-none text-muted-foreground">
@@ -797,7 +797,7 @@ function Steg4Allokering({
           </div>
         </div>
         {ok && (
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-1.5 text-xs font-medium text-accent-foreground">
             <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
             Klar
           </div>
@@ -823,7 +823,7 @@ function Steg5Skjema({
   totalOkter: number;
 }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Steg 5
@@ -870,7 +870,7 @@ function Steg5Skjema({
         </div>
       </div>
 
-      <div className="rounded-md border border-border bg-secondary/40 px-4 py-3 text-sm">
+      <div className="rounded-md border border-border bg-secondary/40 px-4 py-4 text-sm">
         Total: <span className="font-mono font-semibold tabular-nums">{totalOkter}</span> økter over{" "}
         <span className="font-mono font-semibold tabular-nums">{antallUker}</span>{" "}
         {antallUker === 1 ? "uke" : "uker"} ·{" "}
@@ -909,7 +909,7 @@ function Steg6Bekreft({
   totalOkter: number;
 }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Steg 6
@@ -975,7 +975,7 @@ function Oppsummering({
 }) {
   return (
     <div className="rounded-lg border border-border bg-card p-4">
-      <h3 className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+      <h3 className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {tittel}
       </h3>
       <div>{children}</div>

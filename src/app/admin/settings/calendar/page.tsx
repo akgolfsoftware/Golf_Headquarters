@@ -30,13 +30,13 @@ export default async function CalendarSettings({
       />
 
       {ok === "1" && (
-        <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
+        <div className="flex items-start gap-4 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
           <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-primary" strokeWidth={1.75} />
           <span>Google Calendar er koblet til.</span>
         </div>
       )}
       {error && (
-        <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="flex items-start gap-4 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
           <AlertCircle className="h-5 w-5 flex-shrink-0" strokeWidth={1.75} />
           <span>Kobling feilet: {error.replace(/-/g, " ")}</span>
         </div>
@@ -44,7 +44,7 @@ export default async function CalendarSettings({
 
       {conn ? (
         <section className="rounded-2xl border border-border bg-card p-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
               <CalendarCheck className="h-5 w-5" strokeWidth={1.75} />
             </span>
@@ -58,7 +58,7 @@ export default async function CalendarSettings({
             </div>
           </div>
 
-          <dl className="mt-6 space-y-3 text-sm">
+          <dl className="mt-6 space-y-4 text-sm">
             <Rad label="Kalender" value={conn.calendarId} />
             <Rad label="Status" value={conn.status} />
             <Rad
@@ -77,7 +77,7 @@ export default async function CalendarSettings({
             )}
           </dl>
 
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-6 flex items-center gap-4">
             <Link
               href="/api/google-calendar/connect"
               className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground hover:border-border"
@@ -102,7 +102,7 @@ export default async function CalendarSettings({
           </p>
           <Link
             href="/api/google-calendar/connect"
-            className="mt-6 inline-block rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            className="mt-6 inline-block rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
             Koble til Google Calendar
           </Link>
@@ -113,7 +113,7 @@ export default async function CalendarSettings({
         <h3 className="font-display text-base font-semibold tracking-tight">
           Slik fungerer det
         </h3>
-        <ol className="mt-3 space-y-2 text-sm text-muted-foreground">
+        <ol className="mt-4 space-y-2 text-sm text-muted-foreground">
           <li>
             <span className="font-mono text-foreground">1.</span> Når en spiller
             booker en time, sjekker vi Google Calendar for travle tider og
@@ -149,7 +149,7 @@ function Rad({
   error?: boolean;
 }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/40 pb-3 last:border-0 last:pb-0">
+    <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/40 pb-4 last:border-0 last:pb-0">
       <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </dt>

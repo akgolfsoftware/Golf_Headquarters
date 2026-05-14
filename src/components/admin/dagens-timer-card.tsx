@@ -30,8 +30,8 @@ export function DagensTimerCard({ timer }: { timer: DagensTime[] }) {
       ) : (
         <ul className="mt-4 divide-y divide-border">
           {timer.map((t) => (
-            <li key={t.id} className="py-3">
-              <div className="flex items-start justify-between gap-3">
+            <li key={t.id} className="py-4">
+              <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <Link
                     href={`/admin/elever/${t.userId}`}

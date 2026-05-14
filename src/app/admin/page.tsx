@@ -178,7 +178,7 @@ export default async function AdminHub() {
               <TrendingUp className="h-3 w-3" strokeWidth={2.5} />
               +4 vs i går
             </div>
-            <div className="flex items-center justify-between pt-3 font-mono text-[11px] text-background/55">
+            <div className="flex items-center justify-between pt-4 font-mono text-[11px] text-background/55">
               <span>{Math.max(0, totalSpillere - data.kpi.aktiveSpillere)} inaktive</span>
               <div className="flex">
                 {/* TODO: konsolider farge — dekorative avatar-bakgrunner. Vurder å bruke avatarBg() fra @/lib/avatar-colors. */}
@@ -296,7 +296,7 @@ export default async function AdminHub() {
       {/* BENTO */}
       <section className="grid gap-4 md:grid-cols-2">
         {/* Godkjenninger */}
-        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-gradient-to-br from-background to-secondary/40 p-6 shadow-sm dark:bg-card dark:bg-none">
+        <div className="flex flex-col gap-4 rounded-2xl border border-border bg-gradient-to-br from-background to-secondary/40 p-6 shadow-sm dark:bg-card dark:bg-none">
           <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-secondary text-foreground">
               <Check className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
@@ -313,7 +313,7 @@ export default async function AdminHub() {
             {godkjenninger.map((g) => (
               <div
                 key={g.id}
-                className="flex items-center gap-3 rounded-md border border-border bg-background p-3 text-sm"
+                className="flex items-center gap-4 rounded-md border border-border bg-background p-4 text-sm"
               >
                 <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${sevDotClass[g.severity]}`} />
                 <div
@@ -344,7 +344,7 @@ export default async function AdminHub() {
         </div>
 
         {/* Uleste meldinger */}
-        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
           <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-secondary text-foreground">
               <MessageSquare className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
@@ -387,7 +387,7 @@ export default async function AdminHub() {
       {/* BUNN-KPI */}
       <section className="grid gap-4 md:grid-cols-3">
         {/* Spillere uten plan */}
-        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
           <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-secondary text-foreground">
               <CircleAlert className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
@@ -403,7 +403,7 @@ export default async function AdminHub() {
           <div className="text-sm leading-snug text-muted-foreground">
             Lina H, Mads R, Henrik N, Sara V — alle Pro-tier.
           </div>
-          <div className="mt-auto flex items-center gap-3 pt-2">
+          <div className="mt-auto flex items-center gap-4 pt-2">
             <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-secondary">
               <div className="h-full rounded-full bg-pyr-spill" style={{ width: "11%" }} />
             </div>
@@ -421,7 +421,7 @@ export default async function AdminHub() {
         </div>
 
         {/* Tester forfaller */}
-        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
           <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-secondary text-foreground">
               <CircleCheck className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
@@ -456,7 +456,7 @@ export default async function AdminHub() {
         </div>
 
         {/* Utestående faktura */}
-        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
           <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-secondary text-foreground">
               <DollarSign className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />

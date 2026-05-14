@@ -84,7 +84,7 @@ export function NyBookingForm({ spillere, services, lokasjoner }: Props) {
 
   if (spillere.length === 0 || services.length === 0 || lokasjoner.length === 0) {
     return (
-      <div className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+      <div className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-4 text-sm text-destructive">
         Mangler{" "}
         {[
           spillere.length === 0 && "spillere",
@@ -206,7 +206,7 @@ export function NyBookingForm({ spillere, services, lokasjoner }: Props) {
 }
 
 const inputCls =
-  "w-full rounded-md border border-input bg-card px-3 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function Felt({
   label,

@@ -30,7 +30,7 @@ export function TabStrip({
             key={tab.key}
             href={`${basePath}?tab=${tab.key}`}
             aria-current={aktiv ? "page" : undefined}
-            className={`relative px-4 py-3 text-sm font-medium transition-colors ${
+            className={`relative px-4 py-4 text-sm font-medium transition-colors ${
               aktiv
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"

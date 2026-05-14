@@ -102,20 +102,20 @@ export default async function SpillereTabPage({
       />
 
       {/* Toolbar */}
-      <form className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card p-3">
+      <form className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card p-4">
         <input
           type="search"
           name="q"
           defaultValue={q}
           placeholder="Søk spiller, pakke eller fokus…"
-          className="h-9 min-w-[200px] flex-1 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          className="h-9 min-w-[200px] flex-1 rounded-md border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
         />
         <input type="hidden" name="filter" value={filter} />
         {filtere.map((f) => (
           <Link
             key={f.key}
             href={`/admin/agencyos/spillere?filter=${f.key}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
-            className={`inline-flex h-9 items-center gap-1 rounded-md border px-3 text-xs font-mono uppercase tracking-[0.10em] transition-colors ${
+            className={`inline-flex h-9 items-center gap-1 rounded-md border px-4 text-xs font-mono uppercase tracking-[0.10em] transition-colors ${
               filter === f.key
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-background text-muted-foreground hover:bg-secondary"
@@ -126,7 +126,7 @@ export default async function SpillereTabPage({
         ))}
         <button
           type="button"
-          className="ml-auto inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-xs font-semibold text-primary-foreground hover:opacity-90"
+          className="ml-auto inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-xs font-semibold text-primary-foreground hover:opacity-90"
           disabled
         >
           <Sparkles className="h-3 w-3" /> Be Caddie lage rapport
@@ -152,7 +152,7 @@ export default async function SpillereTabPage({
               {filtrert.map((r) => (
                 <tr key={r.id} className="border-t border-border/60 hover:bg-secondary/30">
                   <Td>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-[11px] font-semibold">
                         {r.initialer}
                       </div>
@@ -223,7 +223,7 @@ export default async function SpillereTabPage({
         <ul className="divide-y divide-border md:hidden">
           {filtrert.map((r) => (
             <li key={r.id} className="p-4">
-              <Link href={`/admin/elever/${r.id}`} className="flex items-center gap-3">
+              <Link href={`/admin/elever/${r.id}`} className="flex items-center gap-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-xs font-semibold">
                   {r.initialer}
                 </div>

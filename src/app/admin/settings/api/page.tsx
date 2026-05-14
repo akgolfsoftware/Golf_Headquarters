@@ -55,7 +55,7 @@ export default async function AdminApiKeysPage() {
       />
 
       <section className="rounded-lg border border-border bg-card">
-        <header className="flex items-center gap-3 border-b border-border px-6 py-4">
+        <header className="flex items-center gap-4 border-b border-border px-6 py-4">
           <h2 className="font-display text-base font-semibold tracking-tight">
             API-nøkler
           </h2>

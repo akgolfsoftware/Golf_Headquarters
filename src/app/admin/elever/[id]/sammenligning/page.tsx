@@ -100,7 +100,7 @@ export default async function SammenligningPage({
       {/* Spiller-velger */}
       <form
         method="GET"
-        className="flex flex-col gap-3 rounded-lg border border-border bg-card p-5 sm:flex-row sm:items-end"
+        className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6 sm:flex-row sm:items-end"
       >
         <label className="flex-1">
           <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -109,7 +109,7 @@ export default async function SammenligningPage({
           <select
             name="vs"
             defaultValue={vs ?? ""}
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
           >
             <option value="">— Velg spiller —</option>
             {alleSpillere.map((s) => (
@@ -122,7 +122,7 @@ export default async function SammenligningPage({
         </label>
         <button
           type="submit"
-          className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+          className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
         >
           Sammenlign
         </button>
@@ -202,7 +202,7 @@ function SpillerKolonne({
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      <div className="mt-6 grid grid-cols-2 gap-4">
         <StatRute label="HCP" verdi={formatHcp(hcp)} />
         <StatRute label="Runder totalt" verdi={String(antallRunder)} />
         <StatRute

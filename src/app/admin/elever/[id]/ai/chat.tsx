@@ -105,7 +105,7 @@ export function CoachAiChat({
                   key={f}
                   type="button"
                   onClick={() => setInput(f)}
-                  className="rounded-full border border-input bg-card px-3 py-1.5 text-xs hover:border-border"
+                  className="rounded-full border border-input bg-card px-4 py-1.5 text-xs hover:border-border"
                 >
                   {f}
                 </button>
@@ -119,7 +119,7 @@ export function CoachAiChat({
               className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm ${
+                className={`max-w-[85%] rounded-2xl px-4 py-4 text-sm ${
                   m.role === "user"
                     ? "bg-primary text-primary-foreground"
                     : "border border-border bg-muted/40 text-foreground"
@@ -147,7 +147,7 @@ export function CoachAiChat({
       {feil && (
         <div
           role="alert"
-          className="mx-6 mb-3 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
+          className="mx-6 mb-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
         >
           {feil}
         </div>
@@ -169,12 +169,12 @@ export function CoachAiChat({
           placeholder={`Spør AI om ${playerName}…`}
           rows={1}
           disabled={sender}
-          className="min-h-[44px] flex-1 resize-none rounded-md border border-input bg-card px-4 py-3 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="min-h-[44px] flex-1 resize-none rounded-md border border-input bg-card px-4 py-4 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
         />
         <button
           type="submit"
           disabled={sender || !input.trim()}
-          className="rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+          className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
         >
           {sender ? "…" : "Send"}
         </button>

@@ -59,11 +59,11 @@ export default async function EmailTemplatesAdmin() {
               </h3>
               <TemplateForm triggerLabel="Ny" />
             </div>
-            <div className="border-b border-border p-3">
+            <div className="border-b border-border p-4">
               <input
                 type="text"
                 placeholder="Søk maler…"
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-[12px] outline-none placeholder:text-muted-foreground"
+                className="w-full rounded-md border border-input bg-background px-4 py-2 text-[12px] outline-none placeholder:text-muted-foreground"
               />
             </div>
             <div>
@@ -75,7 +75,7 @@ export default async function EmailTemplatesAdmin() {
                   {mal.map((t) => (
                     <div
                       key={t.id}
-                      className="flex w-full items-center gap-3 border-b border-border px-4 py-3 last:border-b-0 hover:bg-secondary/30"
+                      className="flex w-full items-center gap-4 border-b border-border px-4 py-4 last:border-b-0 hover:bg-secondary/30"
                     >
                       <span
                         className={`h-8 w-1 rounded-full ${
@@ -143,18 +143,18 @@ export default async function EmailTemplatesAdmin() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-3 p-5">
-                  <div className="grid grid-cols-[80px_1fr] items-center gap-3">
+                <div className="flex flex-col gap-4 p-6">
+                  <div className="grid grid-cols-[80px_1fr] items-center gap-4">
                     <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                       Emne
                     </span>
-                    <div className="rounded-md border border-input bg-background px-3 py-2 text-[12px] text-foreground">
+                    <div className="rounded-md border border-input bg-background px-4 py-2 text-[12px] text-foreground">
                       {t.subject}
                     </div>
                   </div>
 
                   <details className="overflow-hidden rounded-md border border-border">
-                    <summary className="cursor-pointer bg-secondary/40 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground hover:text-foreground">
+                    <summary className="cursor-pointer bg-secondary/40 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground hover:text-foreground">
                       Vis innhold
                     </summary>
                     <pre className="whitespace-pre-wrap bg-background p-4 font-mono text-[12px] leading-relaxed text-foreground">
@@ -163,7 +163,7 @@ export default async function EmailTemplatesAdmin() {
                   </details>
                 </div>
 
-                <div className="flex items-center justify-between border-t border-border px-5 py-3">
+                <div className="flex items-center justify-between border-t border-border px-6 py-4">
                   <span className="font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground">
                     Opprettet{" "}
                     {t.createdAt.toLocaleDateString("nb-NO", {
@@ -175,7 +175,7 @@ export default async function EmailTemplatesAdmin() {
                   {/* TODO: Sending-statistikk og forhåndsvisning */}
                   <button
                     type="button"
-                    className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-[12px] font-medium text-muted-foreground"
+                    className="inline-flex items-center gap-1 rounded-md border border-border px-4 py-1.5 text-[12px] font-medium text-muted-foreground"
                     disabled
                   >
                     <Plus className="h-3 w-3" strokeWidth={2} />

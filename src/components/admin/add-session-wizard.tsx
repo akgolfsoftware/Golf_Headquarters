@@ -249,7 +249,7 @@ export function AddSessionWizard({
           tittel="Når og hvor lenge?"
           ingress="Velg dato, klokkeslett og varighet."
         >
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <Felt label="Dato">
               <input
                 type="date"
@@ -382,13 +382,13 @@ export function AddSessionWizard({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Søk drill…"
-                className={`${inputCss} pl-9`}
+                className={`${inputCss} pl-10`}
               />
             </div>
             <button
               type="button"
               onClick={() => setOpprettDrillAapen(true)}
-              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-4 py-3 text-sm font-medium hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-4 py-4 text-sm font-medium hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Plus className="h-4 w-4" strokeWidth={1.5} />
               Ny drill
@@ -417,7 +417,7 @@ export function AddSessionWizard({
                     key={e.id}
                     type="button"
                     onClick={() => toggleDrill(e)}
-                    className={`rounded-md border p-3 text-left transition-colors ${
+                    className={`rounded-md border p-4 text-left transition-colors ${
                       aktiv
                         ? "border-primary bg-primary/5"
                         : "border-input bg-card hover:border-border"
@@ -515,7 +515,7 @@ export function AddSessionWizard({
 
       {step === 8 && (
         <Bolk tittel="Bekreft" ingress="Sjekk at alt stemmer før du lagrer.">
-          <dl className="space-y-3 rounded-lg border border-border bg-card p-6 text-sm">
+          <dl className="space-y-4 rounded-lg border border-border bg-card p-6 text-sm">
             <Rad label="Dato og tid">
               {new Date(`${dato}T${tid}:00`).toLocaleString("nb-NO", {
                 dateStyle: "medium",
@@ -535,19 +535,19 @@ export function AddSessionWizard({
       {error && (
         <div
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-4 text-sm text-destructive"
         >
           {error}
         </div>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex gap-4">
         {step > 1 && (
           <button
             type="button"
             onClick={tilbake}
             disabled={pending}
-            className="rounded-md border border-input bg-card px-5 py-3 text-sm font-medium text-foreground hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+            className="rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
           >
             Tilbake
           </button>
@@ -557,7 +557,7 @@ export function AddSessionWizard({
             type="button"
             onClick={onCancel}
             disabled={pending}
-            className="rounded-md border border-input bg-card px-5 py-3 text-sm font-medium text-muted-foreground hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-muted-foreground hover:border-border active:border-border/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Avbryt
           </button>
@@ -566,7 +566,7 @@ export function AddSessionWizard({
           type="button"
           onClick={neste}
           disabled={pending}
-          className="ml-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
+          className="ml-auto rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
         >
           {pending
             ? "Lagrer…"
@@ -652,11 +652,11 @@ export { oppdaterOkt };
 /* ============== Interne bygge-blokker ============== */
 
 const inputCss =
-  "w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-md border border-input bg-card px-4 py-4 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function StegIndikator({ n, total }: { n: number; total: number }) {
   return (
-    <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+    <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
       <span>
         Steg {n} av {total}
       </span>
@@ -725,7 +725,7 @@ function Rad({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-baseline justify-between gap-3 border-b border-border/40 pb-2 last:border-0 last:pb-0">
+    <div className="flex items-baseline justify-between gap-4 border-b border-border/40 pb-2 last:border-0 last:pb-0">
       <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </dt>
@@ -755,7 +755,7 @@ function Kort({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-md border px-3 py-4 text-center transition-colors ${
+      className={`rounded-md border px-4 py-4 text-center transition-colors ${
         aktiv
           ? "border-primary bg-primary/5"
           : "border-input bg-card hover:border-border"
@@ -789,10 +789,10 @@ function NyDrillSkjema({
 
   return (
     <div className="rounded-md border border-dashed border-primary/40 bg-primary/5 p-4">
-      <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+      <div className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         Opprett drill — {PYRAMIDE_LABEL[pyramidArea]} · {LPHASE_LABEL[lPhase]}
       </div>
-      <div className="space-y-3">
+      <div className="space-y-4">
         <input
           type="text"
           value={navn}

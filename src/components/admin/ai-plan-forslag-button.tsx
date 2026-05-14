@@ -92,7 +92,7 @@ export function AiPlanForslagButton({ playerId, fokusOmrader }: Props) {
               {feil && <p className="text-destructive">{feil}</p>}
               {forslag && <p>{forslag}</p>}
             </div>
-            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Dette er en skisse — bruk AI-coach-panelet under for full generering med revisjon.
             </p>
             <div className="mt-4 flex justify-end">

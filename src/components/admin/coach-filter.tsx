@@ -45,7 +45,7 @@ export function CoachFilter({ coaches }: Props) {
         value={valgt}
         onChange={handleChange}
         disabled={pending}
-        className="rounded-md border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:border-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+        className="rounded-md border border-border bg-card px-4 py-1.5 text-sm text-foreground focus:border-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
       >
         <option value="alle">Alle coacher</option>
         {coaches.map((c) => (

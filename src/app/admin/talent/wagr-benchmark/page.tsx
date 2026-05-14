@@ -78,7 +78,7 @@ export default async function WagrBenchmarkPage() {
           {Object.entries(KATEGORI_INFO).map(([kat, info]) => (
             <div
               key={kat}
-              className="rounded-md border border-border bg-secondary/30 p-3"
+              className="rounded-md border border-border bg-secondary/30 p-4"
             >
               <div className="flex items-baseline justify-between">
                 <span className="font-display text-lg font-semibold">{kat}</span>
@@ -241,7 +241,7 @@ function Th({
 }) {
   return (
     <th
-      className={`px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground text-${align}`}
+      className={`px-4 py-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground text-${align}`}
     >
       {children}
     </th>
@@ -258,7 +258,7 @@ function Td({
   className?: string;
 }) {
   return (
-    <td className={`px-4 py-3 text-${align} ${className}`}>{children}</td>
+    <td className={`px-4 py-4 text-${align} ${className}`}>{children}</td>
   );
 }
 

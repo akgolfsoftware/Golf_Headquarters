@@ -62,7 +62,7 @@ export function MessagesInbox({
   return (
     <section className="flex flex-col overflow-hidden border-r border-border bg-card">
       <div className="border-b border-border px-4 pb-4 pt-4">
-        <div className="flex h-9 items-center gap-2 rounded-md border border-border bg-secondary px-3 text-[13px] text-muted-foreground">
+        <div className="flex h-9 items-center gap-2 rounded-md border border-border bg-secondary px-4 text-[13px] text-muted-foreground">
           <Search size={14} strokeWidth={1.5} />
           <input
             type="text"
@@ -73,7 +73,7 @@ export function MessagesInbox({
           />
         </div>
       </div>
-      <div className="flex gap-1 border-b border-border px-3 py-2">
+      <div className="flex gap-1 border-b border-border px-4 py-2">
         <FilterLink filter="alle" aktivt={aktivtFilter} count={antallAlle}>
           Alle
         </FilterLink>
@@ -95,7 +95,7 @@ export function MessagesInbox({
               key={t.id}
               href={`/admin/messages?thread=${t.id}${aktivtFilter !== "alle" ? `&filter=${aktivtFilter}` : ""}`}
               scroll={false}
-              className={`relative grid grid-cols-[36px_1fr] gap-3 border-b border-border px-4 py-3 transition-colors hover:bg-secondary ${
+              className={`relative grid grid-cols-[36px_1fr] gap-4 border-b border-border px-4 py-4 transition-colors hover:bg-secondary ${
                 t.id === aktivId
                   ? "bg-secondary shadow-[inset_3px_0_0_var(--color-primary)]"
                   : ""

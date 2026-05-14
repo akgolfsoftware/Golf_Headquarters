@@ -125,11 +125,11 @@ export function AdminMobileDrawer() {
             </div>
             <nav
               aria-label="Hovednavigasjon"
-              className="flex-1 space-y-5 overflow-y-auto px-3 pb-6"
+              className="flex-1 space-y-6 overflow-y-auto px-4 pb-6"
             >
               {NAV_GROUPS.map((group) => (
                 <div key={group.label}>
-                  <div className="px-3 pb-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-white/40">
+                  <div className="px-4 pb-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-white/40">
                     {group.label}
                   </div>
                   <div className="space-y-0.5">
@@ -143,7 +143,7 @@ export function AdminMobileDrawer() {
                           href={n.href}
                           onClick={() => setOpen(false)}
                           aria-current={aktiv ? "page" : undefined}
-                          className={`block min-h-11 rounded-md px-3 py-2.5 text-base transition-colors ${
+                          className={`block min-h-11 rounded-md px-4 py-2.5 text-base transition-colors ${
                             aktiv
                               ? "bg-white/10 font-semibold text-white"
                               : "text-white/70 hover:bg-white/5 hover:text-white"

@@ -211,7 +211,7 @@ export default async function GruppeDetalj({
                       <p className="text-sm text-muted-foreground">{s.description}</p>
                     )}
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
                     <ScheduleForm
                       groupId={group.id}
                       triggerLabel="Rediger"

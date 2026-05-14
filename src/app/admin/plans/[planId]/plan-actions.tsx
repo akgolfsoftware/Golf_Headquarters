@@ -217,7 +217,7 @@ export function PlanActions({
             type="button"
             onClick={slett}
             disabled={pending}
-            className="inline-flex items-center gap-2 rounded-md border border-destructive/40 bg-card px-3 py-2 text-[13px] font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-md border border-destructive/40 bg-card px-4 py-2 text-[13px] font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-60"
             aria-label="Slett plan"
           >
             <Trash2 className="h-4 w-4" strokeWidth={1.5} />
@@ -320,7 +320,7 @@ function KopierPlanModal({
       className="w-full max-w-xl rounded-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40"
     >
       <form onSubmit={lagre} className="p-6">
-        <div className="mb-5 flex items-start justify-between">
+        <div className="mb-6 flex items-start justify-between">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Kopier plan
@@ -356,7 +356,7 @@ function KopierPlanModal({
               Velg mottaker
             </span>
             {valgtSpiller ? (
-              <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-secondary/40 px-3 py-2">
+              <div className="flex items-center justify-between gap-4 rounded-md border border-border bg-secondary/40 px-4 py-2">
                 <div className="flex min-w-0 items-center gap-2 text-sm">
                   <UserPlus
                     className="h-4 w-4 shrink-0 text-primary"
@@ -395,14 +395,14 @@ function KopierPlanModal({
                     value={sok}
                     onChange={(e) => setSok(e.target.value)}
                     placeholder="Søk på navn eller klubb…"
-                    className="w-full rounded-md border border-input bg-card py-2 pl-8 pr-3 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                    className="w-full rounded-md border border-input bg-card py-2 pl-8 pr-4 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
                     autoComplete="off"
                   />
                 </div>
 
                 <div className="mt-2 max-h-56 overflow-y-auto rounded-md border border-border bg-background">
                   {filtrerteSpillere.length === 0 ? (
-                    <div className="px-3 py-4 text-center text-sm text-muted-foreground">
+                    <div className="px-4 py-4 text-center text-sm text-muted-foreground">
                       Ingen spillere matcher søket.
                     </div>
                   ) : (
@@ -412,7 +412,7 @@ function KopierPlanModal({
                           <button
                             type="button"
                             onClick={() => setValgtSpiller(s)}
-                            className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm transition-colors hover:bg-secondary"
+                            className="flex w-full items-center justify-between gap-4 px-4 py-2 text-left text-sm transition-colors hover:bg-secondary"
                           >
                             <span className="flex min-w-0 items-center gap-2">
                               <UserPlus
@@ -451,7 +451,7 @@ function KopierPlanModal({
               value={nyNavn}
               onChange={(e) => setNyNavn(e.target.value)}
               placeholder={`Kopi av ${originalPlanNavn}`}
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+              className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
               maxLength={200}
               required
             />
@@ -527,7 +527,7 @@ function LagreSomMalModal({
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl"
       >
-        <div className="mb-5 flex items-start justify-between">
+        <div className="mb-6 flex items-start justify-between">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Lagre som mal
@@ -549,7 +549,7 @@ function LagreSomMalModal({
 
         {suksess ? (
           <div className="space-y-4">
-            <div className="rounded-md border border-primary/30 bg-primary/5 px-4 py-3 text-sm text-foreground">
+            <div className="rounded-md border border-primary/30 bg-primary/5 px-4 py-4 text-sm text-foreground">
               {suksess}
             </div>
             <button
@@ -587,7 +587,7 @@ function LagreSomMalModal({
             </div>
 
             {feil && (
-              <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-4 text-sm text-destructive">
                 {feil}
               </div>
             )}

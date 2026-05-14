@@ -30,7 +30,7 @@ export function CompletedSessions({
 
   return (
     <section className="rounded-lg border border-border bg-card p-6">
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+      <div className="mb-4 flex items-baseline justify-between gap-4">
         <div>
           <h3 className="font-display text-[16px] font-semibold leading-snug">
             Fullførte økter
@@ -64,7 +64,7 @@ export function CompletedSessions({
           return (
             <li
               key={s.id}
-              className="grid grid-cols-[64px_1fr_auto] items-center gap-3 py-2.5"
+              className="grid grid-cols-[64px_1fr_auto] items-center gap-4 py-2.5"
             >
               <div className="font-mono text-[11px] font-semibold leading-tight">
                 {dato}

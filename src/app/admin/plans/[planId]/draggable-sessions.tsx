@@ -267,7 +267,7 @@ export function DraggableSessions({
       </SortableContext>
       <DragOverlay>
         {activeSession ? (
-          <div className="rounded-md border border-border bg-card p-3 shadow-lg ring-2 ring-ring/40">
+          <div className="rounded-md border border-border bg-card p-4 shadow-lg ring-2 ring-ring/40">
             <SessionContent session={activeSession} dragging />
           </div>
         ) : null}

@@ -333,7 +333,7 @@ export default async function Profil360({
   return (
     <div className="space-y-6">
       {/* Hero */}
-      <header className="grid grid-cols-1 gap-5 border-b border-border pb-5 sm:grid-cols-[96px_1fr_auto] sm:items-center sm:gap-6">
+      <header className="grid grid-cols-1 gap-6 border-b border-border pb-6 sm:grid-cols-[96px_1fr_auto] sm:items-center sm:gap-6">
         <Avatar src={player.avatarUrl} initial={initial} />
         <div className="min-w-0">
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -370,7 +370,7 @@ export default async function Profil360({
             </p>
           )}
         </div>
-        <div className="flex gap-7 border-t border-border pt-4 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+        <div className="flex gap-8 border-t border-border pt-4 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
           <QuickStat label="HCP" value={formatHcp(player.hcp)} />
           <QuickStat
             label="SG 12u"
@@ -386,34 +386,34 @@ export default async function Profil360({
       </header>
 
       {/* Side-actions */}
-      <div className="flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-3 py-2.5">
+      <div className="flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-4 py-2.5">
         <span className="mr-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Spiller-handlinger
         </span>
         <Link
           href={`/admin/innboks?tab=meldinger&to=${player.id}`}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           <MessageSquare size={14} strokeWidth={1.5} />
           Send melding
         </Link>
         <Link
           href={`/admin/plans/new?player=${player.id}`}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           <ClipboardList size={14} strokeWidth={1.5} />
           Lag plan
         </Link>
         <Link
           href={`/admin/bookings/ny?player=${player.id}`}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           <CalendarPlus size={14} strokeWidth={1.5} />
           Avtale time
         </Link>
         <Link
           href={`/admin/elever/${player.id}/rediger`}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           <Pencil size={14} strokeWidth={1.5} />
           Rediger
@@ -427,7 +427,7 @@ export default async function Profil360({
       </div>
 
       {/* 4 stat-rich kort */}
-      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatRich
           label="HCP-trend"
           value={formatHcp(player.hcp)}
@@ -492,7 +492,7 @@ export default async function Profil360({
             Ingen loggførte økter siste 12 uker.
           </div>
         ) : (
-          <div className="grid grid-cols-1 items-center gap-9 md:grid-cols-[220px_1fr]">
+          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[220px_1fr]">
             <div className="mx-auto">
               <Donut gradient={donutGradient} totalHours={totalPyrHours} />
             </div>
@@ -514,7 +514,7 @@ export default async function Profil360({
       </section>
 
       {/* Heatmap */}
-      <section className="rounded-lg border border-border bg-card px-6 py-5">
+      <section className="rounded-lg border border-border bg-card px-6 py-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -554,7 +554,7 @@ export default async function Profil360({
       </section>
 
       {/* Tidslinje */}
-      <section className="rounded-lg border border-border bg-card px-6 py-5">
+      <section className="rounded-lg border border-border bg-card px-6 py-6">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -575,11 +575,11 @@ export default async function Profil360({
             Ingen registrerte hendelser ennå.
           </p>
         ) : (
-          <ol className="relative space-y-3 border-l border-border pl-5">
+          <ol className="relative space-y-4 border-l border-border pl-6">
             {timeline.map((item, i) => (
               <li key={i} className="relative">
                 <span className="absolute -left-[26px] top-1.5 h-2.5 w-2.5 rounded-full border border-border bg-card" />
-                <div className="flex items-baseline justify-between gap-3">
+                <div className="flex items-baseline justify-between gap-4">
                   <div className="min-w-0">
                     <div className="truncate text-[13px] font-medium text-foreground">
                       {item.label}
@@ -599,7 +599,7 @@ export default async function Profil360({
       </section>
 
       {/* Siste live-økter — fullførte med rep-logging fra LiveTapper */}
-      <section className="rounded-lg border border-border bg-card px-6 py-5">
+      <section className="rounded-lg border border-border bg-card px-6 py-6">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -646,7 +646,7 @@ export default async function Profil360({
               return (
                 <li
                   key={s.id}
-                  className="grid grid-cols-[72px_1fr_auto] items-center gap-3 py-3"
+                  className="grid grid-cols-[72px_1fr_auto] items-center gap-4 py-4"
                 >
                   <div>
                     <div className="font-mono text-[12px] font-semibold leading-tight tabular-nums">
@@ -713,7 +713,7 @@ export default async function Profil360({
       {/* Siste runder (kompakt liste under tidslinje for hurtig oversikt) */}
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div>
-          <h3 className="mb-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <h3 className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Siste runder
           </h3>
           {player.rounds.length === 0 ? (
@@ -742,7 +742,7 @@ export default async function Profil360({
           )}
         </div>
         <div>
-          <h3 className="mb-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <h3 className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Aktive planer
           </h3>
           {player.trainingPlans.length === 0 ? (
@@ -795,7 +795,7 @@ export default async function Profil360({
         ) : (
           <ul className="divide-y divide-border">
             {player.parentRelations.map((rel) => (
-              <li key={rel.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-[13px]">
+              <li key={rel.id} className="flex flex-wrap items-center justify-between gap-4 py-4 text-[13px]">
                 <div>
                   <div className="font-semibold">{rel.parent.name}</div>
                   <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -937,7 +937,7 @@ function TierRow({
 }) {
   return (
     <div
-      className={`grid grid-cols-[36px_1fr_auto] items-center gap-3 py-2 ${
+      className={`grid grid-cols-[36px_1fr_auto] items-center gap-4 py-2 ${
         last ? "" : "border-b border-border"
       }`}
     >
@@ -983,7 +983,7 @@ function StatRich({
       ? "bg-pyr-tek/10 text-pyr-tek"
       : "bg-secondary text-muted-foreground";
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="flex items-center justify-between gap-2">
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           {label}

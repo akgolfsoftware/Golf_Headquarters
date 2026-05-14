@@ -187,7 +187,7 @@ export function VideoUploadForm({ spillere }: { spillere: Spiller[] }) {
       <FeltTextarea label="Notater til spilleren (valgfri)" name="notes" />
 
       {error && (
-        <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+        <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-4 text-sm text-destructive">
           <AlertCircle size={16} strokeWidth={1.75} className="mt-0.5 shrink-0" />
           <span>{error}</span>
         </div>

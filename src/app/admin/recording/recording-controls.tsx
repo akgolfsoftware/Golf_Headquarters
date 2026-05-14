@@ -37,12 +37,12 @@ export function RecordingControls({
 
   if (skjult) {
     return (
-      <div className="flex items-center justify-between rounded-lg border border-dashed border-border bg-card px-4 py-3 text-[13px] text-muted-foreground">
+      <div className="flex items-center justify-between rounded-lg border border-dashed border-border bg-card px-4 py-4 text-[13px] text-muted-foreground">
         <span>Live-vinduet er skjult.</span>
         <button
           type="button"
           onClick={() => setSkjult(false)}
-          className="rounded-md border border-border bg-secondary px-3 py-1.5 text-[12px] font-medium text-foreground hover:opacity-90"
+          className="rounded-md border border-border bg-secondary px-4 py-1.5 text-[12px] font-medium text-foreground hover:opacity-90"
         >
           Vis igjen
         </button>
@@ -73,11 +73,11 @@ export function RecordingControls({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {banner && (
         <div
           role="status"
-          className={`flex items-center justify-between gap-4 rounded-md border px-4 py-3 text-[13px] ${
+          className={`flex items-center justify-between gap-4 rounded-md border px-4 py-4 text-[13px] ${
             banner.tone === "success"
               ? "border-primary/30 bg-primary/10 text-primary"
               : "border-accent/40 bg-accent/10 text-foreground"
@@ -95,8 +95,8 @@ export function RecordingControls({
       )}
 
       <div className="overflow-hidden rounded-lg border border-border bg-card">
-        <div className="flex items-center justify-between border-b border-border bg-secondary px-4 py-3">
-          <div className="flex flex-1 items-center gap-3">{topbar}</div>
+        <div className="flex items-center justify-between border-b border-border bg-secondary px-4 py-4">
+          <div className="flex flex-1 items-center gap-4">{topbar}</div>
           <button
             type="button"
             onClick={() => setSkjult(true)}
@@ -109,12 +109,12 @@ export function RecordingControls({
 
         {stage}
 
-        <div className="flex items-center gap-3 border-t border-border bg-secondary px-4 py-4">
+        <div className="flex items-center gap-4 border-t border-border bg-secondary px-4 py-4">
           <button
             type="button"
             onClick={pause}
             disabled={!aktivKanStyres}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-4 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
           >
             <Pause className="h-4 w-4" strokeWidth={1.5} />
             {paused ? "Fortsett opptak" : "Pause opptak"}
@@ -123,7 +123,7 @@ export function RecordingControls({
             type="button"
             onClick={avslutt}
             disabled={!aktivKanStyres}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-4 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             <Square className="h-4 w-4" strokeWidth={1.5} fill="currentColor" />
             Avslutt og analyser

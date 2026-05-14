@@ -51,7 +51,7 @@ export default async function TeamAdmin() {
         actions={
           <Link
             href="/admin/team/inviter"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             <UserPlus size={14} strokeWidth={1.75} />
             Inviter coach
@@ -87,7 +87,7 @@ export default async function TeamAdmin() {
 
       {/* Filter */}
       <form className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
+        <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
           <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
@@ -110,7 +110,7 @@ export default async function TeamAdmin() {
           cta={
             <Link
               href="/admin/team/inviter"
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               <UserPlus size={16} strokeWidth={1.75} />
               Inviter coach
@@ -141,7 +141,7 @@ function CoachCard({ member }: { member: TeamMember }) {
   const subRole = isAdmin ? "Administrator" : "Coach";
 
   return (
-    <article className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 text-center transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-lg">
+    <article className="group flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 text-center transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-lg">
       <div
         className="grid h-24 w-24 place-items-center rounded-full font-display text-[32px] font-bold text-white"
         style={{ background: avatarBg(member.name) }}
@@ -176,13 +176,13 @@ function CoachCard({ member }: { member: TeamMember }) {
       <div className="flex w-full gap-1.5">
         <a
           href={`mailto:${member.email}`}
-          className="inline-flex flex-1 items-center justify-center gap-1 rounded-md bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex flex-1 items-center justify-center gap-1 rounded-md bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
         >
           Meld →
         </a>
         <Link
           href={`/admin/team`}
-          className="inline-flex flex-1 items-center justify-center gap-1 rounded-md border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-foreground hover:bg-secondary"
+          className="inline-flex flex-1 items-center justify-center gap-1 rounded-md border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-foreground hover:bg-secondary"
         >
           Profil →
         </Link>
@@ -273,7 +273,7 @@ function Kpi({
 
 function FilterChip({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] text-muted-foreground">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground">
       {label}
     </span>
   );

@@ -34,8 +34,8 @@ export function RejectedBanner({ planId, playerComment, playerName }: Props) {
   }
 
   return (
-    <section className="rounded-lg border border-destructive/40 bg-destructive/5 p-5">
-      <div className="flex items-start gap-3">
+    <section className="rounded-lg border border-destructive/40 bg-destructive/5 p-6">
+      <div className="flex items-start gap-4">
         <AlertCircle
           size={20}
           strokeWidth={1.5}
@@ -45,7 +45,7 @@ export function RejectedBanner({ planId, playerComment, playerName }: Props) {
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-destructive">
             {playerName} har bedt om endring
           </div>
-          <blockquote className="mt-3 rounded-md border-l-2 border-destructive/60 bg-card px-4 py-3 font-display text-[14px] italic leading-snug text-foreground">
+          <blockquote className="mt-4 rounded-md border-l-2 border-destructive/60 bg-card px-4 py-4 font-display text-[14px] italic leading-snug text-foreground">
             «{playerComment}»
           </blockquote>
           <div className="mt-4">

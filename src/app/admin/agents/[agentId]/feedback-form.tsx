@@ -29,13 +29,13 @@ export function FeedbackForm({ auditId }: { auditId: string }) {
   }
 
   return (
-    <div className="mt-3 space-y-2 border-t border-border pt-3">
+    <div className="mt-4 space-y-2 border-t border-border pt-4">
       <textarea
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         rows={2}
         placeholder="Valgfri kommentar — hva fungerte, hva manglet…"
-        className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs leading-relaxed"
+        className="w-full rounded-md border border-input bg-background px-4 py-2 text-xs leading-relaxed"
         disabled={pending}
       />
       <div className="flex items-center gap-2">
@@ -43,7 +43,7 @@ export function FeedbackForm({ auditId }: { auditId: string }) {
           type="button"
           onClick={() => send(1)}
           disabled={pending}
-          className={`inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-secondary disabled:opacity-40 ${
+          className={`inline-flex items-center gap-1.5 rounded-md border border-border px-4 py-1.5 text-xs font-medium transition-colors hover:bg-secondary disabled:opacity-40 ${
             rating === 1 ? "bg-primary/10 text-primary" : "bg-card"
           }`}
         >
@@ -54,7 +54,7 @@ export function FeedbackForm({ auditId }: { auditId: string }) {
           type="button"
           onClick={() => send(-1)}
           disabled={pending}
-          className={`inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-secondary disabled:opacity-40 ${
+          className={`inline-flex items-center gap-1.5 rounded-md border border-border px-4 py-1.5 text-xs font-medium transition-colors hover:bg-secondary disabled:opacity-40 ${
             rating === -1 ? "bg-destructive/10 text-destructive" : "bg-card"
           }`}
         >

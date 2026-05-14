@@ -109,7 +109,7 @@ export default async function LocationsAdmin() {
 
       {/* Filter */}
       <form className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
+        <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
           <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
@@ -143,9 +143,9 @@ export default async function LocationsAdmin() {
             return (
               <article
                 key={l.id}
-                className="group flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-lg"
+                className="group flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-lg"
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <h3 className="font-display text-base font-semibold leading-snug text-foreground">
                       {l.name}
@@ -172,7 +172,7 @@ export default async function LocationsAdmin() {
                   </div>
                 </div>
 
-                <div className="flex gap-5 font-mono text-[11px] text-muted-foreground">
+                <div className="flex gap-6 font-mono text-[11px] text-muted-foreground">
                   <InfoStat
                     label="Status"
                     value={l.active ? "Aktiv" : "Inaktiv"}
@@ -188,7 +188,7 @@ export default async function LocationsAdmin() {
                 </div>
 
                 {l.facilities.length > 0 ? (
-                  <div className="flex flex-wrap gap-1.5 border-t border-border pt-3">
+                  <div className="flex flex-wrap gap-1.5 border-t border-border pt-4">
                     {l.facilities.map((f) => (
                       <span
                         key={f.id}
@@ -211,7 +211,7 @@ export default async function LocationsAdmin() {
                     <FacilityForm locationId={l.id} triggerLabel="+ Fasilitet" />
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between gap-2 rounded-md border border-dashed border-border bg-background/40 px-3 py-2 text-[12px] text-muted-foreground">
+                  <div className="flex items-center justify-between gap-2 rounded-md border border-dashed border-border bg-background/40 px-4 py-2 text-[12px] text-muted-foreground">
                     <span>Ingen fasiliteter ennå</span>
                     <FacilityForm locationId={l.id} triggerLabel="+ Fasilitet" />
                   </div>
@@ -312,7 +312,7 @@ function Kpi({
 
 function FilterChip({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] text-muted-foreground">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground">
       {label}
     </span>
   );

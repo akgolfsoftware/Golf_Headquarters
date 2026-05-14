@@ -32,7 +32,7 @@ export default async function NyMal() {
         sub="Du kan opprette en mal ved å åpne en eksisterende plan og lagre den som mal."
       />
 
-      <div className="flex gap-3">
+      <div className="flex gap-4">
         <Link
           href="/admin/plans"
           className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"

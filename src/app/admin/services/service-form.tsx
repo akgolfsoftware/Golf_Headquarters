@@ -113,7 +113,7 @@ export function ServiceForm({ initial, triggerLabel }: ServiceFormProps) {
             tjeneste
           </h2>
 
-          <div className="mt-5 space-y-3">
+          <div className="mt-6 space-y-4">
             <Felt label="Navn">
               <input
                 type="text"
@@ -131,7 +131,7 @@ export function ServiceForm({ initial, triggerLabel }: ServiceFormProps) {
                 className={input}
               />
             </Felt>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <Felt label="Pris (kr)">
                 <input
                   type="number"
@@ -179,7 +179,7 @@ export function ServiceForm({ initial, triggerLabel }: ServiceFormProps) {
                 type="button"
                 onClick={slett}
                 disabled={pending}
-                className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs font-medium text-destructive hover:border-destructive/50 disabled:opacity-60"
+                className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-2 text-xs font-medium text-destructive hover:border-destructive/50 disabled:opacity-60"
               >
                 Slett
               </button>
@@ -207,7 +207,7 @@ export function ServiceForm({ initial, triggerLabel }: ServiceFormProps) {
 }
 
 const input =
-  "w-full rounded-md border border-input bg-card px-3 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (

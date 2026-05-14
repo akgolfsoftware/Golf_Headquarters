@@ -144,7 +144,7 @@ export default async function AgencyOSPage() {
       />
 
       {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <KpiCard
           label="Inbox"
           value={String(uleste)}
@@ -229,7 +229,7 @@ export default async function AgencyOSPage() {
                 ))}
               </ul>
             )}
-            <div className="border-t border-border px-6 py-3 text-center">
+            <div className="border-t border-border px-6 py-4 text-center">
               <Link
                 href="/portal/varsler"
                 className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
@@ -275,7 +275,7 @@ export default async function AgencyOSPage() {
                     .join("")
                     .toUpperCase();
                   return (
-                    <li key={b.id} className="flex items-center gap-4 px-6 py-3">
+                    <li key={b.id} className="flex items-center gap-4 px-6 py-4">
                       <div className="w-14 shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
                         {timeStr(b.startAt)}
                       </div>
@@ -306,7 +306,7 @@ export default async function AgencyOSPage() {
         <aside className="space-y-8">
           {/* Stripe-panel */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-5 py-3">
+            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
               <h3 className="font-display text-sm font-semibold tracking-tight">
                 Stripe · denne <em>måneden</em>
               </h3>
@@ -323,7 +323,7 @@ export default async function AgencyOSPage() {
               <MoneyRow label="Innbetalt" value={`kr ${formatNok(innbetaltOre)}`} tone="good" />
               <MoneyRow label="Utestående" value={`kr ${formatNok(utestaendeOre)}`} tone={utestaendeOre > 0 ? "warn" : ""} />
             </dl>
-            <div className="border-t border-border px-5 py-3">
+            <div className="border-t border-border px-6 py-4">
               <Link
                 href="/admin/finance"
                 className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
@@ -335,7 +335,7 @@ export default async function AgencyOSPage() {
 
           {/* Caddie-aktivitet */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-5 py-3">
+            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
               <h3 className="font-display text-sm font-semibold tracking-tight">
                 Caddie · <em>aktivitet</em>
               </h3>
@@ -344,13 +344,13 @@ export default async function AgencyOSPage() {
               </span>
             </div>
             {sisteAktivitet.length === 0 ? (
-              <p className="px-5 py-6 text-center text-sm text-muted-foreground">
+              <p className="px-6 py-6 text-center text-sm text-muted-foreground">
                 Ingen aktivitet ennå.
               </p>
             ) : (
               <ul className="divide-y divide-border">
                 {sisteAktivitet.map((a) => (
-                  <li key={a.id} className="px-5 py-3">
+                  <li key={a.id} className="px-6 py-4">
                     <div className="text-sm text-foreground">{a.action}</div>
                     {a.target && (
                       <div className="mt-0.5 truncate text-xs text-muted-foreground">{a.target}</div>
@@ -371,7 +371,7 @@ export default async function AgencyOSPage() {
 
           {/* Connectors */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-5 py-3">
+            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
               <h3 className="font-display text-sm font-semibold tracking-tight">
                 Mine <em>connectors</em>
               </h3>
@@ -389,7 +389,7 @@ export default async function AgencyOSPage() {
                     href={c.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-secondary/40"
+                    className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-secondary/40"
                   >
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-secondary font-mono text-[11px] font-semibold">
                       {c.letter}
@@ -416,11 +416,11 @@ export default async function AgencyOSPage() {
           </section>
 
           {/* Snarveier */}
-          <section className="rounded-lg border border-border bg-card p-5">
+          <section className="rounded-lg border border-border bg-card p-6">
             <h3 className="font-display text-sm font-semibold tracking-tight">
               Caddie <em>snarveier</em>
             </h3>
-            <div className="mt-3 grid grid-cols-2 gap-2">
+            <div className="mt-4 grid grid-cols-2 gap-2">
               <QuickLink href="/admin/innboks" icon={InboxIcon} label="Innboks" />
               <QuickLink href="/admin/calendar" icon={Calendar} label="Kalender" />
               <QuickLink href="/admin/elever" icon={Mail} label="Spillere" />
@@ -432,7 +432,7 @@ export default async function AgencyOSPage() {
 
       {/* Caddie-chat-stub */}
       <div className="sticky bottom-4 z-30 mx-auto max-w-3xl rounded-full border border-border bg-card px-4 py-2 shadow-lg">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-[11px] font-semibold text-primary-foreground">
             C
           </div>
@@ -489,7 +489,7 @@ function KpiCard({
 
 function MoneyRow({ label, value, tone }: { label: string; value: string; tone: string }) {
   return (
-    <div className="flex items-baseline justify-between px-5 py-3">
+    <div className="flex items-baseline justify-between px-6 py-4">
       <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd
         className={`font-mono text-sm font-semibold tabular-nums ${
@@ -514,7 +514,7 @@ function QuickLink({
   return (
     <Link
       href={href}
-      className="flex items-center gap-2 rounded-md border border-border bg-secondary/40 px-3 py-2 text-sm transition-colors hover:bg-secondary"
+      className="flex items-center gap-2 rounded-md border border-border bg-secondary/40 px-4 py-2 text-sm transition-colors hover:bg-secondary"
     >
       <Icon className="h-4 w-4 text-muted-foreground" />
       <span className="truncate">{label}</span>

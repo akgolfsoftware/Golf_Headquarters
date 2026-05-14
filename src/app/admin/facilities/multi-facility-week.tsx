@@ -126,7 +126,7 @@ export function MultiFacilityWeek({
   return (
     <section className="rounded-2xl border border-border bg-card">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border px-6 py-4">
         <div>
           <h2 className="font-display text-lg font-semibold tracking-tight">
             {locationName} <em className="font-normal text-primary md:italic">uke {ukeNr}</em>
@@ -165,7 +165,7 @@ export function MultiFacilityWeek({
         <table className="w-full min-w-[900px] text-sm">
           <thead>
             <tr>
-              <th className="sticky left-0 z-10 bg-card px-4 py-3 text-left font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              <th className="sticky left-0 z-10 bg-card px-4 py-4 text-left font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Fasilitet
               </th>
               {dager.map((d, i) => {
@@ -177,7 +177,7 @@ export function MultiFacilityWeek({
                 return (
                   <th
                     key={i}
-                    className={`border-l border-border px-2 py-3 text-center ${
+                    className={`border-l border-border px-2 py-4 text-center ${
                       erIdag ? "bg-accent/15" : ""
                     }`}
                   >
@@ -204,7 +204,7 @@ export function MultiFacilityWeek({
                   key={f.id}
                   className="border-t border-border/60 align-top"
                 >
-                  <td className="sticky left-0 z-10 bg-card px-4 py-3">
+                  <td className="sticky left-0 z-10 bg-card px-4 py-4">
                     <div className="font-display text-sm font-semibold">
                       {f.name}
                     </div>

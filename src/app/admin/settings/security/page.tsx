@@ -34,7 +34,7 @@ export default async function AdminSecurityPage() {
       />
 
       <Section title="Oversikt">
-        <div className="grid grid-cols-2 gap-4 p-5">
+        <div className="grid grid-cols-2 gap-4 p-6">
           <MiniStat
             label="Konto"
             value={user.role}
@@ -101,7 +101,7 @@ function Section({
 }) {
   return (
     <section className="rounded-lg border border-border bg-card">
-      <header className="flex items-center gap-3 border-b border-border px-6 py-4">
+      <header className="flex items-center gap-4 border-b border-border px-6 py-4">
         <h2 className="font-display text-base font-semibold tracking-tight">
           {title}
         </h2>
@@ -128,7 +128,7 @@ function MiniStat({
   sub: string;
 }) {
   return (
-    <div className="rounded-md border border-border bg-secondary/40 p-5">
+    <div className="rounded-md border border-border bg-secondary/40 p-6">
       <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>

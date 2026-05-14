@@ -67,7 +67,7 @@ export default async function AdminSettingsPage() {
                 <Icon size={20} strokeWidth={1.5} />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="flex items-baseline justify-between gap-3">
+                <div className="flex items-baseline justify-between gap-4">
                   <h3 className="font-display text-base font-semibold tracking-tight text-foreground group-hover:text-primary">
                     {it.label}
                   </h3>

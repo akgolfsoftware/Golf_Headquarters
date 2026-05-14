@@ -189,7 +189,7 @@ export default async function Turneringer() {
       ) : (
         <div className="space-y-8">
           {kommende.length > 0 && (
-            <section className="space-y-3">
+            <section className="space-y-4">
               <h2 className="font-display text-lg font-semibold tracking-tight">
                 Kommende{" "}
                 <span className="font-normal text-muted-foreground">
@@ -201,7 +201,7 @@ export default async function Turneringer() {
           )}
 
           {tidligere.length > 0 && (
-            <section className="space-y-3">
+            <section className="space-y-4">
               <h2 className="font-display text-lg font-semibold tracking-tight">
                 Tidligere{" "}
                 <span className="font-normal text-muted-foreground">
@@ -228,7 +228,7 @@ function TurneringTabell({
     <div className="overflow-hidden rounded-lg border border-border bg-card">
       {/* Tabell-header (skjult på mobil) */}
       <div
-        className="hidden border-b border-border bg-muted/40 px-6 py-3 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-muted-foreground sm:grid"
+        className="hidden border-b border-border bg-muted/40 px-6 py-4 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-muted-foreground sm:grid"
         style={{
           gridTemplateColumns:
             "130px 1fr 200px 100px 110px 110px 80px",

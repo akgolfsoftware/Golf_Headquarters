@@ -72,7 +72,7 @@ export function ImportForm({ spillere }: Props) {
         Spillerdata
       </h2>
 
-      <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Field
           label="WAGR-URL eller slug"
           required
@@ -84,7 +84,7 @@ export function ImportForm({ spillere }: Props) {
             value={form.wagrUrl}
             onChange={(e) => setForm({ ...form, wagrUrl: e.target.value })}
             placeholder="playerprofile/..."
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none transition-colors focus:border-ring"
           />
         </Field>
 
@@ -95,7 +95,7 @@ export function ImportForm({ spillere }: Props) {
             value={form.fullName}
             onChange={(e) => setForm({ ...form, fullName: e.target.value })}
             placeholder="Mathias Aase"
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
           />
         </Field>
 
@@ -108,7 +108,7 @@ export function ImportForm({ spillere }: Props) {
             onChange={(e) =>
               setForm({ ...form, country: e.target.value.toLowerCase() })
             }
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
           />
         </Field>
 
@@ -120,7 +120,7 @@ export function ImportForm({ spillere }: Props) {
             value={form.rank}
             onChange={(e) => setForm({ ...form, rank: e.target.value })}
             placeholder="697"
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
           />
         </Field>
 
@@ -131,7 +131,7 @@ export function ImportForm({ spillere }: Props) {
             value={form.ptsAvg}
             onChange={(e) => setForm({ ...form, ptsAvg: e.target.value })}
             placeholder="504,1956"
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
           />
         </Field>
 
@@ -142,7 +142,7 @@ export function ImportForm({ spillere }: Props) {
             value={form.divisor}
             onChange={(e) => setForm({ ...form, divisor: e.target.value })}
             placeholder="23,0754"
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
           />
         </Field>
 
@@ -152,7 +152,7 @@ export function ImportForm({ spillere }: Props) {
             min={0}
             value={form.wins}
             onChange={(e) => setForm({ ...form, wins: e.target.value })}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
           />
         </Field>
 
@@ -162,7 +162,7 @@ export function ImportForm({ spillere }: Props) {
             min={0}
             value={form.top10s}
             onChange={(e) => setForm({ ...form, top10s: e.target.value })}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
           />
         </Field>
 
@@ -172,7 +172,7 @@ export function ImportForm({ spillere }: Props) {
             min={1}
             value={form.bestRank}
             onChange={(e) => setForm({ ...form, bestRank: e.target.value })}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
           />
         </Field>
 
@@ -185,7 +185,7 @@ export function ImportForm({ spillere }: Props) {
             onChange={(e) =>
               setForm({ ...form, linkUserEmail: e.target.value })
             }
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
           >
             <option value="">Ikke koble</option>
             {spillere.map((s) => (
@@ -200,7 +200,7 @@ export function ImportForm({ spillere }: Props) {
       {resultat && !resultat.ok && (
         <div
           role="alert"
-          className="mt-6 flex items-start gap-3 rounded-md border border-destructive/30 bg-destructive/10 p-4"
+          className="mt-6 flex items-start gap-4 rounded-md border border-destructive/30 bg-destructive/10 p-4"
         >
           <AlertCircle
             size={18}
@@ -214,7 +214,7 @@ export function ImportForm({ spillere }: Props) {
       {resultat?.ok && (
         <div
           role="alert"
-          className="mt-6 flex items-start gap-3 rounded-md border border-primary/30 bg-primary/10 p-4"
+          className="mt-6 flex items-start gap-4 rounded-md border border-primary/30 bg-primary/10 p-4"
         >
           <CheckCircle2
             size={18}
@@ -229,7 +229,7 @@ export function ImportForm({ spillere }: Props) {
         </div>
       )}
 
-      <div className="mt-8 flex items-center justify-between gap-3">
+      <div className="mt-8 flex items-center justify-between gap-4">
         <a
           href="https://www.wagr.com/mens-ranking"
           target="_blank"
@@ -243,7 +243,7 @@ export function ImportForm({ spillere }: Props) {
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {pending && <Loader2 size={14} className="animate-spin" />}
           {pending ? "Lagrer..." : "Lagre snapshot"}

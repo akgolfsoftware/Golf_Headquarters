@@ -166,7 +166,7 @@ export function Conversation({
   return (
     <section className="flex min-w-0 flex-col border-l border-border bg-background">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-border bg-card px-6 py-4">
+      <div className="flex items-center gap-4 border-b border-border bg-card px-6 py-4">
         <span className="grid h-11 w-11 place-items-center rounded-full bg-muted font-display text-[15px] font-semibold">
           {spillerInitialer}
         </span>
@@ -207,7 +207,7 @@ export function Conversation({
       </div>
 
       {/* Meldingsstrøm */}
-      <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
+      <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-6 py-6">
         {meldinger.length === 0 ? (
           <div className="flex flex-1 items-center justify-center">
             <p className="text-sm text-muted-foreground">
@@ -216,8 +216,8 @@ export function Conversation({
           </div>
         ) : (
           dager.map((d, i) => (
-            <div key={i} className="flex flex-col gap-5">
-              <div className="my-1 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
+            <div key={i} className="flex flex-col gap-6">
+              <div className="my-1 flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
                 {d.dag}
               </div>
               {d.meldinger.map((m, j) =>
@@ -245,21 +245,21 @@ export function Conversation({
 
         {/* AI-utkast inline */}
         {aiUtkast !== null && (
-          <div className="ml-auto w-full max-w-[680px] rounded-2xl border border-border bg-accent/15 p-5">
+          <div className="ml-auto w-full max-w-[680px] rounded-2xl border border-border bg-accent/15 p-6">
             <div className="mb-2 flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
               <Sparkles size={14} strokeWidth={1.5} />
               AI-utkast — basert på din skrivestil
               {aiLaster && <Loader2 size={12} className="animate-spin" />}
             </div>
-            <div className="whitespace-pre-wrap rounded-md border border-border bg-card px-3.5 py-3 text-[13px] leading-relaxed">
+            <div className="whitespace-pre-wrap rounded-md border border-border bg-card px-3.5 py-4 text-[13px] leading-relaxed">
               {aiUtkast || (aiLaster ? "Genererer …" : "")}
             </div>
-            <div className="mt-3 flex items-center gap-2">
+            <div className="mt-4 flex items-center gap-2">
               <button
                 type="button"
                 onClick={bruksAiUtkast}
                 disabled={!aiUtkast || aiLaster}
-                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
               >
                 <Check size={14} strokeWidth={1.5} />
                 Bruk
@@ -268,7 +268,7 @@ export function Conversation({
                 type="button"
                 onClick={generereAiUtkast}
                 disabled={aiLaster}
-                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
               >
                 <Pencil size={14} strokeWidth={1.5} />
                 Regenerer
@@ -276,7 +276,7 @@ export function Conversation({
               <button
                 type="button"
                 onClick={() => setAiUtkast(null)}
-                className="inline-flex items-center rounded-md px-3 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-secondary"
+                className="inline-flex items-center rounded-md px-4 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-secondary"
               >
                 Forkast
               </button>
@@ -284,7 +284,7 @@ export function Conversation({
           </div>
         )}
         {aiFeil && (
-          <div className="ml-auto w-full max-w-[680px] rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
+          <div className="ml-auto w-full max-w-[680px] rounded-md border border-destructive/40 bg-destructive/10 px-4 py-2 text-[12px] text-destructive">
             {aiFeil}
           </div>
         )}
@@ -295,7 +295,7 @@ export function Conversation({
         action={(fd) => startTransition(() => void håndterSend(fd))}
         className="border-t border-border bg-card px-6 py-4"
       >
-        <div className="rounded-2xl border border-border bg-background px-3.5 py-3">
+        <div className="rounded-2xl border border-border bg-background px-3.5 py-4">
           <textarea
             ref={textareaRef}
             name="body"
@@ -362,7 +362,7 @@ export function Conversation({
             <button
               type="submit"
               disabled={isPending || tekst.trim().length === 0}
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {isPending ? (
                 <Loader2 size={14} className="animate-spin" />
@@ -392,7 +392,7 @@ function MeldingFraSpiller({
   innhold: string;
 }) {
   return (
-    <div className="grid max-w-[680px] grid-cols-[36px_1fr] gap-3">
+    <div className="grid max-w-[680px] grid-cols-[36px_1fr] gap-4">
       <span className="grid h-9 w-9 place-items-center rounded-full bg-muted font-display text-[12px] font-semibold">
         {initialer}
       </span>
@@ -403,7 +403,7 @@ function MeldingFraSpiller({
           </span>
           <span>{tid}</span>
         </div>
-        <div className="whitespace-pre-wrap rounded-2xl border border-border bg-card px-4 py-3 text-[13px] leading-relaxed">
+        <div className="whitespace-pre-wrap rounded-2xl border border-border bg-card px-4 py-4 text-[13px] leading-relaxed">
           {innhold}
         </div>
       </div>
@@ -423,7 +423,7 @@ function MeldingFraMeg({
   innhold: string;
 }) {
   return (
-    <div className="grid max-w-[680px] grid-cols-[1fr_36px] justify-self-end gap-3">
+    <div className="grid max-w-[680px] grid-cols-[1fr_36px] justify-self-end gap-4">
       <div>
         <div className="mb-1 flex items-baseline justify-end gap-2 text-[11px] text-muted-foreground">
           <span className="text-[12px] font-semibold text-foreground">
@@ -431,7 +431,7 @@ function MeldingFraMeg({
           </span>
           <span>{tid}</span>
         </div>
-        <div className="whitespace-pre-wrap rounded-2xl bg-foreground px-4 py-3 text-[13px] leading-relaxed text-background">
+        <div className="whitespace-pre-wrap rounded-2xl bg-foreground px-4 py-4 text-[13px] leading-relaxed text-background">
           {innhold}
         </div>
       </div>

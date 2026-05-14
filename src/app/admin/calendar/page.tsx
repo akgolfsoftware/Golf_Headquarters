@@ -368,12 +368,12 @@ export default async function AdminCalendar({
       />
 
       {/* KPI-stripe */}
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-lg bg-primary p-4 text-primary-foreground lg:col-span-1">
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] opacity-70">
             I dag · {idagFormat}
           </div>
-          <div className="mt-2 flex items-baseline gap-3">
+          <div className="mt-2 flex items-baseline gap-4">
             <div className="font-mono text-[28px] font-medium tabular-nums leading-none">
               {idagAntall}{" "}
               <small className="text-[14px] opacity-70">
@@ -411,7 +411,7 @@ export default async function AdminCalendar({
 
       {/* Coach-velger for ADMIN */}
       {user.role === "ADMIN" && coachListe.length > 0 && (
-        <div className="rounded-lg border border-border bg-card p-3">
+        <div className="rounded-lg border border-border bg-card p-4">
           <CoachFilter
             coaches={coachListe.map((c) => ({ id: c.id, navn: c.name }))}
           />
@@ -437,7 +437,7 @@ export default async function AdminCalendar({
       </div>
 
       {/* Toolbar: uke-nav + Uke/Maaned-toggle + filter */}
-      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-3">
+      <div className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4">
         {/* Nav */}
         <div className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary p-0.5">
           <Link
@@ -449,7 +449,7 @@ export default async function AdminCalendar({
           </Link>
           <Link
             href={`/admin/calendar${filter === "mine" ? "?filter=mine" : ""}`}
-            className="rounded-sm px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-card"
+            className="rounded-sm px-4 py-1 text-xs font-medium text-foreground transition-colors hover:bg-card"
           >
             I dag
           </Link>
@@ -613,7 +613,7 @@ function Chip({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-medium transition-colors ${
+      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1 text-[12px] font-medium transition-colors ${
         active
           ? "border-foreground bg-foreground text-background"
           : "border-border bg-card text-foreground hover:bg-secondary"
@@ -656,7 +656,7 @@ function CalendarTogglesCard({
   ];
   return (
     <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-      <div className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+      <div className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         Vis kalendere
       </div>
       <div>
@@ -689,7 +689,7 @@ function SyncCard() {
       <div className="mt-1.5 mb-0.5 font-display text-[15px] font-semibold">
         Google Calendar
       </div>
-      <div className="mb-3 text-[12px] text-muted-foreground">
+      <div className="mb-4 text-[12px] text-muted-foreground">
         {/* TODO: koble mot google-calendar-sync */}
         Sync-status kommer i v2.
       </div>
@@ -715,7 +715,7 @@ function PyramideLegendCard() {
   ];
   return (
     <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-      <div className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+      <div className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         Pyramide-stripe
       </div>
       <div className="grid grid-cols-2 gap-x-3 gap-y-2">

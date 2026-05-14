@@ -22,14 +22,14 @@ export function ManualTrigger() {
   }
 
   return (
-    <section className="rounded-lg border border-accent/30 bg-accent/5 p-5">
+    <section className="rounded-lg border border-accent/30 bg-accent/5 p-6">
       <h3 className="font-display text-base font-semibold tracking-tight">
         Manuell trigger (admin)
       </h3>
       <p className="mt-1 text-sm text-muted-foreground">
         Kjør plan-watcher umiddelbart i stedet for å vente på cron.
       </p>
-      <div className="mt-3 flex items-center gap-3">
+      <div className="mt-4 flex items-center gap-4">
         <button
           type="button"
           onClick={trigger}

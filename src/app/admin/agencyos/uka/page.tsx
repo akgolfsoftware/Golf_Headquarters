@@ -87,7 +87,7 @@ export default async function UkaPage() {
       />
 
       {/* Uke-KPI */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <UkeKpi label="Timer totalt" value={`${Math.round(totalTimer)}`} sub={`av ${kapasitet} mål`} />
         <UkeKpi label="Bookinger" value={String(bookinger.length)} sub="denne uka" />
         <UkeKpi label="Unike spillere" value={String(unikeSpillere)} sub="møter denne uka" />
@@ -99,7 +99,7 @@ export default async function UkaPage() {
         {dager.map((d, i) => (
           <div
             key={i}
-            className={`flex min-h-[200px] flex-col rounded-lg border bg-card p-3 ${
+            className={`flex min-h-[200px] flex-col rounded-lg border bg-card p-4 ${
               d.erIdag
                 ? "border-primary ring-2 ring-primary/40"
                 : d.erHelg
@@ -107,7 +107,7 @@ export default async function UkaPage() {
                   : "border-border"
             }`}
           >
-            <div className="mb-3 border-b border-border pb-2">
+            <div className="mb-4 border-b border-border pb-2">
               <div
                 className={`font-mono text-[10px] uppercase tracking-[0.10em] ${
                   d.erIdag ? "text-primary" : "text-muted-foreground"
@@ -155,14 +155,14 @@ export default async function UkaPage() {
         ))}
       </div>
 
-      <div className="rounded-lg border border-border bg-card p-5">
+      <div className="rounded-lg border border-border bg-card p-6">
         <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           <Calendar className="h-3 w-3" />
           Vis full måned eller drag-and-drop i full kalender
         </div>
         <Link
           href="/admin/calendar"
-          className="mt-2 inline-flex h-8 items-center rounded-md border border-border bg-background px-3 text-xs font-medium hover:bg-secondary"
+          className="mt-2 inline-flex h-8 items-center rounded-md border border-border bg-background px-4 text-xs font-medium hover:bg-secondary"
         >
           Åpne kalender →
         </Link>

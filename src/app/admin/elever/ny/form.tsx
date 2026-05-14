@@ -36,7 +36,7 @@ export function NySpillerForm() {
       {generellFeil && (
         <div
           role="alert"
-          className="rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="rounded-md border border-destructive/40 bg-destructive/10 px-4 py-4 text-sm text-destructive"
         >
           {generellFeil}
         </div>
@@ -85,7 +85,7 @@ export function NySpillerForm() {
       <div className="flex items-center justify-end gap-2 border-t border-border pt-6">
         <Link
           href="/admin/elever"
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-input bg-card px-5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-input bg-card px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />
           Avbryt
@@ -93,7 +93,7 @@ export function NySpillerForm() {
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="inline-flex h-10 items-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           <UserPlus className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />
           {pending ? "Oppretter…" : "Opprett spiller"}
@@ -141,7 +141,7 @@ function Field({
         min={min}
         max={max}
         aria-invalid={error ? true : undefined}
-        className={`h-10 rounded-md border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+        className={`h-10 rounded-md border bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
           error ? "border-destructive" : "border-input"
         }`}
       />

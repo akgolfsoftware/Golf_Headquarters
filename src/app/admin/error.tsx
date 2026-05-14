@@ -17,7 +17,7 @@ export default function AdminError({ error, reset }: Props) {
   return (
     <div className="flex min-h-[60vh] items-center justify-center p-8">
       <div className="flex w-full max-w-md flex-col items-center rounded-lg border border-dashed border-border bg-card/40 px-8 py-16 text-center">
-        <div className="mb-5 grid h-14 w-14 place-items-center rounded-full bg-secondary text-destructive">
+        <div className="mb-6 grid h-14 w-14 place-items-center rounded-full bg-secondary text-destructive">
           <AlertTriangle size={24} strokeWidth={1.5} />
         </div>
         <h3 className="font-display text-lg font-semibold leading-tight tracking-tight">
@@ -26,7 +26,7 @@ export default function AdminError({ error, reset }: Props) {
         <p className="mt-2 max-w-sm text-sm text-muted-foreground">
           {error.message || "En uventet feil oppsto. Prøv på nytt eller gå tilbake til hjem."}
         </p>
-        <div className="mt-6 flex items-center gap-3">
+        <div className="mt-6 flex items-center gap-4">
           <button
             type="button"
             onClick={() => reset()}

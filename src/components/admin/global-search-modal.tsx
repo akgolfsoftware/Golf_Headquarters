@@ -351,7 +351,7 @@ export function GlobalSearchModal() {
         className="w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-card shadow-xl"
       >
         {/* Header */}
-        <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+        <div className="flex items-center gap-4 border-b border-border px-4 py-4">
           <Search
             className="h-4 w-4 shrink-0 text-muted-foreground"
             strokeWidth={ICON_STROKE}
@@ -419,7 +419,7 @@ export function GlobalSearchModal() {
           )}
 
           {!showEmptyState && totalCount > 0 && (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {results.players.length > 0 && (
                 <Section title="Spillere" icon={<User strokeWidth={ICON_STROKE} aria-hidden />}>
                   {results.players.map((p) => {
@@ -536,7 +536,7 @@ export function GlobalSearchModal() {
 
         {/* Footer med hints */}
         <div className="flex items-center justify-between gap-4 border-t border-border bg-background/50 px-4 py-2 font-mono text-[11px] text-muted-foreground">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <span className="inline-flex items-center gap-1">
               <ArrowUpDown
                 className="h-3 w-3"
@@ -610,7 +610,7 @@ function ResultRow({
         type="button"
         onClick={onClick}
         aria-selected={active}
-        className={`flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+        className={`flex w-full items-center gap-4 rounded-md px-2 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
           active ? "bg-secondary" : "hover:bg-secondary/60"
         }`}
       >

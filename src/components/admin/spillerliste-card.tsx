@@ -20,10 +20,10 @@ export function SpillerlisteCard({ players }: { players: AktivPlayer[] }) {
           {players.map((p) => {
             const initial = p.name.trim().charAt(0).toUpperCase() || "?";
             return (
-              <li key={p.id} className="py-3">
+              <li key={p.id} className="py-4">
                 <Link
                   href={`/admin/elever/${p.id}`}
-                  className="flex items-center gap-3 hover:text-primary active:text-primary/80 focus-visible:underline focus-visible:outline-none"
+                  className="flex items-center gap-4 hover:text-primary active:text-primary/80 focus-visible:underline focus-visible:outline-none"
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
                     {initial}

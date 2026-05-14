@@ -169,7 +169,7 @@ export default async function ElverListe({
         actions={
           <Link
             href="/admin/elever/ny"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             <UserPlus size={14} strokeWidth={1.75} />
             Ny spiller
@@ -206,7 +206,7 @@ export default async function ElverListe({
 
       {/* Filter */}
       <form className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 min-w-[280px] items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
+        <label className="flex flex-1 min-w-[280px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
           <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
@@ -233,7 +233,7 @@ export default async function ElverListe({
           cta={
             <Link
               href="/admin/elever/ny"
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               <UserPlus size={16} strokeWidth={1.75} />
               Ny spiller
@@ -324,10 +324,10 @@ function PlayerTableRow({
 
   return (
     <tr className="border-b border-border/60 last:border-0 hover:bg-secondary/30">
-      <td className="px-4 py-3">
+      <td className="px-4 py-4">
         <span className="inline-block h-3.5 w-3.5 rounded-sm border border-border bg-card" />
       </td>
-      <td className="px-4 py-3">
+      <td className="px-4 py-4">
         <Link
           href={`/admin/elever/${p.id}`}
           className="flex items-center gap-2.5 hover:text-primary"
@@ -346,24 +346,24 @@ function PlayerTableRow({
           </div>
         </Link>
       </td>
-      <td className="px-4 py-3">
+      <td className="px-4 py-4">
         <span
           className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${CAT_STYLE[p._category]}`}
         >
           {p._category}
         </span>
       </td>
-      <td className="px-4 py-3">
+      <td className="px-4 py-4">
         <span
           className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${TIER_STYLE[p.tier]}`}
         >
           {TIER_LABEL[p.tier]}
         </span>
       </td>
-      <td className="px-4 py-3 text-right font-mono text-[13px] font-semibold tabular-nums">
+      <td className="px-4 py-4 text-right font-mono text-[13px] font-semibold tabular-nums">
         {hcpDisplay}
       </td>
-      <td className="px-4 py-3">
+      <td className="px-4 py-4">
         <span
           className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] ${statusStyle[p._statusInfo.status].bg}`}
         >
@@ -373,14 +373,14 @@ function PlayerTableRow({
           {p._statusInfo.label}
         </span>
       </td>
-      <td className="px-4 py-3">
+      <td className="px-4 py-4">
         <span
           className={`font-mono text-[12px] ${erOver ? "font-medium text-destructive" : "text-muted-foreground"}`}
         >
           {sistInn}
         </span>
       </td>
-      <td className="px-4 py-3 text-right text-muted-foreground">⋯</td>
+      <td className="px-4 py-4 text-right text-muted-foreground">⋯</td>
     </tr>
   );
 }
@@ -406,7 +406,7 @@ function PlayerMobileCard({
     <li>
       <Link
         href={`/admin/elever/${p.id}`}
-        className="flex min-h-16 items-center gap-3 px-4 py-3 hover:bg-secondary/40"
+        className="flex min-h-16 items-center gap-4 px-4 py-4 hover:bg-secondary/40"
       >
         <div
           className="grid h-10 w-10 shrink-0 place-items-center rounded-full font-mono text-[11px] font-semibold text-white"
@@ -511,7 +511,7 @@ function Kpi({
 
 function FilterChip({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] text-muted-foreground">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground">
       {label}
     </span>
   );
@@ -526,7 +526,7 @@ function Th({
 }) {
   return (
     <th
-      className={`px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground ${className}`}
+      className={`px-4 py-4 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground ${className}`}
     >
       {children}
     </th>

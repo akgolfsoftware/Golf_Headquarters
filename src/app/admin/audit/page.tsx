@@ -220,7 +220,7 @@ export default async function AuditLogPage({
         </div>
 
         {/* Filter bar */}
-        <form className="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card px-4 py-3">
+        <form className="mb-6 flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card px-4 py-4">
           <Search className="h-3.5 w-3.5 text-muted-foreground" />
           <input
             type="search"
@@ -231,7 +231,7 @@ export default async function AuditLogPage({
           />
           <button
             type="submit"
-            className="rounded-md bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground hover:opacity-90"
+            className="rounded-md bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground hover:opacity-90"
           >
             Filtrer
           </button>
@@ -273,7 +273,7 @@ export default async function AuditLogPage({
 
           {/* Rail */}
           <aside className="sticky top-6">
-            <div className="rounded-lg border border-border bg-card p-5">
+            <div className="rounded-lg border border-border bg-card p-6">
               <h3 className="mb-3.5 font-display text-[14px] font-semibold tracking-tight">
                 Filter-oppsummering
               </h3>
@@ -335,7 +335,7 @@ function Kpi({
   footTone?: "success";
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="font-mono text-[10px] uppercase tracking-[0.10em] font-medium text-muted-foreground">
         {label}
       </div>
@@ -346,7 +346,7 @@ function Kpi({
       >
         {value}
       </div>
-      <div className="mt-3 flex items-center gap-2 text-[12px]">
+      <div className="mt-4 flex items-center gap-2 text-[12px]">
         {delta && (
           <span
             className={`rounded-md px-1.5 py-0.5 font-mono text-[11px] font-semibold ${
@@ -385,7 +385,7 @@ function Chip({ active, children }: { active?: boolean; children: React.ReactNod
 function DateHeader({ date, count }: { date: string; count: number }) {
   return (
     <div className="sticky top-0 z-[5] mt-6 mb-2 flex items-center gap-3.5 bg-background py-2">
-      <span className="rounded-full bg-foreground px-3 py-1 font-display text-[13px] font-semibold tracking-tight text-background">
+      <span className="rounded-full bg-foreground px-4 py-1 font-display text-[13px] font-semibold tracking-tight text-background">
         {date}
       </span>
       <span className="text-[12px] text-muted-foreground">
@@ -452,7 +452,7 @@ function EvtCard({ evt }: { evt: Evt }) {
           failed ? "border-destructive/25" : "border-border"
         }`}
       >
-        <div className="mb-1 flex items-center gap-3">
+        <div className="mb-1 flex items-center gap-4">
           <span className="font-mono text-[12px] font-medium text-muted-foreground tabular-nums">
             {evt.time}
           </span>

@@ -74,7 +74,7 @@ export default async function AvailabilityAdmin({
       />
 
       {coach.role === "ADMIN" && coachListe.length > 0 && (
-        <div className="rounded-lg border border-border bg-card p-3">
+        <div className="rounded-lg border border-border bg-card p-4">
           <CoachFilter
             coaches={coachListe.map((c) => ({ id: c.id, navn: c.name }))}
           />
@@ -95,7 +95,7 @@ export default async function AvailabilityAdmin({
               <h2 className="font-display text-lg font-semibold tracking-tight text-foreground">
                 Min uke
               </h2>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-7">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-7">
                 {DAGER.map((dag, i) => {
                   const slotter = minSlots.filter((s) => s.weekday === i);
                   return (
@@ -171,7 +171,7 @@ export default async function AvailabilityAdmin({
                         {items.map((s) => (
                           <li
                             key={s.id}
-                            className="flex items-center gap-3 font-mono tabular-nums text-muted-foreground"
+                            className="flex items-center gap-4 font-mono tabular-nums text-muted-foreground"
                           >
                             <span className="text-foreground">
                               {DAGER[s.weekday]}

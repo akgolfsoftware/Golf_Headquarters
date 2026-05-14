@@ -101,9 +101,9 @@ export function AiPlanPanel({ spillere }: { spillere: Spiller[] }) {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between gap-3 px-6 py-4 text-left"
+        className="flex w-full items-center justify-between gap-4 px-6 py-4 text-left"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent">
             <Sparkles
               className="h-5 w-5 text-accent-foreground"
@@ -150,7 +150,7 @@ export function AiPlanPanel({ spillere }: { spillere: Spiller[] }) {
                         key={sp.id}
                         type="button"
                         onClick={() => setSpillerId(sp.id)}
-                        className={`flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm ${
+                        className={`flex items-center gap-2 rounded-md px-4 py-2 text-left text-sm ${
                           valgt
                             ? "border-2 border-accent bg-accent/10"
                             : "border border-border hover:bg-secondary"
@@ -178,7 +178,7 @@ export function AiPlanPanel({ spillere }: { spillere: Spiller[] }) {
                   onChange={(e) => setPrompt(e.target.value)}
                   rows={5}
                   placeholder="F.eks. 'Bygg en 6-ukers plan med fokus på putting under 3 meter og wedge-distansekontroll fra 50-100m. 4 økter per uke, 75 min hver. Spilleren har turnering i uke 6.'"
-                  className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm leading-relaxed"
+                  className="w-full rounded-md border border-input bg-background px-4 py-4 text-sm leading-relaxed"
                 />
               </div>
 
@@ -197,7 +197,7 @@ export function AiPlanPanel({ spillere }: { spillere: Spiller[] }) {
               </div>
 
               {feil && (
-                <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+                <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-4 text-sm text-destructive">
                   {feil}
                 </div>
               )}
@@ -286,7 +286,7 @@ function ForslagVisning({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-border bg-background p-5">
+      <div className="rounded-lg border border-border bg-background p-6">
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           AI-forslag for {spillerNavn}
         </div>
@@ -297,16 +297,16 @@ function ForslagVisning({
           {forslag.beskrivelse}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <span className="rounded-full bg-accent px-3 py-1 font-mono text-xs font-semibold text-accent-foreground">
+          <span className="rounded-full bg-accent px-4 py-1 font-mono text-xs font-semibold text-accent-foreground">
             {forslag.periodeUker} uker
           </span>
-          <span className="rounded-full bg-secondary px-3 py-1 font-mono text-xs font-semibold text-secondary-foreground">
+          <span className="rounded-full bg-secondary px-4 py-1 font-mono text-xs font-semibold text-secondary-foreground">
             {forslag.okter.length} økter
           </span>
           {forslag.fokusOmrader.map((f) => (
             <span
               key={f}
-              className="rounded-full border border-border px-3 py-1 text-xs"
+              className="rounded-full border border-border px-4 py-1 text-xs"
             >
               {f}
             </span>
@@ -322,7 +322,7 @@ function ForslagVisning({
               key={u}
               className="rounded-lg border border-border bg-card p-4"
             >
-              <div className="mb-3 flex items-center justify-between">
+              <div className="mb-4 flex items-center justify-between">
                 <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   Uke {u}
                 </div>
@@ -334,9 +334,9 @@ function ForslagVisning({
                 {okter.map((o, idx) => (
                   <div
                     key={`${u}-${idx}`}
-                    className="rounded-md border border-border bg-background p-3"
+                    className="rounded-md border border-border bg-background p-4"
                   >
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-[10px] font-semibold uppercase tracking-wide text-primary">
@@ -378,7 +378,7 @@ function ForslagVisning({
         })}
       </div>
 
-      <div className="space-y-3 rounded-lg border border-border bg-secondary/40 p-4">
+      <div className="space-y-4 rounded-lg border border-border bg-secondary/40 p-4">
         <label className="block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Be om revisjon (valgfritt)
         </label>
@@ -387,13 +387,13 @@ function ForslagVisning({
           onChange={(e) => setFeedback(e.target.value)}
           rows={3}
           placeholder="F.eks. 'Bytt ut alle range-økter med kortere intensitet og legg til en lang putting-økt på fredager.'"
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm"
         />
         <button
           type="button"
           onClick={onRevider}
           disabled={reviderer || feedback.trim().length < 5}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-xs font-medium transition-colors hover:bg-background disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-xs font-medium transition-colors hover:bg-background disabled:cursor-not-allowed disabled:opacity-40"
         >
           {reviderer ? (
             <>
@@ -410,12 +410,12 @@ function ForslagVisning({
       </div>
 
       {feil && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+        <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-4 text-sm text-destructive">
           {feil}
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
         <button
           type="button"
           onClick={onForkast}

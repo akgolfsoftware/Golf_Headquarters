@@ -183,7 +183,7 @@ function IntegrationCard({ card }: { card: Card }) {
   const Icon = card.icon;
   return (
     <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6">
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-4">
         <div className="grid h-10 w-10 place-items-center rounded-md bg-secondary text-muted-foreground">
           <Icon size={20} strokeWidth={1.5} />
         </div>
@@ -197,7 +197,7 @@ function IntegrationCard({ card }: { card: Card }) {
           {card.description}
         </p>
         {card.meta && (
-          <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             {card.meta}
           </p>
         )}

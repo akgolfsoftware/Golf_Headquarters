@@ -21,7 +21,7 @@ export function RevokeButton({ keyId }: { keyId: string }) {
       type="button"
       onClick={handle}
       disabled={pending}
-      className="rounded-md border border-destructive/30 bg-destructive/5 min-h-11 px-3 text-sm font-medium text-destructive hover:border-destructive/50 disabled:opacity-60"
+      className="rounded-md border border-destructive/30 bg-destructive/5 min-h-11 px-4 text-sm font-medium text-destructive hover:border-destructive/50 disabled:opacity-60"
     >
       {pending ? "…" : "Revoker"}
     </button>

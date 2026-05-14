@@ -33,9 +33,9 @@ export async function AdminShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <header
           role="banner"
-          className="flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 sm:px-8 sm:py-4"
+          className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-4 sm:px-8 sm:py-4"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <AdminMobileDrawer />
             <div
               aria-label={`CoachHQ, rolle ${user.role}`}
@@ -44,7 +44,7 @@ export async function AdminShell({
               CoachHQ · {user.role}
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <ViewModeToggle current="coach" />
             <NotificationBell
               notifications={notifications}

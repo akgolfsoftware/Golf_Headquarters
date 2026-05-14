@@ -89,7 +89,7 @@ export default async function OkonomiTabPage() {
       />
 
       {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <FinKpi
           label="Innbetalt denne mnd"
           value={`kr ${formatNok(denneOre)}`}
@@ -208,12 +208,12 @@ export default async function OkonomiTabPage() {
 
         {/* Sidekolonne — Caddies forslag */}
         <aside className="space-y-4">
-          <section className="rounded-lg border border-border bg-card p-5">
+          <section className="rounded-lg border border-border bg-card p-6">
             <h3 className="font-display text-sm font-semibold tracking-tight">
               Caddies <em>forslag</em>
             </h3>
-            <div className="mt-3 space-y-3">
-              <div className="rounded-md border border-border bg-secondary/40 p-3">
+            <div className="mt-4 space-y-4">
+              <div className="rounded-md border border-border bg-secondary/40 p-4">
                 <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   Stub · M16-utvidelse
                 </div>
@@ -225,7 +225,7 @@ export default async function OkonomiTabPage() {
           </section>
 
           {utestaendeOre > 0 && (
-            <section className="rounded-lg border border-destructive/30 bg-destructive/5 p-5">
+            <section className="rounded-lg border border-destructive/30 bg-destructive/5 p-6">
               <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-destructive">
                 <Flag className="h-3 w-3" /> Utestående
               </div>

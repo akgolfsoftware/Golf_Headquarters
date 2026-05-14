@@ -128,14 +128,14 @@ export default async function AdminPlansList({
           <>
             <Link
               href="/admin/plans/templates"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <Sparkles size={14} strokeWidth={1.75} />
               Maler
             </Link>
             <Link
               href="/admin/plans/new"
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Plus size={14} strokeWidth={1.75} />
               Ny plan
@@ -180,7 +180,7 @@ export default async function AdminPlansList({
 
       {/* Filter */}
       <form className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 min-w-[280px] items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
+        <label className="flex flex-1 min-w-[280px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
           <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
@@ -207,14 +207,14 @@ export default async function AdminPlansList({
             <div className="flex gap-2">
               <Link
                 href="/admin/plans/templates"
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground hover:bg-secondary"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-medium text-foreground hover:bg-secondary"
               >
                 <Sparkles size={16} strokeWidth={1.75} />
                 Bruk mal
               </Link>
               <Link
                 href="/admin/plans/new"
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
               >
                 <Plus size={16} strokeWidth={1.75} />
                 Manuell plan
@@ -314,7 +314,7 @@ function PlanCard({ plan }: { plan: PlanCardData }) {
   return (
     <Link
       href={`/admin/plans/${plan.id}`}
-      className="group flex cursor-pointer flex-col gap-2 rounded-lg border border-border bg-card p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+      className="group flex cursor-pointer flex-col gap-2 rounded-lg border border-border bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
     >
       <header className="flex items-center gap-2">
         <span
@@ -431,7 +431,7 @@ function Kpi({
 
 function FilterChip({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] text-muted-foreground">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground">
       {label}
     </span>
   );

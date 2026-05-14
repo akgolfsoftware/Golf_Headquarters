@@ -101,13 +101,13 @@ export default async function AgentDetaljPage({
       />
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <article className="rounded-lg border border-border bg-card p-5">
+        <article className="rounded-lg border border-border bg-card p-6">
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Status
           </div>
           <div className="mt-2">
             <span
-              className={`rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${
+              className={`rounded-full px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${
                 STATUS_FARGE[konfig.status]
               }`}
             >
@@ -115,13 +115,13 @@ export default async function AgentDetaljPage({
             </span>
           </div>
         </article>
-        <article className="rounded-lg border border-border bg-card p-5">
+        <article className="rounded-lg border border-border bg-card p-6">
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Sist kjørt
           </div>
           <div className="mt-2 text-sm font-semibold">{konfig.sistKjort}</div>
         </article>
-        <article className="rounded-lg border border-border bg-card p-5">
+        <article className="rounded-lg border border-border bg-card p-6">
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Kjøringer i loggen
           </div>
@@ -146,7 +146,7 @@ export default async function AgentDetaljPage({
             sub="Når agenten kjøres, dukker den opp her med feedback-mulighet."
           />
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {kjoringer.map((k) => {
               const meta = (k.metadata as Record<string, unknown> | null) ?? null;
               const snippet = lagSnippet(meta);

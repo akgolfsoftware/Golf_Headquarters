@@ -77,11 +77,11 @@ export function AdminSidebar() {
       </div>
       <nav
         aria-label="Hovednavigasjon"
-        className="flex-1 space-y-5 overflow-y-auto px-3 pb-3"
+        className="flex-1 space-y-6 overflow-y-auto px-4 pb-4"
       >
         {NAV_GROUPS.map((group) => (
           <div key={group.label}>
-            <div className="px-3 pb-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-white/40">
+            <div className="px-4 pb-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-white/40">
               {group.label}
             </div>
             <div className="space-y-0.5">
@@ -95,7 +95,7 @@ export function AdminSidebar() {
                     key={n.href}
                     href={n.href}
                     aria-current={aktiv ? "page" : undefined}
-                    className={`block rounded-md px-3 py-1.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-coach-sidebar)] ${
+                    className={`block rounded-md px-4 py-1.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-coach-sidebar)] ${
                       aktiv
                         ? "bg-white/10 font-semibold text-white"
                         : "text-white/70 hover:bg-white/5 hover:text-white"
@@ -111,7 +111,7 @@ export function AdminSidebar() {
       </nav>
       <div
         aria-hidden="true"
-        className="m-3 rounded-md bg-accent/10 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-accent"
+        className="m-4 rounded-md bg-accent/10 px-4 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-accent"
       >
         CoachHQ
       </div>

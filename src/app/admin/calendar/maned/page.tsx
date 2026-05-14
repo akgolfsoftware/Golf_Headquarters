@@ -284,7 +284,7 @@ export default async function KalenderManedPage({
 
         {/* Sidebar */}
         <aside className="flex flex-col gap-4 lg:sticky lg:top-6">
-          <div className="rounded-2xl bg-foreground p-5 text-background">
+          <div className="rounded-2xl bg-foreground p-6 text-background">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-background/50">
               Dag-detalj
             </span>
@@ -312,8 +312,8 @@ export default async function KalenderManedPage({
           </div>
 
           {/* Legend */}
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Forklaring
             </div>
             <LegendRow
@@ -331,8 +331,8 @@ export default async function KalenderManedPage({
           </div>
 
           {/* Måneds-stats */}
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Måneds-snitt
             </div>
             <MiniStat k="Økter totalt" v={String(totaltMnd)} />

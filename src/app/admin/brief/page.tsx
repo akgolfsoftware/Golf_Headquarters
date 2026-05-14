@@ -185,7 +185,7 @@ export default async function DagligBrief() {
             title={`Nyligste runder · ${data.nyligeRunder.length}`}
           />
           {data.nyligeRunder.length === 0 ? (
-            <div className="flex items-center gap-3.5 rounded-xl border border-border bg-card px-6 py-5">
+            <div className="flex items-center gap-3.5 rounded-xl border border-border bg-card px-6 py-6">
               <Activity className="h-5 w-5 text-muted-foreground" />
               <div>
                 <div className="text-[13.5px] font-medium">
@@ -202,13 +202,13 @@ export default async function DagligBrief() {
               <table className="w-full min-w-[420px]">
                 <thead>
                   <tr className="border-b border-border bg-secondary/40">
-                    <th className="px-4 py-3 text-left font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
+                    <th className="px-4 py-4 text-left font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
                       Spiller
                     </th>
-                    <th className="px-4 py-3 text-left font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
+                    <th className="px-4 py-4 text-left font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
                       Bane
                     </th>
-                    <th className="px-4 py-3 text-right font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
+                    <th className="px-4 py-4 text-right font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
                       SG-tot
                     </th>
                   </tr>
@@ -216,14 +216,14 @@ export default async function DagligBrief() {
                 <tbody className="divide-y divide-border text-[13px]">
                   {data.nyligeRunder.map((r, i) => (
                     <tr key={i}>
-                      <td className="px-4 py-3 font-medium text-foreground">
+                      <td className="px-4 py-4 font-medium text-foreground">
                         {r.spiller}
                       </td>
-                      <td className="px-4 py-3 text-muted-foreground">
+                      <td className="px-4 py-4 text-muted-foreground">
                         {r.bane}
                       </td>
                       <td
-                        className={`px-4 py-3 text-right font-mono tabular-nums ${
+                        className={`px-4 py-4 text-right font-mono tabular-nums ${
                           r.sgTotal != null && r.sgTotal >= 0
                             ? "text-primary"
                             : r.sgTotal != null
@@ -250,7 +250,7 @@ export default async function DagligBrief() {
             <div>
               <SectionNum num="03" title="Agentenes anbefalinger" />
               {/* TODO: hent agent-anbefalinger fra PlanAction-tabellen */}
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-4">
                 <Rec
                   icon={<Bot className="h-4 w-4" />}
                   tone="primary"
@@ -357,14 +357,14 @@ function Kpi({
   footLink?: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-5">
+    <div className="rounded-xl border border-border bg-card p-6">
       <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </div>
       <div className="font-display text-[28px] font-semibold leading-none tracking-tight">
         <span className="font-mono tabular-nums">{value}</span>
       </div>
-      <div className="mt-3 flex items-center gap-2 text-[12px]">
+      <div className="mt-4 flex items-center gap-2 text-[12px]">
         {foot && <span className="text-muted-foreground">{foot}</span>}
         {footLink && (
           <a

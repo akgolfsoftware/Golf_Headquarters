@@ -31,10 +31,10 @@ export function ContextPanel({
   });
 
   return (
-    <aside className="flex flex-col gap-4 overflow-y-auto border-l border-border bg-secondary/40 px-5 py-5">
+    <aside className="flex flex-col gap-4 overflow-y-auto border-l border-border bg-secondary/40 px-6 py-6">
       {/* Spiller-kort */}
       <div className="rounded-lg border border-border bg-card px-4 py-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <span className="grid h-12 w-12 place-items-center rounded-lg bg-muted font-display text-[16px] font-semibold">
             {spiller.initialer}
           </span>
@@ -47,7 +47,7 @@ export function ContextPanel({
             </div>
           </div>
         </div>
-        <div className="mt-3">
+        <div className="mt-4">
           <Stat
             k="Handicap"
             v={
@@ -62,7 +62,7 @@ export function ContextPanel({
         </div>
         <Link
           href={`/admin/elever/${spiller.id}`}
-          className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+          className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           Åpne profil
           <ArrowUpRight size={14} strokeWidth={1.5} />
@@ -71,10 +71,10 @@ export function ContextPanel({
 
       {/* Tidslinje */}
       <div className="rounded-lg border border-border bg-card px-4 py-4">
-        <h3 className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        <h3 className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Siste aktivitet
         </h3>
-        <div className="relative pl-5">
+        <div className="relative pl-6">
           <span className="absolute bottom-1 left-1 top-1 w-px bg-border" />
           <TlItem
             when={sistOppdatert.toLocaleString("nb-NO", {
@@ -101,7 +101,7 @@ export function ContextPanel({
 
       {/* Snarveier */}
       <div className="rounded-lg border border-border bg-card px-4 py-4">
-        <h3 className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        <h3 className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Snarveier
         </h3>
         <div className="flex flex-col gap-2">
@@ -174,7 +174,7 @@ function Shortcut({
   return (
     <Link
       href={href}
-      className="inline-flex items-center justify-start gap-2 rounded-md border border-border bg-card px-3 py-2 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+      className="inline-flex items-center justify-start gap-2 rounded-md border border-border bg-card px-4 py-2 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
     >
       {icon}
       {children}

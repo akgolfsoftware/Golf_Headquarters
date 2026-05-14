@@ -49,7 +49,7 @@ export function InviterCoachForm() {
           type="text"
           required
           minLength={2}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-[14px] outline-none focus:ring-2 focus:ring-ring"
+          className="w-full rounded-md border border-input bg-background px-4 py-2 text-[14px] outline-none focus:ring-2 focus:ring-ring"
           placeholder="Fornavn Etternavn"
         />
         {fieldErrors.name && (
@@ -66,7 +66,7 @@ export function InviterCoachForm() {
           name="email"
           type="email"
           required
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-[14px] outline-none focus:ring-2 focus:ring-ring"
+          className="w-full rounded-md border border-input bg-background px-4 py-2 text-[14px] outline-none focus:ring-2 focus:ring-ring"
           placeholder="coach@akgolf.no"
         />
         {fieldErrors.email && (
@@ -75,13 +75,13 @@ export function InviterCoachForm() {
       </div>
 
       {error && !Object.keys(fieldErrors).length && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-[13px] text-destructive">
+        <div className="rounded-md border border-destructive/40 bg-destructive/10 px-4 py-2 text-[13px] text-destructive">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="rounded-md border border-primary/40 bg-primary/10 px-3 py-2 text-[13px] text-primary">
+        <div className="rounded-md border border-primary/40 bg-primary/10 px-4 py-2 text-[13px] text-primary">
           {success}
         </div>
       )}

@@ -208,7 +208,7 @@ export default async function RecordingAdmin() {
 
           {/* Transcript-placeholder */}
           <div
-            className="pointer-events-none absolute bottom-[104px] left-1/2 max-h-[200px] w-[720px] max-w-[90%] -translate-x-1/2 overflow-hidden px-5 py-3 font-mono text-[13px] leading-[1.6]"
+            className="pointer-events-none absolute bottom-[104px] left-1/2 max-h-[200px] w-[720px] max-w-[90%] -translate-x-1/2 overflow-hidden px-6 py-4 font-mono text-[13px] leading-[1.6]"
             style={{
               maskImage: "linear-gradient(to top, #000 70%, transparent 100%)",
               WebkitMaskImage:
@@ -243,7 +243,7 @@ export default async function RecordingAdmin() {
       />
 
       {/* Meta-strip under frame */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <MetaStat label="Totalt opptak" value={String(totalt)} />
         <MetaStat label="Ferdig" value={String(ferdig)} />
         <MetaStat
@@ -367,8 +367,8 @@ function TimelineScrubber({
   const playhead = aktiv ? 0.42 : 0.0;
 
   return (
-    <section className="space-y-4 rounded-2xl border border-border bg-card p-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <section className="space-y-4 rounded-2xl border border-border bg-card p-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Timeline
@@ -380,7 +380,7 @@ function TimelineScrubber({
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
           >
             {aktiv ? (
               <Pause className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -391,14 +391,14 @@ function TimelineScrubber({
           </button>
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-1.5 text-xs font-semibold text-accent-foreground transition-opacity hover:opacity-90"
           >
             <Flag className="h-3.5 w-3.5" strokeWidth={2} />
             Legg til marker
           </button>
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-md bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-md bg-destructive px-4 py-1.5 text-xs font-semibold text-destructive-foreground transition-opacity hover:opacity-90"
           >
             <Square className="h-3 w-3 fill-current" strokeWidth={0} />
             Stopp
@@ -466,7 +466,7 @@ function TimelineScrubber({
         {STUB_MARKERS.map((m, i) => (
           <li
             key={i}
-            className="flex flex-wrap items-center gap-3 rounded-md border border-border bg-background px-3 py-2 dark:bg-card"
+            className="flex flex-wrap items-center gap-4 rounded-md border border-border bg-background px-4 py-2 dark:bg-card"
           >
             <span className="font-mono text-xs tabular-nums text-muted-foreground">
               {m.ts}
@@ -534,7 +534,7 @@ function MetaStat({
   tone?: "default" | "danger";
 }) {
   return (
-    <div className="rounded-md border border-border bg-card px-4 py-3">
+    <div className="rounded-md border border-border bg-card px-4 py-4">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </div>

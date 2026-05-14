@@ -72,17 +72,17 @@ export function AdminCancelAction({
               <span className="font-medium text-foreground">{playerName}</span>.
               Spilleren får e-post om avbestillingen.
             </p>
-            <p className="mt-3 rounded-md border border-border/50 bg-secondary/40 p-3 text-xs text-muted-foreground">
+            <p className="mt-4 rounded-md border border-border/50 bg-secondary/40 p-4 text-xs text-muted-foreground">
               {before24t
                 ? "Over 24 timer igjen — full refusjon utløses automatisk hvis booking ble betalt via Stripe."
                 : "Mindre enn 24 timer igjen — spillere har normalt ikke krav på refusjon, men som coach/admin trigges refusjon likevel hvis booking ble betalt via Stripe."}
             </p>
-            <div className="mt-5 flex items-center justify-end gap-2">
+            <div className="mt-6 flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 disabled={pending}
-                className="rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground hover:bg-secondary disabled:opacity-60"
+                className="rounded-md border border-border bg-card px-4 py-1.5 text-sm font-medium text-foreground hover:bg-secondary disabled:opacity-60"
               >
                 Avbryt
               </button>
@@ -90,7 +90,7 @@ export function AdminCancelAction({
                 type="button"
                 onClick={bekreft}
                 disabled={pending}
-                className="rounded-md bg-destructive px-3 py-1.5 text-sm font-semibold text-destructive-foreground hover:opacity-90 disabled:opacity-60"
+                className="rounded-md bg-destructive px-4 py-1.5 text-sm font-semibold text-destructive-foreground hover:opacity-90 disabled:opacity-60"
               >
                 {pending ? "Avbestiller…" : "Ja, avbestill"}
               </button>

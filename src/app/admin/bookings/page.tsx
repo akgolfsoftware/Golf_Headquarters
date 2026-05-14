@@ -136,7 +136,7 @@ export default async function Bookinger({
         actions={
           <Link
             href="/admin/bookings/ny"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             + Ny booking
           </Link>
@@ -157,7 +157,7 @@ export default async function Bookinger({
 
       {/* Filter */}
       <div className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
+        <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
           <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
@@ -232,7 +232,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="space-y-3">
+    <section className="space-y-4">
       <h3 className="font-display text-lg font-semibold tracking-tight">
         {title} <span className="font-mono text-sm text-muted-foreground">({count})</span>
       </h3>
@@ -436,7 +436,7 @@ function Legend() {
     { c: "rgba(122,153,140,0.5)", l: "Gruppe" },
   ];
   return (
-    <div className="hidden flex-wrap items-center gap-3 font-mono text-[11px] text-muted-foreground md:flex">
+    <div className="hidden flex-wrap items-center gap-4 font-mono text-[11px] text-muted-foreground md:flex">
       {items.map((it) => (
         <span key={it.l} className="inline-flex items-center gap-1.5">
           <span
@@ -502,7 +502,7 @@ function Kpi({
 
 function FilterChip({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] text-muted-foreground">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground">
       {label}
     </span>
   );
@@ -510,7 +510,7 @@ function FilterChip({ label }: { label: string }) {
 
 function Th({ children }: { children?: React.ReactNode }) {
   return (
-    <th className="px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+    <th className="px-4 py-4 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
       {children}
     </th>
   );

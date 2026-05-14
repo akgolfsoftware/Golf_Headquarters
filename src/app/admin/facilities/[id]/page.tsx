@@ -239,7 +239,7 @@ async function UkeView({
       />
 
       {/* Info-strip */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <InfoCard
           icon={MapPin}
           label="Lokasjon"
@@ -478,7 +478,7 @@ async function MndView({
           {DAGER.map((d) => (
             <div
               key={d}
-              className="px-3 py-2.5 text-center font-mono text-[10px] uppercase tracking-wider text-muted-foreground"
+              className="px-4 py-2.5 text-center font-mono text-[10px] uppercase tracking-wider text-muted-foreground"
             >
               {d}
             </div>
@@ -608,7 +608,7 @@ function LiveOccupancy({
   );
 
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="mb-4 flex items-end justify-between">
         <div>
           <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
@@ -622,7 +622,7 @@ function LiveOccupancy({
           </div>
         </div>
         <span
-          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[11px] font-medium ${
+          className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1 font-mono text-[11px] font-medium ${
             aktiv
               ? "bg-primary/15 text-primary"
               : "bg-accent/30 text-accent-foreground"
@@ -674,7 +674,7 @@ function ViewToggle({
     <div className="inline-flex rounded-md border border-border bg-card p-0.5">
       <Link
         href={`/admin/facilities/${facilityId}?view=uke`}
-        className={`px-3 py-1 text-xs font-medium ${
+        className={`px-4 py-1 text-xs font-medium ${
           active === "uke"
             ? "rounded bg-primary text-primary-foreground"
             : "text-muted-foreground hover:text-foreground"
@@ -684,7 +684,7 @@ function ViewToggle({
       </Link>
       <Link
         href={`/admin/facilities/${facilityId}?view=maned`}
-        className={`px-3 py-1 text-xs font-medium ${
+        className={`px-4 py-1 text-xs font-medium ${
           active === "maned"
             ? "rounded bg-primary text-primary-foreground"
             : "text-muted-foreground hover:text-foreground"

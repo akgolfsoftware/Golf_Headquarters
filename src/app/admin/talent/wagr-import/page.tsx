@@ -38,7 +38,7 @@ export default async function WagrImportPage() {
         <h2 className="font-display text-base font-semibold tracking-tight">
           Slik finner du dataene
         </h2>
-        <ol className="mt-3 space-y-2 text-sm text-muted-foreground">
+        <ol className="mt-4 space-y-2 text-sm text-muted-foreground">
           <li>
             <span className="font-mono text-foreground">1.</span> Åpne{" "}
             <a

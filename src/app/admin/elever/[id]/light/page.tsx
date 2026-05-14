@@ -122,7 +122,7 @@ export default async function SpillerLightPage({
       </div>
 
       {/* Mini-stats */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         <MiniStat
           icon={<Flag className="h-5 w-5" strokeWidth={1.5} />}
           label="Siste runde"
@@ -175,7 +175,7 @@ function MiniStat({
   sub: string;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary/40">
+    <div className="rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40">
       <div className="flex items-start gap-4">
         <div
           aria-hidden="true"

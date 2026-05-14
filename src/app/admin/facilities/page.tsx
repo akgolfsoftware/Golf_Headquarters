@@ -177,7 +177,7 @@ export default async function FacilitiesAdmin({
 
       {/* Filter / søk */}
       {facilities.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-4">
           <label className="flex h-10 min-w-[240px] flex-1 items-center gap-2 rounded-md border border-border bg-background px-4 text-sm text-muted-foreground">
             <Search size={14} strokeWidth={1.75} />
             <input
@@ -293,11 +293,11 @@ export default async function FacilitiesAdmin({
                       )}
                       <Link
                         href={`/admin/facilities/${f.id}`}
-                        className="block rounded-lg border border-border bg-card p-5 transition-all hover:border-primary hover:shadow-sm"
+                        className="block rounded-lg border border-border bg-card p-6 transition-all hover:border-primary hover:shadow-sm"
                       >
                         {/* Header */}
                         <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-start gap-3">
+                          <div className="flex items-start gap-4">
                             <span
                               className={`mt-1.5 inline-block h-2 w-2 rounded-full ${
                                 f.active
@@ -380,7 +380,7 @@ function UkeStrip({
   idag: Date;
 }) {
   return (
-    <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-1">
+    <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-1">
       {dager.map((d, i) => {
         const count = telling[i] ?? 0;
         const erIdag =

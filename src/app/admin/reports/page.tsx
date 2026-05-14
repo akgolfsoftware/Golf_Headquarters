@@ -119,8 +119,8 @@ export default async function Rapporter() {
         </div>
 
         {/* Filter bar */}
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <div className="flex max-w-[280px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
+        <div className="mb-6 flex flex-wrap items-center gap-4">
+          <div className="flex max-w-[280px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
             <Search className="h-3.5 w-3.5" />
             <span>Søk rapport-mal</span>
           </div>
@@ -137,7 +137,7 @@ export default async function Rapporter() {
 
           {/* Right rail */}
           <aside className="sticky top-6 overflow-hidden rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-5 py-4">
+            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
               <h3 className="font-display text-[14px] font-semibold tracking-tight">
                 Planlagte leveranser
               </h3>
@@ -146,14 +146,14 @@ export default async function Rapporter() {
               </span>
             </div>
             {planlagte.length === 0 ? (
-              <div className="px-5 py-6 text-[13px] text-muted-foreground">
+              <div className="px-6 py-6 text-[13px] text-muted-foreground">
                 Ingen planlagte leveranser ennå. Bruk «Planlegg ny» for å sette opp automatisk e-postutsending.
               </div>
             ) : (
               planlagte.map((s, i) => (
                 <div
                   key={i}
-                  className="flex flex-col gap-1.5 border-b border-border px-5 py-3.5 last:border-b-0"
+                  className="flex flex-col gap-1.5 border-b border-border px-6 py-3.5 last:border-b-0"
                 >
                   <div className="text-[13.5px] font-medium leading-[1.4] text-foreground">
                     {s.name}
@@ -169,12 +169,12 @@ export default async function Rapporter() {
                 </div>
               ))
             )}
-            <div className="border-t border-border px-5 py-4">
+            <div className="border-t border-border px-6 py-4">
               <button
                 type="button"
                 disabled
                 title="Kommer i v2"
-                className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] font-medium text-foreground opacity-50"
+                className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground opacity-50"
               >
                 <Plus className="h-4 w-4" />
                 Planlegg ny leveranse
@@ -199,7 +199,7 @@ function Kpi({
   foot: string;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="font-mono text-[10px] uppercase tracking-[0.10em] font-medium text-muted-foreground">
         {label}
       </div>
@@ -209,7 +209,7 @@ function Kpi({
           <span className="text-[14px] font-normal text-muted-foreground">{unit}</span>
         )}
       </div>
-      <div className="mt-3 flex items-center gap-2 text-[12px] text-muted-foreground">
+      <div className="mt-4 flex items-center gap-2 text-[12px] text-muted-foreground">
         {foot}
       </div>
     </div>
@@ -219,7 +219,7 @@ function Kpi({
 function Chip({ active, children }: { active?: boolean; children: React.ReactNode }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-3 py-1.5 text-[12px] font-medium ${
+      className={`inline-flex items-center rounded-full border px-4 py-1.5 text-[12px] font-medium ${
         active
           ? "border-foreground bg-foreground text-background"
           : "border-border bg-card text-muted-foreground"
@@ -296,7 +296,7 @@ function ReportCard({ report }: { report: ReportTemplate }) {
         <a
           href={report.href}
           download
-          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-[12.5px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-[12.5px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
         >
           Last ned →
         </a>
@@ -304,7 +304,7 @@ function ReportCard({ report }: { report: ReportTemplate }) {
           type="button"
           disabled
           title="Kommer i v2"
-          className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md px-3 py-1.5 text-[12.5px] font-medium text-foreground opacity-50"
+          className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md px-4 py-1.5 text-[12.5px] font-medium text-foreground opacity-50"
         >
           Planlegg →
         </button>

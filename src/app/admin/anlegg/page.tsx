@@ -167,7 +167,7 @@ async function Oversikt() {
       </div>
 
       {/* Filter-chips */}
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-3">
+      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-4">
         <label className="flex h-10 min-w-[260px] flex-1 items-center gap-2 rounded-md border border-border bg-background px-4 text-sm text-muted-foreground">
           <Search size={14} strokeWidth={1.75} />
           <input

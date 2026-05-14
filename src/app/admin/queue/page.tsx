@@ -196,7 +196,7 @@ export default async function OppfolgingsKo() {
 
         {/* Top stats */}
         <section
-          className="mb-5 grid gap-3"
+          className="mb-6 grid gap-4"
           style={{ gridTemplateColumns: "repeat(5, 1fr) 1.4fr" }}
         >
           <TopStat
@@ -234,7 +234,7 @@ export default async function OppfolgingsKo() {
         </section>
 
         {/* Filter row */}
-        <div className="mb-5 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-3">
+        <div className="mb-6 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-4">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Filter
           </span>
@@ -257,7 +257,7 @@ export default async function OppfolgingsKo() {
             type="button"
             disabled
             title="Sortering kommer i v2"
-            className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-foreground opacity-60"
+            className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-foreground opacity-60"
           >
             Risiko + tid siden flagget
             <ChevronDown className="h-3.5 w-3.5" />
@@ -306,7 +306,7 @@ function Column({
   };
   return (
     <div
-      className={`flex min-h-[520px] flex-col gap-3 rounded-lg border border-border p-3.5 ${bgTint[col.status]}`}
+      className={`flex min-h-[520px] flex-col gap-4 rounded-lg border border-border p-3.5 ${bgTint[col.status]}`}
     >
       <div className="flex items-center gap-2 px-1.5 pt-1">
         <span className={`h-2 w-2 rounded-full ${dotColor[col.status]}`} />
@@ -446,7 +446,7 @@ function TopStat({
           ? "text-primary"
           : "text-foreground";
   return (
-    <div className="rounded-lg border border-border bg-card px-5 py-4">
+    <div className="rounded-lg border border-border bg-card px-6 py-4">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {k}
       </div>
@@ -466,7 +466,7 @@ function TopStat({
 function Chip({ active, children }: { active?: boolean; children: React.ReactNode }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-[12px] font-medium ${
+      className={`inline-flex items-center rounded-full px-4 py-1 text-[12px] font-medium ${
         active
           ? "bg-foreground text-background"
           : "border border-border bg-card text-muted-foreground"
@@ -483,7 +483,7 @@ function SegBtn({ active, children }: { active?: boolean; children: React.ReactN
       type="button"
       disabled={!active}
       title={active ? undefined : "Visning kommer i v2"}
-      className={`px-3 py-1 text-[12px] font-medium transition-colors ${
+      className={`px-4 py-1 text-[12px] font-medium transition-colors ${
         active
           ? "bg-foreground text-background"
           : "cursor-not-allowed text-muted-foreground opacity-60"

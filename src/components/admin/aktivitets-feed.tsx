@@ -29,7 +29,7 @@ export function AktivitetsFeed({ items }: { items: AktivitetsItem[] }) {
       ) : (
         <ul className="mt-4 divide-y divide-border">
           {items.map((it, i) => (
-            <li key={i} className="flex items-start gap-3 py-3 text-sm">
+            <li key={i} className="flex items-start gap-4 py-4 text-sm">
               <span
                 className={`shrink-0 rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${TYPE_FARGE[it.type]}`}
               >

@@ -53,7 +53,7 @@ export default async function Varsler() {
 
       {/* Hva kommer */}
       <section className="rounded-xl border border-primary/30 bg-primary/5 p-4">
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-4">
           <Bell
             className="h-5 w-5 flex-shrink-0 text-primary"
             strokeWidth={1.75}
@@ -98,7 +98,7 @@ export default async function Varsler() {
               <ul className="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2">
                 {KANALER.map((k) => (
                   <li key={k.key}>
-                    <label className="flex items-start justify-between gap-4 rounded-md border border-border bg-background px-4 py-3 text-sm">
+                    <label className="flex items-start justify-between gap-4 rounded-md border border-border bg-background px-4 py-4 text-sm">
                       <div className="min-w-0">
                         <div className="font-medium">{k.label}</div>
                         <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">

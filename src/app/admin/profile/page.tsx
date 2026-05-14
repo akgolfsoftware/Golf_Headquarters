@@ -116,7 +116,7 @@ export default async function AdminProfilePage() {
           </div>
           <Link
             href="/"
-            className="flex items-center justify-between rounded-sm border border-border bg-secondary p-3 text-[12px] text-foreground transition-colors hover:bg-secondary/80"
+            className="flex items-center justify-between rounded-sm border border-border bg-secondary p-4 text-[12px] text-foreground transition-colors hover:bg-secondary/80"
           >
             <span>Se offentlig profil</span>
             <ExternalLink size={14} strokeWidth={1.5} />
@@ -131,7 +131,7 @@ export default async function AdminProfilePage() {
           </Section>
 
           <Section title="Profesjonelt" aux="Vises på offentlig profil">
-            <div className="grid grid-cols-[180px_1fr_auto] items-start gap-6 border-b border-border px-6 py-5 last:border-b-0">
+            <div className="grid grid-cols-[180px_1fr_auto] items-start gap-6 border-b border-border px-6 py-6 last:border-b-0">
               <div>
                 <span className="text-[13px] font-medium text-muted-foreground">
                   Bio
@@ -159,7 +159,7 @@ export default async function AdminProfilePage() {
           </Section>
 
           <Section title="Galleri" aux="4 bilder vises på offentlig profil">
-            <div className="grid grid-cols-2 gap-3 p-4">
+            <div className="grid grid-cols-2 gap-4 p-4">
               <GalleryEmpty />
               <GalleryEmpty />
               <GalleryEmpty />
@@ -291,7 +291,7 @@ function DangerZone() {
         </div>
         <button
           type="button"
-          className="rounded-sm border border-destructive/40 px-3 py-2 text-[12px] font-medium text-destructive"
+          className="rounded-sm border border-destructive/40 px-4 py-2 text-[12px] font-medium text-destructive"
         >
           Skjul
         </button>

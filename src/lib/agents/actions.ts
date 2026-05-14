@@ -1,12 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 
 export async function acceptPlanAction(actionId: string) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const action = await prisma.planAction.findUnique({
     where: { id: actionId },
@@ -30,8 +29,7 @@ export async function acceptPlanAction(actionId: string) {
 }
 
 export async function rejectPlanAction(actionId: string) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const action = await prisma.planAction.findUnique({
     where: { id: actionId },

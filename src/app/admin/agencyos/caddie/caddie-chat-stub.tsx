@@ -35,11 +35,11 @@ export function CaddieChatStub({ foreslatteSporsmal }: { foreslatteSporsmal: str
   return (
     <div className="flex h-[500px] flex-col">
       {/* Historikk */}
-      <div className="flex-1 space-y-3 overflow-y-auto px-5 py-4">
+      <div className="flex-1 space-y-4 overflow-y-auto px-6 py-4">
         {history.map((m, i) => (
           <div
             key={i}
-            className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
+            className={`max-w-[80%] rounded-lg px-4 py-2 text-sm ${
               m.who === "you"
                 ? "ml-auto bg-primary text-primary-foreground"
                 : "bg-secondary text-foreground"
@@ -60,7 +60,7 @@ export function CaddieChatStub({ foreslatteSporsmal }: { foreslatteSporsmal: str
       </div>
 
       {/* Foreslåtte spørsmål */}
-      <div className="border-t border-border px-5 py-3">
+      <div className="border-t border-border px-6 py-4">
         <div className="mb-2 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           <Sparkles className="h-3 w-3" /> Caddie foreslår
         </div>
@@ -70,7 +70,7 @@ export function CaddieChatStub({ foreslatteSporsmal }: { foreslatteSporsmal: str
               key={p}
               type="button"
               onClick={() => send(p)}
-              className="rounded-full border border-border bg-background px-3 py-1 text-xs text-foreground transition-colors hover:bg-secondary"
+              className="rounded-full border border-border bg-background px-4 py-1 text-xs text-foreground transition-colors hover:bg-secondary"
             >
               {p}
             </button>
@@ -79,7 +79,7 @@ export function CaddieChatStub({ foreslatteSporsmal }: { foreslatteSporsmal: str
       </div>
 
       {/* Input */}
-      <div className="flex items-center gap-2 border-t border-border px-5 py-3">
+      <div className="flex items-center gap-2 border-t border-border px-6 py-4">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-[11px] font-semibold text-primary-foreground">
           C
         </div>

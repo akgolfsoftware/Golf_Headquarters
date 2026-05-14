@@ -191,7 +191,7 @@ export default async function Talent() {
         sub={`${totalt} spillere fordelt på A1–A5 basert på HCP (AK Golf-standard).`}
         actions={
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px] text-muted-foreground">
+            <div className="flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
               <Search className="h-4 w-4" strokeWidth={1.5} />
               <span>Søk spiller</span>
             </div>
@@ -265,7 +265,7 @@ export default async function Talent() {
 
       {/* Frist-stripe */}
       <section>
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-4 flex items-center justify-between">
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             <Calendar className="mr-1 inline h-3 w-3" strokeWidth={1.5} />
             Kommende frister · 8 uker
@@ -278,7 +278,7 @@ export default async function Talent() {
           {FRIST_PLACEHOLDER.map((f) => (
             <div
               key={f.date + f.label}
-              className={`rounded-lg border bg-card p-3 transition-colors hover:border-primary/40 ${
+              className={`rounded-lg border bg-card p-4 transition-colors hover:border-primary/40 ${
                 f.urgent ? "border-accent" : "border-border"
               }`}
             >
@@ -328,7 +328,7 @@ export default async function Talent() {
                   type="button"
                   disabled={!o.active}
                   title={o.active ? undefined : "Sortering kommer i v2"}
-                  className={`rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors ${
+                  className={`rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors ${
                     o.active
                       ? "bg-primary text-primary-foreground"
                       : "cursor-not-allowed bg-secondary text-muted-foreground opacity-60"
@@ -411,7 +411,7 @@ export default async function Talent() {
               </div>
 
               {/* Agent-forslag · primary card */}
-              <div className="mt-5 rounded-lg bg-primary p-4 text-primary-foreground">
+              <div className="mt-6 rounded-lg bg-primary p-4 text-primary-foreground">
                 <div className="flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
                   <Sparkles className="h-3 w-3" strokeWidth={1.5} />
                   Agent-forslag · 90 d
@@ -426,7 +426,7 @@ export default async function Talent() {
                 </p>
                 <Link
                   href={`/admin/plans/new?spillerId=${valgt.id}`}
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-[12px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-[12px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
                 >
                   Planlegg test
                   <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
@@ -434,7 +434,7 @@ export default async function Talent() {
               </div>
 
               {/* Mini-stats — TODO: koble mot StatsCache */}
-              <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="mt-6 grid grid-cols-2 gap-4">
                 <MiniStat label="Avg runde" value="—" delta="—" tone="muted" />
                 <MiniStat label="Percentil" value="—" delta="—" tone="muted" />
                 <MiniStat label="SG total" value="—" delta="—" tone="muted" />
@@ -442,19 +442,19 @@ export default async function Talent() {
               </div>
 
               {/* Hurtignotat */}
-              <div className="mt-5">
+              <div className="mt-6">
                 <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   <StickyNote className="h-3 w-3" strokeWidth={1.5} />
                   Hurtig-notat
                 </div>
-                <div className="mt-2 rounded-md border border-input bg-background p-3 text-[12px] text-muted-foreground">
+                <div className="mt-2 rounded-md border border-input bg-background p-4 text-[12px] text-muted-foreground">
                   Klikk for å notere observasjon fra dagens økt …
                 </div>
               </div>
 
               <Link
                 href={`/admin/elever/${valgt.id}`}
-                className="mt-5 inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2.5 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                className="mt-6 inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2.5 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
               >
                 Åpne 360-profil
                 <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
@@ -485,7 +485,7 @@ function PlayerRow({
 }) {
   return (
     <li
-      className={`grid grid-cols-[48px_minmax(0,1fr)_auto_auto] items-center gap-4 border-b border-border px-4 py-3 last:border-b-0 ${
+      className={`grid grid-cols-[48px_minmax(0,1fr)_auto_auto] items-center gap-4 border-b border-border px-4 py-4 last:border-b-0 ${
         selected ? "bg-primary/5" : "hover:bg-secondary/40"
       }`}
     >
@@ -556,7 +556,7 @@ function MiniStat({
   const deltaCls =
     tone === "success" ? "text-primary" : "text-muted-foreground";
   return (
-    <div className="rounded-md border border-border bg-secondary/30 p-3">
+    <div className="rounded-md border border-border bg-secondary/30 p-4">
       <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </div>
