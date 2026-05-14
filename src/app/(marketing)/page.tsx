@@ -8,9 +8,7 @@ import {
   Flag,
   GraduationCap,
   LineChart,
-  Quote,
   Sparkles,
-  Star,
   Target,
   Users,
 } from "lucide-react";
@@ -38,35 +36,11 @@ const TJENESTER = [
   {
     Icon: GraduationCap,
     tag: "Drop-in",
-    title: "Enkelttimer",
+    title: "Flex timer",
     description:
       "Ikke klar for abonnement? Book en enkelttime når det passer deg. Full tilgang til Trackman og analyse.",
-    price: "Fra 500 kr",
+    price: "300 kr / 20 min",
     href: "/booking",
-  },
-];
-
-const TESTIMONIALS = [
-  {
-    name: "Markus Roinås Pedersen",
-    initials: "MP",
-    role: "Junior · WANG Toppidrett · HCP +2,4",
-    quote:
-      "Strukturen er på et helt annet nivå enn jeg hadde før. Jeg vet hva jeg skal jobbe med, hvorfor — og jeg ser det på tallene.",
-  },
-  {
-    name: "Henrik Solberg",
-    initials: "HS",
-    role: "Amatør · 38 år · HCP 8,2 → 4,1",
-    quote:
-      "Jeg trodde jeg hadde nådd toppen. Etter ett år med plan og månedlig coaching gikk jeg fra 8 til 4 i handicap.",
-  },
-  {
-    name: "Ida Kristoffersen",
-    initials: "IK",
-    role: "Junior · 14 år · NM-finalist 2025",
-    quote:
-      "Anders behandler meg som en utøver, ikke et barn. Det betyr alt når man satser på golf.",
   },
 ];
 
@@ -154,30 +128,6 @@ export default function Hjem() {
           {TJENESTER.map((t) => (
             <ServiceCard key={t.tag} {...t} />
           ))}
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="border-y border-border bg-card">
-        <div className="mx-auto max-w-7xl px-6 py-24">
-          <SectionHeader
-            tag="Spillerne våre"
-            title={
-              <>
-                <em className="font-display font-normal italic text-primary">
-                  Ekte
-                </em>{" "}
-                fremgang, ekte ord
-              </>
-            }
-            intro="Et utvalg fra de 130+ vurderingene fra spillere som har vært gjennom et sesongprogram."
-          />
-
-          <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-            {TESTIMONIALS.map((t) => (
-              <Testimonial key={t.name} {...t} />
-            ))}
-          </div>
         </div>
       </section>
 
@@ -394,55 +344,6 @@ function ServiceCard({
         </span>
       </div>
     </Link>
-  );
-}
-
-function Testimonial({
-  name,
-  initials,
-  role,
-  quote,
-}: {
-  name: string;
-  initials: string;
-  role: string;
-  quote: string;
-}) {
-  return (
-    <figure className="flex flex-col rounded-2xl border border-border bg-background p-8">
-      <Quote
-        className="h-6 w-6 text-primary"
-        strokeWidth={1.5}
-        aria-hidden="true"
-      />
-      <blockquote className="mt-4 flex-1 text-[16px] leading-[1.6] text-foreground">
-        &laquo;{quote}&raquo;
-      </blockquote>
-      <div className="mt-6 flex items-center gap-1">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star
-            key={i}
-            className="h-4 w-4 fill-accent text-accent"
-            strokeWidth={0}
-          />
-        ))}
-      </div>
-      <figcaption className="mt-4 flex items-center gap-4">
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground">
-          <span className="font-display text-[14px] font-semibold">
-            {initials}
-          </span>
-        </span>
-        <span>
-          <span className="block text-[14px] font-semibold text-foreground">
-            {name}
-          </span>
-          <span className="block text-[12px] text-muted-foreground">
-            {role}
-          </span>
-        </span>
-      </figcaption>
-    </figure>
   );
 }
 
