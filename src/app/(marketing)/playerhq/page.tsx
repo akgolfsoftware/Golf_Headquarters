@@ -65,7 +65,7 @@ export default function PlayerHQ() {
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
               PlayerHQ
             </span>
-            <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+            <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
               <em className="font-normal italic text-primary">Din</em>{" "}
               spillerportal
             </h1>
