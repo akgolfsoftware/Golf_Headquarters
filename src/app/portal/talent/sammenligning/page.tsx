@@ -16,7 +16,6 @@ import {
   AXIS_KEYS,
   AXIS_LABELS,
   RadarChart,
-  type AxisKey,
   type RadarValues,
 } from "@/components/portal/talent/radar-chart";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
