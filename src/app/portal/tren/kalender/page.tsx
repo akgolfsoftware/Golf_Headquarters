@@ -8,37 +8,17 @@
  */
 
 import Link from "next/link";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  Flag,
-  Heart,
-  Plus,
-  Users,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Plus } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { dagerIUken, startOfWeek, ukenummer } from "@/lib/uke-helpers";
 import type { PyramidArea } from "@/generated/prisma/client";
+import { KalenderInteraktiv } from "./kalender-interaktiv";
+import type { KalenderEvent, Favoritt } from "./kalender-interaktiv";
 
 type Search = { uke?: string };
-
-type EventTone = "coach" | "self" | "group" | "round" | "tourn" | "fysio";
-type EventStatus = "done" | "plan" | "skip" | "late";
-
-type CalEvent = {
-  title: string;
-  meta: string;
-  tone: EventTone;
-  top: number;
-  height: number;
-  status: EventStatus;
-  tier?: "fys" | "tek" | "slag" | "spill" | "turn";
-  icon?: React.ReactNode;
-};
 
 const DAG_NAVN = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
@@ -51,16 +31,14 @@ const TIER_MAP: Record<PyramidArea, "fys" | "tek" | "slag" | "spill" | "turn"> =
 };
 
 function minutterTilTop(d: Date) {
-  // Y = (timer-6) * 54px (6:00 = top 0, hver time = 54px = 60min)
   const minutter = d.getHours() * 60 + d.getMinutes() - 6 * 60;
   return Math.max(0, (minutter / 60) * 54);
 }
 
-function status(scheduledAt: Date, sessionStatus: string): EventStatus {
-  if (sessionStatus === "COMPLETED") return "done";
-  if (sessionStatus === "SKIPPED") return "skip";
-  const now = new Date();
-  if (scheduledAt < now && sessionStatus === "PLANNED") return "late";
+function kalStatus(scheduledAt: Date, s: string): "done" | "plan" | "skip" | "late" {
+  if (s === "COMPLETED") return "done";
+  if (s === "SKIPPED") return "skip";
+  if (scheduledAt < new Date() && s === "PLANNED") return "late";
   return "plan";
 }
 
@@ -82,7 +60,6 @@ export default async function KalenderPage({
     const aarNum = Number(aar);
     const ukeNum = Number(ukeStr);
     if (aarNum && ukeNum) {
-      // Approximate: 4th jan + (uke-1) uker → ISO uke
       const jan4 = new Date(aarNum, 0, 4);
       const start = startOfWeek(jan4);
       start.setDate(start.getDate() + (ukeNum - 1) * 7);
@@ -115,6 +92,8 @@ export default async function KalenderPage({
             durationMin: true,
             pyramidArea: true,
             status: true,
+            rationale: true,
+            _count: { select: { drills: true } },
           },
         })
       : Promise.resolve([]),
@@ -128,25 +107,53 @@ export default async function KalenderPage({
     }),
   ]);
 
+  // Favoritter: siste unike fullførte økt-typer (brukes i SlotModal)
+  const recentCompleted = planIds.length
+    ? await prisma.trainingPlanSession.findMany({
+        where: { planId: { in: planIds }, status: "COMPLETED" },
+        orderBy: { scheduledAt: "desc" },
+        select: { title: true, pyramidArea: true, durationMin: true },
+        take: 20,
+      })
+    : [];
+  const seenTitles = new Set<string>();
+  const favoritter: Favoritt[] = [];
+  for (const s of recentCompleted) {
+    if (!seenTitles.has(s.title) && favoritter.length < 3) {
+      seenTitles.add(s.title);
+      favoritter.push({
+        title: s.title,
+        pyramidArea: s.pyramidArea,
+        durationMin: s.durationMin,
+      });
+    }
+  }
+
   // Bygg event-map per dag (0=man ... 6=søn)
-  const eventsPerDag: CalEvent[][] = [[], [], [], [], [], [], []];
+  const eventsPerDag: KalenderEvent[][] = [[], [], [], [], [], [], []];
   function dagIndex(d: Date) {
     const diff = Math.floor(
       (d.getTime() - ukeStart.getTime()) / (24 * 60 * 60 * 1000)
     );
     return Math.max(0, Math.min(6, diff));
   }
+
   for (const s of sessions) {
     const idx = dagIndex(s.scheduledAt);
     const slutt = new Date(s.scheduledAt.getTime() + s.durationMin * 60_000);
     eventsPerDag[idx].push({
+      sessionId: s.id,
       title: s.title,
       meta: `${fmtKl(s.scheduledAt)} – ${fmtKl(slutt)}`,
       tone: "coach",
       top: minutterTilTop(s.scheduledAt),
       height: Math.max(40, (s.durationMin / 60) * 54),
-      status: status(s.scheduledAt, s.status),
+      status: kalStatus(s.scheduledAt, s.status),
       tier: TIER_MAP[s.pyramidArea],
+      pyramidArea: s.pyramidArea,
+      durationMin: s.durationMin,
+      drillCount: s._count.drills,
+      rationale: s.rationale ?? undefined,
     });
   }
   for (const r of runder) {
@@ -157,7 +164,6 @@ export default async function KalenderPage({
       top: minutterTilTop(r.playedAt),
       height: 216,
       status: "done",
-      icon: <Flag className="h-3 w-3" />,
     });
   }
   for (const t of tester) {
@@ -177,7 +183,9 @@ export default async function KalenderPage({
 
   const fmtMnd = (d: Date) =>
     d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
-  const subTekst = `Uke ${uke} · ${fmtMnd(ukeStart)} – ${fmtMnd(new Date(ukeSlutt.getTime() - 1))} ${ukeStart.getFullYear()}`;
+  const subTekst = `Uke ${uke} · ${fmtMnd(ukeStart)} – ${fmtMnd(
+    new Date(ukeSlutt.getTime() - 1)
+  )} ${ukeStart.getFullYear()}`;
 
   const forrigeUke = new Date(ukeStart);
   forrigeUke.setDate(forrigeUke.getDate() - 7);
@@ -205,7 +213,9 @@ export default async function KalenderPage({
             eyebrow={`PlayerHQ · Trening · Kalender · ${subTekst}`}
             titleLead="Uke"
             titleItalic={String(uke)}
-            sub={`${aktivitetCount} ${aktivitetCount === 1 ? "aktivitet" : "aktiviteter"} denne uka, ${fornavn}. Alt i én oversikt: coach-økter, selvtrening, runder, tester.`}
+            sub={`${aktivitetCount} ${
+              aktivitetCount === 1 ? "aktivitet" : "aktiviteter"
+            } denne uka, ${fornavn}. Alt i én oversikt: coach-økter, selvtrening, runder, tester.`}
           />
         </div>
 
@@ -286,11 +296,11 @@ export default async function KalenderPage({
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_280px]">
           <div className="overflow-hidden rounded-xl border border-border bg-card">
+            {/* Dag-header (server-rendered, ingen interaktivitet nødvendig) */}
             <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-border bg-secondary">
               <div />
               {dager.map((d, i) => {
-                const erIdag =
-                  d.toDateString() === new Date().toDateString();
+                const erIdag = d.toDateString() === new Date().toDateString();
                 return (
                   <div
                     key={i}
@@ -311,36 +321,14 @@ export default async function KalenderPage({
               })}
             </div>
 
-            <div className="grid grid-cols-[60px_repeat(7,1fr)]">
-              <div className="flex flex-col">
-                {Array.from({ length: 16 }, (_, i) => i + 6).map((h) => (
-                  <div
-                    key={h}
-                    className="h-[54px] border-b border-r border-border/60 px-2 py-2 text-right font-mono text-[10px] text-muted-foreground"
-                  >
-                    {String(h).padStart(2, "0")}
-                  </div>
-                ))}
-              </div>
-              {dager.map((d, i) => (
-                <div
-                  key={i}
-                  className="relative min-h-[864px] border-l border-border/60"
-                >
-                  {todayLine?.dag === i && (
-                    <div
-                      className="absolute left-0 right-0 z-10 h-0.5 bg-destructive"
-                      style={{ top: todayLine.top }}
-                    >
-                      <span className="absolute -left-2 -top-1 h-2 w-2 rounded-full bg-destructive" />
-                    </div>
-                  )}
-                  {eventsPerDag[i].map((e, j) => (
-                    <EventCard key={j} ev={e} />
-                  ))}
-                </div>
-              ))}
-            </div>
+            {/* Interaktivt kalender-grid — klikk på slot, hover på event */}
+            <KalenderInteraktiv
+              eventsPerDag={eventsPerDag}
+              dager={dager}
+              todayLine={todayLine}
+              favoritter={favoritter}
+              isFree={user.tier === "GRATIS"}
+            />
           </div>
 
           <div className="flex flex-col gap-4">
@@ -405,38 +393,6 @@ function KpiCard({
   );
 }
 
-function EventCard({ ev }: { ev: CalEvent }) {
-  const toneMap: Record<EventTone, string> = {
-    coach: "bg-accent/40 text-foreground border-l-4 border-l-accent",
-    self: "bg-secondary text-foreground border border-dashed border-border border-l-4 border-l-primary",
-    group: "bg-primary text-primary-foreground border-l-4 border-l-primary",
-    round: "bg-accent/30 text-foreground border-l-4 border-l-accent",
-    tourn: "bg-foreground text-accent border-l-4 border-l-accent",
-    fysio: "bg-secondary text-muted-foreground border-l-4 border-l-border",
-  };
-  const statusMap: Record<EventStatus, string> = {
-    done: "bg-primary",
-    plan: "bg-accent",
-    skip: "bg-destructive",
-    late: "bg-destructive/60",
-  };
-  return (
-    <div
-      className={`absolute left-1 right-1 rounded-md px-2 py-2 text-xs leading-tight ${toneMap[ev.tone]}`}
-      style={{ top: ev.top, height: ev.height }}
-    >
-      <div className="inline-flex items-center gap-2 font-semibold">
-        {ev.icon}
-        <span>{ev.title}</span>
-      </div>
-      <div className="mt-1 font-mono text-[10px] opacity-85">{ev.meta}</div>
-      <span
-        className={`absolute right-2 top-2 h-2 w-2 rounded-full ${statusMap[ev.status]}`}
-      />
-    </div>
-  );
-}
-
 function RailCard({
   label,
   children,
@@ -453,7 +409,3 @@ function RailCard({
     </div>
   );
 }
-
-// Unused, kept for parity if reintroduced later
-void Heart;
-void Users;
