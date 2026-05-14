@@ -4,6 +4,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { SplitInboxShell } from "@/components/admin/split-inbox-shell";
 import { MessagesInbox } from "./_components/messages-inbox";
 import { Conversation } from "./_components/conversation";
 import { ContextPanel } from "./_components/context-panel";
@@ -131,63 +132,59 @@ export default async function AdminMessages({
           }
         />
       ) : (
-        <div
-          className="grid overflow-hidden rounded-lg border border-border bg-card"
-          style={{
-            gridTemplateColumns: "300px 1fr 320px",
-            height: "calc(100vh - 240px)",
-            minHeight: "640px",
-          }}
-        >
-          {/* Venstre: innboks */}
-          <MessagesInbox
-            tråder={filtrerte}
-            aktivId={aktivId}
-            aktivtFilter={aktivtFilter}
-            antallAlle={beriket.length}
-            antallUlest={antallUlest}
-          />
-
-          {/* Midten: samtale */}
-          {aktivTråd && aktivSpiller ? (
-            <Conversation
-              threadId={aktivTråd.id}
-              spillerNavn={aktivSpiller.name}
-              spillerInitialer={initialer(aktivSpiller.name)}
-              spillerId={aktivSpiller.id}
-              spillerTier={aktivSpiller.tier as string}
-              meldinger={aktivMeldinger}
-              meId={me.id}
-              meName={me.name}
-              meInitialer={initialer(me.name)}
+        <SplitInboxShell
+          activeKey={aktivTråd && aktivSpiller ? aktivTråd.id : null}
+          backHref="/admin/messages"
+          left={
+            <MessagesInbox
+              tråder={filtrerte}
+              aktivId={aktivId}
+              aktivtFilter={aktivtFilter}
+              antallAlle={beriket.length}
+              antallUlest={antallUlest}
             />
-          ) : (
-            <div className="flex items-center justify-center border-l border-border bg-background">
-              <p className="text-sm text-muted-foreground">
-                Velg en samtale fra listen
-              </p>
-            </div>
-          )}
-
-          {/* Høyre: context-panel */}
-          {aktivTråd && aktivSpiller ? (
-            <ContextPanel
-              spiller={{
-                id: aktivSpiller.id,
-                navn: aktivSpiller.name,
-                initialer: initialer(aktivSpiller.name),
-                tier: aktivSpiller.tier as string,
-                hcp: aktivSpillerHcp?.hcp ?? null,
-                homeClub: aktivSpillerHcp?.homeClub ?? null,
-                medlemsSiden: aktivSpiller.createdAt,
-              }}
-              meldingerAntall={aktivMeldinger.length}
-              sistOppdatert={aktivTråd.updatedAt}
-            />
-          ) : (
-            <div className="border-l border-border bg-secondary/40" />
-          )}
-        </div>
+          }
+          center={
+            aktivTråd && aktivSpiller ? (
+              <Conversation
+                threadId={aktivTråd.id}
+                spillerNavn={aktivSpiller.name}
+                spillerInitialer={initialer(aktivSpiller.name)}
+                spillerId={aktivSpiller.id}
+                spillerTier={aktivSpiller.tier as string}
+                meldinger={aktivMeldinger}
+                meId={me.id}
+                meName={me.name}
+                meInitialer={initialer(me.name)}
+              />
+            ) : (
+              <div className="flex items-center justify-center border-l border-border bg-background">
+                <p className="text-sm text-muted-foreground">
+                  Velg en samtale fra listen
+                </p>
+              </div>
+            )
+          }
+          right={
+            aktivTråd && aktivSpiller ? (
+              <ContextPanel
+                spiller={{
+                  id: aktivSpiller.id,
+                  navn: aktivSpiller.name,
+                  initialer: initialer(aktivSpiller.name),
+                  tier: aktivSpiller.tier as string,
+                  hcp: aktivSpillerHcp?.hcp ?? null,
+                  homeClub: aktivSpillerHcp?.homeClub ?? null,
+                  medlemsSiden: aktivSpiller.createdAt,
+                }}
+                meldingerAntall={aktivMeldinger.length}
+                sistOppdatert={aktivTråd.updatedAt}
+              />
+            ) : (
+              <div className="border-l border-border bg-secondary/40" />
+            )
+          }
+        />
       )}
     </div>
   );
