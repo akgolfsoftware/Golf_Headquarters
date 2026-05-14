@@ -12,29 +12,22 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import type { UserGetPayload } from "@/generated/prisma/models/User";
 
-type Role = "COACH" | "ADMIN";
-
-type TeamMember = {
-  id: string;
-  name: string;
-  email: string;
-  role: Role;
-  _count: { coachedGroups: number; coachAvailability: number };
-};
+type TeamMember = UserGetPayload<{
+  include: { _count: { select: { coachedGroups: true; coachAvailability: true } } };
+}>;
 
 export default async function TeamAdmin() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const teamRaw = await prisma.user.findMany({
+  const team = await prisma.user.findMany({
     where: { role: { in: ["COACH", "ADMIN"] } },
     include: {
       _count: { select: { coachedGroups: true, coachAvailability: true } },
     },
     orderBy: [{ role: "asc" }, { name: "asc" }],
   });
-
-  const team = teamRaw as unknown as TeamMember[];
 
   // Tellinger for KPI
   const totalCount = team.length;
