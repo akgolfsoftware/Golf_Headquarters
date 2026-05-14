@@ -262,6 +262,16 @@ async function UkeView({
         />
       </div>
 
+      {/* Live-belegg-kort */}
+      <LiveOccupancy
+        bookings={bookings.map((b) => ({
+          startAt: b.startAt,
+          endAt: b.endAt,
+        }))}
+        capacity={facility.capacity}
+        ukeStart={ukeStart}
+      />
+
       {/* Uke-kalender */}
       <div className="overflow-x-auto rounded-lg border border-border bg-card">
         <div className="min-w-[800px]">
@@ -563,6 +573,91 @@ function InfoCard({
       </div>
       <div className="mt-1.5 font-display text-base font-semibold text-foreground">
         {value}
+      </div>
+    </div>
+  );
+}
+
+function LiveOccupancy({
+  bookings,
+  capacity,
+  ukeStart,
+}: {
+  bookings: { startAt: Date; endAt: Date }[];
+  capacity: number;
+  ukeStart: Date;
+}) {
+  const naa = new Date();
+  const aktiv = bookings.find((b) => b.startAt <= naa && b.endAt > naa);
+
+  // Bygg 7 dag-belegg som % (timer booket / 14 timer åpent 08-22)
+  const ukeDager: { d: Date; pct: number }[] = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(ukeStart);
+    d.setDate(ukeStart.getDate() + i);
+    const dagBookings = bookings.filter((b) => sammeDag(d, b.startAt));
+    const timer = dagBookings.reduce((s, b) => {
+      const ms = b.endAt.getTime() - b.startAt.getTime();
+      return s + ms / 3_600_000;
+    }, 0);
+    ukeDager.push({ d, pct: Math.min(100, Math.round((timer / 14) * 100)) });
+  }
+
+  const snitt = Math.round(
+    ukeDager.reduce((s, d) => s + d.pct, 0) / Math.max(1, ukeDager.length),
+  );
+
+  return (
+    <div className="rounded-lg border border-border bg-card p-5">
+      <div className="mb-4 flex items-end justify-between">
+        <div>
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            Live-belegg
+          </div>
+          <div className="mt-1 font-display text-lg font-semibold">
+            {aktiv ? "Opptatt nå" : "Ledig nå"}
+            <span className="ml-2 font-mono text-sm font-normal text-muted-foreground tabular-nums">
+              · snitt {snitt} % uke
+            </span>
+          </div>
+        </div>
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[11px] font-medium ${
+            aktiv
+              ? "bg-primary/15 text-primary"
+              : "bg-accent/30 text-accent-foreground"
+          }`}
+        >
+          <span
+            className={`inline-block h-2 w-2 rounded-full ${
+              aktiv ? "bg-primary" : "bg-accent"
+            }`}
+          />
+          Kapasitet {capacity}
+        </span>
+      </div>
+      <div className="flex h-16 items-end gap-2">
+        {ukeDager.map((d, i) => (
+          <div key={i} className="flex flex-1 flex-col items-center gap-1">
+            <div className="flex h-full w-full items-end">
+              <div
+                className={`w-full rounded-sm ${
+                  d.pct >= 80
+                    ? "bg-primary"
+                    : d.pct >= 40
+                      ? "bg-primary/60"
+                      : d.pct > 0
+                        ? "bg-primary/30"
+                        : "bg-secondary"
+                }`}
+                style={{ height: `${Math.max(4, d.pct)}%` }}
+              />
+            </div>
+            <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
+              {DAGER[i]}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );
