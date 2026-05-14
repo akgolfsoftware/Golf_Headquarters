@@ -1,14 +1,12 @@
 /**
  * PlayerHQ · Trening · Kalender (uke-view)
  *
- * Endelig design fra wireframe/design-files-v2/playerhq-C/09-tren-kalender.html.
  * Datakilde: TrainingPlanSession + Round + TestResult for valgt uke.
- * Plassholdere (// TODO): streak-graf, formtopp, pyramide-aggregering kommer
- * når Achievement/Goal-data ligger inne.
+ * Kalender er full bredde. Pyramide-fordeling vises i strip over kalender.
  */
 
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Download, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -18,7 +16,7 @@ import type { PyramidArea } from "@/generated/prisma/client";
 import { KalenderInteraktiv } from "./kalender-interaktiv";
 import type { KalenderEvent, Favoritt } from "./kalender-interaktiv";
 
-type Search = { uke?: string };
+type Search = { uke?: string; filter?: string };
 
 const DAG_NAVN = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
@@ -28,6 +26,31 @@ const TIER_MAP: Record<PyramidArea, "fys" | "tek" | "slag" | "spill" | "turn"> =
   SLAG: "slag",
   SPILL: "spill",
   TURN: "turn",
+};
+
+// Static Tailwind classes — must be full strings, not dynamic templates
+const PYR_BAR: Record<PyramidArea, string> = {
+  FYS:  "bg-pyr-fys",
+  TEK:  "bg-pyr-tek",
+  SLAG: "bg-pyr-slag",
+  SPILL: "bg-pyr-spill",
+  TURN: "bg-pyr-turn",
+};
+
+const PYR_LABEL: Record<PyramidArea, string> = {
+  FYS:  "Fysisk",
+  TEK:  "Teknisk",
+  SLAG: "Slag",
+  SPILL: "Spill",
+  TURN: "Turnering",
+};
+
+// Filter: which tones are shown per filter value
+const FILTER_TONES: Record<string, ("coach" | "round" | "tourn")[]> = {
+  alle:      ["coach", "round", "tourn"],
+  coaching:  ["coach"],
+  runde:     ["round"],
+  test:      ["tourn"],
 };
 
 function minutterTilTop(d: Date) {
@@ -54,6 +77,7 @@ export default async function KalenderPage({
   const user = await requirePortalUser();
   const params = await searchParams;
 
+  // --- Uke-navigasjon ---
   let referanseDato = new Date();
   if (params.uke) {
     const [aar, ukeStr] = params.uke.split("-W");
@@ -72,6 +96,7 @@ export default async function KalenderPage({
   ukeSlutt.setDate(ukeSlutt.getDate() + 7);
   const dager = dagerIUken(ukeStart);
 
+  // --- Data ---
   const aktivePlaner = await prisma.trainingPlan.findMany({
     where: { userId: user.id, isActive: true },
     select: { id: true },
@@ -107,7 +132,7 @@ export default async function KalenderPage({
     }),
   ]);
 
-  // Favoritter: siste unike fullførte økt-typer (brukes i SlotModal)
+  // --- Favoritter (for SlotModal) ---
   const recentCompleted = planIds.length
     ? await prisma.trainingPlanSession.findMany({
         where: { planId: { in: planIds }, status: "COMPLETED" },
@@ -129,8 +154,18 @@ export default async function KalenderPage({
     }
   }
 
-  // Bygg event-map per dag (0=man ... 6=søn)
-  const eventsPerDag: KalenderEvent[][] = [[], [], [], [], [], [], []];
+  // --- Pyramide-fordeling (minutter per område) ---
+  const pyrMin: Partial<Record<PyramidArea, number>> = {};
+  for (const s of sessions) {
+    pyrMin[s.pyramidArea] = (pyrMin[s.pyramidArea] ?? 0) + s.durationMin;
+  }
+  const totalPyrMin = Object.values(pyrMin).reduce((a, b) => a + b, 0) || 1;
+  const pyrOmrader = (Object.keys(pyrMin) as PyramidArea[]).sort(
+    (a, b) => (pyrMin[b] ?? 0) - (pyrMin[a] ?? 0)
+  );
+
+  // --- Events per dag ---
+  const eventsPerDagAll: KalenderEvent[][] = [[], [], [], [], [], [], []];
   function dagIndex(d: Date) {
     const diff = Math.floor(
       (d.getTime() - ukeStart.getTime()) / (24 * 60 * 60 * 1000)
@@ -141,7 +176,7 @@ export default async function KalenderPage({
   for (const s of sessions) {
     const idx = dagIndex(s.scheduledAt);
     const slutt = new Date(s.scheduledAt.getTime() + s.durationMin * 60_000);
-    eventsPerDag[idx].push({
+    eventsPerDagAll[idx].push({
       sessionId: s.id,
       title: s.title,
       meta: `${fmtKl(s.scheduledAt)} – ${fmtKl(slutt)}`,
@@ -157,7 +192,7 @@ export default async function KalenderPage({
     });
   }
   for (const r of runder) {
-    eventsPerDag[dagIndex(r.playedAt)].push({
+    eventsPerDagAll[dagIndex(r.playedAt)].push({
       title: `Runde · ${r.course.name}`,
       meta: fmtKl(r.playedAt),
       tone: "round",
@@ -167,7 +202,7 @@ export default async function KalenderPage({
     });
   }
   for (const t of tester) {
-    eventsPerDag[dagIndex(t.takenAt)].push({
+    eventsPerDagAll[dagIndex(t.takenAt)].push({
       title: `Test · ${t.test.name}`,
       meta: fmtKl(t.takenAt),
       tone: "tourn",
@@ -177,6 +212,14 @@ export default async function KalenderPage({
     });
   }
 
+  // --- Filter ---
+  const aktivFilter = (params.filter ?? "alle").toLowerCase();
+  const visToner = FILTER_TONES[aktivFilter] ?? FILTER_TONES["alle"];
+  const eventsPerDag = eventsPerDagAll.map((dag) =>
+    dag.filter((ev) => (visToner as string[]).includes(ev.tone))
+  );
+
+  // --- KPI-data ---
   const fornavn = user.name.split(" ")[0];
   const aktivitetCount = sessions.length + runder.length + tester.length;
   const uke = ukenummer(ukeStart);
@@ -201,13 +244,36 @@ export default async function KalenderPage({
       : null;
 
   const totalCoach = sessions.length;
-  const totalSelv = 0; // TODO: skille selv-trening når flagg på TrainingPlanSession finnes
+  const totalSelv = 0;
   const planlagtMin = sessions.reduce((s, x) => s + x.durationMin, 0);
   const planlagtTimer = `${Math.floor(planlagtMin / 60)} t ${planlagtMin % 60} m`;
+
+  // Planlagte spill og turneringer (SPILL + TURN sessions)
+  const spillOgTurn = sessions.filter(
+    (s) => s.pyramidArea === "SPILL" || s.pyramidArea === "TURN"
+  );
+
+  // Filter-lenke helper
+  function filterLink(f: string) {
+    const sp = new URLSearchParams();
+    if (params.uke) sp.set("uke", params.uke);
+    if (f !== "alle") sp.set("filter", f);
+    const qs = sp.toString();
+    return `/portal/tren/kalender${qs ? "?" + qs : ""}`;
+  }
+
+  const FILTER_PILLS = [
+    { key: "coaching",    label: "Coaching" },
+    { key: "selvtrening", label: "Selvtrening", disabled: true },
+    { key: "gruppe",      label: "Gruppe",      disabled: true },
+    { key: "runde",       label: "Runde" },
+    { key: "test",        label: "Test" },
+  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-[1400px] px-6 py-8">
+        {/* Header */}
         <div className="mb-6">
           <PageHeader
             eyebrow={`PlayerHQ · Trening · Kalender · ${subTekst}`}
@@ -219,27 +285,71 @@ export default async function KalenderPage({
           />
         </div>
 
+        {/* KPI-strip */}
         <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <KpiCard
             label="Økter denne uka"
             value={String(totalCoach + totalSelv)}
             sub={`${totalCoach} coaching · ${totalSelv} selvtrening`}
           />
-          <KpiCard label="Volum" value={planlagtTimer} sub="planlagt" />
-          <KpiCard
-            label="Runder"
-            value={String(runder.length)}
-            sub={runder.length ? "spilt denne uka" : "ingen registrert"}
-          />
-          <KpiCard
-            label="Tester"
-            value={String(tester.length)}
-            sub={tester.length ? "fullført" : "ingen denne uka"}
-            small
-          />
+          <KpiCard label="Volum" value={planlagtTimer} sub="planlagt trening" />
+          <Link href="/portal/mal/runder">
+            <KpiCard
+              label="Spill og turnering"
+              value={String(spillOgTurn.length)}
+              sub={spillOgTurn.length ? "planlagt denne uka" : "ingen planlagt"}
+              link
+            />
+          </Link>
+          <Link href="/portal/tren/tester">
+            <KpiCard
+              label="Tester"
+              value={String(tester.length)}
+              sub={tester.length ? "fullført" : "ingen denne uka"}
+              link
+            />
+          </Link>
         </div>
 
+        {/* Pyramide-fordeling */}
+        {pyrOmrader.length > 0 && (
+          <div className="mb-6 overflow-hidden rounded-xl border border-border bg-card px-6 py-4">
+            <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              Fordeling denne uka
+            </div>
+            <div className="flex h-3 overflow-hidden rounded-full">
+              {pyrOmrader.map((pyr) => {
+                const pct = Math.round(((pyrMin[pyr] ?? 0) / totalPyrMin) * 100);
+                return (
+                  <div
+                    key={pyr}
+                    className={`${PYR_BAR[pyr]} transition-all`}
+                    style={{ width: `${pct}%` }}
+                    title={`${PYR_LABEL[pyr]}: ${pyrMin[pyr]} min`}
+                  />
+                );
+              })}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1">
+              {pyrOmrader.map((pyr) => {
+                const min = pyrMin[pyr] ?? 0;
+                const pct = Math.round((min / totalPyrMin) * 100);
+                return (
+                  <span key={pyr} className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+                    <span className={`h-2 w-2 rounded-sm ${PYR_BAR[pyr]}`} />
+                    {PYR_LABEL[pyr]}
+                    <span className="tabular-nums text-foreground">{pct}%</span>
+                    <span className="tabular-nums opacity-60">{min}m</span>
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Toolbar */}
         <div className="mb-4 flex flex-wrap items-center gap-4">
+          {/* Uke-navigasjon */}
           <div className="inline-flex gap-1 rounded-md border border-border bg-card p-1">
             <Link
               href={`/portal/tren/kalender?uke=${fmtParam(forrigeUke)}`}
@@ -262,29 +372,47 @@ export default async function KalenderPage({
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="flex gap-2">
-            {["Coaching", "Selvtrening", "Gruppe", "Runde", "Test"].map((t) => (
-              <button
-                key={t}
-                type="button"
-                disabled
-                title="Filter kommer i v2"
-                className="rounded-full border border-border bg-card px-4 py-1 text-xs font-medium text-foreground opacity-60"
-              >
-                {t}
-              </button>
-            ))}
+
+          {/* Filter-piller */}
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href={filterLink("alle")}
+              className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
+                aktivFilter === "alle"
+                  ? "bg-foreground text-background"
+                  : "border border-border bg-card text-foreground hover:bg-secondary"
+              }`}
+            >
+              Alle
+            </Link>
+            {FILTER_PILLS.map((p) =>
+              p.disabled ? (
+                <span
+                  key={p.key}
+                  className="rounded-full border border-border bg-card px-4 py-1 text-xs font-medium text-foreground opacity-40"
+                  title="Kommer i v2"
+                >
+                  {p.label}
+                </span>
+              ) : (
+                <Link
+                  key={p.key}
+                  href={filterLink(p.key)}
+                  className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
+                    aktivFilter === p.key
+                      ? "bg-foreground text-background"
+                      : "border border-border bg-card text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  {p.label}
+                </Link>
+              )
+            )}
           </div>
+
           <span className="flex-1" />
-          <button
-            type="button"
-            disabled
-            title="iCal-eksport kommer i v2"
-            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-xs font-medium text-foreground opacity-60"
-          >
-            <Download className="h-4 w-4" />
-            Eksporter iCal
-          </button>
+
+          {/* Ny økt */}
           <Link
             href="/portal/ny-okt"
             className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90"
@@ -294,71 +422,41 @@ export default async function KalenderPage({
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_280px]">
-          <div className="overflow-hidden rounded-xl border border-border bg-card">
-            {/* Dag-header (server-rendered, ingen interaktivitet nødvendig) */}
-            <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-border bg-secondary">
-              <div />
-              {dager.map((d, i) => {
-                const erIdag = d.toDateString() === new Date().toDateString();
-                return (
-                  <div
-                    key={i}
-                    className="border-l border-border/60 px-2 py-2 text-center"
-                  >
-                    <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                      {DAG_NAVN[i]}
-                    </div>
-                    <div
-                      className={`mt-1 font-mono text-lg font-medium ${
-                        erIdag ? "font-bold text-primary" : "text-foreground"
-                      }`}
-                    >
-                      {d.getDate()}
-                    </div>
+        {/* Kalender — full bredde */}
+        <div className="overflow-hidden rounded-xl border border-border bg-card">
+          {/* Dag-header */}
+          <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-border bg-secondary">
+            <div />
+            {dager.map((d, i) => {
+              const erIdag = d.toDateString() === new Date().toDateString();
+              return (
+                <div
+                  key={i}
+                  className="border-l border-border/60 px-2 py-2 text-center"
+                >
+                  <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                    {DAG_NAVN[i]}
                   </div>
-                );
-              })}
-            </div>
-
-            {/* Interaktivt kalender-grid — klikk på slot, hover på event */}
-            <KalenderInteraktiv
-              eventsPerDag={eventsPerDag}
-              dager={dager}
-              todayLine={todayLine}
-              favoritter={favoritter}
-              isFree={user.tier === "GRATIS"}
-            />
+                  <div
+                    className={`mt-1 font-mono text-lg font-medium ${
+                      erIdag ? "font-bold text-primary" : "text-foreground"
+                    }`}
+                  >
+                    {d.getDate()}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          <div className="flex flex-col gap-4">
-            <RailCard label="Ukens pyramide">
-              {/* TODO v2: pyramide-aggregering fra PyramidArea per session */}
-              <div className="mt-2 text-sm text-muted-foreground">
-                Ingen data for denne uken.
-              </div>
-            </RailCard>
-
-            <RailCard label="Streak">
-              <div className="mt-1 flex items-baseline gap-2">
-                <span className="font-mono text-3xl font-medium leading-none">
-                  —
-                </span>
-                <span className="text-sm text-muted-foreground">dager</span>
-              </div>
-              <div className="mt-2 text-xs text-muted-foreground">
-                {/* TODO: streak-beregning */}
-                Streak-tracker kommer.
-              </div>
-            </RailCard>
-
-            <RailCard label="Formtopp">
-              <div className="mt-1 font-display text-base italic leading-relaxed">
-                «Peak-mål settes når sesongen starter.»
-              </div>
-              {/* TODO: Goal-data */}
-            </RailCard>
-          </div>
+          {/* Interaktivt kalender-grid */}
+          <KalenderInteraktiv
+            eventsPerDag={eventsPerDag}
+            dager={dager}
+            todayLine={todayLine}
+            favoritter={favoritter}
+            isFree={user.tier === "GRATIS"}
+          />
         </div>
       </div>
     </div>
@@ -369,43 +467,26 @@ function KpiCard({
   label,
   value,
   sub,
-  small,
+  link,
 }: {
   label: string;
   value: string;
   sub: string;
-  small?: boolean;
+  link?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
+    <div
+      className={`rounded-xl border border-border bg-card p-4 ${
+        link ? "cursor-pointer transition-colors hover:border-foreground/20 hover:bg-secondary/50" : ""
+      }`}
+    >
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </div>
-      <div
-        className={`mt-1 font-mono font-medium leading-tight tracking-tight text-foreground ${
-          small ? "text-base font-display font-semibold" : "text-3xl"
-        }`}
-      >
+      <div className="mt-1 font-mono text-3xl font-medium leading-tight tracking-tight text-foreground">
         {value}
       </div>
       <div className="mt-1 text-xs text-muted-foreground">{sub}</div>
-    </div>
-  );
-}
-
-function RailCard({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </div>
-      {children}
     </div>
   );
 }
