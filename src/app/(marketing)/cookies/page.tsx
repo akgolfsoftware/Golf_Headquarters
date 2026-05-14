@@ -13,15 +13,19 @@ export default function CookiesSide() {
     <div className="px-6 py-16">
       <div className="mx-auto max-w-3xl">
         <header>
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-            Juridisk
-          </span>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+          <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+            Juridisk · AK Golf Group
+          </div>
+          <h1 className="mt-4 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
             <em className="font-normal italic text-primary">Cookies</em> og
             sporing
           </h1>
-          <p className="mt-4 font-mono text-xs text-muted-foreground">
-            Sist oppdatert: {SIST_OPPDATERT}
+          <p className="mt-6 max-w-2xl text-base text-muted-foreground">
+            Slik bruker vi cookies — og hvordan du styrer innstillingene dine.
+          </p>
+          <p className="mt-6 font-mono text-xs text-muted-foreground">
+            Sist oppdatert:{" "}
+            <span className="tabular-nums">{SIST_OPPDATERT}</span>
           </p>
         </header>
 
