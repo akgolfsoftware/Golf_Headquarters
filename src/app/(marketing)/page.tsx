@@ -100,8 +100,7 @@ export default function Hjem() {
 
           <p className="mt-6 max-w-2xl text-[18px] leading-[1.6] text-muted-foreground md:text-[20px]">
             Personlig coaching, periodiserte treningsplaner og målbar fremgang —
-            for spillere som vil mer enn å bare slå baller. Drevet av PGA Class
-            A Pro Anders Kristiansen og AK Golf Academy.
+            for spillere som vil mer enn å bare slå baller.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -133,13 +132,6 @@ export default function Hjem() {
             />
           </div>
 
-          {/* Stats-strip */}
-          <div className="mt-16 grid grid-cols-2 gap-8 border-t border-border pt-10 md:grid-cols-4">
-            <Stat number="200+" label="Aktive spillere" />
-            <Stat number="8 år" label="Erfaring som PGA-pro" />
-            <Stat number="4,9★" label="Snitt på 130 vurderinger" />
-            <Stat number="92 %" label="Forbedret HCP i 2025" />
-          </div>
         </div>
       </section>
 
@@ -318,17 +310,6 @@ export default function Hjem() {
           </div>
         </div>
       </section>
-    </div>
-  );
-}
-
-function Stat({ number, label }: { number: string; label: string }) {
-  return (
-    <div>
-      <div className="font-display text-4xl font-semibold tracking-tight tabular-nums md:text-5xl">
-        {number}
-      </div>
-      <div className="mt-2 text-[13px] text-muted-foreground">{label}</div>
     </div>
   );
 }
