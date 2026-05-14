@@ -61,6 +61,20 @@ const NAV: NavGroup[] = [
     ],
   },
   { type: "link", href: "/portal/utfordringer", label: "Utfordringer" },
+  ...(FEATURES.TALENT
+    ? ([
+        {
+          type: "dropdown",
+          label: "Talent",
+          basePath: "/portal/talent",
+          items: [
+            { href: "/portal/talent/min-plan", label: "Min plan" },
+            { href: "/portal/talent/mitt-niva", label: "Mitt nivå" },
+            { href: "/portal/talent/sammenligning", label: "Sammenligning" },
+          ],
+        },
+      ] satisfies NavGroup[])
+    : []),
   { type: "link", href: "/portal/meg/bookinger", label: "Bookinger" },
   { type: "link", href: "/portal/varsler", label: "Varsler", badge: true },
   {
@@ -106,7 +120,8 @@ export function PortalSidebar({
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [hydrated, setHydrated] = useState(false);
 
-  // Hydrate from localStorage + auto-open active dropdown
+  // Hydrate from localStorage + auto-open active dropdown.
+  // Bevisst setState i effect for å initialisere fra klient-only API.
   useEffect(() => {
     let stored: Record<string, boolean> = {};
     try {
@@ -121,6 +136,7 @@ export function PortalSidebar({
         next[g.label] = true;
       }
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOpen(next);
     setHydrated(true);
   }, [path]);
