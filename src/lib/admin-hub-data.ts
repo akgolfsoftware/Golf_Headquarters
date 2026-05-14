@@ -125,12 +125,25 @@ export async function getAdminHubData(user: User): Promise<AdminHubData> {
       orderBy: { startedAt: "desc" },
       take: 5,
     }),
-    prisma.coachingSession.count({
-      where: {
-        kind: "DIRECT",
-        coachId: user.id,
-      },
-    }),
+    // Ubesvarte = direkte sesjoner der siste melding er fra spiller (role "user").
+    // Vi henter messages-blobben og filtrerer i JS — antall direkte sesjoner per
+    // coach er lavt nok til at det er greit.
+    prisma.coachingSession
+      .findMany({
+        where: { kind: "DIRECT", coachId: user.id },
+        select: { messages: true },
+      })
+      .then((rader) => {
+        let ubesvart = 0;
+        for (const r of rader) {
+          const meldinger = Array.isArray(r.messages)
+            ? (r.messages as Array<{ role?: string }>)
+            : [];
+          const siste = meldinger.at(-1);
+          if (siste?.role === "user") ubesvart += 1;
+        }
+        return ubesvart;
+      }),
     prisma.planAction.count({
       where: { status: "PENDING" },
     }),
