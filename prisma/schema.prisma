@@ -185,7 +185,29 @@ model User {
   // Equipment bag (M18)
   equipmentBag EquipmentBag?
 
+  // Helse-logg (H1) — daglige målinger, én rad per dato
+  healthEntries HealthEntry[]
+
   @@map("users")
+}
+
+// Manuell helse-logg. Én rad per (userId, date). Foreløpig kilde for
+// trenings-belastnings-justering; Apple Health/Garmin-import kommer i v2.
+model HealthEntry {
+  id         String   @id @default(cuid())
+  userId     String
+  date       DateTime @db.Date
+  restingHr  Int?
+  sleepHours Float?
+  weightKg   Float?
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+  @@map("health_entries")
 }
 
 // Foreldre-invitasjons-relasjon (V2 Spor 3).
