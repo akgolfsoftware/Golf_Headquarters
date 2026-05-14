@@ -36,13 +36,11 @@ export default function OmOss() {
             målbar fremgang.
           </p>
 
-          <p>
-            <em className="text-primary not-italic md:italic">
-              «Coaching skal ikke være magi. Det skal være tydelig: hva vi
-              jobber med, hvorfor vi jobber med det, og hvordan du ser at det
-              virker. Det er det Academy er bygget rundt.»
-            </em>
-          </p>
+          <blockquote className="border-l-4 border-primary pl-6 text-lg italic text-primary">
+            «Coaching skal ikke være magi. Det skal være tydelig: hva vi jobber
+            med, hvorfor vi jobber med det, og hvordan du ser at det virker.
+            Det er det Academy er bygget rundt.»
+          </blockquote>
 
           <p>
             Kjernen er AK Golf-pyramiden — et balansert system som sørger for
