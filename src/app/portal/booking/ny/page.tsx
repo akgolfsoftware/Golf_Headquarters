@@ -58,6 +58,10 @@ export default async function NyBookingPage({ searchParams }: Props) {
 
   const slots = await getAvailableSlots(valgtService.id, valgtDato);
 
+  // Bestem aktivt steg basert på query-params: service valgt → steg 2, dato valgt → steg 3
+  const aktivtSteg = !serviceParam ? 1 : !datoParam ? 2 : 3;
+  const isFree = user.tier === "GRATIS";
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -67,6 +71,34 @@ export default async function NyBookingPage({ searchParams }: Props) {
         titleTrail="coaching-timer"
         sub={`${subscription.creditsRemaining} av ${subscription.monthlyCredits} timer igjen denne måneden. Resettes ved neste fakturering.`}
       />
+
+      <StegIndikator
+        aktivt={aktivtSteg}
+        steg={[
+          { nr: 1, label: "Tjeneste", ferdig: !!serviceParam },
+          { nr: 2, label: "Tid", ferdig: !!datoParam && aktivtSteg === 3 },
+          { nr: 3, label: "Bekreft", ferdig: false },
+        ]}
+      />
+
+      {isFree && (
+        <div className="flex items-start gap-3 rounded-md border border-accent/40 bg-accent/10 p-4">
+          <Lock
+            className="mt-0.5 h-4 w-4 shrink-0 text-accent-foreground"
+            strokeWidth={1.75}
+          />
+          <div className="text-sm text-foreground">
+            <span className="font-semibold">Free-konto:</span> Booking krever Pro
+            eller aktivt coaching-abonnement.{" "}
+            <Link
+              href="/portal/meg/abonnement"
+              className="text-primary hover:underline"
+            >
+              Oppgrader →
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
@@ -144,6 +176,52 @@ export default async function NyBookingPage({ searchParams }: Props) {
         </div>
       </section>
 
+      {aktivtSteg === 3 && (
+        <section className="rounded-2xl border border-border bg-card p-5">
+          <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Oppsummering — bekreft før booking
+          </h2>
+          <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-4">
+            <div>
+              <dt className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                Tjeneste
+              </dt>
+              <dd className="mt-0.5 font-medium text-foreground">
+                {valgtService.name}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                Varighet
+              </dt>
+              <dd className="mt-0.5 font-mono tabular-nums text-foreground">
+                {valgtService.durationMin} min
+              </dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                Dato
+              </dt>
+              <dd className="mt-0.5 font-mono tabular-nums text-foreground">
+                {valgtDato.toLocaleDateString("nb-NO", {
+                  weekday: "short",
+                  day: "numeric",
+                  month: "short",
+                })}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                Kostnad
+              </dt>
+              <dd className="mt-0.5 font-mono tabular-nums text-foreground">
+                1 credit
+              </dd>
+            </div>
+          </dl>
+        </section>
+      )}
+
       <section>
         <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           3. Velg tid
@@ -197,6 +275,58 @@ function BruktOppView({ resetAt }: { resetAt: Date | null }) {
         </Link>
       </div>
     </div>
+  );
+}
+
+function StegIndikator({
+  aktivt,
+  steg,
+}: {
+  aktivt: number;
+  steg: { nr: number; label: string; ferdig: boolean }[];
+}) {
+  return (
+    <ol className="flex items-center gap-2 sm:gap-4">
+      {steg.map((s, i) => {
+        const erAktivt = s.nr === aktivt;
+        const erFerdig = s.ferdig;
+        return (
+          <li key={s.nr} className="flex flex-1 items-center gap-2 sm:gap-3">
+            <span
+              className={`grid h-8 w-8 shrink-0 place-items-center rounded-full font-mono text-xs font-semibold ${
+                erFerdig
+                  ? "bg-primary text-primary-foreground"
+                  : erAktivt
+                    ? "bg-foreground text-background"
+                    : "bg-secondary text-muted-foreground"
+              }`}
+            >
+              {erFerdig ? (
+                <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+              ) : (
+                s.nr
+              )}
+            </span>
+            <span
+              className={`hidden text-sm sm:inline ${
+                erAktivt
+                  ? "font-semibold text-foreground"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {s.label}
+            </span>
+            {i < steg.length - 1 && (
+              <span
+                className={`h-px flex-1 ${
+                  erFerdig ? "bg-primary" : "bg-border"
+                }`}
+              />
+            )}
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
