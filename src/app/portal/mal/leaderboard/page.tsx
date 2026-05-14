@@ -8,6 +8,7 @@
  */
 
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import {
   ArrowRight,
   ChevronDown,
@@ -22,6 +23,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { avatarBg } from "@/lib/avatar-colors";
+import { FEATURES } from "@/lib/features";
 
 type Tab = "venner" | "klubb" | "globalt";
 
@@ -53,6 +55,8 @@ export default async function LeaderboardPage({
 }: {
   searchParams: Promise<{ tab?: string }>;
 }) {
+  if (!FEATURES.LEADERBOARD) notFound();
+
   const user = await requirePortalUser();
   const sp = await searchParams;
   const tab: Tab = sp?.tab === "venner" || sp?.tab === "globalt" ? sp.tab : "klubb";
@@ -75,7 +79,7 @@ export default async function LeaderboardPage({
   });
 
   const rangering: Rad[] = proBrukere
-    .map((b, i) => {
+    .map((b) => {
       const sg = b.rounds.length
         ? b.rounds.reduce((s, r) => s + (r.sgTotal ?? 0), 0) / b.rounds.length
         : null;

@@ -13,6 +13,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { FEATURES } from "@/lib/features";
 import { DispersionPlot } from "./dispersion-plot";
 
 export default async function TrackManDetalj({
@@ -20,6 +21,8 @@ export default async function TrackManDetalj({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  if (!FEATURES.TRACKMAN_DETAIL) notFound();
+
   const user = await requirePortalUser();
   const { id } = await params;
 
