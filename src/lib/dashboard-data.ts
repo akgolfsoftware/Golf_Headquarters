@@ -58,12 +58,11 @@ export async function getDashboardData(user: User): Promise<DashboardData> {
   const dagensSlutt = new Date(dagensStart);
   dagensSlutt.setDate(dagensSlutt.getDate() + 1);
 
-  const aktivePlanIds = await prisma.trainingPlan
-    .findMany({
-      where: { userId: user.id, isActive: true },
-      select: { id: true },
-    })
-    .then((rader) => rader.map((r) => r.id));
+  // I stedet for å hente aktivePlanIds først (en separat query før de tre
+  // session-queryene), bruker vi en sub-query (`plan: { userId, isActive }`)
+  // direkte i hver session-where-clause. Sparer én round-trip og lar
+  // Postgres bruke FK-indeksen.
+  const aktivPlanFilter = { plan: { userId: user.id, isActive: true } };
 
   const [
     dagensKandidater,
@@ -76,35 +75,37 @@ export async function getDashboardData(user: User): Promise<DashboardData> {
     sisteAiSesjon,
     pendingActions,
   ] = await Promise.all([
-    aktivePlanIds.length
-      ? prisma.trainingPlanSession.findMany({
-          where: {
-            planId: { in: aktivePlanIds },
-            scheduledAt: { gte: dagensStart, lt: dagensSlutt },
-          },
-          include: {
-            drills: { include: { exercise: true }, orderBy: { orderIndex: "asc" } },
-          },
-          orderBy: { scheduledAt: "asc" },
-        })
-      : Promise.resolve([] as SesjonMedDrills[]),
-    aktivePlanIds.length
-      ? prisma.trainingPlanSession.findMany({
-          where: {
-            planId: { in: aktivePlanIds },
-            scheduledAt: { gte: ukestart, lt: ukeslutt },
-          },
-        })
-      : Promise.resolve([] as TrainingPlanSession[]),
-    aktivePlanIds.length
-      ? prisma.trainingPlanSession.findMany({
-          where: {
-            planId: { in: aktivePlanIds },
-            scheduledAt: { gte: fjorten, lt: dagensSlutt },
-          },
-          select: { pyramidArea: true, durationMin: true, scheduledAt: true, status: true },
-        })
-      : Promise.resolve([]),
+    prisma.trainingPlanSession.findMany({
+      where: {
+        ...aktivPlanFilter,
+        scheduledAt: { gte: dagensStart, lt: dagensSlutt },
+      },
+      include: {
+        drills: {
+          include: { exercise: true },
+          orderBy: { orderIndex: "asc" },
+        },
+      },
+      orderBy: { scheduledAt: "asc" },
+    }) as Promise<SesjonMedDrills[]>,
+    prisma.trainingPlanSession.findMany({
+      where: {
+        ...aktivPlanFilter,
+        scheduledAt: { gte: ukestart, lt: ukeslutt },
+      },
+    }),
+    prisma.trainingPlanSession.findMany({
+      where: {
+        ...aktivPlanFilter,
+        scheduledAt: { gte: fjorten, lt: dagensSlutt },
+      },
+      select: {
+        pyramidArea: true,
+        durationMin: true,
+        scheduledAt: true,
+        status: true,
+      },
+    }),
     prisma.round.findMany({
       where: { userId: user.id, playedAt: { gte: tretti } },
       orderBy: { playedAt: "desc" },
