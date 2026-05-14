@@ -188,7 +188,62 @@ model User {
   // Helse-logg (H1) — daglige målinger, én rad per dato
   healthEntries HealthEntry[]
 
+  // Talent-modul (M13) — kun for spillere i talent-tracking
+  talentTracking TalentTracking?
+
   @@map("users")
+}
+
+// Talent-tracking for spillere i akademiets talent-program.
+// Én rad per spiller. Radar-akser 1-10 representerer Caddies/coachens
+// kvalitative vurdering på 5 dimensjoner.
+model TalentTracking {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  // Aldersnivå: U10, U12, U14, U16, U18, Senior
+  niva         String
+  // Klubb (kan være null hvis ikke registrert klubb)
+  klubb        String?
+  // Region: Oslo, Østfold, Vestfold, Hordaland, Trøndelag etc.
+  region       String?
+  // Når talent ble inkludert i program
+  inkludertFra DateTime @default(now())
+  // Radar-akser (1-10)
+  fysisk       Int?
+  teknikk      Int?
+  taktikk      Int?
+  mental       Int?
+  motivasjon   Int?
+  // Milepæler som JSON-array: [{ tittel, dato, beskrivelse }, ...]
+  milepaeler   Json?
+  notater      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([niva, region])
+  @@index([klubb])
+  @@map("talent_tracking")
+}
+
+// Ressurs-bibliotek for talent-program. Videoer, artikler, podcasts.
+model TalentRessurs {
+  id        String   @id @default(cuid())
+  tittel    String
+  kategori  String   // video | artikkel | podcast
+  url       String
+  // Hvilket nivå er ressursen mest relevant for
+  niva      String?  // U10, U12, ..., Senior, null = alle
+  // Fokus-tag: teknikk, mental, taktikk, fysisk, motivasjon
+  fokus     String?
+  // Beskrivelse / sammendrag
+  beskrivelse String?
+  createdAt DateTime @default(now())
+
+  @@index([kategori, niva])
+  @@index([fokus])
+  @@map("talent_ressurser")
 }
 
 // Manuell helse-logg. Én rad per (userId, date). Foreløpig kilde for
