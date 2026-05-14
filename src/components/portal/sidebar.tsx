@@ -24,7 +24,9 @@ const NAV: NavGroup[] = [
     label: "Tren",
     basePath: "/portal/tren",
     items: [
-      { href: "/portal/tren", label: "Plan" },
+      { href: "/portal/tren", label: "Oversikt" },
+      { href: "/portal/tren/aarsplan", label: "Sesongplan" },
+      { href: "/portal/tren/turneringer", label: "Turneringer" },
       { href: "/portal/tren/kalender", label: "Kalender" },
       { href: "/portal/tren/ovelser", label: "Øvelser" },
       { href: "/portal/tren/tester", label: "Tester" },

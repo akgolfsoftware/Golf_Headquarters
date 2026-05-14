@@ -174,6 +174,10 @@ model User {
   // In-app varsler
   notifications Notification[]
 
+  // Sesongplanlegger (Fase 1.18)
+  seasonPlans       SeasonPlan[]
+  tournamentEntries TournamentEntry[]
+
   // Coaching-videoer (Sprint M11b)
   videosAsPlayer SessionVideo[] @relation("VideoPlayer")
   videosAsCoach  SessionVideo[] @relation("VideoCoach")
@@ -1023,6 +1027,7 @@ model Tournament {
 
   course  CourseDefinition?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
   results TournamentResult[]
+  entries TournamentEntry[]
 
   @@index([startDate])
   @@map("tournaments")
@@ -1043,6 +1048,72 @@ model TournamentResult {
   @@unique([tournamentId, userId])
   @@index([userId])
   @@map("tournament_results")
+}
+
+// ---------- Sesongplanlegger (Fase 1.18) ----------
+
+model SeasonPlan {
+  id        String   @id @default(cuid())
+  userId    String
+  year      Int                        // 2025, 2026, …
+  name      String?                    // "Sesong 2025"
+  startDate DateTime
+  endDate   DateTime
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  periodBlocks      PeriodBlock[]
+  tournamentEntries TournamentEntry[]
+
+  @@unique([userId, year])
+  @@index([userId])
+  @@map("season_plans")
+}
+
+model PeriodBlock {
+  id           String   @id @default(cuid())
+  seasonPlanId String
+  lPhase       LPhase                 // KROPP|ARM|KOLLE|BALL|AUTO
+  startDate    DateTime
+  endDate      DateTime
+  focus        String?                // fri tekst, f.eks. "Putting + kort spill"
+  weeklyVolMin Int?                   // min minutter per uke
+  weeklyVolMax Int?                   // max minutter per uke
+  notes        String?
+
+  seasonPlan SeasonPlan @relation(fields: [seasonPlanId], references: [id], onDelete: Cascade)
+
+  @@index([seasonPlanId])
+  @@map("period_blocks")
+}
+
+model TournamentEntry {
+  id            String    @id @default(cuid())
+  userId        String
+  seasonPlanId  String?
+  // Linket til Tournament-katalogen (null = manuell)
+  tournamentId  String?
+  // Manuelle felter (brukes kun når tournamentId er null)
+  manualName    String?
+  manualDate    DateTime?
+  manualEndDate DateTime?
+  // Felles
+  category      String?              // "A-rekke", "Åpen NM", "Kretsmesterskap"
+  priority      String   @default("NORMAL")  // MAJOR | NORMAL | LOCAL
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tournament Tournament? @relation(fields: [tournamentId], references: [id], onDelete: SetNull)
+  seasonPlan SeasonPlan? @relation(fields: [seasonPlanId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([seasonPlanId])
+  @@index([tournamentId])
+  @@map("tournament_entries")
 }
 
 model Group {
