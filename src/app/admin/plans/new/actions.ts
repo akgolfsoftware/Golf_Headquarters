@@ -4,9 +4,9 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
-import type { PlanTemplatePayload } from "../template-payload";
 import type { PlanForslag, OktType } from "@/lib/ai-plan/schema";
 import { AI_PLAN_MODEL } from "@/lib/ai-plan/generate";
+import { PlanTemplatePayloadSchema } from "@/lib/ai-plan/json-schemas";
 
 /**
  * Periodiserings-fase brukt i Plan-wizard. Mappes til pyramidArea-vekter
@@ -241,16 +241,17 @@ export async function hentMalForhandsutfylling(
   });
   if (!mal || !mal.active) return null;
 
-  const payload = mal.payload as unknown as PlanTemplatePayload;
-
-  if (
-    !payload ||
-    typeof payload !== "object" ||
-    !payload.allokering ||
-    !payload.ukeSkjema
-  ) {
+  // Vi lagrer payload som Json i Prisma. Bruk zod for å validere — feil
+  // format skal feile høyt, ikke gi `undefined.allokering` lengre nede.
+  const parseResult = PlanTemplatePayloadSchema.safeParse(mal.payload);
+  if (!parseResult.success) {
+    console.error("[plans] PlanTemplate.payload har ugyldig form", {
+      templateId: mal.id,
+      feil: parseResult.error.issues,
+    });
     return null;
   }
+  const payload = parseResult.data;
 
   return {
     templateId: mal.id,

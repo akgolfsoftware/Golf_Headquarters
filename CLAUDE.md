@@ -308,6 +308,9 @@ Hvis Anders ber om noe utenfor denne listen: påminn ham, foreslå riktig prosje
 
 ## Kjente gotchas
 
+### JSON-blobs MÅ valideres med zod
+Alle `as unknown as <Type>` på JSON-felter fra Prisma er forbudt for forretningskritiske data (betalinger, tilganger, AI-payload). Bruk zod `safeParse` ved read og kast tydelig feil ved invalid shape.
+
 ### Prisma 7 flyttet `url`/`directUrl` ut av schema
 - **Symptom:** `prisma validate` feiler med `The datasource property url is no longer supported in schema files`.
 - **Årsak:** Prisma 7 (released nov 2025) krever `prisma.config.ts` for connection-strings.
