@@ -29,6 +29,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Unit tests (node:test + tsx)
+        run: npm test
+
       - name: Build
         run: npm run build
         env:
@@ -43,3 +46,39 @@ jobs:
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_dummy
           STRIPE_PRICE_ID_PRO: price_dummy
           CRON_SECRET: dummy
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Start app in background
+        run: npm start &
+        env:
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy?pgbouncer=true
+          DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
+          NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy
+          ANTHROPIC_API_KEY: dummy
+          STRIPE_SECRET_KEY: sk_test_dummy
+          STRIPE_WEBHOOK_SECRET: whsec_dummy
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_dummy
+          STRIPE_PRICE_ID_PRO: price_dummy
+          CRON_SECRET: dummy
+
+      - name: Wait for app to respond
+        run: npx wait-on http://localhost:3000 -t 60000
+        continue-on-error: true
+
+      - name: E2E tests (Playwright)
+        run: npx playwright test
+        env:
+          CI: "true"
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+        continue-on-error: true
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
