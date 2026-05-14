@@ -9,7 +9,17 @@
  * Roller: COACH, ADMIN.
  */
 
-import { Check, CircleDot, Loader2, Mic } from "lucide-react";
+import {
+  Check,
+  CircleDot,
+  Flag,
+  Loader2,
+  Mic,
+  Pause,
+  Play,
+  Square,
+  Tag,
+} from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
@@ -226,6 +236,12 @@ export default async function RecordingAdmin() {
         }
       />
 
+      {/* Timeline-scrubber */}
+      <TimelineScrubber
+        varighet={aktivt?.duration ?? 754}
+        aktiv={harAktivt && aktivt?.status === "PROCESSING"}
+      />
+
       {/* Meta-strip under frame */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <MetaStat label="Totalt opptak" value={String(totalt)} />
@@ -309,6 +325,163 @@ export default async function RecordingAdmin() {
         )}
       </section>
     </div>
+  );
+}
+
+// Stub-markers — i prod kommer disse fra SessionRecording.markers (eller en
+// separat tabell). Beholdes som inline-array til schema er på plass.
+type Marker = {
+  posisjon: number; // 0..1
+  ts: string;
+  tag: "Setup" | "Backswing" | "Impact" | "Notat";
+  notat: string;
+};
+
+const STUB_MARKERS: Marker[] = [
+  { posisjon: 0.15, ts: "01:53", tag: "Setup", notat: "Bredere stance" },
+  { posisjon: 0.38, ts: "04:46", tag: "Backswing", notat: "Skuldre roterer godt" },
+  { posisjon: 0.62, ts: "07:48", tag: "Impact", notat: "Hofte først" },
+  { posisjon: 0.84, ts: "10:34", tag: "Notat", notat: "Pust mellom slag" },
+];
+
+const TAG_FARGE: Record<Marker["tag"], string> = {
+  Setup: "bg-accent text-accent-foreground",
+  Backswing: "bg-primary/15 text-primary border border-primary/30",
+  Impact: "bg-destructive/15 text-destructive border border-destructive/30",
+  Notat: "bg-secondary text-foreground border border-border",
+};
+
+function formatTid(s: number): string {
+  const m = Math.floor(s / 60);
+  const sek = Math.round(s % 60);
+  return `${String(m).padStart(2, "0")}:${String(sek).padStart(2, "0")}`;
+}
+
+function TimelineScrubber({
+  varighet,
+  aktiv,
+}: {
+  varighet: number;
+  aktiv: boolean;
+}) {
+  const playhead = aktiv ? 0.42 : 0.0;
+
+  return (
+    <section className="space-y-4 rounded-2xl border border-border bg-card p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Timeline
+          </span>
+          <h3 className="mt-1 font-display text-lg font-semibold tracking-tight">
+            Markers og tagging
+          </h3>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+          >
+            {aktiv ? (
+              <Pause className="h-3.5 w-3.5" strokeWidth={1.75} />
+            ) : (
+              <Play className="h-3.5 w-3.5" strokeWidth={1.75} />
+            )}
+            {aktiv ? "Pause" : "Spill"}
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+          >
+            <Flag className="h-3.5 w-3.5" strokeWidth={2} />
+            Legg til marker
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 rounded-md bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground transition-opacity hover:opacity-90"
+          >
+            <Square className="h-3 w-3 fill-current" strokeWidth={0} />
+            Stopp
+          </button>
+        </div>
+      </div>
+
+      {/* Stub video-player */}
+      <div className="relative aspect-video w-full overflow-hidden rounded-md bg-foreground/90 dark:bg-card">
+        <video
+          className="h-full w-full"
+          poster=""
+          preload="none"
+          controls={false}
+          aria-label="Sesjon-opptak video"
+        >
+          <source src="" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 grid place-items-center text-background/60">
+          <span className="font-mono text-[10px] uppercase tracking-[0.12em]">
+            Video-stub
+          </span>
+        </div>
+      </div>
+
+      {/* Scrubber-spor */}
+      <div className="space-y-2">
+        <div className="relative h-12 rounded-md border border-border bg-secondary/40">
+          <span
+            className="absolute inset-y-0 left-0 rounded-l-md bg-primary/20"
+            style={{ width: `${playhead * 100}%` }}
+          />
+          <span
+            className="absolute top-0 h-full w-px bg-primary"
+            style={{ left: `${playhead * 100}%` }}
+            aria-hidden
+          />
+          <span
+            className="absolute top-1/2 grid h-4 w-4 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-primary"
+            style={{ left: `${playhead * 100}%` }}
+            aria-hidden
+          />
+          {STUB_MARKERS.map((m, i) => (
+            <span
+              key={i}
+              className="absolute top-0 flex h-full -translate-x-1/2 flex-col items-center"
+              style={{ left: `${m.posisjon * 100}%` }}
+            >
+              <span className="h-full w-0.5 bg-foreground/40" aria-hidden />
+              <span className="absolute -top-2 grid h-4 w-4 place-items-center rounded-full border-2 border-background bg-foreground text-background">
+                <Flag className="h-2 w-2" strokeWidth={2.5} />
+              </span>
+            </span>
+          ))}
+        </div>
+        <div className="flex justify-between font-mono text-[10px] tabular-nums text-muted-foreground">
+          <span>00:00</span>
+          <span>{formatTid(varighet / 2)}</span>
+          <span>{formatTid(varighet)}</span>
+        </div>
+      </div>
+
+      {/* Marker-liste med tag-system */}
+      <ul className="space-y-2">
+        {STUB_MARKERS.map((m, i) => (
+          <li
+            key={i}
+            className="flex flex-wrap items-center gap-3 rounded-md border border-border bg-background px-3 py-2 dark:bg-card"
+          >
+            <span className="font-mono text-xs tabular-nums text-muted-foreground">
+              {m.ts}
+            </span>
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${TAG_FARGE[m.tag]}`}
+            >
+              <Tag className="h-2.5 w-2.5" strokeWidth={2} />
+              {m.tag}
+            </span>
+            <span className="flex-1 text-sm text-foreground">{m.notat}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
