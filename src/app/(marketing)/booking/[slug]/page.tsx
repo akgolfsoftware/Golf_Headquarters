@@ -70,8 +70,8 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             Booking
           </span>
-          <h1 className="mt-2 font-display text-4xl font-semibold leading-tight tracking-tight">
-            {service.name}
+          <h1 className="mt-2 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
+            <em className="font-normal italic text-primary">{service.name}</em>
           </h1>
           {service.description && (
             <p className="mt-4 text-base text-muted-foreground">

@@ -52,9 +52,13 @@ export default async function BekreftPage({ params, searchParams }: Props) {
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             Bekreft
           </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-            <em className="font-normal italic text-primary">Bekreft</em> bestilling
+          <h1 className="mt-2 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
+            <em className="font-normal italic text-primary">Bekreft</em>{" "}
+            bestilling
           </h1>
+          <p className="mt-4 text-base text-muted-foreground">
+            Sjekk detaljene under og fullfør betaling via Stripe.
+          </p>
         </header>
 
         <section className="mt-8 rounded-2xl border border-border bg-card p-6">
