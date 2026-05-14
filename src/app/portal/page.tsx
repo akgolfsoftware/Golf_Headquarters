@@ -14,7 +14,6 @@
 
 import { Suspense } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import {
   ChevronRight,
@@ -41,6 +40,7 @@ import {
 import { aktivStreak } from "@/lib/streak";
 import { totalMinutter, prosentPerArea } from "@/lib/pyramide";
 import { formatSg } from "@/lib/sg";
+import { PortalAvatarButton } from "@/components/portal/portal-avatar-button";
 import { PlanActionsCard } from "@/components/portal/plan-actions-card";
 import { QuickActions } from "@/components/portal/quick-actions";
 import { prisma } from "@/lib/prisma";
@@ -216,35 +216,16 @@ function Hero({ user }: { user: PortalUser }) {
   const fornavn = user.name.split(" ")[0] ?? user.name;
   const initial = user.name.trim().charAt(0).toUpperCase() || "?";
   const klokke = `${String(idag.getHours()).padStart(2, "0")}:${String(idag.getMinutes()).padStart(2, "0")}`;
-  const isFree = user.tier === "GRATIS";
 
   return (
     <header className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
       <div className="flex min-w-0 items-start gap-4 sm:gap-6">
-        <span className="relative shrink-0">
-          <span className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-primary text-xl font-semibold text-primary-foreground md:h-20 md:w-20 md:text-2xl">
-            {user.avatarUrl ? (
-              <Image
-                src={user.avatarUrl}
-                alt=""
-                width={80}
-                height={80}
-                className="h-full w-full rounded-full object-cover"
-              />
-            ) : (
-              initial
-            )}
-          </span>
-          <span
-            className="absolute -bottom-1 -right-1 rounded-sm border-2 border-background px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase tracking-wider"
-            style={{
-              background: isFree ? "hsl(var(--secondary))" : "hsl(var(--accent))",
-              color: isFree ? "hsl(var(--muted-foreground))" : "hsl(var(--accent-foreground))",
-            }}
-          >
-            {isFree ? "Free" : "Pro"}
-          </span>
-        </span>
+        <PortalAvatarButton
+          name={user.name}
+          avatarUrl={user.avatarUrl}
+          initial={initial}
+          tier={user.tier}
+        />
 
         <div className="min-w-0 flex-1">
           <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">

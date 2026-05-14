@@ -73,9 +73,9 @@ export default function BloggListe() {
               fra coaching-hverdagen
             </h1>
             <p className="max-w-2xl text-[17px] leading-[1.6] text-muted-foreground">
-              Vi deler hva vi ser når vi jobber med spillere fra første swing
-              til NM-deltakelse. Skrevet av coachene i AK Golf Academy — uten
-              markedsføringsfluff.
+              Innsikt fra treningshverdagen, analyse av norsk og internasjonal
+              golf, og konkrete råd du faktisk kan bruke. Skrevet av coachene i
+              AK Golf Academy.
             </p>
 
             <form

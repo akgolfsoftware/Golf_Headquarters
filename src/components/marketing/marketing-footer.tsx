@@ -5,16 +5,13 @@ export function MarketingFooter() {
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
-          <div>
-            <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
-              <AkGolfLogo width={48} />
-            </Link>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Personlig coaching og fremgang i én pakke.
-            </p>
-          </div>
+        <div className="mb-10 flex justify-center">
+          <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
+            <AkGolfLogo width={72} />
+          </Link>
+        </div>
 
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
           <div>
             <h4 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Academy

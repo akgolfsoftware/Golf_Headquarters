@@ -17,8 +17,8 @@ export default function OmOss() {
 
         <div className="mt-12 overflow-hidden rounded-2xl border border-border">
           <Image
-            src="/images/akademy/walking-bag.jpg"
-            alt="To golfere går mot fairway med bag i bløt morgensol"
+            src="/images/akademy/coach-observerer.jpg"
+            alt="Anders Kristiansen observerer og veileder spiller på øvingsbanen"
             width={1920}
             height={1280}
             priority
