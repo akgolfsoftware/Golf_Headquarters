@@ -27,7 +27,7 @@ const VALID_PAYLOAD = {
       fokus: "Wedge 50m",
       skillArea: "AROUND_GREEN",
       environment: "RANGE",
-      lPhase: "BALL",
+      lPhase: "SPESIAL",
       drills: [
         { navn: "30 baller fra 50m", sets: 3, reps: 10, csTarget: 70 },
       ],

@@ -24,7 +24,7 @@ export type EnvironmentTag =
   | "HJEM"
   | "SIMULATOR";
 
-export type LPhaseTag = "KROPP" | "ARM" | "KOLLE" | "BALL" | "AUTO";
+export type LPhaseTag = "GRUNN" | "SPESIAL" | "TURNERING";
 
 export const SKILL_AREAS: readonly SkillAreaTag[] = [
   "TEE_TOTAL",
@@ -43,11 +43,9 @@ export const ENVIRONMENTS: readonly EnvironmentTag[] = [
 ] as const;
 
 export const LPHASES: readonly LPhaseTag[] = [
-  "KROPP",
-  "ARM",
-  "KOLLE",
-  "BALL",
-  "AUTO",
+  "GRUNN",
+  "SPESIAL",
+  "TURNERING",
 ] as const;
 
 export const OKT_DAGER: readonly OktDag[] = [
@@ -206,7 +204,7 @@ export function validerPlanForslag(input: unknown): {
       : "RANGE";
     const lPhase = typeof e.lPhase === "string" && LPHASES.includes(e.lPhase as LPhaseTag)
       ? (e.lPhase as LPhaseTag)
-      : "AUTO";
+      : "GRUNN";
     if (!Array.isArray(e.drills)) return { ok: false, feil: `Økt ${i}: drills mangler.` };
     const drills: PlanForslagDrill[] = [];
     for (let j = 0; j < e.drills.length; j++) {

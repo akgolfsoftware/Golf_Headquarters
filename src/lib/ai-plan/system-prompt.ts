@@ -76,12 +76,10 @@ Hver økt skal merkes med tre dimensjoner i tillegg til pyramide-typen:
    - HJEM (i hjemmet, typisk fysisk eller mental)
    - SIMULATOR (innendørs simulator)
 
-3. lPhase — Mac O'Grady-læringsfase, hvor i lærings-prosessen drillen er:
-   - KROPP (posisjon og bevegelse i kroppen — fundament)
-   - ARM (arm-svingen — geometri og bane)
-   - KOLLE (kølle-hode og presisjon)
-   - BALL (ball-flight og kontakt)
-   - AUTO (automatisering — uten bevisst tanke)
+3. lPhase — periodiseringsfase, hvilken del av sesongen økten tilhører:
+   - GRUNN (grunnperiode — fysisk og teknisk grunnlag)
+   - SPESIAL (spesialiseringsperiode — spesialisert trening)
+   - TURNERING (turneringsperiode — kampforberedelse og prestasjon)
 
 DRILL-STRUKTUR:
 Hver drill har { navn, sets?, reps?, csTarget?, notes? }. csTarget er prosent (0-100) som angir mål for completion-score.

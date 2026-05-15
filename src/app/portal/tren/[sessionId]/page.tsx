@@ -33,11 +33,9 @@ const PYR_PILL: Record<PyramidArea, string> = {
 };
 
 const L_PHASE_LABEL = {
-  KROPP: "Kropp",
-  ARM: "Arm",
-  KOLLE: "Kølle",
-  BALL: "Ball",
-  AUTO: "Auto",
+  GRUNN:     "Grunnperiode",
+  SPESIAL:   "Spesialiseringsperiode",
+  TURNERING: "Turneringsperiode",
 } as const;
 
 export default async function SessionDetalj({

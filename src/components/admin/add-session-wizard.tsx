@@ -104,7 +104,7 @@ export function AddSessionWizard({
   const [environment, setEnvironment] = useState<SessionEnvironment>("RANGE");
 
   // Steg 5
-  const [lPhase, setLPhase] = useState<LPhase>("AUTO");
+  const [lPhase, setLPhase] = useState<LPhase>("GRUNN");
 
   // Steg 6 — drill-utvalg
   const [exercises, setExercises] = useState<ExerciseDefinition[]>(exercisesInit);
@@ -125,8 +125,10 @@ export function AddSessionWizard({
   // Når pyramide endres, foreslå skillArea + nullstill drills.
   useEffect(() => {
     const hint = PYR_TIL_SKILL_HINT[pyramidArea];
-    if (hint) setSkillArea(hint);
-    setValgteDrills([]);
+    startTransition(() => {
+      if (hint) setSkillArea(hint);
+      setValgteDrills([]);
+    });
   }, [pyramidArea]);
 
   function toggleDrill(ex: ExerciseDefinition) {
@@ -337,7 +339,7 @@ export function AddSessionWizard({
       {step === 5 && (
         <Bolk
           tittel="Læringsfase"
-          ingress="Mac O'Grady-fasene — fra kroppslig fundament til automatisering."
+          ingress="Periodiseringsfase — grunnperiode, spesialisering eller turneringsforberedelse."
         >
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {LPHASE_REKKEFOLGE.map((l) => {

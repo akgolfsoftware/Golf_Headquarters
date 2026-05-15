@@ -25,11 +25,9 @@ const PYR_BG: Record<PyramidArea, string> = {
 };
 
 const LPHASE_LABEL: Record<LPhase, string> = {
-  KROPP: "Kropp",
-  ARM:   "Arm",
-  KOLLE: "Kølle",
-  BALL:  "Ball",
-  AUTO:  "Auto",
+  GRUNN:     "Grunnperiode",
+  SPESIAL:   "Spesialiseringsperiode",
+  TURNERING: "Turneringsperiode",
 };
 
 // ---------------------------------------------------------------------------

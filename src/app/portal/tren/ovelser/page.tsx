@@ -29,12 +29,10 @@ const PYR_OMRADER: { value: PyramidArea | "ALLE"; label: string }[] = [
 ];
 
 const L_FASER: { value: LPhase | "ALLE"; label: string }[] = [
-  { value: "ALLE", label: "Alle" },
-  { value: "KROPP", label: "Kropp" },
-  { value: "ARM", label: "Arm" },
-  { value: "KOLLE", label: "Kølle" },
-  { value: "BALL", label: "Ball" },
-  { value: "AUTO", label: "Auto" },
+  { value: "ALLE",      label: "Alle" },
+  { value: "GRUNN",     label: "Grunnperiode" },
+  { value: "SPESIAL",   label: "Spesialiseringsperiode" },
+  { value: "TURNERING", label: "Turneringsperiode" },
 ];
 
 export default async function OvelserPage({

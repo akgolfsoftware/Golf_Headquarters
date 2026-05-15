@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock,
-  Dumbbell,
   Flame,
   MessageSquarePlus,
   Plus,
@@ -23,7 +22,6 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
-import { EmptyState } from "@/components/shared/empty-state";
 import type { PyramidArea } from "@/generated/prisma/client";
 
 const PYR_LABEL: Record<PyramidArea, string> = {
@@ -316,30 +314,51 @@ export default async function TrenPlanPage() {
       )}
 
       {ingenPlanOgIngenOkter ? (
-        <EmptyState
-          icon={Dumbbell}
-          titleItalic="Ingen økter"
-          titleTrail="ennå"
-          sub="Du har ingen aktiv treningsplan eller registrerte økter. Start din første økt nå, eller be coach om en plan."
-          cta={
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <Link
-                href="/portal/ny-okt"
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
-              >
-                <Plus size={16} strokeWidth={1.75} />
-                Start ny økt
-              </Link>
-              <Link
-                href="/portal/onskeligokt"
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary"
-              >
-                <MessageSquarePlus size={16} strokeWidth={1.5} />
-                Be om økt fra coach
-              </Link>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Link
+            href="/portal/ny-okt"
+            className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40 hover:bg-primary/5"
+          >
+            <div className="flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 text-primary">
+                <Plus size={20} strokeWidth={1.75} />
+              </span>
+              <div>
+                <p className="font-semibold text-foreground">Planlegg selv</p>
+                <p className="text-xs text-muted-foreground">Start og logg egne treningsøkter</p>
+              </div>
             </div>
-          }
-        />
+            <p className="text-sm text-muted-foreground">
+              Opprett økt, velg øvelser og følg fremgangen din på egenhånd.
+            </p>
+            <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary">
+              Start ny økt
+              <ChevronRight size={14} strokeWidth={1.75} />
+            </span>
+          </Link>
+
+          <Link
+            href="/portal/onskeligokt"
+            className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40 hover:bg-primary/5"
+          >
+            <div className="flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-muted-foreground">
+                <MessageSquarePlus size={20} strokeWidth={1.5} />
+              </span>
+              <div>
+                <p className="font-semibold text-foreground">Se coach sin plan</p>
+                <p className="text-xs text-muted-foreground">Be om eller følg treningsplan fra coach</p>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Coachen din lager en periodisert plan tilpasset dine mål og sesong.
+            </p>
+            <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-foreground">
+              Be om økt fra coach
+              <ChevronRight size={14} strokeWidth={1.75} />
+            </span>
+          </Link>
+        </div>
       ) : (
         <>
           {/* KPI-strip */}

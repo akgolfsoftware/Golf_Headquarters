@@ -53,11 +53,9 @@ enum PyramidArea {
 }
 
 enum LPhase {
-  KROPP
-  ARM
-  KOLLE
-  BALL
-  AUTO
+  GRUNN
+  SPESIAL
+  TURNERING
 }
 
 enum SkillArea {
@@ -1075,7 +1073,7 @@ model SeasonPlan {
 model PeriodBlock {
   id           String   @id @default(cuid())
   seasonPlanId String
-  lPhase       LPhase                 // KROPP|ARM|KOLLE|BALL|AUTO
+  lPhase       LPhase                 // GRUNN|SPESIAL|TURNERING
   startDate    DateTime
   endDate      DateTime
   focus        String?                // fri tekst, f.eks. "Putting + kort spill"

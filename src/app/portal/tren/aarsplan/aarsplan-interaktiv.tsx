@@ -33,14 +33,12 @@ export type SeasonPlanData = {
 // ---------------------------------------------------------------------------
 
 const LPHASE_META: Record<LPhase, { label: string; color: string; desc: string }> = {
-  KROPP: { label: "Kropp", color: "bg-emerald-600", desc: "Fysisk grunnlag" },
-  ARM:   { label: "Arm",   color: "bg-teal-600",   desc: "Arm + hånd-kontroll" },
-  KOLLE: { label: "Kølle", color: "bg-lime-600",    desc: "Kølledata og kontakt" },
-  BALL:  { label: "Ball",  color: "bg-amber-500",   desc: "Ball-flight og kurve" },
-  AUTO:  { label: "Auto",  color: "bg-slate-500",   desc: "Automatisering i spill" },
+  GRUNN:     { label: "Grunnperiode",           color: "bg-emerald-600", desc: "Fysisk og teknisk grunnlag" },
+  SPESIAL:   { label: "Spesialiseringsperiode", color: "bg-teal-600",   desc: "Spesialisert trening" },
+  TURNERING: { label: "Turneringsperiode",      color: "bg-amber-500",  desc: "Kampforberedelse og prestasjon" },
 };
 
-const LPHASE_ORDER: LPhase[] = ["KROPP", "ARM", "KOLLE", "BALL", "AUTO"];
+const LPHASE_ORDER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING"];
 
 // ---------------------------------------------------------------------------
 // Tidslinje (vannrett Jan–Des med periode-band)
@@ -239,7 +237,7 @@ function PeriodSkjema({
   year: number;
   onDone: () => void;
 }) {
-  const [lPhase, setLPhase] = useState<LPhase>("KROPP");
+  const [lPhase, setLPhase] = useState<LPhase>("GRUNN");
   const [startDate, setStartDate] = useState(`${year}-01-01`);
   const [endDate, setEndDate] = useState(`${year}-02-28`);
   const [focus, setFocus] = useState("");

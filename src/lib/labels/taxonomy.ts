@@ -33,19 +33,15 @@ export const ENVIRONMENT_LABEL: Record<SessionEnvironment, string> = {
 };
 
 export const LPHASE_LABEL: Record<LPhase, string> = {
-  KROPP: "Kropp",
-  ARM: "Arm",
-  KOLLE: "Kølle",
-  BALL: "Ball",
-  AUTO: "Automatisering",
+  GRUNN:     "Grunnperiode",
+  SPESIAL:   "Spesialiseringsperiode",
+  TURNERING: "Turneringsperiode",
 };
 
 export const LPHASE_BESKRIVELSE: Record<LPhase, string> = {
-  KROPP: "Posisjon og bevegelse i kroppen — fundament",
-  ARM: "Arm-svingen — geometri og bane",
-  KOLLE: "Kølle-hode og presisjon",
-  BALL: "Ball-flight og kontakt",
-  AUTO: "Automatisering — uten bevisst tanke",
+  GRUNN:     "Fysisk og teknisk grunnlag — basiskapasitet",
+  SPESIAL:   "Spesialisert trening mot sesongens krav",
+  TURNERING: "Kampforberedelse og prestasjon under press",
 };
 
 export const PYRAMIDE_REKKEFOLGE: PyramidArea[] = [
@@ -73,9 +69,7 @@ export const ENVIRONMENT_REKKEFOLGE: SessionEnvironment[] = [
 ];
 
 export const LPHASE_REKKEFOLGE: LPhase[] = [
-  "KROPP",
-  "ARM",
-  "KOLLE",
-  "BALL",
-  "AUTO",
+  "GRUNN",
+  "SPESIAL",
+  "TURNERING",
 ];
