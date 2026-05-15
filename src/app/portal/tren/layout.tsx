@@ -2,7 +2,7 @@ import { SubNav } from "@/components/portal/sub-nav";
 
 const ITEMS = [
   { href: "/portal/tren",             label: "Oversikt" },
-  { href: "/portal/tren/aarsplan",    label: "Sesongplan" },
+  { href: "/portal/tren/aarsplan",    label: "Årsplan" },
   { href: "/portal/tren/turneringer", label: "Turneringer" },
   { href: "/portal/tren/kalender",    label: "Kalender" },
   { href: "/portal/tren/ovelser",     label: "Øvelser" },
