@@ -591,6 +591,7 @@ model TestDefinition {
   description String?
   pyramidArea PyramidArea
   scoringRule String
+  protocol    Json?
   createdAt   DateTime    @default(now())
 
   results TestResult[]
@@ -605,6 +606,7 @@ model TestResult {
   takenAt   DateTime
   score     Float
   notes     String?
+  details   Json?
   createdAt DateTime @default(now())
 
   user User           @relation(fields: [userId], references: [id], onDelete: Cascade)

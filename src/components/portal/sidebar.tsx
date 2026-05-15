@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Plus } from "lucide-react";
 import type { Tier } from "@/generated/prisma/client";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 import { FEATURES } from "@/lib/features";
@@ -10,88 +11,62 @@ import { FEATURES } from "@/lib/features";
 // Types
 // ---------------------------------------------------------------------------
 
-type NavItem = { href: string; label: string; badge?: boolean };
-type NavSection = { label?: string; items: NavItem[] };
+type NavItem = {
+  href: string;
+  label: string;
+  matchPrefixes?: string[];
+  badge?: boolean;
+};
 
 // ---------------------------------------------------------------------------
-// Navigation structure — workflow-basert: Planlegge → Gjennomføre → Evaluere
+// Navigation — 5 hoved-punkter + Talent (betinget)
 // ---------------------------------------------------------------------------
 
-const BASE_SECTIONS: NavSection[] = [
+const MAIN_ITEMS: NavItem[] = [
+  { href: "/portal",            label: "Hjem" },
   {
-    items: [{ href: "/portal", label: "Hjem" }],
+    href: "/portal/tren",
+    label: "Tren",
+    matchPrefixes: ["/portal/tren", "/portal/ny-okt"],
   },
   {
-    label: "Planlegge",
-    items: [
-      { href: "/portal/tren",             label: "Treningsplan" },
-      { href: "/portal/tren/aarsplan",    label: "Årsplan" },
-      { href: "/portal/tren/turneringer", label: "Turneringer" },
-      { href: "/portal/tren/kalender",    label: "Kalender" },
-      { href: "/portal/booking/ny",       label: "Book økt" },
-    ],
+    href: "/portal/statistikk",
+    label: "Statistikk",
+    matchPrefixes: ["/portal/statistikk", "/portal/mal"],
   },
   {
-    label: "Gjennomføre",
-    items: [
-      { href: "/portal/tren/ovelser",  label: "Øvelser" },
-      { href: "/portal/tren/tester",   label: "Tester" },
-      { href: "/portal/ny-okt",        label: "Ny økt" },
-      { href: "/portal/utfordringer",  label: "Utfordringer" },
-    ],
-  },
-  {
-    label: "Evaluere",
-    items: [
-      { href: "/portal/mal",          label: "Resultater" },
-      { href: "/portal/mal/runder",   label: "Runder" },
-      { href: "/portal/mal/trackman", label: "TrackMan" },
-    ],
-  },
-  {
+    href: "/portal/coach",
     label: "Coach",
-    items: [
-      { href: "/portal/coach",         label: "Oversikt" },
-      { href: "/portal/coach/plans",   label: "Min plan" },
-      { href: "/portal/coach/melding", label: "Meldinger" },
-      { href: "/portal/coach/ai",      label: "AI-coach" },
-      { href: "/portal/onskeligokt",   label: "Ønske om økt" },
+    matchPrefixes: [
+      "/portal/coach",
+      "/portal/onskeligokt",
+      "/portal/booking",
     ],
   },
   {
-    label: "Konto",
-    items: [
-      { href: "/portal/varsler",        label: "Varsler", badge: true },
-      { href: "/portal/meg",            label: "Profil" },
-      { href: "/portal/meg/abonnement", label: "Abonnement" },
-    ],
+    href: "/portal/meg",
+    label: "Profil",
+    matchPrefixes: ["/portal/meg", "/portal/varsler"],
+    badge: true,
   },
 ];
 
-const TALENT_SECTION: NavSection = {
+const TALENT_ITEM: NavItem = {
+  href: "/portal/talent",
   label: "Talent",
-  items: [
-    { href: "/portal/talent/min-plan",      label: "Min plan" },
-    { href: "/portal/talent/mitt-niva",     label: "Mitt nivå" },
-    { href: "/portal/talent/sammenligning", label: "Sammenligning" },
-  ],
+  matchPrefixes: ["/portal/talent"],
 };
 
 // ---------------------------------------------------------------------------
 // Active-link helper
-// Bruker exact match når et href har barn i listen (for å unngå at
-// f.eks. "Treningsplan" lyser opp på /portal/tren/kalender).
 // ---------------------------------------------------------------------------
 
-function buildIsActive(allHrefs: string[]) {
-  return function isActive(path: string, href: string): boolean {
-    if (href === "/portal") return path === href;
-    const hasChildren = allHrefs.some(
-      (h) => h !== href && h.startsWith(href + "/"),
-    );
-    if (hasChildren) return path === href;
-    return path === href || path.startsWith(href + "/");
-  };
+function isActive(path: string, item: NavItem): boolean {
+  if (item.href === "/portal") return path === "/portal";
+  const prefixes = item.matchPrefixes ?? [item.href];
+  return prefixes.some(
+    (p) => path === p || path.startsWith(p + "/"),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -107,12 +82,9 @@ export function PortalSidebar({
 }) {
   const path = usePathname();
 
-  const sections: NavSection[] = FEATURES.TALENT
-    ? [...BASE_SECTIONS, TALENT_SECTION]
-    : BASE_SECTIONS;
-
-  const allHrefs = sections.flatMap((s) => s.items.map((i) => i.href));
-  const isActive = buildIsActive(allHrefs);
+  const items: NavItem[] = FEATURES.TALENT
+    ? [...MAIN_ITEMS, TALENT_ITEM]
+    : MAIN_ITEMS;
 
   return (
     <aside
@@ -133,48 +105,50 @@ export function PortalSidebar({
         </Link>
       </div>
 
+      {/* Ny økt — rask handling */}
+      <div className="px-4 pb-4">
+        <Link
+          href="/portal/ny-okt"
+          className="flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          <Plus className="h-4 w-4" strokeWidth={2} />
+          Ny økt
+        </Link>
+      </div>
+
       {/* Nav */}
       <nav
         aria-label="Hovednavigasjon"
         className="flex-1 overflow-y-auto px-4 pb-4"
       >
-        {sections.map((seksjon, i) => (
-          <div key={seksjon.label ?? "__hjem__"} className={i > 0 ? "mt-6" : ""}>
-            {seksjon.label && (
-              <div className="px-4 pb-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-white/40">
-                {seksjon.label}
-              </div>
-            )}
-            <div className="space-y-0.5">
-              {seksjon.items.map((item) => {
-                const aktiv = isActive(path, item.href);
-                const visBadge = item.badge && varslerUlest > 0;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    aria-current={aktiv ? "page" : undefined}
-                    className={`flex items-center justify-between rounded-md px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
-                      aktiv
-                        ? "bg-white/10 font-semibold text-white"
-                        : "text-white/70 hover:bg-white/5 hover:text-white"
-                    }`}
+        <div className="space-y-0.5">
+          {items.map((item) => {
+            const aktiv = isActive(path, item);
+            const visBadge = item.badge && varslerUlest > 0;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={aktiv ? "page" : undefined}
+                className={`flex items-center justify-between rounded-md px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
+                  aktiv
+                    ? "bg-white/10 font-semibold text-white"
+                    : "text-white/70 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <span>{item.label}</span>
+                {visBadge && (
+                  <span
+                    aria-label={`${varslerUlest} uleste varsler`}
+                    className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 font-mono text-[10px] font-semibold text-destructive-foreground"
                   >
-                    <span>{item.label}</span>
-                    {visBadge && (
-                      <span
-                        aria-label={`${varslerUlest} uleste varsler`}
-                        className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 font-mono text-[10px] font-semibold text-destructive-foreground"
-                      >
-                        {varslerUlest}
-                      </span>
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        ))}
+                    {varslerUlest}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </div>
       </nav>
 
       {/* Tier-badge */}

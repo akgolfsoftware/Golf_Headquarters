@@ -231,15 +231,27 @@ export default async function TesterPage() {
                       <span className="text-sm font-medium text-foreground">
                         {t.name}
                       </span>
-                      <span
-                        className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.04em] ${PYR_PILL[t.pyramidArea]}`}
-                      >
+                      <div className="flex items-center gap-2">
                         <span
-                          className={`h-1.5 w-1.5 rounded-full ${PYR_DOT[t.pyramidArea]}`}
-                          aria-hidden="true"
-                        />
-                        {PYR_LABEL[t.pyramidArea]}
-                      </span>
+                          className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.04em] ${PYR_PILL[t.pyramidArea]}`}
+                        >
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full ${PYR_DOT[t.pyramidArea]}`}
+                            aria-hidden="true"
+                          />
+                          {PYR_LABEL[t.pyramidArea]}
+                        </span>
+                        {(t.protocol as { totalShots?: number } | null)
+                          ?.totalShots && (
+                          <span className="font-mono text-[10px] text-muted-foreground">
+                            {
+                              (t.protocol as { totalShots: number })
+                                .totalShots
+                            }{" "}
+                            slag
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="font-mono text-xs text-muted-foreground tabular-nums">
                       {stats ? (

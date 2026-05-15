@@ -1,0 +1,2 @@
+ALTER TABLE test_definitions ADD COLUMN IF NOT EXISTS protocol JSONB;
+ALTER TABLE test_results ADD COLUMN IF NOT EXISTS details JSONB;
