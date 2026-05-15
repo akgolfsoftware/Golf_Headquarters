@@ -197,6 +197,7 @@ export default function Hjem() {
             title="Mulligan Indoor Golf Simulators"
             description="Tre Trackman 4-simulatorer, kafé og lounge. Åpent 06–24 alle dager med medlemskort."
             cta="Se Mulligan Borre"
+            href="https://www.mulligangolf.no"
           />
           <FacilityCard
             tag="Utendørs · Fredrikstad"
@@ -352,11 +353,13 @@ function FacilityCard({
   title,
   description,
   cta,
+  href = "/anlegg",
 }: {
   tag: string;
   title: string;
   description: string;
   cta: string;
+  href?: string;
 }) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-border bg-card">
@@ -380,8 +383,9 @@ function FacilityCard({
           {description}
         </p>
         <Link
-          href="/anlegg"
+          href={href}
           className="mt-6 inline-flex items-center gap-1 text-[14px] font-medium text-primary"
+          {...(href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}
         >
           {cta}
           <ArrowUpRight className="h-4 w-4" strokeWidth={1.75} />
