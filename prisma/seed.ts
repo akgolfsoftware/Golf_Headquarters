@@ -21,14 +21,25 @@ const prisma = new PrismaClient({ adapter });
 const LOCATIONS = [
   {
     name: "Gamle Fredrikstad GK",
-    address: "Torsnesveien 16, Fredrikstad",
+    address: "Torsnesveien 16, 1630 Gamle Fredrikstad",
     facilities: [
       "Performance Studio",
       "Driving Range 1. etg",
       "Driving Range 2. etg",
-      "Nærspillområde",
+      "Nærspillsområde",
       "Puttinggreen",
       "9-hullsbane",
+    ],
+  },
+  {
+    name: "Miklagard Golfklubb",
+    address: "Væringvegen 24, 2040 Kløfta",
+    facilities: [
+      "18-hullsbane",
+      "Trackman Driving Range",
+      "Puttinggreen",
+      "Nærspillsområde",
+      "Clubhouse & Restaurant",
     ],
   },
   {
@@ -38,7 +49,7 @@ const LOCATIONS = [
   },
   {
     name: "WANG Toppidrett Fredrikstad",
-    address: "Fredrikstad", // TODO: bekreft eksakt adresse
+    address: "Fredrikstad",
     facilities: ["Idrettshall", "Klasserom"],
   },
 ] as const;
@@ -333,6 +344,7 @@ const COACH_AVAILABILITY: ReadonlyArray<{
 // Brukes til å vise faste tider i kalenderen + filtrere ut fra
 // coach-tilgjengelighet ved booking.
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const GROUP_SCHEDULE: ReadonlyArray<{
   groupName: string;
   weekday: number;

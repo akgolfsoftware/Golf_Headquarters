@@ -182,7 +182,6 @@ export default async function AuditLogPage({
             <button
               type="button"
               disabled
-              title="Kommer i v2"
               className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
             >
               <Download className="h-4 w-4" />
@@ -424,14 +423,13 @@ function EvtCard({ evt }: { evt: Evt }) {
     agent: "border-border bg-muted text-muted-foreground",
     "auth-fail": "border-destructive bg-destructive/10 text-destructive",
   };
-  const Icon = ({ type }: { type: EvtType }) => {
-    if (type === "create") return <Plus className="h-3.5 w-3.5" />;
-    if (type === "update") return <Pencil className="h-3.5 w-3.5" />;
-    if (type === "delete") return <Trash2 className="h-3.5 w-3.5" />;
-    if (type === "auth") return <ShieldCheck className="h-3.5 w-3.5" />;
-    if (type === "auth-fail") return <ShieldOff className="h-3.5 w-3.5" />;
-    return <Bot className="h-3.5 w-3.5" />;
-  };
+  const evtIcon =
+    evt.type === "create" ? <Plus className="h-3.5 w-3.5" /> :
+    evt.type === "update" ? <Pencil className="h-3.5 w-3.5" /> :
+    evt.type === "delete" ? <Trash2 className="h-3.5 w-3.5" /> :
+    evt.type === "auth" ? <ShieldCheck className="h-3.5 w-3.5" /> :
+    evt.type === "auth-fail" ? <ShieldOff className="h-3.5 w-3.5" /> :
+    <Bot className="h-3.5 w-3.5" />;
 
   const pillLabel =
     evt.type === "auth-fail"
@@ -445,7 +443,7 @@ function EvtCard({ evt }: { evt: Evt }) {
       <div
         className={`absolute -left-8 top-3.5 z-[1] grid h-6 w-6 place-items-center rounded-full border-2 ${iconStyles[evt.type]}`}
       >
-        <Icon type={evt.type} />
+        {evtIcon}
       </div>
       <div
         className={`rounded-lg border bg-card px-4 py-3.5 transition-shadow hover:shadow-sm ${

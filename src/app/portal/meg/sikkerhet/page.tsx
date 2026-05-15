@@ -41,7 +41,7 @@ export default async function SikkerhetPage() {
             label="Aktive økter"
             value="—"
             unit="enheter"
-            sub="Sesjons-oversikt kommer i v2"
+            sub="Antall aktive innlogginger"
           />
           {/* TODO: kobles til Supabase auth sessions senere */}
         </div>
@@ -55,7 +55,7 @@ export default async function SikkerhetPage() {
       </Section>
 
       {/* Aktive økter — TODO: kobles til Supabase auth sessions senere */}
-      <Section title="Aktive økter" v2 aux="Kommer i v2">
+      <Section title="Aktive økter" aux="Under utvikling">
         <div
           aria-disabled="true"
           className="flex cursor-not-allowed items-center gap-4 px-6 py-6 opacity-50"
@@ -68,7 +68,7 @@ export default async function SikkerhetPage() {
               Denne enheten
             </div>
             <div className="font-mono text-xs text-muted-foreground">
-              Detaljert sesjons-liste tilgjengelig i v2 — se og logg ut andre enheter
+              Se og logg ut andre aktive enheter — kommer snart
             </div>
           </div>
           <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
@@ -79,7 +79,7 @@ export default async function SikkerhetPage() {
       </Section>
 
       {/* Innloggings-historikk — TODO: kobles til reell login-historikk senere */}
-      <Section title="Innloggings-historikk" v2 aux="Siste 7 dager">
+      <Section title="Innloggings-historikk" aux="Under utvikling">
         <div
           aria-disabled="true"
           className="flex cursor-not-allowed items-center gap-4 px-6 py-6 opacity-50"
@@ -89,7 +89,7 @@ export default async function SikkerhetPage() {
             strokeWidth={1.5}
           />
           <p className="text-sm text-muted-foreground">
-            Full innloggings-historikk med IP, enhet og tidspunkt vises her i v2.
+            Full innloggings-historikk med IP, enhet og tidspunkt — aktiveres snart.
           </p>
         </div>
       </Section>

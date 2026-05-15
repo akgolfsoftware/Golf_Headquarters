@@ -350,7 +350,6 @@ export default async function AdminCalendar({
             <button
               type="button"
               disabled
-              title="Kommer i v2"
               className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground opacity-50"
             >
               <Download className="h-4 w-4" /> Eksporter
@@ -691,12 +690,11 @@ function SyncCard() {
       </div>
       <div className="mb-4 text-[12px] text-muted-foreground">
         {/* TODO: koble mot google-calendar-sync */}
-        Sync-status kommer i v2.
+        Kobles mot Google Calendar i neste oppdatering.
       </div>
       <button
         type="button"
         disabled
-        title="Kommer i v2"
         className="inline-flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-[12px] font-medium text-foreground opacity-50"
       >
         <RefreshCw className="h-3.5 w-3.5" /> Synk nå

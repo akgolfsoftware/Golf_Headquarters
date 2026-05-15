@@ -183,7 +183,6 @@ export default async function OppfolgingsKo() {
                 <button
                   type="button"
                   disabled
-                  title="Kommer i v2"
                   className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
                 >
                   <Sparkles className="h-4 w-4" />

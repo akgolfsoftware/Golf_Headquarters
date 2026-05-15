@@ -29,8 +29,8 @@ export default async function BanerPage() {
       <PageHeader
         eyebrow="PlayerHQ · Mål · Baner"
         titleLead="Baner"
-        titleItalic="kommer snart"
-        sub="Vi jobber med å samle alle norske baner med par, slope og historikk. Tilgjengelig i V2."
+        titleItalic="i utvikling"
+        sub="Vi jobber med å samle alle norske baner med par, slope og historikk."
       />
 
       <EmptyState

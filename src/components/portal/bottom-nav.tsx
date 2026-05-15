@@ -1,21 +1,21 @@
 "use client";
 
 /**
- * Bottom navigation for PlayerHQ — vises kun på mobil (< lg).
+ * Bottom navigation for PlayerHQ — vises kun på mobil (< md).
+ * Speiler workflow-strukturen i sidebaren: Hjem / Plan / Gjennomfør / Evaluere / Coach.
  * Fast festet i bunn med safe-area-inset for iPhone-hak.
- * 5 ikoner med labels: Hjem, Tren, Mål, Coach, Meg.
  */
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Dumbbell, Target, MessageCircle, User } from "lucide-react";
+import { Home, CalendarCheck, Dumbbell, BarChart2, MessageCircle } from "lucide-react";
 
 const NAV = [
-  { href: "/portal", label: "Hjem", icon: Home },
-  { href: "/portal/tren", label: "Tren", icon: Dumbbell },
-  { href: "/portal/mal", label: "Mål", icon: Target },
-  { href: "/portal/coach", label: "Coach", icon: MessageCircle },
-  { href: "/portal/meg", label: "Meg", icon: User },
+  { href: "/portal",              label: "Hjem",      icon: Home },
+  { href: "/portal/tren",         label: "Plan",       icon: CalendarCheck },
+  { href: "/portal/tren/ovelser", label: "Gjennomfør", icon: Dumbbell },
+  { href: "/portal/mal",          label: "Evaluere",   icon: BarChart2 },
+  { href: "/portal/coach",        label: "Coach",      icon: MessageCircle },
 ];
 
 export function BottomNav() {
@@ -30,8 +30,9 @@ export function BottomNav() {
       <ul className="grid grid-cols-5">
         {NAV.map((item) => {
           const aktiv =
-            path === item.href ||
-            (item.href !== "/portal" && path.startsWith(item.href));
+            item.href === "/portal"
+              ? path === "/portal"
+              : path === item.href || path.startsWith(item.href + "/");
           const Icon = item.icon;
           return (
             <li key={item.href}>

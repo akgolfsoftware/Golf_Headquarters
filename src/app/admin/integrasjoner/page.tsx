@@ -31,7 +31,7 @@ type Card = {
   meta?: string;
   ctaLabel: string;
   ctaHref: string;
-  ctaDisabled?: boolean;
+  ctaExternal?: boolean;
 };
 
 function nokFormat(ore: number): string {
@@ -106,8 +106,8 @@ export default async function IntegrasjonerPage() {
       description: "Speil prosjekter og oppgaver fra Notion-arbeidsområdet.",
       meta: "Venter på Notion-token",
       ctaLabel: "Koble Notion",
-      ctaHref: "#",
-      ctaDisabled: true,
+      ctaHref: "https://www.notion.so/profile/integrations",
+      ctaExternal: true,
     },
     {
       key: "anthropic",
@@ -140,8 +140,8 @@ export default async function IntegrasjonerPage() {
         "Postgres-database og autentisering. Kjernen i hele plattformen.",
       meta: "Always-on",
       ctaLabel: "Status",
-      ctaHref: "#",
-      ctaDisabled: true,
+      ctaHref: "https://status.supabase.com",
+      ctaExternal: true,
     },
   ];
 
@@ -203,14 +203,15 @@ function IntegrationCard({ card }: { card: Card }) {
         )}
       </div>
       <div className="border-t border-border pt-4">
-        {card.ctaDisabled ? (
-          <button
-            type="button"
-            disabled
-            className="inline-flex cursor-not-allowed items-center rounded-full bg-secondary px-4 py-2 text-sm font-medium text-muted-foreground"
+        {card.ctaExternal ? (
+          <a
+            href={card.ctaHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             {card.ctaLabel}
-          </button>
+          </a>
         ) : (
           <Link
             href={card.ctaHref}

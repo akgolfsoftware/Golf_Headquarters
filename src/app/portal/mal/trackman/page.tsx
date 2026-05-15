@@ -32,6 +32,7 @@ export default async function TrackManPage() {
   const sisteOkt = sessions[0];
 
   // 30-dagers vindu for trend-banner
+  // eslint-disable-next-line react-hooks/purity
   const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
   const okter30d = sessions.filter(
     (s) => s.recordedAt.getTime() > thirtyDaysAgo,
@@ -106,7 +107,6 @@ export default async function TrackManPage() {
             <button
               type="button"
               disabled
-              title="Kommer i v2"
               className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-60"
             >
               Eksporter til Strokes Gained

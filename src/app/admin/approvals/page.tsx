@@ -18,7 +18,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { avatarBg } from "@/lib/avatar-colors";
 import { PageHeader } from "@/components/shared/page-header";
-import { EmptyState } from "@/components/shared/empty-state";
+
 import { ApprovalActions } from "./approval-actions";
 
 const ACTION_LABEL: Record<string, string> = {
@@ -101,14 +101,12 @@ export default async function Approvals() {
         titleItalic="venter"
         sub={`${urgCount} urgent · ${warnCount} warning · ${infoCount} info`}
         actions={
-          <button
-            type="button"
-            disabled
-            title="Kommer i v2"
-            className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
+          <Link
+            href="/admin/agents"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
-            Send agent-feedback →
-          </button>
+            Agent-innstillinger →
+          </Link>
         }
       />
 

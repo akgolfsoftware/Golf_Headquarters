@@ -99,7 +99,7 @@ export default function Coaching() {
           {PAKKER.map((p) => (
             <article
               key={p.navn}
-              className={`relative rounded-2xl border p-8 ${
+              className={`relative flex flex-col rounded-2xl border p-8 ${
                 p.fremhevet
                   ? "border-primary/40 bg-primary/5"
                   : "border-border bg-card"
@@ -139,7 +139,7 @@ export default function Coaching() {
                 ))}
               </ul>
 
-              <div className="mt-8">
+              <div className="mt-auto pt-8">
                 <SubscribeButton
                   plan={p.plan}
                   className={`w-full rounded-md px-6 py-4 text-center text-sm font-semibold transition-opacity disabled:opacity-60 ${

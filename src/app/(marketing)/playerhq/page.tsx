@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { PlayerHQMockup } from "@/components/marketing/playerhq-mockup";
 
 export const metadata: Metadata = {
   title: "PlayerHQ — AK Golf Academy",
@@ -89,7 +90,11 @@ export default function PlayerHQ() {
             </h2>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12">
+            <PlayerHQMockup />
+          </div>
+
+          <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {FUNKSJONER.map((f) => (
               <article
                 key={f.label}

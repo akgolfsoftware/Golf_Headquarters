@@ -239,6 +239,7 @@ export function LiveShell({
     if (debugApplied) return;
     const s = searchParams?.get("state");
     if (!s) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDebugApplied(true);
     switch (s) {
       case "intro":
@@ -335,7 +336,6 @@ export function LiveShell({
       const t = setTimeout(() => dispatch({ type: "MARK_FERDIG" }), 350);
       return () => clearTimeout(t);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.repsLogged, state.phase, state.paused, targetReps]);
 
   // Auto-transition: ferdig → between etter 800ms
@@ -352,6 +352,7 @@ export function LiveShell({
   const [idleHint, setIdleHint] = useState(false);
   useEffect(() => {
     if (state.phase !== "active" || state.paused) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIdleHint(false);
       return;
     }
@@ -603,7 +604,7 @@ export function LiveShell({
           right={
             <>
               {state.offline && (
-                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.10em] text-[#F4C430]">
+                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.10em] text-amber-400">
                   <WifiOff className="h-[13px] w-[13px]" strokeWidth={1.5} />
                   Lagrer lokalt
                 </span>
@@ -615,12 +616,12 @@ export function LiveShell({
 
         {/* Tilkobling-tapt overlay-toast */}
         {showOfflineBanner && (
-          <div className="pointer-events-none absolute left-1/2 top-[68px] z-20 inline-flex -translate-x-1/2 items-center gap-2.5 rounded-full border border-[#F4C430]/35 bg-[#F4C430]/10 px-4 py-2 font-mono text-[12px] tracking-[0.04em] text-[#F4C430] backdrop-blur">
+          <div className="pointer-events-none absolute left-1/2 top-[68px] z-20 inline-flex -translate-x-1/2 items-center gap-2.5 rounded-full border border-amber-400/35 bg-amber-400/10 px-4 py-2 font-mono text-[12px] tracking-[0.04em] text-amber-400 backdrop-blur">
             <WifiOff className="h-[15px] w-[15px]" strokeWidth={1.5} />
             <span>
               Tilkobling tapt · reps lagres lokalt og synces ved gjenoppretting
             </span>
-            <span className="ml-2 inline-flex items-center gap-1 text-[#F4C430]/60">
+            <span className="ml-2 inline-flex items-center gap-1 text-amber-400/60">
               <RotateCw className="h-[12px] w-[12px]" strokeWidth={1.5} />
               retry
             </span>
@@ -727,7 +728,7 @@ export function LiveShell({
 
           {/* Offline-kø chip */}
           {showOfflineBanner && state.repsLogged > 0 && (
-            <div className="mt-6 inline-flex items-center gap-2.5 rounded-full border border-[#F4C430]/30 bg-[#F4C430]/[0.08] px-4 py-2 text-[#F4C430]">
+            <div className="mt-6 inline-flex items-center gap-2.5 rounded-full border border-amber-400/30 bg-amber-400/[0.08] px-4 py-2 text-amber-400">
               <RotateCw className="h-[14px] w-[14px]" strokeWidth={1.5} />
               <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] tabular-nums">
                 {state.repsLogged} reps i kø
@@ -1656,9 +1657,9 @@ function MoodButton({
 
 function PausePill() {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full bg-[rgba(244,196,48,0.14)] px-4 py-1.5">
-      <span className="h-2 w-2 rounded-full bg-[#F4C430]" />
-      <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-[#F4C430]">
+    <div className="inline-flex items-center gap-2 rounded-full bg-amber-400/15 px-4 py-1.5">
+      <span className="h-2 w-2 rounded-full bg-amber-400" />
+      <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-amber-400">
         Pause
       </span>
     </div>

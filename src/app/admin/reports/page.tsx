@@ -98,15 +98,13 @@ export default async function Rapporter() {
               <History className="h-4 w-4" />
               Historikk
             </Link>
-            <button
-              type="button"
-              disabled
-              title="Kommer i v2"
-              className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
+            <Link
+              href="/admin/calendar"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Plus className="h-4 w-4" />
               Planlegg ny
-            </button>
+            </Link>
           </div>
         </header>
 
@@ -170,15 +168,13 @@ export default async function Rapporter() {
               ))
             )}
             <div className="border-t border-border px-6 py-4">
-              <button
-                type="button"
-                disabled
-                title="Kommer i v2"
-                className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground opacity-50"
+              <Link
+                href="/admin/calendar"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
               >
                 <Plus className="h-4 w-4" />
                 Planlegg ny leveranse
-              </button>
+              </Link>
             </div>
           </aside>
         </div>
@@ -300,14 +296,12 @@ function ReportCard({ report }: { report: ReportTemplate }) {
         >
           Last ned →
         </a>
-        <button
-          type="button"
-          disabled
-          title="Kommer i v2"
-          className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md px-4 py-1.5 text-[12.5px] font-medium text-foreground opacity-50"
+        <Link
+          href="/admin/calendar"
+          className="inline-flex items-center gap-1.5 rounded-md px-4 py-1.5 text-[12.5px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           Planlegg →
-        </button>
+        </Link>
       </div>
     </div>
   );

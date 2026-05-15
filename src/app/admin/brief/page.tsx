@@ -112,7 +112,6 @@ export default async function DagligBrief() {
             <button
               type="button"
               disabled
-              title="Kommer i v2"
               className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground opacity-50"
             >
               <Mail className="h-4 w-4" />

@@ -13,31 +13,31 @@ const PYRAMIDE = [
     kort: "FYS",
     navn: "Fysisk",
     tekst:
-      "Kjernemuskulatur, balanse, mobilitet og rotasjon. Uten den fysiske basen kan ikke tekniske endringer feste seg.",
+      "Rotasjon, mobilitet og kjernemuskulatur er fundamentet alt annet bygger på. Har du ikke basen, fester ikke tekniske endringer seg — uansett antall repetisjoner.",
   },
   {
     kort: "TEK",
     navn: "Teknisk",
     tekst:
-      "Sving, grep, impact-posisjon og club-path. Vi bygger en sving som er repeterbar — ikke perfekt på papiret, men perfekt for deg.",
+      "Sving, grep, impact og club-path — analysert med Trackman som fasit. Vi bygger en sving du kan stole på under press, ikke én som bare ser bra ut på video.",
   },
   {
     kort: "SLAG",
     navn: "Slag",
     tekst:
-      "Pitch, putt, korthold og bunkerslag. Trygghet rundt grønnen sparer flest slag — derfor får dette stor plass i planen.",
+      "60–65 % av alle slag skjer innen 100 meter fra flagget. Chip, pitch, putt og bunkerspill trenes systematisk — det er her de fleste slag hentes.",
   },
   {
     kort: "SPILL",
     navn: "Spill",
     tekst:
-      "Banetilpasning, beslutninger, club-valg og scoring-strategi. Du må vite hvilke slag du skal velge, ikke bare hvordan du slår dem.",
+      "Riktig valg er like viktig som riktig utførelse. Vi trener beslutninger, risk/reward og banetilpasning — slik at du skårer lavere med svingene du allerede har.",
   },
   {
     kort: "TURN",
     navn: "Turnering",
     tekst:
-      "Press-håndtering, pre-shot rutine, match-play-mentalitet. Det du gjør på rangen må også fungere når det gjelder.",
+      "Alt du øver på må holde når det gjelder. Pre-shot rutine, fokusstrategi og press-håndtering — slik at du er den samme spilleren i runde to som i treningsrunden.",
   },
 ];
 
@@ -142,9 +142,10 @@ export default function Treningsfilosofi() {
           </div>
 
           <p className="mt-6 text-sm text-muted-foreground">
-            Etter noen registrerte runder ser vi mønsteret. Da vet vi om
-            problemet sitter i drives, i innspillene, rundt grønnen eller på
-            putten — og planen oppdateres deretter.
+            Etter 3–5 registrerte runder ser vi et klart mønster. Kanskje
+            driver du bedre enn du tror, men taper alt rundt grønnen. Kanskje
+            er innspillene svakheten ingen har fortalt deg om. Planen peker dit
+            dataen peker — ikke dit magefølelsen peker.
           </p>
 
           <div className="mt-10 overflow-hidden rounded-2xl border border-border">

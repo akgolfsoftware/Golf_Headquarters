@@ -318,7 +318,7 @@ function Chip({
     <button
       type="button"
       disabled={!active}
-      title={active ? undefined : "Kommer i v2"}
+      title={undefined}
       className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
         active
           ? "bg-primary text-primary-foreground"
@@ -465,7 +465,7 @@ function Pagination({ total, vist }: { total: number; vist: number }) {
         <button
           type="button"
           disabled
-          title="Kommer i v2"
+          title=""
           className="rounded-md px-4 py-2 text-xs font-medium opacity-50"
         >
           ← Forrige
@@ -473,7 +473,7 @@ function Pagination({ total, vist }: { total: number; vist: number }) {
         <button
           type="button"
           disabled
-          title="Kommer i v2"
+          title=""
           className="rounded-md border border-border bg-card px-4 py-2 text-xs font-medium opacity-50"
         >
           Vis flere →

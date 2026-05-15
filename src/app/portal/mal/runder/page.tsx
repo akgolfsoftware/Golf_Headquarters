@@ -125,7 +125,7 @@ export default async function RunderPage() {
               <button
                 type="button"
                 disabled
-                title="Kommer i v2 — GolfBox-integrasjon"
+                title=""
                 className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground opacity-60"
               >
                 <Download size={12} strokeWidth={1.75} /> Importer fra GolfBox
@@ -201,7 +201,7 @@ export default async function RunderPage() {
               <button
                 type="button"
                 disabled
-                title="Kommer i v2 — GolfBox-integrasjon"
+                title=""
                 className="inline-flex items-center gap-1.5 rounded-full border border-border bg-transparent px-4 py-2 text-xs font-semibold text-foreground opacity-60"
               >
                 <Download size={12} strokeWidth={1.75} /> Importer fra GolfBox
