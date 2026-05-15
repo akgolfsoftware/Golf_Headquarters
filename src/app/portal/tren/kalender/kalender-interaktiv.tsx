@@ -151,10 +151,12 @@ export function KalenderInteraktiv({
 
   const lukkeModal = useCallback(() => setSelectedSlot(null), []);
 
+  const DAG_NAVN = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+
   return (
     <div className="relative">
-      {/* Kalender-grid */}
-      <div ref={gridRef} className="grid grid-cols-[60px_repeat(7,1fr)]">
+      {/* Desktop: uke-grid */}
+      <div ref={gridRef} className="hidden md:grid grid-cols-[60px_repeat(7,1fr)]">
         {/* Tidslinje-kolonne */}
         <div className="flex flex-col">
           {Array.from({ length: 16 }, (_, i) => i + FIRST_HOUR).map((h) => (
@@ -176,7 +178,6 @@ export function KalenderInteraktiv({
             onMouseLeave={() => setHoverSlot(null)}
             onClick={(e) => handleColClick(e, colIdx)}
           >
-            {/* Nå-linje */}
             {todayLine?.dag === colIdx && (
               <div
                 className="pointer-events-none absolute left-0 right-0 z-10 h-0.5 bg-destructive"
@@ -186,7 +187,6 @@ export function KalenderInteraktiv({
               </div>
             )}
 
-            {/* Hover-indikator på tom slot */}
             {hoverSlot?.col === colIdx && (
               <div
                 className="pointer-events-none absolute left-0 right-0 z-20 flex items-center gap-1.5 px-2"
@@ -199,7 +199,6 @@ export function KalenderInteraktiv({
               </div>
             )}
 
-            {/* Events */}
             {eventsPerDag[colIdx].map((ev, j) => (
               <EventCard
                 key={j}
@@ -210,6 +209,56 @@ export function KalenderInteraktiv({
             ))}
           </div>
         ))}
+      </div>
+
+      {/* Mobil: dagsliste */}
+      <div className="divide-y divide-border md:hidden">
+        {dager.map((dag, colIdx) => {
+          const dagEvents = eventsPerDag[colIdx];
+          const erIdag = dag.toDateString() === new Date().toDateString();
+          return (
+            <div key={colIdx} className="px-4 py-4">
+              <div className="mb-2 flex items-center gap-2">
+                <span
+                  className={`font-mono text-xs font-semibold uppercase tracking-wide ${
+                    erIdag ? "text-primary" : "text-muted-foreground"
+                  }`}
+                >
+                  {DAG_NAVN[colIdx]}
+                </span>
+                <span
+                  className={`font-mono text-lg font-medium ${
+                    erIdag ? "text-primary" : "text-foreground"
+                  }`}
+                >
+                  {dag.getDate()}.
+                </span>
+                {erIdag && (
+                  <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-primary">
+                    I dag
+                  </span>
+                )}
+              </div>
+              {dagEvents.length === 0 ? (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedSlot({ col: colIdx, dato: dag, hour: 9, min: 0 })
+                  }
+                  className="w-full rounded-lg border border-dashed border-border bg-secondary/30 px-4 py-3 text-center text-xs text-muted-foreground hover:border-primary/40 hover:bg-primary/5"
+                >
+                  + Legg til økt
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  {dagEvents.map((ev, j) => (
+                    <MobileEventCard key={j} ev={ev} />
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* Slot-modal */}
@@ -315,6 +364,37 @@ function EventCard({
     </div>
   );
 
+  return inner;
+}
+
+// ── Mobil event-kort (liste-layout) ──────────────────────────────────────
+
+function MobileEventCard({ ev }: { ev: KalenderEvent }) {
+  const toneClass = (ev.tier ? TIER_COLOR[ev.tier] : null) ?? TONE_CLASS[ev.tone] ?? TONE_CLASS.coach;
+
+  const inner = (
+    <div className={`rounded-lg px-4 py-3 text-foreground ${toneClass}`}>
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <span className="text-sm font-semibold">{ev.title}</span>
+          <div className="mt-0.5 flex items-center gap-2 font-mono text-[11px] opacity-75">
+            <span>{ev.meta}</span>
+            {ev.durationMin && <span>· {ev.durationMin} min</span>}
+            {ev.drillCount != null && ev.drillCount > 0 && (
+              <span>· {ev.drillCount} drills</span>
+            )}
+          </div>
+        </div>
+        <span
+          className={`mt-1 h-2 w-2 shrink-0 rounded-full ${STATUS_DOT[ev.status]}`}
+        />
+      </div>
+    </div>
+  );
+
+  if (ev.sessionId) {
+    return <Link href={`/portal/tren/${ev.sessionId}`}>{inner}</Link>;
+  }
   return inner;
 }
 

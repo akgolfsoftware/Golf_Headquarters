@@ -333,8 +333,9 @@ function Chip({
 function Table({ rows }: { rows: Rad[] }) {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-card">
+      {/* Desktop tabell-header */}
       <div
-        className="grid items-center gap-4 border-b border-border bg-secondary px-6 py-4 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground"
+        className="hidden sm:grid items-center gap-4 border-b border-border bg-secondary px-6 py-4 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground"
         style={{ gridTemplateColumns: "56px 1.6fr 70px 100px 80px 130px 50px" }}
       >
         <div className="inline-flex cursor-pointer items-center gap-1 text-foreground">
@@ -348,9 +349,18 @@ function Table({ rows }: { rows: Rad[] }) {
         <div>Badges</div>
         <div />
       </div>
-      {rows.map((r) => (
-        <RowEl key={r.id} r={r} />
-      ))}
+      {/* Desktop rader */}
+      <div className="hidden sm:block">
+        {rows.map((r) => (
+          <RowEl key={r.id} r={r} />
+        ))}
+      </div>
+      {/* Mobil kort-liste */}
+      <div className="divide-y divide-border sm:hidden">
+        {rows.map((r) => (
+          <MobileRow key={r.id} r={r} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -430,6 +440,56 @@ function RowEl({ r }: { r: Rad }) {
         <ArrowRight className="h-4 w-4" />
       </Link>
     </div>
+  );
+}
+
+function MobileRow({ r }: { r: Rad }) {
+  const medalColor =
+    r.medal === "gold"
+      ? "text-primary"
+      : r.medal === "silver"
+        ? "text-muted-foreground"
+        : r.medal === "bronze"
+          ? "text-accent-foreground"
+          : "";
+  return (
+    <Link
+      href={`/portal/coach/${r.id}`}
+      className={`flex items-center gap-4 px-4 py-4 transition-colors ${
+        r.me ? "bg-accent/20" : "hover:bg-secondary"
+      }`}
+    >
+      <div className="flex items-center gap-1 font-mono text-sm font-medium tabular-nums text-muted-foreground">
+        {r.rank}
+        {r.medal && (
+          <Trophy className={`h-4 w-4 ${medalColor}`} strokeWidth={1.5} />
+        )}
+      </div>
+      <div
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-full font-display text-sm font-semibold text-card"
+        style={{ background: r.avatarBg }}
+      >
+        {r.initials}
+      </div>
+      <div className="min-w-0 flex-1">
+        <strong className="block truncate text-sm font-semibold text-foreground">
+          {r.name}
+          {r.me && (
+            <span className="ml-2 inline-block rounded-full bg-accent px-2 py-0.5 align-middle font-mono text-[10px] font-bold uppercase tracking-wider text-accent-foreground">
+              Deg
+            </span>
+          )}
+        </strong>
+        <div className="mt-0.5 flex items-center gap-2 font-mono text-xs text-muted-foreground">
+          <span>HCP {r.hcp}</span>
+          <span className={`font-medium ${(r.sg ?? 0) >= 0 ? "text-primary" : "text-destructive"}`}>
+            SG {fmtSg(r.sg)}
+          </span>
+          <span>{r.sessions} runder</span>
+        </div>
+      </div>
+      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+    </Link>
   );
 }
 

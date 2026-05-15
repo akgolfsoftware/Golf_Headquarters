@@ -229,7 +229,7 @@ export default async function TrackManPage() {
           </div>
 
           {/* Club grid */}
-          <div className="grid gap-1.5" style={{ gridTemplateColumns: "repeat(14, minmax(0, 1fr))" }}>
+          <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-2 sm:grid sm:pb-0" style={{ gridTemplateColumns: "repeat(14, minmax(0, 1fr))" }}>
             {CLUBS.map((club) => (
               <BagClub key={club.name} club={club} />
             ))}
@@ -396,7 +396,7 @@ export default async function TrackManPage() {
 
             {/* Full session table */}
             <section className="overflow-hidden rounded-lg border border-border bg-card">
-              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border px-6 py-5">
+              <div className="space-y-2 border-b border-border px-4 py-4 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                 <div>
                   <div className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
                     Økt-data · 10. mai 2026 · 19:42 · 52 min · 696 slag
@@ -633,7 +633,7 @@ function BagClub({ club }: { club: Club }) {
   const isActive = club.active;
   return (
     <div
-      className={`relative flex cursor-pointer flex-col items-center gap-0.5 rounded-[9px] border px-1 pb-2 pt-3 text-center transition-all ${
+      className={`relative flex shrink-0 w-16 sm:w-auto cursor-pointer flex-col items-center gap-0.5 rounded-[9px] border px-1 pb-2 pt-3 text-center transition-all ${
         isActive
           ? "border-primary bg-primary shadow-lg shadow-primary/20"
           : "border-border bg-secondary hover:-translate-y-0.5 hover:border-muted-foreground/40 hover:shadow-md"

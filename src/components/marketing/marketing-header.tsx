@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
+import { MobileMenu } from "./mobile-menu";
 
 const NAV = [
   { href: "/coaching", label: "Coaching" },
@@ -12,10 +13,13 @@ const NAV = [
 export function MarketingHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
-          <AkGolfLogo width={56} />
-        </Link>
+      <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="flex items-center gap-2">
+          <MobileMenu />
+          <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
+            <AkGolfLogo width={56} />
+          </Link>
+        </div>
 
         <nav className="hidden items-center gap-8 sm:flex">
           {NAV.map((n) => (
@@ -32,7 +36,7 @@ export function MarketingHeader() {
         <div className="flex items-center gap-4">
           <Link
             href="/auth/login"
-            className="hidden text-sm text-muted-foreground hover:text-foreground active:text-foreground/80 focus-visible:underline focus-visible:outline-none sm:block"
+            className="text-sm text-muted-foreground hover:text-foreground active:text-foreground/80 focus-visible:underline focus-visible:outline-none"
           >
             Logg inn
           </Link>

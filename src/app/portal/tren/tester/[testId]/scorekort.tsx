@@ -201,92 +201,96 @@ export function Scorekort({
 
       {/* Scorekort-tabell */}
       <div className="overflow-hidden rounded-lg border border-border bg-card">
-        <div
-          className="hidden border-b border-border bg-muted/40 px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid"
-          style={{
-            gridTemplateColumns: `40px 1.5fr ${protocol.inputFields.map(() => "1fr").join(" ")}`,
-            gap: "8px",
-          }}
-        >
-          <div>#</div>
-          <div>Slag</div>
-          {protocol.inputFields.map((f) => (
-            <div key={f.key}>
-              {f.label} ({f.unit})
-            </div>
-          ))}
-        </div>
+        <div className="overflow-x-auto">
+          <div
+            className="hidden border-b border-border bg-muted/40 px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid"
+            style={{
+              gridTemplateColumns: `40px 1.5fr ${protocol.inputFields.map(() => "1fr").join(" ")}`,
+              gap: "8px",
+              minWidth: protocol.inputFields.length > 2 ? `${200 + protocol.inputFields.length * 100}px` : undefined,
+            }}
+          >
+            <div>#</div>
+            <div>Slag</div>
+            {protocol.inputFields.map((f) => (
+              <div key={f.key}>
+                {f.label} ({f.unit})
+              </div>
+            ))}
+          </div>
 
-        <div className="divide-y divide-border/60">
-          {protocol.shots.map((shot) => {
-            const showCategoryHeader = categoryHeaderAt.has(shot.nr);
+          <div className="divide-y divide-border/60">
+            {protocol.shots.map((shot) => {
+              const showCategoryHeader = categoryHeaderAt.has(shot.nr);
 
-            return (
-              <div key={shot.nr}>
-                {showCategoryHeader && (
-                  <div className="bg-muted/20 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                    {shot.category}
-                  </div>
-                )}
-                <div
-                  className="grid items-center gap-2 px-4 py-2 sm:gap-3"
-                  style={{
-                    gridTemplateColumns: `40px 1.5fr ${protocol.inputFields.map(() => "1fr").join(" ")}`,
-                  }}
-                >
-                  <span className="font-mono text-xs tabular-nums text-muted-foreground">
-                    {shot.nr}
-                  </span>
-                  <div className="min-w-0">
-                    <span className="text-sm text-foreground">{shot.label}</span>
-                    {shot.target !== undefined && (
-                      <span className="ml-2 font-mono text-[10px] text-muted-foreground">
-                        mål: {shot.target}
-                        {protocol.inputFields[0]?.unit === "ja/nei" ? "" : "m"}
-                      </span>
-                    )}
-                  </div>
-                  {protocol.inputFields.map((field) => (
-                    <div key={field.key}>
-                      {field.unit === "ja/nei" ? (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleChange(
-                              shot.nr,
-                              field.key,
-                              String(
-                                (values[shot.nr]?.[field.key] ?? 0) === 1
-                                  ? 0
-                                  : 1,
-                              ),
-                            )
-                          }
-                          className={`flex h-9 w-9 items-center justify-center rounded-md border text-sm font-semibold transition-colors ${
-                            values[shot.nr]?.[field.key] === 1
-                              ? "border-primary bg-primary/10 text-primary"
-                              : "border-border bg-background text-muted-foreground hover:border-primary/40"
-                          }`}
-                        >
-                          {values[shot.nr]?.[field.key] === 1 ? "OK" : "---"}
-                        </button>
-                      ) : (
-                        <input
-                          type="text"
-                          inputMode="decimal"
-                          placeholder={field.unit}
-                          className="h-9 w-full rounded-md border border-border bg-background px-3 font-mono text-sm tabular-nums outline-none transition-colors focus:border-primary"
-                          onChange={(e) =>
-                            handleChange(shot.nr, field.key, e.target.value)
-                          }
-                        />
+              return (
+                <div key={shot.nr}>
+                  {showCategoryHeader && (
+                    <div className="bg-muted/20 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                      {shot.category}
+                    </div>
+                  )}
+                  <div
+                    className="grid items-center gap-2 px-4 py-2 sm:gap-3"
+                    style={{
+                      gridTemplateColumns: `40px 1.5fr ${protocol.inputFields.map(() => "1fr").join(" ")}`,
+                      minWidth: protocol.inputFields.length > 2 ? `${200 + protocol.inputFields.length * 100}px` : undefined,
+                    }}
+                  >
+                    <span className="font-mono text-xs tabular-nums text-muted-foreground">
+                      {shot.nr}
+                    </span>
+                    <div className="min-w-0">
+                      <span className="text-sm text-foreground">{shot.label}</span>
+                      {shot.target !== undefined && (
+                        <span className="ml-2 font-mono text-[10px] text-muted-foreground">
+                          mål: {shot.target}
+                          {protocol.inputFields[0]?.unit === "ja/nei" ? "" : "m"}
+                        </span>
                       )}
                     </div>
-                  ))}
+                    {protocol.inputFields.map((field) => (
+                      <div key={field.key}>
+                        {field.unit === "ja/nei" ? (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleChange(
+                                shot.nr,
+                                field.key,
+                                String(
+                                  (values[shot.nr]?.[field.key] ?? 0) === 1
+                                    ? 0
+                                    : 1,
+                                ),
+                              )
+                            }
+                            className={`flex h-9 w-9 items-center justify-center rounded-md border text-sm font-semibold transition-colors ${
+                              values[shot.nr]?.[field.key] === 1
+                                ? "border-primary bg-primary/10 text-primary"
+                                : "border-border bg-background text-muted-foreground hover:border-primary/40"
+                            }`}
+                          >
+                            {values[shot.nr]?.[field.key] === 1 ? "OK" : "---"}
+                          </button>
+                        ) : (
+                          <input
+                            type="text"
+                            inputMode="decimal"
+                            placeholder={field.unit}
+                            className="h-9 w-full min-w-16 rounded-md border border-border bg-background px-3 font-mono text-sm tabular-nums outline-none transition-colors focus:border-primary"
+                            onChange={(e) =>
+                              handleChange(shot.nr, field.key, e.target.value)
+                            }
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 

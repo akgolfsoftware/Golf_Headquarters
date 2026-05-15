@@ -272,7 +272,7 @@ export default async function KalenderPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-[1400px] px-6 py-8">
+      <div className="mx-auto max-w-[1400px] py-2 sm:px-6 sm:py-8">
         {/* Header */}
         <div className="mb-6">
           <PageHeader
@@ -348,36 +348,46 @@ export default async function KalenderPage({
         )}
 
         {/* Toolbar */}
-        <div className="mb-4 flex flex-wrap items-center gap-4">
-          {/* Uke-navigasjon */}
-          <div className="inline-flex gap-1 rounded-md border border-border bg-card p-1">
+        <div className="mb-4 space-y-2 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
+          {/* Uke-navigasjon + Ny økt (same row on mobile) */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="inline-flex gap-1 rounded-md border border-border bg-card p-1">
+              <Link
+                href={`/portal/tren/kalender?uke=${fmtParam(forrigeUke)}`}
+                className="inline-flex items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium text-foreground hover:bg-secondary"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                <span className="hidden sm:inline">Forrige uke</span>
+              </Link>
+              <Link
+                href="/portal/tren/kalender"
+                className="rounded-sm bg-foreground px-2 py-2 text-xs font-medium text-background"
+              >
+                I dag
+              </Link>
+              <Link
+                href={`/portal/tren/kalender?uke=${fmtParam(nesteUke)}`}
+                className="inline-flex items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium text-foreground hover:bg-secondary"
+              >
+                <span className="hidden sm:inline">Neste uke</span>
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+
             <Link
-              href={`/portal/tren/kalender?uke=${fmtParam(forrigeUke)}`}
-              className="inline-flex items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium text-foreground hover:bg-secondary"
+              href="/portal/ny-okt"
+              className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90 sm:hidden"
             >
-              <ChevronLeft className="h-4 w-4" />
-              Forrige uke
-            </Link>
-            <Link
-              href="/portal/tren/kalender"
-              className="rounded-sm bg-foreground px-2 py-2 text-xs font-medium text-background"
-            >
-              I dag
-            </Link>
-            <Link
-              href={`/portal/tren/kalender?uke=${fmtParam(nesteUke)}`}
-              className="inline-flex items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium text-foreground hover:bg-secondary"
-            >
-              Neste uke
-              <ChevronRight className="h-4 w-4" />
+              <Plus className="h-4 w-4" />
+              Ny økt
             </Link>
           </div>
 
-          {/* Filter-piller */}
-          <div className="flex flex-wrap gap-2">
+          {/* Filter-piller (scrollbar på mobil) */}
+          <div className="flex gap-2 overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
             <Link
               href={filterLink("alle")}
-              className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
+              className={`shrink-0 rounded-full px-4 py-1 text-xs font-medium transition-colors ${
                 aktivFilter === "alle"
                   ? "bg-foreground text-background"
                   : "border border-border bg-card text-foreground hover:bg-secondary"
@@ -389,8 +399,7 @@ export default async function KalenderPage({
               p.disabled ? (
                 <span
                   key={p.key}
-                  className="rounded-full border border-border bg-card px-4 py-1 text-xs font-medium text-foreground opacity-40"
-                  title=""
+                  className="shrink-0 rounded-full border border-border bg-card px-4 py-1 text-xs font-medium text-foreground opacity-40"
                 >
                   {p.label}
                 </span>
@@ -398,7 +407,7 @@ export default async function KalenderPage({
                 <Link
                   key={p.key}
                   href={filterLink(p.key)}
-                  className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
+                  className={`shrink-0 rounded-full px-4 py-1 text-xs font-medium transition-colors ${
                     aktivFilter === p.key
                       ? "bg-foreground text-background"
                       : "border border-border bg-card text-foreground hover:bg-secondary"
@@ -410,12 +419,12 @@ export default async function KalenderPage({
             )}
           </div>
 
-          <span className="flex-1" />
+          <span className="hidden sm:block sm:flex-1" />
 
-          {/* Ny økt */}
+          {/* Ny økt (desktop) */}
           <Link
             href="/portal/ny-okt"
-            className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90"
+            className="hidden sm:inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90"
           >
             <Plus className="h-4 w-4" />
             Ny økt
@@ -424,8 +433,8 @@ export default async function KalenderPage({
 
         {/* Kalender — full bredde */}
         <div className="overflow-hidden rounded-xl border border-border bg-card">
-          {/* Dag-header */}
-          <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-border bg-secondary">
+          {/* Dag-header (kun desktop) */}
+          <div className="hidden md:grid grid-cols-[60px_repeat(7,1fr)] border-b border-border bg-secondary">
             <div />
             {dager.map((d, i) => {
               const erIdag = d.toDateString() === new Date().toDateString();

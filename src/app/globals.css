@@ -180,6 +180,15 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Selection */
 ::selection {
   color: #0a1f17;
