@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { opprettSeasonPlan, opprettPeriodBlock, slettPeriodBlock } from "./actions";
 import type { LPhase } from "@/generated/prisma/client";
+import { PeriodeConstraintBadges } from "@/components/portal/periode-constraint-badges";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -420,6 +421,9 @@ function PeriodListe({
               {b.focus && (
                 <p className="mt-0.5 truncate text-xs text-muted-foreground">{b.focus}</p>
               )}
+              <div className="mt-1">
+                <PeriodeConstraintBadges lPhase={b.lPhase} compact />
+              </div>
             </div>
             {b.weeklyVolMin && (
               <span className="flex-none font-mono text-xs tabular-nums text-muted-foreground">

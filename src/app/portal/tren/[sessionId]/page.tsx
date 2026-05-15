@@ -423,7 +423,7 @@ function DrillBlock({
   pillTier: PyramidArea;
   name: string;
   repsSets: string;
-  lPhase: keyof typeof L_PHASE_LABEL;
+  lPhase: keyof typeof L_PHASE_LABEL | null;
   csTarget: number | null;
   description: string | null;
   notes: string | null;
@@ -445,7 +445,7 @@ function DrillBlock({
             {name}
           </div>
           <div className="mt-0.5 font-mono text-[11px] text-muted-foreground">
-            L-fase {L_PHASE_LABEL[lPhase]}
+            {lPhase ? `L-fase ${L_PHASE_LABEL[lPhase]}` : ""}
           </div>
         </div>
         {fullfort && (
@@ -461,7 +461,7 @@ function DrillBlock({
           label="CS-mål"
           value={csTarget != null ? String(csTarget) : "—"}
         />
-        <DrillFact label="L-fase" value={L_PHASE_LABEL[lPhase]} />
+        <DrillFact label="L-fase" value={lPhase ? L_PHASE_LABEL[lPhase] : "—"} />
         <DrillFact
           label="Fokus"
           value={

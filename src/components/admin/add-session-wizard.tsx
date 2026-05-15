@@ -12,6 +12,7 @@ import { Plus, X, Search } from "lucide-react";
 import type {
   ExerciseDefinition,
   LPhase,
+  PressureLevel,
   PyramidArea,
   SessionEnvironment,
   SkillArea,
@@ -28,6 +29,8 @@ import {
   SKILL_AREA_LABEL,
   SKILL_AREA_REKKEFOLGE,
 } from "@/lib/labels/taxonomy";
+import { PR_PRESS } from "@/lib/taxonomy";
+import { PyramideFordeling } from "@/components/portal/pyramide-fordeling";
 import {
   leggTilOkt,
   oppdaterOkt,
@@ -63,7 +66,17 @@ type Props = {
   onCancel?: () => void;
 };
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 9;
+
+const PRESSURE_LABEL: Record<PressureLevel, string> = {
+  PR1: "Ingen press",
+  PR2: "Lav press",
+  PR3: "Moderat press",
+  PR4: "Hoy press",
+  PR5: "Maks press",
+};
+
+const PRESSURE_ORDER: PressureLevel[] = ["PR1", "PR2", "PR3", "PR4", "PR5"];
 
 const PYR_TIL_SKILL_HINT: Record<PyramidArea, SkillArea | null> = {
   FYS: null,
@@ -106,7 +119,10 @@ export function AddSessionWizard({
   // Steg 5
   const [lPhase, setLPhase] = useState<LPhase>("GRUNN");
 
-  // Steg 6 — drill-utvalg
+  // Steg 6 — pressnivå
+  const [pressureLevel, setPressureLevel] = useState<PressureLevel>("PR1");
+
+  // Steg 7 — drill-utvalg
   const [exercises, setExercises] = useState<ExerciseDefinition[]>(exercisesInit);
   const [valgteDrills, setValgteDrills] = useState<DrillValg[]>([]);
   const [search, setSearch] = useState("");
@@ -116,7 +132,7 @@ export function AddSessionWizard({
     const term = search.trim().toLowerCase();
     return exercises.filter((e) => {
       if (e.pyramidArea !== pyramidArea) return false;
-      if (e.lPhase !== lPhase) return false;
+      if (e.lPhase !== null && e.lPhase !== lPhase) return false;
       if (term && !e.name.toLowerCase().includes(term)) return false;
       return true;
     });
@@ -157,7 +173,7 @@ export function AddSessionWizard({
 
   function neste() {
     setError(null);
-    if (step === 6 && valgteDrills.length === 0) {
+    if (step === 7 && valgteDrills.length === 0) {
       setError("Velg minst én drill (eller opprett en ny).");
       return;
     }
@@ -373,6 +389,41 @@ export function AddSessionWizard({
 
       {step === 6 && (
         <Bolk
+          tittel="Pressniva"
+          ingress="Hvor mye press skal okten ha?"
+        >
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+            {PRESSURE_ORDER.map((p) => {
+              const aktiv = p === pressureLevel;
+              const info = PR_PRESS.find((pr) => pr.kode === p);
+              return (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setPressureLevel(p)}
+                  className={`rounded-md border p-4 text-left transition-colors ${
+                    aktiv
+                      ? "border-primary bg-primary/5"
+                      : "border-input bg-card hover:border-border"
+                  }`}
+                >
+                  <div className={`font-display text-base ${aktiv ? "font-semibold text-primary" : "text-foreground"}`}>
+                    {PRESSURE_LABEL[p]}
+                  </div>
+                  {info && (
+                    <div className="mt-1 text-[11px] leading-[1.3] text-muted-foreground">
+                      {info.beskrivelse}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </Bolk>
+      )}
+
+      {step === 7 && (
+        <Bolk
           tittel="Velg drills"
           ingress={`${valgteDrills.length} valgt · filtrert på ${PYRAMIDE_LABEL[pyramidArea]} · ${LPHASE_LABEL[lPhase]}`}
         >
@@ -427,7 +478,7 @@ export function AddSessionWizard({
                   >
                     <div className="font-medium text-foreground">{e.name}</div>
                     <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                      {LPHASE_LABEL[e.lPhase]}
+                      {e.lPhase ? LPHASE_LABEL[e.lPhase] : "Alle faser"}
                       {e.defaultRepsSets ? ` · ${e.defaultRepsSets}` : ""}
                     </div>
                   </button>
@@ -438,10 +489,10 @@ export function AddSessionWizard({
         </Bolk>
       )}
 
-      {step === 7 && (
+      {step === 8 && (
         <Bolk
           tittel="Reps per drill"
-          ingress="Juster sett, repetisjoner og CS-mål per drill."
+          ingress="Juster sett, repetisjoner og CS-maal per drill."
         >
           {valgteDrills.length === 0 ? (
             <p className="text-sm text-muted-foreground">Ingen drills valgt.</p>
@@ -515,8 +566,8 @@ export function AddSessionWizard({
         </Bolk>
       )}
 
-      {step === 8 && (
-        <Bolk tittel="Bekreft" ingress="Sjekk at alt stemmer før du lagrer.">
+      {step === 9 && (
+        <Bolk tittel="Bekreft" ingress="Sjekk at alt stemmer for du lagrer.">
           <dl className="space-y-4 rounded-lg border border-border bg-card p-6 text-sm">
             <Rad label="Dato og tid">
               {new Date(`${dato}T${tid}:00`).toLocaleString("nb-NO", {
@@ -526,11 +577,23 @@ export function AddSessionWizard({
             </Rad>
             <Rad label="Varighet">{varighet} min</Rad>
             <Rad label="Pyramide">{PYRAMIDE_LABEL[pyramidArea]}</Rad>
-            <Rad label="Område">{SKILL_AREA_LABEL[skillArea]}</Rad>
-            <Rad label="Miljø">{ENVIRONMENT_LABEL[environment]}</Rad>
-            <Rad label="Læringsfase">{LPHASE_LABEL[lPhase]}</Rad>
+            <Rad label="Omraade">{SKILL_AREA_LABEL[skillArea]}</Rad>
+            <Rad label="Miljo">{ENVIRONMENT_LABEL[environment]}</Rad>
+            <Rad label="Laeringsfase">{LPHASE_LABEL[lPhase]}</Rad>
+            <Rad label="Pressniva">{PRESSURE_LABEL[pressureLevel]}</Rad>
             <Rad label="Drills">{valgteDrills.length} valgt</Rad>
           </dl>
+
+          {valgteDrills.length > 0 && (
+            <div className="rounded-lg border border-border bg-card p-4">
+              <PyramideFordeling
+                drills={valgteDrills.map((d) => {
+                  const ex = exercises.find((e) => e.id === d.exerciseId);
+                  return { pyramidArea: ex?.pyramidArea ?? pyramidArea, durationMin: null };
+                })}
+              />
+            </div>
+          )}
         </Bolk>
       )}
 

@@ -81,6 +81,14 @@ enum SubscriptionStatus {
   TRIALING
 }
 
+enum PressureLevel {
+  PR1
+  PR2
+  PR3
+  PR4
+  PR5
+}
+
 enum PlanStatus {
   DRAFT           // Coach jobber på planen
   PENDING_PLAYER  // Sendt til spiller for godkjenning
@@ -192,6 +200,9 @@ model User {
 
   // Talent-modul (M13) — kun for spillere i talent-tracking
   talentTracking TalentTracking?
+
+  // Drill-opprettelse (taxonomy v4)
+  createdExercises ExerciseDefinition[] @relation("ExerciseCreator")
 
   @@map("users")
 }
@@ -481,10 +492,11 @@ model TrainingPlanSession {
   pyramidArea PyramidArea
   skillArea   SkillArea?
   environment SessionEnvironment?
-  lPhase      LPhase?
-  status      SessionStatus @default(PLANNED)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  lPhase        LPhase?
+  pressureLevel PressureLevel?
+  status        SessionStatus @default(PLANNED)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   plan   TrainingPlan            @relation(fields: [planId], references: [id], onDelete: Cascade)
   drills SessionDrill[]
@@ -500,12 +512,17 @@ model ExerciseDefinition {
   description     String?
   videoUrl        String?
   pyramidArea     PyramidArea
-  lPhase          LPhase
+  lPhase          LPhase?
   defaultRepsSets String?
   csMin           Int?
   csMax           Int?
+  durationMin     Int?
+  createdBy       String?
+  parametersJson  Json?
   createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
+  createdByUser User?          @relation("ExerciseCreator", fields: [createdBy], references: [id], onDelete: SetNull)
   sessionDrills SessionDrill[]
 
   @@index([pyramidArea])

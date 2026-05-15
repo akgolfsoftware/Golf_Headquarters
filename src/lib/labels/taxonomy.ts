@@ -6,6 +6,7 @@ import type {
   SkillArea,
   SessionEnvironment,
   LPhase,
+  PressureLevel,
 } from "@/generated/prisma/client";
 
 export const PYRAMIDE_LABEL: Record<PyramidArea, string> = {
@@ -72,4 +73,28 @@ export const LPHASE_REKKEFOLGE: LPhase[] = [
   "GRUNN",
   "SPESIAL",
   "TURNERING",
+];
+
+export const PRESSURE_LABEL: Record<PressureLevel, string> = {
+  PR1: "Ingen press",
+  PR2: "Lav press",
+  PR3: "Moderat press",
+  PR4: "Hoy press",
+  PR5: "Maks press",
+};
+
+export const PRESSURE_BESKRIVELSE: Record<PressureLevel, string> = {
+  PR1: "Fritt utforskende, ingen konsekvens",
+  PR2: "Enkle mal, liten konsekvens",
+  PR3: "Tydelige mal, moderat konsekvens",
+  PR4: "Krevende mal, merkbar konsekvens",
+  PR5: "Simulert turneringssituasjon, full konsekvens",
+};
+
+export const PRESSURE_REKKEFOLGE: PressureLevel[] = [
+  "PR1",
+  "PR2",
+  "PR3",
+  "PR4",
+  "PR5",
 ];
