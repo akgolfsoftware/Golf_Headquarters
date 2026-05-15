@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Plus, ChevronDown } from "lucide-react";
 import type { Tier } from "@/generated/prisma/client";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 import { FEATURES } from "@/lib/features";
@@ -11,23 +11,35 @@ import { FEATURES } from "@/lib/features";
 // Types
 // ---------------------------------------------------------------------------
 
+type NavChild = {
+  href: string;
+  label: string;
+};
+
 type NavItem = {
   href: string;
   label: string;
   matchPrefixes?: string[];
   badge?: boolean;
+  children?: NavChild[];
 };
 
 // ---------------------------------------------------------------------------
-// Navigation — 5 hoved-punkter + Talent (betinget)
+// Navigation
 // ---------------------------------------------------------------------------
 
 const MAIN_ITEMS: NavItem[] = [
-  { href: "/portal",            label: "Hjem" },
+  { href: "/portal", label: "Hjem" },
   {
-    href: "/portal/tren",
-    label: "Tren",
+    href: "/portal/tren/kalender",
+    label: "Planlegging",
     matchPrefixes: ["/portal/tren", "/portal/ny-okt"],
+    children: [
+      { href: "/portal/tren/kalender", label: "Kalender" },
+      { href: "/portal/tren/aarsplan", label: "Årsplan" },
+      { href: "/portal/tren", label: "Treningsplanlegger" },
+      { href: "/portal/tren/turneringer", label: "Turneringsplanlegger" },
+    ],
   },
   {
     href: "/portal/statistikk",
@@ -58,7 +70,7 @@ const TALENT_ITEM: NavItem = {
 };
 
 // ---------------------------------------------------------------------------
-// Active-link helper
+// Active-link helpers
 // ---------------------------------------------------------------------------
 
 function isActive(path: string, item: NavItem): boolean {
@@ -67,6 +79,11 @@ function isActive(path: string, item: NavItem): boolean {
   return prefixes.some(
     (p) => path === p || path.startsWith(p + "/"),
   );
+}
+
+function isChildActive(path: string, child: NavChild): boolean {
+  if (child.href === "/portal/tren") return path === "/portal/tren";
+  return path === child.href || path.startsWith(child.href + "/");
 }
 
 // ---------------------------------------------------------------------------
@@ -125,27 +142,60 @@ export function PortalSidebar({
           {items.map((item) => {
             const aktiv = isActive(path, item);
             const visBadge = item.badge && varslerUlest > 0;
+            const hasChildren = item.children && item.children.length > 0;
+            const expanded = hasChildren && aktiv;
+
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={aktiv ? "page" : undefined}
-                className={`flex items-center justify-between rounded-md px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
-                  aktiv
-                    ? "bg-white/10 font-semibold text-white"
-                    : "text-white/70 hover:bg-white/5 hover:text-white"
-                }`}
-              >
-                <span>{item.label}</span>
-                {visBadge && (
-                  <span
-                    aria-label={`${varslerUlest} uleste varsler`}
-                    className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 font-mono text-[10px] font-semibold text-destructive-foreground"
-                  >
-                    {varslerUlest}
-                  </span>
+              <div key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={aktiv && !hasChildren ? "page" : undefined}
+                  className={`flex items-center justify-between rounded-md px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
+                    aktiv
+                      ? "bg-white/10 font-semibold text-white"
+                      : "text-white/70 hover:bg-white/5 hover:text-white"
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {visBadge && (
+                    <span
+                      aria-label={`${varslerUlest} uleste varsler`}
+                      className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 font-mono text-[10px] font-semibold text-destructive-foreground"
+                    >
+                      {varslerUlest}
+                    </span>
+                  )}
+                  {hasChildren && (
+                    <ChevronDown
+                      className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""} ${aktiv ? "text-white/60" : "text-white/40"}`}
+                      strokeWidth={2}
+                    />
+                  )}
+                </Link>
+
+                {/* Sub-items */}
+                {expanded && item.children && (
+                  <div className="mt-0.5 space-y-0.5 pl-4">
+                    {item.children.map((child) => {
+                      const childAktiv = isChildActive(path, child);
+                      return (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          aria-current={childAktiv ? "page" : undefined}
+                          className={`block rounded-md px-4 py-2 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
+                            childAktiv
+                              ? "font-medium text-white"
+                              : "text-white/50 hover:text-white/80"
+                          }`}
+                        >
+                          {child.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
                 )}
-              </Link>
+              </div>
             );
           })}
         </div>
