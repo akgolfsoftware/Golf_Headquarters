@@ -35,9 +35,9 @@ export type SesonPlanOption = { id: string; year: number; name: string | null };
 // ---------------------------------------------------------------------------
 
 const PRIORITY_LABEL: Record<TurnPriority, string> = {
-  MAJOR: "Major",
-  NORMAL: "Normal",
-  LOCAL: "Lokal",
+  MAJOR: "Trening",
+  NORMAL: "Utvikling",
+  LOCAL: "Prestasjon",
 };
 
 const PRIORITY_CLASS: Record<TurnPriority, string> = {
@@ -244,9 +244,9 @@ function LeggTilModal({
                 onChange={(e) => setPriority(e.target.value as TurnPriority)}
                 className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               >
-                <option value="MAJOR">Major (A-prioritet)</option>
-                <option value="NORMAL">Normal</option>
-                <option value="LOCAL">Lokal</option>
+                <option value="MAJOR">Trening</option>
+                <option value="NORMAL">Utvikling</option>
+                <option value="LOCAL">Prestasjon</option>
               </select>
             </label>
             <label className="block">

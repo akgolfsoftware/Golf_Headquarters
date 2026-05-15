@@ -201,9 +201,10 @@ export default function Hjem() {
           />
           <FacilityCard
             tag="Utendørs · Fredrikstad"
-            title="GFGK Bossum"
+            title="Gamle Fredrikstad Golfklubb"
             description="18-hulls bane, range og kort-spillsområde. Hjemmebanen for AK Golf Academy fra mai til oktober."
-            cta="Se GFGK Bossum"
+            cta="Les mer"
+            href="https://www.gfgk.no"
           />
         </div>
 
@@ -212,10 +213,18 @@ export default function Hjem() {
             Samarbeid og partnere
           </span>
           <div className="flex flex-wrap items-center gap-x-10 gap-y-3 text-[14px] font-medium text-foreground">
-            <Partner label="WANG Toppidrett Fredrikstad" />
-            <Partner label="Mulligan Indoor Golf" />
-            <Partner label="Skarpnord Golf Products" />
-            <Partner label="GFGK Bossum" />
+            <Partner
+              label="WANG Toppidrett Fredrikstad"
+              logoSrc=""
+            />
+            <Partner
+              label="Mulligan Indoor Golf"
+              logoSrc=""
+            />
+            <Partner
+              label="Gamle Fredrikstad Golfklubb"
+              logoSrc=""
+            />
           </div>
         </div>
       </section>
@@ -395,7 +404,18 @@ function FacilityCard({
   );
 }
 
-function Partner({ label }: { label: string }) {
+function Partner({ label, logoSrc }: { label: string; logoSrc?: string }) {
+  if (logoSrc) {
+    return (
+      <Image
+        src={logoSrc}
+        alt={label}
+        width={120}
+        height={32}
+        className="h-8 w-auto object-contain opacity-80"
+      />
+    );
+  }
   return (
     <span className="inline-flex items-center gap-2">
       <Users className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />

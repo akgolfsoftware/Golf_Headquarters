@@ -143,7 +143,7 @@ export default async function AarsplanPage() {
                               : "bg-accent/10 text-accent-foreground"
                           }`}
                         >
-                          {e.priority === "MAJOR" ? "Major" : e.priority === "LOCAL" ? "Lokal" : "Normal"}
+                          {e.priority === "MAJOR" ? "Trening" : e.priority === "LOCAL" ? "Prestasjon" : "Utvikling"}
                         </span>
                       </div>
                     );
