@@ -25,7 +25,7 @@ const BASE_SECTIONS: NavSection[] = [
     label: "Planlegge",
     items: [
       { href: "/portal/tren",             label: "Treningsplan" },
-      { href: "/portal/tren/aarsplan",    label: "Sesongplan" },
+      { href: "/portal/tren/aarsplan",    label: "Årsplan" },
       { href: "/portal/tren/turneringer", label: "Turneringer" },
       { href: "/portal/tren/kalender",    label: "Kalender" },
       { href: "/portal/booking/ny",       label: "Book økt" },

@@ -1,5 +1,5 @@
 /**
- * PlayerHQ · Trening · Sesongplan
+ * PlayerHQ · Trening · Årsplan
  *
  * Hierarkisk sesongplanlegger:
  *   Årsplan → PeriodBlokker (LPhase) → Turneringer
@@ -56,8 +56,8 @@ export default async function AarsplanPage() {
       <div className="mx-auto max-w-[1200px] px-6 py-8">
         <div className="mb-8">
           <PageHeader
-            eyebrow="PlayerHQ · Trening · Sesongplan"
-            titleLead="Sesong"
+            eyebrow="PlayerHQ · Trening · Årsplan"
+            titleLead="Årsplan"
             titleItalic={String(ar)}
             sub={
               plan
