@@ -38,6 +38,8 @@ const ALL_NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Evaluering",
     items: [
       { href: "/admin/analytics", label: "Analytics" },
+      { href: "/admin/lag-snitt", label: "Lag-snitt" },
+      { href: "/admin/kapasitet", label: "Kapasitet" },
       { href: "/admin/reports", label: "Rapporter" },
     ],
   },
@@ -64,6 +66,7 @@ const ALL_NAV_GROUPS: { label: string; items: NavItem[] }[] = [
       { href: "/admin/integrasjoner", label: "Integrasjoner" },
       { href: "/admin/settings", label: "Innstillinger" },
       { href: "/admin/settings/tilgang", label: "Tilgang & roller" },
+      { href: "/admin/tilstander", label: "Tilstander" },
     ],
   },
 ];
