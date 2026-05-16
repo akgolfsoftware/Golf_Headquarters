@@ -6,15 +6,21 @@
  * full 360-visning. Data som ennå ikke har egen Prisma-modell (SG-trend,
  * pyramide-fordeling, heatmap, milepæler) beregnes fra eksisterende rader
  * eller faller tilbake til null/tomme tilstand.
+ *
+ * Tabs: basis | plan | sesjoner | tester | trackman
  */
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
+  Activity,
   CalendarPlus,
   ClipboardList,
+  FlaskConical,
   MessageSquare,
   Pencil,
+  Target,
   Trophy,
+  Zap,
 } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -65,6 +71,11 @@ const NB_FULL = new Intl.DateTimeFormat("nb-NO", {
   day: "2-digit",
   month: "short",
 });
+const NB_LONG = new Intl.DateTimeFormat("nb-NO", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
 
 function isoWeek(date: Date): number {
   const d = new Date(
@@ -88,13 +99,29 @@ function tierLabel(tier: string): string {
   return "GRATIS";
 }
 
+const TABS = [
+  { key: "basis", label: "Basis", icon: Target },
+  { key: "plan", label: "Plan", icon: ClipboardList },
+  { key: "sesjoner", label: "Sesjoner", icon: Activity },
+  { key: "tester", label: "Tester", icon: FlaskConical },
+  { key: "trackman", label: "TrackMan", icon: Zap },
+] as const;
+
+type TabKey = (typeof TABS)[number]["key"];
+
 export default async function Profil360({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
+  const sp = await searchParams;
+  const tab: TabKey = (TABS.map((t) => t.key).includes(sp.tab as TabKey)
+    ? sp.tab
+    : "basis") as TabKey;
 
   const player = await prisma.user.findUnique({
     where: { id },
@@ -110,6 +137,10 @@ export default async function Profil360({
               title: true,
               pyramidArea: true,
               durationMin: true,
+              drills: {
+                include: { exercise: { select: { name: true, pyramidArea: true } } },
+                orderBy: { orderIndex: "asc" },
+              },
               log: {
                 select: {
                   csAchieved: true,
@@ -125,6 +156,7 @@ export default async function Profil360({
             orderBy: { scheduledAt: "desc" },
           },
         },
+        orderBy: { startDate: "desc" },
       },
       rounds: {
         orderBy: { playedAt: "desc" },
@@ -134,11 +166,11 @@ export default async function Profil360({
       testResults: {
         orderBy: { takenAt: "desc" },
         include: { test: true },
-        take: 10,
+        take: 20,
       },
       trackManSessions: {
         orderBy: { recordedAt: "desc" },
-        take: 10,
+        take: 20,
       },
       parentRelations: {
         include: {
@@ -164,22 +196,16 @@ export default async function Profil360({
       durationMin: s.durationMin,
       planName: p.name,
       planId: p.id,
+      drills: s.drills,
       log: s.log,
     }))
   );
-
-  // Siste 5 fullførte live-økter (har log = ble kjørt via LiveTapper)
-  const livecompleted = allSessions
-    .filter((s) => s.status === "COMPLETED" && s.log != null)
-    .sort((a, b) => b.scheduledAt.getTime() - a.scheduledAt.getTime())
-    .slice(0, 5);
 
   const completedSessions = allSessions.filter((s) => s.status === "COMPLETED");
   const plannedSessions = allSessions.filter(
     (s) => s.status !== "COMPLETED" && s.status !== "CANCELLED"
   );
 
-  // Økter siste 4 uker
   const now = new Date();
   const fourWeeksAgo = new Date(now);
   fourWeeksAgo.setDate(now.getDate() - 28);
@@ -187,14 +213,12 @@ export default async function Profil360({
     (s) => s.scheduledAt >= fourWeeksAgo
   );
 
-  // Mål-progresjon: andel fullført av totalt antall økter i aktive planer
   const totalPlanSessions = allSessions.length;
   const progressPct =
     totalPlanSessions > 0
       ? Math.round((completedSessions.length / totalPlanSessions) * 100)
       : 0;
 
-  // Pyramide-fordeling siste 12 uker (i minutter)
   const twelveWeeksAgo = new Date(now);
   twelveWeeksAgo.setDate(now.getDate() - 84);
   const sessions12w = completedSessions.filter(
@@ -227,7 +251,6 @@ export default async function Profil360({
     }
   }
 
-  // Donut conic-gradient stops
   const donutStops: string[] = [];
   let acc = 0;
   for (const k of PYR_KEYS) {
@@ -243,7 +266,6 @@ export default async function Profil360({
       ? `conic-gradient(${donutStops.join(", ")})`
       : "conic-gradient(hsl(var(--secondary)) 0deg 360deg)";
 
-  // Heatmap: 12 uker tilbake, 5 lag, summer min/uke
   const weeks: number[] = [];
   for (let i = 11; i >= 0; i--) {
     const d = new Date(now);
@@ -266,7 +288,6 @@ export default async function Profil360({
     const key = s.pyramidArea as PyramidArea as PyrKey;
     if (key in heatmap) heatmap[key][colIdx] += s.durationMin;
   }
-  // Levels 0-4: 0=0min, 1=<60min, 2=<120min, 3=<180min, 4=180min+
   function toLevel(min: number): number {
     if (min <= 0) return 0;
     if (min < 60) return 1;
@@ -282,7 +303,6 @@ export default async function Profil360({
     TURN: heatmap.TURN.map(toLevel),
   };
 
-  // Tidslinje — siste 8 hendelser av blandet type
   type TimelineItem = {
     when: Date;
     kind: "round" | "session" | "test" | "trackman";
@@ -318,7 +338,6 @@ export default async function Profil360({
     .sort((a, b) => b.when.getTime() - a.when.getTime())
     .slice(0, 8);
 
-  // HCP-trend: differanse mellom snitt-score første og siste halvdel av runder
   const recentRounds = player.rounds;
   let hcpDelta: number | null = null;
   if (recentRounds.length >= 4) {
@@ -329,6 +348,17 @@ export default async function Profil360({
     const avgO = older.reduce((a, r) => a + r.score, 0) / older.length;
     hcpDelta = avgN - avgO;
   }
+
+  // Neste planlagte økt
+  const nesteOkt = plannedSessions
+    .filter((s) => s.scheduledAt >= now)
+    .sort((a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime())[0];
+
+  // Siste fullførte økt
+  const sisteFullfort = completedSessions
+    .sort((a, b) => b.scheduledAt.getTime() - a.scheduledAt.getTime())[0];
+
+  const baseHref = `/admin/elever/${id}`;
 
   return (
     <div className="space-y-6">
@@ -426,394 +456,592 @@ export default async function Profil360({
         </Link>
       </div>
 
-      {/* 4 stat-rich kort */}
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatRich
-          label="HCP-trend"
-          value={formatHcp(player.hcp)}
-          delta={
-            hcpDelta != null
-              ? `${hcpDelta <= 0 ? "−" : "+"}${Math.abs(hcpDelta).toFixed(1).replace(".", ",")} snitt`
-              : "for lite data"
-          }
-          deltaTone={
-            hcpDelta != null && hcpDelta < 0 ? "up" : "flat"
-          }
-          sub={`${recentRounds.length} runder registrert`}
-        />
-        <StatRich
-          label="Økter · 4 uker"
-          value={String(sessions4w.length)}
-          delta={`${plannedSessions.length} planlagt`}
-          deltaTone="flat"
-          sub={`${(sessions4w.reduce((a, s) => a + s.durationMin, 0) / 60).toFixed(1).replace(".", ",")} t totalt`}
-        />
-        <StatRich
-          label="SG-snitt"
-          value={formatSg(sg.total)}
-          delta={`${sg.rundeAntall} runder`}
-          deltaTone="flat"
-          sub={
-            sg.snittScore != null
-              ? `Snitt-score ${sg.snittScore.toFixed(1).replace(".", ",")}`
-              : "Ingen score-data"
-          }
-          valueColor={sg.total != null && sg.total > 0 ? "success" : undefined}
-        />
-        <StatRich
-          label="Mål-progresjon"
-          value={`${progressPct} %`}
-          delta={`${completedSessions.length}/${totalPlanSessions}`}
-          deltaTone={progressPct >= 75 ? "up" : "flat"}
-          sub={`${player.trainingPlans.length} aktiv plan`}
-        />
-      </section>
+      {/* Tab-navigasjon */}
+      <nav className="flex gap-0.5 rounded-lg border border-border bg-secondary p-1">
+        {TABS.map(({ key, label, icon: Icon }) => {
+          const active = tab === key;
+          return (
+            <Link
+              key={key}
+              href={`${baseHref}?tab=${key}`}
+              className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-[12px] font-medium transition-colors ${
+                active
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Icon size={13} strokeWidth={1.5} />
+              <span className="hidden sm:inline">{label}</span>
+            </Link>
+          );
+        })}
+      </nav>
 
-      {/* Pyramide-donut */}
-      <section className="rounded-lg border border-border bg-card p-6">
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Pyramide-snitt · siste 12 uker
-            </div>
-            <h3 className="mt-1 font-display text-[18px] font-semibold leading-snug">
-              Hvordan tiden fordeles
-            </h3>
-            <p className="mt-1 max-w-[360px] text-[12px] leading-[1.5] text-muted-foreground">
-              Faktisk fordeling fra fullførte økter i aktive planer.
-            </p>
+      {/* Tab: BASIS */}
+      {tab === "basis" && (
+        <>
+          {/* 4 stat-rich kort */}
+          <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <StatRich
+              label="HCP-trend"
+              value={formatHcp(player.hcp)}
+              delta={
+                hcpDelta != null
+                  ? `${hcpDelta <= 0 ? "−" : "+"}${Math.abs(hcpDelta).toFixed(1).replace(".", ",")} snitt`
+                  : "for lite data"
+              }
+              deltaTone={hcpDelta != null && hcpDelta < 0 ? "up" : "flat"}
+              sub={`${recentRounds.length} runder registrert`}
+            />
+            <StatRich
+              label="Økter · 4 uker"
+              value={String(sessions4w.length)}
+              delta={`${plannedSessions.length} planlagt`}
+              deltaTone="flat"
+              sub={`${(sessions4w.reduce((a, s) => a + s.durationMin, 0) / 60).toFixed(1).replace(".", ",")} t totalt`}
+            />
+            <StatRich
+              label="SG-snitt"
+              value={formatSg(sg.total)}
+              delta={`${sg.rundeAntall} runder`}
+              deltaTone="flat"
+              sub={
+                sg.snittScore != null
+                  ? `Snitt-score ${sg.snittScore.toFixed(1).replace(".", ",")}`
+                  : "Ingen score-data"
+              }
+              valueColor={sg.total != null && sg.total > 0 ? "success" : undefined}
+            />
+            <StatRich
+              label="Mål-progresjon"
+              value={`${progressPct} %`}
+              delta={`${completedSessions.length}/${totalPlanSessions}`}
+              deltaTone={progressPct >= 75 ? "up" : "flat"}
+              sub={`${player.trainingPlans.length} aktiv plan`}
+            />
+          </section>
+
+          {/* Profil-info */}
+          <section className="rounded-lg border border-border bg-card p-6">
+            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Profil-informasjon
+            </h2>
+            <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <InfoField label="E-post" value={player.email} />
+              <InfoField label="Telefon" value={player.phone ?? "—"} />
+              <InfoField label="Hjemmeklubb" value={player.homeClub ?? "—"} />
+              <InfoField label="HCP" value={formatHcp(player.hcp)} />
+              <InfoField
+                label="Erfaring"
+                value={player.playingYears != null ? `${player.playingYears} år` : "—"}
+              />
+              <InfoField
+                label="Abonnement"
+                value={tierLabel(player.tier)}
+                highlight={player.tier !== "GRATIS"}
+              />
+              {player.ambition && (
+                <div className="sm:col-span-2 lg:col-span-3">
+                  <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                    Ambisjon
+                  </dt>
+                  <dd className="mt-1 text-[13px] leading-[1.5] text-foreground">
+                    {player.ambition}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </section>
+
+          {/* Foreldre */}
+          <section
+            aria-labelledby="foreldre-h"
+            className="rounded-xl border border-border bg-card p-6"
+          >
+            <h2
+              id="foreldre-h"
+              className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+            >
+              Foreldre · {player.parentRelations.length}
+            </h2>
+            {player.parentRelations.length === 0 ? (
+              <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
+                Ingen foresatte er koblet til spilleren.
+              </p>
+            ) : (
+              <ul className="divide-y divide-border">
+                {player.parentRelations.map((rel) => (
+                  <li
+                    key={rel.id}
+                    className="flex flex-wrap items-center justify-between gap-4 py-4 text-[13px]"
+                  >
+                    <div>
+                      <div className="font-semibold">{rel.parent.name}</div>
+                      <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                        {rel.relationship}
+                      </div>
+                    </div>
+                    <div className="text-right text-xs text-muted-foreground">
+                      <div>{rel.parent.email}</div>
+                      {rel.parent.phone ? <div>{rel.parent.phone}</div> : null}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </>
+      )}
+
+      {/* Tab: PLAN */}
+      {tab === "plan" && (
+        <>
+          {/* Aktive planer */}
+          <section className="rounded-lg border border-border bg-card p-6">
+            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Aktive planer · {player.trainingPlans.length}
+            </h2>
+            {player.trainingPlans.length === 0 ? (
+              <div className="rounded-md border border-dashed border-border bg-muted/40 p-6 text-center text-[13px] text-muted-foreground">
+                Ingen aktive planer. Bruk "Lag plan" for å opprette.
+              </div>
+            ) : (
+              <ul className="space-y-3">
+                {player.trainingPlans.map((p) => {
+                  const done = p.sessions.filter((s) => s.status === "COMPLETED").length;
+                  const total = p.sessions.length;
+                  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+                  const fra = p.startDate.toLocaleDateString("nb-NO", {
+                    day: "numeric",
+                    month: "short",
+                  });
+                  const til = p.endDate
+                    ? p.endDate.toLocaleDateString("nb-NO", { day: "numeric", month: "short" })
+                    : "åpen";
+                  return (
+                    <li
+                      key={p.id}
+                      className="rounded-lg border border-border bg-secondary/40 p-4"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <Link
+                            href={`/admin/plans/${p.id}`}
+                            className="font-semibold text-[14px] text-foreground hover:text-primary"
+                          >
+                            {p.name}
+                          </Link>
+                          <div className="mt-1 font-mono text-[10px] text-muted-foreground">
+                            {fra} – {til}
+                          </div>
+                        </div>
+                        <span
+                          className={`shrink-0 rounded-full px-2 py-0.5 font-mono text-[11px] font-medium ${
+                            p.status === "ACTIVE"
+                              ? "bg-primary/10 text-primary"
+                              : p.status === "DRAFT"
+                                ? "bg-secondary text-muted-foreground"
+                                : "bg-secondary text-muted-foreground"
+                          }`}
+                        >
+                          {p.status}
+                        </span>
+                      </div>
+                      <div className="mt-3">
+                        <div className="mb-1 flex justify-between font-mono text-[10px] text-muted-foreground">
+                          <span>{done}/{total} økter</span>
+                          <span>{pct}%</span>
+                        </div>
+                        <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
+                          <div
+                            className="h-full rounded-full bg-primary transition-all"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
+
+          {/* Neste og siste økt */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <section className="rounded-lg border border-border bg-card p-6">
+              <h2 className="mb-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Neste planlagte økt
+              </h2>
+              {nesteOkt ? (
+                <div>
+                  <div className="text-[14px] font-semibold">{nesteOkt.title}</div>
+                  <div className="mt-1 font-mono text-[11px] text-muted-foreground">
+                    {NB_FULL.format(nesteOkt.scheduledAt)} · {nesteOkt.durationMin} min · {nesteOkt.pyramidArea}
+                  </div>
+                  <div className="mt-2 font-mono text-[10px] text-muted-foreground">
+                    Fra plan: {nesteOkt.planName}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-[13px] text-muted-foreground">Ingen kommende økter planlagt.</p>
+              )}
+            </section>
+            <section className="rounded-lg border border-border bg-card p-6">
+              <h2 className="mb-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Siste fullførte økt
+              </h2>
+              {sisteFullfort ? (
+                <div>
+                  <div className="text-[14px] font-semibold">{sisteFullfort.title}</div>
+                  <div className="mt-1 font-mono text-[11px] text-muted-foreground">
+                    {NB_FULL.format(sisteFullfort.scheduledAt)} · {sisteFullfort.durationMin} min · {sisteFullfort.pyramidArea}
+                  </div>
+                  {sisteFullfort.log?.csAchieved != null && (
+                    <div className="mt-2 font-mono text-[11px] text-foreground">
+                      {sisteFullfort.log.csAchieved}% godkjente reps
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p className="text-[13px] text-muted-foreground">Ingen fullførte økter ennå.</p>
+              )}
+            </section>
           </div>
-          <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-            {totalPyrHours.toFixed(1).replace(".", ",")} t loggført
-          </span>
-        </div>
-        {totalPyrMin === 0 ? (
-          <div className="rounded-md border border-dashed border-border bg-muted/40 p-6 text-center text-[13px] text-muted-foreground">
-            Ingen loggførte økter siste 12 uker.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[220px_1fr]">
-            <div className="mx-auto">
-              <Donut gradient={donutGradient} totalHours={totalPyrHours} />
+
+          {/* Pyramide-fordeling */}
+          <section className="rounded-lg border border-border bg-card p-6">
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  Pyramide-snitt · siste 12 uker
+                </div>
+                <h3 className="mt-1 font-display text-[18px] font-semibold leading-snug">
+                  Hvordan tiden fordeles
+                </h3>
+              </div>
+              <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+                {totalPyrHours.toFixed(1).replace(".", ",")} t loggført
+              </span>
             </div>
-            <div className="flex flex-col gap-2.5">
-              {PYR_KEYS.map((k, i) => (
-                <TierRow
-                  key={k}
-                  color={PYR_META[k].color}
-                  name={PYR_META[k].name}
-                  sub={PYR_META[k].sub}
-                  value={`${pyrPct[k]} %`}
-                  delta={`${(pyrMinutes[k] / 60).toFixed(1).replace(".", ",")} t`}
-                  last={i === PYR_KEYS.length - 1}
+            {totalPyrMin === 0 ? (
+              <div className="rounded-md border border-dashed border-border bg-muted/40 p-6 text-center text-[13px] text-muted-foreground">
+                Ingen loggførte økter siste 12 uker.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[220px_1fr]">
+                <div className="mx-auto">
+                  <Donut gradient={donutGradient} totalHours={totalPyrHours} />
+                </div>
+                <div className="flex flex-col gap-2.5">
+                  {PYR_KEYS.map((k, i) => (
+                    <TierRow
+                      key={k}
+                      color={PYR_META[k].color}
+                      name={PYR_META[k].name}
+                      sub={PYR_META[k].sub}
+                      value={`${pyrPct[k]} %`}
+                      delta={`${(pyrMinutes[k] / 60).toFixed(1).replace(".", ",")} t`}
+                      last={i === PYR_KEYS.length - 1}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        </>
+      )}
+
+      {/* Tab: SESJONER */}
+      {tab === "sesjoner" && (
+        <>
+          {/* Heatmap */}
+          <section className="rounded-lg border border-border bg-card px-6 py-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  12 ukers historikk · fordelt på pyramide-lag
+                </div>
+                <h3 className="mt-1 font-display text-[18px] font-semibold leading-snug">
+                  Hva ble trent når
+                </h3>
+                <p className="mt-1 text-[12px] leading-[1.5] text-muted-foreground">
+                  Mørkere = mer tid den uka.
+                </p>
+              </div>
+              <div className="hidden items-center gap-4 text-[11px] font-medium text-muted-foreground sm:flex">
+                <LegendCell
+                  color="hsl(var(--secondary))"
+                  border="hsl(var(--border))"
+                  label="0 t"
                 />
+                <LegendCell color="var(--color-pyr-fys-track)" label="1 t" />
+                <LegendCell color="hsl(var(--primary))" label="3 t+" />
+              </div>
+            </div>
+            <div className="mt-3.5 grid grid-cols-[48px_repeat(12,1fr)] gap-1.5">
+              <div />
+              {weeks.map((w, i) => (
+                <div
+                  key={`${w}-${i}`}
+                  className="text-center font-mono text-[10px] font-medium text-muted-foreground"
+                >
+                  u{w}
+                </div>
+              ))}
+              {PYR_KEYS.map((k) => (
+                <HmRow key={k} label={k} levels={heatLevels[k]} tier={k} />
               ))}
             </div>
-          </div>
-        )}
-      </section>
+          </section>
 
-      {/* Heatmap */}
-      <section className="rounded-lg border border-border bg-card px-6 py-6">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              12 ukers historikk · fordelt på pyramide-lag
+          {/* Alle økter — kronologisk liste */}
+          <section className="rounded-lg border border-border bg-card">
+            <div className="border-b border-border bg-secondary px-6 py-4">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  Alle treningsøkter · {allSessions.length} totalt
+                </span>
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  {completedSessions.length} fullført · {plannedSessions.length} planlagt
+                </span>
+              </div>
             </div>
-            <h3 className="mt-1 font-display text-[18px] font-semibold leading-snug">
-              Hva ble trent når
-            </h3>
-            <p className="mt-1 text-[12px] leading-[1.5] text-muted-foreground">
-              Mørkere = mer tid den uka.
-            </p>
-          </div>
-          <div className="hidden items-center gap-4 text-[11px] font-medium text-muted-foreground sm:flex">
-            <LegendCell
-              color="hsl(var(--secondary))"
-              border="hsl(var(--border))"
-              label="0 t"
-            />
-            <LegendCell color="var(--color-pyr-fys-track)" label="1 t" />
-            <LegendCell color="hsl(var(--primary))" label="3 t+" />
-          </div>
-        </div>
-        <div className="mt-3.5 grid grid-cols-[48px_repeat(12,1fr)] gap-1.5">
-          <div />
-          {weeks.map((w, i) => (
-            <div
-              key={`${w}-${i}`}
-              className="text-center font-mono text-[10px] font-medium text-muted-foreground"
-            >
-              u{w}
-            </div>
-          ))}
-          {PYR_KEYS.map((k) => (
-            <HmRow key={k} label={k} levels={heatLevels[k]} tier={k} />
-          ))}
-        </div>
-      </section>
+            {allSessions.length === 0 ? (
+              <div className="p-8 text-center text-[13px] text-muted-foreground">
+                Ingen økt-data. Opprett en plan og legg til økter.
+              </div>
+            ) : (
+              <ul className="divide-y divide-border">
+                {allSessions
+                  .sort((a, b) => b.scheduledAt.getTime() - a.scheduledAt.getTime())
+                  .map((s) => {
+                    const varighet =
+                      s.log?.completedAt && s.log?.startedAt
+                        ? Math.max(
+                            1,
+                            Math.round(
+                              (s.log.completedAt.getTime() -
+                                s.log.startedAt.getTime()) /
+                                60000
+                            )
+                          )
+                        : null;
+                    return (
+                      <li
+                        key={s.id}
+                        className="grid grid-cols-[72px_1fr_auto] items-center gap-4 px-6 py-4"
+                      >
+                        <div>
+                          <div className="font-mono text-[12px] font-semibold leading-tight tabular-nums">
+                            {NB_FULL.format(s.scheduledAt)}
+                          </div>
+                          <div className="mt-0.5 font-mono text-[10px] text-muted-foreground tabular-nums">
+                            {varighet != null
+                              ? `${varighet} min`
+                              : `${s.durationMin} min`}
+                          </div>
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className="h-2 w-2 shrink-0 rounded-sm"
+                              style={{
+                                background: `var(--color-pyr-${s.pyramidArea.toLowerCase()}, var(--color-primary))`,
+                              }}
+                            />
+                            <span className="truncate text-[13px] font-medium text-foreground">
+                              {s.title}
+                            </span>
+                          </div>
+                          <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+                            {s.pyramidArea} · {s.planName}
+                            {s.log?.csAchieved != null && ` · ${s.log.csAchieved}% godkjent`}
+                            {s.log?.rating != null && ` · ${s.log.rating}/5`}
+                          </div>
+                        </div>
+                        <span
+                          className={`shrink-0 rounded-full px-2 py-0.5 font-mono text-[10px] font-medium ${
+                            s.status === "COMPLETED"
+                              ? "bg-primary/10 text-primary"
+                              : s.status === "ACTIVE"
+                                ? "bg-accent text-accent-foreground"
+                                : s.status === "CANCELLED"
+                                  ? "bg-destructive/10 text-destructive"
+                                  : "bg-secondary text-muted-foreground"
+                          }`}
+                        >
+                          {s.status}
+                        </span>
+                      </li>
+                    );
+                  })}
+              </ul>
+            )}
+          </section>
 
-      {/* Tidslinje */}
-      <section className="rounded-lg border border-border bg-card px-6 py-6">
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Aktivitet
-            </div>
-            <h3 className="mt-1 font-display text-[18px] font-semibold leading-snug">
-              Siste hendelser
-            </h3>
-          </div>
-          <Trophy
-            size={18}
-            strokeWidth={1.5}
-            className="shrink-0 text-muted-foreground"
-          />
-        </div>
-        {timeline.length === 0 ? (
-          <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
-            Ingen registrerte hendelser ennå.
-          </p>
-        ) : (
-          <ol className="relative space-y-4 border-l border-border pl-6">
-            {timeline.map((item, i) => (
-              <li key={i} className="relative">
-                <span className="absolute -left-[26px] top-1.5 h-2.5 w-2.5 rounded-full border border-border bg-card" />
-                <div className="flex items-baseline justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="truncate text-[13px] font-medium text-foreground">
-                      {item.label}
-                    </div>
-                    <div className="text-[11px] text-muted-foreground">
-                      {item.sub}
-                    </div>
-                  </div>
-                  <time className="shrink-0 font-mono text-[11px] uppercase tracking-[0.05em] text-muted-foreground">
-                    {NB_FULL.format(item.when)}
-                  </time>
+          {/* Tidslinje */}
+          <section className="rounded-lg border border-border bg-card px-6 py-6">
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  Aktivitet
                 </div>
-              </li>
-            ))}
-          </ol>
-        )}
-      </section>
-
-      {/* Siste live-økter — fullførte med rep-logging fra LiveTapper */}
-      <section className="rounded-lg border border-border bg-card px-6 py-6">
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Live-økter · rep-logget i appen
+                <h3 className="mt-1 font-display text-[18px] font-semibold leading-snug">
+                  Siste hendelser
+                </h3>
+              </div>
+              <Trophy
+                size={18}
+                strokeWidth={1.5}
+                className="shrink-0 text-muted-foreground"
+              />
             </div>
-            <h3 className="mt-1 font-display text-[18px] font-semibold leading-snug">
-              Siste live-økter
-            </h3>
-            <p className="mt-1 text-[12px] leading-[1.5] text-muted-foreground">
-              Hva som faktisk ble logget — godkjente reps, varighet og fokus.
-            </p>
-          </div>
-          {livecompleted.length > 0 && (
-            <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-              {livecompleted.length}{" "}
-              {livecompleted.length === 1 ? "økt" : "økter"}
-            </span>
-          )}
-        </div>
+            {timeline.length === 0 ? (
+              <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
+                Ingen registrerte hendelser ennå.
+              </p>
+            ) : (
+              <ol className="relative space-y-4 border-l border-border pl-6">
+                {timeline.map((item, i) => (
+                  <li key={i} className="relative">
+                    <span className="absolute -left-[26px] top-1.5 h-2.5 w-2.5 rounded-full border border-border bg-card" />
+                    <div className="flex items-baseline justify-between gap-4">
+                      <div className="min-w-0">
+                        <div className="truncate text-[13px] font-medium text-foreground">
+                          {item.label}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground">
+                          {item.sub}
+                        </div>
+                      </div>
+                      <time className="shrink-0 font-mono text-[11px] uppercase tracking-[0.05em] text-muted-foreground">
+                        {NB_FULL.format(item.when)}
+                      </time>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+        </>
+      )}
 
-        {livecompleted.length === 0 ? (
-          <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
-            Spilleren har ikke fullført en live-økt ennå.
-          </p>
-        ) : (
-          <ul className="divide-y divide-border">
-            {livecompleted.map((s) => {
-              const dato = s.scheduledAt.toLocaleDateString("nb-NO", {
-                day: "2-digit",
-                month: "short",
-              });
-              const varighet =
-                s.log?.completedAt && s.log?.startedAt
-                  ? Math.max(
-                      1,
-                      Math.round(
-                        (s.log.completedAt.getTime() -
-                          s.log.startedAt.getTime()) /
-                          60000,
-                      ),
-                    )
-                  : null;
-              const harFeedback = !!s.log?.coachFeedback;
-              return (
+      {/* Tab: TESTER */}
+      {tab === "tester" && (
+        <section className="rounded-lg border border-border bg-card">
+          <div className="border-b border-border bg-secondary px-6 py-4">
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Test-resultater · {player.testResults.length} totalt
+            </span>
+          </div>
+          {player.testResults.length === 0 ? (
+            <div className="p-8 text-center text-[13px] text-muted-foreground">
+              Ingen test-resultater registrert ennå.
+            </div>
+          ) : (
+            <ul className="divide-y divide-border">
+              {player.testResults.map((t) => (
                 <li
-                  key={s.id}
-                  className="grid grid-cols-[72px_1fr_auto] items-center gap-4 py-4"
+                  key={t.id}
+                  className="grid grid-cols-[72px_1fr_auto] items-center gap-4 px-6 py-4"
                 >
                   <div>
                     <div className="font-mono text-[12px] font-semibold leading-tight tabular-nums">
-                      {dato}
+                      {NB_FULL.format(t.takenAt)}
                     </div>
-                    <div className="mt-0.5 font-mono text-[10px] text-muted-foreground tabular-nums">
-                      {varighet != null
-                        ? `${varighet} min`
-                        : `${s.durationMin} min planlagt`}
+                    <div className="mt-0.5 font-mono text-[10px] uppercase text-muted-foreground">
+                      {t.test.pyramidArea}
                     </div>
                   </div>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="h-2 w-2 shrink-0 rounded-sm"
-                        style={{
-                          background: `var(--color-pyr-${s.pyramidArea.toLowerCase()}, var(--color-primary))`,
-                        }}
-                      />
-                      <Link
-                        href={`/portal/tren/${s.id}`}
-                        className="truncate text-[13px] font-medium text-foreground hover:text-primary"
-                      >
-                        {s.title}
-                      </Link>
+                    <div className="truncate text-[13px] font-medium text-foreground">
+                      {t.test.name}
                     </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-muted-foreground tabular-nums">
-                      <span>{s.pyramidArea}</span>
-                      {s.log?.csAchieved != null && (
-                        <>
-                          <span>·</span>
-                          <span className="text-foreground">
-                            {s.log.csAchieved} % godkjent
-                          </span>
-                        </>
-                      )}
-                      {s.log?.rating != null && (
-                        <>
-                          <span>·</span>
-                          <span>{s.log.rating}/5</span>
-                        </>
-                      )}
-                      {harFeedback && (
-                        <>
-                          <span>·</span>
-                          <span className="text-primary">Feedback sendt</span>
-                        </>
-                      )}
+                    {t.notes && (
+                      <div className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                        {t.notes}
+                      </div>
+                    )}
+                    <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+                      {t.test.scoringRule}
                     </div>
                   </div>
-                  <Link
-                    href={`/admin/plans/${s.planId}#plan-okter`}
-                    className="shrink-0 rounded-md border border-border bg-transparent px-2.5 py-1 font-mono text-[11px] font-medium text-foreground transition-colors hover:bg-secondary"
-                  >
-                    Plan
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
-
-      {/* Siste runder (kompakt liste under tidslinje for hurtig oversikt) */}
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div>
-          <h3 className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Siste runder
-          </h3>
-          {player.rounds.length === 0 ? (
-            <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
-              Ingen registrerte runder.
-            </p>
-          ) : (
-            <ul className="divide-y divide-border rounded-lg border border-border bg-card">
-              {player.rounds.slice(0, 5).map((r) => (
-                <li
-                  key={r.id}
-                  className="flex items-center justify-between px-4 py-2.5 text-[13px]"
-                >
-                  <div className="min-w-0">
-                    <span className="font-medium">{r.course.name}</span>
-                    <span className="ml-2 font-mono text-[10px] text-muted-foreground">
-                      {NB.format(r.playedAt)}
-                    </span>
+                  <div className="text-right">
+                    <div className="font-mono text-[20px] font-semibold tabular-nums text-foreground">
+                      {t.score.toFixed(1).replace(".", ",")}
+                    </div>
+                    <div className="font-mono text-[10px] text-muted-foreground">
+                      score
+                    </div>
                   </div>
-                  <span className="font-mono tabular-nums">
-                    {r.score} · {formatSg(r.sgTotal)}
-                  </span>
                 </li>
               ))}
             </ul>
           )}
-        </div>
-        <div>
-          <h3 className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Aktive planer
-          </h3>
-          {player.trainingPlans.length === 0 ? (
-            <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
-              Ingen aktive planer.
-            </p>
-          ) : (
-            <ul className="space-y-2">
-              {player.trainingPlans.map((p) => {
-                const done = p.sessions.filter(
-                  (s) => s.status === "COMPLETED"
-                ).length;
-                return (
-                  <li
-                    key={p.id}
-                    className="flex items-center justify-between rounded-md border border-border bg-card px-4 py-2.5 text-[13px]"
-                  >
-                    <Link
-                      href={`/admin/plans/${p.id}`}
-                      className="font-medium text-foreground hover:text-primary"
-                    >
-                      {p.name}
-                    </Link>
-                    <span className="font-mono text-[11px] text-muted-foreground">
-                      {done} / {p.sessions.length} økter
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Foreldre — read-only liste over koblede foresatte */}
-      <section
-        aria-labelledby="foreldre-h"
-        className="rounded-xl border border-border bg-card p-6"
-      >
-        <h2
-          id="foreldre-h"
-          className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
-        >
-          Foreldre · {player.parentRelations.length}
-        </h2>
-        {player.parentRelations.length === 0 ? (
-          <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
-            Ingen foresatte er koblet til spilleren.
-          </p>
-        ) : (
-          <ul className="divide-y divide-border">
-            {player.parentRelations.map((rel) => (
-              <li key={rel.id} className="flex flex-wrap items-center justify-between gap-4 py-4 text-[13px]">
-                <div>
-                  <div className="font-semibold">{rel.parent.name}</div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                    {rel.relationship}
-                  </div>
-                </div>
-                <div className="text-right text-xs text-muted-foreground">
-                  <div>{rel.parent.email}</div>
-                  {rel.parent.phone ? <div>{rel.parent.phone}</div> : null}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      {/* Tab: TRACKMAN */}
+      {tab === "trackman" && (
+        <>
+          <section className="rounded-lg border border-border bg-card">
+            <div className="border-b border-border bg-secondary px-6 py-4">
+              <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                TrackMan-sesjoner · {player.trackManSessions.length} totalt
+              </span>
+            </div>
+            {player.trackManSessions.length === 0 ? (
+              <div className="p-8 text-center text-[13px] text-muted-foreground">
+                Ingen TrackMan-data importert ennå. Importer CSV fra TrackMan-portalen.
+              </div>
+            ) : (
+              <ul className="divide-y divide-border">
+                {player.trackManSessions.map((tm) => (
+                  <li
+                    key={tm.id}
+                    className="flex items-center justify-between px-6 py-4"
+                  >
+                    <div>
+                      <div className="text-[13px] font-semibold text-foreground">
+                        {NB_LONG.format(tm.recordedAt)}
+                      </div>
+                      <div className="mt-0.5 font-mono text-[11px] text-muted-foreground">
+                        {tm.environment ? tm.environment.replace(/_/g, " ") : "Ukjent miljø"} · {tm.source}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-mono text-[20px] font-semibold tabular-nums text-foreground">
+                        {tm.shotCount}
+                      </div>
+                      <div className="font-mono text-[10px] text-muted-foreground">
+                        slag
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <div className="rounded-lg border border-border bg-card p-6">
+            <p className="text-[13px] text-muted-foreground">
+              For detaljert slag-analyse og kølledata, bruk{" "}
+              <Link
+                href={`/admin/elever/${id}/ai`}
+                className="font-medium text-primary hover:underline"
+              >
+                AI-analyse
+              </Link>{" "}
+              eller importer data direkte fra TrackMan Performance Studio.
+            </p>
+          </div>
+        </>
+      )}
     </div>
   );
 }
+
+// ---------- Sub-komponenter ----------
 
 function Avatar({
   src,
@@ -888,6 +1116,31 @@ function QuickStat({
           <span className="text-[14px] text-muted-foreground">{of}</span>
         )}
       </div>
+    </div>
+  );
+}
+
+function InfoField({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div>
+      <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        {label}
+      </dt>
+      <dd
+        className={`mt-1 text-[13px] font-medium ${
+          highlight ? "text-primary" : "text-foreground"
+        }`}
+      >
+        {value}
+      </dd>
     </div>
   );
 }
