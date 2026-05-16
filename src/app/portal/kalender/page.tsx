@@ -11,7 +11,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { lesPeriodeType } from "@/app/admin/kalender/actions/perioder";
+import { lesPeriodeType } from "@/app/admin/kalender/lib/periode-helpers";
 import { PageHeader } from "@/components/shared/page-header";
 import { ViewModeProvider } from "@/components/shared/ViewModeContext";
 import { ViewModeToggle } from "@/components/shared/ViewModeToggle";
