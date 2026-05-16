@@ -14,6 +14,11 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
+import {
+  CoachAnalysisCard,
+  type AnalyseData,
+} from "@/components/portal/coach-analysis-card";
+import { Prisma } from "@/generated/prisma/client";
 import type { PyramidArea } from "@/generated/prisma/client";
 
 const PYR_LABEL: Record<PyramidArea, string> = {
@@ -87,6 +92,41 @@ export default async function SessionDetalj({
       select: { id: true, title: true },
     }),
   ]);
+
+  // Coach-analyse fra Voice Memo V3.
+  // TrainingPlanSession har ikke direkte FK til SessionRecording — vi matcher
+  // på spiller + dato-vindu (±24t rundt scheduledAt) og tar nyeste recording
+  // som har aiAnalysis satt.
+  const playerIdForRecording = session.plan.userId;
+  const vinduStart = new Date(
+    session.scheduledAt.getTime() - 24 * 60 * 60 * 1000,
+  );
+  const vinduSlutt = new Date(
+    session.scheduledAt.getTime() + 24 * 60 * 60 * 1000,
+  );
+
+  const recording = await prisma.sessionRecording.findFirst({
+    where: {
+      playerId: playerIdForRecording,
+      aiAnalysis: { not: Prisma.DbNull },
+      startedAt: { gte: vinduStart, lte: vinduSlutt },
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      aiAnalysis: true,
+      startedAt: true,
+      completedAt: true,
+      createdAt: true,
+    },
+  });
+
+  const analyseData = parseAnalyse(recording?.aiAnalysis);
+  const analyseDato =
+    recording?.completedAt ??
+    recording?.startedAt ??
+    recording?.createdAt ??
+    null;
 
   const scheduledDate = new Date(session.scheduledAt);
   const datoStr = scheduledDate.toLocaleDateString("nb-NO", {
@@ -264,6 +304,11 @@ export default async function SessionDetalj({
             </div>
           </div>
         </section>
+      )}
+
+      {/* Coach-analyse fra Voice Memo V3 (AI-generert sammendrag) */}
+      {analyseData && analyseDato && (
+        <CoachAnalysisCard analyse={analyseData} okteDato={analyseDato} />
       )}
 
       {/* Spillerens egen notat fra live-økt */}
@@ -493,4 +538,31 @@ function DrillFact({ label, value }: { label: string; value: string }) {
       </div>
     </div>
   );
+}
+
+/**
+ * Parse SessionRecording.aiAnalysis (Json?) til AnalyseData. Forventer 5 felter
+ * fra Voice Memo V3. Returnerer null hvis felter mangler eller payload har
+ * feil type. V3 lagrer også `coachAnalyse` + `nesteOktAnbefaling`, men de
+ * vises ikke i PlayerHQ — kun for coach.
+ */
+function parseAnalyse(raw: unknown): AnalyseData | null {
+  if (raw == null || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const obj = raw as Record<string, unknown>;
+  const teknisk = typeof obj.teknisk === "string" ? obj.teknisk : "";
+  const taktisk = typeof obj.taktisk === "string" ? obj.taktisk : "";
+  const mental = typeof obj.mental === "string" ? obj.mental : "";
+  const fysisk = typeof obj.fysisk === "string" ? obj.fysisk : "";
+  const hjemmelekse =
+    typeof obj.hjemmelekse === "string" ? obj.hjemmelekse : "";
+
+  const harInnhold =
+    teknisk.trim() !== "" ||
+    taktisk.trim() !== "" ||
+    mental.trim() !== "" ||
+    fysisk.trim() !== "" ||
+    hjemmelekse.trim() !== "";
+
+  if (!harInnhold) return null;
+  return { teknisk, taktisk, mental, fysisk, hjemmelekse };
 }

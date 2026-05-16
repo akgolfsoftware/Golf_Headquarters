@@ -22,6 +22,7 @@ import {
   Flag,
   MessageSquare,
   Plus,
+  Sparkles,
   Star,
   Target,
   Zap,
@@ -32,6 +33,7 @@ import {
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
+import { Prisma } from "@/generated/prisma/client";
 import {
   getDashboardData,
   type SistRegistrert,
@@ -123,9 +125,34 @@ export default async function PortalHjem() {
     subscription?.status === "ACTIVE" &&
     (subscription?.monthlyCredits ?? 0) > 0;
 
+  // Voice Memo V4 — varsel hvis ny coach-analyse er klar (siste 7 dager).
+  // Heuristikk i V4: viser nyeste SessionRecording for spilleren med
+  // aiAnalysis satt og updatedAt nyere enn 7 dager. Spillerprofil-flagg for
+  // "lest" kommer i V4.5.
+  const syvDagerSiden = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const nyAnalyse = await prisma.sessionRecording.findFirst({
+    where: {
+      playerId: user.id,
+      aiAnalysis: { not: Prisma.DbNull },
+      updatedAt: { gte: syvDagerSiden },
+    },
+    orderBy: { updatedAt: "desc" },
+    select: { id: true, completedAt: true, startedAt: true, updatedAt: true },
+  });
+
+  const analyseDato =
+    nyAnalyse?.completedAt ??
+    nyAnalyse?.startedAt ??
+    nyAnalyse?.updatedAt ??
+    null;
+
   return (
     <div className="space-y-6 md:space-y-8">
       <Hero user={user} />
+
+      {nyAnalyse && analyseDato && (
+        <CoachAnalysisBanner okteDato={analyseDato} />
+      )}
 
       <QuickActions
         erAcademyKunde={erAcademyKunde}
@@ -1027,6 +1054,40 @@ function CoachMelding({
         <ChevronRight className="h-3.5 w-3.5" strokeWidth={2} />
       </Link>
     </article>
+  );
+}
+
+// --- Voice Memo V4 — banner -----------------------------------------------
+
+function CoachAnalysisBanner({ okteDato }: { okteDato: Date }) {
+  const datoStr = okteDato.toLocaleDateString("nb-NO", {
+    day: "numeric",
+    month: "long",
+  });
+
+  return (
+    <Link
+      href="/portal/tren"
+      className="group flex items-center justify-between gap-4 rounded-lg border border-primary bg-accent p-4 transition-opacity hover:opacity-90 md:p-6"
+    >
+      <div className="flex items-start gap-3">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">
+          <Sparkles className="h-5 w-5" strokeWidth={1.75} />
+        </div>
+        <div>
+          <div className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-accent-foreground/80">
+            Coach-analyse · {datoStr}
+          </div>
+          <div className="mt-0.5 font-display text-base font-semibold text-accent-foreground md:text-lg">
+            Ny coach-analyse er klar — se hva du skal jobbe med
+          </div>
+        </div>
+      </div>
+      <ChevronRight
+        className="h-5 w-5 shrink-0 text-accent-foreground transition-transform group-hover:translate-x-0.5"
+        strokeWidth={1.75}
+      />
+    </Link>
   );
 }
 
