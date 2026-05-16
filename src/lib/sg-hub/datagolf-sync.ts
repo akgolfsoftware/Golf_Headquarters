@@ -51,14 +51,15 @@ export async function syncDataGolf(): Promise<{ upserted: number }> {
   let upserted = 0;
 
   for (const row of json.data ?? []) {
-    const prismaLie = lieToPrisma(row.lie) as ShotLie | null;
+    const prismaLie = lieToPrisma(row.lie);
+    if (prismaLie === null) continue;
 
     await prisma.sgBaseline.upsert({
       where: {
         category_distanceBucket_lie: {
           category: "APP",
           distanceBucket: bucketLabel(row.dist),
-          lie: prismaLie ?? null,
+          lie: prismaLie,
         },
       },
       update: {
@@ -70,7 +71,7 @@ export async function syncDataGolf(): Promise<{ upserted: number }> {
       create: {
         category: "APP",
         distanceBucket: bucketLabel(row.dist),
-        lie: prismaLie ?? null,
+        lie: prismaLie,
         expectedStrokes: row.sg_gained,
         sampleSize: row.sample,
         source: `datagolf-approach-skill-${fetchedAt.toISOString().slice(0, 7)}`,
