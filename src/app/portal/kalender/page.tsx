@@ -16,10 +16,10 @@ import { PageHeader } from "@/components/shared/page-header";
 import { ViewModeProvider } from "@/components/shared/ViewModeContext";
 import { ViewModeToggle } from "@/components/shared/ViewModeToggle";
 import {
-  KalenderRoot,
   type KalenderData,
   type KalenderOkt,
 } from "@/components/shared/calendar/KalenderRoot";
+import { PortalKalenderWrapper } from "@/components/shared/calendar/PortalKalenderWrapper";
 import type { KalenderVy } from "@/components/shared/calendar/CalendarShell";
 import {
   lagDemoPerioder,
@@ -72,9 +72,8 @@ export default async function PortalKalenderPage({
           <ViewModeToggle locked={grunnleggendeTier} />
         </div>
         <div className="min-h-0 flex-1 overflow-hidden rounded-lg border border-border bg-card">
-          <KalenderRoot
+          <PortalKalenderWrapper
             data={data}
-            viewMode="standard"
             lockedSpillerId={user.id}
           />
         </div>

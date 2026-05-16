@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, MessageSquare, Clock } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { MeldingForm } from "./form";
+
+type ChatMelding = { role?: string; content?: string; ts?: string };
 
 export default async function CoachMeldingPage() {
   const user = await requirePortalUser({
@@ -37,10 +39,37 @@ export default async function CoachMeldingPage() {
     );
   }
 
-  const coacher = await prisma.user.findMany({
-    where: { role: "COACH" },
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
+  const [coacher, sesjoner] = await Promise.all([
+    prisma.user.findMany({
+      where: { role: "COACH" },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.coachingSession.findMany({
+      where: { userId: user.id, kind: "DIRECT" },
+      include: { coach: { select: { name: true } } },
+      orderBy: { updatedAt: "desc" },
+      take: 20,
+    }),
+  ]);
+
+  const historikk = sesjoner.map((s) => {
+    const meldinger = Array.isArray(s.messages)
+      ? (s.messages as ChatMelding[])
+      : [];
+    const sisteMelding = meldinger.at(-1);
+    const snippet =
+      typeof sisteMelding?.content === "string"
+        ? sisteMelding.content.slice(0, 80) +
+          (sisteMelding.content.length > 80 ? "…" : "")
+        : "Ingen meldinger";
+    return {
+      id: s.id,
+      coachNavn: s.coach.name,
+      antall: meldinger.length,
+      snippet,
+      dato: s.updatedAt,
+    };
   });
 
   const hovedcoach = coacher[0];
@@ -56,7 +85,8 @@ export default async function CoachMeldingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-[860px] px-6 py-8">
+      <div className="mx-auto max-w-[1080px] px-6 py-8">
+        {/* Tilbake + PageHeader */}
         <div className="mb-8 space-y-4">
           <Link
             href="/portal/coach"
@@ -88,7 +118,74 @@ export default async function CoachMeldingPage() {
           />
         </div>
 
-        <MeldingForm coacher={coacher} />
+        {/* To-panel layout */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+          {/* Venstre: meldingshistorikk */}
+          <aside className="flex flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <MessageSquare size={14} strokeWidth={1.5} className="text-muted-foreground" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Historikk
+              </span>
+            </div>
+
+            {historikk.length === 0 ? (
+              <div className="rounded-lg border border-dashed border-border bg-card/40 p-6 text-center">
+                <MessageSquare
+                  size={24}
+                  strokeWidth={1.5}
+                  className="mx-auto text-muted-foreground/40"
+                />
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Ingen meldingshistorikk ennå
+                </p>
+              </div>
+            ) : (
+              <ul className="overflow-hidden rounded-lg border border-border bg-card">
+                {historikk.map((h) => (
+                  <li
+                    key={h.id}
+                    className="border-b border-border/60 px-4 py-4 last:border-b-0 hover:bg-secondary/40 transition-colors"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="truncate text-[12px] font-semibold text-foreground">
+                        {h.coachNavn}
+                      </span>
+                      <span className="flex shrink-0 items-center gap-1 font-mono text-[10px] tabular-nums text-muted-foreground">
+                        <Clock size={10} strokeWidth={1.5} />
+                        {h.dato.toLocaleDateString("nb-NO", {
+                          day: "2-digit",
+                          month: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-[11px] leading-snug text-muted-foreground line-clamp-2">
+                      {h.snippet}
+                    </p>
+                    <div className="mt-1.5 font-mono text-[10px] text-muted-foreground/70">
+                      {h.antall} melding{h.antall !== 1 ? "er" : ""}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {historikk.length > 0 && (
+              <Link
+                href="/portal/coach/notes"
+                className="inline-flex items-center gap-1 text-[12px] font-medium text-primary hover:underline"
+              >
+                Se alle notater
+                <ArrowUpRight size={12} strokeWidth={1.5} />
+              </Link>
+            )}
+          </aside>
+
+          {/* Høyre: compose */}
+          <main>
+            <MeldingForm coacher={coacher} />
+          </main>
+        </div>
       </div>
     </div>
   );

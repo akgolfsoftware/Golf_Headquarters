@@ -37,36 +37,86 @@ export function NotifToggles({ initial }: { initial: UserPreferences }) {
   }
 
   return (
-    <div className="space-y-6">
-      <section className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight">
-          Notifikasjoner
+    <div className="space-y-8">
+      {/* Spesifikke varsler */}
+      <section className="space-y-1">
+        <h3 className="font-display text-base font-semibold tracking-tight">
+          Varsler
         </h3>
-        <Toggle
+        <p className="mb-4 text-xs text-muted-foreground">
+          Velg hvilke hendelser du vil varsles om.
+        </p>
+        <ToggleRad
+          label="Nye meldinger fra coach"
+          beskrivelse="Varsles når coachen din sender deg en melding"
+          on={prefs.notif.nyMeldingFraCoach}
+          onChange={(v) => setNotif("nyMeldingFraCoach", v)}
+          disabled={pending}
+        />
+        <ToggleRad
+          label="Treningsplan oppdatert"
+          beskrivelse="Varsles når coachen endrer treningsplanen din"
+          on={prefs.notif.treningsplanOppdatert}
+          onChange={(v) => setNotif("treningsplanOppdatert", v)}
+          disabled={pending}
+        />
+        <ToggleRad
+          label="Bookingbekreftelse"
+          beskrivelse="Bekreftelse og påminnelse for bookede tider"
+          on={prefs.notif.bookingbekreftelse}
+          onChange={(v) => setNotif("bookingbekreftelse", v)}
+          disabled={pending}
+        />
+        <ToggleRad
+          label="Ukentlig fremdrifts-rapport"
+          beskrivelse="Oppsummering av uken — trening, mål og fremgang"
+          on={prefs.notif.ukentligRapport}
+          onChange={(v) => setNotif("ukentligRapport", v)}
+          disabled={pending}
+        />
+        <ToggleRad
+          label="Turneringsresultater"
+          beskrivelse="Varsles når turneringsresultater er registrert"
+          on={prefs.notif.turneringsresultater}
+          onChange={(v) => setNotif("turneringsresultater", v)}
+          disabled={pending}
+        />
+      </section>
+
+      {/* Kanal-innstillinger */}
+      <section className="space-y-1">
+        <h3 className="font-display text-base font-semibold tracking-tight">
+          Kanaler
+        </h3>
+        <p className="mb-4 text-xs text-muted-foreground">
+          Hvordan du mottar varsler.
+        </p>
+        <ToggleRad
           label="E-post"
-          beskrivelse="Sammendrag av planen og påminnelser"
+          beskrivelse="Sammendrag av planen og påminnelser på e-post"
           on={prefs.notif.epost}
           onChange={(v) => setNotif("epost", v)}
           disabled={pending}
         />
-        <Toggle
+        <ToggleRad
           label="Push-varsler"
-          beskrivelse="Sanntidsvarsler i nettleser/mobil"
+          beskrivelse="Sanntidsvarsler i nettleser og mobil"
           on={prefs.notif.push}
           onChange={(v) => setNotif("push", v)}
           disabled={pending}
         />
-        <Toggle
+        <ToggleRad
           label="Påminnelse 1 time før økt"
-          beskrivelse="Få påminnelse før en planlagt økt"
+          beskrivelse="Få påminnelse rett før en planlagt økt starter"
           on={prefs.notif.paaminnelse}
           onChange={(v) => setNotif("paaminnelse", v)}
           disabled={pending}
         />
       </section>
 
+      {/* Språk */}
       <section className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight">
+        <h3 className="font-display text-base font-semibold tracking-tight">
           Språk
         </h3>
         <div className="flex gap-2">
@@ -93,14 +143,14 @@ export function NotifToggles({ initial }: { initial: UserPreferences }) {
 
       {lagret && (
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
-          Lagret ✓
+          Lagret
         </span>
       )}
     </div>
   );
 }
 
-function Toggle({
+function ToggleRad({
   label,
   beskrivelse,
   on,
@@ -114,10 +164,10 @@ function Toggle({
   disabled?: boolean;
 }) {
   return (
-    <label className="flex cursor-pointer items-start justify-between gap-4 rounded-md border border-border bg-card p-4 hover:border-input">
+    <label className="flex cursor-pointer items-center justify-between border-b border-border py-3 last:border-b-0">
       <div className="min-w-0 flex-1">
-        <div className="font-medium text-foreground">{label}</div>
-        <div className="mt-0.5 text-xs text-muted-foreground">{beskrivelse}</div>
+        <p className="text-sm font-medium text-foreground">{label}</p>
+        <p className="text-xs text-muted-foreground">{beskrivelse}</p>
       </div>
       <button
         type="button"
@@ -125,7 +175,7 @@ function Toggle({
         aria-checked={on}
         onClick={() => !disabled && onChange(!on)}
         disabled={disabled}
-        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-60 ${
+        className={`relative ml-4 h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-60 ${
           on ? "bg-primary" : "bg-border"
         }`}
       >

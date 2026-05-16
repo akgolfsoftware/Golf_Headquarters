@@ -7,6 +7,12 @@ export type UserPreferences = {
     epost: boolean;
     push: boolean;
     paaminnelse: boolean;
+    /** Spesifikke notif-typer */
+    nyMeldingFraCoach: boolean;
+    treningsplanOppdatert: boolean;
+    bookingbekreftelse: boolean;
+    ukentligRapport: boolean;
+    turneringsresultater: boolean;
   };
   spraak: "nb" | "en";
   sgHubMode: "simple" | "advanced";
@@ -17,10 +23,19 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
     epost: true,
     push: false,
     paaminnelse: true,
+    nyMeldingFraCoach: true,
+    treningsplanOppdatert: true,
+    bookingbekreftelse: true,
+    ukentligRapport: false,
+    turneringsresultater: false,
   },
   spraak: "nb",
   sgHubMode: "simple",
 };
+
+function boolPref(val: unknown, defaultVal: boolean): boolean {
+  return typeof val === "boolean" ? val : defaultVal;
+}
 
 export function lesPreferences(user: Pick<User, "preferences">): UserPreferences {
   const raw = user.preferences;
@@ -34,15 +49,18 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
       : {};
   const spraak = obj.spraak === "en" ? "en" : "nb";
   const sgHubMode = obj.sgHubMode === "advanced" ? "advanced" : "simple";
+  const d = DEFAULT_PREFERENCES.notif;
 
   return {
     notif: {
-      epost: typeof notif.epost === "boolean" ? notif.epost : DEFAULT_PREFERENCES.notif.epost,
-      push: typeof notif.push === "boolean" ? notif.push : DEFAULT_PREFERENCES.notif.push,
-      paaminnelse:
-        typeof notif.paaminnelse === "boolean"
-          ? notif.paaminnelse
-          : DEFAULT_PREFERENCES.notif.paaminnelse,
+      epost: boolPref(notif.epost, d.epost),
+      push: boolPref(notif.push, d.push),
+      paaminnelse: boolPref(notif.paaminnelse, d.paaminnelse),
+      nyMeldingFraCoach: boolPref(notif.nyMeldingFraCoach, d.nyMeldingFraCoach),
+      treningsplanOppdatert: boolPref(notif.treningsplanOppdatert, d.treningsplanOppdatert),
+      bookingbekreftelse: boolPref(notif.bookingbekreftelse, d.bookingbekreftelse),
+      ukentligRapport: boolPref(notif.ukentligRapport, d.ukentligRapport),
+      turneringsresultater: boolPref(notif.turneringsresultater, d.turneringsresultater),
     },
     spraak,
     sgHubMode,
