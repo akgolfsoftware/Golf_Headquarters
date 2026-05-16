@@ -1,6 +1,6 @@
 # Launch-sjekkliste — AK Golf HQ
 
-Sist oppdatert: 2026-05-14
+Sist oppdatert: 2026-05-17
 
 Kryss av i `[ ]` etterhvert som du fullfører.
 Si fra til Claude (`/fortsett-sesjon` + "verifiser launch-status") så kjører han verifikasjon programmatisk og oppdaterer denne fila.
@@ -115,6 +115,8 @@ dig _dmarc.akgolf.no TXT +short
 
 **Test-DSN:** når Sentry-prosjektet er opprettet, gi DSN til Claude → han legger inn en test-feilknapp i `/admin/settings` → klikk → sjekk Sentry-dashboard innen 30 s.
 
+> **[x] Kode klar** — `src/lib/sentry.ts` stub opprettet. Aktiver med `npm install @sentry/nextjs` + DSN i Vercel-env.
+
 - [ ] **Verifisert (feil mottatt i Sentry)**
 
 ---
@@ -129,6 +131,8 @@ dig _dmarc.akgolf.no TXT +short
 - [ ] Sendt snippet til Claude
 
 **Claude legger inn:** i `src/app/layout.tsx` `<head>` med Next.js Script-komponent.
+
+> **[x] Kode klar** — `Script`-komponent med `data-domain` lagt inn i `layout.tsx`. Aktiveres så snart `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` er satt i Vercel.
 
 **Verifikasjon:** besøk `akgolf.no` → dukker opp som "online visitor" i Plausible-dashboard innen 1 min.
 
@@ -223,6 +227,8 @@ curl -H "Authorization: Bearer $CRON_SECRET" https://akgolf.no/api/cron/plan-wat
 # 200 OK
 ```
 
+> **[x] Kode klar** — alle cron-agenter har auth-sjekk (`Authorization: Bearer CRON_SECRET`), returnerer `{ ok: true }` ved suksess og `{ error: "..." }` med status 500 ved feil.
+
 - [ ] **Cron returnerer 200**
 
 ### L7 — Stripe webhook end-to-end
@@ -235,7 +241,7 @@ curl -H "Authorization: Bearer $CRON_SECRET" https://akgolf.no/api/cron/plan-wat
 ### L8 — Backup + rollback
 
 - [ ] Verifisert Supabase daily backups aktive
-- [ ] `docs/rollback.md` skrevet (Claude lager)
+- [x] `docs/rollback.md` skrevet (Claude lager) — ferdig 2026-05-17
 - [ ] Test-rollback gjennomført på preview-deploy
 
 ### L9 — Final review
