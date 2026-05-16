@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { triggerTrackManAgent } from "@/lib/agents/triggers";
+import { parseTrackManHtmlReport } from "@/lib/trackman/parse-html-report";
 
 export type TrackManCsvInput = {
   recordedAt: string; // ISO-dato
@@ -43,6 +44,35 @@ export async function importTrackManCsv(input: TrackManCsvInput) {
       source: "csv-import",
       shotCount: rader.length,
       rawJson: rader,
+    },
+  });
+
+  await triggerTrackManAgent(user.id);
+
+  revalidatePath("/portal/mal/trackman");
+}
+
+export type TrackManHtmlInput = {
+  recordedAt: string; // ISO-dato (kan overstyres av bruker)
+  htmlContent: string;
+};
+
+export async function importTrackManHtml(input: TrackManHtmlInput) {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("unauthenticated");
+
+  const rapport = parseTrackManHtmlReport(input.htmlContent);
+
+  const shotCount = rapport.clubs.reduce((sum, c) => sum + c.shotCount, 0);
+
+  await prisma.trackManSession.create({
+    data: {
+      userId: user.id,
+      recordedAt: new Date(input.recordedAt),
+      source: "html-import",
+      shotCount,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      rawJson: rapport as any,
     },
   });
 

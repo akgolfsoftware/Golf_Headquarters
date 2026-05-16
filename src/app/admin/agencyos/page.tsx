@@ -5,14 +5,18 @@
 
 import Link from "next/link";
 import {
+  AlertTriangle,
   ArrowUpRight,
   Bell,
   Calendar,
   CheckCircle2,
   ChevronRight,
+  ClipboardList,
+  FileWarning,
   Inbox as InboxIcon,
   Mail,
   Sparkles,
+  Users,
   Wallet,
   Wrench,
 } from "lucide-react";
@@ -70,6 +74,10 @@ export default async function AgencyOSPage() {
 
   const mndStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const mndSlutt = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const tretti = new Date(now);
+  tretti.setDate(tretti.getDate() - 30);
+  const seksti = new Date(now);
+  seksti.setDate(seksti.getDate() - 60);
 
   const [
     uleste,
@@ -79,6 +87,11 @@ export default async function AgencyOSPage() {
     innbetaltMnd,
     utestaende,
     sisteAktivitet,
+    aktiveSpillere,
+    ventendeGodkjenninger,
+    spillereUtenPlan,
+    testerForfaller,
+    utestaendeFakturaCount,
   ] = await Promise.all([
     prisma.notification.count({ where: { userId: user.id, readAt: null } }),
     prisma.notification.findMany({
@@ -117,6 +130,28 @@ export default async function AgencyOSPage() {
       orderBy: { createdAt: "desc" },
       take: 6,
     }),
+    // Aktive spillere = PLAYER med lastLoginAt siste 30 dager
+    prisma.user.count({
+      where: { role: "PLAYER", lastLoginAt: { gte: tretti } },
+    }),
+    // Ventende godkjenninger
+    prisma.planAction.count({ where: { status: "PENDING" } }),
+    // Spillere uten aktiv treningsplan
+    prisma.user.count({
+      where: {
+        role: "PLAYER",
+        trainingPlans: { none: { isActive: true } },
+      },
+    }),
+    // Tester forfaller — spillere uten testresultat siste 60 dager
+    prisma.user.count({
+      where: {
+        role: "PLAYER",
+        testResults: { none: { takenAt: { gte: seksti } } },
+      },
+    }),
+    // Utestående faktura (count, ikke beløp)
+    prisma.payment.count({ where: { status: "PENDING" } }),
   ]);
 
   const innbetaltOre = innbetaltMnd._sum.amountOre ?? 0;
@@ -143,14 +178,14 @@ export default async function AgencyOSPage() {
         }
       />
 
-      {/* KPI-strip */}
+      {/* KPI-strip — operativ status */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <KpiCard
-          label="Inbox"
-          value={String(uleste)}
-          unit="uleste"
-          note={uleste === 0 ? "Alt i orden" : "Krever oppmerksomhet"}
-          tone={uleste === 0 ? "good" : "warn"}
+          label="Aktive spillere"
+          value={String(aktiveSpillere)}
+          unit="siste 30 d"
+          note="I porteføljen"
+          tone="good"
         />
         <KpiCard
           label="Timer denne uka"
@@ -167,11 +202,51 @@ export default async function AgencyOSPage() {
           tone="good"
         />
         <KpiCard
-          label="Utestående"
-          value={formatNok(utestaendeOre)}
-          unit="kr"
-          note={utestaendeOre === 0 ? "Ingen ute" : "Auto-purres"}
-          tone={utestaendeOre === 0 ? "good" : "warn"}
+          label="Godkjenninger"
+          value={String(ventendeGodkjenninger)}
+          unit="venter"
+          note={ventendeGodkjenninger === 0 ? "Alt klart" : "Krever Anders"}
+          tone={ventendeGodkjenninger === 0 ? "good" : "warn"}
+        />
+      </div>
+
+      {/* Hub bunn-rad — risikosignaler */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <RiskCard
+          icon={ClipboardList}
+          label="Spillere uten plan"
+          value={String(spillereUtenPlan)}
+          note={
+            spillereUtenPlan === 0
+              ? "Alle har aktiv treningsplan"
+              : "Trenger plan-utkast fra Caddie"
+          }
+          href="/admin/spillere?view=tabell&status=uten-plan"
+          tone={spillereUtenPlan > 0 ? "warn" : "good"}
+        />
+        <RiskCard
+          icon={AlertTriangle}
+          label="Tester forfaller"
+          value={String(testerForfaller)}
+          note={
+            testerForfaller === 0
+              ? "Alle har test siste 60 d"
+              : "Skal kalles inn til test"
+          }
+          href="/portal/tren/tester"
+          tone={testerForfaller > 0 ? "warn" : "good"}
+        />
+        <RiskCard
+          icon={FileWarning}
+          label="Utestående faktura"
+          value={`kr ${formatNok(utestaendeOre)}`}
+          note={
+            utestaendeFakturaCount === 0
+              ? "Ingen åpne fakturaer"
+              : `${utestaendeFakturaCount} faktura${utestaendeFakturaCount === 1 ? "" : "er"} auto-purres`
+          }
+          href="/admin/finance"
+          tone={utestaendeOre > 0 ? "warn" : "good"}
         />
       </div>
 
@@ -499,6 +574,57 @@ function MoneyRow({ label, value, tone }: { label: string; value: string; tone: 
         {value}
       </dd>
     </div>
+  );
+}
+
+function RiskCard({
+  icon: Icon,
+  label,
+  value,
+  note,
+  href,
+  tone,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  note: string;
+  href: string;
+  tone: "good" | "warn";
+}) {
+  return (
+    <Link
+      href={href}
+      className="group rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      <div className="flex items-start gap-3">
+        <div
+          className={`grid h-10 w-10 shrink-0 place-items-center rounded-md ${
+            tone === "warn"
+              ? "bg-destructive/10 text-destructive"
+              : "bg-primary/10 text-primary"
+          }`}
+        >
+          <Icon className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            {label}
+          </div>
+          <div
+            className={`mt-0.5 font-display text-xl font-semibold tabular-nums ${
+              tone === "warn" ? "text-destructive" : "text-foreground"
+            }`}
+          >
+            {value}
+          </div>
+          <div className="mt-1 text-xs text-muted-foreground group-hover:text-foreground">
+            {note}
+          </div>
+        </div>
+        <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
+      </div>
+    </Link>
   );
 }
 

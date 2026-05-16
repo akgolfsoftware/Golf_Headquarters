@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Activity } from "lucide-react";
 import { CsvImportModal } from "./csv-import-modal";
+import { HtmlImportModal } from "./html-import-modal";
 import { DispersionClient } from "./dispersion-client";
 
 // ---------------------------------------------------------------------------
@@ -126,10 +127,14 @@ export default async function TrackManPage() {
           sub="Importer din første økt for å se trajectory, KPI-trender og dispersion-pattern per kølle."
           cta={
             <div className="space-y-3">
-              <CsvImportModal />
+              <div className="flex flex-wrap gap-2">
+                <CsvImportModal />
+                <HtmlImportModal />
+              </div>
               <p className="rounded-md bg-secondary px-4 py-3 text-left font-mono text-[11px] leading-relaxed text-muted-foreground">
                 <strong className="text-foreground">Eksporter fra TrackMan:</strong><br />
-                Sessions → velg økt → Export → CSV
+                CSV: Sessions → velg økt → Export → CSV<br />
+                HTML: Åpne Multi Group Report i nettleseren → Lagre som HTML
               </p>
             </div>
           }
@@ -170,6 +175,7 @@ export default async function TrackManPage() {
           </div>
           <div className="flex gap-2">
             <CsvImportModal />
+            <HtmlImportModal />
             <button
               type="button"
               disabled
