@@ -7,7 +7,7 @@
  * Klikk på celle åpner sliding panel høyre med liste over økter.
  */
 import { useState, useTransition } from "react";
-import { X } from "lucide-react";
+import { X, Lock, ArrowRight } from "lucide-react";
 import type {
   Dimensjon,
   KrysstabellData,
@@ -18,6 +18,7 @@ import {
   getCelleSessions,
 } from "@/app/admin/analyse/actions";
 import { DEMO_CELLE_SESSIONS } from "@/app/admin/analyse/__demoData";
+import { useViewMode } from "@/components/shared/ViewModeContext";
 
 const DIM_LABELS: Record<Dimensjon, string> = {
   pyramide: "Pyramide (FYS/TEK/...)",
@@ -67,6 +68,7 @@ export function AnalyseKrysstabell({
   initDim1: Dimensjon;
   initDim2: Dimensjon;
 }) {
+  const { mode } = useViewMode();
   const [data, setData] = useState<KrysstabellData>(initData);
   const [dim1, setDim1] = useState<Dimensjon>(initDim1);
   const [dim2, setDim2] = useState<Dimensjon>(initDim2);
@@ -117,6 +119,30 @@ export function AnalyseKrysstabell({
   const verdiKart = new Map(
     data.celler.map((c) => [`${c.rad}::${c.kolonne}`, c]),
   );
+
+  if (mode === "standard") {
+    return (
+      <section className="rounded-lg border border-dashed border-border bg-card p-10 text-center">
+        <Lock
+          className="mx-auto h-8 w-8 text-muted-foreground"
+          strokeWidth={1.5}
+          aria-hidden
+        />
+        <h2 className="mt-4 font-display text-xl font-semibold">
+          Krysstabell er en <em className="text-primary md:italic">Avansert</em>{" "}
+          funksjon
+        </h2>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          Krysstabuler trening på tvers av to dimensjoner — område, miljø,
+          intensitet, pyramide og mer. Bytt til Avansert for å åpne tabellen.
+        </p>
+        <p className="mt-6 inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-1.5 text-xs text-muted-foreground">
+          Bytt til Avansert øverst på siden
+          <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.75} />
+        </p>
+      </section>
+    );
+  }
 
   return (
     <div className="space-y-4">

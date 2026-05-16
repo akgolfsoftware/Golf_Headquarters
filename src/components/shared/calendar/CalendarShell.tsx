@@ -27,6 +27,14 @@ type Props = {
   onToggleSidebar?: () => void;
   children: React.ReactNode;
   className?: string;
+  /**
+   * Standard skjuler AAR-vyen (årsplan) — den brukes hovedsakelig av
+   * trenere for periodisering. Avansert eksponerer alle vyene.
+   * Default "advanced" for bakoverkompatibilitet med CoachHQ.
+   */
+  viewMode?: "standard" | "advanced";
+  /** Slot for ekstra knapper helt til høyre i topbar (f.eks. modus-toggle). */
+  rightSlot?: React.ReactNode;
 };
 
 const VY_KORT: Record<KalenderVy, string> = {
@@ -62,7 +70,13 @@ export function CalendarShell({
   onToggleSidebar,
   children,
   className,
+  viewMode = "advanced",
+  rightSlot,
 }: Props) {
+  const synligeVyer: KalenderVy[] =
+    viewMode === "standard"
+      ? ["MAANED", "UKE", "DAG"]
+      : (Object.keys(VY_LABEL) as KalenderVy[]);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,9 +87,12 @@ export function CalendarShell({
       if (e.metaKey || e.ctrlKey || e.altKey) return;
 
       const k = e.key.toLowerCase();
-      if (SNARVEI_TIL_VY[k]) {
+      const snarvei = SNARVEI_TIL_VY[k];
+      if (snarvei) {
+        // I standard skjuler vi AAR — hopp over snarveien.
+        if (viewMode === "standard" && snarvei === "AAR") return;
         e.preventDefault();
-        onByttVy(SNARVEI_TIL_VY[k]);
+        onByttVy(snarvei);
         return;
       }
       if (k === "arrowleft") {
@@ -88,7 +105,7 @@ export function CalendarShell({
     }
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [onByttVy, onByttDato]);
+  }, [onByttVy, onByttDato, viewMode]);
 
   const datoTekst = formaterTopbarDato(basisdato, vy);
 
@@ -143,7 +160,7 @@ export function CalendarShell({
         </div>
 
         <div className="ml-auto flex items-center gap-1">
-          {(Object.keys(VY_LABEL) as KalenderVy[]).map((v) => (
+          {synligeVyer.map((v) => (
             <button
               key={v}
               type="button"
@@ -163,6 +180,11 @@ export function CalendarShell({
               </span>
             </button>
           ))}
+          {rightSlot && (
+            <div className="ml-3 flex items-center gap-2 border-l border-border pl-3">
+              {rightSlot}
+            </div>
+          )}
         </div>
       </header>
 

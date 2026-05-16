@@ -38,6 +38,19 @@ export type KalenderData = {
   planNavn?: string;
 };
 
+export type KalenderRootProps = {
+  data: KalenderData;
+  /** "advanced" (default) viser alle vyer. "standard" skjuler ÅR. */
+  viewMode?: "standard" | "advanced";
+  /**
+   * Hvis satt: lås kalenderen til denne spilleren. PlayerHQ bruker dette så
+   * en spiller bare ser egne data — spillervelger i sidebar skjules.
+   */
+  lockedSpillerId?: string;
+  /** Topbar-slot (typisk Standard/Avansert-toggle). */
+  rightSlot?: React.ReactNode;
+};
+
 const URL_VY: Record<KalenderVy, string> = {
   AAR: "ar",
   MAANED: "maaned",
@@ -54,18 +67,29 @@ function defaultFilter(): FilterState {
   };
 }
 
-export function KalenderRoot({ data }: { data: KalenderData }) {
+export function KalenderRoot({
+  data,
+  viewMode = "advanced",
+  lockedSpillerId,
+  rightSlot,
+}: KalenderRootProps) {
   const router = useRouter();
   const sp = useSearchParams();
-  const [vy, setVy] = useState<KalenderVy>(data.startVy);
+  // I standard skjuler vi AAR — hvis startVy er AAR, fall til MAANED.
+  const startVy: KalenderVy =
+    viewMode === "standard" && data.startVy === "AAR"
+      ? "MAANED"
+      : data.startVy;
+  const [vy, setVy] = useState<KalenderVy>(startVy);
   const [basisdato, setBasisdato] = useState<Date>(data.basisdato);
   const [valgtSpiller, setValgtSpiller] = useState<string | null>(
-    data.spillere[0]?.id ?? null,
+    lockedSpillerId ?? data.spillere[0]?.id ?? null,
   );
   const [filter, setFilter] = useState<FilterState>(defaultFilter());
   const [sidebarApent, setSidebarApent] = useState(true);
 
   function bytteVy(ny: KalenderVy) {
+    if (viewMode === "standard" && ny === "AAR") return;
     setVy(ny);
     const params = new URLSearchParams(sp.toString());
     params.set("view", URL_VY[ny]);
@@ -133,6 +157,7 @@ export function KalenderRoot({ data }: { data: KalenderData }) {
           stats={stats}
           filter={filter}
           onFilterChange={setFilter}
+          skjulSpillerVelger={Boolean(lockedSpillerId)}
         />
       )}
       <div className="flex flex-1 flex-col">
@@ -144,6 +169,8 @@ export function KalenderRoot({ data }: { data: KalenderData }) {
           onValgIdag={() => setBasisdato(new Date())}
           sidebarApent={sidebarApent}
           onToggleSidebar={() => setSidebarApent((v) => !v)}
+          viewMode={viewMode}
+          rightSlot={rightSlot}
         >
           {vy === "AAR" && (
             <AarsplanView

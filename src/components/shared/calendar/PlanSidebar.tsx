@@ -53,6 +53,8 @@ type Props = {
   filter: FilterState;
   onFilterChange: (filter: FilterState) => void;
   className?: string;
+  /** PlayerHQ skjuler spillervelgeren (kun én spiller — innlogget bruker). */
+  skjulSpillerVelger?: boolean;
 };
 
 const PYRAMIDE_FARGE: Record<PyramidArea, string> = {
@@ -75,6 +77,7 @@ export function PlanSidebar({
   filter,
   onFilterChange,
   className,
+  skjulSpillerVelger = false,
 }: Props) {
   const [filterApent, setFilterApent] = useState(true);
 
@@ -105,6 +108,7 @@ export function PlanSidebar({
       )}
     >
       {/* Spiller-velger */}
+      {!skjulSpillerVelger && (
       <section className="flex flex-col gap-2">
         <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
           <User2 size={14} strokeWidth={1.5} />
@@ -125,6 +129,7 @@ export function PlanSidebar({
           ))}
         </select>
       </section>
+      )}
 
       {/* Periode-status */}
       {periode && (
