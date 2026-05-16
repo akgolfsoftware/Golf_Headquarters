@@ -96,7 +96,7 @@ export function SessionCard({
       className={cn(
         "group relative flex w-full flex-col gap-1.5 rounded-md border border-border border-l-4 bg-card p-2 text-left transition-colors hover:bg-secondary",
         PYRAMIDE_BORDER[pyramide],
-        live && "ring-1 ring-accent",
+        live && "ring-2 ring-accent",
         className,
       )}
     >

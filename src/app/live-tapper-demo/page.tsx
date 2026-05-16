@@ -115,7 +115,7 @@ export default function LiveTapperDemo() {
       {/* TAP bar */}
       <div className="relative z-10 px-6 pb-6">
         <button
-          className="flex h-30 w-full flex-col items-center justify-center gap-1 rounded-[20px] transition-transform active:scale-[0.985]"
+          className="flex h-30 w-full flex-col items-center justify-center gap-1 rounded-2xl transition-transform active:scale-[0.985]"
           style={{
             height: 120,
             background: "linear-gradient(180deg, #D1F843 0%, #C2EE2F 100%)",
