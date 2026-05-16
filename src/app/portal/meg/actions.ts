@@ -40,6 +40,7 @@ export async function oppdaterPreferences(input: Partial<UserPreferences>) {
   const oppdatert: UserPreferences = {
     notif: { ...eksisterende.notif, ...(input.notif ?? {}) },
     spraak: input.spraak ?? eksisterende.spraak,
+    sgHubMode: input.sgHubMode ?? eksisterende.sgHubMode,
   };
 
   await prisma.user.update({

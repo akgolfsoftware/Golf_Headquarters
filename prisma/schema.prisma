@@ -262,6 +262,10 @@ model User {
   // Caddie chat-meldinger (intern AI-assistent for admin)
   caddieMessages CaddieMessage[]
 
+  // SG Coaching Hub (Phase 1)
+  sgInsights     SgInsight[]
+  bestSessionRef BestSessionReference?
+
   @@map("users")
 }
 
@@ -559,9 +563,10 @@ model TrainingPlanSession {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  plan   TrainingPlan            @relation(fields: [planId], references: [id], onDelete: Cascade)
-  drills SessionDrill[]
-  log    TrainingPlanSessionLog?
+  plan           TrainingPlan            @relation(fields: [planId], references: [id], onDelete: Cascade)
+  drills         SessionDrill[]
+  log            TrainingPlanSessionLog?
+  clubsPracticed ClubsPracticed[]
 
   @@index([planId, scheduledAt])
   @@map("training_plan_sessions")
@@ -770,13 +775,14 @@ model TestResult {
 }
 
 model TrackManSession {
-  id         String   @id @default(cuid())
-  userId     String
-  recordedAt DateTime
-  source     String // "csv-import" | "api"
-  shotCount  Int      @default(0)
-  rawJson    Json?
-  createdAt  DateTime @default(now())
+  id          String               @id @default(cuid())
+  userId      String
+  recordedAt  DateTime
+  source      String // "csv-import" | "api"
+  shotCount   Int                  @default(0)
+  rawJson     Json?
+  environment TrackManEnvironment?
+  createdAt   DateTime             @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1005,6 +1011,37 @@ model Payment {
   @@index([status])
   @@index([paidAt])
   @@map("payments")
+}
+
+// ---------- SG Coaching Hub enums ----------
+
+enum TrackManEnvironment {
+  SIMULATOR_INDOOR
+  NET_INDOOR
+  RANGE_OUTDOOR_MAT
+  RANGE_OUTDOOR_GRASS
+  COURSE_PRACTICE
+  COURSE_COMPETITION
+}
+
+enum SgCategory {
+  OTT
+  APP
+  ARG
+  PUTT
+}
+
+enum InsightCategory {
+  DISTANCE_GAPPING
+  CONSISTENCY_LEAK
+  TRAINING_GAP
+  D_PLANE_DRIFT
+  STRIKE_QUALITY
+  FATIGUE_PATTERN
+  EQUIPMENT_FIT
+  TEMPO_VARIANCE
+  PROGRESSION_TREND
+  SAME_DISTANCE_OPPORTUNITY
 }
 
 enum PaymentStatus {
@@ -1751,6 +1788,101 @@ model OktMalDrill {
 
   @@index([malId])
   @@map("okt_mal_driller")
+}
+
+// ---------- SG Coaching Hub modeller ----------
+
+// Køller øvd på i én økt — kobler TrainingPlanSession til køllebruk.
+model ClubsPracticed {
+  id          String              @id @default(cuid())
+  sessionId   String
+  session     TrainingPlanSession @relation(fields: [sessionId], references: [id])
+  club        String              // "3W", "7i", "PW"
+  shotCount   Int?
+  environment TrackManEnvironment
+  createdAt   DateTime            @default(now())
+
+  @@index([sessionId])
+  @@index([club, createdAt])
+  @@map("clubs_practiced")
+}
+
+// PGA Tour benchmark-data fra Data Golf — ukentlig cron-sync.
+model SgBaseline {
+  id              String     @id @default(cuid())
+  category        SgCategory
+  distanceBucket  String     // "175-200y"
+  lie             ShotLie?
+  expectedStrokes Float
+  sampleSize      Int
+  source          String     // "datagolf-approach-skill-2026Q1"
+  fetchedAt       DateTime
+
+  @@unique([category, distanceBucket, lie])
+  @@map("sg_baselines")
+}
+
+// AI-genererte innsikter per spiller — oppdateres daglig via cron kl 04:00.
+model SgInsight {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
+  category       InsightCategory
+  severity       Int             // 1-5
+  title          String
+  body           String          @db.Text
+  payload        Json
+  createdAt      DateTime        @default(now())
+  acknowledgedAt DateTime?
+  resolvedAt     DateTime?
+
+  @@index([userId, category, createdAt])
+  @@map("sg_insights")
+}
+
+// Referanse til "beste økt noensinne" per spiller. Én rad per spiller (1:1).
+model BestSessionReference {
+  userId            String   @id
+  user              User     @relation(fields: [userId], references: [id])
+  trackmanSessionId String
+  pinnedAt          DateTime @default(now())
+  pinnedBy          String   // userId — spiller eller coach
+  notes             String?
+  autoSuggested     Boolean  @default(false)
+
+  @@map("best_session_references")
+}
+
+// Coach-annotasjoner på enkeltslag i TrackMan-session.
+model ShotAnnotation {
+  id                String   @id @default(cuid())
+  trackmanSessionId String
+  clubId            String   // "7i"
+  shotNumber        Int      // 1, 2, 3...
+  coachId           String
+  body              String   @db.Text
+  videoUrl          String?
+  createdAt         DateTime @default(now())
+
+  @@index([trackmanSessionId, clubId])
+  @@map("shot_annotations")
+}
+
+// Materialisert view — historiske per-kølle aggregater, oppdateres via cron.
+model ClubMetricTrend {
+  id           String   @id @default(cuid())
+  userId       String
+  club         String
+  weekStart    DateTime
+  avgClubPath  Float
+  avgFaceAngle Float
+  avgSmash     Float
+  avgTotal     Float
+  sigmaBall    Float
+  shotCount    Int
+
+  @@unique([userId, club, weekStart])
+  @@map("club_metric_trends")
 }
 
 // Caddie — intern AI-assistent for Anders/admin (Mission Control).

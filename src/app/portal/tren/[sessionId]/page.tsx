@@ -18,6 +18,7 @@ import {
   CoachAnalysisCard,
   type AnalyseData,
 } from "@/components/portal/coach-analysis-card";
+import { ClubTaggingModal } from "@/components/sg-hub/ClubTaggingModal";
 import { Prisma } from "@/generated/prisma/client";
 import type { PyramidArea } from "@/generated/prisma/client";
 
@@ -222,6 +223,12 @@ export default async function SessionDetalj({
           )
         }
       />
+
+      {erEier && (
+        <div className="flex justify-end">
+          <ClubTaggingModal sessionId={session.id} />
+        </div>
+      )}
 
       {/* Hero-rad: dato, tid, varighet, fokus */}
       <section className="rounded-xl border border-border bg-card p-6">

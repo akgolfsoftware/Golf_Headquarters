@@ -9,6 +9,7 @@ export type UserPreferences = {
     paaminnelse: boolean;
   };
   spraak: "nb" | "en";
+  sgHubMode: "simple" | "advanced";
 };
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
@@ -18,6 +19,7 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
     paaminnelse: true,
   },
   spraak: "nb",
+  sgHubMode: "simple",
 };
 
 export function lesPreferences(user: Pick<User, "preferences">): UserPreferences {
@@ -31,6 +33,7 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
       ? (obj.notif as Record<string, unknown>)
       : {};
   const spraak = obj.spraak === "en" ? "en" : "nb";
+  const sgHubMode = obj.sgHubMode === "advanced" ? "advanced" : "simple";
 
   return {
     notif: {
@@ -42,5 +45,6 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
           : DEFAULT_PREFERENCES.notif.paaminnelse,
     },
     spraak,
+    sgHubMode,
   };
 }

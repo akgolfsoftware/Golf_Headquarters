@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 import { runPlanWatcher } from "@/lib/agents/plan-watcher";
 import { runBookingReminders } from "@/lib/agents/booking-reminders";
 import { runCleanupRecordings } from "@/lib/agents/cleanup-recordings";
+import { runSgInsights } from "@/lib/sg-hub/insight-engine";
+import { syncDataGolf } from "@/lib/sg-hub/datagolf-sync";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -13,6 +15,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "plan-watcher": runPlanWatcher,
   "booking-reminders": runBookingReminders,
   "cleanup-recordings": runCleanupRecordings,
+  "sg-insights": runSgInsights,
+  "datagolf-sync": syncDataGolf,
 };
 
 export async function GET(

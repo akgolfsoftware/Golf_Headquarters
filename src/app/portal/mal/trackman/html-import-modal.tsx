@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { importTrackManHtml } from "./actions";
+import type { TrackManEnvironment } from "./actions";
+import { ENVIRONMENT_OPTIONS } from "@/lib/sg-hub/environment-labels";
 
 export function HtmlImportModal() {
   const router = useRouter();
@@ -13,6 +15,7 @@ export function HtmlImportModal() {
 
   const today = new Date().toISOString().split("T")[0];
   const [recordedAt, setRecordedAt] = useState(today);
+  const [environment, setEnvironment] = useState<TrackManEnvironment>("SIMULATOR_INDOOR");
   const [filename, setFilename] = useState<string | null>(null);
   const [htmlContent, setHtmlContent] = useState("");
 
@@ -25,6 +28,7 @@ export function HtmlImportModal() {
     setOpen(false);
     setFilename(null);
     setHtmlContent("");
+    setEnvironment("SIMULATOR_INDOOR");
     setError(null);
   }
 
@@ -45,7 +49,7 @@ export function HtmlImportModal() {
     setError(null);
     startTransition(async () => {
       try {
-        await importTrackManHtml({ recordedAt, htmlContent });
+        await importTrackManHtml({ recordedAt, htmlContent, environment });
         lukk();
         router.refresh();
       } catch (err) {
@@ -90,6 +94,22 @@ export function HtmlImportModal() {
                 required
                 className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
               />
+            </label>
+
+            <label className="block">
+              <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Treningsmiljø
+              </span>
+              <select
+                value={environment}
+                onChange={(e) => setEnvironment(e.target.value as TrackManEnvironment)}
+                required
+                className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+              >
+                {ENVIRONMENT_OPTIONS.map(([val, label]) => (
+                  <option key={val} value={val}>{label}</option>
+                ))}
+              </select>
             </label>
 
             <label className="block">

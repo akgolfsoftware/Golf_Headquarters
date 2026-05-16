@@ -5,10 +5,14 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { triggerTrackManAgent } from "@/lib/agents/triggers";
 import { parseTrackManHtmlReport } from "@/lib/trackman/parse-html-report";
+import type { TrackManEnvironment } from "@/generated/prisma/client";
+
+export type { TrackManEnvironment };
 
 export type TrackManCsvInput = {
   recordedAt: string; // ISO-dato
   csvContent: string;
+  environment: TrackManEnvironment;
 };
 
 type ParsedRow = Record<string, string>;
@@ -44,6 +48,7 @@ export async function importTrackManCsv(input: TrackManCsvInput) {
       source: "csv-import",
       shotCount: rader.length,
       rawJson: rader,
+      environment: input.environment,
     },
   });
 
@@ -55,6 +60,7 @@ export async function importTrackManCsv(input: TrackManCsvInput) {
 export type TrackManHtmlInput = {
   recordedAt: string; // ISO-dato (kan overstyres av bruker)
   htmlContent: string;
+  environment: TrackManEnvironment;
 };
 
 export async function importTrackManHtml(input: TrackManHtmlInput) {
@@ -73,6 +79,7 @@ export async function importTrackManHtml(input: TrackManHtmlInput) {
       shotCount,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       rawJson: rapport as any,
+      environment: input.environment,
     },
   });
 
