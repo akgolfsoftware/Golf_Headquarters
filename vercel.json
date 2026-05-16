@@ -16,6 +16,18 @@
     {
       "path": "/api/cron/refresh-calendar-watches",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/sg-insights",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/datagolf-sync",
+      "schedule": "0 5 * * 1"
+    },
+    {
+      "path": "/api/cron/club-trends",
+      "schedule": "0 3 * * 1"
     }
   ]
 }
