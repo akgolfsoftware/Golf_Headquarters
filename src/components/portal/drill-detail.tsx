@@ -10,6 +10,8 @@ import {
   TRENINGSOMRADER,
   L_FASER,
   P_POSISJONER,
+  M_MILJO,
+  PR_PRESS,
   DrillParametersSchema,
   type DrillParameters,
   type FysTreningstype,
@@ -102,27 +104,37 @@ export function DrillDetail({ exercise }: { exercise: DrillData }) {
       {/* FYS-parametre */}
       {params?.modus === "FYS" && <FysSection params={params} />}
 
-      {/* GOLF-parametre */}
-      {params?.modus === "GOLF" && <GolfSection params={params} />}
+      {/* GOLF-parametre — vises alltid for golf-drills (TEK/SLAG/SPILL/TURN) */}
+      {modus === "GOLF" && (
+        <GolfSection
+          params={params?.modus === "GOLF" ? params : null}
+          fallbackLPhase={exercise.lPhase}
+        />
+      )}
 
-      {/* Generelle metadata */}
-      <div className="grid grid-cols-2 gap-4 rounded-xl border border-border bg-secondary/50 p-4 sm:grid-cols-4">
-        {exercise.defaultRepsSets && (
-          <Fact label="Sett / Reps" value={exercise.defaultRepsSets} />
-        )}
-        {(exercise.csMin != null || exercise.csMax != null) && (
-          <Fact
-            label="CS-sone"
-            value={`${exercise.csMin ?? "?"}${exercise.csMax != null ? `–${exercise.csMax}` : ""}%`}
-          />
-        )}
-        {exercise.durationMin != null && (
-          <Fact label="Varighet" value={`${exercise.durationMin} min`} />
-        )}
-        {modus === "FYS" && !params && (
-          <Fact label="Modus" value="Fysisk" />
-        )}
-      </div>
+      {/* Generelle metadata — alltid synlig som card */}
+      <FactPanel
+        title="Generelle metadata"
+        rows={[
+          { label: "Pyramide", value: PYR_LABEL[exercise.pyramidArea] },
+          { label: "L-fase", value: exercise.lPhase ? LPHASE_LABEL[exercise.lPhase] : "—" },
+          {
+            label: "Sett / Reps",
+            value: exercise.defaultRepsSets ?? "—",
+          },
+          {
+            label: "CS-sone",
+            value:
+              exercise.csMin != null || exercise.csMax != null
+                ? `${exercise.csMin ?? "?"}${exercise.csMax != null ? `–${exercise.csMax}` : ""}%`
+                : "—",
+          },
+          {
+            label: "Varighet",
+            value: exercise.durationMin != null ? `${exercise.durationMin} min` : "—",
+          },
+        ]}
+      />
 
       {/* Video */}
       {exercise.videoUrl && (
@@ -136,6 +148,34 @@ export function DrillDetail({ exercise }: { exercise: DrillData }) {
           Se video
         </a>
       )}
+    </div>
+  );
+}
+
+function FactPanel({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: { label: string; value: string }[];
+}) {
+  return (
+    <div className="rounded-xl border border-border bg-card p-4">
+      <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        {title}
+      </div>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        {rows.map((r) => (
+          <div key={r.label}>
+            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              {r.label}
+            </div>
+            <div className="mt-1 font-mono text-base font-medium tabular-nums text-foreground">
+              {r.value}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -196,38 +236,64 @@ function FysSection({ params }: { params: { modus: "FYS"; fysType: string; muske
   );
 }
 
-function GolfSection({ params }: { params: { modus: "GOLF"; treningsomrade: string | null; lFase: string | null; pPosisjoner: string[]; environment: string | null } }) {
+function GolfSection({
+  params,
+  fallbackLPhase,
+}: {
+  params: { modus: "GOLF"; treningsomrade: string | null; lFase: string | null; pPosisjoner: string[]; environment: string | null } | null;
+  fallbackLPhase: LPhase | null;
+}) {
+  const treningsomrade = params?.treningsomrade ?? null;
+  const lFaseKode = params?.lFase ?? (fallbackLPhase ? `L-${fallbackLPhase}` : null);
+  const pPosisjoner = params?.pPosisjoner ?? [];
+  const miljo = params?.environment ?? null;
+
+  const omr = treningsomrade ? TRENINGSOMRADER.find((t) => t.kode === treningsomrade) : null;
+  const lFase = lFaseKode ? L_FASER.find((l) => l.kode === lFaseKode) : null;
+  const miljoInfo = miljo ? M_MILJO.find((m) => m.kode === miljo) : null;
+
   return (
-    <div className="space-y-4 rounded-xl border border-border bg-card p-4">
+    <div className="space-y-5 rounded-xl border border-border bg-card p-5">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         Golf-parametre
       </div>
 
+      {/* Chips: treningsområde + l-fase + miljø */}
       <div className="flex flex-wrap gap-1.5">
-        {params.treningsomrade && (
+        {omr ? (
           <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-            {TRENINGSOMRADER.find((t) => t.kode === params.treningsomrade)?.label ?? params.treningsomrade}
+            {omr.label}
+            {omr.sgKategori && <span className="ml-1 opacity-60">· SG {omr.sgKategori}</span>}
+          </span>
+        ) : (
+          <span className="rounded-full border border-dashed border-border bg-card px-3 py-1 text-xs text-muted-foreground">
+            Treningsområde — ikke satt
           </span>
         )}
-        {params.lFase && (
+        {lFase ? (
           <span className="rounded-full bg-secondary px-3 py-1 text-xs text-foreground">
-            {L_FASER.find((l) => l.kode === params.lFase)?.label ?? params.lFase}
+            {lFase.label}
+          </span>
+        ) : (
+          <span className="rounded-full border border-dashed border-border bg-card px-3 py-1 text-xs text-muted-foreground">
+            L-fase — ikke satt
           </span>
         )}
-        {params.environment && (
+        {miljoInfo && (
           <span className="rounded-full bg-secondary px-3 py-1 text-xs text-foreground">
-            {params.environment}
+            {miljoInfo.label}
           </span>
         )}
       </div>
 
-      {params.pPosisjoner.length > 0 && (
-        <div>
-          <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            P-posisjoner
-          </div>
+      {/* P-posisjoner */}
+      <div>
+        <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          P-posisjoner
+        </div>
+        {pPosisjoner.length > 0 ? (
           <div className="flex flex-wrap gap-1.5">
-            {params.pPosisjoner.map((kode) => {
+            {pPosisjoner.map((kode) => {
               const p = P_POSISJONER.find((pp) => pp.kode === kode);
               return (
                 <span key={kode} className="rounded-full bg-secondary px-2.5 py-1 font-mono text-[10px] tabular-nums text-foreground">
@@ -236,16 +302,34 @@ function GolfSection({ params }: { params: { modus: "GOLF"; treningsomrade: stri
               );
             })}
           </div>
+        ) : (
+          <span className="text-xs text-muted-foreground">Ingen p-posisjoner spesifisert</span>
+        )}
+      </div>
+
+      {/* L-fase beskrivelse */}
+      {lFase && (
+        <div className="rounded-lg bg-secondary/50 px-3 py-2 text-xs text-muted-foreground">
+          <strong className="text-foreground">{lFase.label}:</strong>{" "}
+          {lFase.beskrivelse}
+          {" — "}
+          CS anbefalt: {lFase.csAnbefalt}
         </div>
       )}
 
-      {params.lFase && (
-        <div className="text-xs text-muted-foreground">
-          {L_FASER.find((l) => l.kode === params.lFase)?.beskrivelse}
-          {" — "}
-          CS anbefalt: {L_FASER.find((l) => l.kode === params.lFase)?.csAnbefalt}
+      {/* Press-skala — vis hele PR1–PR5 som referanse */}
+      <div>
+        <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          Press-skala (PR)
         </div>
-      )}
+        <div className="flex flex-wrap gap-1.5">
+          {PR_PRESS.map((p) => (
+            <span key={p.kode} className="rounded-full bg-secondary px-2.5 py-1 font-mono text-[10px] text-muted-foreground">
+              <strong className="text-foreground">{p.kode}</strong> {p.label}
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

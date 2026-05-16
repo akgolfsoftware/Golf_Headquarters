@@ -33,36 +33,10 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
 import { PageHeader } from "@/components/shared/page-header";
-import { aggregateByArea, prosentPerArea } from "@/lib/pyramide";
-import type { PyramidArea, Goal } from "@/generated/prisma/client";
+import { aggregateByArea } from "@/lib/pyramide";
+import { PyramideTimerStatus } from "@/components/portal/pyramide-timer-status";
+import type { Goal } from "@/generated/prisma/client";
 import { NyGoalModal } from "./ny-goal-modal";
-
-// Pyramide-farger fra designet (CSS-vars fra @theme).
-const PYR_COLOR: Record<PyramidArea, string> = {
-  FYS: "var(--color-pyr-fys)",
-  TEK: "var(--color-pyr-tek)",
-  SLAG: "var(--color-pyr-slag)",
-  SPILL: "var(--color-pyr-spill)",
-  TURN: "var(--color-pyr-turn)",
-};
-
-const PYR_REKKEFOLGE: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
-
-const PYR_LABEL_KORT: Record<PyramidArea, string> = {
-  FYS: "FYS",
-  TEK: "TEK",
-  SLAG: "SLAG",
-  SPILL: "SPL",
-  TURN: "TUR",
-};
-
-const PYR_NAVN: Record<PyramidArea, string> = {
-  FYS: "Fysisk",
-  TEK: "Teknikk",
-  SLAG: "Slagtyper",
-  SPILL: "Spill",
-  TURN: "Turnering",
-};
 
 export default async function MalOversikt() {
   const user = await requirePortalUser();
@@ -75,6 +49,9 @@ export default async function MalOversikt() {
 
   const nittiDager = new Date();
   nittiDager.setDate(nittiDager.getDate() - 90);
+
+  const sjuDager = new Date();
+  sjuDager.setDate(sjuDager.getDate() - 7);
 
   const [rounds, goals, sesjoner] = await Promise.all([
     prisma.round.findMany({
@@ -91,7 +68,7 @@ export default async function MalOversikt() {
         plan: { userId: user.id },
         scheduledAt: { gte: nittiDager },
       },
-      select: { pyramidArea: true, durationMin: true, status: true },
+      select: { pyramidArea: true, durationMin: true, status: true, scheduledAt: true },
     }),
   ]);
 
@@ -99,12 +76,13 @@ export default async function MalOversikt() {
     rounds.filter((r) => r.playedAt >= tretti),
   );
 
-  const pyramide = prosentPerArea(
-    aggregateByArea(
-      sesjoner.filter((s) => s.status === "COMPLETED"),
-    ),
-  );
-  const pyramideSnitt = beregnSnitt(pyramide);
+  // Pyramide-aggregat per periode (timer per område)
+  const completedSesjoner = sesjoner.filter((s) => s.status === "COMPLETED");
+  const pyramideMinutter = {
+    "7d": aggregateByArea(completedSesjoner.filter((s) => s.scheduledAt >= sjuDager)),
+    "30d": aggregateByArea(completedSesjoner.filter((s) => s.scheduledAt >= tretti)),
+    "90d": aggregateByArea(completedSesjoner),
+  };
 
   const hcpMaal = finnHcpMaal(goals);
   const scoreMaal = finnScoreMaal(goals);
@@ -134,8 +112,8 @@ export default async function MalOversikt() {
         }
       />
 
-      {/* HCP-trend dark hero */}
-      <HcpTrend user={user} rounds={rounds} isFree={isFree} />
+      {/* Snittscore-trend dark hero */}
+      <ScoreTrend user={user} rounds={rounds} isFree={isFree} />
 
       {/* 3 mål-cards */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -152,10 +130,11 @@ export default async function MalOversikt() {
         />
       </div>
 
-      {/* Pyramide-status */}
-      <PyramideStatus
-        pyramide={pyramide}
-        snitt={pyramideSnitt}
+      {/* Pyramide-status — timer per periode */}
+      <PyramideTimerStatus
+        minutter7d={pyramideMinutter["7d"]}
+        minutter30d={pyramideMinutter["30d"]}
+        minutter90d={pyramideMinutter["90d"]}
         isFree={isFree}
       />
 
@@ -185,14 +164,14 @@ export default async function MalOversikt() {
   );
 }
 
-// --- HCP-TREND ----------------------------------------------------------
+// --- SCORE-TREND ----------------------------------------------------------
 
 type RoundLite = {
   playedAt: Date;
   score: number;
 };
 
-function HcpTrend({
+function ScoreTrend({
   user,
   rounds,
   isFree,
@@ -201,17 +180,15 @@ function HcpTrend({
   rounds: RoundLite[];
   isFree: boolean;
 }) {
-  // Bygg 12 stikkprøver av "HCP-trend" — én per måned siste 12 mnd, med
-  // siste kjent verdi (user.hcp) i siste punkt. Hvis vi har færre data
-  // punkter, plukker vi månedlig median av score som proxy.
-  const punkter = byggHcpSerie(rounds, user.hcp);
+  // Månedlig snitt-score siste 12 mnd
+  const punkter = byggScoreSerie(rounds);
   const harData = punkter.length >= 2;
-  const naa = user.hcp;
+  const naa = punkter.length > 0 ? punkter[punkter.length - 1].v : null;
   const forste = punkter[0]?.v ?? naa;
   const endring =
     naa != null && forste != null ? +(naa - forste).toFixed(1) : null;
   const beste =
-    punkter.length > 0 ? Math.min(...punkter.map((p) => p.v)) : null;
+    rounds.length > 0 ? Math.min(...rounds.map((r) => r.score)) : null;
   const treMndSnitt =
     punkter.length >= 3
       ? +(
@@ -241,17 +218,20 @@ function HcpTrend({
           <span
             className="font-mono text-[11px] uppercase tracking-[0.08em] text-accent/70"
           >
-            Handicap-trend · 12 mnd
+            Snittscore-trend · 12 mnd
           </span>
           <div className="flex items-baseline gap-4 font-mono text-5xl font-medium leading-none tabular-nums tracking-tight md:text-6xl">
-            <span>{naa != null ? formatHcp(naa) : "—"}</span>
-            {endring != null && (
+            <span>{naa != null ? naa.toFixed(1).replace(".", ",") : "—"}</span>
+            {endring != null && Math.abs(endring) >= 0.1 && (
               <span
-                className="text-base font-semibold text-accent"
+                className="text-base font-semibold"
+                style={{
+                  color: endring < 0 ? "hsl(var(--accent))" : "rgb(255, 180, 180)",
+                }}
               >
-                {endring < 0 ? "↓" : endring > 0 ? "↑" : ""}{" "}
+                {endring < 0 ? "↓" : "↑"}{" "}
                 {endring > 0 ? "+" : ""}
-                {formatHcp(Math.abs(endring))}
+                {endring.toFixed(1).replace(".", ",")}
               </span>
             )}
           </div>
@@ -259,17 +239,20 @@ function HcpTrend({
             className="mt-1 text-sm text-white/65"
           >
             {harData
-              ? "Sammenstilt fra loggførte runder siste år."
+              ? "Snitt-score per måned, siste år."
               : "Registrer minst 2 runder for å se trend."}
           </p>
         </div>
 
         <div className="flex flex-wrap items-start gap-6">
           {beste != null && (
-            <Stat label="Beste" value={formatHcp(beste)} highlight />
+            <Stat label="Beste" value={String(beste)} highlight />
           )}
           {treMndSnitt != null && (
-            <Stat label="3 mnd snitt" value={formatHcp(treMndSnitt)} />
+            <Stat label="3 mnd snitt" value={treMndSnitt.toFixed(1).replace(".", ",")} />
+          )}
+          {user.hcp != null && (
+            <Stat label="HCP" value={formatHcp(user.hcp)} />
           )}
           <Stat
             label="Runder 12 mnd"
@@ -755,111 +738,6 @@ function FerdighetMaalCard({
   );
 }
 
-// --- PYRAMIDE-STATUS ---------------------------------------------------
-
-function PyramideStatus({
-  pyramide,
-  snitt,
-  isFree,
-}: {
-  pyramide: Record<PyramidArea, number>;
-  snitt: number;
-  isFree: boolean;
-}) {
-  return (
-    <section className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm md:p-8">
-      <header className="flex items-center justify-between gap-4">
-        <h3 className="font-display text-xl font-semibold tracking-tight text-foreground">
-          Pyramide-status
-          <span className="ml-2 font-sans text-sm font-normal italic text-muted-foreground">
-            snitt {snitt} % siste 90 dager
-          </span>
-        </h3>
-        <Link
-          href="/portal/tren"
-          className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-        >
-          Forklaring
-          <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.75} />
-        </Link>
-      </header>
-
-      <div
-        className={`mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5 ${
-          isFree ? "blur-[3px] opacity-50" : ""
-        }`}
-      >
-        {PYR_REKKEFOLGE.map((area) => (
-          <PyramideRing
-            key={area}
-            area={area}
-            value={pyramide[area]}
-          />
-        ))}
-      </div>
-
-      {isFree && <LockOverlay label="Pyramide kun for Pro" cta="Oppgrader" />}
-    </section>
-  );
-}
-
-function PyramideRing({
-  area,
-  value,
-}: {
-  area: PyramidArea;
-  value: number;
-}) {
-  const radius = 14;
-  const circumference = 2 * Math.PI * radius;
-  const dash = (Math.min(100, value) / 100) * circumference;
-  const color = PYR_COLOR[area];
-
-  return (
-    <div className="flex flex-col items-center gap-2 rounded-md p-4 transition-colors hover:bg-secondary/40">
-      <span className="relative h-24 w-24">
-        <svg
-          viewBox="0 0 36 36"
-          className="h-full w-full -rotate-90"
-          aria-hidden
-        >
-          <circle
-            cx="18"
-            cy="18"
-            r={radius}
-            fill="none"
-            stroke="hsl(var(--secondary))"
-            strokeWidth="3.5"
-          />
-          <circle
-            cx="18"
-            cy="18"
-            r={radius}
-            fill="none"
-            stroke={color}
-            strokeWidth="3.5"
-            strokeDasharray={`${dash} ${circumference}`}
-            strokeLinecap="round"
-          />
-        </svg>
-        <span className="absolute inset-0 grid place-items-center">
-          <span className="flex flex-col items-center">
-            <span className="font-mono text-lg font-semibold tabular-nums text-foreground">
-              {value} %
-            </span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground">
-              {PYR_LABEL_KORT[area]}
-            </span>
-          </span>
-        </span>
-      </span>
-      <span className="font-display text-sm font-semibold text-foreground">
-        {PYR_NAVN[area]}
-      </span>
-    </div>
-  );
-}
-
 // --- QUICK LINKS -------------------------------------------------------
 
 function QuickLink({
@@ -980,27 +858,15 @@ function formatKortDato(d: Date): string {
   });
 }
 
-function beregnSnitt(prosent: Record<PyramidArea, number>): number {
-  const verdier = Object.values(prosent);
-  if (verdier.length === 0) return 0;
-  return Math.round(verdier.reduce((a, b) => a + b, 0) / verdier.length);
-}
-
 /**
- * Bygger en månedlig HCP-serie (12 punkter) som proxy fra score.
- * Bruker forholdet score - par (~72) skalert til HCP-spenn for visualisering.
- * Hvis user.hcp finnes, brukes den som siste-punkt for å låse linjens slutt.
+ * Bygger en månedlig snitt-score-serie (siste 12 mnd).
+ * Plukker kun måneder der det er registrert minst én runde.
  */
-function byggHcpSerie(
+function byggScoreSerie(
   rounds: RoundLite[],
-  naaHcp: number | null,
 ): { label: string; v: number }[] {
-  if (rounds.length === 0 && naaHcp == null) return [];
-  if (rounds.length === 0 && naaHcp != null) {
-    return [{ label: "nå", v: naaHcp }];
-  }
+  if (rounds.length === 0) return [];
 
-  // Grupper runder per måned-bucket siste 12 mnd.
   const nå = new Date();
   const buckets: { label: string; scores: number[] }[] = [];
   for (let i = 11; i >= 0; i--) {
@@ -1021,20 +887,10 @@ function byggHcpSerie(
     }
   }
 
-  // Konverter månedssnitt-score til "HCP-proxy". Hvis bucket er tom,
-  // hopp over (linje tegnes mellom punkter som finnes).
-  const ankerHcp = naaHcp ?? 18;
-  const sisteSnitt =
-    buckets[buckets.length - 1].scores.length > 0
-      ? snitt(buckets[buckets.length - 1].scores)
-      : ankerHcp;
-  const offset = ankerHcp - (sisteSnitt - 72);
-
   return buckets
     .map((b) => {
       if (b.scores.length === 0) return null;
-      const s = snitt(b.scores);
-      return { label: b.label, v: +(s - 72 + offset).toFixed(1) };
+      return { label: b.label, v: +snitt(b.scores).toFixed(1) };
     })
     .filter((p): p is { label: string; v: number } => p !== null);
 }

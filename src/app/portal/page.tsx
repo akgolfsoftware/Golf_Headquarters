@@ -209,6 +209,16 @@ function DashboardSkeleton() {
 
 // --- HERO ----------------------------------------------------------------
 
+function hilsen(date: Date): string {
+  const t = date.getHours();
+  if (t < 5) return "God natt";
+  if (t < 10) return "God morgen";
+  if (t < 12) return "God formiddag";
+  if (t < 17) return "God ettermiddag";
+  if (t < 22) return "God kveld";
+  return "God natt";
+}
+
 function Hero({ user }: { user: PortalUser }) {
   const idag = new Date();
   const dagnavn = DAGNAVN[idag.getDay()];
@@ -216,55 +226,74 @@ function Hero({ user }: { user: PortalUser }) {
   const fornavn = user.name.split(" ")[0] ?? user.name;
   const initial = user.name.trim().charAt(0).toUpperCase() || "?";
   const klokke = `${String(idag.getHours()).padStart(2, "0")}:${String(idag.getMinutes()).padStart(2, "0")}`;
+  const tidsHilsen = hilsen(idag);
 
   return (
-    <header className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
-      <div className="flex min-w-0 items-start gap-4 sm:gap-6">
-        <PortalAvatarButton
-          name={user.name}
-          avatarUrl={user.avatarUrl}
-          initial={initial}
-          tier={user.tier}
-        />
+    <header className="relative overflow-hidden rounded-2xl">
+      {/* Hero-bildet bak teksten */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/hero/coach-pointing.jpg')" }}
+      />
+      {/* Mørk gradient-overlay for tekstlesbarhet */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(105deg, hsl(var(--background)) 0%, hsl(var(--background))/95 35%, hsl(var(--background))/60 70%, transparent 100%)",
+        }}
+      />
 
-        <div className="min-w-0 flex-1">
-          <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-            Hjem · {datoTekst}
-          </span>
-          <h1 className="mt-2 font-display text-3xl font-normal italic leading-[1.05] tracking-tight text-foreground md:text-[42px]">
-            {dagnavn}, {fornavn}.{" "}
-            <span className="not-italic font-semibold text-primary">
-              {user.ambition ? "Vi bygger videre." : "Klar for dagen?"}
+      <div className="relative z-10 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between sm:gap-8 sm:px-8 sm:py-10">
+        <div className="flex min-w-0 items-start gap-4 sm:gap-6">
+          <PortalAvatarButton
+            name={user.name}
+            avatarUrl={user.avatarUrl}
+            initial={initial}
+            tier={user.tier}
+          />
+
+          <div className="min-w-0 flex-1">
+            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+              Hjem · {datoTekst}
             </span>
-          </h1>
-          <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
-            <span>{klokke}</span>
-            {user.homeClub && (
-              <>
-                <span className="text-foreground/30">·</span>
-                <span>{user.homeClub}</span>
-              </>
-            )}
-            {user.hcp != null && (
-              <>
-                <span className="text-foreground/30">·</span>
-                <span className="font-mono">
-                  HCP {user.hcp.toFixed(1).replace(".", ",")}
-                </span>
-              </>
-            )}
-          </p>
+            <h1 className="mt-2 font-display text-3xl font-normal italic leading-[1.05] tracking-tight text-foreground md:text-[42px]">
+              {tidsHilsen}, {fornavn}.{" "}
+              <span className="not-italic font-semibold text-primary">
+                {user.ambition ? "Vi bygger videre." : "Klar for dagen?"}
+              </span>
+            </h1>
+            <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+              <span>{klokke}</span>
+              {user.homeClub && (
+                <>
+                  <span className="text-foreground/30">·</span>
+                  <span>{user.homeClub}</span>
+                </>
+              )}
+              {user.hcp != null && (
+                <>
+                  <span className="text-foreground/30">·</span>
+                  <span className="font-mono">
+                    HCP {user.hcp.toFixed(1).replace(".", ",")}
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="flex shrink-0 items-center gap-2">
-        <Link
-          href="/portal/ny-okt"
-          className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-        >
-          <Plus className="h-4 w-4" strokeWidth={2} />
-          Logg trening
-        </Link>
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            href="/portal/ny-okt"
+            className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <Plus className="h-4 w-4" strokeWidth={2} />
+            Logg trening
+          </Link>
+        </div>
       </div>
     </header>
   );
