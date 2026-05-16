@@ -2,7 +2,7 @@
 
 // Placeholder — adherence-tabell med hopp-over kommer i Masterplan S14.
 
-import type { PlanVsActual } from "@/app/admin/analyse/__demoData";
+import type { PlanVsActual } from "@/app/admin/analyse/actions";
 
 type Props = {
   data: PlanVsActual[];

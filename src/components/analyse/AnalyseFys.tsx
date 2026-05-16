@@ -2,7 +2,7 @@
 
 // Placeholder — FYS-progresjon med vekt + muskelbalanse kommer i Masterplan S14.
 
-import type { FysProgresjonRad } from "@/app/admin/analyse/__demoData";
+import type { FysProgresjonRad } from "@/app/admin/analyse/actions";
 
 type Props = {
   data: FysProgresjonRad[];
