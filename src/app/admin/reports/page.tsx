@@ -7,12 +7,43 @@ import {
   LineChart,
   Plus,
   Search,
+  User,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
+export const dynamic = "force-dynamic";
+
+// ---------- Server Actions (stub — faktisk generering er out of scope) ----------
+
+async function genererSpillerFremgang(data: FormData) {
+  "use server";
+  const type = data.get("type") as string;
+  console.log("Generating report:", type);
+}
+
+async function genererTrenersesjonOppsummering(data: FormData) {
+  "use server";
+  const type = data.get("type") as string;
+  console.log("Generating report:", type);
+}
+
+async function genererInntektsrapport(data: FormData) {
+  "use server";
+  const type = data.get("type") as string;
+  console.log("Generating report:", type);
+}
+
+async function genererAktivitetslogg(data: FormData) {
+  "use server";
+  const type = data.get("type") as string;
+  console.log("Generating report:", type);
+}
+
+// ---------- Eksport-liste (CSV-last ned) ----------
+
 type Tone = "default" | "accent" | "gold" | "danger" | "turn";
 
-type ReportTemplate = {
+type EksportTemplate = {
   id: string;
   title: string;
   desc: string;
@@ -23,7 +54,7 @@ type ReportTemplate = {
   featured?: boolean;
 };
 
-const EKSPORTER: ReportTemplate[] = [
+const EKSPORTER: EksportTemplate[] = [
   {
     id: "spillere",
     title: "Spilleroversikt",
@@ -63,6 +94,49 @@ const EKSPORTER: ReportTemplate[] = [
   },
 ];
 
+// ---------- Rapport-typer med Server Actions ----------
+
+const RAPPORT_TYPER = [
+  {
+    id: "spiller-fremgang",
+    title: "Spiller-fremgangsrapport",
+    desc: "Generer fremgangsrapport for en spiller over en valgt datoperiode. Eksporteres som PDF.",
+    action: genererSpillerFremgang,
+    format: "PDF",
+    frekvens: "Manuell",
+    icon: <User className="h-5 w-5" />,
+  },
+  {
+    id: "trener-oppsummering",
+    title: "Trenersesjon-oppsummering",
+    desc: "Ukentlig oppsummering av alle coachingsesjoner med notater og CS-score. Eksporteres som CSV.",
+    action: genererTrenersesjonOppsummering,
+    format: "CSV",
+    frekvens: "Ukentlig",
+    icon: <BarChart3 className="h-5 w-5" />,
+  },
+  {
+    id: "inntektsrapport",
+    title: "Inntektsrapport",
+    desc: "Månedlig inntektsrapport med alle betalinger, refusjoner og MRR. Eksporteres som PDF.",
+    action: genererInntektsrapport,
+    format: "PDF",
+    frekvens: "Månedlig",
+    icon: <DollarSign className="h-5 w-5" />,
+  },
+  {
+    id: "aktivitetslogg",
+    title: "Aktivitetslogg",
+    desc: "CSV med alle sesjoner, runder og tester på plattformen. Brukes til driftsoversikt.",
+    action: genererAktivitetslogg,
+    format: "CSV",
+    frekvens: "Manuell",
+    icon: <LineChart className="h-5 w-5" />,
+  },
+] as const;
+
+// ---------- Side ----------
+
 export default async function Rapporter() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
@@ -81,13 +155,16 @@ export default async function Rapporter() {
         <header className="mb-8 flex items-start justify-between gap-6">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              CoachHQ · Mal-katalog
+              CoachHQ · Rapport-katalog
             </div>
             <h1 className="mt-2 font-display text-[22px] sm:text-[28px] md:text-[36px] italic leading-[1.1] tracking-tight">
-              <em className="font-normal italic">Hva trenger du å rapportere?</em>
+              <em className="font-normal italic">
+                Hva trenger du å rapportere?
+              </em>
             </h1>
             <p className="mt-2 text-[13.5px] text-muted-foreground">
-              {EKSPORTER.length} eksporter tilgjengelig · CSV-format for regnskap, analyse og oppfølging
+              {RAPPORT_TYPER.length + EKSPORTER.length} rapporter og eksporter
+              tilgjengelig
             </p>
           </div>
           <div className="flex gap-2">
@@ -110,10 +187,27 @@ export default async function Rapporter() {
 
         {/* KPI strip */}
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <Kpi label="Maler tilgjengelig" value={String(EKSPORTER.length)} foot="i 1 kategori" />
-          <Kpi label="Format" value="CSV" foot="Excel-kompatibel" />
-          <Kpi label="Planlagte leveranser" value={String(planlagte.length)} foot="ingen aktive ennå" />
-          <Kpi label="Snitt-genereringstid" value="4" unit=" s" foot="raskest 3 s · tregest 5 s" />
+          <Kpi
+            label="Rapport-typer"
+            value={String(RAPPORT_TYPER.length)}
+            foot="med server actions"
+          />
+          <Kpi
+            label="Eksporter"
+            value={String(EKSPORTER.length)}
+            foot="CSV-format"
+          />
+          <Kpi
+            label="Planlagte leveranser"
+            value={String(planlagte.length)}
+            foot="ingen aktive ennå"
+          />
+          <Kpi
+            label="Snitt-genereringstid"
+            value="4"
+            unit=" s"
+            foot="raskest 3 s · tregest 5 s"
+          />
         </div>
 
         {/* Filter bar */}
@@ -123,12 +217,57 @@ export default async function Rapporter() {
             <span>Søk rapport-mal</span>
           </div>
           <Chip active>Alle kategorier</Chip>
-          <Chip>Eksport ({EKSPORTER.length})</Chip>
+          <Chip>Rapporter ({RAPPORT_TYPER.length})</Chip>
+          <Chip>Eksporter ({EKSPORTER.length})</Chip>
         </div>
 
         {/* Layout */}
         <div className="grid grid-cols-[1fr_320px] items-start gap-8">
           <div>
+            {/* ---- Rapport-typer med Server Actions ---- */}
+            <CategoryHeader
+              title="Rapporter"
+              count={RAPPORT_TYPER.length}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              {RAPPORT_TYPER.map((r) => (
+                <div
+                  key={r.id}
+                  className="flex flex-col gap-3.5 rounded-xl border border-border bg-card p-5"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
+                      {r.icon}
+                    </div>
+                    <div className="flex gap-1.5">
+                      <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+                        {r.format}
+                      </span>
+                      <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+                        {r.frekvens}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">{r.title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {r.desc}
+                    </p>
+                  </div>
+                  <form action={r.action}>
+                    <input type="hidden" name="type" value={r.id} />
+                    <button
+                      type="submit"
+                      className="mt-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                    >
+                      Generer rapport
+                    </button>
+                  </form>
+                </div>
+              ))}
+            </div>
+
+            {/* ---- Eksporter (CSV) ---- */}
             <CategoryHeader title="Eksporter" count={EKSPORTER.length} />
             <ReportGrid reports={EKSPORTER} />
           </div>
@@ -145,7 +284,8 @@ export default async function Rapporter() {
             </div>
             {planlagte.length === 0 ? (
               <div className="px-6 py-6 text-[13px] text-muted-foreground">
-                Ingen planlagte leveranser ennå. Bruk «Planlegg ny» for å sette opp automatisk e-postutsending.
+                Ingen planlagte leveranser ennå. Bruk «Planlegg ny» for å
+                sette opp automatisk e-postutsending.
               </div>
             ) : (
               planlagte.map((s, i) => (
@@ -162,7 +302,9 @@ export default async function Rapporter() {
                   <div className="mt-0.5 flex items-center gap-2 font-mono text-[11.5px] text-muted-foreground">
                     <span>{s.when}</span>
                     <span>·</span>
-                    <span className="font-semibold text-primary">{s.next}</span>
+                    <span className="font-semibold text-primary">
+                      {s.next}
+                    </span>
                   </div>
                 </div>
               ))
@@ -183,6 +325,8 @@ export default async function Rapporter() {
   );
 }
 
+// ---------- helpers ----------
+
 function Kpi({
   label,
   value,
@@ -202,7 +346,9 @@ function Kpi({
       <div className="mt-2 font-mono text-[32px] font-medium leading-none tracking-tight tabular-nums">
         {value}
         {unit && (
-          <span className="text-[14px] font-normal text-muted-foreground">{unit}</span>
+          <span className="text-[14px] font-normal text-muted-foreground">
+            {unit}
+          </span>
         )}
       </div>
       <div className="mt-4 flex items-center gap-2 text-[12px] text-muted-foreground">
@@ -212,7 +358,13 @@ function Kpi({
   );
 }
 
-function Chip({ active, children }: { active?: boolean; children: React.ReactNode }) {
+function Chip({
+  active,
+  children,
+}: {
+  active?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <span
       className={`inline-flex items-center rounded-full border px-4 py-1.5 text-[12px] font-medium ${
@@ -238,7 +390,7 @@ function CategoryHeader({ title, count }: { title: string; count: number }) {
   );
 }
 
-function ReportGrid({ reports }: { reports: ReportTemplate[] }) {
+function ReportGrid({ reports }: { reports: EksportTemplate[] }) {
   return (
     <div className="grid grid-cols-2 gap-4">
       {reports.map((r) => (
@@ -248,7 +400,7 @@ function ReportGrid({ reports }: { reports: ReportTemplate[] }) {
   );
 }
 
-function ReportCard({ report }: { report: ReportTemplate }) {
+function ReportCard({ report }: { report: EksportTemplate }) {
   const iconBg: Record<Tone, string> = {
     default: "bg-primary/10 text-primary",
     accent: "bg-accent/30 text-primary",
@@ -259,7 +411,9 @@ function ReportCard({ report }: { report: ReportTemplate }) {
   return (
     <div
       className={`relative flex flex-col gap-3.5 rounded-lg border p-6 transition-shadow hover:shadow-md ${
-        report.featured ? "border-accent/40 bg-accent/10" : "border-border bg-card"
+        report.featured
+          ? "border-accent/40 bg-accent/10"
+          : "border-border bg-card"
       }`}
     >
       {report.featured && (
