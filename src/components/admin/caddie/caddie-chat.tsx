@@ -147,13 +147,27 @@ export function CaddieChat({ conversationId, initialSeed }: Props) {
 
       <CaddieApprovalModal
         toolCall={approvalToolCall}
-        onApprove={(id) => {
-          updateToolApproval(id, true);
-          dismissApproval(id);
+        onApprove={async (id) => {
+          if (!approvalToolCall) {
+            return { status: "failed", error: "Mangler tool-call kontekst" };
+          }
+          const result = await updateToolApproval(id, true, {
+            toolName: approvalToolCall.toolName,
+            toolInput: approvalToolCall.input,
+          });
+          if (result.status === "done") dismissApproval(id);
+          return result;
         }}
-        onReject={(id) => {
-          updateToolApproval(id, false);
+        onReject={async (id) => {
+          if (!approvalToolCall) {
+            return { status: "failed", error: "Mangler tool-call kontekst" };
+          }
+          const result = await updateToolApproval(id, false, {
+            toolName: approvalToolCall.toolName,
+            toolInput: approvalToolCall.input,
+          });
           dismissApproval(id);
+          return result;
         }}
         onClose={() => approvalToolCall && dismissApproval(approvalToolCall.id)}
       />
