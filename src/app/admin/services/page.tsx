@@ -3,15 +3,18 @@
  * Design migrert fra wireframe/design-files-v2/final/06-tjenester.html.
  *
  * Tabell med navn+beskrivelse, varighet, pris, kategori-pill, "bookinger"-
- * sparkline-placeholder, on/off-toggle. KPI-strip øverst.
+ * sparkline-placeholder, on/off-toggle. KPI-strip øverst. Filter-rad
+ * (kategori, status, sortering, søk) håndtert i client-komponent.
  */
 
-import { Package, Search } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
-import { EmptyState } from "@/components/shared/empty-state";
 import { ServiceForm } from "./service-form";
+import {
+  ServicesListe,
+  type ServiceListItem,
+} from "@/components/admin/services-liste";
 
 type Category = "coach" | "studio" | "green" | "group" | "event";
 
@@ -32,36 +35,6 @@ function deriveCategory(name: string): Category {
   }
   return "coach";
 }
-
-const CATEGORY_LABEL: Record<Category, string> = {
-  coach: "Coaching",
-  studio: "Studio",
-  green: "Greenfee",
-  group: "Gruppe",
-  event: "Event",
-};
-
-// Bevisst dekorativ kategori-palett — 5 distinkte tjeneste-typer trenger visuell separasjon.
-// TODO: konsolider farge — vurder dedikerte --color-cat-* tokens hvis paletten utvides.
-const CATEGORY_STYLE: Record<Category, { bg: string; dot: string }> = {
-  coach: { bg: "bg-primary/15 text-primary", dot: "bg-primary" },
-  studio: {
-    bg: "bg-[rgba(91,124,184,0.15)] text-[#3b5994]",
-    dot: "bg-[#3b5994]",
-  },
-  green: {
-    bg: "bg-[rgba(22,163,74,0.14)] text-[#0f7536]",
-    dot: "bg-[#16A34A]",
-  },
-  group: {
-    bg: "bg-[rgba(244,196,48,0.22)] text-[#7a5a08]",
-    dot: "bg-[#F4C430]",
-  },
-  event: {
-    bg: "bg-[rgba(217,84,123,0.16)] text-[#8a2f55]",
-    dot: "bg-[#d9547b]",
-  },
-};
 
 export default async function ServicesAdmin() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -90,6 +63,16 @@ export default async function ServicesAdmin() {
   // Distinct kategorier
   const kategorier = new Set(services.map((s) => deriveCategory(s.name))).size;
 
+  const items: ServiceListItem[] = services.map((s) => ({
+    id: s.id,
+    name: s.name,
+    description: s.description,
+    priceOre: s.priceOre,
+    durationMin: s.durationMin,
+    active: s.active,
+    _count: { bookings: s._count.bookings },
+  }));
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -107,7 +90,11 @@ export default async function ServicesAdmin() {
           label="Aktive tjenester"
           value={String(aktive)}
           unit={`/ ${totalCount}`}
-          sub={aktive === totalCount ? "Alle synlige i booking" : `${totalCount - aktive} skjult`}
+          sub={
+            aktive === totalCount
+              ? "Alle synlige i booking"
+              : `${totalCount - aktive} skjult`
+          }
         />
         <Kpi
           label="Snitt-pris"
@@ -132,166 +119,12 @@ export default async function ServicesAdmin() {
         />
       </div>
 
-      {/* Filter */}
-      <form className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
-          <Search size={14} strokeWidth={1.75} />
-          <input
-            type="search"
-            name="q"
-            placeholder="Søk tjeneste"
-            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
-          />
-        </label>
-        <FilterChip label="Kategori" />
-        <FilterChip label="Status" />
-        <FilterChip label="Pris" />
-      </form>
-
-      {/* Body */}
-      {services.length === 0 ? (
-        <EmptyState
-          icon={Package}
-          titleItalic="Ingen tjenester"
-          titleTrail="ennå"
-          sub="Lag din første tjeneste for å åpne booking. Vi anbefaler å starte med 1:1 Coaching 60 min — så kan du legge til flere etter hvert."
-          cta={<ServiceForm triggerLabel="+ Lag første tjeneste" />}
-        />
-      ) : (
-        <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-          <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-2.5 font-mono text-[11px] text-muted-foreground">
-            <span>
-              Viser <b className="font-semibold text-foreground">{services.length}</b> av {totalCount}
-            </span>
-            <span className="text-foreground">
-              Sortert: Aktiv → Navn ↑
-            </span>
-          </div>
-          <div className="overflow-x-auto">
-          <table className="w-full min-w-[720px] text-[13px]">
-            <thead className="border-b border-border bg-secondary/30 text-left">
-              <tr>
-                <Th>Tjeneste</Th>
-                <Th>Varighet</Th>
-                <Th className="text-right">Pris</Th>
-                <Th>Kategori</Th>
-                <Th>Bookinger</Th>
-                <Th>Aktiv</Th>
-                <Th></Th>
-              </tr>
-            </thead>
-            <tbody>
-              {services.map((s) => {
-                const cat = deriveCategory(s.name);
-                const catStyle = CATEGORY_STYLE[cat];
-                return (
-                  <tr
-                    key={s.id}
-                    className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
-                  >
-                    <td className="px-4 py-3.5">
-                      <div className="font-semibold text-foreground">
-                        {s.name}
-                      </div>
-                      {s.description && (
-                        <div className="mt-0.5 text-[11.5px] leading-snug text-muted-foreground">
-                          {s.description}
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5 font-mono font-semibold tabular-nums text-foreground">
-                      {s.durationMin} min
-                    </td>
-                    <td className="px-4 py-3.5 text-right font-mono font-semibold tabular-nums text-foreground">
-                      {(s.priceOre / 100).toLocaleString("nb-NO")} kr
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${catStyle.bg}`}
-                      >
-                        <span
-                          className={`inline-block h-1.5 w-1.5 rounded-full ${catStyle.dot}`}
-                        />
-                        {CATEGORY_LABEL[cat]}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-semibold tabular-nums text-foreground">
-                          {s._count.bookings}
-                        </span>
-                        <Sparkline />
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <ToggleVisual on={s.active} />
-                    </td>
-                    <td className="px-4 py-3.5 text-right">
-                      <ServiceForm
-                        initial={{
-                          id: s.id,
-                          name: s.name,
-                          description: s.description,
-                          priceOre: s.priceOre,
-                          durationMin: s.durationMin,
-                          active: s.active,
-                        }}
-                        triggerLabel="Endre"
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          </div>
-        </div>
-      )}
+      <ServicesListe services={items} />
     </div>
   );
 }
 
 // ----------------- Komponenter -----------------
-
-function Sparkline() {
-  // Statisk SVG-placeholder — i v2 koples til faktisk månedsdata.
-  return (
-    <svg
-      width="56"
-      height="18"
-      viewBox="0 0 60 20"
-      aria-hidden="true"
-      className="text-primary"
-    >
-      <polyline
-        points="0,15 10,12 20,14 30,8 40,10 50,6 60,4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function ToggleVisual({ on }: { on: boolean }) {
-  return (
-    <span
-      role="img"
-      aria-label={on ? "Aktiv" : "Inaktiv"}
-      className={`relative inline-block h-5 w-9 rounded-full transition-colors ${
-        on ? "bg-primary" : "bg-border"
-      }`}
-    >
-      <span
-        className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${
-          on ? "left-4" : "left-0.5"
-        }`}
-      />
-    </span>
-  );
-}
 
 function KpiAccent({
   label,
@@ -318,9 +151,7 @@ function KpiAccent({
         )}
       </div>
       {sub && (
-        <div className="font-mono text-[11px] text-background/70">
-          {sub}
-        </div>
+        <div className="font-mono text-[11px] text-background/70">{sub}</div>
       )}
     </div>
   );
@@ -362,29 +193,5 @@ function Kpi({
         <div className="font-mono text-[11px] text-muted-foreground">{sub}</div>
       )}
     </div>
-  );
-}
-
-function FilterChip({ label }: { label: string }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground">
-      {label}
-    </span>
-  );
-}
-
-function Th({
-  children = null,
-  className = "",
-}: {
-  children?: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <th
-      className={`px-4 py-4 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground ${className}`}
-    >
-      {children}
-    </th>
   );
 }

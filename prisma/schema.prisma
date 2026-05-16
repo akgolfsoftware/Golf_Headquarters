@@ -259,7 +259,7 @@ model User {
   uploadedRecordings SessionRecording[] @relation("UploadedRecordings")
   playerRecordings   SessionRecording[] @relation("PlayerRecordings")
 
-  // Caddie chat-historikk
+  // Caddie chat-meldinger (intern AI-assistent for admin)
   caddieMessages CaddieMessage[]
 
   @@map("users")
@@ -1778,4 +1778,30 @@ model OktMalDrill {
 
   @@index([malId])
   @@map("okt_mal_driller")
+}
+
+// Caddie — intern AI-assistent for Anders/admin (Mission Control).
+// Persisterer chat-historikk per samtale. Tool-calls og tool-results lagres
+// som Json-blobs for transparens og debugging.
+model CaddieMessage {
+  id             String   @id @default(cuid())
+  userId         String
+  conversationId String
+  // "user" | "assistant" | "system" | "tool"
+  role           String
+  content        String   @db.Text
+  // Tool-calls fra assistant (array av { toolCallId, toolName, args })
+  toolCalls      Json?
+  // Tool-resultater (array av { toolCallId, toolName, result })
+  toolResults    Json?
+  model          String?
+  inputTokens    Int?
+  outputTokens   Int?
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, conversationId, createdAt])
+  @@index([conversationId, createdAt])
+  @@map("caddie_messages")
 }
