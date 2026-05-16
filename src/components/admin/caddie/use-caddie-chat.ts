@@ -54,7 +54,7 @@ function toCaddieMessage(m: UIMessage): CaddieMessage {
           toolName: part.toolName ?? "ukjent",
           input: part.input ?? {},
           output: part.output,
-          state: part.state === "result" ? "result" : part.state === "error" ? "error" : "calling",
+          state: (part.state === "result" ? "result" : part.state === "error" ? "error" : "calling") as CaddieToolCall["state"],
           needsApproval: part.output?.needsApproval === true,
           approvalPreview: part.output?.needsApproval ? part.output : undefined,
         };
