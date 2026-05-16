@@ -4,7 +4,9 @@ import {
   BarChart2,
   Circle,
   Crosshair,
+  MapPin,
   Package,
+  Wind,
   Zap,
 } from "lucide-react";
 
@@ -40,15 +42,34 @@ type FeatureCard = {
   fase: string;
 };
 
-const FEATURES: FeatureCard[] = [
+const LIVE_FEATURES: FeatureCard[] = [
   {
     href: "/portal/mal/sg-hub/yardage",
     icon: BarChart2,
     title: "Stock Yardage Chart",
     description:
-      "Auto-generert yardage-kort med carry, 3/4, soft og værjustering.",
+      "Auto-generert yardage-kort med carry, 3/4, soft og PDF-eksport.",
     fase: "Fase 3",
   },
+  {
+    href: "/portal/mal/sg-hub/conditions",
+    icon: Wind,
+    title: "Værjustert distanse",
+    description:
+      "Slidere for temp, vind og høyde — live-oppdatert per kølle.",
+    fase: "Fase 3",
+  },
+  {
+    href: "/portal/mal/sg-hub/strategy",
+    icon: MapPin,
+    title: "Same-Distance strategi",
+    description:
+      "Beste kølle for valgt mål-distanse rangert etter expected SG.",
+    fase: "Fase 3",
+  },
+];
+
+const UPCOMING_FEATURES: FeatureCard[] = [
   {
     href: "/portal/mal/sg-hub/best-vs-now",
     icon: Crosshair,
@@ -145,11 +166,25 @@ export default async function SgHubPage() {
         )}
       </section>
 
+      {/* Aktive verktøy */}
+      <section>
+        <h3 className="mb-4 font-semibold">Distanse og strategi</h3>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {LIVE_FEATURES.map((f) => (
+            <FeatureLiveCard
+              key={f.href}
+              {...f}
+              advanced={advanced}
+            />
+          ))}
+        </div>
+      </section>
+
       {/* Kommende verktøy */}
       <section>
         <h3 className="mb-4 font-semibold">Kommende verktøy</h3>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
+          {UPCOMING_FEATURES.map((f) => (
             <FeatureStubCard
               key={f.href}
               {...f}
@@ -159,6 +194,37 @@ export default async function SgHubPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function FeatureLiveCard({
+  href,
+  icon: Icon,
+  title,
+  description,
+  fase,
+  advanced,
+}: FeatureCard & { advanced: boolean }) {
+  return (
+    <Link
+      href={href}
+      className="group flex flex-col rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary"
+    >
+      <div className="mb-3 flex items-start justify-between gap-2">
+        <Icon className="mt-0.5 h-4 w-4 text-primary" />
+        <span className="rounded-full bg-accent/30 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em] text-accent-foreground">
+          {fase}
+        </span>
+      </div>
+      <h4 className="text-sm font-semibold">{title}</h4>
+      {advanced && (
+        <p className="mt-1 text-xs text-muted-foreground">{description}</p>
+      )}
+      <div className="mt-3 flex items-center gap-1 text-xs text-primary">
+        Åpne
+        <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+      </div>
+    </Link>
   );
 }
 
