@@ -26,6 +26,7 @@ import { avatarBg } from "@/lib/avatar-colors";
 import { FEATURES } from "@/lib/features";
 
 type Tab = "venner" | "klubb" | "globalt";
+type SgTab = "totalt" | "approach" | "short-game" | "putting";
 
 type Rad = {
   id: string;
@@ -53,16 +54,34 @@ function initialer(navn: string) {
 export default async function LeaderboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; sg?: string }>;
 }) {
   if (!FEATURES.LEADERBOARD) notFound();
 
   const user = await requirePortalUser();
   const sp = await searchParams;
   const tab: Tab = sp?.tab === "venner" || sp?.tab === "globalt" ? sp.tab : "klubb";
+  const sgTab: SgTab =
+    sp?.sg === "approach"
+      ? "approach"
+      : sp?.sg === "short-game"
+        ? "short-game"
+        : sp?.sg === "putting"
+          ? "putting"
+          : "totalt";
 
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
+
+  // Velg riktig SG-felt basert på aktiv kategori-tab
+  const sgField =
+    sgTab === "approach"
+      ? "sgApp"
+      : sgTab === "short-game"
+        ? "sgArg"
+        : sgTab === "putting"
+          ? "sgPutt"
+          : "sgTotal";
 
   const proBrukere = await prisma.user.findMany({
     where: { tier: "PRO", role: "PLAYER" },
@@ -72,17 +91,29 @@ export default async function LeaderboardPage({
       hcp: true,
       homeClub: true,
       rounds: {
-        where: { playedAt: { gte: tretti }, sgTotal: { not: null } },
-        select: { sgTotal: true },
+        where: {
+          playedAt: { gte: tretti },
+          [sgField]: { not: null },
+        },
+        select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },
       },
     },
   });
 
   const rangering: Rad[] = proBrukere
     .map((b) => {
-      const sg = b.rounds.length
-        ? b.rounds.reduce((s, r) => s + (r.sgTotal ?? 0), 0) / b.rounds.length
-        : null;
+      const sgVerdier = b.rounds
+        .map((r) => {
+          if (sgTab === "approach") return r.sgApp;
+          if (sgTab === "short-game") return r.sgArg;
+          if (sgTab === "putting") return r.sgPutt;
+          return r.sgTotal;
+        })
+        .filter((v): v is number => typeof v === "number");
+      const sg =
+        sgVerdier.length > 0
+          ? sgVerdier.reduce((s, v) => s + v, 0) / sgVerdier.length
+          : null;
       return {
         id: b.id,
         rank: 0,
@@ -120,7 +151,7 @@ export default async function LeaderboardPage({
     <div className="space-y-6">
       <Head fornavn={fornavn} minRank={minRank} total={total} tab={tab} />
       {meg && <YourRank meg={meg} fornavn={user.name} hcp={meg.hcp} total={total} />}
-      <Filters />
+      <Filters tab={tab} sgTab={sgTab} />
       {rangering.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border bg-card p-12 text-center">
           <Trophy className="mx-auto h-8 w-8 text-muted-foreground" />
@@ -133,7 +164,7 @@ export default async function LeaderboardPage({
         </div>
       ) : (
         <>
-          <Table rows={rangering} />
+          <Table rows={rangering} sgTab={sgTab} />
           <Pagination total={total} vist={rangering.length} />
         </>
       )}
@@ -281,27 +312,50 @@ function RankDelta({
   );
 }
 
-function Filters() {
+const SG_TABS: { key: SgTab; label: string }[] = [
+  { key: "totalt", label: "Totalt" },
+  { key: "approach", label: "Approach" },
+  { key: "short-game", label: "Short Game" },
+  { key: "putting", label: "Putting" },
+];
+
+function Filters({ tab, sgTab }: { tab: Tab; sgTab: SgTab }) {
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-card px-4 py-4">
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-        Periode
-      </span>
-      <Chip active>30 dager</Chip>
-      <Chip>Sesong</Chip>
-      <div className="h-4 w-px bg-border" />
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-        Metric
-      </span>
-      <Chip active>Snitt SG</Chip>
-      <Chip>Runder</Chip>
-      <div className="h-4 w-px bg-border" />
-      <div className="inline-flex max-w-[200px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-4 py-2">
-        <Search className="h-4 w-4 text-muted-foreground" />
-        <input
-          placeholder="Søk spiller …"
-          className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-        />
+    <div className="space-y-3">
+      {/* SG-kategori-tabs */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-border pb-3">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+          Kategori
+        </span>
+        {SG_TABS.map((t) => (
+          <Link
+            key={t.key}
+            href={`/portal/mal/leaderboard?tab=${tab}&sg=${t.key}`}
+            className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
+              t.key === sgTab
+                ? "bg-primary text-primary-foreground"
+                : "border border-border bg-card text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {t.label}
+          </Link>
+        ))}
+      </div>
+      {/* Periode + søk */}
+      <div className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-card px-4 py-4">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+          Periode
+        </span>
+        <Chip active>30 dager</Chip>
+        <Chip>Sesong</Chip>
+        <div className="h-4 w-px bg-border" />
+        <div className="inline-flex max-w-[200px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-4 py-2">
+          <Search className="h-4 w-4 text-muted-foreground" />
+          <input
+            placeholder="Søk spiller …"
+            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          />
+        </div>
       </div>
     </div>
   );
@@ -330,7 +384,16 @@ function Chip({
   );
 }
 
-function Table({ rows }: { rows: Rad[] }) {
+function Table({ rows, sgTab }: { rows: Rad[]; sgTab: SgTab }) {
+  const sgLabel =
+    sgTab === "approach"
+      ? "SG APP"
+      : sgTab === "short-game"
+        ? "SG ARG"
+        : sgTab === "putting"
+          ? "SG PUTT"
+          : "Snitt SG";
+
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-card">
       {/* Desktop tabell-header */}
@@ -344,7 +407,7 @@ function Table({ rows }: { rows: Rad[] }) {
         </div>
         <div>Spiller</div>
         <div>HCP</div>
-        <div>Snitt SG</div>
+        <div>{sgLabel}</div>
         <div>Runder</div>
         <div>Badges</div>
         <div />

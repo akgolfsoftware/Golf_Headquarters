@@ -153,7 +153,7 @@ export async function POST(request: Request) {
     });
 
     if (endretBookinger > 0 || kanselerte > 0) {
-      console.log(
+      console.info(
         `[google-calendar/webhook] sub=${sub.id} endret=${endretBookinger} kansellert=${kanselerte}`,
       );
     }

@@ -77,8 +77,7 @@ export async function importTrackManHtml(input: TrackManHtmlInput) {
       recordedAt: new Date(input.recordedAt),
       source: "html-import",
       shotCount,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      rawJson: rapport as any,
+      rawJson: rapport as unknown as import("@/generated/prisma/client").Prisma.JsonObject,
       environment: input.environment,
     },
   });

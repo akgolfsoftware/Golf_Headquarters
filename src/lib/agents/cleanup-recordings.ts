@@ -105,7 +105,7 @@ export async function runCleanupRecordings(): Promise<AgentResult> {
       }
     }
 
-    console.log(
+    console.info(
       `[cleanup-recordings] totalt=${utdaterte.length} slettet=${slettet} feilet=${feilet}`,
     );
 

@@ -49,9 +49,4 @@ export async function notifiserAnalyseKlar(
   // 2) Web Push — krever VAPID-keys (parkert i V2.1). Stub for nå.
   // TODO: hent PushSubscription for playerId og kall sendPushNotification()
   // når VAPID er satt opp.
-  if (process.env.NODE_ENV !== "production") {
-    console.log(
-      `[notify-analysis-ready] (push-stub) ${input.playerId}: ${tittel}`,
-    );
-  }
 }

@@ -66,8 +66,15 @@ function toCaddieMessage(m: UIMessage): CaddieMessage {
       }
       // Tool-call/result-parter fra AI SDK v6 har varierende form;
       // mapper minimalt så UI-en kan vise dem som tool-call.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const part = p as any;
+      type AiSdkToolPart = {
+        type?: string;
+        toolCallId?: string;
+        toolName?: string;
+        input?: Record<string, unknown>;
+        output?: Record<string, unknown>;
+        state?: string;
+      };
+      const part = p as unknown as AiSdkToolPart;
       if (part.type?.startsWith("tool-")) {
         const out = part.output ?? {};
         const needsApproval = out?.needsApproval === true;

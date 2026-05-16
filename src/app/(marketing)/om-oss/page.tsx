@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Om oss | AK Golf Academy",
+  description:
+    "Les om Anders Kristiansen og filosofien bak AK Golf Academy — personlig coaching bygd på Mac O'Grady-metodikk og moderne data-analyse.",
+};
 
 export default function OmOss() {
   return (

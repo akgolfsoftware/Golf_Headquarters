@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,6 +13,12 @@ import {
   Target,
   Users,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "AK Golf Academy | Personlig coaching, bygd på data",
+  description:
+    "AK Golf Academy tilbyr prestasjonsgolf-coaching for ambisiøse spillere. Booking, treningsplaner og analyse — alt i ett system.",
+};
 
 const TJENESTER = [
   {
