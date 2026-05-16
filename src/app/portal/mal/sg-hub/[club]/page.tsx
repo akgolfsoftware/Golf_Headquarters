@@ -11,6 +11,7 @@ import { computeSmashCurve } from "@/lib/sg-hub/smash-curve";
 import { DPlanePlot } from "@/components/sg-hub/DPlanePlot";
 import { StrikeHeatmap } from "@/components/sg-hub/StrikeHeatmap";
 import { SmashCurvePlot } from "@/components/sg-hub/SmashCurvePlot";
+import { TempoRibbon } from "@/components/sg-hub/TempoRibbon";
 
 export default async function ClubDetailPage({
   params,
@@ -142,6 +143,13 @@ export default async function ClubDetailPage({
         <div className="flex justify-center">
           <StrikeHeatmap result={strike} advanced={advanced} />
         </div>
+      </section>
+
+      <section>
+        <div className="mb-4">
+          <h2 className="font-semibold">Tempo · Rytme-konsistens</h2>
+        </div>
+        <TempoRibbon shots={allShots} advanced={advanced} />
       </section>
 
       <section className="rounded-xl border border-border bg-card p-6">

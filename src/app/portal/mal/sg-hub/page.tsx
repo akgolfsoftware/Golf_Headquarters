@@ -1,11 +1,14 @@
 import Link from "next/link";
 import {
+  AlertTriangle,
   ArrowRight,
   BarChart2,
   Circle,
   Crosshair,
+  Lightbulb,
   MapPin,
   Package,
+  Sparkles,
   Wind,
   Zap,
 } from "lucide-react";
@@ -14,6 +17,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { extractClubs } from "@/lib/sg-hub/extract-shots";
+import type { InsightCategory } from "@/generated/prisma/client";
 
 // Kanonisk rekkefølge for køllenumre
 const CLUB_ORDER = [
@@ -33,6 +37,19 @@ function sortClubs(clubs: string[]): string[] {
     return ai - bi;
   });
 }
+
+const CATEGORY_LABELS: Record<InsightCategory, string> = {
+  DISTANCE_GAPPING: "Distansegap",
+  CONSISTENCY_LEAK: "Konsistens",
+  TRAINING_GAP: "Treningsgap",
+  D_PLANE_DRIFT: "D-Plane drift",
+  STRIKE_QUALITY: "Kontaktkvalitet",
+  FATIGUE_PATTERN: "Fatigue",
+  EQUIPMENT_FIT: "Utstyrstilpasning",
+  TEMPO_VARIANCE: "Tempo",
+  PROGRESSION_TREND: "Progresjon",
+  SAME_DISTANCE_OPPORTUNITY: "Same-distance",
+};
 
 type FeatureCard = {
   href: string;
@@ -67,9 +84,6 @@ const LIVE_FEATURES: FeatureCard[] = [
       "Beste kølle for valgt mål-distanse rangert etter expected SG.",
     fase: "Fase 3",
   },
-];
-
-const UPCOMING_FEATURES: FeatureCard[] = [
   {
     href: "/portal/mal/sg-hub/best-vs-now",
     icon: Crosshair,
@@ -98,9 +112,22 @@ export default async function SgHubPage() {
     select: { rawJson: true },
   });
 
-  const [insightCount] = await Promise.all([
+  const [insightCount, insights] = await Promise.all([
     prisma.sgInsight.count({
       where: { userId: user.id, resolvedAt: null, acknowledgedAt: null },
+    }),
+    prisma.sgInsight.findMany({
+      where: { userId: user.id, resolvedAt: null, acknowledgedAt: null },
+      orderBy: [{ severity: "desc" }, { createdAt: "desc" }],
+      take: 5,
+      select: {
+        id: true,
+        category: true,
+        severity: true,
+        title: true,
+        body: true,
+        createdAt: true,
+      },
     }),
   ]);
 
@@ -124,13 +151,43 @@ export default async function SgHubPage() {
 
       {/* Innsikter */}
       <section className="rounded-xl border border-border bg-card p-6">
-        <h3 className="mb-4 font-semibold">Aktive innsikter</h3>
-        {insightCount === 0 ? (
+        <div className="mb-4 flex items-center gap-2">
+          <Lightbulb
+            className="h-4 w-4 text-muted-foreground"
+            strokeWidth={1.5}
+          />
+          <h3 className="font-semibold">Aktive innsikter</h3>
+        </div>
+        {insights.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             Ingen aktive innsikter ennå. Insight Engine genererer innsikter
             daglig kl. 04:00 UTC etter at du har nok TrackMan-data.
           </p>
-        ) : null}
+        ) : (
+          <ul className="space-y-3">
+            {insights.map((ins) => (
+              <li
+                key={ins.id}
+                className="flex items-start gap-3 rounded-md border border-border bg-background p-4"
+              >
+                <SeverityIcon severity={ins.severity} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h4 className="text-sm font-semibold">{ins.title}</h4>
+                    <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
+                      {CATEGORY_LABELS[ins.category]}
+                    </span>
+                  </div>
+                  {(advanced || ins.severity >= 3) && (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {ins.body}
+                    </p>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       {/* Per-kølle grid */}
@@ -166,9 +223,9 @@ export default async function SgHubPage() {
         )}
       </section>
 
-      {/* Aktive verktøy */}
+      {/* Verktøy */}
       <section>
-        <h3 className="mb-4 font-semibold">Distanse og strategi</h3>
+        <h3 className="mb-4 font-semibold">Verktøy</h3>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {LIVE_FEATURES.map((f) => (
             <FeatureLiveCard
@@ -179,21 +236,33 @@ export default async function SgHubPage() {
           ))}
         </div>
       </section>
-
-      {/* Kommende verktøy */}
-      <section>
-        <h3 className="mb-4 font-semibold">Kommende verktøy</h3>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {UPCOMING_FEATURES.map((f) => (
-            <FeatureStubCard
-              key={f.href}
-              {...f}
-              advanced={advanced}
-            />
-          ))}
-        </div>
-      </section>
     </div>
+  );
+}
+
+function SeverityIcon({ severity }: { severity: number }) {
+  // 1 = positiv (Sparkles), 2-3 = info, 4-5 = advarsel
+  if (severity <= 1) {
+    return (
+      <Sparkles
+        className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+        strokeWidth={1.5}
+      />
+    );
+  }
+  if (severity >= 4) {
+    return (
+      <AlertTriangle
+        className="mt-0.5 h-4 w-4 shrink-0 text-destructive"
+        strokeWidth={1.5}
+      />
+    );
+  }
+  return (
+    <Lightbulb
+      className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
+      strokeWidth={1.5}
+    />
   );
 }
 
@@ -221,8 +290,9 @@ function FeatureLiveCard({
         <p className="mt-1 text-xs text-muted-foreground">{description}</p>
       )}
       <div className="mt-3 flex items-center gap-1 text-xs text-primary">
-        Åpne
+        <span>Åpne</span>
         <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+        <Zap className="ml-auto h-3 w-3 text-accent" strokeWidth={1.5} />
       </div>
     </Link>
   );
@@ -247,34 +317,6 @@ function StatCard({
       >
         {value}
       </p>
-    </div>
-  );
-}
-
-function FeatureStubCard({
-  href,
-  icon: Icon,
-  title,
-  description,
-  fase,
-  advanced,
-}: FeatureCard & { advanced: boolean }) {
-  return (
-    <div className="rounded-xl border border-dashed border-border bg-card/50 p-5">
-      <div className="mb-3 flex items-start justify-between gap-2">
-        <Icon className="mt-0.5 h-4 w-4 text-muted-foreground" />
-        <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
-          {fase}
-        </span>
-      </div>
-      <h4 className="text-sm font-semibold">{title}</h4>
-      {advanced && (
-        <p className="mt-1 text-xs text-muted-foreground">{description}</p>
-      )}
-      <div className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
-        <Zap className="h-3 w-3" />
-        Kommer snart
-      </div>
     </div>
   );
 }

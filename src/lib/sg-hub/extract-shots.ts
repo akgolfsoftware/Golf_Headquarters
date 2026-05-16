@@ -11,6 +11,10 @@ export type ShotData = {
   smashFactor: number;
   ballSpeed: number;
   totalDistance: number;
+  // Tempo-data — kun tilgjengelig via CSV-eksport (Phase 6).
+  tempo?: number; // tempo-ratio backswing/downswing, hvis TrackMan eksporterer ferdig beregnet
+  backswingTime?: number; // sekunder
+  downswingTime?: number; // sekunder
 };
 
 type HtmlShot = {
@@ -22,6 +26,9 @@ type HtmlShot = {
   smashFactor: number;
   ballSpeed: number;
   totalDistance: number;
+  tempo?: number;
+  backswingTime?: number;
+  downswingTime?: number;
 };
 
 type HtmlClub = {
@@ -38,6 +45,13 @@ type HtmlReport = {
 function num(v: string | undefined): number {
   const n = parseFloat(v ?? "");
   return isNaN(n) ? 0 : n;
+}
+
+// Hent tall hvis kolonnen finnes og er gyldig, ellers undefined.
+function optNum(v: string | undefined): number | undefined {
+  if (v === undefined || v === null || v === "") return undefined;
+  const n = parseFloat(v);
+  return isNaN(n) ? undefined : n;
 }
 
 function isHtmlReport(raw: unknown): raw is HtmlReport {
@@ -70,6 +84,9 @@ export function extractShots(rawJson: unknown, clubId: string): ShotData[] {
       smashFactor: s.smashFactor,
       ballSpeed: s.ballSpeed,
       totalDistance: s.totalDistance,
+      tempo: s.tempo,
+      backswingTime: s.backswingTime,
+      downswingTime: s.downswingTime,
     }));
   }
 
@@ -90,6 +107,13 @@ export function extractShots(rawJson: unknown, clubId: string): ShotData[] {
         smashFactor: num(r["Smash Factor"] ?? r["SmashFactor"]),
         ballSpeed: num(r["Ball Speed"] ?? r["BallSpeed"]),
         totalDistance: num(r["Total"] ?? r["TotalDistance"] ?? r["Carry"]),
+        tempo: optNum(r["Tempo"] ?? r["tempo"]),
+        backswingTime: optNum(
+          r["Backswing Time"] ?? r["BackswingTime"] ?? r["Backswing"],
+        ),
+        downswingTime: optNum(
+          r["Downswing Time"] ?? r["DownswingTime"] ?? r["Downswing"],
+        ),
       }));
   }
 
