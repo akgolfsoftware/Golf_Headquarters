@@ -175,7 +175,7 @@ export default async function AgencyOSPage() {
         />
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className="grid gap-8 lg:grid-cols-3 lg:items-start">
         {/* Hovedkolonne */}
         <div className="space-y-8 lg:col-span-2">
           {/* Til godkjenning */}
@@ -302,8 +302,8 @@ export default async function AgencyOSPage() {
           </section>
         </div>
 
-        {/* Sidekolonne */}
-        <aside className="space-y-8">
+        {/* Sidekolonne — sticky så den følger scroll i hovedkolonnen */}
+        <aside className="space-y-8 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-1">
           {/* Stripe-panel */}
           <section className="rounded-lg border border-border bg-card">
             <div className="flex items-baseline justify-between border-b border-border px-6 py-4">

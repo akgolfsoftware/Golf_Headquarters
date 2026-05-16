@@ -183,7 +183,7 @@ export default function Coaching() {
           </ul>
         </section>
 
-        <section className="mt-12 rounded-2xl border border-border bg-background p-8">
+        <section className="mt-12 rounded-2xl border border-border bg-card p-8 shadow-sm">
           <h2 className="font-display text-xl font-semibold tracking-tight">
             Ikke klar for abonnement?
           </h2>

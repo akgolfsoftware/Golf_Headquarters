@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 export const metadata: Metadata = {
   title: "Anlegg — AK Golf Academy",
   description:
-    "Våre treningsanlegg i Fredrikstad — Gamle Fredrikstad Golfklubb og Mulligan Indoor Golf Simulators.",
+    "Hovedanleggene våre — Gamle Fredrikstad Golfklubb på Bossum og Miklagard Golfklubb på Kløfta.",
 };
 
 function slugify(name: string) {
@@ -24,9 +24,16 @@ const HERO_IMAGES: Record<string, string> = {
   default: "/images/akademy/walking-bag.jpg",
 };
 
+// Kun disse anleggene vises i marketing — andre lokasjoner finnes i admin men er ikke
+// hovedanlegg for AK Golf Academy
+const MARKETING_LOCATIONS = ["Gamle Fredrikstad GK", "Miklagard Golfklubb"];
+
 export default async function AnleggListe() {
   const locations = await prisma.location.findMany({
-    where: { active: true },
+    where: {
+      active: true,
+      name: { in: MARKETING_LOCATIONS },
+    },
     include: { facilities: { where: { active: true } } },
     orderBy: { name: "asc" },
   });
@@ -39,24 +46,14 @@ export default async function AnleggListe() {
             Anlegg · AK Golf Group
           </div>
           <h1 className="mt-4 max-w-3xl font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
-            To anlegg —{" "}
-            <em className="font-normal italic text-primary">året rundt</em>
+            Hjemmebaner —{" "}
+            <em className="font-normal italic text-primary">Bossum og Kløfta</em>
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Innendørs på Mulligan i Horten når været ikke samarbeider, utendørs
-            på GFGK Bossum i sesongen. Samme coacher, samme plan, sømløs
-            booking.
+            To tradisjonsrike anlegg på Østlandet. Gamle Fredrikstad GK på
+            Bossum og Miklagard Golfklubb på Kløfta — samme coach, samme
+            plan, sømløs booking.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-primary" strokeWidth={1.5} />
-              Horten + Fredrikstad
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <ArrowRight className="h-4 w-4 text-primary" strokeWidth={1.5} />
-              Booking åpen 24/7
-            </span>
-          </div>
         </div>
       </section>
 
