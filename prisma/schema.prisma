@@ -353,6 +353,8 @@ model Location {
   id        String   @id @default(cuid())
   name      String
   address   String
+  latitude  Float?
+  longitude Float?
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { avatarBg } from "@/lib/avatar-colors";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { SpillereTabs } from "@/components/admin/spillere-tabs";
 
 type SearchParams = { tier?: string; q?: string; status?: string; sort?: string };
 
@@ -128,6 +129,7 @@ export default async function ElverListe({
   const players = playersRaw as PlayerRow[];
 
   // Status-beregning per spiller
+  // eslint-disable-next-line react-hooks/purity
   const naa = Date.now();
   const dgrSiden = (d: Date | null) =>
     d ? Math.floor((naa - d.getTime()) / (1000 * 60 * 60 * 24)) : 999;
@@ -162,7 +164,7 @@ export default async function ElverListe({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · /admin/elever"
+        eyebrow="CoachHQ · /admin/spillere"
         titleLead={String(total)}
         titleItalic="spillere"
         sub={`AK Golf · ${proEliteCount} Pro/Elite · ${aktive} aktive denne uka`}
@@ -176,6 +178,8 @@ export default async function ElverListe({
           </Link>
         }
       />
+
+      <SpillereTabs aktiv="tabell" />
 
       {/* KPI-strip */}
       <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">

@@ -18,6 +18,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { SpillereTabs } from "@/components/admin/spillere-tabs";
 import { startOfWeek, ukenummer } from "@/lib/uke-helpers";
 
 function isoUkeKey(d: Date): string {
@@ -142,7 +143,7 @@ export default async function CoachingBoard({
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="CoachHQ · /admin/board"
+        eyebrow="CoachHQ · /admin/spillere · Tavle"
         titleLead={`${players.length}`}
         titleItalic="spillere"
         titleTrail="i porteføljen"
@@ -183,6 +184,8 @@ export default async function CoachingBoard({
           </div>
         }
       />
+
+      <SpillereTabs aktiv="tavle" />
 
       {/* KPI-strip */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
