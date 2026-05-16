@@ -14,7 +14,7 @@ import {
   lagDemoTurneringer,
   lagDemoOkterForMaaned,
 } from "@/components/shared/calendar/__demoData";
-import { lesPeriodeType } from "@/app/admin/kalender/actions/perioder";
+import { lesPeriodeType } from "@/app/admin/kalender/lib/periode-helpers";
 import { prisma } from "@/lib/prisma";
 import type { AarsplanPeriode, AarsplanTurnering } from "@/components/shared/calendar/AarsplanView";
 

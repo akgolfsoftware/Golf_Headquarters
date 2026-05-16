@@ -14,40 +14,12 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PeriodeTypeSchema } from "@/lib/portal/training/ak-taxonomy";
-import type { PeriodBlock, PeriodeType, LPhase } from "@/generated/prisma/client";
-
-// ---------------------------------------------------------------------------
-// Mapping mellom PeriodeType (v4) og LPhase (eksisterende)
-// ---------------------------------------------------------------------------
-
-const TIL_LPHASE: Record<PeriodeType, LPhase> = {
-  GRUNN: "GRUNN",
-  SPESIALISERING: "SPESIAL",
-  TURNERING: "TURNERING",
-  // EVALUERING og FERIE lagres som TURNERING / GRUNN inntil schema utvides;
-  // den ekte verdien serialiseres i notes-prefix.
-  EVALUERING: "TURNERING",
-  FERIE: "GRUNN",
-};
-
-const FRA_NOTES_PREFIKS = /^\[periode:([A-Z]+)\]\s*/;
-
-function leggTilPeriodeMarkor(periodeType: PeriodeType, notes: string | null | undefined): string {
-  const ren = (notes ?? "").replace(FRA_NOTES_PREFIKS, "").trim();
-  return `[periode:${periodeType}] ${ren}`.trim();
-}
-
-export function lesPeriodeType(block: Pick<PeriodBlock, "lPhase" | "notes">): PeriodeType {
-  const match = (block.notes ?? "").match(FRA_NOTES_PREFIKS);
-  if (match && match[1]) {
-    const parsed = PeriodeTypeSchema.safeParse(match[1]);
-    if (parsed.success) return parsed.data;
-  }
-  // Fallback: bruk LPhase
-  if (block.lPhase === "GRUNN") return "GRUNN";
-  if (block.lPhase === "SPESIAL") return "SPESIALISERING";
-  return "TURNERING";
-}
+import type { PeriodBlock } from "@/generated/prisma/client";
+import {
+  TIL_LPHASE,
+  leggTilPeriodeMarkor,
+  lesPeriodeType,
+} from "../lib/periode-helpers";
 
 // ---------------------------------------------------------------------------
 // Skjemaer
