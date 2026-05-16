@@ -5,6 +5,45 @@
 
 ---
 
+## 2026-05-16 — Fase 2: Admin-konsolidering
+
+**Branch:** `feat/admin-konsolidering`
+
+### Fase 2.1 — Hub + AgencyOS-fusjon
+- `src/app/admin/page.tsx` — ren redirect til `/admin/agencyos`
+- `src/components/admin/sidebar.tsx` — fjernet "AgencyOS"-oppføring, omdøpt rute til "Hub" som peker til `/admin/agencyos`
+- Resultat: én "Hub"-oppføring i sidemenyen, AgencyOS-utseendet er nå Hub
+
+### Fase 2.2 — Spillere + Trener-tavle-fusjon
+- 🆕 `src/components/admin/spillere-tabs.tsx` — tab-bar [Tabell | Tavle]
+- `src/app/admin/elever/page.tsx` — `<SpillereTabs aktiv="tabell" />` lagt til
+- `src/app/admin/board/page.tsx` — `<SpillereTabs aktiv="tavle" />` lagt til, eyebrow oppdatert til "Tavle"-modus
+- `src/components/admin/sidebar.tsx` — fjernet "Trener-tavle"-oppføring; "Spillere" peker til `/admin/elever` med tab-toggle
+- Resultat: én "Spillere"-oppføring, brukeren kan veksle mellom Tabell og Tavle med tab
+
+### Fase 2.3 — Mapbox på anlegg
+- `prisma/schema.prisma` — `Location` utvidet med `latitude` + `longitude` (begge nullable)
+- 🆕 `prisma/migrations/20260516000004_location_coords/migration.sql`
+- `npm install mapbox-gl @types/mapbox-gl`
+- 🆕 `src/components/admin/anlegg-mapbox.tsx` — klient-komponent som:
+  - Bruker `mapboxgl` med lyst light-v11-style
+  - Faller tilbake til "token mangler"-placeholder hvis `NEXT_PUBLIC_MAPBOX_TOKEN` ikke er satt
+  - Henter koordinater fra DB; faller tilbake til navn-basert mapping (Fredrikstad, Drøbak, Miklagard, etc.)
+  - Markers med popup (navn, adresse)
+  - Klikk på marker scroller til tilsvarende LocationCard via `data-loc-id`
+- `src/app/admin/anlegg/page.tsx` — erstattet `MapStub` med `<AnleggMapbox locations={…} />`, fjernet `MapStub`-funksjonen
+- Klar når token legges inn
+
+### Verifikasjon
+- `npx tsc --noEmit` — 0 feil
+- Visuelt verifisert: /admin redirecter til /admin/agencyos, "Hub" i meny, Tabell/Tavle-toggle på Spillere-sidene, Mapbox-placeholder vises på /admin/anlegg
+
+### Commit
+`feat: sprint 2 — admin-konsolidering (Hub, Spillere, Mapbox)`
+
+
+---
+
 ## 2026-05-16 — Fase 1: Sprint 1 (rask QoL + UI-pussing)
 
 **Branch:** `main`

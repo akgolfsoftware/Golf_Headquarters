@@ -17,6 +17,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { TabStrip } from "@/components/admin/tab-strip";
+import { AnleggMapbox } from "@/components/admin/anlegg-mapbox";
 import LocationsPage from "@/app/admin/locations/page";
 import FacilitiesPage from "@/app/admin/facilities/page";
 import AvailabilityPage from "@/app/admin/availability/page";
@@ -137,12 +138,13 @@ async function Oversikt() {
         )
       : 0;
 
-  // Pin-posisjoner — deterministisk basert på navn (stub før Mapbox)
-  const pins = locations.map((l, i) => ({
+  const mapLocations = locations.map((l) => ({
     id: l.id,
-    badge: l.name.charAt(0).toUpperCase(),
-    x: 16 + ((i * 17) % 70),
-    y: 22 + ((i * 23) % 60),
+    name: l.name,
+    address: l.address,
+    latitude: l.latitude,
+    longitude: l.longitude,
+    active: l.active,
   }));
 
   return (
@@ -187,7 +189,7 @@ async function Oversikt() {
 
       {/* Kart + kort */}
       <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-        <MapStub pins={pins} />
+        <AnleggMapbox locations={mapLocations} />
         <div className="flex max-h-[640px] flex-col gap-4 overflow-y-auto pr-1">
           {locations.length === 0 && (
             <div className="rounded-lg border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
@@ -195,15 +197,16 @@ async function Oversikt() {
             </div>
           )}
           {locations.map((l) => (
-            <LocationCard
-              key={l.id}
-              name={l.name}
-              address={l.address}
-              type={deriveType(l.name)}
-              active={l.active}
-              facilities={l.facilities.map((f) => f.name)}
-              bookingsMonth={l._count.bookings}
-            />
+            <div key={l.id} data-loc-id={l.id}>
+              <LocationCard
+                name={l.name}
+                address={l.address}
+                type={deriveType(l.name)}
+                active={l.active}
+                facilities={l.facilities.map((f) => f.name)}
+                bookingsMonth={l._count.bookings}
+              />
+            </div>
           ))}
         </div>
       </div>
@@ -245,58 +248,6 @@ function Chip({ children }: { children: React.ReactNode }) {
   );
 }
 
-function MapStub({
-  pins,
-}: {
-  pins: { id: string; badge: string; x: number; y: number }[];
-}) {
-  return (
-    <div className="relative min-h-[520px] overflow-hidden rounded-lg border border-border bg-gradient-to-br from-primary/5 to-accent/10">
-      {/* Grid */}
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0,88,64,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,88,64,0.06) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-      {/* Region-labels */}
-      <span className="absolute left-[6%] top-[22%] font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-        Fredrikstad
-      </span>
-      <span className="absolute left-[55%] top-[14%] font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-        Drøbak
-      </span>
-      <span className="absolute left-[18%] top-[78%] font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-        Borge
-      </span>
-
-      {pins.map((p, i) => (
-        <div
-          key={p.id}
-          className="absolute -translate-x-1/2"
-          style={{ left: `${p.x}%`, top: `${p.y}%` }}
-        >
-          <div
-            className={`grid h-8 w-8 place-items-center rounded-full text-[11px] font-semibold ${
-              i === 0
-                ? "bg-primary text-primary-foreground shadow-lg ring-2 ring-primary/30"
-                : "bg-card text-foreground ring-1 ring-border"
-            }`}
-          >
-            {p.badge}
-          </div>
-        </div>
-      ))}
-
-      <div className="absolute right-3 top-3 rounded-md bg-background/80 px-2 py-1 font-mono text-[10px] text-muted-foreground">
-        Kart-stub · Mapbox kommer
-      </div>
-    </div>
-  );
-}
 
 function LocationCard({
   name,

@@ -11,8 +11,7 @@ const ALL_NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   {
     label: "Daglig",
     items: [
-      { href: "/admin", label: "Hub" },
-      { href: "/admin/agencyos", label: "AgencyOS" },
+      { href: "/admin/agencyos", label: "Hub" },
       { href: "/admin/calendar", label: "Kalender" },
       { href: "/admin/foresporsler", label: "Forespørsler" },
     ],
@@ -29,7 +28,6 @@ const ALL_NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Planlegge",
     items: [
       { href: "/admin/elever", label: "Spillere" },
-      { href: "/admin/board", label: "Trener-tavle" },
       { href: "/admin/plans", label: "Treningsplaner" },
       { href: "/admin/anlegg", label: "Anlegg" },
       { href: "/admin/services", label: "Tjenester" },
