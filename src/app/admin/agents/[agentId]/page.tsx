@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { FeedbackForm } from "./feedback-form";
+import { ApprovalActions } from "@/app/admin/approvals/approval-actions";
 
 type AgentKonfig = {
   navn: string;
@@ -62,6 +63,21 @@ const STATUS_FARGE: Record<AgentKonfig["status"], string> = {
   planlagt: "bg-secondary text-secondary-foreground",
 };
 
+const ACTION_LABEL: Record<string, string> = {
+  PYRAMID_ADJUST: "Juster pyramide",
+  SESSION_ADD: "Legg til økt",
+  SESSION_REMOVE: "Fjern økt",
+  INTENSITY_ADJUST: "Juster intensitet",
+  TAPER_ENGAGE: "Start taper",
+  WITHDRAW: "Trekk fra",
+  DRILL_SUGGEST: "Drill-forslag",
+  TEST_SCHEDULE: "Planlegg test",
+  PEER_COMPARE: "Sammenlign",
+  RECOVERY_ADD: "Legg til hvile",
+  ESCALATION: "Eskalering",
+  DELOAD: "Pauseuke",
+};
+
 export default async function AgentDetaljPage({
   params,
 }: {
@@ -72,16 +88,26 @@ export default async function AgentDetaljPage({
   const konfig = AGENT_KONFIG[agentId];
   if (!konfig) notFound();
 
-  const kjoringer = await prisma.auditLog.findMany({
-    where: {
-      action: { startsWith: `agent.${agentId}` },
-    },
-    orderBy: { createdAt: "desc" },
-    take: 20,
-    include: {
-      actor: { select: { name: true } },
-    },
-  });
+  const [kjoringer, planActions] = await Promise.all([
+    prisma.auditLog.findMany({
+      where: {
+        action: { startsWith: `agent.${agentId}` },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      include: {
+        actor: { select: { name: true } },
+      },
+    }),
+    prisma.planAction.findMany({
+      where: { agentName: agentId },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      include: {
+        user: { select: { id: true, name: true } },
+      },
+    }),
+  ]);
 
   return (
     <div className="space-y-8">
@@ -131,11 +157,94 @@ export default async function AgentDetaljPage({
         </article>
       </section>
 
+      {/* Siste 10 forslag (PlanAction) fra denne agenten */}
+      <section>
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" strokeWidth={1.8} />
+            <h3 className="font-display text-lg font-semibold tracking-tight">
+              Siste forslag fra agenten
+            </h3>
+          </div>
+          <Link
+            href="/admin/approvals"
+            className="text-[12px] text-muted-foreground hover:text-foreground"
+          >
+            Se alle ventende →
+          </Link>
+        </div>
+        {planActions.length === 0 ? (
+          <EmptyState
+            icon={Sparkles}
+            titleItalic="Ingen forslag"
+            titleTrail="ennå"
+            sub="Forslag fra denne agenten dukker opp her."
+          />
+        ) : (
+          <div className="space-y-3">
+            {planActions.map((a) => {
+              const sugg = a.suggestion as { forklaring?: string } | null;
+              const statusKlasse =
+                a.status === "PENDING"
+                  ? "bg-accent/30 text-accent-foreground"
+                  : a.status === "ACCEPTED"
+                    ? "bg-primary/10 text-primary"
+                    : "bg-muted text-muted-foreground";
+              return (
+                <article
+                  key={a.id}
+                  className="rounded-lg border border-border bg-card p-4"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className="rounded-sm bg-secondary px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                          {ACTION_LABEL[a.actionType] ?? a.actionType}
+                        </span>
+                        <span
+                          className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${statusKlasse}`}
+                        >
+                          {a.status === "PENDING"
+                            ? "Venter"
+                            : a.status === "ACCEPTED"
+                              ? "Godkjent"
+                              : "Avvist"}
+                        </span>
+                        <span className="font-mono text-[10px] text-muted-foreground">
+                          {a.user.name}
+                        </span>
+                        <span className="ml-auto font-mono text-[10px] text-muted-foreground">
+                          {a.createdAt.toLocaleDateString("nb-NO", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
+                          })}
+                        </span>
+                      </div>
+                      {sugg?.forklaring && (
+                        <p className="text-sm text-foreground leading-relaxed">
+                          {sugg.forklaring}
+                        </p>
+                      )}
+                    </div>
+                    {a.status === "PENDING" && (
+                      <div className="shrink-0">
+                        <ApprovalActions actionId={a.id} />
+                      </div>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
       <section>
         <div className="mb-4 flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-primary" strokeWidth={1.8} />
+          <Bot className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
           <h3 className="font-display text-lg font-semibold tracking-tight">
-            Siste kjøringer
+            Siste kjøringer (audit-logg)
           </h3>
         </div>
         {kjoringer.length === 0 ? (
