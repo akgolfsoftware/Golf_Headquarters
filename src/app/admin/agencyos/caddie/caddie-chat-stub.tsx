@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * @deprecated Bruker nå `CaddieChat` fra `@/components/admin/caddie/caddie-chat`.
+ * Filen er beholdt midlertidig som referanse til den gamle V1-stub-en og slettes
+ * når M19 (AI SDK-integrasjon) er ferdig. Ikke importer denne i nye komponenter.
+ */
+
 import { useState } from "react";
 import { ArrowUp, Sparkles } from "lucide-react";
 
