@@ -7,6 +7,7 @@ import { runBookingReminders } from "@/lib/agents/booking-reminders";
 import { runCleanupRecordings } from "@/lib/agents/cleanup-recordings";
 import { runSgInsights } from "@/lib/sg-hub/insight-engine";
 import { syncDataGolf } from "@/lib/sg-hub/datagolf-sync";
+import { runClubTrends } from "@/lib/sg-hub/club-trend-aggregator";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -17,6 +18,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "cleanup-recordings": runCleanupRecordings,
   "sg-insights": runSgInsights,
   "datagolf-sync": syncDataGolf,
+  "club-trends": runClubTrends,
 };
 
 export async function GET(

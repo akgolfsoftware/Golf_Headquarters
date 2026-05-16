@@ -1,0 +1,54 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { prisma } from "@/lib/prisma";
+
+export async function pinSession(input: {
+  trackmanSessionId: string;
+  notes?: string | null;
+  autoSuggested?: boolean;
+}) {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("unauthenticated");
+
+  // Verifiser at økten tilhører brukeren
+  const session = await prisma.trackManSession.findFirst({
+    where: { id: input.trackmanSessionId, userId: user.id },
+    select: { id: true },
+  });
+  if (!session) throw new Error("session-not-found");
+
+  await prisma.bestSessionReference.upsert({
+    where: { userId: user.id },
+    create: {
+      userId: user.id,
+      trackmanSessionId: input.trackmanSessionId,
+      pinnedBy: user.id,
+      notes: input.notes ?? null,
+      autoSuggested: input.autoSuggested ?? false,
+    },
+    update: {
+      trackmanSessionId: input.trackmanSessionId,
+      pinnedBy: user.id,
+      pinnedAt: new Date(),
+      notes: input.notes ?? null,
+      autoSuggested: input.autoSuggested ?? false,
+    },
+  });
+
+  revalidatePath("/portal/mal/sg-hub/best-vs-now");
+}
+
+export async function unpinSession() {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("unauthenticated");
+
+  await prisma.bestSessionReference
+    .delete({ where: { userId: user.id } })
+    .catch(() => {
+      // Stille feil hvis ingen pin finnes — operasjon er idempotent.
+    });
+
+  revalidatePath("/portal/mal/sg-hub/best-vs-now");
+}
