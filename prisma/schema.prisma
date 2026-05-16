@@ -255,7 +255,41 @@ model User {
   // Drill-opprettelse (taxonomy v4)
   createdExercises ExerciseDefinition[] @relation("ExerciseCreator")
 
+  // Voice-memo-opptak (Sprint recording V1)
+  uploadedRecordings SessionRecording[] @relation("UploadedRecordings")
+  playerRecordings   SessionRecording[] @relation("PlayerRecordings")
+
+  // Caddie chat-historikk
+  caddieMessages CaddieMessage[]
+
   @@map("users")
+}
+
+// Caddie chat — hver melding lagres for historikk og kontekst i nye samtaler.
+// Tool-calls og resultater lagres som JSON for senere visning/audit.
+model CaddieMessage {
+  id           String   @id @default(cuid())
+  userId       String
+  conversationId String  // grupperer meldinger til samme samtale
+  // "user" | "assistant" | "tool"
+  role         String
+  content      String   @db.Text
+  // Hvis assistant kalte et tool, lagres call-info her
+  toolCalls    Json?
+  // Hvis dette er en tool-respons, lagres resultatet
+  toolResults  Json?
+  // Tokens brukt (for kostnads-sporing)
+  inputTokens  Int?
+  outputTokens Int?
+  // Modell-navn (claude-sonnet-4-6 etc.)
+  model        String?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([conversationId])
+  @@map("caddie_messages")
 }
 
 // Talent-tracking for spillere i akademiets talent-program.
@@ -457,6 +491,7 @@ model Booking {
   subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
   facility     Facility?     @relation(fields: [facilityId], references: [id], onDelete: SetNull)
   payments     Payment[]
+  recordings   SessionRecording[]
 
   @@index([userId])
   @@index([startAt])
@@ -1396,20 +1431,37 @@ model Facility {
 }
 
 model SessionRecording {
-  id           String   @id @default(cuid())
-  sessionId    String?
-  uploadedById String
-  audioUrl     String
-  transcript   String?
-  duration     Int?
-  // PROCESSING | DONE | FAILED
-  status       String   @default("PROCESSING")
-  deepgramId   String?
-  notes        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String    @id @default(cuid())
+  sessionId      String?
+  bookingId      String?
+  uploadedById   String
+  playerId       String?
+  // null inntil chunks er merget til final.webm.
+  audioUrl       String?
+  // [{ idx: number, path: string, size: number }]
+  chunks         Json      @default("[]")
+  transcript     String?
+  durationSec    Int?
+  // RECORDING | PROCESSING | DONE | FAILED | ABORTED
+  status         String    @default("RECORDING")
+  // { teknisk, taktisk, mental, fysisk, hjemmelekse, coachAnalyse, nesteOktAnbefaling }
+  aiAnalysis     Json?
+  notionPageId   String?
+  notes          String?
+  retentionUntil DateTime?
+  deepgramId     String?
+  startedAt      DateTime  @default(now())
+  completedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  booking    Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  uploadedBy User     @relation("UploadedRecordings", fields: [uploadedById], references: [id], onDelete: Cascade)
+  player     User?    @relation("PlayerRecordings", fields: [playerId], references: [id], onDelete: SetNull)
 
   @@index([uploadedById, createdAt])
+  @@index([bookingId])
+  @@index([playerId, createdAt])
   @@map("session_recordings")
 }
 

@@ -70,19 +70,44 @@ function formatDato(d: Date): string {
   });
 }
 
-export default async function RecordingAdmin() {
+type SearchParams = Promise<{ id?: string }>;
+
+export default async function RecordingAdmin({
+  searchParams,
+}: {
+  searchParams?: SearchParams;
+}) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const sp = (await searchParams) ?? {};
+  const activeRecordingId = sp.id ?? null;
 
   const recordings = await prisma.sessionRecording.findMany({
     orderBy: { createdAt: "desc" },
     take: 30,
   });
 
+  // Recovery: status=RECORDING for innlogget coach, startet >5 min siden,
+  // ikke samme som aktiv recordingId i URL.
+  const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
+  const recovery = await prisma.sessionRecording.findFirst({
+    where: {
+      uploadedById: user.id,
+      status: "RECORDING",
+      startedAt: { lt: fiveMinAgo },
+      ...(activeRecordingId ? { id: { not: activeRecordingId } } : {}),
+    },
+    orderBy: { startedAt: "desc" },
+    select: { id: true, startedAt: true },
+  });
+
   const harDeepgramKey = !!process.env.DEEPGRAM_API_KEY;
 
   // Plukk siste aktive opptak for live-vinduet, ellers placeholder
-  const aktivt =
-    recordings.find((r) => r.status === "PROCESSING") ?? recordings[0] ?? null;
+  const aktivt = activeRecordingId
+    ? (recordings.find((r) => r.id === activeRecordingId) ?? null)
+    : (recordings.find((r) => r.status === "PROCESSING") ??
+        recordings[0] ??
+        null);
   const harAktivt = !!aktivt;
 
   // Pipeline-tilstand basert på aktivt opptak
@@ -142,9 +167,18 @@ export default async function RecordingAdmin() {
 
       {/* Live recording frame */}
       <RecordingControls
-        harAktivt={harAktivt}
-        aktivStatus={aktivt?.status ?? null}
-        aktivId={aktivt?.id ?? null}
+        recordingId={activeRecordingId}
+        recoveryRecordingId={recovery?.id ?? null}
+        recoveryStartedAt={
+          recovery
+            ? recovery.startedAt.toLocaleString("nb-NO", {
+                day: "2-digit",
+                month: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : null
+        }
         topbar={
           <>
             {harAktivt && aktivt.status === "PROCESSING" ? (
@@ -153,7 +187,7 @@ export default async function RecordingAdmin() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-destructive" />
                 </span>
-                REC {formatVarighet(aktivt.duration ?? null)}
+                REC {formatVarighet(aktivt.durationSec ?? null)}
               </span>
             ) : (
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
@@ -238,7 +272,7 @@ export default async function RecordingAdmin() {
 
       {/* Timeline-scrubber */}
       <TimelineScrubber
-        varighet={aktivt?.duration ?? 754}
+        varighet={aktivt?.durationSec ?? 754}
         aktiv={harAktivt && aktivt?.status === "PROCESSING"}
       />
 
@@ -296,19 +330,20 @@ export default async function RecordingAdmin() {
                 >
                   {STATUS_LABEL[r.status] ?? r.status}
                 </span>
-                {r.duration && (
+                {r.durationSec && (
                   <span className="font-mono text-[10px] text-muted-foreground">
-                    {Math.round(r.duration / 60)} min
+                    {Math.round(r.durationSec / 60)} min
                   </span>
                 )}
-                <a
-                  href={r.audioUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline"
-                >
-                  Åpne lyd →
-                </a>
+                {r.audioUrl ? (
+                  <span className="font-mono text-[10px] text-muted-foreground">
+                    {r.audioUrl}
+                  </span>
+                ) : (
+                  <span className="font-mono text-[10px] text-muted-foreground italic">
+                    Lyd ikke klar
+                  </span>
+                )}
                 {r.transcript && (
                   <details className="w-full">
                     <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">

@@ -88,7 +88,7 @@ export function NyRundeModal({ courses }: { courses: Course[] }) {
       return;
     }
     if (!score || isNaN(Number(score))) {
-      setError("Skår må være et tall.");
+      setError("Score må være et tall.");
       return;
     }
     setError(null);

@@ -37,9 +37,9 @@ export default async function NyOktPage({
       </Link>
 
       <PageHeader
-        eyebrow="CoachHQ · Ny okt"
+        eyebrow="CoachHQ · Ny økt"
         titleLead="Legg til"
-        titleItalic="okt"
+        titleItalic="økt"
       />
 
       <AddSessionWizard planId={planId} exercises={exercises} />

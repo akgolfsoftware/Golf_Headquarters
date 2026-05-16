@@ -2,7 +2,7 @@
  * PlayerHQ · Trening · Tester
  *
  * Migrert til endelig design (wireframe/design-files-v2/final/12-tester.html).
- * Tabs (NGF / Mine), KPI-strip med gjennomført + snitt + beste kategori, filter-row
+ * Tabs (Team Norway / Mine), KPI-strip med gjennomført + snitt + beste kategori, filter-row
  * og tabell med kategori-pill, rangering-pill, "Ta test"-knapp.
  */
 import Link from "next/link";
@@ -89,7 +89,7 @@ export default async function TesterPage() {
         sub={`${gjennomfoert} av ${totalTester} tester gjennomført · ${totalResultater} resultat${totalResultater === 1 ? "" : "er"} logget`}
       />
 
-      {/* Tabs (NGF / Mine) — Mine er Pro-locked og vises som disabled */}
+      {/* Tabs (Team Norway / Mine) — Mine er Pro-locked og vises som disabled */}
       <div className="inline-flex w-fit gap-0.5 rounded-md bg-secondary p-1">
         <span className="rounded-sm bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm">
           Team Norway{" "}

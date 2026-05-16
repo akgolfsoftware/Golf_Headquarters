@@ -1,5 +1,5 @@
 /**
- * PILOT — CoachHQ Kalender · Maaned
+ * PILOT — CoachHQ Kalender · Måned
  * Bygd direkte fra wireframe/design-files-v2/07-kalender-maaned.html
  * URL: /kalender-maaned-demo
  *

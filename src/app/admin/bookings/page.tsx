@@ -15,6 +15,7 @@ import { avatarBg } from "@/lib/avatar-colors";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { CoachFilter } from "@/components/admin/coach-filter";
+import { RecordingTriggerButton } from "@/components/admin/recording-trigger-button";
 import { AdminCancelAction } from "./cancel-action";
 import type { Prisma } from "@/generated/prisma/client";
 
@@ -304,7 +305,8 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
                   </span>
                 ) : null}
               </div>
-              <div className="mt-2 flex justify-end">
+              <div className="mt-2 flex flex-wrap items-center justify-end gap-2">
+                <RecordingTriggerButton bookingId={b.id} />
                 <AdminCancelAction
                   bookingId={b.id}
                   status={b.status}
@@ -412,12 +414,15 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
                   </span>
                 </Td>
                 <Td className="text-right">
-                  <AdminCancelAction
-                    bookingId={b.id}
-                    status={b.status}
-                    startAt={b.startAt}
-                    playerName={b.user.name}
-                  />
+                  <div className="inline-flex items-center gap-2">
+                    <RecordingTriggerButton bookingId={b.id} />
+                    <AdminCancelAction
+                      bookingId={b.id}
+                      status={b.status}
+                      startAt={b.startAt}
+                      playerName={b.user.name}
+                    />
+                  </div>
                 </Td>
               </tr>
             );

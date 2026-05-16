@@ -436,7 +436,7 @@ export default async function AdminCalendar({
         </Chip>
       </div>
 
-      {/* Toolbar: uke-nav + Uke/Maaned-toggle + filter */}
+      {/* Toolbar: uke-nav + Uke/Måned-toggle + filter */}
       <div className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4">
         {/* Nav */}
         <div className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary p-0.5">
@@ -473,7 +473,7 @@ export default async function AdminCalendar({
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          {/* Uke / Maaned-toggle */}
+          {/* Uke / Måned-toggle */}
           <div className="inline-flex items-center gap-px rounded-md border border-border bg-secondary p-0.5 text-xs">
             <span className="rounded-sm bg-card px-2.5 py-1.5 font-medium text-foreground shadow-sm">
               Uke

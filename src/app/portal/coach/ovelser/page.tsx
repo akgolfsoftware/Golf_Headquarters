@@ -53,15 +53,15 @@ export default async function CoachOvelserPage({
         <PageHeader
           eyebrow="CoachHQ · Bibliotek"
           titleLead="Drills og"
-          titleItalic="ovelser"
-          sub={`${exercises.length} ovelse${exercises.length === 1 ? "" : "r"} i biblioteket`}
+          titleItalic="øvelser"
+          sub={`${exercises.length} øvelse${exercises.length === 1 ? "" : "r"} i biblioteket`}
         />
         <Link
           href="/portal/coach/ovelser/ny"
           className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
         >
           <Plus className="h-4 w-4" strokeWidth={2} />
-          Ny ovelse
+          Ny øvelse
         </Link>
       </div>
 
