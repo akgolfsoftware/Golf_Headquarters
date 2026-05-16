@@ -1,18 +1,29 @@
 /**
- * Google Calendar 2-way sync for coach-bookinger.
+ * Google Calendar 2-way sync for coach-bookinger — multi-kalender.
  *
- * Funksjoner:
- * - getOauthClient(): OAuth2-klient med refresh-token (per coach)
- * - getCalendarBusy(userId, from, to): hent eksterne events fra coachens kalender
- *   så vi kan ekskludere disse fra ledige slots
- * - pushBookingToCalendar(booking): opprett/oppdater event i coachens kalender
- * - removeFromCalendar(userId, eventId): slett event ved avbestilling
+ * En coach kan ha flere kalendere koblet til Google-kontoen. Hver kalender
+ * (GoogleCalendarSubscription) har egen push/pull-toggle:
+ *
+ *   - syncPush=true: nye bookinger pushes hit som event
+ *   - syncPull=true: events herfra blokkerer ledige slots
+ *
+ * For pull-kalendere setter vi opp Google Push Notifications (watch) slik at
+ * vi får webhook ved endring — som lar oss reflektere endringer/sletting
+ * tilbake i Booking-tabellen (two-way sync).
  *
  * Refresh-token er kryptert (AES-256-GCM) med GOOGLE_TOKEN_ENCRYPTION_KEY.
  */
-import { google } from "googleapis";
-import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
+import { google, type calendar_v3 } from "googleapis";
+import { OAuth2Client } from "google-auth-library";
+import {
+  createCipheriv,
+  createDecipheriv,
+  createHmac,
+  randomBytes,
+  randomUUID,
+} from "node:crypto";
 import { prisma } from "@/lib/prisma";
+import type { GoogleCalendarConnection } from "@/generated/prisma/client";
 
 const CLIENT_ID = process.env.GOOGLE_OAUTH_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
@@ -55,7 +66,7 @@ export function decryptToken(cipherStr: string): string {
   return plain.toString("utf8");
 }
 
-export function getOAuth2Client() {
+export function getOAuth2Client(): OAuth2Client {
   if (!CLIENT_ID || !CLIENT_SECRET || !REDIRECT_URI) {
     throw new Error("Google OAuth env-vars mangler");
   }
@@ -85,66 +96,108 @@ export async function exchangeCode(code: string) {
 }
 
 /**
- * Lag en autentisert Calendar API-klient for en gitt coach.
- * Henter refresh-token fra DB, dekrypterer, og bytter til access-token.
+ * HMAC-signering brukt til webhook-token (X-Goog-Channel-Token).
  */
-async function getCalendarClient(userId: string) {
-  const conn = await prisma.googleCalendarConnection.findUnique({
-    where: { userId },
-  });
-  if (!conn || conn.status !== "ACTIVE") {
-    return null;
-  }
-  const refreshToken = decryptToken(conn.refreshTokenCipher);
-  const oauth = getOAuth2Client();
-  oauth.setCredentials({ refresh_token: refreshToken });
-  const calendar = google.calendar({ version: "v3", auth: oauth });
-  return { calendar, connection: conn };
+export function signWebhookToken(channelId: string): string {
+  const secret = process.env.GOOGLE_WEBHOOK_TOKEN_SECRET;
+  if (!secret) throw new Error("GOOGLE_WEBHOOK_TOKEN_SECRET mangler");
+  return createHmac("sha256", secret).update(channelId).digest("hex");
 }
 
 /**
- * Hent travle tidsperioder fra coachens Google Calendar i et tidsvindu.
- * Returnerer liste over { start, end }-intervaller.
+ * Lag autentisert Calendar API-klient for en tilkobling.
+ * Tar inn connection direkte for å unngå dobbeltlookup.
+ */
+export function getCalendarApi(connection: GoogleCalendarConnection): calendar_v3.Calendar {
+  const refreshToken = decryptToken(connection.refreshTokenCipher);
+  const oauth = getOAuth2Client();
+  oauth.setCredentials({ refresh_token: refreshToken });
+  return google.calendar({ version: "v3", auth: oauth });
+}
+
+/**
+ * Hent connection for en bruker hvis aktiv, ellers null.
+ */
+async function getActiveConnection(userId: string): Promise<GoogleCalendarConnection | null> {
+  const conn = await prisma.googleCalendarConnection.findUnique({
+    where: { userId },
+  });
+  if (!conn || conn.status !== "ACTIVE") return null;
+  return conn;
+}
+
+/**
+ * Hent travle tidsperioder fra alle PULL-kalendere coachen har aktivert.
+ * Returnerer kombinert liste — duplikater er OK (filtreres ikke).
  */
 export async function getCalendarBusy(
   userId: string,
   from: Date,
   to: Date,
 ): Promise<{ start: Date; end: Date }[]> {
-  const client = await getCalendarClient(userId);
-  if (!client) return [];
+  const conn = await getActiveConnection(userId);
+  if (!conn) return [];
 
-  try {
-    const res = await client.calendar.freebusy.query({
-      requestBody: {
-        timeMin: from.toISOString(),
-        timeMax: to.toISOString(),
-        items: [{ id: client.connection.calendarId }],
-      },
-    });
-    const busy = res.data.calendars?.[client.connection.calendarId]?.busy ?? [];
+  const subs = await prisma.googleCalendarSubscription.findMany({
+    where: { connectionId: conn.id, syncPull: true, active: true },
+  });
+  if (subs.length === 0) return [];
+
+  const calendar = getCalendarApi(conn);
+  const all: { start: Date; end: Date }[] = [];
+  let nokenSuksess = false;
+
+  for (const sub of subs) {
+    try {
+      const res = await calendar.freebusy.query({
+        requestBody: {
+          timeMin: from.toISOString(),
+          timeMax: to.toISOString(),
+          items: [{ id: sub.googleCalendarId }],
+        },
+      });
+      const busy = res.data.calendars?.[sub.googleCalendarId]?.busy ?? [];
+      for (const b of busy) {
+        if (b.start && b.end) {
+          all.push({ start: new Date(b.start), end: new Date(b.end) });
+        }
+      }
+      nokenSuksess = true;
+      await prisma.googleCalendarSubscription.update({
+        where: { id: sub.id },
+        data: { lastSyncAt: new Date(), lastError: null },
+      });
+    } catch (err) {
+      const melding = err instanceof Error ? err.message : "unknown";
+      console.error(`[google-calendar] freebusy failed for ${sub.googleCalendarId}`, melding);
+      await prisma.googleCalendarSubscription.update({
+        where: { id: sub.id },
+        data: { lastError: melding.slice(0, 500) },
+      });
+    }
+  }
+
+  if (nokenSuksess) {
     await prisma.googleCalendarConnection.update({
-      where: { userId },
+      where: { id: conn.id },
       data: { lastSyncAt: new Date(), lastError: null, status: "ACTIVE" },
     });
-    return busy
-      .filter((b): b is { start: string; end: string } => !!b.start && !!b.end)
-      .map((b) => ({ start: new Date(b.start), end: new Date(b.end) }));
-  } catch (err) {
-    const melding = err instanceof Error ? err.message : "unknown";
-    console.error("[google-calendar] getBusy failed", melding);
-    await prisma.googleCalendarConnection.update({
-      where: { userId },
-      data: { lastError: melding.slice(0, 500), status: "ERROR" },
-    });
-    return [];
   }
+
+  return all;
 }
 
 /**
- * Push booking til coachens Google Calendar. Oppretter nytt event eller
- * oppdaterer eksisterende basert på Booking.googleEventId.
- * Returnerer event-ID hvis vellykket, ellers null.
+ * Push booking til ALLE coachens PUSH-kalendere. Oppretter event per kalender,
+ * eller oppdaterer hvis Booking.googleEventId allerede er satt.
+ *
+ * Implementasjonsmerknad: I dag lagrer vi kun ÉN event-ID på Booking. Hvis
+ * coach har flere PUSH-kalendere skriver vi event-ID fra den FØRSTE som ble
+ * opprettet. Endringer/sletting fra app pusher kun til den. Dette er
+ * pragmatisk — multi-event-ID per booking krever egen relasjons-tabell, og
+ * de fleste coacher har bare én PUSH-kalender (sin egen jobb-kalender).
+ *
+ * Returnerer event-ID hvis minst én push lyktes, ellers null.
  */
 export async function pushBookingToCalendar(bookingId: string): Promise<string | null> {
   const booking = await prisma.booking.findUnique({
@@ -160,8 +213,15 @@ export async function pushBookingToCalendar(bookingId: string): Promise<string |
   if (!booking) return null;
   if (!booking.serviceType.coachUserId) return null;
 
-  const client = await getCalendarClient(booking.serviceType.coachUserId);
-  if (!client) return null;
+  const conn = await getActiveConnection(booking.serviceType.coachUserId);
+  if (!conn) return null;
+
+  const pushSubs = await prisma.googleCalendarSubscription.findMany({
+    where: { connectionId: conn.id, syncPush: true, active: true },
+  });
+  if (pushSubs.length === 0) return null;
+
+  const calendar = getCalendarApi(conn);
 
   const summary = `${booking.serviceType.name} — ${booking.user.name}`;
   const description = [
@@ -172,7 +232,7 @@ export async function pushBookingToCalendar(bookingId: string): Promise<string |
     .filter(Boolean)
     .join("\n");
 
-  const event = {
+  const event: calendar_v3.Schema$Event = {
     summary,
     description,
     location: `${booking.location.name}, ${booking.location.address}`,
@@ -181,51 +241,260 @@ export async function pushBookingToCalendar(bookingId: string): Promise<string |
     attendees: [{ email: booking.user.email, displayName: booking.user.name }],
   };
 
-  try {
-    let eventId = booking.googleEventId;
-    if (eventId) {
-      await client.calendar.events.update({
-        calendarId: client.connection.calendarId,
-        eventId,
-        requestBody: event,
-      });
-    } else {
-      const res = await client.calendar.events.insert({
-        calendarId: client.connection.calendarId,
-        requestBody: event,
-      });
-      eventId = res.data.id ?? null;
-      if (eventId) {
-        await prisma.booking.update({
-          where: { id: booking.id },
-          data: { googleEventId: eventId },
+  let primaryEventId: string | null = booking.googleEventId;
+
+  for (const sub of pushSubs) {
+    try {
+      if (primaryEventId && sub === pushSubs[0]) {
+        // Oppdater eksisterende event i primær push-kalender
+        await calendar.events.update({
+          calendarId: sub.googleCalendarId,
+          eventId: primaryEventId,
+          requestBody: event,
         });
+      } else {
+        const res = await calendar.events.insert({
+          calendarId: sub.googleCalendarId,
+          requestBody: event,
+        });
+        const id = res.data.id ?? null;
+        // Lagre første event-ID på Booking
+        if (id && !primaryEventId) {
+          primaryEventId = id;
+          await prisma.booking.update({
+            where: { id: booking.id },
+            data: { googleEventId: id },
+          });
+        }
       }
+    } catch (err) {
+      console.error(
+        `[google-calendar] push failed for ${sub.googleCalendarId}`,
+        err instanceof Error ? err.message : err,
+      );
+      // Fortsett med neste sub — én feilet sub skal ikke blokkere de andre.
     }
-    return eventId;
-  } catch (err) {
-    console.error("[google-calendar] push failed", err);
-    return null;
   }
+
+  return primaryEventId;
 }
 
 /**
- * Slett event fra Calendar når booking avbestilles.
+ * Slett event fra alle coachens PUSH-kalendere når booking avbestilles.
+ * Best-effort — feil per kalender stopper ikke loopen.
  */
 export async function removeFromCalendar(
   coachUserId: string,
   googleEventId: string,
 ): Promise<boolean> {
-  const client = await getCalendarClient(coachUserId);
-  if (!client) return false;
+  const conn = await getActiveConnection(coachUserId);
+  if (!conn) return false;
+
+  const pushSubs = await prisma.googleCalendarSubscription.findMany({
+    where: { connectionId: conn.id, syncPush: true, active: true },
+  });
+  if (pushSubs.length === 0) return false;
+
+  const calendar = getCalendarApi(conn);
+  let suksess = false;
+
+  for (const sub of pushSubs) {
+    try {
+      await calendar.events.delete({
+        calendarId: sub.googleCalendarId,
+        eventId: googleEventId,
+      });
+      suksess = true;
+    } catch (err) {
+      // Eventet eksisterer ofte ikke i alle kalendere — det er forventet.
+      const melding = err instanceof Error ? err.message : String(err);
+      if (!melding.includes("Resource has been deleted") && !melding.includes("Not Found")) {
+        console.error(
+          `[google-calendar] delete failed for ${sub.googleCalendarId}`,
+          melding,
+        );
+      }
+    }
+  }
+  return suksess;
+}
+
+/**
+ * Hent kalender-liste fra Google og upsert subscriptions.
+ *
+ * Default-regler:
+ *   - accessRole=owner → syncPush=true, syncPull=true (sin egen kalender)
+ *   - accessRole=writer/reader → syncPush=false, syncPull=true (delte)
+ *   - accessRole=freeBusyReader → hopp over (kun travelhet, lite verdi)
+ *
+ * For EKSISTERENDE subscriptions oppdaterer vi kun visningsdata (navn, farge,
+ * beskrivelse) — bruker-toggler beholdes.
+ */
+export async function syncCalendarList(connectionId: string): Promise<{
+  found: number;
+  upserted: number;
+  skipped: number;
+}> {
+  const connection = await prisma.googleCalendarConnection.findUnique({
+    where: { id: connectionId },
+  });
+  if (!connection) throw new Error("Tilkobling ikke funnet");
+
+  const calendar = getCalendarApi(connection);
+  const res = await calendar.calendarList.list({ maxResults: 250 });
+  const items = res.data.items ?? [];
+
+  let upserted = 0;
+  let skipped = 0;
+
+  for (const item of items) {
+    if (!item.id) continue;
+    if (item.accessRole === "freeBusyReader") {
+      skipped++;
+      continue;
+    }
+    const isOwner = item.accessRole === "owner";
+    await prisma.googleCalendarSubscription.upsert({
+      where: {
+        connectionId_googleCalendarId: {
+          connectionId,
+          googleCalendarId: item.id,
+        },
+      },
+      create: {
+        connectionId,
+        googleCalendarId: item.id,
+        calendarName: item.summary ?? item.id,
+        description: item.description ?? null,
+        color: item.backgroundColor ?? null,
+        syncPush: isOwner,
+        syncPull: true,
+        active: true,
+      },
+      update: {
+        // Behold bruker-toggler, oppdater kun visningsdata
+        calendarName: item.summary ?? item.id,
+        description: item.description ?? null,
+        color: item.backgroundColor ?? null,
+      },
+    });
+    upserted++;
+  }
+
+  return { found: items.length, upserted, skipped };
+}
+
+/**
+ * Sett opp Google Push Notifications (watch) for en subscription.
+ * Returnerer { channelId, resourceId, expiration } ved suksess.
+ *
+ * Google forplikter watch-channels å gå ut etter maks 7 dager — vi setter
+ * eksplisitt 7 dager og forventer at cron fornyer dem.
+ */
+export async function setupWatchForSubscription(
+  subscriptionId: string,
+): Promise<{ channelId: string; resourceId: string; expiresAt: Date } | null> {
+  const sub = await prisma.googleCalendarSubscription.findUnique({
+    where: { id: subscriptionId },
+    include: { connection: true },
+  });
+  if (!sub) return null;
+  if (!sub.syncPull || !sub.active) return null;
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!baseUrl) {
+    console.error("[google-calendar] NEXT_PUBLIC_APP_URL mangler — kan ikke registrere watch");
+    return null;
+  }
+  // Google krever https for webhook-adresse
+  if (!baseUrl.startsWith("https://")) {
+    console.warn(`[google-calendar] hopper over watch — NEXT_PUBLIC_APP_URL er ikke https: ${baseUrl}`);
+    return null;
+  }
+
+  const calendar = getCalendarApi(sub.connection);
+  const channelId = randomUUID();
+  const expirationMs = Date.now() + 7 * 24 * 60 * 60 * 1000;
+
   try {
-    await client.calendar.events.delete({
-      calendarId: client.connection.calendarId,
-      eventId: googleEventId,
+    const res = await calendar.events.watch({
+      calendarId: sub.googleCalendarId,
+      requestBody: {
+        id: channelId,
+        type: "web_hook",
+        address: `${baseUrl}/api/google-calendar/webhook`,
+        expiration: String(expirationMs),
+        token: signWebhookToken(channelId),
+      },
+    });
+
+    const resourceId = res.data.resourceId ?? null;
+    const expiration = res.data.expiration ? Number(res.data.expiration) : expirationMs;
+    if (!resourceId) {
+      console.error(`[google-calendar] watch returnerte ingen resourceId for ${sub.googleCalendarId}`);
+      return null;
+    }
+    const expiresAt = new Date(expiration);
+
+    await prisma.googleCalendarSubscription.update({
+      where: { id: sub.id },
+      data: {
+        watchChannelId: channelId,
+        watchResourceId: resourceId,
+        watchExpiresAt: expiresAt,
+      },
+    });
+
+    return { channelId, resourceId, expiresAt };
+  } catch (err) {
+    const melding = err instanceof Error ? err.message : "unknown";
+    console.error(`[google-calendar] watch.insert failed for ${sub.googleCalendarId}`, melding);
+    await prisma.googleCalendarSubscription.update({
+      where: { id: sub.id },
+      data: { lastError: melding.slice(0, 500) },
+    });
+    return null;
+  }
+}
+
+/**
+ * Stopp en eksisterende watch-kanal (kalles før fornyelse eller når
+ * subscription deaktiveres).
+ */
+export async function stopWatchForSubscription(subscriptionId: string): Promise<boolean> {
+  const sub = await prisma.googleCalendarSubscription.findUnique({
+    where: { id: subscriptionId },
+    include: { connection: true },
+  });
+  if (!sub || !sub.watchChannelId || !sub.watchResourceId) return false;
+
+  const calendar = getCalendarApi(sub.connection);
+  try {
+    await calendar.channels.stop({
+      requestBody: {
+        id: sub.watchChannelId,
+        resourceId: sub.watchResourceId,
+      },
+    });
+    await prisma.googleCalendarSubscription.update({
+      where: { id: sub.id },
+      data: {
+        watchChannelId: null,
+        watchResourceId: null,
+        watchExpiresAt: null,
+      },
     });
     return true;
   } catch (err) {
-    console.error("[google-calendar] delete failed", err);
+    // Hvis kanalen allerede er utløpt får vi 404 — det er OK.
+    console.warn(
+      `[google-calendar] channels.stop feilet (ofte OK):`,
+      err instanceof Error ? err.message : err,
+    );
+    await prisma.googleCalendarSubscription.update({
+      where: { id: sub.id },
+      data: { watchChannelId: null, watchResourceId: null, watchExpiresAt: null },
+    });
     return false;
   }
 }

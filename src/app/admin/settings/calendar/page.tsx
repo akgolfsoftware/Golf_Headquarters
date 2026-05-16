@@ -4,6 +4,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { DisconnectButton } from "./disconnect-button";
+import { SubscriptionsForm, type SubscriptionRow } from "./subscriptions-form";
 
 type SearchParams = Promise<{ ok?: string; error?: string }>;
 
@@ -17,7 +18,26 @@ export default async function CalendarSettings({
 
   const conn = await prisma.googleCalendarConnection.findUnique({
     where: { userId: user.id },
+    include: {
+      subscriptions: {
+        orderBy: [{ syncPush: "desc" }, { calendarName: "asc" }],
+      },
+    },
   });
+
+  const rader: SubscriptionRow[] =
+    conn?.subscriptions.map((s) => ({
+      id: s.id,
+      googleCalendarId: s.googleCalendarId,
+      calendarName: s.calendarName,
+      color: s.color,
+      syncPush: s.syncPush,
+      syncPull: s.syncPull,
+      active: s.active,
+      lastSyncAt: s.lastSyncAt ? s.lastSyncAt.toISOString() : null,
+      lastError: s.lastError,
+      watchExpiresAt: s.watchExpiresAt ? s.watchExpiresAt.toISOString() : null,
+    })) ?? [];
 
   return (
     <div className="space-y-6">
@@ -26,13 +46,13 @@ export default async function CalendarSettings({
         titleLead="Google"
         titleItalic="Calendar"
         titleTrail="2-way sync"
-        sub="Koble din Google-konto for å unngå dobbel-booking. Vi leser travle tider fra Calendar og pusher nye bookinger dit."
+        sub="Koble din Google-konto og velg hvilke kalendere som skal pushe bookinger og blokkere tider. Endringer i Google Calendar reflekteres tilbake hit."
       />
 
       {ok === "1" && (
         <div className="flex items-start gap-4 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
           <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-primary" strokeWidth={1.75} />
-          <span>Google Calendar er koblet til.</span>
+          <span>Google Calendar er koblet til. Velg hvilke kalendere du vil synke.</span>
         </div>
       )}
       {error && (
@@ -43,50 +63,58 @@ export default async function CalendarSettings({
       )}
 
       {conn ? (
-        <section className="rounded-2xl border border-border bg-card p-6">
-          <div className="flex items-center gap-4">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <CalendarCheck className="h-5 w-5" strokeWidth={1.75} />
-            </span>
-            <div>
-              <h3 className="font-display text-lg font-semibold tracking-tight">
-                Koblet til
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {conn.googleEmail}
-              </p>
+        <>
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <CalendarCheck className="h-5 w-5" strokeWidth={1.75} />
+                </span>
+                <div>
+                  <h3 className="font-display text-lg font-semibold tracking-tight">
+                    Koblet til
+                  </h3>
+                  <p className="text-sm text-muted-foreground">{conn.googleEmail}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/api/google-calendar/connect"
+                  className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground hover:border-border"
+                >
+                  Koble på nytt
+                </Link>
+                <DisconnectButton />
+              </div>
             </div>
-          </div>
 
-          <dl className="mt-6 space-y-4 text-sm">
-            <Rad label="Kalender" value={conn.calendarId} />
-            <Rad label="Status" value={conn.status} />
-            <Rad
-              label="Siste sync"
-              value={
-                conn.lastSyncAt
-                  ? conn.lastSyncAt.toLocaleString("nb-NO", {
-                      dateStyle: "medium",
-                      timeStyle: "short",
-                    })
-                  : "Aldri"
-              }
-            />
-            {conn.lastError && (
-              <Rad label="Siste feil" value={conn.lastError} error />
-            )}
-          </dl>
+            <dl className="mt-6 grid gap-4 sm:grid-cols-3 text-sm">
+              <Rad label="Status" value={conn.status} />
+              <Rad
+                label="Siste sync"
+                value={
+                  conn.lastSyncAt
+                    ? conn.lastSyncAt.toLocaleString("nb-NO", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })
+                    : "Aldri"
+                }
+              />
+              <Rad
+                label="Antall kalendere"
+                value={String(rader.length)}
+              />
+              {conn.lastError && (
+                <div className="sm:col-span-3">
+                  <Rad label="Siste feil" value={conn.lastError} error />
+                </div>
+              )}
+            </dl>
+          </section>
 
-          <div className="mt-6 flex items-center gap-4">
-            <Link
-              href="/api/google-calendar/connect"
-              className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground hover:border-border"
-            >
-              Koble på nytt
-            </Link>
-            <DisconnectButton />
-          </div>
-        </section>
+          <SubscriptionsForm rows={rader} />
+        </>
       ) : (
         <section className="rounded-2xl border border-border bg-card p-8 text-center">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -115,23 +143,23 @@ export default async function CalendarSettings({
         </h3>
         <ol className="mt-4 space-y-2 text-sm text-muted-foreground">
           <li>
-            <span className="font-mono text-foreground">1.</span> Når en spiller
-            booker en time, sjekker vi Google Calendar for travle tider og
-            ekskluderer disse.
+            <span className="font-mono text-foreground">1.</span>{" "}
+            <strong className="text-foreground">Pull</strong> — kalendere med
+            denne på blokkerer ledige slots i AK Golf HQ.
           </li>
           <li>
-            <span className="font-mono text-foreground">2.</span> Bekreftede
-            bookinger pushes til kalenderen din som event med spillerens navn
-            og notater.
+            <span className="font-mono text-foreground">2.</span>{" "}
+            <strong className="text-foreground">Push</strong> — bekreftede
+            bookinger pushes til kalendere med denne på.
           </li>
           <li>
-            <span className="font-mono text-foreground">3.</span> Hvis du
-            legger inn en privat avtale i Calendar, blir den tiden automatisk
-            blokkert for nye bookinger i plattformen.
+            <span className="font-mono text-foreground">3.</span> Endringer i
+            Google (event flyttet eller slettet) reflekteres tilbake til
+            Booking-tabellen via webhook.
           </li>
           <li>
-            <span className="font-mono text-foreground">4.</span> Når en
-            booking avbestilles, slettes også Calendar-eventet.
+            <span className="font-mono text-foreground">4.</span> Du kan slå av
+            individuelle kalendere uten å koble fra hele tilkoblingen.
           </li>
         </ol>
       </section>
@@ -149,13 +177,13 @@ function Rad({
   error?: boolean;
 }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/40 pb-4 last:border-0 last:pb-0">
+    <div className="space-y-2">
       <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </dt>
       <dd
         className={
-          error ? "text-destructive" : "font-mono text-sm text-foreground"
+          error ? "text-sm text-destructive" : "font-mono text-sm text-foreground"
         }
       >
         {value}

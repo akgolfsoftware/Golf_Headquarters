@@ -1196,9 +1196,49 @@ model GoogleCalendarConnection {
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptions GoogleCalendarSubscription[]
 
   @@map("google_calendar_connections")
+}
+
+// En coach kan ha flere kalendere koblet til Google-kontoen sin. Hver
+// subscription representerer én Google-kalender med valgfri push/pull-retning.
+//
+// - syncPush=true: bookinger pushes til denne kalenderen som nytt event
+// - syncPull=true: events i denne kalenderen blokkerer ledige slots
+// - watchChannelId/resourceId/expiresAt: Google Push Notifications-state
+//   for å motta webhook ved endringer (kun ved syncPull=true).
+model GoogleCalendarSubscription {
+  id               String   @id @default(cuid())
+  connectionId     String
+  // Google sin egen calendarId — kan være "primary", e-post eller UUID
+  googleCalendarId String
+  // Visningsnavn fra Google calendarList.summary
+  calendarName     String
+  description      String?
+  // Hex-farge fra calendarList.backgroundColor (f.eks. "#4285F4")
+  color            String?
+  // Sync-retning
+  syncPush         Boolean  @default(false)
+  syncPull         Boolean  @default(true)
+  active           Boolean  @default(true)
+  // Google Push Notifications watch-tilstand (kun ved syncPull=true)
+  watchChannelId   String?
+  watchResourceId  String?
+  watchExpiresAt   DateTime?
+  // Cache av siste sync
+  lastSyncAt       DateTime?
+  lastError        String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  connection GoogleCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, googleCalendarId])
+  @@index([connectionId, active])
+  @@index([watchChannelId])
+  @@map("google_calendar_subscriptions")
 }
 
 // ---------- CoachHQ-modeller (Fase 2.1) ----------

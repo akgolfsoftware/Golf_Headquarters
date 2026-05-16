@@ -10,6 +10,8 @@ import {
   encryptToken,
   exchangeCode,
   getOAuth2Client,
+  syncCalendarList,
+  setupWatchForSubscription,
 } from "@/lib/google-calendar";
 
 export const runtime = "nodejs";
@@ -73,7 +75,7 @@ export async function GET(req: Request) {
 
     const cipher = encryptToken(tokens.refresh_token);
 
-    await prisma.googleCalendarConnection.upsert({
+    const connection = await prisma.googleCalendarConnection.upsert({
       where: { userId },
       create: {
         userId,
@@ -90,6 +92,32 @@ export async function GET(req: Request) {
         lastSyncAt: new Date(),
       },
     });
+
+    // Hent kalender-liste og opprett subscriptions med default-toggler
+    try {
+      await syncCalendarList(connection.id);
+    } catch (err) {
+      console.error(
+        "[google-calendar/callback] kalender-liste-sync feilet",
+        err instanceof Error ? err.message : err,
+      );
+    }
+
+    // Sett opp watch for hver aktiv pull-subscription (best-effort)
+    try {
+      const pullSubs = await prisma.googleCalendarSubscription.findMany({
+        where: { connectionId: connection.id, syncPull: true, active: true },
+        select: { id: true },
+      });
+      await Promise.allSettled(
+        pullSubs.map((s) => setupWatchForSubscription(s.id)),
+      );
+    } catch (err) {
+      console.error(
+        "[google-calendar/callback] watch-oppsett feilet",
+        err instanceof Error ? err.message : err,
+      );
+    }
 
     return NextResponse.redirect(
       new URL("/admin/settings/calendar?ok=1", req.url),

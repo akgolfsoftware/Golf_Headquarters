@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { runPlanWatcher } from "@/lib/agents/plan-watcher";
 import { runBookingReminders } from "@/lib/agents/booking-reminders";
 import { runCleanupRecordings } from "@/lib/agents/cleanup-recordings";
+import { runRefreshCalendarWatches } from "@/lib/agents/refresh-calendar-watches";
 import { runSgInsights } from "@/lib/sg-hub/insight-engine";
 import { syncDataGolf } from "@/lib/sg-hub/datagolf-sync";
 import { runClubTrends } from "@/lib/sg-hub/club-trend-aggregator";
@@ -16,6 +17,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "plan-watcher": runPlanWatcher,
   "booking-reminders": runBookingReminders,
   "cleanup-recordings": runCleanupRecordings,
+  "refresh-calendar-watches": runRefreshCalendarWatches,
   "sg-insights": runSgInsights,
   "datagolf-sync": syncDataGolf,
   "club-trends": runClubTrends,
