@@ -5,6 +5,7 @@
  * Pro-versjon med 4 KPI-kort (snitt, vs par, beste, SG total), filter-row,
  * og tabell med tee-pill, score, vs-par-pill, SG og detaljer-link.
  */
+import Link from "next/link";
 import { Flag, Search, ChevronDown, Download } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -266,9 +267,12 @@ export default async function RunderPage() {
                       >
                         {formatSg(r.sgTotal)}
                       </span>
-                      <span className="text-xs font-medium text-primary">
+                      <Link
+                        href={`/portal/mal/runder/${r.id}`}
+                        className="text-xs font-medium text-primary hover:underline"
+                      >
                         Detaljer →
-                      </span>
+                      </Link>
                     </div>
                   </li>
                 );

@@ -597,9 +597,67 @@ model Round {
 
   user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   course CourseDefinition @relation(fields: [courseId], references: [id])
+  shots  Shot[]
 
   @@index([userId, playedAt])
   @@map("rounds")
+}
+
+// Per-slag statistikk (manuell wizard eller UpGame-import)
+
+enum ShotLie {
+  TEE
+  FAIRWAY
+  SEMI_ROUGH
+  ROUGH
+  DEEP_ROUGH
+  BUNKER
+  GREEN
+  WATER
+  OOB
+  TREES
+}
+
+enum WindDir {
+  STILLE
+  MEDVIND
+  MOTVIND
+  VENSTRE
+  HOYRE
+}
+
+enum ShotType {
+  DRIVE
+  APPROACH
+  CHIP
+  PITCH
+  PUTT
+  BUNKER
+  RECOVERY
+  DROP
+}
+
+model Shot {
+  id            String   @id @default(cuid())
+  roundId       String
+  holeNumber    Int
+  holePar       Int
+  shotNumber    Int
+  club          String?
+  lie           ShotLie
+  distanceToPin Float?
+  distanceHit   Float?
+  windDir       WindDir?
+  shotType      ShotType
+  isPenalty     Boolean  @default(false)
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
+
+  @@unique([roundId, holeNumber, shotNumber])
+  @@index([roundId, holeNumber])
+  @@map("shots")
 }
 
 model TestDefinition {
