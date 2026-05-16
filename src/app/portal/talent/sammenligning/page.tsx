@@ -23,7 +23,15 @@ import { prisma } from "@/lib/prisma";
 
 import { AnonymiserToggle } from "./anonymiser-toggle";
 
-type SearchParams = Promise<{ q?: string; spiller?: string }>;
+type Periode = "30d" | "90d" | "1ar";
+
+type SgDelta = {
+  label: string;
+  no: number | null;
+  da: number | null;
+};
+
+type SearchParams = Promise<{ q?: string; spiller?: string; periode?: string }>;
 
 function lesAnonymiser(prefs: unknown): boolean {
   if (!prefs || typeof prefs !== "object" || Array.isArray(prefs)) return false;
@@ -39,7 +47,7 @@ export default async function SammenligningPage({
   searchParams: SearchParams;
 }) {
   const user = await requirePortalUser({ allow: ["PLAYER"] });
-  const { q, spiller } = await searchParams;
+  const { q, spiller, periode } = await searchParams;
 
   const mineData = await prisma.talentTracking.findUnique({
     where: { userId: user.id },
@@ -100,6 +108,45 @@ export default async function SammenligningPage({
     : annenAnonymisert
       ? "Spiller"
       : (valgt.user.name ?? "Ukjent");
+
+  // Periode-filter for HCP og SG delta
+  const periodeValgt: Periode =
+    periode === "90d" ? "90d" : periode === "1ar" ? "1ar" : "30d";
+  const dager = periodeValgt === "1ar" ? 365 : periodeValgt === "90d" ? 90 : 30;
+  const periodeStart = new Date();
+  periodeStart.setDate(periodeStart.getDate() - dager);
+
+  // HCP og SG siste runde i perioden vs første runde i perioden
+  const [nyeRunder, gamleRunder, brukerHcp] = await Promise.all([
+    prisma.round.findMany({
+      where: { userId: user.id, playedAt: { gte: periodeStart } },
+      orderBy: { playedAt: "desc" },
+      take: 5,
+      select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true, playedAt: true },
+    }),
+    prisma.round.findMany({
+      where: { userId: user.id, playedAt: { lt: periodeStart } },
+      orderBy: { playedAt: "desc" },
+      take: 5,
+      select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },
+    }),
+    prisma.user.findUnique({
+      where: { id: user.id },
+      select: { hcp: true },
+    }),
+  ]);
+
+  function snitt(runder: { sgTotal: number | null; sgApp: number | null; sgArg: number | null; sgPutt: number | null }[], felt: "sgTotal" | "sgApp" | "sgArg" | "sgPutt"): number | null {
+    const vals = runder.map((r) => r[felt]).filter((v): v is number => v !== null);
+    return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+  }
+
+  const sgDeltas: SgDelta[] = [
+    { label: "SG Totalt", no: snitt(nyeRunder, "sgTotal"), da: snitt(gamleRunder, "sgTotal") },
+    { label: "SG APP", no: snitt(nyeRunder, "sgApp"), da: snitt(gamleRunder, "sgApp") },
+    { label: "SG ARG", no: snitt(nyeRunder, "sgArg"), da: snitt(gamleRunder, "sgArg") },
+    { label: "SG PUTT", no: snitt(nyeRunder, "sgPutt"), da: snitt(gamleRunder, "sgPutt") },
+  ];
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-8 md:px-8 md:py-12">
@@ -265,8 +312,111 @@ export default async function SammenligningPage({
               ))}
             </div>
           </section>
+
+          {/* HCP og SG delta over valgt periode */}
+          <section aria-label="Fremgang over tid" className="mt-8">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-display text-2xl font-medium tracking-tight">
+                Din fremgang
+              </h2>
+              <PeriodePicker aktiv={periodeValgt} q={q} spiller={spiller} />
+            </div>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {sgDeltas.map((d) => (
+                <SgDeltaKort key={d.label} delta={d} />
+              ))}
+            </div>
+          </section>
         </>
       )}
+
+      {/* Alltid vis fremgang-seksjon for innlogget spiller */}
+      {!valgt && (
+        <section aria-label="Fremgang over tid" className="mt-8">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-display text-2xl font-medium tracking-tight">
+              Din fremgang
+            </h2>
+            <PeriodePicker aktiv={periodeValgt} q={q} spiller={spiller} />
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {sgDeltas.map((d) => (
+              <SgDeltaKort key={d.label} delta={d} />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
+
+function PeriodePicker({
+  aktiv,
+  q,
+  spiller,
+}: {
+  aktiv: Periode;
+  q?: string;
+  spiller?: string;
+}) {
+  const perioder: { key: Periode; label: string }[] = [
+    { key: "30d", label: "30 dager" },
+    { key: "90d", label: "90 dager" },
+    { key: "1ar", label: "1 år" },
+  ];
+  return (
+    <div className="flex gap-1 rounded-md border border-border bg-card p-1">
+      {perioder.map((p) => {
+        const params = new URLSearchParams();
+        if (q) params.set("q", q);
+        if (spiller) params.set("spiller", spiller);
+        params.set("periode", p.key);
+        return (
+          <a
+            key={p.key}
+            href={`/portal/talent/sammenligning?${params.toString()}`}
+            className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
+              p.key === aktiv
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {p.label}
+          </a>
+        );
+      })}
+    </div>
+  );
+}
+
+function SgDeltaKort({ delta }: { delta: SgDelta }) {
+  const diff =
+    delta.no !== null && delta.da !== null ? delta.no - delta.da : null;
+  const pos = diff !== null && diff >= 0;
+  const fmtSg = (v: number | null) => {
+    if (v === null) return "—";
+    return (v >= 0 ? "+" : "") + v.toFixed(2).replace(".", ",");
+  };
+  return (
+    <div className="rounded-lg border border-border bg-card p-4">
+      <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        {delta.label}
+      </div>
+      <div
+        className={`mt-2 font-mono text-2xl font-medium tabular-nums ${
+          diff === null
+            ? "text-muted-foreground"
+            : pos
+              ? "text-primary"
+              : "text-destructive"
+        }`}
+      >
+        {diff === null ? "—" : (pos ? "+" : "") + diff.toFixed(2).replace(".", ",")}
+      </div>
+      <div className="mt-1 flex justify-between font-mono text-[10px] text-muted-foreground">
+        <span>Nå: {fmtSg(delta.no)}</span>
+        <span>Da: {fmtSg(delta.da)}</span>
+      </div>
     </div>
   );
 }

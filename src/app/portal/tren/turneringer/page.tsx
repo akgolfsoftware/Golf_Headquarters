@@ -5,6 +5,7 @@
  * Kobles mot SeasonPlan og Tournament-katalogen (admin-data).
  */
 
+import { Calendar, Medal } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
@@ -18,7 +19,7 @@ import {
 export default async function TurneringerPage() {
   const user = await requirePortalUser();
 
-  const [entries, turneringer, sesongplaner] = await Promise.all([
+  const [entries, turneringer, sesongplaner, resultater] = await Promise.all([
     prisma.tournamentEntry.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
@@ -34,6 +35,14 @@ export default async function TurneringerPage() {
       where: { userId: user.id },
       orderBy: { year: "desc" },
       select: { id: true, year: true, name: true },
+    }),
+    prisma.tournamentResult.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      include: {
+        tournament: { select: { name: true, startDate: true } },
+      },
     }),
   ]);
 
@@ -87,6 +96,67 @@ export default async function TurneringerPage() {
           katalog={katalog}
           sesongplaner={sesongplanerOptions}
         />
+
+        {/* Historiske turneringsresultater */}
+        {resultater.length > 0 && (
+          <section aria-label="Historiske resultater" className="mt-12">
+            <div className="mb-6 flex items-center gap-3">
+              <Medal size={20} strokeWidth={1.5} className="text-primary" aria-hidden />
+              <h2 className="font-display text-2xl font-medium tracking-tight">
+                Historiske resultater
+              </h2>
+            </div>
+            <div className="overflow-hidden rounded-lg border border-border bg-card">
+              <div
+                className="hidden sm:grid border-b border-border bg-secondary px-6 py-4 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground"
+                style={{ gridTemplateColumns: "1fr 160px 80px" }}
+              >
+                <div>Turnering</div>
+                <div>Dato</div>
+                <div>Resultat</div>
+              </div>
+              {resultater.map((r) => {
+                const dato = r.tournament?.startDate
+                  ? new Date(r.tournament.startDate).toLocaleDateString("nb-NO", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })
+                  : "—";
+                return (
+                  <div
+                    key={r.id}
+                    className="flex flex-col gap-1 border-b border-border px-6 py-4 last:border-b-0 sm:grid sm:items-center sm:gap-4"
+                    style={{ gridTemplateColumns: "1fr 160px 80px" }}
+                  >
+                    <div>
+                      <strong className="block text-sm font-semibold text-foreground">
+                        {r.tournament?.name ?? "Ukjent turnering"}
+                      </strong>
+                      {r.notes && (
+                        <span className="font-mono text-xs text-muted-foreground">
+                          {r.notes}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 font-mono text-sm text-muted-foreground">
+                      <Calendar size={14} strokeWidth={1.5} aria-hidden />
+                      {dato}
+                    </div>
+                    <div className="font-mono text-sm font-medium tabular-nums text-foreground">
+                      {r.position != null ? `#${r.position}` : "—"}
+                      {r.score != null && (
+                        <span className="ml-2 text-muted-foreground">
+                          ({r.score > 0 ? "+" : ""}{r.score})
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
