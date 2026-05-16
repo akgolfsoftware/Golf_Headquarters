@@ -7,6 +7,14 @@ import type { Prisma } from "@/generated/prisma/client";
 import { extractShots, extractClubs } from "@/lib/sg-hub/extract-shots";
 import { computeStrikePattern } from "@/lib/sg-hub/strike-pattern";
 import { computeTempo } from "@/lib/sg-hub/tempo";
+import { detectDrift } from "@/lib/sg-hub/drift-detection";
+import { computeFatigueCurve } from "@/lib/sg-hub/fatigue";
+import { computeClubFit } from "@/lib/sg-hub/equipment-fit";
+import { buildYardageRows } from "@/lib/sg-hub/yardage-calc";
+import {
+  buildStrategy,
+  makeBaselineLookup,
+} from "@/lib/sg-hub/same-distance-strategy";
 
 type EvaluatorResult = {
   category: InsightCategory;
@@ -166,14 +174,32 @@ async function evaluateTrainingGap(userId: string): Promise<EvaluatorResult> {
   };
 }
 
-// Phase 4: D-Plane Drift — venter på src/lib/sg-hub/drift-detection.ts.
-// Aktiveres når Phase 4 er merged. Inntil videre returnerer null.
+// Phase 4: D-Plane Drift — lineær regresjon over 12 uker per metrikk per kølle.
 async function evaluateDPlaneDrift(userId: string): Promise<EvaluatorResult> {
-  // TODO Phase 4: Krever src/lib/sg-hub/drift-detection.ts (drift-detection)
-  // som leser ClubMetricTrend over 12 uker og kjører lineær regresjon
-  // mot terskler (clubPath 0.2°/uke, faceAngle 0.15°/uke, totalDistance 0.5m/uke).
-  void userId;
-  return null;
+  const alerts = await detectDrift(userId);
+  if (alerts.length === 0) return null;
+
+  // Velg verste drift målt etter magnitude / threshold-ratio
+  alerts.sort((a, b) => b.magnitude / b.threshold - a.magnitude / a.threshold);
+  const worst = alerts[0];
+
+  const metricLabel = {
+    clubPath: "Club Path",
+    faceAngle: "Face Angle",
+    totalDistance: "Total Distance",
+  }[worst.metric];
+
+  const enhet = worst.metric === "totalDistance" ? "m" : "°";
+  const retning = worst.direction === "up" ? "økning" : "reduksjon";
+  const severity = worst.magnitude > worst.threshold * 2 ? 4 : 3;
+
+  return {
+    category: "D_PLANE_DRIFT",
+    severity,
+    title: `Teknisk drift: ${worst.club} · ${metricLabel}`,
+    body: `${worst.club} viser jevn ${retning} på ${metricLabel} — ${Math.abs(worst.slopePerWeek)}${enhet}/uke over ${worst.weeks} uker (terskel: ${worst.threshold}${enhet}/uke). Sjekk teknikk eller utstyrsendring.`,
+    payload: { alerts } as unknown as Prisma.InputJsonObject,
+  };
 }
 
 // Phase 2: Sweet Spot % per kølle — flagg lav treffprosent
@@ -214,24 +240,112 @@ async function evaluateStrikeQuality(userId: string): Promise<EvaluatorResult> {
   };
 }
 
-// Phase 4: Fatigue Pattern — venter på src/lib/sg-hub/fatigue.ts.
-// Aktiveres når Phase 4 er merged. Inntil videre returnerer null.
+// Phase 4: Fatigue Pattern — analyser per-økt om Club Speed faller etter ~slag 25-30.
+// Flagg hvis ≥50% av økter viser fatigue.
 async function evaluateFatiguePattern(userId: string): Promise<EvaluatorResult> {
-  // TODO Phase 4: Krever src/lib/sg-hub/fatigue.ts som identifiserer økter
-  // med Club Speed drop > 1 mph per 10 slag. Hvis ≥50% av økter viser fatigue
-  // → generer insight med FATIGUE_PATTERN-kategori.
-  void userId;
-  return null;
+  const sessions = await getSessions(userId);
+  if (sessions.length < 3) return null;
+
+  const clubSet = new Set<string>();
+  for (const s of sessions) {
+    for (const c of extractClubs(s.rawJson)) clubSet.add(c);
+  }
+
+  type FatigueCount = { club: string; sessions: number; fatigued: number; avgDrop: number };
+  const counts: FatigueCount[] = [];
+
+  for (const club of clubSet) {
+    let sessionCount = 0;
+    let fatigueCount = 0;
+    const drops: number[] = [];
+
+    for (const s of sessions) {
+      const shots = extractShots(s.rawJson, club);
+      if (shots.length < 15) continue;
+      sessionCount++;
+      const fatigue = computeFatigueCurve(shots);
+      if (fatigue.fatigueDetected) {
+        fatigueCount++;
+        drops.push(fatigue.dropPer10);
+      }
+    }
+
+    if (sessionCount < 3) continue;
+    const ratio = fatigueCount / sessionCount;
+    if (ratio < 0.5) continue;
+
+    const avgDrop = drops.length > 0
+      ? Math.round((drops.reduce((s, d) => s + d, 0) / drops.length) * 10) / 10
+      : 0;
+
+    counts.push({ club, sessions: sessionCount, fatigued: fatigueCount, avgDrop });
+  }
+
+  if (counts.length === 0) return null;
+
+  counts.sort((a, b) => b.avgDrop - a.avgDrop);
+  const worst = counts[0];
+  const severity = worst.avgDrop > 2 ? 4 : 3;
+
+  return {
+    category: "FATIGUE_PATTERN",
+    severity,
+    title: `Fatigue-mønster: ${worst.club}`,
+    body: `Club Speed faller i ${worst.fatigued} av ${worst.sessions} økter på ${worst.club} — gjennomsnittlig ${worst.avgDrop} mph drop per 10 slag. Vurder kortere økter, oppvarming eller fysisk forberedelse.`,
+    payload: { counts } as unknown as Prisma.InputJsonObject,
+  };
 }
 
-// Phase 5: Equipment Fit — venter på src/lib/sg-hub/equipment-fit.ts.
-// Aktiveres når Phase 5 er merged. Inntil videre returnerer null.
+// Phase 5: Equipment Fit — sjekk launch/spin/smash mot targets per kølletype.
 async function evaluateEquipmentFit(userId: string): Promise<EvaluatorResult> {
-  // TODO Phase 5: Krever src/lib/sg-hub/equipment-fit.ts som sjekker launch,
-  // spin og smash mot targets per kølletype. Hvis ≥2 metrikker er kritisk
-  // avvik → generer EQUIPMENT_FIT-innsikt.
-  void userId;
-  return null;
+  const sessions = await getSessions(userId);
+  if (sessions.length === 0) return null;
+
+  const clubSet = new Set<string>();
+  for (const s of sessions) {
+    for (const c of extractClubs(s.rawJson)) clubSet.add(c);
+  }
+
+  type CriticalClub = {
+    club: string;
+    criticalCount: number;
+    warnCount: number;
+    notes: string[];
+  };
+  const flagged: CriticalClub[] = [];
+
+  for (const club of clubSet) {
+    const allShots = sessions.flatMap((s) => extractShots(s.rawJson, club));
+    if (allShots.length < 8) continue;
+    // Bruk siste sessions rawJson for launch/spin-lookup (CSV-felt)
+    const rawJson = sessions[0].rawJson;
+    const report = computeClubFit(club, allShots, rawJson);
+    const critical = report.metrics.filter((m) => m.status === "critical");
+    const warn = report.metrics.filter((m) => m.status === "warn");
+
+    if (critical.length >= 2 || (critical.length >= 1 && warn.length >= 1)) {
+      flagged.push({
+        club,
+        criticalCount: critical.length,
+        warnCount: warn.length,
+        notes: [...critical, ...warn].map((m) => m.note),
+      });
+    }
+  }
+
+  if (flagged.length === 0) return null;
+
+  flagged.sort((a, b) => b.criticalCount - a.criticalCount);
+  const worst = flagged[0];
+  const severity = worst.criticalCount >= 2 ? 4 : 3;
+
+  return {
+    category: "EQUIPMENT_FIT",
+    severity,
+    title: `Utstyrstilpasning: ${worst.club}`,
+    body: `${worst.club} har ${worst.criticalCount} kritiske og ${worst.warnCount} avvik fra target — ${worst.notes.slice(0, 2).join("; ")}. Vurder fitting eller justering av utstyr.`,
+    payload: { flagged } as unknown as Prisma.InputJsonObject,
+  };
 }
 
 // Phase 6: Tempo Variance — flagg tempo-ratio σ > 0.15.
@@ -383,13 +497,61 @@ async function evaluateProgressionTrend(userId: string): Promise<EvaluatorResult
   };
 }
 
-// Phase 3: Same-Distance Opportunity — venter på src/lib/sg-hub/same-distance-strategy.ts.
-// Aktiveres når Phase 3 er merged. Inntil videre returnerer null.
+// Phase 3: Same-Distance Opportunity — bruk SgBaseline for å se om spilleren
+// kan vinne SG ved å bytte kølle på vanlige approach-distanser.
 async function evaluateSameDistanceOpportunity(userId: string): Promise<EvaluatorResult> {
-  // TODO Phase 3: Krever src/lib/sg-hub/same-distance-strategy.ts + SgBaseline-data
-  // for å sammenligne expected SG på tvers av køller som dekker samme distanse.
-  void userId;
-  return null;
+  const sessions = await getSessions(userId);
+  if (sessions.length === 0) return null;
+
+  const baselines = await prisma.sgBaseline.findMany({
+    where: { category: "APP" },
+    select: { distanceBucket: true, expectedStrokes: true },
+  });
+
+  if (baselines.length === 0) return null;
+
+  const rows = buildYardageRows(sessions);
+  if (rows.length === 0) return null;
+
+  const lookupBaseline = makeBaselineLookup(baselines);
+
+  // Sjekk på 3 vanlige approach-distanser (yards → meter)
+  const targetsYards = [100, 125, 150];
+  type Finding = { distanceY: number; best: string; recommended: string; sgDelta: number };
+  const findings: Finding[] = [];
+
+  for (const yardTarget of targetsYards) {
+    const meterTarget = yardTarget / 1.0936;
+    const options = buildStrategy(rows, meterTarget, 10, lookupBaseline);
+    if (options.length < 2) continue;
+
+    const best = options[0];
+    const second = options[1];
+    if (best.expectedSgVsBest != null && second.expectedSgVsBest != null) {
+      const sgDelta = Math.abs(second.expectedSgVsBest - best.expectedSgVsBest);
+      if (sgDelta > 0.05) {
+        findings.push({
+          distanceY: yardTarget,
+          best: best.club,
+          recommended: best.club,
+          sgDelta: Math.round(sgDelta * 100) / 100,
+        });
+      }
+    }
+  }
+
+  if (findings.length === 0) return null;
+
+  findings.sort((a, b) => b.sgDelta - a.sgDelta);
+  const worst = findings[0];
+
+  return {
+    category: "SAME_DISTANCE_OPPORTUNITY",
+    severity: 2,
+    title: `SG-mulighet på ${worst.distanceY} yards`,
+    body: `På ${worst.distanceY}y er ${worst.best} statistisk beste valg basert på din distribusjon vs PGA-baseline (potensial: +${worst.sgDelta} SG vs nest beste alternativ). Bruk Same-Distance-verktøyet for å se hele rangeringen.`,
+    payload: { findings } as unknown as Prisma.InputJsonObject,
+  };
 }
 
 const EVALUATORS: Array<(userId: string) => Promise<EvaluatorResult>> = [

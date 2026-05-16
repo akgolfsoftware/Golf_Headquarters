@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Target, Crosshair, Zap } from "lucide-react";
+import { ArrowLeft, Target, Crosshair, Zap, Activity } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
@@ -8,10 +8,13 @@ import { extractShots } from "@/lib/sg-hub/extract-shots";
 import { computeDPlane, DPLANE_LABELS } from "@/lib/sg-hub/d-plane";
 import { computeStrikePattern } from "@/lib/sg-hub/strike-pattern";
 import { computeSmashCurve } from "@/lib/sg-hub/smash-curve";
+import { computeFatigueCurve } from "@/lib/sg-hub/fatigue";
 import { DPlanePlot } from "@/components/sg-hub/DPlanePlot";
 import { StrikeHeatmap } from "@/components/sg-hub/StrikeHeatmap";
 import { SmashCurvePlot } from "@/components/sg-hub/SmashCurvePlot";
+import { FatigueChart } from "@/components/sg-hub/FatigueChart";
 import { TempoRibbon } from "@/components/sg-hub/TempoRibbon";
+import { ShotAnnotationPopover } from "@/components/sg-hub/ShotAnnotationPopover";
 
 export default async function ClubDetailPage({
   params,
@@ -23,6 +26,7 @@ export default async function ClubDetailPage({
   const { club } = await params;
   const decoded = decodeURIComponent(club);
   const advanced = sgHubMode === "advanced";
+  const isCoach = user.role === "COACH" || user.role === "ADMIN";
 
   const sessions = await prisma.trackManSession.findMany({
     where: { userId: user.id },
@@ -67,6 +71,61 @@ export default async function ClubDetailPage({
   const dPlane = computeDPlane(allShots);
   const strike = computeStrikePattern(allShots);
   const smash = computeSmashCurve(allShots);
+  const fatigue = computeFatigueCurve(allShots);
+
+  const latestSession = sessions[0];
+  const latestShots = latestSession
+    ? extractShots(latestSession.rawJson, decoded)
+    : [];
+
+  const annotationsRaw =
+    advanced && latestSession
+      ? await prisma.shotAnnotation.findMany({
+          where: { trackmanSessionId: latestSession.id, clubId: decoded },
+          select: {
+            id: true,
+            shotNumber: true,
+            body: true,
+            videoUrl: true,
+            coachId: true,
+            createdAt: true,
+          },
+          orderBy: { createdAt: "desc" },
+        })
+      : [];
+
+  // ShotAnnotation har ingen relasjon til User i schema — hent coach-navn separat.
+  const coachIds = Array.from(new Set(annotationsRaw.map((a) => a.coachId)));
+  const coaches = coachIds.length
+    ? await prisma.user.findMany({
+        where: { id: { in: coachIds } },
+        select: { id: true, name: true },
+      })
+    : [];
+  const coachNameById = new Map(coaches.map((c) => [c.id, c.name ?? "Coach"]));
+
+  const annotationsByShot = new Map<
+    number,
+    Array<{
+      id: string;
+      body: string;
+      videoUrl: string | null;
+      coachName: string;
+      createdAt: string;
+    }>
+  >();
+  for (const a of annotationsRaw) {
+    const row = {
+      id: a.id,
+      body: a.body,
+      videoUrl: a.videoUrl,
+      coachName: coachNameById.get(a.coachId) ?? "Coach",
+      createdAt: a.createdAt.toISOString(),
+    };
+    const existing = annotationsByShot.get(a.shotNumber) ?? [];
+    existing.push(row);
+    annotationsByShot.set(a.shotNumber, existing);
+  }
 
   return (
     <div className="space-y-8">
@@ -86,10 +145,12 @@ export default async function ClubDetailPage({
           <em className="font-normal italic">{decoded}</em>
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {allShots.length} slag · {sessions.length} økt{sessions.length !== 1 ? "er" : ""}
+          {allShots.length} slag · {sessions.length} økt
+          {sessions.length !== 1 ? "er" : ""}
         </p>
       </div>
 
+      {/* Summary cards */}
       <div className="grid grid-cols-3 gap-4">
         <SummaryCard
           icon={Crosshair}
@@ -115,6 +176,7 @@ export default async function ClubDetailPage({
         />
       </div>
 
+      {/* D-Plane */}
       <section className="rounded-xl border border-border bg-card p-6">
         <div className="mb-4">
           <h2 className="font-semibold">D-Plane · Kurve-mønster</h2>
@@ -131,12 +193,14 @@ export default async function ClubDetailPage({
         <DPlanePlot result={dPlane} advanced={advanced} />
       </section>
 
+      {/* Strike Heatmap */}
       <section className="rounded-xl border border-border bg-card p-6">
         <div className="mb-4">
           <h2 className="font-semibold">Strike Heatmap · Kontaktpunkt</h2>
           {!advanced && (
             <p className="mt-1 text-sm text-muted-foreground">
-              {strike.sweetPct}% sweet spot · Snitt Smash Factor {strike.avgSmash}
+              {strike.sweetPct}% sweet spot · Snitt Smash Factor{" "}
+              {strike.avgSmash}
             </p>
           )}
         </div>
@@ -145,13 +209,7 @@ export default async function ClubDetailPage({
         </div>
       </section>
 
-      <section>
-        <div className="mb-4">
-          <h2 className="font-semibold">Tempo · Rytme-konsistens</h2>
-        </div>
-        <TempoRibbon shots={allShots} advanced={advanced} />
-      </section>
-
+      {/* Smash Curve */}
       <section className="rounded-xl border border-border bg-card p-6">
         <div className="mb-4">
           <h2 className="font-semibold">Smash Curve · Effektivitets-optimum</h2>
@@ -170,43 +228,170 @@ export default async function ClubDetailPage({
         <SmashCurvePlot result={smash} advanced={advanced} />
       </section>
 
+      {/* Tempo Ribbon */}
+      <TempoRibbon shots={allShots} advanced={advanced} />
+
+      {/* Fatigue Curve */}
+      <section className="rounded-xl border border-border bg-card p-6">
+        <div className="mb-4 flex items-center gap-2">
+          <Activity className="h-4 w-4 text-muted-foreground" />
+          <h2 className="font-semibold">Fatigue Curve · Club Speed over tid</h2>
+        </div>
+        {!advanced && (
+          <p className="mb-3 text-sm text-muted-foreground">
+            {fatigue.fatigueDetected
+              ? `Trøtthet oppdaget — drop ${fatigue.dropPer10} mph / 10 slag`
+              : "Stabil Club Speed — ingen trøtthet detektert"}
+          </p>
+        )}
+        <FatigueChart result={fatigue} advanced={advanced} />
+      </section>
+
+      {/* Advanced: slag-tabell med annotasjoner for siste økt */}
       {advanced && (
         <section className="rounded-xl border border-border bg-card p-6">
-          <h2 className="mb-4 font-semibold">Slag-statistikk</h2>
+          <h2 className="mb-1 font-semibold">Slag-statistikk</h2>
+          {latestSession && (
+            <p className="mb-4 text-xs text-muted-foreground">
+              Siste økt:{" "}
+              {new Date(latestSession.recordedAt).toLocaleDateString("nb-NO", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}{" "}
+              · {latestShots.length} slag
+            </p>
+          )}
           <div className="overflow-x-auto">
             <table className="w-full font-mono text-xs">
               <thead>
                 <tr className="border-b border-border">
-                  {["#", "Face°", "Path°", "Smash", "Speed", "Ball", "Dist"].map(
-                    (h) => (
-                      <th
-                        key={h}
-                        className="pb-2 pr-4 text-right first:text-left font-normal tracking-wide text-muted-foreground"
-                      >
-                        {h}
-                      </th>
-                    )
-                  )}
+                  {[
+                    "#",
+                    "Face°",
+                    "Path°",
+                    "Smash",
+                    "Speed",
+                    "Ball",
+                    "Dist",
+                    "",
+                  ].map((h, i) => (
+                    <th
+                      key={i}
+                      className="pb-2 pr-4 text-right first:text-left last:text-center font-normal tracking-wide text-muted-foreground"
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {allShots.map((s) => (
+                {latestShots.map((s) => (
                   <tr
                     key={s.shotNumber}
                     className="border-b border-border/40 hover:bg-muted/30"
                   >
-                    <td className="py-1.5 pr-4 text-muted-foreground">{s.shotNumber}</td>
-                    <td className="py-1.5 pr-4 text-right tabular-nums">{s.faceAngle.toFixed(1)}</td>
-                    <td className="py-1.5 pr-4 text-right tabular-nums">{s.clubPath.toFixed(1)}</td>
-                    <td className="py-1.5 pr-4 text-right tabular-nums">{s.smashFactor.toFixed(2)}</td>
-                    <td className="py-1.5 pr-4 text-right tabular-nums">{s.clubSpeed.toFixed(1)}</td>
-                    <td className="py-1.5 pr-4 text-right tabular-nums">{s.ballSpeed.toFixed(1)}</td>
-                    <td className="py-1.5 pr-4 text-right tabular-nums">{Math.round(s.totalDistance)}</td>
+                    <td className="py-1.5 pr-4 text-muted-foreground">
+                      {s.shotNumber}
+                    </td>
+                    <td className="py-1.5 pr-4 text-right tabular-nums">
+                      {s.faceAngle.toFixed(1)}
+                    </td>
+                    <td className="py-1.5 pr-4 text-right tabular-nums">
+                      {s.clubPath.toFixed(1)}
+                    </td>
+                    <td className="py-1.5 pr-4 text-right tabular-nums">
+                      {s.smashFactor.toFixed(2)}
+                    </td>
+                    <td className="py-1.5 pr-4 text-right tabular-nums">
+                      {s.clubSpeed.toFixed(1)}
+                    </td>
+                    <td className="py-1.5 pr-4 text-right tabular-nums">
+                      {s.ballSpeed.toFixed(1)}
+                    </td>
+                    <td className="py-1.5 pr-4 text-right tabular-nums">
+                      {Math.round(s.totalDistance)}
+                    </td>
+                    <td className="py-1.5 text-center">
+                      {latestSession && (
+                        <ShotAnnotationPopover
+                          trackmanSessionId={latestSession.id}
+                          clubId={decoded}
+                          shotNumber={s.shotNumber}
+                          annotations={
+                            annotationsByShot.get(s.shotNumber) ?? []
+                          }
+                          canEdit={isCoach}
+                        />
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+
+          {sessions.length > 1 && (
+            <details className="mt-6">
+              <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground">
+                Alle slag ({allShots.length} totalt, {sessions.length} økter)
+              </summary>
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full font-mono text-xs">
+                  <thead>
+                    <tr className="border-b border-border">
+                      {[
+                        "#",
+                        "Face°",
+                        "Path°",
+                        "Smash",
+                        "Speed",
+                        "Ball",
+                        "Dist",
+                      ].map((h) => (
+                        <th
+                          key={h}
+                          className="pb-2 pr-4 text-right first:text-left font-normal tracking-wide text-muted-foreground"
+                        >
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allShots.map((s, i) => (
+                      <tr
+                        key={i}
+                        className="border-b border-border/40 hover:bg-muted/30"
+                      >
+                        <td className="py-1.5 pr-4 text-muted-foreground">
+                          {s.shotNumber}
+                        </td>
+                        <td className="py-1.5 pr-4 text-right tabular-nums">
+                          {s.faceAngle.toFixed(1)}
+                        </td>
+                        <td className="py-1.5 pr-4 text-right tabular-nums">
+                          {s.clubPath.toFixed(1)}
+                        </td>
+                        <td className="py-1.5 pr-4 text-right tabular-nums">
+                          {s.smashFactor.toFixed(2)}
+                        </td>
+                        <td className="py-1.5 pr-4 text-right tabular-nums">
+                          {s.clubSpeed.toFixed(1)}
+                        </td>
+                        <td className="py-1.5 pr-4 text-right tabular-nums">
+                          {s.ballSpeed.toFixed(1)}
+                        </td>
+                        <td className="py-1.5 pr-4 text-right tabular-nums">
+                          {Math.round(s.totalDistance)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          )}
         </section>
       )}
     </div>

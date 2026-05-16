@@ -31,8 +31,8 @@ export function TempoRibbon({ shots, advanced = false }: Props) {
           Ingen tempo-data tilgjengelig
         </p>
         <p className="mx-auto mt-2 max-w-md text-xs text-muted-foreground">
-          Aktiver tempo i TrackMan-eksport for å se denne analysen. HTML-rapporter
-          inneholder ikke tempo — bruk CSV-eksport med kolonnene{" "}
+          Aktiver tempo i TrackMan-eksport for å se denne analysen.
+          HTML-rapporter inneholder ikke tempo — bruk CSV-eksport med kolonnene{" "}
           <span className="font-mono">Tempo</span>,{" "}
           <span className="font-mono">BackswingTime</span> eller{" "}
           <span className="font-mono">DownswingTime</span>.
@@ -44,7 +44,6 @@ export function TempoRibbon({ shots, advanced = false }: Props) {
   const { points, avgRatio, sigmaRatio, variancePct, consistencyPct } = result;
   const inconsistent = variancePct > 5;
 
-  // Skaler smash-linja
   const smashMin = Math.min(...points.map((p) => p.smashFactor));
   const smashMax = Math.max(...points.map((p) => p.smashFactor));
   const smashRange = smashMax - smashMin || 0.1;
@@ -71,10 +70,7 @@ export function TempoRibbon({ shots, advanced = false }: Props) {
           )}
         </div>
         {inconsistent && (
-          <span
-            className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-foreground"
-            title="Variasjon over 5%"
-          >
+          <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-foreground">
             <AlertTriangle className="h-3 w-3" strokeWidth={1.5} />
             Varierende
           </span>
@@ -108,7 +104,8 @@ export function TempoRibbon({ shots, advanced = false }: Props) {
             vectorEffect="non-scaling-stroke"
             points={points
               .map((p, i) => {
-                const y = 100 - ((p.smashFactor - smashMin) / smashRange) * 100;
+                const y =
+                  100 - ((p.smashFactor - smashMin) / smashRange) * 100;
                 return `${i + 0.5},${y}`;
               })
               .join(" ")}
@@ -123,7 +120,10 @@ export function TempoRibbon({ shots, advanced = false }: Props) {
       {advanced && (
         <dl className="grid grid-cols-2 gap-3 border-t border-border pt-4 sm:grid-cols-4">
           <Stat label="Snitt-ratio" value={`${avgRatio.toFixed(2)}:1`} />
-          <Stat label="Optimal" value={`${TEMPO_OPTIMAL_RATIO.toFixed(1)}:1`} />
+          <Stat
+            label="Optimal"
+            value={`${TEMPO_OPTIMAL_RATIO.toFixed(1)}:1`}
+          />
           <Stat label="σ" value={sigmaRatio.toFixed(3)} />
           <Stat
             label="Variasjon"
