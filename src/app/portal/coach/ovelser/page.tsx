@@ -68,7 +68,7 @@ export default async function CoachOvelserPage({
       {/* Filter-strip */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Omraade:
+          Område:
         </span>
         {PYR_OMRADER.map((o) => {
           const aktiv = o.value === valgtArea;
@@ -91,15 +91,15 @@ export default async function CoachOvelserPage({
       {exercises.length === 0 ? (
         <EmptyState
           icon={Dumbbell}
-          titleItalic="Ingen ovelser"
-          titleTrail="enda"
-          sub="Opprett den forste ovelsen for a begynne a bygge treningsbiblioteket."
+          titleItalic="Ingen øvelser"
+          titleTrail="ennå"
+          sub="Opprett den første øvelsen for å begynne å bygge treningsbiblioteket."
           cta={
             <Link
               href="/portal/coach/ovelser/ny"
               className="inline-flex items-center rounded-full bg-primary px-6 py-2.5 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
             >
-              Opprett ovelse
+              Opprett øvelse
             </Link>
           }
         />

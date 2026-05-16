@@ -190,7 +190,7 @@ export function DrillEditor({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
-          placeholder="Forklar ovelsen..."
+          placeholder="Forklar øvelsen..."
           className={inputCss}
         />
       </Felt>
@@ -474,7 +474,7 @@ export function DrillEditor({
         ) : (
           <>
             <Save className="h-4 w-4" strokeWidth={2} />
-            {mode === "edit" ? "Lagre endringer" : "Opprett ovelse"}
+            {mode === "edit" ? "Lagre endringer" : "Opprett øvelse"}
           </>
         )}
       </button>
