@@ -99,6 +99,57 @@ enum PlanStatus {
   ARCHIVED        // Ferdig eller avsluttet
 }
 
+// Treningsplanlegger (Masterplan Sesjon 0)
+
+enum LFase {
+  L_KROPP
+  L_ARM
+  L_KOLLE
+  L_BALL
+  L_AUTO
+}
+
+enum CSNivaa {
+  CS50
+  CS60
+  CS70
+  CS80
+  CS90
+  CS100
+}
+
+enum MMiljo {
+  M0
+  M1
+  M2
+  M3
+  M4
+  M5
+}
+
+enum PRPress {
+  PR1
+  PR2
+  PR3
+  PR4
+  PR5
+}
+
+enum PracticeType {
+  BLOKK
+  RANDOM
+  KONKURRANSE
+  SPILL_TEST
+}
+
+enum PeriodeType {
+  GRUNN
+  SPESIALISERING
+  TURNERING
+  EVALUERING
+  FERIE
+}
+
 // ---------- Models ----------
 
 model User {
@@ -1429,4 +1480,248 @@ model WagrSnapshot {
   @@index([ngfCategory])
   @@index([userId])
   @@map("wagr_snapshots")
+}
+
+// ---------- Treningsplanlegger (Masterplan Sesjon 0) ----------
+
+model TrainingSessionV2 {
+  id                   String   @id @default(cuid())
+  title                String
+  studentId            String?
+  groupId              String?
+  coachId              String
+  startTime            DateTime
+  endTime              DateTime
+  miljo                MMiljo
+  practiceType         PracticeType
+  notes                String?
+  isCoachCreated       Boolean  @default(true)
+  rrule                String?
+  recurringGroupId     String?
+  isException          Boolean  @default(false)
+  generertFra          String?
+  generertFraId        String?
+  regelBrudd           Json?
+  trengerOppmerksomhet Boolean  @default(false)
+  drillLoggInterval    Int      @default(1)
+  drills               TrainingDrillV2[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([studentId, startTime])
+  @@index([coachId, startTime])
+  @@map("training_sessions_v2")
+}
+
+model TrainingDrillV2 {
+  id                  String   @id @default(cuid())
+  sessionId           String
+  session             TrainingSessionV2 @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sortOrder           Int
+  name                String
+  description         String?
+  durationMinutes     Int
+  repetitions         Int?
+  drillLoggInterval   Int      @default(1)
+  pyramide            PyramidArea
+  omraade             String?
+  lFase               LFase?
+  csNivaa             CSNivaa?
+  miljo               MMiljo?
+  prPress             PRPress?
+  pPosisjoner         String[]
+  lifeKode            String?
+  componentFocus      String?
+  slowMotionMode      Boolean  @default(false)
+  fysTreningstype     String?
+  fysMuskelgruppe     String?
+  fysOvelse           String?
+  fysSett             Int?
+  fysReps             Int?
+  fysVektKg           Float?
+  fysVektProsent      Int?
+  fysTempo            String?
+  fysPauseSek         Int?
+  fysVarighetMin      Int?
+  fysIntensitetsSone  Int?
+  fysDistanseM        Int?
+  fysAktivitet        String?
+  fysBevegelighetType String?
+  fysHoldSek          Int?
+  notes               String?
+  logs                DrillLogV2[]
+
+  @@index([sessionId])
+  @@map("training_drills_v2")
+}
+
+model DrillLogV2 {
+  id          String   @id @default(cuid())
+  drillId     String
+  drill       TrainingDrillV2 @relation(fields: [drillId], references: [id], onDelete: Cascade)
+  loggedBy    String
+  successRate Int
+  notes       String?
+  loggedAt    DateTime @default(now())
+
+  @@index([drillId])
+  @@map("drill_logs_v2")
+}
+
+model LockedAnchor {
+  id              String   @id @default(cuid())
+  studentId       String
+  navn            String
+  pyramide        PyramidArea
+  ukedag          Int
+  startTid        String
+  sluttTid        String
+  startDato       DateTime
+  sluttDato       DateTime
+  varighetMin     Int
+  beskrivelse     String?
+  fysMuskelgruppe String?
+  fysTreningstype String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([studentId])
+  @@map("locked_anchors")
+}
+
+model RecurringPattern {
+  id              String   @id @default(cuid())
+  studentId       String
+  navn            String
+  pyramide        PyramidArea
+  rrule           String
+  startDato       DateTime
+  sluttDato       DateTime?
+  startTid        String
+  varighetMin     Int
+  beskrivelse     String?
+  fysMuskelgruppe String?
+  fysTreningstype String?
+  createdAt       DateTime @default(now())
+
+  @@index([studentId])
+  @@map("recurring_patterns")
+}
+
+model PeriodVolumeRecipe {
+  id             String            @id @default(cuid())
+  trainingPlanId String            @unique
+  okter          PeriodRecipeOkt[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@map("period_volume_recipes")
+}
+
+model PeriodRecipeOkt {
+  id                      String   @id @default(cuid())
+  recipeId                String
+  recipe                  PeriodVolumeRecipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  pyramide                PyramidArea
+  antallPerUke            Int
+  varighetMin             Int
+  fysTreningstype         String?
+  fysMuskelgruppeRotasjon String[]
+  preferertUkedag         Int?
+  preferertTid            String?
+  notat                   String?
+
+  @@index([recipeId])
+  @@map("period_recipe_okter")
+}
+
+model ConditionalRule {
+  id             String   @id @default(cuid())
+  studentId      String?
+  trainingPlanId String?
+  navn           String
+  type           String
+  parametere     Json
+  aktiv          Boolean  @default(true)
+  prioritet      Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  @@index([studentId])
+  @@index([trainingPlanId])
+  @@map("conditional_rules")
+}
+
+model DrillMal {
+  id                 String   @id @default(cuid())
+  coachId            String
+  navn               String
+  beskrivelse        String?
+  kategori           String
+  pyramide           PyramidArea
+  erFavoritt         Boolean  @default(false)
+  erGlobal           Boolean  @default(false)
+  bruktAntall        Int      @default(0)
+  sistBrukt          DateTime?
+  omraade            String?
+  lFase              LFase?
+  csNivaa            CSNivaa?
+  miljo              MMiljo?
+  prPress            PRPress?
+  pPosisjoner        String[]
+  componentFocus     String?
+  fysTreningstype    String?
+  fysMuskelgruppe    String?
+  fysOvelse          String?
+  fysSett            Int?
+  fysReps            Int?
+  fysVektProsent     Int?
+  fysVarighetMin     Int?
+  fysIntensitetsSone Int?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([coachId])
+  @@index([pyramide])
+  @@map("drill_maler")
+}
+
+model OktMal {
+  id              String   @id @default(cuid())
+  coachId         String
+  navn            String
+  beskrivelse     String?
+  kategori        String
+  pyramide        PyramidArea
+  periodeType     PeriodeType?
+  kategoriAK      String?
+  erFavoritt      Boolean  @default(false)
+  erGlobal        Boolean  @default(false)
+  bruktAntall     Int      @default(0)
+  sistBrukt       DateTime?
+  durationMinutes Int
+  practiceType    PracticeType
+  notat           String?
+  driller         OktMalDrill[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([coachId])
+  @@index([pyramide])
+  @@map("okt_maler")
+}
+
+model OktMalDrill {
+  id              String  @id @default(cuid())
+  malId           String
+  mal             OktMal  @relation(fields: [malId], references: [id], onDelete: Cascade)
+  sortOrder       Int
+  pyramide        PyramidArea
+  navn            String
+  durationMinutes Int
+  omraade         String?
+  lFase           LFase?
+  csNivaa         CSNivaa?
+
+  @@index([malId])
+  @@map("okt_mal_driller")
 }
