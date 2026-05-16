@@ -27,7 +27,7 @@ const ALL_NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   {
     label: "Planlegge",
     items: [
-      { href: "/admin/elever", label: "Spillere" },
+      { href: "/admin/spillere", label: "Spillere" },
       { href: "/admin/plans", label: "Treningsplaner" },
       { href: "/admin/anlegg", label: "Anlegg" },
       { href: "/admin/services", label: "Tjenester" },

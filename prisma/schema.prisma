@@ -265,33 +265,6 @@ model User {
   @@map("users")
 }
 
-// Caddie chat — hver melding lagres for historikk og kontekst i nye samtaler.
-// Tool-calls og resultater lagres som JSON for senere visning/audit.
-model CaddieMessage {
-  id           String   @id @default(cuid())
-  userId       String
-  conversationId String  // grupperer meldinger til samme samtale
-  // "user" | "assistant" | "tool"
-  role         String
-  content      String   @db.Text
-  // Hvis assistant kalte et tool, lagres call-info her
-  toolCalls    Json?
-  // Hvis dette er en tool-respons, lagres resultatet
-  toolResults  Json?
-  // Tokens brukt (for kostnads-sporing)
-  inputTokens  Int?
-  outputTokens Int?
-  // Modell-navn (claude-sonnet-4-6 etc.)
-  model        String?
-  createdAt    DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt])
-  @@index([conversationId])
-  @@map("caddie_messages")
-}
-
 // Talent-tracking for spillere i akademiets talent-program.
 // Én rad per spiller. Radar-akser 1-10 representerer Caddies/coachens
 // kvalitative vurdering på 5 dimensjoner.

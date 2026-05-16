@@ -587,6 +587,7 @@ export default async function TrackManPage() {
                 Eksporter til Strokes Gained
               </button>
               <CsvImportModal />
+              <HtmlImportModal />
               <Link
                 href="/portal/coach/melding?type=trackman-vurdering"
                 className="w-full rounded-md border border-border bg-card px-4 py-2 text-center text-[13px] font-medium hover:bg-secondary"
