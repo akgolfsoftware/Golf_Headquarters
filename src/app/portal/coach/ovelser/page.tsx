@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { Dumbbell, Plus, Trash2, Pencil } from "lucide-react";
+import { Dumbbell, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { ExerciseCard } from "@/components/portal/exercise-card";
+import { ExerciseCardActions } from "@/components/portal/exercise-card-actions";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PyramidArea, type Prisma } from "@/generated/prisma/client";
-import { slettOvelse } from "./actions";
 
 type Search = { area?: string; phase?: string };
 
@@ -110,41 +110,11 @@ export default async function CoachOvelserPage({
               key={e.id}
               exercise={e}
               href={`/portal/tren/ovelser/${e.id}`}
-              actions={
-                <div className="flex gap-1">
-                  <Link
-                    href={`/portal/coach/ovelser/${e.id}/rediger`}
-                    className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    onClick={(ev) => ev.stopPropagation()}
-                  >
-                    <Pencil className="h-3.5 w-3.5" strokeWidth={1.5} />
-                  </Link>
-                  <SlettKnapp id={e.id} />
-                </div>
-              }
+              actions={<ExerciseCardActions id={e.id} />}
             />
           ))}
         </div>
       )}
     </div>
-  );
-}
-
-function SlettKnapp({ id }: { id: string }) {
-  async function handleSlett() {
-    "use server";
-    await slettOvelse(id);
-  }
-
-  return (
-    <form action={handleSlett}>
-      <button
-        type="submit"
-        className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Trash2 className="h-3.5 w-3.5" strokeWidth={1.5} />
-      </button>
-    </form>
   );
 }
