@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ • Krysstabell · Treningsanalyse</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ak-primary: #005840;
+  --ak-primary-hover: #006e4f;
+  --ak-accent: #D1F843;
+  --ak-bg: #FAFAF7;
+  --ak-card: #FFFFFF;
+  --ak-ink: #0A1F17;
+  --ak-muted: #5E5C57;
+  --ak-border: #E5E3DD;
+  --ak-success: #16A34A;
+  --ak-warning: #B8852A;
+  --ak-danger: #A32D2D;
+  --pyr-fys: #003B2A;
+  --pyr-tek: #005840;
+  --pyr-slag: #2A7D5A;
+  --pyr-spill: #B7C97D;
+  --pyr-turn: #D1F843;
+
+  /* Heatmap-trapp */
+  --hm-0: #F4F2EC;       /* 0 min */
+  --hm-1: #E6EED4;       /* 1-30 */
+  --hm-2: #BFD895;       /* 31-90 */
+  --hm-3: #7AAE63;       /* 91-180 */
+  --hm-4: #2A6B3F;       /* 180+ */
+  --hm-5: #0F3A24;       /* 240+ */
+}
+body { font-family: 'Geist', system-ui, -apple-system, sans-serif; }
+.font-display { font-family: 'Instrument Serif', Georgia, serif; }
+.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+.italic-serif { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes cellIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes panelIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes tooltipPop {
+  from { opacity: 0; transform: translateY(4px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.section { animation: fadeUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards; }
+.section:nth-child(1) { animation-delay: 0.05s; }
+.section:nth-child(2) { animation-delay: 0.15s; }
+.section:nth-child(3) { animation-delay: 0.25s; }
+
+.cell { animation: cellIn 0.32s cubic-bezier(0.4, 0, 0.2, 1) backwards; }
+.cell:hover { transform: scale(1.04); box-shadow: 0 0 0 2px var(--ak-ink), 0 4px 12px rgba(0,0,0,0.16); z-index: 2; }
+.cell.active { box-shadow: 0 0 0 2px var(--ak-ink), 0 6px 16px rgba(0,0,0,0.2); transform: scale(1.04); z-index: 2; }
+.cell { transition: transform 0.14s ease, box-shadow 0.14s ease; }
+
+.scrollbar-thin::-webkit-scrollbar { width: 5px; height: 5px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--ak-border); border-radius: 2px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #C8C5BC; }
+
+.hm-0 { background: var(--hm-0); color: #B8B5AB; }
+.hm-1 { background: var(--hm-1); color: #2A4520; }
+.hm-2 { background: var(--hm-2); color: #1F3018; }
+.hm-3 { background: var(--hm-3); color: #FAFAF7; }
+.hm-4 { background: var(--hm-4); color: #FAFAF7; }
+.hm-5 { background: var(--hm-5); color: #FAFAF7; }
+
+.preset-pill { transition: all 0.18s ease; }
+
+.tooltip { animation: tooltipPop 0.18s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+#sidePanel.open { transform: translateX(0); }
+#sidePanel { transform: translateX(100%); transition: transform 0.36s cubic-bezier(0.4, 0, 0.2, 1); }
+
+.banner-insight { animation: fadeUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards; }
+.banner-insight:nth-child(1) { animation-delay: 0.5s; }
+.banner-insight:nth-child(2) { animation-delay: 0.58s; }
+.banner-insight:nth-child(3) { animation-delay: 0.66s; }
+</style>
+</head>
+<body class="bg-zinc-900 flex items-center justify-center min-h-screen p-6">
+<div class="w-[1440px] bg-[var(--ak-bg)] text-[var(--ak-ink)] shadow-2xl rounded-3xl overflow-hidden flex relative" style="height: 900px;">
+
+  <!-- ============== SIDEBAR (mørk) ============== -->
+  <aside class="w-[260px] bg-[#0A1F17] text-white flex flex-col flex-shrink-0">
+    <!-- Logo -->
+    <div class="px-6 py-5 border-b border-white/10">
+      <div class="flex items-baseline gap-1">
+        <span class="font-display text-2xl font-bold">ak</span>
+        <span class="italic-serif text-sm text-[var(--ak-accent)]">coach</span>
+      </div>
+      <div class="mono text-[10px] uppercase tracking-widest text-white/40 mt-0.5">CoachHQ</div>
+    </div>
+
+    <!-- Coach pill -->
+    <div class="px-4 py-4 border-b border-white/10">
+      <div class="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-2">
+        <div class="w-9 h-9 rounded-full bg-[var(--ak-accent)] grid place-items-center mono text-sm font-bold text-[var(--ak-ink)]">AK</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-semibold truncate">Anders K.</div>
+          <div class="text-[10px] text-white/60">12 aktive · A-lisens</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto scrollbar-thin">
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/60 hover:bg-white/5 hover:text-white text-sm transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Hub
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/60 hover:bg-white/5 hover:text-white text-sm transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        Spillere
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/60 hover:bg-white/5 hover:text-white text-sm transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Kalender
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/60 hover:bg-white/5 hover:text-white text-sm transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        Plan
+      </a>
+
+      <!-- Analyse (aktiv parent) -->
+      <div class="pt-2">
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[var(--ak-accent)]/12 text-white font-medium text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Analyse
+        </a>
+        <!-- Sub-nav -->
+        <div class="ml-7 mt-1 space-y-0 border-l border-white/10 pl-3">
+          <a class="block py-1.5 text-[12px] text-white/50 hover:text-white transition">Oversikt</a>
+          <a class="block py-1.5 text-[12px] text-white font-medium relative">
+            <span class="absolute -left-[13px] top-0 bottom-0 w-[2px] bg-[var(--ak-accent)]"></span>
+            Krysstabell
+          </a>
+          <a class="block py-1.5 text-[12px] text-white/50 hover:text-white transition">Trender</a>
+          <a class="block py-1.5 text-[12px] text-white/50 hover:text-white transition">SG-kobling</a>
+          <a class="block py-1.5 text-[12px] text-white/50 hover:text-white transition">FYS</a>
+          <a class="block py-1.5 text-[12px] text-white/50 hover:text-white transition">Plan vs faktisk</a>
+        </div>
+      </div>
+
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/60 hover:bg-white/5 hover:text-white text-sm transition mt-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/></svg>
+        Økonomi
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/60 hover:bg-white/5 hover:text-white text-sm transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+        Rapporter
+      </a>
+    </nav>
+
+    <!-- CTA: Caddie -->
+    <div class="px-4 pb-4 pt-2 border-t border-white/10">
+      <button onclick="openCommandPalette()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/80 text-xs transition">
+        <span class="w-2 h-2 rounded-full bg-[var(--ak-accent)] animate-pulse"></span>
+        <span class="flex-1 text-left">Spør Caddie</span>
+        <kbd class="mono text-[10px] bg-white/10 px-1.5 py-0.5 rounded">⌘K</kbd>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============== HOVEDINNHOLD ============== -->
+  <main class="flex-1 overflow-y-auto scrollbar-thin">
+
+    <!-- HEADER -->
+    <header class="px-8 pt-7 pb-5 section">
+      <div class="mono text-[10px] uppercase tracking-[0.14em] text-[var(--ak-muted)]">COACHHQ · ANALYSE · KRYSSTABELL</div>
+      <div class="mt-2 flex items-end justify-between gap-6">
+        <h1 class="font-display text-[40px] leading-[1.05] tracking-tight">
+          Hvor trenes hva
+          <span class="italic-serif text-[var(--ak-primary)]">trent som hva?</span>
+        </h1>
+        <div class="flex items-center gap-2 pb-1">
+          <span class="mono text-[10px] uppercase tracking-widest text-[var(--ak-muted)]">SISTE OPPDATERT</span>
+          <span class="mono text-[10px] text-[var(--ak-ink)]">16. mai · 19:51</span>
+        </div>
+      </div>
+      <p class="mt-2 text-sm text-[var(--ak-muted)] max-w-3xl">Sammenlign treningsområde × pyramide for å forstå treningssignaturen din. Klikk en celle for å se hvilke økter som ligger bak tallet.</p>
+    </header>
+
+    <!-- TOOLBAR (sticky) -->
+    <div class="px-8 pb-4 sticky top-0 bg-[var(--ak-bg)]/95 backdrop-blur-sm z-20 border-b border-[var(--ak-border)]/0">
+      <div class="flex flex-wrap items-center gap-2.5 py-2">
+        <!-- Spiller-velger -->
+        <button class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-[var(--ak-border)] hover:border-[var(--ak-primary)] transition">
+          <div class="w-6 h-6 rounded-full bg-[var(--ak-primary)] grid place-items-center mono text-[10px] font-bold text-white">MR</div>
+          <span class="text-sm font-medium">Markus Pedersen</span>
+          <span class="mono text-[10px] text-[var(--ak-muted)] bg-[var(--ak-bg)] px-1.5 py-0.5 rounded">HCP 4,2</span>
+          <svg class="w-3.5 h-3.5 text-[var(--ak-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+
+        <div class="w-px h-7 bg-[var(--ak-border)] mx-1"></div>
+
+        <!-- Dimensjon-toggle -->
+        <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-[var(--ak-border)]">
+          <span class="mono text-[10px] uppercase tracking-wider text-[var(--ak-muted)]">RADER</span>
+          <button class="flex items-center gap-1.5 text-sm font-medium hover:text-[var(--ak-primary)] transition">
+            Treningsområde
+            <svg class="w-3 h-3 text-[var(--ak-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <span class="mono text-[var(--ak-muted)] mx-1">×</span>
+          <span class="mono text-[10px] uppercase tracking-wider text-[var(--ak-muted)]">KOLONNER</span>
+          <button class="flex items-center gap-1.5 text-sm font-medium hover:text-[var(--ak-primary)] transition">
+            Pyramide
+            <svg class="w-3 h-3 text-[var(--ak-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+        </div>
+
+        <!-- Presets -->
+        <div class="flex items-center gap-1 ml-1">
+          <button onclick="setPreset(this,'omr-pyr')" class="preset-pill px-3 py-1.5 rounded-full bg-[var(--ak-primary)] text-white text-[12px] font-medium">Område × Pyramide</button>
+          <button onclick="setPreset(this,'omr-miljo')" class="preset-pill px-3 py-1.5 rounded-full bg-white border border-[var(--ak-border)] text-[12px] text-[var(--ak-ink)] hover:border-[var(--ak-primary)]">Område × Miljø</button>
+          <button onclick="setPreset(this,'pyr-praksis')" class="preset-pill px-3 py-1.5 rounded-full bg-white border border-[var(--ak-border)] text-[12px] text-[var(--ak-ink)] hover:border-[var(--ak-primary)]">Pyramide × Praksistype</button>
+          <button onclick="setPreset(this,'lfase-komp')" class="preset-pill px-3 py-1.5 rounded-full bg-white border border-[var(--ak-border)] text-[12px] text-[var(--ak-ink)] hover:border-[var(--ak-primary)]">L-fase × Komponentfokus</button>
+        </div>
+
+        <div class="flex-1"></div>
+
+        <!-- Periode -->
+        <button class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-[var(--ak-border)] hover:border-[var(--ak-primary)] transition">
+          <svg class="w-3.5 h-3.5 text-[var(--ak-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span class="text-sm font-medium">Siste 90 dager</span>
+          <svg class="w-3 h-3 text-[var(--ak-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+
+        <!-- Eksport -->
+        <div class="flex items-center rounded-lg bg-white border border-[var(--ak-border)] overflow-hidden">
+          <button class="px-3 py-2 text-[12px] mono uppercase tracking-wider hover:bg-[var(--ak-bg)] transition">CSV</button>
+          <div class="w-px h-5 bg-[var(--ak-border)]"></div>
+          <button class="px-3 py-2 text-[12px] mono uppercase tracking-wider hover:bg-[var(--ak-bg)] transition">PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KRYSSTABELL -->
+    <section class="section px-8 pt-3 pb-5">
+      <div class="rounded-2xl bg-white border border-[var(--ak-border)] p-5">
+        <!-- KPI-strip over tabell -->
+        <div class="flex items-baseline gap-8 mb-5 pb-4 border-b border-[var(--ak-border)]">
+          <div>
+            <div class="mono text-[10px] uppercase tracking-widest text-[var(--ak-muted)]">TOTAL TID</div>
+            <div class="mono text-2xl font-medium leading-none mt-1">3 240<span class="text-sm text-[var(--ak-muted)] ml-1">min</span></div>
+          </div>
+          <div>
+            <div class="mono text-[10px] uppercase tracking-widest text-[var(--ak-muted)]">ØKTER</div>
+            <div class="mono text-2xl font-medium leading-none mt-1">87</div>
+          </div>
+          <div>
+            <div class="mono text-[10px] uppercase tracking-widest text-[var(--ak-muted)]">SNITT SUKSESS</div>
+            <div class="mono text-2xl font-medium leading-none mt-1 text-[var(--ak-success)]">74<span class="text-sm text-[var(--ak-muted)] ml-0.5">%</span></div>
+          </div>
+          <div>
+            <div class="mono text-[10px] uppercase tracking-widest text-[var(--ak-muted)]">CELLER &gt; 60 MIN</div>
+            <div class="mono text-2xl font-medium leading-none mt-1">19<span class="text-sm text-[var(--ak-muted)] ml-1">/ 80</span></div>
+          </div>
+          <div class="flex-1"></div>
+          <!-- Heatmap-legend -->
+          <div class="flex items-center gap-2">
+            <span class="mono text-[10px] uppercase tracking-wider text-[var(--ak-muted)]">SKALA</span>
+            <div class="flex items-center gap-0">
+              <span class="w-6 h-3 hm-0 border-r border-white"></span>
+              <span class="w-6 h-3 hm-1 border-r border-white"></span>
+              <span class="w-6 h-3 hm-2 border-r border-white"></span>
+              <span class="w-6 h-3 hm-3 border-r border-white"></span>
+              <span class="w-6 h-3 hm-4 border-r border-white"></span>
+              <span class="w-6 h-3 hm-5"></span>
+            </div>
+            <span class="mono text-[10px] text-[var(--ak-muted)]">0</span>
+            <span class="mono text-[10px] text-[var(--ak-muted)]">→</span>
+            <span class="mono text-[10px] text-[var(--ak-muted)]">240+ min</span>
+          </div>
+        </div>
+
+        <!-- Tabell -->
+        <div id="grid-wrap" class="overflow-x-auto scrollbar-thin">
+          <table class="border-collapse" style="table-layout: fixed;">
+            <thead>
+              <tr>
+                <th class="text-left pb-3 pr-3 sticky left-0 bg-white z-10" style="width: 180px;">
+                  <span class="mono text-[10px] uppercase tracking-widest text-[var(--ak-muted)]">OMRÅDE \ PYR</span>
+                </th>
+                <th class="pb-3 px-1.5" style="width: 96px;">
+                  <div class="flex flex-col items-center gap-1">
+                    <span class="w-full h-1 rounded-full" style="background: var(--pyr-fys);"></span>
+                    <span class="mono text-[11px] font-semibold tracking-wider">FYS</span>
+                    <span class="mono text-[9px] text-[var(--ak-muted)] uppercase">Fysisk</span>
+                  </div>
+                </th>
+                <th class="pb-3 px-1.5" style="width: 96px;">
+                  <div class="flex flex-col items-center gap-1">
+                    <span class="w-full h-1 rounded-full" style="background: var(--pyr-tek);"></span>
+                    <span class="mono text-[11px] font-semibold tracking-wider">TEK</span>
+                    <span class="mono text-[9px] text-[var(--ak-muted)] uppercase">Teknikk</span>
+                  </div>
+                </th>
+                <th class="pb-3 px-1.5" style="width: 96px;">
+                  <div class="flex flex-col items-center gap-1">
+                    <span class="w-full h-1 rounded-full" style="background: var(--pyr-slag);"></span>
+                    <span class="mono text-[11px] font-semibold tracking-wider">SLAG</span>
+                    <span class="mono text-[9px] text-[var(--ak-muted)] uppercase">Golfslag</span>
+                  </div>
+                </th>
+                <th class="pb-3 px-1.5" style="width: 96px;">
+                  <div class="flex flex-col items-center gap-1">
+                    <span class="w-full h-1 rounded-full" style="background: var(--pyr-spill);"></span>
+                    <span class="mono text-[11px] font-semibold tracking-wider">SPILL</span>
+                    <span class="mono text-[9px] text-[var(--ak-muted)] uppercase">På bane</span>
+                  </div>
+                </th>
+                <th class="pb-3 px-1.5" style="width: 96px;">
+                  <div class="flex flex-col items-center gap-1">
+                    <span class="w-full h-1 rounded-full" style="background: var(--pyr-turn);"></span>
+                    <span class="mono text-[11px] font-semibold tracking-wider">TURN</span>
+                    <span class="mono text-[9px] text-[var(--ak-muted)] uppercase">Konkur.</span>
+                  </div>
+                </th>
+                <th class="pb-3 pl-3 border-l-2 border-[var(--ak-border)]" style="width: 92px;">
+                  <div class="flex flex-col items-center gap-1">
+                    <span class="w-full h-1 rounded-full bg-[var(--ak-ink)]"></span>
+                    <span class="mono text-[11px] font-semibold tracking-wider">SUM</span>
+                    <span class="mono text-[9px] text-[var(--ak-muted)] uppercase">min</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="grid-body">
+              <!-- Rows injected by JS -->
+            </tbody>
+            <tfoot>
+              <tr id="totals-row">
+                <!-- injected -->
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- INNSIKTS-BANNER -->
+    <section class="px-8 pb-7">
+      <div class="flex items-baseline justify-between mb-3">
+        <h2 class="font-display text-lg tracking-tight">Caddies <span class="italic-serif text-[var(--ak-primary)]">tre funn.</span></h2>
+        <span class="mono text-[10px] uppercase tracking-widest text-[var(--ak-muted)]">AUTOGENERERT · 16. MAI 19:51</span>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+
+        <!-- Funn 1: rødt -->
+        <div class="banner-insight rounded-xl bg-white border border-[var(--ak-border)] p-4 relative overflow-hidden group hover:border-[var(--ak-danger)] transition">
+          <span class="absolute left-0 top-0 bottom-0 w-1 bg-[var(--ak-danger)]"></span>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-[var(--ak-danger)]/10 grid place-items-center flex-shrink-0">
+              <svg class="w-4 h-4 text-[var(--ak-danger)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="mono text-[10px] uppercase tracking-widest text-[var(--ak-danger)] font-semibold">SIGNATUR-SKJEVHET</div>
+              <p class="text-sm mt-1 leading-snug">TEE-trening domineres av <span class="font-semibold">SLAG (50 %)</span> — vurder mer TEK-fokus (nå 33 %).</p>
+              <button class="mt-2 mono text-[11px] text-[var(--ak-primary)] font-medium hover:underline flex items-center gap-1">
+                Foreslå plan-justering
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Funn 2: gult -->
+        <div class="banner-insight rounded-xl bg-white border border-[var(--ak-border)] p-4 relative overflow-hidden group hover:border-[var(--ak-warning)] transition">
+          <span class="absolute left-0 top-0 bottom-0 w-1 bg-[var(--ak-warning)]"></span>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-[var(--ak-warning)]/10 grid place-items-center flex-shrink-0">
+              <svg class="w-4 h-4 text-[var(--ak-warning)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="mono text-[10px] uppercase tracking-widest text-[var(--ak-warning)] font-semibold">OVERVEKT MOT SPILL</div>
+              <p class="text-sm mt-1 leading-snug">PUTT 0-3 ft er overweight på <span class="font-semibold">SPILL (50 %)</span> — TEK-konsistens kan hjelpe.</p>
+              <button class="mt-2 mono text-[11px] text-[var(--ak-primary)] font-medium hover:underline flex items-center gap-1">
+                Foreslå plan-justering
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Funn 3: rødt (gap) -->
+        <div class="banner-insight rounded-xl bg-white border border-[var(--ak-border)] p-4 relative overflow-hidden group hover:border-[var(--ak-danger)] transition">
+          <span class="absolute left-0 top-0 bottom-0 w-1 bg-[var(--ak-danger)]"></span>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-[var(--ak-danger)]/10 grid place-items-center flex-shrink-0">
+              <svg class="w-4 h-4 text-[var(--ak-danger)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="mono text-[10px] uppercase tracking-widest text-[var(--ak-danger)] font-semibold">KRITISK HULL</div>
+              <p class="text-sm mt-1 leading-snug">Ingen TEK på <span class="font-semibold">PUTT 5-10 ft</span> — kritisk distanse-felt mangler systematisk trening.</p>
+              <button class="mt-2 mono text-[11px] text-[var(--ak-primary)] font-medium hover:underline flex items-center gap-1">
+                Foreslå plan-justering
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============== SIDE PANEL (slide-in fra høyre) ============== -->
+  <aside id="sidePanel" class="absolute top-0 right-0 h-full w-[400px] bg-white border-l border-[var(--ak-border)] shadow-2xl z-30 flex flex-col">
+    <div class="p-5 border-b border-[var(--ak-border)]">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="mono text-[10px] uppercase tracking-widest text-[var(--ak-muted)]" id="panel-eyebrow">TEE TOTAL × SLAG</div>
+          <h3 class="mt-1 font-display text-2xl tracking-tight leading-tight">
+            <span id="panel-minutes" class="mono">360</span><span class="text-sm text-[var(--ak-muted)] mono ml-1">min</span>
+            <span class="text-[var(--ak-muted)] mx-1">·</span>
+            <span id="panel-sessions" class="mono">12</span><span class="text-sm text-[var(--ak-muted)] mono ml-1">økter</span>
+          </h3>
+          <p class="mt-1 text-xs text-[var(--ak-muted)]">Snitt suksess <span class="mono text-[var(--ak-success)] font-semibold" id="panel-success">78 %</span> · Siste økt <span class="mono" id="panel-last">14. mai</span></p>
+        </div>
+        <button onclick="closePanel()" class="w-8 h-8 rounded-lg hover:bg-[var(--ak-bg)] grid place-items-center transition" title="Lukk (Esc)">
+          <svg class="w-4 h-4 text-[var(--ak-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Mini-fordeling -->
+      <div class="mt-4 grid grid-cols-3 gap-2">
+        <div class="rounded-lg bg-[var(--ak-bg)] p-2.5">
+          <div class="mono text-[9px] uppercase tracking-widest text-[var(--ak-muted)]">L-FASE</div>
+          <div class="text-[11px] mt-0.5 font-medium">L-AUTO <span class="mono text-[var(--ak-muted)]">·92%</span></div>
+        </div>
+        <div class="rounded-lg bg-[var(--ak-bg)] p-2.5">
+          <div class="mono text-[9px] uppercase tracking-widest text-[var(--ak-muted)]">CS</div>
+          <div class="text-[11px] mt-0.5 font-medium">CS80 <span class="mono text-[var(--ak-muted)]">·snitt</span></div>
+        </div>
+        <div class="rounded-lg bg-[var(--ak-bg)] p-2.5">
+          <div class="mono text-[9px] uppercase tracking-widest text-[var(--ak-muted)]">MILJØ</div>
+          <div class="text-[11px] mt-0.5 font-medium">M2 <span class="mono text-[var(--ak-muted)]">·67%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Økter-liste -->
+    <div class="flex-1 overflow-y-auto scrollbar-thin">
+      <div class="px-5 py-3 sticky top-0 bg-white border-b border-[var(--ak-border)] flex items-center justify-between">
+        <span class="mono text-[10px] uppercase tracking-widest text-[var(--ak-muted)]">ØKTER</span>
+        <button class="mono text-[10px] text-[var(--ak-muted)] hover:text-[var(--ak-ink)] flex items-center gap-1">Dato ↓</button>
+      </div>
+
+      <div id="sessions-list" class="divide-y divide-[var(--ak-border)]">
+        <!-- Sessions injected by JS -->
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="p-4 border-t border-[var(--ak-border)] bg-[var(--ak-bg)] flex items-center gap-2">
+      <button class="flex-1 px-3 py-2 rounded-lg bg-[var(--ak-primary)] hover:bg-[var(--ak-primary-hover)] text-white text-xs font-semibold transition flex items-center justify-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        Planlegg ny økt
+      </button>
+      <button class="px-3 py-2 rounded-lg bg-white border border-[var(--ak-border)] hover:border-[var(--ak-primary)] text-xs transition">Eksporter</button>
+    </div>
+  </aside>
+
+  <!-- Tooltip element -->
+  <div id="tooltip" class="hidden absolute z-40 pointer-events-none rounded-lg bg-[var(--ak-ink)] text-white text-[11px] px-3 py-2 shadow-xl">
+    <div class="mono text-[9px] uppercase tracking-widest text-white/60" id="tt-eyebrow">TEE × SLAG</div>
+    <div class="mt-0.5"><span class="mono font-semibold" id="tt-minutes">360</span> min · <span class="mono" id="tt-sessions">12</span> økter</div>
+    <div class="mt-0.5 mono text-[10px] text-[var(--ak-accent)]" id="tt-success">78 % suksess</div>
+    <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-[var(--ak-ink)]"></div>
+  </div>
+
+  <!-- ============== COMMAND PALETTE ============== -->
+  <div id="palette-overlay" class="hidden absolute inset-0 z-50 bg-black/40 backdrop-blur-sm">
+    <div class="mx-auto mt-24 w-[640px] bg-white rounded-2xl shadow-2xl overflow-hidden" style="animation: modalPop 0.18s ease forwards;">
+      <div class="flex items-center gap-3 px-5 py-4 border-b border-[var(--ak-border)]">
+        <svg class="w-4 h-4 text-[var(--ak-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input id="palette-input" type="text" placeholder="Søk kommandoer, sider, spillere…" class="flex-1 outline-none text-sm bg-transparent" oninput="filterPalette(this.value)">
+        <kbd class="mono text-[10px] bg-[var(--ak-bg)] border border-[var(--ak-border)] px-1.5 py-0.5 rounded">ESC</kbd>
+      </div>
+      <div id="palette-list" class="max-h-[480px] overflow-y-auto scrollbar-thin py-2">
+        <!-- Injected -->
+      </div>
+      <div class="px-5 py-2.5 border-t border-[var(--ak-border)] bg-[var(--ak-bg)] flex items-center justify-between text-[10px] text-[var(--ak-muted)]">
+        <div class="flex items-center gap-3">
+          <span class="flex items-center gap-1"><kbd class="mono bg-white border border-[var(--ak-border)] px-1 rounded">↑↓</kbd> Naviger</span>
+          <span class="flex items-center gap-1"><kbd class="mono bg-white border border-[var(--ak-border)] px-1 rounded">↵</kbd> Velg</span>
+        </div>
+        <span class="mono">⌘K · CoachHQ Caddie</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============ DATA ============
+const omrader = [
+  { key: 'TEE_TOT',   label: 'Tee Total',     sub: 'Driver + utslag' },
+  { key: 'INN_200',   label: 'Innspill 200m', sub: 'Hybrid · 3-jern' },
+  { key: 'INN_150',   label: 'Innspill 150m', sub: '7-jern · 8-jern' },
+  { key: 'INN_100',   label: 'Innspill 100m', sub: 'Wedges' },
+  { key: 'INN_50',    label: 'Innspill 50m',  sub: 'Lyfted wedge' },
+  { key: 'CHIP',      label: 'Chip',          sub: 'Lavt løft' },
+  { key: 'PITCH',     label: 'Pitch',         sub: 'Mellomhøyt løft' },
+  { key: 'LOB',       label: 'Lob',           sub: 'Høyt løft' },
+  { key: 'BUNKER',    label: 'Bunker',        sub: 'Greenside' },
+  { key: 'PUTT_0_3',  label: 'Putt 0-3 ft',   sub: 'Tap-ins' },
+  { key: 'PUTT_3_5',  label: 'Putt 3-5 ft',   sub: 'Make-zone' },
+  { key: 'PUTT_5_10', label: 'Putt 5-10 ft',  sub: 'Make / miss' },
+  { key: 'PUTT_10_15',label: 'Putt 10-15 ft', sub: 'Lag-zone' },
+  { key: 'PUTT_15_25',label: 'Putt 15-25 ft', sub: 'Lag-zone' },
+  { key: 'PUTT_25_40',label: 'Putt 25-40 ft', sub: 'Long lag' },
+  { key: 'PUTT_40',   label: 'Putt 40+ ft',   sub: 'Speed only' },
+];
+
+const pyrs = ['FYS','TEK','SLAG','SPILL','TURN'];
+
+// Cells: minutes per (omrade, pyramide). Realistic distribution.
+// Tee dominated by SLAG (range/simulator), some TEK, little SPILL on course.
+// Putt 0-3 dominated by SPILL (rounds) — gap on TEK.
+// Putt 5-10 has a hole on TEK (the critical gap).
+const data = {
+  // [FYS, TEK, SLAG, SPILL, TURN]
+  TEE_TOT:    [30, 240, 360, 90,  60],
+  INN_200:    [0,  90,  180, 60,  30],
+  INN_150:    [0,  210, 240, 120, 45],
+  INN_100:    [0,  180, 150, 90,  30],
+  INN_50:     [0,  120, 60,  45,  15],
+  CHIP:       [0,  90,  120, 180, 30],
+  PITCH:      [0,  60,  90,  120, 30],
+  LOB:        [0,  45,  30,  60,  15],
+  BUNKER:     [0,  30,  60,  45,  0],
+  PUTT_0_3:   [0,  60,  30,  180, 90],
+  PUTT_3_5:   [0,  120, 60,  150, 60],
+  PUTT_5_10:  [0,  0,   45,  120, 30],  // KRITISK: 0 TEK
+  PUTT_10_15: [0,  30,  60,  90,  15],
+  PUTT_15_25: [0,  45,  30,  60,  0],
+  PUTT_25_40: [0,  30,  15,  45,  0],
+  PUTT_40:    [0,  15,  0,   30,  0],
+};
+
+// Active cell preset for slide-in: TEE × SLAG = 360
+const activeCell = { omrade: 'TEE_TOT', pyrIdx: 2 };
+
+// ============ HEATMAP-CLASS ============
+function heatClass(v) {
+  if (v === 0)    return 'hm-0';
+  if (v <= 30)    return 'hm-1';
+  if (v <= 90)    return 'hm-2';
+  if (v <= 180)   return 'hm-3';
+  if (v <= 240)   return 'hm-4';
+  return 'hm-5';
+}
+
+// ============ RENDER GRID ============
+function renderGrid() {
+  const tbody = document.getElementById('grid-body');
+  tbody.innerHTML = '';
+  let cellIdx = 0;
+
+  omrader.forEach((omr, rowIdx) => {
+    const vals = data[omr.key];
+    const rowSum = vals.reduce((a,b)=>a+b,0);
+
+    const tr = document.createElement('tr');
+    tr.className = 'group';
+
+    // Label
+    const th = document.createElement('th');
+    th.className = 'text-left py-1 pr-3 sticky left-0 bg-white group-hover:bg-[var(--ak-bg)] transition z-[1]';
+    th.innerHTML = `
+      <div class="flex flex-col leading-tight">
+        <span class="text-[12px] font-medium">${omr.label}</span>
+        <span class="mono text-[9px] uppercase tracking-wider text-[var(--ak-muted)]">${omr.sub}</span>
+      </div>`;
+    tr.appendChild(th);
+
+    // Cells
+    vals.forEach((v, ci) => {
+      const td = document.createElement('td');
+      td.className = 'py-1 px-1';
+      const isActive = activeCell.omrade === omr.key && activeCell.pyrIdx === ci;
+      const cls = heatClass(v);
+      const display = v === 0 ? '–' : v;
+
+      td.innerHTML = `
+        <div class="cell ${cls} ${isActive ? 'active' : ''} rounded-md h-10 flex items-center justify-center mono text-[13px] font-medium cursor-pointer"
+             data-omr="${omr.key}" data-omrlabel="${omr.label}" data-pyr="${pyrs[ci]}" data-min="${v}"
+             style="animation-delay: ${cellIdx * 5}ms;"
+             onmouseenter="showTooltip(event, this)"
+             onmousemove="moveTooltip(event)"
+             onmouseleave="hideTooltip()"
+             onclick="openPanel(this)">
+          ${display}
+        </div>`;
+      tr.appendChild(td);
+      cellIdx++;
+    });
+
+    // Row total
+    const tdSum = document.createElement('td');
+    tdSum.className = 'py-1 pl-3 border-l-2 border-[var(--ak-border)]';
+    tdSum.innerHTML = `<div class="h-10 flex items-center justify-center mono text-[13px] font-semibold text-[var(--ak-ink)] bg-[var(--ak-bg)] rounded-md">${rowSum}</div>`;
+    tr.appendChild(tdSum);
+
+    tbody.appendChild(tr);
+  });
+
+  // Totals row
+  const totals = pyrs.map((_, i) => omrader.reduce((s, o) => s + data[o.key][i], 0));
+  const grand = totals.reduce((a,b)=>a+b,0);
+  const totalsRow = document.getElementById('totals-row');
+  totalsRow.innerHTML = `
+    <td class="pt-3 pr-3 sticky left-0 bg-white">
+      <span class="mono text-[10px] uppercase tracking-widest text-[var(--ak-ink)] font-semibold">SUM</span>
+    </td>
+    ${totals.map(t => `
+      <td class="pt-3 px-1">
+        <div class="h-10 flex items-center justify-center mono text-[13px] font-semibold rounded-md bg-[var(--ak-ink)] text-white">${t}</div>
+      </td>`).join('')}
+    <td class="pt-3 pl-3 border-l-2 border-[var(--ak-border)]">
+      <div class="h-10 flex items-center justify-center mono text-[13px] font-semibold rounded-md bg-[var(--ak-primary)] text-white">${grand}</div>
+    </td>`;
+}
+
+// ============ TOOLTIP ============
+const tt = document.getElementById('tooltip');
+function showTooltip(e, el) {
+  const min = +el.dataset.min;
+  if (min === 0) {
+    tt.classList.remove('hidden');
+    tt.querySelector('#tt-eyebrow').textContent = `${el.dataset.omrlabel.toUpperCase()} × ${el.dataset.pyr}`;
+    tt.querySelector('#tt-minutes').textContent = '0';
+    tt.querySelector('#tt-sessions').textContent = '0';
+    tt.querySelector('#tt-success').textContent = 'Ingen aktivitet';
+  } else {
+    tt.classList.remove('hidden');
+    tt.querySelector('#tt-eyebrow').textContent = `${el.dataset.omrlabel.toUpperCase()} × ${el.dataset.pyr}`;
+    tt.querySelector('#tt-minutes').textContent = min;
+    const sessions = Math.max(1, Math.round(min / 30));
+    const success = 60 + Math.floor((min * 13) % 30);
+    tt.querySelector('#tt-sessions').textContent = sessions;
+    tt.querySelector('#tt-success').textContent = `${success} % suksess`;
+  }
+  moveTooltip(e);
+}
+function moveTooltip(e) {
+  const x = e.clientX;
+  const y = e.clientY;
+  tt.style.left = (x - 70) + 'px';
+  tt.style.top = (y - 78) + 'px';
+}
+function hideTooltip() { tt.classList.add('hidden'); }
+
+// ============ PANEL ============
+const panel = document.getElementById('sidePanel');
+const panelEyebrow = document.getElementById('panel-eyebrow');
+const panelMinutes = document.getElementById('panel-minutes');
+const panelSessions = document.getElementById('panel-sessions');
+const panelSuccess = document.getElementById('panel-success');
+const panelLast = document.getElementById('panel-last');
+
+function openPanel(el) {
+  const min = +el.dataset.min;
+  if (min === 0) {
+    // For empty cells: show suggestion
+    panelEyebrow.textContent = `${el.dataset.omrlabel.toUpperCase()} × ${el.dataset.pyr} · TOMT`;
+    panelMinutes.textContent = '0';
+    panelSessions.textContent = '0';
+    panelSuccess.textContent = '–';
+    panelLast.textContent = 'aldri';
+    document.getElementById('sessions-list').innerHTML = `
+      <div class="p-5 text-center">
+        <div class="mx-auto w-10 h-10 rounded-full bg-[var(--ak-danger)]/10 grid place-items-center">
+          <svg class="w-5 h-5 text-[var(--ak-danger)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <p class="mt-3 text-sm font-medium">Ingen trening registrert</p>
+        <p class="mt-1 text-xs text-[var(--ak-muted)] px-4">Vil du legge denne kombinasjonen inn i neste plan-syklus?</p>
+        <button class="mt-4 px-4 py-2 rounded-lg bg-[var(--ak-primary)] hover:bg-[var(--ak-primary-hover)] text-white text-xs font-semibold transition">
+          Foreslå drill
+        </button>
+      </div>`;
+  } else {
+    panelEyebrow.textContent = `${el.dataset.omrlabel.toUpperCase()} × ${el.dataset.pyr}`;
+    panelMinutes.textContent = min;
+    const sessions = Math.max(1, Math.round(min / 30));
+    panelSessions.textContent = sessions;
+    const success = 60 + Math.floor((min * 13) % 30);
+    panelSuccess.textContent = `${success} %`;
+    renderSessions(min, el.dataset.omrlabel, el.dataset.pyr, sessions);
+  }
+
+  // Highlight active cell
+  document.querySelectorAll('.cell.active').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+
+  panel.classList.add('open');
+}
+
+function closePanel() {
+  panel.classList.remove('open');
+  document.querySelectorAll('.cell.active').forEach(c => c.classList.remove('active'));
+}
+
+function renderSessions(totalMin, omrLabel, pyr, count) {
+  // Generate plausible sessions list
+  const dates = ['14. mai', '11. mai', '7. mai', '3. mai', '29. apr', '24. apr', '20. apr', '16. apr', '11. apr', '6. apr', '2. apr', '28. mar'];
+  const lFases = ['L-AUTO','L-BALL','L-AUTO','L-AUTO','L-BALL','L-AUTO','L-KOLLE','L-AUTO','L-BALL','L-AUTO','L-AUTO','L-BALL'];
+  const miljos = ['M2','M2','M4','M2','M3','M2','M2','M4','M2','M2','M3','M2'];
+  const cs = ['CS80','CS80','CS90','CS80','CS70','CS80','CS80','CS90','CS80','CS80','CS70','CS80'];
+
+  let avgMin = Math.round(totalMin / count);
+  const items = [];
+  for (let i = 0; i < count; i++) {
+    const varMin = avgMin + (i % 3 === 0 ? -5 : (i % 3 === 1 ? 5 : 0));
+    const suc = 60 + Math.floor(((i + 1) * 7 + totalMin) % 38);
+    const sucColor = suc >= 75 ? 'text-[var(--ak-success)]' : (suc >= 60 ? 'text-[var(--ak-warning)]' : 'text-[var(--ak-danger)]');
+    items.push(`
+      <button class="w-full text-left px-5 py-3 hover:bg-[var(--ak-bg)] transition flex items-start gap-3">
+        <div class="mono text-[10px] uppercase tracking-widest text-[var(--ak-muted)] w-12 pt-0.5">${dates[i] || '—'}</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10px] mono uppercase tracking-wider px-1.5 py-0.5 rounded text-white" style="background: var(--pyr-${pyr.toLowerCase()});">${pyr}</span>
+            <span class="mono text-[10px] text-[var(--ak-muted)]">${lFases[i]} · ${cs[i]} · ${miljos[i]}</span>
+          </div>
+          <div class="mt-1 text-[12.5px] font-medium leading-tight">${omrLabel} · øvelse ${count - i}</div>
+        </div>
+        <div class="text-right flex-shrink-0">
+          <div class="mono text-[12.5px] font-semibold">${varMin}<span class="text-[10px] text-[var(--ak-muted)] ml-0.5">min</span></div>
+          <div class="mono text-[10px] mt-0.5 ${sucColor}">${suc} %</div>
+        </div>
+      </button>`);
+  }
+  document.getElementById('sessions-list').innerHTML = items.join('');
+}
+
+// ============ PRESET TOGGLE ============
+function setPreset(btn, key) {
+  document.querySelectorAll('.preset-pill').forEach(b => {
+    b.className = 'preset-pill px-3 py-1.5 rounded-full bg-white border border-[var(--ak-border)] text-[12px] text-[var(--ak-ink)] hover:border-[var(--ak-primary)]';
+  });
+  btn.className = 'preset-pill px-3 py-1.5 rounded-full bg-[var(--ak-primary)] text-white text-[12px] font-medium';
+
+  // Crossfade re-render (data stays same for demo)
+  const wrap = document.getElementById('grid-wrap');
+  wrap.style.transition = 'opacity 0.18s';
+  wrap.style.opacity = '0';
+  setTimeout(() => {
+    renderGrid();
+    wrap.style.opacity = '1';
+  }, 180);
+}
+
+// ============ COMMAND PALETTE ============
+const COMMANDS = [
+  // Handlinger
+  { cat: 'Handlinger', label: 'Eksporter rådata som CSV', icon: 'download', action: () => alert('Eksporterer CSV…') },
+  { cat: 'Handlinger', label: 'Generer PDF-rapport', icon: 'file', action: () => alert('Genererer PDF…') },
+  { cat: 'Handlinger', label: 'Foreslå plan-justering basert på funn', icon: 'sparkles', action: () => alert('Caddie tenker…') },
+  { cat: 'Handlinger', label: 'Markér celle som "fokus neste uke"', icon: 'flag', action: () => alert('Markert.') },
+  { cat: 'Handlinger', label: 'Del visning med spiller', icon: 'share', action: () => alert('Delt.') },
+
+  // Navigasjon
+  { cat: 'Navigasjon', label: 'Bytt til Trender', icon: 'arrow', action: () => alert('→ Trender') },
+  { cat: 'Navigasjon', label: 'Bytt til SG-kobling', icon: 'arrow', action: () => alert('→ SG') },
+  { cat: 'Navigasjon', label: 'Gå til Spiller-360 · Markus', icon: 'user', action: () => alert('→ Spiller-360') },
+  { cat: 'Navigasjon', label: 'Åpne Caddie chat', icon: 'message', action: () => alert('Caddie åpnet') },
+  { cat: 'Navigasjon', label: 'Gå til ukens plan', icon: 'calendar', action: () => alert('→ Plan') },
+
+  // Sammenlign
+  { cat: 'Sammenlign', label: 'Bytt dimensjon: Område × Miljø', icon: 'swap', action: () => setPreset(document.querySelectorAll('.preset-pill')[1], 'omr-miljo') },
+  { cat: 'Sammenlign', label: 'Bytt dimensjon: L-fase × Komponentfokus', icon: 'swap', action: () => setPreset(document.querySelectorAll('.preset-pill')[3], 'lfase-komp') },
+  { cat: 'Sammenlign', label: 'Sammenlign med forrige periode', icon: 'compare', action: () => alert('Vs Q1 2026') },
+  { cat: 'Sammenlign', label: 'Sammenlign Markus vs Sofie', icon: 'compare', action: () => alert('Sammenligner spillere…') },
+  { cat: 'Sammenlign', label: 'Overlay Hovland-snitt (16 år)', icon: 'compare', action: () => alert('Hovland overlay') },
+
+  // Analyse
+  { cat: 'Analyse', label: 'Vis kun celler > 60 min', icon: 'filter', action: () => alert('Filtrert.') },
+  { cat: 'Analyse', label: 'Filtrer på siste 30 dager', icon: 'filter', action: () => alert('30 dager.') },
+  { cat: 'Analyse', label: 'Skjul null-celler', icon: 'eye', action: () => alert('Nuller skjult.') },
+  { cat: 'Analyse', label: 'Velg pyramide-fokus: TEK', icon: 'target', action: () => alert('TEK isolert.') },
+  { cat: 'Analyse', label: 'Vis bare PUTT-områder', icon: 'filter', action: () => alert('Putt-filter.') },
+
+  // Hjelp
+  { cat: 'Hjelp', label: 'Hva er TAK / Myelin?', icon: 'help', action: () => alert('TAK = Trening, Anvendelse, Konkurranse…') },
+  { cat: 'Hjelp', label: 'Forklaring av forkortelser', icon: 'help', action: () => alert('L-AUTO = automatisert ball-fase…') },
+  { cat: 'Hjelp', label: 'Tastatursnarveier', icon: 'keyboard', action: () => alert('⌘K palette · Esc lukk') },
+];
+
+const iconSVGs = {
+  download: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>',
+  file: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+  sparkles: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>',
+  flag: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 2H21l-3 6 3 6h-8.5l-1-2H5a2 2 0 00-2 2zm9-13.5V9"/>',
+  share: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.032 4.026a3 3 0 11-5.464 2.684 3 3 0 015.464-2.684z"/>',
+  arrow: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>',
+  user: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>',
+  message: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>',
+  calendar: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
+  swap: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>',
+  compare: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>',
+  filter: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>',
+  eye: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>',
+  target: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>',
+  help: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093M12 17h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+  keyboard: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>',
+};
+
+function renderPalette(filter='') {
+  const list = document.getElementById('palette-list');
+  const f = filter.toLowerCase();
+  const filtered = COMMANDS.filter(c => c.label.toLowerCase().includes(f) || c.cat.toLowerCase().includes(f));
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="px-5 py-8 text-center text-sm text-[var(--ak-muted)]">Ingen treff på «' + filter + '»</div>';
+    return;
+  }
+
+  const groups = {};
+  filtered.forEach(c => { (groups[c.cat] = groups[c.cat] || []).push(c); });
+
+  list.innerHTML = Object.entries(groups).map(([cat, cmds]) => `
+    <div class="px-2 pt-2 pb-1">
+      <div class="px-3 py-1 mono text-[9px] uppercase tracking-widest text-[var(--ak-muted)]">${cat}</div>
+      ${cmds.map((c, i) => `
+        <button onclick="executePaletteCmd('${cat}',${cmds.indexOf(c)})" class="palette-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[var(--ak-bg)] text-left transition">
+          <svg class="w-4 h-4 text-[var(--ak-muted)] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconSVGs[c.icon] || iconSVGs.help}</svg>
+          <span class="text-sm flex-1">${c.label}</span>
+          <svg class="w-3 h-3 text-[var(--ak-muted)] opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>`).join('')}
+    </div>`).join('');
+}
+
+function executePaletteCmd(cat, idx) {
+  const cmd = COMMANDS.filter(c => c.cat === cat)[idx];
+  if (cmd && cmd.action) cmd.action();
+  closeCommandPalette();
+}
+
+function openCommandPalette() {
+  document.getElementById('palette-overlay').classList.remove('hidden');
+  document.getElementById('palette-input').value = '';
+  document.getElementById('palette-input').focus();
+  renderPalette('');
+}
+function closeCommandPalette() {
+  document.getElementById('palette-overlay').classList.add('hidden');
+}
+function filterPalette(v) { renderPalette(v); }
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    openCommandPalette();
+  }
+  if (e.key === 'Escape') {
+    closeCommandPalette();
+    closePanel();
+  }
+});
+
+document.getElementById('palette-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'palette-overlay') closeCommandPalette();
+});
+
+// ============ INIT ============
+renderGrid();
+
+// Auto-open panel on load (vist åpen state per spec)
+setTimeout(() => {
+  const target = document.querySelector(`[data-omr="TEE_TOT"][data-pyr="SLAG"]`);
+  if (target) openPanel(target);
+}, 900);
+</script>
+</body>
+</html>
