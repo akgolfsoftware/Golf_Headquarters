@@ -25,6 +25,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { RecordingControls } from "./recording-controls";
+import { RecordingAnalyzeButton } from "@/components/admin/recording-analyze-button";
 
 type PipelineStatus = "done" | "active" | "idle";
 
@@ -353,6 +354,12 @@ export default async function RecordingAdmin({
                       {r.transcript}
                     </pre>
                   </details>
+                )}
+                {r.status === "PROCESSING" && (
+                  <RecordingAnalyzeButton
+                    recordingId={r.id}
+                    harTranskripsjon={!!r.transcript && r.transcript.trim().length > 0}
+                  />
                 )}
               </li>
             ))}

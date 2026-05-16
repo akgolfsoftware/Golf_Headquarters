@@ -129,7 +129,27 @@ export async function POST(req: Request) {
     },
   });
 
-  // V2: trigge transkribering (Deepgram) + AI-analyse + Notion-publish her.
+  // V2: trigge transkribering (Whisper) i bakgrunnen — fire-and-forget.
+  // V3 AI-analyse trigges automatisk fra /api/recording/transcribe når
+  // transcript er lagret.
+  try {
+    const transcribeUrl = new URL(
+      "/api/recording/transcribe",
+      req.url,
+    ).toString();
+    fetch(transcribeUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        cookie: req.headers.get("cookie") ?? "",
+      },
+      body: JSON.stringify({ recordingId: recording.id }),
+    }).catch((e) => {
+      console.error("[complete] kunne ikke trigge transcribe:", e);
+    });
+  } catch (e) {
+    console.error("[complete] feil ved trigging av transcribe:", e);
+  }
 
   return NextResponse.json({ ok: true, recordingId: recording.id });
 }
