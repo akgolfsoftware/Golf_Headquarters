@@ -6,12 +6,13 @@
  * og tabell med kategori-pill, rangering-pill, "Ta test"-knapp.
  */
 import Link from "next/link";
-import { Target, Search, ChevronDown, Filter, Plus } from "lucide-react";
+import { Target, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { TesterListe } from "@/components/portal/tester-liste";
 
 const PYR_LABEL: Record<PyramidArea, string> = {
   FYS: "Fysisk",
@@ -19,22 +20,6 @@ const PYR_LABEL: Record<PyramidArea, string> = {
   SLAG: "Slag",
   SPILL: "Spill",
   TURN: "Turnering",
-};
-
-const PYR_PILL: Record<PyramidArea, string> = {
-  FYS: "bg-primary/10 text-primary",
-  TEK: "bg-primary/12 text-primary",
-  SLAG: "bg-accent/40 text-accent-foreground",
-  SPILL: "bg-accent/20 text-accent-foreground",
-  TURN: "bg-secondary text-muted-foreground",
-};
-
-const PYR_DOT: Record<PyramidArea, string> = {
-  FYS: "bg-primary/80",
-  TEK: "bg-primary",
-  SLAG: "bg-accent-foreground",
-  SPILL: "bg-accent",
-  TURN: "bg-muted-foreground",
 };
 
 export default async function TesterPage() {
@@ -107,7 +92,7 @@ export default async function TesterPage() {
       {/* Tabs (NGF / Mine) — Mine er Pro-locked og vises som disabled */}
       <div className="inline-flex w-fit gap-0.5 rounded-md bg-secondary p-1">
         <span className="rounded-sm bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm">
-          NGF-standard{" "}
+          Team Norway{" "}
           <span className="font-mono text-xs text-primary">{totalTester}</span>
         </span>
         <span className="cursor-not-allowed rounded-sm px-4 py-2 text-sm font-medium text-muted-foreground opacity-65">
@@ -155,34 +140,6 @@ export default async function TesterPage() {
         />
       </div>
 
-      {/* Filter-row */}
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="relative w-full sm:w-64">
-          <Search
-            size={13}
-            strokeWidth={1.75}
-            aria-hidden="true"
-            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
-          />
-          <input
-            type="search"
-            aria-label="Søk i tester"
-            placeholder="Søk test..."
-            className="w-full rounded-md border border-border bg-card py-2 pl-10 pr-4 text-sm outline-none focus:border-primary"
-          />
-        </div>
-        <Chip>
-          Kategori: Alle <ChevronDown size={11} strokeWidth={1.75} />
-        </Chip>
-        <Chip>
-          Status: Alle <ChevronDown size={11} strokeWidth={1.75} />
-        </Chip>
-        <div className="ml-auto inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Filter size={13} strokeWidth={1.75} />
-          Sortér: Sist tatt
-        </div>
-      </div>
-
       {tests.length === 0 ? (
         <EmptyState
           icon={Target}
@@ -199,100 +156,22 @@ export default async function TesterPage() {
           }
         />
       ) : (
-        <div className="overflow-hidden rounded-lg border border-border bg-card">
-          {/* Tabell-header */}
-          <div
-            className="hidden border-b border-border bg-muted/40 px-6 py-4 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid"
-            style={{
-              gridTemplateColumns: "1.7fr 1fr 0.9fr 1fr 110px",
-              gap: "14px",
-            }}
-          >
-            <div>Test</div>
-            <div>Sist tatt</div>
-            <div>Beste</div>
-            <div>Forsøk</div>
-            <div />
-          </div>
-
-          <ul>
-            {tests.map((t) => {
-              const stats = statsPerTest.get(t.id);
-              return (
-                <li
-                  key={t.id}
-                  className="border-b border-border/60 last:border-0"
-                >
-                  <Link
-                    href={`/portal/tren/tester/${t.id}`}
-                    className="grid grid-cols-1 items-center gap-4 px-6 py-4 transition-colors hover:bg-muted/30 sm:grid-cols-[1.7fr_1fr_0.9fr_1fr_110px]"
-                  >
-                    <div className="flex flex-col gap-1.5">
-                      <span className="text-sm font-medium text-foreground">
-                        {t.name}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.04em] ${PYR_PILL[t.pyramidArea]}`}
-                        >
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full ${PYR_DOT[t.pyramidArea]}`}
-                            aria-hidden="true"
-                          />
-                          {PYR_LABEL[t.pyramidArea]}
-                        </span>
-                        {(t.protocol as { totalShots?: number } | null)
-                          ?.totalShots && (
-                          <span className="font-mono text-[10px] text-muted-foreground">
-                            {
-                              (t.protocol as { totalShots: number })
-                                .totalShots
-                            }{" "}
-                            slag
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="font-mono text-xs text-muted-foreground tabular-nums">
-                      {stats ? (
-                        stats.takenAt.toLocaleDateString("nb-NO", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })
-                      ) : (
-                        <span className="italic">Aldri tatt</span>
-                      )}
-                    </div>
-                    <div className="font-mono text-sm font-semibold text-foreground tabular-nums">
-                      {stats ? (
-                        stats.beste.toFixed(1).replace(".", ",")
-                      ) : (
-                        <span className="text-muted-foreground/60">—</span>
-                      )}
-                    </div>
-                    <div className="font-mono text-xs text-muted-foreground tabular-nums">
-                      {stats ? `${stats.antall} forsøk` : "Ingen forsøk"}
-                    </div>
-                    <span className="inline-flex w-fit items-center gap-1 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90">
-                      Ta test →
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <TesterListe
+          tests={tests.map((t) => ({
+            id: t.id,
+            name: t.name,
+            pyramidArea: t.pyramidArea,
+            protocol: t.protocol,
+          }))}
+          stats={Object.fromEntries(
+            Array.from(statsPerTest.entries()).map(([id, s]) => [
+              id,
+              { takenAt: s.takenAt.toISOString(), beste: s.beste, antall: s.antall },
+            ]),
+          )}
+        />
       )}
     </div>
-  );
-}
-
-function Chip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs text-foreground">
-      {children}
-    </span>
   );
 }
 

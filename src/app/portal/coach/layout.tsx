@@ -4,10 +4,10 @@ const ITEMS = [
   { href: "/portal/coach",          label: "Oversikt" },
   { href: "/portal/coach/plans",    label: "Planer" },
   { href: "/portal/coach/plans/perioder", label: "Perioder" },
-  { href: "/portal/coach/ovelser",  label: "Ovelser" },
+  { href: "/portal/coach/ovelser",  label: "Øvelser" },
   { href: "/portal/coach/melding",  label: "Meldinger" },
-  { href: "/portal/onskeligokt",    label: "Onske om okt" },
-  { href: "/portal/booking",        label: "Book okt" },
+  { href: "/portal/onskeligokt",    label: "Ønske om økt" },
+  { href: "/portal/booking",        label: "Book økt" },
   { href: "/portal/coach/ai",       label: "AI-coach" },
 ];
 

@@ -31,7 +31,7 @@ export default async function RedigerOvelsePage({
       </Link>
 
       <PageHeader
-        eyebrow="CoachHQ · Rediger ovelse"
+        eyebrow="CoachHQ · Rediger øvelse"
         titleLead="Rediger"
         titleItalic={exercise.name}
       />

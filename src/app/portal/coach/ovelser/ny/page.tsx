@@ -18,9 +18,9 @@ export default async function NyOvelsePage() {
       </Link>
 
       <PageHeader
-        eyebrow="CoachHQ · Ny ovelse"
+        eyebrow="CoachHQ · Ny øvelse"
         titleLead="Opprett"
-        titleItalic="ovelse"
+        titleItalic="øvelse"
       />
 
       <DrillEditor mode="create" />

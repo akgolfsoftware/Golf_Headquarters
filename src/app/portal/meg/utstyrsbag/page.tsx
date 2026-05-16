@@ -28,9 +28,9 @@ export default async function UtstyrsbagPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="PlayerHQ · Meg · Utstyrsbag"
-        titleLead="Min"
-        titleItalic="utstyrsbag"
+        eyebrow="PlayerHQ · Meg · Mitt utstyr"
+        titleLead="Mitt"
+        titleItalic="utstyr"
         sub="Logg kølle-utstyret ditt slik at coach kan tilpasse anbefalinger og fitting. Alle felter er valgfrie."
       />
 

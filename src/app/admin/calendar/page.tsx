@@ -27,6 +27,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { CoachFilter } from "@/components/admin/coach-filter";
 import { EmptyState } from "@/components/shared/empty-state";
+import { GruppeSnarveier } from "@/components/admin/gruppe-snarveier";
 import {
   startOfWeek,
   dagerIUken,
@@ -547,7 +548,7 @@ export default async function AdminCalendar({
               gruppeAntall={FASTE_GRUPPER.length}
             />
             <SyncCard />
-            <PyramideLegendCard />
+            <GruppeSnarveier />
           </aside>
         </div>
       )}
@@ -703,33 +704,3 @@ function SyncCard() {
   );
 }
 
-function PyramideLegendCard() {
-  const items: { label: string; tone: string }[] = [
-    { label: "FYS", tone: "bg-primary" },
-    { label: "TEK", tone: "bg-primary/70" },
-    { label: "SLAG", tone: "bg-accent" },
-    { label: "SPILL", tone: "bg-foreground/60" },
-    { label: "TURN", tone: "bg-muted-foreground" },
-  ];
-  return (
-    <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-      <div className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-        Pyramide-stripe
-      </div>
-      <div className="grid grid-cols-2 gap-x-3 gap-y-2">
-        {items.map((it) => (
-          <div
-            key={it.label}
-            className="flex items-center gap-2 text-[12px] text-muted-foreground"
-          >
-            <span className={`inline-block h-4 w-2 rounded-sm ${it.tone}`} />
-            {it.label}
-          </div>
-        ))}
-      </div>
-      <div className="mt-2.5 text-[11px] leading-[1.4] text-muted-foreground">
-        Stripe-segmenter viser fokus-fordeling per økt.
-      </div>
-    </div>
-  );
-}

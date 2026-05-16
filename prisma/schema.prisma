@@ -592,6 +592,23 @@ model Round {
   sgApp    Float?
   sgArg    Float?
   sgPutt   Float?
+  // Granulære SG-felter (fra taksonomien — alle valgfrie)
+  sgTee        Float?
+  sgApp200     Float?
+  sgApp150     Float?
+  sgApp100     Float?
+  sgApp50      Float?
+  sgChip       Float?
+  sgPitch      Float?
+  sgLob        Float?
+  sgBunker     Float?
+  sgPutt0_3    Float?
+  sgPutt3_5    Float?
+  sgPutt5_10   Float?
+  sgPutt10_15  Float?
+  sgPutt15_25  Float?
+  sgPutt25_40  Float?
+  sgPutt40plus Float?
   notes    String?
   createdAt DateTime @default(now())
 
