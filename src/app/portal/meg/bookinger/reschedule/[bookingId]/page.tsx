@@ -79,6 +79,23 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
         sub={`Nåværende: ${naa} kl ${naaTid}. Velg ny dato og tid under.`}
       />
 
+      {/* Nåværende booking-info */}
+      <div className="rounded-xl bg-secondary p-4 text-sm">
+        <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          Nåværende tid
+        </div>
+        <p className="mt-1 font-medium text-foreground">
+          {naa} kl {naaTid} &middot; {booking.serviceType.durationMin} min &middot; {booking.location.name}
+        </p>
+      </div>
+
+      {/* Avbestillingspolicy */}
+      <div className="rounded-md border border-border bg-card p-4 text-sm text-muted-foreground">
+        <span className="font-semibold text-foreground">Avbestillingspolicy:</span> Bytting av tid er gratis frem til 24 timer
+        før opprinnelig starttidspunkt. Etter 24-timersgrensen kan ikke
+        tidspunktet endres, og bookingen er ikke refunderbar.
+      </div>
+
       <section>
         <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           1. Velg ny dato

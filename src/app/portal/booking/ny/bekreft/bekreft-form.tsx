@@ -21,13 +21,13 @@ export function BekreftForm({ serviceTypeId, coachId, start }: Props) {
     setError(null);
     startTransition(async () => {
       try {
-        await createCreditBooking({
+        const result = await createCreditBooking({
           serviceTypeId,
           coachId,
           start,
           notes: notes.trim() || undefined,
         });
-        router.push("/portal/meg/bookinger?ny=1");
+        router.push(`/portal/booking/bekreftet?bookingId=${result.bookingId}`);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Noe gikk galt.");
       }

@@ -34,10 +34,10 @@ export default async function NyBookingPage({ searchParams }: Props) {
     return <BruktOppView resetAt={subscription.currentPeriodEnd} />;
   }
 
-  // 20-min coaching-tjenester
+  // Alle aktive coaching-tjenester
   const services = await prisma.serviceType.findMany({
-    where: { active: true, durationMin: 20 },
-    orderBy: { name: "asc" },
+    where: { active: true },
+    orderBy: { durationMin: "asc" },
   });
 
   if (services.length === 0) {
@@ -152,10 +152,17 @@ export default async function NyBookingPage({ searchParams }: Props) {
                       </p>
                     )}
                   </div>
-                  <span className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                    <Clock className="h-3 w-3" strokeWidth={1.75} />
-                    {s.durationMin} min
-                  </span>
+                  <div className="flex flex-col items-end gap-1 shrink-0">
+                    <span className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                      <Clock className="h-3 w-3" strokeWidth={1.75} />
+                      {s.durationMin} min
+                    </span>
+                    {s.priceOre > 0 && (
+                      <span className="font-mono text-xs tabular-nums text-muted-foreground">
+                        {s.priceOre / 100} kr
+                      </span>
+                    )}
+                  </div>
                 </div>
               </Link>
             );

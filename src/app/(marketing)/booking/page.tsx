@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { MapPin, User } from "lucide-react";
+import { MapPin, User, CalendarDays, CreditCard, UserCheck } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
@@ -316,6 +316,9 @@ export default async function BookingLanding({
             </a>
           </div>
         )}
+
+        {/* Slik fungerer det */}
+        <SlikFungererDet />
       </div>
     </div>
   );
@@ -372,28 +375,96 @@ function StegIndikator({
 function BookingPaused() {
   return (
     <div className="px-6 py-16 sm:py-20">
-      <div className="mx-auto max-w-2xl text-center">
-        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-          Booking
-        </span>
-        <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-          Booking er midlertidig{" "}
-          <em className="font-normal italic text-primary">pauset</em>
-        </h1>
-        <p className="mt-6 text-base text-muted-foreground">
-          Vi gjør klar Google Calendar-integrasjon slik at du aldri risikerer
-          å booke en time som ikke er ledig. Bookingen åpner igjen om kort tid.
-        </p>
-        <p className="mt-4 text-base text-muted-foreground">
-          Vil du booke en time akkurat nå? Send oss en e-post:
-        </p>
-        <a
-          href="mailto:post@akgolf.no?subject=Booking-foresp%C3%B8rsel"
-          className="mt-6 inline-block rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
-        >
-          Skriv til post@akgolf.no
-        </a>
+      <div className="mx-auto max-w-5xl">
+        <div className="text-center">
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
+            Booking
+          </span>
+          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+            Booking er midlertidig{" "}
+            <em className="font-normal italic text-primary">pauset</em>
+          </h1>
+          <p className="mt-6 text-base text-muted-foreground">
+            Vi gjør klar Google Calendar-integrasjon slik at du aldri risikerer
+            å booke en time som ikke er ledig. Bookingen åpner igjen om kort
+            tid.
+          </p>
+          <p className="mt-4 text-base text-muted-foreground">
+            Vil du booke en time akkurat nå? Send oss en e-post:
+          </p>
+          <a
+            href="mailto:post@akgolf.no?subject=Booking-foresp%C3%B8rsel"
+            className="mt-6 inline-block rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          >
+            Skriv til post@akgolf.no
+          </a>
+        </div>
+        <SlikFungererDet />
       </div>
     </div>
+  );
+}
+
+function SlikFungererDet() {
+  const steg = [
+    {
+      nr: 1,
+      ikon: CalendarDays,
+      tittel: "Velg tid",
+      beskrivelse:
+        "Finn ledig tid hos din coach. Se tilgjengelighet i sanntid — ingen venteliste.",
+    },
+    {
+      nr: 2,
+      ikon: CreditCard,
+      tittel: "Betal trygt",
+      beskrivelse:
+        "Betal via Stripe med kort. For Academy-kunder trekkes én coaching-credit automatisk.",
+    },
+    {
+      nr: 3,
+      ikon: UserCheck,
+      tittel: "Møt din coach",
+      beskrivelse:
+        "Få en bekreftelse på e-post med alle detaljer. Avbestilling gratis frem til 24 timer før.",
+    },
+  ];
+
+  return (
+    <section className="mt-16 border-t border-border pt-16">
+      <div className="text-center">
+        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
+          Enkelt og trygt
+        </span>
+        <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+          Slik fungerer det
+        </h2>
+      </div>
+      <div className="mt-10 grid gap-8 sm:grid-cols-3">
+        {steg.map((s) => {
+          const Ikon = s.ikon;
+          return (
+            <div key={s.nr} className="flex flex-col items-start gap-4">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Ikon className="h-6 w-6" strokeWidth={1.5} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                    Steg {s.nr}
+                  </span>
+                </div>
+                <h3 className="mt-1 font-display text-lg font-semibold tracking-tight">
+                  {s.tittel}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {s.beskrivelse}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
