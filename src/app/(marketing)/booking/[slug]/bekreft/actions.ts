@@ -44,6 +44,11 @@ export async function createBookingCheckout(
       };
     }
 
+    // Stripe NOK minimum er 300 øre (kr 3,00)
+    if (service.priceOre < 300) {
+      return { ok: false, error: "Tjenesten har ugyldig pris. Kontakt oss på post@akgolf.no." };
+    }
+
     const endAt = new Date(startAt.getTime() + service.durationMin * 60_000);
 
     // Finn lokasjon — prøv med kjente navn-varianter, fall tilbake til første tilgjengelige.
