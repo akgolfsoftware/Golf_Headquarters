@@ -13,7 +13,7 @@ export async function POST(
   _request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const user = await requirePortalUser({ allow: ["ADMIN"] });
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { id } = await context.params;
 
   const booking = await prisma.booking.findUnique({
