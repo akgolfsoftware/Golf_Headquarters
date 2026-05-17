@@ -85,7 +85,7 @@ export default async function Kvittering({ params }: Props) {
               value={`${tid} (${booking.serviceType.durationMin} min)`}
             />
             <Rad label="Sted" value={booking.location.name} />
-            <Rad label="Pris" value={`${booking.priceOre / 100} kr`} bold />
+            <Rad label="Pris" value={new Intl.NumberFormat("nb-NO", { style: "currency", currency: "NOK", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(booking.priceOre / 100)} bold />
           </dl>
         </section>
 

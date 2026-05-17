@@ -23,7 +23,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 function formaterPris(ore: number): string {
-  return `${ore / 100} kr`;
+  return new Intl.NumberFormat("nb-NO", {
+    style: "currency",
+    currency: "NOK",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(ore / 100);
 }
 
 function toDateInput(d: Date): string {

@@ -67,7 +67,7 @@ export default async function BekreftPage({ params, searchParams }: Props) {
             <Rad label="Dato" value={dato} />
             <Rad label="Klokkeslett" value={`${klokkeslett} (${service.durationMin} min)`} />
             {coachUser && <Rad label="Coach" value={coachUser.name ?? "—"} />}
-            <Rad label="Pris" value={`${service.priceOre / 100} kr`} bold />
+            <Rad label="Pris" value={new Intl.NumberFormat("nb-NO", { style: "currency", currency: "NOK", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(service.priceOre / 100)} bold />
           </dl>
         </section>
 

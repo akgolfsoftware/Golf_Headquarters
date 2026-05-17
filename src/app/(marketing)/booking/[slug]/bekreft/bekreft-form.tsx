@@ -107,7 +107,7 @@ export function BekreftForm({
         disabled={pending}
         className="w-full rounded-full bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
-        {pending ? "Sender til betaling…" : `Betal ${priceOre / 100} kr →`}
+        {pending ? "Sender til betaling…" : `Betal ${new Intl.NumberFormat("nb-NO", { style: "currency", currency: "NOK", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(priceOre / 100)} →`}
       </button>
     </form>
   );
