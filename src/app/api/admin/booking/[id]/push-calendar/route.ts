@@ -9,6 +9,14 @@ import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
+// GET = POST i denne admin-debug-endpointen for å kunne trigges fra browser-bar
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ id: string }> },
+) {
+  return POST(request, context);
+}
+
 export async function POST(
   _request: Request,
   context: { params: Promise<{ id: string }> },
