@@ -26,6 +26,7 @@ import { FaseTimeline } from "./_timeline";
 import { PhaseCard } from "./_phase-card";
 import { KpiCard } from "./_kpi-card";
 import { PyramideFordeling } from "./_pyramide-fordeling";
+import { AgentStrip } from "@/components/coachhq/agent-strip";
 import {
   CompletedSessions,
   type CompletedSession,
@@ -183,6 +184,11 @@ export default async function AdminPlanDetalj({
           playerName={plan.user.name}
         />
       )}
+
+      <AgentStrip label="Periodiserings-agent">
+        Overvåker fasebytter og foreslår justeringer hvis planen sklir.
+        Klikk på en fase under for å se status og blokker.
+      </AgentStrip>
 
       <FaseTimeline faser={faser} />
 

@@ -75,8 +75,18 @@ export default async function ForespørslerPage() {
   const pending = requests.filter((r) => r.status === "PENDING");
   const behandlet = requests.filter((r) => r.status !== "PENDING");
 
+  // KPI-beregninger: siste 7 dager
+  // eslint-disable-next-line react-hooks/purity
+  const sjuDagerSiden = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const planlagt7d = requests.filter(
+    (r) => r.status === "SCHEDULED" && r.createdAt.getTime() >= sjuDagerSiden,
+  ).length;
+  const avslatt7d = requests.filter(
+    (r) => r.status === "DECLINED" && r.createdAt.getTime() >= sjuDagerSiden,
+  ).length;
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
         eyebrow="CoachHQ · Daglig"
         titleLead="Økt-"
@@ -90,6 +100,54 @@ export default async function ForespørslerPage() {
           </div>
         }
       />
+
+      {/* KPI-strip */}
+      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+        <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent/70">
+            Venter
+          </div>
+          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-white">
+            {pending.length}
+          </div>
+          <div className="font-mono text-[11px] text-background/70">
+            {pending.length === 0 ? "Alt kvittert" : "Krever handling"}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+            Planlagt · 7d
+          </div>
+          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
+            {planlagt7d}
+          </div>
+          <div className="font-mono text-[11px] text-muted-foreground">
+            Forespørsler bekreftet siste uke
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+            Avslått · 7d
+          </div>
+          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
+            {avslatt7d}
+          </div>
+          <div className="font-mono text-[11px] text-muted-foreground">
+            Ikke booket inn
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+            Totalt
+          </div>
+          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
+            {requests.length}
+          </div>
+          <div className="font-mono text-[11px] text-muted-foreground">
+            {behandlet.length} behandlet · {pending.length} venter
+          </div>
+        </div>
+      </div>
 
       {requests.length === 0 ? (
         <EmptyState
