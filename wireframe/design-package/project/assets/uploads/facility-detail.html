@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>FacilityDetailModal</title></head>
+<body style="background: rgba(10,31,24,0.5); padding: 0; min-height: 100vh; display: flex; justify-content: flex-end;">
+<div class="modal" style="background: white; border-radius: 20px 0 0 20px; max-width: 600px; width: 100%; padding: 32px; box-shadow: -20px 0 60px rgba(0,0,0,0.2); height: 100vh; overflow-y: auto;">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+    <div>
+      <span class="page-eyebrow">Mulligan Indoor Golf · Fredrikstad</span>
+      <h2 style="font-family: var(--font-display); font-size: 24px; font-weight: 600; margin-top: 4px;">Mulligan <em style="color: var(--primary); font-weight: 400;">Fredrikstad</em></h2>
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Stortorget 12 · 1607 Fredrikstad · 4 simulatorer</div>
+    </div>
+    <button style="background: transparent; border: 0; font-size: 24px; cursor: pointer; color: var(--text-secondary);">×</button>
+  </div>
+
+  <div class="kpi-strip" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 24px;">
+    <div class="kpi"><div class="kpi-label">Belegg 7 dager</div><div class="kpi-value num">68%</div></div>
+    <div class="kpi"><div class="kpi-label">Bookinger uke 19</div><div class="kpi-value num">42</div></div>
+    <div class="kpi"><div class="kpi-label">Inntekt mai</div><div class="kpi-value num">38k</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2 style="font-size: 14px;">Belegg neste 7 dager</h2></div>
+    <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
+      <div style="display: grid; grid-template-columns: 50px repeat(7, 1fr); gap: 4px; align-items: center;">
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary);">SIM 1</div>
+        <div style="height: 18px; background: rgba(0,88,64,0.85); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.65); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.85); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.45); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.65); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.95); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.95); border-radius: 3px;"></div>
+
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary);">SIM 2</div>
+        <div style="height: 18px; background: rgba(0,88,64,0.65); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.45); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.85); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.65); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.85); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.95); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.85); border-radius: 3px;"></div>
+
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary);">SIM 3</div>
+        <div style="height: 18px; background: rgba(0,88,64,0.45); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.25); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.65); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.85); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.65); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.95); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.65); border-radius: 3px;"></div>
+
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary);">SIM 4</div>
+        <div style="height: 18px; background: rgba(0,88,64,0.65); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.45); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(245,158,11,0.45); border-radius: 3px;" title="vedlikehold"></div>
+        <div style="height: 18px; background: rgba(245,158,11,0.45); border-radius: 3px;" title="vedlikehold"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.65); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.85); border-radius: 3px;"></div>
+        <div style="height: 18px; background: rgba(0,88,64,0.85); border-radius: 3px;"></div>
+      </div>
+      <div style="display: grid; grid-template-columns: 50px repeat(7, 1fr); gap: 4px; margin-top: 8px; font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); text-align: center;">
+        <div></div><div>MAN</div><div>TIR</div><div>ONS</div><div>TOR</div><div>FRE</div><div>LØR</div><div>SØN</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2 style="font-size: 14px;">Nylige bookinger</h2></div>
+    <table class="tbl">
+      <tr><td><b>Markus R</b><br><small style="font-family: var(--font-mono); color: var(--text-secondary);">11. mai · 17:00</small></td><td><span class="pill pill-success">Ferdig</span></td><td style="text-align: right; font-family: var(--font-mono);">800 kr</td></tr>
+      <tr><td><b>Julie S</b><br><small style="font-family: var(--font-mono); color: var(--text-secondary);">11. mai · 18:30</small></td><td><span class="pill pill-info">Aktiv</span></td><td style="text-align: right; font-family: var(--font-mono);">800 kr</td></tr>
+      <tr><td><b>Aksel H</b><br><small style="font-family: var(--font-mono); color: var(--text-secondary);">12. mai · 16:00</small></td><td><span class="pill pill-muted">Kommende</span></td><td style="text-align: right; font-family: var(--font-mono);">800 kr</td></tr>
+      <tr><td><b>Selma L</b><br><small style="font-family: var(--font-mono); color: var(--text-secondary);">12. mai · 19:00</small></td><td><span class="pill pill-muted">Kommende</span></td><td style="text-align: right; font-family: var(--font-mono);">800 kr</td></tr>
+      <tr><td><b>Theo B</b><br><small style="font-family: var(--font-mono); color: var(--text-secondary);">13. mai · 14:00</small></td><td><span class="pill pill-muted">Kommende</span></td><td style="text-align: right; font-family: var(--font-mono);">800 kr</td></tr>
+    </table>
+  </div>
+
+  <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
+    <button class="btn btn-ghost">Vis kalender</button>
+    <button class="btn btn-primary">Rediger fasilitet</button>
+  </div>
+
+</div>
+</body>
+</html>

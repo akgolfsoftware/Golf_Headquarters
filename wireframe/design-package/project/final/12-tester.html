@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="nb"><head><meta charset="UTF-8"><title>12 · Tester</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+.deck{display:flex;flex-direction:column;align-items:center;gap:56px;padding:56px 24px 96px}
+.head{max-width:1248px;width:100%;display:flex;flex-direction:column;gap:10px}
+.head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+.head h1{font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.02em;margin:0}
+.head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+.ab{display:flex;flex-direction:column;gap:14px;max-width:1248px;width:100%}
+.ab-label{display:flex;align-items:baseline;gap:14px;color:#3a3935;font-family:var(--font-display);font-weight:500}
+.ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990}.ab-label .ttl{font-size:19px}
+.ab-label .meta{font-size:12px;color:#7a7872;font-style:italic;margin-left:auto;font-family:var(--font-body)}
+.ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:22px;overflow:hidden;box-shadow:0 24px 50px -28px rgba(10,31,24,.18)}
+.ab-frame svg:not([fill]){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.app{display:flex;min-height:860px;background:var(--surface)}.app--md{min-height:720px}
+.rail{width:56px;background:#0F2A22;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;flex-shrink:0}
+.rail .logo{width:34px;height:34px;border-radius:9px;background:var(--brand-accent);color:#0A1F18;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11px;margin-bottom:6px}
+.rail .ri{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(245,244,238,.6)}.rail .ri.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}.rail .ri svg{width:17px;height:17px}
+.rail .av{margin-top:auto;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4a3a8a,#7c52b0);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+.nav{width:208px;background:#FAFAF7;border-right:1px solid #F0EDE5;padding:18px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+.nav .label{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:6px 10px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13px;color:var(--ink-muted);position:relative}
+.nav-item.active{background:rgba(209,248,67,.30);color:#0A1F18;font-weight:500}
+.nav-item.active::before{content:"";position:absolute;left:-12px;top:6px;bottom:6px;width:3px;background:var(--brand-primary);border-radius:0 3px 3px 0}
+.main{flex:1;padding:28px 36px;min-width:0;display:flex;flex-direction:column;gap:22px}
+
+.hero{display:flex;flex-direction:column;gap:8px}
+.hero .crumb{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle)}
+.hero h1{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:36px;letter-spacing:-.02em;margin:0;line-height:1.05;text-wrap:pretty}
+.hero .sub{font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);letter-spacing:.02em}
+
+.tabs{display:inline-flex;background:#F0EDE5;border-radius:10px;padding:3px;width:fit-content;gap:2px}
+.tab{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;color:var(--ink-muted);cursor:pointer;display:flex;align-items:center;gap:6px;position:relative}
+.tab.active{background:var(--surface-card);color:var(--ink);box-shadow:0 1px 3px rgba(10,31,24,.06)}
+.tab .ct{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+.tab.active .ct{color:var(--brand-primary)}
+.tab .lock{width:11px;height:11px;color:#7a5a08}
+
+.kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kpi{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.kpi .lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+.kpi .v{font-family:var(--font-display);font-size:28px;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+.kpi .v .unit{font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);font-weight:400;margin-left:4px}
+.kpi .delta{font-family:var(--font-mono);font-size:11px;color:var(--brand-primary);display:flex;align-items:center;gap:3px}
+
+.filter-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.search{position:relative;width:240px}
+.search input{width:100%;padding:7px 10px 7px 30px;border:1px solid var(--line);border-radius:9px;background:var(--surface-card);font-family:var(--font-body);font-size:12.5px;color:var(--ink);outline:none}
+.search svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--ink-subtle)}
+.chip{padding:6px 11px;border-radius:100px;background:var(--surface-card);border:1px solid var(--line);font-size:12px;color:var(--ink);display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.chip svg{width:11px;height:11px;color:var(--ink-subtle)}
+.chip.act{background:rgba(0,88,64,.10);border-color:var(--brand-primary);color:var(--brand-primary)}
+.sort{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-muted)}
+.sort svg{width:13px;height:13px}
+
+.table{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.t-head,.t-row{display:grid;grid-template-columns:1.7fr 1fr .9fr 1fr 100px 110px;align-items:center;padding:0 18px;height:42px;gap:14px}
+.t-head{height:38px;background:#FAFAF7;border-bottom:1px solid var(--line);font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+.t-row{height:64px;border-bottom:1px solid var(--line-soft);cursor:pointer}
+.t-row:last-child{border-bottom:none}
+.t-row:hover,.t-row.hover{background:#FAFAF7}
+.t-name{display:flex;flex-direction:column;gap:3px}
+.t-name .n{font-size:13.5px;font-weight:500;color:var(--ink)}
+.cat-pill{display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:100px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;width:fit-content}
+.cat-pill .dot{width:5px;height:5px;border-radius:50%}
+.cat-putte{background:rgba(74,58,138,.12);color:#4a3a8a}.cat-putte .dot{background:#4a3a8a}
+.cat-chip{background:rgba(91,124,184,.18);color:#3b5994}.cat-chip .dot{background:#3b5994}
+.cat-iron{background:rgba(0,88,64,.12);color:var(--brand-primary)}.cat-iron .dot{background:var(--brand-primary)}
+.cat-driver{background:rgba(161,75,48,.16);color:#a14b30}.cat-driver .dot{background:#a14b30}
+.cat-wedge{background:rgba(244,196,48,.22);color:#7a5a08}.cat-wedge .dot{background:#7a5a08}
+.cat-mental{background:rgba(94,92,87,.18);color:#3a3935}.cat-mental .dot{background:#3a3935}
+.t-date{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-muted)}
+.t-date.never{color:#9c9990;font-style:italic}
+.t-res{font-family:var(--font-mono);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+.t-res.empty{color:#cbc8c0}
+.rank-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:100px;font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.02em;width:fit-content}
+.rank-top{background:rgba(209,248,67,.4);color:#3d4a0c}
+.rank-mid{background:rgba(0,88,64,.12);color:var(--brand-primary)}
+.rank-low{background:rgba(94,92,87,.14);color:var(--ink-muted)}
+.rank-bot{background:rgba(161,75,48,.12);color:#a14b30}
+.rank-empty{color:#cbc8c0;font-family:var(--font-mono);font-size:11px;font-style:italic}
+.spark{height:24px;display:flex;align-items:flex-end}
+.spark svg{display:block}
+.spark-empty{color:#cbc8c0;font-family:var(--font-mono);font-size:10px;font-style:italic}
+.ta-btn{padding:5px 12px;border-radius:100px;background:var(--brand-primary);color:#fff;font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;gap:4px;cursor:pointer;width:fit-content;font-family:var(--font-body)}
+.ta-btn svg{width:11px;height:11px}
+.ta-btn:hover{background:#003F2D}
+.ta-btn.dis{background:#F0EDE5;color:var(--ink-subtle);cursor:not-allowed}
+
+.spark-tt{position:absolute;background:#0F2A22;color:#F5F4EE;padding:6px 10px;border-radius:8px;font-family:var(--font-mono);font-size:10.5px;white-space:nowrap;z-index:10;pointer-events:none}
+.spark-tt::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:#0F2A22}
+
+/* Mine tester — Pro */
+.mine-cta{margin-left:auto;padding:7px 14px;border-radius:100px;background:#0F2A22;color:#F5F4EE;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.mine-cta svg{width:12px;height:12px;color:var(--brand-accent)}
+.mine-cta.locked{background:#F0EDE5;color:var(--ink-subtle);position:relative}
+.mine-cta.locked svg{color:#7a5a08}
+
+/* Tier banners */
+.tier{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;background:linear-gradient(90deg,rgba(244,196,48,.16),rgba(244,196,48,.04));border:1px solid rgba(244,196,48,.4);font-size:12.5px;color:#5a4408}
+.tier .ic{width:28px;height:28px;border-radius:7px;background:rgba(244,196,48,.4);color:#7a5a08;display:flex;align-items:center;justify-content:center}
+.tier .ic svg{width:14px;height:14px}
+.tier strong{color:#3a2c08;font-weight:600}
+.tier .up{margin-left:auto;padding:5px 10px;border-radius:100px;background:#0F2A22;color:var(--brand-accent);font-size:11px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+
+/* Free lock overlay (Mine tab full) */
+.lock-shell{position:relative}
+.lock-content{opacity:.35;filter:blur(.4px);pointer-events:none}
+.lock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(237,234,226,.66);backdrop-filter:blur(2px);border-radius:14px}
+.lock-card{background:var(--surface-card);border:1px solid rgba(244,196,48,.5);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;align-items:center;gap:10px;max-width:340px;text-align:center;box-shadow:0 22px 40px -14px rgba(10,31,24,.2)}
+.lock-card .ic{width:38px;height:38px;border-radius:9px;background:rgba(244,196,48,.22);color:#7a5a08;display:flex;align-items:center;justify-content:center}
+.lock-card h3{font-family:var(--font-display);font-size:17px;font-weight:600;margin:0;color:var(--ink)}
+.lock-card p{font-size:12.5px;color:var(--ink-muted);margin:0;line-height:1.45;text-wrap:pretty}
+.lock-card .up{padding:8px 14px;border-radius:100px;background:#0F2A22;color:var(--brand-accent);font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+
+/* Dark */
+.dark .ab-frame{border-color:#1c3b32}
+.dark .app{background:#0F2A22;color:#F5F4EE}
+.dark .nav{background:#0B221C;border-right-color:#1c3b32}.dark .nav .label,.dark .nav-item{color:#9D9C95}
+.dark .nav-item.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}.dark .nav-item.active::before{background:var(--brand-accent)}
+.dark .hero h1{color:#F5F4EE}.dark .hero .crumb,.dark .hero .sub{color:#9D9C95}
+.dark .tabs{background:#163027}.dark .tab.active{background:#1c3b32;color:#F5F4EE}.dark .tab{color:#9D9C95}
+.dark .kpi,.dark .table{background:#163027;border-color:#274d41}
+.dark .kpi .v,.dark .t-name .n,.dark .t-res{color:#F5F4EE}
+.dark .t-head{background:#0B221C;border-color:#1c3b32}
+.dark .t-row{border-color:#1c3b32}.dark .t-row:hover{background:#1c3b32}
+.dark .search input,.dark .chip{background:#163027;border-color:#274d41;color:#F5F4EE}
+
+/* Mobile */
+.mob-wrap{display:flex;justify-content:center;padding:30px;background:linear-gradient(180deg,#F5F2EA,#EDEAE2)}
+.mob{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden}
+.m-status{display:flex;justify-content:space-between;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;font-weight:500}
+.m-top{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;border-bottom:1px solid var(--line-soft)}
+.m-top .ham{width:32px;height:32px;border-radius:9px;background:#0F2A22;color:#F5F4EE;display:flex;align-items:center;justify-content:center}
+.m-top .ttl{font-family:var(--font-display);font-size:14px;font-weight:600}
+.m-body{padding:16px;display:flex;flex-direction:column;gap:14px}
+.m-card{background:var(--surface-card);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.m-card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.m-card .n{font-size:14px;font-weight:600;color:var(--ink)}
+.m-card .row{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)}
+.m-card .row .v{font-size:13px;color:var(--ink);font-weight:600}
+.m-bot{display:flex;justify-content:space-around;padding:8px 8px 22px;border-top:1px solid var(--line-soft)}
+.m-bot .b{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle);padding:6px}.m-bot .b.sel{color:var(--brand-primary);font-weight:600}.m-bot .b svg{width:18px;height:18px}
+</style></head>
+<body><div class="deck">
+<header class="head"><span class="eyebrow">Batch 3 · Spec 12 · PlayerHQ · Tester</span><h1>Tester · NGF-katalog + Mine tester (Pro)</h1><p class="sub">7 artboards: NGF-tab Pro lyst (alle 18), NGF-tab Free med Mine låst, Mine-tab Pro (6 egne), Mine-tab Free med full lock-overlay, mørkt tema, hover-state med sparkline-tooltip, mobil ≤640px kort-layout.</p></header>
+
+<!-- 01 NGF Pro -->
+<section class="ab" data-screen-label="01 NGF-tab Pro"><div class="ab-label"><span class="num">01</span><span class="ttl">NGF-tab · Pro · alle 18 tester</span><span class="meta">1248 × 860</span></div>
+<div class="ab-frame"><div class="app">
+<aside class="rail"><div class="logo">AK</div><div class="ri"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7"/></svg></div><div class="ri active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div><div class="ri"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18 22 12 18.5 6 22 7 14.5 2 9.5 9 8.5"/></svg></div><div class="av">MK</div></aside>
+<aside class="nav"><div class="label">PlayerHQ · Trening</div><div class="nav-item">Plan</div><div class="nav-item">Øvelser</div><div class="nav-item active">Tester</div><div class="nav-item">Kalender</div></aside>
+<main class="main">
+<section class="hero"><div class="crumb">/portal/tren/tester</div><h1><span style="font-style:normal;font-weight:600">Mål deg,</span> Markus.</h1><div class="sub">Sist test: 5. mai · 13 av 18 NGF-tester gjennomført</div></section>
+
+<div class="tabs">
+<div class="tab active">NGF-standard <span class="ct">18</span></div>
+<div class="tab">Mine tester <span class="ct">6</span></div>
+</div>
+
+<div class="kpi-strip">
+<div class="kpi"><div class="lbl">Gjennomført</div><div class="v">13<span class="unit">/ 18</span></div><div class="delta"><svg width="11" height="11" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><polyline points="18 15 12 9 6 15"/></svg>+2 siste 30d</div></div>
+<div class="kpi"><div class="lbl">Snitt-rangering</div><div class="v">Topp 28%<span class="unit">av 12,4-HCP</span></div><div class="delta">↑ fra topp 34% i april</div></div>
+<div class="kpi"><div class="lbl">Beste kategori</div><div class="v" style="font-size:22px">Putte<span class="unit">P3 · 82%</span></div><div class="delta">3 tester · topp 18%</div></div>
+</div>
+
+<div class="filter-row">
+<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Søk test..."/></div>
+<span class="chip">Kategori: Alle <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+<span class="chip">Status: Alle <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+<div class="sort"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>Sortér: Sist tatt</div>
+</div>
+
+<div class="table">
+<div class="t-head"><div>Test</div><div>Sist tatt</div><div>Beste</div><div>Rangering</div><div>Forsøk</div><div></div></div>
+
+<div class="t-row"><div class="t-name"><div class="n">P3 — Distansekontroll 3–9 m</div><span class="cat-pill cat-putte"><span class="dot"></span>Putte</span></div><div class="t-date">5. mai 2026</div><div class="t-res">82%</div><div><span class="rank-pill rank-top">Topp 18%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,18 12,15 22,12 32,11 42,8 58,5" stroke="#005840" stroke-width="1.5" fill="none"/><circle cx="58" cy="5" r="2.2" fill="#005840"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-name"><div class="n">P2 — Lange putts 6–12 m</div><span class="cat-pill cat-putte"><span class="dot"></span>Putte</span></div><div class="t-date">28. apr 2026</div><div class="t-res">74%</div><div><span class="rank-pill rank-top">Topp 24%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,20 12,17 22,16 32,12 42,11 58,8" stroke="#005840" stroke-width="1.5" fill="none"/><circle cx="58" cy="8" r="2.2" fill="#005840"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-name"><div class="n">C2 — Chip 5–15 m presisjon</div><span class="cat-pill cat-chip"><span class="dot"></span>Chip</span></div><div class="t-date">22. apr 2026</div><div class="t-res">68%</div><div><span class="rank-pill rank-mid">Topp 38%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,17 12,18 22,16 32,14 42,15 58,12" stroke="#005840" stroke-width="1.5" fill="none"/><circle cx="58" cy="12" r="2.2" fill="#005840"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-name"><div class="n">I3 — Iron 150 m konsistens</div><span class="cat-pill cat-iron"><span class="dot"></span>Iron</span></div><div class="t-date">18. apr 2026</div><div class="t-res">71%</div><div><span class="rank-pill rank-top">Topp 25%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,15 12,14 22,11 32,13 42,10 58,9" stroke="#005840" stroke-width="1.5" fill="none"/><circle cx="58" cy="9" r="2.2" fill="#005840"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-name"><div class="n">D1 — Driver carry-konsistens</div><span class="cat-pill cat-driver"><span class="dot"></span>Driver</span></div><div class="t-date">12. apr 2026</div><div class="t-res">62%</div><div><span class="rank-pill rank-low">Topp 56%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,12 12,14 22,11 32,15 42,13 58,11" stroke="#5e5c57" stroke-width="1.5" fill="none"/><circle cx="58" cy="11" r="2.2" fill="#5e5c57"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-name"><div class="n">W2 — Wedge 80 m landing-zone</div><span class="cat-pill cat-wedge"><span class="dot"></span>Wedge</span></div><div class="t-date">5. apr 2026</div><div class="t-res">65%</div><div><span class="rank-pill rank-mid">Topp 42%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,18 12,16 22,17 32,14 42,15 58,13" stroke="#005840" stroke-width="1.5" fill="none"/><circle cx="58" cy="13" r="2.2" fill="#005840"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-name"><div class="n">M1 — Pre-shot rutine-konsistens</div><span class="cat-pill cat-mental"><span class="dot"></span>Mental</span></div><div class="t-date never">Aldri tatt</div><div class="t-res empty">—</div><div><span class="rank-empty">Ingen data</span></div><div class="spark"><span class="spark-empty">Ingen forsøk</span></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-name"><div class="n">D2 — Driver fairway-treff</div><span class="cat-pill cat-driver"><span class="dot"></span>Driver</span></div><div class="t-date">2. feb 2026</div><div class="t-res">58%</div><div><span class="rank-pill rank-bot">Topp 78%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,14 12,16 22,13 32,17 42,15 58,16" stroke="#a14b30" stroke-width="1.5" fill="none"/><circle cx="58" cy="16" r="2.2" fill="#a14b30"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div style="padding:12px 18px;border-top:1px solid var(--line-soft);font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);text-align:center;background:#FAFAF7">+ 10 NGF-tester til · scroll for å se</div>
+</div>
+</main></div></div></section>
+
+<!-- 02 NGF Free -->
+<section class="ab" data-screen-label="02 NGF-tab Free · Mine låst"><div class="ab-label"><span class="num">02</span><span class="ttl">NGF-tab · Free · Mine-tab vises med lock</span><span class="meta">1248 × 540</span></div>
+<div class="ab-frame"><div style="background:var(--surface);padding:28px 36px">
+<section class="hero" style="margin-bottom:18px"><div class="crumb">/portal/tren/tester · Free-konto</div><h1 style="font-size:30px"><span style="font-style:normal;font-weight:600">Mål deg,</span> Markus.</h1><div class="sub">Sist test: 5. mai · 13 av 18 NGF-tester gjennomført</div></section>
+
+<div class="tabs" style="margin-bottom:18px">
+<div class="tab active">NGF-standard <span class="ct">18</span></div>
+<div class="tab" style="opacity:.65"><svg class="lock" viewBox="0 0 24 24" stroke="#7a5a08" stroke-width="2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Mine tester <span class="ct">Pro</span></div>
+</div>
+
+<div class="tier">
+<div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+<div><strong>Gratis-plan dekker NGF-katalog (18 tester).</strong> Egendefinerte tester fra coachen din krever Pro.</div>
+<span class="up">Oppgrader til Pro · 149 kr/mnd <svg width="11" height="11" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg></span>
+</div>
+
+<div class="kpi-strip" style="margin-top:18px">
+<div class="kpi"><div class="lbl">Gjennomført</div><div class="v">13<span class="unit">/ 18</span></div></div>
+<div class="kpi"><div class="lbl">Snitt-rangering</div><div class="v">Topp 28%</div></div>
+<div class="kpi"><div class="lbl">Beste kategori</div><div class="v" style="font-size:22px">Putte</div></div>
+</div>
+</div></div></section>
+
+<!-- 03 Mine Pro -->
+<section class="ab" data-screen-label="03 Mine-tab Pro"><div class="ab-label"><span class="num">03</span><span class="ttl">Mine tester · Pro · 6 egendefinerte tester</span><span class="meta">1248 × 580</span></div>
+<div class="ab-frame"><div style="background:var(--surface);padding:28px 36px">
+<section class="hero" style="margin-bottom:16px"><div class="crumb">/portal/tren/tester · Mine</div><h1 style="font-size:30px"><span style="font-style:normal;font-weight:600">Dine egne</span> tester</h1><div class="sub">6 tester satt opp av Anders Kristiansen · sist oppdatert 28. apr</div></section>
+
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+<div class="tabs">
+<div class="tab">NGF-standard <span class="ct">18</span></div>
+<div class="tab active">Mine tester <span class="ct">6</span></div>
+</div>
+<span class="mine-cta" style="margin-left:auto"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Lag test</span>
+</div>
+
+<div class="table">
+<div class="t-head"><div>Test</div><div>Sist tatt</div><div>Beste</div><div>Rangering</div><div>Forsøk</div><div></div></div>
+<div class="t-row"><div class="t-name"><div class="n">Markus' bunkerstart 6–8 m</div><span class="cat-pill cat-chip"><span class="dot"></span>Chip · Egendefinert</span></div><div class="t-date">28. apr 2026</div><div class="t-res">71%</div><div><span class="rank-pill rank-top" style="font-family:var(--font-mono);font-size:9.5px">Personlig topp</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,20 12,18 22,15 32,13 42,11 58,7" stroke="#005840" stroke-width="1.5" fill="none"/><circle cx="58" cy="7" r="2.2" fill="#005840"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+<div class="t-row"><div class="t-name"><div class="n">Press-putt under simulert turnering</div><span class="cat-pill cat-putte"><span class="dot"></span>Putte · Egendefinert</span></div><div class="t-date">22. apr 2026</div><div class="t-res">66%</div><div><span class="rank-pill rank-top" style="font-family:var(--font-mono);font-size:9.5px">Personlig topp</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,18 12,17 22,14 32,15 42,12 58,10" stroke="#005840" stroke-width="1.5" fill="none"/><circle cx="58" cy="10" r="2.2" fill="#005840"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+<div class="t-row"><div class="t-name"><div class="n">Iron-fade-kontroll 140 m</div><span class="cat-pill cat-iron"><span class="dot"></span>Iron · Egendefinert</span></div><div class="t-date">18. apr 2026</div><div class="t-res">63%</div><div><span class="rank-pill rank-mid">2. forsøk</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,14 32,13 58,11" stroke="#005840" stroke-width="1.5" fill="none"/><circle cx="58" cy="11" r="2.2" fill="#005840"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+<div class="t-row"><div class="t-name"><div class="n">Wedge-spinn 60 m</div><span class="cat-pill cat-wedge"><span class="dot"></span>Wedge · Egendefinert</span></div><div class="t-date never">Aldri tatt</div><div class="t-res empty">—</div><div><span class="rank-empty">Ingen data</span></div><div class="spark"><span class="spark-empty">Ingen forsøk</span></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+</div>
+</div></div></section>
+
+<!-- 04 Mine Free (lock) -->
+<section class="ab" data-screen-label="04 Mine-tab Free · full lock"><div class="ab-label"><span class="num">04</span><span class="ttl">Mine tester · Free · full lock-overlay</span><span class="meta">1248 × 540</span></div>
+<div class="ab-frame"><div style="background:var(--surface);padding:28px 36px">
+<section class="hero" style="margin-bottom:16px"><div class="crumb">/portal/tren/tester · Mine · Free</div><h1 style="font-size:30px"><span style="font-style:normal;font-weight:600">Dine egne</span> tester</h1></section>
+
+<div class="tabs" style="margin-bottom:16px">
+<div class="tab">NGF-standard <span class="ct">18</span></div>
+<div class="tab active">Mine tester <span class="ct">Pro</span></div>
+</div>
+
+<div class="lock-shell" style="border:1px solid var(--line);border-radius:14px">
+<div class="lock-content">
+<div class="table" style="border:none;border-radius:14px">
+<div class="t-head"><div>Test</div><div>Sist tatt</div><div>Beste</div><div>Rangering</div><div>Forsøk</div><div></div></div>
+<div class="t-row"><div class="t-name"><div class="n">Demo egendefinert test</div><span class="cat-pill cat-chip"><span class="dot"></span>Chip</span></div><div class="t-date">— · — · —</div><div class="t-res">—</div><div></div><div></div><div></div></div>
+<div class="t-row"><div class="t-name"><div class="n">Demo egendefinert test</div><span class="cat-pill cat-putte"><span class="dot"></span>Putte</span></div><div class="t-date">— · — · —</div><div class="t-res">—</div><div></div><div></div><div></div></div>
+<div class="t-row"><div class="t-name"><div class="n">Demo egendefinert test</div><span class="cat-pill cat-iron"><span class="dot"></span>Iron</span></div><div class="t-date">— · — · —</div><div class="t-res">—</div><div></div><div></div><div></div></div>
+</div>
+</div>
+<div class="lock-overlay">
+<div class="lock-card">
+<div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+<h3>Egendefinerte tester er en Pro-feature</h3>
+<p>Få coachen din til å skreddersy tester for dine svakheter. Inkludert: ubegrenset egne tester, AI-baselining, sammenligning mot coach-snittet.</p>
+<span class="up">Oppgrader til Pro · 149 kr/mnd <svg width="11" height="11" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg></span>
+</div>
+</div>
+</div>
+</div></div></section>
+
+<!-- 05 Dark -->
+<section class="ab dark" data-screen-label="05 Mørkt"><div class="ab-label"><span class="num">05</span><span class="ttl">Mørkt tema · NGF-tab</span><span class="meta">1248 × 580</span></div>
+<div class="ab-frame"><div style="background:#0F2A22;padding:28px 36px;color:#F5F4EE">
+<section class="hero" style="margin-bottom:16px"><div class="crumb" style="color:#9D9C95">/portal/tren/tester</div><h1 style="font-size:30px;color:#F5F4EE"><span style="font-style:normal;font-weight:600">Mål deg,</span> Markus.</h1></section>
+<div class="tabs" style="margin-bottom:16px"><div class="tab active">NGF-standard <span class="ct">18</span></div><div class="tab">Mine tester <span class="ct">6</span></div></div>
+<div class="kpi-strip" style="margin-bottom:16px">
+<div class="kpi"><div class="lbl">Gjennomført</div><div class="v">13<span class="unit" style="color:#9D9C95">/ 18</span></div></div>
+<div class="kpi"><div class="lbl">Snitt-rangering</div><div class="v">Topp 28%</div></div>
+<div class="kpi"><div class="lbl">Beste</div><div class="v" style="font-size:22px">Putte</div></div>
+</div>
+<div class="table">
+<div class="t-head"><div>Test</div><div>Sist tatt</div><div>Beste</div><div>Rangering</div><div>Forsøk</div><div></div></div>
+<div class="t-row"><div class="t-name"><div class="n">P3 — Distansekontroll 3–9 m</div><span class="cat-pill cat-putte"><span class="dot"></span>Putte</span></div><div class="t-date" style="color:#9D9C95">5. mai 2026</div><div class="t-res">82%</div><div><span class="rank-pill rank-top">Topp 18%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,18 12,15 22,12 32,11 42,8 58,5" stroke="#D1F843" stroke-width="1.5" fill="none"/><circle cx="58" cy="5" r="2.2" fill="#D1F843"/></svg></div><div><span class="ta-btn" style="background:#D1F843;color:#0A1F18">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+<div class="t-row"><div class="t-name"><div class="n">I3 — Iron 150 m konsistens</div><span class="cat-pill cat-iron"><span class="dot"></span>Iron</span></div><div class="t-date" style="color:#9D9C95">18. apr 2026</div><div class="t-res">71%</div><div><span class="rank-pill rank-top">Topp 25%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,15 12,14 22,11 32,13 42,10 58,9" stroke="#D1F843" stroke-width="1.5" fill="none"/></svg></div><div><span class="ta-btn" style="background:#D1F843;color:#0A1F18">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+</div>
+</div></div></section>
+
+<!-- 06 Hover -->
+<section class="ab" data-screen-label="06 Hover · sparkline-tooltip"><div class="ab-label"><span class="num">06</span><span class="ttl">Hover · rad fremhevet + sparkline-tooltip</span><span class="meta">1248 × 320</span></div>
+<div class="ab-frame"><div style="background:var(--surface);padding:32px 36px">
+<div class="table" style="position:relative">
+<div class="t-head"><div>Test</div><div>Sist tatt</div><div>Beste</div><div>Rangering</div><div>Forsøk</div><div></div></div>
+<div class="t-row"><div class="t-name"><div class="n">P3 — Distansekontroll 3–9 m</div><span class="cat-pill cat-putte"><span class="dot"></span>Putte</span></div><div class="t-date">5. mai 2026</div><div class="t-res">82%</div><div><span class="rank-pill rank-top">Topp 18%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,18 12,15 22,12 32,11 42,8 58,5" stroke="#005840" stroke-width="1.5" fill="none"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+<div class="t-row hover" style="background:#F5F2EA;position:relative">
+<div class="t-name"><div class="n" style="color:var(--brand-primary)">P2 — Lange putts 6–12 m</div><span class="cat-pill cat-putte"><span class="dot"></span>Putte</span></div>
+<div class="t-date">28. apr 2026</div><div class="t-res">74%</div><div><span class="rank-pill rank-top">Topp 24%</span></div>
+<div class="spark" style="position:relative"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,20 12,17 22,16 32,12 42,11 58,8" stroke="#005840" stroke-width="1.5" fill="none"/><circle cx="58" cy="8" r="3.5" fill="#005840"/></svg><div class="spark-tt" style="top:-32px;right:0">Forsøk 6: 74% (28. apr)</div></div>
+<div><span class="ta-btn" style="background:#003F2D">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+</div>
+<div class="t-row"><div class="t-name"><div class="n">C2 — Chip 5–15 m presisjon</div><span class="cat-pill cat-chip"><span class="dot"></span>Chip</span></div><div class="t-date">22. apr 2026</div><div class="t-res">68%</div><div><span class="rank-pill rank-mid">Topp 38%</span></div><div class="spark"><svg width="60" height="24" viewBox="0 0 60 24"><polyline points="2,17 12,18 22,16 32,14 42,15 58,12" stroke="#005840" stroke-width="1.5" fill="none"/></svg></div><div><span class="ta-btn">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+</div>
+</div></div></section>
+
+<!-- 07 Mobile -->
+<section class="ab" data-screen-label="07 Mobil · kort-layout"><div class="ab-label"><span class="num">07</span><span class="ttl">Mobil ≤640px · tabell → kort</span><span class="meta">392 px</span></div>
+<div class="ab-frame"><div class="mob-wrap"><div class="mob">
+<div class="m-status"><span>14:08</span><span><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="19" height="9" rx="2"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/></svg></span></div>
+<div class="m-top"><div class="ham"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/></svg></div><div class="ttl">Tester</div><div style="width:32px"></div></div>
+<div class="m-body">
+<div style="display:flex;flex-direction:column;gap:4px">
+<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle)">/tren/tester</div>
+<h1 style="font-family:var(--font-display);font-style:italic;font-weight:400;font-size:24px;letter-spacing:-.02em;margin:0;line-height:1.05"><span style="font-style:normal;font-weight:600">Mål deg,</span> Markus.</h1>
+<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)">13 av 18 NGF-tester · topp 28%</div>
+</div>
+<div class="tabs" style="width:100%"><div class="tab active" style="flex:1;justify-content:center">NGF <span class="ct">18</span></div><div class="tab" style="flex:1;justify-content:center">Mine <span class="ct">6</span></div></div>
+
+<div class="m-card">
+<div class="top"><div><div class="n">P3 — Distansekontroll 3–9 m</div><span class="cat-pill cat-putte" style="margin-top:4px"><span class="dot"></span>Putte</span></div><span class="rank-pill rank-top">Topp 18%</span></div>
+<div class="row"><span>Sist tatt</span><span class="v">5. mai 2026</span></div>
+<div class="row"><span>Beste resultat</span><span class="v">82%</span></div>
+<span class="ta-btn" style="width:100%;justify-content:center;padding:8px;font-size:12px">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+</div>
+
+<div class="m-card">
+<div class="top"><div><div class="n">P2 — Lange putts 6–12 m</div><span class="cat-pill cat-putte" style="margin-top:4px"><span class="dot"></span>Putte</span></div><span class="rank-pill rank-top">Topp 24%</span></div>
+<div class="row"><span>Sist tatt</span><span class="v">28. apr</span></div>
+<div class="row"><span>Beste resultat</span><span class="v">74%</span></div>
+<span class="ta-btn" style="width:100%;justify-content:center;padding:8px;font-size:12px">Ta test <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+</div>
+
+<div class="m-card">
+<div class="top"><div><div class="n">M1 — Pre-shot rutine</div><span class="cat-pill cat-mental" style="margin-top:4px"><span class="dot"></span>Mental</span></div><span class="rank-empty">Aldri tatt</span></div>
+<div class="row"><span>Status</span><span class="v" style="font-style:italic;color:var(--ink-subtle);font-weight:400">Ingen forsøk</span></div>
+<span class="ta-btn" style="width:100%;justify-content:center;padding:8px;font-size:12px;background:#0F2A22">Ta test for første gang <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+</div>
+</div>
+<div class="m-bot"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7"/></svg>Hjem</div><div class="b sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Trening</div><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18 22 12 18.5 6 22 7 14.5 2 9.5 9 8.5"/></svg>Runder</div><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>Meg</div></div>
+</div></div></div></section>
+
+</div></body></html>

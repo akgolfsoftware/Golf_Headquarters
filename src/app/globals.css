@@ -141,6 +141,55 @@
   --gradient-avatar-6: linear-gradient(135deg, #A6651E 0%, #7A4910 100%);
   --gradient-avatar-7: linear-gradient(135deg, #2C7D76 0%, #3FA39A 100%);
   --gradient-avatar-8: linear-gradient(135deg, #5A3B8A 0%, #7C52B0 100%);
+
+  /* ---------- Cockpit / Design package tokens (2026-05-18) ----------
+   * Direkte fra wireframe/design-package — referert i HTML-designene.
+   * Disse er TILLEGG til de semantiske tokens; bruk dem på cockpit-layouts.
+   */
+  --color-brand-primary: #005840;
+  --color-brand-primary-hover: #00472f;
+  --color-brand-primary-soft: #E8F0EC;
+  --color-brand-primary-deep: #003B2A;
+  --color-brand-accent: #D1F843;
+  --color-brand-accent-hover: #C2EE2F;
+  --color-brand-accent-on: #0A1F18;
+  --color-accent-bg: rgba(209, 248, 67, 0.12);
+  --color-accent-fill: rgba(209, 248, 67, 0.25);
+  --color-accent-soft: #ECFCC0;
+
+  --color-surface: #FAFAF7;
+  --color-surface-alt: #F5F2EA;
+  --color-surface-card: #FFFFFF;
+  --color-surface-deck: #EDEAE2;
+
+  --color-ink: #0A1F18;
+  --color-ink-muted: #5E5C57;
+  --color-ink-subtle: #9C9990;
+  --color-ink-disabled: #C4C0B8;
+
+  --color-line: #E5E3DD;
+  --color-line-soft: #EFEDE6;
+
+  --color-success: #1A7D56;
+  --color-success-bg: #E5F1EA;
+  --color-warning: #B8852A;
+  --color-warning-bg: #FFF0D6;
+  --color-danger: #A32D2D;
+  --color-danger-bg: #FAE3E3;
+
+  --color-rail-bg: #061210;
+  --color-rail-bg-cockpit: #0F2A22;
+  --color-nav-bg: #FAFAF7;
+  --color-nav-active: rgba(209, 248, 67, 0.30);
+
+  --shadow-card: 0 1px 2px rgba(15, 31, 24, 0.04), 0 4px 12px rgba(15, 31, 24, 0.04);
+  --shadow-card-hover: 0 1px 2px rgba(15, 31, 24, 0.06), 0 14px 32px rgba(15, 31, 24, 0.08);
+  --shadow-deck: 0 24px 50px -28px rgba(10, 31, 24, 0.18), 0 2px 4px rgba(10, 31, 24, 0.04);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-micro: 120ms;
+  --duration-short: 200ms;
+  --duration-long: 320ms;
 }
 
 /* ---------- Base ---------- */

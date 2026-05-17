@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="nb"><head><meta charset="UTF-8"/><title>PlayerHQ · pakke C — indeks</title>
+<link rel="stylesheet" href="../tokens.css"/>
+<style>
+body{background:var(--surface-page);font-family:var(--font-sans);color:var(--ink);margin:0;padding:48px 56px;}
+.eyebrow{font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);}
+h1{font-family:var(--font-tight);font-size:54px;font-weight:400;letter-spacing:-0.02em;line-height:1.05;margin:10px 0 8px;}
+h1 em{font-style:italic;font-family:'Instrument Serif',var(--font-tight);color:var(--brand-primary);}
+.lede{font-size:15.5px;color:var(--ink-muted);max-width:680px;line-height:1.5;margin-bottom:36px;}
+.group{font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin:32px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.card{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:10px;transition:border-color .15s, transform .15s;}
+.card:hover{border-color:var(--brand-primary);transform:translateY(-2px);}
+.card-num{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);font-weight:600;}
+.card-title{font-family:var(--font-tight);font-size:19px;font-weight:500;line-height:1.2;letter-spacing:-0.01em;}
+.card-sub{font-size:12.5px;color:var(--ink-muted);line-height:1.45;}
+.card-meta{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-subtle);display:flex;gap:10px;margin-top:auto;padding-top:8px;border-top:1px dashed var(--line-soft);}
+.tag{display:inline-flex;padding:2px 7px;border-radius:5px;background:var(--surface-alt);color:var(--ink-muted);font-weight:600;}
+.tag.wiz{background:rgba(43,79,57,0.08);color:var(--brand-primary);}
+.tag.flow{background:rgba(209,248,67,0.35);color:#0A1F18;}
+.tag.detail{background:rgba(43,107,143,0.10);color:var(--pyr-tek);}
+.foot{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-muted);display:flex;justify-content:space-between;}
+.foot a{color:var(--ink);text-decoration:underline;}
+</style></head>
+<body>
+
+<span class="eyebrow">/playerhq · pakke C · 10 skjermer</span>
+<h1>Plan i <em>handling</em></h1>
+<p class="lede">Det spilleren faktisk gjør i appen: be om økter, planlegge dem, se kalenderen sin, og lukke loopen mot coach. Pakke C henger sammen med pakke B (coach-side plan-bygging) — samme datamodell, samme pyramide-vokabular, lysere sidebar tilpasset PlayerHQ.</p>
+
+<div class="group">Ny økt · wizard (6 steg)</div>
+<div class="grid">
+  <a class="card" href="01-ny-okt-steg-1.html">
+    <span class="card-num">C.01</span>
+    <span class="card-title">Steg 1 · Type & pyramide-blokk</span>
+    <span class="card-sub">Velg coaching, selvtrening, runde eller fysio. Hvilken pyramide-blokk dekker dette?</span>
+    <span class="card-meta"><span class="tag wiz">wizard</span> 6 steg</span>
+  </a>
+  <a class="card" href="02-ny-okt-steg-2.html">
+    <span class="card-num">C.02</span>
+    <span class="card-title">Steg 2 · Når & hvor lenge</span>
+    <span class="card-sub">Dato, tid, varighet og repetisjon — med ledige slots fra coach-kalender hvis aktuelt.</span>
+    <span class="card-meta"><span class="tag wiz">wizard</span></span>
+  </a>
+  <a class="card" href="03-ny-okt-steg-3.html">
+    <span class="card-num">C.03</span>
+    <span class="card-title">Steg 3 · Sted & utstyr</span>
+    <span class="card-sub">Hjemmebane, range, simulator, gym. Hvilke køller/utstyr trengs?</span>
+    <span class="card-meta"><span class="tag wiz">wizard</span></span>
+  </a>
+  <a class="card" href="04-ny-okt-steg-4.html">
+    <span class="card-num">C.04</span>
+    <span class="card-title">Steg 4 · Fokus & intensjon</span>
+    <span class="card-sub">Hva skal du jobbe med? Knyttes til aktiv plan og åpne mål.</span>
+    <span class="card-meta"><span class="tag wiz">wizard</span></span>
+  </a>
+  <a class="card" href="05-ny-okt-steg-5.html">
+    <span class="card-num">C.05</span>
+    <span class="card-title">Steg 5 · Økt-skjelett</span>
+    <span class="card-sub">Drag-and-drop blokker fra bibliotek inn i tidsramme. Eller la coach fylle.</span>
+    <span class="card-meta"><span class="tag wiz">wizard</span></span>
+  </a>
+  <a class="card" href="06-ny-okt-steg-6.html">
+    <span class="card-num">C.06</span>
+    <span class="card-title">Steg 6 · Bekreft</span>
+    <span class="card-sub">Oppsummering, varsler, deling med coach, legg til kalender.</span>
+    <span class="card-meta"><span class="tag wiz">wizard</span></span>
+  </a>
+</div>
+
+<div class="group">Coach-dialog & kalender</div>
+<div class="grid">
+  <a class="card" href="07-onskeligokt.html">
+    <span class="card-num">C.07</span>
+    <span class="card-title">ØnskeligØkt</span>
+    <span class="card-sub">Send en spørring om økt til coach. Tidsvindu, prioriterte fokusområder, valgfri kontekst.</span>
+    <span class="card-meta"><span class="tag flow">flow</span></span>
+  </a>
+  <a class="card" href="08-coach-melding.html">
+    <span class="card-num">C.08</span>
+    <span class="card-title">Coach-melding · compose</span>
+    <span class="card-sub">Skriv til coach med vedlegg av økt, video, slag — alt knyttes til riktig kontekst.</span>
+    <span class="card-meta"><span class="tag flow">flow</span></span>
+  </a>
+  <a class="card" href="09-tren-kalender.html">
+    <span class="card-num">C.09</span>
+    <span class="card-title">Tren-kalender · uke</span>
+    <span class="card-sub">Uke-view med coaching, selvtrening, gruppe, runder. Pyramide-donut, streak, formtopp i høyre rail.</span>
+    <span class="card-meta"><span class="tag flow">flow</span> uke 19</span>
+  </a>
+  <a class="card" href="10-treningsdetalj.html">
+    <span class="card-num">C.10</span>
+    <span class="card-title">Treningsdetalj · 4 tabs</span>
+    <span class="card-sub">Oversikt-tab med blokker, KPI, pyramide-bidrag, coach-note og avvik-fra-plan.</span>
+    <span class="card-meta"><span class="tag detail">detalj</span> 90 min</span>
+  </a>
+</div>
+
+<div class="foot">
+  <span>AK Golf · PlayerHQ pakke C · 10 skjermer · 11. mai 2026</span>
+  <span><a href="../index.html">← prosjekt-indeks</a></span>
+</div>
+
+</body></html>

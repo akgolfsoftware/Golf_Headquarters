@@ -1,0 +1,33 @@
+# Vedlegg for Mini-batch playerhq-B - Coach-samhandling
+
+Last opp disse HTML-filene i Claude Design som visuelle vedlegg.
+Aapne hver i Finder, eller bruk: Cmd+Shift+G og lim inn stien.
+
+## Hovedskjermer (5 stk)
+
+~/Developer/akgolf-hq/wireframe/screen-deck/playerhq/coach-detalj.html
+~/Developer/akgolf-hq/wireframe/screen-deck/playerhq/coaching-planer.html
+~/Developer/akgolf-hq/wireframe/screen-deck/playerhq/coaching-detail.html
+~/Developer/akgolf-hq/wireframe/screen-deck/playerhq/coach-notes.html
+~/Developer/akgolf-hq/wireframe/screen-deck/playerhq/notater-detalj.html
+
+## Tilhoerende modaler (referanse for hva som aapnes)
+
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/plan-approval.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/plan-share.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/message-detail.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/video-upload.html
+
+## Pluss alltid (system-kontekst, engang per ny sesjon)
+
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/branding-style-guide.html
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/design-system-v2.md
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/fonts/  (alle 20 .woff2)
+
+## Pluss anti-state-katalog-regel
+
+~/Developer/akgolf-hq/wireframe/design-batches/redesign-arketype-e/felles-instruks.md
+
+## Pluss mini-batch-spec
+
+~/Developer/akgolf-hq/wireframe/design-batches/mvp/playerhq/playerhq-B.md

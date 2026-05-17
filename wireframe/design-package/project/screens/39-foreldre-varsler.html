@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Foreldre — Varsler &amp; preferanser · 7-B/4</title>
+<link rel="stylesheet" href="_shared/arketype-h.css">
+<style>
+  .chan-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  .chan-card{padding:14px;background:var(--surface-card);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;gap:10px}
+  .chan-card.on{border-left:3px solid var(--brand-primary)}
+  .chan-card.off{background:var(--surface-alt);opacity:.78}
+  .chan-card .top{display:flex;align-items:center;gap:10px}
+  .chan-card .ic{width:32px;height:32px;border-radius:8px;background:var(--accent-bg);color:var(--brand-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .chan-card.off .ic{background:var(--surface-alt);color:var(--ink-disabled)}
+  .chan-card .nm{font-size:13px;font-weight:600;color:var(--ink)}
+  .chan-card .mt{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.04em;margin-top:1px}
+  .chan-card .toggle{width:34px;height:20px;border-radius:100px;background:var(--surface-alt);border:1.5px solid var(--line);position:relative;flex-shrink:0;margin-left:auto;cursor:pointer}
+  .chan-card .toggle::after{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;border:1px solid var(--line);top:1px;left:1px}
+  .chan-card.on .toggle{background:var(--brand-primary);border-color:var(--brand-primary)}
+  .chan-card.on .toggle::after{left:16px;border-color:var(--brand-primary)}
+  .chan-card .info{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.04em;display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--line-soft)}
+  .chan-card .info b{color:var(--ink);font-weight:500}
+
+  .matrix-wrap{background:var(--surface-card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .matrix-head,.matrix-row{display:grid;grid-template-columns:1fr 70px 70px 70px 70px 110px;padding:12px 16px;align-items:center}
+  .matrix-head{background:var(--surface-alt);border-bottom:1px solid var(--line);font-family:var(--font-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-subtle)}
+  .matrix-head .ch{text-align:center}
+  .matrix-row{border-bottom:1px solid var(--line-soft)}
+  .matrix-row:last-child{border-bottom:none}
+  .matrix-row .nm{font-size:13px;color:var(--ink);font-weight:500}
+  .matrix-row .nm .pill{font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-left:8px}
+  .matrix-row .nm .pill.crit{background:var(--status-danger-bg);color:var(--status-danger)}
+  .matrix-row .nm .pill.req{background:var(--ink);color:#fff}
+  .matrix-row .dsc{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.02em;margin-top:3px}
+  .chk{display:flex;justify-content:center}
+  .dot{width:18px;height:18px;border:1.5px solid var(--line);border-radius:5px;display:flex;align-items:center;justify-content:center;background:#fff}
+  .dot.on{background:var(--brand-primary);border-color:var(--brand-primary);color:#fff}
+  .dot.on svg{width:11px;height:11px}
+  .dot.lk{background:var(--ink-disabled);border-color:var(--ink-disabled);color:#fff;opacity:.65}
+  .dot.na{border-style:dashed}
+  .freq select{font-family:var(--font-mono);font-size:10px;padding:5px 8px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--ink);letter-spacing:.04em;width:100%}
+
+  .qh-time{padding:8px 14px;background:var(--ink);color:#fff;border-radius:8px;font-family:var(--font-mono);font-size:13px;letter-spacing:.04em;font-weight:600;display:inline-block}
+  .qh-bar{position:relative;height:32px;background:var(--surface-alt);border:1px solid var(--line);border-radius:8px;margin-top:14px;overflow:hidden}
+  .qh-bar .seg{position:absolute;height:100%;background:repeating-linear-gradient(45deg,var(--ink) 0,var(--ink) 4px,#23211D 4px,#23211D 8px);opacity:.85}
+  .qh-bar .hour{position:absolute;top:100%;font-family:var(--font-mono);font-size:9px;color:var(--ink-subtle);letter-spacing:.04em;transform:translateX(-50%);margin-top:4px}
+  .qh-bar .now{position:absolute;top:-4px;width:2px;height:40px;background:var(--status-danger);z-index:2}
+  .qh-bar .now::after{content:"21:34";position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--status-danger);color:#fff;font-family:var(--font-mono);font-size:9px;padding:2px 5px;border-radius:3px;font-weight:600;white-space:nowrap}
+
+  .digest-opt{padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:6px}
+  .digest-opt.sel{border-color:var(--brand-primary);background:var(--accent-bg)}
+  .digest-opt .rad{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--line);flex-shrink:0;position:relative}
+  .digest-opt.sel .rad{border-color:var(--brand-primary)}
+  .digest-opt.sel .rad::after{content:"";position:absolute;inset:2px;background:var(--brand-primary);border-radius:50%}
+  .digest-opt .nm{font-size:12px;color:var(--ink);font-weight:500}
+  .digest-opt .mt{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.04em;margin-left:auto}
+
+  .activity-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft);align-items:center}
+  .activity-row:last-child{border-bottom:none}
+  .activity-row .ic{width:28px;height:28px;border-radius:7px;background:var(--accent-bg);color:var(--brand-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .activity-row .ic.warn{background:var(--status-warning-bg);color:var(--status-warning)}
+  .activity-row .ic.ok{background:var(--status-success-bg);color:var(--status-success)}
+  .activity-row .nm{font-size:13px;color:var(--ink);line-height:1.4}
+  .activity-row .nm small{display:block;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.02em;margin-top:3px}
+  .ch-pill{font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;border-radius:4px;background:var(--surface-alt);color:var(--ink-muted)}
+  .tm{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.02em;text-align:right;min-width:48px}
+  .tm b{display:block;color:var(--ink);font-weight:500}
+</style>
+</head>
+<body>
+<div class="deck" data-screen-label="39 Foreldre — Varsler &amp; preferanser">
+  <header class="deck-head">
+    <div class="eyebrow">7-B · Foreldre-portal · skjerm 4 av 5</div>
+    <h1>Varsler &amp; preferanser</h1>
+    <p class="sub">Granulær kontroll over hvilke hendelser forelder får, gjennom hvilken kanal, hvor ofte, og når på døgnet. Kritiske helse- og sikkerhetsvarsler kan ikke skrus av. Stille tider, digest-frekvens og audit-logg over leverte varsler i samme view.</p>
+    <div class="meta-row"><span><span class="lbl">Rute:</span> /forelder/varsler</span><span><span class="lbl">Aktive kanaler:</span> 3/4</span><span><span class="lbl">Sendt 30d:</span> 47</span><span><span class="lbl">Levert:</span> 98.2%</span></div>
+  </header>
+  <section class="ab">
+    <div class="ab-label"><span class="num">39 · 7-B/4</span><span class="ttl">Varsler &amp; preferanser</span><span class="meta">kanaler · matrix · stille tider · digest</span></div>
+    <div class="ab-frame"><div class="app">
+      <div class="topbar">
+        <div class="tb-brand"><div class="mk">AK</div><div class="ttl">AK Golf HQ<small>Foreldre-portal</small></div></div>
+        <div class="tb-divider"></div>
+        <div class="tb-tabs">
+          <a class="tb-tab">Hjem</a><a class="tb-tab">Ukerapport</a><a class="tb-tab">Samtykke</a>
+          <a class="tb-tab active">Varsler</a><a class="tb-tab">Medlemskap</a>
+        </div>
+        <div class="tb-actions"><div class="tb-bell"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1112 0c0 7 3 8 3 8H3s3-1 3-8M9 21a3 3 0 006 0"/></svg></div><div class="tb-user"><span class="av">EB</span><div class="nm">Erik Bjerke<small>forelder</small></div></div></div>
+      </div>
+      <div class="kid-bar">
+        <div class="kid-card active"><span class="av">MB</span><div class="info"><span class="nm">Mathilde Bjerke</span><span class="mt">16 år · 12 varsler · 7 dgr</span></div></div>
+        <div class="kid-card"><span class="av">JB</span><div class="info"><span class="nm">Jakob Bjerke</span><span class="mt">11 år · 8 varsler · 7 dgr</span></div></div>
+        <div class="kid-context"><span><b>Felles innstillinger:</b> Erik + Anne har samme regler</span></div>
+      </div>
+      <div class="body">
+        <div class="body-head"><div><h1>Varsler <em>· Mathilde Bjerke</em></h1><div class="sub">Skader og kritiske helse-flagg leveres alltid — du kan ikke skru disse av.</div></div><div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm">Test-varsel</button><button class="btn btn-outline btn-sm">Tilbakestill</button></div></div>
+
+        <div class="chan-grid">
+          <div class="chan-card on"><div class="top"><div class="ic"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div><div><div class="nm">E-post</div><div class="mt">erik.bjerke@example.no</div></div><div class="toggle"></div></div><div class="info"><span>Sendt 30d: <b>22</b></span><span>Levert: <b>100%</b></span></div></div>
+          <div class="chan-card on"><div class="top"><div class="ic"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></div><div><div class="nm">Push (mobil)</div><div class="mt">iPhone 15 · iOS 18.2</div></div><div class="toggle"></div></div><div class="info"><span>Sendt 30d: <b>18</b></span><span>Levert: <b>94%</b></span></div></div>
+          <div class="chan-card on"><div class="top"><div class="ic"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M21 11c0 4.97-4.03 9-9 9a8.96 8.96 0 01-4.42-1.16L3 20l1.17-4.58A8.96 8.96 0 013 11c0-4.97 4.03-9 9-9s9 4.03 9 9z"/></svg></div><div><div class="nm">SMS</div><div class="mt">+47 905 xx xxx</div></div><div class="toggle"></div></div><div class="info"><span>Sendt 30d: <b>7</b></span><span style="color:var(--status-warning)">kun kritisk</span></div></div>
+          <div class="chan-card off"><div class="top"><div class="ic"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/></svg></div><div><div class="nm" style="color:var(--ink-muted)">WhatsApp</div><div class="mt">ikke koblet</div></div><div class="toggle"></div></div><div class="info" style="color:var(--status-warning)"><span>Koble til via QR</span><span>→</span></div></div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px">
+          <div class="ch"><h3>Hendelses-matrise</h3><span class="meta">7 kategorier · 4 kanaler · frekvens</span></div>
+          <div class="matrix-wrap">
+            <div class="matrix-head"><div>Kategori</div><div class="ch">E-post</div><div class="ch">Push</div><div class="ch">SMS</div><div class="ch">In-app</div><div style="text-align:right">Frekvens</div></div>
+            <div class="matrix-row"><div><div class="nm">Skade- &amp; smerte-flagg <span class="pill crit">kritisk</span></div><div class="dsc">RPE &gt;8 i to økter på rad, smerte &gt;6, fysio-anbefaling</div></div><div class="chk"><div class="dot on lk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot on lk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot on lk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot on lk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="freq"><select disabled><option>umiddelbart</option></select></div></div>
+            <div class="matrix-row"><div><div class="nm">Samtykke- &amp; tilgangs­endringer <span class="pill req">påkrevd</span></div><div class="dsc">Ny coach, scope endret, DPA oppdatert, ny enhet</div></div><div class="chk"><div class="dot on lk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot"></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="freq"><select><option>umiddelbart</option></select></div></div>
+            <div class="matrix-row"><div><div class="nm">Treningsplan oppdatert</div><div class="dsc">Ny uke- eller blokk-plan publisert</div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot"></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="freq"><select><option selected>daglig digest</option></select></div></div>
+            <div class="matrix-row"><div><div class="nm">Ukerapport klar</div><div class="dsc">Sammendrag av økter, fremgang og fokus</div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot"></div></div><div class="chk"><div class="dot"></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="freq"><select><option selected>søn 18:00</option></select></div></div>
+            <div class="matrix-row"><div><div class="nm">Resultat fra turnering</div><div class="dsc">Score, plassering, høydepunkter</div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="freq"><select><option selected>umiddelbart</option></select></div></div>
+            <div class="matrix-row"><div><div class="nm">Klubb &amp; turnerings-meldinger</div><div class="dsc">RSVP, lagoppstilling, oppmøte-bekreftelser</div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot"></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="freq"><select><option selected>umiddelbart</option></select></div></div>
+            <div class="matrix-row"><div><div class="nm">Faktura &amp; betalinger</div><div class="dsc">Faktura tilgjengelig, mislykket betaling, fornyelse</div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot"></div></div><div class="chk"><div class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div></div><div class="chk"><div class="dot"></div></div><div class="freq"><select><option selected>umiddelbart</option></select></div></div>
+            <div class="matrix-row"><div><div class="nm">Produkt-nytt &amp; tips</div><div class="dsc">Nye funksjoner, treningstips fra redaksjonen</div></div><div class="chk"><div class="dot na"></div></div><div class="chk"><div class="dot na"></div></div><div class="chk"><div class="dot na"></div></div><div class="chk"><div class="dot na"></div></div><div class="freq"><select disabled><option>av</option></select></div></div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px">
+          <div class="card">
+            <div class="ch"><h3>Stille tider</h3><span class="meta">push &amp; SMS pauses · e-post leveres alltid</span></div>
+            <div style="display:flex;align-items:center;gap:14px;margin-top:8px"><span class="qh-time">21:30</span><span style="color:var(--ink-disabled)">→</span><span class="qh-time">07:00</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.04em">man – søn · Europe/Oslo</span><button class="btn btn-outline btn-sm" style="margin-left:auto">Endre</button></div>
+            <div class="qh-bar"><div class="seg" style="left:0;width:29.17%"></div><div class="seg" style="left:89.58%;width:10.42%"></div><div class="now" style="left:89.75%"></div><div class="hour" style="left:0%">00</div><div class="hour" style="left:25%">06</div><div class="hour" style="left:50%">12</div><div class="hour" style="left:75%">18</div><div class="hour" style="left:100%">24</div></div>
+            <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--ink-muted);line-height:1.7">
+              <div>✓ Skade- og helse-varsler bryter alltid gjennom</div>
+              <div>✓ Varsler i stille tid samles til én push neste morgen kl 07:00</div>
+              <div>✓ Helg-regel: lørdag &amp; søndag stille tid fra kl 22:30</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><h3>Digest-frekvens</h3></div>
+            <div style="font-size:12px;color:var(--ink-muted);line-height:1.5;margin-bottom:14px">Sammendrag fremfor enkeltvarsler?</div>
+            <div class="digest-opt"><div class="rad"></div><div class="nm">Umiddelbart</div><div class="mt">~22/uke</div></div>
+            <div class="digest-opt sel"><div class="rad"></div><div class="nm">Daglig digest</div><div class="mt">19:00 · 7/uke</div></div>
+            <div class="digest-opt"><div class="rad"></div><div class="nm">Ukentlig digest</div><div class="mt">søn 18:00</div></div>
+            <div class="digest-opt"><div class="rad"></div><div class="nm">Kun kritisk</div><div class="mt">~2/uke</div></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <div class="ch"><h3>Sist leverte varsler <em>· 7 dgr</em></h3><span class="meta">12 sendt · 98.2% lest · audit-bevis</span></div>
+          <div class="activity-row"><div class="ic warn"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.01"/></svg></div><div class="nm">Mathilde rapporterte RPE 8 — coach varslet<small>skade-flagg · auto-eskalert · åpnet 14:36</small></div><span class="ch-pill" style="background:var(--status-warning-bg);color:var(--status-warning)">Push + SMS</span><div class="tm"><b>14:18</b>i dag</div></div>
+          <div class="activity-row"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><div class="nm">Erik publiserte «Pre-camp uke 19»<small>i daglig digest · åpnet 19:04</small></div><span class="ch-pill">E-post</span><div class="tm"><b>19:00</b>i går</div></div>
+          <div class="activity-row"><div class="ic ok"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M9 14l-1 7 4-2 4 2-1-7"/></svg></div><div class="nm">Resultat: 78 brutto, +6 · 14. plass — Kongsberg Open R1<small>åpnet 17:14 · delt med Anne 17:16</small></div><span class="ch-pill">Push</span><div class="tm"><b>17:12</b>09.05</div></div>
+          <div class="activity-row"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 4 8 8 10 4-2 8-5 8-10V6z"/></svg></div><div class="nm">Ny coach tildelt — samtykke krevdes og ble signert<small>BankID · 1 påminnelse · åpnet 11:02</small></div><span class="ch-pill">E-post + In-app</span><div class="tm"><b>10:45</b>07.05</div></div>
+          <div class="activity-row"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 11h18"/></svg></div><div class="nm">Månedsfaktura mai klar · 449 kr<small>autotrekk Visa **4242 den 14.05 · åpnet 08:21</small></div><span class="ch-pill">E-post + SMS</span><div class="tm"><b>08:00</b>06.05</div></div>
+        </div>
+
+      </div>
+    </div></div>
+  </section>
+</div>
+</body>
+</html>

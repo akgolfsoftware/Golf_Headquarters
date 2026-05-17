@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Planlegg · Ukeplan u20 · CoachHQ</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/dark-shell.css">
+<link rel="stylesheet" href="assets/light-shell-v2.css">
+<style>
+  body { min-width: 1920px; }
+  .main { padding: 20px 28px 48px; }
+
+  /* Banners over content */
+  .banner {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  .banner.myelin {
+    background: rgba(217,69,69,0.10);
+    border-left: 3px solid var(--status-alarm);
+    color: #F1D6D6;
+  }
+  .banner.myelin .ttl { color: var(--status-alarm); font-weight: 600; }
+  .banner.tour {
+    background: rgba(244,196,48,0.10);
+    border-left: 3px solid var(--status-warn);
+    color: #F4E7C2;
+  }
+  .banner.tour .ttl { color: var(--status-warn); font-weight: 600; }
+  .banner .spacer { flex: 1; }
+  .banner .actions { display: flex; gap: 8px; }
+  .banner .btn-mini {
+    padding: 5px 9px;
+    border-radius: 6px;
+    font: 600 11px/1 var(--font-sans);
+    background: var(--bg-elev-2);
+    color: var(--ink-dk);
+    border: 0; cursor: pointer;
+  }
+  .banner .btn-mini:hover { background: var(--bg-elev); }
+  .banner .btn-mini.primary {
+    background: var(--brand-accent); color: var(--brand-accent-on);
+  }
+
+  /* Capacity bar above week grid */
+  .week-cap {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+  }
+  .week-cap .lbl { font: 600 10px/1 var(--font-sans); letter-spacing: .10em; text-transform: uppercase; color: var(--ink-dk-subtle); }
+  .week-cap .v { font: 600 13px/1 var(--font-mono); color: var(--ink-dk); }
+  .week-cap-bar {
+    flex: 1; height: 8px; background: var(--bg-elev-2);
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .week-cap-bar .fl { height: 100%; background: var(--status-warn); }
+  .week-cap-bar .tak {
+    position: absolute; top: -2px; bottom: -2px;
+    width: 1px; background: rgba(255,255,255,0.5);
+    left: 100%;
+  }
+  .week-cap .mt { font: 500 11px/1 var(--font-mono); color: var(--ink-dk-muted); }
+
+  /* Week grid */
+  .week-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .wk-head {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
+    background: var(--bg-elev);
+    border-bottom: 1px solid var(--border);
+  }
+  .wk-head .corner { padding: 10px; }
+  .wk-head .dh {
+    padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 2px;
+    border-left: 1px solid var(--border-soft);
+  }
+  .wk-head .dh .dow { font: 600 10px/1 var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-dk-subtle); }
+  .wk-head .dh .date { font: 600 22px/1 var(--font-tight); color: var(--ink-dk); letter-spacing: -.015em; }
+  .wk-head .dh .meta { font: 500 10px/1 var(--font-mono); color: var(--ink-dk-subtle); }
+  .wk-head .dh.today { background: rgba(209,248,67,0.06); }
+  .wk-head .dh.today .dow { color: var(--brand-accent); }
+  .wk-head .dh.today .date { color: var(--brand-accent); }
+  .wk-head .dh.weekend { background: rgba(255,255,255,0.015); }
+  .wk-head .dh.weekend .dow, .wk-head .dh.weekend .date { color: var(--ink-dk-muted); }
+  .wk-head .dh.tour {
+    background: rgba(244,196,48,0.08);
+    box-shadow: inset 0 -2px 0 var(--brand-accent);
+  }
+  .wk-head .dh.tour .dow { color: var(--status-warn); }
+
+  .wk-grid {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
+    position: relative;
+    grid-auto-rows: 56px;
+    /* 16 hours: 06–22 = 16 rows × 56 = 896 */
+  }
+  .hour-lbl {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-soft);
+    padding: 4px 8px;
+    font: 500 10px/1 var(--font-mono);
+    color: var(--ink-dk-subtle);
+    text-align: right;
+  }
+  .col {
+    border-right: 1px solid var(--border-soft);
+    position: relative;
+    background: var(--bg-surface);
+  }
+  .col:last-child { border-right: 0; }
+  .col.today { background: rgba(209,248,67,0.025); }
+  .col.weekend { background: rgba(255,255,255,0.015); }
+  .col.tour { background: rgba(244,196,48,0.025); }
+  .col-slot {
+    height: 56px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .col-slot:nth-child(2n) { border-bottom-style: dashed; }
+
+  /* Events absolute-positioned */
+  .ev {
+    position: absolute; left: 4px; right: 4px;
+    border-radius: 8px;
+    padding: 7px 10px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex; flex-direction: column; gap: 2px;
+    transition: transform 120ms;
+    z-index: 2;
+  }
+  .ev:hover { transform: scale(1.02); z-index: 3; }
+  .ev .t { font: 500 10px/1 var(--font-mono); opacity: 0.75; }
+  .ev .nm { font: 600 12.5px/1.2 var(--font-tight); letter-spacing: -.005em; }
+  .ev .meta { font: 500 10.5px/1.3 var(--font-mono); opacity: 0.7; }
+  .ev .badges { display: flex; gap: 4px; margin-top: 4px; align-items: center; }
+
+  .ev.fys   { background: rgba(22,163,74,0.18);  color: #C8F1D5; box-shadow: inset 3px 0 0 var(--pyr-fys-d); }
+  .ev.tek   { background: rgba(46,140,106,0.20); color: #C8EBDD; box-shadow: inset 3px 0 0 var(--pyr-tek-d); }
+  .ev.slag  { background: rgba(209,248,67,0.16); color: #E9F8B0; box-shadow: inset 3px 0 0 var(--pyr-slag-d); }
+  .ev.spill { background: rgba(244,196,48,0.16); color: #F1DDA1; box-shadow: inset 3px 0 0 var(--pyr-spill-d); }
+  .ev.turn  { background: rgba(181,191,183,0.16); color: #DDE3DE; box-shadow: inset 3px 0 0 var(--pyr-turn-d); }
+  .ev.rest  { background: rgba(255,255,255,0.03); color: var(--ink-dk-subtle); font-style: italic; }
+
+  .ev.live {
+    background: var(--brand-accent);
+    color: var(--brand-accent-on);
+    box-shadow: 0 0 0 1px var(--brand-accent), 0 8px 24px rgba(209,248,67,0.25);
+  }
+  .ev.live .t, .ev.live .meta { color: var(--brand-accent-on); opacity: 0.7; }
+
+  /* Recurrence icon */
+  .recur-mark {
+    width: 14px; height: 14px;
+    background: rgba(0,0,0,0.18); border-radius: 50%;
+    display: grid; place-items: center;
+    font: 700 8px/1 var(--font-sans);
+    position: absolute; top: 6px; right: 6px;
+  }
+
+  /* Now line */
+  .now-h {
+    position: absolute; left: 60px; right: 0;
+    height: 2px;
+    background: var(--brand-accent);
+    box-shadow: 0 0 12px rgba(209,248,67,0.6);
+    z-index: 6;
+    pointer-events: none;
+  }
+  .now-h::before {
+    content: "14:18";
+    position: absolute; left: -56px; top: -8px;
+    background: var(--bg-deep);
+    color: var(--brand-accent);
+    border: 1px solid var(--brand-accent);
+    padding: 1px 5px; border-radius: 4px;
+    font: 700 10px/1 var(--font-mono);
+  }
+  .now-h::after {
+    content: "";
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--brand-accent);
+    position: absolute; left: -5px; top: -4px;
+    box-shadow: 0 0 0 3px rgba(209,248,67,0.18);
+  }
+
+  /* drag-over hint */
+  .drag-hint {
+    position: absolute; left: 4px; right: 4px;
+    background: rgba(0,88,64,0.20);
+    border: 1px dashed #2E8C6A;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #6FE0B8; font: 600 11px/1 var(--font-mono);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Overlap pair */
+  .ev.l { left: 4px; right: 50%; }
+  .ev.r { left: 50%; right: 4px; }
+</style>
+</head>
+<body>
+<div class="app" data-screen-label="Planlegg — Ukeplan u20 (12.–18. mai 2026)">
+
+  <!-- Rail + Nav (same as år) -->
+  <aside class="rail">
+    <div class="rail-logo">AK</div>
+    <div class="rail-ic" title="Søk"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+    <div class="rail-ic active" title="Planlegg"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+    <div class="rail-ic" title="Spillere"><svg class="ic" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+    <div class="rail-ic" title="Statistikk"><svg class="ic" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/></svg></div>
+    <div class="rail-ic" title="Meldinger"><svg class="ic" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    <div class="rail-spacer"></div>
+    <div class="rail-avatar">AK</div>
+  </aside>
+
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="nav-brand-title">AK Golf</div>
+      <div class="nav-brand-sub">CoachHQ</div>
+    </div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashbord</div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere</div>
+    <div class="nav-section">Planlegg</div>
+    <div class="nav-item active"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Kalender</div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><path d="M14 2v6h6"/></svg>Treningsplaner</div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Maler</div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/></svg>Kapasitet</div>
+    <div class="nav-section">Analyser</div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/></svg>Lag-snitt</div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/></svg>Oppfølging</div>
+    <div class="nav-foot">
+      <div class="av">AK</div>
+      <div><div class="name">Anders K.</div><div class="role">Hovedcoach · GFGK</div></div>
+    </div>
+  </nav>
+
+  <!-- Plan sidebar -->
+  <aside class="plan-sidebar">
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Mai – Juli 2026</div><div class="ps-link">I dag</div></div>
+      <div class="mini-cal">
+        <div class="mini-cal-month">
+          <div class="mini-cal-month-h"><span class="mt">Mai</span><span class="yr">2026</span></div>
+          <div class="mini-cal-grid">
+            <div class="mini-cal-dow">m</div><div class="mini-cal-dow">t</div><div class="mini-cal-dow">o</div><div class="mini-cal-dow">t</div><div class="mini-cal-dow">f</div><div class="mini-cal-dow">l</div><div class="mini-cal-dow">s</div>
+            <div class="mini-cal-day is-out">28</div><div class="mini-cal-day is-out">29</div><div class="mini-cal-day is-out">30</div><div class="mini-cal-day">1</div><div class="mini-cal-day has-session">2</div><div class="mini-cal-day">3</div><div class="mini-cal-day">4</div>
+            <div class="mini-cal-day has-session">5</div><div class="mini-cal-day has-session">6</div><div class="mini-cal-day">7</div><div class="mini-cal-day has-session">8</div><div class="mini-cal-day">9</div><div class="mini-cal-day">10</div><div class="mini-cal-day has-tour">11</div>
+            <div class="mini-cal-day has-session">12</div><div class="mini-cal-day has-session">13</div><div class="mini-cal-day is-today">14</div><div class="mini-cal-day has-session">15</div><div class="mini-cal-day">16</div><div class="mini-cal-day">17</div><div class="mini-cal-day">18</div>
+            <div class="mini-cal-day has-session">19</div><div class="mini-cal-day has-session">20</div><div class="mini-cal-day has-session">21</div><div class="mini-cal-day">22</div><div class="mini-cal-day has-tour">23</div><div class="mini-cal-day has-tour">24</div><div class="mini-cal-day has-tour">25</div>
+            <div class="mini-cal-day">26</div><div class="mini-cal-day has-session">27</div><div class="mini-cal-day has-session">28</div><div class="mini-cal-day">29</div><div class="mini-cal-day">30</div><div class="mini-cal-day">31</div><div class="mini-cal-day is-out">1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Spillere</div><div class="ps-meta">1 / 6</div></div>
+      <div class="spiller-list">
+        <div class="spiller-row on"><div class="av-s av-1">MP</div><div class="nm">Markus Pedersen<span class="cat b">B</span></div><div class="dt"></div></div>
+        <div class="spiller-row off"><div class="av-s av-2">EK</div><div class="nm">Eline Krogh<span class="cat e">E</span></div><div class="dt"></div></div>
+        <div class="spiller-row off"><div class="av-s av-3">AK</div><div class="nm">Astrid Kvam<span class="cat c">C</span></div><div class="dt"></div></div>
+        <div class="spiller-row off"><div class="av-s av-4">SB</div><div class="nm">Sondre Berg<span class="cat f">F</span></div><div class="dt"></div></div>
+        <div class="spiller-row off"><div class="av-s av-5">HN</div><div class="nm">Henrik Norvik<span class="cat f">F</span></div><div class="dt"></div></div>
+        <div class="spiller-row off"><div class="av-s av-6">JT</div><div class="nm">Jakob Tønsberg<span class="cat b">B</span></div><div class="dt"></div></div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Pyramide</div><div class="ps-link">Alle</div></div>
+      <div class="pyr-filter">
+        <div class="pyr-row pyr-fys on"><div class="cb"></div><div class="nm">FYS</div><div class="mt">19%</div></div>
+        <div class="pyr-row pyr-tek on"><div class="cb"></div><div class="nm">TEK</div><div class="mt">27%</div></div>
+        <div class="pyr-row pyr-slag on"><div class="cb"></div><div class="nm">SLAG</div><div class="mt">34%</div></div>
+        <div class="pyr-row pyr-spill on"><div class="cb"></div><div class="nm">SPILL</div><div class="mt">15%</div></div>
+        <div class="pyr-row pyr-turn on"><div class="cb"></div><div class="nm">TURN</div><div class="mt">5%</div></div>
+      </div>
+    </div>
+
+    
+    <div class="ps-section">
+      <div class="ps-section-h">
+        <div class="ps-title">Treningsområde</div>
+        <div class="ps-link">15 av 16</div>
+      </div>
+      <div class="omr-tree">
+        <div class="omr-grp tee">
+          <div class="omr-grp-h"><span class="dot"></span>TEE — Tee total</div>
+          <div class="omr-codes"><span class="code on">TEE</span></div>
+        </div>
+        <div class="omr-grp inn">
+          <div class="omr-grp-h"><span class="dot"></span>INNSPILL</div>
+          <div class="omr-codes">
+            <span class="code on">INN200</span>
+            <span class="code on hot">INN150</span>
+            <span class="code on hot">INN100</span>
+            <span class="code on">INN50</span>
+          </div>
+        </div>
+        <div class="omr-grp naer">
+          <div class="omr-grp-h"><span class="dot"></span>NÆRSPILL</div>
+          <div class="omr-codes">
+            <span class="code on">CHIP</span>
+            <span class="code on">PITCH</span>
+            <span class="code on">LOB</span>
+            <span class="code" style="color: var(--status-alarm); border-color: rgba(217,69,69,0.3);">BUNKER</span>
+          </div>
+        </div>
+        <div class="omr-grp putt">
+          <div class="omr-grp-h"><span class="dot"></span>PUTTING</div>
+          <div class="omr-codes">
+            <span class="code on hot">PUTT0-3</span>
+            <span class="code on">PUTT3-5</span>
+            <span class="code on">PUTT5-10</span>
+            <span class="code on">PUTT10-15</span>
+            <span class="code on">PUTT15-25</span>
+            <span class="code on">PUTT25-40</span>
+            <span class="code on">PUTT40+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Taxonomi · ref</div></div>
+      <div class="tax-card">
+        <div class="row"><span class="k">L-fase</span><span class="v">KROPP→ARM→KØLLE→BALL→AUTO</span></div>
+        <div class="row"><span class="k">CS</span><span class="v">CS50→CS100 · steg 10</span></div>
+        <div class="row"><span class="k">M-miljø</span><span class="v">M0→M5</span></div>
+        <div class="row"><span class="k">PR-press</span><span class="v">PR1→PR5</span></div>
+        <hr/>
+        <div class="row"><span class="k">P-pos</span><span class="v">P1.0…P10.0 (14 pkt)</span></div>
+        <div class="row"><span class="k">LIFE</span><span class="v">SELV·SOS·EMO·KAR·RES</span></div>
+        <hr/>
+        <div class="row"><span class="k">Økt-ID</span></div>
+        <div style="font-size:9.5px; color: var(--ink-dk-subtle); line-height: 1.4;">
+          [PYR]_[OMR]_[L]_[CS]_[M]_[PR]
+        </div>
+        <div style="font: 500 9.5px/1.3 var(--font-mono); color: var(--brand-accent);">
+          SLAG_PUTT0-3_L-KØLLE_CS80_M3_PR4
+        </div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Kapasitet</div><div class="ps-link">Detaljer →</div></div>
+      <div class="cap-card">
+        <div class="cap-card-h"><div class="ttl">Uke 20 — Markus</div><div class="who">SPES</div></div>
+        <div class="cap-bar">
+          <div class="cap-bar-fill warn" style="width: 88%;"></div>
+          <div class="cap-bar-tak" style="left: 100%;"></div>
+        </div>
+        <div class="cap-foot"><span class="v">704 / 800 min</span><span class="s">88 %</span></div>
+        <div class="cap-mini-days" style="margin-top:14px;">
+          <div class="cap-mini-day"><div class="fl" style="height:55%;background:var(--status-ok)"></div><div class="dn">ma</div></div>
+          <div class="cap-mini-day"><div class="fl" style="height:90%;background:var(--status-warn)"></div><div class="dn">ti</div></div>
+          <div class="cap-mini-day"><div class="fl" style="height:75%;background:var(--status-ok)"></div><div class="dn">on</div></div>
+          <div class="cap-mini-day"><div class="fl" style="height:115%;background:var(--status-bad)"></div><div class="dn">to</div></div>
+          <div class="cap-mini-day"><div class="fl" style="height:60%;background:var(--status-ok)"></div><div class="dn">fr</div></div>
+          <div class="cap-mini-day"><div class="fl" style="height:30%;background:var(--status-ok)"></div><div class="dn">lø</div></div>
+          <div class="cap-mini-day"><div class="fl" style="height:0%;"></div><div class="dn">sø</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ps-section" style="margin-top:14px;">
+      <div class="ps-section-h"><div class="ps-title">Treningshelse</div><div class="ps-link">Vis alle</div></div>
+      <div class="myelin-list">
+        <div class="myelin-row"><div class="dt alarm"></div><div class="nm">Bunker</div><div class="ago">28 d</div></div>
+        <div class="myelin-row"><div class="dt bad"></div><div class="nm">Lange putts</div><div class="ago">18 d</div></div>
+        <div class="myelin-row"><div class="dt warn"></div><div class="nm">Driver · fade</div><div class="ago">11 d</div></div>
+        <div class="myelin-row"><div class="dt ok"></div><div class="nm">Approach 100m</div><div class="ago">2 d</div></div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Aktiv periode</div></div>
+      <div class="periode-info">
+        <div class="periode-info-h"><div class="nm">Vår-spesialisering</div><span class="periode-badge spes">SPES</span></div>
+        <div class="pyr-bar">
+          <div class="pyr-bar-seg fys" style="width:18%;">18</div>
+          <div class="pyr-bar-seg tek" style="width:30%;">30</div>
+          <div class="pyr-bar-seg slag" style="width:32%;">32</div>
+          <div class="pyr-bar-seg spill" style="width:16%;">16</div>
+          <div class="pyr-bar-seg turn" style="width:4%;">4</div>
+        </div>
+        <div class="periode-stat"><span class="k">TAK · uke</span><span class="v">800 min</span></div>
+        <div class="periode-warning">Neste turnering om <b>9 dager</b> — Bossum Open 23–25. mai.</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-eyebrow"><span class="dt"></span>/admin/kalender</div>
+        <nav class="view-tabs">
+          <a class="view-tab" href="01-aarsplan.html">ÅR <span class="kbd">1</span></a>
+          <a class="view-tab" href="02-maanedsplan.html">MÅNED <span class="kbd">2</span></a>
+          <a class="view-tab active" href="03-ukeplan.html">UKE <span class="kbd">3</span></a>
+          <a class="view-tab" href="04-dagsplan.html">DAG <span class="kbd">4</span></a>
+        </nav>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;"><div class="theme-toggle" id="__themetoggle" title="Tema · L=lys · D=mørk"><span class="opt l on">L</span><span class="opt d">D</span></div><div class="spiller-ctx">
+        <div class="av av-1">MP</div>
+        <div>
+          <div class="nm">Markus Pedersen</div><div class="role">A-lag · 17 år</div></div>
+        <svg class="ic ic-sm chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      </div>
+    </header>
+
+    <div class="page-head">
+      <div class="page-eyebrow">Uke 20 · 12.–18. mai 2026</div>
+      <h1 class="page-title">Ukeplan <em>· torsdag 14. mai, 14:18</em></h1>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button class="tb"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="tb">I dag</button>
+        <button class="tb"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <div class="toolbar-title">Uke 20 — Markus Pedersen</div>
+      <div class="toolbar-sub">11 økter · 704 min · spes</div>
+      <div class="toolbar-spacer"></div>
+      <button class="btn btn-ghost btn-sm"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M14 2v6h6"/><path d="M16 22H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2z"/></svg>Hent fra mal</button>
+      <button class="btn btn-soft btn-sm"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M16 18 22 12l-6-6"/><path d="M8 6 2 12l6 6"/></svg>Kopier u19 →</button>
+      <button class="btn btn-primary btn-sm"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Ny økt</button>
+    </div>
+
+    <!-- Myelin banner -->
+    <div class="banner myelin">
+      <svg class="ic ic-lg" style="color:var(--status-alarm);" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m4.93 19.07 14.14-14.14a2 2 0 0 0 0-2.83l-1.41-1.41a2 2 0 0 0-2.83 0L1.51 14.59a2 2 0 0 0 0 2.83l4.6 4.6a2 2 0 0 0 2.82 0z"/></svg>
+      <div>
+        <div class="ttl">BUNKER er ikke trent på 28 dager.</div>
+        <div style="font-size:12px;color:var(--ink-dk-muted);margin-top:2px;">Foreslår en 15-min repetisjonsøkt før Bossum Open.</div>
+      </div>
+      <div class="spacer"></div>
+      <div class="actions">
+        <button class="btn-mini">Avvis</button>
+        <button class="btn-mini primary">+ BUNKER-økt fre 18:00</button>
+      </div>
+    </div>
+
+    <!-- Tournament banner -->
+    <div class="banner tour">
+      <svg class="ic ic-lg" style="color:var(--status-warn);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <div>
+        <div class="ttl">Bossum Open om 9 dager.</div>
+        <div style="font-size:12px;color:var(--ink-dk-muted);margin-top:2px;">7-dagerslås aktiveres i uke 21 — pyramide låses til TURN-default. Coach kan overstyre manuelt.</div>
+      </div>
+      <div class="spacer"></div>
+      <div class="actions"><button class="btn-mini">Se turn-konfig →</button></div>
+    </div>
+
+    <!-- Week capacity bar -->
+    <div class="week-cap">
+      <span class="lbl">Belastning u20</span>
+      <span class="v">704 min</span>
+      <div class="week-cap-bar">
+        <div class="fl" style="width: 88%;"></div>
+        <div class="tak"></div>
+      </div>
+      <span class="mt">av 800 min TAK · <span style="color:var(--status-warn);">88 %</span></span>
+    </div>
+
+    <!-- Week card -->
+    <div class="week-card">
+      <div class="wk-head">
+        <div class="corner"></div>
+        <div class="dh"><span class="dow">man</span><span class="date">12</span><span class="meta">3 økter · 122 m</span></div>
+        <div class="dh"><span class="dow">tir</span><span class="date">13</span><span class="meta">3 økter · 145 m</span></div>
+        <div class="dh today"><span class="dow">ons · i dag</span><span class="date">14</span><span class="meta">4 økter · 165 m</span></div>
+        <div class="dh"><span class="dow">tor</span><span class="date">15</span><span class="meta">4 økter · 180 m</span></div>
+        <div class="dh"><span class="dow">fre</span><span class="date">16</span><span class="meta">2 økter · 92 m</span></div>
+        <div class="dh weekend"><span class="dow">lør</span><span class="date">17</span><span class="meta">1 økt · 240 m</span></div>
+        <div class="dh weekend"><span class="dow">søn</span><span class="date">18</span><span class="meta">hvile</span></div>
+      </div>
+
+      <div class="wk-grid">
+        <!-- 16 hour rows, repeating column slots -->
+        <!-- Row helper: we render hour labels + 7 slot cells per row -->
+
+        <!-- 06 -->
+        <div class="hour-lbl">06:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 07 -->
+        <div class="hour-lbl">07:00</div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <!-- Mon FYS 07:00–07:45 -->
+          <div class="ev fys" style="top:0; height:42px;">
+            <span class="t">07:00–07:45</span>
+            <span class="nm">FYS · styrke · MOB
+            </span>
+            <span class="meta">FYS · L-KROPP · CS60 · M1 · PR1</span>
+            <div class="recur-mark" title="Ukentlig">↻</div>
+          </div>
+        </div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <!-- Thu FYS 07:00–07:45 -->
+          <div class="ev fys" style="top:0; height:42px;">
+            <span class="t">07:00–07:45</span>
+            <span class="nm">FYS · uthold. · CORE
+            </span>
+            <span class="meta">FYS · L-KROPP · CS55 · M1 · PR1</span>
+            <div class="recur-mark">↻</div>
+          </div>
+        </div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 08 -->
+        <div class="hour-lbl">08:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 09 -->
+        <div class="hour-lbl">09:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <!-- Tue TEK video 09:00–10:30 -->
+          <div class="ev tek" style="top:0; height:84px;">
+            <span class="t">09:00–10:30</span>
+            <span class="nm">Video · downswing
+            </span>
+            <span class="meta">TEK · TEE · L-KØLLE · CS70 · M1 · PR2</span>
+            <div class="badges"><span class="prk b">B</span><span class="pyr-dot tek"></span></div>
+          </div>
+        </div>
+        <div class="col today">
+          <div class="col-slot"></div>
+          <!-- Wed TEK 09:00–10:30 -->
+          <div class="ev tek" style="top:0; height:84px;">
+            <span class="t">09:00–10:30</span>
+            <span class="nm">Video · P7.0 Impact
+            </span>
+            <span class="meta">TEK · P7.0 · L-KØLLE · CS70 · M1 · PR2</span>
+            <div class="badges"><span class="prk b">B</span><span class="pyr-dot tek"></span></div>
+          </div>
+        </div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend">
+          <div class="col-slot"></div>
+          <!-- Sat full-day 18-hulls -->
+          <div class="ev spill" style="top:0; height:392px;">
+            <span class="t">09:00–16:00</span>
+            <span class="nm">18-hulls · Bossum
+            </span>
+            <span class="meta">SPILL · ALL · L-AUTO · CS90 · M4 · PR3 · spill-test</span>
+            <div class="badges" style="margin-top:8px;"><span class="prk s">S</span><span class="pyr-dot spill"></span><span class="pill" style="background:rgba(244,196,48,0.18);color:var(--pyr-spill-d);font-size:10px;padding:2px 7px;">par 71 · 6 040m</span></div>
+          </div>
+        </div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 10 -->
+        <div class="hour-lbl">10:00</div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <!-- Mon TEK 10:00–11:30 -->
+          <div class="ev tek" style="top:0; height:84px;">
+            <span class="t">10:00–11:30</span>
+            <span class="nm">INN100 · 7-jern
+            </span>
+            <span class="meta">SLAG · INN100 · L-BALL · CS65 · M2 · PR2</span>
+            <div class="badges"><span class="prk b">B</span><span class="pyr-dot tek"></span><span class="pyr-dot slag"></span></div>
+          </div>
+        </div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 11 -->
+        <div class="hour-lbl">11:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 12 -->
+        <div class="hour-lbl">12:00</div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <div class="ev rest" style="top:0; height:56px;">
+            <span class="t">12:00–13:00</span>
+            <span class="nm">Lunsj</span>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <div class="ev rest" style="top:0; height:56px;">
+            <span class="t">12:00–13:00</span>
+            <span class="nm">Lunsj</span>
+          </div>
+        </div>
+        <div class="col today">
+          <div class="col-slot"></div>
+          <div class="ev rest" style="top:0; height:56px;">
+            <span class="t">12:00–13:00</span>
+            <span class="nm">Lunsj</span>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <div class="ev rest" style="top:0; height:56px;">
+            <span class="t">12:00–13:00</span>
+            <span class="nm">Lunsj</span>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <div class="ev rest" style="top:0; height:56px;">
+            <span class="t">12:00–13:00</span>
+            <span class="nm">Lunsj</span>
+          </div>
+        </div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 13 -->
+        <div class="hour-lbl">13:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 14 -->
+        <div class="hour-lbl">14:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <!-- Tue SLAG driver 14:00–15:30 -->
+          <div class="ev slag" style="top:0; height:84px;">
+            <span class="t">14:00–15:30</span>
+            <span class="nm">TEE · Driver fade
+            </span>
+            <span class="meta">SLAG · TEE · L-BALL · CS75 · M2 · PR3</span>
+            <div class="badges"><span class="prk r">R</span><span class="pyr-dot slag"></span></div>
+          </div>
+        </div>
+        <div class="col today">
+          <div class="col-slot"></div>
+          <!-- Wed LIVE 14:00–15:30 (now playing) -->
+          <div class="ev live" style="top:0; height:84px;">
+            <span class="t">14:00–15:30 · NÅ</span>
+            <span class="nm">Press-utfordring · PUTT0-3</span>
+            <span class="meta">SLAG · PUTT0-3 · L-KØLLE · CS80 · M3 · PR4 · 12 min igjen</span>
+            <div class="badges">
+              <span class="prk" style="background:rgba(10,31,24,0.25);color:var(--brand-accent-on);font-weight:700;">K</span>
+              <span class="pyr-dot slag" style="border:1px solid var(--brand-accent-on);"></span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <!-- Thu SLAG wedges 14:00–15:30 -->
+          <div class="ev slag" style="top:0; height:84px;">
+            <span class="t">14:00–15:30</span>
+            <span class="nm">PITCH · spinn
+            </span>
+            <span class="meta">SLAG · PITCH · L-BALL · CS70 · M2 · PR3</span>
+            <div class="badges"><span class="prk r">R</span><span class="pyr-dot slag"></span></div>
+          </div>
+        </div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 15 -->
+        <div class="hour-lbl">15:00</div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <!-- Mon SLAG iron 15:00–16:30 -->
+          <div class="ev slag" style="top:0; height:84px;">
+            <span class="t">15:00–16:30</span>
+            <span class="nm">Iron · INN150
+            </span>
+            <span class="meta">SLAG · INN150 · L-KØLLE · CS65 · M2 · PR2</span>
+            <div class="badges"><span class="prk b">B</span><span class="pyr-dot slag"></span></div>
+          </div>
+        </div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 16 -->
+        <div class="hour-lbl">16:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 17 -->
+        <div class="hour-lbl">17:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <!-- Tue spill par-3 17:00–18:00 -->
+          <div class="ev spill" style="top:0; height:56px;">
+            <span class="t">17:00–18:00</span>
+            <span class="nm">Par-3 par-spill
+            </span>
+            <span class="meta">SPILL · INN150 · L-AUTO · CS80 · M4 · PR4</span>
+          </div>
+        </div>
+        <div class="col today">
+          <div class="col-slot"></div>
+          <!-- Wed FYS 17:00–17:45 -->
+          <div class="ev fys" style="top:0; height:42px;">
+            <span class="t">17:00–17:45</span>
+            <span class="nm">FYS · core · CORE
+            </span>
+            <span class="meta">FYS · L-KROPP · CS50 · M1 · PR1</span>
+            <div class="recur-mark">↻</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <!-- Thu SPILL 9-hulls 17:00–19:00 -->
+          <div class="ev spill" style="top:0; height:112px;">
+            <span class="t">17:00–19:00</span>
+            <span class="nm">9-hulls · GFGK
+            </span>
+            <span class="meta">SPILL · ALL · L-AUTO · CS80 · M4 · PR3 · spill-test</span>
+            <div class="badges"><span class="prk s">S</span><span class="pyr-dot spill"></span></div>
+          </div>
+        </div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 18 -->
+        <div class="hour-lbl">18:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col">
+          <div class="col-slot"></div>
+          <!-- Fri suggested bunker -->
+          <div class="ev slag" style="top:0; height:30px; background:repeating-linear-gradient(135deg, rgba(217,69,69,0.25) 0 6px, rgba(217,69,69,0.10) 6px 12px); color:#F1D6D6; box-shadow: inset 3px 0 0 var(--status-alarm); cursor:pointer;">
+            <span class="t" style="color:#F1D6D6;">18:00–18:30</span>
+            <span class="nm" style="color:#F8E7E7;">Forslag · BUNKER rep.</span>
+          </div>
+        </div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 19 -->
+        <div class="hour-lbl">19:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 20 -->
+        <div class="hour-lbl">20:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- 21 -->
+        <div class="hour-lbl">21:00</div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col today"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+        <div class="col weekend"><div class="col-slot"></div></div>
+
+        <!-- Now line at 14:18 = row 9, ~ (14-6)*56 + 18 ≈ 466px from start of grid -->
+        <div class="now-h" style="top: 482px;"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === '1') location.href = '01-aarsplan.html';
+    if (e.key === '2') location.href = '02-maanedsplan.html';
+    if (e.key === '3') location.href = '03-ukeplan.html';
+    if (e.key === '4') location.href = '04-dagsplan.html';
+  });
+</script>
+
+<script>
+  // Theme: dark | light. Default light per AK Golf Brand request.
+  (function(){
+    var saved = localStorage.getItem('ak-theme') || 'light';
+    if (saved === 'light') document.body.classList.add('light');
+    window.addEventListener('DOMContentLoaded', function(){
+      var t = document.getElementById('__themetoggle');
+      if (!t) return;
+      function paint(){
+        var isLight = document.body.classList.contains('light');
+        t.querySelector('.opt.l').classList.toggle('on', isLight);
+        t.querySelector('.opt.d').classList.toggle('on', !isLight);
+      }
+      paint();
+      t.addEventListener('click', function(e){
+        var pick = e.target.closest('.opt');
+        if (!pick) return;
+        var wantLight = pick.classList.contains('l');
+        document.body.classList.toggle('light', wantLight);
+        localStorage.setItem('ak-theme', wantLight ? 'light' : 'dark');
+        paint();
+      });
+    });
+  })();
+</script>
+</body>
+</html>

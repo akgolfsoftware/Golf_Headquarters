@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — Godkjenninger · Pakke 3</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:64px;padding:64px 24px 96px}
+  .ab{display:flex;flex-direction:column;gap:16px;max-width:1448px;width:100%}
+  .ab-label{display:flex;align-items:baseline;gap:16px;color:#3a3935;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em}
+  .ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990;font-weight:500}
+  .ab-label .ttl{font-size:20px}
+  .ab-label .meta{font-family:var(--font-body);font-size:13px;color:#7a7872;font-style:italic;font-weight:400;margin-left:auto}
+  .ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:24px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(10,31,24,.18),0 2px 4px rgba(10,31,24,.04)}
+  .ab-frame svg:not([fill]):not(.spark){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  .deck-head{max-width:1448px;width:100%;display:flex;flex-direction:column;gap:12px;padding:0 4px;margin-bottom:8px}
+  .deck-head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+  .deck-head h1{font-family:var(--font-display);font-size:36px;font-weight:600;letter-spacing:-.02em;margin:0;color:var(--ink)}
+  .deck-head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+  .deck-head .meta-row{display:flex;gap:24px;flex-wrap:wrap;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono);margin-top:8px}
+  .deck-head .meta-row .lbl{color:var(--ink);font-weight:500}
+
+  /* shell */
+  .app{display:flex;min-height:920px;background:var(--surface)}
+  .app--short{min-height:560px}
+  .rail{width:56px;background:var(--sidebar-coach-rail-bg);display:flex;flex-direction:column;align-items:center;padding:18px 0;gap:12px;flex-shrink:0}
+  .rail .mark{width:40px;height:40px;border-radius:12px;background:var(--brand-primary);display:flex;align-items:center;justify-content:center;color:var(--brand-accent);font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:4px}
+  .rail-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5)}
+  .rail-icon.active{background:rgba(255,255,255,.08);color:var(--brand-accent)}
+  .rail-icon.bottom{margin-top:auto}
+  .rail-icon .badge{position:absolute;width:8px;height:8px;background:var(--status-danger);border-radius:50%;border:2px solid var(--sidebar-coach-rail-bg);transform:translate(11px,-11px)}
+  .nav{width:220px;background:var(--sidebar-coach-nav-bg);border-right:1px solid var(--line);padding:24px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+  .nav-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:0 12px 16px;display:flex;align-items:center;gap:8px}
+  .nav-title .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-accent)}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:14px;color:var(--ink-muted);cursor:pointer;font-weight:400}
+  .nav-item:hover{background:var(--surface-alt);color:var(--ink)}
+  .nav-item.active{background:var(--sidebar-coach-active);color:var(--ink);font-weight:500}
+  .nav-item .count{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+  .nav-item .count.urgent{background:var(--status-danger);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px}
+  .nav-divider{height:1px;background:var(--line-soft);margin:16px 8px}
+  .nav-foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:13px;color:var(--ink-muted)}
+  .nav-foot .av-sm{width:28px;height:28px;border-radius:50%;background:var(--brand-primary);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+
+  .main{flex:1;padding:32px 36px 40px;min-width:0;display:flex;flex-direction:column;gap:24px}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+  .head h1{font-family:var(--font-display);font-size:30px;font-weight:400;font-style:italic;letter-spacing:-.02em;color:var(--ink);margin:0;line-height:1.1}
+  .head .crumb{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px}
+  .head .crumb .sep{margin:0 8px;color:var(--ink-disabled)}
+  .head-actions{display:flex;gap:8px;align-items:center}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;height:40px;white-space:nowrap;transition:all 120ms}
+  .btn-primary{background:var(--brand-primary);color:#fff}
+  .btn-primary:hover{background:var(--brand-primary-hover)}
+  .btn-ghost{background:var(--surface-card);color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{background:var(--surface-alt)}
+  .btn-accent{background:var(--brand-accent);color:var(--brand-accent-on);font-weight:600}
+  .btn-sm{height:32px;padding:0 12px;font-size:12px;border-radius:9px}
+  .btn-danger-ghost{background:transparent;color:var(--status-danger);border-color:rgba(163,45,45,.20)}
+  .btn-danger-ghost:hover{background:var(--status-danger-bg)}
+
+  /* KPI */
+  .kpi-strip{display:grid;grid-template-columns:1.4fr .9fr .9fr .9fr;gap:14px}
+  .kpi{padding:18px 20px;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);position:relative;overflow:hidden}
+  .kpi .lbl{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px}
+  .kpi .val{font-family:var(--font-mono);font-size:30px;font-weight:500;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .kpi .delta{font-family:var(--font-mono);font-size:12px;color:var(--status-success);margin-top:8px;display:inline-flex;align-items:center;gap:4px}
+  .kpi .delta.warn{color:var(--status-warning)}
+  .kpi.feature{background:linear-gradient(180deg,#fff 0,#fff 60%,#FAFAF7 100%)}
+  .kpi.feature .val{font-size:36px}
+  .sev-mix{display:flex;gap:6px;margin-top:10px;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)}
+  .sev-mix span{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px}
+  .sev-mix .urgent{background:var(--status-danger-bg);color:var(--status-danger)}
+  .sev-mix .warn{background:var(--status-warning-bg);color:var(--status-warning)}
+  .sev-mix .info{background:var(--brand-primary-soft);color:var(--brand-primary)}
+
+  /* filter */
+  .filter{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 14px;background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card)}
+  .search{flex:1;min-width:280px;display:flex;align-items:center;gap:10px;padding:0 14px;height:40px;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink-muted)}
+  .search input{flex:1;border:none;outline:none;background:transparent;font:inherit;font-size:14px;color:var(--ink)}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:100px;font-size:13px;color:var(--ink-muted);background:var(--surface);border:1px solid var(--line);cursor:pointer}
+  .chip:hover{background:var(--surface-alt);color:var(--ink)}
+  .chip.active{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+  .chip .ct{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+  .chip.active .ct{color:rgba(245,244,238,.7)}
+  .chip-grp{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+  .chip-grp .chip{border:none;border-radius:9px;padding:6px 10px;background:transparent}
+  .chip-grp .chip.active{background:var(--surface-card);color:var(--ink);box-shadow:0 1px 2px rgba(15,31,24,.06)}
+  .kbd{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:var(--surface-alt)}
+
+  /* count line */
+  .count-line{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--ink-muted);font-family:var(--font-mono)}
+  .count-line .em{color:var(--ink);font-weight:500}
+
+  /* INBOX list */
+  .inbox{background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden}
+  .grp-hd{padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle)}
+  .grp-hd .ct{font-family:var(--font-mono);color:var(--ink-muted);background:var(--surface-card);border:1px solid var(--line);padding:1px 8px;border-radius:8px}
+
+  .row{display:grid;grid-template-columns:120px 220px 1fr 160px 110px 280px;gap:18px;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line-soft);position:relative;transition:background 120ms}
+  .row:last-child{border-bottom:none}
+  .row:hover{background:var(--surface-alt)}
+  .row.urgent{background:linear-gradient(90deg,rgba(163,45,45,.04) 0%,transparent 60%)}
+  .row.urgent::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--status-danger)}
+  .row.warn::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--status-warning)}
+  .row.info::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--brand-primary)}
+
+  /* severity */
+  .sev{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 8px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;font-family:var(--font-body)}
+  .sev .pulse{width:8px;height:8px;border-radius:50%;position:relative}
+  .sev.urgent{background:var(--status-danger-bg);color:var(--status-danger)}
+  .sev.urgent .pulse{background:var(--status-danger)}
+  .sev.urgent .pulse::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--status-danger);opacity:.4;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{transform:scale(1);opacity:.4}100%{transform:scale(1.8);opacity:0}}
+  .sev.warn{background:var(--status-warning-bg);color:var(--status-warning)}
+  .sev.warn .pulse{background:var(--status-warning)}
+  .sev.info{background:var(--brand-primary-soft);color:var(--brand-primary)}
+  .sev.info .pulse{background:var(--brand-primary)}
+
+  .player{display:flex;align-items:center;gap:10px;min-width:0}
+  .av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;color:#fff;font-size:11px;flex-shrink:0}
+  .player .nm{font-weight:500;color:var(--ink);font-size:14px;line-height:1.2}
+  .player .meta{font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono);margin-top:2px}
+
+  .action{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .action .h{font-size:14px;color:var(--ink);font-weight:500;line-height:1.3;display:flex;gap:8px;align-items:flex-start}
+  .action .h svg{flex-shrink:0;color:var(--ink-muted);margin-top:2px}
+  .action .h strong{font-weight:600}
+  .action .d{font-size:12px;color:var(--ink-muted);line-height:1.4}
+  .action .d .num{font-family:var(--font-mono);color:var(--ink);font-weight:500}
+  .action .d .delta{font-family:var(--font-mono);color:var(--status-success);font-weight:500}
+  .action .d .delta.bad{color:var(--status-danger)}
+
+  .agent{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:500;background:var(--surface-alt);color:var(--ink-muted);border:1px solid var(--line-soft);font-family:var(--font-body);white-space:nowrap}
+  .agent .glyph{width:14px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-family:var(--font-mono);font-weight:700}
+  .agent.peri .glyph{background:#1A7D56}
+  .agent.deload .glyph{background:#B8852A}
+  .agent.escal .glyph{background:#A32D2D}
+  .agent.signal .glyph{background:#005840}
+
+  .when{font-family:var(--font-mono);font-size:12px;color:var(--ink-subtle);font-variant-numeric:tabular-nums}
+
+  .row-actions{display:flex;gap:6px;justify-content:flex-end;align-items:center}
+
+  /* sticky bulk bar */
+  .bulk{position:relative;display:flex;align-items:center;gap:14px;padding:14px 20px;background:var(--ink);color:var(--surface);border-radius:14px;box-shadow:var(--shadow-pop);margin-bottom:0}
+  .bulk .count{font-family:var(--font-mono);font-weight:500;font-size:13px;display:flex;align-items:center;gap:8px}
+  .bulk .count .n{padding:2px 8px;background:var(--brand-accent);color:var(--brand-accent-on);border-radius:6px;font-size:12px;font-weight:600}
+  .bulk-actions{margin-left:auto;display:flex;gap:6px;align-items:center}
+  .bulk-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;font-size:13px;color:var(--surface);background:rgba(255,255,255,.08);border:none;cursor:pointer;font-weight:500}
+  .bulk-btn:hover{background:rgba(255,255,255,.16)}
+  .bulk-btn.accept{background:var(--brand-accent);color:var(--brand-accent-on);font-weight:600}
+  .bulk-btn.accept:hover{background:var(--brand-accent-hover)}
+  .bulk-btn.danger{color:#FFB6B6}
+
+  /* checkbox */
+  .checkbox{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--ink-disabled);background:var(--surface-card);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:transparent;cursor:pointer}
+  .checkbox.on{background:var(--brand-primary);border-color:var(--brand-primary);color:#fff}
+  .checkbox.on::after{content:"✓";font-size:11px;font-family:var(--font-mono);color:#fff}
+
+  /* hover state for accept */
+  .row.demo-hover .btn-accept{background:var(--brand-accent-hover);box-shadow:0 0 0 4px rgba(209,248,67,.30)}
+  .btn-accept{background:var(--brand-accent);color:var(--brand-accent-on);font-weight:600;height:32px;padding:0 14px;border-radius:9px;font-size:12px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 120ms}
+  .btn-decline{background:transparent;color:var(--ink-muted);border:1px solid var(--line);height:32px;padding:0 12px;border-radius:9px;font-size:12px;cursor:pointer}
+  .btn-decline:hover{background:var(--surface-alt);color:var(--ink)}
+  .btn-detail{background:transparent;color:var(--ink-muted);border:none;height:32px;padding:0 8px;border-radius:9px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+  .btn-detail:hover{color:var(--ink)}
+
+  /* feedback / decline-inline */
+  .decline-inline{grid-column:1/-1;display:flex;gap:10px;align-items:center;padding:14px 20px;background:var(--status-danger-bg);border-top:1px dashed rgba(163,45,45,.30);margin:0 -20px -18px}
+  .decline-inline textarea{flex:1;min-height:64px;border:1px solid rgba(163,45,45,.20);border-radius:10px;padding:10px 12px;font:inherit;font-size:13px;background:#fff;color:var(--ink);resize:none;outline:none}
+
+  /* empty */
+  .empty{padding:88px 32px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .empty .ill{width:96px;height:96px;border-radius:50%;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;color:var(--brand-primary);margin-bottom:6px}
+  .empty .ill svg{stroke-width:1.5;width:44px;height:44px;color:var(--brand-primary)}
+  .empty h3{font-family:var(--font-display);font-size:24px;font-weight:600;letter-spacing:-.01em;margin:0}
+  .empty .lede{font-family:var(--font-display);font-style:italic;font-size:18px;color:var(--ink-muted);margin:0;max-width:420px;line-height:1.4}
+  .empty .stats{display:flex;gap:32px;margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--ink-muted)}
+  .empty .stats .v{font-size:18px;color:var(--ink);font-weight:500;display:block}
+
+  /* dark */
+  .dark .ab-frame{border-color:#1c3b32}
+  .dark .app{background:#0F2A22}
+  .dark .nav{background:#0F2A22;border-right-color:#1c3b32}
+  .dark .nav-item{color:#9D9C95}
+  .dark .nav-item:hover{background:#163027;color:#F5F4EE}
+  .dark .nav-item.active{background:rgba(209,248,67,.14);color:#F5F4EE}
+  .dark .nav-divider{background:#1c3b32}
+  .dark .nav-foot .av-sm{background:var(--brand-accent);color:#0A1F18}
+  .dark .head h1{color:#F5F4EE}
+  .dark .head .crumb{color:#9D9C95}
+  .dark .btn-ghost{background:#163027;color:#F5F4EE;border-color:#274d41}
+  .dark .kpi{background:#163027;border-color:#274d41}
+  .dark .kpi .val{color:#F5F4EE}
+  .dark .kpi.feature{background:linear-gradient(180deg,#1a3830 0,#163027 70%)}
+  .dark .filter{background:#163027;border-color:#274d41}
+  .dark .search{background:#0F2A22;border-color:#274d41;color:#9D9C95}
+  .dark .search input{color:#F5F4EE}
+  .dark .kbd{background:#0F2A22;border-color:#274d41;color:#9D9C95}
+  .dark .chip{background:#0F2A22;color:#9D9C95;border-color:#274d41}
+  .dark .chip.active{background:var(--brand-accent);color:#0A1F18;border-color:var(--brand-accent)}
+  .dark .chip-grp{background:#0F2A22;border-color:#274d41}
+  .dark .chip-grp .chip.active{background:#21433A;color:#F5F4EE}
+  .dark .inbox{background:#163027;border-color:#274d41}
+  .dark .grp-hd{background:#0F2A22;border-bottom-color:#274d41;color:#9D9C95}
+  .dark .grp-hd .ct{background:#163027;border-color:#274d41;color:#9D9C95}
+  .dark .row{border-bottom-color:#274d41}
+  .dark .row:hover{background:#1a3830}
+  .dark .row.urgent{background:linear-gradient(90deg,rgba(163,45,45,.16) 0%,transparent 60%)}
+  .dark .player .nm{color:#F5F4EE}
+  .dark .player .meta{color:#9D9C95}
+  .dark .action .h{color:#F5F4EE}
+  .dark .action .h svg{color:#9D9C95}
+  .dark .action .d{color:#9D9C95}
+  .dark .action .d .num{color:#F5F4EE}
+  .dark .agent{background:#0F2A22;color:#9D9C95;border-color:#274d41}
+  .dark .when{color:#9D9C95}
+  .dark .btn-decline{background:transparent;border-color:#274d41;color:#9D9C95}
+  .dark .btn-decline:hover{background:#21433A;color:#F5F4EE}
+  .dark .btn-detail{color:#9D9C95}
+  .dark .btn-detail:hover{color:#F5F4EE}
+  .dark .count-line{color:#9D9C95}
+  .dark .count-line .em{color:#F5F4EE}
+
+  /* MOBILE */
+  .mobile-wrap{display:flex;justify-content:center;padding:32px;background:linear-gradient(180deg,#F5F2EA 0,#EDEAE2 100%)}
+  .mobile{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden}
+  .m-status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;color:var(--ink);font-weight:500}
+  .m-status .right{display:flex;gap:6px}
+  .m-head{padding:8px 20px 14px;border-bottom:1px solid var(--line-soft)}
+  .m-head .crumb{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:6px}
+  .m-head h1{font-family:var(--font-display);font-size:24px;font-weight:400;font-style:italic;margin:0;line-height:1.2}
+  .m-tab-row{display:flex;gap:6px;padding:12px 20px;border-bottom:1px solid var(--line-soft);overflow-x:auto;scrollbar-width:none}
+  .m-tab-row::-webkit-scrollbar{display:none}
+  .m-tab-row .chip{flex-shrink:0}
+  .m-list{padding:8px 12px;display:flex;flex-direction:column;gap:8px}
+  .m-card{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface-card);display:flex;flex-direction:column;gap:10px;position:relative}
+  .m-card.urgent{border-color:rgba(163,45,45,.30);background:linear-gradient(180deg,rgba(163,45,45,.04) 0,#fff 100%)}
+  .m-card-top{display:flex;align-items:center;gap:8px}
+  .m-card .when{margin-left:auto}
+  .m-card .h{font-size:14px;color:var(--ink);font-weight:500;line-height:1.3}
+  .m-card .actions{display:flex;gap:6px;flex-direction:column}
+  .m-card .actions button{width:100%;justify-content:center}
+  .m-tabbar{display:flex;justify-content:space-around;padding:10px 12px 22px;border-top:1px solid var(--line-soft)}
+  .m-tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle);font-weight:500;padding:6px 10px;letter-spacing:.04em;text-transform:uppercase}
+  .m-tab.active{color:var(--ink)}
+  .m-tab svg{width:20px;height:20px}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <header class="deck-head">
+    <span class="eyebrow">CoachHQ · Mini-batch 2-A · Pakke 3</span>
+    <h1>Godkjenninger — agent-inbox</h1>
+    <p class="sub">Coach sin agent-inbox: Signal→Skill→Agent-anbefalinger som krever beslutning. Severity-stripe til venstre, agent-badge i midten, Aksepter / Avslå / Detaljer til høyre. Tomtilstanden ("Alt godkjent") er målet — designet som en belønning, ikke et hull.</p>
+    <div class="meta-row">
+      <span><span class="lbl">URL:</span> /admin/approvals</span>
+      <span><span class="lbl">Arketype:</span> B — agent-inbox</span>
+      <span><span class="lbl">Modaler:</span> PlanActionDetail, BulkApprove, AgentFeedback</span>
+    </div>
+  </header>
+
+  <!-- ====================================================== -->
+  <!-- 01 LIGHT, 7 PENDING                                     -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="01 Inbox — lyst">
+    <div class="ab-label"><span class="num">01</span><span class="ttl">Inbox — lyst tema</span><span class="meta">1448 × 920 · 7 venter, gruppert etter severity</span></div>
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg></div>
+          <div class="rail-icon active" style="position:relative"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span class="badge"></span></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere<span class="count">42</span></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg>Treningsplaner<span class="count">76</span></div>
+          <div class="nav-item active"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Godkjenninger<span class="count urgent">7</span></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Timeplan</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analyser</div>
+          <div class="nav-divider"></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Meldinger</div>
+          <div class="nav-foot"><div class="av-sm">AK</div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Anders K.</span><span style="font-size:11px;color:var(--ink-subtle)">Hovedcoach</span></div></div>
+        </aside>
+
+        <main class="main">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Godkjenninger</div>
+              <h1>Sju anbefalinger venter på deg.</h1>
+            </div>
+            <div class="head-actions">
+              <button class="btn btn-ghost"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Send agent-feedback</button>
+              <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Velg flere</button>
+            </div>
+          </header>
+
+          <div class="kpi-strip">
+            <div class="kpi feature">
+              <div class="lbl">Venter</div>
+              <div class="val">7</div>
+              <div class="sev-mix">
+                <span class="urgent"><span style="width:6px;height:6px;border-radius:50%;background:var(--status-danger)"></span>3 urgent</span>
+                <span class="warn"><span style="width:6px;height:6px;border-radius:50%;background:var(--status-warning)"></span>2 warning</span>
+                <span class="info"><span style="width:6px;height:6px;border-radius:50%;background:var(--brand-primary)"></span>2 info</span>
+              </div>
+            </div>
+            <div class="kpi"><div class="lbl">Godkjent siste 7d</div><div class="val">23</div><span class="delta">+5 vs forrige uke</span></div>
+            <div class="kpi"><div class="lbl">Avslått siste 7d</div><div class="val">4</div><span class="delta">17% avslagsrate</span></div>
+            <div class="kpi"><div class="lbl">Snitt responstid</div><div class="val">2t 14m</div><span class="delta">−18m vs sist uke</span></div>
+          </div>
+
+          <div class="filter">
+            <div class="search">
+              <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input placeholder="Søk spiller eller action">
+              <span class="kbd">⌘K</span>
+            </div>
+            <div class="chip-grp">
+              <span class="chip active">Alle <span class="ct">7</span></span>
+              <span class="chip">Urgent <span class="ct">3</span></span>
+              <span class="chip">Warning <span class="ct">2</span></span>
+              <span class="chip">Info <span class="ct">2</span></span>
+            </div>
+            <span class="chip">Agent <span class="ct">3</span></span>
+            <span class="chip">Spiller</span>
+            <span class="chip">Nyeste <svg width="12" height="12" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </div>
+
+          <div class="count-line">
+            <span>Viser <span class="em">7 av 7</span> · gruppert etter severity</span>
+            <span><span class="em">Auto-refresh</span> · sist 14 sek siden</span>
+          </div>
+
+          <div class="inbox">
+            <!-- URGENT GROUP -->
+            <div class="grp-hd">
+              <span style="width:8px;height:8px;background:var(--status-danger);border-radius:50%"></span>
+              Urgent — krever umiddelbar respons <span class="ct">3</span>
+            </div>
+
+            <div class="row urgent">
+              <span class="sev urgent"><span class="pulse"></span>Urgent</span>
+              <div class="player">
+                <div class="av" style="background:#A32D2D">JT</div>
+                <div><div class="nm">Joachim Tangen</div><div class="meta">HCP 14.2 · Skadet</div></div>
+              </div>
+              <div class="action">
+                <div class="h"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg><span><strong>Eskalering til hovedcoach</strong> — skade-flagg fra dagbok</span></div>
+                <div class="d">Spiller har rapportert <span class="num">3 av 4</span> dager med smerte i venstre kne (NRS <span class="num">5/10</span>). Anbefaling: stoppe alle SLAG-økter, henvise til fysio.</div>
+              </div>
+              <span class="agent escal"><span class="glyph">E</span>Escalation-agent</span>
+              <span class="when">14 min siden</span>
+              <div class="row-actions">
+                <button class="btn-detail">Detaljer →</button>
+                <button class="btn-decline">Avslå</button>
+                <button class="btn-accept"><svg width="12" height="12" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aksepter</button>
+              </div>
+            </div>
+
+            <div class="row urgent demo-hover">
+              <span class="sev urgent"><span class="pulse"></span>Urgent</span>
+              <div class="player">
+                <div class="av" style="background:#005840">MR</div>
+                <div><div class="nm">Markus R Pedersen</div><div class="meta">HCP +2.4 · Elite</div></div>
+              </div>
+              <div class="action">
+                <div class="h"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9"/><polyline points="3 4 3 12 11 12"/></svg><span><strong>Avlys planlagt turnering</strong> — overtreningsindeks kritisk</span></div>
+                <div class="d">HRV <span class="delta bad">−18%</span> over 5 dager, søvn <span class="num">5.4t</span> snitt. Anbefaling: trekk fra Sørlandsåpent helga 11–12. mai. Plan B: lett restitusjon + Bossum range.</div>
+              </div>
+              <span class="agent deload"><span class="glyph">D</span>Deload-agent</span>
+              <span class="when">42 min siden</span>
+              <div class="row-actions">
+                <button class="btn-detail">Detaljer →</button>
+                <button class="btn-decline">Avslå</button>
+                <button class="btn-accept"><svg width="12" height="12" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aksepter</button>
+              </div>
+            </div>
+
+            <div class="row urgent">
+              <span class="sev urgent"><span class="pulse"></span>Urgent</span>
+              <div class="player">
+                <div class="av" style="background:#1A7D56">ES</div>
+                <div><div class="nm">Emma Solberg</div><div class="meta">HCP 8.7 · Pro</div></div>
+              </div>
+              <div class="action">
+                <div class="h"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span><strong>Foreldre-melding krever svar</strong> — 6 dgr ubesvart</span></div>
+                <div class="d">Far har sendt <span class="num">2</span> meldinger om utstyrsbytte (driver-skaft). Foreslått svar generert. Aksepter for å sende, eller redigér først.</div>
+              </div>
+              <span class="agent signal"><span class="glyph">S</span>Signal-agent</span>
+              <span class="when">2t 14m siden</span>
+              <div class="row-actions">
+                <button class="btn-detail">Detaljer →</button>
+                <button class="btn-decline">Avslå</button>
+                <button class="btn-accept"><svg width="12" height="12" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aksepter</button>
+              </div>
+            </div>
+
+            <!-- WARNING -->
+            <div class="grp-hd">
+              <span style="width:8px;height:8px;background:var(--status-warning);border-radius:50%"></span>
+              Warning <span class="ct">2</span>
+            </div>
+
+            <div class="row warn">
+              <span class="sev warn"><span class="pulse"></span>Warning</span>
+              <div class="player">
+                <div class="av" style="background:#005840">MR</div>
+                <div><div class="nm">Markus R Pedersen</div><div class="meta">HCP +2.4 · Elite</div></div>
+              </div>
+              <div class="action">
+                <div class="h"><svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span><strong>Pauseuke anbefalt</strong> — før Sørlandsåpent</span></div>
+                <div class="d">8 ukers progresjon viser flat platå siste 12 dager. Anbefaling: redusér volum med <span class="num">40%</span> i uke 19, behold intensitet på SLAG.</div>
+              </div>
+              <span class="agent deload"><span class="glyph">D</span>Deload-agent</span>
+              <span class="when">2t 02m siden</span>
+              <div class="row-actions">
+                <button class="btn-detail">Detaljer →</button>
+                <button class="btn-decline">Avslå</button>
+                <button class="btn-accept"><svg width="12" height="12" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aksepter</button>
+              </div>
+            </div>
+
+            <div class="row warn">
+              <span class="sev warn"><span class="pulse"></span>Warning</span>
+              <div class="player">
+                <div class="av" style="background:#1A7D56">ES</div>
+                <div><div class="nm">Emma Solberg</div><div class="meta">HCP 8.7 · Pro</div></div>
+              </div>
+              <div class="action">
+                <div class="h"><svg width="16" height="16" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span><strong>Endre TEK-volum</strong> fra <span class="num">40%</span> → <span class="num">28%</span></span></div>
+                <div class="d">Sving-data viser overfokusering på TEK relativt til SLAG. Re-balansering matcher pyramide-mal for hennes nivå (Pro, midt-sesong).</div>
+              </div>
+              <span class="agent peri"><span class="glyph">P</span>Periodisering-agent</span>
+              <span class="when">i går 16:42</span>
+              <div class="row-actions">
+                <button class="btn-detail">Detaljer →</button>
+                <button class="btn-decline">Avslå</button>
+                <button class="btn-accept"><svg width="12" height="12" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aksepter</button>
+              </div>
+            </div>
+
+            <!-- INFO -->
+            <div class="grp-hd">
+              <span style="width:8px;height:8px;background:var(--brand-primary);border-radius:50%"></span>
+              Info <span class="ct">2</span>
+            </div>
+
+            <div class="row info">
+              <span class="sev info"><span class="pulse"></span>Info</span>
+              <div class="player">
+                <div class="av" style="background:#D1F843;color:#0A1F18">LH</div>
+                <div><div class="nm">Lina Hellesund</div><div class="meta">HCP 4.1 · Elite</div></div>
+              </div>
+              <div class="action">
+                <div class="h"><svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span><strong>Ny fase klar</strong> — "Sommer-toppform" går fra Base → Spesifikk</span></div>
+                <div class="d">Spiller har fullført <span class="num">14 av 16</span> base-økter med snitt <span class="delta">+12%</span>. Neste fase aktiveres ved godkjenning.</div>
+              </div>
+              <span class="agent peri"><span class="glyph">P</span>Periodisering-agent</span>
+              <span class="when">i går 11:08</span>
+              <div class="row-actions">
+                <button class="btn-detail">Detaljer →</button>
+                <button class="btn-decline">Avslå</button>
+                <button class="btn-accept"><svg width="12" height="12" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aksepter</button>
+              </div>
+            </div>
+
+            <div class="row info">
+              <span class="sev info"><span class="pulse"></span>Info</span>
+              <div class="player">
+                <div class="av" style="background:#5E5C57">JD</div>
+                <div><div class="nm">Jon Dahl</div><div class="meta">HCP 14.0 · Pro</div></div>
+              </div>
+              <div class="action">
+                <div class="h"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg><span><strong>Plan ferdig</strong> — "Konsistens fra tee" arkiveres</span></div>
+                <div class="d">Mål oppnådd: greens-in-regulation <span class="delta">+8%</span> over 10 uker. Anbefaling: arkiver og start oppfølgings-plan.</div>
+              </div>
+              <span class="agent peri"><span class="glyph">P</span>Periodisering-agent</span>
+              <span class="when">2 dgr siden</span>
+              <div class="row-actions">
+                <button class="btn-detail">Detaljer →</button>
+                <button class="btn-decline">Avslå</button>
+                <button class="btn-accept"><svg width="12" height="12" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aksepter</button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 02 DARK                                                 -->
+  <!-- ====================================================== -->
+  <section class="ab dark" data-screen-label="02 Inbox — mørkt">
+    <div class="ab-label"><span class="num">02</span><span class="ttl">Inbox — mørkt tema</span><span class="meta">1448 × 760 · samme data, kveldsbruk</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon active" style="position:relative"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span class="badge"></span></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title" style="color:#9D9C95"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item">Spillere<span class="count">42</span></div>
+          <div class="nav-item">Treningsplaner<span class="count">76</span></div>
+          <div class="nav-item active">Godkjenninger<span class="count urgent">7</span></div>
+          <div class="nav-item">Timeplan</div>
+        </aside>
+        <main class="main">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Godkjenninger</div>
+              <h1>Sju anbefalinger venter.</h1>
+            </div>
+          </header>
+
+          <div class="filter">
+            <div class="search">
+              <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input placeholder="Søk spiller eller action">
+              <span class="kbd">⌘K</span>
+            </div>
+            <div class="chip-grp">
+              <span class="chip active">Alle <span class="ct">7</span></span>
+              <span class="chip">Urgent <span class="ct">3</span></span>
+              <span class="chip">Warning <span class="ct">2</span></span>
+            </div>
+          </div>
+
+          <div class="inbox">
+            <div class="grp-hd"><span style="width:8px;height:8px;background:var(--status-danger);border-radius:50%"></span>Urgent <span class="ct">3</span></div>
+            <div class="row urgent">
+              <span class="sev urgent"><span class="pulse"></span>Urgent</span>
+              <div class="player"><div class="av" style="background:#A32D2D">JT</div><div><div class="nm">Joachim Tangen</div><div class="meta">HCP 14.2 · Skadet</div></div></div>
+              <div class="action"><div class="h"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg><span><strong>Eskalering til hovedcoach</strong> — skade-flagg</span></div><div class="d">3 av 4 dager med smerte i venstre kne. Stoppe SLAG-økter.</div></div>
+              <span class="agent escal"><span class="glyph">E</span>Escalation</span>
+              <span class="when">14 min siden</span>
+              <div class="row-actions"><button class="btn-detail">Detaljer →</button><button class="btn-decline">Avslå</button><button class="btn-accept">Aksepter</button></div>
+            </div>
+            <div class="row urgent">
+              <span class="sev urgent"><span class="pulse"></span>Urgent</span>
+              <div class="player"><div class="av" style="background:#005840">MR</div><div><div class="nm">Markus R Pedersen</div><div class="meta">HCP +2.4 · Elite</div></div></div>
+              <div class="action"><div class="h"><span><strong>Avlys turnering</strong> — overtreningsindeks kritisk</span></div><div class="d">HRV <span class="d bad" style="color:#FF8E8E">−18%</span> over 5 dgr.</div></div>
+              <span class="agent deload"><span class="glyph">D</span>Deload</span>
+              <span class="when">42 min</span>
+              <div class="row-actions"><button class="btn-detail">Detaljer →</button><button class="btn-decline">Avslå</button><button class="btn-accept">Aksepter</button></div>
+            </div>
+            <div class="grp-hd"><span style="width:8px;height:8px;background:var(--status-warning);border-radius:50%"></span>Warning <span class="ct">2</span></div>
+            <div class="row warn">
+              <span class="sev warn"><span class="pulse"></span>Warning</span>
+              <div class="player"><div class="av" style="background:#1A7D56">ES</div><div><div class="nm">Emma Solberg</div><div class="meta">HCP 8.7 · Pro</div></div></div>
+              <div class="action"><div class="h"><span><strong>Endre TEK-volum</strong> 40% → 28%</span></div><div class="d">Re-balansering matcher pyramide-mal.</div></div>
+              <span class="agent peri"><span class="glyph">P</span>Periodisering</span>
+              <span class="when">i går 16:42</span>
+              <div class="row-actions"><button class="btn-detail">Detaljer →</button><button class="btn-decline">Avslå</button><button class="btn-accept">Aksepter</button></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 03 HOVER STATE on Aksepter                              -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="03 Hover Aksepter">
+    <div class="ab-label"><span class="num">03</span><span class="ttl">Hover-state — Aksepter</span><span class="meta">1448 × 360 · zoom på én rad, glow på lime CTA, keyboard-hint</span></div>
+    <div class="ab-frame">
+      <div style="padding:48px;background:var(--surface)">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono)">
+          <span class="kbd">A</span> aksepter · <span class="kbd">D</span> avslå · <span class="kbd">→</span> detaljer · <span class="kbd">⌘ ↵</span> aksepter alle valgte
+        </div>
+        <div class="inbox" style="max-width:1200px">
+          <div class="row urgent demo-hover" style="grid-template-columns:120px 220px 1fr 160px 110px 320px">
+            <span class="sev urgent"><span class="pulse"></span>Urgent</span>
+            <div class="player">
+              <div class="av" style="background:#005840">MR</div>
+              <div><div class="nm">Markus R Pedersen</div><div class="meta">HCP +2.4 · Elite</div></div>
+            </div>
+            <div class="action">
+              <div class="h"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9"/><polyline points="3 4 3 12 11 12"/></svg><span><strong>Avlys planlagt turnering</strong> — overtreningsindeks kritisk</span></div>
+              <div class="d">HRV <span class="d bad" style="color:var(--status-danger)">−18%</span> over 5 dager, søvn <span class="num">5.4t</span> snitt.</div>
+            </div>
+            <span class="agent deload"><span class="glyph">D</span>Deload-agent</span>
+            <span class="when">42 min siden</span>
+            <div class="row-actions">
+              <button class="btn-detail">Detaljer →</button>
+              <button class="btn-decline">Avslå</button>
+              <button class="btn-accept" style="background:var(--brand-accent-hover);box-shadow:0 0 0 4px rgba(209,248,67,.30),0 6px 16px rgba(209,248,67,.32);transform:translateY(-1px)"><svg width="12" height="12" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aksepter <span style="margin-left:4px;font-family:var(--font-mono);font-size:10px;opacity:.7">A</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 04 BULK MODE                                            -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="04 Bulk-mode">
+    <div class="ab-label"><span class="num">04</span><span class="ttl">Bulk-mode — 3 valgt</span><span class="meta">1448 × 720 · sticky bar med Aksepter alle / Avslå alle</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon active" style="position:relative"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item active">Godkjenninger<span class="count urgent">7</span></div>
+          <div class="nav-item">Spillere<span class="count">42</span></div>
+        </aside>
+        <main class="main">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Godkjenninger</div>
+              <h1>Tre valgt — håndter samlet.</h1>
+            </div>
+          </header>
+
+          <div class="bulk">
+            <span class="count"><span class="n">3</span>valgt av 7</span>
+            <span style="opacity:.5;font-size:12px">·</span>
+            <span style="font-size:12px;opacity:.7;font-family:var(--font-mono)">2 urgent · 1 warning</span>
+            <div class="bulk-actions">
+              <button class="bulk-btn"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>Eksporter</button>
+              <button class="bulk-btn danger"><svg width="14" height="14" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Avslå alle (3)</button>
+              <button class="bulk-btn accept"><svg width="14" height="14" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aksepter alle (3)</button>
+            </div>
+          </div>
+
+          <div class="inbox" style="margin-top:14px">
+            <div class="row urgent" style="background:rgba(0,88,64,.04);grid-template-columns:32px 90px 200px 1fr 140px 90px 140px">
+              <span class="checkbox on"></span>
+              <span class="sev urgent"><span class="pulse"></span>Urgent</span>
+              <div class="player"><div class="av" style="background:#A32D2D">JT</div><div><div class="nm">Joachim Tangen</div><div class="meta">HCP 14.2</div></div></div>
+              <div class="action"><div class="h"><strong>Eskalering til hovedcoach</strong></div><div class="d">Skade-flagg fra dagbok — knesmerte 3 av 4 dgr</div></div>
+              <span class="agent escal"><span class="glyph">E</span>Escalation</span>
+              <span class="when">14 min</span>
+              <div class="row-actions"><button class="btn-detail">→</button></div>
+            </div>
+            <div class="row urgent" style="background:rgba(0,88,64,.04);grid-template-columns:32px 90px 200px 1fr 140px 90px 140px">
+              <span class="checkbox on"></span>
+              <span class="sev urgent"><span class="pulse"></span>Urgent</span>
+              <div class="player"><div class="av" style="background:#005840">MR</div><div><div class="nm">Markus R Pedersen</div><div class="meta">+2.4</div></div></div>
+              <div class="action"><div class="h"><strong>Avlys turnering</strong></div><div class="d">Overtreningsindeks kritisk — HRV −18%</div></div>
+              <span class="agent deload"><span class="glyph">D</span>Deload</span>
+              <span class="when">42 min</span>
+              <div class="row-actions"><button class="btn-detail">→</button></div>
+            </div>
+            <div class="row warn" style="background:rgba(0,88,64,.04);grid-template-columns:32px 90px 200px 1fr 140px 90px 140px">
+              <span class="checkbox on"></span>
+              <span class="sev warn"><span class="pulse"></span>Warning</span>
+              <div class="player"><div class="av" style="background:#1A7D56">ES</div><div><div class="nm">Emma Solberg</div><div class="meta">8.7</div></div></div>
+              <div class="action"><div class="h"><strong>Endre TEK-volum</strong> 40% → 28%</div><div class="d">Re-balansering matcher pyramide-mal</div></div>
+              <span class="agent peri"><span class="glyph">P</span>Periodisering</span>
+              <span class="when">i går</span>
+              <div class="row-actions"><button class="btn-detail">→</button></div>
+            </div>
+            <div class="row" style="grid-template-columns:32px 90px 200px 1fr 140px 90px 140px">
+              <span class="checkbox"></span>
+              <span class="sev warn"><span class="pulse"></span>Warning</span>
+              <div class="player"><div class="av" style="background:#005840">MR</div><div><div class="nm">Markus R Pedersen</div></div></div>
+              <div class="action"><div class="h"><strong>Pauseuke anbefalt</strong></div><div class="d">Før Sørlandsåpent — flat platå 12 dgr</div></div>
+              <span class="agent deload"><span class="glyph">D</span>Deload</span>
+              <span class="when">2t</span>
+              <div class="row-actions"><button class="btn-detail">→</button></div>
+            </div>
+            <div class="row info" style="grid-template-columns:32px 90px 200px 1fr 140px 90px 140px">
+              <span class="checkbox"></span>
+              <span class="sev info"><span class="pulse"></span>Info</span>
+              <div class="player"><div class="av" style="background:#D1F843;color:#0A1F18">LH</div><div><div class="nm">Lina Hellesund</div></div></div>
+              <div class="action"><div class="h"><strong>Ny fase klar</strong> — Base → Spesifikk</div><div class="d">14 av 16 base-økter fullført, +12% snitt</div></div>
+              <span class="agent peri"><span class="glyph">P</span>Periodisering</span>
+              <span class="when">i går</span>
+              <div class="row-actions"><button class="btn-detail">→</button></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 05 EMPTY                                                -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="05 Empty — alt godkjent">
+    <div class="ab-label"><span class="num">05</span><span class="ttl">Empty — alt godkjent</span><span class="meta">1448 × 600 · belønningstilstand</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item active">Godkjenninger<span class="count" style="font-family:var(--font-mono);color:var(--brand-primary)">0</span></div>
+          <div class="nav-item">Spillere<span class="count">42</span></div>
+        </aside>
+        <main class="main">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Godkjenninger</div>
+              <h1>Alt godkjent. Bra jobba.</h1>
+            </div>
+          </header>
+
+          <div class="inbox" style="background:linear-gradient(180deg,var(--accent-bg) 0%,#fff 60%);border-color:rgba(135,168,32,.20)">
+            <div class="empty">
+              <div class="ill">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <h3>Inboxen er tom</h3>
+              <p class="lede">Agentene jobber i bakgrunnen. Du får varsel her når det er noe som krever beslutningen din.</p>
+              <div class="stats">
+                <div><span class="v">2t 14m</span>snitt responstid</div>
+                <div><span class="v">23</span>godkjent siste 7d</div>
+                <div><span class="v">87%</span>akseptrate</div>
+              </div>
+              <div style="margin-top:18px">
+                <button class="btn btn-ghost"><svg width="14" height="14" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Se historikk</button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 06 MOBILE                                               -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="06 Mobil">
+    <div class="ab-label"><span class="num">06</span><span class="ttl">Mobil — kort-layout</span><span class="meta">≤ 640px · severity-pill øverst, aksjoner stables vertikalt</span></div>
+    <div class="ab-frame">
+      <div class="mobile-wrap">
+        <div class="mobile">
+          <div class="m-status"><span>09:41</span><span class="right"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor"><path d="M1 9V5"/><path d="M5 9V3"/><path d="M9 9V1"/><path d="M13 9V1"/></svg><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="19" height="9" rx="2"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/></svg></span></div>
+          <div class="m-head">
+            <div class="crumb">Coach HQ · Inbox</div>
+            <h1>7 venter — 3 urgent.</h1>
+          </div>
+          <div class="m-tab-row">
+            <span class="chip active">Alle <span class="ct">7</span></span>
+            <span class="chip">Urgent <span class="ct">3</span></span>
+            <span class="chip">Warning <span class="ct">2</span></span>
+            <span class="chip">Info <span class="ct">2</span></span>
+          </div>
+          <div class="m-list">
+            <div class="m-card urgent">
+              <div class="m-card-top">
+                <span class="sev urgent"><span class="pulse"></span>Urgent</span>
+                <span class="when">14m</span>
+              </div>
+              <div class="player"><div class="av" style="background:#A32D2D">JT</div><div><div class="nm">Joachim Tangen</div><div class="meta">HCP 14.2 · Skadet</div></div></div>
+              <div class="h"><strong>Eskalering til hovedcoach</strong> — skade-flagg fra dagbok. Stoppe SLAG-økter, henvise til fysio.</div>
+              <span class="agent escal" style="align-self:flex-start"><span class="glyph">E</span>Escalation-agent</span>
+              <div class="actions">
+                <button class="btn btn-accent" style="height:44px;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aksepter</button>
+                <div style="display:flex;gap:6px">
+                  <button class="btn btn-ghost" style="flex:1;height:40px;justify-content:center">Avslå</button>
+                  <button class="btn btn-ghost" style="flex:1;height:40px;justify-content:center">Detaljer →</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="m-card">
+              <div class="m-card-top">
+                <span class="sev warn"><span class="pulse"></span>Warning</span>
+                <span class="when">2t</span>
+              </div>
+              <div class="player"><div class="av" style="background:#005840">MR</div><div><div class="nm">Markus R Pedersen</div><div class="meta">+2.4 · Elite</div></div></div>
+              <div class="h"><strong>Pauseuke anbefalt</strong> — før Sørlandsåpent. Volum −40%, behold intensitet.</div>
+              <span class="agent deload" style="align-self:flex-start"><span class="glyph">D</span>Deload-agent</span>
+              <div class="actions">
+                <button class="btn btn-accent" style="height:44px;justify-content:center">Aksepter</button>
+                <div style="display:flex;gap:6px">
+                  <button class="btn btn-ghost" style="flex:1;height:40px;justify-content:center">Avslå</button>
+                  <button class="btn btn-ghost" style="flex:1;height:40px;justify-content:center">Detaljer →</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="m-card">
+              <div class="m-card-top">
+                <span class="sev info"><span class="pulse"></span>Info</span>
+                <span class="when">i går</span>
+              </div>
+              <div class="player"><div class="av" style="background:#D1F843;color:#0A1F18">LH</div><div><div class="nm">Lina Hellesund</div><div class="meta">4.1 · Elite</div></div></div>
+              <div class="h"><strong>Ny fase klar</strong> — Base → Spesifikk. 14 av 16 økter fullført.</div>
+              <span class="agent peri" style="align-self:flex-start"><span class="glyph">P</span>Periodisering-agent</span>
+              <div class="actions">
+                <button class="btn btn-accent" style="height:44px;justify-content:center">Aksepter</button>
+              </div>
+            </div>
+          </div>
+          <div class="m-tabbar">
+            <div class="m-tab"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Hjem</div>
+            <div class="m-tab"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere</div>
+            <div class="m-tab active" style="position:relative"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Inbox</div>
+            <div class="m-tab"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Timeplan</div>
+            <div class="m-tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Meg</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

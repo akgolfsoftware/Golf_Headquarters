@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — Sikkerhet · 6-A/3</title>
+<link rel="stylesheet" href="_shared/arketype-f.css">
+<style>
+  .twofa-card{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:24px;background:var(--surface-alt);border-radius:14px;border:1px solid var(--line-soft)}
+  .qr{width:200px;height:200px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;position:relative}
+  .qr svg{width:100%;height:100%;display:block}
+  .qr .center-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;color:#0A1F18;font-size:11px;border:2px solid #0A1F18}
+  .recovery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-family:var(--font-mono);font-size:13px;color:var(--ink)}
+  .recovery-grid span{padding:8px 10px;background:var(--surface-card);border:1px solid var(--line-soft);border-radius:6px;display:flex;align-items:center;gap:8px}
+  .recovery-grid .idx{color:var(--ink-disabled);font-size:10px;width:14px}
+  .recovery-grid .strike{text-decoration:line-through;color:var(--ink-disabled)}
+  .sess-list{display:flex;flex-direction:column}
+  .sess-row{display:grid;grid-template-columns:32px 1fr auto auto;gap:14px;align-items:center;padding:16px 24px;border-top:1px solid var(--line-soft)}
+  .sess-row:first-child{border-top:0}
+  .sess-icon{width:32px;height:32px;border-radius:8px;background:var(--surface-alt);display:flex;align-items:center;justify-content:center;color:var(--ink-muted)}
+  .sess-icon svg{width:16px;height:16px}
+  .sess-row.current .sess-icon{background:var(--accent-bg);color:var(--brand-primary)}
+  .sess-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .sess-info .t1{font-size:14px;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .sess-info .t1 .tag{padding:1px 6px;border-radius:4px;background:var(--accent-bg);color:#0A1F18;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+  .sess-info .t2{font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono)}
+  .sess-meta{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);text-align:right;line-height:1.4}
+  .sess-meta .now{color:var(--brand-primary);font-weight:600}
+  .sess-meta .stale{color:var(--status-warning)}
+  .hist-list{display:flex;flex-direction:column;font-family:var(--font-mono);font-size:12px}
+  .hist-row{display:grid;grid-template-columns:140px 1fr 130px 110px;gap:14px;align-items:center;padding:10px 24px;border-top:1px solid var(--line-soft)}
+  .hist-row:first-child{border-top:0}
+  .hist-row .time{color:var(--ink-muted)}
+  .hist-row .ip{color:var(--ink)}
+  .hist-row .loc{color:var(--ink-muted)}
+  .hist-row .stat{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:100px;font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;justify-self:start}
+  .hist-row .stat.ok{background:var(--status-success-bg);color:#1A7D56}
+  .hist-row .stat.fail{background:#FCEBEB;color:#A32D2D}
+  .hist-row .stat .d{width:5px;height:5px;border-radius:50%;background:currentColor}
+  .panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:18px 24px;align-items:start}
+  .mini-stat{padding:18px;background:var(--surface-alt);border-radius:12px;border:1px solid var(--line-soft);display:flex;flex-direction:column;gap:4px}
+  .mini-stat .lbl{font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.04em;font-family:var(--font-mono)}
+  .mini-stat .v{font-family:var(--font-display);font-size:30px;font-weight:600;color:var(--ink);letter-spacing:-.02em;display:flex;align-items:baseline;gap:8px}
+  .mini-stat .v .u{font-family:var(--font-mono);font-size:12px;font-weight:400;color:var(--ink-muted);letter-spacing:0;text-transform:lowercase}
+  .mini-stat .d{font-size:11px;color:var(--ink-subtle);margin-top:2px}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <header class="deck-head">
+    <span class="eyebrow">CoachHQ · Mini-batch 6-A · Pakke 3</span>
+    <h1>Sikkerhet — 2FA, økter og innloggings-historikk</h1>
+    <p class="sub">Hvor er du logget inn, hva har skjedd, og hvordan slår vi av tilgang hvis noe lukter rart. Designet for å føles ufarlig å besøke — men powerful når det trengs.</p>
+    <div class="meta-row">
+      <span><span class="lbl">URL:</span> /admin/settings/sikkerhet</span>
+      <span><span class="lbl">Arketype:</span> F — Settings</span>
+      <span><span class="lbl">Modaler:</span> Enable2FAModal, RevokeSessionModal</span>
+    </div>
+  </header>
+
+  <section class="ab" data-screen-label="01 Sikkerhet — lyst default">
+    <div class="ab-label"><span class="num">01</span><span class="ttl">Lyst tema — 2FA aktiv, 3 aktive økter, login-historikk siste 7 dager</span><span class="meta">1448 × 1180 · default</span></div>
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item">Spillere</div>
+          <div class="nav-divider"></div>
+          <div class="nav-title" style="padding-top:0">Konto</div>
+          <div class="nav-item">Profil</div>
+          <div class="nav-item active">Innstillinger</div>
+          <div class="nav-foot"><div class="av-sm">AK</div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Anders K.</span><span style="font-size:11px;color:var(--ink-subtle)">Hovedcoach</span></div></div>
+        </aside>
+
+        <main class="main">
+          <header class="page-head">
+            <div class="crumb">Innstillinger <span class="sep">/</span> Sikkerhet</div>
+            <h1>Hvem er logget inn akkurat nå?</h1>
+            <div class="sub">Kontoen din virker grei. Sjekk likevel listen — første gang du ser en rar IP er ofte siste sjanse.</div>
+          </header>
+
+          <div class="settings">
+            <aside class="subnav">
+              <div class="subnav-title">Innstillinger</div>
+              <div class="subnav-item">Profil</div>
+              <div class="subnav-item">Bruker</div>
+              <div class="subnav-item active">Sikkerhet</div>
+              <div class="subnav-item">Varsler</div>
+              <div class="subnav-item">API <span class="count">3</span></div>
+            </aside>
+
+            <div class="form-area">
+
+              <div class="section">
+                <div class="section-head"><h2>Oversikt</h2></div>
+                <div class="panel-grid">
+                  <div class="mini-stat"><span class="lbl">Score</span><span class="v">82<span class="u">/ 100</span></span><span class="d">2FA aktiv, sterkt passord, ikke verifisert e-post</span></div>
+                  <div class="mini-stat"><span class="lbl">Aktive økter</span><span class="v">3<span class="u">enheter</span></span><span class="d">macOS, iOS, iPad — alle dine</span></div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-head"><h2>To-faktor</h2><span class="aux">Aktiv via SMS</span></div>
+                <div class="field-list">
+                  <div class="field"><span class="lbl">SMS-kode</span><span class="val"><span class="chip success" style="padding:3px 10px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Aktiv · +47 ••• ••• 67</span></span><a class="edit-link">Endre →</a></div>
+                  <div class="field"><span class="lbl">Authenticator-app<span class="hint">Anbefalt — Authy, 1Password</span></span><span class="val" style="color:var(--ink-muted)">Ikke konfigurert</span><a class="edit-link">Sett opp →</a></div>
+                  <div class="field"><span class="lbl">Sikkerhetsnøkkel<span class="hint">YubiKey, fysiske USB-nøkler</span></span><span class="val" style="color:var(--ink-muted)">Ikke konfigurert</span><a class="edit-link">Legg til →</a></div>
+                  <div class="field"><span class="lbl">Recovery-koder<span class="hint">10 engangskoder — sist generert 14. mars</span></span>
+                    <div class="val">
+                      <div class="recovery-grid" style="width:100%;max-width:380px">
+                        <span><span class="idx">01</span>K4P9-X2RM</span>
+                        <span><span class="idx">02</span>9HQT-N7DV</span>
+                        <span class="strike"><span class="idx">03</span>R3W5-MJ8B</span>
+                        <span><span class="idx">04</span>2X8F-PCQK</span>
+                        <span><span class="idx">05</span>L7VN-K4HW</span>
+                        <span><span class="idx">06</span>3MZP-T9XB</span>
+                      </div>
+                    </div>
+                    <a class="edit-link">Regenerer →</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-head"><h2>Aktive økter</h2><span class="desc">3 enheter er logget inn akkurat nå</span><div style="margin-left:auto"><button class="btn btn-destructive-ghost btn-sm">Logg ut alle andre</button></div></div>
+                <div class="sess-list">
+                  <div class="sess-row current">
+                    <div class="sess-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg></div>
+                    <div class="sess-info">
+                      <span class="t1">MacBook Pro · Safari 17 <span class="tag">Denne enheten</span></span>
+                      <span class="t2">macOS 14.5 · Oslo, NO · 84.215.142.018</span>
+                    </div>
+                    <span class="sess-meta"><span class="now">● Aktiv nå</span><br>Sist innlogg 09:14</span>
+                    <button class="btn btn-ghost btn-sm" disabled style="opacity:.4">—</button>
+                  </div>
+                  <div class="sess-row">
+                    <div class="sess-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+                    <div class="sess-info">
+                      <span class="t1">iPhone 15 · CoachHQ-app</span>
+                      <span class="t2">iOS 17.4 · Oslo, NO · 84.215.142.018</span>
+                    </div>
+                    <span class="sess-meta">Aktiv 14 min siden<br>Innlogget 12. mai</span>
+                    <button class="btn btn-ghost btn-sm">Logg ut →</button>
+                  </div>
+                  <div class="sess-row">
+                    <div class="sess-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/></svg></div>
+                    <div class="sess-info">
+                      <span class="t1">iPad Pro · Safari</span>
+                      <span class="t2">iPadOS 17.4 · Bærum, NO · 178.232.014.092</span>
+                    </div>
+                    <span class="sess-meta"><span class="stale">Aktiv 4 dager siden</span><br>Innlogget 28. april</span>
+                    <button class="btn btn-ghost btn-sm">Logg ut →</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-head"><h2>Innloggings-historikk</h2><span class="desc">Siste 7 dager</span><div style="margin-left:auto"><a class="edit-link">Se alle →</a></div></div>
+                <div class="hist-list">
+                  <div class="hist-row"><span class="time">14. mai · 09:14</span><span class="ip">84.215.142.018</span><span class="loc">Oslo, NO</span><span class="stat ok"><span class="d"></span>OK</span></div>
+                  <div class="hist-row"><span class="time">13. mai · 21:42</span><span class="ip">84.215.142.018</span><span class="loc">Oslo, NO</span><span class="stat ok"><span class="d"></span>OK</span></div>
+                  <div class="hist-row"><span class="time">12. mai · 08:31</span><span class="ip">178.232.014.092</span><span class="loc">Bærum, NO</span><span class="stat ok"><span class="d"></span>OK</span></div>
+                  <div class="hist-row"><span class="time">11. mai · 19:08</span><span class="ip">192.168.043.122</span><span class="loc">Trondheim, NO</span><span class="stat fail"><span class="d"></span>Feilet 2FA</span></div>
+                  <div class="hist-row"><span class="time">10. mai · 14:55</span><span class="ip">84.215.142.018</span><span class="loc">Oslo, NO</span><span class="stat ok"><span class="d"></span>OK</span></div>
+                  <div class="hist-row"><span class="time">08. mai · 11:02</span><span class="ip">84.215.142.018</span><span class="loc">Oslo, NO</span><span class="stat ok"><span class="d"></span>OK</span></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <section class="ab" data-screen-label="02 Sikkerhet — modal Enable2FA">
+    <div class="ab-label"><span class="num">02</span><span class="ttl">Modal — sett opp Authenticator-app (QR + manuell nøkkel, steg 2 av 3)</span><span class="meta">1448 × 880 · modal</span></div>
+    <div class="ab-frame">
+      <div class="app app--med" style="position:relative">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item active">Innstillinger</div>
+        </aside>
+        <main class="main" style="opacity:.4;filter:blur(1.5px)">
+          <header class="page-head"><div class="crumb">Innstillinger / Sikkerhet</div><h1>Hvem er logget inn akkurat nå?</h1></header>
+          <div class="settings"><aside class="subnav"><div class="subnav-item active">Sikkerhet</div></aside><div class="form-area"><div class="section"><div class="section-head"><h2>To-faktor</h2></div></div></div></div>
+        </main>
+
+        <div style="position:absolute;inset:0;background:rgba(10,31,24,.30);display:flex;align-items:center;justify-content:center;padding:32px">
+          <div style="width:640px;max-width:100%;background:var(--surface-card);border-radius:18px;border:1px solid var(--line);box-shadow:0 24px 64px rgba(10,31,24,.20);display:flex;flex-direction:column;overflow:hidden">
+            <header style="padding:20px 24px;border-bottom:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:center">
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase">Steg 2 av 3</span>
+                <h2 style="font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink);margin:0">Skann med Authenticator-appen</h2>
+              </div>
+              <button style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--ink-muted)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </header>
+
+            <div style="padding:24px">
+              <p style="font-size:14px;color:var(--ink-muted);line-height:1.5;margin:0 0 18px">Åpne appen din (Authy, 1Password, Google Authenticator), trykk "Legg til", og skann denne koden. Eller skriv inn den manuelle nøkkelen.</p>
+              <div class="twofa-card">
+                <div class="qr">
+                  <svg viewBox="0 0 33 33" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                    <rect width="33" height="33" fill="#fff"/>
+                    <g fill="#0A1F18">
+                      <rect x="1" y="1" width="7" height="7"/><rect x="2" y="2" width="5" height="5" fill="#fff"/><rect x="3" y="3" width="3" height="3"/>
+                      <rect x="25" y="1" width="7" height="7"/><rect x="26" y="2" width="5" height="5" fill="#fff"/><rect x="27" y="3" width="3" height="3"/>
+                      <rect x="1" y="25" width="7" height="7"/><rect x="2" y="26" width="5" height="5" fill="#fff"/><rect x="3" y="27" width="3" height="3"/>
+                      <rect x="10" y="2" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="14" y="2" width="2" height="1"/><rect x="17" y="2" width="1" height="1"/><rect x="20" y="2" width="1" height="1"/><rect x="22" y="2" width="1" height="1"/>
+                      <rect x="9" y="4" width="2" height="1"/><rect x="13" y="4" width="1" height="2"/><rect x="15" y="4" width="1" height="1"/><rect x="18" y="4" width="2" height="1"/><rect x="22" y="4" width="1" height="2"/>
+                      <rect x="10" y="6" width="1" height="2"/><rect x="12" y="6" width="2" height="1"/><rect x="16" y="6" width="2" height="2"/><rect x="20" y="6" width="1" height="1"/><rect x="22" y="6" width="2" height="1"/>
+                      <rect x="2" y="10" width="1" height="1"/><rect x="4" y="10" width="2" height="1"/><rect x="9" y="10" width="2" height="2"/><rect x="14" y="10" width="3" height="1"/><rect x="18" y="10" width="1" height="2"/><rect x="20" y="10" width="2" height="1"/><rect x="26" y="10" width="2" height="1"/>
+                      <rect x="3" y="12" width="2" height="1"/><rect x="9" y="12" width="1" height="1"/><rect x="11" y="12" width="2" height="1"/><rect x="15" y="12" width="1" height="2"/><rect x="17" y="12" width="2" height="1"/><rect x="20" y="12" width="1" height="2"/><rect x="22" y="12" width="2" height="1"/><rect x="27" y="12" width="2" height="1"/>
+                      <rect x="2" y="14" width="2" height="1"/><rect x="8" y="14" width="2" height="1"/><rect x="11" y="14" width="1" height="2"/><rect x="13" y="14" width="2" height="1"/><rect x="19" y="14" width="2" height="1"/><rect x="23" y="14" width="1" height="2"/><rect x="29" y="14" width="1" height="2"/>
+                      <rect x="3" y="16" width="1" height="2"/><rect x="6" y="16" width="2" height="1"/><rect x="9" y="16" width="1" height="2"/><rect x="12" y="16" width="2" height="1"/><rect x="15" y="16" width="1" height="2"/><rect x="18" y="16" width="2" height="1"/><rect x="21" y="16" width="1" height="2"/><rect x="24" y="16" width="2" height="1"/>
+                      <rect x="2" y="18" width="2" height="1"/><rect x="8" y="18" width="2" height="1"/><rect x="11" y="18" width="1" height="2"/><rect x="14" y="18" width="2" height="1"/><rect x="17" y="18" width="1" height="2"/><rect x="20" y="18" width="2" height="1"/><rect x="24" y="18" width="2" height="1"/>
+                      <rect x="3" y="20" width="1" height="1"/><rect x="9" y="20" width="1" height="2"/><rect x="11" y="20" width="3" height="1"/><rect x="15" y="20" width="1" height="2"/><rect x="18" y="20" width="2" height="1"/><rect x="21" y="20" width="1" height="2"/><rect x="24" y="20" width="2" height="1"/><rect x="28" y="20" width="2" height="1"/>
+                      <rect x="10" y="22" width="1" height="2"/><rect x="13" y="22" width="2" height="1"/><rect x="16" y="22" width="1" height="2"/><rect x="19" y="22" width="2" height="1"/><rect x="25" y="22" width="2" height="1"/>
+                      <rect x="10" y="26" width="2" height="1"/><rect x="14" y="26" width="1" height="2"/><rect x="17" y="26" width="2" height="1"/><rect x="20" y="26" width="2" height="1"/><rect x="24" y="26" width="1" height="2"/><rect x="27" y="26" width="3" height="1"/>
+                      <rect x="11" y="28" width="2" height="1"/><rect x="15" y="28" width="1" height="2"/><rect x="18" y="28" width="2" height="1"/><rect x="22" y="28" width="1" height="2"/><rect x="26" y="28" width="2" height="1"/>
+                    </g>
+                  </svg>
+                  <div class="center-mark">AK</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:14px">
+                  <div>
+                    <div style="font-size:12px;color:var(--ink-muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Eller skriv inn manuelt</div>
+                    <div style="display:flex;align-items:center;gap:8px"><code style="font-family:var(--font-mono);font-size:14px;background:var(--surface-card);padding:8px 12px;border-radius:8px;border:1px solid var(--line);color:var(--ink);letter-spacing:.05em">JBSWY3DPEHPK3PXP</code><button style="width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:var(--surface-card);display:flex;align-items:center;justify-content:center;color:var(--ink-muted)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+                  </div>
+                  <div>
+                    <div style="font-size:12px;color:var(--ink-muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Bekreft koden fra appen</div>
+                    <div style="display:flex;gap:6px">
+                      <input style="width:42px;height:48px;text-align:center;font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink);background:var(--surface-card);border:1.5px solid var(--brand-primary);border-radius:8px" value="4"><input style="width:42px;height:48px;text-align:center;font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink);background:var(--surface-card);border:1.5px solid var(--brand-primary);border-radius:8px" value="8"><input style="width:42px;height:48px;text-align:center;font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink);background:var(--surface-card);border:1.5px solid var(--brand-primary);border-radius:8px" value="2"><span style="display:flex;align-items:center;font-family:var(--font-mono);font-size:18px;color:var(--ink-disabled);padding:0 4px">·</span><input style="width:42px;height:48px;text-align:center;font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink);background:var(--surface-card);border:1.5px solid var(--brand-primary);border-radius:8px" value="9"><input style="width:42px;height:48px;text-align:center;font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink);background:var(--surface-card);border:1.5px solid var(--brand-primary);border-radius:8px" value=""><input style="width:42px;height:48px;text-align:center;font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink);background:var(--surface-card);border:1.5px solid var(--line);border-radius:8px" value="">
+                    </div>
+                    <div style="font-size:11px;color:var(--ink-subtle);margin-top:6px">Koden roterer hvert 30 sek</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <footer style="padding:18px 24px;background:var(--surface-alt);border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:center">
+              <div style="display:flex;gap:6px">
+                <span style="width:24px;height:4px;border-radius:100px;background:var(--brand-primary)"></span>
+                <span style="width:24px;height:4px;border-radius:100px;background:var(--brand-primary)"></span>
+                <span style="width:24px;height:4px;border-radius:100px;background:var(--line)"></span>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm">Tilbake</button>
+                <button class="btn btn-primary btn-sm">Bekreft og fortsett →</button>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ab dark" data-screen-label="03 Sikkerhet — mørkt, mistenkelig aktivitet">
+    <div class="ab-label"><span class="num">03</span><span class="ttl">Mørkt tema — mistenkelig sesjon flagget med varselbanner</span><span class="meta">1448 × 880 · dark + warning</span></div>
+    <div class="ab-frame">
+      <div class="app app--med">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-divider"></div>
+          <div class="nav-item active">Innstillinger</div>
+        </aside>
+        <main class="main">
+          <header class="page-head">
+            <div class="crumb">Innstillinger <span class="sep">/</span> Sikkerhet</div>
+            <h1>Vi så noe rart. Sjekk listen.</h1>
+            <div class="sub">Ny enhet logget inn fra Berlin kl 03:42 i natt. Var det deg?</div>
+          </header>
+
+          <div style="margin:0 0 24px;padding:18px 22px;background:rgba(229,72,77,.10);border:1px solid rgba(229,72,77,.40);border-radius:14px;display:flex;align-items:center;gap:16px">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(229,72,77,.20);display:flex;align-items:center;justify-content:center;color:#FF8E92;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div style="flex:1">
+              <div style="font-family:var(--font-display);font-size:16px;font-weight:600;color:#F5F4EE;margin-bottom:2px">Ny innlogging fra Berlin, Tyskland</div>
+              <div style="font-size:13px;color:#9D9C95;font-family:var(--font-mono)">81.214.044.187 · Chrome 124 · macOS · 14. mai 03:42</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-shrink:0">
+              <button class="btn btn-ghost btn-sm">Det var meg</button>
+              <button class="btn btn-destructive btn-sm" style="background:#A32D2D">Logg ut + bytt passord</button>
+            </div>
+          </div>
+
+          <div class="settings">
+            <aside class="subnav">
+              <div class="subnav-item">Bruker</div>
+              <div class="subnav-item active">Sikkerhet</div>
+              <div class="subnav-item">API</div>
+            </aside>
+            <div class="form-area">
+              <div class="section">
+                <div class="section-head"><h2 style="color:#F5F4EE">Aktive økter</h2><span class="desc" style="color:#9D9C95">4 enheter — 1 ukjent</span></div>
+                <div class="sess-list">
+                  <div class="sess-row current">
+                    <div class="sess-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                    <div class="sess-info">
+                      <span class="t1" style="color:#F5F4EE">MacBook Pro · Safari 17 <span class="tag" style="background:rgba(209,248,67,.18);color:var(--brand-accent)">Denne enheten</span></span>
+                      <span class="t2">macOS 14.5 · Oslo, NO · 84.215.142.018</span>
+                    </div>
+                    <span class="sess-meta"><span class="now" style="color:var(--brand-accent)">● Aktiv nå</span><br>09:14</span>
+                    <button class="btn btn-ghost btn-sm" disabled style="opacity:.4">—</button>
+                  </div>
+                  <div class="sess-row" style="background:rgba(229,72,77,.08);border-top:1px solid rgba(229,72,77,.20)">
+                    <div class="sess-icon" style="background:rgba(229,72,77,.20);color:#FF8E92"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                    <div class="sess-info">
+                      <span class="t1" style="color:#F5F4EE">Ukjent — Chrome 124 <span class="tag" style="background:rgba(229,72,77,.20);color:#FF8E92">Mistenkelig</span></span>
+                      <span class="t2">macOS · Berlin, DE · 81.214.044.187</span>
+                    </div>
+                    <span class="sess-meta"><span class="stale">5t siden</span><br>Innlogg 03:42</span>
+                    <button class="btn btn-destructive btn-sm" style="background:#A32D2D">Logg ut nå</button>
+                  </div>
+                  <div class="sess-row">
+                    <div class="sess-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+                    <div class="sess-info"><span class="t1" style="color:#F5F4EE">iPhone 15 · CoachHQ-app</span><span class="t2">iOS 17.4 · Oslo, NO</span></div>
+                    <span class="sess-meta">14 min siden</span>
+                    <button class="btn btn-ghost btn-sm">Logg ut →</button>
+                  </div>
+                  <div class="sess-row">
+                    <div class="sess-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/></svg></div>
+                    <div class="sess-info"><span class="t1" style="color:#F5F4EE">iPad Pro · Safari</span><span class="t2">iPadOS 17.4 · Bærum, NO</span></div>
+                    <span class="sess-meta">4 dg siden</span>
+                    <button class="btn btn-ghost btn-sm">Logg ut →</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

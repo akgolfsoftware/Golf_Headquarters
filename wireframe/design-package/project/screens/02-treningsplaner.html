@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — Treningsplaner · Pakke 2</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:64px;padding:64px 24px 96px}
+  .ab{display:flex;flex-direction:column;gap:16px;max-width:1448px;width:100%}
+  .ab-label{display:flex;align-items:baseline;gap:16px;color:#3a3935;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em}
+  .ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990;font-weight:500}
+  .ab-label .ttl{font-size:20px}
+  .ab-label .meta{font-family:var(--font-body);font-size:13px;color:#7a7872;font-style:italic;font-weight:400;margin-left:auto}
+  .ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:24px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(10,31,24,.18),0 2px 4px rgba(10,31,24,.04)}
+  .ab-frame svg:not([fill]):not(.spark){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  /* deck head */
+  .deck-head{max-width:1448px;width:100%;display:flex;flex-direction:column;gap:12px;padding:0 4px;margin-bottom:8px}
+  .deck-head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+  .deck-head h1{font-family:var(--font-display);font-size:36px;font-weight:600;letter-spacing:-.02em;margin:0;color:var(--ink)}
+  .deck-head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+  .deck-head .meta-row{display:flex;gap:24px;flex-wrap:wrap;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono);margin-top:8px}
+  .deck-head .meta-row .lbl{color:var(--ink);font-weight:500}
+
+  /* App shell */
+  .app{display:flex;min-height:980px;background:var(--surface)}
+  .app--short{min-height:520px}
+  .rail{width:56px;background:var(--sidebar-coach-rail-bg);display:flex;flex-direction:column;align-items:center;padding:18px 0;gap:12px;flex-shrink:0}
+  .rail .mark{width:40px;height:40px;border-radius:12px;background:var(--brand-primary);display:flex;align-items:center;justify-content:center;color:var(--brand-accent);font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:4px;letter-spacing:-.02em}
+  .rail-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);cursor:pointer;transition:color 120ms,background 120ms}
+  .rail-icon:hover{color:rgba(255,255,255,.85)}
+  .rail-icon.active{background:rgba(255,255,255,.08);color:var(--brand-accent)}
+  .rail-icon.bottom{margin-top:auto}
+
+  .nav{width:220px;background:var(--sidebar-coach-nav-bg);border-right:1px solid var(--line);padding:24px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+  .nav-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:0 12px 16px;display:flex;align-items:center;gap:8px}
+  .nav-title .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-accent)}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:14px;color:var(--ink-muted);cursor:pointer;font-weight:400}
+  .nav-item:hover{background:var(--surface-alt);color:var(--ink)}
+  .nav-item.active{background:var(--sidebar-coach-active);color:var(--ink);font-weight:500}
+  .nav-item .count{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);font-variant-numeric:tabular-nums}
+  .nav-divider{height:1px;background:var(--line-soft);margin:16px 8px}
+  .nav-foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:13px;color:var(--ink-muted)}
+  .nav-foot .av-sm{width:28px;height:28px;border-radius:50%;background:var(--brand-primary);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+
+  /* main */
+  .main{flex:1;padding:32px 36px 40px;min-width:0;display:flex;flex-direction:column;gap:24px}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+  .head h1{font-family:var(--font-display);font-size:30px;font-weight:400;font-style:italic;letter-spacing:-.02em;color:var(--ink);margin:0;line-height:1.1}
+  .head .crumb{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px}
+  .head .crumb .sep{margin:0 8px;color:var(--ink-disabled)}
+  .head-actions{display:flex;gap:8px;align-items:center}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;height:40px;white-space:nowrap;transition:all 120ms}
+  .btn-primary{background:var(--brand-primary);color:#fff}
+  .btn-primary:hover{background:var(--brand-primary-hover)}
+  .btn-ghost{background:var(--surface-card);color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{background:var(--surface-alt)}
+  .btn-accent{background:var(--brand-accent);color:var(--brand-accent-on);font-weight:600;box-shadow:0 0 0 1px rgba(135,168,32,.18),0 6px 16px rgba(209,248,67,.28)}
+  .btn-accent:hover{background:var(--brand-accent-hover)}
+  .iconbtn{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;background:var(--surface-card);color:var(--ink-muted);border:1px solid var(--line);border-radius:12px;cursor:pointer}
+  .iconbtn:hover{background:var(--surface-alt);color:var(--ink)}
+
+  /* segment toggle */
+  .seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px;height:40px;align-items:center}
+  .seg .opt{display:inline-flex;align-items:center;gap:6px;padding:0 14px;height:32px;border-radius:9px;font-size:13px;color:var(--ink-muted);cursor:pointer;font-weight:500}
+  .seg .opt.active{background:var(--surface-card);color:var(--ink);box-shadow:0 1px 2px rgba(15,31,24,.06),inset 0 0 0 1px var(--line)}
+
+  /* KPI strip */
+  .kpi-strip{display:grid;grid-template-columns:1.4fr .9fr .9fr .9fr;gap:14px}
+  .kpi{padding:18px 20px;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);position:relative;overflow:hidden}
+  .kpi .lbl{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px}
+  .kpi .val{font-family:var(--font-mono);font-size:30px;font-weight:500;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .kpi .delta{font-family:var(--font-mono);font-size:12px;color:var(--status-success);margin-top:8px;display:inline-flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+  .kpi .delta.warn{color:var(--status-warning)}
+  .kpi.feature{background:linear-gradient(180deg,#fff 0%,#fff 65%,#FAFAF7 100%)}
+  .kpi.feature .val{font-size:34px}
+  .kpi .spark{position:absolute;right:18px;bottom:14px;width:96px;height:32px;opacity:.85}
+
+  /* filter bar */
+  .filter{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 14px;background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card)}
+  .search{flex:1;min-width:280px;display:flex;align-items:center;gap:10px;padding:0 14px;height:40px;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink-muted)}
+  .search input{flex:1;border:none;outline:none;background:transparent;font:inherit;font-size:14px;color:var(--ink)}
+  .search input::placeholder{color:var(--ink-subtle)}
+  .search .kbd{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:var(--surface-alt)}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:100px;font-size:13px;color:var(--ink-muted);background:var(--surface);border:1px solid var(--line);cursor:pointer}
+  .chip:hover{background:var(--surface-alt);color:var(--ink)}
+  .chip.active{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+  .chip .ct{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);font-variant-numeric:tabular-nums}
+  .chip.active .ct{color:rgba(245,244,238,.7)}
+  .chip-grp{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+  .chip-grp .chip{border:none;border-radius:9px;padding:6px 10px;background:transparent}
+  .chip-grp .chip.active{background:var(--surface-card);color:var(--ink);box-shadow:0 1px 2px rgba(15,31,24,.06)}
+
+  /* count line */
+  .count-line{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--ink-muted);font-family:var(--font-mono)}
+  .count-line .em{color:var(--ink);font-weight:500}
+
+  /* ============================== KANBAN ============================== */
+  .kanban{display:grid;grid-template-columns:1.55fr 1fr 1fr;gap:16px;align-items:start}
+  .col{background:var(--surface-alt);border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:560px}
+  .col.col-paused{background:#F0EDE5}
+  .col.col-archived{background:transparent;border-style:dashed;border-color:var(--line);min-height:auto}
+  .col-head{display:flex;align-items:center;gap:10px;padding:6px 6px 10px;border-bottom:1px solid var(--line-soft)}
+  .col-head .dot{width:8px;height:8px;border-radius:50%}
+  .col-head .ttl{font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--ink);font-family:var(--font-body)}
+  .col-head .ct{font-family:var(--font-mono);font-size:11px;font-variant-numeric:tabular-nums;color:var(--ink-subtle);padding:2px 8px;background:var(--surface-card);border:1px solid var(--line);border-radius:100px}
+  .col-head .add{margin-left:auto;width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--ink-subtle);cursor:pointer;border-radius:6px}
+  .col-head .add:hover{background:var(--surface-card);color:var(--ink)}
+  .col-head .chev{margin-left:auto;color:var(--ink-subtle);transition:transform 120ms}
+  .col.col-archived.collapsed .chev{transform:rotate(-90deg)}
+
+  /* plan card */
+  .plan{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;cursor:grab;transition:all 160ms cubic-bezier(.16,1,.3,1);box-shadow:0 1px 2px rgba(15,31,24,.04)}
+  .plan:hover{box-shadow:0 1px 2px rgba(15,31,24,.04),0 8px 18px rgba(15,31,24,.06);border-color:rgba(0,88,64,.20);transform:translateY(-1px)}
+  .plan-row{display:flex;align-items:center;gap:8px;min-width:0}
+  .plan .av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;color:#fff;font-size:10px;flex-shrink:0}
+  .plan .who{font-size:12px;color:var(--ink-muted);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .plan .more{margin-left:auto;color:var(--ink-subtle);width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:5px;cursor:pointer}
+  .plan .more:hover{background:var(--surface-alt);color:var(--ink)}
+  .plan h4{font-family:var(--font-display);font-style:italic;font-weight:500;font-size:18px;letter-spacing:-.01em;color:var(--ink);margin:0;line-height:1.2}
+  .plan .desc{font-size:12px;color:var(--ink-muted);line-height:1.4;margin:0}
+  .plan-bot{display:flex;align-items:center;gap:8px;justify-content:space-between}
+  .periode{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:100px;font-family:var(--font-mono);font-size:11px;font-variant-numeric:tabular-nums;background:var(--surface-alt);color:var(--ink-muted);border:1px solid var(--line)}
+  .periode.warn{background:var(--status-warning-bg);color:var(--status-warning);border-color:transparent}
+  .periode.danger{background:var(--status-danger-bg);color:var(--status-danger);border-color:transparent}
+  .periode.live{background:var(--accent-bg);color:#384c0a;border-color:rgba(135,168,32,.30)}
+  .progress{display:flex;align-items:center;gap:8px;width:100%}
+  .progress .track{flex:1;height:4px;background:var(--surface-alt);border-radius:100px;overflow:hidden;border:1px solid var(--line-soft)}
+  .progress .fill{height:100%;background:var(--brand-primary);border-radius:100px}
+  .progress .fill.full{background:var(--brand-accent)}
+  .progress .pct{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);font-variant-numeric:tabular-nums;min-width:32px;text-align:right}
+  .plan-foot{display:flex;align-items:center;gap:6px;padding-top:8px;border-top:1px solid var(--line-soft);margin-top:2px}
+  .tag{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;background:var(--surface-alt);color:var(--ink-muted);border:1px solid var(--line-soft)}
+  .tag.ai{background:var(--brand-primary-soft);color:var(--brand-primary);border-color:rgba(0,88,64,.18)}
+  .tag.tmpl{background:#FFF0D6;color:var(--status-warning);border-color:rgba(184,133,42,.18)}
+  .plan .coach-av{margin-left:auto;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;color:#fff;font-size:9px;border:1.5px solid var(--surface-card);box-shadow:0 0 0 1px var(--line)}
+
+  /* Drag specific */
+  .plan.dragging{opacity:.4;border-style:dashed;background:transparent;box-shadow:none}
+  .plan.ghost{transform:rotate(-2deg) translateY(-4px);box-shadow:0 24px 40px -16px rgba(10,31,24,.30),0 4px 8px rgba(10,31,24,.10);border-color:var(--brand-primary);position:relative;z-index:5;cursor:grabbing}
+  .col.drop-target{background:rgba(0,88,64,.06);border:2px dashed var(--brand-primary);padding:12px}
+  .drop-zone{height:60px;border:2px dashed rgba(0,88,64,.40);background:rgba(0,88,64,.04);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--brand-primary);font-weight:500;letter-spacing:.02em}
+
+  /* Archived list (collapsed-style rows) */
+  .arch-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface-card);border:1px solid var(--line-soft);border-radius:10px;font-size:12px;color:var(--ink-muted)}
+  .arch-row .nm{color:var(--ink);font-weight:500}
+  .arch-row .when{margin-left:auto;font-family:var(--font-mono);color:var(--ink-subtle);font-size:11px}
+  .arch-row .av{width:20px;height:20px;border-radius:50%;color:#fff;font-family:var(--font-display);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center}
+
+  /* ============================== LIST ============================== */
+  .tbl-card{background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden}
+  table.plans{width:100%;border-collapse:collapse}
+  .plans thead th{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);text-align:left;padding:14px 12px;background:var(--surface);border-bottom:1px solid var(--line-soft)}
+  .plans thead th.first{padding-left:20px}
+  .plans thead th.last{padding-right:20px;text-align:right}
+  .plans tbody td{padding:14px 12px;border-bottom:1px solid var(--line-soft);font-size:14px;color:var(--ink);vertical-align:middle}
+  .plans tbody tr:last-child td{border-bottom:none}
+  .plans tbody tr:hover{background:var(--surface-alt)}
+  .plans td.first{padding-left:20px}
+  .plans td.last{padding-right:20px;text-align:right}
+  .plan-name{display:flex;flex-direction:column;line-height:1.3}
+  .plan-name .t{font-family:var(--font-display);font-style:italic;font-weight:500;font-size:15px;color:var(--ink);letter-spacing:-.01em}
+  .plan-name .s{font-size:12px;color:var(--ink-subtle);margin-top:2px}
+  .player{display:flex;align-items:center;gap:10px;min-width:0}
+  .av-sm{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;color:#fff;font-size:10px;flex-shrink:0}
+  .player .nm{font-weight:500;color:var(--ink);font-size:14px}
+  .progress.inline{width:140px}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:500;white-space:nowrap}
+  .pill .dot{width:6px;height:6px;border-radius:50%}
+  .pill-active{background:var(--accent-bg);color:#384c0a}
+  .pill-active .dot{background:var(--brand-accent)}
+  .pill-paused{background:var(--surface-alt);color:var(--ink-muted)}
+  .pill-paused .dot{background:var(--ink-subtle)}
+  .pill-archived{background:#F0EDE5;color:#8a877f}
+  .pill-archived .dot{background:#bcb8ad}
+
+  /* ============================== EMPTY ============================== */
+  .empty{padding:120px 32px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;background:var(--surface-card);border:1px dashed var(--line);border-radius:18px}
+  .empty .ill{width:96px;height:96px;border-radius:50%;background:var(--surface-alt);display:flex;align-items:center;justify-content:center;color:var(--ink-subtle);margin-bottom:6px}
+  .empty .ill svg{stroke-width:1.5;width:42px;height:42px}
+  .empty h3{font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:-.01em;margin:0}
+  .empty .lede{font-family:var(--font-display);font-style:italic;font-size:18px;color:var(--ink-muted);margin:0;max-width:420px;line-height:1.4}
+  .empty p{font-size:14px;color:var(--ink-muted);margin:0;max-width:380px;line-height:1.55}
+  .empty .actions{display:flex;gap:10px;margin-top:8px}
+
+  /* ============================== DARK ============================== */
+  .dark .ab-frame{border-color:#1c3b32}
+  .dark .app{background:#0F2A22}
+  .dark .nav{background:#0F2A22;border-right-color:#1c3b32}
+  .dark .nav-item{color:#9D9C95}
+  .dark .nav-item:hover{background:#163027;color:#F5F4EE}
+  .dark .nav-item.active{background:rgba(209,248,67,.14);color:#F5F4EE}
+  .dark .nav-divider{background:#1c3b32}
+  .dark .nav-foot .av-sm{background:var(--brand-accent);color:#0A1F18}
+  .dark .main{color:#F5F4EE}
+  .dark .head h1{color:#F5F4EE}
+  .dark .head .crumb{color:#9D9C95}
+  .dark .btn-ghost{background:#163027;color:#F5F4EE;border-color:#274d41}
+  .dark .iconbtn{background:#163027;color:#9D9C95;border-color:#274d41}
+  .dark .seg{background:#163027;border-color:#274d41}
+  .dark .seg .opt{color:#9D9C95}
+  .dark .seg .opt.active{background:#21433A;color:#F5F4EE;box-shadow:none}
+  .dark .kpi{background:#163027;border-color:#274d41}
+  .dark .kpi .val{color:#F5F4EE}
+  .dark .kpi.feature{background:linear-gradient(180deg,#1a3830 0,#163027 70%)}
+  .dark .filter{background:#163027;border-color:#274d41}
+  .dark .search{background:#0F2A22;border-color:#274d41;color:#9D9C95}
+  .dark .search input{color:#F5F4EE}
+  .dark .search .kbd{background:#0F2A22;border-color:#274d41;color:#9D9C95}
+  .dark .chip{background:#0F2A22;color:#9D9C95;border-color:#274d41}
+  .dark .chip:hover{background:#163027;color:#F5F4EE}
+  .dark .chip.active{background:var(--brand-accent);color:#0A1F18;border-color:var(--brand-accent)}
+  .dark .chip-grp{background:#0F2A22;border-color:#274d41}
+  .dark .chip-grp .chip{background:transparent}
+  .dark .chip-grp .chip.active{background:#21433A;color:#F5F4EE}
+  .dark .col{background:#163027;border-color:#274d41}
+  .dark .col.col-paused{background:#1a3a30}
+  .dark .col.col-archived{background:transparent;border-color:#274d41}
+  .dark .col-head{border-bottom-color:#274d41}
+  .dark .col-head .ttl{color:#F5F4EE}
+  .dark .col-head .ct{background:#0F2A22;border-color:#274d41;color:#9D9C95}
+  .dark .plan{background:#21433A;border-color:#2c5a4d;box-shadow:none}
+  .dark .plan h4{color:#F5F4EE}
+  .dark .plan .who{color:#C7C5BD}
+  .dark .plan .desc{color:#9D9C95}
+  .dark .periode{background:#0F2A22;color:#9D9C95;border-color:#2c5a4d}
+  .dark .progress .track{background:#0F2A22;border-color:#2c5a4d}
+  .dark .plan-foot{border-top-color:#2c5a4d}
+  .dark .tag{background:#0F2A22;color:#9D9C95;border-color:#2c5a4d}
+  .dark .count-line{color:#9D9C95}
+  .dark .count-line .em{color:#F5F4EE}
+
+  /* ============================== MOBILE ============================== */
+  .mobile-wrap{display:flex;justify-content:center;gap:24px;padding:32px;background:linear-gradient(180deg,#F5F2EA 0,#EDEAE2 100%)}
+  .mobile{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16),0 2px 4px rgba(10,31,24,.04);overflow:hidden}
+  .m-status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;color:var(--ink);font-weight:500}
+  .m-status .right{display:flex;gap:6px;align-items:center}
+  .m-head{padding:8px 20px 12px;border-bottom:1px solid var(--line-soft)}
+  .m-head .crumb{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:6px}
+  .m-head h1{font-family:var(--font-display);font-size:24px;font-weight:400;font-style:italic;letter-spacing:-.02em;margin:0;line-height:1.2}
+  .m-head .actions{display:flex;gap:8px;margin-top:14px}
+  .m-search{flex:1;display:flex;align-items:center;gap:8px;padding:0 12px;height:40px;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink-subtle);font-size:14px}
+  .m-iconbtn{width:40px;height:40px;border-radius:12px;background:var(--ink);color:var(--brand-accent);display:flex;align-items:center;justify-content:center}
+  .m-tab-row{display:flex;gap:6px;padding:12px 20px;border-bottom:1px solid var(--line-soft);overflow-x:auto;scrollbar-width:none}
+  .m-tab-row::-webkit-scrollbar{display:none}
+  .m-kanban{padding:16px;display:flex;gap:14px;overflow-x:auto;scrollbar-width:none}
+  .m-kanban::-webkit-scrollbar{display:none}
+  .m-col{flex-shrink:0;width:280px;background:var(--surface-alt);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+  .m-col .col-head{padding:4px 4px 8px}
+  .m-tabbar{display:flex;justify-content:space-around;padding:10px 12px 22px;border-top:1px solid var(--line-soft);background:var(--surface-card)}
+  .m-tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle);font-weight:500;padding:6px 10px;letter-spacing:.04em;text-transform:uppercase}
+  .m-tab.active{color:var(--ink)}
+  .m-tab svg{width:20px;height:20px}
+
+  /* tooltip / drop-indicator floating help */
+  .floater{position:absolute;background:var(--ink);color:var(--surface);padding:6px 10px;border-radius:8px;font-size:11px;font-family:var(--font-mono);box-shadow:0 8px 20px rgba(10,31,24,.20);z-index:10}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <header class="deck-head">
+    <span class="eyebrow">CoachHQ · Mini-batch 2-A · Pakke 2</span>
+    <h1>Treningsplaner — kanban</h1>
+    <p class="sub">Hjertet i CoachHQ. Coach overvåker alle aktive planer, drar mellom statuser, og arkiverer ferdigstilte. Default kanban; liste er sekundært. Lime brukes sparsomt: progress-bar når plan er ferdig, AI-tag, Aksepter-CTA. Mørkt tema flipper lime til primary.</p>
+    <div class="meta-row">
+      <span><span class="lbl">URL:</span> /admin/plans</span>
+      <span><span class="lbl">Arketype:</span> B — list + filter</span>
+      <span><span class="lbl">Modaler:</span> NewPlanModal, AIPlanGenerator, TemplateSelector</span>
+    </div>
+  </header>
+
+  <!-- ====================================================== -->
+  <!-- 01 KANBAN — LYST                                        -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="01 Kanban — lyst">
+    <div class="ab-label"><span class="num">01</span><span class="ttl">Kanban — lyst tema</span><span class="meta">1448 × 980 · default view, ingen drag</span></div>
+    <div class="ab-frame">
+      <div class="app">
+        <!-- rail -->
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        </aside>
+        <!-- nav -->
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere<span class="count">42</span></div>
+          <div class="nav-item active"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg>Treningsplaner<span class="count">76</span></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>Timeplan</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analyser</div>
+          <div class="nav-divider"></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Meldinger<span class="count">7</span></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Hjelp</div>
+          <div class="nav-foot">
+            <div class="av-sm">AK</div>
+            <div style="display:flex;flex-direction:column;line-height:1.2">
+              <span style="font-size:13px;color:var(--ink);font-weight:500">Anders K.</span>
+              <span style="font-size:11px;color:var(--ink-subtle)">Hovedcoach</span>
+            </div>
+          </div>
+        </aside>
+
+        <main class="main">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Treningsplaner</div>
+              <h1>Tjueire planer i flyt. Tre forfaller før helga.</h1>
+            </div>
+            <div class="head-actions">
+              <div class="seg">
+                <span class="opt"><svg width="14" height="14" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Liste</span>
+                <span class="opt active"><svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg>Kanban</span>
+              </div>
+              <button class="btn btn-accent"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2l1.7 4.5L18 7l-3 3.5L15.7 15 12 12.5 8.3 15l.7-4.5L6 7l4.3-.5z"/></svg>AI-generer →</button>
+              <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Ny plan</button>
+            </div>
+          </header>
+
+          <div class="kpi-strip">
+            <div class="kpi feature">
+              <div class="lbl">Aktive planer</div>
+              <div class="val">24<span style="font-size:14px;color:var(--ink-subtle);margin-left:8px">/ 38 spillere</span></div>
+              <span class="delta">63% av portefølje aktiv</span>
+              <svg class="spark" viewBox="0 0 96 32" preserveAspectRatio="none"><polyline points="0,22 12,18 24,20 36,14 48,16 60,10 72,12 84,8 96,6" fill="none" stroke="#1A7D56" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="kpi"><div class="lbl">Snitt-progress</div><div class="val">64%</div><span class="delta">+8% vs sist mnd</span></div>
+            <div class="kpi"><div class="lbl">Forfaller denne uka</div><div class="val">3</div><span class="delta warn">Krever oppfølging</span></div>
+            <div class="kpi"><div class="lbl">AI-genererte</div><div class="val">12</div><span class="delta">50% av aktive</span></div>
+          </div>
+
+          <div class="filter">
+            <div class="search">
+              <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input placeholder="Søk plan eller spiller">
+              <span class="kbd">⌘K</span>
+            </div>
+            <div class="chip-grp">
+              <span class="chip active">Alle coacher</span>
+              <span class="chip">Anders K</span>
+              <span class="chip">Sara L</span>
+              <span class="chip">Tom B</span>
+            </div>
+            <div class="chip-grp">
+              <span class="chip active">Aktiv nå</span>
+              <span class="chip">Snart <span class="ct">3</span></span>
+              <span class="chip">Forfalt</span>
+            </div>
+            <span class="chip">Type <span class="ct">3</span></span>
+            <span class="chip">Sist endret <svg width="12" height="12" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </div>
+
+          <div class="count-line">
+            <span>Viser <span class="em">29 av 76</span> planer · gruppert etter status</span>
+            <span>Sortert: <span class="em">Sist endret</span></span>
+          </div>
+
+          <!-- KANBAN -->
+          <div class="kanban">
+            <!-- COL 1: Aktiv -->
+            <div class="col">
+              <div class="col-head">
+                <span class="dot" style="background:var(--brand-accent)"></span>
+                <span class="ttl">Aktiv</span>
+                <span class="ct">24</span>
+                <span class="add"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+              </div>
+              <!-- card 1 -->
+              <div class="plan">
+                <div class="plan-row">
+                  <div class="av" style="background:#005840">MR</div>
+                  <span class="who">Markus R Pedersen</span>
+                  <span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>
+                </div>
+                <h4>Sommer-toppform 2026</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:78%"></div></div><span class="pct">78%</span></div>
+                <div class="plan-bot">
+                  <span class="periode">9. mai – 30. jun</span>
+                </div>
+                <div class="plan-foot">
+                  <span class="tag ai"><svg width="10" height="10" viewBox="0 0 24 24"><path d="M12 2l1.7 4.5L18 7l-3 3.5L15.7 15 12 12.5 8.3 15l.7-4.5L6 7l4.3-.5z"/></svg>AI</span>
+                  <span class="tag">8 uker</span>
+                  <span class="coach-av" style="background:#005840">AK</span>
+                </div>
+              </div>
+              <!-- card 2 -->
+              <div class="plan">
+                <div class="plan-row">
+                  <div class="av" style="background:#1A7D56">ES</div>
+                  <span class="who">Emma Solberg</span>
+                  <span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>
+                </div>
+                <h4>Putting-fokus, kort sesong</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:42%"></div></div><span class="pct">42%</span></div>
+                <div class="plan-bot">
+                  <span class="periode warn">2. mai – 14. mai</span>
+                </div>
+                <div class="plan-foot">
+                  <span class="tag tmpl">Mal</span>
+                  <span class="tag">2 uker</span>
+                  <span class="coach-av" style="background:#B8852A">SL</span>
+                </div>
+              </div>
+              <!-- card 3 -->
+              <div class="plan">
+                <div class="plan-row">
+                  <div class="av" style="background:#D1F843;color:#0A1F18">LH</div>
+                  <span class="who">Lina Hellesund</span>
+                  <span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>
+                </div>
+                <h4>Eliteoppkjøring NM Junior</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:54%"></div></div><span class="pct">54%</span></div>
+                <div class="plan-bot">
+                  <span class="periode">12. apr – 18. jul</span>
+                </div>
+                <div class="plan-foot">
+                  <span class="tag ai"><svg width="10" height="10" viewBox="0 0 24 24"><path d="M12 2l1.7 4.5L18 7l-3 3.5L15.7 15 12 12.5 8.3 15l.7-4.5L6 7l4.3-.5z"/></svg>AI</span>
+                  <span class="tag">14 uker</span>
+                  <span class="coach-av" style="background:#005840">AK</span>
+                </div>
+              </div>
+              <!-- card 4 -->
+              <div class="plan">
+                <div class="plan-row">
+                  <div class="av" style="background:#A32D2D">JT</div>
+                  <span class="who">Joachim Tangen</span>
+                  <span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>
+                </div>
+                <h4>Retur fra skade — fase 2</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:18%"></div></div><span class="pct">18%</span></div>
+                <div class="plan-bot">
+                  <span class="periode danger">Forfalt 4. mai</span>
+                </div>
+                <div class="plan-foot">
+                  <span class="tag">Manuell</span>
+                  <span class="tag">6 uker</span>
+                  <span class="coach-av" style="background:#1A7D56">SL</span>
+                </div>
+              </div>
+              <!-- card 5 -->
+              <div class="plan">
+                <div class="plan-row">
+                  <div class="av" style="background:#5E5C57">JD</div>
+                  <span class="who">Jon Dahl</span>
+                  <span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>
+                </div>
+                <h4>Konsistens fra tee, midt-sesong</h4>
+                <div class="progress"><div class="track"><div class="fill full" style="width:96%"></div></div><span class="pct">96%</span></div>
+                <div class="plan-bot">
+                  <span class="periode live">Avsluttes 12. mai</span>
+                </div>
+                <div class="plan-foot">
+                  <span class="tag ai"><svg width="10" height="10" viewBox="0 0 24 24"><path d="M12 2l1.7 4.5L18 7l-3 3.5L15.7 15 12 12.5 8.3 15l.7-4.5L6 7l4.3-.5z"/></svg>AI</span>
+                  <span class="tag">10 uker</span>
+                  <span class="coach-av" style="background:#005840">AK</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- COL 2: Pause -->
+            <div class="col col-paused">
+              <div class="col-head">
+                <span class="dot" style="background:var(--ink-subtle)"></span>
+                <span class="ttl">Pause</span>
+                <span class="ct">5</span>
+                <span class="add"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+              </div>
+              <div class="plan">
+                <div class="plan-row">
+                  <div class="av" style="background:#B8852A">SK</div>
+                  <span class="who">Sebastian Krohn</span>
+                  <span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>
+                </div>
+                <h4>Vinter-base, off-season</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:64%" style2="background:var(--ink-subtle)"></div></div><span class="pct">64%</span></div>
+                <div class="plan-bot">
+                  <span class="periode">Pauset 28. apr</span>
+                </div>
+                <div class="plan-foot">
+                  <span class="tag">Manuell</span>
+                  <span class="coach-av" style="background:#1A7D56">SL</span>
+                </div>
+              </div>
+              <div class="plan">
+                <div class="plan-row">
+                  <div class="av" style="background:#5EA382">NO</div>
+                  <span class="who">Nora Olsen</span>
+                  <span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>
+                </div>
+                <h4>Eksamenstid, redusert volum</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:38%"></div></div><span class="pct">38%</span></div>
+                <div class="plan-bot">
+                  <span class="periode">Pauset 1. mai</span>
+                </div>
+                <div class="plan-foot">
+                  <span class="tag tmpl">Mal</span>
+                  <span class="coach-av" style="background:#B8852A">TB</span>
+                </div>
+              </div>
+              <div class="plan">
+                <div class="plan-row">
+                  <div class="av" style="background:#384c0a;color:#D1F843">VH</div>
+                  <span class="who">Vegard Hansen</span>
+                  <span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>
+                </div>
+                <h4>Skadeoppfølging, kne</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:22%"></div></div><span class="pct">22%</span></div>
+                <div class="plan-bot">
+                  <span class="periode">Pauset 22. apr</span>
+                </div>
+                <div class="plan-foot">
+                  <span class="tag">Manuell</span>
+                  <span class="coach-av" style="background:#005840">AK</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- COL 3: Arkivert -->
+            <div class="col col-archived">
+              <div class="col-head">
+                <span class="dot" style="background:#bcb8ad"></span>
+                <span class="ttl">Arkivert</span>
+                <span class="ct">47</span>
+                <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+              </div>
+              <div class="arch-row"><div class="av" style="background:#005840">MR</div><span class="nm">Markus R</span><span>Vinter-base 25/26</span><span class="when">apr 22</span></div>
+              <div class="arch-row"><div class="av" style="background:#1A7D56">ES</div><span class="nm">Emma S</span><span>Putting-fokus mars</span><span class="when">apr 14</span></div>
+              <div class="arch-row"><div class="av" style="background:#B8852A">TS</div><span class="nm">Tor Stene</span><span>Sving-revisjon Q1</span><span class="when">apr 02</span></div>
+              <div class="arch-row"><div class="av" style="background:#5E5C57">JD</div><span class="nm">Jon Dahl</span><span>Pre-sesong base</span><span class="when">mar 30</span></div>
+              <div class="arch-row"><div class="av" style="background:#A32D2D">LS</div><span class="nm">Lise Sandberg</span><span>Skadeprotokoll</span><span class="when">mar 18</span></div>
+              <div class="arch-row" style="opacity:.6;justify-content:center;color:var(--ink-subtle);font-size:11px">+ 42 eldre planer</div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 02 LISTE — LYST                                         -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="02 Liste — lyst">
+    <div class="ab-label"><span class="num">02</span><span class="ttl">Liste-view — lyst tema</span><span class="meta">1448 × 760 · samme data, sortert etter Sist endret</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere<span class="count">42</span></div>
+          <div class="nav-item active"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg>Treningsplaner<span class="count">76</span></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Timeplan</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analyser</div>
+        </aside>
+        <main class="main">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Treningsplaner</div>
+              <h1>Tjueire planer i flyt.</h1>
+            </div>
+            <div class="head-actions">
+              <div class="seg">
+                <span class="opt active"><svg width="14" height="14" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Liste</span>
+                <span class="opt"><svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg>Kanban</span>
+              </div>
+              <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Ny plan</button>
+            </div>
+          </header>
+
+          <div class="filter">
+            <div class="search">
+              <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input placeholder="Søk plan eller spiller">
+              <span class="kbd">⌘K</span>
+            </div>
+            <span class="chip active">Alle statuser</span>
+            <span class="chip">Anders K</span>
+            <span class="chip">Type <span class="ct">3</span></span>
+          </div>
+
+          <div class="tbl-card">
+            <table class="plans">
+              <thead><tr>
+                <th class="first">Plan</th>
+                <th>Spiller</th>
+                <th>Status</th>
+                <th>Periode</th>
+                <th>Progress</th>
+                <th>Coach</th>
+                <th class="last">Sist endret</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td class="first"><div class="plan-name"><span class="t">Sommer-toppform 2026</span><span class="s">AI · 8 uker · TEK 38% / SLAG 28%</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#005840">MR</div><span class="nm">Markus R Pedersen</span></div></td>
+                  <td><span class="pill pill-active"><span class="dot"></span>Aktiv</span></td>
+                  <td style="font-family:var(--font-mono);font-size:13px;color:var(--ink-muted);font-variant-numeric:tabular-nums">9. mai – 30. jun</td>
+                  <td><div class="progress inline"><div class="track"><div class="fill" style="width:78%"></div></div><span class="pct">78%</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#005840;width:24px;height:24px;font-size:9px">AK</div></div></td>
+                  <td class="last" style="font-family:var(--font-mono);font-size:12px;color:var(--ink-subtle)">2t siden</td>
+                </tr>
+                <tr>
+                  <td class="first"><div class="plan-name"><span class="t">Eliteoppkjøring NM Junior</span><span class="s">AI · 14 uker · SLAG 34% / SPILL 22%</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#D1F843;color:#0A1F18">LH</div><span class="nm">Lina Hellesund</span></div></td>
+                  <td><span class="pill pill-active"><span class="dot"></span>Aktiv</span></td>
+                  <td style="font-family:var(--font-mono);font-size:13px;color:var(--ink-muted)">12. apr – 18. jul</td>
+                  <td><div class="progress inline"><div class="track"><div class="fill" style="width:54%"></div></div><span class="pct">54%</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#005840;width:24px;height:24px;font-size:9px">AK</div></div></td>
+                  <td class="last" style="font-family:var(--font-mono);font-size:12px;color:var(--ink-subtle)">i går</td>
+                </tr>
+                <tr>
+                  <td class="first"><div class="plan-name"><span class="t">Putting-fokus, kort sesong</span><span class="s">Mal · 2 uker · forfaller snart</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#1A7D56">ES</div><span class="nm">Emma Solberg</span></div></td>
+                  <td><span class="pill pill-active"><span class="dot"></span>Aktiv</span></td>
+                  <td style="font-family:var(--font-mono);font-size:13px;color:var(--status-warning)">2. mai – 14. mai</td>
+                  <td><div class="progress inline"><div class="track"><div class="fill" style="width:42%"></div></div><span class="pct">42%</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#B8852A;width:24px;height:24px;font-size:9px">SL</div></div></td>
+                  <td class="last" style="font-family:var(--font-mono);font-size:12px;color:var(--ink-subtle)">3t siden</td>
+                </tr>
+                <tr>
+                  <td class="first"><div class="plan-name"><span class="t">Konsistens fra tee, midt-sesong</span><span class="s">AI · 10 uker · nær fullført</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#5E5C57">JD</div><span class="nm">Jon Dahl</span></div></td>
+                  <td><span class="pill pill-active"><span class="dot"></span>Aktiv</span></td>
+                  <td style="font-family:var(--font-mono);font-size:13px;color:var(--ink-muted)">3. mar – 12. mai</td>
+                  <td><div class="progress inline"><div class="track"><div class="fill full" style="width:96%"></div></div><span class="pct">96%</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#005840;width:24px;height:24px;font-size:9px">AK</div></div></td>
+                  <td class="last" style="font-family:var(--font-mono);font-size:12px;color:var(--ink-subtle)">i går</td>
+                </tr>
+                <tr>
+                  <td class="first"><div class="plan-name"><span class="t">Retur fra skade — fase 2</span><span class="s">Manuell · forfalt 4. mai</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#A32D2D">JT</div><span class="nm">Joachim Tangen</span></div></td>
+                  <td><span class="pill pill-active"><span class="dot"></span>Aktiv</span></td>
+                  <td style="font-family:var(--font-mono);font-size:13px;color:var(--status-danger)">forfalt 4. mai</td>
+                  <td><div class="progress inline"><div class="track"><div class="fill" style="width:18%"></div></div><span class="pct">18%</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#1A7D56;width:24px;height:24px;font-size:9px">SL</div></div></td>
+                  <td class="last" style="font-family:var(--font-mono);font-size:12px;color:var(--ink-subtle)">5d siden</td>
+                </tr>
+                <tr>
+                  <td class="first"><div class="plan-name"><span class="t">Vinter-base, off-season</span><span class="s">Manuell · 12 uker</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#B8852A">SK</div><span class="nm">Sebastian Krohn</span></div></td>
+                  <td><span class="pill pill-paused"><span class="dot"></span>Pause</span></td>
+                  <td style="font-family:var(--font-mono);font-size:13px;color:var(--ink-muted)">pauset 28. apr</td>
+                  <td><div class="progress inline"><div class="track"><div class="fill" style="width:64%;background:var(--ink-subtle)"></div></div><span class="pct">64%</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#1A7D56;width:24px;height:24px;font-size:9px">SL</div></div></td>
+                  <td class="last" style="font-family:var(--font-mono);font-size:12px;color:var(--ink-subtle)">9d siden</td>
+                </tr>
+                <tr>
+                  <td class="first"><div class="plan-name"><span class="t">Vinter-base 25/26</span><span class="s">Mal · arkivert etter fullføring</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#005840">MR</div><span class="nm">Markus R Pedersen</span></div></td>
+                  <td><span class="pill pill-archived"><span class="dot"></span>Arkivert</span></td>
+                  <td style="font-family:var(--font-mono);font-size:13px;color:var(--ink-subtle)">22. apr</td>
+                  <td><div class="progress inline"><div class="track"><div class="fill full" style="width:100%"></div></div><span class="pct">100%</span></div></td>
+                  <td><div class="player"><div class="av-sm" style="background:#005840;width:24px;height:24px;font-size:9px">AK</div></div></td>
+                  <td class="last" style="font-family:var(--font-mono);font-size:12px;color:var(--ink-subtle)">22. apr</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 03 KANBAN — MØRKT                                       -->
+  <!-- ====================================================== -->
+  <section class="ab dark" data-screen-label="03 Kanban — mørkt">
+    <div class="ab-label"><span class="num">03</span><span class="ttl">Kanban — mørkt tema</span><span class="meta">1448 × 820 · samme data, lime som primary</span></div>
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title" style="color:#9D9C95"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item">Spillere<span class="count">42</span></div>
+          <div class="nav-item active">Treningsplaner<span class="count">76</span></div>
+          <div class="nav-item">Timeplan</div>
+          <div class="nav-item">Analyser</div>
+          <div class="nav-foot">
+            <div class="av-sm">AK</div>
+            <div style="display:flex;flex-direction:column;line-height:1.2">
+              <span style="font-size:13px;font-weight:500;color:#F5F4EE">Anders K.</span>
+              <span style="font-size:11px;color:#9D9C95">Hovedcoach</span>
+            </div>
+          </div>
+        </aside>
+
+        <main class="main">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Treningsplaner</div>
+              <h1>Tjueire planer i flyt.</h1>
+            </div>
+            <div class="head-actions">
+              <div class="seg">
+                <span class="opt">Liste</span>
+                <span class="opt active">Kanban</span>
+              </div>
+              <button class="btn btn-primary" style="background:var(--brand-accent);color:#0A1F18">Ny plan</button>
+            </div>
+          </header>
+
+          <div class="filter">
+            <div class="search">
+              <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input placeholder="Søk plan eller spiller">
+              <span class="kbd">⌘K</span>
+            </div>
+            <div class="chip-grp">
+              <span class="chip active">Alle</span>
+              <span class="chip">Anders K</span>
+              <span class="chip">Sara L</span>
+            </div>
+            <span class="chip active">Aktiv nå</span>
+            <span class="chip">Type <span class="ct">3</span></span>
+          </div>
+
+          <div class="kanban">
+            <div class="col">
+              <div class="col-head">
+                <span class="dot" style="background:var(--brand-accent)"></span>
+                <span class="ttl">Aktiv</span>
+                <span class="ct">24</span>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#005840">MR</div><span class="who">Markus R Pedersen</span><span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
+                <h4>Sommer-toppform 2026</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:78%;background:var(--brand-accent)"></div></div><span class="pct">78%</span></div>
+                <div class="plan-bot"><span class="periode">9. mai – 30. jun</span></div>
+                <div class="plan-foot"><span class="tag ai" style="background:rgba(209,248,67,.16);color:#D1F843;border-color:rgba(209,248,67,.30)">AI</span><span class="tag">8 uker</span><span class="coach-av" style="background:#D1F843;color:#0A1F18;box-shadow:none;border:none">AK</span></div>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#1A7D56">ES</div><span class="who">Emma Solberg</span><span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
+                <h4>Putting-fokus</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:42%;background:var(--brand-accent)"></div></div><span class="pct">42%</span></div>
+                <div class="plan-bot"><span class="periode warn">2. – 14. mai</span></div>
+                <div class="plan-foot"><span class="tag tmpl" style="background:rgba(184,133,42,.18);color:#E0A442;border-color:rgba(184,133,42,.30)">Mal</span><span class="coach-av" style="background:#B8852A">SL</span></div>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#D1F843;color:#0A1F18">LH</div><span class="who">Lina Hellesund</span><span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
+                <h4>NM Junior-oppkjøring</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:54%;background:var(--brand-accent)"></div></div><span class="pct">54%</span></div>
+                <div class="plan-bot"><span class="periode">12. apr – 18. jul</span></div>
+                <div class="plan-foot"><span class="tag ai" style="background:rgba(209,248,67,.16);color:#D1F843;border-color:rgba(209,248,67,.30)">AI</span><span class="coach-av" style="background:#D1F843;color:#0A1F18;box-shadow:none;border:none">AK</span></div>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#A32D2D">JT</div><span class="who">Joachim Tangen</span><span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
+                <h4>Retur fra skade</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:18%;background:#E08F8F"></div></div><span class="pct">18%</span></div>
+                <div class="plan-bot"><span class="periode danger">Forfalt 4. mai</span></div>
+                <div class="plan-foot"><span class="tag">Manuell</span><span class="coach-av" style="background:#1A7D56">SL</span></div>
+              </div>
+            </div>
+
+            <div class="col col-paused">
+              <div class="col-head">
+                <span class="dot" style="background:#9D9C95"></span>
+                <span class="ttl">Pause</span>
+                <span class="ct">5</span>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#B8852A">SK</div><span class="who">Sebastian Krohn</span><span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
+                <h4>Vinter-base</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:64%;background:#9D9C95"></div></div><span class="pct">64%</span></div>
+                <div class="plan-bot"><span class="periode">Pauset 28. apr</span></div>
+                <div class="plan-foot"><span class="tag">Manuell</span><span class="coach-av" style="background:#1A7D56">SL</span></div>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#5EA382">NO</div><span class="who">Nora Olsen</span><span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
+                <h4>Eksamenstid</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:38%;background:#9D9C95"></div></div><span class="pct">38%</span></div>
+                <div class="plan-bot"><span class="periode">Pauset 1. mai</span></div>
+                <div class="plan-foot"><span class="tag tmpl" style="background:rgba(184,133,42,.18);color:#E0A442;border-color:rgba(184,133,42,.30)">Mal</span><span class="coach-av" style="background:#B8852A">TB</span></div>
+              </div>
+            </div>
+
+            <div class="col col-archived">
+              <div class="col-head">
+                <span class="dot" style="background:#5E5C57"></span>
+                <span class="ttl">Arkivert</span>
+                <span class="ct">47</span>
+                <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+              </div>
+              <div class="arch-row" style="background:#163027;border-color:#274d41;color:#9D9C95"><div class="av" style="background:#005840">MR</div><span class="nm" style="color:#F5F4EE">Markus R</span><span>Vinter-base 25/26</span><span class="when">apr 22</span></div>
+              <div class="arch-row" style="background:#163027;border-color:#274d41;color:#9D9C95"><div class="av" style="background:#1A7D56">ES</div><span class="nm" style="color:#F5F4EE">Emma S</span><span>Putting mars</span><span class="when">apr 14</span></div>
+              <div class="arch-row" style="background:#163027;border-color:#274d41;color:#9D9C95"><div class="av" style="background:#B8852A">TS</div><span class="nm" style="color:#F5F4EE">Tor S</span><span>Sving-revisjon</span><span class="when">apr 02</span></div>
+              <div class="arch-row" style="opacity:.6;justify-content:center;font-size:11px;background:transparent;border:none;color:#9D9C95">+ 44 eldre planer</div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 04 DRAG STATE                                           -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="04 Drag-state">
+    <div class="ab-label"><span class="num">04</span><span class="ttl">Drag-state — Aktiv → Pause</span><span class="meta">1448 × 760 · ett kort under flytting, drop-target highlight</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item active">Treningsplaner<span class="count">76</span></div>
+          <div class="nav-item">Spillere<span class="count">42</span></div>
+        </aside>
+        <main class="main" style="position:relative">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Treningsplaner</div>
+              <h1>Flytter Sebastian Krohn til Pause.</h1>
+            </div>
+          </header>
+
+          <div class="kanban">
+            <div class="col">
+              <div class="col-head">
+                <span class="dot" style="background:var(--brand-accent)"></span>
+                <span class="ttl">Aktiv</span>
+                <span class="ct">24</span>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#005840">MR</div><span class="who">Markus R Pedersen</span></div>
+                <h4>Sommer-toppform 2026</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:78%"></div></div><span class="pct">78%</span></div>
+                <div class="plan-bot"><span class="periode">9. mai – 30. jun</span></div>
+              </div>
+              <!-- ghost / origin -->
+              <div class="plan dragging">
+                <div class="plan-row"><div class="av" style="background:#B8852A">SK</div><span class="who">Sebastian Krohn</span></div>
+                <h4 style="color:transparent">Vinter-base</h4>
+                <div class="progress"><div class="track" style="background:transparent"></div></div>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#1A7D56">ES</div><span class="who">Emma Solberg</span></div>
+                <h4>Putting-fokus</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:42%"></div></div><span class="pct">42%</span></div>
+                <div class="plan-bot"><span class="periode warn">2. – 14. mai</span></div>
+              </div>
+            </div>
+
+            <div class="col col-paused drop-target">
+              <div class="col-head">
+                <span class="dot" style="background:var(--brand-primary)"></span>
+                <span class="ttl" style="color:var(--brand-primary)">Slipp her — Pause</span>
+                <span class="ct" style="background:var(--brand-primary);color:#fff;border:none">5 → 6</span>
+              </div>
+              <div class="drop-zone">↓ Sebastian Krohn → Pause</div>
+              <div class="plan" style="opacity:.55">
+                <div class="plan-row"><div class="av" style="background:#5EA382">NO</div><span class="who">Nora Olsen</span></div>
+                <h4>Eksamenstid</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:38%"></div></div><span class="pct">38%</span></div>
+              </div>
+              <div class="plan" style="opacity:.55">
+                <div class="plan-row"><div class="av" style="background:#384c0a;color:#D1F843">VH</div><span class="who">Vegard Hansen</span></div>
+                <h4>Skadeoppfølging</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:22%"></div></div><span class="pct">22%</span></div>
+              </div>
+            </div>
+
+            <div class="col col-archived" style="opacity:.4">
+              <div class="col-head">
+                <span class="dot" style="background:#bcb8ad"></span>
+                <span class="ttl">Arkivert</span>
+                <span class="ct">47</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- floating ghost card following the cursor -->
+          <div class="plan ghost" style="position:absolute;left:540px;top:280px;width:300px;cursor:grabbing">
+            <div class="plan-row"><div class="av" style="background:#B8852A">SK</div><span class="who">Sebastian Krohn</span><span class="more"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
+            <h4>Vinter-base, off-season</h4>
+            <div class="progress"><div class="track"><div class="fill" style="width:64%"></div></div><span class="pct">64%</span></div>
+            <div class="plan-bot"><span class="periode">12 uker · 7 igjen</span></div>
+            <div class="plan-foot"><span class="tag">Manuell</span><span class="coach-av" style="background:#1A7D56">SL</span></div>
+          </div>
+          <div class="floater" style="left:830px;top:296px">⌘ + Z for å angre</div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 05 EMPTY                                                -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="05 Empty totalt">
+    <div class="ab-label"><span class="num">05</span><span class="ttl">Empty — ingen planer ennå</span><span class="meta">1448 × 620 · førstegangsbruker, 2 CTAs</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item active">Treningsplaner<span class="count">0</span></div>
+          <div class="nav-item">Spillere<span class="count">42</span></div>
+        </aside>
+        <main class="main">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Treningsplaner</div>
+              <h1>Ingen planer ennå.</h1>
+            </div>
+          </header>
+
+          <div class="empty">
+            <div class="ill">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M9 11l3 3 8-8"/><path d="M3 11h6"/><path d="M3 17h10"/></svg>
+            </div>
+            <h3>Lag din første plan</h3>
+            <p class="lede">En treningsplan kobler en spiller til en tidsperiode med konkrete mål — og lar AI-en hjelpe deg med periodisering.</p>
+            <div class="actions">
+              <button class="btn btn-ghost"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Manuell plan</button>
+              <button class="btn btn-accent"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2l1.7 4.5L18 7l-3 3.5L15.7 15 12 12.5 8.3 15l.7-4.5L6 7l4.3-.5z"/></svg>AI-generer →</button>
+            </div>
+            <p style="margin-top:24px;font-size:12px;color:var(--ink-subtle)">Eller <a href="#" style="color:var(--brand-primary);text-decoration:underline">velg en mal</a> — 14 ferdige programmer fra A K Golf-akademiet.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 06 MOBILE                                               -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="06 Mobil">
+    <div class="ab-label"><span class="num">06</span><span class="ttl">Mobil — kanban scroller horisontalt</span><span class="meta">≤ 768px · kort 280px brede, swipe mellom kolonner</span></div>
+    <div class="ab-frame">
+      <div class="mobile-wrap">
+        <div class="mobile">
+          <div class="m-status"><span>09:41</span><span class="right"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor"><path d="M1 9V5"/><path d="M5 9V3"/><path d="M9 9V1"/><path d="M13 9V1"/></svg><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><path d="M1 4l1.5-1.5C4.4 1.1 6.6.5 8 .5s3.6.6 5.5 2L15 4l-1 1c-1.5-1.2-3.5-2-6-2s-4.5.8-6 2L1 4z"/></svg><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="19" height="9" rx="2"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/><line x1="20.5" y1="3" x2="20.5" y2="7"/></svg></span></div>
+          <div class="m-head">
+            <div class="crumb">Coach HQ · Plans</div>
+            <h1>24 aktive planer.</h1>
+            <div class="actions">
+              <div class="m-search"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Søk plan</div>
+              <div class="m-iconbtn"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg></div>
+            </div>
+          </div>
+          <div class="m-tab-row">
+            <span class="chip active">Aktiv <span class="ct">24</span></span>
+            <span class="chip">Pause <span class="ct">5</span></span>
+            <span class="chip">Arkivert <span class="ct">47</span></span>
+            <span class="chip">Filter</span>
+          </div>
+          <div class="m-kanban">
+            <div class="m-col">
+              <div class="col-head">
+                <span class="dot" style="background:var(--brand-accent)"></span>
+                <span class="ttl">Aktiv</span>
+                <span class="ct">24</span>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#005840">MR</div><span class="who">Markus R Pedersen</span></div>
+                <h4>Sommer-toppform 2026</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:78%"></div></div><span class="pct">78%</span></div>
+                <div class="plan-bot"><span class="periode">9. mai – 30. jun</span></div>
+                <div class="plan-foot"><span class="tag ai">AI</span><span class="coach-av" style="background:#005840">AK</span></div>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#1A7D56">ES</div><span class="who">Emma Solberg</span></div>
+                <h4>Putting-fokus</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:42%"></div></div><span class="pct">42%</span></div>
+                <div class="plan-bot"><span class="periode warn">2. – 14. mai</span></div>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#D1F843;color:#0A1F18">LH</div><span class="who">Lina Hellesund</span></div>
+                <h4>NM Junior</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:54%"></div></div><span class="pct">54%</span></div>
+                <div class="plan-bot"><span class="periode">12. apr – 18. jul</span></div>
+              </div>
+            </div>
+            <div class="m-col">
+              <div class="col-head">
+                <span class="dot" style="background:var(--ink-subtle)"></span>
+                <span class="ttl">Pause</span>
+                <span class="ct">5</span>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#B8852A">SK</div><span class="who">Sebastian Krohn</span></div>
+                <h4>Vinter-base</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:64%;background:var(--ink-subtle)"></div></div><span class="pct">64%</span></div>
+                <div class="plan-bot"><span class="periode">Pauset 28. apr</span></div>
+              </div>
+              <div class="plan">
+                <div class="plan-row"><div class="av" style="background:#5EA382">NO</div><span class="who">Nora Olsen</span></div>
+                <h4>Eksamenstid</h4>
+                <div class="progress"><div class="track"><div class="fill" style="width:38%"></div></div><span class="pct">38%</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="m-tabbar">
+            <div class="m-tab"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Hjem</div>
+            <div class="m-tab"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere</div>
+            <div class="m-tab active"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg>Planer</div>
+            <div class="m-tab"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Timeplan</div>
+            <div class="m-tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Meg</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

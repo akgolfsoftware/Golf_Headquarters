@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="nb"><head><meta charset="UTF-8"/><title>FacilityDetailModal · Tider</title>
+<link rel="stylesheet" href="../tokens.css"/><link rel="stylesheet" href="../modal-shell.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"/>
+<style>
+.hero-img{height:180px;background:linear-gradient(135deg,#1A3526 0%,#2A4F39 60%,#3D6E54 100%);position:relative;display:flex;align-items:flex-end;padding:18px 22px;color:#fff;}
+.hero-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(209,248,67,0.18),transparent 60%);}
+.hero-svg{position:absolute;right:24px;top:24px;color:rgba(209,248,67,0.40);}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);padding:0 28px;background:var(--surface-card);}
+.tab{padding:12px 16px;font-size:13.5px;font-weight:500;color:var(--ink-muted);border:0;background:transparent;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.tab.active{color:var(--ink);border-bottom-color:var(--ink);}
+.tab .ic-sm{margin-right:6px;vertical-align:-2px;}
+
+.hours{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface-card);margin-bottom:18px;}
+.hours-row{display:grid;grid-template-columns:1fr 1.4fr auto;gap:12px;padding:13px 18px;align-items:center;border-bottom:1px solid var(--line-soft);}
+.hours-row:last-child{border-bottom:0;}
+.hours-row.today{background:var(--brand-primary-soft);}
+.hours-day{font-family:var(--font-tight);font-size:13.5px;font-weight:600;}
+.hours-day .now{font-family:var(--font-mono);font-size:9px;background:var(--brand-primary);color:#fff;padding:1px 5px;border-radius:3px;margin-left:6px;font-weight:700;vertical-align:1px;}
+.hours-times{font-family:var(--font-mono);font-size:12px;color:var(--ink);}
+.hours-tag{font-family:var(--font-mono);font-size:10px;color:var(--success);background:var(--success-bg);padding:2px 8px;border-radius:6px;font-weight:600;}
+.hours-tag.closed{color:var(--danger);background:var(--danger-bg);}
+
+.peak-h{font-family:var(--font-mono);font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin:6px 0 10px;}
+.peak-chart{display:grid;grid-template-columns:repeat(14,1fr);gap:3px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;}
+.peak-col{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.peak-bar{width:100%;height:80px;background:var(--surface-alt);border-radius:4px;position:relative;overflow:hidden;}
+.peak-bar .fill{position:absolute;left:0;right:0;bottom:0;border-radius:4px;}
+.peak-bar.low .fill{background:var(--success);}
+.peak-bar.mid .fill{background:var(--warning);}
+.peak-bar.high .fill{background:var(--danger);}
+.peak-h-num{font-family:var(--font-mono);font-size:9px;color:var(--ink-subtle);}
+.peak-legend{display:flex;gap:14px;margin-top:10px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted);}
+.peak-legend-sw{width:10px;height:10px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:5px;}
+
+.season{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;}
+.season-card{padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-card);}
+.season-card.now{background:var(--brand-primary-soft);border-color:rgba(0,88,64,0.25);}
+.season-k{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+.season-card.now .season-k{color:var(--brand-primary);}
+.season-v{font-family:var(--font-tight);font-size:18px;font-weight:600;margin-top:3px;}
+.season-sub{font-size:12px;color:var(--ink-muted);margin-top:4px;}
+</style></head>
+<body>
+<div class="scrim"><div class="modal" data-screen-label="FacilityDetail Tider">
+<div class="hero-img">
+<svg class="hero-svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" style="width:64px;height:64px;"><rect x="8" y="14" width="48" height="32" rx="3"/><path d="M8 24h48M18 46v6M46 46v6"/><circle cx="32" cy="30" r="5"/></svg>
+</div>
+
+<div class="modal-head" style="border-bottom:0;padding-bottom:12px;">
+<div>
+<div class="modal-eyebrow"><span>STORGATA 12 · FREDRIKSTAD</span><span style="color:var(--ink-subtle);">·</span><span>1,2 KM UNNA</span></div>
+<h2 class="modal-title">Mulligan Studio 1</h2>
+</div>
+<button class="modal-x"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+</div>
+
+<div class="tabs">
+<button class="tab"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:inline-block;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 2"/></svg>Oversikt</button>
+<button class="tab"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg>Utstyr</button>
+<button class="tab active"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:inline-block;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Tider</button>
+<button class="tab"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:inline-block;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Anmeldelser <span style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-subtle);">32</span></button>
+</div>
+
+<div class="modal-body">
+<span class="lbl">ÅPNINGSTIDER</span>
+<div class="hours">
+<div class="hours-row today"><div class="hours-day">Mandag<span class="now">NÅ</span></div><div class="hours-times">07:00 – 22:00</div><span class="hours-tag">Åpent</span></div>
+<div class="hours-row"><div class="hours-day">Tirsdag</div><div class="hours-times">07:00 – 22:00</div><span class="hours-tag">Åpent</span></div>
+<div class="hours-row"><div class="hours-day">Onsdag</div><div class="hours-times">07:00 – 22:00</div><span class="hours-tag">Åpent</span></div>
+<div class="hours-row"><div class="hours-day">Torsdag</div><div class="hours-times">07:00 – 22:00</div><span class="hours-tag">Åpent</span></div>
+<div class="hours-row"><div class="hours-day">Fredag</div><div class="hours-times">07:00 – 21:00</div><span class="hours-tag">Åpent</span></div>
+<div class="hours-row"><div class="hours-day">Lørdag</div><div class="hours-times">09:00 – 20:00</div><span class="hours-tag">Åpent</span></div>
+<div class="hours-row"><div class="hours-day">Søndag</div><div class="hours-times">10:00 – 18:00</div><span class="hours-tag">Åpent</span></div>
+</div>
+
+<div class="peak-h">TYPISK BELEGG — UKEDAGER</div>
+<div class="peak-chart">
+<div class="peak-col"><div class="peak-bar low"><div class="fill" style="height:15%;"></div></div><div class="peak-h-num">07</div></div>
+<div class="peak-col"><div class="peak-bar low"><div class="fill" style="height:25%;"></div></div><div class="peak-h-num">08</div></div>
+<div class="peak-col"><div class="peak-bar low"><div class="fill" style="height:30%;"></div></div><div class="peak-h-num">09</div></div>
+<div class="peak-col"><div class="peak-bar low"><div class="fill" style="height:40%;"></div></div><div class="peak-h-num">10</div></div>
+<div class="peak-col"><div class="peak-bar mid"><div class="fill" style="height:55%;"></div></div><div class="peak-h-num">11</div></div>
+<div class="peak-col"><div class="peak-bar mid"><div class="fill" style="height:60%;"></div></div><div class="peak-h-num">12</div></div>
+<div class="peak-col"><div class="peak-bar low"><div class="fill" style="height:45%;"></div></div><div class="peak-h-num">13</div></div>
+<div class="peak-col"><div class="peak-bar mid"><div class="fill" style="height:65%;"></div></div><div class="peak-h-num">14</div></div>
+<div class="peak-col"><div class="peak-bar mid"><div class="fill" style="height:70%;"></div></div><div class="peak-h-num">15</div></div>
+<div class="peak-col"><div class="peak-bar high"><div class="fill" style="height:88%;"></div></div><div class="peak-h-num">16</div></div>
+<div class="peak-col"><div class="peak-bar high"><div class="fill" style="height:95%;"></div></div><div class="peak-h-num">17</div></div>
+<div class="peak-col"><div class="peak-bar high"><div class="fill" style="height:85%;"></div></div><div class="peak-h-num">18</div></div>
+<div class="peak-col"><div class="peak-bar mid"><div class="fill" style="height:60%;"></div></div><div class="peak-h-num">19</div></div>
+<div class="peak-col"><div class="peak-bar low"><div class="fill" style="height:30%;"></div></div><div class="peak-h-num">20</div></div>
+</div>
+
+<div class="peak-legend">
+<span><span class="peak-legend-sw" style="background:var(--success);"></span>Rolig (&lt; 50 %)</span>
+<span><span class="peak-legend-sw" style="background:var(--warning);"></span>Middels (50–80 %)</span>
+<span><span class="peak-legend-sw" style="background:var(--danger);"></span>Travelt (&gt; 80 %)</span>
+</div>
+
+<div class="peak-h" style="margin-top:18px;">SESONG-PRIS</div>
+<div class="season">
+<div class="season-card now">
+<div class="season-k">VÅR / SOMMER · NÅ</div>
+<div class="season-v">1 600 kr / time</div>
+<div class="season-sub">apr – sep · lavere etterspørsel</div>
+</div>
+<div class="season-card">
+<div class="season-k">HØST / VINTER</div>
+<div class="season-v">1 950 kr / time</div>
+<div class="season-sub">okt – mar · høysesong indoor</div>
+</div>
+</div>
+</div>
+
+<div class="modal-foot">
+<button class="btn-ghost">Lukk</button>
+<div class="modal-foot-right">
+<button class="btn-sec">Del</button>
+<button class="btn-pri">Book her <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+</div>
+</div>
+</div></div>
+</body></html>

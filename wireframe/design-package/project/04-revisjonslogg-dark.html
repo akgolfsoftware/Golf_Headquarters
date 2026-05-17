@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>04 Revisjonslogg (mørkt) · CoachHQ · AK Golf</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="tokens.css">
+<style>
+.audit-layout{display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:flex-start}
+.audit-filter{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:24px;padding:14px 16px;background:var(--surface-card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-card)}
+body.dark .audit-filter{border-color:#22282A}
+.audit-search{flex:1;display:flex;align-items:center;gap:8px;color:var(--ink-muted);font-size:13.5px;padding:4px 0}
+.chip{padding:5px 11px;border-radius:9999px;border:1px solid var(--line);font-size:12px;font-weight:500;color:var(--ink-muted);background:var(--surface);display:inline-flex;align-items:center;gap:6px}
+body.dark .chip{background:#0F1413;border-color:#22282A}
+.chip.active{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+body.dark .chip.active{background:#F2F1EC;color:#0B0F0E}
+
+.date-sticky{position:sticky;top:0;background:var(--surface);padding:8px 0 12px;margin:24px 0 8px;display:flex;align-items:center;gap:14px;z-index:5}
+.date-sticky-lbl{font-family:var(--font-tight);font-size:13px;font-weight:600;letter-spacing:-.005em;padding:4px 12px;background:var(--ink);color:var(--surface);border-radius:9999px}
+body.dark .date-sticky-lbl{background:#F2F1EC;color:#0B0F0E}
+.date-sticky-meta{font-size:12px;color:var(--ink-muted)}
+.date-sticky::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:"";position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:var(--line)}
+body.dark .timeline::before{background:#22282A}
+
+.evt{position:relative;display:grid;grid-template-columns:1fr;margin-bottom:14px}
+.evt-icon{position:absolute;left:-32px;top:14px;width:24px;height:24px;border-radius:50%;background:var(--surface-card);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;z-index:1}
+body.dark .evt-icon{border-color:#22282A}
+.evt-icon.create{border-color:var(--brand-accent);color:var(--brand-primary-deep);background:var(--accent-soft)}
+body.dark .evt-icon.create{background:rgba(209,248,67,.12);color:#D1F843}
+.evt-icon.update{border-color:var(--brand-primary);color:var(--brand-primary);background:var(--brand-primary-soft)}
+body.dark .evt-icon.update{background:#102220;color:#7BB39A}
+.evt-icon.delete{border-color:var(--danger);color:var(--danger);background:var(--danger-bg)}
+.evt-icon.auth{border-color:var(--pyr-spill);color:#8A6510;background:var(--warning-bg)}
+.evt-icon.agent{border-color:var(--pyr-turn);color:var(--pyr-turn);background:rgba(94,92,87,.1)}
+body.dark .evt-icon.agent{background:rgba(168,165,156,.1);color:#A8A59C}
+
+.evt-card{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow-card);transition:box-shadow var(--duration-micro,120ms) var(--ease-out)}
+body.dark .evt-card{border-color:#22282A}
+.evt-card:hover{box-shadow:var(--shadow-card-hover)}
+.evt-head{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.evt-time{font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);font-weight:500}
+.evt-type-pill{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;padding:2px 7px;border-radius:6px}
+.evt-type-pill.create{background:var(--accent-soft);color:var(--brand-accent-on)}
+body.dark .evt-type-pill.create{background:rgba(209,248,67,.15);color:#D1F843}
+.evt-type-pill.update{background:var(--brand-primary-soft);color:var(--brand-primary)}
+body.dark .evt-type-pill.update{background:#102220;color:#7BB39A}
+.evt-type-pill.delete{background:var(--danger-bg);color:var(--danger)}
+.evt-type-pill.auth{background:var(--warning-bg);color:var(--warning)}
+.evt-type-pill.agent{background:rgba(94,92,87,.12);color:var(--pyr-turn)}
+body.dark .evt-type-pill.agent{background:rgba(168,165,156,.12);color:#A8A59C}
+.evt-action{font-size:14px;color:var(--ink);margin-bottom:8px;line-height:1.5}
+.evt-action b{font-weight:600}
+.evt-action a{color:var(--brand-primary);border-bottom:1px solid transparent}
+body.dark .evt-action a{color:#7BB39A}
+.evt-action a:hover{border-bottom-color:currentColor}
+.evt-diff-tg{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11.5px;color:var(--ink-muted);padding:3px 0;border-bottom:1px dotted var(--ink-subtle);cursor:pointer}
+.evt-diff-tg:hover{color:var(--ink)}
+.evt-diff{margin-top:10px;background:var(--surface-alt);border:1px solid var(--line-soft);border-radius:8px;padding:8px 12px;font-family:var(--font-mono);font-size:12px;display:none}
+body.dark .evt-diff{background:#0F1413;border-color:#22282A}
+.evt-diff.open{display:block}
+.evt-diff .rm{color:var(--danger);background:var(--danger-bg);padding:1px 4px;border-radius:3px}
+.evt-diff .ad{color:var(--success);background:var(--success-bg);padding:1px 4px;border-radius:3px}
+.evt-meta{margin-top:10px;display:flex;flex-wrap:wrap;gap:14px;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);padding-top:10px;border-top:1px solid var(--line-soft)}
+
+.rail-card{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-card);padding:20px;box-shadow:var(--shadow-card);margin-bottom:20px;position:sticky;top:24px}
+body.dark .rail-card{border-color:#22282A}
+.rail-card h3{font-family:var(--font-tight);font-size:14px;font-weight:600;margin-bottom:14px;letter-spacing:-.005em}
+.rail-stat{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:13px}
+.rail-stat:last-child{border-bottom:none}
+.rail-stat .l{color:var(--ink-muted)}
+.rail-stat .v{font-family:var(--font-mono);font-weight:500;color:var(--ink)}
+.bar-row{display:grid;grid-template-columns:90px 1fr 40px;gap:10px;align-items:center;margin-bottom:8px;font-size:12px}
+.bar-row .lbl{color:var(--ink)}
+.bar-bg{height:6px;background:var(--surface-alt);border-radius:3px;overflow:hidden}
+body.dark .bar-bg{background:#22282A}
+.bar-fill{height:100%;background:var(--brand-primary);border-radius:3px}
+.bar-fill.accent{background:var(--brand-accent)}
+.bar-val{font-family:var(--font-mono);font-size:11px;text-align:right;color:var(--ink-muted)}
+</style>
+</head>
+<body class="dark">
+<div class="app" data-screen-label="04 Revisjonslogg — dark">
+  <aside class="rail">
+    <div class="rail-logo">AK</div>
+    <div class="rail-icons">
+      <a href="#" class="rail-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a>
+      <a href="#" class="rail-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></a>
+      <a href="#" class="rail-ic active" title="Revisjonslogg"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/></svg></a>
+    </div>
+    <div class="rail-bottom"><div class="av rail-avatar">AK</div></div>
+  </aside>
+
+  <aside class="nav">
+    <div class="nav-head"><div class="nav-head-title">CoachHQ</div><div class="nav-head-sub">AK Golf · Admin</div></div>
+    <a href="#" class="nav-item">Hub</a>
+    <a href="#" class="nav-item">Daglig brief</a>
+    <a href="#" class="nav-item">Spillere<span class="badge">38</span></a>
+    <a href="#" class="nav-item">Timeplan</a>
+    <a href="#" class="nav-item">Godkjenninger<span class="badge">3</span></a>
+    <a href="#" class="nav-item">Analytics</a>
+    <a href="#" class="nav-item">Økonomi</a>
+    <a href="#" class="nav-item">Fasiliteter</a>
+    <a href="#" class="nav-item">Rapporter</a>
+    <div class="nav-section">System</div>
+    <a href="#" class="nav-item active">Revisjonslogg</a>
+    <a href="#" class="nav-item">Innstillinger</a>
+  </aside>
+
+  <main class="main">
+    <header class="hero">
+      <div>
+        <div class="hero-eyebrow">CoachHQ · Sikkerhet · Capability audit.read</div>
+        <h1 class="hero-title"><em>1 247 hendelser siste 7 dager. Alt logget.</em></h1>
+        <div class="hero-sub">Compliance-verktøy · 8 aktører (5 mennesker, 3 agenter) · GDPR-eksport tilgjengelig</div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-secondary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Kopier filter-link</button>
+        <button class="btn btn-primary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Eksporter</button>
+      </div>
+    </header>
+
+    <div class="kpi-strip">
+      <div class="kpi"><div class="kpi-label">Hendelser · 7d</div><div class="kpi-value">1 247</div><div class="kpi-foot"><span class="delta delta-up">+12,3%</span><span>vs forrige uke</span></div></div>
+      <div class="kpi"><div class="kpi-label">Aktive aktører</div><div class="kpi-value">8</div><div class="kpi-foot"><span>5 mennesker · 3 agenter</span></div></div>
+      <div class="kpi"><div class="kpi-label">Slett-hendelser</div><div class="kpi-value">12</div><div class="kpi-foot"><span style="color:var(--success)">Alle med årsak loggført</span></div></div>
+      <div class="kpi"><div class="kpi-label">Sikkerhets-events</div><div class="kpi-value" style="color:var(--warning)">3</div><div class="kpi-foot"><span>mislyktede login · IP-allowlist</span></div></div>
+    </div>
+
+    <div class="audit-filter">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-subtle)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <div class="audit-search">Søk aktør, entitet eller action</div>
+      <span class="chip active">Alle handlinger</span>
+      <span class="chip">Create</span>
+      <span class="chip">Update</span>
+      <span class="chip">Delete</span>
+      <span class="chip">Auth</span>
+      <span class="chip">Agent</span>
+      <span style="width:1px;height:20px;background:var(--line)"></span>
+      <span class="chip">Aktør: alle</span>
+      <span class="chip">Entitet: alle</span>
+      <span class="chip">Siste 7 dager <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+
+    <div class="audit-layout">
+      <div>
+
+        <div class="date-sticky"><span class="date-sticky-lbl">11. mai 2026 · onsdag</span><span class="date-sticky-meta">6 hendelser i dag</span></div>
+
+        <div class="timeline">
+
+          <div class="evt">
+            <div class="evt-icon update"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></div>
+            <div class="evt-card">
+              <div class="evt-head"><span class="evt-time">14:32:18</span><span class="evt-type-pill update">Update</span></div>
+              <div class="evt-action"><b><a href="#">Anders Kristiansen</a></b> oppdaterte plan <b>«Sommer-toppform»</b> for <b><a href="#">Markus Roinaas Pedersen</a></b></div>
+              <span class="evt-diff-tg">Vis endring →</span>
+              <div class="evt-meta"><span>192.168.1.84</span><span>Mac · Chrome 134</span><span>CBAC: Hovedcoach</span><span>req: 4f8a-2c91</span></div>
+            </div>
+          </div>
+
+          <div class="evt">
+            <div class="evt-icon agent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg></div>
+            <div class="evt-card">
+              <div class="evt-head"><span class="evt-time">13:58:04</span><span class="evt-type-pill agent">Agent</span></div>
+              <div class="evt-action"><b>Periodiserings-agent</b> foreslo pauseuke for <b><a href="#">Markus Roinaas Pedersen</a></b> før Sørlandsåpent · venter på godkjenning</div>
+              <div class="evt-meta"><span>system</span><span>agent-pipeline v2.3.1</span><span>conf: 0.87</span><span>req: ag-92f1-bb14</span></div>
+            </div>
+          </div>
+
+          <div class="evt">
+            <div class="evt-icon create"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="evt-card">
+              <div class="evt-head"><span class="evt-time">11:42:51</span><span class="evt-type-pill create">Create</span></div>
+              <div class="evt-action"><b><a href="#">Sara Pedersen</a></b> registrerte ny spiller <b>«Tobias Lindberg»</b> i kategori A</div>
+              <div class="evt-meta"><span>192.168.1.91</span><span>Win · Edge 128</span><span>CBAC: Coach</span><span>req: 8b1d-7a44</span></div>
+            </div>
+          </div>
+
+          <div class="evt">
+            <div class="evt-icon delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></div>
+            <div class="evt-card">
+              <div class="evt-head"><span class="evt-time">10:18:33</span><span class="evt-type-pill delete">Delete</span></div>
+              <div class="evt-action"><b><a href="#">Anders Kristiansen</a></b> slettet booking <b>«Studio 3 · 11.05 14:00»</b> · årsak: fasilitet under vedlikehold</div>
+              <span class="evt-diff-tg">Vis raw JSON →</span>
+              <div class="evt-meta"><span>192.168.1.84</span><span>Mac · Chrome 134</span><span>CBAC: Hovedcoach</span><span>req: 2c91-4f8a</span></div>
+            </div>
+          </div>
+
+          <div class="evt">
+            <div class="evt-icon auth"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15L19 4"/><path d="M18 5l2 2"/><path d="M15 8l2 2"/></svg></div>
+            <div class="evt-card">
+              <div class="evt-head"><span class="evt-time">08:04:12</span><span class="evt-type-pill auth">Auth</span></div>
+              <div class="evt-action"><b><a href="#">Anders Kristiansen</a></b> logget inn med passord + TOTP · 2FA godkjent</div>
+              <div class="evt-meta"><span>192.168.1.84</span><span>Mac · Chrome 134</span><span>session: 7e4a-…</span><span>req: au-1d2f-9001</span></div>
+            </div>
+          </div>
+
+          <div class="evt">
+            <div class="evt-icon auth"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+            <div class="evt-card" style="border-color:rgba(163,45,45,.25)">
+              <div class="evt-head"><span class="evt-time">02:14:08</span><span class="evt-type-pill auth" style="background:var(--danger-bg);color:var(--danger)">Auth · mislyktet</span></div>
+              <div class="evt-action"><b>Ukjent</b> forsøkte å logge inn som <b>anders@akgolf.no</b> · feil passord (3/5 forsøk)</div>
+              <div class="evt-meta"><span style="color:var(--danger)">185.34.219.12 · Romania</span><span>Linux · curl/8.4</span><span style="color:var(--danger)">Blokkert · IP rate-limit</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="date-sticky"><span class="date-sticky-lbl">10. mai 2026 · tirsdag</span><span class="date-sticky-meta">4 hendelser</span></div>
+
+        <div class="timeline">
+          <div class="evt">
+            <div class="evt-icon update"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></div>
+            <div class="evt-card">
+              <div class="evt-head"><span class="evt-time">16:48:22</span><span class="evt-type-pill update">Update</span></div>
+              <div class="evt-action"><b><a href="#">Anders Kristiansen</a></b> endret pris-matrise for <b>«Mulligan · Studio 1»</b></div>
+              <span class="evt-diff-tg">Vis endring →</span>
+              <div class="evt-meta"><span>192.168.1.84</span><span>Mac · Chrome 134</span><span>CBAC: Admin</span><span>req: 6c11-3e09</span></div>
+            </div>
+          </div>
+
+          <div class="evt">
+            <div class="evt-icon update"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></div>
+            <div class="evt-card">
+              <div class="evt-head"><span class="evt-time">15:12:05</span><span class="evt-type-pill update">Update</span></div>
+              <div class="evt-action"><b><a href="#">Tom Andersen</a></b> endret CBAC-rolle for <b><a href="#">Sara Pedersen</a></b> fra Coach → Hovedcoach</div>
+              <div class="evt-meta"><span>192.168.1.77</span><span>Mac · Safari 17</span><span>CBAC: Admin</span><span>req: ad-2208-441b</span></div>
+            </div>
+          </div>
+
+          <div class="evt">
+            <div class="evt-icon agent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg></div>
+            <div class="evt-card">
+              <div class="evt-head"><span class="evt-time">11:00:00</span><span class="evt-type-pill agent">Agent</span></div>
+              <div class="evt-action"><b>Faktura-agent</b> genererte 38 mai-fakturaer og merket for review</div>
+              <div class="evt-meta"><span>system</span><span>cron: monthly-billing</span><span>jobs ok: 38/38</span><span>req: fa-mai-2026</span></div>
+            </div>
+          </div>
+
+          <div class="evt">
+            <div class="evt-icon create"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="evt-card">
+              <div class="evt-head"><span class="evt-time">09:24:51</span><span class="evt-type-pill create">Create</span></div>
+              <div class="evt-action"><b><a href="#">Anders Kristiansen</a></b> opprettet test-batch <b>«NGF screening · uke 20»</b> for 7 spillere</div>
+              <div class="evt-meta"><span>192.168.1.84</span><span>Mac · Chrome 134</span><span>CBAC: Hovedcoach</span><span>req: t-ngf-2020</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <aside>
+        <div class="rail-card">
+          <h3>Filter-oppsummering</h3>
+          <div style="font-size:13px;color:var(--ink-muted);margin-bottom:14px">Viser <b style="color:var(--ink);font-family:var(--font-mono)">47</b> hendelser siste 7 dager</div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-subtle);font-weight:500;margin-bottom:10px">Top aktører</div>
+          <div class="bar-row"><span class="lbl">Anders K</span><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div><span class="bar-val">28</span></div>
+          <div class="bar-row"><span class="lbl">Sara P</span><div class="bar-bg"><div class="bar-fill" style="width:43%"></div></div><span class="bar-val">12</span></div>
+          <div class="bar-row"><span class="lbl">Periodiserings-agent</span><div class="bar-bg"><div class="bar-fill accent" style="width:25%"></div></div><span class="bar-val">7</span></div>
+          <div class="bar-row"><span class="lbl">Tom A</span><div class="bar-bg"><div class="bar-fill" style="width:14%"></div></div><span class="bar-val">4</span></div>
+          <div class="bar-row"><span class="lbl">Faktura-agent</span><div class="bar-bg"><div class="bar-fill accent" style="width:11%"></div></div><span class="bar-val">3</span></div>
+
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-subtle);font-weight:500;margin:20px 0 10px">Top entiteter</div>
+          <div class="bar-row"><span class="lbl">Plan</span><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div><span class="bar-val">18</span></div>
+          <div class="bar-row"><span class="lbl">Spiller</span><div class="bar-bg"><div class="bar-fill" style="width:67%"></div></div><span class="bar-val">12</span></div>
+          <div class="bar-row"><span class="lbl">Booking</span><div class="bar-bg"><div class="bar-fill" style="width:56%"></div></div><span class="bar-val">10</span></div>
+          <div class="bar-row"><span class="lbl">Faktura</span><div class="bar-bg"><div class="bar-fill" style="width:28%"></div></div><span class="bar-val">5</span></div>
+          <div class="bar-row"><span class="lbl">Konfig</span><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div><span class="bar-val">2</span></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>

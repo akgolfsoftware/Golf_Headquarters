@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head><meta charset="UTF-8"><title>PlayerHQ — Mål &amp; milepæler · 9-E/2</title><link rel="stylesheet" href="_shared/arketype-f-player.css">
+<style>
+  .goal-hero{padding:24px 28px;background:#fff;border:1px solid #F0EDE5;border-radius:18px;margin-bottom:18px;display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:center;box-shadow:0 8px 24px -16px rgba(10,31,24,.10)}
+  .goal-hero .eye{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--brand-primary);margin-bottom:6px}
+  .goal-hero h2{font-family:var(--font-display);font-size:28px;font-weight:500;letter-spacing:-.02em;margin:0;line-height:1.15}
+  .goal-hero h2 em{font-style:italic;color:var(--brand-primary)}
+  .goal-hero .desc{font-size:13px;color:var(--ink-muted);line-height:1.55;margin-top:10px}
+  .goal-hero .deadline{display:inline-flex;gap:8px;align-items:center;margin-top:14px;padding:8px 12px;background:rgba(184,133,42,.10);color:#6F500B;border-radius:7px;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;font-weight:600}
+  .goal-hero .ring-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .ring{width:180px;height:180px;position:relative}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .center .pct{font-family:var(--font-display);font-size:46px;font-weight:500;letter-spacing:-.02em;line-height:1}
+  .ring .center .lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-subtle);margin-top:4px}
+  .ring-legend{display:flex;gap:14px;font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:.02em}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+  .goal-card{background:#fff;border:1px solid #F0EDE5;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+  .goal-card.done{background:rgba(0,88,64,.04);border-color:rgba(0,88,64,.15)}
+  .goal-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+  .goal-card .cat{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;padding:3px 7px;border-radius:5px;background:var(--accent-bg);color:var(--brand-primary)}
+  .goal-card .cat.fysisk{background:rgba(184,133,42,.12);color:#7d5814}
+  .goal-card .cat.mental{background:rgba(176,68,68,.10);color:#7a3232}
+  .goal-card .cat.komp{background:rgba(0,88,64,.10);color:var(--brand-primary)}
+  .goal-card h4{font-family:var(--font-display);font-size:16px;font-weight:600;margin:0;letter-spacing:-.01em;line-height:1.25}
+  .goal-card .meta{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.04em}
+  .goal-card .prog{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:#FAFAF7;border-radius:8px}
+  .goal-card .prog-bar{height:8px;background:#F0EDE5;border-radius:4px;overflow:hidden;position:relative}
+  .goal-card .prog-bar .fl{height:100%;background:var(--brand-primary);border-radius:4px;position:relative}
+  .goal-card .prog-bar .fl::after{content:"";position:absolute;right:0;top:-2px;bottom:-2px;width:3px;background:var(--brand-accent);border-radius:2px}
+  .goal-card .prog-bar.warn .fl{background:var(--status-warning)}
+  .goal-card .prog-info{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.02em}
+  .goal-card .prog-info b{color:var(--ink);font-weight:600}
+  .goal-card .milestones{display:flex;flex-direction:column;gap:4px}
+  .ms{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--ink-muted);line-height:1.4}
+  .ms .box{width:14px;height:14px;border:1.5px solid var(--ink-muted);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center}
+  .ms.done .box{background:var(--status-success);border-color:var(--status-success);color:#fff;font-size:9px;font-weight:bold}
+  .ms.done{color:var(--ink-subtle);text-decoration:line-through}
+  .ms b{color:var(--ink);font-weight:500}
+  .ms .when{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);margin-left:4px;letter-spacing:.02em}
+  .goal-card .coach-note{padding:10px 12px;background:rgba(225,206,123,.20);border-left:3px solid var(--brand-accent);border-radius:0 8px 8px 0;font-size:12px;color:var(--ink-muted);line-height:1.5;font-style:italic}
+  .goal-card .coach-note b{font-style:normal;font-weight:600;color:var(--ink);display:block;margin-bottom:2px;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase}
+
+  .achievements{display:flex;gap:10px;flex-wrap:wrap}
+  .badge{padding:10px 12px;background:#fff;border:1px solid #F0EDE5;border-radius:10px;display:flex;align-items:center;gap:10px;flex:1;min-width:200px}
+  .badge.locked{opacity:.55;background:#FAFAF7}
+  .badge .ic{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#005840,#1A7D56);color:var(--brand-accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:14px;flex-shrink:0}
+  .badge.locked .ic{background:#E8E5DC;color:var(--ink-subtle)}
+  .badge .t{font-size:13px;font-weight:600;color:var(--ink);line-height:1.2}
+  .badge small{display:block;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);margin-top:2px;letter-spacing:.02em}
+</style></head>
+<body>
+<div class="deck" data-screen-label="54 PlayerHQ — Mål &amp; milepæler">
+  <header class="deck-head">
+    <div class="eyebrow">9-E · PlayerHQ utvidelser · skjerm 2 av 5</div>
+    <h1>Mål &amp; milepæler</h1>
+    <p class="sub">Sesong-mål satt sammen med coach. Hovedmål med 4–5 milepæler, ukentlig framdrift, og coach-kommentar. Achievements vises som badges når milepæler lukkes.</p>
+    <div class="meta-row"><span><span class="lbl">URL:</span> /meg/mål</span><span><span class="lbl">Sync:</span> Coach-board · Pro-tier</span></div>
+  </header>
+  <section class="ab">
+    <div class="ab-label"><span class="num">54 · 9-E/2</span><span class="ttl">Sesong-mål med milepæler</span><span class="meta">framdrift · coach-notater · badges</span></div>
+    <div class="ab-frame"><div class="app app--ph">
+      <aside class="nav">
+        <div class="nav-logo"><div class="mark">AK</div><div class="n">AK Golf<span class="dim">/spiller</span></div></div>
+        <div class="nav-item">Hub</div><div class="nav-item">Plan</div><div class="nav-item">Statistikk</div>
+        <div class="nav-item active">Mål</div>
+        <div class="nav-item">Coach</div><div class="nav-item">Helse</div>
+        <div class="nav-foot"><div class="av-sm">MP<span class="tier">PRO</span></div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Markus P.</span><span style="font-size:11px;color:var(--ink-subtle)">HCP +2,4 · GFGK</span></div></div>
+      </aside>
+      <main class="main">
+        <header class="page-head">
+          <div class="crumb">PlayerHQ <span class="sep">/</span> Mål</div>
+          <h1>Hovedmål · sesong 2026.</h1>
+          <p class="sub">Komme ned i HCP +0,5 og kvalifisere til NM Q-school R3. Coach: Anders K. · sist oppdatert 12. mai.</p>
+        </header>
+
+        <div class="goal-hero">
+          <div>
+            <div class="eye">Hovedmål · 2026</div>
+            <h2>HCP <em>+0,5</em> innen sesongslutt 31.10.26.</h2>
+            <div class="desc">Mål satt sammen med Anders K. på sesongstart-samtale 12.03. Krever konsistens på par-3 hull (SG +0,3), gjennomsnitt 70,5, og at 12 av 16 runder spilles inn under HCP.</div>
+            <div class="deadline">📅 23 uker igjen · neste milepæl 25.05</div>
+          </div>
+          <div class="ring-wrap">
+            <div class="ring">
+              <svg width="180" height="180" viewBox="0 0 180 180">
+                <circle cx="90" cy="90" r="75" fill="none" stroke="#F0EDE5" stroke-width="14"/>
+                <circle cx="90" cy="90" r="75" fill="none" stroke="url(#g1)" stroke-width="14" stroke-dasharray="471" stroke-dashoffset="160" stroke-linecap="round"/>
+                <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#005840"/><stop offset="1" stop-color="#1A7D56"/></linearGradient></defs>
+              </svg>
+              <div class="center"><div class="pct">66%</div><div class="lbl">til hovedmål</div></div>
+            </div>
+            <div class="ring-legend"><span>start +3,2</span><span>nå +2,4</span><span>mål +0,5</span></div>
+          </div>
+        </div>
+
+        <div class="grid">
+
+          <div class="goal-card">
+            <div class="top"><div><span class="cat">teknisk</span><h4 style="margin-top:6px">Strokes Gained Approach &gt; +0,40</h4><div class="meta" style="margin-top:4px">område: 100–175 m · måling: shotzone-data fra Live Tapper</div></div></div>
+            <div class="prog">
+              <div class="prog-bar"><div class="fl" style="width:72%"></div></div>
+              <div class="prog-info"><span>start −0,15</span><span><b>nå +0,29</b></span><span>mål +0,40</span></div>
+            </div>
+            <div class="milestones">
+              <div class="ms done"><div class="box">✓</div><div><b>Iron-fitting m/ TrackMan</b> hos GFGK <span class="when">· 18.03</span></div></div>
+              <div class="ms done"><div class="box">✓</div><div><b>10 økter approach-blokk</b> 100/125/150 m <span class="when">· apr</span></div></div>
+              <div class="ms done"><div class="box">✓</div><div><b>SG approach &gt; 0</b> over 5 sammenhengende runder <span class="when">· 04.05</span></div></div>
+              <div class="ms"><div class="box"></div><div><b>Hold +0,30 i 8 runder på rad</b> · 3 av 8 OK <span class="when">· mål 30.06</span></div></div>
+            </div>
+            <div class="coach-note"><b>Coach Anders · 09.05</b>Treffer veldig fint på 125 m. Vi fortsetter med distanse-kontroll-blokken — fokus på 145 m i denne ukens økt.</div>
+          </div>
+
+          <div class="goal-card">
+            <div class="top"><div><span class="cat komp">konkurranse</span><h4 style="margin-top:6px">Kvalifisere til NM Q-school R3</h4><div class="meta" style="margin-top:4px">krever topp 30 etter R2 · cut +5</div></div></div>
+            <div class="prog">
+              <div class="prog-bar"><div class="fl" style="width:50%"></div></div>
+              <div class="prog-info"><span>R1 ikke startet</span><span><b>i posisjon</b></span><span>R3 23.05.26</span></div>
+            </div>
+            <div class="milestones">
+              <div class="ms done"><div class="box">✓</div><div><b>Påmeldt R1 · 20.05</b> Larvik GK <span class="when">· bekreftet</span></div></div>
+              <div class="ms done"><div class="box">✓</div><div><b>BankID-samtykke fullført</b> <span class="when">· 18.04</span></div></div>
+              <div class="ms"><div class="box"></div><div><b>R1 spilles 20.05</b> · score under 74 (cut-projeksjon)</div></div>
+              <div class="ms"><div class="box"></div><div><b>R2 spilles 21.05</b> · holde +5 over 36 hull</div></div>
+              <div class="ms"><div class="box"></div><div><b>R3 22.05</b> · topp 30 = ferdig</div></div>
+            </div>
+            <div class="coach-note"><b>Coach Anders · 11.05</b>Du er i god form. Spill din vanlige plan på par-5 — ikke jakt birdies du ikke har. R2 vil avgjøre.</div>
+          </div>
+
+          <div class="goal-card">
+            <div class="top"><div><span class="cat fysisk">fysisk</span><h4 style="margin-top:6px">Bygge konsistent gym-rutine · 3 økter / uke</h4><div class="meta" style="margin-top:4px">styrke (2) + mobilitet (1) · 12 uker</div></div></div>
+            <div class="prog">
+              <div class="prog-bar warn"><div class="fl" style="width:58%"></div></div>
+              <div class="prog-info"><span>uke 1</span><span><b style="color:var(--status-warning)">7 av 12 uker fullført</b></span><span>uke 12</span></div>
+            </div>
+            <div class="milestones">
+              <div class="ms done"><div class="box">✓</div><div><b>Onboarding m/ fysioterapeut Mia</b> <span class="when">· 22.03</span></div></div>
+              <div class="ms done"><div class="box">✓</div><div><b>5 uker på rad · 3+ økter</b> <span class="when">· 22.03–25.04</span></div></div>
+              <div class="ms"><div class="box"></div><div><b>Hopp tilbake til 3+/uke</b> · siste 2 uker bare 2 økter <span class="when">· mål denne uka</span></div></div>
+              <div class="ms"><div class="box"></div><div><b>12 sammenhengende uker</b> · re-måling styrke 14.06</div></div>
+            </div>
+            <div class="coach-note" style="background:rgba(184,133,42,.10);border-color:#B8852A"><b style="color:#6F500B">⚠ Fysio Mia · 10.05</b>Ser at gym-økter falt i de to siste ukene. Det henger nok sammen med høyt turneringsuttak — la oss prate i dag for å justere uken.</div>
+          </div>
+
+          <div class="goal-card">
+            <div class="top"><div><span class="cat mental">mental</span><h4 style="margin-top:6px">Pre-shot rutine · 100% av tee-shots</h4><div class="meta" style="margin-top:4px">selv-vurdering etter hver runde · score 1–5</div></div></div>
+            <div class="prog">
+              <div class="prog-bar"><div class="fl" style="width:84%"></div></div>
+              <div class="prog-info"><span>start 3,2/5</span><span><b>nå 4,4/5</b></span><span>mål 4,8/5</span></div>
+            </div>
+            <div class="milestones">
+              <div class="ms done"><div class="box">✓</div><div><b>Definert egen 5-stegs rutine</b> m/ mental-coach <span class="when">· feb</span></div></div>
+              <div class="ms done"><div class="box">✓</div><div><b>10 runder &gt; 4/5</b> <span class="when">· 14 av 18 oppnådd</span></div></div>
+              <div class="ms"><div class="box"></div><div><b>Snitt 4,8/5 over 5 runder</b> · siste 5: 4,4 / 4,6 / 4,2 / 4,8 / 4,6</div></div>
+              <div class="ms"><div class="box"></div><div><b>Spille en hel runde uten brudd</b> · ikke oppnådd ennå</div></div>
+            </div>
+            <div class="coach-note"><b>Mental-coach Solveig · 04.05</b>Tydelig forbedring under press. Bryt ned hva som gikk galt på hull 12 i siste R3 — sannsynligvis hastet rutinen.</div>
+          </div>
+
+        </div>
+
+        <div class="panel" style="background:#fff;border:1px solid #F0EDE5;border-radius:14px;padding:18px">
+          <h3 style="font-family:var(--font-display);font-size:14px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em">Achievements · sesong 2026</h3>
+          <div class="achievements">
+            <div class="badge"><div class="ic">66</div><div><div class="t">Personlig rekord</div><small>Bærum GK · 04.05 · −5</small></div></div>
+            <div class="badge"><div class="ic">SG</div><div><div class="t">SG approach &gt; 0 i 5 rader</div><small>oppnådd 04.05</small></div></div>
+            <div class="badge"><div class="ic">10</div><div><div class="t">10 runder under HCP</div><small>10 av 12 mål</small></div></div>
+            <div class="badge locked"><div class="ic">+0,5</div><div><div class="t">HCP +0,5</div><small>Låses opp ved hovedmål</small></div></div>
+            <div class="badge locked"><div class="ic">NM</div><div><div class="t">Q-school R3</div><small>Låses opp 22.05</small></div></div>
+            <div class="badge locked"><div class="ic">12u</div><div><div class="t">12 uker gym</div><small>7 av 12</small></div></div>
+          </div>
+        </div>
+
+      </main>
+    </div></div>
+  </section>
+</div>
+</body>
+</html>

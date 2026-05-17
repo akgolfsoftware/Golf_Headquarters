@@ -1,0 +1,310 @@
+/* ============================================================
+   styles-opt4.css — Option 4: Bygger-wizard
+   Cockpit · Stadium · Forest Green · Lime accent
+   Variants: clean | polished
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+/* ============================================================
+   CLEAN VARIANT
+   Forest green sidebar, crisp dots, no decorative flourishes
+   ============================================================ */
+
+#frame-opt4.clean .browser-chrome {
+  background: #1a2e28;
+  border-bottom: 1px solid #2d4a40;
+}
+#frame-opt4.clean .browser-dots span { background: #3a5a50; }
+#frame-opt4.clean .browser-url { color: #8fb8ae; font-size: 12px; }
+#frame-opt4.clean .browser-controls { color: #4a7a6e; }
+
+/* Cockpit Strip — clean */
+#frame-opt4.clean .cockpit-strip {
+  background: linear-gradient(90deg, #003D2C 0%, #005840 100%);
+  border-bottom: 1px solid #004a35;
+}
+#frame-opt4.clean .cockpit-logo { color: #D1F843; font-weight: 700; }
+#frame-opt4.clean .cnav-pill { color: rgba(255,255,255,0.65); }
+#frame-opt4.clean .cnav-pill.cnav-active {
+  background: #D1F843;
+  color: #003D2C;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  font-weight: 600;
+}
+#frame-opt4.clean .cockpit-search {
+  color: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+/* Wizard sidebar — clean */
+#frame-opt4.clean .wizard-sidebar {
+  background: #0A1F18;
+  border-right: 1px solid #1a3328;
+}
+#frame-opt4.clean .wsidebar-title {
+  color: rgba(255,255,255,0.4);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 16px 16px 8px;
+  display: block;
+}
+#frame-opt4.clean .wsidebar-item { color: rgba(255,255,255,0.7); }
+#frame-opt4.clean .wsidebar-item.wsidebar-item-active {
+  background: rgba(209,248,67,0.08);
+  border-left: 3px solid #D1F843;
+  color: #ffffff;
+}
+#frame-opt4.clean .ws-dot { color: rgba(255,255,255,0.45); font-size: 11px; }
+#frame-opt4.clean .ws-dot.ws-dot-active { color: #4CAF50; }
+#frame-opt4.clean .ws-dot.ws-dot-new {
+  background: #D1F843;
+  color: #003D2C;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+#frame-opt4.clean .ws-name { font-size: 13px; font-weight: 500; }
+#frame-opt4.clean .ws-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+#frame-opt4.clean .wsidebar-divider { border-top: 1px solid rgba(255,255,255,0.08); margin: 8px 16px; }
+#frame-opt4.clean .wsidebar-action { color: rgba(255,255,255,0.5); padding: 6px 16px; font-size: 12px; }
+#frame-opt4.clean .wsidebar-action:hover { color: rgba(255,255,255,0.8); }
+
+/* Progress dots — clean */
+#frame-opt4.clean .wizard-progress-bar {
+  background: #f5f4f0;
+  border-bottom: 1px solid #e5e3dd;
+  padding: 12px 24px;
+}
+#frame-opt4.clean .wprog-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #e5e3dd; color: #9d9c95;
+  font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid #d4d2cc;
+}
+#frame-opt4.clean .wprog-dot-done {
+  background: #005840; color: #ffffff; border-color: #005840;
+}
+#frame-opt4.clean .wprog-dot-current {
+  background: transparent;
+  border: 2.5px solid #005840;
+  color: #005840; font-weight: 700;
+}
+#frame-opt4.clean .wprog-connector {
+  height: 2px; background: #e5e3dd;
+  flex: 1; margin: 0 4px;
+  align-self: center; margin-bottom: 18px;
+}
+#frame-opt4.clean .wprog-conn-done { background: #005840; }
+#frame-opt4.clean .wprog-label { font-size: 11px; color: #9d9c95; margin-top: 4px; }
+#frame-opt4.clean .wprog-label-current { color: #005840; font-weight: 600; }
+
+/* Step content — clean */
+#frame-opt4.clean .wstep-title { font-size: 18px; font-weight: 600; color: #0A1F17; }
+#frame-opt4.clean .wstep-sub { font-size: 13px; color: #6B7280; margin-top: 2px; }
+#frame-opt4.clean .wstep-hint {
+  background: #f0f7f4; border: 1px solid #c0d9d0; border-radius: 6px;
+  padding: 10px 14px; font-size: 13px; color: #3a5a50;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+#frame-opt4.clean .hint-icon { color: #005840; font-size: 14px; }
+#frame-opt4.clean .hint-btn {
+  background: #005840; color: #ffffff; border: none;
+  border-radius: 4px; padding: 4px 10px;
+  font-size: 11px; font-weight: 500; cursor: pointer;
+}
+#frame-opt4.clean .wp-period {
+  background: #ffffff; border: 1px solid #e5e3dd; border-radius: 6px; margin-bottom: 8px;
+}
+#frame-opt4.clean .wp-input,
+#frame-opt4.clean .wp-select {
+  border: 1px solid #d4d2cc; border-radius: 4px;
+  background: #fafaf7; color: #0A1F17;
+  padding: 5px 8px; font-size: 13px;
+}
+#frame-opt4.clean .btn-primary {
+  background: #005840; color: #D1F843; border: none;
+  border-radius: 6px; padding: 8px 20px; font-weight: 600; font-size: 13px;
+}
+#frame-opt4.clean .btn-outline {
+  background: transparent; color: #005840;
+  border: 1px solid #005840; border-radius: 6px; padding: 8px 16px; font-size: 13px;
+}
+#frame-opt4.clean .wiz-autosave { color: #005840; font-size: 12px; }
+#frame-opt4.clean .btn-add-period {
+  background: transparent; color: #005840;
+  border: 1px dashed #005840; border-radius: 6px;
+  padding: 6px 16px; font-size: 13px; width: 100%; margin-top: 4px;
+}
+
+/* ============================================================
+   POLISHED VARIANT
+   Dark cockpit chrome, Bebas Neue titles, lime-forward dots
+   ============================================================ */
+
+#frame-opt4.polished .browser-chrome {
+  background: #061210;
+  border-bottom: 2px solid #D1F843;
+}
+#frame-opt4.polished .browser-dots span:nth-child(1) { background: #EF4444; }
+#frame-opt4.polished .browser-dots span:nth-child(2) { background: #F59E0B; }
+#frame-opt4.polished .browser-dots span:nth-child(3) { background: #10B981; }
+#frame-opt4.polished .browser-url {
+  color: #D1F843; font-size: 12px;
+  font-family: 'Courier New', monospace; letter-spacing: 0.01em;
+}
+#frame-opt4.polished .browser-controls { color: #4a7a6e; }
+
+/* Cockpit Strip — polished */
+#frame-opt4.polished .cockpit-strip {
+  background: linear-gradient(90deg, #001a12 0%, #003D2C 60%, #004a35 100%);
+  border-bottom: 1px solid rgba(209,248,67,0.4);
+}
+#frame-opt4.polished .cockpit-logo {
+  color: #D1F843;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 0.08em;
+}
+#frame-opt4.polished .cnav-pill { color: rgba(255,255,255,0.6); font-size: 12px; letter-spacing: 0.03em; }
+#frame-opt4.polished .cnav-pill.cnav-active {
+  background: #D1F843; color: #003D2C;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  font-weight: 700;
+}
+#frame-opt4.polished .cockpit-search {
+  color: rgba(255,255,255,0.4);
+  border: 1px solid rgba(209,248,67,0.25);
+  border-radius: 4px; padding: 2px 8px;
+}
+
+/* Wizard sidebar — polished */
+#frame-opt4.polished .wizard-sidebar {
+  background: #0A1F18;
+  border-right: 1px solid rgba(209,248,67,0.12);
+}
+#frame-opt4.polished .wsidebar-title {
+  color: #D1F843;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px; letter-spacing: 0.12em;
+  padding: 16px 16px 8px; display: block;
+}
+#frame-opt4.polished .wsidebar-item { color: rgba(255,255,255,0.65); }
+#frame-opt4.polished .wsidebar-item.wsidebar-item-active {
+  background: rgba(209,248,67,0.06);
+  border-left: 3px solid #D1F843; color: #ffffff;
+}
+#frame-opt4.polished .ws-dot.ws-dot-active { color: #4CAF50; }
+#frame-opt4.polished .ws-dot.ws-dot-new {
+  background: #D1F843; color: #003D2C;
+  font-size: 9px; font-weight: 700; border-radius: 3px; padding: 1px 4px;
+}
+#frame-opt4.polished .ws-name { font-size: 13px; font-weight: 500; }
+#frame-opt4.polished .ws-sub { font-size: 11px; color: rgba(255,255,255,0.35); }
+#frame-opt4.polished .wsidebar-divider { border-top: 1px solid rgba(255,255,255,0.07); margin: 8px 16px; }
+#frame-opt4.polished .wsidebar-action { color: rgba(209,248,67,0.5); padding: 6px 16px; font-size: 12px; }
+#frame-opt4.polished .wsidebar-action:hover { color: #D1F843; }
+
+/* Progress dots — polished */
+#frame-opt4.polished .wizard-progress-bar {
+  background: #f5f4f0; border-bottom: 1px solid #e0ddd6; padding: 12px 24px;
+}
+#frame-opt4.polished .wprog-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #e5e3dd; color: #9d9c95;
+  font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid #d4d2cc;
+}
+#frame-opt4.polished .wprog-dot-done {
+  background: #005840; color: #D1F843; border-color: #005840;
+}
+#frame-opt4.polished .wprog-dot-current {
+  background: #D1F843; color: #003D2C; border-color: #D1F843;
+  font-weight: 800;
+  box-shadow: 0 0 0 3px rgba(209,248,67,0.25);
+}
+#frame-opt4.polished .wprog-connector {
+  height: 2px; background: #e5e3dd;
+  flex: 1; margin: 0 4px; align-self: center; margin-bottom: 18px;
+}
+#frame-opt4.polished .wprog-conn-done { background: #005840; }
+#frame-opt4.polished .wprog-label { font-size: 11px; color: #9d9c95; margin-top: 4px; }
+#frame-opt4.polished .wprog-label-current { color: #003D2C; font-weight: 700; }
+
+/* Step content — polished */
+#frame-opt4.polished .wstep-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 0.06em;
+  color: #0A1F17; line-height: 1.1;
+}
+#frame-opt4.polished .wstep-sub { font-size: 13px; color: #6B7280; margin-top: 3px; }
+#frame-opt4.polished .wstep-hint {
+  background: rgba(209,248,67,0.06);
+  border: 1px solid #D1F843; border-radius: 6px;
+  padding: 10px 14px; font-size: 13px; color: #3a5a50;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+#frame-opt4.polished .hint-icon { color: #005840; font-size: 15px; }
+#frame-opt4.polished .hint-btn {
+  background: #005840; color: #D1F843; border: none;
+  border-radius: 4px; padding: 4px 10px;
+  font-size: 11px; font-weight: 600; cursor: pointer;
+}
+#frame-opt4.polished .wp-period {
+  background: #ffffff; border: 1px solid #e5e3dd; border-radius: 8px; margin-bottom: 8px;
+  transition: box-shadow 150ms ease-out, transform 150ms ease-out;
+}
+#frame-opt4.polished .wp-period:hover {
+  box-shadow: 0 4px 16px rgba(0,88,64,0.10);
+  transform: translateY(-1px);
+}
+#frame-opt4.polished .wp-input,
+#frame-opt4.polished .wp-select {
+  border: 1px solid #d4d2cc; border-radius: 4px;
+  background: #fafaf7; color: #0A1F17;
+  padding: 5px 8px; font-size: 13px;
+}
+#frame-opt4.polished .wp-input:focus { border-color: #005840; outline: none; }
+#frame-opt4.polished .btn-primary {
+  background: #005840; color: #D1F843; border: none;
+  border-radius: 20px; padding: 8px 20px;
+  font-weight: 700; font-size: 13px; letter-spacing: 0.02em;
+}
+#frame-opt4.polished .btn-primary:hover { background: #003D2C; }
+#frame-opt4.polished .btn-outline {
+  background: transparent; color: #005840;
+  border: 1.5px solid #005840; border-radius: 20px; padding: 8px 16px; font-size: 13px;
+}
+#frame-opt4.polished .wiz-autosave {
+  color: #D1F843; font-size: 12px; font-weight: 600;
+  background: rgba(209,248,67,0.08);
+  padding: 3px 10px; border-radius: 12px; letter-spacing: 0.02em;
+}
+#frame-opt4.polished .btn-add-period {
+  background: transparent; color: #005840;
+  border: 1.5px dashed rgba(0,88,64,0.4);
+  border-radius: 8px; padding: 6px 16px; font-size: 13px;
+  width: 100%; margin-top: 4px;
+  transition: border-color 150ms ease-out;
+}
+#frame-opt4.polished .btn-add-period:hover {
+  border-color: #005840;
+  background: rgba(0,88,64,0.04);
+}
+
+/* ============================================================
+   Self-reveal — hide badge, color sub-tabs
+   ============================================================ */
+#frame-opt4-tabs .sub-tab-badge { display: none; }
+#frame-opt4-tabs .sub-tab-btn[data-variant="clean"] { color: #64B5F6; }
+#frame-opt4-tabs .sub-tab-btn[data-variant="clean"]:hover { color: #1E88E5; }
+#frame-opt4-tabs .sub-tab-btn[data-variant="clean"].active { color: #1565C0; border-bottom-color: #1565C0; }
+#frame-opt4-tabs .sub-tab-btn[data-variant="polished"] { color: #81C784; }
+#frame-opt4-tabs .sub-tab-btn[data-variant="polished"]:hover { color: #43A047; }
+#frame-opt4-tabs .sub-tab-btn[data-variant="polished"].active { color: #2E7D32; border-bottom-color: #2E7D32; }

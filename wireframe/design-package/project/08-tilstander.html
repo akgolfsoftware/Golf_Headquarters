@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Oekt-kort · tilstander · CoachHQ</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<style>
+  body { min-width: 1440px; }
+  .main { padding: 32px 40px 48px; }
+
+  .state-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    margin-top: 8px;
+  }
+
+  /* Section header */
+  .sec-head {
+    display: flex; align-items: baseline; gap: 14px;
+    margin: 32px 0 14px;
+  }
+  .sec-head .num {
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-subtle); font-weight: 500;
+  }
+  .sec-head h2 {
+    font-family: var(--font-display); font-size: 22px; font-weight: 600;
+    letter-spacing: -0.015em; margin: 0;
+  }
+  .sec-head .sub {
+    font-family: var(--font-display); font-style: italic; font-size: 16px;
+    color: var(--ink-muted); margin-left: auto;
+  }
+
+  /* Frame around each state card */
+  .frame {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 14px;
+    box-shadow: var(--shadow-card);
+  }
+  .frame-meta { display: flex; align-items: center; justify-content: space-between; }
+  .frame-meta .name {
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-subtle); letter-spacing: 0.04em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .frame-meta .tag {
+    font-family: var(--font-mono); font-size: 10px; padding: 3px 7px; border-radius: 4px;
+    background: var(--surface-alt); color: var(--ink-muted);
+  }
+
+  /* The actual session card — base */
+  .sc {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative;
+  }
+  .sc-head { display: flex; align-items: flex-start; gap: 10px; }
+  .sc-head .time {
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-subtle);
+    padding-top: 2px; min-width: 40px;
+  }
+  .sc-head .who { flex: 1; }
+  .sc-head .who .name {
+    font-family: var(--font-display); font-size: 15px; font-weight: 600;
+    letter-spacing: -0.01em; line-height: 1.2;
+  }
+  .sc-head .who .meta {
+    font-size: 11.5px; color: var(--ink-muted); margin-top: 2px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sc-head .who .meta .sep { opacity: 0.4; }
+  .sc-head .av { flex-shrink: 0; }
+
+  .sc-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 500; padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .sc-status .d { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .sc-body {
+    font-size: 12.5px; color: var(--ink-muted); line-height: 1.45;
+    padding: 10px 12px; background: var(--surface-alt); border-radius: 10px;
+  }
+  .sc-body .l { color: var(--ink-subtle); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+  .sc-body strong { color: var(--ink); font-weight: 500; }
+
+  .sc-actions { display: flex; gap: 6px; align-items: center; }
+  .sc-actions .spacer { flex: 1; }
+
+  /* Tiny progress bar */
+  .progress { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--ink-muted); }
+  .progress .bar { flex: 1; height: 4px; background: var(--surface-alt); border-radius: 2px; overflow: hidden; }
+  .progress .fill { height: 100%; background: var(--brand-primary); border-radius: 2px; }
+  .progress .v { font-family: var(--font-mono); font-size: 11px; color: var(--ink); font-weight: 500; }
+
+  /* State variants */
+  /* PLANLAGT (default) */
+  .sc--planned .sc-status { background: var(--brand-primary-soft); color: var(--brand-primary); }
+
+  /* FORBERED (24h foer) */
+  .sc--prep {
+    border-color: rgba(184,133,42,0.35);
+    box-shadow: 0 0 0 1px rgba(184,133,42,0.20), var(--shadow-card);
+  }
+  .sc--prep .sc-status { background: var(--warning-bg); color: var(--warning); }
+
+  /* PAAGAR */
+  .sc--live {
+    background: var(--ink); color: var(--surface);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent), 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .sc--live .sc-head .time { color: var(--accent); }
+  .sc--live .sc-head .who .meta { color: rgba(255,255,255,0.55); }
+  .sc--live .sc-status { background: var(--accent); color: var(--accent-on); }
+  .sc--live .sc-body { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+  .sc--live .sc-body .l { color: rgba(255,255,255,0.5); }
+  .sc--live .sc-body strong { color: var(--surface); }
+  .sc--live .progress .bar { background: rgba(255,255,255,0.1); }
+  .sc--live .progress .fill { background: var(--accent); }
+  .sc--live .progress .v { color: var(--surface); }
+  .sc--live .progress { color: rgba(255,255,255,0.55); }
+  .sc--live .pulse {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 0 rgba(209,248,67,0.6);
+    animation: pulse 1.8s var(--ease-out) infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(209,248,67,0.7); }
+    100% { box-shadow: 0 0 0 12px rgba(209,248,67,0); }
+  }
+
+  /* GJORT */
+  .sc--done {
+    background: var(--surface-alt);
+    border-color: var(--line-soft);
+  }
+  .sc--done .sc-head .name { color: var(--ink-muted); }
+  .sc--done .sc-status { background: var(--success-bg); color: var(--success); }
+  .sc--done .sc-body { background: var(--card); }
+
+  /* AVLYST */
+  .sc--cancelled {
+    background: repeating-linear-gradient(135deg, var(--card) 0 8px, var(--surface-alt) 8px 16px);
+    border-color: var(--line);
+  }
+  .sc--cancelled .sc-head .name { color: var(--ink-muted); text-decoration: line-through; text-decoration-color: var(--ink-subtle); }
+  .sc--cancelled .sc-status { background: var(--danger-bg); color: var(--danger); }
+
+  /* MANGLER */
+  .sc--missing {
+    background: var(--card);
+    border: 1px solid var(--danger);
+    box-shadow: 0 0 0 3px var(--danger-bg);
+  }
+  .sc--missing .sc-status { background: var(--danger); color: #fff; }
+  .sc--missing .alert {
+    font-size: 12px; color: var(--danger); display: flex; align-items: center; gap: 6px;
+    padding: 8px 10px; background: var(--danger-bg); border-radius: 8px;
+  }
+
+  /* OVERBOOKED */
+  .sc--conflict {
+    border-color: var(--danger);
+  }
+  .sc--conflict .conflict-stripe {
+    position: absolute; left: -1px; top: -1px; bottom: -1px; width: 4px;
+    background: var(--danger); border-radius: 14px 0 0 14px;
+  }
+  .sc--conflict .sc-status { background: var(--danger-bg); color: var(--danger); }
+
+  /* FORESPURT (av elev) */
+  .sc--requested {
+    background: var(--accent-bg);
+    border: 1px dashed var(--accent);
+  }
+  .sc--requested .sc-status { background: var(--accent); color: var(--accent-on); }
+
+  /* HOLDET / BLOKKERT */
+  .sc--block {
+    background: repeating-linear-gradient(135deg, var(--card) 0 6px, var(--surface-alt) 6px 12px);
+    border: 1px dashed var(--line);
+  }
+  .sc--block .sc-head .name { color: var(--ink-muted); font-style: italic; }
+  .sc--block .sc-status { background: var(--surface-alt); color: var(--ink-muted); border: 1px solid var(--line); }
+
+  /* Behaviour rows */
+  .behaviour { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  /* Spec list */
+  .spec-list {
+    font-size: 12.5px; color: var(--ink-muted); line-height: 1.6;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .spec-list .row-spec { display: flex; gap: 10px; align-items: baseline; }
+  .spec-list .row-spec .k {
+    font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-subtle);
+    text-transform: uppercase; letter-spacing: 0.06em; min-width: 64px;
+  }
+  .spec-list .row-spec .v { color: var(--ink); }
+</style>
+</head>
+<body data-screen-label="08 Tilstander">
+<div class="shell">
+
+  <aside class="rail">
+    <div class="logo">AK</div>
+    <button class="rail-btn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    <div class="rail-spacer"></div>
+    <div class="rail-avatar">AK</div>
+  </aside>
+
+  <nav class="nav">
+    <div class="nav-title">CoachHQ</div>
+    <a href="index.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Dashbord</a>
+    <a href="01-kalender-uke.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Kalender</a>
+    <a href="02-kapasitet.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> Kapasitet</a>
+    <a href="04-meldinger.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Meldinger</a>
+    <a href="03-lag-snitt.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/></svg> Lag-snitt</a>
+    <a href="05-oppfolgingsko.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Oppfoelging</a>
+    <a href="#" class="is-active"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg> Tilstander</a>
+    <div class="nav-divider"></div>
+    <div class="tier-card"><b>Design-system</b><div class="meta">Oekt-kort · 9 tilstander</div></div>
+  </nav>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <span class="page-eyebrow"><span class="dot"></span>/design-system/states · oekt-kort</span>
+        <h1 class="page-title">Tilstander <em>· oekt-kort</em></h1>
+        <p class="page-hero-fragment italic-edit">Et kort gjennom hele oektens liv — fra plan til etter.</p>
+      </div>
+      <div class="row gap-2">
+        <button class="btn">Eksporter</button>
+        <button class="btn btn-primary">Bruk i Figma</button>
+      </div>
+    </header>
+
+    <!-- ROW 1 — Livssyklus -->
+    <div class="sec-head">
+      <span class="num">01</span>
+      <h2>Livssyklus</h2>
+      <span class="sub">fire trinn fra plan til etter</span>
+    </div>
+
+    <div class="state-grid">
+
+      <!-- PLANLAGT -->
+      <div class="frame">
+        <div class="frame-meta"><span class="name">PLANLAGT</span><span class="tag">default</span></div>
+        <div class="sc sc--planned">
+          <div class="sc-head">
+            <div class="time">10:00</div>
+            <div class="who">
+              <div class="name">Mathias Pedersen</div>
+              <div class="meta">A-lag · 60 min<span class="sep">·</span>Studio 2</div>
+            </div>
+            <div class="avatar avatar-md av-mp">MP</div>
+          </div>
+          <span class="sc-status"><span class="d"></span>planlagt</span>
+          <div class="sc-body">
+            <div class="l">tema</div>
+            Backswing-plan <strong>+ slag-fundament</strong>. Maaling med Trackman.
+          </div>
+          <div class="sc-actions">
+            <button class="btn btn-sm">Aapne</button>
+            <button class="btn btn-sm btn-ghost">Flytt</button>
+            <div class="spacer"></div>
+            <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-subtle);">om 4 dgr</span>
+          </div>
+        </div>
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">trigger</span><span class="v">bekreftet av elev</span></div>
+          <div class="row-spec"><span class="k">aksjon</span><span class="v">aapne · flytt · avlys</span></div>
+          <div class="row-spec"><span class="k">vises i</span><span class="v">kalender · oppfolging</span></div>
+        </div>
+      </div>
+
+      <!-- FORBERED -->
+      <div class="frame">
+        <div class="frame-meta"><span class="name">FORBERED</span><span class="tag">T-24h</span></div>
+        <div class="sc sc--prep">
+          <div class="sc-head">
+            <div class="time">09:00</div>
+            <div class="who">
+              <div class="name">Eline Krogh</div>
+              <div class="meta">junior · 45 min<span class="sep">·</span>Bossum</div>
+            </div>
+            <div class="avatar avatar-md av-ek">EK</div>
+          </div>
+          <span class="sc-status"><span class="d"></span>forbered i dag</span>
+          <div class="sc-body">
+            <div class="l">noter fra forrige</div>
+            Vridning ut <strong>fra bunn</strong>. Kontroll i kropp. Maal: maaling under 3.0°.
+          </div>
+          <div class="progress">
+            <span>forberedelse</span>
+            <div class="bar"><div class="fill" style="width: 35%; background: var(--warning);"></div></div>
+            <span class="v">2 av 5</span>
+          </div>
+          <div class="sc-actions">
+            <button class="btn btn-sm btn-accent">Fullfoer plan</button>
+            <button class="btn btn-sm btn-ghost">Se historikk</button>
+          </div>
+        </div>
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">trigger</span><span class="v">&lt;24 t til start</span></div>
+          <div class="row-spec"><span class="k">aksjon</span><span class="v">fullfoer plan-sjekkliste</span></div>
+          <div class="row-spec"><span class="k">vises i</span><span class="v">kalender · dashbord-feed</span></div>
+        </div>
+      </div>
+
+      <!-- PAAGAR -->
+      <div class="frame">
+        <div class="frame-meta"><span class="name">PAAGAR</span><span class="tag">live</span></div>
+        <div class="sc sc--live">
+          <div class="sc-head">
+            <div class="time">09:00<div class="pulse" style="margin-top: 4px;"></div></div>
+            <div class="who">
+              <div class="name">Mathias Pedersen</div>
+              <div class="meta">A-lag · 60 min<span class="sep">·</span>Studio 2</div>
+            </div>
+            <div class="avatar avatar-md av-mp">MP</div>
+          </div>
+          <span class="sc-status"><span class="d"></span>paagar · 22 min igjen</span>
+          <div class="sc-body">
+            <div class="l">live-noter</div>
+            Tester ny backswing-vinkel. <strong>2 nye maalinger</strong> registrert. Trackman-feed aktiv.
+          </div>
+          <div class="progress">
+            <span>tid</span>
+            <div class="bar"><div class="fill" style="width: 63%;"></div></div>
+            <span class="v">38/60</span>
+          </div>
+          <div class="sc-actions">
+            <button class="btn btn-sm btn-accent">Aapne live-noter</button>
+            <button class="btn btn-sm" style="background: rgba(255,255,255,0.08); color: var(--surface); border-color: rgba(255,255,255,0.12);">Avslutt</button>
+          </div>
+        </div>
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">trigger</span><span class="v">paa starttidspunkt</span></div>
+          <div class="row-spec"><span class="k">aksjon</span><span class="v">live-noter · maalinger · avslutt</span></div>
+          <div class="row-spec"><span class="k">vises i</span><span class="v">naa-banner · kalender</span></div>
+        </div>
+      </div>
+
+      <!-- GJORT -->
+      <div class="frame">
+        <div class="frame-meta"><span class="name">GJORT</span><span class="tag">avsluttet</span></div>
+        <div class="sc sc--done">
+          <div class="sc-head">
+            <div class="time">08:00</div>
+            <div class="who">
+              <div class="name">Henrik Norvik</div>
+              <div class="meta">senior · 60 min<span class="sep">·</span>i gaar</div>
+            </div>
+            <div class="avatar avatar-md av-hn">HN</div>
+          </div>
+          <span class="sc-status"><span class="d"></span>gjort · noter klare</span>
+          <div class="sc-body">
+            <div class="l">utbytte</div>
+            Spin-vinkel <strong>−1.4°</strong>. Carry-snitt opp 4 m. <strong>2 tilbakemeldinger</strong> klare for sending.
+          </div>
+          <div class="sc-actions">
+            <button class="btn btn-sm">Send oppsummering</button>
+            <button class="btn btn-sm btn-ghost">Se noter</button>
+            <div class="spacer"></div>
+            <span style="font-family: var(--font-mono); font-size: 11px; color: var(--success);">+4 m carry</span>
+          </div>
+        </div>
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">trigger</span><span class="v">manuell avslutning</span></div>
+          <div class="row-spec"><span class="k">aksjon</span><span class="v">send oppsummering · arkiver</span></div>
+          <div class="row-spec"><span class="k">vises i</span><span class="v">oppfolging · historikk</span></div>
+        </div>
+      </div>
+
+      <!-- ETTER -->
+      <div class="frame">
+        <div class="frame-meta"><span class="name">ETTER</span><span class="tag">7 dgr</span></div>
+        <div class="sc sc--done" style="opacity: 0.85;">
+          <div class="sc-head">
+            <div class="time">—</div>
+            <div class="who">
+              <div class="name" style="text-decoration: none;">Astrid Kvam</div>
+              <div class="meta">senior · 7 dgr siden<span class="sep">·</span>Bossum</div>
+            </div>
+            <div class="avatar avatar-md av-ak">AK</div>
+          </div>
+          <span class="sc-status" style="background: var(--surface-alt); color: var(--ink-muted);"><span class="d"></span>arkivert</span>
+          <div class="sc-body">
+            <div class="l">snitt-paavirkning</div>
+            Adherence <strong>+8 %</strong>. Aapnet i lag-snitt-rapport <strong>3 ganger</strong>.
+          </div>
+          <div class="sc-actions">
+            <button class="btn btn-sm btn-ghost">Vis i historikk</button>
+            <button class="btn btn-sm btn-ghost">Dupliser plan</button>
+          </div>
+        </div>
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">trigger</span><span class="v">7 dgr etter avsluttet</span></div>
+          <div class="row-spec"><span class="k">aksjon</span><span class="v">vis i historikk · dupliser</span></div>
+          <div class="row-spec"><span class="k">vises i</span><span class="v">historikk · elev-profil</span></div>
+        </div>
+      </div>
+
+      <!-- AVLYST -->
+      <div class="frame">
+        <div class="frame-meta"><span class="name">AVLYST</span><span class="tag">cancelled</span></div>
+        <div class="sc sc--cancelled">
+          <div class="sc-head">
+            <div class="time">14:00</div>
+            <div class="who">
+              <div class="name">Sondre Berg</div>
+              <div class="meta">junior · 45 min<span class="sep">·</span>i morgen</div>
+            </div>
+            <div class="avatar avatar-md av-sb">SB</div>
+          </div>
+          <span class="sc-status"><span class="d"></span>avlyst · av elev</span>
+          <div class="sc-body">
+            <div class="l">aarsak</div>
+            "Skole-tur som dukket opp." <strong>Foreslaatt</strong> ny tid: tirsdag 10:00.
+          </div>
+          <div class="sc-actions">
+            <button class="btn btn-sm btn-primary">Bekreft ny tid</button>
+            <button class="btn btn-sm btn-ghost">Tilby alt</button>
+          </div>
+        </div>
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">trigger</span><span class="v">elev avlyste · &gt;12 t</span></div>
+          <div class="row-spec"><span class="k">aksjon</span><span class="v">tilby ny tid · slett</span></div>
+          <div class="row-spec"><span class="k">vises i</span><span class="v">oppfolgings-ko</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 2 — Edge cases -->
+    <div class="sec-head">
+      <span class="num">02</span>
+      <h2>Edge cases</h2>
+      <span class="sub">naar noe trenger oppmerksomhet</span>
+    </div>
+
+    <div class="state-grid">
+
+      <!-- MANGLER NOTER -->
+      <div class="frame">
+        <div class="frame-meta"><span class="name">MANGLER NOTER</span><span class="tag">overdue</span></div>
+        <div class="sc sc--missing">
+          <div class="sc-head">
+            <div class="time">08:00</div>
+            <div class="who">
+              <div class="name">Jakob Tonsberg</div>
+              <div class="meta">senior · 3 dgr siden<span class="sep">·</span>GFGK</div>
+            </div>
+            <div class="avatar avatar-md av-jt">JT</div>
+          </div>
+          <span class="sc-status"><span class="d"></span>mangler oppsummering</span>
+          <div class="alert">
+            <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0"/></svg>
+            Eleven aapnet appen <strong>4 ganger</strong> · venter pa svar
+          </div>
+          <div class="sc-actions">
+            <button class="btn btn-sm btn-primary">Skriv naa</button>
+            <button class="btn btn-sm btn-ghost">AI-utkast</button>
+          </div>
+        </div>
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">trigger</span><span class="v">&gt;48 t uten oppsummering</span></div>
+          <div class="row-spec"><span class="k">aksjon</span><span class="v">skriv · AI-utkast</span></div>
+          <div class="row-spec"><span class="k">vises i</span><span class="v">oppfolgings-ko · varsler</span></div>
+        </div>
+      </div>
+
+      <!-- KONFLIKT -->
+      <div class="frame">
+        <div class="frame-meta"><span class="name">KONFLIKT</span><span class="tag">overbooked</span></div>
+        <div class="sc sc--conflict">
+          <div class="conflict-stripe"></div>
+          <div class="sc-head">
+            <div class="time">15:00</div>
+            <div class="who">
+              <div class="name">Markus Roinaas P.</div>
+              <div class="meta">A-lag · 60 min<span class="sep">·</span>Studio 2</div>
+            </div>
+            <div class="avatar avatar-md av-mr">MR</div>
+          </div>
+          <span class="sc-status"><span class="d"></span>kolliderer · Studio 2</span>
+          <div class="sc-body">
+            <div class="l">konflikt</div>
+            Bjoern har <strong>Studio 2</strong> 14:30–16:00. Foreslaa <strong>Studio 1</strong> eller flytt til 16:30.
+          </div>
+          <div class="sc-actions">
+            <button class="btn btn-sm btn-primary">Bytt rom</button>
+            <button class="btn btn-sm">Flytt tid</button>
+          </div>
+        </div>
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">trigger</span><span class="v">overlapp paa rom/coach</span></div>
+          <div class="row-spec"><span class="k">aksjon</span><span class="v">bytt rom · flytt tid · ignorer</span></div>
+          <div class="row-spec"><span class="k">vises i</span><span class="v">kalender · kapasitet</span></div>
+        </div>
+      </div>
+
+      <!-- FORESPURT -->
+      <div class="frame">
+        <div class="frame-meta"><span class="name">FORESPURT</span><span class="tag">av elev</span></div>
+        <div class="sc sc--requested">
+          <div class="sc-head">
+            <div class="time">~16:00</div>
+            <div class="who">
+              <div class="name">Maja Tangen</div>
+              <div class="meta">senior · 60 min<span class="sep">·</span>onsdag eller torsdag</div>
+            </div>
+            <div class="avatar avatar-md av-jt" style="background: #B8852A;">MT</div>
+          </div>
+          <span class="sc-status"><span class="d"></span>onsker bekreftelse</span>
+          <div class="sc-body">
+            <div class="l">forespoersel</div>
+            "Vil ha en oekt foer KM. <strong>Putting + slag</strong>. Helst Bossum, men greit med GFGK."
+          </div>
+          <div class="sc-actions">
+            <button class="btn btn-sm btn-accent">Bekreft ons 16:00</button>
+            <button class="btn btn-sm btn-ghost">Tilby alt</button>
+          </div>
+        </div>
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">trigger</span><span class="v">elev ba om tid</span></div>
+          <div class="row-spec"><span class="k">aksjon</span><span class="v">bekreft · forhandle</span></div>
+          <div class="row-spec"><span class="k">vises i</span><span class="v">oppfolgings-ko · meldinger</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 3 — Behaviour spec -->
+    <div class="sec-head">
+      <span class="num">03</span>
+      <h2>Tilstands-flyt</h2>
+      <span class="sub">hvordan kortet beveger seg</span>
+    </div>
+
+    <div class="behaviour">
+      <div class="card" style="padding: 24px 28px;">
+        <div style="font-family: var(--font-display); font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px;">Standard livssyklus</div>
+        <div class="muted" style="font-size: 13px; margin-bottom: 18px;">Ingen avvik · ingen avlysing.</div>
+
+        <!-- Flow diagram -->
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
+          <span class="pill" style="background: var(--brand-primary-soft); color: var(--brand-primary); border-color: transparent;">planlagt</span>
+          <span class="muted">→</span>
+          <span class="pill pill-warning">forbered</span>
+          <span class="muted">→</span>
+          <span class="pill" style="background: var(--ink); color: var(--accent); border-color: transparent;">paagar</span>
+          <span class="muted">→</span>
+          <span class="pill pill-success">gjort</span>
+          <span class="muted">→</span>
+          <span class="pill" style="background: var(--surface-alt); color: var(--ink-muted);">arkivert</span>
+        </div>
+
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">T-7d</span><span class="v">opprettes · oekt vises i ukes-kalender</span></div>
+          <div class="row-spec"><span class="k">T-24t</span><span class="v">bytter til <strong>forbered</strong> · ber om plan-sjekkliste</span></div>
+          <div class="row-spec"><span class="k">T0</span><span class="v">bytter til <strong>paagar</strong> · live-noter aapnes</span></div>
+          <div class="row-spec"><span class="k">T+5m</span><span class="v">avslutt aapner oppsummeringsboks</span></div>
+          <div class="row-spec"><span class="k">T+48t</span><span class="v">automatisk <strong>arkiveres</strong> hvis oppsummering er sendt</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 24px 28px;">
+        <div style="font-family: var(--font-display); font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px;">Eskaleringer</div>
+        <div class="muted" style="font-size: 13px; margin-bottom: 18px;">Naar systemet maa bryte inn.</div>
+
+        <div class="spec-list">
+          <div class="row-spec"><span class="k">+ 12t</span><span class="v">elev avlyser → bytter til <strong>avlyst</strong> · kommer i oppfolgings-ko</span></div>
+          <div class="row-spec"><span class="k">+ 48t</span><span class="v">ingen oppsummering → bytter til <strong>mangler noter</strong></span></div>
+          <div class="row-spec"><span class="k">romkrasj</span><span class="v">overlapp → bytter til <strong>konflikt</strong> · varsel paa kapasitet</span></div>
+          <div class="row-spec"><span class="k">elev-init</span><span class="v">elev ber om tid → kommer som <strong>forespurt</strong></span></div>
+          <div class="row-spec"><span class="k">no-show</span><span class="v">starttid + 15 min uten check-in → tag <strong>no-show</strong> paa gjort-tilstand</span></div>
+        </div>
+
+        <div style="margin-top: 22px; padding: 12px 14px; background: var(--accent-bg); border-radius: 12px; font-size: 12.5px; color: var(--accent-on);">
+          <strong style="font-weight: 600;">Regel:</strong> alle eskaleringer skaper ett <em style="font-family: var(--font-display); font-style: italic;">felt</em> i oppfolgings-koen. Aldri to.
+        </div>
+      </div>
+    </div>
+
+    <footer style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-subtle); display: flex; justify-content: space-between;">
+      <span>AK Golf Platform · CoachHQ · /design-system/states</span>
+      <span class="mono">9 tilstander · 3 eskaleringer</span>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

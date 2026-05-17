@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — Bookinger · Pakke 4</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:64px;padding:64px 24px 96px}
+  .ab{display:flex;flex-direction:column;gap:16px;max-width:1448px;width:100%}
+  .ab-label{display:flex;align-items:baseline;gap:16px;color:#3a3935;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em}
+  .ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990;font-weight:500}
+  .ab-label .ttl{font-size:20px}
+  .ab-label .meta{font-family:var(--font-body);font-size:13px;color:#7a7872;font-style:italic;font-weight:400;margin-left:auto}
+  .ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:24px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(10,31,24,.18),0 2px 4px rgba(10,31,24,.04)}
+  .ab-frame svg:not([fill]):not(.spark){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  .deck-head{max-width:1448px;width:100%;display:flex;flex-direction:column;gap:12px;padding:0 4px;margin-bottom:8px}
+  .deck-head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+  .deck-head h1{font-family:var(--font-display);font-size:36px;font-weight:600;letter-spacing:-.02em;margin:0;color:var(--ink)}
+  .deck-head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+  .deck-head .meta-row{display:flex;gap:24px;flex-wrap:wrap;font-size:12px;color:var(--ink-subtle);font-family:var(--font-mono);margin-top:8px}
+  .deck-head .meta-row .lbl{color:var(--ink);font-weight:500}
+
+  /* shell — same as p1-3 */
+  .app{display:flex;min-height:980px;background:var(--surface)}
+  .app--med{min-height:760px}
+  .app--short{min-height:620px}
+  .rail{width:56px;background:var(--sidebar-coach-rail-bg);display:flex;flex-direction:column;align-items:center;padding:18px 0;gap:12px;flex-shrink:0}
+  .rail .mark{width:40px;height:40px;border-radius:12px;background:var(--brand-primary);display:flex;align-items:center;justify-content:center;color:var(--brand-accent);font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:4px}
+  .rail-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);position:relative}
+  .rail-icon.active{background:rgba(255,255,255,.08);color:var(--brand-accent)}
+  .rail-icon.bottom{margin-top:auto}
+  .nav{width:220px;background:var(--sidebar-coach-nav-bg);border-right:1px solid var(--line);padding:24px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+  .nav-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:0 12px 16px;display:flex;align-items:center;gap:8px}
+  .nav-title .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-accent)}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:14px;color:var(--ink-muted);cursor:pointer}
+  .nav-item:hover{background:var(--surface-alt);color:var(--ink)}
+  .nav-item.active{background:var(--sidebar-coach-active);color:var(--ink);font-weight:500}
+  .nav-item .count{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+  .nav-divider{height:1px;background:var(--line-soft);margin:16px 8px}
+  .nav-foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:13px;color:var(--ink-muted)}
+  .nav-foot .av-sm{width:28px;height:28px;border-radius:50%;background:var(--brand-primary);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+
+  .main{flex:1;padding:32px 36px 40px;min-width:0;display:flex;flex-direction:column;gap:20px}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+  .head h1{font-family:var(--font-display);font-size:30px;font-weight:400;font-style:italic;letter-spacing:-.02em;color:var(--ink);margin:0;line-height:1.1}
+  .head .crumb{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px}
+  .head .crumb .sep{margin:0 8px;color:var(--ink-disabled)}
+  .head-actions{display:flex;gap:8px;align-items:center}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;height:40px;white-space:nowrap}
+  .btn-primary{background:var(--brand-primary);color:#fff}
+  .btn-primary:hover{background:var(--brand-primary-hover)}
+  .btn-ghost{background:var(--surface-card);color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{background:var(--surface-alt)}
+  .btn-accent{background:var(--brand-accent);color:var(--brand-accent-on);font-weight:600}
+  .btn-icon{width:40px;padding:0;justify-content:center}
+
+  /* segmented toggle */
+  .seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:3px;height:40px}
+  .seg button{background:transparent;border:none;padding:0 14px;font-size:13px;font-weight:500;color:var(--ink-muted);border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .seg button.on{background:var(--surface-card);color:var(--ink);box-shadow:0 1px 2px rgba(15,31,24,.06)}
+
+  /* KPI */
+  .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .kpi{padding:18px 20px;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card)}
+  .kpi .lbl{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px}
+  .kpi .val{font-family:var(--font-mono);font-size:30px;font-weight:500;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .kpi .delta{font-family:var(--font-mono);font-size:12px;color:var(--status-success);margin-top:8px;display:inline-flex;align-items:center;gap:4px}
+  .kpi .delta.warn{color:var(--status-warning)}
+  .kpi .delta.bad{color:var(--status-danger)}
+
+  /* type-legend in KPI */
+  .legend{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+  .legend .dt{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-muted);font-family:var(--font-body)}
+  .legend .dt .sw{width:10px;height:10px;border-radius:3px}
+
+  /* filter */
+  .filter{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 14px;background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card)}
+  .search{flex:1;min-width:280px;display:flex;align-items:center;gap:10px;padding:0 14px;height:40px;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink-muted)}
+  .search input{flex:1;border:none;outline:none;background:transparent;font:inherit;font-size:14px;color:var(--ink)}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:100px;font-size:13px;color:var(--ink-muted);background:var(--surface);border:1px solid var(--line);cursor:pointer}
+  .chip:hover{background:var(--surface-alt);color:var(--ink)}
+  .chip.active{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+  .chip .ct{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+  .chip.active .ct{color:rgba(245,244,238,.7)}
+  .kbd{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:var(--surface-alt)}
+
+  /* WEEK NAV */
+  .weeknav{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card)}
+  .weeknav .iconbtn{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--surface-card);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+  .weeknav .iconbtn:hover{background:var(--surface-alt)}
+  .weeknav .today{padding:0 14px;height:32px;border:1px solid var(--line);border-radius:9px;background:var(--surface-card);font-size:12px;font-weight:500;display:inline-flex;align-items:center;cursor:pointer}
+  .weeknav .week-label{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-.01em}
+  .weeknav .week-label .muted{color:var(--ink-subtle);font-weight:400;font-family:var(--font-body);font-size:13px;margin-left:6px}
+  .weeknav .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .weeknav .picker{display:inline-flex;align-items:center;gap:8px;padding:0 14px;height:32px;border:1px solid var(--line);border-radius:9px;background:var(--surface-card);font-size:12px;color:var(--ink-muted);cursor:pointer;font-family:var(--font-mono)}
+
+  /* CALENDAR GRID */
+  .cal{background:var(--surface-card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-card)}
+  .cal-grid{display:grid;grid-template-columns:64px repeat(7,1fr);position:relative}
+  .cal-corner{background:var(--surface);border-right:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);height:60px}
+  .cal-day{padding:10px 12px;border-right:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);background:var(--surface);height:60px}
+  .cal-day:last-child{border-right:none}
+  .cal-day.today{background:linear-gradient(180deg,var(--accent-bg) 0%,var(--surface) 100%)}
+  .cal-day .dy{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .cal-day .dt{font-family:var(--font-mono);font-size:18px;font-weight:500;color:var(--ink);margin-top:2px;line-height:1}
+  .cal-day.today .dt{color:var(--brand-primary)}
+  .cal-day .small{font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono);margin-top:2px}
+
+  .cal-time{position:relative;border-right:1px solid var(--line-soft);background:var(--surface)}
+  .cal-time .t{position:absolute;left:0;right:0;text-align:right;padding-right:8px;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);transform:translateY(-6px)}
+  .cal-col{position:relative;border-right:1px solid var(--line-soft);background:repeating-linear-gradient(to bottom,transparent 0,transparent 32px,rgba(229,227,221,.5) 32px,rgba(229,227,221,.5) 33px,transparent 33px,transparent 64px,var(--line-soft) 64px,var(--line-soft) 65px)}
+  .cal-col:last-child{border-right:none}
+  .cal-col.today{background-color:rgba(209,248,67,.04)}
+
+  /* booking pills */
+  .bk{position:absolute;left:6px;right:6px;border-radius:9px;padding:6px 8px;font-size:11px;line-height:1.25;color:#fff;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;gap:2px;font-family:var(--font-body);border:1px solid transparent}
+  .bk .t{font-family:var(--font-mono);font-size:10px;opacity:.85}
+  .bk .who{font-weight:600;font-size:12px}
+  .bk .meta{font-size:10px;opacity:.85}
+  .bk.coach{background:linear-gradient(180deg,#D1F843 0%,#B7DD2F 100%);color:#0A1F18;border-color:#A8CC23}
+  .bk.fac{background:linear-gradient(180deg,#005840 0%,#004532 100%);color:#fff;border-color:rgba(0,0,0,.18)}
+  .bk.gf{background:linear-gradient(180deg,#B8852A 0%,#946A1F 100%);color:#fff;border-color:rgba(0,0,0,.18)}
+  .bk.grp{background:linear-gradient(180deg,#1A7D56 0%,#13634A 100%);color:#fff;border-color:rgba(0,0,0,.18)}
+  .bk.dimmed{opacity:.5;filter:saturate(.7)}
+  .bk:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(10,31,24,.14)}
+
+  /* now line */
+  .nowline{position:absolute;left:0;right:0;height:0;border-top:2px solid var(--status-danger);z-index:5}
+  .nowline::before{content:"";position:absolute;left:-5px;top:-5px;width:8px;height:8px;border-radius:50%;background:var(--status-danger);box-shadow:0 0 0 3px rgba(163,45,45,.2)}
+  .nowline .t{position:absolute;right:6px;top:-22px;font-family:var(--font-mono);font-size:10px;background:var(--status-danger);color:#fff;padding:2px 6px;border-radius:6px;font-weight:600}
+
+  /* legend */
+  .cal-foot{display:flex;align-items:center;gap:14px;padding:12px 18px;border-top:1px solid var(--line-soft);background:var(--surface);font-size:12px;color:var(--ink-muted)}
+  .cal-foot .lg{display:inline-flex;align-items:center;gap:6px}
+  .cal-foot .lg .sw{width:14px;height:14px;border-radius:4px}
+
+  /* empty slot demo */
+  .empty-slot{position:absolute;left:6px;right:6px;border:1px dashed transparent;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink-subtle)}
+  .empty-slot.demo{border-color:var(--brand-primary);background:rgba(0,88,64,.06);color:var(--brand-primary);font-weight:500}
+  .empty-slot.demo svg{margin-right:4px}
+
+  /* LIST view */
+  .list{background:var(--surface-card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-card)}
+  .list-row{display:grid;grid-template-columns:120px 110px 230px 1fr 130px 110px 40px;gap:16px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line-soft);font-size:14px}
+  .list-row:last-child{border-bottom:none}
+  .list-row:hover{background:var(--surface-alt)}
+  .list-row.head{background:var(--surface);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);padding:12px 20px}
+  .list-row .when{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+  .list-row .when small{display:block;color:var(--ink-subtle);font-size:11px;margin-top:2px}
+  .list-row .player{display:flex;align-items:center;gap:10px;min-width:0}
+  .list-row .av{width:30px;height:30px;border-radius:50%;color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .list-row .nm{font-weight:500;font-size:13px;line-height:1.2}
+  .list-row .em{font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono);margin-top:2px}
+  .typepill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.02em}
+  .typepill .dot{width:7px;height:7px;border-radius:50%}
+  .typepill.coach{background:var(--accent-bg);color:#0A1F18;border:1px solid rgba(168,204,35,.4)}.typepill.coach .dot{background:#B7DD2F}
+  .typepill.fac{background:var(--brand-primary-soft);color:var(--brand-primary)}.typepill.fac .dot{background:var(--brand-primary)}
+  .typepill.gf{background:var(--status-warning-bg);color:var(--status-warning)}.typepill.gf .dot{background:var(--status-warning)}
+  .typepill.grp{background:#E5F1EA;color:#1A7D56}.typepill.grp .dot{background:#1A7D56}
+  .stat-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:500}
+  .stat-pill.ok{background:var(--status-success-bg);color:var(--status-success)}
+  .stat-pill.wait{background:var(--surface-alt);color:var(--ink-muted)}
+  .stat-pill.cancel{background:var(--status-danger-bg);color:var(--status-danger);text-decoration:line-through}
+  .more{width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--ink-muted);cursor:pointer}
+  .more:hover{background:var(--surface-alt)}
+
+  /* QUICK POPOVER */
+  .popover{position:absolute;width:340px;background:var(--surface-card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-pop);padding:16px;z-index:20;font-size:13px}
+  .popover::before{content:"";position:absolute;left:-7px;top:24px;width:14px;height:14px;background:var(--surface-card);border-left:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+  .popover h4{font-family:var(--font-display);font-size:16px;font-weight:600;margin:0 0 4px}
+  .popover .sub{font-size:12px;color:var(--ink-muted);font-family:var(--font-mono);margin-bottom:12px}
+  .pop-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line-soft);font-size:13px}
+  .pop-row:first-of-type{border-top:none}
+  .pop-row .lbl{color:var(--ink-subtle);font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;width:70px;flex-shrink:0}
+  .pop-row .val{font-weight:500}
+  .pop-actions{display:flex;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft)}
+  .pop-actions .btn{flex:1;height:36px;justify-content:center;font-size:12px}
+
+  /* empty calendar */
+  .empty-cal{padding:96px 32px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;background:repeating-linear-gradient(45deg,var(--surface) 0,var(--surface) 12px,var(--surface-alt) 12px,var(--surface-alt) 13px)}
+  .empty-cal h3{font-family:var(--font-display);font-size:22px;font-weight:600;margin:0;font-style:italic}
+  .empty-cal p{font-size:14px;color:var(--ink-muted);margin:0;max-width:420px}
+
+  /* mobile */
+  .mobile-wrap{display:flex;justify-content:center;gap:24px;padding:32px;background:linear-gradient(180deg,#F5F2EA 0,#EDEAE2 100%);flex-wrap:wrap}
+  .mobile{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden}
+  .m-status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;color:var(--ink);font-weight:500}
+  .m-status .right{display:flex;gap:6px}
+  .m-head{padding:8px 20px 14px;border-bottom:1px solid var(--line-soft)}
+  .m-head .crumb{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:6px}
+  .m-head h1{font-family:var(--font-display);font-size:24px;font-weight:400;font-style:italic;margin:0;line-height:1.2}
+  .m-daynav{display:flex;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid var(--line-soft)}
+  .m-daynav .iconbtn{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+  .m-daynav .lbl{flex:1;text-align:center;font-family:var(--font-display);font-size:16px;font-weight:600}
+  .m-day{padding:8px 16px;display:grid;grid-template-columns:48px 1fr;column-gap:8px;font-size:12px}
+  .m-day .row{padding:8px 0;border-top:1px solid var(--line-soft);min-height:56px;position:relative;display:flex;align-items:flex-start}
+  .m-day .row.t{color:var(--ink-subtle);font-family:var(--font-mono);font-size:11px;text-align:right;padding-right:8px}
+  .m-day .row.b{align-items:stretch;flex-direction:column;gap:4px}
+  .m-pill{padding:8px 10px;border-radius:9px;font-size:12px;color:#fff;display:flex;flex-direction:column;gap:2px}
+  .m-pill .who{font-weight:600;font-size:13px}
+  .m-pill .meta{font-size:11px;opacity:.85}
+  .m-pill.coach{background:#D1F843;color:#0A1F18}
+  .m-pill.fac{background:#005840}
+  .m-pill.gf{background:#B8852A}
+
+  /* dark */
+  .dark .ab-frame{border-color:#1c3b32}
+  .dark .app{background:#0F2A22}
+  .dark .nav{background:#0F2A22;border-right-color:#1c3b32}
+  .dark .nav-item{color:#9D9C95}
+  .dark .nav-item:hover{background:#163027;color:#F5F4EE}
+  .dark .nav-item.active{background:rgba(209,248,67,.14);color:#F5F4EE}
+  .dark .nav-divider{background:#1c3b32}
+  .dark .nav-foot .av-sm{background:var(--brand-accent);color:#0A1F18}
+  .dark .head h1{color:#F5F4EE}
+  .dark .head .crumb{color:#9D9C95}
+  .dark .btn-ghost{background:#163027;color:#F5F4EE;border-color:#274d41}
+  .dark .seg{background:#0F2A22;border-color:#274d41}
+  .dark .seg button.on{background:#21433A;color:#F5F4EE}
+  .dark .kpi{background:#163027;border-color:#274d41}
+  .dark .kpi .val{color:#F5F4EE}
+  .dark .filter{background:#163027;border-color:#274d41}
+  .dark .search{background:#0F2A22;border-color:#274d41;color:#9D9C95}
+  .dark .search input{color:#F5F4EE}
+  .dark .kbd{background:#0F2A22;border-color:#274d41;color:#9D9C95}
+  .dark .chip{background:#0F2A22;color:#9D9C95;border-color:#274d41}
+  .dark .chip.active{background:var(--brand-accent);color:#0A1F18;border-color:var(--brand-accent)}
+  .dark .weeknav{background:#163027;border-color:#274d41}
+  .dark .weeknav .iconbtn,.dark .weeknav .today,.dark .weeknav .picker{background:#0F2A22;border-color:#274d41;color:#F5F4EE}
+  .dark .weeknav .week-label{color:#F5F4EE}
+  .dark .cal{background:#163027;border-color:#274d41}
+  .dark .cal-corner,.dark .cal-day,.dark .cal-time{background:#0F2A22;border-right-color:#274d41;border-bottom-color:#274d41}
+  .dark .cal-day .dy{color:#9D9C95}
+  .dark .cal-day .dt{color:#F5F4EE}
+  .dark .cal-day.today{background:linear-gradient(180deg,rgba(209,248,67,.16) 0%,#0F2A22 100%)}
+  .dark .cal-col{background:repeating-linear-gradient(to bottom,transparent 0,transparent 32px,rgba(39,77,65,.4) 32px,rgba(39,77,65,.4) 33px,transparent 33px,transparent 64px,#274d41 64px,#274d41 65px)}
+  .dark .cal-foot{background:#0F2A22;border-top-color:#274d41;color:#9D9C95}
+
+  /* MIX OF NUMBERS UTILITY */
+  .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <header class="deck-head">
+    <span class="eyebrow">CoachHQ · Mini-batch 2-A · Pakke 4</span>
+    <h1>Bookinger — uke-kalender + liste</h1>
+    <p class="sub">Default uke-kalender med fargekodede pills (Coaching=lime, Fasilitet=primary, Greenfee=gold, Gruppe=secondary). "Nå"-linje på dagens dato. Toggle til liste når man trenger filtrering på spesifikke kriterier.</p>
+    <div class="meta-row">
+      <span><span class="lbl">URL:</span> /admin/bookings</span>
+      <span><span class="lbl">Arketype:</span> B — kalender + liste</span>
+      <span><span class="lbl">Modaler:</span> BookSession, Reschedule, NewBooking</span>
+    </div>
+  </header>
+
+  <!-- ====================================================== -->
+  <!-- 01 UKE-KALENDER LYST                                    -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="01 Uke-kalender — lyst">
+    <div class="ab-label"><span class="num">01</span><span class="ttl">Uke-kalender — lyst tema</span><span class="meta">1448 × 1100 · uke 19 · 11.–17. mai 2026 · ~20 bookinger</span></div>
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <div class="rail-icon"><svg width="20" height="20" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="rail-icon bottom"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere<span class="count">42</span></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/></svg>Treningsplaner<span class="count">76</span></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Godkjenninger<span class="count">7</span></div>
+          <div class="nav-item active"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Bookinger<span class="count">47</span></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Økter</div>
+          <div class="nav-divider"></div>
+          <div class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analyser</div>
+          <div class="nav-foot"><div class="av-sm">AK</div><div style="display:flex;flex-direction:column;line-height:1.2"><span style="font-size:13px;color:var(--ink);font-weight:500">Anders K.</span><span style="font-size:11px;color:var(--ink-subtle)">Hovedcoach</span></div></div>
+        </aside>
+
+        <main class="main">
+          <header class="head">
+            <div>
+              <div class="crumb">Coach HQ <span class="sep">/</span> Bookinger</div>
+              <h1>47 bookinger denne uka.</h1>
+            </div>
+            <div class="head-actions">
+              <div class="seg">
+                <button class="on"><svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Uke-kalender</button>
+                <button><svg width="14" height="14" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Liste</button>
+              </div>
+              <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Ny booking</button>
+            </div>
+          </header>
+
+          <div class="kpi-strip">
+            <div class="kpi"><div class="lbl">Bookinger denne uka</div><div class="val">47</div><span class="delta">+6 vs forrige uke</span></div>
+            <div class="kpi"><div class="lbl">Belegg studio 1–4</div><div class="val">73 %</div><span class="delta">+4 % vs forrige uke</span></div>
+            <div class="kpi"><div class="lbl">Ledig kapasitet i kveld</div><div class="val">6t</div><span class="delta warn">2 ledige slots 17–22</span></div>
+            <div class="kpi"><div class="lbl">Avlysninger siste 7d</div><div class="val">3</div><span class="delta bad">+1 vs forrige uke</span></div>
+          </div>
+
+          <div class="filter">
+            <div class="search">
+              <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input placeholder="Søk spiller eller fasilitet">
+              <span class="kbd">⌘K</span>
+            </div>
+            <span class="chip active">Alle typer <span class="ct">47</span></span>
+            <span class="chip">Coaching <span class="ct">18</span></span>
+            <span class="chip">Fasilitet <span class="ct">14</span></span>
+            <span class="chip">Greenfee <span class="ct">9</span></span>
+            <span class="chip">Gruppe <span class="ct">6</span></span>
+            <span class="chip">Fasilitet · alle</span>
+            <span class="chip">Coach: Anders K</span>
+          </div>
+
+          <div class="weeknav">
+            <button class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="today">I dag</button>
+            <button class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <span class="week-label">Uke 19 <span class="muted">· 11.–17. mai 2026</span></span>
+            <div class="right">
+              <span class="picker"><svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>11. mai</span>
+              <span class="picker">Vis: alle ressurser ▾</span>
+            </div>
+          </div>
+
+          <div class="cal">
+            <div class="cal-grid">
+              <div class="cal-corner"></div>
+              <div class="cal-day"><div class="dy">Man</div><div class="dt">11</div><div class="small">7 bk</div></div>
+              <div class="cal-day"><div class="dy">Tir</div><div class="dt">12</div><div class="small">6 bk</div></div>
+              <div class="cal-day today"><div class="dy">Ons</div><div class="dt">13</div><div class="small">8 bk · i dag</div></div>
+              <div class="cal-day"><div class="dy">Tor</div><div class="dt">14</div><div class="small">7 bk</div></div>
+              <div class="cal-day"><div class="dy">Fre</div><div class="dt">15</div><div class="small">9 bk</div></div>
+              <div class="cal-day"><div class="dy">Lør</div><div class="dt">16</div><div class="small">6 bk</div></div>
+              <div class="cal-day"><div class="dy">Søn</div><div class="dt">17</div><div class="small">4 bk</div></div>
+
+              <!-- time column: 6-22, 16 hrs * 32px = 512px -->
+              <div class="cal-time" style="height:608px">
+                <span class="t" style="top:0">06:00</span>
+                <span class="t" style="top:32px">07:00</span>
+                <span class="t" style="top:64px">08:00</span>
+                <span class="t" style="top:96px">09:00</span>
+                <span class="t" style="top:128px">10:00</span>
+                <span class="t" style="top:160px">11:00</span>
+                <span class="t" style="top:192px">12:00</span>
+                <span class="t" style="top:224px">13:00</span>
+                <span class="t" style="top:256px">14:00</span>
+                <span class="t" style="top:288px">15:00</span>
+                <span class="t" style="top:320px">16:00</span>
+                <span class="t" style="top:352px">17:00</span>
+                <span class="t" style="top:384px">18:00</span>
+                <span class="t" style="top:416px">19:00</span>
+                <span class="t" style="top:448px">20:00</span>
+                <span class="t" style="top:480px">21:00</span>
+                <span class="t" style="top:512px">22:00</span>
+              </div>
+
+              <!-- MON 11 -->
+              <div class="cal-col" style="height:608px">
+                <div class="bk grp" style="top:64px;height:60px"><span class="t">08:00–09:00</span><span class="who">WANG team</span><span class="meta">Range · 6 spillere</span></div>
+                <div class="bk coach" style="top:160px;height:48px"><span class="t">11:00–12:00</span><span class="who">1:1 Markus R</span><span class="meta">Studio 2 · Anders K</span></div>
+                <div class="bk fac" style="top:288px;height:60px"><span class="t">15:00–16:00</span><span class="who">Studio 1</span><span class="meta">Emma Solberg</span></div>
+                <div class="bk coach" style="top:384px;height:48px"><span class="t">18:00–19:00</span><span class="who">1:1 Lina H</span><span class="meta">Studio 2 · Sara</span></div>
+              </div>
+              <!-- TUE 12 -->
+              <div class="cal-col" style="height:608px">
+                <div class="bk fac" style="top:96px;height:48px"><span class="t">09:00–10:00</span><span class="who">Studio 3</span><span class="meta">Joachim T.</span></div>
+                <div class="bk coach" style="top:224px;height:48px"><span class="t">13:00–14:00</span><span class="who">1:1 Henrik N</span><span class="meta">Studio 1 · Anders K</span></div>
+                <div class="bk gf" style="top:320px;height:108px"><span class="t">16:00–18:00</span><span class="who">18 hull · GFGK</span><span class="meta">Anna K + Mads R</span></div>
+                <div class="bk fac" style="top:448px;height:48px"><span class="t">20:00–21:00</span><span class="who">Studio 2</span><span class="meta">Lise S.</span></div>
+              </div>
+              <!-- WED 13 today -->
+              <div class="cal-col today" style="height:608px">
+                <div class="bk coach" style="top:96px;height:60px"><span class="t">09:00–10:00</span><span class="who">1:1 Henrik N</span><span class="meta">Studio 4 · Anders K</span></div>
+                <div class="bk grp" style="top:160px;height:60px"><span class="t">11:00–12:00</span><span class="who">Junior gruppe</span><span class="meta">Range · 5 stk</span></div>
+                <div class="bk fac" style="top:256px;height:48px"><span class="t">14:00–15:00</span><span class="who">Studio 1</span><span class="meta">Markus R.</span></div>
+                <div class="bk coach" style="top:352px;height:60px"><span class="t">17:00–18:00</span><span class="who">1:1 Mads R</span><span class="meta">Studio 2 · Anders K</span></div>
+                <div class="bk fac" style="top:480px;height:48px"><span class="t">21:00–22:00</span><span class="who">Studio 3</span><span class="meta">Jon D.</span></div>
+                <!-- now line at 13:42 ≈ 32px*7 + ~22 = 246px -->
+                <div class="nowline" style="top:246px"><span class="t">13:42</span></div>
+              </div>
+              <!-- THU 14 -->
+              <div class="cal-col" style="height:608px">
+                <div class="bk gf" style="top:64px;height:120px"><span class="t">08:00–10:00</span><span class="who">Bossum 9-hulls</span><span class="meta">Pro-grp · 4 stk</span></div>
+                <div class="bk fac" style="top:224px;height:48px"><span class="t">13:00–14:00</span><span class="who">Studio 4</span><span class="meta">Lina H.</span></div>
+                <div class="bk coach" style="top:288px;height:48px"><span class="t">15:00–16:00</span><span class="who">1:1 Emma S</span><span class="meta">Studio 1 · Sara</span></div>
+                <div class="bk coach" style="top:384px;height:48px"><span class="t">18:00–19:00</span><span class="who">1:1 Anna K</span><span class="meta">Studio 2 · Tom</span></div>
+              </div>
+              <!-- FRI 15 -->
+              <div class="cal-col" style="height:608px">
+                <div class="bk coach" style="top:64px;height:48px"><span class="t">08:00–09:00</span><span class="who">1:1 Markus R</span><span class="meta">Studio 2 · Anders K</span></div>
+                <div class="bk fac" style="top:160px;height:48px"><span class="t">11:00–12:00</span><span class="who">Studio 1</span><span class="meta">Henrik N.</span></div>
+                <div class="bk grp" style="top:224px;height:60px"><span class="t">13:00–14:00</span><span class="who">U16 toppidrett</span><span class="meta">Range · 8 stk</span></div>
+                <div class="bk gf" style="top:320px;height:108px"><span class="t">16:00–18:00</span><span class="who">18 hull · GFGK</span><span class="meta">Joachim T + 3</span></div>
+                <div class="bk fac" style="top:448px;height:48px"><span class="t">20:00–21:00</span><span class="who">Studio 4</span><span class="meta">Lise S.</span></div>
+              </div>
+              <!-- SAT 16 -->
+              <div class="cal-col" style="height:608px">
+                <div class="bk gf" style="top:64px;height:120px"><span class="t">08:00–10:00</span><span class="who">Junior-cup</span><span class="meta">GFGK · 12 stk</span></div>
+                <div class="bk coach" style="top:224px;height:60px"><span class="t">13:00–14:00</span><span class="who">1:1 Lina H</span><span class="meta">Studio 1 · Anders K</span></div>
+                <div class="bk fac" style="top:320px;height:48px"><span class="t">16:00–17:00</span><span class="who">Studio 2</span><span class="meta">Emma S.</span></div>
+              </div>
+              <!-- SUN 17 -->
+              <div class="cal-col" style="height:608px">
+                <div class="bk fac" style="top:128px;height:48px"><span class="t">10:00–11:00</span><span class="who">Studio 3</span><span class="meta">Jon Dahl</span></div>
+                <div class="bk grp" style="top:224px;height:60px"><span class="t">13:00–14:00</span><span class="who">Familie-økt</span><span class="meta">Range · 4 stk</span></div>
+              </div>
+            </div>
+            <div class="cal-foot">
+              <span class="lg"><span class="sw" style="background:#D1F843"></span>Coaching</span>
+              <span class="lg"><span class="sw" style="background:#005840"></span>Fasilitet</span>
+              <span class="lg"><span class="sw" style="background:#B8852A"></span>Greenfee</span>
+              <span class="lg"><span class="sw" style="background:#1A7D56"></span>Gruppe</span>
+              <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px">Klikk på pill for detaljer · Klikk i tom slot for å booke</span>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 02 LIST VIEW LIGHT                                      -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="02 Liste — lyst">
+    <div class="ab-label"><span class="num">02</span><span class="ttl">Liste-view — lyst tema</span><span class="meta">1448 × 820 · samme uke, sortert etter dato</span></div>
+    <div class="ab-frame">
+      <div class="app app--med">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item active">Bookinger<span class="count">47</span></div>
+          <div class="nav-item">Økter</div>
+          <div class="nav-item">Spillere<span class="count">42</span></div>
+        </aside>
+
+        <main class="main">
+          <header class="head">
+            <div><div class="crumb">Coach HQ <span class="sep">/</span> Bookinger</div><h1>Liste-view — alt på en flate.</h1></div>
+            <div class="head-actions">
+              <div class="seg">
+                <button><svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Uke-kalender</button>
+                <button class="on"><svg width="14" height="14" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>Liste</button>
+              </div>
+              <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Ny booking</button>
+            </div>
+          </header>
+
+          <div class="filter">
+            <div class="search">
+              <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input placeholder="Søk spiller eller fasilitet" value="emma">
+              <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)">3 treff</span>
+            </div>
+            <span class="chip active">Coaching <span class="ct">18</span></span>
+            <span class="chip">Fasilitet <span class="ct">14</span></span>
+            <span class="chip">Greenfee <span class="ct">9</span></span>
+            <span class="chip">Mulligan Studio 1–4</span>
+            <span class="chip">Sortér: Dato ↑</span>
+          </div>
+
+          <div class="list">
+            <div class="list-row head">
+              <span>Dato</span><span>Tid</span><span>Spiller</span><span>Fasilitet</span><span>Type</span><span>Status</span><span></span>
+            </div>
+            <div class="list-row">
+              <span class="when">11. mai<small>Mandag</small></span>
+              <span class="when">11:00<small>—12:00</small></span>
+              <div class="player"><div class="av" style="background:#005840">MR</div><div><div class="nm">Markus R Pedersen</div><div class="em">+2,4 · Elite</div></div></div>
+              <span>Studio 2</span>
+              <span class="typepill coach"><span class="dot"></span>Coaching</span>
+              <span class="stat-pill ok">Bekreftet</span>
+              <span class="more">⋯</span>
+            </div>
+            <div class="list-row">
+              <span class="when">12. mai<small>Tirsdag</small></span>
+              <span class="when">16:00<small>—18:00</small></span>
+              <div class="player"><div class="av" style="background:#1A7D56">AK</div><div><div class="nm">Anna Karlsen + 1</div><div class="em">+ Mads Rønning</div></div></div>
+              <span>GFGK · 18 hull</span>
+              <span class="typepill gf"><span class="dot"></span>Greenfee</span>
+              <span class="stat-pill ok">Bekreftet</span>
+              <span class="more">⋯</span>
+            </div>
+            <div class="list-row">
+              <span class="when">13. mai<small>Onsdag · i dag</small></span>
+              <span class="when">14:00<small>—15:00</small></span>
+              <div class="player"><div class="av" style="background:#005840">MR</div><div><div class="nm">Markus R Pedersen</div><div class="em">+2,4 · Elite</div></div></div>
+              <span>Mulligan Studio 1</span>
+              <span class="typepill fac"><span class="dot"></span>Fasilitet</span>
+              <span class="stat-pill ok">Bekreftet</span>
+              <span class="more">⋯</span>
+            </div>
+            <div class="list-row">
+              <span class="when">14. mai<small>Torsdag</small></span>
+              <span class="when">15:00<small>—16:00</small></span>
+              <div class="player"><div class="av" style="background:#1A7D56">ES</div><div><div class="nm">Emma Solberg</div><div class="em">8,7 · Pro</div></div></div>
+              <span>Mulligan Studio 1</span>
+              <span class="typepill coach"><span class="dot"></span>Coaching</span>
+              <span class="stat-pill wait">Venter</span>
+              <span class="more">⋯</span>
+            </div>
+            <div class="list-row">
+              <span class="when">15. mai<small>Fredag</small></span>
+              <span class="when">16:00<small>—18:00</small></span>
+              <div class="player"><div class="av" style="background:#A32D2D">JT</div><div><div class="nm">Joachim Tangen + 3</div><div class="em">14,2 · skadet</div></div></div>
+              <span>GFGK · 18 hull</span>
+              <span class="typepill gf"><span class="dot"></span>Greenfee</span>
+              <span class="stat-pill cancel">Avlyst</span>
+              <span class="more">⋯</span>
+            </div>
+            <div class="list-row">
+              <span class="when">16. mai<small>Lørdag</small></span>
+              <span class="when">08:00<small>—10:00</small></span>
+              <div class="player"><div class="av" style="background:#B8852A">JG</div><div><div class="nm">Junior-cup</div><div class="em">12 spillere</div></div></div>
+              <span>GFGK · 18 hull</span>
+              <span class="typepill grp"><span class="dot"></span>Gruppe</span>
+              <span class="stat-pill ok">Bekreftet</span>
+              <span class="more">⋯</span>
+            </div>
+            <div class="list-row">
+              <span class="when">17. mai<small>Søndag</small></span>
+              <span class="when">13:00<small>—14:00</small></span>
+              <div class="player"><div class="av" style="background:#5E5C57">FA</div><div><div class="nm">Familie-økt</div><div class="em">4 deltakere</div></div></div>
+              <span>Range</span>
+              <span class="typepill grp"><span class="dot"></span>Gruppe</span>
+              <span class="stat-pill ok">Bekreftet</span>
+              <span class="more">⋯</span>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 03 DARK CALENDAR                                        -->
+  <!-- ====================================================== -->
+  <section class="ab dark" data-screen-label="03 Kalender — mørkt">
+    <div class="ab-label"><span class="num">03</span><span class="ttl">Uke-kalender — mørkt</span><span class="meta">1448 × 920 · kveldsbruk</span></div>
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title" style="color:#9D9C95"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item active">Bookinger<span class="count">47</span></div>
+          <div class="nav-item">Økter</div>
+        </aside>
+        <main class="main">
+          <header class="head">
+            <div><div class="crumb">Coach HQ <span class="sep">/</span> Bookinger</div><h1>47 bookinger denne uka.</h1></div>
+            <div class="head-actions">
+              <div class="seg">
+                <button class="on">Uke-kalender</button>
+                <button>Liste</button>
+              </div>
+            </div>
+          </header>
+
+          <div class="weeknav">
+            <button class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="today">I dag</button>
+            <button class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <span class="week-label">Uke 19 <span class="muted">· 11.–17. mai 2026</span></span>
+          </div>
+
+          <div class="cal">
+            <div class="cal-grid">
+              <div class="cal-corner"></div>
+              <div class="cal-day"><div class="dy">Man</div><div class="dt">11</div></div>
+              <div class="cal-day"><div class="dy">Tir</div><div class="dt">12</div></div>
+              <div class="cal-day today"><div class="dy">Ons</div><div class="dt">13</div></div>
+              <div class="cal-day"><div class="dy">Tor</div><div class="dt">14</div></div>
+              <div class="cal-day"><div class="dy">Fre</div><div class="dt">15</div></div>
+              <div class="cal-day"><div class="dy">Lør</div><div class="dt">16</div></div>
+              <div class="cal-day"><div class="dy">Søn</div><div class="dt">17</div></div>
+
+              <div class="cal-time" style="height:480px">
+                <span class="t" style="top:0">08:00</span>
+                <span class="t" style="top:64px">10:00</span>
+                <span class="t" style="top:128px">12:00</span>
+                <span class="t" style="top:192px">14:00</span>
+                <span class="t" style="top:256px">16:00</span>
+                <span class="t" style="top:320px">18:00</span>
+                <span class="t" style="top:384px">20:00</span>
+                <span class="t" style="top:448px">22:00</span>
+              </div>
+
+              <div class="cal-col" style="height:480px">
+                <div class="bk grp" style="top:0;height:60px"><span class="t">08:00–09:00</span><span class="who">WANG</span><span class="meta">6 stk</span></div>
+                <div class="bk coach" style="top:96px;height:48px"><span class="t">11:00</span><span class="who">Markus R</span></div>
+                <div class="bk fac" style="top:224px;height:60px"><span class="t">15:00</span><span class="who">Studio 1</span></div>
+                <div class="bk coach" style="top:320px;height:48px"><span class="t">18:00</span><span class="who">Lina H</span></div>
+              </div>
+              <div class="cal-col" style="height:480px">
+                <div class="bk fac" style="top:32px;height:48px"><span class="t">09:00</span><span class="who">Joachim</span></div>
+                <div class="bk coach" style="top:160px;height:48px"><span class="t">13:00</span><span class="who">Henrik N</span></div>
+                <div class="bk gf" style="top:256px;height:108px"><span class="t">16:00–18:00</span><span class="who">GFGK</span></div>
+              </div>
+              <div class="cal-col today" style="height:480px">
+                <div class="bk coach" style="top:32px;height:60px"><span class="t">09:00</span><span class="who">Henrik N</span></div>
+                <div class="bk grp" style="top:96px;height:60px"><span class="t">11:00</span><span class="who">Junior</span></div>
+                <div class="bk fac" style="top:192px;height:48px"><span class="t">14:00</span><span class="who">Markus R</span></div>
+                <div class="bk coach" style="top:288px;height:60px"><span class="t">17:00</span><span class="who">Mads R</span></div>
+                <div class="nowline" style="top:182px"><span class="t">13:42</span></div>
+              </div>
+              <div class="cal-col" style="height:480px">
+                <div class="bk gf" style="top:0;height:120px"><span class="t">08:00–10:00</span><span class="who">Bossum</span></div>
+                <div class="bk fac" style="top:160px;height:48px"><span class="t">13:00</span><span class="who">Lina H</span></div>
+                <div class="bk coach" style="top:224px;height:48px"><span class="t">15:00</span><span class="who">Emma S</span></div>
+              </div>
+              <div class="cal-col" style="height:480px">
+                <div class="bk coach" style="top:0;height:48px"><span class="t">08:00</span><span class="who">Markus R</span></div>
+                <div class="bk grp" style="top:160px;height:60px"><span class="t">13:00</span><span class="who">U16</span></div>
+                <div class="bk gf" style="top:256px;height:108px"><span class="t">16:00–18:00</span><span class="who">GFGK</span></div>
+              </div>
+              <div class="cal-col" style="height:480px">
+                <div class="bk gf" style="top:0;height:120px"><span class="t">08:00–10:00</span><span class="who">Junior-cup</span></div>
+                <div class="bk coach" style="top:160px;height:60px"><span class="t">13:00</span><span class="who">Lina H</span></div>
+              </div>
+              <div class="cal-col" style="height:480px">
+                <div class="bk fac" style="top:64px;height:48px"><span class="t">10:00</span><span class="who">Jon D</span></div>
+                <div class="bk grp" style="top:160px;height:60px"><span class="t">13:00</span><span class="who">Familie</span></div>
+              </div>
+            </div>
+            <div class="cal-foot">
+              <span class="lg"><span class="sw" style="background:#D1F843"></span>Coaching</span>
+              <span class="lg"><span class="sw" style="background:#005840"></span>Fasilitet</span>
+              <span class="lg"><span class="sw" style="background:#B8852A"></span>Greenfee</span>
+              <span class="lg"><span class="sw" style="background:#1A7D56"></span>Gruppe</span>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 04 QUICK POPOVER + EMPTY SLOT HOVER                     -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="04 Popover + tom-slot">
+    <div class="ab-label"><span class="num">04</span><span class="ttl">Quick-popover + tom-slot hover</span><span class="meta">1448 × 540 · klikk på pill → detaljer · klikk i blank slot → ny booking</span></div>
+    <div class="ab-frame">
+      <div style="padding:48px;background:var(--surface);position:relative">
+        <div style="display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:start">
+          <!-- left: cropped calendar with active pill -->
+          <div>
+            <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:14px">A) Klikk på booking-pill</div>
+            <div class="cal" style="height:380px;position:relative">
+              <div class="cal-grid">
+                <div class="cal-corner"></div>
+                <div class="cal-day"><div class="dy">Tir</div><div class="dt">12</div></div>
+                <div class="cal-day today"><div class="dy">Ons</div><div class="dt">13</div></div>
+                <div class="cal-day"><div class="dy">Tor</div><div class="dt">14</div></div>
+
+                <div class="cal-time" style="height:320px">
+                  <span class="t" style="top:0">10:00</span>
+                  <span class="t" style="top:64px">12:00</span>
+                  <span class="t" style="top:128px">14:00</span>
+                  <span class="t" style="top:192px">16:00</span>
+                  <span class="t" style="top:256px">18:00</span>
+                </div>
+                <div class="cal-col" style="height:320px">
+                  <div class="bk fac dimmed" style="top:0;height:48px"><span class="t">10:00</span><span class="who">Studio 3</span></div>
+                  <div class="bk gf dimmed" style="top:192px;height:108px"><span class="t">16:00–18:00</span><span class="who">GFGK</span></div>
+                </div>
+                <div class="cal-col today" style="height:320px;position:relative">
+                  <div class="bk coach" style="top:128px;height:60px;box-shadow:0 0 0 3px rgba(0,88,64,.4),0 8px 20px rgba(10,31,24,.18);z-index:10;position:absolute"><span class="t">14:00–15:00</span><span class="who">1:1 Markus R</span><span class="meta">Studio 1 · Anders K</span></div>
+                  <div class="bk fac dimmed" style="top:64px;height:48px"><span class="t">12:00</span><span class="who">Studio 4</span></div>
+                  <!-- popover -->
+                  <div class="popover" style="left:calc(100% + 16px);top:120px">
+                    <h4>1:1 Markus R Pedersen</h4>
+                    <div class="sub">Onsdag 13. mai · 14:00–15:00</div>
+                    <div class="pop-row"><span class="lbl">Coach</span><span class="val">Anders Kristiansen</span></div>
+                    <div class="pop-row"><span class="lbl">Sted</span><span class="val">Mulligan Studio 1</span></div>
+                    <div class="pop-row"><span class="lbl">Type</span><span class="val"><span class="typepill coach"><span class="dot"></span>Coaching</span></span></div>
+                    <div class="pop-row"><span class="lbl">Status</span><span class="val"><span class="stat-pill ok">Bekreftet</span></span></div>
+                    <div class="pop-row"><span class="lbl">Notat</span><span class="val" style="font-size:12px;color:var(--ink-muted);font-weight:400">Forberedelse Sørlandsåpent — TEK + putting</span></div>
+                    <div class="pop-actions">
+                      <button class="btn btn-ghost"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Omplanlegg</button>
+                      <button class="btn btn-ghost" style="color:var(--status-danger)">Avlys</button>
+                      <button class="btn btn-primary">Detaljer →</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="cal-col" style="height:320px">
+                  <div class="bk gf dimmed" style="top:0;height:120px"><span class="t">10:00–12:00</span><span class="who">Bossum</span></div>
+                  <div class="bk coach dimmed" style="top:160px;height:48px"><span class="t">15:00</span><span class="who">Emma S</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- right: empty slot hover demo -->
+          <div>
+            <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:14px">B) Hover på tom slot</div>
+            <div class="cal" style="height:380px">
+              <div class="cal-grid" style="grid-template-columns:48px 1fr">
+                <div class="cal-corner"></div>
+                <div class="cal-day"><div class="dy">Fre</div><div class="dt">15</div></div>
+                <div class="cal-time" style="height:320px">
+                  <span class="t" style="top:0">14:00</span>
+                  <span class="t" style="top:64px">15:00</span>
+                  <span class="t" style="top:128px">16:00</span>
+                  <span class="t" style="top:192px">17:00</span>
+                  <span class="t" style="top:256px">18:00</span>
+                </div>
+                <div class="cal-col" style="height:320px">
+                  <div class="bk coach dimmed" style="top:0;height:48px"><span class="t">14:00</span><span class="who">Lina H</span></div>
+                  <!-- empty slot hover -->
+                  <div class="empty-slot demo" style="top:96px;height:60px"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Book 16:00–17:00</div>
+                  <div class="bk fac dimmed" style="top:192px;height:48px"><span class="t">17:00</span><span class="who">Studio 4</span></div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:14px;padding:12px 14px;background:var(--brand-primary-soft);border-radius:10px;font-size:12px;color:var(--brand-primary);display:flex;gap:8px;align-items:flex-start">
+              <svg width="14" height="14" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>Klikk åpner <strong>BookSessionModal</strong> med tid/dato pre-fylt: 15. mai 16:00–17:00.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 05 EMPTY                                                -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="05 Empty kalender">
+    <div class="ab-label"><span class="num">05</span><span class="ttl">Empty — uke uten bookinger</span><span class="meta">1448 × 620</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="rail">
+          <div class="mark">AK</div>
+          <div class="rail-icon active"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></div>
+        </aside>
+        <aside class="nav">
+          <div class="nav-title"><span class="dot"></span>Coach HQ</div>
+          <div class="nav-item active">Bookinger<span class="count" style="font-family:var(--font-mono)">0</span></div>
+        </aside>
+        <main class="main">
+          <header class="head">
+            <div><div class="crumb">Coach HQ <span class="sep">/</span> Bookinger</div><h1>En tom uke. Sjeldent syn.</h1></div>
+            <div class="head-actions">
+              <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Ny booking</button>
+            </div>
+          </header>
+
+          <div class="weeknav">
+            <button class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="today">I dag</button>
+            <button class="iconbtn"><svg width="16" height="16" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <span class="week-label">Uke 27 <span class="muted">· 6.–12. juli 2026</span></span>
+          </div>
+
+          <div class="cal">
+            <div class="empty-cal">
+              <svg width="48" height="48" viewBox="0 0 24 24" style="color:var(--ink-subtle)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <h3>Ingen bookinger denne uka</h3>
+              <p>Klikk en slot i kalenderen — eller bruk <span class="num" style="background:var(--surface-card);padding:2px 6px;border-radius:6px;border:1px solid var(--line)">+ Ny booking</span> for å lage en ny.</p>
+              <div style="display:flex;gap:8px;margin-top:14px">
+                <button class="btn btn-ghost">Vis kalender →</button>
+                <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Ny booking</button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!-- 06 MOBILE                                               -->
+  <!-- ====================================================== -->
+  <section class="ab" data-screen-label="06 Mobil 1-dag">
+    <div class="ab-label"><span class="num">06</span><span class="ttl">Mobil — 1-dag-view + liste</span><span class="meta">≤ 640px · pile mellom dager</span></div>
+    <div class="ab-frame">
+      <div class="mobile-wrap">
+        <!-- A: 1-day calendar -->
+        <div class="mobile">
+          <div class="m-status"><span>09:41</span><span class="right"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor"><path d="M1 9V5"/><path d="M5 9V3"/><path d="M9 9V1"/><path d="M13 9V1"/></svg><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="19" height="9" rx="2"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/></svg></span></div>
+          <div class="m-head">
+            <div class="crumb">Bookinger</div>
+            <h1>I dag — 8 bookinger.</h1>
+          </div>
+          <div class="m-daynav">
+            <div class="iconbtn"><svg width="14" height="14" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+            <span class="lbl">Onsdag 13. mai</span>
+            <div class="iconbtn"><svg width="14" height="14" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </div>
+          <div class="m-day">
+            <div class="row t">09:00</div>
+            <div class="row b"><div class="m-pill coach"><span class="who">1:1 Henrik N</span><span class="meta">Studio 4 · Anders K · 09:00–10:00</span></div></div>
+            <div class="row t">11:00</div>
+            <div class="row b"><div class="m-pill fac"><span class="who">Junior gruppe</span><span class="meta">Range · 5 stk · 11:00–12:00</span></div></div>
+            <div class="row t">14:00</div>
+            <div class="row b" style="position:relative">
+              <div class="m-pill fac"><span class="who">Studio 1</span><span class="meta">Markus R · 14:00–15:00</span></div>
+              <div style="position:absolute;left:-16px;right:-16px;top:18px;border-top:2px solid var(--status-danger);z-index:5"><span style="position:absolute;right:-12px;top:-9px;background:var(--status-danger);color:#fff;font-family:var(--font-mono);font-size:10px;padding:1px 6px;border-radius:5px;font-weight:600">13:42</span></div>
+            </div>
+            <div class="row t">17:00</div>
+            <div class="row b"><div class="m-pill coach"><span class="who">1:1 Mads R</span><span class="meta">Studio 2 · 17:00–18:00</span></div></div>
+            <div class="row t">21:00</div>
+            <div class="row b"><div class="m-pill fac"><span class="who">Studio 3</span><span class="meta">Jon Dahl · 21:00–22:00</span></div></div>
+          </div>
+          <div style="display:flex;justify-content:space-around;padding:10px 12px 22px;border-top:1px solid var(--line-soft)">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle);font-weight:500;letter-spacing:.04em;text-transform:uppercase">
+              <svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Hjem</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle)">
+              <svg width="20" height="20" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink);font-weight:600">
+              <svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Bookinger</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle)">
+              <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Økter</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle)">
+              <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>Meg</div>
+          </div>
+        </div>
+
+        <!-- B: list-as-cards -->
+        <div class="mobile">
+          <div class="m-status"><span>09:41</span><span class="right"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor"><path d="M1 9V5"/><path d="M5 9V3"/><path d="M9 9V1"/><path d="M13 9V1"/></svg><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="19" height="9" rx="2"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/></svg></span></div>
+          <div class="m-head">
+            <div class="crumb">Bookinger · Liste</div>
+            <h1>Filter (3) — 47 treff.</h1>
+          </div>
+          <div style="padding:12px 16px;display:flex;gap:6px;border-bottom:1px solid var(--line-soft);overflow-x:auto;scrollbar-width:none">
+            <span class="chip active">Filter <span class="ct">3</span> ▾</span>
+            <span class="chip">Sortér ▾</span>
+            <span class="chip">Coaching</span>
+          </div>
+          <div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px">
+            <div style="padding:14px;border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:8px"><span class="typepill coach"><span class="dot"></span>Coaching</span><span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)">11. mai 11:00</span></div>
+              <div style="display:flex;align-items:center;gap:10px"><div class="av" style="background:#005840;width:30px;height:30px;border-radius:50%;color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center">MR</div><div><div style="font-weight:500;font-size:13px">Markus R Pedersen</div><div style="font-size:11px;color:var(--ink-subtle)">Studio 2 · Anders K</div></div></div>
+              <div style="display:flex;gap:6px"><span class="stat-pill ok">Bekreftet</span></div>
+            </div>
+            <div style="padding:14px;border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:8px"><span class="typepill gf"><span class="dot"></span>Greenfee</span><span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)">12. mai 16:00</span></div>
+              <div style="display:flex;align-items:center;gap:10px"><div class="av" style="background:#1A7D56;width:30px;height:30px;border-radius:50%;color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center">AK</div><div><div style="font-weight:500;font-size:13px">Anna Karlsen + 1</div><div style="font-size:11px;color:var(--ink-subtle)">GFGK · 18 hull</div></div></div>
+              <div style="display:flex;gap:6px"><span class="stat-pill ok">Bekreftet</span></div>
+            </div>
+            <div style="padding:14px;border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;gap:8px;opacity:.7">
+              <div style="display:flex;align-items:center;gap:8px"><span class="typepill gf"><span class="dot"></span>Greenfee</span><span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)">15. mai 16:00</span></div>
+              <div style="display:flex;align-items:center;gap:10px"><div class="av" style="background:#A32D2D;width:30px;height:30px;border-radius:50%;color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center">JT</div><div><div style="font-weight:500;font-size:13px">Joachim Tangen + 3</div><div style="font-size:11px;color:var(--ink-subtle)">GFGK · skadet</div></div></div>
+              <div style="display:flex;gap:6px"><span class="stat-pill cancel">Avlyst</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

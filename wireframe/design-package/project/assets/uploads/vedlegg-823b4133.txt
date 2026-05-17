@@ -1,0 +1,34 @@
+# Vedlegg for Mini-batch playerhq-C - Wizards + kalender
+
+Last opp disse HTML-filene i Claude Design som visuelle vedlegg.
+Aapne hver i Finder, eller bruk: Cmd+Shift+G og lim inn stien.
+
+## Hovedskjermer (5 stk)
+
+~/Developer/akgolf-hq/wireframe/screen-deck/playerhq/ny-okt-wizard.html
+~/Developer/akgolf-hq/wireframe/screen-deck/playerhq/onskeligokt.html
+~/Developer/akgolf-hq/wireframe/screen-deck/playerhq/coach-message-compose.html
+~/Developer/akgolf-hq/wireframe/screen-deck/playerhq/tren-kalender.html
+~/Developer/akgolf-hq/wireframe/screen-deck/playerhq/treningsdetalj.html
+
+## Tilhoerende modaler (referanse for hva som aapnes)
+
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/book-session.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/booking-confirmation.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/reschedule-booking.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/video-upload.html
+~/Developer/akgolf-hq/wireframe/screen-deck/shared/modals/message-detail.html
+
+## Pluss alltid (system-kontekst, engang per ny sesjon)
+
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/branding-style-guide.html
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/design-system-v2.md
+~/Developer/akgolf-hq/wireframe/brain/for-claude-design/fonts/  (alle 20 .woff2)
+
+## Pluss anti-state-katalog-regel
+
+~/Developer/akgolf-hq/wireframe/design-batches/redesign-arketype-e/felles-instruks.md
+
+## Pluss mini-batch-spec
+
+~/Developer/akgolf-hq/wireframe/design-batches/mvp/playerhq/playerhq-C.md

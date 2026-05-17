@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head><meta charset="UTF-8"><title>Auth — Logg inn · 9-G/1</title><link rel="stylesheet" href="_shared/arketype-g-auth.css">
+<style>
+  .testimonial{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px;margin-top:24px;position:relative}
+  .testimonial .quote{font-family:var(--font-display);font-size:16px;font-weight:500;font-style:italic;line-height:1.5;color:#fff;letter-spacing:-.005em}
+  .testimonial .who{font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,.55);letter-spacing:.04em;margin-top:10px}
+  .testimonial .who b{color:var(--brand-accent);font-weight:600}
+
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px;position:relative}
+  .stat-row .s{padding:10px 0;border-top:1px solid rgba(255,255,255,.10)}
+  .stat-row .s .v{font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--brand-accent);letter-spacing:-.02em;line-height:1}
+  .stat-row .s .l{font-family:var(--font-mono);font-size:9px;color:rgba(255,255,255,.55);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+</style></head>
+<body>
+<div class="deck" data-screen-label="62 Auth — Logg inn">
+  <header class="deck-head">
+    <div class="eyebrow">9-G · Auth &amp; før-login · skjerm 1 av 5</div>
+    <h1>Logg inn · split-skjerm</h1>
+    <p class="sub">Inngangspunkt for både spillere, coacher, foreldre og klubb-admins. E-post + passord eller passordløs (magisk lenke). Vipps/BankID som SSO. Coach-tier får tilbud om enterprise SSO på "Velg organisasjon" etter login.</p>
+    <div class="meta-row"><span><span class="lbl">URL:</span> /auth/login</span><span><span class="lbl">Rolle-detekt:</span> ved første login → onboarding-flyt</span></div>
+  </header>
+  <section class="ab">
+    <div class="ab-label"><span class="num">62 · 9-G/1</span><span class="ttl">Logg inn · spiller/coach/forelder</span><span class="meta">e-post · magisk lenke · vipps/bankid SSO</span></div>
+    <div class="ab-frame">
+      <div class="auth">
+        <aside class="auth-side">
+          <div class="brand">
+            <div class="mark">AK</div>
+            <div class="nm">AK Golf<span class="dim">/ coaching · spiller · forelder</span></div>
+          </div>
+          <div class="hero">
+            <div class="eye">Coaching · gjort enklere.</div>
+            <h2>Hver økt, hvert mål, hver <em>milepæl</em> — på ett sted.</h2>
+            <p>Plattformen som binder sammen spillere, coacher, foreldre og klubber. Live Session, Coaching Board, automatiske rapporter — bygd for norsk junior-golf.</p>
+            <div class="testimonial">
+              <div class="quote">"Vi sparer 6 timer i uken på rapportering. Foreldrene er mer engasjert enn noensinne, og spillerne ser sin egen progresjon hver dag."</div>
+              <div class="who"><b>Anders K.</b> · Hovedcoach, GFGK</div>
+            </div>
+            <div class="stat-row">
+              <div class="s"><div class="v">340+</div><div class="l">Aktive coacher</div></div>
+              <div class="s"><div class="v">2 800</div><div class="l">Spillere</div></div>
+              <div class="s"><div class="v">+62</div><div class="l">Foreldre-NPS</div></div>
+            </div>
+          </div>
+          <div class="foot">
+            <span>AK Golf · v3.4.2 · status: <span style="color:#4ade80">●</span> alle systemer</span>
+            <a>norsk · english →</a>
+          </div>
+        </aside>
+
+        <div class="auth-main">
+          <h1>Velkommen tilbake.</h1>
+          <p class="sub">Logg inn for å fortsette. Har du ikke konto? <a class="link">Opprett en →</a></p>
+
+          <div class="field focused">
+            <label for="e">E-post</label>
+            <input id="e" type="email" value="anders@gfgk.no" autocomplete="off">
+            <div class="hint">Vi har gjenkjent deg som <b style="color:var(--brand-primary)">Anders K. · coach @ GFGK</b></div>
+          </div>
+
+          <div class="field">
+            <label for="p">Passord <span style="float:right;color:var(--brand-primary);text-transform:none;letter-spacing:0;font-family:var(--font-body)">Glemt det?</span></label>
+            <input id="p" type="password" value="••••••••••••" autocomplete="off">
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px;color:var(--ink-muted)">
+            <label style="display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" checked style="margin:0">Hold meg innlogget på denne enheten</label>
+          </div>
+
+          <button class="btn btn-block" style="margin-top:18px">Logg inn →</button>
+
+          <div class="divider-or"><hr><span>eller fortsett med</span><hr></div>
+
+          <div class="sso-row">
+            <div class="sso">
+              <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="#FF5B24"><path d="M21.7 5.2L12 13.5 2.3 5.2C2.1 5 2 4.7 2 4.5 2 4.2 2.2 4 2.5 4h19c.3 0 .5.2.5.5 0 .2-.1.5-.3.7zM2 7.4l9.7 8.3c.2.2.6.2.8 0L22 7.4V19c0 .6-.4 1-1 1H3c-.6 0-1-.4-1-1V7.4z"/></svg></span>
+              Magisk lenke · e-post
+            </div>
+            <div class="sso">
+              <span class="ic" style="background:#FF5B24;color:#fff;border-radius:4px;font-family:var(--font-display);font-weight:600;font-size:10px;letter-spacing:.04em;padding:2px 4px">vipps</span>
+              Vipps Logg inn
+            </div>
+            <div class="sso" style="grid-column:span 2;background:#39134C;color:#fff;border-color:#39134C">
+              <span class="ic" style="background:#fff;color:#39134C;border-radius:3px;font-family:var(--font-mono);font-weight:700;font-size:9px;padding:2px 4px;letter-spacing:.02em">BankID</span>
+              Logg inn med BankID
+            </div>
+          </div>
+
+          <p style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);letter-spacing:.02em;text-align:center;margin-top:22px;line-height:1.6">Ved innlogging samtykker du til <a class="link" style="font-size:10px">brukervilkår</a> og <a class="link" style="font-size:10px">personvern</a>. Underdomenenavn vises etter login.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

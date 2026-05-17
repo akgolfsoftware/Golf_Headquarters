@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="nb"><head><meta charset="UTF-8"><title>14 · TrackMan</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+.deck{display:flex;flex-direction:column;align-items:center;gap:56px;padding:56px 24px 96px}
+.head{max-width:1248px;width:100%;display:flex;flex-direction:column;gap:10px}
+.head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+.head h1{font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.02em;margin:0}
+.head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+.ab{display:flex;flex-direction:column;gap:14px;max-width:1248px;width:100%}
+.ab-label{display:flex;align-items:baseline;gap:14px;color:#3a3935;font-family:var(--font-display);font-weight:500}
+.ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990}.ab-label .ttl{font-size:19px}
+.ab-label .meta{font-size:12px;color:#7a7872;font-style:italic;margin-left:auto;font-family:var(--font-body)}
+.ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:22px;overflow:hidden;box-shadow:0 24px 50px -28px rgba(10,31,24,.18)}
+.ab-frame svg:not([fill]){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.app{display:flex;min-height:820px;background:var(--surface)}
+.rail{width:56px;background:#0F2A22;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;flex-shrink:0}
+.rail .logo{width:34px;height:34px;border-radius:9px;background:var(--brand-accent);color:#0A1F18;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11px;margin-bottom:6px}
+.rail .ri{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(245,244,238,.6)}.rail .ri.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}.rail .ri svg{width:17px;height:17px}
+.rail .av{margin-top:auto;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4a3a8a,#7c52b0);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+.nav{width:208px;background:#FAFAF7;border-right:1px solid #F0EDE5;padding:18px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+.nav .label{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:6px 10px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13px;color:var(--ink-muted);position:relative}
+.nav-item.active{background:rgba(209,248,67,.30);color:#0A1F18;font-weight:500}
+.nav-item.active::before{content:"";position:absolute;left:-12px;top:6px;bottom:6px;width:3px;background:var(--brand-primary);border-radius:0 3px 3px 0}
+.main{flex:1;padding:28px 36px;min-width:0;display:flex;flex-direction:column;gap:22px}
+
+.hero{display:flex;flex-direction:column;gap:8px}
+.hero .crumb{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle)}
+.hero h1{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:36px;letter-spacing:-.02em;margin:0;line-height:1.05}
+.hero h1 em{font-style:normal;font-weight:600}
+.hero .sub{font-family:var(--font-mono);font-size:12px;color:var(--ink-muted)}
+
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stat{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.stat:hover{transform:translateY(-2px);box-shadow:0 14px 28px -10px rgba(10,31,24,.12)}
+.stat .lbl{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+.stat .row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.stat .v{font-family:var(--font-mono);font-size:28px;font-weight:600;letter-spacing:-.01em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+.stat .unit{font-size:12px;color:var(--ink-muted);font-weight:400;margin-left:3px;font-family:var(--font-mono)}
+.stat .spark{width:60px;height:24px}
+.stat .delta{font-family:var(--font-mono);font-size:10px;color:var(--brand-primary)}
+.stat .delta.neg{color:#a14b30}
+
+.filter-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.search{position:relative;width:200px}
+.search input{width:100%;padding:7px 10px 7px 30px;border:1px solid var(--line);border-radius:9px;background:var(--surface-card);font-family:var(--font-body);font-size:12.5px;color:var(--ink);outline:none}
+.search svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--ink-subtle)}
+.chip{padding:6px 11px;border-radius:100px;background:var(--surface-card);border:1px solid var(--line);font-size:12px;color:var(--ink);display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.chip svg{width:11px;height:11px;color:var(--ink-subtle)}
+.cta-grp{margin-left:auto}
+.btn{padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:var(--font-body)}
+.btn-pri{background:var(--brand-primary);color:#fff}.btn-pri:hover{background:#003F2D}.btn-pri svg{width:12px;height:12px}
+
+.table{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.t-head,.t-row{display:grid;grid-template-columns:1.1fr .6fr .55fr 1.3fr .75fr 1fr .35fr .65fr;align-items:center;padding:0 18px;height:42px;gap:12px}
+.t-head{height:38px;background:#FAFAF7;border-bottom:1px solid var(--line);font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+.t-row{height:64px;border-bottom:1px solid var(--line-soft);cursor:pointer}
+.t-row:last-child{border-bottom:none}
+.t-row:hover{background:#FAFAF7}
+.t-date{display:flex;flex-direction:column;gap:3px}
+.t-date .d{font-family:var(--font-mono);font-size:12px;color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.loc-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:100px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;background:rgba(91,124,184,.18);color:#3b5994;width:fit-content}
+.loc-pill .dot{width:4px;height:4px;border-radius:50%;background:#3b5994}
+.loc-pill.indoor{background:rgba(74,58,138,.12);color:#4a3a8a}.loc-pill.indoor .dot{background:#4a3a8a}
+.loc-pill.range{background:rgba(0,88,64,.12);color:var(--brand-primary)}.loc-pill.range .dot{background:var(--brand-primary)}
+.dur{font-family:var(--font-mono);font-size:12px;color:var(--ink-muted)}
+.balls{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.clubs{display:flex;gap:4px;flex-wrap:wrap}
+.club-pill{padding:2px 7px;border-radius:5px;font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.02em;background:#F0EDE5;color:var(--ink-muted)}
+.smash{display:flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+.smash svg{width:10px;height:10px}
+.smash.up{color:var(--brand-primary)}
+.smash.dn{color:#a14b30}
+.best{display:flex;flex-direction:column;gap:1px}
+.best .v{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.best .c{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-subtle)}
+.src{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:#F0EDE5;color:var(--ink-muted)}
+.src svg{width:13px;height:13px}
+.det{font-size:12px;color:var(--brand-primary);font-weight:500;display:inline-flex;align-items:center;gap:3px}
+.det svg{width:11px;height:11px}
+
+.spark-tt{position:absolute;background:#0F2A22;color:#F5F4EE;padding:6px 10px;border-radius:8px;font-family:var(--font-mono);font-size:10.5px;white-space:nowrap;z-index:10}
+.spark-tt::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:#0F2A22}
+
+/* Tier lock — Free */
+.lock-shell{position:relative}
+.lock-content{filter:blur(4.5px);opacity:.4;pointer-events:none}
+.lock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(237,234,226,.5);backdrop-filter:blur(2px)}
+.lock-card{background:var(--surface-card);border:1px solid rgba(244,196,48,.5);border-radius:18px;padding:32px 36px;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:440px;text-align:center;box-shadow:0 32px 60px -20px rgba(10,31,24,.3)}
+.lock-card .ic{width:56px;height:56px;border-radius:14px;background:rgba(244,196,48,.22);color:#7a5a08;display:flex;align-items:center;justify-content:center}
+.lock-card .ic svg{width:26px;height:26px}
+.lock-card h3{font-family:var(--font-display);font-style:italic;font-size:24px;font-weight:400;margin:0;color:var(--ink)}
+.lock-card h3 em{font-style:normal;font-weight:600}
+.lock-card p{font-size:13px;color:var(--ink-muted);margin:0;line-height:1.5}
+.lock-card .feat{display:flex;flex-direction:column;gap:6px;margin:6px 0;text-align:left;width:100%}
+.lock-card .feat li{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink);line-height:1.4}
+.lock-card .feat svg{width:14px;height:14px;color:var(--brand-primary);flex-shrink:0}
+.lock-card .up{padding:9px 16px;border-radius:100px;background:#0F2A22;color:var(--brand-accent);font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:var(--font-body)}
+.lock-card .up svg{width:12px;height:12px}
+
+/* Empty */
+.empty{display:flex;flex-direction:column;align-items:center;gap:14px;padding:48px 24px;background:var(--surface-card);border:1px dashed var(--line);border-radius:14px;text-align:center}
+.empty .ic{width:48px;height:48px;border-radius:12px;background:rgba(0,88,64,.10);color:var(--brand-primary);display:flex;align-items:center;justify-content:center}
+.empty .ic svg{width:22px;height:22px}
+.empty h3{font-family:var(--font-display);font-style:italic;font-size:22px;font-weight:400;margin:0}
+.empty h3 em{font-style:normal;font-weight:600}
+.empty p{font-size:12.5px;color:var(--ink-muted);margin:0;max-width:440px;line-height:1.5}
+.empty .help{margin-top:4px;padding:10px 14px;background:#F5F2EA;border-radius:10px;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);text-align:left;max-width:480px;line-height:1.6}
+.empty .help strong{color:var(--ink)}
+
+/* Skeletons */
+.sk{background:linear-gradient(90deg,#F0EDE5 0%,#F5F2EA 50%,#F0EDE5 100%);background-size:200% 100%;animation:shim 1.5s linear infinite;border-radius:6px}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Dark */
+.dark .ab-frame{border-color:#1c3b32}
+.dark .app{background:#0F2A22;color:#F5F4EE}
+.dark .nav{background:#0B221C;border-right-color:#1c3b32}.dark .nav .label,.dark .nav-item{color:#9D9C95}
+.dark .nav-item.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}.dark .nav-item.active::before{background:var(--brand-accent)}
+.dark .hero h1{color:#F5F4EE}.dark .hero .crumb,.dark .hero .sub{color:#9D9C95}
+.dark .stat,.dark .table{background:#163027;border-color:#274d41}
+.dark .stat .v,.dark .balls,.dark .smash,.dark .best .v,.dark .t-date .d{color:#F5F4EE}
+.dark .t-head{background:#0B221C;border-color:#1c3b32}.dark .t-row{border-color:#1c3b32}.dark .t-row:hover{background:#1c3b32}
+.dark .search input,.dark .chip{background:#163027;border-color:#274d41;color:#F5F4EE}
+.dark .club-pill,.dark .src{background:#1c3b32;color:#9D9C95}
+
+/* Mobile */
+.mob-wrap{display:flex;justify-content:center;padding:30px;background:linear-gradient(180deg,#F5F2EA,#EDEAE2)}
+.mob{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden}
+.m-status{display:flex;justify-content:space-between;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;font-weight:500}
+.m-top{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;border-bottom:1px solid var(--line-soft)}
+.m-top .ham{width:32px;height:32px;border-radius:9px;background:#0F2A22;color:#F5F4EE;display:flex;align-items:center;justify-content:center}
+.m-top .ttl{font-family:var(--font-display);font-size:14px;font-weight:600}
+.m-body{padding:16px;display:flex;flex-direction:column;gap:14px}
+.m-stat{background:var(--surface-card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.m-stat .l{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-subtle)}
+.m-stat .v{font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.m-bot{display:flex;justify-content:space-around;padding:8px 8px 22px;border-top:1px solid var(--line-soft)}
+.m-bot .b{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle);padding:6px}.m-bot .b.sel{color:var(--brand-primary);font-weight:600}.m-bot .b svg{width:18px;height:18px}
+</style></head>
+<body><div class="deck">
+<header class="head"><span class="eyebrow">Batch 3 · Spec 14 · PlayerHQ · TrackMan</span><h1>TrackMan-økter · radardata-loggbok (Pro-locked for Free)</h1><p class="sub">7 artboards: Pro full med 6-stats-grid + 12 økter, Free med full-page lock-overlay + Pro-fordeler, mørkt Pro, hover-stat med sparkline-tooltip, empty (Pro ingen økter), loading skeletons, mobil 1-kolonne.</p></header>
+
+<!-- 01 PRO LIGHT -->
+<section class="ab" data-screen-label="01 Pro lyst"><div class="ab-label"><span class="num">01</span><span class="ttl">Pro · full radardata · 6 stats + tabell</span><span class="meta">1248 × 820</span></div>
+<div class="ab-frame"><div class="app">
+<aside class="rail"><div class="logo">AK</div><div class="ri"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7"/></svg></div><div class="ri"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div><div class="ri active"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18 22 12 18.5 6 22 7 14.5 2 9.5 9 8.5"/></svg></div><div class="av">MK</div></aside>
+<aside class="nav"><div class="label">PlayerHQ · Mål</div><div class="nav-item">Oversikt</div><div class="nav-item">Runder</div><div class="nav-item">Tester</div><div class="nav-item active">TrackMan</div></aside>
+<main class="main">
+<section class="hero"><div class="crumb">/portal/mal/trackman · Pro</div><h1><em>12 økter</em> med radar-data, Markus.</h1><div class="sub">Sist økt: 7. mai · 187 baller · Snitt smash 1,46 · 2 184 baller totalt</div></section>
+
+<div class="stat-grid">
+<div class="stat"><div class="lbl">Driver · clubhead</div><div class="row"><div class="v">107<span class="unit">mph</span></div><svg class="spark" width="60" height="24" viewBox="0 0 60 24"><polyline points="2,18 12,16 22,14 32,15 42,12 58,10" stroke="#005840" stroke-width="1.5" fill="none"/></svg></div><div class="delta">↑ +1,2 mph vs apr</div></div>
+<div class="stat"><div class="lbl">Driver · ball-speed</div><div class="row"><div class="v">158<span class="unit">mph</span></div><svg class="spark" width="60" height="24" viewBox="0 0 60 24"><polyline points="2,17 12,15 22,16 32,13 42,12 58,9" stroke="#005840" stroke-width="1.5" fill="none"/></svg></div><div class="delta">↑ +1,8 mph</div></div>
+<div class="stat"><div class="lbl">7-jern · carry</div><div class="row"><div class="v">164<span class="unit">m</span></div><svg class="spark" width="60" height="24" viewBox="0 0 60 24"><polyline points="2,14 12,13 22,15 32,12 42,13 58,11" stroke="#005840" stroke-width="1.5" fill="none"/></svg></div><div class="delta">↑ +2 m</div></div>
+<div class="stat"><div class="lbl">Snitt smash</div><div class="row"><div class="v">1,46</div><svg class="spark" width="60" height="24" viewBox="0 0 60 24"><polyline points="2,16 12,15 22,14 32,12 42,13 58,10" stroke="#005840" stroke-width="1.5" fill="none"/></svg></div><div class="delta">↑ +0,02</div></div>
+<div class="stat"><div class="lbl">Total baller</div><div class="row"><div class="v">2 184</div></div><div class="delta">+187 denne uka</div></div>
+<div class="stat"><div class="lbl">7-jern · spin</div><div class="row"><div class="v">6 920<span class="unit">rpm</span></div><svg class="spark" width="60" height="24" viewBox="0 0 60 24"><polyline points="2,11 12,13 22,11 32,13 42,12 58,14" stroke="#a14b30" stroke-width="1.5" fill="none"/></svg></div><div class="delta neg">↓ −120 rpm</div></div>
+</div>
+
+<div class="filter-row">
+<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Søk lokasjon..."/></div>
+<span class="chip">Lokasjon: Alle <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+<span class="chip">Klubb: Alle <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+<span class="chip">Periode: 90 dager <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+<div class="cta-grp"><span class="btn btn-pri"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Importer økt</span></div>
+</div>
+
+<div class="table">
+<div class="t-head"><div>Dato · lokasjon</div><div>Varighet</div><div>Baller</div><div>Klubber</div><div>Snitt smash</div><div>Beste carry</div><div>Kilde</div><div></div></div>
+
+<div class="t-row"><div class="t-date"><div class="d">7. mai 2026</div><span class="loc-pill"><span class="dot"></span>Mulligan Perf.</span></div><div class="dur">52 min</div><div class="balls">187</div><div class="clubs"><span class="club-pill">Driver</span><span class="club-pill">7i</span><span class="club-pill">PW</span></div><div><span class="smash up">1,48 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><polyline points="18 15 12 9 6 15"/></svg></span></div><div class="best"><span class="v">251 m</span><span class="c">Driver</span></div><div><span class="src" title="CSV"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div><div><span class="det">Detaljer <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-date"><div class="d">4. mai 2026</div><span class="loc-pill indoor"><span class="dot"></span>Mulligan Indoor</span></div><div class="dur">45 min</div><div class="balls">147</div><div class="clubs"><span class="club-pill">Driver</span><span class="club-pill">7i</span></div><div><span class="smash up">1,47 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><polyline points="18 15 12 9 6 15"/></svg></span></div><div class="best"><span class="v">248 m</span><span class="c">Driver</span></div><div><span class="src"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div><div><span class="det">Detaljer <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-date"><div class="d">29. apr 2026</div><span class="loc-pill range"><span class="dot"></span>GFGK Range</span></div><div class="dur">38 min</div><div class="balls">112</div><div class="clubs"><span class="club-pill">7i</span><span class="club-pill">PW</span><span class="club-pill">SW</span></div><div><span class="smash dn">1,42 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="best"><span class="v">170 m</span><span class="c">7-jern</span></div><div><span class="src" title="Screenshot · OCR"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span></div><div><span class="det">Detaljer <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-date"><div class="d">22. apr 2026</div><span class="loc-pill"><span class="dot"></span>Mulligan Perf.</span></div><div class="dur">60 min</div><div class="balls">214</div><div class="clubs"><span class="club-pill">Driver</span><span class="club-pill">3W</span><span class="club-pill">7i</span><span class="club-pill">PW</span></div><div><span class="smash up">1,49 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><polyline points="18 15 12 9 6 15"/></svg></span></div><div class="best"><span class="v">256 m</span><span class="c">Driver</span></div><div><span class="src"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div><div><span class="det">Detaljer <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div class="t-row"><div class="t-date"><div class="d">15. apr 2026</div><span class="loc-pill indoor"><span class="dot"></span>Mulligan Indoor</span></div><div class="dur">50 min</div><div class="balls">168</div><div class="clubs"><span class="club-pill">7i</span><span class="club-pill">PW</span></div><div><span class="smash up">1,45 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><polyline points="18 15 12 9 6 15"/></svg></span></div><div class="best"><span class="v">168 m</span><span class="c">7-jern</span></div><div><span class="src"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span></div><div><span class="det">Detaljer <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div></div>
+
+<div style="padding:11px 18px;border-top:1px solid var(--line-soft);font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);text-align:center;background:#FAFAF7">+ 7 eldre økter</div>
+</div>
+</main></div></div></section>
+
+<!-- 02 FREE LOCKED -->
+<section class="ab" data-screen-label="02 Free · lock-overlay"><div class="ab-label"><span class="num">02</span><span class="ttl">Free · full-page lock-overlay + Pro-fordeler</span><span class="meta">1248 × 580</span></div>
+<div class="ab-frame"><div class="lock-shell" style="background:var(--surface);padding:28px 36px">
+<div class="lock-content">
+<section class="hero" style="margin-bottom:18px"><div class="crumb">/portal/mal/trackman</div><h1 style="font-size:32px"><em>12 økter</em> med radar-data</h1><div class="sub">Demo-data</div></section>
+<div class="stat-grid" style="margin-bottom:18px">
+<div class="stat"><div class="lbl">Driver · clubhead</div><div class="row"><div class="v">107<span class="unit">mph</span></div></div></div>
+<div class="stat"><div class="lbl">Driver · ball-speed</div><div class="row"><div class="v">158<span class="unit">mph</span></div></div></div>
+<div class="stat"><div class="lbl">7-jern · carry</div><div class="row"><div class="v">164<span class="unit">m</span></div></div></div>
+<div class="stat"><div class="lbl">Snitt smash</div><div class="row"><div class="v">1,46</div></div></div>
+<div class="stat"><div class="lbl">Total baller</div><div class="row"><div class="v">2 184</div></div></div>
+<div class="stat"><div class="lbl">7-jern · spin</div><div class="row"><div class="v">6 920</div></div></div>
+</div>
+</div>
+<div class="lock-overlay">
+<div class="lock-card">
+<div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+<h3><em>TrackMan-analyse</em> er en Pro-feature</h3>
+<p>Importér radardata fra TrackMan og se nøyaktig hvor du gjør fremgang.</p>
+<ul class="feat" style="list-style:none;padding:0;margin:8px 0 4px">
+<li><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><polyline points="20 6 9 17 4 12"/></svg><span>Carry- og smash-trend over måneder</span></li>
+<li><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><polyline points="20 6 9 17 4 12"/></svg><span>Sammenlign klubber mot hverandre — find spin-leak per jern</span></li>
+<li><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><polyline points="20 6 9 17 4 12"/></svg><span>Auto-import via CSV eller screenshot-OCR</span></li>
+</ul>
+<span class="up">Oppgrader til Pro · 149 kr/mnd <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"/></svg></span>
+<div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);margin-top:2px">14 dagers gratis prøveperiode · ingen kort</div>
+</div>
+</div>
+</div></div></section>
+
+<!-- 03 DARK -->
+<section class="ab dark" data-screen-label="03 Mørkt"><div class="ab-label"><span class="num">03</span><span class="ttl">Mørkt tema · Pro</span><span class="meta">1248 × 540</span></div>
+<div class="ab-frame"><div style="background:#0F2A22;padding:28px 36px;color:#F5F4EE">
+<section class="hero" style="margin-bottom:16px"><div class="crumb" style="color:#9D9C95">/portal/mal/trackman</div><h1 style="font-size:30px;color:#F5F4EE"><em>12 økter</em> med radar-data, Markus.</h1></section>
+<div class="stat-grid" style="margin-bottom:16px">
+<div class="stat"><div class="lbl">Driver · clubhead</div><div class="row"><div class="v">107<span class="unit" style="color:#9D9C95">mph</span></div><svg class="spark" width="60" height="24" viewBox="0 0 60 24"><polyline points="2,18 12,16 22,14 32,15 42,12 58,10" stroke="#D1F843" stroke-width="1.5" fill="none"/></svg></div><div class="delta" style="color:#D1F843">↑ +1,2 mph</div></div>
+<div class="stat"><div class="lbl">7-jern · carry</div><div class="row"><div class="v">164<span class="unit" style="color:#9D9C95">m</span></div><svg class="spark" width="60" height="24" viewBox="0 0 60 24"><polyline points="2,14 12,13 22,15 32,12 42,13 58,11" stroke="#D1F843" stroke-width="1.5" fill="none"/></svg></div><div class="delta" style="color:#D1F843">↑ +2 m</div></div>
+<div class="stat"><div class="lbl">Snitt smash</div><div class="row"><div class="v">1,46</div></div><div class="delta" style="color:#D1F843">↑ +0,02</div></div>
+</div>
+<div class="table">
+<div class="t-head"><div>Dato · lokasjon</div><div>Varighet</div><div>Baller</div><div>Klubber</div><div>Smash</div><div>Beste carry</div><div>Kilde</div><div></div></div>
+<div class="t-row"><div class="t-date"><div class="d">7. mai 2026</div><span class="loc-pill"><span class="dot"></span>Mulligan</span></div><div class="dur" style="color:#9D9C95">52 min</div><div class="balls">187</div><div class="clubs"><span class="club-pill">Driver</span><span class="club-pill">7i</span></div><div><span class="smash" style="color:#D1F843">1,48 ↑</span></div><div class="best"><span class="v">251 m</span><span class="c" style="color:#9D9C95">Driver</span></div><div><span class="src"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></span></div><div><span class="det" style="color:#D1F843">Detaljer →</span></div></div>
+</div>
+</div></div></section>
+
+<!-- 04 HOVER STAT -->
+<section class="ab" data-screen-label="04 Stat-card hover · sparkline-tooltip"><div class="ab-label"><span class="num">04</span><span class="ttl">Stat-card hover · sparkline-tooltip</span><span class="meta">1248 × 240</span></div>
+<div class="ab-frame"><div style="background:var(--surface);padding:48px 80px;position:relative">
+<div class="stat-grid" style="position:relative">
+<div class="stat"><div class="lbl">Driver · clubhead</div><div class="row"><div class="v">107<span class="unit">mph</span></div><svg class="spark" width="60" height="24" viewBox="0 0 60 24"><polyline points="2,18 12,16 22,14 32,15 42,12 58,10" stroke="#005840" stroke-width="1.5" fill="none"/></svg></div><div class="delta">↑ +1,2 mph vs apr</div></div>
+<div class="stat" style="transform:translateY(-2px);box-shadow:0 18px 32px -10px rgba(10,31,24,.16);border-color:var(--brand-primary);position:relative">
+<div class="lbl">Driver · ball-speed</div><div class="row"><div class="v" style="color:var(--brand-primary)">158<span class="unit">mph</span></div><svg class="spark" width="60" height="24" viewBox="0 0 60 24"><polyline points="2,17 12,15 22,16 32,13 42,12 58,9" stroke="#005840" stroke-width="2" fill="none"/><circle cx="58" cy="9" r="3" fill="#005840"/></svg></div><div class="delta">↑ +1,8 mph vs apr</div>
+<div class="spark-tt" style="top:-32px;right:8px">Forrige økt: 156 mph (4. mai)</div>
+</div>
+<div class="stat"><div class="lbl">7-jern · carry</div><div class="row"><div class="v">164<span class="unit">m</span></div><svg class="spark" width="60" height="24" viewBox="0 0 60 24"><polyline points="2,14 12,13 22,15 32,12 42,13 58,11" stroke="#005840" stroke-width="1.5" fill="none"/></svg></div><div class="delta">↑ +2 m</div></div>
+</div>
+</div></div></section>
+
+<!-- 05 EMPTY -->
+<section class="ab" data-screen-label="05 Empty · Pro ingen økter"><div class="ab-label"><span class="num">05</span><span class="ttl">Empty · Pro · ingen økter importert</span><span class="meta">1248 × 460</span></div>
+<div class="ab-frame"><div style="background:var(--surface);padding:60px 80px">
+<div class="empty">
+<div class="ic"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+<h3><em>Ingen TrackMan-økter</em> importert ennå</h3>
+<p>Importer din første økt for å se carry-trend, smash-utvikling og klubb-sammenligning over tid.</p>
+<span class="btn btn-pri" style="margin-top:8px"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Importer din første økt</span>
+<div class="help"><strong>Hvordan eksportere fra TrackMan:</strong><br/>Åpne TrackMan-appen → Sessions → velg økten → Export → CSV. Eller ta screenshot fra Performance-skjermen — vi bruker OCR.</div>
+</div>
+</div></div></section>
+
+<!-- 06 LOADING -->
+<section class="ab" data-screen-label="06 Loading"><div class="ab-label"><span class="num">06</span><span class="ttl">Loading · skeletons</span><span class="meta">1248 × 460</span></div>
+<div class="ab-frame"><div style="background:var(--surface);padding:28px 36px">
+<section class="hero" style="margin-bottom:16px"><div class="crumb">/portal/mal/trackman</div><h1 style="font-size:30px"><em>TrackMan-økter</em></h1></section>
+<div class="stat-grid" style="margin-bottom:16px">
+<div class="stat"><div class="sk" style="width:90px;height:11px"></div><div style="height:8px"></div><div class="sk" style="width:120px;height:28px"></div></div>
+<div class="stat"><div class="sk" style="width:100px;height:11px"></div><div style="height:8px"></div><div class="sk" style="width:110px;height:28px"></div></div>
+<div class="stat"><div class="sk" style="width:80px;height:11px"></div><div style="height:8px"></div><div class="sk" style="width:140px;height:28px"></div></div>
+<div class="stat"><div class="sk" style="width:90px;height:11px"></div><div style="height:8px"></div><div class="sk" style="width:90px;height:28px"></div></div>
+<div class="stat"><div class="sk" style="width:90px;height:11px"></div><div style="height:8px"></div><div class="sk" style="width:130px;height:28px"></div></div>
+<div class="stat"><div class="sk" style="width:80px;height:11px"></div><div style="height:8px"></div><div class="sk" style="width:120px;height:28px"></div></div>
+</div>
+<div class="table">
+<div class="t-head"><div>Dato · lokasjon</div><div>Varighet</div><div>Baller</div><div>Klubber</div><div>Smash</div><div>Beste</div><div>Kilde</div><div></div></div>
+<div class="t-row"><div><div class="sk" style="width:90px;height:10px;margin-bottom:6px"></div><div class="sk" style="width:110px;height:14px;border-radius:100px"></div></div><div class="sk" style="width:50px;height:10px"></div><div class="sk" style="width:40px;height:12px"></div><div class="sk" style="width:140px;height:14px"></div><div class="sk" style="width:60px;height:12px"></div><div class="sk" style="width:80px;height:12px"></div><div class="sk" style="width:24px;height:24px;border-radius:6px"></div><div class="sk" style="width:60px;height:11px"></div></div>
+<div class="t-row"><div><div class="sk" style="width:90px;height:10px;margin-bottom:6px"></div><div class="sk" style="width:100px;height:14px;border-radius:100px"></div></div><div class="sk" style="width:50px;height:10px"></div><div class="sk" style="width:40px;height:12px"></div><div class="sk" style="width:140px;height:14px"></div><div class="sk" style="width:60px;height:12px"></div><div class="sk" style="width:80px;height:12px"></div><div class="sk" style="width:24px;height:24px;border-radius:6px"></div><div class="sk" style="width:60px;height:11px"></div></div>
+<div class="t-row"><div><div class="sk" style="width:90px;height:10px;margin-bottom:6px"></div><div class="sk" style="width:120px;height:14px;border-radius:100px"></div></div><div class="sk" style="width:50px;height:10px"></div><div class="sk" style="width:40px;height:12px"></div><div class="sk" style="width:140px;height:14px"></div><div class="sk" style="width:60px;height:12px"></div><div class="sk" style="width:80px;height:12px"></div><div class="sk" style="width:24px;height:24px;border-radius:6px"></div><div class="sk" style="width:60px;height:11px"></div></div>
+</div>
+</div></div></section>
+
+<!-- 07 MOBILE -->
+<section class="ab" data-screen-label="07 Mobil · 1-kolonne"><div class="ab-label"><span class="num">07</span><span class="ttl">Mobil ≤640px · stats kollapser til 1×6</span><span class="meta">392 px</span></div>
+<div class="ab-frame"><div class="mob-wrap"><div class="mob">
+<div class="m-status"><span>16:08</span><span><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="19" height="9" rx="2"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/></svg></span></div>
+<div class="m-top"><div class="ham"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/></svg></div><div class="ttl">TrackMan</div><div style="width:32px"></div></div>
+<div class="m-body">
+<div style="display:flex;flex-direction:column;gap:4px">
+<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle)">/mal/trackman</div>
+<h1 style="font-family:var(--font-display);font-style:italic;font-weight:400;font-size:24px;letter-spacing:-.02em;margin:0;line-height:1.1"><em style="font-style:normal;font-weight:600">12 økter</em> med radardata</h1>
+<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)">2 184 baller · snitt smash 1,46</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:6px">
+<div class="m-stat"><span class="l">Driver clubhead</span><span class="v">107 <span style="font-size:11px;color:var(--ink-subtle)">mph</span></span></div>
+<div class="m-stat"><span class="l">Driver ball-speed</span><span class="v">158 <span style="font-size:11px;color:var(--ink-subtle)">mph</span></span></div>
+<div class="m-stat"><span class="l">7-jern carry</span><span class="v">164 <span style="font-size:11px;color:var(--ink-subtle)">m</span></span></div>
+<div class="m-stat"><span class="l">Snitt smash</span><span class="v">1,46</span></div>
+<div class="m-stat"><span class="l">7-jern spin</span><span class="v">6 920 <span style="font-size:11px;color:var(--ink-subtle)">rpm</span></span></div>
+<div class="m-stat"><span class="l">Total baller</span><span class="v">2 184</span></div>
+</div>
+
+<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-top:4px">Siste økter</div>
+
+<div class="m-stat" style="flex-direction:column;align-items:stretch;gap:6px">
+<div style="display:flex;justify-content:space-between"><span style="font-family:var(--font-mono);font-size:12px;font-weight:600">7. mai 2026</span><span class="loc-pill"><span class="dot"></span>Mulligan</span></div>
+<div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)"><span>187 baller · 52 min</span><span class="smash up">1,48 ↑</span></div>
+</div>
+<div class="m-stat" style="flex-direction:column;align-items:stretch;gap:6px">
+<div style="display:flex;justify-content:space-between"><span style="font-family:var(--font-mono);font-size:12px;font-weight:600">4. mai 2026</span><span class="loc-pill indoor"><span class="dot"></span>Indoor</span></div>
+<div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)"><span>147 baller · 45 min</span><span class="smash up">1,47 ↑</span></div>
+</div>
+
+<span class="btn btn-pri" style="width:100%;justify-content:center;padding:10px"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Importer økt</span>
+</div>
+<div class="m-bot"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7"/></svg>Hjem</div><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Trening</div><div class="b sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18 22 12 18.5 6 22 7 14.5 2 9.5 9 8.5"/></svg>Mål</div><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>Meg</div></div>
+</div></div></div></section>
+
+</div></body></html>

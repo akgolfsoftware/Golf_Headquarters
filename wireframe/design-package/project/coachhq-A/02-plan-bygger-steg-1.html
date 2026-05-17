@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Plan-bygger · Steg 1 · Velg spiller</title>
+<link rel="stylesheet" href="../colors_and_type.css" />
+<link rel="stylesheet" href="../coachhq-shell.css" />
+<link rel="stylesheet" href="wizard.css" />
+</head>
+<body>
+<div class="app" data-screen-label="02 Plan-bygger · Steg 1 · Spiller">
+  <aside class="rail">
+    <div class="rail-logo">AK</div>
+    <div class="rail-btn"><svg class="ic" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+    <div class="rail-btn active"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div>
+    <div class="rail-btn"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/></svg></div>
+    <div class="rail-spacer"></div>
+    <div class="rail-avatar">AK</div>
+  </aside>
+  <nav class="nav">
+    <div style="font: 700 14px/1.2 var(--font-display); padding: 0 8px 4px;">Treningsplaner</div>
+    <div style="font: 400 11px/1 var(--font-body); color: var(--ink-muted); padding: 0 8px 12px;">14 maler · 8 aktive</div>
+    <a class="nav-item">Alle planer <span class="nav-count">12</span></a>
+    <a class="nav-item active">+ Ny plan</a>
+    <a class="nav-item">Maler <span class="nav-count">14</span></a>
+  </nav>
+  <main class="main">
+    <header class="page-head">
+      <span class="page-eyebrow">Treningsplaner · Ny plan · Steg 1 av 6</span>
+      <h1 class="page-title"><em>Velg spiller</em> for ny plan</h1>
+      <p class="page-lede">Hvem skal planen lages for? Du kan filtrere etter kategori eller søke direkte. Periodiserings-agent leser spillerens 30-dagers historikk når du velger.</p>
+    </header>
+
+    <div class="steps">
+      <div class="step current"><div class="step-num">1</div><div class="step-name">Spiller</div><div class="step-sub">Velg nå</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-name">Periode</div><div class="step-sub">8 ukers default</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-name">Faser</div><div class="step-sub">Auto-foreslås</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-name">Pyramide</div><div class="step-sub">Drag-allokering</div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-name">Økt-skjelett</div><div class="step-sub">Auto-bygges</div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-name">Bekreft</div><div class="step-sub">Send til spiller</div></div>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="card-label">Mine 38 elever</div>
+          <h3>Hvem skal planen lages for?</h3>
+          <p>Filtrer etter kategori, søk på navn, eller bruk forslag basert på hvem som mangler aktiv plan.</p>
+        </div>
+        <div style="display:flex; gap: 8px;">
+          <button class="btn btn-ghost">Kategori A <span style="opacity:0.5;margin-left:4px;">6</span></button>
+          <button class="btn btn-ghost">Kategori B <span style="opacity:0.5;margin-left:4px;">12</span></button>
+          <button class="btn btn-ghost">Junior <span style="opacity:0.5;margin-left:4px;">14</span></button>
+        </div>
+      </div>
+
+      <div style="position: relative; margin-bottom: 20px;">
+        <svg class="ic" viewBox="0 0 24 24" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-muted);"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input placeholder="Søk på navn …" style="width: 100%; padding: 12px 16px 12px 42px; border: 1px solid var(--line); border-radius: 10px; font: 400 14px/1 var(--font-body); background: var(--surface);" />
+      </div>
+
+      <div style="font: 600 10px/1 var(--font-body); letter-spacing: 0.10em; text-transform: uppercase; color: var(--ink-subtle); margin-bottom: 10px;">Foreslått — mangler aktiv plan</div>
+      <div class="player-pick">
+        <div class="pp-card selected">
+          <div class="av">M</div>
+          <div class="info">
+            <div class="nm">Markus R. Pedersen</div>
+            <div class="sb"><span class="pill pill-info" style="padding:2px 6px;font-size:10px;">Kat A</span><span>HCP +2,4</span></div>
+          </div>
+          <div class="check"><svg class="ic" viewBox="0 0 24 24" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="pp-card">
+          <div class="av" style="background:#005840">H</div>
+          <div class="info">
+            <div class="nm">Henrik Nilsen</div>
+            <div class="sb"><span class="pill pill-muted" style="padding:2px 6px;font-size:10px;">Pro</span><span>HCP 8,7</span></div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="pp-card">
+          <div class="av" style="background:#B8852A">A</div>
+          <div class="info">
+            <div class="nm">Anna Karlsen</div>
+            <div class="sb"><span class="pill pill-muted" style="padding:2px 6px;font-size:10px;">Free</span><span>HCP 16,8</span></div>
+          </div>
+          <div class="check"></div>
+        </div>
+      </div>
+
+      <div style="font: 600 10px/1 var(--font-body); letter-spacing: 0.10em; text-transform: uppercase; color: var(--ink-subtle); margin: 24px 0 10px;">Alle elever — kategori A og B</div>
+      <div class="player-pick">
+        <div class="pp-card">
+          <div class="av" style="background:#16A34A">M</div>
+          <div class="info"><div class="nm">Mads Rønning</div><div class="sb"><span>Pro</span><span>HCP 9,4</span></div></div>
+          <div class="check"></div>
+        </div>
+        <div class="pp-card">
+          <div class="av" style="background:#5E5C57">L</div>
+          <div class="info"><div class="nm">Lise Sandberg</div><div class="sb"><span>Free</span><span>HCP 19,5</span></div></div>
+          <div class="check"></div>
+        </div>
+        <div class="pp-card" style="opacity:0.5">
+          <div class="av" style="background:#DC2626">J</div>
+          <div class="info"><div class="nm">Joachim Tangen</div><div class="sb" style="color:var(--status-danger)"><span>Skadet</span><span>HCP 14,2</span></div></div>
+          <div class="check"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-bar">
+      <div class="l"><button class="btn btn-ghost">Avbryt</button></div>
+      <div class="r">
+        <button class="btn btn-ghost" disabled style="opacity:0.4">← Tilbake</button>
+        <button class="btn btn-primary">Neste: Periode → <span style="opacity:0.6;margin-left:6px;">Markus R.</span></button>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

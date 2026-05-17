@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>PlayerHQ — Agent Pipeline</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="_shared/arketype-e.css" />
+<style>
+  /* node-graph */
+  .pl-board {
+    position:relative; width: 1120px; height: 520px; margin: 0 auto;
+  }
+  .pl-col-label {
+    position: absolute; top: -32px;
+    font-family:'JetBrains Mono'; font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--e-muted);
+  }
+  .pl-sig {
+    position:absolute; left: 0; width: 220px;
+    display:flex; align-items:center; gap:12px;
+    font-size: 13px; color: var(--e-fg);
+  }
+  .pl-sig .dot {
+    width:32px; height:32px; border-radius:999px; background: var(--e-surface);
+    border: 1px solid var(--e-border);
+    display:flex; align-items:center; justify-content:center; font-size: 14px;
+    flex: 0 0 32px;
+  }
+  .pl-sig.is-active .dot { border-color: var(--e-lime); color: var(--e-lime); box-shadow: 0 0 0 4px rgba(209,248,67,0.08); }
+
+  .pl-skill {
+    position: absolute;
+    width: 200px; height: 100px;
+    background: var(--e-surface-2); border:1px solid var(--e-border);
+    border-radius: 14px; padding: 14px 16px;
+    display:flex; flex-direction:column; justify-content:center; gap: 4px;
+  }
+  .pl-skill h4 { margin:0; font-size:14px; font-weight: 600; }
+  .pl-skill p  { margin:0; font-size: 11px; color: var(--e-muted); line-height: 1.4; }
+  .pl-skill.is-active { border-color: var(--e-lime); background: rgba(209,248,67,0.04); }
+
+  .pl-agent {
+    position:absolute; right: 0;
+    width: 88px; height: 88px; border-radius: 999px;
+    background: var(--e-surface); border:2px solid var(--e-border);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap: 2px;
+    font-size: 11px; color: var(--e-fg);
+  }
+  .pl-agent .ic { font-size: 22px; }
+  .pl-agent .lbl { font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.06em; }
+  .pl-agent.is-active {
+    border-color: var(--e-lime);
+    box-shadow: 0 0 0 6px rgba(209,248,67,0.08), 0 0 24px rgba(209,248,67,0.35);
+    color: var(--e-lime);
+  }
+
+  .pl-line {
+    position:absolute; height: 2px; background: var(--e-border);
+  }
+  .pl-line.is-active {
+    background: linear-gradient(90deg,
+      rgba(209,248,67,0.2) 0%,
+      rgba(209,248,67,0.9) 50%,
+      rgba(209,248,67,0.2) 100%);
+    background-size: 30px 100%;
+    animation: pl-dash 1.4s linear infinite;
+  }
+  @keyframes pl-dash { from { background-position: 0 0 } to { background-position: 30px 0 } }
+
+  /* popover */
+  .pl-popover {
+    position:absolute; top: 80px; right: 24px; width: 360px;
+    background: var(--e-surface); border: 1px solid var(--e-border);
+    border-radius: 16px; padding: 20px;
+    z-index: 8;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+  }
+
+  /* blur overlay for tier-gate */
+  .pl-blur { filter: blur(8px); pointer-events: none; }
+  .pl-gate {
+    position:absolute; inset: 56px 0 88px 0;
+    display:flex; align-items:center; justify-content:center;
+    z-index: 10;
+  }
+</style>
+</head>
+<body class="e-canvas">
+
+<header>
+  <div class="e-label"><span class="dot"></span> PLAYERHQ · /agents/pipeline · ARKETYPE E · TRUST-BUILDER</div>
+  <h1>Agent Pipeline</h1>
+  <p class="sub">Signal → Skill → Agent. Tre-lags graf som viser hvordan plattformens AI jobber for spilleren. Linjer pulserer ved aktiv signal-strøm.</p>
+  <div class="meta">
+    <span><b>Tier</b> Pro+Elite (Free blurred)</span>
+    <span><b>BG</b> #0A1F18</span>
+    <span><b>Layout</b> 3 kolonner: 220 → 200 → 88</span>
+    <span><b>Aktiv farge</b> lime #D1F843</span>
+  </div>
+</header>
+
+<div class="e-grid">
+
+  <!-- 1. STATISK ------------------------------------------------------- -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">1 — Statisk view, ingen aktivitet</h2>
+    <p>Alle noder grå-dempet, linjer statiske. Brukes som "what's available"-view.</p>
+    <div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left">
+          <span style="font-size:14px">Agent Pipeline</span>
+          <span class="e-pyr e-pyr--slag" style="border-color:rgba(209,248,67,0.4)">PRO</span>
+        </div>
+        <div class="e-center">Sist oppdatert: 14:32</div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+
+      <div class="e-stage">
+        <div class="pl-board">
+          <div class="pl-col-label" style="left:0">SIGNAL</div>
+          <div class="pl-col-label" style="left: 350px">SKILL</div>
+          <div class="pl-col-label" style="right:0">AGENT</div>
+
+          <!-- signals -->
+          <div class="pl-sig" style="top: 24px"><span class="dot">⌖</span> TrackMan</div>
+          <div class="pl-sig" style="top: 96px"><span class="dot">🅗</span> HCP-data</div>
+          <div class="pl-sig" style="top: 168px"><span class="dot">☾</span> Søvn</div>
+          <div class="pl-sig" style="top: 240px"><span class="dot">⏱</span> Live Session</div>
+
+          <!-- skills -->
+          <div class="pl-skill" style="left: 320px; top: 24px">
+            <h4>Tech-analyse</h4><p>Mønster i køllebane, ball-flight, distanse.</p>
+          </div>
+          <div class="pl-skill" style="left: 320px; top: 156px">
+            <h4>Volum-analyse</h4><p>Rep-tetthet, sammenheng med tretthet.</p>
+          </div>
+
+          <!-- agents -->
+          <div class="pl-agent" style="top: 24px"><span class="ic">🎯</span><span class="lbl">DRILL</span></div>
+          <div class="pl-agent" style="top: 156px"><span class="ic">📅</span><span class="lbl">PERIOD.</span></div>
+          <div class="pl-agent" style="top: 288px"><span class="ic">🔋</span><span class="lbl">DELOAD</span></div>
+
+          <!-- lines -->
+          <div class="pl-line" style="left: 32px; top: 40px; width: 280px"></div>
+          <div class="pl-line" style="left: 32px; top: 112px; width: 280px"></div>
+          <div class="pl-line" style="left: 32px; top: 184px; width: 280px"></div>
+          <div class="pl-line" style="left: 32px; top: 256px; width: 280px"></div>
+
+          <div class="pl-line" style="left: 520px; top: 72px; width: 480px"></div>
+          <div class="pl-line" style="left: 520px; top: 204px; width: 480px"></div>
+        </div>
+      </div>
+
+      <div class="e-bottombar">
+        <div style="color:var(--e-muted); font-size:13px; flex:1">12 anbefalinger siste 7 dager</div>
+        <button class="e-btn e-btn--ghost-lime">Send agent-feedback →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. AKTIV --------------------------------------------------------- -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">2 — Aktiv pipeline, TrackMan → Drill-agent</h2>
+    <p>Linjer animert dash når signal flyter. Aktive noder lime accent + glow.</p>
+    <div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left">
+          <span style="font-size:14px">Agent Pipeline</span>
+          <span class="e-pyr e-pyr--slag" style="border-color:rgba(209,248,67,0.4)">PRO</span>
+        </div>
+        <div class="e-center">Sist oppdatert: 14:32</div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+
+      <div class="e-stage">
+        <div class="pl-board">
+          <div class="pl-col-label" style="left:0">SIGNAL</div>
+          <div class="pl-col-label" style="left: 350px">SKILL</div>
+          <div class="pl-col-label" style="right:0">AGENT</div>
+
+          <div class="pl-sig is-active" style="top: 24px"><span class="dot">⌖</span> TrackMan</div>
+          <div class="pl-sig" style="top: 96px; opacity:0.55"><span class="dot">🅗</span> HCP-data</div>
+          <div class="pl-sig" style="top: 168px; opacity:0.55"><span class="dot">☾</span> Søvn</div>
+          <div class="pl-sig" style="top: 240px; opacity:0.55"><span class="dot">⏱</span> Live Session</div>
+
+          <div class="pl-skill is-active" style="left: 320px; top: 24px">
+            <h4>Tech-analyse</h4><p>Mønster i køllebane, ball-flight, distanse.</p>
+          </div>
+          <div class="pl-skill" style="left: 320px; top: 156px; opacity:0.55">
+            <h4>Volum-analyse</h4><p>Rep-tetthet, sammenheng med tretthet.</p>
+          </div>
+
+          <div class="pl-agent is-active" style="top: 24px"><span class="ic">🎯</span><span class="lbl">DRILL</span></div>
+          <div class="pl-agent" style="top: 156px; opacity:0.55"><span class="ic">📅</span><span class="lbl">PERIOD.</span></div>
+          <div class="pl-agent" style="top: 288px; opacity:0.55"><span class="ic">🔋</span><span class="lbl">DELOAD</span></div>
+
+          <div class="pl-line is-active" style="left: 32px; top: 40px; width: 280px"></div>
+          <div class="pl-line" style="left: 32px; top: 112px; width: 280px; opacity:0.4"></div>
+          <div class="pl-line" style="left: 32px; top: 184px; width: 280px; opacity:0.4"></div>
+          <div class="pl-line" style="left: 32px; top: 256px; width: 280px; opacity:0.4"></div>
+
+          <div class="pl-line is-active" style="left: 520px; top: 72px; width: 480px"></div>
+          <div class="pl-line" style="left: 520px; top: 204px; width: 480px; opacity:0.4"></div>
+        </div>
+      </div>
+
+      <div class="e-bottombar">
+        <div style="color:var(--e-muted); font-size:13px; flex:1">
+          <span style="color:var(--e-lime)">●</span> Drill-agent jobber nå — basert på siste 12 driver-slag
+        </div>
+        <button class="e-btn e-btn--ghost-lime">Send agent-feedback →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. POPOVER ÅPEN -------------------------------------------------- -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">3 — Drill-agent klikket, popover åpen</h2>
+    <p>Høyre-popover med agent-detaljer + siste 3 anbefalinger.</p>
+    <div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left">
+          <span style="font-size:14px">Agent Pipeline</span>
+          <span class="e-pyr e-pyr--slag" style="border-color:rgba(209,248,67,0.4)">PRO</span>
+        </div>
+        <div class="e-center">Sist oppdatert: 14:32</div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+
+      <div class="e-stage">
+        <div class="pl-board" style="opacity:0.7">
+          <div class="pl-col-label" style="left:0">SIGNAL</div>
+          <div class="pl-col-label" style="left: 350px">SKILL</div>
+          <div class="pl-col-label" style="right:0">AGENT</div>
+          <div class="pl-sig is-active" style="top: 24px"><span class="dot">⌖</span> TrackMan</div>
+          <div class="pl-sig" style="top: 96px; opacity:0.4"><span class="dot">🅗</span> HCP-data</div>
+          <div class="pl-skill is-active" style="left: 320px; top: 24px">
+            <h4>Tech-analyse</h4><p>Mønster i køllebane, ball-flight, distanse.</p>
+          </div>
+          <div class="pl-agent is-active" style="top: 24px"><span class="ic">🎯</span><span class="lbl">DRILL</span></div>
+          <div class="pl-line is-active" style="left: 32px; top: 40px; width: 280px"></div>
+          <div class="pl-line is-active" style="left: 520px; top: 72px; width: 480px"></div>
+        </div>
+      </div>
+
+      <!-- popover -->
+      <aside class="pl-popover">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom: 16px">
+          <div style="width:48px;height:48px;border-radius:999px;background:rgba(209,248,67,0.08);border:1px solid rgba(209,248,67,0.3);display:flex;align-items:center;justify-content:center;font-size:22px">🎯</div>
+          <div>
+            <div class="e-italic" style="font-size: 22px; line-height: 1">Drill-agent</div>
+            <div style="font-size:11px; color:var(--e-muted); font-family:'JetBrains Mono'; letter-spacing:0.08em; text-transform:uppercase; margin-top:4px">Foreslår øvelser</div>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--e-muted); margin: 0 0 16px; line-height:1.5">
+          Plukker fra et bibliotek på 240 øvelser. Vekter mot dine svakeste områder og ferskeste TrackMan-data.
+        </p>
+        <div style="font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.12em; color: var(--e-muted); text-transform: uppercase; margin-bottom: 8px">Siste 3 anbefalinger</div>
+        <div style="display:flex; flex-direction:column; gap: 8px">
+          <div style="display:flex; justify-content:space-between; font-size: 13px; padding: 10px 12px; background: rgba(255,255,255,0.02); border-radius: 8px">
+            <span>Balansert avslutning</span><span style="color:var(--e-muted)">i dag</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size: 13px; padding: 10px 12px; background: rgba(255,255,255,0.02); border-radius: 8px">
+            <span>Lukket clubface drill</span><span style="color:var(--e-muted)">i går</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size: 13px; padding: 10px 12px; background: rgba(255,255,255,0.02); border-radius: 8px">
+            <span>Tempo 3:1 med wedge</span><span style="color:var(--e-muted)">tirs</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="e-bottombar">
+        <button class="e-btn e-btn--ghost-lime">Send agent-feedback →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. FREE TIER GATED ----------------------------------------------- -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">4 — Free tier, gated (blurred)</h2>
+    <p>Pipeline blurred 8px. Sentrert upgrade-kort.</p>
+    <div class="e-frame e-grain" style="margin-top:18px">
+      <div class="e-topbar">
+        <div class="e-left"><span style="font-size:14px">Agent Pipeline</span></div>
+        <div class="e-center">Pro+Elite</div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+      <div class="e-stage pl-blur">
+        <div class="pl-board">
+          <div class="pl-sig is-active" style="top: 24px"><span class="dot">⌖</span> TrackMan</div>
+          <div class="pl-skill is-active" style="left: 320px; top: 24px">
+            <h4>Tech-analyse</h4><p>Mønster i køllebane, ball-flight, distanse.</p>
+          </div>
+          <div class="pl-agent is-active" style="top: 24px"><span class="ic">🎯</span><span class="lbl">DRILL</span></div>
+          <div class="pl-line is-active" style="left: 32px; top: 40px; width: 280px"></div>
+          <div class="pl-line is-active" style="left: 520px; top: 72px; width: 480px"></div>
+        </div>
+      </div>
+      <div class="pl-gate">
+        <div style="background: var(--e-surface); border:1px solid var(--e-border); border-radius: 20px; padding: 32px; max-width: 460px; text-align:center; backdrop-filter: blur(0)">
+          <div style="font-family:'JetBrains Mono'; font-size: 11px; letter-spacing:0.12em; text-transform:uppercase; color: var(--e-muted); margin-bottom: 8px">Pro-funksjon</div>
+          <h3 class="e-italic" style="font-size: 36px; margin: 0 0 12px">Se hvordan AI-en jobber for deg</h3>
+          <p style="color:var(--e-muted); font-size: 14px; line-height: 1.5; margin: 0 0 24px">
+            Pro låser opp Agent Pipeline — klikk på enhver node og se akkurat hvilken data som førte til en anbefaling.
+          </p>
+          <button class="e-btn e-btn--primary" style="width:100%">Oppgrader til Pro →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. MOBIL --------------------------------------------------------- -->
+  <section class="e-cap-stack">
+    <h2 class="cap-title">5 — Mobil, vertikalt stacket</h2>
+    <p>Signal øverst, Agent nederst. Swipe ned for å se alle. Linjer går vertikalt.</p>
+    <div class="e-frame e-grain is-mobile" style="margin-top:18px">
+      <div class="e-topbar" style="padding:0 16px">
+        <div class="e-left"><span style="font-size:13px">Pipeline</span></div>
+        <div class="e-right"><span class="e-close">×</span></div>
+      </div>
+      <div class="e-stage" style="top:72px; flex-direction:column; padding: 8px 16px; overflow:hidden">
+        <div style="display:flex; flex-direction:column; align-items:center; gap: 14px; width:100%">
+          <div style="font-family:'JetBrains Mono'; font-size: 9px; letter-spacing:0.14em; color: var(--e-muted); text-transform:uppercase">Signal</div>
+          <div style="display:flex; gap: 8px">
+            <span class="e-pyr" style="border-color:var(--e-lime); color:var(--e-lime)">TRACKMAN</span>
+            <span class="e-pyr" style="opacity:0.5">HCP</span>
+          </div>
+
+          <div style="width:2px; height: 20px; background: linear-gradient(to bottom, var(--e-lime), var(--e-border))"></div>
+
+          <div style="font-family:'JetBrains Mono'; font-size: 9px; letter-spacing:0.14em; color: var(--e-muted); text-transform:uppercase">Skill</div>
+          <div class="pl-skill is-active" style="position:relative; width: 280px; height:auto">
+            <h4>Tech-analyse</h4><p>Mønster i køllebane, ball-flight</p>
+          </div>
+
+          <div style="width:2px; height: 20px; background: linear-gradient(to bottom, var(--e-lime), var(--e-border))"></div>
+
+          <div style="font-family:'JetBrains Mono'; font-size: 9px; letter-spacing:0.14em; color: var(--e-muted); text-transform:uppercase">Agent</div>
+          <div class="pl-agent is-active" style="position:relative; right:auto"><span class="ic">🎯</span><span class="lbl">DRILL</span></div>
+        </div>
+      </div>
+      <div class="e-bottombar" style="padding:0 16px">
+        <button class="e-btn e-btn--ghost-lime" style="flex:1; font-size:13px">Agent-feedback →</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

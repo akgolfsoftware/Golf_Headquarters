@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="nb"><head><meta charset="UTF-8"><title>02 · Elever</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+.deck{display:flex;flex-direction:column;align-items:center;gap:56px;padding:56px 24px 96px}
+.head{max-width:1448px;width:100%;display:flex;flex-direction:column;gap:10px}
+.head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+.head h1{font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.02em;margin:0}
+.head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+.ab{display:flex;flex-direction:column;gap:14px;max-width:1448px;width:100%}
+.ab-label{display:flex;align-items:baseline;gap:14px;color:#3a3935;font-family:var(--font-display);font-weight:500}
+.ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990}
+.ab-label .ttl{font-size:19px}
+.ab-label .meta{font-size:12px;color:#7a7872;font-style:italic;margin-left:auto;font-family:var(--font-body)}
+.ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:22px;overflow:hidden;box-shadow:0 24px 50px -28px rgba(10,31,24,.18)}
+.ab-frame svg:not([fill]){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.app{display:flex;min-height:920px;background:var(--surface)}.app--md{min-height:680px}.app--sm{min-height:520px}
+.rail{width:56px;background:#0F2A22;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;flex-shrink:0}
+.rail .logo{width:34px;height:34px;border-radius:9px;background:var(--brand-accent);color:#0A1F18;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11px;margin-bottom:6px}
+.rail .ri{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(245,244,238,.6)}.rail .ri.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}.rail .ri svg{width:17px;height:17px}
+.rail .av{margin-top:auto;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center}
+.nav{width:198px;background:#FAFAF7;border-right:1px solid #F0EDE5;padding:18px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+.nav .label{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:6px 10px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13px;color:var(--ink-muted);position:relative}
+.nav-item.active{background:rgba(209,248,67,.30);color:#0A1F18;font-weight:500}
+.nav-item.active::before{content:"";position:absolute;left:-12px;top:6px;bottom:6px;width:3px;background:var(--brand-primary);border-radius:0 3px 3px 0}
+.nav-item svg{width:16px;height:16px}
+.nav-item .count{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);background:#F0EDE5;padding:2px 6px;border-radius:5px}
+.main{flex:1;padding:28px 32px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.hero{display:flex;justify-content:space-between;align-items:flex-end}
+.hero .crumb{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:6px}
+.hero h1{font-family:var(--font-display);font-size:32px;font-weight:400;font-style:italic;letter-spacing:-.02em;margin:0;line-height:1.05}
+.hero h1 .em{font-style:normal;font-weight:600;color:var(--brand-primary)}
+.hero .meta{font-size:13px;color:var(--ink-muted);margin-top:6px;font-family:var(--font-mono)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{padding:14px 18px;background:var(--surface-card);border:1px solid var(--line);border-radius:14px}
+.kpi .h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+.kpi .v{font-family:var(--font-mono);font-size:28px;font-weight:600;line-height:1.05;margin-top:4px}
+.kpi .v .u{font-size:13px;color:var(--ink-subtle);font-weight:500;margin-left:2px}
+.kpi .sub{font-size:11px;color:var(--ink-muted);margin-top:3px;font-family:var(--font-mono)}
+.kpi.acc{background:linear-gradient(135deg,#0F2A22,#163027);color:#F5F4EE;border-color:#274d41}
+.kpi.acc .h{color:rgba(209,248,67,.7)}.kpi.acc .v{color:#F5F4EE}.kpi.acc .sub{color:rgba(245,244,238,.65)}
+.filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.search{display:flex;align-items:center;gap:8px;background:var(--surface-card);border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-size:13px;min-width:280px}
+.search svg{width:14px;height:14px;color:var(--ink-subtle)}
+.search input{flex:1;border:none;outline:none;background:transparent;font-size:13px}
+.chip{padding:6px 11px;border-radius:100px;border:1px solid var(--line);font-size:12px;color:var(--ink-muted);display:inline-flex;align-items:center;gap:6px;background:var(--surface-card)}
+.chip.sel{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
+.chip svg{width:11px;height:11px}
+.btn{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface-card);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
+.list-card{background:var(--surface-card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-card)}
+.ttable{width:100%;font-size:13px;border-collapse:collapse}
+.ttable th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);padding:10px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
+.ttable td{padding:10px 16px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+.ttable tr:hover td{background:#FAFAF7}
+.ttable tr.sel td{background:rgba(0,88,64,.05)}
+.ttable .num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:600}
+.av-name{display:flex;align-items:center;gap:10px}
+.av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.av-name .n{font-weight:500;color:var(--ink);line-height:1.15}
+.av-name .em{font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono)}
+.cb{width:14px;height:14px;border:1.5px solid var(--ink-subtle);border-radius:3px;display:inline-block;vertical-align:middle;cursor:pointer;position:relative}
+.cb.on{background:var(--brand-primary);border-color:var(--brand-primary)}
+.cb.on::after{content:"✓";position:absolute;color:#fff;font-size:10px;left:1px;top:-3px;font-weight:bold}
+.cb.partial{background:var(--brand-primary);border-color:var(--brand-primary)}
+.cb.partial::after{content:"";position:absolute;top:4px;left:2px;right:2px;height:2px;background:#fff;border-radius:1px}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:100px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.pill .dot{width:6px;height:6px;border-radius:50%}
+.pill.cat-a{background:rgba(209,248,67,.30);color:#3d4d0f}
+.pill.cat-b{background:rgba(166,101,30,.16);color:#7a4910}
+.pill.cat-c{background:rgba(122,153,140,.20);color:#3d5048}
+.pill.cat-d{background:rgba(156,153,144,.20);color:#5a5852}
+.pill.free{background:#F0EDE5;color:var(--ink-muted)}
+.pill.pro{background:rgba(0,88,64,.14);color:var(--brand-primary)}
+.pill.elite{background:#0F2A22;color:var(--brand-accent)}
+.pill.aktiv{background:rgba(0,88,64,.12);color:var(--brand-primary)}.pill.aktiv .dot{background:var(--brand-primary)}
+.pill.inaktiv{background:#F0EDE5;color:var(--ink-muted)}.pill.inaktiv .dot{background:var(--ink-subtle)}
+.pill.skadet{background:rgba(239,68,68,.14);color:#b73838}.pill.skadet .dot{background:#EF4444}
+.last{font-family:var(--font-mono);font-size:12px;color:var(--ink-muted)}
+.last.over{color:#b73838;font-weight:500}
+.bulk-bar{background:#0F2A22;color:#F5F4EE;padding:10px 16px;display:flex;align-items:center;gap:14px;border-radius:12px;margin-bottom:8px}
+.bulk-bar .ct{font-family:var(--font-mono);font-size:13px;font-weight:600}
+.bulk-bar .ct .n{background:var(--brand-accent);color:#0A1F18;padding:2px 8px;border-radius:5px;margin-right:6px}
+.bulk-bar .acts{display:flex;gap:6px;margin-left:auto}
+.bulk-bar .bk{padding:6px 12px;background:rgba(255,255,255,.10);color:#F5F4EE;border:1px solid rgba(255,255,255,.15);border-radius:8px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.bulk-bar .bk svg{width:12px;height:12px}
+.bulk-bar .x{margin-left:6px;cursor:pointer;color:rgba(255,255,255,.5);font-size:18px}
+@keyframes shim{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.sk{background:linear-gradient(90deg,#EDEAE2 0%,#F5F2EA 50%,#EDEAE2 100%);background-size:800px 100%;animation:shim 1.4s infinite;border-radius:5px}
+.dark .ab-frame{border-color:#1c3b32}
+.dark .app{background:#0F2A22}
+.dark .nav{background:#0B221C;border-right-color:#1c3b32}
+.dark .nav .label{color:#7a8580}
+.dark .nav-item{color:#9D9C95}
+.dark .nav-item.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}
+.dark .nav-item.active::before{background:var(--brand-accent)}
+.dark .nav-item .count{background:#163027}
+.dark .hero h1{color:#F5F4EE}.dark .hero h1 .em{color:var(--brand-accent)}.dark .hero .crumb,.dark .hero .meta{color:#9D9C95}
+.dark .kpi{background:#163027;border-color:#274d41}.dark .kpi .v{color:#F5F4EE}.dark .kpi .h,.dark .kpi .sub{color:#9D9C95}
+.dark .search,.dark .chip,.dark .btn,.dark .list-card{background:#163027;border-color:#274d41;color:#F5F4EE}
+.dark .search input{color:#F5F4EE}.dark .search svg{color:#7a8580}
+.dark .ttable th{background:#0F2A22;color:#7a8580;border-bottom-color:#274d41}
+.dark .ttable td{border-bottom-color:#274d41}.dark .ttable tr:hover td{background:#1f3d33}
+.dark .av-name .n{color:#F5F4EE}.dark .av-name .em{color:#7a8580}
+.dark .pill.free{background:#274d41;color:#9D9C95}
+.dark .pill.inaktiv{background:#274d41;color:#9D9C95}
+.dark .last{color:#9D9C95}
+.mob-wrap{display:flex;justify-content:center;padding:30px;background:linear-gradient(180deg,#F5F2EA,#EDEAE2)}
+.mob{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden;position:relative}
+.m-status{display:flex;justify-content:space-between;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;font-weight:500}
+.m-top{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;border-bottom:1px solid var(--line-soft)}
+.m-top .ham,.m-top .avt{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.m-top .ham{background:#0F2A22;color:#F5F4EE}
+.m-top .avt{border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px}
+.m-top .ttl{font-family:var(--font-display);font-size:14px;font-weight:600}
+.m-hero{padding:14px 18px 6px}
+.m-hero h1{font-family:var(--font-display);font-size:22px;font-style:italic;font-weight:400;margin:0}
+.m-hero h1 .em{font-style:normal;font-weight:600;color:var(--brand-primary)}
+.m-hero .meta{font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);margin-top:3px}
+.m-filter{display:flex;gap:6px;padding:6px 18px 10px;overflow-x:auto}
+.m-filter .ct{padding:5px 10px;border-radius:100px;border:1px solid var(--line);font-size:11px;color:var(--ink-muted);white-space:nowrap;font-family:var(--font-mono);font-weight:600;text-transform:uppercase}
+.m-filter .ct.sel{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
+.m-cards{padding:0 18px 12px;display:flex;flex-direction:column;gap:8px}
+.m-card{background:var(--surface-card);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:12px}
+.m-card .av{width:44px;height:44px;border-radius:50%;font-size:14px}
+.m-card .bd{flex:1;display:flex;flex-direction:column;gap:4px}
+.m-card .nm{font-weight:500;font-size:14px;color:var(--ink)}
+.m-card .em{font-size:10px;color:var(--ink-subtle);font-family:var(--font-mono)}
+.m-card .gr{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}
+.m-card .gr .it{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-muted)}
+.m-card .gr .it .lbl{font-family:var(--font-mono);font-size:9px;color:var(--ink-subtle);text-transform:uppercase}
+.m-bot{display:flex;justify-content:space-around;padding:8px 8px 22px;border-top:1px solid var(--line-soft)}
+.m-bot .b{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle);padding:6px}
+.m-bot .b.sel{color:var(--brand-primary);font-weight:600}
+.m-bot .b svg{width:18px;height:18px}
+.empty{padding:48px 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;background:linear-gradient(135deg,#F5F2EA,#EDEAE2);border-radius:18px;border:2px dashed var(--line)}
+.empty .ic{width:60px;height:60px;border-radius:16px;background:var(--accent-bg);color:#0A1F18;display:flex;align-items:center;justify-content:center}
+.empty .ic svg{width:28px;height:28px}
+.empty h2{font-family:var(--font-display);font-size:22px;font-style:italic;font-weight:400;margin:0}
+.empty p{font-size:13px;color:var(--ink-muted);max-width:420px;margin:0 0 10px}
+</style></head>
+<body><div class="deck">
+<header class="head"><span class="eyebrow">Batch 1 · Spec 02 · CoachHQ · Elever</span><h1>38 spillere — kategori, tier, HCP, status</h1><p class="sub">6 artboards: lyst (default), mørkt, filter aktiv (Kat A+B / Pro+Elite), bulk 3 valgt, loading, mobil kort-layout.</p></header>
+
+<!-- 01 LIGHT -->
+<section class="ab" data-screen-label="01 Lyst"><div class="ab-label"><span class="num">01</span><span class="ttl">Lyst · 38 spillere · ingen filter</span><span class="meta">1448 × 920</span></div>
+<div class="ab-frame"><div class="app">
+<aside class="rail"><div class="logo">AK</div><div class="ri"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7"/></svg></div><div class="ri active"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4"/></svg></div><div class="ri"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></div><div class="av">EH</div></aside>
+<aside class="nav"><div class="label">CoachHQ</div><div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7"/></svg>Hub</div><div class="nav-item active"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/></svg>Elever<span class="count">38</span></div><div class="nav-item"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Planer<span class="count">24</span></div><div class="nav-item"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/></svg>Godkjenninger<span class="count">7</span></div><div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>Økter</div></aside>
+<main class="main">
+<header class="hero"><div><div class="crumb">CoachHQ · /admin/elever</div><h1><span class="em">38</span> spillere</h1><div class="meta">Bærum GK · sesong 2026 · 14 Pro/Elite</div></div></header>
+<div class="kpis">
+  <div class="kpi acc"><div class="h">Aktive</div><div class="v">38</div><div class="sub">↑ +6 siden januar</div></div>
+  <div class="kpi"><div class="h">Pro + Elite</div><div class="v">14 <span class="u">/ 38</span></div><div class="sub">37 % betalende</div></div>
+  <div class="kpi"><div class="h">Inaktive &gt; 30 d</div><div class="v" style="color:#a16808">4</div><div class="sub">krever oppfølging</div></div>
+  <div class="kpi"><div class="h">Skadet</div><div class="v" style="color:#b73838">2</div><div class="sub">Joachim · Pia</div></div>
+</div>
+<div class="filter"><div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Søk spiller, e-post eller HCP"/></div><span class="chip">Kategori <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="chip">Tier <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="chip">Status <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="chip">Coach <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="chip">Sort: HCP <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><div style="flex:1"></div><button class="btn primary">+ Ny spiller</button></div>
+<div class="list-card"><table class="ttable">
+<thead><tr><th style="width:40px"><span class="cb"></span></th><th>Spiller</th><th>Kat</th><th>Tier</th><th class="num">HCP</th><th>Status</th><th>Siste økt</th><th style="width:40px"></th></tr></thead>
+<tbody>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av">MR</div><div><div class="n">Markus Roinås Pedersen</div><div class="em">markus.r@gmail.com</div></div></div></td><td><span class="pill cat-a">A</span></td><td><span class="pill elite">Elite</span></td><td class="num">+2.4</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">i dag</span></td><td><span style="color:var(--ink-subtle);cursor:pointer">⋯</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A6651E,#7A4910)">ES</div><div><div class="n">Emma Solberg</div><div class="em">emma@solberg.no</div></div></div></td><td><span class="pill cat-b">B</span></td><td><span class="pill pro">Pro</span></td><td class="num">8.7</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">for 2 d siden</span></td><td><span style="color:var(--ink-subtle)">⋯</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#7A998C,#56796D)">JT</div><div><div class="n">Joachim Tangen</div><div class="em">joachim.t@me.com</div></div></div></td><td><span class="pill cat-c">C</span></td><td><span class="pill pro">Pro</span></td><td class="num">14.2</td><td><span class="pill skadet"><span class="dot"></span>Skadet</span></td><td><span class="last over">for 18 d siden</span></td><td><span style="color:var(--ink-subtle)">⋯</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av">LH</div><div><div class="n">Lina Hellesund</div><div class="em">lina.h@outlook.com</div></div></div></td><td><span class="pill cat-a">A</span></td><td><span class="pill elite">Elite</span></td><td class="num">4.1</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">i går</span></td><td><span style="color:var(--ink-subtle)">⋯</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A32D2D,#7C2020)">PV</div><div><div class="n">Pia Vik</div><div class="em">pia.vik@bgk.no</div></div></div></td><td><span class="pill cat-b">B</span></td><td><span class="pill pro">Pro</span></td><td class="num">11.6</td><td><span class="pill skadet"><span class="dot"></span>Skadet</span></td><td><span class="last over">for 31 d siden</span></td><td><span style="color:var(--ink-subtle)">⋯</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#1A7D56,#005840)">SH</div><div><div class="n">Henrik Sørli</div><div class="em">henrik.sorli@gmail.com</div></div></div></td><td><span class="pill cat-a">A</span></td><td><span class="pill elite">Elite</span></td><td class="num">+0.8</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">i dag</span></td><td><span style="color:var(--ink-subtle)">⋯</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A6651E,#7A4910)">EH</div><div><div class="n">Ellen Hauge</div><div class="em">ellen@hauge.no</div></div></div></td><td><span class="pill cat-c">C</span></td><td><span class="pill pro">Pro</span></td><td class="num">12.4</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">for 3 d siden</span></td><td><span style="color:var(--ink-subtle)">⋯</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av">KB</div><div><div class="n">Kristian Berg</div><div class="em">kb@berg.org</div></div></div></td><td><span class="pill cat-b">B</span></td><td><span class="pill free">Free</span></td><td class="num">15.0</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">for 5 d siden</span></td><td><span style="color:var(--ink-subtle)">⋯</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#7A998C,#56796D)">JL</div><div><div class="n">Jonas Lien</div><div class="em">jonas.l@gmail.com</div></div></div></td><td><span class="pill cat-d">D</span></td><td><span class="pill free">Free</span></td><td class="num">20.8</td><td><span class="pill inaktiv"><span class="dot"></span>Inaktiv</span></td><td><span class="last over">for 42 d siden</span></td><td><span style="color:var(--ink-subtle)">⋯</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av">SK</div><div><div class="n">Sara Kvam</div><div class="em">sara.k@bgk.no</div></div></div></td><td><span class="pill cat-c">C</span></td><td><span class="pill pro">Pro</span></td><td class="num">9.2</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">for 4 d siden</span></td><td><span style="color:var(--ink-subtle)">⋯</span></td></tr>
+</tbody></table></div>
+</main></div></div></section>
+
+<!-- 02 DARK -->
+<section class="ab dark" data-screen-label="02 Mørkt"><div class="ab-label"><span class="num">02</span><span class="ttl">Mørkt tema</span><span class="meta">1448 × 680</span></div>
+<div class="ab-frame"><div class="app app--md">
+<aside class="rail"><div class="logo">AK</div><div class="ri active"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/></svg></div><div class="av">EH</div></aside>
+<aside class="nav"><div class="label">CoachHQ</div><div class="nav-item active">Elever<span class="count">38</span></div><div class="nav-item">Planer<span class="count">24</span></div></aside>
+<main class="main">
+<header class="hero"><div><div class="crumb">CoachHQ</div><h1><span class="em">38</span> spillere</h1></div></header>
+<div class="filter"><div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/></svg><input placeholder="Søk"/></div><span class="chip">Kategori</span><span class="chip">Tier</span><div style="flex:1"></div><button class="btn primary">+ Ny spiller</button></div>
+<div class="list-card"><table class="ttable">
+<thead><tr><th style="width:40px"><span class="cb"></span></th><th>Spiller</th><th>Kat</th><th>Tier</th><th class="num">HCP</th><th>Status</th><th>Siste økt</th></tr></thead>
+<tbody>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av">MR</div><div><div class="n">Markus Roinås P.</div><div class="em">markus.r@gmail.com</div></div></div></td><td><span class="pill cat-a">A</span></td><td><span class="pill elite">Elite</span></td><td class="num">+2.4</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">i dag</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A6651E,#7A4910)">ES</div><div><div class="n">Emma Solberg</div><div class="em">emma@solberg.no</div></div></div></td><td><span class="pill cat-b">B</span></td><td><span class="pill pro">Pro</span></td><td class="num">8.7</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">for 2 d</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#7A998C,#56796D)">JT</div><div><div class="n">Joachim Tangen</div><div class="em">joachim.t@me.com</div></div></div></td><td><span class="pill cat-c">C</span></td><td><span class="pill pro">Pro</span></td><td class="num">14.2</td><td><span class="pill skadet"><span class="dot"></span>Skadet</span></td><td><span class="last over">for 18 d</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av">LH</div><div><div class="n">Lina Hellesund</div><div class="em">lina.h@outlook.com</div></div></div></td><td><span class="pill cat-a">A</span></td><td><span class="pill elite">Elite</span></td><td class="num">4.1</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">i går</span></td></tr>
+</tbody></table></div>
+</main></div></div></section>
+
+<!-- 03 FILTER -->
+<section class="ab" data-screen-label="03 Filter · Kat A+B Tier Pro+Elite"><div class="ab-label"><span class="num">03</span><span class="ttl">Filter aktiv: Kategori A,B + Tier Pro,Elite</span><span class="meta">1448 × 540</span></div>
+<div class="ab-frame"><div style="padding:24px 32px;background:var(--surface)">
+<div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:12px">Filter aktiv · viser 9 av 38</div>
+<div class="filter"><div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/></svg><input/></div><span class="chip sel">Kategori: A, B <span style="opacity:.7">×</span></span><span class="chip sel">Tier: Pro, Elite <span style="opacity:.7">×</span></span><span class="chip">Status</span><span class="chip">Coach</span><div style="flex:1"></div><span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted)">VISER 9 AV 38</span><button class="btn">Tilbakestill</button></div>
+<div style="height:14px"></div>
+<div class="list-card"><table class="ttable">
+<thead><tr><th style="width:40px"><span class="cb"></span></th><th>Spiller</th><th>Kat</th><th>Tier</th><th class="num">HCP</th><th>Status</th><th>Siste økt</th></tr></thead>
+<tbody>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av">MR</div><div><div class="n">Markus Roinås P.</div><div class="em">markus.r@gmail.com</div></div></div></td><td><span class="pill cat-a">A</span></td><td><span class="pill elite">Elite</span></td><td class="num">+2.4</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">i dag</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A6651E,#7A4910)">ES</div><div><div class="n">Emma Solberg</div><div class="em">emma@solberg.no</div></div></div></td><td><span class="pill cat-b">B</span></td><td><span class="pill pro">Pro</span></td><td class="num">8.7</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">for 2 d</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av">LH</div><div><div class="n">Lina Hellesund</div><div class="em">lina.h@outlook.com</div></div></div></td><td><span class="pill cat-a">A</span></td><td><span class="pill elite">Elite</span></td><td class="num">4.1</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">i går</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#1A7D56,#005840)">SH</div><div><div class="n">Henrik Sørli</div><div class="em">henrik.sorli@gmail.com</div></div></div></td><td><span class="pill cat-a">A</span></td><td><span class="pill elite">Elite</span></td><td class="num">+0.8</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">i dag</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A32D2D,#7C2020)">PV</div><div><div class="n">Pia Vik</div><div class="em">pia.vik@bgk.no</div></div></div></td><td><span class="pill cat-b">B</span></td><td><span class="pill pro">Pro</span></td><td class="num">11.6</td><td><span class="pill skadet"><span class="dot"></span>Skadet</span></td><td><span class="last over">for 31 d</span></td></tr>
+</tbody></table></div>
+</div></div></section>
+
+<!-- 04 BULK -->
+<section class="ab" data-screen-label="04 Bulk · 3 valgt"><div class="ab-label"><span class="num">04</span><span class="ttl">Bulk-mode · 3 valgt + sticky action-bar</span><span class="meta">1448 × 540</span></div>
+<div class="ab-frame"><div style="padding:24px 32px;background:var(--surface)">
+<div class="bulk-bar"><span class="ct"><span class="n">3</span> valgt</span><div class="acts"><button class="bk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Send melding</button><button class="bk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/></svg>Endre coach</button><button class="bk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7h10v10H7z"/></svg>Endre kategori</button><button class="bk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>Eksporter CSV</button><span class="x">×</span></div></div>
+<div class="list-card"><table class="ttable">
+<thead><tr><th style="width:40px"><span class="cb partial"></span></th><th>Spiller</th><th>Kat</th><th>Tier</th><th class="num">HCP</th><th>Status</th><th>Siste økt</th></tr></thead>
+<tbody>
+<tr class="sel"><td><span class="cb on"></span></td><td><div class="av-name"><div class="av">MR</div><div><div class="n">Markus Roinås P.</div><div class="em">markus.r@gmail.com</div></div></div></td><td><span class="pill cat-a">A</span></td><td><span class="pill elite">Elite</span></td><td class="num">+2.4</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">i dag</span></td></tr>
+<tr class="sel"><td><span class="cb on"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A6651E,#7A4910)">ES</div><div><div class="n">Emma Solberg</div><div class="em">emma@solberg.no</div></div></div></td><td><span class="pill cat-b">B</span></td><td><span class="pill pro">Pro</span></td><td class="num">8.7</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">for 2 d</span></td></tr>
+<tr><td><span class="cb"></span></td><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#7A998C,#56796D)">JT</div><div><div class="n">Joachim Tangen</div><div class="em">joachim.t@me.com</div></div></div></td><td><span class="pill cat-c">C</span></td><td><span class="pill pro">Pro</span></td><td class="num">14.2</td><td><span class="pill skadet"><span class="dot"></span>Skadet</span></td><td><span class="last over">for 18 d</span></td></tr>
+<tr class="sel"><td><span class="cb on"></span></td><td><div class="av-name"><div class="av">LH</div><div><div class="n">Lina Hellesund</div><div class="em">lina.h@outlook.com</div></div></div></td><td><span class="pill cat-a">A</span></td><td><span class="pill elite">Elite</span></td><td class="num">4.1</td><td><span class="pill aktiv"><span class="dot"></span>Aktiv</span></td><td><span class="last">i går</span></td></tr>
+</tbody></table></div>
+</div></div></section>
+
+<!-- 05 LOADING -->
+<section class="ab" data-screen-label="05 Loading"><div class="ab-label"><span class="num">05</span><span class="ttl">Loading · skeleton-rader</span><span class="meta">1448 × 520</span></div>
+<div class="ab-frame"><div class="app app--sm">
+<aside class="rail"><div class="logo">AK</div><div class="ri active"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/></svg></div><div class="av">EH</div></aside>
+<aside class="nav"><div class="label">CoachHQ</div><div class="nav-item active">Elever</div></aside>
+<main class="main">
+<header class="hero"><div><div class="crumb">Synkroniserer …</div><h1 style="color:var(--ink-subtle)">Henter spillere</h1></div></header>
+<div class="list-card"><table class="ttable"><thead><tr><th style="width:40px"></th><th>Spiller</th><th>Kat</th><th>Tier</th><th class="num">HCP</th><th>Status</th><th>Siste økt</th></tr></thead><tbody>
+<tr><td><span class="sk" style="width:14px;height:14px;display:inline-block"></span></td><td><div class="av-name"><div class="sk" style="width:32px;height:32px;border-radius:50%"></div><div><div class="sk" style="width:160px;height:11px;margin-bottom:5px"></div><div class="sk" style="width:120px;height:9px"></div></div></div></td><td><div class="sk" style="width:30px;height:14px;border-radius:100px"></div></td><td><div class="sk" style="width:42px;height:14px;border-radius:100px"></div></td><td class="num"><div class="sk" style="width:36px;height:11px;margin-left:auto"></div></td><td><div class="sk" style="width:60px;height:14px;border-radius:100px"></div></td><td><div class="sk" style="width:80px;height:11px"></div></td></tr>
+<tr><td><span class="sk" style="width:14px;height:14px;display:inline-block"></span></td><td><div class="av-name"><div class="sk" style="width:32px;height:32px;border-radius:50%"></div><div><div class="sk" style="width:140px;height:11px;margin-bottom:5px"></div><div class="sk" style="width:100px;height:9px"></div></div></div></td><td><div class="sk" style="width:30px;height:14px;border-radius:100px"></div></td><td><div class="sk" style="width:42px;height:14px;border-radius:100px"></div></td><td class="num"><div class="sk" style="width:36px;height:11px;margin-left:auto"></div></td><td><div class="sk" style="width:60px;height:14px;border-radius:100px"></div></td><td><div class="sk" style="width:80px;height:11px"></div></td></tr>
+<tr><td><span class="sk" style="width:14px;height:14px;display:inline-block"></span></td><td><div class="av-name"><div class="sk" style="width:32px;height:32px;border-radius:50%"></div><div><div class="sk" style="width:180px;height:11px;margin-bottom:5px"></div><div class="sk" style="width:130px;height:9px"></div></div></div></td><td><div class="sk" style="width:30px;height:14px;border-radius:100px"></div></td><td><div class="sk" style="width:42px;height:14px;border-radius:100px"></div></td><td class="num"><div class="sk" style="width:36px;height:11px;margin-left:auto"></div></td><td><div class="sk" style="width:60px;height:14px;border-radius:100px"></div></td><td><div class="sk" style="width:80px;height:11px"></div></td></tr>
+<tr><td><span class="sk" style="width:14px;height:14px;display:inline-block"></span></td><td><div class="av-name"><div class="sk" style="width:32px;height:32px;border-radius:50%"></div><div><div class="sk" style="width:150px;height:11px;margin-bottom:5px"></div><div class="sk" style="width:110px;height:9px"></div></div></div></td><td><div class="sk" style="width:30px;height:14px;border-radius:100px"></div></td><td><div class="sk" style="width:42px;height:14px;border-radius:100px"></div></td><td class="num"><div class="sk" style="width:36px;height:11px;margin-left:auto"></div></td><td><div class="sk" style="width:60px;height:14px;border-radius:100px"></div></td><td><div class="sk" style="width:80px;height:11px"></div></td></tr>
+</tbody></table></div>
+</main></div></div></section>
+
+<!-- 06 MOBILE -->
+<section class="ab" data-screen-label="06 Mobil · kort-layout"><div class="ab-label"><span class="num">06</span><span class="ttl">Mobil ≤ 640 px · kort-layout</span><span class="meta">392 px</span></div>
+<div class="ab-frame"><div class="mob-wrap"><div class="mob">
+<div class="m-status"><span>09:14</span><span><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="19" height="9" rx="2"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/></svg></span></div>
+<div class="m-top"><div class="ham"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><div class="ttl">Elever</div><div class="avt">EH</div></div>
+<div class="m-hero"><h1><span class="em">38</span> spillere</h1><div class="meta">14 Pro/Elite · 4 inaktive</div></div>
+<div class="m-filter"><span class="ct sel">Alle</span><span class="ct">Aktiv</span><span class="ct">Skadet</span><span class="ct">A B C</span><span class="ct">Pro+</span></div>
+<div class="m-cards">
+<div class="m-card"><div class="av">MR</div><div class="bd"><div class="nm">Markus Roinås P.</div><div class="em">markus.r@gmail.com</div><div class="gr"><span class="it"><span class="lbl">Kat</span><span class="pill cat-a">A</span></span><span class="it"><span class="lbl">Tier</span><span class="pill elite">Elite</span></span><span class="it"><span class="lbl">HCP</span><span style="font-family:var(--font-mono);font-weight:600">+2.4</span></span><span class="it"><span class="lbl">Sist</span><span style="font-family:var(--font-mono);font-size:10px">i dag</span></span></div></div></div>
+<div class="m-card"><div class="av" style="background:linear-gradient(135deg,#A6651E,#7A4910)">ES</div><div class="bd"><div class="nm">Emma Solberg</div><div class="em">emma@solberg.no</div><div class="gr"><span class="it"><span class="lbl">Kat</span><span class="pill cat-b">B</span></span><span class="it"><span class="lbl">Tier</span><span class="pill pro">Pro</span></span><span class="it"><span class="lbl">HCP</span><span style="font-family:var(--font-mono);font-weight:600">8.7</span></span><span class="it"><span class="lbl">Sist</span><span style="font-family:var(--font-mono);font-size:10px">2 d</span></span></div></div></div>
+<div class="m-card"><div class="av" style="background:linear-gradient(135deg,#7A998C,#56796D)">JT</div><div class="bd"><div class="nm">Joachim Tangen</div><div class="em">joachim.t@me.com</div><div class="gr"><span class="it"><span class="lbl">Kat</span><span class="pill cat-c">C</span></span><span class="it"><span class="lbl">Tier</span><span class="pill pro">Pro</span></span><span class="it"><span class="lbl">HCP</span><span style="font-family:var(--font-mono);font-weight:600">14.2</span></span><span class="it"><span class="lbl">Status</span><span class="pill skadet"><span class="dot"></span>Skadet</span></span></div></div></div>
+<div class="m-card"><div class="av">LH</div><div class="bd"><div class="nm">Lina Hellesund</div><div class="em">lina.h@outlook.com</div><div class="gr"><span class="it"><span class="lbl">Kat</span><span class="pill cat-a">A</span></span><span class="it"><span class="lbl">Tier</span><span class="pill elite">Elite</span></span><span class="it"><span class="lbl">HCP</span><span style="font-family:var(--font-mono);font-weight:600">4.1</span></span><span class="it"><span class="lbl">Sist</span><span style="font-family:var(--font-mono);font-size:10px">i går</span></span></div></div></div>
+</div>
+<div class="m-bot"><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7"/></svg>Hub</div><div class="b sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/></svg>Elever</div><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Planer</div><div class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/></svg>Godkjenn</div></div>
+</div></div></div></section>
+
+</div></body></html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Meldinger</title>
+<style>
+.msg-shell { display: grid; grid-template-columns: 360px 1fr; gap: 16px; height: calc(100vh - 200px); }
+.msg-list { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; display: flex; flex-direction: column; }
+.msg-list-head { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.msg-list-search { padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--bg); }
+.msg-list-search input { width: 100%; border: 1px solid var(--border); border-radius: var(--r-pill); padding: 8px 12px; font-size: 12px; font-family: inherit; }
+.msg-list-items { overflow-y: auto; flex: 1; }
+.msg-thread { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.msg-thread:hover { background: var(--bg); }
+.msg-thread.active { background: rgba(0,88,64,0.04); border-left: 3px solid var(--primary); padding-left: 13px; }
+.msg-thread.unread { background: rgba(209,248,67,0.08); }
+.msg-thread-info { flex: 1; min-width: 0; }
+.msg-thread-name { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+.msg-thread-name b { font-size: 13px; font-weight: 600; }
+.msg-thread-time { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+.msg-thread-preview { font-size: 12px; color: var(--text-secondary); line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.msg-detail { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); display: flex; flex-direction: column; overflow: hidden; }
+.msg-detail-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.msg-detail-name { flex: 1; }
+.msg-detail-name b { font-size: 14px; }
+.msg-detail-name small { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); display: block; }
+.msg-detail-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+.msg-bubble { max-width: 70%; padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.5; }
+.msg-bubble-them { background: var(--bg); align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg-bubble-me { background: var(--primary); color: var(--text-inverse); align-self: flex-end; border-bottom-right-radius: 4px; }
+.msg-bubble-meta { font-family: var(--font-mono); font-size: 9px; opacity: 0.7; margin-top: 4px; display: block; }
+.msg-compose { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: flex-end; background: var(--bg); }
+.msg-compose textarea { flex: 1; border: 1px solid var(--border); border-radius: 14px; padding: 10px 14px; font-family: inherit; font-size: 13px; resize: vertical; min-height: 44px; max-height: 120px; outline: 0; }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="hub.html">Hub</a>
+      <a href="daglig-brief.html">Daglig Brief</a>
+      <a href="plans.html">Treningsplaner</a>
+      <a href="elever.html">Elever</a>
+      <a href="coaching-board.html">Coaching Board</a>
+      <a href="oppfolgingsko.html">Oppfølgingskø</a>
+      <a href="approvals.html">Godkjenninger</a>
+      <a href="kalender.html">Kalender</a>
+      <a href="bookings.html">Bookinger</a>
+      <a href="#" class="active">Meldinger</a>
+      <a href="sessions.html">Tester</a>
+      <a href="finance.html">Økonomi</a>
+      <a href="settings-bruker.html">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">/admin/messages · 8 tråder · 5 uleste</span>
+      <h1 class="page-title"><em>Meldinger</em></h1>
+    </header>
+
+    <div class="msg-shell">
+      <div class="msg-list">
+        <div class="msg-list-head">
+          <b style="font-size:13px;">Innboks</b>
+          <button class="btn btn-link" style="padding:0; font-size:12px;">+ Ny</button>
+        </div>
+        <div class="msg-list-search">
+          <input type="text" placeholder="Søk i meldinger...">
+        </div>
+        <div class="msg-list-items">
+
+          <div class="msg-thread unread">
+            <span class="avatar">A</span>
+            <div class="msg-thread-info">
+              <div class="msg-thread-name"><b>Foresatt Aksel L</b><span class="msg-thread-time">07:42</span></div>
+              <div class="msg-thread-preview">Kan vi flytte fredag? Aksel er til...</div>
+              <span class="pill pill-danger" style="font-size:9px; margin-top:4px;">SLA 4t over</span>
+            </div>
+          </div>
+
+          <div class="msg-thread active">
+            <span class="avatar">M</span>
+            <div class="msg-thread-info">
+              <div class="msg-thread-name"><b>Markus R Pedersen</b><span class="msg-thread-time">08:14</span></div>
+              <div class="msg-thread-preview">Putt-formen er på topp! Hvor mye kan...</div>
+              <span class="pill pill-success" style="font-size:9px; margin-top:4px;">Aktiv</span>
+            </div>
+          </div>
+
+          <div class="msg-thread unread">
+            <span class="avatar">E</span>
+            <div class="msg-thread-info">
+              <div class="msg-thread-name"><b>Emma Solheim</b><span class="msg-thread-time">i går</span></div>
+              <div class="msg-thread-preview">Takk for økten! Når er neste...</div>
+            </div>
+          </div>
+
+          <div class="msg-thread unread">
+            <span class="avatar">JT</span>
+            <div class="msg-thread-info">
+              <div class="msg-thread-name"><b>Joachim Tveit</b><span class="msg-thread-time">i går</span></div>
+              <div class="msg-thread-preview">Sender video — slag 7. Det føles lik...</div>
+            </div>
+          </div>
+
+          <div class="msg-thread">
+            <span class="avatar">L</span>
+            <div class="msg-thread-info">
+              <div class="msg-thread-name"><b>Lina Hagen</b><span class="msg-thread-time">10.05</span></div>
+              <div class="msg-thread-preview">Du: Bra jobba i bunkeren — vi tar ny test...</div>
+            </div>
+          </div>
+
+          <div class="msg-thread unread">
+            <span class="avatar">SB</span>
+            <div class="msg-thread-info">
+              <div class="msg-thread-name"><b>Foresatt Sofie B</b><span class="msg-thread-time">10.05</span></div>
+              <div class="msg-thread-preview">2 spørsmål om sommer-camp i juni...</div>
+            </div>
+          </div>
+
+          <div class="msg-thread unread">
+            <span class="avatar">JS</span>
+            <div class="msg-thread-info">
+              <div class="msg-thread-name"><b>Joachim Solberg</b><span class="msg-thread-time">09.05</span></div>
+              <div class="msg-thread-preview">Periodisering 2026 — har lest. Vil...</div>
+            </div>
+          </div>
+
+          <div class="msg-thread">
+            <span class="avatar">JB</span>
+            <div class="msg-thread-info">
+              <div class="msg-thread-name"><b>Joakim Berg</b><span class="msg-thread-time">08.05</span></div>
+              <div class="msg-thread-preview">Du: Send video så ser jeg på det i...</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="msg-detail">
+        <div class="msg-detail-head">
+          <span class="avatar" style="width:40px; height:40px; font-size:14px;">M</span>
+          <div class="msg-detail-name">
+            <b>Markus R Pedersen</b>
+            <small>HCP 7,4 · A2 · GFGK · siste sett: nå</small>
+          </div>
+          <a href="360-profil.html" class="btn btn-ghost">360-profil →</a>
+        </div>
+
+        <div class="msg-detail-body">
+          <div class="msg-bubble msg-bubble-them">
+            Hei Anders! Putt-formen er på topp etter forrige økt — fikk +0,4 SG på Bossum søndag. Kan vi bruke neste økt på pitch i stedet?
+            <span class="msg-bubble-meta">i går · 18:42</span>
+          </div>
+
+          <div class="msg-bubble msg-bubble-me">
+            Bra! Akkurat det samme jeg tenkte. Booker 14:00 i morgen på Mulligan — pitch 50–100 m, lav trajectory.
+            <span class="msg-bubble-meta">i går · 19:14</span>
+          </div>
+
+          <div class="msg-bubble msg-bubble-them">
+            Perfekt. Tar med 56-graderen og 60-graderen.
+            <span class="msg-bubble-meta">i går · 19:18</span>
+          </div>
+
+          <div class="msg-bubble msg-bubble-me">
+            Husk også å se gjennom video-loopen jeg sendte sist uke — 3 nøkler vi jobber med.
+            <span class="msg-bubble-meta">i går · 20:02</span>
+          </div>
+
+          <div class="msg-bubble msg-bubble-them">
+            Sett. Lengde-kontroll, hvilende skuldre, hode i ro.
+            <span class="msg-bubble-meta">i går · 20:14</span>
+          </div>
+
+          <div class="msg-bubble msg-bubble-them">
+            Putt-formen er på topp! Hvor mye kan jeg legge på pyramiden hvis det fortsetter?
+            <span class="msg-bubble-meta">i dag · 08:14</span>
+          </div>
+        </div>
+
+        <div class="msg-compose">
+          <textarea placeholder="Skriv en melding til Markus..."></textarea>
+          <button class="btn btn-ghost">📎</button>
+          <button class="btn btn-primary">Send</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

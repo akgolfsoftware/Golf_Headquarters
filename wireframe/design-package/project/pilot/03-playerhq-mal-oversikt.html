@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>PlayerHQ — Mål · Pilot Pakke 3</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:64px;padding:64px 24px 96px}
+  .ab{display:flex;flex-direction:column;gap:16px;max-width:1448px;width:100%}
+  .ab-label{display:flex;align-items:baseline;gap:16px;color:#3a3935;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em}
+  .ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990;font-weight:500}
+  .ab-label .ttl{font-size:20px}
+  .ab-label .meta{font-family:var(--font-body);font-size:13px;color:#7a7872;font-style:italic;font-weight:400;margin-left:auto}
+  .ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:24px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(10,31,24,.18),0 2px 4px rgba(10,31,24,.04)}
+  .ab-frame svg:not([fill]):not(.spark):not(.donut):not(.line){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  .deck-head{max-width:1448px;width:100%;display:flex;flex-direction:column;gap:12px;padding:0 4px;margin-bottom:8px}
+  .deck-head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+  .deck-head h1{font-family:var(--font-display);font-size:36px;font-weight:600;letter-spacing:-.02em;margin:0;color:var(--ink)}
+  .deck-head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+
+  /* shell */
+  .app{display:flex;min-height:1080px;background:var(--surface)}
+  .app--med{min-height:920px}.app--short{min-height:760px}
+  .nav{width:220px;background:#FFFFFF;border-right:1px solid #F0EDE5;padding:22px 14px 16px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+  .nav-logo{display:flex;align-items:center;gap:10px;padding:0 8px 22px;border-bottom:1px solid #F0EDE5;margin-left:-6px;margin-right:-6px;padding-left:14px;padding-right:14px}
+  .nav-logo .mark{width:32px;height:32px;border-radius:9px;background:var(--brand-primary);color:var(--brand-accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11px}
+  .nav-logo .n{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--ink)}
+  .nav-logo .n .dim{color:var(--ink-subtle);font-weight:400;margin-left:4px}
+  .nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;font-size:14px;color:var(--ink-muted);cursor:pointer;line-height:1.2;position:relative;margin-top:2px}
+  .nav-item:hover{background:#F8F5EE;color:var(--ink)}
+  .nav-item.active{background:rgba(0,88,64,.08);color:var(--brand-primary);font-weight:500}
+  .nav-item.active::before{content:"";position:absolute;left:-14px;top:8px;bottom:8px;width:3px;background:var(--brand-primary);border-radius:0 3px 3px 0}
+  .nav-item svg{width:18px;height:18px;flex-shrink:0}
+  .nav-item .count{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);background:#F0EDE5;padding:2px 6px;border-radius:5px}
+  .nav-foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:#FAFAF7;border:1px solid #F0EDE5}
+  .nav-foot .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+  .nav-foot .av .tier{position:absolute;bottom:-2px;right:-4px;background:var(--brand-accent);color:#0A1F18;font-family:var(--font-mono);font-size:8px;font-weight:700;padding:1px 5px;border-radius:5px;border:2px solid #FAFAF7}
+  .nav-foot .av .tier.free{background:#E8E5DC;color:var(--ink-muted)}
+  .nav-foot .who{display:flex;flex-direction:column;line-height:1.2;flex:1;min-width:0}
+  .nav-foot .who .n{font-size:13px;color:var(--ink);font-weight:500}
+  .nav-foot .who .r{font-size:10px;color:var(--ink-subtle);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+  /* sub-nav inside Mål */
+  .sub-nav{margin-top:12px;padding:8px 0;border-top:1px solid #F0EDE5}
+  .sub-nav .lbl{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:0 12px 6px}
+  .sub-nav .si{display:flex;align-items:center;gap:8px;padding:7px 12px 7px 24px;font-size:12px;color:var(--ink-muted);border-radius:8px;cursor:pointer}
+  .sub-nav .si:hover{background:#F8F5EE;color:var(--ink)}
+  .sub-nav .si.lock{opacity:.5}
+  .sub-nav .si svg{width:14px;height:14px}
+
+  .main{flex:1;padding:36px 44px 40px;min-width:0;display:flex;flex-direction:column;gap:24px}
+
+  .hero{display:flex;justify-content:space-between;align-items:flex-end;gap:32px}
+  .hero .crumb{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:10px}
+  .hero h1{font-family:var(--font-display);font-size:42px;font-weight:400;font-style:italic;letter-spacing:-.02em;color:var(--ink);margin:0;line-height:1.05;max-width:780px}
+  .hero h1 .em{font-style:normal;font-weight:600;color:var(--brand-primary)}
+  .hero .meta{font-size:14px;color:var(--ink-muted);margin-top:12px;display:flex;gap:14px;align-items:center}
+  .hero .meta .sep{color:var(--ink-disabled)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;height:40px}
+  .btn-primary{background:var(--brand-primary);color:#fff}
+  .btn-ghost{background:var(--surface-card);color:var(--ink);border-color:var(--line)}
+  .btn-accent{background:var(--brand-accent);color:#0A1F18;font-weight:600}
+
+  /* HCP TREND */
+  .hcp{padding:28px 32px;background:linear-gradient(135deg,#0F2A22 0%,#163027 60%,#0A1F18 100%);color:#F5F4EE;border-radius:24px;position:relative;overflow:hidden}
+  .hcp::before{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(209,248,67,.10) 0%,transparent 70%)}
+  .hcp .top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;position:relative;z-index:1}
+  .hcp .left{display:flex;flex-direction:column;gap:6px}
+  .hcp .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(209,248,67,.7)}
+  .hcp .big{font-family:var(--font-mono);font-size:64px;font-weight:500;line-height:1;letter-spacing:-.03em;color:#F5F4EE;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:14px}
+  .hcp .big .arrow{font-size:18px;color:var(--brand-accent)}
+  .hcp .sub{font-size:14px;color:rgba(245,244,238,.65);margin-top:4px}
+  .hcp .sub .em{color:var(--brand-accent);font-weight:600}
+  .hcp .right-stats{display:flex;gap:24px;align-items:flex-start}
+  .hcp .stat{display:flex;flex-direction:column}
+  .hcp .stat .lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:rgba(245,244,238,.5)}
+  .hcp .stat .v{font-family:var(--font-mono);font-size:22px;font-weight:600;color:#F5F4EE;margin-top:2px}
+  .hcp .stat .v.acc{color:var(--brand-accent)}
+  .hcp .toggle{display:flex;background:rgba(255,255,255,.06);border-radius:8px;padding:3px;gap:2px;align-self:flex-start;margin-top:6px}
+  .hcp .toggle .t{padding:5px 10px;font-family:var(--font-mono);font-size:11px;color:rgba(245,244,238,.6);border-radius:6px;cursor:pointer}
+  .hcp .toggle .t.on{background:rgba(209,248,67,.18);color:var(--brand-accent);font-weight:600}
+  .hcp .chart{margin-top:18px;position:relative;height:200px}
+  .hcp .chart svg{width:100%;height:200px;display:block}
+  .hcp .chart .lock-proj{position:absolute;right:0;top:0;bottom:0;width:38%;background:rgba(15,42,34,.6);backdrop-filter:blur(2px);border-left:1px dashed rgba(209,248,67,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:0 12px 12px 0}
+  .hcp .chart .lock-proj .ic{width:36px;height:36px;border-radius:10px;background:var(--brand-accent);color:#0A1F18;display:flex;align-items:center;justify-content:center}
+  .hcp .chart .lock-proj .t{font-family:var(--font-display);font-size:14px;font-style:italic;color:#F5F4EE}
+  .hcp .chart .lock-proj .cta{font-family:var(--font-mono);font-size:10px;color:var(--brand-accent);text-transform:uppercase;letter-spacing:.06em;font-weight:600;background:rgba(209,248,67,.16);padding:5px 10px;border-radius:100px}
+  .hcp .x-axis{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:rgba(245,244,238,.4);margin-top:6px;padding:0 4px}
+
+  /* tooltip on hover */
+  .tt{position:absolute;background:#FAFAF7;color:var(--ink);padding:10px 14px;border-radius:10px;font-size:12px;box-shadow:0 12px 30px -10px rgba(0,0,0,.35);z-index:5;pointer-events:none;min-width:160px}
+  .tt::after{content:"";position:absolute;bottom:-5px;left:50%;margin-left:-5px;width:10px;height:10px;background:#FAFAF7;transform:rotate(45deg)}
+  .tt .l1{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);text-transform:uppercase;letter-spacing:.06em}
+  .tt .l2{font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink);margin-top:2px}
+  .tt .l3{font-size:11px;color:var(--ink-muted);margin-top:4px}
+
+  /* MÅL-grupper */
+  .goals{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:14px}
+  .gcard{padding:22px 24px;background:var(--surface-card);border:1px solid var(--line);border-radius:20px;display:flex;flex-direction:column;gap:10px;cursor:pointer;box-shadow:var(--shadow-card);position:relative;overflow:hidden}
+  .gcard:hover{transform:translateY(-2px);box-shadow:0 16px 32px -14px rgba(10,31,24,.16);border-color:rgba(0,88,64,.30)}
+  .gcard.hover{transform:translateY(-2px);box-shadow:0 18px 36px -14px rgba(10,31,24,.20);border-color:var(--brand-primary)}
+  .gcard .h{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .gcard .h .ic{width:24px;height:24px;border-radius:7px;background:var(--surface-alt);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+  .gcard .h .badge{margin-left:auto;font-family:var(--font-mono);font-size:10px;padding:2px 7px;border-radius:5px;background:var(--accent-bg);color:#0A1F18;font-weight:600}
+  .gcard .ttl{font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:-.01em;color:var(--ink);font-style:italic;line-height:1.15}
+  .gcard .ttl .em{font-style:normal;color:var(--brand-primary)}
+  .gcard .row{display:flex;justify-content:space-between;align-items:baseline}
+  .gcard .row .now{font-family:var(--font-mono);font-size:32px;font-weight:600;color:var(--ink)}
+  .gcard .row .target{font-family:var(--font-mono);font-size:14px;color:var(--ink-subtle)}
+  .gcard .row .target .em{color:var(--brand-primary);font-weight:600}
+  .gcard .pbar{height:8px;background:#F0EDE5;border-radius:4px;overflow:hidden;position:relative}
+  .gcard .pbar .fl{height:100%;background:linear-gradient(90deg,#005840 0%,#1A7D56 100%);border-radius:4px}
+  .gcard .pbar .fl.near{background:linear-gradient(90deg,#1A7D56 0%,var(--brand-accent) 100%)}
+  .gcard .pbar .marker{position:absolute;top:-2px;width:2px;height:12px;background:var(--ink)}
+  .gcard .pmeta{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+  .gcard .cta{margin-top:auto;font-size:13px;color:var(--brand-primary);font-weight:500;display:inline-flex;align-items:center;gap:6px}
+  .gcard .cta svg{width:14px;height:14px}
+  .gcard .pillrow{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+  .gcard .pillrow .px{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:100px;font-family:var(--font-mono);font-size:11px;background:#F0EDE5;color:var(--ink-muted)}
+  .gcard .pillrow .px.on{background:var(--brand-primary);color:#F5F4EE}
+
+  /* PYRAMIDE big */
+  .pyr-section{background:var(--surface-card);border:1px solid var(--line);border-radius:20px;padding:24px 28px;box-shadow:var(--shadow-card)}
+  .pyr-section .h{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .pyr-section h3{font-family:var(--font-display);font-size:20px;font-weight:600;margin:0;letter-spacing:-.01em}
+  .pyr-section h3 .meta{font-weight:400;color:var(--ink-subtle);font-family:var(--font-body);font-size:13px;margin-left:8px;font-style:italic}
+  .pyr-section .all{font-size:13px;color:var(--brand-primary);font-weight:500;display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+  .pyr-big{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+  .pyr-big .ring{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px;border-radius:14px;cursor:pointer}
+  .pyr-big .ring:hover{background:#F8F5EE}
+  .pyr-big .ring .donut{position:relative;width:96px;height:96px}
+  .pyr-big .ring .donut svg{width:96px;height:96px;transform:rotate(-90deg)}
+  .pyr-big .ring .donut .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:600;color:var(--ink)}
+  .pyr-big .ring .donut .num .pct{font-size:22px}
+  .pyr-big .ring .donut .num .lbl{font-size:9px;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
+  .pyr-big .ring .name{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--ink)}
+  .pyr-big .ring .delta{font-family:var(--font-mono);font-size:11px;color:var(--status-success)}
+
+  /* TURNERINGER + REKORDER */
+  .row-2col{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+  .panel{background:var(--surface-card);border:1px solid var(--line);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card)}
+  .panel .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .panel h3{font-family:var(--font-display);font-size:18px;font-weight:600;margin:0;letter-spacing:-.01em}
+  .panel h3 .meta{font-weight:400;color:var(--ink-subtle);font-family:var(--font-body);font-size:12px;margin-left:8px;font-style:italic}
+  .tourn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tourn-card{padding:14px;background:#F8F5EE;border:1px solid #E8E5DC;border-radius:14px;cursor:pointer;display:flex;flex-direction:column;gap:6px}
+  .tourn-card:hover{background:#FAFAF7;border-color:var(--brand-primary)}
+  .tourn-card .when{display:flex;align-items:baseline;gap:8px}
+  .tourn-card .when .d{font-family:var(--font-mono);font-size:22px;font-weight:600;color:var(--brand-primary);line-height:1}
+  .tourn-card .when .m{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.04em;text-transform:uppercase}
+  .tourn-card .name{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--ink);line-height:1.2}
+  .tourn-card .loc{font-size:11px;color:var(--ink-muted);font-family:var(--font-mono)}
+  .tourn-card .reg{margin-top:6px;font-size:12px;color:var(--brand-primary);font-weight:500;display:inline-flex;align-items:center;gap:4px}
+  .records{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .rec{padding:12px 14px;background:var(--surface);border:1px solid var(--line-soft);border-radius:12px;cursor:pointer}
+  .rec:hover{background:#FAFAF7}
+  .rec .k{font-family:var(--font-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .rec .v{font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink);line-height:1.2;margin-top:2px}
+  .rec .v .u{font-size:10px;color:var(--ink-subtle);font-weight:400;margin-left:2px}
+  .rec .when{font-size:10px;color:var(--ink-subtle);font-family:var(--font-mono);margin-top:2px}
+
+  /* QUICK LINKS */
+  .qlinks{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .ql{padding:24px;background:var(--surface-card);border:1px solid var(--line);border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:18px;box-shadow:var(--shadow-card);position:relative;overflow:hidden}
+  .ql:hover{transform:translateY(-2px);box-shadow:0 16px 32px -14px rgba(10,31,24,.16);border-color:rgba(0,88,64,.30)}
+  .ql .ic{width:48px;height:48px;border-radius:14px;background:var(--accent-bg);color:#0A1F18;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ql .body{flex:1;min-width:0}
+  .ql .body .ttl{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+  .ql .body .sub{font-size:12px;color:var(--ink-muted);font-family:var(--font-mono);margin-top:2px}
+  .ql .arr{color:var(--brand-primary)}
+
+  /* LOCK */
+  .lock{position:absolute;inset:0;background:rgba(255,255,255,.86);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:20px;z-index:5}
+  .lock .ic{width:42px;height:42px;border-radius:12px;background:#0F2A22;color:var(--brand-accent);display:flex;align-items:center;justify-content:center}
+  .lock .ttl{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--ink);font-style:italic}
+  .lock .cta{font-size:12px;color:var(--brand-primary);font-weight:600;display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em;padding:6px 12px;background:var(--accent-bg);border-radius:100px}
+
+  @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+  .skel{background:linear-gradient(90deg,var(--surface-alt) 0%,#F5F2EA 50%,var(--surface-alt) 100%);background-size:800px 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+
+  /* DARK */
+  .dark .ab-frame{border-color:#1c3b32}
+  .dark .app{background:#0F2A22}
+  .dark .nav{background:#0B221C;border-right-color:#1c3b32}
+  .dark .nav-logo{border-bottom-color:#1c3b32}
+  .dark .nav-logo .n{color:#F5F4EE}
+  .dark .nav-item{color:#9D9C95}
+  .dark .nav-item:hover{background:#163027;color:#F5F4EE}
+  .dark .nav-item.active{background:rgba(209,248,67,.10);color:var(--brand-accent)}
+  .dark .nav-item.active::before{background:var(--brand-accent)}
+  .dark .nav-foot{background:#163027;border-color:#274d41}
+  .dark .nav-foot .who .n{color:#F5F4EE}
+  .dark .hero h1{color:#F5F4EE}
+  .dark .hero h1 .em{color:var(--brand-accent)}
+  .dark .hero .crumb,.dark .hero .meta{color:#9D9C95}
+  .dark .gcard{background:#163027;border-color:#274d41}
+  .dark .gcard .h{color:#9D9C95}
+  .dark .gcard .h .ic{background:#0F2A22;color:#F5F4EE}
+  .dark .gcard .ttl{color:#F5F4EE}
+  .dark .gcard .ttl .em{color:var(--brand-accent)}
+  .dark .gcard .row .now{color:#F5F4EE}
+  .dark .gcard .pbar{background:#0F2A22}
+  .dark .gcard .cta{color:var(--brand-accent)}
+  .dark .gcard .pillrow .px{background:#0F2A22;color:#9D9C95}
+  .dark .pyr-section{background:#163027;border-color:#274d41}
+  .dark .pyr-section h3{color:#F5F4EE}
+  .dark .pyr-section .all{color:var(--brand-accent)}
+  .dark .pyr-big .ring:hover{background:#0F2A22}
+  .dark .pyr-big .ring .donut .num{color:#F5F4EE}
+  .dark .pyr-big .ring .name{color:#F5F4EE}
+  .dark .panel{background:#163027;border-color:#274d41}
+  .dark .panel h3{color:#F5F4EE}
+  .dark .tourn-card{background:#0F2A22;border-color:#274d41}
+  .dark .tourn-card .name{color:#F5F4EE}
+  .dark .tourn-card .when .d{color:var(--brand-accent)}
+  .dark .tourn-card .reg{color:var(--brand-accent)}
+  .dark .rec{background:#0F2A22;border-color:#274d41}
+  .dark .rec .v{color:#F5F4EE}
+  .dark .ql{background:#163027;border-color:#274d41}
+  .dark .ql .body .ttl{color:#F5F4EE}
+  .dark .ql .arr{color:var(--brand-accent)}
+
+  /* MOBILE */
+  .mobile-wrap{display:flex;justify-content:center;padding:32px;background:linear-gradient(180deg,#F5F2EA 0,#EDEAE2 100%)}
+  .mobile{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden}
+  .m-status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;color:var(--ink);font-weight:500}
+  .m-top{display:flex;align-items:center;justify-content:space-between;padding:8px 18px 8px}
+  .m-top .greet{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .m-top .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .m-hero{padding:0 18px 14px}
+  .m-hero h1{font-family:var(--font-display);font-size:26px;font-weight:400;font-style:italic;margin:0;line-height:1.1}
+  .m-hero h1 .em{font-style:normal;font-weight:600;color:var(--brand-primary)}
+  .m-hcp{margin:0 18px 14px;padding:18px;background:linear-gradient(135deg,#0F2A22,#163027);color:#F5F4EE;border-radius:18px;position:relative;overflow:hidden}
+  .m-hcp .e{font-family:var(--font-mono);font-size:10px;color:rgba(209,248,67,.7);letter-spacing:.06em;text-transform:uppercase}
+  .m-hcp .big{font-family:var(--font-mono);font-size:48px;font-weight:500;line-height:1;color:#F5F4EE;margin-top:4px}
+  .m-hcp .sub{font-size:12px;color:rgba(245,244,238,.65);margin-top:2px}
+  .m-hcp .sub .em{color:var(--brand-accent);font-weight:600}
+  .m-hcp .chart{margin-top:14px;height:80px}
+  .m-goals{display:flex;flex-direction:column;gap:10px;padding:0 18px 14px}
+  .m-g{padding:14px;background:var(--surface-card);border:1px solid var(--line);border-radius:14px}
+  .m-g .h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .m-g .ttl{font-family:var(--font-display);font-size:16px;font-weight:600;font-style:italic;margin:4px 0}
+  .m-g .row{display:flex;justify-content:space-between;align-items:baseline;margin:4px 0}
+  .m-g .now{font-family:var(--font-mono);font-size:22px;font-weight:600}
+  .m-g .target{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle)}
+  .m-g .pbar{height:6px;background:#F0EDE5;border-radius:3px;overflow:hidden}
+  .m-g .pbar .fl{height:100%;background:var(--brand-primary);border-radius:3px}
+  .m-tabs{display:flex;justify-content:space-around;padding:8px 8px 22px;border-top:1px solid var(--line-soft);background:var(--surface-card)}
+  .m-tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle);padding:6px 8px}
+  .m-tab.active{color:var(--brand-primary);font-weight:600}
+  .m-tab.active .icw{background:rgba(0,88,64,.10)}
+  .m-tab .icw{width:36px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+
+  .anno{position:absolute;font-family:var(--font-mono);font-size:10px;color:#F5F4EE;background:#0A1F18;padding:3px 8px;border-radius:6px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;z-index:10;white-space:nowrap}
+  .anno::before{content:"";position:absolute;width:10px;height:10px;background:#0A1F18;transform:rotate(45deg)}
+  .anno.bottom::before{bottom:-4px;left:50%;margin-left:-5px}
+  .anno.right::before{right:-4px;top:50%;margin-top:-5px}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <header class="deck-head">
+    <span class="eyebrow">Pilot · PlayerHQ · Mål-oversikt</span>
+    <h1>Mål — hvor du står, hvor du skal, hvordan du kommer dit</h1>
+    <p class="sub">HCP-trend (12 mnd + Pro-projeksjon), tre mål-grupper, full pyramide-status, turneringer, personlige rekorder og quick-links til sub-skjermer.</p>
+  </header>
+
+  <!-- 01 LIGHT PRO -->
+  <section class="ab" data-screen-label="01 Lyst · Pro">
+    <div class="ab-label"><span class="num">01</span><span class="ttl">Lyst tema — Pro-bruker (full visning)</span><span class="meta">1448 × 1080</span></div>
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="nav">
+          <div class="nav-logo"><div class="mark">AK</div><div class="n">AK Golf<span class="dim">·player</span></div></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Hjem</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Tren<span class="count">3</span></div>
+          <div class="nav-item active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Mål<span class="count">5</span></div>
+          <div class="sub-nav">
+            <div class="lbl">Mål — sub</div>
+            <div class="si"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>Alle runder</div>
+            <div class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/></svg>TrackMan-økter</div>
+            <div class="si"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7"/></svg>Mine baner</div>
+          </div>
+          <div class="nav-item" style="margin-top:8px"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5"/></svg>Coach<span class="count">1</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/></svg>Meg</div>
+          <div class="nav-foot"><div class="av">MR<span class="tier">PRO</span></div><div class="who"><span class="n">Markus R</span><span class="r">Pro · HCP 12,4</span></div></div>
+        </aside>
+        <main class="main">
+          <header class="hero">
+            <div>
+              <div class="crumb">Mål · Onsdag 13. mai 2026</div>
+              <h1>Mål — <span class="em">hvor du står</span>, hvor du skal.</h1>
+              <div class="meta"><span>Sist oppdatert: i dag 09:14</span><span class="sep">·</span><span>47 runder loggført sesong 2026</span></div>
+            </div>
+            <div style="display:flex;gap:8px"><button class="btn btn-ghost"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>Eksporter</button><button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Nytt mål</button></div>
+          </header>
+
+          <!-- HCP -->
+          <section class="hcp">
+            <div class="top">
+              <div class="left">
+                <div class="eyebrow">Handicap-trend · 12 mnd</div>
+                <div class="big">12,4 <span class="arrow">↓ −1,8</span></div>
+                <div class="sub">Mål: <span class="em">9,5</span> innen sesongslutt 2026 · projeksjon viser kurs <span class="em">10,2</span> ved 31. okt</div>
+              </div>
+              <div class="right-stats">
+                <div class="stat"><span class="lbl">Beste</span><span class="v acc">11,9</span></div>
+                <div class="stat"><span class="lbl">3 mnd snitt</span><span class="v">12,7</span></div>
+                <div class="toggle"><span class="t">6 mnd</span><span class="t on">12 mnd</span><span class="t">24 mnd</span></div>
+              </div>
+            </div>
+            <div class="chart">
+              <svg viewBox="0 0 800 200" preserveAspectRatio="none">
+                <!-- grid -->
+                <line x1="0" y1="50" x2="800" y2="50" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                <line x1="0" y1="100" x2="800" y2="100" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                <line x1="0" y1="150" x2="800" y2="150" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                <!-- target line -->
+                <line x1="0" y1="60" x2="800" y2="60" stroke="rgba(209,248,67,.4)" stroke-width="1.5" stroke-dasharray="4 4"/>
+                <text x="8" y="55" font-family="JetBrains Mono" font-size="11" fill="rgba(209,248,67,.7)">Mål 9,5</text>
+                <!-- actual data (12 mo) -->
+                <path d="M20,40 L70,38 L120,42 L170,55 L220,60 L270,72 L320,68 L370,80 L420,90 L470,98 L495,110" fill="none" stroke="#D1F843" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M20,40 L70,38 L120,42 L170,55 L220,60 L270,72 L320,68 L370,80 L420,90 L470,98 L495,110 L495,200 L20,200 Z" fill="rgba(209,248,67,.10)"/>
+                <!-- projected dashed -->
+                <path d="M495,110 L545,108 L595,98 L645,82 L695,72 L745,62 L780,55" fill="none" stroke="#D1F843" stroke-width="2" stroke-dasharray="6 4" opacity=".55"/>
+                <!-- data points -->
+                <circle cx="170" cy="55" r="3" fill="#D1F843"/>
+                <circle cx="270" cy="72" r="3" fill="#D1F843"/>
+                <circle cx="370" cy="80" r="3" fill="#D1F843"/>
+                <circle cx="470" cy="98" r="3" fill="#D1F843"/>
+                <circle cx="495" cy="110" r="5" fill="#D1F843" stroke="#0F2A22" stroke-width="2"/>
+                <text x="495" y="130" font-family="JetBrains Mono" font-size="10" fill="#F5F4EE" text-anchor="middle" font-weight="600">12,4 nå</text>
+              </svg>
+            </div>
+            <div class="x-axis"><span>jun '25</span><span>jul</span><span>aug</span><span>sep</span><span>okt</span><span>nov</span><span>des</span><span>jan</span><span>feb</span><span>mar</span><span>apr</span><span>mai</span><span>okt '26</span></div>
+          </section>
+
+          <!-- MÅL -->
+          <div class="goals">
+            <div class="gcard">
+              <div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>HCP-mål<span class="badge">Sesongmål</span></div>
+              <div class="ttl">Fra 12,4 til <span class="em">9,5</span> innen okt.</div>
+              <div class="row"><span class="now">12,4</span><span class="target">→ <span class="em">9,5</span> · 5 mnd igjen</span></div>
+              <div class="pbar"><div class="fl" style="width:38%"></div><div class="marker" style="left:38%"></div></div>
+              <div class="pmeta"><span>Start: 14,2</span><span>38 % fullført</span><span>Mål: 9,5</span></div>
+              <span class="cta">Detaljer <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+            <div class="gcard">
+              <div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg></div>Score-mål</div>
+              <div class="ttl">Beat <span class="em">85</span> · 5 av 10.</div>
+              <div class="row"><span class="now">5<span style="font-size:14px;color:var(--ink-subtle);font-weight:400"> / 10</span></span><span class="target">5 igjen</span></div>
+              <div class="pbar"><div class="fl" style="width:50%"></div></div>
+              <div class="pillrow">
+                <span class="px on">82</span><span class="px on">84</span><span class="px on">81</span><span class="px on">85</span><span class="px on">83</span><span class="px">—</span><span class="px">—</span><span class="px">—</span><span class="px">—</span><span class="px">—</span>
+              </div>
+              <span class="cta">Detaljer <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+            <div class="gcard">
+              <div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>Ferdighetsmål</div>
+              <div class="ttl">Putt &lt; 2 m: <span class="em">72 %</span>.</div>
+              <div class="row"><span class="now">72 <span style="font-size:14px;color:var(--ink-subtle);font-weight:400">%</span></span><span class="target">→ <span class="em">85 %</span></span></div>
+              <div class="pbar"><div class="fl near" style="width:72%"></div></div>
+              <div class="pmeta"><span>Snitt 30 d</span><span>13 pt igjen</span></div>
+              <span class="cta">Detaljer <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+          </div>
+
+          <!-- PYRAMIDE -->
+          <section class="pyr-section">
+            <div class="h"><h3>Pyramide-status<span class="meta">snitt 67 % · +5 % siste mnd</span></h3><span class="all">Forklaring <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
+            <div class="pyr-big">
+              <div class="ring">
+                <div class="donut"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3.5"/><circle cx="18" cy="18" r="14" fill="none" stroke="#A32D2D" stroke-width="3.5" stroke-dasharray="54.5 87.96" stroke-linecap="round"/></svg><span class="num"><span class="pct">62 %</span><span class="lbl">FYS</span></span></div>
+                <span class="name">Fysisk</span><span class="delta">+3 % siste mnd</span>
+              </div>
+              <div class="ring">
+                <div class="donut"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3.5"/><circle cx="18" cy="18" r="14" fill="none" stroke="#7A998C" stroke-width="3.5" stroke-dasharray="68.6 87.96" stroke-linecap="round"/></svg><span class="num"><span class="pct">78 %</span><span class="lbl">TEK</span></span></div>
+                <span class="name">Teknikk</span><span class="delta">+8 % siste mnd</span>
+              </div>
+              <div class="ring">
+                <div class="donut"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3.5"/><circle cx="18" cy="18" r="14" fill="none" stroke="#A6651E" stroke-width="3.5" stroke-dasharray="62.5 87.96" stroke-linecap="round"/></svg><span class="num"><span class="pct">71 %</span><span class="lbl">SLAG</span></span></div>
+                <span class="name">Slagtyper</span><span class="delta">+4 % siste mnd</span>
+              </div>
+              <div class="ring">
+                <div class="donut"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3.5"/><circle cx="18" cy="18" r="14" fill="none" stroke="#264E3B" stroke-width="3.5" stroke-dasharray="59.8 87.96" stroke-linecap="round"/></svg><span class="num"><span class="pct">68 %</span><span class="lbl">SPL</span></span></div>
+                <span class="name">Spill</span><span class="delta">+6 % siste mnd</span>
+              </div>
+              <div class="ring">
+                <div class="donut"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3.5"/><circle cx="18" cy="18" r="14" fill="none" stroke="#0A1F18" stroke-width="3.5" stroke-dasharray="48.4 87.96" stroke-linecap="round"/></svg><span class="num"><span class="pct">55 %</span><span class="lbl">TUR</span></span></div>
+                <span class="name">Turnering</span><span class="delta" style="color:var(--ink-subtle)">±0 %</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- TURNERINGER + REKORDER -->
+          <div class="row-2col">
+            <div class="panel">
+              <div class="h"><h3>Turneringer<span class="meta">3 oppkommende</span></h3><span class="all" style="color:var(--brand-primary);font-size:13px;font-weight:500;cursor:pointer">Se alle</span></div>
+              <div class="tourn-grid">
+                <div class="tourn-card">
+                  <div class="when"><span class="d">25</span><span class="m">mai · 12 d igjen</span></div>
+                  <div class="name">Sørlandsåpent 2026</div>
+                  <div class="loc">Mandal GK · Klasse Pro</div>
+                  <span class="reg">Registrer <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+                <div class="tourn-card">
+                  <div class="when"><span class="d">09</span><span class="m">jun · 4 uker</span></div>
+                  <div class="name">Bærum Open</div>
+                  <div class="loc">Bærum GK · Klubbmesterskap</div>
+                  <span class="reg">Registrer →</span>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="h"><h3>Personlige rekorder<span class="meta">4 av 12</span></h3><span class="all" style="color:var(--brand-primary);font-size:13px;font-weight:500;cursor:pointer">Alle →</span></div>
+              <div class="records">
+                <div class="rec"><span class="k">Lengste drive</span><span class="v">274<span class="u"> m</span></span><span class="when">12. apr · Bærum 14</span></div>
+                <div class="rec"><span class="k">Beste runde</span><span class="v">76<span class="u"> slag</span></span><span class="when">3. mai · Bærum</span></div>
+                <div class="rec"><span class="k">Mest birdier</span><span class="v">5<span class="u"> · runde</span></span><span class="when">3. mai · Bærum</span></div>
+                <div class="rec"><span class="k">Lengste streak</span><span class="v">14<span class="u"> dager</span></span><span class="when">feb 2026</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK LINKS -->
+          <div class="qlinks">
+            <div class="ql">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+              <div class="body"><div class="ttl">Alle runder</div><div class="sub">47 loggført · sortér / filtrer</div></div>
+              <svg width="20" height="20" viewBox="0 0 24 24" class="arr"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+            <div class="ql">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><circle cx="12" cy="12" r="3"/></svg></div>
+              <div class="body"><div class="ttl">TrackMan-økter</div><div class="sub">12 økter · launch / spin / carry</div></div>
+              <svg width="20" height="20" viewBox="0 0 24 24" class="arr"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+            <div class="ql">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+              <div class="body"><div class="ttl">Mine baner</div><div class="sub">8 spilte · 3 favoritter</div></div>
+              <svg width="20" height="20" viewBox="0 0 24 24" class="arr"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 LIGHT FREE -->
+  <section class="ab" data-screen-label="02 Lyst · Free">
+    <div class="ab-label"><span class="num">02</span><span class="ttl">Lyst tema — Free (HCP-projeksjon + TrackMan låst)</span><span class="meta">1448 × 920</span></div>
+    <div class="ab-frame">
+      <div class="app app--med">
+        <aside class="nav">
+          <div class="nav-logo"><div class="mark">AK</div><div class="n">AK Golf<span class="dim">·player</span></div></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Hjem</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Tren</div>
+          <div class="nav-item active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2"/></svg>Mål</div>
+          <div class="sub-nav">
+            <div class="lbl">Mål — sub</div>
+            <div class="si"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/></svg>Alle runder</div>
+            <div class="si lock"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>TrackMan <svg width="11" height="11" viewBox="0 0 24 24" style="margin-left:auto"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <div class="si"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7"/></svg>Mine baner</div>
+          </div>
+          <div class="nav-item" style="margin-top:8px"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5"/></svg>Coach</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/></svg>Meg</div>
+          <div class="nav-foot"><div class="av" style="background:linear-gradient(135deg,#7A998C,#36685A)">MR<span class="tier free">FREE</span></div><div class="who"><span class="n">Markus R</span><span class="r">Free · HCP 12,4</span></div></div>
+        </aside>
+        <main class="main">
+          <header class="hero">
+            <div>
+              <div class="crumb">Mål · Free-plan</div>
+              <h1>Mål — <span class="em">hvor du står</span>.</h1>
+              <div class="meta"><span>Projeksjon og TrackMan er Pro-features</span></div>
+            </div>
+            <button class="btn btn-accent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3v18l7-5 7 5V3"/></svg>Oppgrader</button>
+          </header>
+          <section class="hcp">
+            <div class="top">
+              <div class="left">
+                <div class="eyebrow">Handicap-trend · 12 mnd</div>
+                <div class="big">12,4 <span class="arrow">↓ −1,8</span></div>
+                <div class="sub">Mål: <span class="em">9,5</span> · projeksjon krever Pro</div>
+              </div>
+              <div class="right-stats"><div class="toggle"><span class="t">6 mnd</span><span class="t on">12 mnd</span><span class="t">24 mnd</span></div></div>
+            </div>
+            <div class="chart">
+              <svg viewBox="0 0 800 200" preserveAspectRatio="none">
+                <line x1="0" y1="60" x2="800" y2="60" stroke="rgba(209,248,67,.4)" stroke-width="1.5" stroke-dasharray="4 4"/>
+                <path d="M20,40 L70,38 L120,42 L170,55 L220,60 L270,72 L320,68 L370,80 L420,90 L470,98 L495,110" fill="none" stroke="#D1F843" stroke-width="2.5" stroke-linejoin="round"/>
+                <circle cx="495" cy="110" r="5" fill="#D1F843" stroke="#0F2A22" stroke-width="2"/>
+              </svg>
+              <div class="lock-proj">
+                <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                <div class="t">Projeksjon — Pro</div>
+                <span class="cta">Oppgrader →</span>
+              </div>
+            </div>
+          </section>
+          <div class="goals">
+            <div class="gcard"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>HCP-mål</div><div class="ttl">Fra 12,4 til <span class="em">9,5</span>.</div><div class="row"><span class="now">12,4</span><span class="target">→ <span class="em">9,5</span></span></div><div class="pbar"><div class="fl" style="width:38%"></div></div><span class="cta">Detaljer →</span></div>
+            <div class="gcard" style="opacity:.55;position:relative"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg></div>Score-mål<span class="badge">PRO</span></div><div class="ttl">Beat 85.</div><div class="row"><span class="now" style="filter:blur(2px)">5 / 10</span></div><div class="lock"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><span class="cta">Pro →</span></div></div>
+            <div class="gcard" style="opacity:.55;position:relative"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>Ferdighetsmål<span class="badge">PRO</span></div><div class="ttl">Putt &lt; 2 m.</div><div class="row"><span class="now" style="filter:blur(2px)">72 %</span></div><div class="lock"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><span class="cta">Pro →</span></div></div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 DARK -->
+  <section class="ab dark" data-screen-label="03 Mørkt">
+    <div class="ab-label"><span class="num">03</span><span class="ttl">Mørkt tema</span><span class="meta">1448 × 880</span></div>
+    <div class="ab-frame">
+      <div class="app app--med">
+        <aside class="nav">
+          <div class="nav-logo"><div class="mark">AK</div><div class="n">AK Golf<span class="dim">·player</span></div></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Hjem</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Tren</div>
+          <div class="nav-item active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2"/></svg>Mål</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5"/></svg>Coach</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/></svg>Meg</div>
+          <div class="nav-foot"><div class="av">MR<span class="tier">PRO</span></div><div class="who"><span class="n">Markus R</span><span class="r">Pro · HCP 12,4</span></div></div>
+        </aside>
+        <main class="main">
+          <header class="hero"><div><div class="crumb">Mål · onsdag</div><h1>Mål — <span class="em">hvor du står</span>.</h1><div class="meta"><span>47 runder · sesong 2026</span></div></div></header>
+          <section class="hcp">
+            <div class="top">
+              <div class="left"><div class="eyebrow">HCP-trend</div><div class="big">12,4 <span class="arrow">↓ −1,8</span></div><div class="sub">Mål: <span class="em">9,5</span> · projeksjon <span class="em">10,2</span></div></div>
+              <div class="right-stats"><div class="stat"><span class="lbl">Beste</span><span class="v acc">11,9</span></div><div class="stat"><span class="lbl">3 mnd</span><span class="v">12,7</span></div></div>
+            </div>
+            <div class="chart">
+              <svg viewBox="0 0 800 200" preserveAspectRatio="none">
+                <line x1="0" y1="60" x2="800" y2="60" stroke="rgba(209,248,67,.4)" stroke-width="1.5" stroke-dasharray="4 4"/>
+                <path d="M20,40 L120,42 L220,60 L320,68 L420,90 L495,110" fill="none" stroke="#D1F843" stroke-width="2.5"/>
+                <path d="M495,110 L595,98 L695,72 L780,55" fill="none" stroke="#D1F843" stroke-width="2" stroke-dasharray="6 4" opacity=".55"/>
+                <circle cx="495" cy="110" r="5" fill="#D1F843"/>
+              </svg>
+            </div>
+          </section>
+          <div class="goals">
+            <div class="gcard"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>HCP-mål</div><div class="ttl">Fra 12,4 til <span class="em">9,5</span>.</div><div class="row"><span class="now">12,4</span><span class="target">→ <span class="em">9,5</span></span></div><div class="pbar"><div class="fl" style="width:38%"></div></div><span class="cta">Detaljer →</span></div>
+            <div class="gcard"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg></div>Score-mål</div><div class="ttl">Beat 85 · 5 / 10.</div><div class="row"><span class="now">5 / 10</span></div><div class="pbar"><div class="fl" style="width:50%"></div></div><span class="cta">Detaljer →</span></div>
+            <div class="gcard"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>Ferdighet</div><div class="ttl">Putt &lt; 2 m: <span class="em">72 %</span>.</div><div class="row"><span class="now">72 %</span></div><div class="pbar"><div class="fl near" style="width:72%"></div></div><span class="cta">Detaljer →</span></div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 HOVER -->
+  <section class="ab" data-screen-label="04 Hover · tooltip + mål-card">
+    <div class="ab-label"><span class="num">04</span><span class="ttl">Hover-states — datapunkt-tooltip + mål-card</span><span class="meta">1448 × 540</span></div>
+    <div class="ab-frame">
+      <div style="padding:48px;background:var(--surface)">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:18px">Datapunkt på HCP-graf viser tooltip · mål-card løftes med primary-border</div>
+        <section class="hcp" style="position:relative">
+          <div class="top">
+            <div class="left"><div class="eyebrow">HCP-trend</div><div class="big">12,4</div></div>
+          </div>
+          <div class="chart" style="height:140px">
+            <svg viewBox="0 0 800 140" preserveAspectRatio="none">
+              <line x1="0" y1="42" x2="800" y2="42" stroke="rgba(209,248,67,.4)" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <path d="M20,28 L120,30 L220,42 L320,48 L420,68 L495,78" fill="none" stroke="#D1F843" stroke-width="2.5"/>
+              <circle cx="320" cy="48" r="6" fill="#D1F843" stroke="#0F2A22" stroke-width="2"/>
+              <line x1="320" y1="48" x2="320" y2="140" stroke="#D1F843" stroke-width="1" stroke-dasharray="3 3" opacity=".4"/>
+            </svg>
+            <div class="tt" style="left:240px;top:-90px"><div class="l1">Uke 14 · 6. apr</div><div class="l2">12,7</div><div class="l3">3 runder · snitt 84,3</div></div>
+          </div>
+          <span class="anno bottom" style="left:38%;bottom:-22px">DATAPUNKT-HOVER · tooltip</span>
+        </section>
+        <div class="goals" style="margin-top:48px">
+          <div class="gcard hover"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>HCP-mål<span class="badge">Sesongmål</span></div>
+            <div class="ttl">Fra 12,4 til <span class="em">9,5</span>.</div>
+            <div class="row"><span class="now">12,4</span><span class="target">→ <span class="em">9,5</span></span></div>
+            <div class="pbar"><div class="fl" style="width:38%"></div></div>
+            <span class="cta" style="color:var(--brand-primary);font-weight:600">Detaljer <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            <span class="anno right" style="left:calc(100% + 12px);top:30px">HOVER · primary-border</span>
+          </div>
+          <div class="gcard"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg></div>Score-mål</div><div class="ttl">Beat 85.</div></div>
+          <div class="gcard"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>Ferdighet</div><div class="ttl">Putt &lt; 2 m.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 LOADING -->
+  <section class="ab" data-screen-label="05 Loading">
+    <div class="ab-label"><span class="num">05</span><span class="ttl">Loading-state</span><span class="meta">1448 × 720</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="nav">
+          <div class="nav-logo"><div class="mark">AK</div><div class="n">AK Golf<span class="dim">·player</span></div></div>
+          <div class="nav-item active">Mål</div>
+        </aside>
+        <main class="main">
+          <header class="hero"><div><div class="crumb">Mål · synkroniserer</div><h1 style="color:var(--ink-subtle)">Henter mål-oversikt …</h1></div></header>
+          <div style="background:linear-gradient(135deg,#0F2A22 0%,#163027 60%);border-radius:24px;padding:28px;color:#F5F4EE">
+            <div class="skel" style="width:140px;height:11px;background:rgba(255,255,255,.12)"></div>
+            <div class="skel" style="width:180px;height:48px;margin-top:8px;background:rgba(255,255,255,.10)"></div>
+            <div class="skel" style="width:100%;height:140px;margin-top:18px;border-radius:12px;background:rgba(255,255,255,.08)"></div>
+          </div>
+          <div class="goals">
+            <div class="gcard" style="cursor:default"><div class="skel" style="width:100px;height:11px"></div><div class="skel" style="width:80%;height:24px;margin-top:8px"></div><div class="skel" style="width:100%;height:8px;margin-top:14px;border-radius:4px"></div></div>
+            <div class="gcard" style="cursor:default"><div class="skel" style="width:100px;height:11px"></div><div class="skel" style="width:60%;height:24px;margin-top:8px"></div><div class="skel" style="width:100%;height:8px;margin-top:14px;border-radius:4px"></div></div>
+            <div class="gcard" style="cursor:default"><div class="skel" style="width:100px;height:11px"></div><div class="skel" style="width:60%;height:24px;margin-top:8px"></div><div class="skel" style="width:100%;height:8px;margin-top:14px;border-radius:4px"></div></div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 EMPTY -->
+  <section class="ab" data-screen-label="06 Empty · ny bruker">
+    <div class="ab-label"><span class="num">06</span><span class="ttl">Empty — ny bruker uten data</span><span class="meta">1448 × 700</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="nav">
+          <div class="nav-logo"><div class="mark">AK</div><div class="n">AK Golf<span class="dim">·player</span></div></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7"/></svg>Hjem</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Tren</div>
+          <div class="nav-item active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>Mål</div>
+          <div class="nav-foot"><div class="av">MR<span class="tier">NY</span></div><div class="who"><span class="n">Markus R</span><span class="r">Onboarding</span></div></div>
+        </aside>
+        <main class="main">
+          <header class="hero"><div><div class="crumb">Mål · velkommen</div><h1>Sett ditt <span class="em">første mål</span>.</h1><div class="meta"><span>Mål gjør det lettere å se progresjon. Vi har 3 forslag basert på handicap.</span></div></div></header>
+          <div style="padding:36px;background:linear-gradient(135deg,#FAFAF7 0%,#F5F2EA 100%);border:2px dashed #D8D5CC;border-radius:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px">
+            <div style="width:56px;height:56px;border-radius:16px;background:var(--accent-bg);color:#0A1F18;display:flex;align-items:center;justify-content:center;margin-bottom:6px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+            <h2 style="font-family:var(--font-display);font-size:26px;font-style:italic;font-weight:400;margin:0">Trend tilgjengelig fra 5+ runder.</h2>
+            <p style="font-size:14px;color:var(--ink-muted);max-width:520px;margin:0 0 12px">Du har <strong>0 av 5</strong>. Logg første runde for å starte HCP-trend, eller sett et ferdighetsmål mens du venter.</p>
+            <div style="display:flex;gap:10px"><button class="btn btn-primary" style="height:44px;padding:12px 22px"><svg width="14" height="14" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Logg første runde</button><button class="btn btn-ghost" style="height:44px"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>Sett ferdighetsmål</button></div>
+          </div>
+          <div class="goals">
+            <div class="gcard" style="border-style:dashed"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>Forslag · HCP</div><div class="ttl">Senk til <span class="em">10,0</span>.</div><div style="font-size:13px;color:var(--ink-muted)">Realistisk innen sesongslutt basert på 12,4 nå.</div><span class="cta">Sett som mål +</span></div>
+            <div class="gcard" style="border-style:dashed"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg></div>Forslag · Score</div><div class="ttl">Beat <span class="em">85</span>.</div><div style="font-size:13px;color:var(--ink-muted)">5 ganger i sesongen 2026.</div><span class="cta">Sett som mål +</span></div>
+            <div class="gcard" style="border-style:dashed"><div class="h"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></div>Forslag · Putt</div><div class="ttl"><span class="em">85 %</span> putt &lt; 2 m.</div><div style="font-size:13px;color:var(--ink-muted)">Måles per runde.</div><span class="cta">Sett som mål +</span></div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 MOBILE -->
+  <section class="ab" data-screen-label="07 Mobil">
+    <div class="ab-label"><span class="num">07</span><span class="ttl">Mobil ≤ 640 px</span><span class="meta">392 px</span></div>
+    <div class="ab-frame">
+      <div class="mobile-wrap">
+        <div class="mobile">
+          <div class="m-status"><span>09:14</span><span><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="19" height="9" rx="2"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/></svg></span></div>
+          <div class="m-top"><div class="greet">Mål · onsdag</div><div class="av">MR</div></div>
+          <div class="m-hero"><h1>Mål — <span class="em">hvor du står</span>.</h1></div>
+          <div class="m-hcp">
+            <div class="e">HCP-trend · 12 mnd</div>
+            <div class="big">12,4 <span style="font-size:14px;color:var(--brand-accent)">↓ −1,8</span></div>
+            <div class="sub">Mål: <span class="em">9,5</span> · projeksjon <span class="em">10,2</span></div>
+            <div class="chart">
+              <svg viewBox="0 0 360 80" preserveAspectRatio="none" width="100%" height="80">
+                <line x1="0" y1="20" x2="360" y2="20" stroke="rgba(209,248,67,.4)" stroke-width="1" stroke-dasharray="3 3"/>
+                <path d="M10,12 L60,14 L110,18 L160,28 L210,38 L240,46" fill="none" stroke="#D1F843" stroke-width="2"/>
+                <path d="M240,46 L290,40 L330,28 L355,18" fill="none" stroke="#D1F843" stroke-width="2" stroke-dasharray="4 3" opacity=".55"/>
+                <circle cx="240" cy="46" r="4" fill="#D1F843"/>
+              </svg>
+            </div>
+          </div>
+          <div class="m-goals">
+            <div class="m-g"><div class="h">HCP-mål</div><div class="ttl">Fra 12,4 til 9,5.</div><div class="row"><span class="now">12,4</span><span class="target">38 %</span></div><div class="pbar"><div class="fl" style="width:38%"></div></div></div>
+            <div class="m-g"><div class="h">Score-mål · Beat 85</div><div class="ttl">5 / 10.</div><div class="row"><span class="now">5</span><span class="target">5 igjen</span></div><div class="pbar"><div class="fl" style="width:50%"></div></div></div>
+            <div class="m-g"><div class="h">Putt &lt; 2 m</div><div class="ttl">72 %.</div><div class="row"><span class="now">72 %</span><span class="target">→ 85 %</span></div><div class="pbar"><div class="fl" style="width:72%;background:linear-gradient(90deg,#1A7D56,#D1F843)"></div></div></div>
+          </div>
+          <div style="padding:0 18px 14px"><div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px">Pyramide</div>
+            <div style="display:flex;gap:8px;justify-content:space-between">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="position:relative;width:48px;height:48px"><svg viewBox="0 0 36 36" style="width:48px;height:48px;transform:rotate(-90deg)"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#A32D2D" stroke-width="3" stroke-dasharray="54.5 87.96" stroke-linecap="round"/></svg><span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600">62</span></div><span style="font-size:9px;color:var(--ink-subtle);font-weight:600;letter-spacing:.04em;text-transform:uppercase">FYS</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="position:relative;width:48px;height:48px"><svg viewBox="0 0 36 36" style="width:48px;height:48px;transform:rotate(-90deg)"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#7A998C" stroke-width="3" stroke-dasharray="68.6 87.96" stroke-linecap="round"/></svg><span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600">78</span></div><span style="font-size:9px;color:var(--ink-subtle);font-weight:600;letter-spacing:.04em;text-transform:uppercase">TEK</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="position:relative;width:48px;height:48px"><svg viewBox="0 0 36 36" style="width:48px;height:48px;transform:rotate(-90deg)"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#A6651E" stroke-width="3" stroke-dasharray="62.5 87.96" stroke-linecap="round"/></svg><span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600">71</span></div><span style="font-size:9px;color:var(--ink-subtle);font-weight:600;letter-spacing:.04em;text-transform:uppercase">SLAG</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="position:relative;width:48px;height:48px"><svg viewBox="0 0 36 36" style="width:48px;height:48px;transform:rotate(-90deg)"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#264E3B" stroke-width="3" stroke-dasharray="59.8 87.96" stroke-linecap="round"/></svg><span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600">68</span></div><span style="font-size:9px;color:var(--ink-subtle);font-weight:600;letter-spacing:.04em;text-transform:uppercase">SPIL</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="position:relative;width:48px;height:48px"><svg viewBox="0 0 36 36" style="width:48px;height:48px;transform:rotate(-90deg)"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#0A1F18" stroke-width="3" stroke-dasharray="48.4 87.96" stroke-linecap="round"/></svg><span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600">55</span></div><span style="font-size:9px;color:var(--ink-subtle);font-weight:600;letter-spacing:.04em;text-transform:uppercase">TUR</span></div>
+            </div>
+          </div>
+          <div class="m-tabs">
+            <div class="m-tab"><div class="icw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>Hjem</div>
+            <div class="m-tab"><div class="icw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>Tren</div>
+            <div class="m-tab active"><div class="icw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2"/></svg></div>Mål</div>
+            <div class="m-tab"><div class="icw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5"/></svg></div>Coach</div>
+            <div class="m-tab"><div class="icw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/></svg></div>Meg</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

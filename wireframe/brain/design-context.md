@@ -18,17 +18,22 @@ Domenet er golfcoaching: spillere har handicap, slår runder, registrerer Stroke
 
 ## Layout Patterns
 
-- **Sidebar + content** — fast venstre sidebar (240px), scrollbart hovedinnhold
-- **12-kolonne bento grid** — asymmetrisk på dashboards, ikke 3×1 uniform
-- **Asymmetri-prinsipp** — ALDRI lik bredde på alle moduler. Bevisst hierarki: ett hero-element + 2–4 støtteelementer i variert størrelse
+- **BESLUTTET 2026-05-17: Cockpit Strip (Option 2)** — erstatter vertikal sidebar med horisontalt nav-strip
+- **Cockpit Strip:** 72px mørk forest-strip (`linear-gradient #003D2C → #005840`) med logo til venstre, 8 seksjons-pills i midten, søk til høyre
+- **Aktiv pill:** Lime `#D1F843` med stadium clip-path (`polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)`)
+- **3-sone layout under strip:** Zone A (I dag + godkjenninger, 38%) · Zone B (Spillere + KPI, 35%) · Zone C (AI Feed, 27%)
+- **Ingen vertikal sidebar** på CoachHQ. PlayerHQ beholder 5-tabs bunnav på mobil.
+- **Asymmetri-prinsipp** — ALDRI lik bredde på alle moduler. Bevisst hierarki: ett hero-element + 2–4 støtteelementer
 - **Maks 3 lime (`#D1F843`)-elementer synlige per skjerm** — accent skal være sjelden
-- **Kort-typer:** Flush (ingen padding/border, hele bredden), Standard (16px radius, hvit bg, subtil border), Featured (gradient eller accent-stripe)
+- **Kort-typer:** Flush, Standard (cream bg, subtil border), Featured (gradient eller lime-stripe)
+- **Inline-godkjenning:** ✓/✕ direkte i godkjennings-rader — ingen ekstra navigasjon til egen side
 
 ## Navigation
 
-- **PlayerHQ sidebar** (5 hovedtabs): Hjem, Tren, Mål, Coach (tier-gatet Pro/Elite), Meg
-- **CoachHQ sidebar:** Hub, Daglig Brief, Spillere, Coaching Board, Godkjenninger, Plans, Tests, Bookinger osv.
-- **Sidebar-aktiv:** PlayerHQ bruker `#005840`-stripe; CoachHQ bruker `#D1F843`-stripe
+- **CoachHQ:** Horisontalt Cockpit Strip (8 seksjons-pills): I dag · Spillere · Plans · Kalender · Anlegg · Innsikt · AI Lab · Innstillinger
+- **PlayerHQ sidebar** (5 hovedtabs): Hjem, Tren, Mål, Coach (tier-gatet Pro/Elite), Meg — beholder vertikal sidebar
+- **CoachHQ aktiv pill:** Lime `#D1F843` med stadium clip-path
+- **PlayerHQ sidebar-aktiv:** `#005840`-stripe
 - **Bunnav på mobil:** ikoner + label, fast nederst
 
 ## Page Types
