@@ -455,13 +455,99 @@ Aldri:
 
 ---
 
-## 10. Ikonografi
+## 10. Ikonografi — to-tier system
 
-### Eneste bibliotek: Lucide
+Sports Editorial bruker **typografi som primær ikonografi**. Det
+forsterker hele systemets DNA (Instrument Serif italic + JetBrains Mono).
+Lucide brukes kun for nøytrale UI-utility-handlinger.
 
-Stroke 1.5px, `currentColor`. Aldri farget direkte.
+### Tier 1 — Typografi-glyfer (golf-domene)
 
-### Størrelser
+**Regelen:** Hvis konseptet har et navn eller et tall, ER navnet/tallet
+ikonet. Ingen tegning nødvendig.
+
+#### Shot-typer (italic Instrument Serif)
+
+| Konsept | Glyf | Bruk |
+|---|---|---|
+| Tee total | *Tee* | Driver-shot, tee-box |
+| Pitch | *Pitch* | Høy, kort approach |
+| Chip | *Chip* | Lav rull-over fra fringe |
+| Lob | *Lob* | Over hinder, tett pin |
+| Bunker | *Bunker* | Ball i sand |
+| Putt | *Putt* | På green |
+
+#### Distance-buckets (JetBrains Mono)
+
+| Konsept | Glyf | Bruk |
+|---|---|---|
+| Approach 200+ | `200+` | Long iron |
+| Approach 150–200 | `150-200` | Mid iron |
+| Approach 100–150 | `100-150` | Short iron |
+| Approach 50–100 | `50-100` | Wedge approach |
+| Putt 0–3 ft | `0-3` | Tap-in |
+| Putt 3–5 ft | `3-5` | Pressure |
+| Putt 5–10 ft | `5-10` | Make-distance |
+| Putt 10–15 ft | `10-15` | Birdie range |
+| Putt 15–25 ft | `15-25` | Lag-rate |
+| Putt 25–40 ft | `25-40` | Long lag |
+| Putt 40+ ft | `40+` | Survive |
+
+#### Pyramide-kategorier (italic-uppercase eller mono)
+
+| Pyramide | Glyf | Farge |
+|---|---|---|
+| FYS | *FYS* | #003B2A |
+| TEK | *TEK* | #005840 |
+| SLAG | *SLAG* | #2A7D5A |
+| SPILL | *SPILL* | #B7C97D |
+| TURN | *TURN* | #D1F843 (mørk tekst) |
+
+### Display-modes for typografi-glyfer
+
+**Mode A — Inline editorial.** Glyf står midt i tekst, ingen ramme:
+> Markus traff *Chip* tre ganger og <span style="font-family: mono">5-10</span> putts med <span style="font-family: mono">4/4</span> make-rate.
+
+**Mode B — Hero (stort).** Italic 56-128px som ikon-erstatning i kort.
+Brukes i hero-stat-blocks.
+
+**Mode C — Badge (pill med ramme).** 32px høyde, italic eller mono inni.
+Brukes som filter-chip, tag, kategori-marker.
+
+**Mode D — Composite.** Stables: *Approach* `150-200` i én tag.
+
+### Størrelsesskala for glyfer
+
+| Token | Px | Mode |
+|---|---|---|
+| `--glyph-tiny` | 11-13 | Inline body |
+| `--glyph-sm` | 14-16 | Badge, list-item |
+| `--glyph-md` | 20-28 | Headline accent |
+| `--glyph-lg` | 36-48 | Card hero |
+| `--glyph-xl` | 64-96 | Page hero |
+| `--glyph-cover` | 96-128 | Cover-stat |
+
+### Tier 2 — Lucide (UI-utility)
+
+Brukes kun for **nøytrale UI-handlinger** som typografi ikke kan
+løse. Stroke 1.5px, `currentColor`. Aldri farget direkte.
+
+#### Tillatte Lucide-ikoner
+
+| Kategori | Ikoner |
+|---|---|
+| Navigation | `ArrowLeft`, `ArrowRight`, `ArrowUp`, `ArrowDown`, `ChevronRight`, `ChevronLeft`, `ChevronDown`, `ExternalLink` |
+| Status | `Check`, `X`, `AlertTriangle`, `AlertCircle`, `Info`, `CheckCircle2` |
+| Data | `TrendingUp`, `TrendingDown`, `Minus`, `Activity`, `BarChart2`, `LineChart` |
+| Time | `Calendar`, `Clock`, `CalendarDays` |
+| Place | `MapPin`, `Globe`, `Home` |
+| Person | `User`, `Users`, `UserCircle2` |
+| Communication | `MessageCircle`, `Send`, `Mail`, `Bell` |
+| Object | `Target`, `Crosshair`, `Pin`, `Lightbulb`, `Sparkles`, `Search` |
+| Action | `Plus`, `Edit`, `Trash2`, `Download`, `Share`, `Settings`, `Filter`, `MoreHorizontal` |
+| Media | `Play`, `Pause`, `Image`, `Video`, `FileText` |
+
+#### Lucide-størrelser
 
 | Token | Px | Bruk |
 |---|---|---|
@@ -474,22 +560,18 @@ Stroke 1.5px, `currentColor`. Aldri farget direkte.
 ### Forbudte ikoner
 
 - Emoji (aldri 🎉 👋 ⭐ 🔥 etc.)
-- Custom dekorative SVG
-- Filled-style ikoner (kun outline)
+- Custom dekorative SVG-tegninger (ingen "shot trajectory drawings")
+- Filled-style Lucide-ikoner (kun outline)
 - Multi-color ikoner
+- Generic stock-illustrasjoner
 
-### Tillatte Lucide-ikoner (most-used)
+### Hvorfor typografi-først?
 
-Navigation: `ArrowLeft`, `ArrowRight`, `ArrowUp`, `ArrowDown`, `ChevronRight`,
-`ChevronLeft`, `ExternalLink`
-Status: `Check`, `X`, `AlertTriangle`, `AlertCircle`, `Info`
-Data: `TrendingUp`, `TrendingDown`, `Minus`, `Activity`, `BarChart2`
-Time: `Calendar`, `Clock`, `CalendarDays`
-Place: `MapPin`, `Globe`
-Person: `User`, `Users`, `UserCircle2`
-Communication: `MessageCircle`, `Send`, `Mail`
-Object: `Target`, `Crosshair`, `Zap`, `Pin`, `Lightbulb`, `Sparkles`
-Action: `Plus`, `Edit`, `Trash2`, `Download`, `Share`, `Settings`
+1. **Matcher brand-DNA** — Instrument Serif italic er allerede signaturen
+2. **Skalérer perfekt** — text er text, fungerer 11px til 128px
+3. **Aldri tvetydig** — *Chip* betyr alltid Chip
+4. **Editorial-konsistens** — magazine bruker typografi som hovedelement
+5. **Null asset-administrasjon** — ingen SVG-bibliotek å vedlikeholde
 
 ---
 
@@ -1993,32 +2075,219 @@ const formatted = value < 0 ? `${minustegn}${Math.abs(value)}` : `+${value}`;
 
 ---
 
-## 26. Responsiv tenkning
+## 26. Multi-device wireframing
 
-### Breakpoints
+Hver skjerm leveres som **tre fullferdige wireframes** — desktop, iPad, iPhone.
+Ikke "responsive that breaks at breakpoints" — tre intensjonelle utgaver.
 
-| Bredde | Navn | Kontekst |
-|---|---|---|
-| <768px | Mobile | Spilleren mellom slag |
-| 768-1023px | Tablet | Spilleren etter økt |
-| 1024-1439px | Laptop | Coach på kontor |
-| 1440px+ | Desktop | Stort skjerm |
+### De tre primær-formfaktorene
 
-### Mobile-tilpasninger
+| Enhet | Viewport | Kontekst | Magazine-metafor |
+|---|---|---|---|
+| **Desktop** | 1440×900 | Coach på kontor, spilleren hjemme | Magasin-spread (oppslag, 2 sider) |
+| **iPad** | 1024×768 (landscape) eller 768×1024 (portrait) | Tablet på pulten, coach på rangen | Magasin (én side full) |
+| **iPhone** | 393×852 (iPhone 15) | Mellom slag, kø på range, sengetid | Pocket-edition (kompakt) |
 
-- Cover-tittel: 56-72px (var 112)
-- Body: 17px (var 19)
-- Spreads stables vertikalt (8+4 → 12, 12)
-- Marginalia flyttes inline under elementet
-- Drop caps: 4× body (var 5×)
-- Photo aspect: prefer 4:5 over 3:2
-- Pull-tabs: full-width hvis primary
+### A. Desktop — magasin-spread
+
+**Layout-paradigme:** 12-kolonne magasin med sidebar TOC.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  MASTHEAD ─────────────────────────────────────  ⌘K        │ ← 64-80px topp
+├─────────────────────────────────────────────────────────────┤
+│             │                                                 │
+│  SIDEBAR    │  ┌───────────────────────────────────────────┐ │
+│  TOC        │  │  COVER spread (12-col)                     │ │
+│             │  └───────────────────────────────────────────┘ │
+│  240-280px  │  ┌──────────────────────┬───────────────────┐ │
+│             │  │  LEAD spread (8-col) │  Photo (4-col)    │ │
+│  - Hjem     │  └──────────────────────┴───────────────────┘ │
+│  - Trening  │  ┌────────────────────────────┐               │
+│  - Mål      │  │  DATA spread (6-col)        │  + annot.    │
+│  - Coach    │  └────────────────────────────┘               │
+│  - Meg      │  ┌───────────────────────────────────────────┐ │
+│             │  │  PULL QUOTE (10-col centered)              │ │
+│             │  └───────────────────────────────────────────┘ │
+│  Logout     │  KOLOFON                                       │
+│             │                                                 │
+└─────────────┴─────────────────────────────────────────────────┘
+```
+
+**Spesifikt for desktop:**
+- Sidebar TOC permanent venstre (240-280px)
+- Main content max-width 1000-1080px med padding 48-64px
+- Cover-tittel 96-128px Instrument Serif italic
+- Spreads stables vertikalt med 96-128px luft mellom
+- Photo aspects: bruk 4:5, 3:2 eller 16:9 vekslende
+- Command palette ⌘K alltid tilgjengelig
+- Marginalia i sidemarg (24-32px ekstra plass venstre/høyre)
+
+### B. iPad — magasin-kompakt
+
+**Layout-paradigme:** Single-column page med top-tab nav.
+
+```
+┌─────────────────────────────────────────────┐
+│  MASTHEAD ─────────────────────────  ⌘K    │ ← 56px topp
+├─────────────────────────────────────────────┤
+│  [Hjem] [Trening] [Mål] [Coach] [Meg]      │ ← Tab-bar 48px
+├─────────────────────────────────────────────┤
+│                                              │
+│  ┌─────────────────────────────────────┐   │
+│  │  COVER spread (full-bredde)          │   │
+│  └─────────────────────────────────────┘   │
+│                                              │
+│  ┌─────────────────────────────────────┐   │
+│  │  LEAD spread (8+4 fortsatt OK)       │   │
+│  └─────────────────────────────────────┘   │
+│                                              │
+│  ┌─────────────────────────────────────┐   │
+│  │  DATA spread (kondensert)            │   │
+│  └─────────────────────────────────────┘   │
+│                                              │
+│  ┌─────────────────────────────────────┐   │
+│  │  PULL QUOTE (centered)               │   │
+│  └─────────────────────────────────────┘   │
+│                                              │
+│  KOLOFON                                     │
+└─────────────────────────────────────────────┘
+```
+
+**Spesifikt for iPad:**
+- Ingen sidebar — top-tab nav i stedet (48px høyde)
+- Padding: 32-48px hver side
+- Cover-tittel: 72-96px (mellom desktop og mobile)
+- 8+4-kolonne-spreads beholdes
+- Touch-targets minimum 44px
+- ⌘K erstatte med søke-ikon høyre topp
+- Photo aspects: prefer 4:5 og 1:1 (portrait-vennlig)
+- Sticky bottom CTA for primær handling hvis lang skjerm
+
+### C. iPhone — pocket-edition
+
+**Layout-paradigme:** Single column med bottom-tab nav.
+
+```
+┌───────────────────────────┐
+│  MARKUS · DASH        ⌘K │ ← 44px topp (running head)
+├───────────────────────────┤
+│                            │
+│  EYEBROW · 17.05 · 03:31  │
+│                            │
+│  Markus —                  │
+│  nesten i mål.             │
+│  *Men ikke helt ennå.*     │
+│                            │
+│  HCP 4,2 i dag. Ned 1,8    │
+│  siden januar...           │
+│                            │
+│  [Photo 4:5]               │
+│                            │
+│  ─────────────             │
+│                            │
+│  STAT                      │
+│  12  ← count-up            │
+│  *Dager på rad i trening.* │
+│                            │
+│  ─────────────             │
+│                            │
+│  PULL QUOTE                │
+│  *"Bra arbeid i går..."*   │
+│  — ANDERS                  │
+│                            │
+│  ─────────────             │
+│                            │
+│  [Editorial card]          │
+│  [Editorial card]          │
+│  [Editorial card]          │
+│                            │
+├───────────────────────────┤
+│  [Sett i gang →]           │ ← Sticky CTA, full-bredde
+├───────────────────────────┤
+│  [Hjem][Tren][Mål][Coach][⋯]│ ← Bottom tab-bar 56px
+└───────────────────────────┘
+```
+
+**Spesifikt for iPhone:**
+- Bottom tab-bar (56px) med 4-5 hovedseksjoner + flere-knapp
+- Sticky primær CTA over tab-bar når relevant
+- Padding: 16-20px hver side
+- Cover-tittel: 48-56px (Instrument Serif italic fortsatt)
+- Body: 16-17px
+- Drop caps: 3.5-4× body (40-56px)
+- ALLE spreads stables vertikalt — null kolonner side-by-side
+- Photo aspects: prefer 4:5 og 16:9 (portrait + cinema)
+- Touch-targets minimum 44×44px
+- Pull-quote: 24-28px italic, ikke 44px
+- Skip noen marginalia — for trangt
+- ⌘K erstattes med søke-ikon (forstørrelsesglass) som åpner overlay
+
+### Hva som krymper, hva som beholdes
+
+| Element | Desktop | iPad | iPhone |
+|---|---|---|---|
+| Cover-tittel | 96-128px | 72-96px | 48-56px |
+| Lead body | 19px | 18px | 16-17px |
+| Pull quote | 44px | 36px | 24-28px |
+| Stat hero | 128px | 96px | 64-80px |
+| Drop cap | 5× body | 4.5× | 4× |
+| Margins | 80px | 32-48px | 16-20px |
+| Spread-bredder | 8+4, 6+6 | 8+4 | 12 (stack) |
+| Nav | Sidebar 280px | Top tab-bar | Bottom tab-bar |
+| Search/⌘K | Cmd+K | Top right | Search ikon |
+| Marginalia | Full | Inline | Skip eller inline |
+| Photo aspect | Vekslende | 4:5, 1:1 | 4:5, 16:9 |
+
+### Hva endrer seg IKKE
+
+- Brand-farger (cream, forest, lime alle 3 enheter)
+- Italic Instrument Serif hovedstemme (alle 3)
+- JetBrains Mono tabular-nums (alle 3)
+- Editorial tone og microcopy
+- Norsk locale
+- Magazine-spread-feel (selv pocket-edition er magasin, bare kompakt)
+
+### Wireframe-output-krav
+
+**Hver skjerm leveres som ÉN HTML-fil med tre viewport-seksjoner:**
+
+```html
+<!-- DESKTOP 1440×900 -->
+<section class="device device--desktop">
+  <div class="frame" style="width:1440px; height:900px;">
+    <!-- full magasin-spread layout -->
+  </div>
+</section>
+
+<!-- IPAD 1024×768 -->
+<section class="device device--ipad">
+  <div class="frame" style="width:1024px; height:768px;">
+    <!-- kompakt magasin layout -->
+  </div>
+</section>
+
+<!-- IPHONE 393×852 -->
+<section class="device device--iphone">
+  <div class="frame" style="width:393px; height:auto; min-height:852px;">
+    <!-- single-column pocket layout -->
+  </div>
+</section>
+```
+
+Plasseres vertikalt på en lengre side med separator-tekst mellom. Hver
+viewport rammes inn i en device-mockup (subtil border, evt. liten label
+"Desktop 1440px" / "iPad 1024px" / "iPhone 393px") slik at Anders ser alle
+tre på ett oppslag.
 
 ### Aldri
 
 - Hamburger-meny som primær desktop-nav
 - "View in app"-banner på mobil
 - Hide critical info bak "see more"
+- Bare bygge desktop og hope mobile er "responsive"
+- Bryte typografi-hierarkiet på mindre skjermer (Instrument Serif italic
+  forblir hovedstemmen overalt)
 
 ---
 
