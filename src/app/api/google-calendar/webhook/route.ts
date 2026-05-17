@@ -24,6 +24,9 @@ import { getCalendarApi, signWebhookToken } from "@/lib/google-calendar";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Google retrier hvis vi ikke svarer innen ~30s. events.list + flere DB-writes
+// kan ta tid ved store calendar-deltaer. 60s er trygg buffer.
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   const channelId = request.headers.get("x-goog-channel-id");

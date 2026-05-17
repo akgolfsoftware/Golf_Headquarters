@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import type Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import {
@@ -18,6 +18,9 @@ import {
 } from "@/lib/payments/record";
 
 export const runtime = "nodejs";
+// Gi webhook nok hode-rom mot cold starts + DB-writes.
+// Sideeffekter (e-post, Google Calendar push) flyttes ut via after().
+export const maxDuration = 60;
 
 function mapStripeStatus(s: string): SubscriptionStatus {
   switch (s) {
@@ -169,27 +172,31 @@ export async function POST(req: Request) {
               bookingId
             );
           } else {
-            // Send bekreftelses-e-post (best-effort, ikke feil hvis Resend nede)
-            try {
-              const { sendBookingConfirmation } = await import(
-                "@/lib/email/booking-emails"
-              );
-              await sendBookingConfirmation(bookingId);
-            } catch (err) {
-              console.error(
-                "[stripe-webhook] booking-confirmation-email failed",
-                err
-              );
-            }
-            // Push til coachens Google Calendar (best-effort)
-            try {
-              await pushBookingToCalendar(bookingId);
-            } catch (err) {
-              console.error(
-                "[stripe-webhook] calendar-push failed",
-                err
-              );
-            }
+            // Fire-and-forget sideeffekter: e-post + Google Calendar push.
+            // after() lar oss returnere 200 til Stripe umiddelbart, slik at
+            // vi unngår "pending_webhooks"-timeout. Resend og Google API kan
+            // henge i flere sekunder — det er ikke noe Stripe trenger å vente på.
+            after(async () => {
+              try {
+                const { sendBookingConfirmation } = await import(
+                  "@/lib/email/booking-emails"
+                );
+                await sendBookingConfirmation(bookingId);
+              } catch (err) {
+                console.error(
+                  "[stripe-webhook] booking-confirmation-email failed",
+                  err
+                );
+              }
+              try {
+                await pushBookingToCalendar(bookingId);
+              } catch (err) {
+                console.error(
+                  "[stripe-webhook] calendar-push failed",
+                  err
+                );
+              }
+            });
           }
         }
         break;
