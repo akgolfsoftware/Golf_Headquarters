@@ -70,23 +70,18 @@ export async function createBookingCheckout(
 
     const user = await getCurrentUser();
 
-    if (!user) {
-      return {
-        ok: false,
-        error: "Du må logge inn for å fullføre booking. Klikk 'Logg inn' øverst på siden.",
-      };
-    }
-
+    // userId er nullable — gjester booker uten konto.
+    // guestName/guestEmail/guestPhone brukes for kontakt og kvittering.
     const bookingData = {
-      userId: user.id,
+      userId: user?.id ?? null,
       serviceTypeId: service.id,
       locationId: lokasjon.id,
       startAt,
       endAt,
       status: "PENDING" as const,
       priceOre: service.priceOre,
-      guestName: input.name !== user.name ? input.name.trim() : null,
-      guestEmail: input.email.toLowerCase() !== user.email?.toLowerCase() ? input.email.trim().toLowerCase() : null,
+      guestName: user ? null : input.name.trim(),
+      guestEmail: user ? null : input.email.trim().toLowerCase(),
       guestPhone: input.phone.trim() || null,
       notes: input.notes.trim() || null,
     };

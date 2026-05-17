@@ -20,7 +20,7 @@ type Booking = {
   endAt: string; // ISO
   status: string;
   facilityId: string | null;
-  user: { id: string; name: string };
+  user: { id: string; name: string } | null;
   serviceType: { name: string };
 };
 
@@ -286,10 +286,10 @@ function BookingPiller({ booking }: { booking: Booking }) {
     <Link
       href={`/admin/bookings`}
       className={`rounded px-1.5 py-1 text-left text-[11px] leading-tight transition-opacity hover:opacity-80 ${farge}`}
-      title={`${booking.user.name} · ${booking.serviceType.name}`}
+      title={`${booking.user?.name ?? "Gjest"} · ${booking.serviceType.name}`}
     >
       <span className="block font-mono tabular-nums">{tid}</span>
-      <span className="block truncate">{booking.user.name}</span>
+      <span className="block truncate">{booking.user?.name ?? "Gjest"}</span>
     </Link>
   );
 }

@@ -161,7 +161,7 @@ export async function GET(req: Request) {
 
   const bookings: SearchBooking[] = bookingsRaw.map((b) => ({
     id: b.id,
-    playerName: b.user.name,
+    playerName: b.user?.name ?? "Gjest",
     startAt: b.startAt.toISOString(),
     serviceName: b.serviceType.name,
     href: `/admin/bookings/${b.id}`,

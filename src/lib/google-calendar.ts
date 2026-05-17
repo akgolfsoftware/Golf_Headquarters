@@ -223,9 +223,11 @@ export async function pushBookingToCalendar(bookingId: string): Promise<string |
 
   const calendar = getCalendarApi(conn);
 
-  const summary = `${booking.serviceType.name} — ${booking.user.name}`;
+  const userName = booking.user?.name ?? "Gjest";
+  const userEmail = booking.user?.email ?? null;
+  const summary = `${booking.serviceType.name} — ${userName}`;
   const description = [
-    `Spiller: ${booking.user.name} (${booking.user.email})`,
+    userEmail ? `Spiller: ${userName} (${userEmail})` : `Spiller: ${userName}`,
     booking.notes ? `Notater: ${booking.notes}` : null,
     `Booket via AK Golf Platform`,
   ]
@@ -238,7 +240,7 @@ export async function pushBookingToCalendar(bookingId: string): Promise<string |
     location: `${booking.location.name}, ${booking.location.address}`,
     start: { dateTime: booking.startAt.toISOString(), timeZone: "Europe/Oslo" },
     end: { dateTime: booking.endAt.toISOString(), timeZone: "Europe/Oslo" },
-    attendees: [{ email: booking.user.email, displayName: booking.user.name }],
+    attendees: userEmail ? [{ email: userEmail, displayName: userName }] : [],
   };
 
   let primaryEventId: string | null = booking.googleEventId;

@@ -218,7 +218,7 @@ type BookingRow = {
   status: string;
   priceOre: number;
   subscriptionId: string | null;
-  user: { id: string; name: string };
+  user: { id: string; name: string } | null;
   serviceType: { name: string };
   location: { name: string };
 };
@@ -271,12 +271,18 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
                       minute: "2-digit",
                     })}
                   </div>
-                  <Link
-                    href={`/admin/elever/${b.user.id}`}
-                    className="mt-1 block font-semibold text-foreground hover:text-primary"
-                  >
-                    {b.user.name}
-                  </Link>
+                  {b.user ? (
+                    <Link
+                      href={`/admin/elever/${b.user.id}`}
+                      className="mt-1 block font-semibold text-foreground hover:text-primary"
+                    >
+                      {b.user.name}
+                    </Link>
+                  ) : (
+                    <span className="mt-1 block font-semibold text-muted-foreground">
+                      Gjest
+                    </span>
+                  )}
                   <div className="mt-1 text-xs text-muted-foreground">
                     {b.location.name} · {b.serviceType.name}
                   </div>
@@ -311,7 +317,7 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
                   bookingId={b.id}
                   status={b.status}
                   startAt={b.startAt}
-                  playerName={b.user.name}
+                  playerName={b.user?.name ?? "Gjest"}
                 />
               </div>
             </div>
@@ -361,20 +367,24 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
                   </span>
                 </Td>
                 <Td>
-                  <Link
-                    href={`/admin/elever/${b.user.id}`}
-                    className="inline-flex items-center gap-2 hover:text-primary"
-                  >
-                    <span
-                      className="grid h-7 w-7 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
-                      style={{ background: avatarBg(b.user.name) }}
+                  {b.user ? (
+                    <Link
+                      href={`/admin/elever/${b.user.id}`}
+                      className="inline-flex items-center gap-2 hover:text-primary"
                     >
-                      {initials(b.user.name)}
-                    </span>
-                    <span className="font-medium text-foreground">
-                      {b.user.name}
-                    </span>
-                  </Link>
+                      <span
+                        className="grid h-7 w-7 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
+                        style={{ background: avatarBg(b.user.name) }}
+                      >
+                        {initials(b.user.name)}
+                      </span>
+                      <span className="font-medium text-foreground">
+                        {b.user.name}
+                      </span>
+                    </Link>
+                  ) : (
+                    <span className="font-medium text-muted-foreground">Gjest</span>
+                  )}
                 </Td>
                 <Td>
                   <div className="leading-tight">
@@ -420,7 +430,7 @@ function BookingTable({ rows }: { rows: BookingRow[] }) {
                       bookingId={b.id}
                       status={b.status}
                       startAt={b.startAt}
-                      playerName={b.user.name}
+                      playerName={b.user?.name ?? "Gjest"}
                     />
                   </div>
                 </Td>

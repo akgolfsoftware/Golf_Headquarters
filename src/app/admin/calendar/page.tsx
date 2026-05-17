@@ -255,7 +255,7 @@ export default async function AdminCalendar({
       top: topForHour(clampedStart),
       height: heightForRange(clampedStart, clampedEnd),
       timeLabel: `${b.startAt.toTimeString().slice(0, 5)} – ${b.endAt.toTimeString().slice(0, 5)}`,
-      title: `${b.user.name} · ${b.serviceType.name}`,
+      title: `${b.user?.name ?? "Gjest"} · ${b.serviceType.name}`,
       sub: b.location.name,
       startHour: clampedStart,
       endHour: clampedEnd,

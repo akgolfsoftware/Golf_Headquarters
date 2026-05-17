@@ -190,7 +190,7 @@ export default async function CapacityPage() {
                 </div>
                 <div className="min-w-0">
                   <div className="text-[13px] font-medium text-foreground">
-                    {b.user.name}
+                    {b.user?.name ?? "Gjest"}
                   </div>
                   <div className="text-[11px] text-muted-foreground">
                     {b.location.name}
@@ -233,7 +233,7 @@ function DagKolonne({
     ledig: number;
     pct: number;
     erIdag: boolean;
-    bookinger: { id: string; startAt: Date; user: { name: string }; serviceType: { name: string } }[];
+    bookinger: { id: string; startAt: Date; user: { name: string } | null; serviceType: { name: string } }[];
   };
 }) {
   return (
@@ -292,7 +292,7 @@ function DagKolonne({
                 {b.startAt.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}
               </div>
               <div className="truncate font-medium text-foreground">
-                {b.user.name}
+                {b.user?.name ?? "Gjest"}
               </div>
               <div className="truncate text-[10px] text-muted-foreground">
                 {b.serviceType.name}

@@ -364,7 +364,7 @@ async function UkeView({
                         key={b.id}
                         startH={startH}
                         endH={endH}
-                        title={`${b.user.name} · ${b.serviceType.name}`}
+                        title={`${b.user?.name ?? "Gjest"} · ${b.serviceType.name}`}
                         sub={b.serviceType.coach?.name ?? ""}
                         tone="booking"
                         bookingId={b.id}
@@ -524,10 +524,10 @@ async function MndView({
                     <div
                       key={b.id}
                       className="truncate rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-medium text-primary"
-                      title={`${b.user.name} · ${b.serviceType.name}`}
+                      title={`${b.user?.name ?? "Gjest"} · ${b.serviceType.name}`}
                     >
                       {String(b.startAt.getHours()).padStart(2, "0")}{" "}
-                      {b.user.name.split(" ")[0]}
+                      {b.user?.name.split(" ")[0] ?? "Gjest"}
                     </div>
                   ))}
                   {totaltEvents > 4 && (

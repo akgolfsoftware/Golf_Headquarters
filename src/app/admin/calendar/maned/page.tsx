@@ -126,7 +126,7 @@ export default async function KalenderManedPage({
       const timer = String(b.startAt.getHours()).padStart(2, "0");
       const navn = gruppe
         ? (b.serviceType?.name ?? "Gruppe")
-        : (b.user.name.split(" ")[0] ?? "Økt");
+        : (b.user?.name.split(" ")[0] ?? "Økt");
       return { time: timer, label: navn, tone };
     });
     return { events, total: liste.length };
@@ -304,7 +304,7 @@ export default async function KalenderManedPage({
                 <ScheduleEv
                   key={b.id}
                   t={String(b.startAt.getHours()).padStart(2, "0") + ":00"}
-                  name={b.user.name}
+                  name={b.user?.name ?? "Gjest"}
                   who={`${b.serviceType?.name ?? "Økt"}${b.serviceType?.coach?.name ? " · " + b.serviceType.coach.name : ""}`}
                 />
               ))}

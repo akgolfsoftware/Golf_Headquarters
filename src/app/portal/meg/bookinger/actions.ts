@@ -102,13 +102,15 @@ export async function cancelBooking(bookingId: string) {
     dateStyle: "medium",
     timeStyle: "short",
   });
-  await notify({
-    userId: booking.userId,
-    type: "booking",
-    title: "Booking avbestilt",
-    body: `${tidStr}. ${creditRefunded ? "Credit returnert." : kanRefunderes ? "Refusjon underveis." : "Mindre enn 24t — ingen refusjon."}`,
-    link: "/portal/meg/bookinger",
-  });
+  if (booking.userId) {
+    await notify({
+      userId: booking.userId,
+      type: "booking",
+      title: "Booking avbestilt",
+      body: `${tidStr}. ${creditRefunded ? "Credit returnert." : kanRefunderes ? "Refusjon underveis." : "Mindre enn 24t — ingen refusjon."}`,
+      link: "/portal/meg/bookinger",
+    });
+  }
 
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/admin/bookings");
@@ -217,13 +219,15 @@ export async function rescheduleBooking(input: {
     dateStyle: "medium",
     timeStyle: "short",
   });
-  await notify({
-    userId: booking.userId,
-    type: "booking",
-    title: "Booking flyttet",
-    body: `Ny tid: ${nyTidStr}.`,
-    link: "/portal/meg/bookinger",
-  });
+  if (booking.userId) {
+    await notify({
+      userId: booking.userId,
+      type: "booking",
+      title: "Booking flyttet",
+      body: `Ny tid: ${nyTidStr}.`,
+      link: "/portal/meg/bookinger",
+    });
+  }
 
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/admin/bookings");
