@@ -39,19 +39,21 @@ export function BekreftForm({
     }
     setError(null);
     startTransition(async () => {
-      try {
-        await createBookingCheckout({
-          slug,
-          start,
-          coachId,
-          name,
-          email,
-          phone,
-          notes,
-        });
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Kunne ikke opprette bestilling.");
+      const result = await createBookingCheckout({
+        slug,
+        start,
+        coachId,
+        name,
+        email,
+        phone,
+        notes,
+      });
+      if (!result.ok) {
+        setError(result.error);
+        return;
       }
+      // Naviger til Stripe Checkout
+      window.location.href = result.url;
     });
   }
 

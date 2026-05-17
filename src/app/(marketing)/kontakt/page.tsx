@@ -20,13 +20,13 @@ export const metadata: Metadata = {
 type Hours = { day: string; coaching: string; mulligan: string };
 
 const HOURS: Hours[] = [
-  { day: "Mandag", coaching: "09–20", mulligan: "06–24" },
-  { day: "Tirsdag", coaching: "09–20", mulligan: "06–24" },
-  { day: "Onsdag", coaching: "09–20", mulligan: "06–24" },
-  { day: "Torsdag", coaching: "09–20", mulligan: "06–24" },
-  { day: "Fredag", coaching: "09–17", mulligan: "06–24" },
-  { day: "Lørdag", coaching: "10–14", mulligan: "08–22" },
-  { day: "Søndag", coaching: "Stengt", mulligan: "08–22" },
+  { day: "Mandag", coaching: "09–20", mulligan: "07–00" },
+  { day: "Tirsdag", coaching: "09–20", mulligan: "07–00" },
+  { day: "Onsdag", coaching: "09–20", mulligan: "07–00" },
+  { day: "Torsdag", coaching: "09–20", mulligan: "07–00" },
+  { day: "Fredag", coaching: "09–17", mulligan: "07–00" },
+  { day: "Lørdag", coaching: "10–14", mulligan: "07–00" },
+  { day: "Søndag", coaching: "Stengt", mulligan: "07–00" },
 ];
 
 const FAQ = [
@@ -40,7 +40,7 @@ const FAQ = [
   },
   {
     q: "Hvor holder dere til?",
-    a: "Innendørs på Mulligan Borre (Horten) og utendørs på GFGK Bossum (Fredrikstad) fra mai til oktober.",
+    a: "Innendørs på Mulligan Indoor Golf i Fredrikstad og Sarpsborg, og utendørs på Gamle Fredrikstad Golfklubb fra mai til oktober.",
   },
   {
     q: "Tar dere bedriftsevent?",
@@ -169,8 +169,8 @@ export default function KontaktSide() {
               </em>
             </h2>
             <p className="mt-4 max-w-md text-[15px] leading-[1.6] text-muted-foreground">
-              Mulligan Borre er åpent med medlemskort 06–24 hele uka.
-              Coaching-timer må bookes innenfor coachenes arbeidstid.
+              Mulligan Indoor Golf er åpent 07–00 alle dager i Fredrikstad og
+              Sarpsborg. Coaching-timer må bookes innenfor coachenes arbeidstid.
             </p>
             <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-[13px] text-foreground">
               <Clock className="h-4 w-4 text-primary" strokeWidth={1.75} />
@@ -230,20 +230,26 @@ export default function KontaktSide() {
             Finn frem til oss
           </h2>
           <p className="mt-4 max-w-2xl text-[15px] leading-[1.6] text-muted-foreground">
-            Vi holder til på to anlegg — Mulligan Indoor på Borre for innendørs
-            trening, og GFGK Bossum for utendørs sesong.
+            Vi holder til på tre anlegg — Mulligan Indoor Golf i Fredrikstad og
+            Sarpsborg for innendørs trening hele året, og Gamle Fredrikstad
+            Golfklubb for utendørs sesong.
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
           <MapCard
-            place="Mulligan Indoor Borre"
-            address="Borreveien 12, 3186 Horten"
-            note="Innendørs · Trackman 4 · Åpent 06–24"
+            place="Mulligan Indoor Golf Fredrikstad"
+            address="Produksjonsveien 21, 1618 Fredrikstad"
+            note="Innendørs · 4× TrackMan 4 · Åpent 07–00"
           />
           <MapCard
-            place="GFGK Bossum"
-            address="Bossumveien 200, 1638 Gamle Fredrikstad"
+            place="Mulligan Indoor Golf Sarpsborg"
+            address="Bjørnstadveien 12, 1712 Sarpsborg"
+            note="Innendørs · 2× TrackMan iO · Åpent 07–00"
+          />
+          <MapCard
+            place="Gamle Fredrikstad Golfklubb"
+            address="Torsnesveien 16, 1630 Gamle Fredrikstad"
             note="Utendørs · Mai–oktober · 18 hull"
           />
         </div>

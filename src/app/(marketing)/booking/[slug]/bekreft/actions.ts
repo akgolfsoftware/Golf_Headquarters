@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
@@ -17,94 +16,138 @@ export type BookingFormInput = {
   notes: string;
 };
 
-export async function createBookingCheckout(input: BookingFormInput) {
-  const service = await prisma.serviceType.findUnique({
-    where: { slug: input.slug },
-  });
-  if (!service || !service.active) {
-    throw new Error("Tjeneste ikke tilgjengelig.");
-  }
+export type BookingResult =
+  | { ok: true; url: string }
+  | { ok: false; error: string };
 
-  const startAt = new Date(input.start);
-  if (isNaN(startAt.getTime())) throw new Error("Ugyldig dato.");
+export async function createBookingCheckout(
+  input: BookingFormInput,
+): Promise<BookingResult> {
+  try {
+    const service = await prisma.serviceType.findUnique({
+      where: { slug: input.slug },
+    });
+    if (!service || !service.active) {
+      return { ok: false, error: "Tjeneste ikke tilgjengelig." };
+    }
 
-  // Verifiser at slot fortsatt er ledig.
-  const ok = await isSlotStillAvailable(service.id, startAt, input.coachId);
-  if (!ok) throw new Error("Tiden ble dessverre booket av noen andre. Velg en annen tid.");
+    const startAt = new Date(input.start);
+    if (isNaN(startAt.getTime())) {
+      return { ok: false, error: "Ugyldig tidspunkt." };
+    }
 
-  const endAt = new Date(startAt.getTime() + service.durationMin * 60_000);
+    const ok = await isSlotStillAvailable(service.id, startAt, input.coachId);
+    if (!ok) {
+      return {
+        ok: false,
+        error: "Denne tiden ble dessverre booket av noen andre. Velg en annen tid.",
+      };
+    }
 
-  // Default-location: Mulligan for Trackman, GFGK for andre.
-  const lokasjon = await prisma.location.findFirst({
-    where: {
-      name: service.slug.includes("trackman")
-        ? "Mulligan Indoor Golf"
-        : "Gamle Fredrikstad GK",
-    },
-  });
-  if (!lokasjon) throw new Error("Mangler lokasjon i seed-data.");
+    const endAt = new Date(startAt.getTime() + service.durationMin * 60_000);
 
-  const user = await getCurrentUser();
+    // Finn lokasjon — prøv med kjente navn-varianter, fall tilbake til første tilgjengelige.
+    const wantMulligan = service.slug.includes("trackman");
+    const lokasjon = await prisma.location.findFirst({
+      where: wantMulligan
+        ? { OR: [{ name: { contains: "Mulligan" } }, { name: { contains: "mulligan" } }] }
+        : {
+            OR: [
+              { name: { contains: "Fredrikstad" } },
+              { name: { contains: "GFGK" } },
+              { name: { contains: "Bossum" } },
+              { name: { contains: "Golfklubb" } },
+            ],
+          },
+    }) ?? (await prisma.location.findFirst());
 
-  // Opprett booking med PENDING-status.
-  const booking = await prisma.booking.create({
-    data: {
-      userId: user?.id ?? "guest",
+    if (!lokasjon) {
+      return {
+        ok: false,
+        error: "Ingen lokasjon er registrert i systemet. Kontakt oss på post@akgolf.no.",
+      };
+    }
+
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return {
+        ok: false,
+        error: "Du må logge inn for å fullføre booking. Klikk 'Logg inn' øverst på siden.",
+      };
+    }
+
+    const bookingData = {
+      userId: user.id,
       serviceTypeId: service.id,
       locationId: lokasjon.id,
       startAt,
       endAt,
-      status: "PENDING",
+      status: "PENDING" as const,
       priceOre: service.priceOre,
-      guestName: user ? null : input.name.trim(),
-      guestEmail: user ? null : input.email.trim().toLowerCase(),
-      guestPhone: user ? null : input.phone.trim() || null,
+      guestName: input.name !== user.name ? input.name.trim() : null,
+      guestEmail: input.email.toLowerCase() !== user.email?.toLowerCase() ? input.email.trim().toLowerCase() : null,
+      guestPhone: input.phone.trim() || null,
       notes: input.notes.trim() || null,
-    },
-  });
+    };
 
-  // Stripe Checkout Session
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const stripe = stripeKlient();
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    customer_email: user?.email ?? input.email.trim().toLowerCase(),
-    line_items: [
-      {
-        price_data: {
-          currency: "nok",
-          product_data: {
-            name: service.name,
-            description: `${startAt.toLocaleString("nb-NO", { dateStyle: "full", timeStyle: "short" })} hos ${lokasjon.name}`,
+    const booking = await prisma.booking.create({ data: bookingData });
+
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf-hq.vercel.app";
+    const stripe = stripeKlient();
+
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      customer_email: user?.email ?? input.email.trim().toLowerCase(),
+      line_items: [
+        {
+          price_data: {
+            currency: "nok",
+            product_data: {
+              name: service.name,
+              description: `${startAt.toLocaleString("nb-NO", { dateStyle: "full", timeStyle: "short" })} hos ${lokasjon.name}`,
+            },
+            unit_amount: service.priceOre,
           },
-          unit_amount: service.priceOre,
+          quantity: 1,
         },
-        quantity: 1,
+      ],
+      metadata: {
+        bookingId: booking.id,
+        coachId: input.coachId,
+        serviceSlug: service.slug,
       },
-    ],
-    metadata: {
-      bookingId: booking.id,
-      coachId: input.coachId,
-      serviceSlug: service.slug,
-    },
-    success_url: `${appUrl}/booking/kvittering/${booking.id}?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${appUrl}/booking/${service.slug}`,
-    // Hold slot i 30 min (Stripe-minimum for expires_at)
-    expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
-  });
+      success_url: `${appUrl}/booking/kvittering/${booking.id}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/booking/${service.slug}`,
+      expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
+    });
 
-  await prisma.booking.update({
-    where: { id: booking.id },
-    data: { stripeCheckoutSessionId: session.id },
-  });
+    await prisma.booking.update({
+      where: { id: booking.id },
+      data: { stripeCheckoutSessionId: session.id },
+    });
 
-  await audit({
-    actorId: user?.id ?? null,
-    action: "booking.checkout_started",
-    target: `Booking:${booking.id}`,
-    metadata: { serviceSlug: service.slug, priceOre: service.priceOre },
-  });
+    await audit({
+      actorId: user?.id ?? null,
+      action: "booking.checkout_started",
+      target: `Booking:${booking.id}`,
+      metadata: { serviceSlug: service.slug, priceOre: service.priceOre },
+    });
 
-  if (!session.url) throw new Error("Stripe checkout URL mangler.");
-  redirect(session.url);
+    if (!session.url) {
+      return { ok: false, error: "Stripe checkout URL mangler. Prøv igjen." };
+    }
+
+    return { ok: true, url: session.url };
+  } catch (err) {
+    console.error("[createBookingCheckout]", err);
+    const msg = err instanceof Error ? err.message : "Ukjent feil";
+    // Ikke leak interne feilmeldinger til klienten i produksjon
+    return {
+      ok: false,
+      error: msg.startsWith("STRIPE")
+        ? "Betalingsfeil. Prøv igjen eller kontakt oss."
+        : msg,
+    };
+  }
 }

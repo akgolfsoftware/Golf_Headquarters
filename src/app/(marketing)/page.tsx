@@ -195,15 +195,15 @@ export default function Hjem() {
               </em>
             </>
           }
-          intro="Innendørs på Mulligan Borre med Trackman 4, og utendørs på GFGK Bossum gjennom sesong."
+          intro="Innendørs på Mulligan Indoor Golf i Fredrikstad og Sarpsborg med TrackMan, og utendørs på Gamle Fredrikstad Golfklubb gjennom sesong."
         />
 
         <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
           <FacilityCard
-            tag="Innendørs · Borre"
+            tag="Innendørs · Fredrikstad & Sarpsborg"
             title="Mulligan Indoor Golf Simulators"
-            description="Tre Trackman 4-simulatorer, kafé og lounge. Åpent 06–24 alle dager med medlemskort."
-            cta="Se Mulligan Borre"
+            description="Fire TrackMan 4-simulatorer i Fredrikstad og to TrackMan iO i Sarpsborg. Åpent 07–00 alle dager."
+            cta="Se mulligangolf.no"
             href="https://www.mulligangolf.no"
           />
           <FacilityCard

@@ -66,7 +66,7 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
     punkter: [
       {
         q: "Hvor er dere lokalisert?",
-        a: "Vi holder til på Gamle Fredrikstad Golfklubb (Bossumveien 6) og Mulligan Indoor Golf Simulators i Fredrikstad sentrum. Begge anlegg er fullt utstyrt for coaching året rundt.",
+        a: "Vi holder til på Mulligan Indoor Golf i Fredrikstad (Produksjonsveien 21) og Sarpsborg (Bjørnstadveien 12), samt Gamle Fredrikstad Golfklubb (Torsnesveien 16) fra mai til oktober. Alle anlegg er fullt utstyrt for coaching.",
       },
       {
         q: "Hva med utstyr — må jeg ha eget?",

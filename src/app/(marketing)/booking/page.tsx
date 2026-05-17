@@ -32,12 +32,12 @@ const LOCATIONS: Record<string, { id: string; navn: string; sted: string }> = {
   gfgk: {
     id: "gfgk",
     navn: "Gamle Fredrikstad Golfklubb",
-    sted: "Bossumveien 6, 1605 Fredrikstad",
+    sted: "Torsnesveien 16, 1630 Gamle Fredrikstad",
   },
   mulligan: {
     id: "mulligan",
-    navn: "Mulligan Indoor Golf",
-    sted: "Innendørs simulator-fasilitet",
+    navn: "Mulligan Indoor Golf Fredrikstad",
+    sted: "Produksjonsveien 21, 1618 Fredrikstad",
   },
 };
 
