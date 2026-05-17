@@ -143,22 +143,15 @@ export async function POST(req: Request) {
       }
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        await recordCheckoutSession(session);
-        if (session.subscription) {
-          const subId =
-            typeof session.subscription === "string"
-              ? session.subscription
-              : session.subscription.id;
-          const fullSub = await stripe.subscriptions.retrieve(subId);
-          await syncSubscription(fullSub);
-        }
-        // Booking-mode (one-time payment via metadata.bookingId)
+        // Booking-mode: rask CONFIRMED-update synkront, alt annet i bakgrunn
+        // for å unngå Stripes 10-sek webhook-timeout.
         const bookingId = session.metadata?.bookingId;
+        const paymentIntentId =
+          typeof session.payment_intent === "string"
+            ? session.payment_intent
+            : session.payment_intent?.id ?? null;
+
         if (bookingId && session.payment_status === "paid") {
-          const paymentIntentId =
-            typeof session.payment_intent === "string"
-              ? session.payment_intent
-              : session.payment_intent?.id ?? null;
           const result = await prisma.booking.updateMany({
             where: { id: bookingId },
             data: {
@@ -169,36 +162,55 @@ export async function POST(req: Request) {
           if (result.count === 0) {
             console.warn(
               "[stripe-webhook] checkout.session.completed: ukjent bookingId",
-              bookingId
+              bookingId,
             );
-          } else {
-            // Fire-and-forget sideeffekter: e-post + Google Calendar push.
-            // after() lar oss returnere 200 til Stripe umiddelbart, slik at
-            // vi unngår "pending_webhooks"-timeout. Resend og Google API kan
-            // henge i flere sekunder — det er ikke noe Stripe trenger å vente på.
-            after(async () => {
-              try {
-                const { sendBookingConfirmation } = await import(
-                  "@/lib/email/booking-emails"
-                );
-                await sendBookingConfirmation(bookingId);
-              } catch (err) {
-                console.error(
-                  "[stripe-webhook] booking-confirmation-email failed",
-                  err
-                );
-              }
-              try {
-                await pushBookingToCalendar(bookingId);
-              } catch (err) {
-                console.error(
-                  "[stripe-webhook] calendar-push failed",
-                  err
-                );
-              }
-            });
           }
         }
+
+        // ALT ANNET i bakgrunnen (etter 200 OK til Stripe):
+        //   - recordCheckoutSession (6 DB-queries, opp til 15 sek)
+        //   - subscription-sync (Stripe API-kall)
+        //   - sendBookingConfirmation (Resend, 1-3 sek)
+        //   - pushBookingToCalendar (Google API, 2-5 sek per kalender)
+        after(async () => {
+          try {
+            await recordCheckoutSession(session);
+          } catch (err) {
+            console.error("[stripe-webhook] recordCheckoutSession failed", err);
+          }
+
+          if (session.subscription) {
+            try {
+              const subId =
+                typeof session.subscription === "string"
+                  ? session.subscription
+                  : session.subscription.id;
+              const fullSub = await stripe.subscriptions.retrieve(subId);
+              await syncSubscription(fullSub);
+            } catch (err) {
+              console.error("[stripe-webhook] subscription-sync failed", err);
+            }
+          }
+
+          if (bookingId && session.payment_status === "paid") {
+            try {
+              const { sendBookingConfirmation } = await import(
+                "@/lib/email/booking-emails"
+              );
+              await sendBookingConfirmation(bookingId);
+            } catch (err) {
+              console.error(
+                "[stripe-webhook] booking-confirmation-email failed",
+                err,
+              );
+            }
+            try {
+              await pushBookingToCalendar(bookingId);
+            } catch (err) {
+              console.error("[stripe-webhook] calendar-push failed", err);
+            }
+          }
+        });
         break;
       }
       case "checkout.session.expired": {
