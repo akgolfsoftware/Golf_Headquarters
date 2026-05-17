@@ -11,7 +11,7 @@
 **AK Golf HQ er** Bloomberg Terminal møter The New York Times for golf-coaching.
 
 - **Premium uten å være pretensiøst** — datatetthet med ro
-- **Editorial luksus** — Instrument Serif italic gir signature-følelse
+- **Editorial luksus** — Inter Tight italic gir signature-følelse
 - **Norsk presisjon** — bokmål, æøå, ingen amerikanismer
 - **Verktøy for proff bruk** — ikke "fun"-app, ikke gamification-overload
 - **Anti-AI-slop** — bevisste design-valg, ingen generisk shadcn-standard
@@ -44,12 +44,12 @@ Fra `src/app/globals.css`:
 
 | Bruk | Font | Vekt | Stil | Eksempel |
 |---|---|---|---|---|
-| Hero h1 | Instrument Serif | 400 | italic | "Anders" (på Hub) |
-| Display | Instrument Serif | 400 | italic | "Krysstabuler all aktivitet" |
-| Section | Geist | 600 | regular | "Dagens første prioritet" |
-| Body | Geist | 400 | regular | Standard tekst |
-| Eyebrow | Geist Mono | 500 | uppercase, tracking 0.1em | "CoachHQ · Hub" |
-| Tall | Geist Mono | 600 | tabular-nums | KPI-verdier |
+| Hero h1 | Inter Tight | 400 | italic | "Anders" (på Hub) |
+| Display | Inter Tight | 400 | italic | "Krysstabuler all aktivitet" |
+| Section | Inter | 600 | regular | "Dagens første prioritet" |
+| Body | Inter | 400 | regular | Standard tekst |
+| Eyebrow | JetBrains Mono | 500 | uppercase, tracking 0.1em | "CoachHQ · Hub" |
+| Tall | JetBrains Mono | 600 | tabular-nums | KPI-verdier |
 
 Responsive: hero h1 skalerer `text-[28px] sm:text-[40px] md:text-[56px]` (aldri konstant 64px på mobil).
 
@@ -166,7 +166,7 @@ STEG 4 (i Claude Code): Verifiser
 2. **Aldri emojier i UI** — bruk Lucide-ikoner
 3. **Aldri amerikansk dato** — norsk format (`13.05.26` eller `13. mai`)
 4. **Aldri norske tegn ASCII-fallback** — alltid æ/ø/å
-5. **Aldri mer enn 3 fonter** — Geist, Geist Mono, Instrument Serif
+5. **Aldri mer enn 3 fonter** — Inter, Inter Tight, JetBrains Mono
 6. **Aldri konstant font-size på hero** — alltid responsive (`sm:` + `md:`)
 7. **Aldri shadcn-default uten polish** — bruk eksisterende komponent-mønstre
 8. **Aldri ny ikoner-pakke** — kun Lucide React

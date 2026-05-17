@@ -55,11 +55,11 @@ Tre fonter, lastet via `next/font/google` i `src/app/layout.tsx`. **Ingen andre 
 
 | Bruk | Font | Vekt | Stil | Tailwind |
 |---|---|---|---|---|
-| Hero h1 (display) | Instrument Serif | 400 | italic | `font-display italic` |
-| Section heading | Geist | 600 | regular | `font-semibold` |
-| Body | Geist | 400 | regular | (default) |
-| Caption / eyebrow | Geist Mono | 500 | uppercase, tracking 0.10em | `font-mono uppercase tracking-[0.10em]` |
-| Tabulære tall (KPI) | Geist Mono | 600 | tabular-nums | `font-mono tabular-nums` |
+| Hero h1 (display) | Inter Tight | 400 | italic | `font-display italic` |
+| Section heading | Inter | 600 | regular | `font-semibold` |
+| Body | Inter | 400 | regular | (default) |
+| Caption / eyebrow | JetBrains Mono | 500 | uppercase, tracking 0.10em | `font-mono uppercase tracking-[0.10em]` |
+| Tabulære tall (KPI) | JetBrains Mono | 600 | tabular-nums | `font-mono tabular-nums` |
 
 **Type-skala (mobil → desktop):**
 
@@ -74,7 +74,7 @@ Tre fonter, lastet via `next/font/google` i `src/app/layout.tsx`. **Ingen andre 
 | body-sm | `text-xs md:text-sm` | Sekundær |
 | caption | `text-[10px]` | Eyebrows, mono-labels |
 
-**Regler:** Aldri konstant `text-5xl` på hero (bryter mobil). Maks én italic Instrument Serif-tekst per seksjon. Tall i tabeller alltid `font-mono tabular-nums`.
+**Regler:** Aldri konstant `text-5xl` på hero (bryter mobil). Maks én italic Inter Tight-tekst per seksjon. Tall i tabeller alltid `font-mono tabular-nums`.
 
 ### 2.3 Spacing — 8pt grid (håndheves i kode-review)
 
@@ -263,7 +263,7 @@ Implementert i `src/components/shared/empty-state.tsx:20`. Brukes når liste/sek
 
 **Regler:**
 - Ikon alltid Lucide, 24px, stroke 1.5
-- Tagline: italic Instrument Serif kort (max 5 ord)
+- Tagline: italic Inter Tight kort (max 5 ord)
 - Sub: max 1 setning (≤80 tegn) — forklar hva som skjer hvis bruker handler
 - CTA-knapp: `primary` variant, kort verb ("Legg til økt")
 
@@ -422,7 +422,7 @@ Subtilt — ingen "feiringer". Toast eller inline grønn check.
 |---|---|---|---|
 | 1 | Hex-farger i kode (`#005840`) | Bryter dark mode + skaleringer | Bruk semantisk token: `bg-primary` |
 | 2 | Emojier i UI-tekst (🎉, 😊, ✅) | Bryter premium-tone, dårlig screen-reader | Bruk Lucide-ikon (`<CheckCircle />`) |
-| 3 | Flere enn 3 fonter | Bryter typografisk konsistens | Geist, Geist Mono, Instrument Serif — punkt |
+| 3 | Flere enn 3 fonter | Bryter typografisk konsistens | Inter, Inter Tight, JetBrains Mono — punkt |
 | 4 | Annet ikon-bibliotek (Heroicons, Phosphor) | Brytt visuell konsistens | Kun `lucide-react` |
 | 5 | Konstant `text-5xl` på hero | Knuser mobil-layout | Responsive: `text-2xl md:text-5xl` |
 | 6 | `any` i TypeScript | Skjuler bugs, bryter type-sikkerhet | Definer interface eller bruk `unknown` |
@@ -506,7 +506,7 @@ Subtilt — ingen "feiringer". Toast eller inline grønn check.
 
 - [ ] PageHeader øverst med eyebrow + titleLead + titleItalic
 - [ ] Maks én primary CTA per skjerm
-- [ ] Maks én italic Instrument Serif-tekst per seksjon
+- [ ] Maks én italic Inter Tight-tekst per seksjon
 - [ ] Mobile-layout testet (375px)
 - [ ] Tablet-layout testet (768px)
 - [ ] Desktop-layout testet (1280px)

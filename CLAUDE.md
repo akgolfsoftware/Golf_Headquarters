@@ -34,7 +34,7 @@ som alle de andre, men inneholder ingen UI-kode for sluttbrukere.
 - React 19
 - Prisma 7 + Supabase (Postgres)
 - Tailwind CSS v4 (CSS-first via `@theme` i `globals.css` — ingen `tailwind.config.ts`)
-- Geist + Geist Mono + Instrument Serif (alle via `next/font/google`)
+- Inter + Inter Tight + JetBrains Mono (alle via `next/font/google`)
 - Lucide React — eneste icon-bibliotek
 - npm (ikke pnpm, ikke yarn, ikke bun)
 
@@ -100,16 +100,17 @@ Tre fonter, alle gratis via Google Fonts, lastet via `next/font/google` i `layou
 
 | Font | Bruk | Tailwind | CSS-variabel |
 |---|---|---|---|
-| Geist | UI, brødtekst (default) | `font-sans` (default) | `--font-geist` |
-| Geist Mono | Tabulære tall, kode, data | `font-mono` | `--font-geist-mono` |
-| Instrument Serif | Display, editorial italic | `font-display` (custom) | `--font-instrument-serif` |
+| Inter | UI, brødtekst (default) | `font-sans` (default) | `--font-inter` |
+| Inter Tight | Display, hero-overskrifter | `font-display` (custom) | `--font-inter-tight` |
+| JetBrains Mono | Tabulære tall, kode, data, eyebrows | `font-mono` | `--font-jetbrains-mono` |
 
 **Regler:**
-- Geist er variable, brukes som default (`font-sans`)
-- Instrument Serif lastes med `weight: "400"` og `style: ["normal", "italic"]`
-- Italic Instrument Serif gir editorial luxury-feel — bruk i hero-overskrifter
-- Geist Mono har `font-variant-numeric: tabular-nums` (eller bruk `.tabular`-klassen)
+- Inter er variable, brukes som default (`font-sans`)
+- Inter Tight har strammere bokstavspasiering, brukes for store overskrifter
+- JetBrains Mono har `font-variant-numeric: tabular-nums` (eller bruk `.tabular`-klassen)
 - Ingen andre fonter — ikke import fra Google Fonts CDN, ikke bruk `<link>`-tags
+
+**Editorial italic:** Hvis hero-overskrifter trenger en luxury-italic-feel (f.eks. på marketing-sider), bruk Inter Tight med `italic`-klassen — IKKE legg til Instrument Serif som fjerde font.
 
 ### Ikoner
 
@@ -134,7 +135,7 @@ akgolf-hq/
 ├── src/
 │   ├── app/                    # App Router — sider, layouts, route handlers
 │   │   ├── globals.css         # Designsystem-tokens (@theme)
-│   │   ├── layout.tsx          # Root layout, Geist + Instrument Serif
+│   │   ├── layout.tsx          # Root layout, Inter + Inter Tight + JetBrains Mono
 │   │   └── page.tsx
 │   ├── components/             # Delte komponenter (tom inntil videre)
 │   │   └── ui/                 # Primitives (Button, Card, etc.)
