@@ -123,3 +123,123 @@ export async function deleteResult(tournamentId: string, resultId: string) {
   });
   revalidatePath(`/admin/tournaments/${tournamentId}`);
 }
+
+// ============================================================
+// Påmeldinger (TournamentEntry) — turneringsplanlegger
+// ============================================================
+
+const TILLATT_PRIORITET = ["MAJOR", "NORMAL", "LOCAL"] as const;
+type Prioritet = (typeof TILLATT_PRIORITET)[number];
+
+function valgPrioritet(p: string | undefined | null): Prioritet {
+  return TILLATT_PRIORITET.includes(p as Prioritet) ? (p as Prioritet) : "NORMAL";
+}
+
+export type PaameldingInput = {
+  userId: string;
+  priority?: string;
+};
+
+export async function meldPaSpillere(
+  tournamentId: string,
+  players: PaameldingInput[],
+) {
+  const coach = await krevCoach();
+  const turnering = await prisma.tournament.findUnique({
+    where: { id: tournamentId },
+    select: { id: true, startDate: true, name: true },
+  });
+  if (!turnering) throw new Error("not_found");
+
+  const aaret = turnering.startDate.getFullYear();
+  let opprettet = 0;
+  let oppdatert = 0;
+
+  for (const p of players) {
+    if (!p.userId) continue;
+    const priority = valgPrioritet(p.priority);
+
+    // Finn evt. SeasonPlan for året
+    const plan = await prisma.seasonPlan.findUnique({
+      where: { userId_year: { userId: p.userId, year: aaret } },
+      select: { id: true },
+    });
+
+    const eksisterende = await prisma.tournamentEntry.findFirst({
+      where: { tournamentId, userId: p.userId },
+      select: { id: true },
+    });
+
+    if (eksisterende) {
+      await prisma.tournamentEntry.update({
+        where: { id: eksisterende.id },
+        data: {
+          priority,
+          seasonPlanId: plan?.id ?? null,
+        },
+      });
+      oppdatert++;
+    } else {
+      await prisma.tournamentEntry.create({
+        data: {
+          tournamentId,
+          userId: p.userId,
+          priority,
+          seasonPlanId: plan?.id ?? null,
+        },
+      });
+      opprettet++;
+    }
+  }
+
+  await audit({
+    actorId: coach.id,
+    action: "tournament_entries.bulk_upsert",
+    target: `Tournament:${tournamentId}`,
+    metadata: { opprettet, oppdatert, count: players.length },
+  });
+
+  revalidatePath("/admin/tournaments");
+  revalidatePath(`/admin/tournaments/${tournamentId}`);
+  revalidatePath("/admin/agencyos");
+  return { opprettet, oppdatert };
+}
+
+export async function fjernPamelding(entryId: string) {
+  const coach = await krevCoach();
+  const entry = await prisma.tournamentEntry.findUnique({
+    where: { id: entryId },
+    select: { tournamentId: true },
+  });
+  await prisma.tournamentEntry.delete({ where: { id: entryId } });
+  await audit({
+    actorId: coach.id,
+    action: "tournament_entry.deleted",
+    target: `TournamentEntry:${entryId}`,
+  });
+  if (entry?.tournamentId) {
+    revalidatePath(`/admin/tournaments/${entry.tournamentId}`);
+  }
+  revalidatePath("/admin/tournaments");
+  revalidatePath("/admin/agencyos");
+}
+
+export async function oppdaterPrioritet(entryId: string, priority: string) {
+  const coach = await krevCoach();
+  const valgt = valgPrioritet(priority);
+  const entry = await prisma.tournamentEntry.update({
+    where: { id: entryId },
+    data: { priority: valgt },
+    select: { tournamentId: true },
+  });
+  await audit({
+    actorId: coach.id,
+    action: "tournament_entry.priority_updated",
+    target: `TournamentEntry:${entryId}`,
+    metadata: { priority: valgt },
+  });
+  if (entry.tournamentId) {
+    revalidatePath(`/admin/tournaments/${entry.tournamentId}`);
+  }
+  revalidatePath("/admin/tournaments");
+}

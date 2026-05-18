@@ -16,9 +16,11 @@ import {
   Inbox as InboxIcon,
   Mail,
   Sparkles,
+  Trophy,
   Wallet,
   Wrench,
 } from "lucide-react";
+import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
@@ -150,6 +152,49 @@ export default async function AgencyOSPage() {
     // Utestående faktura (count, ikke beløp)
     prisma.payment.count({ where: { status: "PENDING" } }),
   ]);
+
+  // Mine spilleres turneringer (neste 30 dager)
+  const tretti_frem = new Date(now);
+  tretti_frem.setDate(tretti_frem.getDate() + 30);
+  const kommendeEntries = await prisma.tournamentEntry.findMany({
+    where: {
+      tournamentId: { not: null },
+      tournament: {
+        startDate: { gte: dagStart, lt: tretti_frem },
+      },
+    },
+    include: {
+      tournament: { select: { id: true, name: true, startDate: true } },
+      user: { select: { id: true, name: true } },
+    },
+    orderBy: { tournament: { startDate: "asc" } },
+  });
+
+  // Grupper per turnering
+  const tourneyMap = new Map<
+    string,
+    {
+      id: string;
+      name: string;
+      startDate: Date;
+      spillere: { id: string; name: string }[];
+    }
+  >();
+  for (const e of kommendeEntries) {
+    if (!e.tournament) continue;
+    const eks = tourneyMap.get(e.tournament.id);
+    if (eks) {
+      eks.spillere.push({ id: e.user.id, name: e.user.name ?? "?" });
+    } else {
+      tourneyMap.set(e.tournament.id, {
+        id: e.tournament.id,
+        name: e.tournament.name,
+        startDate: e.tournament.startDate,
+        spillere: [{ id: e.user.id, name: e.user.name ?? "?" }],
+      });
+    }
+  }
+  const turneringerMedSpillere = Array.from(tourneyMap.values()).slice(0, 6);
 
   const innbetaltOre = innbetaltMnd._sum.amountOre ?? 0;
   const utestaendeOre = utestaende._sum.amountOre ?? 0;
@@ -378,6 +423,85 @@ export default async function AgencyOSPage() {
                     </li>
                   );
                 })}
+              </ul>
+            )}
+          </section>
+
+          {/* Mine spilleres turneringer */}
+          <section className="rounded-lg border border-border bg-card">
+            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
+              <div>
+                <h2 className="font-display text-lg font-semibold tracking-tight">
+                  Mine spilleres <em>turneringer</em>
+                </h2>
+                <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  Neste 30 dager · {turneringerMedSpillere.length} turneringer · {kommendeEntries.length} påmeldinger
+                </p>
+              </div>
+              <Link
+                href="/admin/tournaments"
+                className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
+              >
+                Alle turneringer →
+              </Link>
+            </div>
+            {turneringerMedSpillere.length === 0 ? (
+              <div className="px-6 py-10 text-center">
+                <Trophy className="mx-auto h-8 w-8 text-muted-foreground" />
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Ingen påmeldinger neste 30 dager.
+                </p>
+                <Link
+                  href="/admin/tournaments"
+                  className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
+                >
+                  Meld på spillere →
+                </Link>
+              </div>
+            ) : (
+              <ul className="divide-y divide-border">
+                {turneringerMedSpillere.map((t) => (
+                  <li key={t.id}>
+                    <Link
+                      href={`/admin/tournaments/${t.id}`}
+                      className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-secondary/40"
+                    >
+                      <div className="w-14 shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
+                        {t.startDate.toLocaleDateString("nb-NO", {
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-sm font-semibold text-foreground">
+                          {t.name}
+                        </div>
+                        <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                          {t.spillere.length} spiller
+                          {t.spillere.length === 1 ? "" : "e"} påmeldt
+                        </div>
+                      </div>
+                      <div className="flex -space-x-2">
+                        {t.spillere.slice(0, 4).map((s) => (
+                          <span
+                            key={s.id}
+                            title={s.name}
+                            className="grid h-7 w-7 place-items-center rounded-full border-2 border-card font-mono text-[10px] font-semibold text-white"
+                            style={{ background: avatarBg(s.name) }}
+                          >
+                            {initialsFromName(s.name)}
+                          </span>
+                        ))}
+                        {t.spillere.length > 4 && (
+                          <span className="grid h-7 w-7 place-items-center rounded-full border-2 border-card bg-secondary font-mono text-[10px] font-semibold text-foreground">
+                            +{t.spillere.length - 4}
+                          </span>
+                        )}
+                      </div>
+                      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    </Link>
+                  </li>
+                ))}
               </ul>
             )}
           </section>

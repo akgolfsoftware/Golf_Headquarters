@@ -1,11 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ListChecks } from "lucide-react";
+import { ListChecks, Users } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { EmptyState } from "@/components/shared/empty-state";
 import { TournamentForm } from "../tournament-form";
 import { ResultForm } from "./result-form";
+import {
+  TournamentEnrollModal,
+  PriorityPill,
+} from "@/components/coachhq/tournament-enroll-modal";
+import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 
 export default async function TurneringDetalj({
   params,
@@ -15,7 +20,7 @@ export default async function TurneringDetalj({
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
-  const [tournament, courses, players] = await Promise.all([
+  const [tournament, courses, players, entries] = await Promise.all([
     prisma.tournament.findUnique({
       where: { id },
       include: {
@@ -32,7 +37,14 @@ export default async function TurneringDetalj({
     prisma.user.findMany({
       where: { role: "PLAYER" },
       orderBy: { name: "asc" },
-      select: { id: true, name: true },
+      select: { id: true, name: true, hcp: true, tier: true },
+    }),
+    prisma.tournamentEntry.findMany({
+      where: { tournamentId: id },
+      include: {
+        user: { select: { id: true, name: true, hcp: true, tier: true } },
+      },
+      orderBy: { createdAt: "asc" },
     }),
   ]);
 
@@ -86,7 +98,11 @@ export default async function TurneringDetalj({
                 </span>
               )}
               <span>
-                Deltakere:{" "}
+                Påmeldte:{" "}
+                <b className="font-medium text-white">{entries.length}</b>
+              </span>
+              <span>
+                Resultater:{" "}
                 <b className="font-medium text-white">{tournament.results.length}</b>
               </span>
             </div>
@@ -147,6 +163,87 @@ export default async function TurneringDetalj({
           </div>
         );
       })()}
+
+      {/* Påmeldte spillere */}
+      <section>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-display text-lg font-semibold tracking-tight">
+            Påmeldte{" "}
+            <span className="font-normal text-muted-foreground">
+              ({entries.length})
+            </span>
+          </h2>
+          <TournamentEnrollModal
+            tournamentId={tournament.id}
+            tournamentName={tournament.name}
+            tournamentDate={periodStr}
+            players={players.map((p) => ({
+              id: p.id,
+              name: p.name ?? "(uten navn)",
+              hcp: p.hcp,
+              tier: p.tier,
+            }))}
+            existing={entries.map((e) => ({
+              entryId: e.id,
+              userId: e.userId,
+              name: e.user.name ?? "(uten navn)",
+              hcp: e.user.hcp,
+              tier: e.user.tier,
+              priority: e.priority,
+            }))}
+            triggerLabel={entries.length === 0 ? "+ Meld på spillere" : "+ Legg til flere"}
+          />
+        </div>
+
+        {entries.length === 0 ? (
+          <EmptyState
+            icon={Users}
+            titleItalic="Ingen påmeldte"
+            titleTrail="spillere"
+            sub="Klikk «Meld på spillere» øverst for rask multi-select-påmelding."
+          />
+        ) : (
+          <div className="overflow-hidden rounded-lg border border-border bg-card">
+            <ul className="divide-y divide-border">
+              {entries.map((e) => {
+                const navn = e.user.name ?? "(uten navn)";
+                return (
+                  <li
+                    key={e.id}
+                    className="flex items-center gap-4 px-6 py-4"
+                  >
+                    <span
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full font-mono text-[11px] font-semibold text-white"
+                      style={{ background: avatarBg(navn) }}
+                      aria-hidden="true"
+                    >
+                      {initialsFromName(navn)}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <Link
+                        href={`/admin/elever/${e.userId}`}
+                        className="block truncate text-sm font-medium text-foreground hover:text-primary"
+                      >
+                        {navn}
+                      </Link>
+                      <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                        HCP {e.user.hcp ?? "—"} · {e.user.tier}
+                      </div>
+                    </div>
+                    <PriorityPill priority={e.priority} />
+                    <Link
+                      href={`/admin/elever/${e.userId}`}
+                      className="font-mono text-[10px] uppercase tracking-[0.06em] text-primary hover:underline"
+                    >
+                      Profil →
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </section>
 
       <section>
         <div className="mb-4 flex items-center justify-between">
