@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Booking — Coach-detalj</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="../_shared/arketype-g.css" />
+<style>
+  /* Hero ---------------------------------------------------------- */
+  .c4-hero {
+    display:flex; align-items:center; gap: 28px;
+    max-width: 1000px; margin: 0 auto 32px;
+  }
+  .c4-hero .avatar {
+    width: 96px; height: 96px; border-radius: 999px;
+    background: rgba(0,88,64,0.10); color: var(--g-primary);
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:'Inter Tight'; font-weight:700; font-size: 32px;
+    flex-shrink: 0;
+  }
+  .g-frame.is-dark .c4-hero .avatar { background: rgba(209,248,67,0.15); }
+  .c4-hero h1 {
+    font-family:'Instrument Serif'; font-weight: 400; font-size: 44px;
+    letter-spacing: -0.015em; color: var(--g-fg);
+    margin: 0 0 8px; line-height: 1.05;
+  }
+  .c4-hero h1 em { font-style: italic; color: var(--g-primary); }
+  .c4-hero .role {
+    font-family:'JetBrains Mono'; font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--g-muted);
+    margin-bottom: 12px;
+  }
+  /* Two-col body --------------------------------------------------- */
+  .c4-grid {
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px;
+    max-width: 1000px; margin: 0 auto;
+  }
+  .c4-bio p {
+    font-size: 14px; line-height: 1.6; color: var(--g-fg);
+    margin: 0 0 12px; max-width: 580px;
+  }
+  .c4-bio p:last-child { color: var(--g-muted); }
+  .c4-section {
+    margin-top: 28px;
+  }
+  .c4-section h3 {
+    font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--g-subtle);
+    margin: 0 0 14px;
+  }
+  /* Certifications ------------------------------------------------- */
+  .c4-certs { display:flex; flex-wrap: wrap; gap: 8px; }
+  .c4-cert {
+    display:inline-flex; align-items:center; gap: 8px;
+    height: 32px; padding: 0 12px;
+    border: 1px solid var(--g-line); border-radius: 100px;
+    background: var(--g-card);
+    font-size: 12px; color: var(--g-fg);
+  }
+  .c4-cert .badge {
+    width: 18px; height: 18px; border-radius: 100px;
+    background: rgba(0,88,64,0.10); color: var(--g-primary);
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size: 10px; flex-shrink: 0;
+  }
+  .g-frame.is-dark .c4-cert .badge { background: rgba(209,248,67,0.2); }
+  /* Spesialitet ---------------------------------------------------- */
+  .c4-special ul {
+    list-style: none; padding: 0; margin: 0;
+    display:flex; flex-direction:column; gap: 10px;
+  }
+  .c4-special li {
+    display:flex; align-items:center; gap: 10px;
+    font-size: 14px; color: var(--g-fg);
+  }
+  .c4-special li .ic {
+    width: 18px; height: 18px; border-radius: 100px;
+    background: rgba(0,88,64,0.10); color: var(--g-primary);
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size: 11px; flex-shrink: 0;
+  }
+  .g-frame.is-dark .c4-special li .ic { background: rgba(209,248,67,0.2); }
+  /* Anbefalinger --------------------------------------------------- */
+  .c4-quote {
+    background: var(--g-card); border: 1px solid var(--g-line);
+    border-radius: 16px; padding: 22px 24px; margin-bottom: 12px;
+  }
+  .c4-quote .q {
+    font-family:'Instrument Serif'; font-style: italic;
+    font-size: 18px; line-height: 1.45; color: var(--g-fg);
+    margin: 0 0 12px;
+  }
+  .c4-quote .who {
+    font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--g-muted);
+    display:flex; align-items:center; gap: 8px;
+  }
+  .c4-quote .who .sep { color: var(--g-subtle); }
+  /* 7-dagers grid -------------------------------------------------- */
+  .c4-week {
+    max-width: 1000px; margin: 40px auto 0;
+    background: var(--g-card); border: 1px solid var(--g-line);
+    border-radius: 20px; padding: 24px;
+  }
+  .c4-week-head {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom: 18px;
+  }
+  .c4-week-head h2 {
+    font-family:'Instrument Serif'; font-weight: 400; font-style: italic;
+    font-size: 24px; color: var(--g-fg); margin: 0;
+  }
+  .c4-week-head a {
+    color: var(--g-primary); font-size: 13px; font-weight: 500;
+    text-decoration: none; display:inline-flex; align-items:center; gap: 6px;
+  }
+  .c4-week-head a:hover { text-decoration: underline; }
+  .c4-week-grid {
+    display:grid; grid-template-columns: repeat(7, 1fr); gap: 10px;
+  }
+  .c4-day {
+    display:flex; flex-direction: column; gap: 8px;
+    padding: 12px 6px; border-radius: 12px;
+    background: var(--g-bg-alt); min-height: 200px;
+  }
+  .c4-day .hdr {
+    text-align:center; padding-bottom: 8px;
+    border-bottom: 1px solid var(--g-line-soft);
+  }
+  .c4-day .wd {
+    font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--g-muted);
+  }
+  .c4-day .d {
+    font-family:'Instrument Serif'; font-style: italic; font-weight: 400;
+    font-size: 22px; color: var(--g-fg); line-height: 1.1; margin-top: 2px;
+  }
+  .c4-day .month {
+    font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--g-subtle);
+  }
+  .c4-day.is-today .d { color: var(--g-primary); }
+  .c4-day.is-today .wd { color: var(--g-primary); }
+  .c4-pill {
+    display:flex; align-items:center; justify-content:center;
+    height: 32px; border-radius: 8px;
+    background: var(--g-card); border: 1px solid var(--g-line-soft);
+    font-family:'JetBrains Mono'; font-size: 11px; color: var(--g-fg);
+    cursor: pointer; transition: all 120ms;
+  }
+  .c4-pill:hover {
+    border-color: var(--g-primary); transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,88,64,0.08);
+  }
+  .g-frame.is-dark .c4-pill:hover { box-shadow: 0 4px 10px rgba(209,248,67,0.12); }
+  .c4-pill.is-selected {
+    background: var(--g-primary); color: #fff;
+    border-color: var(--g-primary);
+    box-shadow: 0 0 0 3px rgba(0,88,64,0.15);
+  }
+  .g-frame.is-dark .c4-pill.is-selected { color: #0A1F18; box-shadow: 0 0 0 3px rgba(209,248,67,0.25); }
+  .c4-pill.is-busy {
+    background: transparent; color: var(--g-subtle);
+    border-style: dashed; cursor: not-allowed;
+    text-decoration: line-through; text-decoration-thickness: 1px;
+  }
+  .c4-pill.is-busy:hover { transform: none; border-color: var(--g-line-soft); box-shadow:none; }
+  .c4-day-empty {
+    flex: 1; display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--g-subtle);
+    padding: 12px 4px; text-align:center;
+  }
+  /* Empty / skeleton ---------------------------------------------- */
+  .c4-week-empty {
+    text-align:center; padding: 60px 24px;
+  }
+  .c4-week-empty h3 {
+    font-family:'Instrument Serif'; font-style: italic; font-weight: 400;
+    font-size: 28px; color: var(--g-fg); margin: 0 0 8px;
+  }
+  .c4-week-empty p { color: var(--g-muted); font-size: 14px; margin: 0 0 18px; }
+</style>
+</head>
+<body class="g-canvas" data-screen-label="booking · 04 coach-detalj">
+
+<header>
+  <div class="g-label"><span class="dot"></span> BOOKING · 04 COACH-DETALJ · STEG 2 / 5</div>
+  <h1>Coach-<em>detalj</em></h1>
+  <p class="sub">Coach-profil med bio, sertifiseringer, anbefalinger og 7-dagers quick-book-grid. Klikk en tid → hopper rett til sammendrag (steg 4). "Se hele kalenderen →" → steg 3.</p>
+  <div class="meta">
+    <span><b>URL</b> /coaches/anders-k</span>
+    <span><b>Progress</b> 2. Coach (aktiv)</span>
+    <span><b>States</b> Light · Dark · Tid valgt · Empty · Mobile</span>
+  </div>
+</header>
+
+<div class="g-grid">
+
+  <!-- 1. LIGHT — FULL ------------------------------------------------ -->
+  <section class="g-cap">
+    <h2 class="cap-title">1 — Lyst tema, full coach-profil</h2>
+    <p>Hero med avatar + tilgjengelighet-pill, bio + sertifiseringer venstre, spesialitet + anbefalinger høyre, 7-dagers grid under.</p>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav">
+        <span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span>
+        <span class="g-side"><a href="#">Min side →</a></span>
+      </div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span>
+        <span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Coach</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Tid</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Sammendrag</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Betaling</span>
+      </div>
+
+      <div class="g-body g-body--compact">
+        <div class="c4-hero">
+          <div class="avatar">AK</div>
+          <div>
+            <div class="role">PGA-Profesjonell · Mulligan Indoor · 12 år erfaring</div>
+            <h1>Anders <em>Kristiansen</em></h1>
+            <span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig denne uka — 14 ledige tider</span>
+          </div>
+        </div>
+
+        <div class="c4-grid">
+          <div class="c4-bio">
+            <p>Anders har coachet golfere på alle nivåer i over 12 år — fra første runde til norgesmesterskap. Spesialiserer seg på scoring-spill og mental tilnærming under press.</p>
+            <p>Tidligere norgesfinalist (2014, 2017) og en av få nordmenn som har trent direkte med Mac O'Grady. Tror på data, men enda mer på følelse.</p>
+            <p>Tilgjengelig på Mulligan Indoor Fredrikstad. Tar imot alle aldre, fra junior 8 år til senior.</p>
+            <div class="c4-section">
+              <h3>Sertifiseringer</h3>
+              <div class="c4-certs">
+                <span class="c4-cert"><span class="badge">P</span>PGA Norge</span>
+                <span class="c4-cert"><span class="badge">T</span>TrackMan Master</span>
+                <span class="c4-cert"><span class="badge">M</span>Mac O'Grady-trent</span>
+                <span class="c4-cert"><span class="badge">J</span>Junior-spesialist</span>
+              </div>
+            </div>
+          </div>
+          <div class="c4-special">
+            <h3 style="font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.16em; text-transform:uppercase; color: var(--g-subtle); margin: 0 0 14px">Spesialitet</h3>
+            <ul>
+              <li><span class="ic">✓</span>Scoring innenfor 100 meter</li>
+              <li><span class="ic">✓</span>Putte-mekanikk &amp; lesing</li>
+              <li><span class="ic">✓</span>Mental tilnærming under press</li>
+              <li><span class="ic">✓</span>Junior-utvikling (8–16 år)</li>
+            </ul>
+            <div class="c4-section">
+              <h3>Anbefalinger</h3>
+              <div class="c4-quote">
+                <p class="q">"Anders snur ikke bare swingen — han snur måten jeg tenker på under runden. Mitt hcp gikk fra 11 til 6 på halvannen sesong."</p>
+                <div class="who"><span>Markus R.</span><span class="sep">·</span><span>Hcp 6 · Coach siden 2024</span></div>
+              </div>
+              <div class="c4-quote">
+                <p class="q">"Tålmodig og målrettet. Datteren min på 11 år gledet seg til hver time."</p>
+                <div class="who"><span>Lena B.</span><span class="sep">·</span><span>Forelder · Junior-coach</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="c4-week">
+          <div class="c4-week-head">
+            <h2>Ledige tider <em>neste 7 dager</em></h2>
+            <a href="#">Se hele kalenderen →</a>
+          </div>
+          <div class="c4-week-grid">
+            <div class="c4-day is-today">
+              <div class="hdr"><div class="wd">Man</div><div class="d">11</div><div class="month">Mai</div></div>
+              <div class="c4-pill">08:00</div>
+              <div class="c4-pill">14:00</div>
+              <div class="c4-pill is-busy">15:00</div>
+            </div>
+            <div class="c4-day">
+              <div class="hdr"><div class="wd">Tirs</div><div class="d">12</div><div class="month">Mai</div></div>
+              <div class="c4-pill">08:00</div>
+              <div class="c4-pill">09:00</div>
+              <div class="c4-pill">10:00</div>
+              <div class="c4-pill">14:00</div>
+            </div>
+            <div class="c4-day">
+              <div class="hdr"><div class="wd">Ons</div><div class="d">13</div><div class="month">Mai</div></div>
+              <div class="c4-pill">09:00</div>
+              <div class="c4-pill">11:00</div>
+              <div class="c4-pill is-busy">14:00</div>
+            </div>
+            <div class="c4-day">
+              <div class="hdr"><div class="wd">Tors</div><div class="d">14</div><div class="month">Mai</div></div>
+              <div class="c4-day-empty">Ingen tider</div>
+            </div>
+            <div class="c4-day">
+              <div class="hdr"><div class="wd">Fre</div><div class="d">15</div><div class="month">Mai</div></div>
+              <div class="c4-pill">08:00</div>
+              <div class="c4-pill">10:00</div>
+              <div class="c4-pill">13:00</div>
+              <div class="c4-pill">15:00</div>
+            </div>
+            <div class="c4-day">
+              <div class="hdr"><div class="wd">Lør</div><div class="d">16</div><div class="month">Mai</div></div>
+              <div class="c4-pill">10:00</div>
+              <div class="c4-pill">12:00</div>
+            </div>
+            <div class="c4-day">
+              <div class="hdr"><div class="wd">Søn</div><div class="d">17</div><div class="month">Mai</div></div>
+              <div class="c4-day-empty">Stengt</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-footer">
+        <div class="left"><button class="g-btn g-btn--ghost">← Andre coacher</button></div>
+        <div class="right"><button class="g-btn g-btn--primary">Se hele kalenderen →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. DARK -------------------------------------------------------- -->
+  <section class="g-cap">
+    <h2 class="cap-title">2 — Mørkt tema</h2>
+    <div class="g-frame is-dark" style="margin-top:18px">
+      <div class="g-topnav">
+        <span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span>
+        <span class="g-side"><a href="#">Min side →</a></span>
+      </div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span>
+        <span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Coach</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Tid</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Sammendrag</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Betaling</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="c4-hero">
+          <div class="avatar">AK</div>
+          <div>
+            <div class="role">PGA-Profesjonell · Mulligan Indoor · 12 år erfaring</div>
+            <h1>Anders <em>Kristiansen</em></h1>
+            <span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig denne uka — 14 ledige tider</span>
+          </div>
+        </div>
+        <div class="c4-grid">
+          <div class="c4-bio">
+            <p>Anders har coachet golfere på alle nivåer i over 12 år. Spesialiserer seg på scoring-spill og mental tilnærming under press.</p>
+            <p>Tidligere norgesfinalist og en av få nordmenn som har trent direkte med Mac O'Grady. Tror på data, men enda mer på følelse.</p>
+            <div class="c4-section">
+              <h3>Sertifiseringer</h3>
+              <div class="c4-certs">
+                <span class="c4-cert"><span class="badge">P</span>PGA Norge</span>
+                <span class="c4-cert"><span class="badge">T</span>TrackMan Master</span>
+                <span class="c4-cert"><span class="badge">M</span>Mac O'Grady-trent</span>
+                <span class="c4-cert"><span class="badge">J</span>Junior-spesialist</span>
+              </div>
+            </div>
+          </div>
+          <div class="c4-special">
+            <h3 style="font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.16em; text-transform:uppercase; color: var(--g-subtle); margin: 0 0 14px">Spesialitet</h3>
+            <ul>
+              <li><span class="ic">✓</span>Scoring innenfor 100 meter</li>
+              <li><span class="ic">✓</span>Putte-mekanikk &amp; lesing</li>
+              <li><span class="ic">✓</span>Mental tilnærming under press</li>
+              <li><span class="ic">✓</span>Junior-utvikling (8–16 år)</li>
+            </ul>
+            <div class="c4-section">
+              <h3>Anbefalinger</h3>
+              <div class="c4-quote">
+                <p class="q">"Mitt hcp gikk fra 11 til 6 på halvannen sesong."</p>
+                <div class="who"><span>Markus R.</span><span class="sep">·</span><span>Hcp 6</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="c4-week">
+          <div class="c4-week-head">
+            <h2>Ledige tider <em>neste 7 dager</em></h2>
+            <a href="#">Se hele kalenderen →</a>
+          </div>
+          <div class="c4-week-grid">
+            <div class="c4-day is-today"><div class="hdr"><div class="wd">Man</div><div class="d">11</div><div class="month">Mai</div></div><div class="c4-pill">08:00</div><div class="c4-pill">14:00</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Tirs</div><div class="d">12</div><div class="month">Mai</div></div><div class="c4-pill">08:00</div><div class="c4-pill">09:00</div><div class="c4-pill">10:00</div><div class="c4-pill">14:00</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Ons</div><div class="d">13</div><div class="month">Mai</div></div><div class="c4-pill">09:00</div><div class="c4-pill">11:00</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Tors</div><div class="d">14</div><div class="month">Mai</div></div><div class="c4-day-empty">Ingen</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Fre</div><div class="d">15</div><div class="month">Mai</div></div><div class="c4-pill">08:00</div><div class="c4-pill">10:00</div><div class="c4-pill">13:00</div><div class="c4-pill">15:00</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Lør</div><div class="d">16</div><div class="month">Mai</div></div><div class="c4-pill">10:00</div><div class="c4-pill">12:00</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Søn</div><div class="d">17</div><div class="month">Mai</div></div><div class="c4-day-empty">Stengt</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="g-footer">
+        <div class="left"><button class="g-btn g-btn--ghost">← Andre coacher</button></div>
+        <div class="right"><button class="g-btn g-btn--primary">Se hele kalenderen →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. TID VALGT --------------------------------------------------- -->
+  <section class="g-cap">
+    <h2 class="cap-title">3 — Tirsdag 09:00 valgt (lime ring) — primær CTA endrer seg</h2>
+    <p>Klikk på pill = midlertidig hold + CTA byttes til "Bekreft Tirs 12. mai · 09:00 →".</p>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav">
+        <span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span>
+        <span class="g-side"><a href="#">Min side →</a></span>
+      </div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span>
+        <span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Coach</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Tid</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Sammendrag</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Betaling</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="c4-hero">
+          <div class="avatar">AK</div>
+          <div>
+            <div class="role">PGA-Profesjonell · Mulligan Indoor · 12 år erfaring</div>
+            <h1>Anders <em>Kristiansen</em></h1>
+            <span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig denne uka — 14 ledige tider</span>
+          </div>
+        </div>
+        <div class="c4-week" style="margin-top: 0">
+          <div class="c4-week-head">
+            <h2>Ledige tider <em>neste 7 dager</em></h2>
+            <a href="#">Se hele kalenderen →</a>
+          </div>
+          <div class="c4-week-grid">
+            <div class="c4-day is-today"><div class="hdr"><div class="wd">Man</div><div class="d">11</div><div class="month">Mai</div></div><div class="c4-pill">08:00</div><div class="c4-pill">14:00</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Tirs</div><div class="d">12</div><div class="month">Mai</div></div><div class="c4-pill">08:00</div><div class="c4-pill is-selected">09:00</div><div class="c4-pill">10:00</div><div class="c4-pill">14:00</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Ons</div><div class="d">13</div><div class="month">Mai</div></div><div class="c4-pill">09:00</div><div class="c4-pill">11:00</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Tors</div><div class="d">14</div><div class="month">Mai</div></div><div class="c4-day-empty">Ingen</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Fre</div><div class="d">15</div><div class="month">Mai</div></div><div class="c4-pill">08:00</div><div class="c4-pill">10:00</div><div class="c4-pill">13:00</div><div class="c4-pill">15:00</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Lør</div><div class="d">16</div><div class="month">Mai</div></div><div class="c4-pill">10:00</div><div class="c4-pill">12:00</div></div>
+            <div class="c4-day"><div class="hdr"><div class="wd">Søn</div><div class="d">17</div><div class="month">Mai</div></div><div class="c4-day-empty">Stengt</div></div>
+          </div>
+        </div>
+        <div style="max-width:1000px; margin: 18px auto 0; padding: 16px 20px; background: rgba(0,88,64,0.04); border: 1px solid rgba(0,88,64,0.15); border-radius: 12px; display:flex; align-items:center; justify-content:space-between">
+          <div style="display:flex; align-items:center; gap: 14px">
+            <span style="width: 36px; height: 36px; border-radius: 100px; background: var(--g-primary); color: #fff; display:inline-flex; align-items:center; justify-content:center; font-family:'JetBrains Mono'; font-size: 12px; font-weight: 700">12</span>
+            <div>
+              <div style="font-family:'Inter Tight'; font-size: 14px; font-weight: 600; color: var(--g-fg)">Tirs 12. mai · 09:00 — 10:00</div>
+              <div style="font-family:'JetBrains Mono'; font-size: 10px; letter-spacing: 0.1em; text-transform:uppercase; color: var(--g-muted); margin-top: 2px">Personlig coaching · Mulligan Indoor · 1 600 kr</div>
+            </div>
+          </div>
+          <div style="font-family:'JetBrains Mono'; font-size: 10px; color: var(--g-muted)">HOLDT I 14:32</div>
+        </div>
+      </div>
+      <div class="g-footer">
+        <div class="left"><button class="g-btn g-btn--ghost">← Andre coacher</button></div>
+        <div class="right">
+          <button class="g-btn g-btn--link" style="color: var(--g-muted); padding: 0 12px">Endre valg</button>
+          <button class="g-btn g-btn--primary">Bekreft Tirs 12. mai · 09:00 →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. EMPTY ------------------------------------------------------- -->
+  <section class="g-cap">
+    <h2 class="cap-title">4 — Empty: ingen ledige tider neste 7 dager</h2>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav">
+        <span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span>
+        <span class="g-side"><a href="#">Min side →</a></span>
+      </div>
+      <div class="g-progress">
+        <span class="g-step is-done"><span class="num">✓</span>Tjeneste</span>
+        <span class="arrow">→</span>
+        <span class="g-step is-active"><span class="num">2</span>Coach</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">3</span>Tid</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">4</span>Sammendrag</span>
+        <span class="arrow">→</span>
+        <span class="g-step"><span class="num">5</span>Betaling</span>
+      </div>
+      <div class="g-body g-body--compact">
+        <div class="c4-hero">
+          <div class="avatar">AK</div>
+          <div>
+            <div class="role">PGA-Profesjonell · Mulligan Indoor · 12 år erfaring</div>
+            <h1>Anders <em>Kristiansen</em></h1>
+            <span class="g-pill g-pill--warn"><span class="g-dot g-dot--warn"></span>Fullt denne uka</span>
+          </div>
+        </div>
+        <div class="c4-week" style="margin-top: 0">
+          <div class="c4-week-head">
+            <h2>Ledige tider <em>neste 7 dager</em></h2>
+            <a href="#">Se uke 21 →</a>
+          </div>
+          <div class="c4-week-empty">
+            <h3>Anders K har ingen ledige tider denne uka</h3>
+            <p>Han er fullbooket fram til 18. mai. Vil du se neste uke, eller velge en annen coach?</p>
+            <div style="display:flex; gap: 10px; justify-content: center">
+              <button class="g-btn g-btn--ghost">← Andre coacher</button>
+              <button class="g-btn g-btn--primary">Se uke 21 →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="g-footer">
+        <div class="left"><button class="g-btn g-btn--ghost">← Andre coacher</button></div>
+        <div class="right"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. MOBIL ------------------------------------------------------- -->
+  <section class="g-cap">
+    <h2 class="cap-title">5 — Mobil ≤640px — 7-dagers grid blir horisontalt scrollbar</h2>
+    <p>Hero stacker. Bio/spesialitet/anbefalinger 1-kolonne. Quick-book-grid: 7 kolonner à 80px, horisontal scroll, snap.</p>
+    <div class="g-frame is-mobile" style="margin-top:18px">
+      <div class="g-topnav" style="padding: 0 16px; height: 52px">
+        <span class="g-brand" style="font-size: 12px"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span>
+        <span class="g-side" style="font-size: 12px"><a href="#">Min side</a></span>
+      </div>
+      <div style="padding: 14px 16px; border-bottom: 1px solid var(--g-line-soft); background: var(--g-bg)">
+        <div style="display:flex; align-items:center; gap: 10px; margin-bottom: 8px">
+          <span class="g-mono" style="font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--g-muted)">Steg 2 av 5</span>
+        </div>
+        <div style="height: 8px; background: var(--g-bg-alt); border-radius: 100px; overflow:hidden">
+          <div style="height:100%; width: 40%; background: var(--g-primary); border-radius: 100px"></div>
+        </div>
+      </div>
+      <div style="padding: 24px 16px 16px">
+        <div style="display:flex; align-items:center; gap: 16px; margin-bottom: 16px">
+          <div style="width: 64px; height: 64px; border-radius: 100px; background: rgba(0,88,64,0.10); color: var(--g-primary); display:inline-flex; align-items:center; justify-content:center; font-family:'Inter Tight'; font-weight: 700; font-size: 22px; flex-shrink: 0">AK</div>
+          <div>
+            <div style="font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--g-muted); margin-bottom: 4px">PGA · Mulligan · 12 år</div>
+            <h1 style="font-family:'Instrument Serif'; font-weight: 400; font-size: 28px; margin: 0; line-height: 1.05">Anders <em style="font-style:italic; color: var(--g-primary)">Kristiansen</em></h1>
+          </div>
+        </div>
+        <span class="g-pill g-pill--success" style="margin-bottom: 18px"><span class="g-dot g-dot--success"></span>14 ledige tider denne uka</span>
+        <p style="font-size: 13px; line-height: 1.55; color: var(--g-fg); margin: 16px 0 0">Spesialiserer seg på scoring-spill og mental tilnærming. PGA Norge · TrackMan Master · Mac O'Grady-trent.</p>
+        <div style="margin-top: 18px">
+          <div style="font-family:'JetBrains Mono'; font-size: 9px; letter-spacing: 0.16em; text-transform:uppercase; color: var(--g-subtle); margin-bottom: 10px">Sertifiseringer</div>
+          <div style="display:flex; flex-wrap: wrap; gap: 6px">
+            <span class="c4-cert" style="height: 26px; font-size: 11px"><span class="badge" style="width: 14px; height: 14px; font-size: 9px">P</span>PGA</span>
+            <span class="c4-cert" style="height: 26px; font-size: 11px"><span class="badge" style="width: 14px; height: 14px; font-size: 9px">T</span>TrackMan</span>
+            <span class="c4-cert" style="height: 26px; font-size: 11px"><span class="badge" style="width: 14px; height: 14px; font-size: 9px">J</span>Junior</span>
+          </div>
+        </div>
+      </div>
+      <div style="padding: 14px 0 24px">
+        <div style="padding: 0 16px; display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px">
+          <div style="font-family:'Instrument Serif'; font-style: italic; font-size: 18px">Neste 7 dager</div>
+          <a href="#" style="font-size: 11px; color: var(--g-primary); text-decoration:none">Hele kalenderen →</a>
+        </div>
+        <div style="display:flex; gap: 8px; padding: 0 16px; overflow-x: auto; scroll-snap-type: x mandatory">
+          <div class="c4-day is-today" style="flex: 0 0 80px; min-height: 180px; scroll-snap-align: start"><div class="hdr"><div class="wd" style="font-size: 9px">Man</div><div class="d" style="font-size: 18px">11</div></div><div class="c4-pill" style="height: 28px; font-size: 10px">08:00</div><div class="c4-pill" style="height: 28px; font-size: 10px">14:00</div></div>
+          <div class="c4-day" style="flex: 0 0 80px; min-height: 180px; scroll-snap-align: start"><div class="hdr"><div class="wd" style="font-size: 9px">Tirs</div><div class="d" style="font-size: 18px">12</div></div><div class="c4-pill" style="height: 28px; font-size: 10px">08:00</div><div class="c4-pill" style="height: 28px; font-size: 10px">09:00</div><div class="c4-pill" style="height: 28px; font-size: 10px">14:00</div></div>
+          <div class="c4-day" style="flex: 0 0 80px; min-height: 180px; scroll-snap-align: start"><div class="hdr"><div class="wd" style="font-size: 9px">Ons</div><div class="d" style="font-size: 18px">13</div></div><div class="c4-pill" style="height: 28px; font-size: 10px">09:00</div><div class="c4-pill" style="height: 28px; font-size: 10px">11:00</div></div>
+          <div class="c4-day" style="flex: 0 0 80px; min-height: 180px; scroll-snap-align: start"><div class="hdr"><div class="wd" style="font-size: 9px">Tors</div><div class="d" style="font-size: 18px">14</div></div><div class="c4-day-empty" style="font-size: 8px">—</div></div>
+          <div class="c4-day" style="flex: 0 0 80px; min-height: 180px; scroll-snap-align: start"><div class="hdr"><div class="wd" style="font-size: 9px">Fre</div><div class="d" style="font-size: 18px">15</div></div><div class="c4-pill" style="height: 28px; font-size: 10px">08:00</div><div class="c4-pill" style="height: 28px; font-size: 10px">10:00</div></div>
+        </div>
+      </div>
+      <div style="position:absolute; left:0; right:0; bottom:0; padding: 12px 16px; background: var(--g-bg); border-top: 1px solid var(--g-line-soft); display:flex; align-items:center; justify-content:space-between">
+        <button class="g-btn g-btn--ghost" style="height: 40px; padding: 0 12px; font-size: 12px">← Coacher</button>
+        <button class="g-btn g-btn--primary" style="height: 40px; padding: 0 14px; font-size: 12px">Kalender →</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,324 @@
+/* AK Golf — Booking Arketype G (Wizard / Card-grid)
+ * Shared tokens + classes for screens/booking/*.html
+ * Maps onto root colors_and_type.css palette.
+ */
+
+@import url("../../../colors_and_type.css");
+
+:root {
+  --g-bg:        #FAFAF7;
+  --g-bg-alt:    #F5F2EA;
+  --g-card:      #FFFFFF;
+  --g-fg:        #0A1F18;
+  --g-muted:     #5E5C57;
+  --g-subtle:    #9C9990;
+  --g-line:      #E5E3DD;
+  --g-line-soft: #EFEDE6;
+  --g-primary:   #005840;
+  --g-primary-hover: #00472f;
+  --g-accent:    #D1F843;
+  --g-success:   #1A7D56;
+  --g-warning:   #B8852A;
+  --g-danger:    #A32D2D;
+}
+
+/* ===== Canvas / review page ===== */
+.g-canvas {
+  margin: 0;
+  background: #EDEAE2;
+  color: var(--g-fg);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+.g-canvas header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 32px 24px;
+}
+.g-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--g-muted);
+  padding: 6px 10px; border-radius: 100px;
+  background: #fff; border: 1px solid var(--g-line);
+}
+.g-label .dot { width:6px; height:6px; border-radius:50%; background: var(--g-primary); }
+.g-canvas header h1 {
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 400; font-style: italic;
+  font-size: 56px; letter-spacing: -0.02em; line-height: 1.05;
+  margin: 18px 0 14px;
+  color: var(--g-fg);
+}
+.g-canvas header h1 em {
+  font-style: italic; color: var(--g-primary); font-weight: 500;
+}
+.g-canvas header .sub {
+  font-size: 16px; color: var(--g-muted); max-width: 700px; margin: 0 0 18px;
+}
+.g-canvas header .meta {
+  display: flex; flex-wrap: wrap; gap: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--g-subtle);
+}
+.g-canvas header .meta b { color: var(--g-fg); font-weight: 500; margin-right: 4px; }
+
+/* ===== Grid of artboards ===== */
+.g-grid {
+  max-width: 1200px; margin: 0 auto;
+  padding: 24px 32px 96px;
+  display: flex; flex-direction: column; gap: 56px;
+}
+.g-cap { display: flex; flex-direction: column; gap: 6px; }
+.g-cap .cap-title {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 18px; font-weight: 500; margin: 0;
+  color: var(--g-fg); letter-spacing: -0.005em;
+}
+.g-cap p { color: var(--g-muted); font-size: 13px; margin: 0; }
+
+/* ===== Frame (the bezel around each artboard) ===== */
+.g-frame {
+  background: var(--g-bg);
+  border: 1px solid var(--g-line);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15,31,24,0.04), 0 16px 32px rgba(15,31,24,0.06);
+  position: relative;
+}
+.g-frame.is-mobile {
+  max-width: 392px; margin-left: auto; margin-right: auto;
+  border-radius: 36px;
+  min-height: 760px;
+}
+.g-frame.is-dark {
+  --g-bg:        #0A1F18;
+  --g-bg-alt:    #102923;
+  --g-card:      #143028;
+  --g-fg:        #F2EFE6;
+  --g-muted:     #B6B3AA;
+  --g-subtle:    #7A786F;
+  --g-line:      #1F3A32;
+  --g-line-soft: #18302A;
+  --g-primary:   #D1F843;
+  --g-primary-hover: #E8FF6A;
+  background: var(--g-bg);
+  color: var(--g-fg);
+  border-color: #102923;
+}
+.g-frame.is-dark h1, .g-frame.is-dark h2, .g-frame.is-dark h3 { color: var(--g-fg); }
+
+/* ===== Topnav (in-frame) ===== */
+.g-topnav {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 28px;
+  border-bottom: 1px solid var(--g-line-soft);
+  background: var(--g-bg);
+}
+.g-brand {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 14px; font-weight: 500; color: var(--g-fg);
+}
+.g-brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--g-primary); }
+.g-brand .sep { color: var(--g-subtle); margin: 0 4px; }
+.g-side a { color: var(--g-muted); font-size: 13px; text-decoration: none; }
+.g-side a:hover { color: var(--g-fg); }
+
+/* ===== Progress strip ===== */
+.g-progress {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 18px 28px;
+  background: var(--g-bg-alt);
+  border-bottom: 1px solid var(--g-line-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.g-step {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--g-subtle);
+}
+.g-step .num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--g-card); color: var(--g-subtle);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 500;
+  border: 1px solid var(--g-line);
+}
+.g-step.is-active { color: var(--g-fg); }
+.g-step.is-active .num {
+  background: var(--g-primary);
+  color: var(--g-card);
+  border-color: var(--g-primary);
+}
+.g-frame.is-dark .g-step.is-active .num { color: #0A1F18; }
+.g-step.is-done { color: var(--g-muted); }
+.g-step.is-done .num {
+  background: var(--g-primary);
+  color: var(--g-card);
+  border-color: var(--g-primary);
+}
+.g-frame.is-dark .g-step.is-done .num { color: #0A1F18; }
+.g-progress .arrow { color: var(--g-subtle); }
+
+/* ===== Body ===== */
+.g-body { padding: 56px 28px; background: var(--g-bg); }
+.g-body--compact { padding: 36px 28px 28px; }
+.g-hero { text-align: center; max-width: 720px; margin: 0 auto 28px; }
+.g-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--g-primary); margin-bottom: 12px;
+}
+.g-frame.is-dark .g-eyebrow { color: var(--g-accent); }
+.g-title {
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 400; font-style: italic;
+  font-size: 56px; line-height: 1.05; letter-spacing: -0.02em;
+  margin: 0; color: var(--g-fg);
+}
+.g-title em { font-style: italic; color: var(--g-primary); font-weight: 500; }
+.g-frame.is-dark .g-title em { color: var(--g-accent); }
+.g-title--md { font-size: 42px; }
+.g-title--sm { font-size: 32px; }
+.g-sub {
+  font-size: 14px; color: var(--g-muted);
+  margin: 14px auto 0; max-width: 540px;
+}
+
+/* ===== Cards ===== */
+.g-card {
+  background: var(--g-card);
+  border: 1px solid var(--g-line);
+  border-radius: 16px;
+  padding: 22px 24px;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  cursor: pointer;
+  position: relative;
+}
+.g-card:hover {
+  border-color: var(--g-primary);
+  box-shadow: 0 1px 2px rgba(15,31,24,0.06), 0 14px 32px rgba(15,31,24,0.10);
+  transform: translateY(-1px);
+}
+.g-card.is-disabled {
+  opacity: 0.55; cursor: not-allowed;
+}
+.g-card.is-disabled:hover {
+  border-color: var(--g-line); box-shadow: none; transform: none;
+}
+.g-card.is-selected {
+  border-color: var(--g-primary);
+  box-shadow: 0 0 0 3px rgba(0,88,64,0.12);
+}
+.g-frame.is-dark .g-card.is-selected {
+  border-color: var(--g-accent);
+  box-shadow: 0 0 0 3px rgba(209,248,67,0.20);
+}
+
+/* ===== Chips / pills ===== */
+.g-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 12px; border-radius: 100px;
+  background: var(--g-card);
+  border: 1px solid var(--g-line);
+  font-size: 12px; color: var(--g-fg);
+  cursor: pointer; user-select: none;
+}
+.g-chip:hover { border-color: var(--g-primary); }
+.g-chip .caret { color: var(--g-subtle); font-size: 10px; }
+.g-chip.is-active {
+  background: var(--g-primary);
+  color: #fff;
+  border-color: var(--g-primary);
+}
+.g-frame.is-dark .g-chip.is-active {
+  background: var(--g-accent);
+  color: #0A1F18;
+  border-color: var(--g-accent);
+}
+.g-chip.is-active .caret { color: rgba(255,255,255,0.7); }
+.g-frame.is-dark .g-chip.is-active .caret { color: rgba(10,31,24,0.7); }
+.g-chip.is-toggle {
+  background: var(--g-bg-alt);
+  border-color: var(--g-line);
+}
+.g-chip.is-toggle .count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  background: var(--g-primary);
+  color: #fff;
+  border-radius: 100px;
+  padding: 1px 6px;
+}
+.g-pill {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--g-bg-alt);
+  color: var(--g-muted);
+  padding: 4px 9px; border-radius: 100px;
+  border: 1px solid var(--g-line);
+}
+.g-frame.is-dark .g-pill {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.10);
+  color: var(--g-muted);
+}
+
+/* ===== Avatars / status dots ===== */
+.g-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, #005840, #1A7D56);
+  color: #fff;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 14px; font-weight: 600;
+  flex-shrink: 0;
+}
+.g-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--g-subtle); flex-shrink: 0;
+}
+.g-dot--success { background: var(--g-success); }
+.g-dot--warning { background: var(--g-warning); }
+.g-dot--danger  { background: var(--g-danger); }
+
+/* ===== Buttons ===== */
+.g-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 18px; height: 44px;
+  border-radius: 12px; border: 1px solid transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 500;
+  cursor: pointer; user-select: none;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.g-btn--primary {
+  background: var(--g-primary); color: #fff; border-color: var(--g-primary);
+}
+.g-btn--primary:hover { background: var(--g-primary-hover); border-color: var(--g-primary-hover); }
+.g-frame.is-dark .g-btn--primary { background: var(--g-accent); color: #0A1F18; border-color: var(--g-accent); }
+.g-btn--ghost {
+  background: transparent; color: var(--g-muted); border-color: var(--g-line);
+}
+.g-btn--ghost:hover { color: var(--g-fg); border-color: var(--g-fg); }
+.g-btn--link {
+  background: transparent; border: none; color: var(--g-primary);
+  padding: 0; height: auto; text-decoration: underline;
+  text-decoration-color: var(--g-subtle);
+}
+
+/* ===== Footer (in-frame) ===== */
+.g-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 28px;
+  border-top: 1px solid var(--g-line-soft);
+  background: var(--g-bg-alt);
+}
+.g-mono {
+  font-family: 'JetBrains Mono', monospace;
+}

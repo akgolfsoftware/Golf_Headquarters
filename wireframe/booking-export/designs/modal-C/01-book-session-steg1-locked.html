@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="nb"><head><meta charset="UTF-8"/><title>BookSessionModal · tier-låst</title>
+<link rel="stylesheet" href="../tokens.css"/><link rel="stylesheet" href="../modal-shell.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"/>
+<style>
+.lock-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:36px 28px 32px;}
+.lock-icon{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-deep));color:var(--brand-accent);display:flex;align-items:center;justify-content:center;margin-bottom:22px;position:relative;}
+.lock-icon::after{content:'';position:absolute;inset:-6px;border:2px solid rgba(209,248,67,0.30);border-radius:30px;}
+.lock-eyebrow{font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--warning);margin-bottom:8px;}
+.lock-h{font-family:'Instrument Serif',var(--font-tight);font-style:italic;font-size:32px;line-height:1.1;color:var(--ink);max-width:420px;margin-bottom:8px;}
+.lock-sub{font-size:14px;color:var(--ink-muted);max-width:380px;line-height:1.5;margin-bottom:24px;}
+.benefits{display:flex;flex-direction:column;gap:10px;width:100%;max-width:380px;margin-bottom:24px;text-align:left;}
+.benefit{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;}
+.benefit-ic{width:28px;height:28px;border-radius:8px;background:var(--brand-primary-soft);color:var(--brand-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.benefit-txt{font-size:13px;color:var(--ink);line-height:1.4;}
+.benefit-txt b{font-weight:600;display:block;margin-bottom:1px;}
+.benefit-txt span{color:var(--ink-muted);font-size:12.5px;}
+.upgrade-cta{background:var(--brand-accent);color:var(--brand-accent-on);font-weight:700;padding:14px 24px;border-radius:12px;font-size:15px;display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;}
+.upgrade-cta:hover{background:var(--brand-accent-hover);}
+.upgrade-sub{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);margin-top:10px;}
+.reset-info{margin-top:20px;font-size:12px;color:var(--ink-subtle);}
+</style></head>
+<body>
+<div class="scrim"><div class="modal size-560" data-screen-label="BookSession tier-locked">
+<div class="modal-head">
+<div>
+<div class="modal-eyebrow"><span style="color:var(--warning);">●</span><span>FREE-KONTO · GRENSE NÅDD</span></div>
+<h2 class="modal-title">Book økt</h2>
+</div>
+<button class="modal-x"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+</div>
+
+<div class="modal-body" style="padding:0;">
+<div class="lock-card">
+<div class="lock-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="width:40px;height:40px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+</div>
+<div class="lock-eyebrow">2 av 2 bookinger brukt denne måneden</div>
+<h3 class="lock-h">Mer trening, samme måned.</h3>
+<p class="lock-sub">Pro fjerner taket, gir prioritert kø på Mulligan-studio og 20 % rabatt på 1:1 coaching.</p>
+
+<div class="benefits">
+<div class="benefit">
+<div class="benefit-ic"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+<div class="benefit-txt"><b>Ubegrenset booking</b><span>Book så ofte du vil — inkludert helger</span></div>
+</div>
+<div class="benefit">
+<div class="benefit-ic"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+<div class="benefit-txt"><b>Prioritert tilgang</b><span>Du får slotene først — også 24 t før alle andre</span></div>
+</div>
+<div class="benefit">
+<div class="benefit-ic"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div>
+<div class="benefit-txt"><b>20 % på 1:1 coaching</b><span>1 280 kr/time hos Anders mot 1 600 kr</span></div>
+</div>
+</div>
+
+<button class="upgrade-cta">Oppgrader til Pro <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+<div class="upgrade-sub">249 kr/mnd · sies opp når som helst</div>
+<div class="reset-info">Eller vent til 1. juni — gratis-grensen tilbakestilles om 21 dager.</div>
+</div>
+</div>
+
+<div class="modal-foot">
+<button class="btn-ghost">Lukk</button>
+<button class="btn-sec">Se hva som er booket</button>
+</div>
+</div></div>
+</body></html>
