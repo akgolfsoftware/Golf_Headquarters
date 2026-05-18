@@ -15,6 +15,7 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
+import { CalendarViewToggle } from "@/components/admin/calendar-view-toggle";
 import { sammeDag, ukenummer } from "@/lib/uke-helpers";
 
 const ICON_STROKE = 1.75;
@@ -171,17 +172,7 @@ export default async function KalenderManedPage({
         sub="Zoom ut. Se hvor måneden tetner."
         actions={
           <div className="flex items-center gap-2">
-            <div className="inline-flex rounded-full border border-border bg-secondary p-0.5">
-              <Link
-                href="/admin/calendar"
-                className="rounded-full px-4 py-2 text-xs font-medium text-muted-foreground"
-              >
-                Uke
-              </Link>
-              <span className="rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background">
-                Måned
-              </span>
-            </div>
+            <CalendarViewToggle active="month" />
             <Link
               href="/admin/calendar/maned"
               className="rounded-md border border-border bg-card px-4 py-2 text-xs font-medium hover:bg-secondary"

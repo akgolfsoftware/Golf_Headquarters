@@ -12,6 +12,7 @@
  */
 
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
@@ -40,6 +41,14 @@ import {
   type Ev,
   type Stripe,
 } from "@/components/admin/calendar-week-grid";
+import {
+  CalendarViewToggle,
+  type CalendarView,
+} from "@/components/admin/calendar-view-toggle";
+import {
+  CalendarDayView,
+  type DayEv,
+} from "@/components/admin/calendar-day-view";
 
 // ---------- Konstanter ----------
 
@@ -117,7 +126,13 @@ function ukeShift(start: Date, deltaWeeks: number): Date {
 
 // ---------- Page ----------
 
-type Search = { uke?: string; filter?: string; coach?: string };
+type Search = {
+  uke?: string;
+  filter?: string;
+  coach?: string;
+  view?: string;
+  dag?: string;
+};
 
 export default async function AdminCalendar({
   searchParams,
@@ -126,6 +141,17 @@ export default async function AdminCalendar({
 }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN", "GUEST"] });
   const params = await searchParams;
+
+  // View-toggle: dag / uke / måned. Måned redirecter til egen rute.
+  const view: CalendarView =
+    params.view === "day"
+      ? "day"
+      : params.view === "month"
+        ? "month"
+        : "week";
+  if (view === "month") {
+    redirect("/admin/calendar/maned");
+  }
 
   // Filter: "alle" (default) eller "mine"
   const filter = params.filter === "mine" ? "mine" : "alle";
@@ -329,6 +355,18 @@ export default async function AdminCalendar({
   function dateKey(d: Date): string {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   }
+  // Dag-view: velg dag (today hvis i uka, ellers første dag)
+  const dagViewIdx = idagIdx >= 0 ? idagIdx : 0;
+  const dagViewDato = dager[dagViewIdx];
+  const dagViewEvents: DayEv[] = eventsPerDag[dagViewIdx].map((ev) => ({
+    startHour: ev.startHour,
+    endHour: ev.endHour,
+    title: ev.title,
+    type: ev.sub ?? "",
+    location: ev.sub ?? "",
+    kind: ev.kind,
+  }));
+
   const dagPayloads: DagPayload[] = dager.map((d, i) => ({
     dateKey: dateKey(d),
     year: d.getFullYear(),
@@ -473,18 +511,8 @@ export default async function AdminCalendar({
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          {/* Uke / Måned-toggle */}
-          <div className="inline-flex items-center gap-px rounded-md border border-border bg-secondary p-0.5 text-xs">
-            <span className="rounded-sm bg-card px-2.5 py-1.5 font-medium text-foreground shadow-sm">
-              Uke
-            </span>
-            <Link
-              href="/admin/calendar/maned"
-              className="rounded-sm px-2.5 py-1.5 text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Måned
-            </Link>
-          </div>
+          {/* Dag / Uke / Måned-toggle */}
+          <CalendarViewToggle active={view} />
 
           {/* Filter-toggle */}
           <div className="inline-flex items-center gap-px rounded-md border border-border bg-secondary p-0.5 text-xs">
@@ -529,6 +557,13 @@ export default async function AdminCalendar({
               </Link>
             ) : undefined
           }
+        />
+      ) : view === "day" ? (
+        <CalendarDayView
+          events={dagViewEvents}
+          dato={dagViewDato}
+          nowHour={nowHour}
+          erIdag={sammeDag(dagViewDato, now)}
         />
       ) : (
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_304px]">

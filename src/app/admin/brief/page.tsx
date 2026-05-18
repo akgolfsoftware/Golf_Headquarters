@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PrintButton } from "@/components/shared/print-button";
+import { AgentStrip } from "@/components/coachhq/agent-strip";
 import {
   getBriefData,
   bygBriefSystemPrompt,
@@ -119,6 +120,15 @@ export default async function DagligBrief() {
             </button>
           </div>
         </header>
+
+        {/* AI-agent hint øverst */}
+        <div className="mb-8">
+          <AgentStrip label="AK-AGENT · Daglig brief">
+            {data.dagensTimer.antall === 0
+              ? "Ingen økter i dag — bruk dagen til plan-revisjon og approvals-køen."
+              : `Du har ${data.dagensTimer.antall} ${data.dagensTimer.antall === 1 ? "økt" : "økter"} planlagt fra ${startTid} til ${sluttTid}. ${data.ventendeGodkjenninger > 0 ? `${data.ventendeGodkjenninger} agent-forslag venter på godkjenning.` : "Approvals-køen er tom."}`}
+          </AgentStrip>
+        </div>
 
         {/* KPI-strip */}
         <div className="mb-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">

@@ -16,7 +16,6 @@ import {
   Inbox as InboxIcon,
   Mail,
   Sparkles,
-  Users,
   Wallet,
   Wrench,
 } from "lucide-react";
@@ -80,7 +79,6 @@ export default async function AgencyOSPage() {
   seksti.setDate(seksti.getDate() - 60);
 
   const [
-    uleste,
     pendingNotifications,
     dagensBookinger,
     ukensBookinger,
@@ -93,7 +91,6 @@ export default async function AgencyOSPage() {
     testerForfaller,
     utestaendeFakturaCount,
   ] = await Promise.all([
-    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
     prisma.notification.findMany({
       where: { userId: user.id, readAt: null },
       orderBy: { createdAt: "desc" },
@@ -168,13 +165,22 @@ export default async function AgencyOSPage() {
         titleItalic="Her er dagen."
         sub={`Du har ${dagensBookinger.length} timer i dag og ${ukensBookinger} bookinger denne uka. Caddie holder utkast klare i innboksen din.`}
         actions={
-          <Link
-            href="/admin/calendar"
-            className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
-          >
-            <Calendar className="h-4 w-4" />
-            Åpne kalender
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/admin/brief"
+              className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card px-4 text-sm font-medium text-foreground hover:bg-secondary"
+            >
+              <Sparkles className="h-4 w-4" strokeWidth={1.75} />
+              Daglig brief
+            </Link>
+            <Link
+              href="/admin/calendar"
+              className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            >
+              <Calendar className="h-4 w-4" />
+              Åpne kalender
+            </Link>
+          </div>
         }
       />
 
