@@ -22,6 +22,56 @@ type DesignSection = {
 
 const sections: DesignSection[] = [
   {
+    title: "Athletic preview-flater (live data)",
+    intro: "Komplette PlayerHQ + CoachHQ-sider med Anders' ekte spillerdata.",
+    icon: Smartphone,
+    items: [
+      {
+        title: "PlayerHQ — Hjem",
+        description: "Hero, dagens fokus, AI-insikter, pyramide, SG-trend, HCP, distansebånd.",
+        href: "/portal-preview",
+        status: "FINAL",
+      },
+      {
+        title: "PlayerHQ — Treningsplanlegger",
+        description: "Aktiv plan, fremdrift, årsplan-Gantt, periodisering, kalendere, AI-signaler.",
+        href: "/portal-preview/planlegger",
+        status: "FINAL",
+      },
+      {
+        title: "CoachHQ — Treningsplanlegger",
+        description: "Alle aktive planer, godkjenninger, gruppe-fordeling, fokus-spiller, kalendere.",
+        href: "/coach-preview/planlegger",
+        status: "FINAL",
+      },
+      {
+        title: "Anders som spiller — full data-katalog",
+        description: "Alle 14 data-komponenter stablet vertikalt for sammenligning.",
+        href: "/design/anders-spiller",
+        status: "VARIANT",
+      },
+    ],
+  },
+  {
+    title: "Komponentkit",
+    intro: "Athletic kit og 10 dynamiske kalendere.",
+    icon: Layers,
+    items: [
+      {
+        title: "Athletic Kit",
+        description: "14 layout/UI-komponenter: Hero, Greeting, KPI, FeaturedCard, etc.",
+        href: "/design/athletic-kit",
+        status: "FINAL",
+      },
+      {
+        title: "10 dynamiske kalendere",
+        description: "Year/Month/Week/Day, Period, Scheduler, Heatmap, Streak, Load, Compare.",
+        href: "/design/athletic-kit/kalendere",
+        status: "FINAL",
+      },
+    ],
+  },
+  {
     title: "Beslutninger som venter",
     intro: "Disse trenger Anders sitt svar i dag.",
     icon: Compass,
