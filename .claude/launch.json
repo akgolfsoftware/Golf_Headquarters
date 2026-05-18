@@ -20,6 +20,20 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "e2e"],
       "port": 0
+    },
+    {
+      "name": "wireframe",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "wireframe"],
+      "port": 8765,
+      "autoPort": true
+    },
+    {
+      "name": "booking-dev",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd /Users/anderskristiansen/Developer/akgolf-booking && PORT=3100 npm run dev"],
+      "port": 3100,
+      "autoPort": false
     }
   ]
 }
