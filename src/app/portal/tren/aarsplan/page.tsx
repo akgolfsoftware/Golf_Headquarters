@@ -13,11 +13,14 @@ import { CalendarDays, Trophy } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
+import { AgentStrip } from "@/components/coachhq/agent-strip";
 import {
   AarsplanInteraktiv,
   OpprettSesonPlanSkjema,
   type SeasonPlanData,
+  type TurneringPin,
 } from "./aarsplan-interaktiv";
+import { BulkKoblTurneringer } from "./bulk-kobl-button";
 
 export default async function AarsplanPage() {
   const user = await requirePortalUser();
@@ -31,12 +34,38 @@ export default async function AarsplanPage() {
       tournamentEntries: {
         orderBy: { manualDate: "asc" },
         include: { tournament: { select: { name: true, startDate: true } } },
-        take: 5,
       },
     },
   });
 
+  // Antall entries i året som IKKE er koblet til sesongplan (kandidater for bulk-kobling)
+  const fra = new Date(ar, 0, 1);
+  const til = new Date(ar, 11, 31, 23, 59, 59);
+  const ukoblede = await prisma.tournamentEntry.count({
+    where: {
+      userId: user.id,
+      seasonPlanId: null,
+      OR: [
+        { tournament: { startDate: { gte: fra, lte: til } } },
+        { manualDate: { gte: fra, lte: til } },
+      ],
+    },
+  });
+
   const antallTurneringer = sesongplan?.tournamentEntries.length ?? 0;
+
+  const turneringPins: TurneringPin[] = (sesongplan?.tournamentEntries ?? [])
+    .map((e) => {
+      const dato = e.tournament?.startDate ?? e.manualDate;
+      if (!dato) return null;
+      return {
+        id: e.id,
+        navn: e.tournament?.name ?? e.manualName ?? "Manuell turnering",
+        dato,
+        priority: e.priority as "MAJOR" | "NORMAL" | "LOCAL",
+      };
+    })
+    .filter((p): p is TurneringPin => p !== null);
 
   const plan: SeasonPlanData | null = sesongplan
     ? {
@@ -90,7 +119,18 @@ export default async function AarsplanPage() {
         {/* Sesongplan funnet */}
         {plan && (
           <>
-            <AarsplanInteraktiv plan={plan} />
+            {ukoblede > 0 && (
+              <div className="mb-6">
+                <AgentStrip label="Årsplan-agent">
+                  Du har {ukoblede} {ukoblede === 1 ? "turnering" : "turneringer"} i {ar} som ikke er koblet til sesongplanen. Last dem inn nå for å se dem på tidslinjen.
+                  <span className="ml-3 inline-block">
+                    <BulkKoblTurneringer seasonPlanId={plan.id} year={ar} antall={ukoblede} />
+                  </span>
+                </AgentStrip>
+              </div>
+            )}
+
+            <AarsplanInteraktiv plan={plan} turneringer={turneringPins} />
 
             {/* Turneringer-lenke */}
             <div className="mt-6 flex items-center justify-between rounded-xl border border-border bg-card px-6 py-4">

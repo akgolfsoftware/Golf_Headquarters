@@ -44,6 +44,7 @@ import { formatSg } from "@/lib/sg";
 import { PortalAvatarButton } from "@/components/portal/portal-avatar-button";
 import { PlanActionsCard } from "@/components/portal/plan-actions-card";
 import { QuickActions } from "@/components/portal/quick-actions";
+import { KommendeTurneringerCard } from "@/components/portal/kommende-turneringer-card";
 import { prisma } from "@/lib/prisma";
 import {
   SkeletonKpi,
@@ -129,6 +130,7 @@ export default async function PortalHjem() {
   // Heuristikk i V4: viser nyeste SessionRecording for spilleren med
   // aiAnalysis satt og updatedAt nyere enn 7 dager. Spillerprofil-flagg for
   // "lest" kommer i V4.5.
+  // eslint-disable-next-line react-hooks/purity -- server-component, ikke render-pure-context
   const syvDagerSiden = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const nyAnalyse = await prisma.sessionRecording.findFirst({
     where: {
@@ -209,6 +211,8 @@ async function DashboardSeksjoner({ user }: { user: PortalUser }) {
       </div>
 
       <SistRegistrert items={data.sisteRegistrerte} />
+
+      <KommendeTurneringerCard userId={user.id} />
 
       {data.sisteCoachMelding && (
         <CoachMelding melding={data.sisteCoachMelding} tier={user.tier} />

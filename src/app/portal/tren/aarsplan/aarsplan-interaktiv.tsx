@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { opprettSeasonPlan, opprettPeriodBlock, slettPeriodBlock } from "./actions";
@@ -29,6 +30,13 @@ export type SeasonPlanData = {
   periodBlocks: PeriodBlockData[];
 };
 
+export type TurneringPin = {
+  id: string;
+  navn: string;
+  dato: Date;
+  priority: "MAJOR" | "NORMAL" | "LOCAL";
+};
+
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
@@ -45,13 +53,22 @@ const LPHASE_ORDER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING"];
 // Tidslinje (vannrett Jan–Des med periode-band)
 // ---------------------------------------------------------------------------
 
+const PIN_COLOR: Record<"MAJOR" | "NORMAL" | "LOCAL", string> = {
+  MAJOR: "text-primary",
+  NORMAL: "text-accent-foreground",
+  LOCAL: "text-muted-foreground",
+};
+
 function Tidslinje({
   plan,
   blocks,
+  turneringer,
 }: {
   plan: SeasonPlanData;
   blocks: PeriodBlockData[];
+  turneringer: TurneringPin[];
 }) {
+  const [aktivPin, setAktivPin] = useState<string | null>(null);
   const yearStart = new Date(plan.year, 0, 1);
   const yearEnd = new Date(plan.year, 11, 31);
   const totalMs = yearEnd.getTime() - yearStart.getTime();
@@ -68,6 +85,45 @@ function Tidslinje({
       <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         Tidslinje {plan.year}
       </div>
+
+      {/* Turnerings-pins (▲) over tidslinjen */}
+      {turneringer.length > 0 && (
+        <div className="relative mb-1 h-6">
+          {turneringer.map((t) => {
+            const left = pct(t.dato);
+            const aktiv = aktivPin === t.id;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setAktivPin(aktiv ? null : t.id)}
+                className={`absolute -translate-x-1/2 ${PIN_COLOR[t.priority]} hover:scale-125 transition-transform`}
+                style={{ left: `${left}%`, top: 0 }}
+                title={`${t.navn} — ${t.dato.toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}`}
+                aria-label={`Turnering ${t.navn}`}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
+                  <polygon points="7,2 13,12 1,12" fill="currentColor" />
+                </svg>
+                {aktiv && (
+                  <div className="absolute left-1/2 top-full z-20 mt-1 w-48 -translate-x-1/2 rounded-md border border-border bg-card p-2 text-left shadow-lg">
+                    <div className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
+                      {t.dato.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" })}
+                    </div>
+                    <div className="mt-0.5 text-xs font-medium text-foreground">{t.navn}</div>
+                    <Link
+                      href="/portal/tren/turneringer"
+                      className="mt-1 inline-block text-[10px] font-medium text-primary hover:underline"
+                    >
+                      Se detaljer →
+                    </Link>
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Month labels */}
       <div className="relative mb-1 flex">
@@ -451,15 +507,17 @@ function PeriodListe({
 
 export function AarsplanInteraktiv({
   plan,
+  turneringer = [],
 }: {
   plan: SeasonPlanData;
+  turneringer?: TurneringPin[];
 }) {
   const [visSkjema, setVisSkjema] = useState(false);
   const [visDetaljer, setVisDetaljer] = useState(false);
 
   return (
     <div className="space-y-6">
-      <Tidslinje plan={plan} blocks={plan.periodBlocks} />
+      <Tidslinje plan={plan} blocks={plan.periodBlocks} turneringer={turneringer} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_280px]">
         {/* Perioder */}

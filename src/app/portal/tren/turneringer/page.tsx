@@ -9,6 +9,7 @@ import { Calendar, Medal } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
+import { AgentStrip } from "@/components/coachhq/agent-strip";
 import {
   TurneringerInteraktiv,
   type TurnEntry,
@@ -89,6 +90,12 @@ export default async function TurneringerPage() {
                 : `${antall} ${antall === 1 ? "turnering" : "turneringer"} i planen din, ${fornavn}.`
             }
           />
+        </div>
+
+        <div className="mb-6">
+          <AgentStrip label="Turnerings-agent">
+            Viser {katalog.length} turneringer for {new Date().getFullYear()}-sesongen — kretsmesterskap, Olyo, Srixon og Østlandstour. Filtrer på &quot;Tilgjengelige&quot; for å melde deg på direkte.
+          </AgentStrip>
         </div>
 
         <TurneringerInteraktiv

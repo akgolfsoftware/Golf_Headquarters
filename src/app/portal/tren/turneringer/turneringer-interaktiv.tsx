@@ -1,8 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { Trophy, Plus, Trash2, Search, X } from "lucide-react";
-import { leggTilTurnering, slettTournamentEntry, type TurnPriority } from "./actions";
+import { useMemo, useState, useTransition } from "react";
+import { Trophy, Plus, Trash2, Search, X, CheckCircle2, UserPlus } from "lucide-react";
+import {
+  leggTilTurnering,
+  meldDegPa,
+  slettTournamentEntry,
+  type TurnPriority,
+} from "./actions";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -314,6 +319,38 @@ function LeggTilModal({
 // TurnerigerListe — med priority-tabs og slett
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// MeldDegPaKnapp — direkte påmelding fra katalog
+// ---------------------------------------------------------------------------
+
+function MeldDegPaKnapp({ tournamentId }: { tournamentId: string }) {
+  const [isPending, startTransition] = useTransition();
+  const [feil, setFeil] = useState<string | null>(null);
+  return (
+    <button
+      onClick={() => {
+        setFeil(null);
+        startTransition(async () => {
+          const res = await meldDegPa(tournamentId);
+          if (!res.ok) setFeil(res.feil);
+        });
+      }}
+      disabled={isPending}
+      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-primary-foreground hover:opacity-90 disabled:opacity-50"
+      title={feil ?? "Meld meg på"}
+    >
+      <UserPlus className="h-3.5 w-3.5" strokeWidth={1.75} />
+      {isPending ? "Melder på…" : "Meld meg på"}
+    </button>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main export — TurneringerInteraktiv
+// ---------------------------------------------------------------------------
+
+type Mode = "MINE" | "TILGJENGELIGE" | "ALLE";
+
 export function TurneringerInteraktiv({
   entries,
   katalog,
@@ -324,34 +361,105 @@ export function TurneringerInteraktiv({
   sesongplaner: SesonPlanOption[];
 }) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [filter, setFilter] = useState<"ALLE" | TurnPriority>("ALLE");
+  const [mode, setMode] = useState<Mode>("MINE");
 
-  const filtrert = filter === "ALLE"
-    ? entries
-    : entries.filter((e) => e.priority === filter);
+  // ID-er for turneringer brukeren er påmeldt (kun katalog-turneringer har id)
+  const paameldteIds = useMemo(
+    () => new Set(entries.map((e) => e.tournamentId).filter((id): id is string => Boolean(id))),
+    [entries],
+  );
 
-  const sortert = [...filtrert].sort((a, b) => {
-    const da = a.tournament?.startDate ?? a.manualDate ?? new Date(9999, 0);
-    const db = b.tournament?.startDate ?? b.manualDate ?? new Date(9999, 0);
-    return da.getTime() - db.getTime();
-  });
+  // Mine = entries (egne påmeldinger, kommende først)
+  const mine = useMemo(() => {
+    const naa = new Date();
+    const sortert = [...entries].sort((a, b) => {
+      const da = a.tournament?.startDate ?? a.manualDate ?? new Date(9999, 0);
+      const db = b.tournament?.startDate ?? b.manualDate ?? new Date(9999, 0);
+      return da.getTime() - db.getTime();
+    });
+    // Plasser kommende først, deretter passerte
+    const kommende = sortert.filter((e) => {
+      const d = e.tournament?.startDate ?? e.manualDate;
+      return !d || d >= naa;
+    });
+    const passerte = sortert
+      .filter((e) => {
+        const d = e.tournament?.startDate ?? e.manualDate;
+        return d && d < naa;
+      })
+      .reverse();
+    return [...kommende, ...passerte];
+  }, [entries]);
+
+  // Tilgjengelige = katalog der user ikke har TournamentEntry, kommende først
+  const tilgjengelige = useMemo(() => {
+    return katalog
+      .filter((t) => !paameldteIds.has(t.id))
+      .sort((a, b) => {
+        const da = a.startDate ?? new Date(9999, 0);
+        const db = b.startDate ?? new Date(9999, 0);
+        return da.getTime() - db.getTime();
+      });
+  }, [katalog, paameldteIds]);
+
+  // Alle = hele katalogen + manuelle entries, sortert på dato
+  const alle = useMemo(() => {
+    const manuelle = entries.filter((e) => !e.tournamentId);
+    type Row = {
+      key: string;
+      navn: string;
+      dato: Date | null;
+      paameldt: boolean;
+      entry: TurnEntry | null;
+      tournamentId: string | null;
+    };
+    const rows: Row[] = [
+      ...katalog.map((t) => ({
+        key: `k:${t.id}`,
+        navn: t.name,
+        dato: t.startDate,
+        paameldt: paameldteIds.has(t.id),
+        entry: entries.find((e) => e.tournamentId === t.id) ?? null,
+        tournamentId: t.id,
+      })),
+      ...manuelle.map((e) => ({
+        key: `m:${e.id}`,
+        navn: e.manualName ?? "Manuell turnering",
+        dato: e.manualDate,
+        paameldt: true,
+        entry: e,
+        tournamentId: null,
+      })),
+    ];
+    return rows.sort((a, b) => {
+      const da = a.dato ?? new Date(9999, 0);
+      const db = b.dato ?? new Date(9999, 0);
+      return da.getTime() - db.getTime();
+    });
+  }, [katalog, entries, paameldteIds]);
+
+  const MODE_LABEL: Record<Mode, string> = {
+    MINE: `Mine påmeldte (${entries.length})`,
+    TILGJENGELIGE: `Tilgjengelige (${tilgjengelige.length})`,
+    ALLE: `Alle (${katalog.length})`,
+  };
 
   return (
     <>
       {/* Toolbar */}
       <div className="mb-6 flex flex-wrap items-center gap-4">
         <div className="inline-flex gap-1 rounded-md border border-border bg-card p-1">
-          {(["ALLE", "MAJOR", "NORMAL", "LOCAL"] as const).map((f) => (
+          {(["MINE", "TILGJENGELIGE", "ALLE"] as const).map((m) => (
             <button
-              key={f}
-              onClick={() => setFilter(f)}
+              key={m}
+              onClick={() => setMode(m)}
               className={`rounded-sm px-3 py-1.5 text-xs font-medium transition-colors ${
-                filter === f
+                mode === m
                   ? "bg-foreground text-background"
                   : "text-muted-foreground hover:bg-secondary"
               }`}
             >
-              {f === "ALLE" ? "Alle" : PRIORITY_LABEL[f as TurnPriority]}
+              {MODE_LABEL[m]}
             </button>
           ))}
         </div>
@@ -366,54 +474,112 @@ export function TurneringerInteraktiv({
       </div>
 
       {/* Liste */}
-      {sortert.length === 0 ? (
-        <div className="rounded-xl border border-border bg-card px-8 py-16 text-center">
-          <Trophy className="mx-auto h-10 w-10 text-muted-foreground" strokeWidth={1} />
-          <p className="mt-4 text-sm text-muted-foreground">
-            {filter === "ALLE"
-              ? "Ingen turneringer planlagt. Legg til din første."
-              : `Ingen ${PRIORITY_LABEL[filter as TurnPriority].toLowerCase()}-turneringer.`}
-          </p>
-        </div>
-      ) : (
-        <div className="overflow-hidden rounded-xl border border-border bg-card">
-          <div className="divide-y divide-border">
-            {sortert.map((e) => {
-              const navn = e.tournament?.name ?? e.manualName ?? "Manuell turnering";
-              const dato = e.tournament?.startDate ?? e.manualDate;
-              const pri = e.priority as TurnPriority;
-              return (
-                <div key={e.id} className="flex items-center gap-4 px-6 py-4">
-                  <Trophy className="h-5 w-5 flex-none text-muted-foreground" strokeWidth={1.5} />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-medium text-foreground">{navn}</span>
-                      {e.category && (
-                        <span className="rounded-full border border-border px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-                          {e.category}
-                        </span>
+      {mode === "MINE" && (
+        mine.length === 0 ? (
+          <div className="rounded-xl border border-border bg-card px-8 py-16 text-center">
+            <Trophy className="mx-auto h-10 w-10 text-muted-foreground" strokeWidth={1} />
+            <p className="mt-4 text-sm text-muted-foreground">
+              Ingen turneringer påmeldt enda. Bytt til &quot;Tilgjengelige&quot; for å melde deg på.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-border bg-card">
+            <div className="divide-y divide-border">
+              {mine.map((e) => {
+                const navn = e.tournament?.name ?? e.manualName ?? "Manuell turnering";
+                const dato = e.tournament?.startDate ?? e.manualDate;
+                const pri = e.priority as TurnPriority;
+                return (
+                  <div key={e.id} className="flex items-center gap-4 px-6 py-4">
+                    <Trophy className="h-5 w-5 flex-none text-muted-foreground" strokeWidth={1.5} />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-sm font-medium text-foreground">{navn}</span>
+                        {e.category && (
+                          <span className="rounded-full border border-border px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                            {e.category}
+                          </span>
+                        )}
+                      </div>
+                      {e.notes && (
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">{e.notes}</p>
                       )}
                     </div>
-                    {e.notes && (
-                      <p className="mt-0.5 truncate text-xs text-muted-foreground">{e.notes}</p>
+                    {dato && (
+                      <span className="flex-none font-mono text-xs tabular-nums text-muted-foreground">
+                        {dato.toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}
+                      </span>
                     )}
+                    <span
+                      className={`flex-none rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] ${
+                        PRIORITY_CLASS[pri]
+                      }`}
+                    >
+                      {PRIORITY_LABEL[pri]}
+                    </span>
+                    <SlettKnapp id={e.id} />
                   </div>
-                  {dato && (
+                );
+              })}
+            </div>
+          </div>
+        )
+      )}
+
+      {mode === "TILGJENGELIGE" && (
+        tilgjengelige.length === 0 ? (
+          <div className="rounded-xl border border-border bg-card px-8 py-16 text-center">
+            <CheckCircle2 className="mx-auto h-10 w-10 text-muted-foreground" strokeWidth={1} />
+            <p className="mt-4 text-sm text-muted-foreground">
+              Du er påmeldt alle turneringer i katalogen.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-border bg-card">
+            <div className="divide-y divide-border">
+              {tilgjengelige.map((t) => (
+                <div key={t.id} className="flex items-center gap-4 px-6 py-4">
+                  <Trophy className="h-5 w-5 flex-none text-muted-foreground" strokeWidth={1.5} />
+                  <div className="min-w-0 flex-1">
+                    <span className="text-sm font-medium text-foreground">{t.name}</span>
+                  </div>
+                  {t.startDate && (
                     <span className="flex-none font-mono text-xs tabular-nums text-muted-foreground">
-                      {dato.toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}
+                      {t.startDate.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" })}
                     </span>
                   )}
-                  <span
-                    className={`flex-none rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] ${
-                      PRIORITY_CLASS[pri]
-                    }`}
-                  >
-                    {PRIORITY_LABEL[pri]}
-                  </span>
-                  <SlettKnapp id={e.id} />
+                  <MeldDegPaKnapp tournamentId={t.id} />
                 </div>
-              );
-            })}
+              ))}
+            </div>
+          </div>
+        )
+      )}
+
+      {mode === "ALLE" && (
+        <div className="overflow-hidden rounded-xl border border-border bg-card">
+          <div className="divide-y divide-border">
+            {alle.map((row) => (
+              <div key={row.key} className="flex items-center gap-4 px-6 py-4">
+                <Trophy className="h-5 w-5 flex-none text-muted-foreground" strokeWidth={1.5} />
+                <div className="min-w-0 flex-1">
+                  <span className="text-sm font-medium text-foreground">{row.navn}</span>
+                </div>
+                {row.dato && (
+                  <span className="flex-none font-mono text-xs tabular-nums text-muted-foreground">
+                    {row.dato.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" })}
+                  </span>
+                )}
+                {row.paameldt ? (
+                  <span className="inline-flex flex-none items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">
+                    <CheckCircle2 className="h-3 w-3" strokeWidth={2} />
+                    Påmeldt
+                  </span>
+                ) : row.tournamentId ? (
+                  <MeldDegPaKnapp tournamentId={row.tournamentId} />
+                ) : null}
+              </div>
+            ))}
           </div>
         </div>
       )}

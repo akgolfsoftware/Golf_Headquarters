@@ -121,6 +121,33 @@ async function byggKalenderData(
     include: { periodBlocks: { orderBy: { startDate: "asc" } } },
   });
 
+  // Hent reelle turneringer for spilleren i året
+  const tournamentEntries = await prisma.tournamentEntry.findMany({
+    where: {
+      userId: spilllerId,
+      OR: [
+        { tournament: { startDate: { gte: fra, lte: til } } },
+        { manualDate: { gte: fra, lte: til } },
+      ],
+    },
+    include: { tournament: { select: { name: true, startDate: true } } },
+  });
+  type Entry = (typeof tournamentEntries)[number];
+  const ekteTurneringer: AarsplanTurnering[] = tournamentEntries
+    .map((e: Entry): AarsplanTurnering | null => {
+      const dato = e.tournament?.startDate ?? e.manualDate;
+      if (!dato) return null;
+      const pri = e.priority as "MAJOR" | "NORMAL" | "LOCAL";
+      return {
+        id: e.id,
+        spilllerId,
+        navn: e.tournament?.name ?? e.manualName ?? "Turnering",
+        dato,
+        prioritet: pri,
+      };
+    })
+    .filter((t): t is AarsplanTurnering => t !== null);
+
   type SeasonPlan = (typeof seasonPlaner)[number];
   type PeriodBlock = SeasonPlan["periodBlocks"][number];
   const perioder: AarsplanPeriode[] = seasonPlaner.flatMap((sp: SeasonPlan) =>
@@ -135,9 +162,10 @@ async function byggKalenderData(
   );
 
   // Hvis ingen ekte data: fyll med demo for å gi UI noe å vise
-  const harData = okter.length > 0 || perioder.length > 0;
+  const harData =
+    okter.length > 0 || perioder.length > 0 || ekteTurneringer.length > 0;
   const turneringer: AarsplanTurnering[] = harData
-    ? []
+    ? ekteTurneringer
     : lagDemoTurneringer(aar, spilllerId).map((t) => ({
         id: t.id,
         spilllerId,
