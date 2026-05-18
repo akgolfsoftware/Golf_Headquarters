@@ -15,7 +15,9 @@ import {
   Activity,
   CalendarPlus,
   ClipboardList,
+  Flag,
   FlaskConical,
+  History,
   MessageSquare,
   Pencil,
   Target,
@@ -63,10 +65,6 @@ const PYR_META: Record<
   },
 };
 
-const NB = new Intl.DateTimeFormat("nb-NO", {
-  day: "2-digit",
-  month: "2-digit",
-});
 const NB_FULL = new Intl.DateTimeFormat("nb-NO", {
   day: "2-digit",
   month: "short",
@@ -100,11 +98,13 @@ function tierLabel(tier: string): string {
 }
 
 const TABS = [
-  { key: "basis", label: "Basis", icon: Target },
+  { key: "basis", label: "Oversikt", icon: Target },
   { key: "plan", label: "Plan", icon: ClipboardList },
   { key: "sesjoner", label: "Sesjoner", icon: Activity },
+  { key: "runder", label: "Runder", icon: Flag },
   { key: "tester", label: "Tester", icon: FlaskConical },
   { key: "trackman", label: "TrackMan", icon: Zap },
+  { key: "historikk", label: "Historikk", icon: History },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
@@ -349,6 +349,31 @@ export default async function Profil360({
     hcpDelta = avgN - avgO;
   }
 
+  // Coach-notater — utdrag fra session-logs med coachFeedback
+  type CoachNote = {
+    sessionId: string;
+    title: string;
+    feedback: string;
+    feedbackAt: Date;
+    pyramidArea: string;
+  };
+  const coachNotater: CoachNote[] = allSessions
+    .filter(
+      (s): s is typeof s & { log: NonNullable<typeof s.log> } =>
+        s.log != null &&
+        s.log.coachFeedback != null &&
+        s.log.coachFeedback.trim().length > 0 &&
+        s.log.coachFeedbackAt != null
+    )
+    .map((s) => ({
+      sessionId: s.id,
+      title: s.title,
+      feedback: s.log.coachFeedback as string,
+      feedbackAt: s.log.coachFeedbackAt as Date,
+      pyramidArea: s.pyramidArea,
+    }))
+    .sort((a, b) => b.feedbackAt.getTime() - a.feedbackAt.getTime());
+
   // Neste planlagte økt
   const nesteOkt = plannedSessions
     .filter((s) => s.scheduledAt >= now)
@@ -590,6 +615,62 @@ export default async function Profil360({
               </ul>
             )}
           </section>
+
+          {/* Coach-notater */}
+          <section
+            aria-labelledby="coach-notater-h"
+            className="rounded-lg border border-border bg-card p-6"
+          >
+            <div className="mb-4 flex items-baseline justify-between gap-4">
+              <h2
+                id="coach-notater-h"
+                className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+              >
+                Coach-notater · {coachNotater.length}
+              </h2>
+              {coachNotater.length > 5 && (
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  Viser 5 nyeste
+                </span>
+              )}
+            </div>
+            {coachNotater.length === 0 ? (
+              <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
+                Ingen coach-tilbakemeldinger registrert på fullførte økter
+                ennå. Legg igjen tilbakemelding fra økt-loggen.
+              </p>
+            ) : (
+              <ul className="space-y-3">
+                {coachNotater.slice(0, 5).map((n) => (
+                  <li
+                    key={n.sessionId}
+                    className="rounded-lg border border-border bg-secondary/30 p-4"
+                  >
+                    <div className="flex items-baseline justify-between gap-4">
+                      <div className="min-w-0 flex items-center gap-2">
+                        <span
+                          aria-hidden="true"
+                          className="h-2 w-2 shrink-0 rounded-sm"
+                          style={{
+                            background: `var(--color-pyr-${n.pyramidArea.toLowerCase()}, var(--color-primary))`,
+                          }}
+                        />
+                        <span className="truncate text-[13px] font-semibold text-foreground">
+                          {n.title}
+                        </span>
+                      </div>
+                      <time className="shrink-0 font-mono text-[10px] uppercase tracking-[0.05em] text-muted-foreground">
+                        {NB_FULL.format(n.feedbackAt)}
+                      </time>
+                    </div>
+                    <p className="mt-2 text-[13px] leading-[1.5] text-foreground/85">
+                      {n.feedback}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </>
       )}
 
@@ -603,7 +684,7 @@ export default async function Profil360({
             </h2>
             {player.trainingPlans.length === 0 ? (
               <div className="rounded-md border border-dashed border-border bg-muted/40 p-6 text-center text-[13px] text-muted-foreground">
-                Ingen aktive planer. Bruk "Lag plan" for å opprette.
+                Ingen aktive planer. Bruk &laquo;Lag plan&raquo; for å opprette.
               </div>
             ) : (
               <ul className="space-y-3">
@@ -1035,6 +1116,176 @@ export default async function Profil360({
               eller importer data direkte fra TrackMan Performance Studio.
             </p>
           </div>
+        </>
+      )}
+
+      {/* Tab: RUNDER */}
+      {tab === "runder" && (
+        <>
+          <section className="rounded-lg border border-border bg-card">
+            <div className="border-b border-border bg-secondary px-6 py-4">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  Runder · {player.rounds.length} totalt
+                </span>
+                {sg.snittScore != null && (
+                  <span className="font-mono text-[10px] text-muted-foreground">
+                    Snitt-score {sg.snittScore.toFixed(1).replace(".", ",")} · SG {formatSg(sg.total)}
+                  </span>
+                )}
+              </div>
+            </div>
+            {player.rounds.length === 0 ? (
+              <div className="p-8 text-center text-[13px] text-muted-foreground">
+                Ingen runder registrert ennå.
+              </div>
+            ) : (
+              <ul className="divide-y divide-border">
+                {player.rounds.map((r) => (
+                  <li
+                    key={r.id}
+                    className="grid grid-cols-[88px_1fr_auto] items-center gap-4 px-6 py-4"
+                  >
+                    <div>
+                      <div className="font-mono text-[12px] font-semibold leading-tight tabular-nums">
+                        {NB_FULL.format(r.playedAt)}
+                      </div>
+                      <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.05em] text-muted-foreground">
+                        runde
+                      </div>
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-[13px] font-semibold text-foreground">
+                        {r.course.name}
+                      </div>
+                      <div className="mt-0.5 flex flex-wrap items-center gap-3 font-mono text-[10px] text-muted-foreground tabular-nums">
+                        {r.sgOtt != null && <span>OTT {formatSg(r.sgOtt)}</span>}
+                        {r.sgApp != null && <span>APP {formatSg(r.sgApp)}</span>}
+                        {r.sgArg != null && <span>ARG {formatSg(r.sgArg)}</span>}
+                        {r.sgPutt != null && <span>PUTT {formatSg(r.sgPutt)}</span>}
+                      </div>
+                      {r.notes && (
+                        <div className="mt-1 truncate text-[11px] text-muted-foreground">
+                          {r.notes}
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <div className="font-mono text-[20px] font-semibold tabular-nums text-foreground">
+                        {r.score}
+                      </div>
+                      {r.sgTotal != null && (
+                        <div
+                          className={`font-mono text-[10px] tabular-nums ${
+                            r.sgTotal > 0 ? "text-pyr-tek" : "text-muted-foreground"
+                          }`}
+                        >
+                          SG {formatSg(r.sgTotal)}
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </>
+      )}
+
+      {/* Tab: HISTORIKK — samlet tidslinje */}
+      {tab === "historikk" && (
+        <>
+          <section className="rounded-lg border border-border bg-card px-6 py-6">
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  Samlet aktivitet
+                </div>
+                <h3 className="mt-1 font-display text-[18px] font-semibold leading-snug">
+                  Hele historikken
+                </h3>
+                <p className="mt-1 text-[12px] leading-[1.5] text-muted-foreground">
+                  Alle runder, fullførte økter, tester og TrackMan-sesjoner i
+                  kronologisk rekkefølge.
+                </p>
+              </div>
+              <Trophy
+                size={18}
+                strokeWidth={1.5}
+                className="shrink-0 text-muted-foreground"
+              />
+            </div>
+            {(() => {
+              const items: TimelineItem[] = [
+                ...player.rounds.map<TimelineItem>((r) => ({
+                  when: r.playedAt,
+                  kind: "round",
+                  label: `Runde · ${r.course.name}`,
+                  sub: `Score ${r.score}${r.sgTotal != null ? ` · SG ${formatSg(r.sgTotal)}` : ""}`,
+                })),
+                ...completedSessions.map<TimelineItem>((s) => ({
+                  when: s.scheduledAt,
+                  kind: "session",
+                  label: `Økt · ${s.title}`,
+                  sub: `${s.pyramidArea} · ${s.durationMin} min`,
+                })),
+                ...player.testResults.map<TimelineItem>((t) => ({
+                  when: t.takenAt,
+                  kind: "test",
+                  label: `Test · ${t.test.name}`,
+                  sub: `Resultat ${t.score.toFixed(1).replace(".", ",")}`,
+                })),
+                ...player.trackManSessions.map<TimelineItem>((tm) => ({
+                  when: tm.recordedAt,
+                  kind: "trackman",
+                  label: "TrackMan-økt",
+                  sub: `${tm.shotCount} slag`,
+                })),
+              ].sort((a, b) => b.when.getTime() - a.when.getTime());
+
+              if (items.length === 0) {
+                return (
+                  <p className="rounded-md border border-dashed border-border bg-muted/40 p-4 text-[13px] text-muted-foreground">
+                    Ingen registrerte hendelser ennå.
+                  </p>
+                );
+              }
+              return (
+                <ol className="relative space-y-4 border-l border-border pl-6">
+                  {items.map((item, i) => (
+                    <li key={i} className="relative">
+                      <span
+                        className="absolute -left-[26px] top-1.5 h-2.5 w-2.5 rounded-full border border-border"
+                        style={{
+                          background:
+                            item.kind === "round"
+                              ? "hsl(var(--primary))"
+                              : item.kind === "test"
+                                ? "var(--color-pyr-tek)"
+                                : item.kind === "trackman"
+                                  ? "hsl(var(--accent))"
+                                  : "hsl(var(--card))",
+                        }}
+                      />
+                      <div className="flex items-baseline justify-between gap-4">
+                        <div className="min-w-0">
+                          <div className="truncate text-[13px] font-medium text-foreground">
+                            {item.label}
+                          </div>
+                          <div className="text-[11px] text-muted-foreground">
+                            {item.sub}
+                          </div>
+                        </div>
+                        <time className="shrink-0 font-mono text-[11px] uppercase tracking-[0.05em] text-muted-foreground">
+                          {NB_FULL.format(item.when)}
+                        </time>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              );
+            })()}
+          </section>
         </>
       )}
     </div>
