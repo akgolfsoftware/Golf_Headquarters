@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, X, Search } from "lucide-react";
+import { AgentStrip } from "@/components/coachhq/agent-strip";
 import type {
   ExerciseDefinition,
   LPhase,
@@ -261,6 +262,18 @@ export function AddSessionWizard({
   return (
     <div className="space-y-6">
       <StegIndikator n={step} total={TOTAL_STEPS} />
+
+      <AgentStrip label="Økt-agent">
+        {step === 1 && "Velg dato, varighet og miljø. Jeg foreslår tid basert på kalenderen din."}
+        {step === 2 && "Sett en kort, beskrivende tittel. Jeg lager forslag hvis du står fast."}
+        {step === 3 && "Velg L-fase. Standard for ad hoc-økt er PRAKSIS."}
+        {step === 4 && "Hvilket ferdighetsområde har hovedfokus? Det styrer drill-forslagene."}
+        {step === 5 && "Fordel pyramide-vekt mellom prosess, struktur og prestasjon. Må summe til 100 %."}
+        {step === 6 && "Velg pressnivå (P0–P4). Høyere press = mer konkurranse-realisme."}
+        {step === 7 && "Plukk drills som matcher fokus og press. Jeg foreslår basert på valg."}
+        {step === 8 && "Justér sets, reps og CS-mål per drill. Realistisk for nivået ditt."}
+        {step === 9 && "Sjekk og bekreft. Økta legges i kalenderen din."}
+      </AgentStrip>
 
       {step === 1 && (
         <Bolk

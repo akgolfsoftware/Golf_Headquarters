@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, ChevronLeft, ChevronRight, LayoutTemplate, X } from "lucide-react";
+import { AgentStrip } from "@/components/coachhq/agent-strip";
 import {
   hentMalForhandsutfylling,
   opprettPlan,
@@ -223,6 +224,15 @@ export function PlanWizard({
       </div>
 
       <ProgressStripe current={steg} />
+
+      <AgentStrip label="Plan-agent">
+        {steg === 1 && "Velg spiller for å starte. Jeg foreslår mal basert på hcp og historikk."}
+        {steg === 2 && "Sett periode og navn. Jeg sjekker mot eksisterende planer."}
+        {steg === 3 && "Velg 3-5 faser. Standard er BASE → GENERELL → SPESIFIKK → TOPPFORM."}
+        {steg === 4 && "Allokeringen må summe til 100 %. Jeg hjelper med fordeling."}
+        {steg === 5 && "Skjema = økter per uke × varighet. Realistisk for tier."}
+        {steg === 6 && "Sjekk og bekreft. Planen sendes til spilleren for godkjenning."}
+      </AgentStrip>
 
       <div className="rounded-2xl border border-border bg-card px-6 py-6">
         {steg === 1 && (
