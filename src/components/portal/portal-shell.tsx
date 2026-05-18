@@ -2,6 +2,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PortalSidebar } from "./sidebar";
 import { BottomNav } from "./bottom-nav";
+import { PortalGlobalSearchModal } from "./global-search-modal";
+import { PortalSearchTriggerButton } from "./search-trigger-button";
 import { UserMenu } from "@/components/shared/user-menu";
 import { ViewModeToggle } from "@/components/shared/view-mode-toggle";
 import { NotificationBell } from "@/components/shared/notification-bell";
@@ -48,7 +50,8 @@ export async function PortalShell({
               PlayerHQ
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <PortalSearchTriggerButton />
             {(user.role === "ADMIN" || user.role === "COACH") && (
               <ViewModeToggle current="player" />
             )}
@@ -68,6 +71,7 @@ export async function PortalShell({
         </main>
       </div>
       <BottomNav />
+      <PortalGlobalSearchModal />
     </div>
   );
 }
