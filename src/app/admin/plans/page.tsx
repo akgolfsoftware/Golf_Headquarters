@@ -19,8 +19,22 @@ import { prisma } from "@/lib/prisma";
 import { avatarBg } from "@/lib/avatar-colors";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import {
+  PlanViewToggle,
+  type PlanView,
+} from "@/components/coachhq/plan-view-toggle";
+import {
+  PlanTidslinje,
+  type TidslinjePlan,
+} from "@/components/coachhq/plan-tidslinje";
+import {
+  PlanSplitView,
+  type SplitPlanRow,
+} from "@/components/coachhq/plan-split-view";
 
-type Search = { q?: string; status?: string };
+type Search = { q?: string; status?: string; view?: string; planId?: string };
+
+const VALID_VIEWS: readonly PlanView[] = ["kanban", "tidslinje", "split"];
 
 type PlanStatus = "aktiv" | "pause" | "arkiv";
 
@@ -43,6 +57,9 @@ export default async function AdminPlansList({
 }) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const params = await searchParams;
+  const activeView: PlanView = VALID_VIEWS.includes(params.view as PlanView)
+    ? (params.view as PlanView)
+    : "kanban";
 
   const plansRaw = await prisma.trainingPlan.findMany({
     orderBy: [{ isActive: "desc" }, { createdAt: "desc" }],
@@ -53,8 +70,9 @@ export default async function AdminPlansList({
     take: 200,
   });
 
-  // Beregn status per plan
-  const naa = Date.now();
+  // Stabil tidsreferanse for hele requesten — unngår Date.now() spredt rundt.
+  const now = new Date();
+  const naa = now.getTime();
   type PlanWithStatus = (typeof plansRaw)[number] & { _status: PlanStatus };
   const plans: PlanWithStatus[] = plansRaw.map((p) => {
     let status: PlanStatus;
@@ -126,6 +144,7 @@ export default async function AdminPlansList({
         sub={`${totalSpillere} spillere · ${forfaller} forfaller denne uka · ${arkivCount} arkivert`}
         actions={
           <>
+            <PlanViewToggle active={activeView} q={params.q} />
             <Link
               href="/admin/plans/templates"
               className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
@@ -222,7 +241,7 @@ export default async function AdminPlansList({
             </div>
           }
         />
-      ) : (
+      ) : activeView === "kanban" ? (
         <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-[1.4fr_1fr_0.5fr]">
           <Column status="aktiv" count={aktivPlans.length} plans={aktivPlans} />
           <Column
@@ -238,6 +257,34 @@ export default async function AdminPlansList({
             collapsed
           />
         </div>
+      ) : activeView === "tidslinje" ? (
+        <PlanTidslinje
+          plans={synlige.map<TidslinjePlan>((p) => ({
+            id: p.id,
+            name: p.name,
+            userId: p.user.id,
+            userName: p.user.name,
+            startDate: p.startDate,
+            endDate: p.endDate,
+            status: p._status,
+            pct: pct(p),
+          }))}
+          now={now}
+        />
+      ) : (
+        <PlanSplitView
+          plans={synlige.map<SplitPlanRow>((p) => ({
+            id: p.id,
+            name: p.name,
+            userName: p.user.name,
+            pct: pct(p),
+            status: p._status,
+            startDate: p.startDate,
+            endDate: p.endDate,
+          }))}
+          selectedPlanId={params.planId}
+          q={params.q}
+        />
       )}
     </div>
   );
