@@ -10,8 +10,10 @@
 // Server actions / Prisma kobles på i senere fase.
 
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import "./workbench-v2.css";
 import {
+  AiForeslaUkeModal,
   AskCoachModal,
   DisciplineKey,
   DisciplineModal,
@@ -23,6 +25,8 @@ import {
   ModalName,
   NewGoalModal,
   NotificationsPopover,
+  NyEktModal,
+  NyEktPrefill,
   PlanAdjustModal,
   Toast,
   TrackManImportModal,
@@ -310,13 +314,17 @@ const DAG_EVTS: Record<number, DagEvt> = {
 type Mode = "status" | "plan";
 type Zoom = "ar" | "md" | "uke" | "dag" | "okt";
 
+type Router = ReturnType<typeof useRouter>;
+
 /* ─── Main client component ────────────────────────────────────────── */
 
 export function WorkbenchClient() {
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>("status");
   const [zoom, setZoom] = useState<Zoom>("uke");
   const [modal, setModal] = useState<ModalName>(null);
   const [discKey, setDiscKey] = useState<DisciplineKey>("tek");
+  const [nyEktPrefill, setNyEktPrefill] = useState<NyEktPrefill | undefined>(undefined);
   const [toast, setToast] = useState<{ text: string; show: boolean }>({
     text: "",
     show: false,
@@ -325,6 +333,14 @@ export function WorkbenchClient() {
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifRect, setNotifRect] = useState<DOMRect | null>(null);
   const bellRef = useRef<HTMLButtonElement>(null);
+
+  const openNyEkt = useCallback((prefilled?: NyEktPrefill) => {
+    setNyEktPrefill(prefilled);
+    setModal("ny-okt");
+  }, []);
+  const openMessagesWithAnders = useCallback(() => {
+    setDrawerOpen(true);
+  }, []);
 
   // event popover
   const [eventPopEv, setEventPopEv] = useState<UkeEvent | null>(null);
@@ -465,11 +481,14 @@ export function WorkbenchClient() {
           </div>
           <div className="nav-group">
             <div className="nav-group-label">Hjem</div>
-            <button className="nav-item">
+            <button className="nav-item" onClick={() => router.push("/portal")}>
               <Icon id="ic-home" />
               Hjem
             </button>
-            <button className="nav-item">
+            <button
+              className="nav-item"
+              onClick={() => router.push("/portal/varsler")}
+            >
               <Icon id="ic-bell" />
               Varsler<span className="badge-count">3</span>
             </button>
@@ -480,22 +499,34 @@ export function WorkbenchClient() {
               <Icon id="ic-clipboard" />
               Min workbench
             </button>
-            <button className="nav-item">
+            <button
+              className="nav-item"
+              onClick={() => router.push("/portal/kalender")}
+            >
               <Icon id="ic-cal" />
               Kalender
             </button>
-            <button className="nav-item">
+            <button
+              className="nav-item"
+              onClick={() => router.push("/portal/mal")}
+            >
               <Icon id="ic-target" />
               Mål
             </button>
           </div>
           <div className="nav-group">
             <div className="nav-group-label">Innsikt</div>
-            <button className="nav-item">
+            <button
+              className="nav-item"
+              onClick={() => router.push("/portal/statistikk")}
+            >
               <Icon id="ic-bar" />
               Statistikk
             </button>
-            <button className="nav-item">
+            <button
+              className="nav-item"
+              onClick={() => router.push("/portal/coach")}
+            >
               <Icon id="ic-user" />
               Coach
             </button>
@@ -618,7 +649,10 @@ export function WorkbenchClient() {
                   <Icon id="ic-msg" />
                   Be om økt fra coach
                 </button>
-                <button className="btn btn-primary btn-sm">
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => openNyEkt()}
+                >
                   <Icon id="ic-plus" strokeWidth={2} />
                   Ny økt
                 </button>
@@ -649,7 +683,11 @@ export function WorkbenchClient() {
           </div>
 
           <div className="page">
-            <StatusView openModal={openModal} />
+            <StatusView
+              openModal={openModal}
+              router={router}
+              openNyEkt={openNyEkt}
+            />
 
             <div className="view-plan">
               {/* Zoom bar */}
@@ -679,11 +717,17 @@ export function WorkbenchClient() {
                   Viser <strong>{zoomBread}</strong>
                 </div>
                 <div className="zoom-actions">
-                  <button className="btn btn-outline btn-sm">
+                  <button
+                    className="btn btn-outline btn-sm"
+                    onClick={() => openModal("ai-foresla")}
+                  >
                     <Icon id="ic-sparkles" />
                     AI-foreslå
                   </button>
-                  <button className="btn btn-forest btn-sm">
+                  <button
+                    className="btn btn-forest btn-sm"
+                    onClick={() => openNyEkt()}
+                  >
                     <Icon id="ic-plus" strokeWidth={2} />
                     Ny økt
                   </button>
@@ -692,17 +736,35 @@ export function WorkbenchClient() {
 
               <div className="plan-layout">
                 <div className="plan-main">
-                  <ArView />
-                  <MdView cells={monthCells} />
+                  <ArView
+                    router={router}
+                    setZoom={setZoom}
+                    openModal={openModal}
+                  />
+                  <MdView
+                    cells={monthCells}
+                    onCellClick={() => setZoom("dag")}
+                  />
                   <UkeView
                     onEventClick={onEventClick}
                     onEmptySlotClick={onEmptySlotClick}
                   />
-                  <DagView onEmptySlotClick={onEmptySlotClick} />
-                  <OktView openModal={openModal} />
+                  <DagView
+                    onEmptySlotClick={onEmptySlotClick}
+                    onNewClick={() => openNyEkt()}
+                    openMessagesWithAnders={openMessagesWithAnders}
+                  />
+                  <OktView
+                    openModal={openModal}
+                    router={router}
+                  />
                 </div>
 
-                <PlanRail />
+                <PlanRail
+                  router={router}
+                  showToast={showToast}
+                  openMessagesWithAnders={openMessagesWithAnders}
+                />
               </div>
             </div>
           </div>
@@ -800,6 +862,17 @@ export function WorkbenchClient() {
         onClose={closeModal}
         onSubmit={submitModal}
       />
+      <NyEktModal
+        open={modal === "ny-okt"}
+        onClose={closeModal}
+        onSubmit={submitModal}
+        prefilled={nyEktPrefill}
+      />
+      <AiForeslaUkeModal
+        open={modal === "ai-foresla"}
+        onClose={closeModal}
+        onSubmit={submitModal}
+      />
 
       <MessagesDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <NotificationsPopover
@@ -853,7 +926,15 @@ export function WorkbenchClient() {
 /*                      STATUS VIEW                                      */
 /* ───────────────────────────────────────────────────────────────────── */
 
-function StatusView({ openModal }: { openModal: (n: ModalName) => void }) {
+function StatusView({
+  openModal,
+  router,
+  openNyEkt,
+}: {
+  openModal: (n: ModalName) => void;
+  router: Router;
+  openNyEkt: (prefilled?: NyEktPrefill) => void;
+}) {
   return (
     <div className="view-status">
       {/* 1. Hero */}
@@ -887,7 +968,13 @@ function StatusView({ openModal }: { openModal: (n: ModalName) => void }) {
           </div>
         </div>
 
-        <div className="next-target">
+        <div
+          className="next-target"
+          style={{ cursor: "pointer" }}
+          onClick={() =>
+            router.push("/portal/tren/turneringer/sorlandsapent-2026")
+          }
+        >
           <div className="nt-head">
             <div>
               <span className="label-mono">Neste hovedmål</span>
@@ -944,7 +1031,12 @@ function StatusView({ openModal }: { openModal: (n: ModalName) => void }) {
             <div className="sub">3 AKTIVE · 1 RESULTAT · 1 PROSESS · 1 SESONG</div>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <button className="btn btn-outline btn-sm">Se alle →</button>
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={() => router.push("/portal/mal")}
+            >
+              Se alle →
+            </button>
             <button
               className="btn btn-primary btn-sm"
               onClick={() => openModal("new-goal")}
@@ -955,7 +1047,11 @@ function StatusView({ openModal }: { openModal: (n: ModalName) => void }) {
           </div>
         </div>
         <div className="goals">
-          <div className="goal-card">
+          <div
+            className="goal-card"
+            style={{ cursor: "pointer" }}
+            onClick={() => router.push("/portal/mal/goal/top-10-nm-slag")}
+          >
             <div className="row-flex">
               <span className="type-label">Resultatmål</span>
               <span className="pill pill-turn" style={{ marginLeft: "auto" }}>
@@ -1019,7 +1115,11 @@ function StatusView({ openModal }: { openModal: (n: ModalName) => void }) {
             </div>
           </div>
 
-          <div className="goal-card">
+          <div
+            className="goal-card"
+            style={{ cursor: "pointer" }}
+            onClick={() => router.push("/portal/mal/goal/snitt-under-72")}
+          >
             <div className="row-flex">
               <span className="type-label">Prosessmål</span>
               <span className="pill pill-slag" style={{ marginLeft: "auto" }}>
@@ -1098,7 +1198,11 @@ function StatusView({ openModal }: { openModal: (n: ModalName) => void }) {
             </div>
           </div>
 
-          <div className="goal-card">
+          <div
+            className="goal-card"
+            style={{ cursor: "pointer" }}
+            onClick={() => router.push("/portal/mal/goal/hcp-under-2")}
+          >
             <div className="row-flex">
               <span className="type-label">Sesongmål</span>
               <span className="pill pill-fys" style={{ marginLeft: "auto" }}>
@@ -1196,15 +1300,21 @@ function StatusView({ openModal }: { openModal: (n: ModalName) => void }) {
         </div>
       </section>
 
-      <StatusSGSection />
+      <StatusSGSection router={router} openNyEkt={openNyEkt} />
       <StatusTrainingSection />
-      <StatusTrackManSection openModal={openModal} />
+      <StatusTrackManSection openModal={openModal} router={router} />
     </div>
   );
 }
 
 /* SG-analyse + DataGolf */
-function StatusSGSection() {
+function StatusSGSection({
+  router,
+  openNyEkt,
+}: {
+  router: Router;
+  openNyEkt: (prefilled?: NyEktPrefill) => void;
+}) {
   return (
     <section>
       <div className="section-h" style={{ marginBottom: 16 }}>
@@ -1212,7 +1322,12 @@ function StatusSGSection() {
           <h2>SG-analyse</h2>
           <div className="sub">SISTE 90 DAGER · KATEGORI A1 · 247 SPILLERE</div>
         </div>
-        <button className="btn btn-outline btn-sm">Full analyse →</button>
+        <button
+          className="btn btn-outline btn-sm"
+          onClick={() => router.push("/portal/mal/sg-hub")}
+        >
+          Full analyse →
+        </button>
       </div>
       <div className="sg-grid">
         <div className="card">
@@ -1292,18 +1407,42 @@ function StatusSGSection() {
           </div>
           {(
             [
-              ["01", "Approach 100—150m", "6 hull i dette området på Bossum", "+0,42 SG potensial"],
-              ["02", "Putting 3—6m", "SG ned 0,4 siste 30 dager", "+0,38 SG potensial"],
-              ["03", "Driver-presisjon", "Smale fairways · treff under snitt", "+0,22 SG potensial"],
+              ["01", "Approach 100—150m", "6 hull i dette området på Bossum", "+0,42 SG potensial", "slag", "Approach 100—150m blokk"],
+              ["02", "Putting 3—6m", "SG ned 0,4 siste 30 dager", "+0,38 SG potensial", "slag", "Putting 3—6m"],
+              ["03", "Driver-presisjon", "Smale fairways · treff under snitt", "+0,22 SG potensial", "tek", "Driver grunntrening"],
             ] as const
-          ).map(([num, ttl, meta, pot]) => (
-            <div className="prio-row" key={num}>
+          ).map(([num, ttl, meta, pot, kind, drill]) => (
+            <div
+              className="prio-row"
+              key={num}
+              style={{ cursor: "pointer" }}
+              onClick={() =>
+                openNyEkt({
+                  discipline: kind as DisciplineKey,
+                  drill,
+                  title: drill,
+                })
+              }
+            >
               <div className="prio-num">{num}</div>
-              <div>
+              <div style={{ flex: 1 }}>
                 <div className="prio-title">{ttl}</div>
                 <div className="prio-meta">{meta}</div>
                 <span className="prio-pot">{pot}</span>
               </div>
+              <button
+                className="btn btn-outline btn-xs"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openNyEkt({
+                    discipline: kind as DisciplineKey,
+                    drill,
+                    title: drill,
+                  });
+                }}
+              >
+                Bruk
+              </button>
             </div>
           ))}
         </div>
@@ -1539,8 +1678,10 @@ function StatusTrainingSection() {
 /* TrackMan-økter siste 5 */
 function StatusTrackManSection({
   openModal,
+  router,
 }: {
   openModal: (n: ModalName) => void;
+  router: Router;
 }) {
   return (
     <section>
@@ -1560,14 +1701,19 @@ function StatusTrackManSection({
       <div className="tm-strip">
         {(
           [
-            ["17. MAI", "Driver-økt", ["Club-speed", "112 mph"], ["Smash", "1,48"]],
-            ["15. MAI", "Iron 7", ["Carry", "158 m"], ["Spinn", "6 820 rpm"]],
-            ["13. MAI", "Pitch 50—100m", ["Landing", "±3,2 m"], ["184 reps", ""]],
-            ["12. MAI", "Putting blokk", ["0—3m", "87%"], ["3—6m", "52%"]],
-            ["10. MAI", "Iron-progresjon", ["CS", "74 → 76 mph"], ["240 reps", ""]],
+            ["17. MAI", "Driver-økt", ["Club-speed", "112 mph"], ["Smash", "1,48"], "tm-2026-05-17"],
+            ["15. MAI", "Iron 7", ["Carry", "158 m"], ["Spinn", "6 820 rpm"], "tm-2026-05-15"],
+            ["13. MAI", "Pitch 50—100m", ["Landing", "±3,2 m"], ["184 reps", ""], "tm-2026-05-13"],
+            ["12. MAI", "Putting blokk", ["0—3m", "87%"], ["3—6m", "52%"], "tm-2026-05-12"],
+            ["10. MAI", "Iron-progresjon", ["CS", "74 → 76 mph"], ["240 reps", ""], "tm-2026-05-10"],
           ] as const
-        ).map(([date, ttype, m1, m2]) => (
-          <div className="tm-card" key={`${date}-${ttype}`}>
+        ).map(([date, ttype, m1, m2, id]) => (
+          <div
+            className="tm-card"
+            key={`${date}-${ttype}`}
+            style={{ cursor: "pointer" }}
+            onClick={() => router.push(`/portal/mal/trackman/${id}`)}
+          >
             <div className="date">{date}</div>
             <div className="ttype">{ttype}</div>
             <div className="metric">
@@ -1588,7 +1734,15 @@ function StatusTrackManSection({
 /*                       PLAN VIEW — ÅR                                  */
 /* ───────────────────────────────────────────────────────────────────── */
 
-function ArView() {
+function ArView({
+  router,
+  setZoom,
+  openModal,
+}: {
+  router: Router;
+  setZoom: (z: Zoom) => void;
+  openModal: (n: ModalName) => void;
+}) {
   return (
     <div className="z-view z-ar">
       <div className="card ar-card">
@@ -1607,7 +1761,10 @@ function ArView() {
               6 PERIODER · 5 TURNERINGER · 2 HOVEDMÅL
             </div>
           </div>
-          <button className="btn btn-outline btn-sm">
+          <button
+            className="btn btn-outline btn-sm"
+            onClick={() => openModal("plan-adjust")}
+          >
             Juster periodisering →
           </button>
         </div>
@@ -1664,7 +1821,11 @@ function ArView() {
             </svg>
           </div>
 
-          <div className="today-pin" style={{ left: "38.4%" }}>
+          <div
+            className="today-pin"
+            style={{ left: "38.4%", cursor: "pointer" }}
+            onClick={() => setZoom("dag")}
+          >
             <span className="pin-label">I DAG</span>
           </div>
         </div>
@@ -1686,7 +1847,12 @@ function ArView() {
               ["DES", 15, false],
             ] as const
           ).map(([lbl, h, active]) => (
-            <div key={lbl} className={`ar-mcol${active ? " active" : ""}`}>
+            <div
+              key={lbl}
+              className={`ar-mcol${active ? " active" : ""}`}
+              style={{ cursor: "pointer" }}
+              onClick={() => setZoom("md")}
+            >
               <div className="bar" style={{ height: `${h}%` }} />
               <div className="lbl">{lbl}</div>
             </div>
@@ -1722,7 +1888,12 @@ function ArView() {
               ★ HOVEDMÅL · ▽ STØTTE-TURNERING
             </div>
           </div>
-          <button className="btn btn-outline btn-sm">Legg til</button>
+          <button
+            className="btn btn-outline btn-sm"
+            onClick={() => router.push("/portal/tren/turneringer")}
+          >
+            Legg til
+          </button>
         </div>
         <div
           style={{
@@ -1733,13 +1904,13 @@ function ArView() {
         >
           {(
             [
-              ["10. JUN · 21 DAGER", "★ Sørlandsåpent", "HOVEDMÅL · TOP 10", true],
-              ["24. JUN · 35 DAGER", "Bossum Open", "FORM-TEST", false],
-              ["8. JUL · 49 DAGER", "★ NM Slag", "HOVEDMÅL", true],
-              ["22. JUL · 63 DAGER", "Trondheim Open", "STØTTE", false],
-              ["5. AUG · 77 DAGER", "GFGK Mesterskap", "KLUBB", false],
+              ["10. JUN · 21 DAGER", "★ Sørlandsåpent", "HOVEDMÅL · TOP 10", true, "sorlandsapent-2026"],
+              ["24. JUN · 35 DAGER", "Bossum Open", "FORM-TEST", false, "bossum-open-2026"],
+              ["8. JUL · 49 DAGER", "★ NM Slag", "HOVEDMÅL", true, "nm-slag-2026"],
+              ["22. JUL · 63 DAGER", "Trondheim Open", "STØTTE", false, "trondheim-open-2026"],
+              ["5. AUG · 77 DAGER", "GFGK Mesterskap", "KLUBB", false, "gfgk-mesterskap-2026"],
             ] as const
-          ).map(([date, name, sub, highlight]) => (
+          ).map(([date, name, sub, highlight, slug]) => (
             <div
               key={name}
               style={{
@@ -1749,7 +1920,9 @@ function ArView() {
                 background: highlight ? "rgba(209,248,67,0.10)" : undefined,
                 borderRadius: 10,
                 padding: 12,
+                cursor: "pointer",
               }}
+              onClick={() => router.push(`/portal/tren/turneringer/${slug}`)}
             >
               <div
                 className="mono"
@@ -1800,7 +1973,13 @@ type MonthCell = {
   dim?: boolean;
 };
 
-function MdView({ cells }: { cells: MonthCell[] }) {
+function MdView({
+  cells,
+  onCellClick,
+}: {
+  cells: MonthCell[];
+  onCellClick: (day: number, month: "apr" | "mai" | "jun") => void;
+}) {
   return (
     <div className="z-view z-md">
       <div className="card month-card">
@@ -1866,7 +2045,12 @@ function MdView({ cells }: { cells: MonthCell[] }) {
             if (ev?.today) classes.push("today");
             if (ev?.tour) classes.push("has-tour");
             return (
-              <div key={c.key} className={classes.join(" ")}>
+              <div
+                key={c.key}
+                className={classes.join(" ")}
+                style={{ cursor: "pointer" }}
+                onClick={() => onCellClick(c.day, c.month)}
+              >
                 <div
                   style={{
                     display: "flex",
@@ -2026,8 +2210,12 @@ function UkeView({
 
 function DagView({
   onEmptySlotClick,
+  onNewClick,
+  openMessagesWithAnders,
 }: {
   onEmptySlotClick: (e: React.MouseEvent, label: string) => void;
+  onNewClick: () => void;
+  openMessagesWithAnders: () => void;
 }) {
   const hours = Array.from({ length: 11 }, (_, i) => 8 + i);
   return (
@@ -2049,7 +2237,10 @@ function DagView({
                 3 ØKTER · 165 MIN · 1 FULLFØRT
               </div>
             </div>
-            <button className="btn btn-outline btn-xs">
+            <button
+              className="btn btn-outline btn-xs"
+              onClick={onNewClick}
+            >
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -2166,7 +2357,11 @@ function DagView({
               </div>
             </div>
           </div>
-          <div className="card">
+          <div
+            className="card"
+            style={{ cursor: "pointer" }}
+            onClick={openMessagesWithAnders}
+          >
             <div className="card-head">
               <div className="title">Notat fra Anders</div>
               <span
@@ -2201,7 +2396,14 @@ function DagView({
 /*                       PLAN VIEW — ØKT                                 */
 /* ───────────────────────────────────────────────────────────────────── */
 
-function OktView({ openModal }: { openModal: (n: ModalName) => void }) {
+function OktView({
+  openModal,
+  router,
+}: {
+  openModal: (n: ModalName) => void;
+  router: Router;
+}) {
+  const sessionId = "iron-cs70-cs80-2026-05-19";
   return (
     <div className="z-view z-okt">
       <div className="card okt-card">
@@ -2317,7 +2519,9 @@ function OktView({ openModal }: { openModal: (n: ModalName) => void }) {
                   background: "var(--bg)",
                   borderRadius: 10,
                   padding: 14,
+                  cursor: "pointer",
                 }}
+                onClick={() => router.push("/portal/mal/goal/top-10-nm-slag")}
               >
                 <div
                   className="mono"
@@ -2362,6 +2566,9 @@ function OktView({ openModal }: { openModal: (n: ModalName) => void }) {
                 <button
                   className="btn btn-primary"
                   style={{ justifyContent: "center" }}
+                  onClick={() =>
+                    router.push(`/portal/live/${sessionId}/brief`)
+                  }
                 >
                   Start økt
                 </button>
@@ -2375,6 +2582,7 @@ function OktView({ openModal }: { openModal: (n: ModalName) => void }) {
                 <button
                   className="btn btn-outline btn-sm"
                   style={{ justifyContent: "center" }}
+                  onClick={() => openModal("plan-adjust")}
                 >
                   Be Anders om endring
                 </button>
@@ -2391,7 +2599,15 @@ function OktView({ openModal }: { openModal: (n: ModalName) => void }) {
 /*                       PLAN RAIL                                       */
 /* ───────────────────────────────────────────────────────────────────── */
 
-function PlanRail() {
+function PlanRail({
+  router,
+  showToast,
+  openMessagesWithAnders,
+}: {
+  router: Router;
+  showToast: (t: string) => void;
+  openMessagesWithAnders: () => void;
+}) {
   return (
     <aside className="plan-rail">
       <div className="rail-card ai-card">
@@ -2403,12 +2619,17 @@ function PlanRail() {
         </div>
         {(
           [
-            ["ic-target", "Pitch fra rough", "Coach foreslår · 45 min"],
-            ["ic-up", "Beinbøy intervall", "Ikke trent FYS på 9 dager"],
-            ["ic-down", "Putting 3—6m", "SG ned 0,4 siste 30d"],
+            ["ic-target", "Pitch fra rough", "Coach foreslår · 45 min", "pitch-fra-rough"],
+            ["ic-up", "Beinbøy intervall", "Ikke trent FYS på 9 dager", "beinboy-intervall"],
+            ["ic-down", "Putting 3—6m", "SG ned 0,4 siste 30d", "putt-3-6"],
           ] as const
-        ).map(([icon, ttl, meta]) => (
-          <div className="rail-row" key={ttl}>
+        ).map(([icon, ttl, meta, drillId]) => (
+          <div
+            className="rail-row"
+            key={ttl}
+            style={{ cursor: "pointer" }}
+            onClick={() => router.push(`/portal/tren/ovelser/${drillId}`)}
+          >
             <div className="rail-icon">
               <Icon id={icon} />
             </div>
@@ -2416,7 +2637,15 @@ function PlanRail() {
               <div className="ttl">{ttl}</div>
               <div className="meta">{meta}</div>
             </div>
-            <button className="btn btn-xs btn-primary">Bruk</button>
+            <button
+              className="btn btn-xs btn-primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                showToast(`${ttl} lagt til i ukeplan`);
+              }}
+            >
+              Bruk
+            </button>
           </div>
         ))}
       </div>
@@ -2426,7 +2655,11 @@ function PlanRail() {
           <div className="ttl">Fra Anders</div>
           <span className="count">2 NYE</span>
         </div>
-        <div className="rail-row">
+        <div
+          className="rail-row"
+          style={{ cursor: "pointer" }}
+          onClick={() => router.push("/portal/tren/ovelser/iron-cs70-cs80")}
+        >
           <div className="rail-icon">
             <Icon id="ic-clipboard" />
           </div>
@@ -2435,7 +2668,11 @@ function PlanRail() {
             <div className="meta">TILDELT · MAN 14:00</div>
           </div>
         </div>
-        <div className="rail-row">
+        <div
+          className="rail-row"
+          style={{ cursor: "pointer" }}
+          onClick={() => router.push("/portal/tren/ovelser/driver-grunn")}
+        >
           <div className="rail-icon">
             <Icon id="ic-clipboard" />
           </div>
@@ -2444,7 +2681,11 @@ function PlanRail() {
             <div className="meta">TILDELT · FRE 11:00</div>
           </div>
         </div>
-        <div className="rail-row">
+        <div
+          className="rail-row"
+          style={{ cursor: "pointer" }}
+          onClick={openMessagesWithAnders}
+        >
           <div className="rail-icon">
             <Icon id="ic-msg" />
           </div>
@@ -2471,13 +2712,18 @@ function PlanRail() {
         </div>
         {(
           [
-            ["Pitch 50—100m, lav", "slag", "60 MIN"],
-            ["Putting 0—3m blokk", "slag", "30 MIN"],
-            ["Beinbøy + core", "fys", "30 MIN"],
-            ["Bunker-eskalering", "slag", "45 MIN"],
+            ["Pitch 50—100m, lav", "slag", "60 MIN", "pitch-50-100"],
+            ["Putting 0—3m blokk", "slag", "30 MIN", "putt-0-3"],
+            ["Beinbøy + core", "fys", "30 MIN", "bein-core"],
+            ["Bunker-eskalering", "slag", "45 MIN", "bunker-esk"],
           ] as const
-        ).map(([ttl, kind, mins]) => (
-          <div className="drill-mini" key={ttl}>
+        ).map(([ttl, kind, mins, drillId]) => (
+          <div
+            className="drill-mini"
+            key={ttl}
+            style={{ cursor: "pointer" }}
+            onClick={() => router.push(`/portal/tren/ovelser/${drillId}`)}
+          >
             <svg
               className="grip"
               width="12"
@@ -2504,6 +2750,7 @@ function PlanRail() {
             justifyContent: "center",
             marginTop: 8,
           }}
+          onClick={() => router.push("/portal/tren/ovelser")}
         >
           Se alle drills
         </button>

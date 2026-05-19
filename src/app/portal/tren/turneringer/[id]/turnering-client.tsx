@@ -6,19 +6,37 @@
  * <style>-blokk med tdc- prefiks for å unngå kollisjoner med PortalShell.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  AlertTriangle,
+  Check,
   ChevronDown,
   Clock,
   Flag,
+  Map as MapIcon,
   MapPin,
   MessageSquare,
+  Send,
   Sparkles,
   Star,
   Target,
   Trophy,
   TrendingUp,
+  X,
 } from "lucide-react";
+
+type ModalName =
+  | "forbered-meg"
+  | "logg-resultat"
+  | "avregistrer"
+  | "bane-kart"
+  | "be-om-plan"
+  | null;
+
+type PrepPlanVariant = "konservativ" | "standard" | "aggressiv";
+type AvregReason = "skade" | "skolekonflikt" | "annen-turnering" | "annet";
+type PlanRequestKind = "scratch" | "juster" | "fokus";
+type PlanUrgency = "naar-passer" | "innen-24t" | "i-dag";
 
 type PrepStatus = "FULLFORT" | "PLANLAGT" | "TURNERING" | "SCOUT";
 type PrepPill = "TEK" | "SLAG" | "SPILL" | "TURN";
@@ -229,7 +247,21 @@ export function TurneringDetaljClient({
   tournamentName: string | null;
 }) {
   const [participantsOpen, setParticipantsOpen] = useState(true);
+  const [modal, setModal] = useState<ModalName>(null);
+  const [toast, setToast] = useState<{ text: string; show: boolean }>({
+    text: "",
+    show: false,
+  });
   const visningsnavn = tournamentName ?? "Sørlandsåpent";
+
+  const showToast = (text: string) => {
+    setToast({ text, show: true });
+    window.setTimeout(() => {
+      setToast((t) => ({ ...t, show: false }));
+    }, 2800);
+  };
+
+  const closeModal = () => setModal(null);
 
   return (
     <div className="tdc-root">
@@ -253,15 +285,27 @@ export function TurneringDetaljClient({
               Mandal Golfklubb · 54 hull stroke play · 3 dager
             </div>
             <div className="tdc-hero-actions">
-              <button className="tdc-btn tdc-btn-primary" type="button">
+              <button
+                className="tdc-btn tdc-btn-primary"
+                type="button"
+                onClick={() => setModal("forbered-meg")}
+              >
                 <Sparkles size={14} strokeWidth={1.75} aria-hidden />
                 Forbered meg
               </button>
-              <button className="tdc-btn tdc-btn-forest-on-dark" type="button">
+              <button
+                className="tdc-btn tdc-btn-forest-on-dark"
+                type="button"
+                onClick={() => setModal("logg-resultat")}
+              >
                 <Trophy size={14} strokeWidth={1.75} aria-hidden />
                 Logg resultat
               </button>
-              <button className="tdc-btn tdc-btn-ghost-on-dark" type="button">
+              <button
+                className="tdc-btn tdc-btn-ghost-on-dark"
+                type="button"
+                onClick={() => setModal("avregistrer")}
+              >
                 Avregistrer
               </button>
             </div>
@@ -311,7 +355,11 @@ export function TurneringDetaljClient({
                 PARK-LINKS · ETABLERT 1976 · GFGK-RIVAL
               </div>
             </div>
-            <button className="tdc-btn tdc-btn-outline tdc-btn-sm" type="button">
+            <button
+              className="tdc-btn tdc-btn-outline tdc-btn-sm"
+              type="button"
+              onClick={() => setModal("bane-kart")}
+            >
               <MapPin size={14} strokeWidth={1.75} aria-hidden />
               Vis bane-kart →
             </button>
@@ -320,10 +368,15 @@ export function TurneringDetaljClient({
           <div className="tdc-course-grid">
             {/* Pane A: Bane-bilde + stats */}
             <div className="tdc-card">
-              <div className="tdc-course-image">
+              <button
+                type="button"
+                className="tdc-course-image tdc-course-image-btn"
+                onClick={() => setModal("bane-kart")}
+                aria-label="Åpne bane-kart"
+              >
                 <span className="tdc-pin" />
                 <span className="tdc-map-label">Mandal GK · 18 hull</span>
-              </div>
+              </button>
               <div className="tdc-course-stats">
                 <div className="tdc-cstat">
                   <div className="tdc-cstat-lbl">Lengde</div>
@@ -492,7 +545,11 @@ export function TurneringDetaljClient({
                 12 ØKTER KNYTTET · 4 FULLFØRT · 8 PLANLAGT · 21 DAGER IGJEN
               </div>
             </div>
-            <button className="tdc-btn tdc-btn-primary tdc-btn-sm" type="button">
+            <button
+              className="tdc-btn tdc-btn-primary tdc-btn-sm"
+              type="button"
+              onClick={() => setModal("be-om-plan")}
+            >
               <MessageSquare size={14} strokeWidth={1.75} aria-hidden />
               Be om turnerings-plan
             </button>
@@ -611,14 +668,962 @@ export function TurneringDetaljClient({
               <Star size={14} strokeWidth={1.75} aria-hidden />
               Tilbake til workbench
             </button>
-            <button className="tdc-btn tdc-btn-primary tdc-btn-sm" type="button">
+            <button
+              className="tdc-btn tdc-btn-primary tdc-btn-sm"
+              type="button"
+              onClick={() => setModal("forbered-meg")}
+            >
               <Sparkles size={14} strokeWidth={1.75} aria-hidden />
               Forbered meg
             </button>
           </div>
         </div>
       </div>
+
+      {/* ============ MODALER ============ */}
+      <ForberedMegModal
+        open={modal === "forbered-meg"}
+        tournamentName={visningsnavn}
+        onClose={closeModal}
+        onAccept={() => {
+          closeModal();
+          showToast("21-dagers plan opprettet");
+        }}
+      />
+      <LoggResultatModal
+        open={modal === "logg-resultat"}
+        tournamentName={visningsnavn}
+        onClose={closeModal}
+        onSave={() => {
+          closeModal();
+          showToast("Resultat lagret");
+        }}
+      />
+      <AvregistrerModal
+        open={modal === "avregistrer"}
+        tournamentName={visningsnavn}
+        onClose={closeModal}
+        onConfirm={() => {
+          closeModal();
+          showToast(`Avregistrert fra ${visningsnavn}`);
+        }}
+      />
+      <BaneKartModal
+        open={modal === "bane-kart"}
+        onClose={closeModal}
+      />
+      <BeOmTurneringsPlanModal
+        open={modal === "be-om-plan"}
+        tournamentName={visningsnavn}
+        onClose={closeModal}
+        onSend={() => {
+          closeModal();
+          showToast("Forespørsel sendt til Anders");
+        }}
+      />
+
+      {/* ============ TOAST ============ */}
+      <TdcToast text={toast.text} show={toast.show} />
     </div>
+  );
+}
+
+/* =============================================================
+   Modal-rammeverk
+   ============================================================= */
+
+function TdcModalBackdrop({
+  open,
+  onClose,
+  children,
+  width,
+}: {
+  open: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  width?: number;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="tdc-modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="tdc-modal"
+        style={width ? { maxWidth: `${width}px` } : undefined}
+        role="document"
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function TdcModalClose({ onClose }: { onClose: () => void }) {
+  return (
+    <button
+      type="button"
+      className="tdc-modal-close"
+      onClick={onClose}
+      aria-label="Lukk"
+    >
+      <X size={18} strokeWidth={1.75} aria-hidden />
+    </button>
+  );
+}
+
+function TdcToast({ text, show }: { text: string; show: boolean }) {
+  return (
+    <div
+      className={`tdc-toast${show ? " tdc-toast-show" : ""}`}
+      role="status"
+      aria-live="polite"
+    >
+      <Check size={14} strokeWidth={2.5} aria-hidden />
+      <span>{text}</span>
+    </div>
+  );
+}
+
+/* =============================================================
+   3A — ForberedMegModal
+   ============================================================= */
+
+const PREP_VARIANTS: {
+  id: PrepPlanVariant;
+  label: string;
+  desc: string;
+  okter: number;
+  intensitet: string;
+}[] = [
+  {
+    id: "konservativ",
+    label: "Konservativ",
+    desc: "Lav volum, beholder eksisterende plan og legger inn 8 prep-økter med fokus på vedlikehold.",
+    okter: 8,
+    intensitet: "Lav · 4 t/uke",
+  },
+  {
+    id: "standard",
+    label: "Standard",
+    desc: "Balansert prep — 12 økter prioritert etter approach-gap og bane-profile på Mandal.",
+    okter: 12,
+    intensitet: "Middels · 6 t/uke",
+  },
+  {
+    id: "aggressiv",
+    label: "Aggressiv",
+    desc: "Høy volum, erstatter uplanlagt tid med 16 økter inkl. ekstra mental-prep og spillsim.",
+    okter: 16,
+    intensitet: "Høy · 9 t/uke",
+  },
+];
+
+function ForberedMegModal({
+  open,
+  tournamentName,
+  onClose,
+  onAccept,
+}: {
+  open: boolean;
+  tournamentName: string;
+  onClose: () => void;
+  onAccept: () => void;
+}) {
+  const [variant, setVariant] = useState<PrepPlanVariant>("standard");
+  const [replace, setReplace] = useState(true);
+
+  return (
+    <TdcModalBackdrop open={open} onClose={onClose} width={640}>
+      <header className="tdc-modal-header">
+        <div>
+          <div className="tdc-label-mono tdc-modal-eyebrow">
+            <Sparkles size={11} strokeWidth={1.75} aria-hidden /> AI-forberedelse
+          </div>
+          <h2 className="tdc-modal-title">
+            AI-bygd plan for <em>{tournamentName}</em>
+          </h2>
+          <div className="tdc-modal-sub">
+            21 dager · 12 økter foreslått · 4 TEK · 5 SLAG · 2 SPILL · 1 TURN
+          </div>
+        </div>
+        <TdcModalClose onClose={onClose} />
+      </header>
+
+      <div className="tdc-modal-body">
+        <div className="tdc-mini-timeline" aria-hidden>
+          {Array.from({ length: 21 }).map((_, i) => {
+            const has = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 19, 20].includes(i);
+            const dotClass = has
+              ? i % 3 === 0
+                ? "tdc-tl-tek"
+                : i % 3 === 1
+                ? "tdc-tl-slag"
+                : "tdc-tl-spill"
+              : "tdc-tl-empty";
+            return (
+              <span key={i} className={`tdc-tl-cell ${dotClass}`} />
+            );
+          })}
+        </div>
+
+        <div className="tdc-italic-block tdc-modal-italic">
+          <em className="tdc-italic-accent">Approach-gap −0,42 SG</em> → 3 SLAG-økter prioritert.{" "}
+          <em className="tdc-italic-accent">Mandal har smale fairways</em> → 2 driver-presisjon-økter.{" "}
+          Bossum Open lørdag fungerer som form-test. Mental prep står på 30% → 2 turn-økter lagt inn.
+        </div>
+
+        <div className="tdc-variant-list">
+          {PREP_VARIANTS.map((v) => (
+            <label
+              key={v.id}
+              className={`tdc-variant${variant === v.id ? " tdc-variant-active" : ""}`}
+            >
+              <input
+                type="radio"
+                name="prep-variant"
+                value={v.id}
+                checked={variant === v.id}
+                onChange={() => setVariant(v.id)}
+              />
+              <div className="tdc-variant-body">
+                <div className="tdc-variant-head">
+                  <span className="tdc-variant-label">{v.label}</span>
+                  <span className="tdc-mono tdc-variant-meta">
+                    {v.okter} ØKTER · {v.intensitet}
+                  </span>
+                </div>
+                <div className="tdc-variant-desc">{v.desc}</div>
+              </div>
+            </label>
+          ))}
+        </div>
+
+        <label className="tdc-toggle-row">
+          <input
+            type="checkbox"
+            checked={replace}
+            onChange={(e) => setReplace(e.target.checked)}
+          />
+          <span>Erstatt eksisterende uplanlagt tid i kalenderen</span>
+        </label>
+      </div>
+
+      <footer className="tdc-modal-footer">
+        <button
+          type="button"
+          className="tdc-btn tdc-btn-outline"
+          onClick={onClose}
+        >
+          Avbryt
+        </button>
+        <button
+          type="button"
+          className="tdc-btn tdc-btn-primary"
+          onClick={onAccept}
+        >
+          <Sparkles size={14} strokeWidth={1.75} aria-hidden />
+          Bygg planen
+        </button>
+      </footer>
+    </TdcModalBackdrop>
+  );
+}
+
+/* =============================================================
+   3B — LoggResultatModal
+   ============================================================= */
+
+type RundeWeather = "sol" | "skyet" | "regn" | "vind";
+type RoundEntry = {
+  score: string;
+  weather: RundeWeather;
+  notat: string;
+};
+
+function LoggResultatModal({
+  open,
+  tournamentName,
+  onClose,
+  onSave,
+}: {
+  open: boolean;
+  tournamentName: string;
+  onClose: () => void;
+  onSave: () => void;
+}) {
+  if (!open) return null;
+  return (
+    <LoggResultatModalInner
+      tournamentName={tournamentName}
+      onClose={onClose}
+      onSave={onSave}
+    />
+  );
+}
+
+function LoggResultatModalInner({
+  tournamentName,
+  onClose,
+  onSave,
+}: {
+  tournamentName: string;
+  onClose: () => void;
+  onSave: () => void;
+}) {
+  const [step, setStep] = useState<1 | 2>(1);
+  const [rounds, setRounds] = useState<RoundEntry[]>([
+    { score: "", weather: "sol", notat: "" },
+    { score: "", weather: "sol", notat: "" },
+    { score: "", weather: "sol", notat: "" },
+  ]);
+  const [plassering, setPlassering] = useState("");
+  const [passerteCut, setPasserteCut] = useState(true);
+  const [sgTotal, setSgTotal] = useState("");
+  const [fungerte, setFungerte] = useState("");
+  const [forbedres, setForbedres] = useState("");
+
+  const updateRound = (idx: number, patch: Partial<RoundEntry>) => {
+    setRounds((rs) => rs.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
+  };
+
+  return (
+    <TdcModalBackdrop open onClose={onClose} width={560}>
+      <header className="tdc-modal-header">
+        <div>
+          <div className="tdc-label-mono tdc-modal-eyebrow">
+            <Trophy size={11} strokeWidth={1.75} aria-hidden /> Logg resultat ·
+            steg {step}/2
+          </div>
+          <h2 className="tdc-modal-title">
+            {tournamentName} <em>resultat</em>
+          </h2>
+          <div className="tdc-modal-sub">
+            Registrer runder og sluttresultat — brukes i Mine resultater-grafen
+          </div>
+        </div>
+        <TdcModalClose onClose={onClose} />
+      </header>
+
+      <div className="tdc-modal-body">
+        {step === 1 ? (
+          <div className="tdc-rounds-list">
+            {rounds.map((r, i) => (
+              <div key={i} className="tdc-round-card">
+                <div className="tdc-round-head">
+                  <span className="tdc-mono tdc-round-tag">RUNDE {i + 1}</span>
+                </div>
+                <div className="tdc-round-grid">
+                  <label className="tdc-field">
+                    <span className="tdc-label-mono">Score</span>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      placeholder="72"
+                      value={r.score}
+                      onChange={(e) => updateRound(i, { score: e.target.value })}
+                      className="tdc-input"
+                    />
+                  </label>
+                  <label className="tdc-field">
+                    <span className="tdc-label-mono">Vær</span>
+                    <select
+                      value={r.weather}
+                      onChange={(e) =>
+                        updateRound(i, {
+                          weather: e.target.value as RundeWeather,
+                        })
+                      }
+                      className="tdc-input"
+                    >
+                      <option value="sol">Sol</option>
+                      <option value="skyet">Skyet</option>
+                      <option value="regn">Regn</option>
+                      <option value="vind">Vind</option>
+                    </select>
+                  </label>
+                  <label className="tdc-field tdc-field-wide">
+                    <span className="tdc-label-mono">Notat</span>
+                    <input
+                      type="text"
+                      placeholder="Kort notat fra runden"
+                      value={r.notat}
+                      onChange={(e) => updateRound(i, { notat: e.target.value })}
+                      className="tdc-input"
+                    />
+                  </label>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="tdc-form-stack">
+            <div className="tdc-form-grid-2">
+              <label className="tdc-field">
+                <span className="tdc-label-mono">Plassering</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="14"
+                  value={plassering}
+                  onChange={(e) => setPlassering(e.target.value)}
+                  className="tdc-input"
+                />
+              </label>
+              <label className="tdc-field">
+                <span className="tdc-label-mono">SG-total (valgfri)</span>
+                <input
+                  type="text"
+                  placeholder="+0,21"
+                  value={sgTotal}
+                  onChange={(e) => setSgTotal(e.target.value)}
+                  className="tdc-input"
+                />
+              </label>
+            </div>
+
+            <label className="tdc-toggle-row">
+              <input
+                type="checkbox"
+                checked={passerteCut}
+                onChange={(e) => setPasserteCut(e.target.checked)}
+              />
+              <span>Passerte cut</span>
+            </label>
+
+            <label className="tdc-field">
+              <span className="tdc-label-mono">Hva fungerte?</span>
+              <textarea
+                rows={3}
+                value={fungerte}
+                onChange={(e) => setFungerte(e.target.value)}
+                className="tdc-input tdc-textarea"
+                placeholder="Sterk approach-fase, lav variasjon på iron 7..."
+              />
+            </label>
+
+            <label className="tdc-field">
+              <span className="tdc-label-mono">
+                Hva skal forbedres til neste år?
+              </span>
+              <textarea
+                rows={3}
+                value={forbedres}
+                onChange={(e) => setForbedres(e.target.value)}
+                className="tdc-input tdc-textarea"
+                placeholder="Mer mental prep, bedre lag-strategi på hull 12..."
+              />
+            </label>
+          </div>
+        )}
+      </div>
+
+      <footer className="tdc-modal-footer">
+        {step === 1 ? (
+          <>
+            <button
+              type="button"
+              className="tdc-btn tdc-btn-outline"
+              onClick={onClose}
+            >
+              Avbryt
+            </button>
+            <button
+              type="button"
+              className="tdc-btn tdc-btn-primary"
+              onClick={() => setStep(2)}
+            >
+              Neste steg →
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              type="button"
+              className="tdc-btn tdc-btn-outline"
+              onClick={() => setStep(1)}
+            >
+              ← Tilbake
+            </button>
+            <button
+              type="button"
+              className="tdc-btn tdc-btn-primary"
+              onClick={onSave}
+            >
+              <Trophy size={14} strokeWidth={1.75} aria-hidden />
+              Lagre resultat
+            </button>
+          </>
+        )}
+      </footer>
+    </TdcModalBackdrop>
+  );
+}
+
+/* =============================================================
+   3C — AvregistrerModal
+   ============================================================= */
+
+const REASONS: { id: AvregReason; label: string }[] = [
+  { id: "skade", label: "Skade" },
+  { id: "skolekonflikt", label: "Skolekonflikt" },
+  { id: "annen-turnering", label: "Annen turnering" },
+  { id: "annet", label: "Annet" },
+];
+
+function AvregistrerModal({
+  open,
+  tournamentName,
+  onClose,
+  onConfirm,
+}: {
+  open: boolean;
+  tournamentName: string;
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  const [reason, setReason] = useState<AvregReason>("skade");
+  const [annetText, setAnnetText] = useState("");
+
+  return (
+    <TdcModalBackdrop open={open} onClose={onClose} width={440}>
+      <header className="tdc-modal-header tdc-modal-header-danger">
+        <div>
+          <div className="tdc-label-mono tdc-modal-eyebrow tdc-eyebrow-danger">
+            <AlertTriangle size={11} strokeWidth={1.75} aria-hidden />
+            Bekreft avregistrering
+          </div>
+          <h2 className="tdc-modal-title">Avregistrer fra {tournamentName}?</h2>
+        </div>
+        <TdcModalClose onClose={onClose} />
+      </header>
+
+      <div className="tdc-modal-body">
+        <p className="tdc-modal-text">
+          Du har 12 økter knyttet til denne turneringen. 4 er allerede fullført —
+          data beholdes. Resterende 8 planlagte økter beholdes som vanlige
+          treningsøkter.
+        </p>
+
+        <div className="tdc-danger-callout">
+          <AlertTriangle size={14} strokeWidth={1.75} aria-hidden />
+          <div>
+            Påmeldingsavgift <strong>NOK 1 450</strong> refunderes ikke etter
+            1. juni.
+          </div>
+        </div>
+
+        <div className="tdc-reason-list">
+          <div className="tdc-label-mono tdc-reason-label">Grunn</div>
+          {REASONS.map((r) => (
+            <label
+              key={r.id}
+              className={`tdc-reason${reason === r.id ? " tdc-reason-active" : ""}`}
+            >
+              <input
+                type="radio"
+                name="avreg-reason"
+                value={r.id}
+                checked={reason === r.id}
+                onChange={() => setReason(r.id)}
+              />
+              <span>{r.label}</span>
+            </label>
+          ))}
+          {reason === "annet" && (
+            <textarea
+              rows={2}
+              className="tdc-input tdc-textarea tdc-reason-text"
+              placeholder="Beskriv kort..."
+              value={annetText}
+              onChange={(e) => setAnnetText(e.target.value)}
+            />
+          )}
+        </div>
+      </div>
+
+      <footer className="tdc-modal-footer">
+        <button
+          type="button"
+          className="tdc-btn tdc-btn-outline"
+          onClick={onClose}
+        >
+          Avbryt
+        </button>
+        <button
+          type="button"
+          className="tdc-btn tdc-btn-danger"
+          onClick={onConfirm}
+        >
+          Bekreft avregistrering
+        </button>
+      </footer>
+    </TdcModalBackdrop>
+  );
+}
+
+/* =============================================================
+   3D — BaneKartModal
+   ============================================================= */
+
+function BaneKartModal({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  const [activeHole, setActiveHole] = useState<number>(1);
+  const hole = HOLES.find((h) => h.hull === activeHole) ?? HOLES[0];
+
+  // 18 pin-posisjoner fordelt over kartet (x%, y%)
+  const PINS: { x: number; y: number }[] = [
+    { x: 14, y: 78 }, { x: 22, y: 62 }, { x: 30, y: 48 },
+    { x: 38, y: 36 }, { x: 46, y: 26 }, { x: 54, y: 20 },
+    { x: 62, y: 28 }, { x: 70, y: 40 }, { x: 78, y: 52 },
+    { x: 84, y: 66 }, { x: 76, y: 78 }, { x: 66, y: 84 },
+    { x: 56, y: 82 }, { x: 46, y: 76 }, { x: 36, y: 68 },
+    { x: 28, y: 56 }, { x: 20, y: 44 }, { x: 16, y: 32 },
+  ];
+
+  return (
+    <TdcModalBackdrop open={open} onClose={onClose} width={920}>
+      <header className="tdc-modal-header">
+        <div>
+          <div className="tdc-label-mono tdc-modal-eyebrow">
+            <MapIcon size={11} strokeWidth={1.75} aria-hidden />
+            Bane-kart · interaktiv
+          </div>
+          <h2 className="tdc-modal-title">
+            Mandal Golfklubb <em>bane-kart</em>
+          </h2>
+          <div className="tdc-modal-sub">
+            Klikk på et hull-nummer for detaljer · 6 240 m · par 72
+          </div>
+        </div>
+        <TdcModalClose onClose={onClose} />
+      </header>
+
+      <div className="tdc-modal-body tdc-map-body">
+        <div className="tdc-map-grid">
+          <div className="tdc-map-canvas">
+            <svg
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              aria-hidden
+              className="tdc-map-svg"
+            >
+              <defs>
+                <linearGradient id="tdc-fairway" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#88B45A" />
+                  <stop offset="100%" stopColor="#3A8B6C" />
+                </linearGradient>
+              </defs>
+              <rect x="0" y="0" width="100" height="100" fill="url(#tdc-fairway)" />
+              <path
+                d="M 8 80 Q 30 50 50 22 T 92 70 Q 70 90 30 84 Z"
+                fill="rgba(255,255,255,0.10)"
+                stroke="rgba(255,255,255,0.30)"
+                strokeWidth="0.4"
+              />
+              <path
+                d="M 18 70 Q 36 50 56 36 T 80 60"
+                fill="none"
+                stroke="rgba(255,255,255,0.45)"
+                strokeWidth="0.6"
+                strokeDasharray="1 1.5"
+              />
+            </svg>
+
+            {PINS.map((p, i) => {
+              const num = i + 1;
+              const active = activeHole === num;
+              return (
+                <button
+                  key={num}
+                  type="button"
+                  className={`tdc-map-pin${active ? " tdc-map-pin-active" : ""}`}
+                  style={{ left: `${p.x}%`, top: `${p.y}%` }}
+                  onClick={() => setActiveHole(num)}
+                  aria-label={`Hull ${num}`}
+                >
+                  {num}
+                </button>
+              );
+            })}
+
+            {hole && (
+              <div className="tdc-map-tooltip">
+                <div className="tdc-mono tdc-map-tt-eyebrow">
+                  HULL {hole.hull} · PAR {hole.par} · HCP {hole.hcp}
+                </div>
+                <div className="tdc-map-tt-len">{hole.lengde}</div>
+                <div className="tdc-map-tt-sig">{hole.signature}</div>
+              </div>
+            )}
+          </div>
+
+          <aside className="tdc-map-rail">
+            <div className="tdc-label-mono">Hull-liste</div>
+            <ul className="tdc-map-list">
+              {HOLES.map((h) => (
+                <li key={h.hull}>
+                  <button
+                    type="button"
+                    className={`tdc-map-list-row${activeHole === h.hull ? " tdc-map-list-row-active" : ""}`}
+                    onClick={() => setActiveHole(h.hull)}
+                  >
+                    <span className="tdc-map-list-num">{h.hull}</span>
+                    <span className="tdc-map-list-mid">
+                      <span className="tdc-map-list-par">Par {h.par}</span>
+                      <span className="tdc-map-list-len">{h.lengde}</span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        </div>
+      </div>
+
+      <footer className="tdc-modal-footer">
+        <button
+          type="button"
+          className="tdc-btn tdc-btn-outline"
+          onClick={onClose}
+        >
+          Lukk
+        </button>
+        <button
+          type="button"
+          className="tdc-btn tdc-btn-primary"
+          onClick={() =>
+            setActiveHole((h) => (h >= 18 ? 1 : h + 1))
+          }
+        >
+          Forhåndsvisning fra teen {activeHole >= 18 ? 1 : activeHole + 1}
+        </button>
+      </footer>
+    </TdcModalBackdrop>
+  );
+}
+
+/* =============================================================
+   3E — BeOmTurneringsPlanModal
+   ============================================================= */
+
+const FOKUS_CHIPS: { id: string; label: string }[] = [
+  { id: "approach", label: "Approach" },
+  { id: "putting", label: "Putting" },
+  { id: "mental", label: "Mental" },
+  { id: "strategi", label: "Strategi" },
+  { id: "fysisk", label: "Fysisk" },
+];
+
+const QUICK_TAGS: string[] = [
+  "Mer approach-fokus mot smale Mandal-greener",
+  "Mental forberedelse — jeg er nervøs",
+  "Sjekk swing før turnering",
+  "Score-strategy for hull 12 (par-5)",
+  "Hvile-uke uka før",
+];
+
+const KIND_OPTIONS: { id: PlanRequestKind; label: string }[] = [
+  { id: "scratch", label: "Bygg hele planen fra scratch" },
+  { id: "juster", label: "Juster eksisterende prep-økter" },
+  { id: "fokus", label: "Fokus på spesifikt område" },
+];
+
+const URGENCY_OPTIONS: { id: PlanUrgency; label: string }[] = [
+  { id: "naar-passer", label: "Når det passer" },
+  { id: "innen-24t", label: "Innen 24t" },
+  { id: "i-dag", label: "I dag" },
+];
+
+function BeOmTurneringsPlanModal({
+  open,
+  tournamentName,
+  onClose,
+  onSend,
+}: {
+  open: boolean;
+  tournamentName: string;
+  onClose: () => void;
+  onSend: () => void;
+}) {
+  const [kind, setKind] = useState<PlanRequestKind>("juster");
+  const [fokus, setFokus] = useState<Set<string>>(new Set());
+  const [begrunnelse, setBegrunnelse] = useState("");
+  const [urgency, setUrgency] = useState<PlanUrgency>("naar-passer");
+
+  const toggleFokus = (id: string) => {
+    setFokus((s) => {
+      const next = new Set(s);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const counterColor =
+    begrunnelse.length === 0
+      ? "var(--tdc-muted-soft)"
+      : begrunnelse.length >= 10
+      ? "var(--tdc-success)"
+      : "var(--tdc-danger)";
+
+  return (
+    <TdcModalBackdrop open={open} onClose={onClose} width={560}>
+      <header className="tdc-modal-header">
+        <div>
+          <div className="tdc-label-mono tdc-modal-eyebrow">
+            <MessageSquare size={11} strokeWidth={1.75} aria-hidden />
+            TIL: ANDERS K. · 21 DAGER IGJEN
+          </div>
+          <h2 className="tdc-modal-title">
+            Be om plan for <em>{tournamentName}</em>
+          </h2>
+          <div className="tdc-modal-sub">
+            Forespørselen knyttes til denne turneringen og dukker opp i Anders sin kø
+          </div>
+        </div>
+        <TdcModalClose onClose={onClose} />
+      </header>
+
+      <div className="tdc-modal-body">
+        <fieldset className="tdc-fieldset">
+          <legend className="tdc-label-mono">Hva trenger du hjelp med?</legend>
+          <div className="tdc-radio-stack">
+            {KIND_OPTIONS.map((opt) => (
+              <label
+                key={opt.id}
+                className={`tdc-radio-row${kind === opt.id ? " tdc-radio-row-active" : ""}`}
+              >
+                <input
+                  type="radio"
+                  name="plan-kind"
+                  value={opt.id}
+                  checked={kind === opt.id}
+                  onChange={() => setKind(opt.id)}
+                />
+                <span>{opt.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        {kind === "fokus" && (
+          <fieldset className="tdc-fieldset">
+            <legend className="tdc-label-mono">Disiplin-fokus</legend>
+            <div className="tdc-chip-row">
+              {FOKUS_CHIPS.map((c) => {
+                const active = fokus.has(c.id);
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className={`tdc-chip${active ? " tdc-chip-active" : ""}`}
+                    onClick={() => toggleFokus(c.id)}
+                  >
+                    {c.label}
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
+        )}
+
+        <label className="tdc-field">
+          <span className="tdc-label-mono tdc-field-label-row">
+            Hva er din største usikkerhet?
+            <span className="tdc-counter" style={{ color: counterColor }}>
+              {begrunnelse.length} / min 10
+            </span>
+          </span>
+          <textarea
+            rows={4}
+            className="tdc-input tdc-textarea"
+            value={begrunnelse}
+            onChange={(e) => setBegrunnelse(e.target.value)}
+            placeholder="Beskriv hva som plager deg foran turneringen..."
+          />
+        </label>
+
+        <fieldset className="tdc-fieldset">
+          <legend className="tdc-label-mono">Hastegrad</legend>
+          <div className="tdc-segmented">
+            {URGENCY_OPTIONS.map((u) => (
+              <button
+                key={u.id}
+                type="button"
+                className={`tdc-seg${urgency === u.id ? " tdc-seg-active" : ""}`}
+                onClick={() => setUrgency(u.id)}
+              >
+                {u.label}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className="tdc-fieldset">
+          <legend className="tdc-label-mono">Hurtigvalg</legend>
+          <div className="tdc-quick-tags">
+            {QUICK_TAGS.map((t) => (
+              <button
+                key={t}
+                type="button"
+                className="tdc-quick-tag"
+                onClick={() => {
+                  const sep = begrunnelse.length === 0 ? "" : "\n";
+                  setBegrunnelse((b) => `${b}${sep}${t}`);
+                }}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      </div>
+
+      <footer className="tdc-modal-footer">
+        <button
+          type="button"
+          className="tdc-btn tdc-btn-outline"
+          onClick={onClose}
+        >
+          Avbryt
+        </button>
+        <button
+          type="button"
+          className="tdc-btn tdc-btn-primary"
+          onClick={onSend}
+          disabled={begrunnelse.length < 10}
+        >
+          <Send size={14} strokeWidth={1.75} aria-hidden />
+          Send forespørsel
+        </button>
+      </footer>
+    </TdcModalBackdrop>
   );
 }
 
@@ -1150,4 +2155,443 @@ const TDC_CSS = `
 }
 .tdc-ft-summary strong { color: var(--tdc-fg); letter-spacing: 0.10em; }
 .tdc-ft-actions { display: flex; gap: 8px; }
+
+/* =============================================================
+   MODALER / TOAST / FORM
+   ============================================================= */
+
+.tdc-course-image-btn {
+  width: 100%;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  padding: 16px;
+}
+.tdc-course-image-btn:focus-visible {
+  outline: 2px solid var(--tdc-accent);
+  outline-offset: 2px;
+}
+
+.tdc-modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(10, 31, 23, 0.55);
+  backdrop-filter: blur(2px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; z-index: 100;
+  animation: tdc-fade 120ms ease-out;
+}
+@keyframes tdc-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.tdc-modal {
+  background: var(--tdc-card);
+  border: 1px solid var(--tdc-border);
+  border-radius: var(--tdc-r-card);
+  width: 100%; max-width: 560px;
+  max-height: calc(100vh - 48px);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(10,31,23,0.35);
+  animation: tdc-pop 140ms ease-out;
+}
+@keyframes tdc-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.tdc-modal-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid var(--tdc-border-soft);
+}
+.tdc-modal-header-danger {
+  background: rgba(163,45,45,0.05);
+}
+.tdc-modal-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-bottom: 6px;
+}
+.tdc-eyebrow-danger { color: var(--tdc-danger); }
+.tdc-modal-title {
+  font-family: var(--tdc-font-display);
+  font-size: 20px; font-weight: 700;
+  letter-spacing: -0.015em; margin: 0;
+}
+.tdc-modal-title em {
+  font-family: var(--tdc-font-serif);
+  font-style: italic; font-weight: 400;
+  color: var(--tdc-primary);
+}
+.tdc-modal-sub {
+  font-family: var(--tdc-font-mono);
+  font-size: 10.5px; letter-spacing: 0.06em;
+  color: var(--tdc-muted); margin-top: 6px;
+}
+.tdc-modal-close {
+  background: transparent; border: 1px solid var(--tdc-border);
+  width: 32px; height: 32px; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--tdc-muted); cursor: pointer; flex-shrink: 0;
+}
+.tdc-modal-close:hover { color: var(--tdc-fg); background: var(--tdc-bg); }
+
+.tdc-modal-body {
+  padding: 18px 22px;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.tdc-modal-text {
+  font-size: 13.5px; line-height: 1.55; margin: 0;
+  color: var(--tdc-fg);
+}
+.tdc-modal-italic { margin-top: 0; border-top: 0; padding-top: 0; }
+
+.tdc-modal-footer {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--tdc-border-soft);
+  background: var(--tdc-bg);
+}
+.tdc-btn-danger {
+  background: var(--tdc-danger); color: #fff;
+}
+.tdc-btn-danger:hover { background: #8E2424; }
+.tdc-btn[disabled] {
+  opacity: 0.5; cursor: not-allowed;
+}
+
+/* ---- form fields ---- */
+.tdc-field {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.tdc-field-wide { grid-column: 1 / -1; }
+.tdc-field-label-row {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.tdc-counter {
+  font-family: var(--tdc-font-mono);
+  font-size: 10px; letter-spacing: 0.04em;
+}
+.tdc-input {
+  font-family: var(--tdc-font-body);
+  font-size: 13px;
+  padding: 9px 12px;
+  background: #fff;
+  border: 1px solid var(--tdc-border);
+  border-radius: 10px;
+  color: var(--tdc-fg);
+  outline: none;
+  transition: border-color 120ms;
+}
+.tdc-input:focus {
+  border-color: var(--tdc-primary);
+  box-shadow: 0 0 0 3px rgba(0,88,64,0.10);
+}
+.tdc-textarea { resize: vertical; min-height: 64px; font-family: var(--tdc-font-body); }
+.tdc-form-stack { display: flex; flex-direction: column; gap: 14px; }
+.tdc-form-grid-2 {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.tdc-fieldset {
+  border: 0; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.tdc-fieldset legend { padding: 0; margin-bottom: 4px; }
+
+.tdc-toggle-row {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--tdc-fg);
+  cursor: pointer;
+  padding: 8px 10px; border-radius: 10px;
+  background: var(--tdc-bg);
+  border: 1px solid var(--tdc-border-soft);
+}
+.tdc-toggle-row input { accent-color: var(--tdc-primary); }
+
+/* ---- variants (3A) ---- */
+.tdc-variant-list { display: flex; flex-direction: column; gap: 8px; }
+.tdc-variant {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px solid var(--tdc-border);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 120ms, background 120ms;
+}
+.tdc-variant input { margin-top: 4px; accent-color: var(--tdc-primary); }
+.tdc-variant-active {
+  border-color: var(--tdc-primary);
+  background: rgba(0,88,64,0.04);
+}
+.tdc-variant-body { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.tdc-variant-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 12px;
+}
+.tdc-variant-label {
+  font-family: var(--tdc-font-display);
+  font-size: 14px; font-weight: 600;
+}
+.tdc-variant-meta {
+  font-size: 10px; letter-spacing: 0.06em;
+  color: var(--tdc-muted);
+}
+.tdc-variant-desc { font-size: 12.5px; color: var(--tdc-muted); line-height: 1.45; }
+
+.tdc-mini-timeline {
+  display: grid; grid-template-columns: repeat(21, 1fr);
+  gap: 4px; padding: 10px 0;
+}
+.tdc-tl-cell {
+  height: 18px; border-radius: 4px; background: var(--tdc-border-soft);
+}
+.tdc-tl-empty { background: var(--tdc-border-soft); }
+.tdc-tl-tek { background: var(--tdc-tek); }
+.tdc-tl-slag { background: var(--tdc-slag); }
+.tdc-tl-spill { background: var(--tdc-spill); }
+
+/* ---- rounds (3B) ---- */
+.tdc-rounds-list { display: flex; flex-direction: column; gap: 12px; }
+.tdc-round-card {
+  border: 1px solid var(--tdc-border-soft);
+  border-radius: 12px; padding: 12px 14px;
+  background: #fff;
+}
+.tdc-round-head { margin-bottom: 10px; }
+.tdc-round-tag {
+  font-size: 10px; letter-spacing: 0.10em;
+  color: var(--tdc-primary); font-weight: 700;
+}
+.tdc-round-grid {
+  display: grid; grid-template-columns: 120px 1fr;
+  gap: 10px;
+}
+.tdc-round-grid .tdc-field-wide { grid-column: 1 / -1; }
+
+/* ---- avregistrer (3C) ---- */
+.tdc-danger-callout {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 12px;
+  background: rgba(163,45,45,0.08);
+  border: 1px solid rgba(163,45,45,0.20);
+  border-radius: 10px;
+  font-size: 12.5px;
+  color: var(--tdc-fg);
+}
+.tdc-danger-callout svg {
+  color: var(--tdc-danger); flex-shrink: 0; margin-top: 2px;
+}
+.tdc-reason-list { display: flex; flex-direction: column; gap: 6px; }
+.tdc-reason-label { margin-bottom: 2px; }
+.tdc-reason {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--tdc-border);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+.tdc-reason input { accent-color: var(--tdc-primary); }
+.tdc-reason-active {
+  border-color: var(--tdc-primary);
+  background: rgba(0,88,64,0.04);
+}
+.tdc-reason-text { margin-top: 4px; }
+
+/* ---- bane-kart (3D) ---- */
+.tdc-map-body { padding: 0; }
+.tdc-map-grid {
+  display: grid; grid-template-columns: 1fr 240px;
+  gap: 0; min-height: 440px;
+}
+@media (max-width: 720px) {
+  .tdc-map-grid { grid-template-columns: 1fr; }
+}
+.tdc-map-canvas {
+  position: relative;
+  background: linear-gradient(140deg, #88B45A 0%, #3A8B6C 70%);
+  overflow: hidden;
+  min-height: 440px;
+}
+.tdc-map-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+.tdc-map-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  color: var(--tdc-primary);
+  border: 2px solid var(--tdc-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--tdc-font-mono);
+  font-size: 11px; font-weight: 700;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 120ms;
+}
+.tdc-map-pin:hover { transform: translate(-50%, -50%) scale(1.12); }
+.tdc-map-pin-active {
+  background: var(--tdc-accent);
+  border-color: var(--tdc-fg);
+  color: var(--tdc-fg);
+  box-shadow: 0 0 0 4px rgba(209,248,67,0.40);
+}
+.tdc-map-tooltip {
+  position: absolute; bottom: 14px; left: 14px;
+  background: rgba(10,31,23,0.92);
+  color: #fff; padding: 10px 14px;
+  border-radius: 10px; max-width: 280px;
+  z-index: 3;
+}
+.tdc-map-tt-eyebrow {
+  font-size: 9.5px; letter-spacing: 0.10em;
+  color: var(--tdc-accent); margin-bottom: 4px;
+}
+.tdc-map-tt-len {
+  font-family: var(--tdc-font-mono);
+  font-size: 18px; font-weight: 700;
+}
+.tdc-map-tt-sig {
+  font-family: var(--tdc-font-serif);
+  font-style: italic; font-size: 12.5px;
+  color: rgba(255,255,255,0.85); margin-top: 4px;
+}
+.tdc-map-rail {
+  border-left: 1px solid var(--tdc-border-soft);
+  background: #fff;
+  padding: 14px;
+  overflow-y: auto;
+  max-height: 440px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.tdc-map-list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.tdc-map-list-row {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--tdc-font-body);
+}
+.tdc-map-list-row:hover { background: var(--tdc-bg); }
+.tdc-map-list-row-active {
+  background: rgba(0,88,64,0.06);
+}
+.tdc-map-list-num {
+  font-family: var(--tdc-font-mono);
+  font-size: 12px; font-weight: 700;
+  color: var(--tdc-fg);
+  width: 22px; text-align: center;
+}
+.tdc-map-list-mid {
+  display: flex; flex-direction: column; gap: 1px;
+}
+.tdc-map-list-par {
+  font-family: var(--tdc-font-mono);
+  font-size: 10.5px; color: var(--tdc-primary);
+  letter-spacing: 0.04em; font-weight: 600;
+}
+.tdc-map-list-len {
+  font-family: var(--tdc-font-mono);
+  font-size: 10px; color: var(--tdc-muted);
+}
+
+/* ---- be om plan (3E) ---- */
+.tdc-radio-stack { display: flex; flex-direction: column; gap: 6px; }
+.tdc-radio-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--tdc-border);
+  border-radius: 10px; background: #fff;
+  font-size: 13px; cursor: pointer;
+}
+.tdc-radio-row input { accent-color: var(--tdc-primary); }
+.tdc-radio-row-active {
+  border-color: var(--tdc-primary);
+  background: rgba(0,88,64,0.04);
+}
+.tdc-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.tdc-chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--tdc-border);
+  background: #fff;
+  font-family: var(--tdc-font-body);
+  font-size: 12px; font-weight: 500;
+  cursor: pointer;
+  color: var(--tdc-fg);
+}
+.tdc-chip-active {
+  background: var(--tdc-primary);
+  color: #fff;
+  border-color: var(--tdc-primary);
+}
+.tdc-segmented {
+  display: inline-flex;
+  border: 1px solid var(--tdc-border);
+  border-radius: 999px; padding: 3px;
+  background: #fff;
+}
+.tdc-seg {
+  border: 0; background: transparent;
+  padding: 6px 14px; border-radius: 999px;
+  font-family: var(--tdc-font-body);
+  font-size: 12px; font-weight: 500;
+  color: var(--tdc-muted); cursor: pointer;
+}
+.tdc-seg-active {
+  background: var(--tdc-primary); color: #fff;
+}
+.tdc-quick-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.tdc-quick-tag {
+  padding: 5px 10px;
+  border: 1px dashed var(--tdc-border);
+  border-radius: 8px;
+  background: var(--tdc-bg);
+  font-family: var(--tdc-font-body);
+  font-size: 11.5px;
+  color: var(--tdc-muted);
+  cursor: pointer;
+}
+.tdc-quick-tag:hover {
+  border-style: solid;
+  border-color: var(--tdc-primary);
+  color: var(--tdc-primary);
+  background: #fff;
+}
+
+/* ---- toast ---- */
+.tdc-toast {
+  position: fixed;
+  bottom: 32px; left: 50%;
+  transform: translate(-50%, 16px);
+  background: var(--tdc-fg);
+  color: var(--tdc-accent);
+  padding: 11px 18px;
+  border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--tdc-font-body);
+  font-size: 13px; font-weight: 500;
+  box-shadow: 0 12px 32px rgba(10,31,23,0.30);
+  opacity: 0; pointer-events: none;
+  transition: opacity 180ms, transform 180ms;
+  z-index: 200;
+}
+.tdc-toast-show {
+  opacity: 1; transform: translate(-50%, 0);
+}
+.tdc-toast svg { color: var(--tdc-accent); }
 `;

@@ -17,9 +17,20 @@ export type ModalName =
   | "new-goal"
   | "log-session"
   | "ask-coach"
+  | "ny-okt"
+  | "ai-foresla"
   | null;
 
 export type DisciplineKey = "fys" | "tek" | "slag" | "spill" | "turn";
+
+export type NyEktPrefill = {
+  discipline?: DisciplineKey;
+  drill?: string;
+  title?: string;
+  datetime?: string;
+  durationMin?: number;
+  place?: string;
+};
 
 const Icon = ({ id, className }: { id: string; className?: string }) => (
   <svg
@@ -3161,5 +3172,969 @@ export function EventPreviewPopover({
         </button>
       </div>
     </div>
+  );
+}
+
+/* ─── Ny økt fra scratch — Modal ───────────────────────────────────── */
+
+const DRILL_LIBRARY: { id: string; title: string; kind: DisciplineKey; mins: number }[] = [
+  { id: "pitch-50-100", title: "Pitch 50—100m, lav", kind: "slag", mins: 60 },
+  { id: "putt-0-3", title: "Putting 0—3m blokk", kind: "slag", mins: 30 },
+  { id: "putt-3-6", title: "Putting 3—6m", kind: "slag", mins: 45 },
+  { id: "approach-100-150", title: "Approach 100—150m blokk", kind: "slag", mins: 90 },
+  { id: "bunker-esk", title: "Bunker-eskalering", kind: "slag", mins: 45 },
+  { id: "iron-cs", title: "Iron-progresjon CS70 → CS80", kind: "tek", mins: 90 },
+  { id: "driver-grunn", title: "Driver grunntrening", kind: "tek", mins: 60 },
+  { id: "spin-kontroll", title: "Spin-kontroll iron 7", kind: "tek", mins: 60 },
+  { id: "bein-core", title: "Beinbøy + core", kind: "fys", mins: 30 },
+  { id: "intervall-4x4", title: "Intervall 4×4", kind: "fys", mins: 30 },
+  { id: "mobilitet", title: "Mobilitet rotasjon", kind: "fys", mins: 20 },
+  { id: "spillsim-9", title: "9-hulls spillsim", kind: "spill", mins: 90 },
+  { id: "strategi-runde", title: "Strategi-runde", kind: "spill", mins: 240 },
+  { id: "mental-visu", title: "Mental visualisering", kind: "turn", mins: 15 },
+  { id: "preshot", title: "Pre-shot routine", kind: "turn", mins: 20 },
+];
+
+export function NyEktModal({
+  open,
+  onClose,
+  onSubmit,
+  prefilled,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (msg: string) => void;
+  prefilled?: NyEktPrefill;
+}) {
+  const [discipline, setDiscipline] = useState<DisciplineKey>(
+    prefilled?.discipline ?? "slag",
+  );
+  const [title, setTitle] = useState(prefilled?.title ?? "Approach 100—150m blokk");
+  const [datetime, setDatetime] = useState(prefilled?.datetime ?? "2026-05-22T11:00");
+  const [duration, setDuration] = useState(prefilled?.durationMin ?? 60);
+  const [place, setPlace] = useState(prefilled?.place ?? "GFGK Performance Studio · Bay 4");
+  const [drillOpen, setDrillOpen] = useState(false);
+  const [drill, setDrill] = useState<string>(prefilled?.drill ?? "");
+  const [focus, setFocus] = useState("");
+  const [linkedGoals, setLinkedGoals] = useState<string[]>([]);
+  const [drillQuery, setDrillQuery] = useState("");
+  const [prevOpen, setPrevOpen] = useState(open);
+
+  // Re-sync state on every open with new prefilled values.
+  if (prevOpen !== open) {
+    setPrevOpen(open);
+    if (open) {
+      setDiscipline(prefilled?.discipline ?? "slag");
+      setTitle(prefilled?.title ?? "Approach 100—150m blokk");
+      setDatetime(prefilled?.datetime ?? "2026-05-22T11:00");
+      setDuration(prefilled?.durationMin ?? 60);
+      setPlace(prefilled?.place ?? "GFGK Performance Studio · Bay 4");
+      setDrill(prefilled?.drill ?? "");
+      setFocus("");
+      setLinkedGoals([]);
+      setDrillQuery("");
+      setDrillOpen(false);
+    }
+  }
+
+  const aiBadge = !prefilled?.discipline;
+  const dtLabel = (() => {
+    if (!datetime) return "PLANLEGGES";
+    const [d, t] = datetime.split("T");
+    const [yr, mo, da] = d.split("-").map(Number);
+    const dayNames = ["SØN", "MAN", "TIR", "ONS", "TOR", "FRE", "LØR"];
+    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DES"];
+    const date = new Date(yr, mo - 1, da);
+    return `PLANLEGGES · ${dayNames[date.getDay()]} ${da}. ${monthNames[mo - 1]} · ${t}`;
+  })();
+  const ctaTime = (() => {
+    if (!datetime) return "";
+    const [d, t] = datetime.split("T");
+    const [yr, mo, da] = d.split("-").map(Number);
+    const dayNames = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+    const date = new Date(yr, mo - 1, da);
+    return `${dayNames[date.getDay()]} ${t}`;
+  })();
+
+  const toggleGoal = (g: string) =>
+    setLinkedGoals((p) => (p.includes(g) ? p.filter((x) => x !== g) : [...p, g]));
+
+  const filteredDrills = drillQuery.trim()
+    ? DRILL_LIBRARY.filter((d) =>
+        d.title.toLowerCase().includes(drillQuery.toLowerCase()),
+      )
+    : DRILL_LIBRARY.filter((d) => d.kind === discipline);
+
+  const selectDrill = (d: (typeof DRILL_LIBRARY)[number]) => {
+    setDrill(d.title);
+    setTitle(d.title);
+    setDuration(d.mins);
+    setDiscipline(d.kind);
+    setDrillOpen(false);
+  };
+
+  return (
+    <ModalBackdrop open={open} onClose={onClose}>
+      <div className="modal new-goal" role="document" style={{ maxWidth: 560 }}>
+        <header className="modal-header">
+          <div>
+            <h2>Ny økt</h2>
+            <div className="caption">{dtLabel}</div>
+          </div>
+          <button className="modal-close" onClick={onClose} aria-label="Lukk">
+            <CloseIcon />
+          </button>
+        </header>
+
+        <div className="modal-body">
+          <div className="field">
+            <label className="field-label">
+              Tema<span className="req">*</span>
+              {aiBadge && (
+                <span
+                  className="mono"
+                  style={{
+                    marginLeft: 8,
+                    fontSize: 9.5,
+                    color: "var(--primary)",
+                    background: "var(--accent)",
+                    padding: "2px 6px",
+                    borderRadius: 4,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  AI-foreslått
+                </span>
+              )}
+            </label>
+            <div className="chip-row multi">
+              {(["fys", "tek", "slag", "spill", "turn"] as DisciplineKey[]).map(
+                (k) => {
+                  const active = discipline === k;
+                  return (
+                    <button
+                      key={k}
+                      type="button"
+                      className={`chip${active ? ` active chip-${k}` : ""}`}
+                      onClick={() => setDiscipline(k)}
+                    >
+                      {k.toUpperCase()}
+                    </button>
+                  );
+                },
+              )}
+            </div>
+            {aiBadge && discipline === "slag" && (
+              <div className="field-helper">
+                SLAG anbefalt pga. approach-gap −0,42 SG
+              </div>
+            )}
+          </div>
+
+          <div className="field">
+            <label className="field-label" htmlFor="ny-okt-title">
+              Tittel<span className="req">*</span>
+            </label>
+            <input
+              id="ny-okt-title"
+              className="field-input"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <div className="field-helper">Auto-foreslås når tema endres</div>
+          </div>
+
+          <div className="field-grid-2">
+            <div className="field">
+              <label className="field-label" htmlFor="ny-okt-when">
+                Tid<span className="req">*</span>
+              </label>
+              <input
+                id="ny-okt-when"
+                className="field-input"
+                type="datetime-local"
+                value={datetime}
+                onChange={(e) => setDatetime(e.target.value)}
+              />
+            </div>
+            <div className="field">
+              <label className="field-label" htmlFor="ny-okt-duration">
+                Varighet
+              </label>
+              <div className="slider-row">
+                <input
+                  id="ny-okt-duration"
+                  type="range"
+                  min={15}
+                  max={180}
+                  step={5}
+                  value={duration}
+                  onChange={(e) => setDuration(Number(e.target.value))}
+                />
+                <span className="val">
+                  <span>{duration}</span> min
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="field-label" htmlFor="ny-okt-place">
+              Sted
+            </label>
+            <select
+              id="ny-okt-place"
+              className="field-input"
+              value={place}
+              onChange={(e) => setPlace(e.target.value)}
+            >
+              <option>GFGK Performance Studio · Bay 4</option>
+              <option>GFGK Performance Studio · Bay 1</option>
+              <option>Bossum range</option>
+              <option>Hjemme</option>
+              <option>Range</option>
+              <option>Annet</option>
+            </select>
+          </div>
+
+          <div className="field">
+            <label className="field-label">Drill</label>
+            {drill ? (
+              <div
+                className="assigned-card"
+                style={{ cursor: "pointer" }}
+                onClick={() => setDrillOpen(true)}
+              >
+                <div className="avatar">
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{ width: 14, height: 14 }}
+                  >
+                    <use href="#ic-clipboard" />
+                  </svg>
+                </div>
+                <div className="body">
+                  <div className="lbl">Valgt drill</div>
+                  <div className="nm">{drill}</div>
+                </div>
+                <span className={`pill pill-${discipline}`}>
+                  {discipline.toUpperCase()}
+                </span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-outline btn-sm"
+                style={{ alignSelf: "flex-start" }}
+                onClick={() => setDrillOpen((v) => !v)}
+              >
+                <Icon id="ic-plus" />
+                Velg fra mine drills
+              </button>
+            )}
+            {drillOpen && (
+              <div
+                style={{
+                  marginTop: 8,
+                  border: "1px solid var(--border)",
+                  borderRadius: 10,
+                  padding: 10,
+                  background: "var(--bg)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <input
+                  className="field-input"
+                  type="text"
+                  placeholder="Søk drill…"
+                  value={drillQuery}
+                  onChange={(e) => setDrillQuery(e.target.value)}
+                />
+                <div
+                  style={{
+                    maxHeight: 200,
+                    overflowY: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                  }}
+                >
+                  {filteredDrills.length === 0 && (
+                    <div
+                      className="mono"
+                      style={{
+                        fontSize: 11,
+                        color: "var(--muted)",
+                        padding: 8,
+                        textAlign: "center",
+                      }}
+                    >
+                      Ingen treff
+                    </div>
+                  )}
+                  {filteredDrills.map((d) => (
+                    <button
+                      key={d.id}
+                      type="button"
+                      onClick={() => selectDrill(d)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "8px 10px",
+                        border: "1px solid var(--border-soft)",
+                        borderRadius: 8,
+                        background: "var(--card)",
+                        textAlign: "left",
+                        cursor: "pointer",
+                        fontFamily: "var(--font-body)",
+                        fontSize: 12.5,
+                      }}
+                    >
+                      <span className={`pill pill-${d.kind}`}>
+                        {d.kind.toUpperCase()}
+                      </span>
+                      <span style={{ flex: 1 }}>{d.title}</span>
+                      <span
+                        className="mono"
+                        style={{ fontSize: 10, color: "var(--muted)" }}
+                      >
+                        {d.mins} MIN
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="field">
+            <label className="field-label" htmlFor="ny-okt-focus">
+              Reps / fokus{" "}
+              <span
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontWeight: 400,
+                  color: "var(--muted-soft)",
+                  textTransform: "none",
+                  letterSpacing: 0,
+                }}
+              >
+                (valgfritt)
+              </span>
+            </label>
+            <textarea
+              id="ny-okt-focus"
+              className="field-input"
+              rows={2}
+              value={focus}
+              onChange={(e) => setFocus(e.target.value)}
+              placeholder="F.eks: 80 reps · landingssone ±3m · spinn lav"
+            />
+          </div>
+
+          <div className="field">
+            <label className="field-label">
+              Koble til mål{" "}
+              <span
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontWeight: 400,
+                  color: "var(--muted-soft)",
+                  textTransform: "none",
+                  letterSpacing: 0,
+                }}
+              >
+                (valgfritt)
+              </span>
+            </label>
+            <div className="chip-row multi">
+              {(["Top 10 NM", "Snitt < 72", "HCP +2,0"] as const).map((g) => {
+                const active = linkedGoals.includes(g);
+                return (
+                  <button
+                    key={g}
+                    type="button"
+                    className={`chip${active ? " active chip-slag" : ""}`}
+                    onClick={() => toggleGoal(g)}
+                  >
+                    {g}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <footer className="modal-footer">
+          <div className="left-meta">Lagres som planlagt i Uke 21</div>
+          <button className="btn-ghost" onClick={onClose}>
+            Avbryt
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              if (!title.trim() || !datetime) return;
+              onSubmit(
+                ctaTime ? `Økt planlagt · ${ctaTime}` : "Økt opprettet",
+              );
+            }}
+          >
+            <Icon id="ic-plus" />
+            Lagre{ctaTime ? ` · ${ctaTime}` : ""}
+          </button>
+        </footer>
+      </div>
+    </ModalBackdrop>
+  );
+}
+
+/* ─── AI-foreslå uke — Modal ───────────────────────────────────────── */
+
+type AiPhase = "generating" | "suggestion" | "confirm";
+
+const AI_DAYS = [
+  { day: "Man", date: "19/5", kind: "tek" as DisciplineKey, time: "14:00", title: "Iron CS70→CS80", min: 90, kept: true },
+  { day: "Tir", date: "20/5", kind: "fys" as DisciplineKey, time: "11:00", title: "Beinbøy + core", min: 30, kept: false },
+  { day: "Tir", date: "20/5", kind: "turn" as DisciplineKey, time: "16:00", title: "Mental Sørlands", min: 15, kept: false },
+  { day: "Ons", date: "21/5", kind: "slag" as DisciplineKey, time: "09:00", title: "Approach 100—150m", min: 90, kept: false },
+  { day: "Ons", date: "21/5", kind: "spill" as DisciplineKey, time: "17:00", title: "Spillsim Bossum-prep", min: 90, kept: false },
+  { day: "Tor", date: "22/5", kind: "slag" as DisciplineKey, time: "15:00", title: "Putting 3—6m", min: 45, kept: false },
+  { day: "Lør", date: "24/5", kind: "spill" as DisciplineKey, time: "09:00", title: "Bossum Open R1", min: 240, kept: false },
+];
+
+const AI_REASONS = [
+  "Approach-gap på <em>−0,42 SG</em> → 3 SLAG-økter prioritert",
+  "Du har ikke trent FYS på <em>9 dager</em> → beinbøy tirsdag",
+  "Sørlandsåpent om 21 dager → mental tirsdag",
+  "Bossum Open lørdag → spillsim onsdag",
+  "Anders' tildelte iron-økt <em>beholdt</em> mandag",
+];
+
+const AI_CHIPS = ["Mer FYS", "Mindre TEK", "Hvile fredag", "Flere korte økter"];
+
+export function AiForeslaUkeModal({
+  open,
+  onClose,
+  onSubmit,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (msg: string) => void;
+}) {
+  const [phase, setPhase] = useState<AiPhase>("generating");
+  const [progress, setProgress] = useState(0);
+  const [doneSteps, setDoneSteps] = useState(0);
+  const [chips, setChips] = useState<string[]>([]);
+  const [keepAnders, setKeepAnders] = useState(true);
+  const [prevOpen, setPrevOpen] = useState(open);
+
+  if (prevOpen !== open) {
+    setPrevOpen(open);
+    if (open) {
+      setPhase("generating");
+      setProgress(0);
+      setDoneSteps(0);
+      setChips([]);
+      setKeepAnders(true);
+    }
+  }
+
+  useEffect(() => {
+    if (!open || phase !== "generating") return;
+    const start = Date.now();
+    const total = 2200;
+    const tick = window.setInterval(() => {
+      const elapsed = Date.now() - start;
+      const p = Math.min(100, (elapsed / total) * 100);
+      setProgress(p);
+      if (elapsed > total * 0.25) setDoneSteps((s) => Math.max(s, 1));
+      if (elapsed > total * 0.55) setDoneSteps((s) => Math.max(s, 2));
+      if (elapsed > total * 0.85) setDoneSteps((s) => Math.max(s, 3));
+      if (elapsed >= total) {
+        window.clearInterval(tick);
+        setPhase("suggestion");
+      }
+    }, 60);
+    return () => window.clearInterval(tick);
+  }, [open, phase]);
+
+  const toggleChip = (c: string) =>
+    setChips((p) => (p.includes(c) ? p.filter((x) => x !== c) : [...p, c]));
+
+  const regenerate = () => {
+    setProgress(0);
+    setDoneSteps(0);
+    setPhase("generating");
+  };
+
+  const sessionCount = AI_DAYS.length;
+  const totalMin = AI_DAYS.reduce((acc, d) => acc + d.min, 0);
+  const keptCount = AI_DAYS.filter((d) => d.kept).length;
+  const replacedCount = sessionCount - keptCount;
+
+  return (
+    <ModalBackdrop open={open} onClose={onClose}>
+      <div className="modal" role="document" style={{ maxWidth: 640 }}>
+        <header className="modal-header">
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <svg
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              viewBox="0 0 24 24"
+              style={{ width: 22, height: 22, color: "var(--primary)" }}
+            >
+              <use href="#ic-sparkles" />
+            </svg>
+            <div>
+              <h2>
+                {phase === "generating"
+                  ? "AI bygger uken din"
+                  : phase === "suggestion"
+                  ? "Forslag · Uke 22"
+                  : "Bekreft ukeplan"}
+              </h2>
+              <div className="caption">
+                {phase === "generating"
+                  ? "ANALYSERER 12 RUNDER · 47 ØKTER · 3 MÅL"
+                  : `${sessionCount} ØKTER · ${totalMin} MIN · 72% PYRAMIDE-TREFF`}
+              </div>
+            </div>
+          </div>
+          <button className="modal-close" onClick={onClose} aria-label="Lukk">
+            <CloseIcon />
+          </button>
+        </header>
+
+        <div className="modal-body">
+          {phase === "generating" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+              <div
+                style={{
+                  height: 8,
+                  borderRadius: 999,
+                  background: "var(--border-soft)",
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    width: `${progress}%`,
+                    height: "100%",
+                    background:
+                      "linear-gradient(90deg, var(--accent), var(--primary))",
+                    transition: "width 0.12s linear",
+                  }}
+                />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {[
+                  "Lest SG-trender",
+                  "Sjekket Anders' coaching-mål",
+                  "Hentet Sørlandsåpent-prep-status",
+                ].map((step, i) => {
+                  const done = doneSteps > i;
+                  return (
+                    <div
+                      key={step}
+                      className="mono"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        fontSize: 11.5,
+                        letterSpacing: "0.04em",
+                        color: done ? "var(--fg)" : "var(--muted)",
+                        opacity: done ? 1 : 0.55,
+                        transition: "opacity 0.2s, color 0.2s",
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 14,
+                          height: 14,
+                          borderRadius: "50%",
+                          background: done ? "var(--accent)" : "var(--border)",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "var(--primary)",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {done && (
+                          <svg
+                            width="9"
+                            height="9"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            viewBox="0 0 24 24"
+                          >
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
+                      </span>
+                      {step}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {phase === "suggestion" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div
+                style={{
+                  background: "var(--primary)",
+                  color: "var(--accent)",
+                  borderRadius: 10,
+                  padding: 14,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 12,
+                }}
+              >
+                <div>
+                  <div
+                    className="mono"
+                    style={{
+                      fontSize: 10,
+                      letterSpacing: "0.08em",
+                      opacity: 0.85,
+                    }}
+                  >
+                    UKE 22 · 6 ØKTER · 220 MIN
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: 18,
+                      fontWeight: 600,
+                      marginTop: 4,
+                      color: "#fff",
+                    }}
+                  >
+                    72% pyramide-treff
+                  </div>
+                </div>
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 11,
+                    textAlign: "right",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  +15% SLAG
+                  <br />
+                  −10% TEK
+                </div>
+              </div>
+
+              <div>
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 10,
+                    color: "var(--muted)",
+                    letterSpacing: "0.08em",
+                    marginBottom: 8,
+                  }}
+                >
+                  FORESLÅTTE ØKTER
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                  }}
+                >
+                  {AI_DAYS.map((s, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        padding: "8px 10px",
+                        border: "1px solid var(--border)",
+                        borderLeft: `3px solid var(--${s.kind})`,
+                        borderRadius: 8,
+                        background: "var(--card)",
+                      }}
+                    >
+                      <span
+                        className="mono"
+                        style={{
+                          fontSize: 10.5,
+                          color: "var(--muted)",
+                          letterSpacing: "0.06em",
+                          width: 64,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {s.day} {s.date}
+                      </span>
+                      <span
+                        className="mono"
+                        style={{
+                          fontSize: 11,
+                          color: "var(--fg)",
+                          width: 48,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {s.time}
+                      </span>
+                      <span className={`pill pill-${s.kind}`}>
+                        {s.kind.toUpperCase()}
+                      </span>
+                      <span
+                        style={{
+                          flex: 1,
+                          fontSize: 12.5,
+                          minWidth: 0,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {s.title}
+                      </span>
+                      <span
+                        className="mono"
+                        style={{
+                          fontSize: 10,
+                          color: "var(--muted)",
+                        }}
+                      >
+                        {s.min} MIN
+                      </span>
+                      {s.kept && (
+                        <span
+                          className="mono"
+                          style={{
+                            fontSize: 9.5,
+                            color: "var(--primary)",
+                            background: "var(--accent)",
+                            padding: "2px 6px",
+                            borderRadius: 4,
+                            letterSpacing: "0.06em",
+                          }}
+                        >
+                          BEHOLDT
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 10,
+                    color: "var(--muted)",
+                    letterSpacing: "0.08em",
+                    marginBottom: 8,
+                  }}
+                >
+                  HVORFOR DENNE PLANEN?
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                    fontFamily: "var(--font-serif)",
+                    fontStyle: "italic",
+                    fontSize: 13.5,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {AI_REASONS.map((r, i) => (
+                    <div
+                      key={i}
+                      style={{ display: "flex", gap: 8, alignItems: "baseline" }}
+                    >
+                      <span style={{ color: "var(--primary)" }}>•</span>
+                      <span dangerouslySetInnerHTML={{ __html: r }} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 10,
+                    color: "var(--muted)",
+                    letterSpacing: "0.08em",
+                    marginBottom: 8,
+                  }}
+                >
+                  JUSTER
+                </div>
+                <div className="chip-row multi">
+                  {AI_CHIPS.map((c) => {
+                    const active = chips.includes(c);
+                    return (
+                      <button
+                        key={c}
+                        type="button"
+                        className={`chip${active ? " active chip-slag" : ""}`}
+                        onClick={() => toggleChip(c)}
+                      >
+                        {c}
+                      </button>
+                    );
+                  })}
+                </div>
+                {chips.length > 0 && (
+                  <button
+                    className="btn btn-outline btn-sm"
+                    style={{ marginTop: 10, alignSelf: "flex-start" }}
+                    onClick={regenerate}
+                  >
+                    <Icon id="ic-refresh" />
+                    Regenerer med justeringer
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {phase === "confirm" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div
+                style={{
+                  background: "var(--bg)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 10,
+                  padding: 14,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: 14,
+                    fontWeight: 600,
+                  }}
+                >
+                  Erstatter {replacedCount} eksisterende økter
+                </div>
+                <div
+                  className="mono"
+                  style={{ fontSize: 11, color: "var(--muted)", marginTop: 4 }}
+                >
+                  BEHOLDER {keptCount} FRA ANDERS · LEGGER TIL{" "}
+                  {sessionCount - keptCount} NYE
+                </div>
+              </div>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={keepAnders}
+                  onChange={(e) => setKeepAnders(e.target.checked)}
+                />
+                <span style={{ fontSize: 13 }}>
+                  Behold Anders&apos; tildelte økter alltid
+                </span>
+              </label>
+            </div>
+          )}
+        </div>
+
+        <footer className="modal-footer">
+          {phase === "generating" && (
+            <>
+              <div className="left-meta">Generere tar 2—3 sek</div>
+              <button className="btn-ghost" onClick={onClose}>
+                Avbryt
+              </button>
+            </>
+          )}
+          {phase === "suggestion" && (
+            <>
+              <div className="left-meta">
+                {chips.length > 0
+                  ? `${chips.length} justering${chips.length === 1 ? "" : "er"}`
+                  : "Klar til å aksepteres"}
+              </div>
+              <button className="btn-ghost" onClick={onClose}>
+                Avbryt
+              </button>
+              <button className="btn btn-outline" onClick={regenerate}>
+                <Icon id="ic-refresh" />
+                Regenerer
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => setPhase("confirm")}
+              >
+                <svg
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  viewBox="0 0 24 24"
+                  style={{ width: 14, height: 14 }}
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Aksepter {sessionCount} økter
+              </button>
+            </>
+          )}
+          {phase === "confirm" && (
+            <>
+              <div className="left-meta">Refresher ukeplan</div>
+              <button
+                className="btn-ghost"
+                onClick={() => setPhase("suggestion")}
+              >
+                Tilbake
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() =>
+                  onSubmit(`Uke 22 oppdatert · ${sessionCount} økter lagt til`)
+                }
+              >
+                Bekreft
+              </button>
+            </>
+          )}
+        </footer>
+      </div>
+    </ModalBackdrop>
   );
 }
