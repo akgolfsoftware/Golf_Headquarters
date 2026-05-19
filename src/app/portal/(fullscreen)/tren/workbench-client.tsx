@@ -748,11 +748,21 @@ export function WorkbenchClient() {
                   <UkeView
                     onEventClick={onEventClick}
                     onEmptySlotClick={onEmptySlotClick}
+                    onWeekNav={(dir) =>
+                      showToast(
+                        dir === "today"
+                          ? "Tilbake til uke 21"
+                          : dir === "prev"
+                            ? "Uke 20"
+                            : "Uke 22",
+                      )
+                    }
                   />
                   <DagView
                     onEmptySlotClick={onEmptySlotClick}
                     onNewClick={() => openNyEkt()}
                     openMessagesWithAnders={openMessagesWithAnders}
+                    onEventClick={() => openModal("edit-session")}
                   />
                   <OktView
                     openModal={openModal}
@@ -2087,9 +2097,11 @@ function MdView({
 function UkeView({
   onEventClick,
   onEmptySlotClick,
+  onWeekNav,
 }: {
   onEventClick: (e: React.MouseEvent, ev: UkeEvent) => void;
   onEmptySlotClick: (e: React.MouseEvent, label: string) => void;
+  onWeekNav: (dir: "prev" | "today" | "next") => void;
 }) {
   return (
     <div className="z-view z-uke">
@@ -2110,7 +2122,10 @@ function UkeView({
             </div>
           </div>
           <div className="row-flex">
-            <button className="btn btn-outline btn-xs">
+            <button
+              className="btn btn-outline btn-xs"
+              onClick={() => onWeekNav("prev")}
+            >
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -2122,8 +2137,16 @@ function UkeView({
                 <use href="#ic-chev-l" />
               </svg>
             </button>
-            <button className="btn btn-outline btn-xs">I dag</button>
-            <button className="btn btn-outline btn-xs">
+            <button
+              className="btn btn-outline btn-xs"
+              onClick={() => onWeekNav("today")}
+            >
+              I dag
+            </button>
+            <button
+              className="btn btn-outline btn-xs"
+              onClick={() => onWeekNav("next")}
+            >
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -2212,10 +2235,12 @@ function DagView({
   onEmptySlotClick,
   onNewClick,
   openMessagesWithAnders,
+  onEventClick,
 }: {
   onEmptySlotClick: (e: React.MouseEvent, label: string) => void;
   onNewClick: () => void;
   openMessagesWithAnders: () => void;
+  onEventClick: (k: DisciplineKey, t: string) => void;
 }) {
   const hours = Array.from({ length: 11 }, (_, i) => 8 + i);
   return (
@@ -2274,7 +2299,11 @@ function DagView({
                       </div>
                     ) : (
                       <div className="dt-slot">
-                        <div className={`dt-event ${ev.k}`}>
+                        <div
+                          className={`dt-event ${ev.k}`}
+                          style={{ cursor: "pointer" }}
+                          onClick={() => onEventClick(ev.k, ev.t)}
+                        >
                           <div
                             style={{
                               display: "flex",
