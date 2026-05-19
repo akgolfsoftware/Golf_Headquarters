@@ -1,9 +1,12 @@
-// Unified Workbench (TSX-portering av /public/design/workbench/index.html).
+// Workbench v2 (TSX-portering av /public/design/workbench-v2.html).
 // Plassert i `(fullscreen)`-gruppen for å unngå dobbel sidebar/topbar
 // fra `PortalShell` — denne siden har sin egen chrome (sidebar + topbar
 // + sticky footer) som matcher HTML-prototypen.
 //
-// URL: /portal/workbench
+// To moduser: STATUS (hvor er jeg?) og PLAN (hva skal jeg gjøre?)
+// Plan-modus har zoom-akse: År → Måned → Uke → Dag → Økt
+//
+// URL: /portal/tren
 
 import { Instrument_Serif } from "next/font/google";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -26,7 +29,7 @@ export const metadata = {
 export default async function WorkbenchPage() {
   await requirePortalUser();
   return (
-    <div className={`${instrumentSerif.variable} min-h-screen bg-[#FAFAF7]`}>
+    <div className={instrumentSerif.variable}>
       <WorkbenchClient />
     </div>
   );
