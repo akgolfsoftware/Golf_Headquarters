@@ -325,6 +325,45 @@ Disse er **out-of-scope for denne specen** men kreves for at workbench skal fung
 
 **Hvorfor sticky footer?** Pyramide-balanse + ukens stats er den viktigste "her er du nå"-informasjonen — bør være synlig under alt arbeid.
 
+### Designprinsipp: Naturlig flyt, ikke overveldende
+
+Workbench har mye innhold, men må IKKE føles kaotisk. Følgende regler styrer flyten:
+
+1. **Top-down narrativ:** Seksjonene følger en planleggings-fortelling, ikke tilfeldig rekkefølge:
+   1. *Hvor er jeg?* (hero + årsplan-gantt — sesong-kontekst)
+   2. *Hva planlegger jeg nå?* (3-pane workbench — denne uka)
+   3. *Hva er jeg på vei mot?* (mål-trackers)
+   4. *Hva må jeg jobbe med?* (SG + slag-prioritering)
+   5. *Hva har jeg gjort sist?* (TrackMan-historikk)
+   6. *Hvor står jeg akkurat nå?* (sticky footer — pyramide + stats)
+
+2. **Vertikal rytme:** Hver seksjon har klar høyde (Hero 80px, Gantt 120px, 3-pane 600-800px, mål 250px, insight 320px, TrackMan 150px). Konsistente gap (32px) mellom seksjoner. Aldri to seksjoner med samme dominant farge ved siden av hverandre.
+
+3. **Visuell hierarki:** Hver seksjon har én tydelig "hovedaktør":
+   - 3-pane: KALENDEREN (sentralt, dominerer bredde)
+   - Mål-rad: TRACKERS (3 like kort)
+   - Insight-strip: SG-GRAF til venstre (mest plass)
+   - Andre elementer er støttende, ikke konkurrerende
+
+4. **Whitespace som verktøy:** Padding 24-32px innenfor cards, 16-24px gap mellom subkomponenter. Tette tabeller bare når det gir mening (drill-bibliotek, spillerliste).
+
+5. **Progressive disclosure:** Detaljerte data åpnes på klikk, ikke vist by default:
+   - Klikk en uke i Gantt → scrollIntoView til 3-pane workbench for den uka
+   - Klikk en økt i kalender → modal eller drawer med drill-detaljer
+   - Klikk mål-card → full mål-detaljside `/portal/mal/goal/[id]`
+   - Klikk insight i SG → opprett drill-økt fra insight
+
+6. **Konsistente CTA-plasseringer:**
+   - Primary CTA (lime fyll) alltid bunn-høyre i seksjon
+   - Sekundære actions (outline) på samme rad
+   - Floating actions kun i sticky footer
+
+7. **Empty states som forteller:** Når en seksjon mangler data, vis hva som kommer hit i stedet for tom firkant. F.eks. tom mål-rad: "Du har ingen aktive mål ennå. Resultatmål er hva du vil oppnå (vinne Srixon Tour). Prosessmål er hva du må gjøre (snitt under 72)."
+
+### Live Session Logger — separat skjerm
+
+Når spilleren klikker en økt i kalenderen for å GJENNOMFØRE den (ikke bare se), åpnes Live Session Logger på `/portal/live/[sessionId]/active` — en mobil-først fullscreen-modus utenfor workbench. Se egen spec: `2026-05-19-live-session-logger-design.md`.
+
 ---
 
 ## 7. Verifikasjon
