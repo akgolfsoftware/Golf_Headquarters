@@ -1,0 +1,3630 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>AK Golf PlayerHQ — Workbench v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+</head>
+<body data-mode="status" data-zoom="uke" data-screen-label="Workbench v2">
+
+<!-- SVG sprite (Lucide) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="ic-chev-l" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+    <symbol id="ic-chev-r" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+    <symbol id="ic-up" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+    <symbol id="ic-down" viewBox="0 0 24 24"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></symbol>
+    <symbol id="ic-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.9 5.7L19.6 10.6 13.9 12.5 12 18.2 10.1 12.5 4.4 10.6 10.1 8.7Z"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="ic-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="ic-hammer" viewBox="0 0 24 24"><path d="M15 12l-8.5 8.5a2.12 2.12 0 1 1-3-3L12 9"/><path d="M17.64 15L22 10.64"/><path d="M20.91 11.7l-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91"/></symbol>
+    <symbol id="ic-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-import" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="ic-trophy" viewBox="0 0 24 24"><path d="M6 9H4a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h3"/><path d="M18 9h2a2 2 0 0 0 2-2V6a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></symbol>
+    <symbol id="ic-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+    <symbol id="ic-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+    <symbol id="ic-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="ic-map-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="ic-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></symbol>
+    <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="name">AK GOLF</div>
+      <div class="meta">PLAYERHQ · PRO</div>
+    </div>
+    <div class="sidebar-profile">
+      <div class="avatar">MR</div>
+      <div>
+        <div class="nm">Markus R.P.</div>
+        <div class="hcp">HCP +3,5 · A1</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Hjem</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg>Varsler<span class="badge-count">3</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Workbench</div>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Min workbench</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Kalender</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Mål</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Statistikk</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user"/></svg>Coach</button>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <header class="topbar">
+      <div class="search">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+        <input placeholder="Søk drill, plan eller mål…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="breadcrumb" style="margin-left:0;">
+        Workbench &nbsp;/&nbsp; <span class="current" id="bread">Status</span>
+      </div>
+      <div style="margin-left:auto; display:flex; align-items:center; gap:4px;">
+        <button id="msg-btn" aria-label="Meldinger" style="
+          width:38px; height:38px; border-radius:10px;
+          border:0; background:transparent;
+          display:inline-flex; align-items:center; justify-content:center;
+          color:var(--fg); position:relative; cursor:pointer;
+        ">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>
+          <span id="msg-dot" style="
+            position:absolute; top:8px; right:9px;
+            width:8px; height:8px; border-radius:50%;
+            background:var(--accent);
+            border:1.5px solid #fff;
+          "></span>
+        </button>
+        <button id="bell-btn" aria-label="Varsler" style="
+          width:38px; height:38px; border-radius:10px;
+          border:0; background:transparent;
+          display:inline-flex; align-items:center; justify-content:center;
+          color:var(--fg); position:relative; cursor:pointer;
+        ">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg>
+          <span id="bell-dot" style="
+            position:absolute; top:8px; right:9px;
+            width:8px; height:8px; border-radius:50%;
+            background:var(--danger);
+            border:1.5px solid #fff;
+          "></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===== MODE BAR ===== -->
+    <div class="mode-bar">
+      <div class="mode-bar-top">
+        <div>
+          <h1>God morgen, <em>Markus</em></h1>
+          <div class="greeting-meta">MANDAG 19. MAI · UKE 21 · 21 DAGER TIL SØRLANDSÅPENT</div>
+        </div>
+        <div class="mode-actions">
+          <button class="btn btn-outline btn-sm" data-open-modal="ask-coach">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>
+            Be om økt fra coach
+          </button>
+          <button class="btn btn-primary btn-sm">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+            Ny økt
+          </button>
+        </div>
+      </div>
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-target="status" data-screen-label="Status mode">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-eye"/></svg>
+          <span class="mt-stack"><span>Status</span><span class="mt-sub">Hvor er jeg?</span></span>
+        </button>
+        <button class="mode-tab" data-target="plan" data-screen-label="Plan mode">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-hammer"/></svg>
+          <span class="mt-stack"><span>Plan</span><span class="mt-sub">Hva skal jeg gjøre?</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="page">
+
+      <!-- ╔════════════════════════════════════════════════════════╗ -->
+      <!-- ║                    STATUS MODE                         ║ -->
+      <!-- ╚════════════════════════════════════════════════════════╝ -->
+      <div class="view-status">
+
+        <!-- 1. Hero -->
+        <section class="status-hero" data-screen-label="Status · Hero">
+          <div class="status-hero-main">
+            <span class="label-mono">Status · uke 21 · 19. mai 2026</span>
+            <h2>Du er <em>på plan</em> — approach er fortsatt gapet.</h2>
+            <div class="status-stats-row">
+              <div class="stat">
+                <div class="lbl">HCP</div>
+                <div class="val">+3,5</div>
+                <div class="delta dn">↓ 0,4 / 90d</div>
+              </div>
+              <div class="stat">
+                <div class="lbl">Kategori</div>
+                <div class="val">A1</div>
+                <div class="delta flat">Stabil</div>
+              </div>
+              <div class="stat">
+                <div class="lbl">SG total</div>
+                <div class="val">+0,21</div>
+                <div class="delta up">↑ +0,08</div>
+              </div>
+              <div class="stat">
+                <div class="lbl">Streak</div>
+                <div class="val">11d</div>
+                <div class="delta up">av 14</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="next-target">
+            <div class="nt-head">
+              <div>
+                <span class="label-mono">Neste hovedmål</span>
+                <h3>Sørlandsåpent</h3>
+              </div>
+              <div class="nt-countdown">
+                <div class="days">21</div>
+                <div class="lab">DAGER</div>
+              </div>
+            </div>
+            <div class="nt-prob">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="7"/>
+                <circle cx="40" cy="40" r="32" fill="none" stroke="var(--accent)" stroke-width="7"
+                        stroke-dasharray="76.4 201" stroke-linecap="round"
+                        transform="rotate(-90 40 40)"/>
+                <text x="40" y="46" text-anchor="middle" font-family="JetBrains Mono" font-size="18" font-weight="600" fill="var(--fg)">38%</text>
+              </svg>
+              <div class="copy">
+                <strong>Top 10-sannsynlighet</strong>
+                Basert på SG og siste 12 runder
+              </div>
+            </div>
+            <div class="nt-italic">
+              <em class="italic-accent">Approach +0,4 SG</em> løfter sannsynligheten til 50%.
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Mål-trackers -->
+        <section data-screen-label="Status · Målsetninger">
+          <div class="section-h" style="margin-bottom:16px;">
+            <div>
+              <h2>Målsetninger</h2>
+              <div class="sub">3 AKTIVE · 1 RESULTAT · 1 PROSESS · 1 SESONG</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-outline btn-sm">Se alle →</button>
+              <button class="btn btn-primary btn-sm" data-open-modal="new-goal">
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+                Nytt mål
+              </button>
+            </div>
+          </div>
+          <div class="goals">
+            <div class="goal-card">
+              <div class="row-flex">
+                <span class="type-label">Resultatmål</span>
+                <span class="pill pill-turn" style="margin-left:auto;">PRIO 1</span>
+              </div>
+              <h3>Top 10 NM Slag</h3>
+              <div style="display:flex;align-items:center;gap:14px;">
+                <svg width="76" height="76" viewBox="0 0 80 80">
+                  <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="7"/>
+                  <circle cx="40" cy="40" r="32" fill="none" stroke="var(--accent)" stroke-width="7"
+                          stroke-dasharray="76.4 201" stroke-linecap="round"
+                          transform="rotate(-90 40 40)"/>
+                  <text x="40" y="46" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="600" fill="var(--fg)">38%</text>
+                </svg>
+                <div>
+                  <div class="mono" style="font-size:11px;color:var(--muted);letter-spacing:0.10em;text-transform:uppercase;">50 dager</div>
+                  <div class="mono" style="font-size:11px;color:var(--success);margin-top:6px;">↑ +6% denne uka</div>
+                </div>
+              </div>
+              <div class="italic-note"><em class="italic-accent">Approach +0,4 SG</em> løfter sannsynligheten til 50%.</div>
+            </div>
+
+            <div class="goal-card">
+              <div class="row-flex">
+                <span class="type-label">Prosessmål</span>
+                <span class="pill pill-slag" style="margin-left:auto;">UKENTLIG</span>
+              </div>
+              <h3>Snitt under 72 på Srixon</h3>
+              <svg viewBox="0 0 280 76" preserveAspectRatio="none" style="width:100%;height:76px;">
+                <line x1="0" y1="32" x2="280" y2="32" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 3"/>
+                <text x="278" y="29" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">72</text>
+                <polyline fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                  points="6,20 28,26 50,16 72,38 94,24 116,42 138,34 160,26 182,28 204,22 226,36 248,26 270,22"/>
+                <polyline fill="rgba(209,248,67,0.15)" stroke="none"
+                  points="6,20 28,26 50,16 72,38 94,24 116,42 138,34 160,26 182,28 204,22 226,36 248,26 270,22 270,74 6,74"/>
+                <g fill="var(--primary)">
+                  <circle cx="6" cy="20" r="2"/><circle cx="50" cy="16" r="2"/><circle cx="94" cy="24" r="2"/>
+                  <circle cx="160" cy="26" r="2"/><circle cx="204" cy="22" r="2"/><circle cx="270" cy="22" r="2"/>
+                </g>
+              </svg>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span class="mono" style="font-size:18px;font-weight:700;color:var(--success);">71,4</span>
+                <span class="mono" style="font-size:10.5px;color:var(--muted);">5 AV 7 UNDER MÅL</span>
+              </div>
+              <div class="italic-note">Forbedring på 1,2 slag siste 8 uker.</div>
+            </div>
+
+            <div class="goal-card">
+              <div class="row-flex">
+                <span class="type-label">Sesongmål</span>
+                <span class="pill pill-fys" style="margin-left:auto;">2026</span>
+              </div>
+              <h3>HCP under +2,0</h3>
+              <div style="display:flex;flex-direction:column;gap:14px;margin-top:6px;">
+                <div style="position:relative;height:12px;border-radius:999px;background:linear-gradient(to right,rgba(163,45,45,0.22) 0%,rgba(163,45,45,0.22) 30%,rgba(184,133,42,0.28) 30%,rgba(184,133,42,0.28) 65%,rgba(44,125,82,0.28) 65%,rgba(44,125,82,0.28) 100%);">
+                  <div style="position:absolute;top:0;bottom:0;left:0;width:60%;background:var(--accent);border-radius:999px;box-shadow:0 0 0 2px rgba(255,255,255,0.6);"></div>
+                  <div style="position:absolute;top:-4px;bottom:-4px;left:calc(60% - 1.5px);width:3px;background:var(--fg);border-radius:2px;"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                  <span class="mono" style="font-size:11px;color:var(--muted);">+3,5</span>
+                  <span class="mono" style="font-size:18px;font-weight:700;">+2,9</span>
+                  <span class="mono" style="font-size:11px;color:var(--muted);">+2,0</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span class="mono" style="font-size:10.5px;color:var(--muted);">82 DAGER IGJEN</span>
+                  <span class="mono" style="font-size:11px;color:var(--success);font-weight:600;">60% AV VEIEN</span>
+                </div>
+              </div>
+              <div class="italic-note">Fra +3,5 til +2,0 = 1,5 slag forbedring.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. SG-analyse + prio + DataGolf -->
+        <section data-screen-label="Status · SG-analyse">
+          <div class="section-h" style="margin-bottom:16px;">
+            <div>
+              <h2>SG-analyse</h2>
+              <div class="sub">SISTE 90 DAGER · KATEGORI A1 · 247 SPILLERE</div>
+            </div>
+            <button class="btn btn-outline btn-sm">Full analyse →</button>
+          </div>
+          <div class="sg-grid">
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <div class="title">SG-trend per disipplin</div>
+                  <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">PUTTING LØFTER TOTALEN · APPROACH DRAR NED</div>
+                </div>
+              </div>
+              <svg viewBox="0 0 380 160" preserveAspectRatio="none" style="width:100%;height:160px;">
+                <line x1="32" y1="20" x2="380" y2="20" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="32" y1="60" x2="380" y2="60" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="32" y1="90" x2="380" y2="90" stroke="var(--border-soft)" stroke-width="1"/>
+                <line x1="32" y1="130" x2="380" y2="130" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <text x="28" y="24" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">+1,0</text>
+                <text x="28" y="64" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">+0,5</text>
+                <text x="28" y="94" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">0,0</text>
+                <text x="28" y="134" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">−0,5</text>
+
+                <polyline fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  points="38,82 80,78 122,76 164,72 206,72 248,68 290,66 332,64 374,62"/>
+                <polyline fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  points="38,64 80,68 122,72 164,78 206,86 248,94 290,108 332,116 374,124"/>
+                <polyline fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  points="38,78 80,74 122,72 164,68 206,66 248,62 290,58 332,56 374,54"/>
+                <polyline fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                  points="38,108 80,104 122,98 164,90 206,80 248,72 290,60 332,46 374,34"/>
+
+                <text x="60" y="155" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">MAR</text>
+                <text x="200" y="155" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">APR</text>
+                <text x="340" y="155" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">MAI</text>
+              </svg>
+              <div class="legend">
+                <div class="legend-item"><span class="sw" style="background:var(--primary);"></span>Off-tee +0,12</div>
+                <div class="legend-item"><span class="sw" style="background:var(--danger);"></span>Approach −0,42</div>
+                <div class="legend-item"><span class="sw" style="background:var(--success);"></span>A-green +0,15</div>
+                <div class="legend-item"><span class="sw" style="background:var(--accent);"></span>Putting +0,38</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <div class="title">Slag-prioritering</div>
+                  <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">FOR SØRLANDSÅPENT · 21 DAGER</div>
+                </div>
+              </div>
+              <div class="prio-row">
+                <div class="prio-num">01</div>
+                <div>
+                  <div class="prio-title">Approach 100—150m</div>
+                  <div class="prio-meta">6 hull i dette området på Bossum</div>
+                  <span class="prio-pot">+0,42 SG potensial</span>
+                </div>
+              </div>
+              <div class="prio-row">
+                <div class="prio-num">02</div>
+                <div>
+                  <div class="prio-title">Putting 3—6m</div>
+                  <div class="prio-meta">SG ned 0,4 siste 30 dager</div>
+                  <span class="prio-pot">+0,38 SG potensial</span>
+                </div>
+              </div>
+              <div class="prio-row">
+                <div class="prio-num">03</div>
+                <div>
+                  <div class="prio-title">Driver-presisjon</div>
+                  <div class="prio-meta">Smale fairways · treff under snitt</div>
+                  <span class="prio-pot">+0,22 SG potensial</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <div class="title">vs. DataGolf</div>
+                  <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">KATEGORI A1 SNITT</div>
+                </div>
+              </div>
+              <div class="dg-row">
+                <span class="label">Off-tee</span>
+                <div class="dg-bar"><div class="center"></div><div class="fill" style="background:var(--warning);right:50%;width:6%;"></div></div>
+                <span class="val warn">−0,12</span>
+              </div>
+              <div class="dg-row">
+                <span class="label">Approach</span>
+                <div class="dg-bar"><div class="center"></div><div class="fill" style="background:var(--danger);right:50%;width:21%;"></div></div>
+                <span class="val neg">−0,42</span>
+              </div>
+              <div class="dg-row">
+                <span class="label">A-green</span>
+                <div class="dg-bar"><div class="center"></div><div class="fill" style="background:var(--accent);left:50%;width:8%;"></div></div>
+                <span class="val pos">+0,15</span>
+              </div>
+              <div class="dg-row">
+                <span class="label">Putting</span>
+                <div class="dg-bar"><div class="center"></div><div class="fill" style="background:var(--warning);right:50%;width:14%;"></div></div>
+                <span class="val warn">−0,28</span>
+              </div>
+              <div class="dg-row">
+                <span class="label">Strategy</span>
+                <div class="dg-bar"><div class="center"></div><div class="fill" style="background:var(--accent);left:50%;width:4%;"></div></div>
+                <span class="val pos">+0,08</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Treningsanalyse -->
+        <section data-screen-label="Status · Treningsanalyse">
+          <div class="section-h" style="margin-bottom:16px;">
+            <div>
+              <h2>Treningsanalyse</h2>
+              <div class="sub">PYRAMIDE-BALANSE · BELASTNING SISTE 4 UKER</div>
+            </div>
+          </div>
+          <div class="training-grid">
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <div class="title">Pyramide-balanse</div>
+                  <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">FAKTISK vs MÅLSETTING · UKE 21</div>
+                </div>
+              </div>
+              <div class="pyramide-bal">
+                <div class="pb-row clickable" data-discipline="fys">
+                  <span class="label">FYS</span>
+                  <div class="bar-wrap"><div class="actual" style="width:20%;background:var(--fys);"></div><div class="target" style="left:20%;"></div></div>
+                  <span class="val">20 % <span class="target-val">/ 20</span></span>
+                </div>
+                <div class="pb-row clickable" data-discipline="tek">
+                  <span class="label">TEK</span>
+                  <div class="bar-wrap"><div class="actual" style="width:32%;background:var(--tek);"></div><div class="target" style="left:30%;"></div></div>
+                  <span class="val">32 % <span class="target-val">/ 30</span></span>
+                </div>
+                <div class="pb-row clickable" data-discipline="slag">
+                  <span class="label">SLAG</span>
+                  <div class="bar-wrap"><div class="actual" style="width:28%;background:var(--slag);"></div><div class="target" style="left:30%;"></div></div>
+                  <span class="val">28 % <span class="target-val">/ 30</span></span>
+                </div>
+                <div class="pb-row clickable" data-discipline="spill">
+                  <span class="label">SPILL</span>
+                  <div class="bar-wrap"><div class="actual" style="width:15%;background:var(--spill);"></div><div class="target" style="left:15%;"></div></div>
+                  <span class="val">15 % <span class="target-val">/ 15</span></span>
+                </div>
+                <div class="pb-row clickable" data-discipline="turn">
+                  <span class="label">TURN</span>
+                  <div class="bar-wrap"><div class="actual" style="width:5%;background:var(--turn);"></div><div class="target" style="left:5%;"></div></div>
+                  <span class="val">5 % <span class="target-val">/ 5</span></span>
+                </div>
+              </div>
+              <div style="font-family:var(--font-serif);font-style:italic;font-size:13.5px;color:var(--fg);line-height:1.5;margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);">
+                Solid balanse. <em class="italic-accent">Tek litt høyt, slag litt lavt</em> — bytt én tek-økt mot slag denne uka.
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <div class="title">Belastning siste 28 dager</div>
+                  <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">MINUTTER/DAG · SNITT 156 · TOTAL 4 360 MIN</div>
+                </div>
+                <div class="row-flex">
+                  <span class="mono" style="font-size:10.5px;color:var(--muted);">CHRONIC</span>
+                  <span class="mono" style="font-size:14px;font-weight:700;">1,08</span>
+                </div>
+              </div>
+              <!-- bar chart -->
+              <svg viewBox="0 0 560 180" preserveAspectRatio="none" style="width:100%;height:200px;">
+                <line x1="32" y1="20" x2="560" y2="20" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="32" y1="80" x2="560" y2="80" stroke="var(--border-soft)" stroke-width="1"/>
+                <line x1="32" y1="140" x2="560" y2="140" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <text x="28" y="24" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">240</text>
+                <text x="28" y="84" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">120</text>
+                <text x="28" y="144" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">0</text>
+
+                <!-- 28 daily bars -->
+                <g>
+                  <!-- Week 1 (mar 22-28) -->
+                  <rect x="42"  y="74" width="14" height="66" fill="var(--tek)"   rx="2"/>
+                  <rect x="60"  y="98" width="14" height="42" fill="var(--slag)"  rx="2"/>
+                  <rect x="78"  y="120" width="14" height="20" fill="var(--fys)"  rx="2"/>
+                  <rect x="96"  y="56" width="14" height="84" fill="var(--tek)"   rx="2"/>
+                  <rect x="114" y="84" width="14" height="56" fill="var(--slag)"  rx="2"/>
+                  <rect x="132" y="135" width="14" height="5" fill="var(--border)" rx="2"/>
+                  <rect x="150" y="48" width="14" height="92" fill="var(--spill)" rx="2"/>
+                  <!-- Week 2 -->
+                  <rect x="172" y="80" width="14" height="60" fill="var(--tek)"   rx="2"/>
+                  <rect x="190" y="110" width="14" height="30" fill="var(--fys)"  rx="2"/>
+                  <rect x="208" y="60" width="14" height="80" fill="var(--slag)"  rx="2"/>
+                  <rect x="226" y="78" width="14" height="62" fill="var(--tek)"   rx="2"/>
+                  <rect x="244" y="135" width="14" height="5" fill="var(--border)" rx="2"/>
+                  <rect x="262" y="92" width="14" height="48" fill="var(--slag)"  rx="2"/>
+                  <rect x="280" y="40" width="14" height="100" fill="var(--spill)" rx="2"/>
+                  <!-- Week 3 -->
+                  <rect x="302" y="70" width="14" height="70" fill="var(--tek)"   rx="2"/>
+                  <rect x="320" y="92" width="14" height="48" fill="var(--slag)"  rx="2"/>
+                  <rect x="338" y="115" width="14" height="25" fill="var(--fys)"  rx="2"/>
+                  <rect x="356" y="50" width="14" height="90" fill="var(--tek)"   rx="2"/>
+                  <rect x="374" y="86" width="14" height="54" fill="var(--slag)"  rx="2"/>
+                  <rect x="392" y="135" width="14" height="5" fill="var(--border)" rx="2"/>
+                  <rect x="410" y="46" width="14" height="94" fill="var(--spill)" rx="2"/>
+                  <!-- Week 4 (this week, partial) -->
+                  <rect x="432" y="64" width="14" height="76" fill="var(--accent)" rx="2"/>
+                  <rect x="450" y="100" width="14" height="40" fill="var(--accent)" rx="2"/>
+                  <rect x="468" y="74" width="14" height="66" fill="var(--accent)" rx="2"/>
+                  <rect x="486" y="135" width="14" height="5" fill="var(--border)" rx="2" opacity="0.4"/>
+                  <rect x="504" y="135" width="14" height="5" fill="var(--border)" rx="2" opacity="0.4"/>
+                  <rect x="522" y="135" width="14" height="5" fill="var(--border)" rx="2" opacity="0.4"/>
+                  <rect x="540" y="135" width="14" height="5" fill="var(--border)" rx="2" opacity="0.4"/>
+                </g>
+
+                <!-- Week dividers/labels -->
+                <line x1="166" y1="20" x2="166" y2="140" stroke="var(--border-soft)" stroke-width="1" stroke-dasharray="2 3"/>
+                <line x1="296" y1="20" x2="296" y2="140" stroke="var(--border-soft)" stroke-width="1" stroke-dasharray="2 3"/>
+                <line x1="426" y1="20" x2="426" y2="140" stroke="var(--border-soft)" stroke-width="1" stroke-dasharray="2 3"/>
+                <text x="100" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--muted)" letter-spacing="1">UKE 18</text>
+                <text x="230" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--muted)" letter-spacing="1">UKE 19</text>
+                <text x="360" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--muted)" letter-spacing="1">UKE 20</text>
+                <text x="490" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--fg)" font-weight="600" letter-spacing="1">UKE 21</text>
+
+                <!-- ACWR -->
+                <text x="556" y="78" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--primary)">SNITT</text>
+              </svg>
+              <div class="legend" style="border-top:1px solid var(--border-soft);padding-top:12px;margin-top:8px;">
+                <div class="legend-item"><span class="sw" style="background:var(--fys);"></span>FYS</div>
+                <div class="legend-item"><span class="sw" style="background:var(--tek);"></span>TEK</div>
+                <div class="legend-item"><span class="sw" style="background:var(--slag);"></span>SLAG</div>
+                <div class="legend-item"><span class="sw" style="background:var(--spill);"></span>SPILL</div>
+                <div class="legend-item"><span class="sw" style="background:var(--accent);"></span>Denne uka</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. TrackMan -->
+        <section data-screen-label="Status · TrackMan">
+          <div class="section-h" style="margin-bottom:16px;">
+            <div>
+              <h2>Siste TrackMan-økter</h2>
+              <div class="sub">5 ØKTER · IMPORTERT FRA TRACKMAN PRO</div>
+            </div>
+            <button class="btn btn-outline btn-sm" data-open-modal="tm-import">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-import"/></svg>
+              Importer ny
+            </button>
+          </div>
+          <div class="tm-strip">
+            <div class="tm-card">
+              <div class="date">17. MAI</div>
+              <div class="ttype">Driver-økt</div>
+              <div class="metric"><span>Club-speed</span> 112 mph</div>
+              <div class="metric"><span>Smash</span> 1,48</div>
+              <a class="open">Åpne →</a>
+            </div>
+            <div class="tm-card">
+              <div class="date">15. MAI</div>
+              <div class="ttype">Iron 7</div>
+              <div class="metric"><span>Carry</span> 158 m</div>
+              <div class="metric"><span>Spinn</span> 6 820 rpm</div>
+              <a class="open">Åpne →</a>
+            </div>
+            <div class="tm-card">
+              <div class="date">13. MAI</div>
+              <div class="ttype">Pitch 50—100m</div>
+              <div class="metric"><span>Landing</span> ±3,2 m</div>
+              <div class="metric"><span>184 reps</span></div>
+              <a class="open">Åpne →</a>
+            </div>
+            <div class="tm-card">
+              <div class="date">12. MAI</div>
+              <div class="ttype">Putting blokk</div>
+              <div class="metric"><span>0—3m</span> 87%</div>
+              <div class="metric"><span>3—6m</span> 52%</div>
+              <a class="open">Åpne →</a>
+            </div>
+            <div class="tm-card">
+              <div class="date">10. MAI</div>
+              <div class="ttype">Iron-progresjon</div>
+              <div class="metric"><span>CS</span> 74 → 76 mph</div>
+              <div class="metric"><span>240 reps</span></div>
+              <a class="open">Åpne →</a>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ╔════════════════════════════════════════════════════════╗ -->
+      <!-- ║                     PLAN MODE                          ║ -->
+      <!-- ╚════════════════════════════════════════════════════════╝ -->
+      <div class="view-plan">
+
+        <!-- Zoom bar -->
+        <div class="zoom-bar">
+          <span class="zoom-label">Zoom</span>
+          <div class="zoom-tabs">
+            <button class="zoom-tab" data-zoom="ar">År<span class="zt-sub">Sesong</span></button>
+            <button class="zoom-tab" data-zoom="md">Måned<span class="zt-sub">Mai</span></button>
+            <button class="zoom-tab active" data-zoom="uke">Uke<span class="zt-sub">U21</span></button>
+            <button class="zoom-tab" data-zoom="dag">Dag<span class="zt-sub">Man</span></button>
+            <button class="zoom-tab" data-zoom="okt">Økt<span class="zt-sub">14:00</span></button>
+          </div>
+          <div class="zoom-bread">
+            Viser <strong id="zoom-bread-val">Uke 21 · 19—25 mai</strong>
+          </div>
+          <div class="zoom-actions">
+            <button class="btn btn-outline btn-sm">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sparkles"/></svg>
+              AI-foreslå
+            </button>
+            <button class="btn btn-forest btn-sm">
+              <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+              Ny økt
+            </button>
+          </div>
+        </div>
+
+        <div class="plan-layout">
+
+          <!-- ===== Plan main (zoom views) ===== -->
+          <div class="plan-main">
+
+            <!-- ████ ÅR-view ████ -->
+            <div class="z-view z-ar">
+              <div class="card ar-card">
+                <div class="card-head">
+                  <div>
+                    <div class="title">Årsplan 2026</div>
+                    <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">6 PERIODER · 5 TURNERINGER · 2 HOVEDMÅL</div>
+                  </div>
+                  <button class="btn btn-outline btn-sm">Juster periodisering →</button>
+                </div>
+                <div class="months">
+                  <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span>
+                  <span>Mai</span><span>Jun</span><span>Jul</span><span>Aug</span>
+                  <span>Sep</span><span>Okt</span><span>Nov</span><span>Des</span>
+                </div>
+                <div class="gantt-track">
+                  <div class="gantt-block" style="left:0%; width:24%; background:#C8D5C8;">GRUNNTRENING</div>
+                  <div class="gantt-block" style="left:16.67%; width:16.67%; background:#6FA686; color:#fff;">OPPBYGGING</div>
+                  <div class="gantt-block active" style="left:25%; width:16.67%; background:var(--primary);">SPESIALISERING</div>
+                  <div class="gantt-block" style="left:41.67%; width:16.67%; background:var(--accent); color:var(--fg);">KONKURRANSE</div>
+                  <div class="gantt-block" style="left:66.67%; width:16.67%; background:#A8B89B;">OVERGANG</div>
+                  <div class="gantt-block" style="left:83.33%; width:16.67%; background:#E5E3DD; color:var(--muted);">HVILE</div>
+
+                  <div class="flag-mark star" style="left:44.4%;"><svg fill="currentColor"><use href="#ic-star"/></svg></div>
+                  <div class="flag-mark red"  style="left:48.3%;"><svg fill="currentColor"><use href="#ic-flag"/></svg></div>
+                  <div class="flag-mark star" style="left:52.1%;"><svg fill="currentColor"><use href="#ic-star"/></svg></div>
+                  <div class="flag-mark red"  style="left:55.9%;"><svg fill="currentColor"><use href="#ic-flag"/></svg></div>
+                  <div class="flag-mark red"  style="left:59.7%;"><svg fill="currentColor"><use href="#ic-flag"/></svg></div>
+
+                  <div class="today-pin" style="left:38.4%;"><span class="pin-label">I DAG</span></div>
+                </div>
+
+                <div class="ar-month-load">
+                  <div class="ar-mcol"><div class="bar" style="height:30%;"></div><div class="lbl">JAN</div></div>
+                  <div class="ar-mcol"><div class="bar" style="height:40%;"></div><div class="lbl">FEB</div></div>
+                  <div class="ar-mcol"><div class="bar" style="height:55%;"></div><div class="lbl">MAR</div></div>
+                  <div class="ar-mcol"><div class="bar" style="height:65%;"></div><div class="lbl">APR</div></div>
+                  <div class="ar-mcol active"><div class="bar" style="height:85%;"></div><div class="lbl">MAI</div></div>
+                  <div class="ar-mcol"><div class="bar" style="height:95%;"></div><div class="lbl">JUN</div></div>
+                  <div class="ar-mcol"><div class="bar" style="height:100%;"></div><div class="lbl">JUL</div></div>
+                  <div class="ar-mcol"><div class="bar" style="height:80%;"></div><div class="lbl">AUG</div></div>
+                  <div class="ar-mcol"><div class="bar" style="height:50%;"></div><div class="lbl">SEP</div></div>
+                  <div class="ar-mcol"><div class="bar" style="height:40%;"></div><div class="lbl">OKT</div></div>
+                  <div class="ar-mcol"><div class="bar" style="height:20%;"></div><div class="lbl">NOV</div></div>
+                  <div class="ar-mcol"><div class="bar" style="height:15%;"></div><div class="lbl">DES</div></div>
+                </div>
+                <div class="mono" style="font-size:10px;color:var(--muted);text-align:center;margin-top:8px;letter-spacing:0.10em;">PLANLAGT BELASTNING · MIN/MND</div>
+              </div>
+
+              <div class="card" style="margin-top:18px;">
+                <div class="card-head">
+                  <div>
+                    <div class="title">Turneringer · sesong 2026</div>
+                    <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">★ HOVEDMÅL · ▽ STØTTE-TURNERING</div>
+                  </div>
+                  <button class="btn btn-outline btn-sm">Legg til</button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;">
+                  <div style="border:1px solid var(--accent);background:rgba(209,248,67,0.10);border-radius:10px;padding:12px;">
+                    <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:0.08em;">10. JUN · 21 DAGER</div>
+                    <div style="font-family:var(--font-display);font-size:14px;font-weight:600;margin-top:4px;">★ Sørlandsåpent</div>
+                    <div class="mono" style="font-size:10px;color:var(--success);margin-top:4px;">HOVEDMÅL · TOP 10</div>
+                  </div>
+                  <div style="border:1px solid var(--border);border-radius:10px;padding:12px;">
+                    <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:0.08em;">24. JUN · 35 DAGER</div>
+                    <div style="font-family:var(--font-display);font-size:14px;font-weight:600;margin-top:4px;">Bossum Open</div>
+                    <div class="mono" style="font-size:10px;color:var(--muted);margin-top:4px;">FORM-TEST</div>
+                  </div>
+                  <div style="border:1px solid var(--accent);background:rgba(209,248,67,0.10);border-radius:10px;padding:12px;">
+                    <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:0.08em;">8. JUL · 49 DAGER</div>
+                    <div style="font-family:var(--font-display);font-size:14px;font-weight:600;margin-top:4px;">★ NM Slag</div>
+                    <div class="mono" style="font-size:10px;color:var(--success);margin-top:4px;">HOVEDMÅL</div>
+                  </div>
+                  <div style="border:1px solid var(--border);border-radius:10px;padding:12px;">
+                    <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:0.08em;">22. JUL · 63 DAGER</div>
+                    <div style="font-family:var(--font-display);font-size:14px;font-weight:600;margin-top:4px;">Trondheim Open</div>
+                    <div class="mono" style="font-size:10px;color:var(--muted);margin-top:4px;">STØTTE</div>
+                  </div>
+                  <div style="border:1px solid var(--border);border-radius:10px;padding:12px;">
+                    <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:0.08em;">5. AUG · 77 DAGER</div>
+                    <div style="font-family:var(--font-display);font-size:14px;font-weight:600;margin-top:4px;">GFGK Mesterskap</div>
+                    <div class="mono" style="font-size:10px;color:var(--muted);margin-top:4px;">KLUBB</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ████ MÅNED-view ████ -->
+            <div class="z-view z-md">
+              <div class="card month-card">
+                <div class="card-head">
+                  <div>
+                    <div class="title">Mai 2026</div>
+                    <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">5 UKER · 22 ØKTER · 2 250 MIN PLANLAGT</div>
+                  </div>
+                  <div class="row-flex">
+                    <button class="btn btn-outline btn-xs"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><use href="#ic-chev-l"/></svg>Apr</button>
+                    <button class="btn btn-outline btn-xs">Jun<svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><use href="#ic-chev-r"/></svg></button>
+                  </div>
+                </div>
+                <div class="month-header">
+                  <span>MAN</span><span>TIR</span><span>ONS</span><span>TOR</span><span>FRE</span><span>LØR</span><span>SØN</span>
+                </div>
+                <div class="month-grid" id="month-grid">
+                  <!-- generated by JS below -->
+                </div>
+              </div>
+            </div>
+
+            <!-- ████ UKE-view ████ -->
+            <div class="z-view z-uke">
+              <div class="card uke-card">
+                <div class="uke-head">
+                  <div>
+                    <div class="title">Uke 21 · 19—25 mai 2026</div>
+                    <div class="mono" style="font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">5 ØKTER · 195 MIN · 67% PYRAMIDE-MÅL</div>
+                  </div>
+                  <div class="row-flex">
+                    <button class="btn btn-outline btn-xs"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><use href="#ic-chev-l"/></svg></button>
+                    <button class="btn btn-outline btn-xs">I dag</button>
+                    <button class="btn btn-outline btn-xs"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><use href="#ic-chev-r"/></svg></button>
+                  </div>
+                </div>
+                <div class="uke-grid" id="uke-grid"></div>
+              </div>
+            </div>
+
+            <!-- ████ DAG-view ████ -->
+            <div class="z-view z-dag">
+              <div class="dag-grid">
+                <div class="card dag-timeline-card">
+                  <div class="card-head">
+                    <div>
+                      <div class="title">Mandag 19. mai</div>
+                      <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">3 ØKTER · 165 MIN · 1 FULLFØRT</div>
+                    </div>
+                    <button class="btn btn-outline btn-xs"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><use href="#ic-plus"/></svg>Ny</button>
+                  </div>
+                  <div class="dag-tline" id="dag-tline"></div>
+                </div>
+
+                <div class="dag-side">
+                  <div class="dag-stat-row">
+                    <div class="dag-stat"><div class="lbl">Planlagt</div><div class="val">165</div><div class="sub">MIN</div></div>
+                    <div class="dag-stat"><div class="lbl">Fullført</div><div class="val">60</div><div class="sub">MIN · 36%</div></div>
+                    <div class="dag-stat"><div class="lbl">Disipliner</div><div class="val">3</div><div class="sub">SLAG · TEK · TURN</div></div>
+                  </div>
+                  <div class="card">
+                    <div class="card-head">
+                      <div class="title">Fokus i dag</div>
+                    </div>
+                    <div class="goal-list">
+                      <div class="goal-row"><span class="goal-bullet"></span><span class="txt">Approach <strong>100—150m</strong> — slag-prio 1</span></div>
+                      <div class="goal-row"><span class="goal-bullet"></span><span class="txt">Iron CS mot <strong>76 mph</strong></span></div>
+                      <div class="goal-row"><span class="goal-bullet"></span><span class="txt">15 min mental forberedelse</span></div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card-head">
+                      <div class="title">Notat fra Anders</div>
+                      <span class="mono" style="font-size:10px;color:var(--muted);letter-spacing:0.06em;">2 T SIDEN</span>
+                    </div>
+                    <div style="font-family:var(--font-serif);font-style:italic;font-size:14px;line-height:1.5;">
+                      "Hold focus på lav-spinn på CS80-iron-økten. Vi tar en titt sammen torsdag."
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ████ ØKT-view ████ -->
+            <div class="z-view z-okt">
+              <div class="card okt-card">
+                <div class="okt-head">
+                  <div>
+                    <span class="label-mono">Økt-detalj · av Anders K.</span>
+                    <h2>Iron-progresjon <em>CS70 → CS80</em></h2>
+                    <div class="okt-head-meta">
+                      <span class="pill">TEK</span>
+                      <span class="mono" style="font-size:11px;color:rgba(255,255,255,0.7);letter-spacing:0.06em;">90 MIN · 240 REPS · 3 DRILLS</span>
+                    </div>
+                  </div>
+                  <div class="schedule">
+                    <div class="when">MAN 19. MAI</div>
+                    <div class="when" style="font-size:20px;margin-top:4px;">14:00 — 15:30</div>
+                    <div class="where">BAY 4 · GFGK INDOOR</div>
+                  </div>
+                </div>
+
+                <div class="okt-body">
+                  <div>
+                    <div class="okt-section">
+                      <h4>Drills · 90 min total</h4>
+                      <div class="drill-block">
+                        <svg class="grip" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-grip"/></svg>
+                        <div class="body">
+                          <div class="ttl">Iron 7 · CS-progresjon 70→76</div>
+                          <div class="params">120 reps · 4 sett × 30 · CS-mål +2 mph per sett</div>
+                        </div>
+                        <div class="target-num">76<span class="lbl">MPH MÅL</span></div>
+                      </div>
+                      <div class="drill-block">
+                        <svg class="grip" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-grip"/></svg>
+                        <div class="body">
+                          <div class="ttl">Iron 7 · lav-spinn dispersjon</div>
+                          <div class="params">80 reps · spinn-mål under 6 500 rpm · landingssone ±4m</div>
+                        </div>
+                        <div class="target-num">±4<span class="lbl">METER</span></div>
+                      </div>
+                      <div class="drill-block">
+                        <svg class="grip" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-grip"/></svg>
+                        <div class="body">
+                          <div class="ttl">CS80 push-test · siste 40 reps</div>
+                          <div class="params">40 reps · smash-faktor over 1,42 på minst 30 av 40</div>
+                        </div>
+                        <div class="target-num">1,42<span class="lbl">SMASH</span></div>
+                      </div>
+                    </div>
+
+                    <div class="okt-section">
+                      <h4>Mål for økten</h4>
+                      <div class="goal-list">
+                        <div class="goal-row"><span class="goal-bullet"></span><span class="txt">Snitt-CS opp fra <strong>74</strong> til <strong>76 mph</strong> på siste sett</span></div>
+                        <div class="goal-row"><span class="goal-bullet"></span><span class="txt">Smash over <strong>1,42</strong> på 75% av reps</span></div>
+                        <div class="goal-row"><span class="goal-bullet"></span><span class="txt">Lav-spinn dispersjon under <strong>±4 m</strong></span></div>
+                        <div class="goal-row"><span class="goal-bullet"></span><span class="txt">Coach-review torsdag kveld</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="okt-section">
+                      <h4>Utstyr</h4>
+                      <div class="equip-tags">
+                        <span class="equip-tag checked">Iron 7 · Srixon ZX5</span>
+                        <span class="equip-tag checked">TrackMan 4</span>
+                        <span class="equip-tag checked">Pro V1x</span>
+                        <span class="equip-tag">Alignment-stick</span>
+                        <span class="equip-tag">Lav-spinn ball</span>
+                      </div>
+                    </div>
+
+                    <div class="okt-section">
+                      <h4>Kobling til mål</h4>
+                      <div style="background:var(--bg);border-radius:10px;padding:14px;">
+                        <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;">Bidrar til</div>
+                        <div style="font-family:var(--font-display);font-size:14px;font-weight:600;margin-top:6px;">Top 10 NM Slag</div>
+                        <div style="font-family:var(--font-serif);font-style:italic;font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.45;">
+                          Approach 100—150m er prio 1. CS80-progresjon gir kontroll i dette området.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="okt-section">
+                      <h4>Klar?</h4>
+                      <div style="display:flex;flex-direction:column;gap:8px;">
+                        <button class="btn btn-primary" style="justify-content:center;">Start økt</button>
+                        <button class="btn btn-outline btn-sm" style="justify-content:center;" data-open-modal="edit-session">Endre detaljer</button>
+                        <button class="btn btn-outline btn-sm" style="justify-content:center;">Be Anders om endring</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ===== Plan side rail ===== -->
+          <aside class="plan-rail">
+            <!-- AI / anbefalt -->
+            <div class="rail-card ai-card">
+              <div class="head">
+                <div class="ttl" style="color:var(--primary);">Anbefalt for deg</div>
+                <span class="count">3 FORSLAG</span>
+              </div>
+              <div class="rail-row">
+                <div class="rail-icon"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg></div>
+                <div class="body">
+                  <div class="ttl">Pitch fra rough</div>
+                  <div class="meta">Coach foreslår · 45 min</div>
+                </div>
+                <button class="btn btn-xs btn-primary">Bruk</button>
+              </div>
+              <div class="rail-row">
+                <div class="rail-icon"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-up"/></svg></div>
+                <div class="body">
+                  <div class="ttl">Beinbøy intervall</div>
+                  <div class="meta">Ikke trent FYS på 9 dager</div>
+                </div>
+                <button class="btn btn-xs btn-primary">Bruk</button>
+              </div>
+              <div class="rail-row">
+                <div class="rail-icon"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-down"/></svg></div>
+                <div class="body">
+                  <div class="ttl">Putting 3—6m</div>
+                  <div class="meta">SG ned 0,4 siste 30d</div>
+                </div>
+                <button class="btn btn-xs btn-primary">Bruk</button>
+              </div>
+            </div>
+
+            <!-- Fra coach -->
+            <div class="rail-card coach-card">
+              <div class="head">
+                <div class="ttl">Fra Anders</div>
+                <span class="count">2 NYE</span>
+              </div>
+              <div class="rail-row">
+                <div class="rail-icon"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg></div>
+                <div class="body">
+                  <div class="ttl">Iron CS70→CS80</div>
+                  <div class="meta">TILDELT · MAN 14:00</div>
+                </div>
+              </div>
+              <div class="rail-row">
+                <div class="rail-icon"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg></div>
+                <div class="body">
+                  <div class="ttl">Driver grunntrening</div>
+                  <div class="meta">TILDELT · FRE 11:00</div>
+                </div>
+              </div>
+              <div class="rail-row">
+                <div class="rail-icon"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg></div>
+                <div class="body">
+                  <div class="ttl" style="font-family:var(--font-serif);font-style:italic;font-weight:400;font-size:13px;">"Hold trykket inn mot Sørlandsåpent."</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Drill library -->
+            <div class="rail-card">
+              <div class="head">
+                <div class="ttl">Mine drills</div>
+                <span class="count">24 STK</span>
+              </div>
+              <div class="drill-mini">
+                <svg class="grip" width="12" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-grip"/></svg>
+                <div class="body">
+                  <div class="ttl">Pitch 50—100m, lav</div>
+                  <div class="meta-row"><span class="pill pill-slag">SLAG</span><span class="mins">60 MIN</span></div>
+                </div>
+              </div>
+              <div class="drill-mini">
+                <svg class="grip" width="12" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-grip"/></svg>
+                <div class="body">
+                  <div class="ttl">Putting 0—3m blokk</div>
+                  <div class="meta-row"><span class="pill pill-slag">SLAG</span><span class="mins">30 MIN</span></div>
+                </div>
+              </div>
+              <div class="drill-mini">
+                <svg class="grip" width="12" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-grip"/></svg>
+                <div class="body">
+                  <div class="ttl">Beinbøy + core</div>
+                  <div class="meta-row"><span class="pill pill-fys">FYS</span><span class="mins">30 MIN</span></div>
+                </div>
+              </div>
+              <div class="drill-mini">
+                <svg class="grip" width="12" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-grip"/></svg>
+                <div class="body">
+                  <div class="ttl">Bunker-eskalering</div>
+                  <div class="meta-row"><span class="pill pill-slag">SLAG</span><span class="mins">45 MIN</span></div>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-xs" style="width:100%;justify-content:center;margin-top:8px;">Se alle drills</button>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ===== STICKY FOOTER ===== -->
+<footer class="sticky-footer">
+  <div class="ft-status">
+    <div class="ft-pyramide">
+      <span class="ft-pyr-label">Pyramide denne uka</span>
+      <div class="ft-pyr-bar clickable" data-discipline="fys"><span class="nm">FYS</span><div class="mini"><div style="width:20%;background:var(--fys);"></div></div></div>
+      <div class="ft-pyr-bar clickable" data-discipline="tek"><span class="nm">TEK</span><div class="mini"><div style="width:32%;background:var(--tek);"></div></div></div>
+      <div class="ft-pyr-bar clickable" data-discipline="slag"><span class="nm">SLAG</span><div class="mini"><div style="width:28%;background:var(--slag);"></div></div></div>
+      <div class="ft-pyr-bar clickable" data-discipline="spill"><span class="nm">SPILL</span><div class="mini"><div style="width:15%;background:var(--spill);"></div></div></div>
+      <div class="ft-pyr-bar clickable" data-discipline="turn"><span class="nm">TURN</span><div class="mini"><div style="width:5%;background:var(--turn);"></div></div></div>
+    </div>
+  </div>
+  <div class="ft-plan ft-summary">
+    <strong>4 PLANLAGT</strong> · <strong>1 FULLFØRT</strong> · <strong>195 MIN</strong> · <strong>67% PYRAMIDE-MÅL</strong>
+  </div>
+  <div class="ft-actions">
+    <button class="btn btn-outline btn-sm ft-status">Gå til Plan →</button>
+    <button class="btn btn-outline btn-sm ft-plan" data-open-modal="plan-adjust">Be om plan-justering</button>
+    <button class="btn btn-primary btn-sm" data-open-modal="log-session">
+      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+      Logg ny økt
+    </button>
+  </div>
+</footer>
+
+<script>
+  // ============ MODE TOGGLE ============
+  document.querySelectorAll('.mode-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = btn.dataset.target;
+      document.body.dataset.mode = t;
+      document.querySelectorAll('.mode-tab').forEach(b => b.classList.toggle('active', b === btn));
+      document.getElementById('bread').textContent = t === 'plan' ? 'Plan' : 'Status';
+    });
+  });
+
+  // ============ ZOOM TOGGLE ============
+  document.addEventListener('click', (e) => {
+    const zt = e.target.closest('.zoom-tab');
+    if (!zt) return;
+    const z = zt.dataset.zoom;
+    document.body.dataset.zoom = z;
+    document.querySelectorAll('.zoom-tab').forEach(b => b.classList.toggle('active', b === zt));
+    const bread = document.getElementById('zoom-bread-val');
+    const labels = {
+      ar:  'Sesong 2026',
+      md:  'Mai 2026',
+      uke: 'Uke 21 · 19—25 mai',
+      dag: 'Mandag 19. mai',
+      okt: 'Iron-progresjon CS70→CS80'
+    };
+    if (bread) bread.textContent = labels[z] || '';
+  });
+
+  // ============ MÅNED-GRID (mai 2026) ============
+  // mai 2026 starter på fredag (1. mai = fredag)
+  // Vi viser 28. apr (man) — 31. mai (søn) = 5 uker × 7 dager = 35 celler
+  (() => {
+    const grid = document.getElementById('month-grid');
+    if (!grid) return;
+    // events: day -> {dots: [...], summary, today?, tour?}
+    // Vi viser 28. apr (man) — 1. juni. Mai-objektet kun for mai-dager.
+    const apr = {
+      28: { dots: ['tek','fys'], summary: '120 min' },
+      29: { dots: ['slag'], summary: '60 min' },
+      30: { dots: [], summary: '—' },
+    };
+    const evts = {
+      1:  { dots: ['fys','tek'], summary: '110 min' },
+      2:  { dots: ['spill'], summary: '4 t · Bossum' },
+      3:  { dots: [], summary: '—' },
+      4:  { dots: ['tek','slag'], summary: '150 min' },
+      5:  { dots: ['fys'], summary: '30 min' },
+      6:  { dots: ['slag','tek'], summary: '120 min' },
+      7:  { dots: ['tek'], summary: '90 min' },
+      8:  { dots: ['fys','slag'], summary: '90 min' },
+      9:  { dots: ['spill'], summary: '4 t' },
+      10: { dots: [], summary: '—' },
+      11: { dots: ['tek','slag'], summary: '150 min' },
+      12: { dots: ['fys','slag'], summary: '90 min' },
+      13: { dots: ['slag','tek'], summary: '180 min' },
+      14: { dots: ['tek'], summary: '90 min' },
+      15: { dots: ['fys','tek'], summary: '110 min' },
+      16: { dots: ['spill'], summary: '4 t · runde' },
+      17: { dots: [], summary: '—' },
+      18: { dots: ['fys'], summary: '30 min' },
+      19: { dots: ['slag','tek','turn'], summary: '165 min', today: true },
+      20: { dots: ['fys'], summary: '30 min' },
+      21: { dots: ['slag','turn','tek'], summary: '180 min' },
+      22: { dots: [], summary: '—' },
+      23: { dots: ['tek','fys'], summary: '110 min' },
+      24: { dots: ['spill'], summary: 'Bossum R1', tour: 'BOSSUM' },
+      25: { dots: ['spill'], summary: 'Bossum R2', tour: 'BOSSUM' },
+      26: { dots: ['fys'], summary: '30 min' },
+      27: { dots: ['tek','slag'], summary: '150 min' },
+      28: { dots: ['fys'], summary: '40 min' },
+      29: { dots: ['slag','tek'], summary: '120 min' },
+      30: { dots: ['spill'], summary: '4 t' },
+      31: { dots: [], summary: '—' },
+    };
+    const cells = [
+      { day: 28, month: 'apr', dim: true },
+      { day: 29, month: 'apr', dim: true },
+      { day: 30, month: 'apr', dim: true },
+      ...[...Array(31).keys()].map(i => ({ day: i + 1, month: 'mai' })),
+      { day: 1, month: 'jun', dim: true },
+    ];
+    const dotColor = { fys: 'var(--fys)', tek: 'var(--tek)', slag: 'var(--slag)', spill: 'var(--spill)', turn: '#C8B72A' };
+    const html = cells.map(c => {
+      const ev = c.month === 'mai' ? evts[c.day] : (c.month === 'apr' ? apr[c.day] : null);
+      const classes = ['day-cell'];
+      if (c.dim) classes.push('dim');
+      if (ev && ev.today) classes.push('today');
+      if (ev && ev.tour) classes.push('has-tour');
+      const dots = ev && ev.dots ? ev.dots.map(d => `<span class="dot" style="background:${dotColor[d]}"></span>`).join('') : '';
+      const tourLabel = ev && ev.tour ? `<span class="tour-label">${ev.tour}</span>` : '';
+      const summary = ev && ev.summary ? `<div class="summary">${ev.summary}</div>` : '';
+      return `<div class="${classes.join(' ')}">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span class="dnum">${c.day}</span>
+          ${tourLabel}
+        </div>
+        <div class="dots">${dots}</div>
+        ${summary}
+      </div>`;
+    }).join('');
+    grid.innerHTML = html;
+  })();
+
+  // ============ UKE-GRID (Uke 21) ============
+  (() => {
+    const grid = document.getElementById('uke-grid');
+    if (!grid) return;
+    const days = [
+      { lbl: 'MAN', dnum: 19, today: true },
+      { lbl: 'TIR', dnum: 20 },
+      { lbl: 'ONS', dnum: 21 },
+      { lbl: 'TOR', dnum: 22 },
+      { lbl: 'FRE', dnum: 23 },
+      { lbl: 'LØR', dnum: 24, weekend: true },
+      { lbl: 'SØN', dnum: 25, weekend: true },
+    ];
+    const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+    // events: rich record (dayIdx, hourStart, durMin, kind, title, time + details)
+    const events = [
+      { id: 'pitch-mon', d: 0, h: 9, dur: 60, k: 'slag', t: 'Pitch 50—100m, lav', time: '09:00 — 10:00',
+        dayLabel: 'Mandag 19. mai', reps: 184, drill: 'Pitch 50—100m, lav trajectory',
+        focus: 'Landing-sone ±3m · spinn lav', assigned: 'Selvplanlagt', status: 'fullfort',
+        statusText: 'FULLFØRT', goal: 'Approach 100—150m er <strong>prio 1</strong> — pitch er forberedelse for de korte iron-skuddene.' },
+      { id: 'iron-mon', d: 0, h: 14, dur: 90, k: 'tek', t: 'Iron CS70 → CS80', time: '14:00 — 15:30',
+        dayLabel: 'Mandag 19. mai', reps: 240, drill: 'Iron-progresjon CS70 → CS80',
+        focus: 'Snitt-CS opp fra 74 til <strong>76 mph</strong>', assigned: 'Av Anders K.', status: 'planlagt',
+        statusText: 'PLANLAGT · NESTE OPP', goal: 'Bidrar til <strong>Top 10 NM Slag</strong> via approach-kontroll på 100—150m.' },
+      { id: 'mental-mon', d: 0, h: 16, dur: 15, k: 'turn', t: 'Mental visualisering', time: '16:00 — 16:15',
+        dayLabel: 'Mandag 19. mai', reps: 0, drill: 'Pre-Sørlands ritual',
+        focus: 'Visualiser hull 1 + 12 på Mandal', assigned: 'Egen-økt', status: 'planlagt', statusText: 'PLANLAGT', goal: 'Forberedelse for <strong>Sørlandsåpent</strong> · 21 dager.' },
+      { id: 'fys-tue', d: 1, h: 11, dur: 30, k: 'fys', t: 'Beinbøy + core', time: '11:00 — 11:30',
+        dayLabel: 'Tirsdag 20. mai', reps: 0, drill: 'Beinbøy + core',
+        focus: '4 sett · core-stabilitet', assigned: 'Egen-økt', status: 'planlagt', statusText: 'PLANLAGT', goal: 'Bygger fundament for CS-progresjon.' },
+      { id: 'bunker-wed', d: 2, h: 9, dur: 90, k: 'slag', t: 'Bunker-eskalering', time: '09:00 — 10:30',
+        dayLabel: 'Onsdag 21. mai', reps: 80, drill: 'Bunker-eskalering',
+        focus: 'Greenside · escalating distances', assigned: 'Selvplanlagt', status: 'planlagt', statusText: 'PLANLAGT', goal: 'Bossum har 4 bunker-omkransede greener.' },
+      { id: 'spillsim-wed', d: 2, h: 17, dur: 90, k: 'spill', t: '9-hulls spillsim', time: '17:00 — 18:30',
+        dayLabel: 'Onsdag 21. mai', reps: 9, drill: '9-hulls spillsim',
+        focus: 'Score-runde · klubbvalg', assigned: 'Egen-økt', status: 'planlagt', statusText: 'PLANLAGT', goal: 'Sjekker form før Bossum Open lørdag.' },
+      { id: 'driver-fri', d: 4, h: 11, dur: 60, k: 'tek', t: 'Driver grunntrening', time: '11:00 — 12:00',
+        dayLabel: 'Fredag 23. mai', reps: 120, drill: 'Driver grunntrening',
+        focus: 'CS 112 mph stable · smash 1,48', assigned: 'Av Anders K.', status: 'planlagt', statusText: 'PLANLAGT', goal: 'Bidrar til <strong>HCP +2,0</strong> via driving-distance.' },
+      { id: 'bossum-sat', d: 5, h: 9, dur: 240, k: 'spill', t: 'Bossum Open · R1', time: '09:00 — 13:00',
+        dayLabel: 'Lørdag 24. mai', reps: 18, drill: 'Turnerings-runde',
+        focus: '18 hull · runde 1 · tee 09:00', assigned: 'Turnering', status: 'turnering', statusText: 'TURNERING', goal: 'Form-test før Sørlandsåpent. Mål: under 73.' },
+      { id: 'putt-sun', d: 6, h: 18, dur: 30, k: 'slag', t: 'Putting 0—3m', time: '18:00 — 18:30',
+        dayLabel: 'Søndag 25. mai', reps: 100, drill: 'Putting 0—3m blokk',
+        focus: 'Klokke-drill · 90% treff', assigned: 'Selvplanlagt', status: 'planlagt', statusText: 'PLANLAGT', goal: 'Putting har størst comeback-potensial i SG.' },
+    ];
+    // Make events globally accessible for the preview-popover JS
+    window.__UKE_EVENTS = events.reduce((acc, e) => { acc[e.id] = e; return acc; }, {});
+    const emptySlots = [
+      { d: 1, h: 14 }, { d: 3, h: 12 }, { d: 3, h: 15 },
+    ];
+
+    let html = '<div class="corner"></div>';
+    days.forEach(d => {
+      const cls = ['day-head'];
+      if (d.weekend) cls.push('weekend');
+      if (d.today) cls.push('today');
+      html += `<div class="${cls.join(' ')}">${d.lbl}<span class="dnum">${d.dnum}</span></div>`;
+    });
+
+    hours.forEach(h => {
+      html += `<div class="time-label">${String(h).padStart(2,'0')}:00</div>`;
+      days.forEach((d, di) => {
+        const cellCls = ['cell'];
+        if (d.weekend) cellCls.push('weekend');
+        if (d.today) cellCls.push('today');
+        // event starting in this slot?
+        const ev = events.find(e => e.d === di && e.h === h);
+        const empty = emptySlots.find(s => s.d === di && s.h === h);
+        let inner = '';
+        if (ev) {
+          const h_px = (ev.dur / 60) * 42 - 2; // 42px row
+          inner = `<div class="event ${ev.k}" data-event-id="${ev.id}" style="top:2px;height:${h_px}px;cursor:pointer;">
+            <div class="ev-title">${ev.t}</div>
+            <div class="ev-time">${ev.time}</div>
+          </div>`;
+        } else if (empty) {
+          inner = `<div class="event-empty">Selvplanlegg<br/>eller be om økt</div>`;
+        }
+        html += `<div class="${cellCls.join(' ')}">${inner}</div>`;
+      });
+    });
+    grid.innerHTML = html;
+  })();
+
+  // ============ DAG-TIDSLINJE ============
+  (() => {
+    const tline = document.getElementById('dag-tline');
+    if (!tline) return;
+    const hours = [];
+    for (let h = 8; h <= 18; h++) hours.push(h);
+    // events keyed by hour
+    const events = {
+      9:  { k: 'slag', t: 'Pitch 50—100m, lav', meta: '09:00 — 10:00 · 184 reps · FULLFØRT' },
+      11: { k: 'fys',  t: 'Beinbøy + core (valgfri)', meta: '11:00 — 11:30 · egen-økt', empty: true },
+      14: { k: 'tek',  t: 'Iron-progresjon CS70 → CS80', meta: '14:00 — 15:30 · 240 reps · AV ANDERS', primary: true },
+      16: { k: 'turn', t: 'Mental visualisering', meta: '16:00 — 16:15 · pre-Sørlands' },
+    };
+    let html = '';
+    hours.forEach(h => {
+      const ev = events[h];
+      html += `<div class="dt-hour">${String(h).padStart(2,'0')}:00</div>`;
+      if (ev) {
+        if (ev.empty) {
+          html += `<div class="dt-slot"><div class="dt-empty">${ev.t} — ${ev.meta}</div></div>`;
+        } else {
+          html += `<div class="dt-slot"><div class="dt-event ${ev.k}">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;">
+              <div class="ev-title">${ev.t}</div>
+              ${ev.primary ? '<span class="mono" style="font-size:10px;color:var(--primary);font-weight:700;letter-spacing:0.08em;">NESTE</span>' : ''}
+            </div>
+            <div class="ev-row">
+              <span class="pill pill-${ev.k}">${ev.k.toUpperCase()}</span>
+              <span class="ev-meta">${ev.meta}</span>
+            </div>
+          </div></div>`;
+        }
+      } else {
+        html += `<div class="dt-slot"></div>`;
+      }
+    });
+    tline.innerHTML = html;
+  })();
+</script>
+
+<!-- ===== EVENT PREVIEW POPOVER ===== -->
+<div class="event-pop" id="event-pop" role="dialog" aria-label="Økt forhåndsvisning">
+  <div class="head" id="event-pop-head">
+    <div class="meta-row">
+      <span class="pill" id="ep-pill">SLAG</span>
+      <span class="badge" id="ep-status">PLANLAGT</span>
+    </div>
+    <div class="ttl" id="ep-title">—</div>
+    <div class="when" id="ep-when">—</div>
+    <button class="close-x" id="ep-close" aria-label="Lukk">
+      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="body">
+    <div class="kv"><span class="k">Varighet</span><span class="v mono" id="ep-duration">—</span></div>
+    <div class="kv"><span class="k">Reps</span><span class="v mono" id="ep-reps">—</span></div>
+    <div class="kv"><span class="k">Drill</span><span class="v" id="ep-drill">—</span></div>
+    <div class="kv"><span class="k">Fokus</span><span class="v" id="ep-focus">—</span></div>
+    <div class="kv"><span class="k">Tildelt</span><span class="v" id="ep-assigned">—</span></div>
+    <div class="goals-mini" id="ep-goal">—</div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-outline" id="ep-edit">Endre</button>
+    <button class="btn btn-outline" id="ep-log">Logg fullført</button>
+    <button class="btn btn-primary full-w" id="ep-open">Åpne full øktplan →</button>
+  </div>
+</div>
+
+<!-- ===== MESSAGES DRAWER ===== -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="msg-drawer" id="msg-drawer" role="dialog" aria-modal="true" aria-label="Meldinger">
+  <header class="msg-drawer-head" id="msg-head">
+    <!-- header rendered by JS -->
+  </header>
+
+  <!-- thread-list (state A) -->
+  <div class="thread-list" id="thread-list"></div>
+
+  <!-- active chat (state B, hidden initially) -->
+  <div id="chat-view" style="display:none; flex-direction:column; flex:1; min-height:0;">
+    <div class="chat-stream" id="chat-stream"></div>
+    <div class="quick-replies" id="quick-replies">
+      <button class="qr-pill" data-text="Ja, høres bra ut!">Ja, høres bra ut</button>
+      <button class="qr-pill" data-text="Kan vi flytte til torsdag?">Kan vi flytte til torsdag?</button>
+      <button class="qr-pill" data-text="Takk!">Takk!</button>
+    </div>
+    <div class="msg-input-wrap">
+      <div class="msg-input-row">
+        <button class="msg-attach" aria-label="Vedlegg">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <textarea class="msg-input" id="msg-input" rows="1" placeholder="Skriv en melding til Anders…"></textarea>
+        <button class="msg-send" id="msg-send" aria-label="Send">
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <span class="msg-input-hint">Trykk Enter for å sende · Shift + Enter for ny linje</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== NOTIFICATIONS POPOVER ===== -->
+<div class="notif-pop" id="notif-pop" role="dialog" aria-label="Varsler">
+  <div class="notif-head">
+    <div>
+      <span class="ttl">Varsler</span>
+      <span class="unread" id="notif-unread">3 ULESTE</span>
+    </div>
+    <button class="notif-mark-read" id="notif-mark-all">Merk alle som lest</button>
+  </div>
+  <div class="notif-tabs" data-field="notif-tabs">
+    <button class="notif-tab active" data-filter="all">Alle</button>
+    <button class="notif-tab" data-filter="coach">Coach</button>
+    <button class="notif-tab" data-filter="plan">Plan</button>
+    <button class="notif-tab" data-filter="goal">Mål</button>
+    <button class="notif-tab" data-filter="tour">Turnering</button>
+  </div>
+  <div class="notif-list" id="notif-list"><!-- generated --></div>
+  <div class="notif-foot">
+    <a href="#">Se alle varsler →</a>
+  </div>
+</div>
+
+<!-- ===== DISCIPLINE DRILL-DOWN MODAL ===== -->
+<div class="modal-backdrop" id="modal-disc" data-modal="disc" role="dialog" aria-modal="true" aria-labelledby="disc-title">
+  <div class="modal disc" role="document">
+    <header class="modal-header">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span class="disc-pill-lg kind-tek" id="disc-pill">TEK</span>
+        <div>
+          <h2 id="disc-title">TEK — Teknikk</h2>
+          <div class="caption" id="disc-caption">Uke 21 · 30% mål · 28% faktisk · −2 pp</div>
+        </div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+
+      <!-- Hero -->
+      <div class="disc-hero">
+        <div>
+          <span class="label-mono lbl">Faktisk denne uka</span>
+          <div class="num" id="disc-num">28%</div>
+          <div class="sub">av ukens totale treningstid</div>
+        </div>
+        <div class="right">
+          <span class="diff" id="disc-diff">↓ −2 pp mot mål</span>
+          <span class="totals" id="disc-totals">67 min av 195 min planlagt</span>
+        </div>
+      </div>
+
+      <!-- A. Hva er det? -->
+      <div class="disc-section">
+        <h4>Hva er <span id="disc-name">TEK</span>?</h4>
+        <div class="descr" id="disc-descr">
+          TEK = teknisk kvalitetstrening med fokus på <em class="italic-accent">kraftutvikling</em>, swing-mekanikk og repetisjon. Skal være langsom og gjentakende — ikke spillsimulering.
+        </div>
+        <div class="disc-tags" id="disc-tags">
+          <span class="equip-tag">Iron-progresjon</span>
+          <span class="equip-tag">Driver grunntrening</span>
+          <span class="equip-tag">Spin-kontroll</span>
+          <span class="equip-tag">CS-progresjon</span>
+        </div>
+      </div>
+
+      <!-- B. Bidragsøkter -->
+      <div class="disc-section">
+        <h4>Disse øktene bidro denne uka</h4>
+        <div id="disc-contribs">
+          <div class="contrib-row">
+            <span class="dt">MAN 19/5</span>
+            <div>
+              <div class="ttl">Iron-progresjon CS70 → CS80</div>
+              <div class="meta">14:00 — 15:30 · 240 reps · av Anders</div>
+            </div>
+            <span class="badge badge-success">FULLFØRT</span>
+            <span class="mins">90 min</span>
+          </div>
+          <div class="contrib-row">
+            <span class="dt">FRE 23/5</span>
+            <div>
+              <div class="ttl">Driver grunntrening</div>
+              <div class="meta">11:00 — 12:00 · 120 reps · av Anders</div>
+            </div>
+            <span class="badge badge-forest">PLANLAGT</span>
+            <span class="mins">60 min</span>
+          </div>
+        </div>
+        <div class="mono" style="font-size:10.5px;color:var(--muted);margin-top:8px;letter-spacing:0.04em;">
+          TOTAL: 150 MIN PLANLAGT · 90 MIN FULLFØRT · 60 MIN GJENSTÅR
+        </div>
+      </div>
+
+      <!-- C. Forslag -->
+      <div class="disc-section">
+        <h4>Forslag for å nå mål</h4>
+        <div class="rail-card ai-card" style="margin:0;">
+          <div class="rail-row">
+            <div class="rail-icon"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg></div>
+            <div class="body">
+              <div class="ttl">Legg til 30 min driver-økt fredag</div>
+              <div class="meta">Bryter ikke pyramiden · gir +3 pp TEK</div>
+            </div>
+            <button class="btn btn-xs btn-primary">Bruk</button>
+          </div>
+          <div class="rail-row">
+            <div class="rail-icon"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg></div>
+            <div class="body">
+              <div class="ttl">Bytt én SLAG-økt mot iron-progresjon</div>
+              <div class="meta">Bossum R1 lørdag har SLAG-overhead</div>
+            </div>
+            <button class="btn btn-xs btn-primary">Bruk</button>
+          </div>
+          <div class="rail-row">
+            <div class="rail-icon"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg></div>
+            <div class="body">
+              <div class="ttl">Be Anders om mer TEK neste uke</div>
+              <div class="meta">Periodisering for CS80-progresjon</div>
+            </div>
+            <button class="btn btn-xs btn-primary" data-open-modal="plan-adjust" data-close-modal>Be om</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <button class="btn-ghost" data-close-modal>Lukk</button>
+      <button class="btn btn-primary" data-open-modal="plan-adjust" data-close-modal>
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:14px;height:14px;"><use href="#ic-msg"/></svg>
+        Be om mer <span id="disc-cta-name">TEK</span> fra coach
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ===== TRACKMAN IMPORT WIZARD ===== -->
+<div class="modal-backdrop" id="modal-tm-import" data-modal="tm-import" role="dialog" aria-modal="true" aria-labelledby="tm-title">
+  <div class="modal tm-import" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="tm-title">Importer TrackMan-økt</h2>
+        <div class="stepper" id="tm-stepper">
+          <span class="dot active" data-step="1"></span>
+          <span class="dot" data-step="2"></span>
+          <span class="dot" data-step="3"></span>
+          <span class="step-label" id="tm-step-label">STEG 1 AV 3 · VELG KILDE</span>
+        </div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+
+      <!-- ─── STEG 1 ─── -->
+      <div class="step-view active" data-step-view="1">
+        <div class="source-cards" data-field="tm-source">
+          <div class="source-card active" data-val="account">
+            <span class="radio-mark"></span>
+            <div class="icon-wrap"><span class="tm-mono">TM</span></div>
+            <div>
+              <div class="ttl">TrackMan-konto</div>
+              <div class="sub">Hent siste 10 økter automatisk</div>
+            </div>
+            <span class="status-pill connected">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg>
+              Tilkoblet
+            </span>
+          </div>
+
+          <div class="source-card" data-val="csv">
+            <span class="radio-mark"></span>
+            <div class="icon-wrap">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div>
+              <div class="ttl">CSV-fil</div>
+              <div class="sub">Last opp .csv eksportert fra TrackMan Pro</div>
+            </div>
+            <div class="dropzone">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Dra .csv hit eller klikk for å velge
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── STEG 2 ─── -->
+      <div class="step-view" data-step-view="2">
+        <!-- Account: sessions list -->
+        <div data-source-pane="account" style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-family:var(--font-display);font-size:14px;font-weight:600;">10 nye økter funnet</div>
+              <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:0.06em;margin-top:2px;">VELG HVILKE SOM SKAL IMPORTERES</div>
+            </div>
+            <div class="row-flex">
+              <button class="btn btn-outline btn-xs" id="tm-select-all">Velg alle</button>
+              <button class="btn btn-outline btn-xs" id="tm-select-none">Fjern alle</button>
+            </div>
+          </div>
+          <div class="sessions-list" id="tm-sessions">
+            <!-- Each row -->
+            <div class="session-row checked" data-id="1">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <span class="date">18. MAI</span>
+              <div class="body">
+                <span class="ttl">Driver-økt</span>
+                <span class="metrics">CS 113 mph · Smash 1,49 · 84 reps</span>
+              </div>
+              <span class="pill pill-tek">TEK</span>
+            </div>
+            <div class="session-row checked" data-id="2">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <span class="date">16. MAI</span>
+              <div class="body">
+                <span class="ttl">Iron 7</span>
+                <span class="metrics">Carry 160 m · Spinn 6 920 rpm · 96 reps</span>
+              </div>
+              <span class="pill pill-tek">TEK</span>
+            </div>
+            <div class="session-row checked" data-id="3">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <span class="date">14. MAI</span>
+              <div class="body">
+                <span class="ttl">Pitch 50—100m</span>
+                <span class="metrics">Landing ±2,8 m · 156 reps · 74% mål</span>
+              </div>
+              <span class="pill pill-slag">SLAG</span>
+            </div>
+            <div class="session-row checked" data-id="4">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <span class="date">11. MAI</span>
+              <div class="body">
+                <span class="ttl">Putting blokk</span>
+                <span class="metrics">0—3m 89% · 3—6m 55% · 80 putts</span>
+              </div>
+              <span class="pill pill-slag">SLAG</span>
+            </div>
+            <div class="session-row checked" data-id="5">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <span class="date">9. MAI</span>
+              <div class="body">
+                <span class="ttl">Iron 8 · approach</span>
+                <span class="metrics">Carry 142 m · Dispersjon ±5,2 m · 64 reps</span>
+              </div>
+              <span class="pill pill-tek">TEK</span>
+            </div>
+            <div class="session-row" data-id="6">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <span class="date">8. MAI</span>
+              <div class="body">
+                <span class="ttl">Wedge 60° spinn-test</span>
+                <span class="metrics">Spinn 9 800 rpm · Apex 22 m · 40 reps</span>
+              </div>
+              <span class="pill pill-slag">SLAG</span>
+            </div>
+            <div class="session-row" data-id="7">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <span class="date">6. MAI</span>
+              <div class="body">
+                <span class="ttl">Driver-økt</span>
+                <span class="metrics">CS 111 mph · Smash 1,46 · 72 reps</span>
+              </div>
+              <span class="pill pill-tek">TEK</span>
+            </div>
+            <div class="session-row" data-id="8">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <span class="date">4. MAI</span>
+              <div class="body">
+                <span class="ttl">Iron 5 · low-trajectory</span>
+                <span class="metrics">Carry 188 m · Apex 18 m · 48 reps</span>
+              </div>
+              <span class="pill pill-tek">TEK</span>
+            </div>
+            <div class="session-row" data-id="9">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <span class="date">2. MAI</span>
+              <div class="body">
+                <span class="ttl">Pitch fra rough</span>
+                <span class="metrics">Spinn 8 200 rpm · Landing ±3,5 m · 60 reps</span>
+              </div>
+              <span class="pill pill-slag">SLAG</span>
+            </div>
+            <div class="session-row" data-id="10">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <span class="date">30. APR</span>
+              <div class="body">
+                <span class="ttl">Putting 3—6m</span>
+                <span class="metrics">52% · snitt 0,42m fra hull · 120 putts</span>
+              </div>
+              <span class="pill pill-slag">SLAG</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CSV: preview table -->
+        <div data-source-pane="csv" style="display:none;flex-direction:column;gap:14px;">
+          <div class="preview-table-wrap">
+            <table class="preview-table">
+              <thead>
+                <tr><th>Dato</th><th>Klubb</th><th>CS</th><th>Smash</th><th>Carry</th><th>Spinn</th><th>Apex</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>18.05.26</td><td>Driver</td><td>113</td><td>1,49</td><td>251 m</td><td>2 240</td><td>34 m</td></tr>
+                <tr><td>18.05.26</td><td>Driver</td><td>112</td><td>1,48</td><td>248 m</td><td>2 310</td><td>33 m</td></tr>
+                <tr><td>18.05.26</td><td>Driver</td><td>113</td><td>1,49</td><td>252 m</td><td>2 180</td><td>34 m</td></tr>
+                <tr><td>16.05.26</td><td>Iron 7</td><td>74</td><td>1,42</td><td>158 m</td><td>6 820</td><td>27 m</td></tr>
+                <tr><td>16.05.26</td><td>Iron 7</td><td>75</td><td>1,43</td><td>160 m</td><td>6 920</td><td>28 m</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mono" style="font-size:10px;color:var(--muted-soft);letter-spacing:0.04em;">Viser 5 av 184 rader i csv-filen</div>
+        </div>
+
+        <!-- Felles mapping -->
+        <div class="field" style="margin-top:18px;">
+          <label class="field-label">Mapping</label>
+        </div>
+        <div class="field-grid-2">
+          <div class="field">
+            <label class="field-label" for="tm-discipline">Disiplin (auto)</label>
+            <select id="tm-discipline" class="field-input">
+              <option>Auto-detekter fra klubb-data</option>
+              <option>TEK</option>
+              <option>SLAG</option>
+            </select>
+            <div class="field-helper">Driver/Iron → TEK, wedge/putting → SLAG</div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="tm-drill">Koble til drill</label>
+            <select id="tm-drill" class="field-input">
+              <option value="">— Ingen drill —</option>
+              <option>Iron-progresjon CS70→CS80</option>
+              <option>Driver grunntrening</option>
+              <option>Putting 0—3m blokk</option>
+              <option>Pitch 50—100m, lav</option>
+            </select>
+            <div class="field-helper">Valgfritt</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Koble til mål <span style="font-family:var(--font-body);font-weight:400;color:var(--muted-soft);text-transform:none;letter-spacing:0;">(valgfritt)</span></label>
+          <div class="chip-row multi" data-field="tm-goals">
+            <button type="button" class="chip active chip-slag" data-val="top10">Top 10 NM</button>
+            <button type="button" class="chip" data-val="srixon">Snitt &lt; 72</button>
+            <button type="button" class="chip" data-val="hcp">HCP +2,0</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="tm-note">Notat</label>
+          <textarea id="tm-note" class="field-input" rows="2" placeholder="F.eks: Driver-økt på Bossum range, vind sør 4 m/s."></textarea>
+        </div>
+      </div>
+
+      <!-- ─── STEG 3 ─── -->
+      <div class="step-view" data-step-view="3">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+          <div>
+            <div style="font-family:var(--font-display);font-size:15px;font-weight:600;">Klare til import</div>
+            <div class="mono" style="font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:0.06em;"><span id="tm-count">5</span> ØKTER · 524 REPS · TOTAL 6 T 20 MIN</div>
+          </div>
+          <span class="badge badge-success">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+            VALIDERT
+          </span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;padding-right:4px;" id="tm-summary-list">
+          <!-- generated by JS -->
+        </div>
+
+        <div class="toggle-row">
+          <div class="body">
+            <div class="ttl">Erstatt manuelt-loggede økter med samme dato</div>
+            <div class="meta">2 manuelle økter på 14. mai og 18. mai vil bli overskrevet</div>
+          </div>
+          <button class="toggle-switch" id="tm-replace-toggle" aria-pressed="false"></button>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <button class="btn-ghost" id="tm-back" style="visibility:hidden;">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="15 18 9 12 15 6"/></svg>
+        Forrige
+      </button>
+      <button class="btn-ghost" data-close-modal>Avbryt</button>
+      <button class="btn btn-primary" id="tm-next">
+        <span id="tm-next-label">Neste</span>
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:14px;height:14px;"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ===== PLAN ADJUSTMENT MODAL ===== -->
+<div class="modal-backdrop" id="modal-plan-adjust" data-modal="plan-adjust" role="dialog" aria-modal="true" aria-labelledby="adj-title">
+  <div class="modal plan-adjust" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="adj-title">Be om plan-justering</h2>
+        <div class="caption">Til: Anders K. · Uke 21 · 19—25 mai</div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+
+      <!-- Current state preview -->
+      <div class="pyr-preview">
+        <div class="head">
+          <span class="ttl">Din uke akkurat nå</span>
+          <span class="summary">5 økter · 195 min · 67% pyramide-treff</span>
+        </div>
+        <div class="pyr-segs">
+          <div class="pyr-seg"><div class="bar"><div class="fill" style="height:67%; background:var(--fys);"></div></div><div class="nm">FYS</div><div class="pct">20 %</div></div>
+          <div class="pyr-seg"><div class="bar"><div class="fill" style="height:100%; background:var(--tek);"></div></div><div class="nm">TEK</div><div class="pct">30 %</div></div>
+          <div class="pyr-seg"><div class="bar"><div class="fill" style="height:100%; background:var(--slag);"></div></div><div class="nm">SLAG</div><div class="pct">30 %</div></div>
+          <div class="pyr-seg"><div class="bar"><div class="fill" style="height:50%; background:var(--spill);"></div></div><div class="nm">SPILL</div><div class="pct">15 %</div></div>
+          <div class="pyr-seg"><div class="bar"><div class="fill" style="height:17%; background:#C8B72A;"></div></div><div class="nm">TURN</div><div class="pct">5 %</div></div>
+        </div>
+      </div>
+
+      <!-- Hva endre? -->
+      <div class="field">
+        <label class="field-label">Hva ønsker du å endre?<span class="req">*</span></label>
+        <div class="prio-radio" data-field="adj-type" style="grid-template-columns: 1fr 1fr;">
+          <div class="prio-opt prio-2 active" data-val="more">
+            <span class="radio-dot"></span>
+            <div class="label-stack"><span class="nm" style="color:var(--success);">Mer av disiplin</span><span class="sub">F.eks: mer SLAG</span></div>
+          </div>
+          <div class="prio-opt prio-3" data-val="less">
+            <span class="radio-dot"></span>
+            <div class="label-stack"><span class="nm">Mindre av disiplin</span><span class="sub">F.eks: kutt TEK</span></div>
+          </div>
+          <div class="prio-opt prio-3" data-val="volume">
+            <span class="radio-dot"></span>
+            <div class="label-stack"><span class="nm">Endre totalt volum</span><span class="sub">Mer/mindre min</span></div>
+          </div>
+          <div class="prio-opt prio-3" data-val="other">
+            <span class="radio-dot"></span>
+            <div class="label-stack"><span class="nm">Mer spesifikt</span><span class="sub">Annet · forklar</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Disiplin (conditional) -->
+      <div class="field" id="adj-disc-field">
+        <label class="field-label">Hvilken disiplin?</label>
+        <div class="chip-row multi" data-field="adj-disciplines">
+          <button type="button" class="chip" data-val="fys">FYS</button>
+          <button type="button" class="chip" data-val="tek">TEK</button>
+          <button type="button" class="chip active chip-slag" data-val="slag">SLAG</button>
+          <button type="button" class="chip" data-val="spill">SPILL</button>
+          <button type="button" class="chip" data-val="turn">TURN</button>
+        </div>
+        <div class="field-helper">SLAG foreslått pga. approach-gap −0,42</div>
+      </div>
+
+      <!-- Begrunnelse -->
+      <div class="field">
+        <label class="field-label" for="adj-text">Begrunnelse<span class="req">*</span></label>
+        <textarea id="adj-text" class="field-input" rows="4"
+          placeholder="F.eks: Approach-gap er størst — kan vi få inn 2 ekstra approach-økter denne uka?"></textarea>
+        <div class="field-helper" id="adj-counter">0 / 320 tegn · minimum 10</div>
+      </div>
+
+      <!-- Quick-tags -->
+      <div class="field">
+        <label class="field-label">Hurtigvalg <span style="font-family:var(--font-body);font-weight:400;color:var(--muted-soft);text-transform:none;letter-spacing:0;">(klikk for å fylle inn)</span></label>
+        <div class="quick-tags" id="adj-quick-tags">
+          <button type="button" class="quick-tag" data-text="Approach 100—150m er mitt største gap (−0,42 SG mot kategori-snitt). Kan vi få inn 2 ekstra approach-økter denne uka?">Approach trenger fokus</button>
+          <button type="button" class="quick-tag" data-text="TEK-volumet har blitt for høyt — 32 % vs målet på 30. Vurder å bytte én tek-økt mot SLAG eller SPILL.">For mye TEK</button>
+          <button type="button" class="quick-tag" data-text="Vil ha mer spill-trening — 9-hulls simulering eller ekstra runde. Føler at jeg er rustenløst i kamp-modus.">Vil ha mer spill</button>
+          <button type="button" class="quick-tag" data-text="Jeg har vært sliten siste 3 dager. Kutt totalt volum 20—30 % denne uka, behold fokus på prio-1 (approach).">Sliten — kutt belastning</button>
+          <button type="button" class="quick-tag" data-text="Sørlandsåpent om 21 dager. Vil tilpasse uka mot tournament-prep: mer mental, mer slag-prio, mindre teknisk dypdykk.">Forbered Sørlandsåpent</button>
+        </div>
+      </div>
+
+      <!-- Urgency -->
+      <div class="field">
+        <label class="field-label">Hvor mye haster det?</label>
+        <div class="urgency-3" data-field="adj-urgency">
+          <button type="button" class="active urg-mute" data-val="normal">Når det passer</button>
+          <button type="button" class="urg-warn" data-val="24h">Innen 24 t</button>
+          <button type="button" class="urg-danger" data-val="today">I dag</button>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <div class="left-meta">Sendes som push + e-post til Anders</div>
+      <button class="btn-ghost" data-close-modal>Avbryt</button>
+      <button class="btn btn-primary" id="adj-submit">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:14px;height:14px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send forespørsel
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ===== EMPTY-SLOT POPOVER ===== -->
+<div class="slot-pop" id="slot-popover" role="dialog" aria-label="Tomt tidspunkt">
+  <div class="slot-pop-head">
+    <span class="lbl" id="slot-pop-header">TOR 22. MAI · 11:00</span>
+    <button class="slot-pop-close" id="slot-pop-close" aria-label="Lukk">
+      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="slot-pop-list">
+    <button class="slot-action" id="slot-action-new">
+      <svg class="ic-left" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+      <span class="text">Legg inn ny økt</span>
+      <svg class="chev" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="slot-action" id="slot-action-ai">
+      <svg class="ic-left" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sparkles"/></svg>
+      <span class="text">AI-foreslå 1 økt her</span>
+      <svg class="chev" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="slot-action" id="slot-action-coach">
+      <svg class="ic-left" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>
+      <span class="text">Be om økt fra coach</span>
+      <svg class="chev" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="slot-action" id="slot-action-rest">
+      <svg class="ic-left" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-moon"/></svg>
+      <span class="text">Marker som hviledag</span>
+      <svg class="chev" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+  <div class="slot-ai-result" id="slot-ai-result">
+    <div class="streaming"></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="slot-ai-accept">Aksepter</button>
+      <button class="btn btn-outline" id="slot-ai-dismiss">Avvis</button>
+    </div>
+  </div>
+  <div class="slot-pop-foot">Klikk + dra for å sette varighet</div>
+</div>
+
+<!-- ===== EDIT SESSION MODAL ===== -->
+<div class="modal-backdrop" id="modal-edit-session" data-modal="edit-session" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+  <div class="modal edit-session" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="edit-title">Endre økt</h2>
+        <div class="caption">Iron-progresjon CS70 → CS80 · Ons 21. mai 14:00</div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+
+      <div class="field">
+        <label class="field-label" for="edit-title-input">Tittel</label>
+        <input id="edit-title-input" class="field-input" type="text" value="Iron-progresjon CS70 → CS80" />
+      </div>
+
+      <div class="field-grid-2">
+        <div class="field">
+          <label class="field-label" for="edit-when">Tid</label>
+          <input id="edit-when" class="field-input" type="datetime-local" value="2026-05-21T14:00" />
+        </div>
+        <div class="field">
+          <label class="field-label" for="edit-duration">Varighet</label>
+          <div class="slider-row">
+            <input id="edit-duration" type="range" min="15" max="180" step="5" value="90" />
+            <span class="val"><span id="edit-duration-val">90</span> min</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="edit-place">Sted</label>
+        <select id="edit-place" class="field-input">
+          <option>GFGK Performance Studio · Bay 4</option>
+          <option>GFGK Performance Studio · Bay 1</option>
+          <option>Bossum range</option>
+          <option>Hjemme</option>
+          <option>Annet</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="edit-focus">Reps / fokus</label>
+        <textarea id="edit-focus" class="field-input" rows="3">240 reps · CS70→CS80 · Bay 4</textarea>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Bytt drill</label>
+        <button class="btn btn-outline btn-sm" id="edit-swap-drill" style="align-self:flex-start;">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg>
+          Velg annen drill
+        </button>
+        <div class="field-helper">Bytter til en av dine drills eller en coach-tildelt</div>
+      </div>
+
+      <!-- Status-info -->
+      <div class="assigned-card">
+        <div class="avatar">AK</div>
+        <div class="body">
+          <div class="lbl">Tildelt av</div>
+          <div class="nm">Anders Kristiansen</div>
+        </div>
+        <span class="pill pill-tek">TEK</span>
+      </div>
+
+      <div class="warn-row" id="edit-warn-row" style="display:none;">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-alert"/></svg>
+        <span>Coach blir varslet om endringen — den er tildelt av Anders.</span>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <button class="btn-danger-ghost footer-left" id="edit-delete">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-trash"/></svg>
+        Slett økt
+      </button>
+      <button class="btn-ghost" data-close-modal>Avbryt</button>
+      <button class="btn btn-primary" id="edit-save">Lagre endringer</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ===== NEW GOAL MODAL ===== -->
+<div class="modal-backdrop" id="modal-new-goal" data-modal="new-goal" role="dialog" aria-modal="true" aria-labelledby="goal-title">
+  <div class="modal new-goal" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="goal-title">Nytt mål</h2>
+        <div class="caption">3 aktive mål · ingen øvre grense</div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+
+      <!-- Mål-type -->
+      <div class="field">
+        <label class="field-label">Mål-type<span class="req">*</span></label>
+        <div class="type-seg" data-field="goal-type">
+          <button type="button" class="active" data-val="resultat">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-trophy"/></svg>
+            Resultat
+            <span class="sub">Turnering · HCP</span>
+          </button>
+          <button type="button" data-val="prosess">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-target"/></svg>
+            Prosess
+            <span class="sub">Snitt · vaner</span>
+          </button>
+          <button type="button" data-val="streak">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-flame"/></svg>
+            Streak
+            <span class="sub">Dager i strekk</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tittel -->
+      <div class="field">
+        <label class="field-label" for="goal-title-input">Tittel<span class="req">*</span></label>
+        <input id="goal-title-input" class="field-input" type="text" value="Top 10 i Bossum Open" />
+        <div class="field-helper" id="goal-title-helper">Auto-foreslått basert på type</div>
+      </div>
+
+      <!-- Dynamiske mål-verdier -->
+      <div class="type-pane active" data-type-pane="resultat">
+        <div class="value-row">
+          <div class="field">
+            <label class="field-label" for="goal-pos">Plassering</label>
+            <input id="goal-pos" class="field-input" type="number" min="1" max="200" value="10" />
+            <div class="field-helper">Topp X i</div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="goal-tour">Turnering</label>
+            <select id="goal-tour" class="field-input">
+              <option value="bossum">Bossum Open · 24. jun</option>
+              <option value="sorlands">Sørlandsåpent · 10. jun</option>
+              <option value="nm">NM Slag · 8. jul</option>
+              <option value="trondheim">Trondheim Open · 22. jul</option>
+              <option value="gfgk">GFGK Mesterskap · 5. aug</option>
+            </select>
+            <div class="field-helper" id="goal-tour-date">Frist auto-satt: 24. juni 2026</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="type-pane" data-type-pane="prosess">
+        <div class="value-row">
+          <div class="field">
+            <label class="field-label" for="goal-prosess-val">Verdi</label>
+            <input id="goal-prosess-val" class="field-input" type="number" step="0.1" value="72" />
+            <div class="field-helper">Under denne grensen</div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="goal-metric">Metric</label>
+            <select id="goal-metric" class="field-input">
+              <option>Snitt-score</option>
+              <option>SG-total</option>
+              <option>Fairways treff (%)</option>
+              <option>Putting (snitt putt/runde)</option>
+              <option>Greens in regulation (%)</option>
+            </select>
+            <div class="field-helper">Hva måles?</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="goal-deadline">Innen</label>
+          <input id="goal-deadline" class="field-input" type="date" value="2026-08-31" />
+          <div class="field-helper">31. aug 2026 · sesongslutt</div>
+        </div>
+      </div>
+
+      <div class="type-pane" data-type-pane="streak">
+        <div class="value-row">
+          <div class="field">
+            <label class="field-label" for="goal-days">Antall dager</label>
+            <input id="goal-days" class="field-input" type="number" min="1" value="30" />
+            <div class="field-helper">I strekk</div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="goal-streak-disc">Disiplin</label>
+            <select id="goal-streak-disc" class="field-input">
+              <option>Hvilken som helst</option>
+              <option>FYS</option>
+              <option>TEK</option>
+              <option>SLAG</option>
+              <option>SPILL</option>
+              <option>TURN</option>
+            </select>
+            <div class="field-helper">Hva skal trenes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prioritet -->
+      <div class="field">
+        <label class="field-label">Prioritet</label>
+        <div class="prio-radio" data-field="goal-prio">
+          <div class="prio-opt prio-1" data-val="1">
+            <span class="radio-dot"></span>
+            <div class="label-stack"><span class="nm">PRIO 1</span><span class="sub">Hovedmål</span></div>
+          </div>
+          <div class="prio-opt prio-2 active" data-val="2">
+            <span class="radio-dot"></span>
+            <div class="label-stack"><span class="nm">PRIO 2</span><span class="sub">Viktig</span></div>
+          </div>
+          <div class="prio-opt prio-3" data-val="3">
+            <span class="radio-dot"></span>
+            <div class="label-stack"><span class="nm">PRIO 3</span><span class="sub">Bonus</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Knytt til disiplin -->
+      <div class="field">
+        <label class="field-label">Knytt til disiplin <span style="font-family:var(--font-body);font-weight:400;color:var(--muted-soft);text-transform:none;letter-spacing:0;">(valgfritt)</span></label>
+        <div class="chip-row multi" data-field="goal-disciplines">
+          <button type="button" class="chip" data-val="fys">FYS</button>
+          <button type="button" class="chip" data-val="tek">TEK</button>
+          <button type="button" class="chip active chip-slag" data-val="slag">SLAG</button>
+          <button type="button" class="chip" data-val="spill">SPILL</button>
+          <button type="button" class="chip" data-val="turn">TURN</button>
+        </div>
+        <div class="field-helper">SLAG foreslått pga. approach-gap</div>
+      </div>
+
+      <!-- Hvorfor -->
+      <div class="field">
+        <label class="field-label" for="goal-why">Hvorfor er dette viktig? <span style="font-family:var(--font-body);font-weight:400;color:var(--muted-soft);text-transform:none;letter-spacing:0;">(valgfritt)</span></label>
+        <textarea id="goal-why" class="field-input" rows="2" placeholder="F.eks: For å komme inn på laget, må jeg slå Hampus."></textarea>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <div class="left-meta">Synlig for Anders</div>
+      <button class="btn-ghost" data-close-modal>Avbryt</button>
+      <button class="btn btn-primary" id="goal-submit">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:14px;height:14px;"><use href="#ic-plus"/></svg>
+        Opprett mål
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ===== LOG SESSION WIZARD MODAL ===== -->
+<div class="modal-backdrop" id="modal-log-session" data-modal="log-session" role="dialog" aria-modal="true" aria-labelledby="log-title">
+  <div class="modal wizard" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="log-title">Logg gjennomført økt</h2>
+        <div class="stepper" id="log-stepper">
+          <span class="dot active" data-step="1"></span>
+          <span class="dot" data-step="2"></span>
+          <span class="dot" data-step="3"></span>
+          <span class="step-label" id="log-step-label">STEG 1 AV 3 · HVA TRENTE DU?</span>
+        </div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+
+      <!-- ─── STEG 1 ─── -->
+      <div class="step-view active" data-step-view="1">
+        <div class="field">
+          <label class="field-label">Disipliner<span class="req">*</span></label>
+          <div class="chip-row multi" data-field="log-disciplines">
+            <button type="button" class="chip" data-val="tek">TEK</button>
+            <button type="button" class="chip active chip-slag" data-val="slag">SLAG</button>
+            <button type="button" class="chip" data-val="fys">FYS</button>
+            <button type="button" class="chip" data-val="spill">SPILL</button>
+            <button type="button" class="chip" data-val="turn">TURN</button>
+          </div>
+          <div class="field-helper">Velg én eller flere</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="log-title-input">Tittel</label>
+          <input id="log-title-input" class="field-input" type="text" value="Egen putting-økt" />
+          <div class="field-helper">Auto-foreslått basert på disiplin</div>
+        </div>
+
+        <div class="field-grid-2">
+          <div class="field">
+            <label class="field-label" for="log-duration">Varighet</label>
+            <div class="slider-row">
+              <input id="log-duration" type="range" min="15" max="180" step="5" value="60" />
+              <span class="val"><span id="log-duration-val">60</span> min</span>
+            </div>
+            <div class="field-helper">15 — 180 min</div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="log-place">Sted</label>
+            <select id="log-place" class="field-input">
+              <option>GFGK Performance Studio</option>
+              <option>Bossum</option>
+              <option>Hjemme</option>
+              <option>Range</option>
+              <option>Annet</option>
+            </select>
+            <div class="field-helper">Hvor trente du?</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="log-when">Dato/tid</label>
+          <input id="log-when" class="field-input" type="datetime-local" value="2026-05-19T16:30" />
+          <div class="field-helper">I dag, 16:30</div>
+        </div>
+      </div>
+
+      <!-- ─── STEG 2 ─── -->
+      <div class="step-view" data-step-view="2">
+        <div class="field">
+          <label class="field-label">Type registrering</label>
+          <div class="toggle-2" data-field="log-source">
+            <button type="button" class="active" data-val="manual">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Manuelt
+            </button>
+            <button type="button" data-val="trackman">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-import"/></svg>
+              TrackMan-import
+            </button>
+          </div>
+        </div>
+
+        <div data-source-pane="manual" style="display:flex;flex-direction:column;gap:18px;">
+          <div class="field-grid-2">
+            <div class="field">
+              <label class="field-label" for="log-reps">Antall reps</label>
+              <input id="log-reps" class="field-input" type="number" min="0" value="120" />
+              <div class="field-helper">Slag, ball-treff, sets</div>
+            </div>
+            <div class="field">
+              <label class="field-label">Hvor godt?</label>
+              <div class="star-row" id="log-stars">
+                <button type="button" class="star-btn on" data-rating="1"><svg viewBox="0 0 24 24"><use href="#ic-star"/></svg></button>
+                <button type="button" class="star-btn on" data-rating="2"><svg viewBox="0 0 24 24"><use href="#ic-star"/></svg></button>
+                <button type="button" class="star-btn on" data-rating="3"><svg viewBox="0 0 24 24"><use href="#ic-star"/></svg></button>
+                <button type="button" class="star-btn on" data-rating="4"><svg viewBox="0 0 24 24"><use href="#ic-star"/></svg></button>
+                <button type="button" class="star-btn" data-rating="5"><svg viewBox="0 0 24 24"><use href="#ic-star"/></svg></button>
+              </div>
+              <div class="field-helper" id="log-rating-label">4 av 5 · solid økt</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="log-note">Notat</label>
+            <textarea id="log-note" class="field-input" rows="4" placeholder="Hva fungerte? Hva må følges opp?"></textarea>
+          </div>
+        </div>
+
+        <div data-source-pane="trackman" style="display:none;flex-direction:column;gap:14px;">
+          <div class="context-card">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-import"/></svg>
+            <div class="ctx-body">
+              <strong>Importer fra TrackMan Pro.</strong>
+              Reps, club-speed, smash, spinn og dispersjon hentes automatisk.
+            </div>
+          </div>
+          <button class="btn btn-forest" style="align-self:flex-start;">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-import"/></svg>
+            Åpne TrackMan-import
+          </button>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="log-drill">Koble til drill <span style="font-family:var(--font-body);font-weight:400;color:var(--muted-soft);text-transform:none;letter-spacing:0;">(valgfritt)</span></label>
+          <select id="log-drill" class="field-input">
+            <option value="">— Ingen drill —</option>
+            <optgroup label="Tildelt av Anders">
+              <option>Pitch 50—100m, lav trajectory</option>
+              <option>Iron-progresjon CS70→CS80</option>
+              <option>Driver grunntrening</option>
+            </optgroup>
+            <optgroup label="Favoritter">
+              <option>Putting 0—3m blokk</option>
+              <option>Bunker-eskalering</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Koble til mål <span style="font-family:var(--font-body);font-weight:400;color:var(--muted-soft);text-transform:none;letter-spacing:0;">(valgfritt)</span></label>
+          <div class="goal-checks" data-field="log-goals">
+            <div class="goal-check checked" data-val="top10">
+              <span class="box"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <div class="body">
+                <div class="ttl">Top 10 NM Slag</div>
+                <div class="meta">Resultatmål · 50 dager</div>
+              </div>
+            </div>
+            <div class="goal-check checked" data-val="srixon">
+              <span class="box"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <div class="body">
+                <div class="ttl">Snitt under 72 på Srixon</div>
+                <div class="meta">Prosessmål · ukentlig</div>
+              </div>
+            </div>
+            <div class="goal-check" data-val="hcp">
+              <span class="box"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg></span>
+              <div class="body">
+                <div class="ttl">HCP under +2,0</div>
+                <div class="meta">Sesongmål · 82 dager igjen</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── STEG 3 ─── -->
+      <div class="step-view" data-step-view="3">
+        <div class="summary-card">
+          <div class="duration-hero">
+            <span class="big" id="sum-duration">60</span>
+            <span class="unit">min</span>
+            <div class="right">
+              <div class="lbl">Dato</div>
+              <div class="val" id="sum-when">I dag · 16:30</div>
+            </div>
+          </div>
+          <div class="summary-row"><span class="k">Tittel</span><span class="v" id="sum-title">Egen putting-økt</span></div>
+          <div class="summary-row"><span class="k">Disipliner</span><span class="v" id="sum-disciplines">SLAG</span></div>
+          <div class="summary-row"><span class="k">Sted</span><span class="v" id="sum-place">GFGK Performance Studio</span></div>
+          <div class="summary-row"><span class="k">Reps</span><span class="v" id="sum-reps">120</span></div>
+          <div class="summary-row"><span class="k">Vurdering</span><span class="v" id="sum-rating">4 av 5</span></div>
+          <div class="summary-row"><span class="k">Mål-kobling</span><span class="v" id="sum-goals">Top 10 NM Slag · Snitt &lt; 72</span></div>
+        </div>
+
+        <div class="impact-card">
+          <div class="head">
+            <span class="ttl">Pyramide-impact denne uka</span>
+            <span class="sub" id="impact-summary">+12 % SLAG · Uke 21</span>
+          </div>
+          <div id="impact-bars">
+            <div class="impact-bar-row">
+              <span class="label">FYS</span>
+              <div class="bar"><div class="before" style="background:var(--fys); width:20%;"></div></div>
+              <span class="delta flat">20 % →</span>
+            </div>
+            <div class="impact-bar-row">
+              <span class="label">TEK</span>
+              <div class="bar"><div class="before" style="background:var(--tek); width:32%;"></div></div>
+              <span class="delta flat">32 % →</span>
+            </div>
+            <div class="impact-bar-row">
+              <span class="label">SLAG</span>
+              <div class="bar">
+                <div class="before" style="background:var(--slag); width:28%;"></div>
+                <div class="add" style="left:28%; width:12%;"></div>
+              </div>
+              <span class="delta up">+12 % ↑</span>
+            </div>
+            <div class="impact-bar-row">
+              <span class="label">SPILL</span>
+              <div class="bar"><div class="before" style="background:var(--spill); width:15%;"></div></div>
+              <span class="delta flat">15 % →</span>
+            </div>
+            <div class="impact-bar-row">
+              <span class="label">TURN</span>
+              <div class="bar"><div class="before" style="background:#C8B72A; width:5%;"></div></div>
+              <span class="delta flat">5 % →</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <button class="btn-ghost" id="log-back" style="visibility:hidden;">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="15 18 9 12 15 6"/></svg>
+        Forrige
+      </button>
+      <button class="btn-ghost" data-close-modal>Avbryt</button>
+      <button class="btn btn-primary" id="log-next">
+        <span id="log-next-label">Neste</span>
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:14px;height:14px;"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ===== ASK COACH MODAL ===== -->
+<div class="modal-backdrop" id="modal-ask-coach" data-modal="ask-coach" role="dialog" aria-modal="true" aria-labelledby="ask-coach-title">
+  <div class="modal" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="ask-coach-title">Be om økt fra coach</h2>
+        <div class="caption">Til: Anders Kristiansen · Head coach</div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+      <!-- Context hint -->
+      <div class="context-card">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div class="ctx-body">
+          <strong>Approach −0,42 SG mot kategori-snitt</strong> er ditt største gap.
+          Anders får dette med automatisk.
+        </div>
+      </div>
+
+      <!-- Tema (disiplin) -->
+      <div class="field">
+        <label class="field-label">Tema<span class="req">*</span></label>
+        <div class="chip-row" role="radiogroup" data-field="discipline">
+          <button type="button" class="chip" data-val="tek">TEK</button>
+          <button type="button" class="chip active chip-slag" data-val="slag">SLAG</button>
+          <button type="button" class="chip" data-val="fys">FYS</button>
+          <button type="button" class="chip" data-val="spill">SPILL</button>
+          <button type="button" class="chip" data-val="turn">TURN</button>
+        </div>
+      </div>
+
+      <!-- Hva trenger du? -->
+      <div class="field">
+        <label class="field-label" for="ask-text">Hva trenger du?<span class="req">*</span></label>
+        <textarea
+          id="ask-text"
+          class="field-input"
+          rows="3"
+          placeholder="F.eks: Jeg sliter med approach 100—150m. Datagolf viser −0,42 SG mot kategori-snitt."
+        ></textarea>
+        <div class="field-helper" id="ask-counter">0 / 280 tegn · minimum 10</div>
+      </div>
+
+      <!-- Dato/tid + Sted -->
+      <div class="field-grid-2">
+        <div class="field">
+          <label class="field-label" for="ask-when">Foreslått dato/tid</label>
+          <input id="ask-when" class="field-input" type="datetime-local" value="2026-05-22T14:00" />
+          <div class="field-helper">Tor 22. mai · første ledige slot</div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="ask-place">Sted</label>
+          <select id="ask-place" class="field-input">
+            <option>GFGK Performance Studio</option>
+            <option>Bossum</option>
+            <option>Hjemme</option>
+            <option>Annet</option>
+          </select>
+          <div class="field-helper">Bay 4 om mulig</div>
+        </div>
+      </div>
+
+      <!-- Hastegrad -->
+      <div class="field">
+        <label class="field-label">Hastegrad</label>
+        <div class="segmented" data-field="urgency">
+          <button type="button" class="active" data-val="normal">Vanlig</button>
+          <button type="button" data-val="7d">Innen 7 dager</button>
+          <button type="button" data-val="tour">Før neste turnering</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="modal-footer">
+      <div class="left-meta">Sendes som push + e-post</div>
+      <button class="btn-ghost" data-close-modal>Avbryt</button>
+      <button class="btn btn-primary" id="ask-submit">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:14px;height:14px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send forespørsel
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-text">Forespørsel sendt til Anders</span>
+</div>
+
+<script>
+  // ============ MODAL ============
+  const openModal = (name) => {
+    const m = document.querySelector(`.modal-backdrop[data-modal="${name}"]`);
+    if (!m) return;
+    m.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // focus first interactive
+    setTimeout(() => m.querySelector('textarea, input, button')?.focus(), 50);
+  };
+  const closeModal = () => {
+    document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open'));
+    document.body.style.overflow = '';
+  };
+
+  document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('[data-open-modal]');
+    if (trigger) { openModal(trigger.dataset.openModal); return; }
+    const closer = e.target.closest('[data-close-modal]');
+    if (closer) { closeModal(); return; }
+    if (e.target.classList.contains('modal-backdrop')) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // chip-row (discipline)
+  document.querySelectorAll('[data-field="discipline"]').forEach(group => {
+    group.addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip');
+      if (!btn) return;
+      group.querySelectorAll('.chip').forEach(c => {
+        c.classList.remove('active', 'chip-tek', 'chip-slag', 'chip-fys', 'chip-spill', 'chip-turn');
+      });
+      btn.classList.add('active', `chip-${btn.dataset.val}`);
+    });
+  });
+
+  // segmented (urgency)
+  document.querySelectorAll('[data-field="urgency"]').forEach(group => {
+    group.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      group.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  // textarea counter
+  const askText = document.getElementById('ask-text');
+  const askCounter = document.getElementById('ask-counter');
+  askText?.addEventListener('input', () => {
+    const n = askText.value.length;
+    askCounter.textContent = `${n} / 280 tegn · minimum 10`;
+    askCounter.style.color = n >= 10 ? 'var(--success)' : 'var(--muted-soft)';
+  });
+
+  // submit
+  const toast = document.getElementById('toast');
+  const showToast = (text) => {
+    document.getElementById('toast-text').textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2600);
+  };
+
+  document.getElementById('ask-submit')?.addEventListener('click', () => {
+    const text = askText.value.trim();
+    if (text.length < 10) {
+      askText.focus();
+      askCounter.style.color = 'var(--danger)';
+      askCounter.textContent = `Beskriv hva du trenger (minst 10 tegn) — ${text.length} / 280`;
+      return;
+    }
+    const payload = {
+      discipline: document.querySelector('[data-field="discipline"] .chip.active')?.dataset.val,
+      text,
+      when: document.getElementById('ask-when').value,
+      place: document.getElementById('ask-place').value,
+      urgency: document.querySelector('[data-field="urgency"] button.active')?.dataset.val,
+      to: 'Anders Kristiansen',
+    };
+    console.log('POST /api/coach/requests', payload);
+    closeModal();
+    askText.value = '';
+    askCounter.textContent = '0 / 280 tegn · minimum 10';
+    askCounter.style.color = 'var(--muted-soft)';
+    showToast('Forespørsel sendt til Anders');
+  });
+  // ============ LOG SESSION WIZARD ============
+  (() => {
+    let step = 1;
+    const stepLabels = {
+      1: 'STEG 1 AV 3 · HVA TRENTE DU?',
+      2: 'STEG 2 AV 3 · HVORDAN GIKK DET?',
+      3: 'STEG 3 AV 3 · BEKREFT',
+    };
+    const labelEl = document.getElementById('log-step-label');
+    const stepperDots = document.querySelectorAll('#log-stepper .dot');
+    const backBtn = document.getElementById('log-back');
+    const nextBtn = document.getElementById('log-next');
+    const nextLbl = document.getElementById('log-next-label');
+
+    const setStep = (n) => {
+      step = n;
+      labelEl.textContent = stepLabels[n];
+      stepperDots.forEach(d => {
+        const s = +d.dataset.step;
+        d.classList.toggle('active', s === n);
+        d.classList.toggle('done', s < n);
+      });
+      document.querySelectorAll('.step-view').forEach(v => {
+        v.classList.toggle('active', +v.dataset.stepView === n);
+      });
+      backBtn.style.visibility = n === 1 ? 'hidden' : '';
+      nextLbl.textContent = n === 3 ? 'Logg økt' : 'Neste';
+      nextBtn.querySelector('svg').style.display = n === 3 ? 'none' : '';
+      if (n === 3) refreshSummary();
+    };
+
+    // reset to step 1 when modal opens
+    document.querySelector('[data-open-modal="log-session"]')?.addEventListener('click', () => setTimeout(() => setStep(1), 10));
+    document.querySelectorAll('[data-open-modal="log-session"]').forEach(b => {
+      b.addEventListener('click', () => setTimeout(() => setStep(1), 10));
+    });
+
+    backBtn.addEventListener('click', () => setStep(Math.max(1, step - 1)));
+    nextBtn.addEventListener('click', () => {
+      if (step < 3) { setStep(step + 1); return; }
+      // submit
+      const payload = collectPayload();
+      console.log('POST /api/sessions', payload);
+      closeModal();
+      setStep(1);
+      showToast('Økt logget — pyramide oppdatert');
+    });
+
+    // disciplines multi-chip
+    document.querySelector('[data-field="log-disciplines"]').addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip');
+      if (!btn) return;
+      btn.classList.toggle('active');
+      // reapply discipline-specific class
+      if (btn.classList.contains('active')) {
+        btn.classList.add(`chip-${btn.dataset.val}`);
+      } else {
+        btn.classList.remove(`chip-${btn.dataset.val}`);
+      }
+    });
+
+    // source toggle
+    document.querySelector('[data-field="log-source"]').addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const group = btn.parentElement;
+      group.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelector('[data-source-pane="manual"]').style.display   = btn.dataset.val === 'manual'   ? 'flex' : 'none';
+      document.querySelector('[data-source-pane="trackman"]').style.display = btn.dataset.val === 'trackman' ? 'flex' : 'none';
+    });
+
+    // duration slider live
+    const durIn = document.getElementById('log-duration');
+    const durOut = document.getElementById('log-duration-val');
+    durIn.addEventListener('input', () => { durOut.textContent = durIn.value; });
+
+    // star rating
+    const ratingLabels = { 1: '1 av 5 · måtte avbryte', 2: '2 av 5 · slet litt', 3: '3 av 5 · grei økt', 4: '4 av 5 · solid økt', 5: '5 av 5 · toppøkt' };
+    const ratingLabel = document.getElementById('log-rating-label');
+    let rating = 4;
+    document.querySelectorAll('#log-stars .star-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        rating = +b.dataset.rating;
+        document.querySelectorAll('#log-stars .star-btn').forEach(x => {
+          x.classList.toggle('on', +x.dataset.rating <= rating);
+        });
+        ratingLabel.textContent = ratingLabels[rating];
+      });
+    });
+
+    // goal checks
+    document.querySelector('[data-field="log-goals"]').addEventListener('click', (e) => {
+      const card = e.target.closest('.goal-check');
+      if (!card) return;
+      card.classList.toggle('checked');
+    });
+
+    // auto-suggest title based on disciplines
+    const titleIn = document.getElementById('log-title-input');
+    const suggestions = {
+      slag: 'Egen slag-økt', tek: 'Teknikk-økt', fys: 'Styrke/fys',
+      spill: 'Spillrunde', turn: 'Turneringsforberedelse'
+    };
+    document.querySelector('[data-field="log-disciplines"]').addEventListener('click', () => {
+      const active = [...document.querySelectorAll('[data-field="log-disciplines"] .chip.active')].map(c => c.dataset.val);
+      if (active.length === 1 && titleIn.value.startsWith('Egen') || titleIn.value.startsWith('Teknikk') || titleIn.value.startsWith('Spill') || titleIn.value.startsWith('Turn') || titleIn.value.startsWith('Styrke')) {
+        // simple heuristic — don't override custom titles
+      }
+    });
+
+    // ===== summary refresh =====
+    const collectPayload = () => {
+      const disc = [...document.querySelectorAll('[data-field="log-disciplines"] .chip.active')].map(c => c.dataset.val);
+      const goals = [...document.querySelectorAll('[data-field="log-goals"] .goal-check.checked')].map(g => g.dataset.val);
+      return {
+        title: titleIn.value,
+        disciplines: disc,
+        duration: +durIn.value,
+        place: document.getElementById('log-place').value,
+        when: document.getElementById('log-when').value,
+        source: document.querySelector('[data-field="log-source"] button.active').dataset.val,
+        reps: +document.getElementById('log-reps').value,
+        rating,
+        note: document.getElementById('log-note').value,
+        drill: document.getElementById('log-drill').value,
+        goals,
+        completed: true,
+      };
+    };
+    const refreshSummary = () => {
+      const p = collectPayload();
+      document.getElementById('sum-duration').textContent = p.duration;
+      document.getElementById('sum-title').textContent = p.title || '—';
+      document.getElementById('sum-disciplines').textContent = p.disciplines.length ? p.disciplines.map(d => d.toUpperCase()).join(' · ') : '—';
+      document.getElementById('sum-place').textContent = p.place;
+      document.getElementById('sum-reps').textContent = p.source === 'trackman' ? 'Hentes fra TrackMan' : p.reps;
+      document.getElementById('sum-rating').textContent = p.source === 'trackman' ? '—' : `${p.rating} av 5`;
+      const goalLabels = { top10: 'Top 10 NM Slag', srixon: 'Snitt < 72', hcp: 'HCP +2,0' };
+      document.getElementById('sum-goals').textContent = p.goals.length ? p.goals.map(g => goalLabels[g]).join(' · ') : '—';
+      // when
+      try {
+        const d = new Date(p.when);
+        const today = new Date();
+        const isToday = d.toDateString() === today.toDateString();
+        const hh = String(d.getHours()).padStart(2, '0');
+        const mm = String(d.getMinutes()).padStart(2, '0');
+        document.getElementById('sum-when').textContent = isToday ? `I dag · ${hh}:${mm}` : `${d.getDate()}. ${['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'][d.getMonth()]} · ${hh}:${mm}`;
+      } catch(e) {}
+      // impact: distribute duration across disciplines as a delta on top of base pyramide
+      const base = { fys: 20, tek: 32, slag: 28, spill: 15, turn: 5 };
+      const totalBaseMin = 195; // current week
+      const addPerDisc = p.disciplines.length ? (p.duration / p.disciplines.length) : 0;
+      const newTotal = totalBaseMin + p.duration;
+      const newPct = {};
+      Object.keys(base).forEach(k => {
+        const oldMin = (base[k] / 100) * totalBaseMin;
+        const addMin = p.disciplines.includes(k) ? addPerDisc : 0;
+        newPct[k] = Math.round(((oldMin + addMin) / newTotal) * 100);
+      });
+      // update bars
+      const colors = { fys: 'var(--fys)', tek: 'var(--tek)', slag: 'var(--slag)', spill: 'var(--spill)', turn: '#C8B72A' };
+      const bars = document.querySelectorAll('#impact-bars .impact-bar-row');
+      const keys = ['fys','tek','slag','spill','turn'];
+      bars.forEach((row, i) => {
+        const k = keys[i];
+        const before = base[k];
+        const after = newPct[k];
+        const delta = after - before;
+        const beforeEl = row.querySelector('.before');
+        const addEl = row.querySelector('.add');
+        const deltaEl = row.querySelector('.delta');
+        beforeEl.style.width = before + '%';
+        if (delta > 0) {
+          if (!addEl) {
+            const a = document.createElement('div');
+            a.className = 'add';
+            a.style.left = before + '%';
+            a.style.width = delta + '%';
+            row.querySelector('.bar').appendChild(a);
+          } else {
+            addEl.style.left = before + '%';
+            addEl.style.width = delta + '%';
+          }
+          deltaEl.className = 'delta up';
+          deltaEl.textContent = `+${delta} % ↑`;
+        } else {
+          if (addEl) addEl.remove();
+          deltaEl.className = 'delta flat';
+          deltaEl.textContent = `${before} % →`;
+        }
+      });
+      // impact summary
+      const grew = p.disciplines.map(d => `+${newPct[d] - base[d]}% ${d.toUpperCase()}`).filter(s => !s.includes('+0%')).join(' · ');
+      document.getElementById('impact-summary').textContent = (grew || 'Ingen endring') + ' · Uke 21';
+    };
+  })();
+
+  // ============ NEW GOAL ============
+  (() => {
+    const titleIn = document.getElementById('goal-title-input');
+    const helper = document.getElementById('goal-title-helper');
+
+    // type segmented
+    document.querySelector('[data-field="goal-type"]').addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const val = btn.dataset.val;
+      btn.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('[data-type-pane]').forEach(p => p.classList.toggle('active', p.dataset.typePane === val));
+      // auto-suggest title
+      const t = document.getElementById('goal-tour');
+      const m = document.getElementById('goal-metric');
+      const d = document.getElementById('goal-streak-disc');
+      if (val === 'resultat') {
+        const pos = document.getElementById('goal-pos').value || '10';
+        const tour = t.options[t.selectedIndex].text.split(' · ')[0];
+        titleIn.value = `Top ${pos} i ${tour}`;
+        helper.textContent = 'Auto-foreslått basert på turnering';
+      } else if (val === 'prosess') {
+        const v = document.getElementById('goal-prosess-val').value || '72';
+        titleIn.value = `${m.value} under ${v}`;
+        helper.textContent = 'Auto-foreslått basert på metric';
+      } else {
+        const days = document.getElementById('goal-days').value || '30';
+        const disc = d.value;
+        titleIn.value = `Trene ${disc === 'Hvilken som helst' ? 'hver dag' : disc} ${days} dager i strekk`;
+        helper.textContent = 'Auto-foreslått basert på streak';
+      }
+    });
+
+    // tour change → update title + frist-helper
+    document.getElementById('goal-tour')?.addEventListener('change', (e) => {
+      const txt = e.target.options[e.target.selectedIndex].text;
+      const date = txt.split(' · ')[1];
+      document.getElementById('goal-tour-date').textContent = `Frist auto-satt: ${date}`;
+      const pos = document.getElementById('goal-pos').value || '10';
+      titleIn.value = `Top ${pos} i ${txt.split(' · ')[0]}`;
+    });
+
+    // priority radio
+    document.querySelector('[data-field="goal-prio"]').addEventListener('click', (e) => {
+      const opt = e.target.closest('.prio-opt');
+      if (!opt) return;
+      opt.parentElement.querySelectorAll('.prio-opt').forEach(o => o.classList.toggle('active', o === opt));
+    });
+
+    // disciplines multi
+    document.querySelector('[data-field="goal-disciplines"]').addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip');
+      if (!btn) return;
+      btn.classList.toggle('active');
+      if (btn.classList.contains('active')) {
+        btn.classList.add(`chip-${btn.dataset.val}`);
+      } else {
+        btn.classList.remove(`chip-${btn.dataset.val}`);
+      }
+    });
+
+    document.getElementById('goal-submit').addEventListener('click', () => {
+      if (!titleIn.value.trim()) {
+        titleIn.focus();
+        helper.style.color = 'var(--danger)';
+        helper.textContent = 'Tittel er påkrevd';
+        return;
+      }
+      const type = document.querySelector('[data-field="goal-type"] button.active').dataset.val;
+      const prio = document.querySelector('[data-field="goal-prio"] .prio-opt.active').dataset.val;
+      const disc = [...document.querySelectorAll('[data-field="goal-disciplines"] .chip.active')].map(c => c.dataset.val);
+      const payload = {
+        type,
+        title: titleIn.value,
+        priority: +prio,
+        disciplines: disc,
+        why: document.getElementById('goal-why').value,
+      };
+      if (type === 'resultat') {
+        payload.placement = +document.getElementById('goal-pos').value;
+        payload.tournament = document.getElementById('goal-tour').value;
+      } else if (type === 'prosess') {
+        payload.value = +document.getElementById('goal-prosess-val').value;
+        payload.metric = document.getElementById('goal-metric').value;
+        payload.deadline = document.getElementById('goal-deadline').value;
+      } else {
+        payload.days = +document.getElementById('goal-days').value;
+        payload.discipline = document.getElementById('goal-streak-disc').value;
+      }
+      console.log('POST /api/goals', payload);
+      closeModal();
+      showToast('Mål opprettet');
+    });
+  })();
+
+  // ============ EDIT SESSION ============
+  (() => {
+    const durIn = document.getElementById('edit-duration');
+    const durOut = document.getElementById('edit-duration-val');
+    durIn?.addEventListener('input', () => durOut.textContent = durIn.value);
+
+    // detect any change → show coach-warning since this session is "assigned by Anders"
+    const inputs = document.querySelectorAll('#modal-edit-session input, #modal-edit-session select, #modal-edit-session textarea');
+    const warn = document.getElementById('edit-warn-row');
+    inputs.forEach(i => i.addEventListener('input', () => warn.style.display = 'flex'));
+    inputs.forEach(i => i.addEventListener('change', () => warn.style.display = 'flex'));
+
+    document.getElementById('edit-save')?.addEventListener('click', () => {
+      const payload = {
+        title: document.getElementById('edit-title-input').value,
+        when: document.getElementById('edit-when').value,
+        duration: +durIn.value,
+        place: document.getElementById('edit-place').value,
+        focus: document.getElementById('edit-focus').value,
+      };
+      console.log('PATCH /api/sessions/[id]', payload);
+      closeModal();
+      warn.style.display = 'none';
+      showToast('Økt oppdatert');
+    });
+
+    document.getElementById('edit-delete')?.addEventListener('click', () => {
+      if (!confirm('Slette denne økten? Anders blir varslet.')) return;
+      console.log('DELETE /api/sessions/[id]');
+      closeModal();
+      warn.style.display = 'none';
+      showToast('Økt slettet');
+    });
+
+    document.getElementById('edit-swap-drill')?.addEventListener('click', () => {
+      showToast('Drill-bibliotek åpnes …');
+    });
+  })();
+
+  // ============ PLAN ADJUST ============
+  (() => {
+    const text = document.getElementById('adj-text');
+    const counter = document.getElementById('adj-counter');
+    text?.addEventListener('input', () => {
+      const n = text.value.length;
+      counter.textContent = `${n} / 320 tegn · minimum 10`;
+      counter.style.color = n >= 10 ? 'var(--success)' : 'var(--muted-soft)';
+    });
+    // type radio
+    document.querySelector('[data-field="adj-type"]')?.addEventListener('click', (e) => {
+      const opt = e.target.closest('.prio-opt');
+      if (!opt) return;
+      opt.parentElement.querySelectorAll('.prio-opt').forEach(o => o.classList.toggle('active', o === opt));
+      const v = opt.dataset.val;
+      const discField = document.getElementById('adj-disc-field');
+      if (discField) discField.style.display = (v === 'more' || v === 'less') ? '' : 'none';
+    });
+    // disciplines multi
+    document.querySelector('[data-field="adj-disciplines"]')?.addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip');
+      if (!btn) return;
+      btn.classList.toggle('active');
+      if (btn.classList.contains('active')) btn.classList.add(`chip-${btn.dataset.val}`);
+      else btn.classList.remove(`chip-${btn.dataset.val}`);
+    });
+    // urgency
+    document.querySelector('[data-field="adj-urgency"]')?.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const all = btn.parentElement.querySelectorAll('button');
+      all.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    // quick tags
+    document.getElementById('adj-quick-tags')?.addEventListener('click', (e) => {
+      const tag = e.target.closest('.quick-tag');
+      if (!tag) return;
+      text.value = tag.dataset.text;
+      text.dispatchEvent(new Event('input'));
+      text.focus();
+    });
+    document.getElementById('adj-submit')?.addEventListener('click', () => {
+      if (text.value.trim().length < 10) {
+        text.focus();
+        counter.style.color = 'var(--danger)';
+        counter.textContent = `Forklar hva du ønsker (minst 10 tegn) — ${text.value.length} / 320`;
+        return;
+      }
+      const payload = {
+        type: document.querySelector('[data-field="adj-type"] .prio-opt.active').dataset.val,
+        disciplines: [...document.querySelectorAll('[data-field="adj-disciplines"] .chip.active')].map(c => c.dataset.val),
+        text: text.value,
+        urgency: document.querySelector('[data-field="adj-urgency"] button.active').dataset.val,
+        week: 21,
+      };
+      console.log('POST /api/coach/plan-adjustments', payload);
+      closeModal();
+      showToast('Plan-justering sendt til Anders');
+    });
+  })();
+
+  // ============ EMPTY-SLOT POPOVER ============
+  (() => {
+    const pop = document.getElementById('slot-popover');
+    if (!pop) return;
+    const popHeader = document.getElementById('slot-pop-header');
+
+    const dayLabels = ['SØN','MAN','TIR','ONS','TOR','FRE','LØR'];
+    const monthNames = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
+
+    const openAt = (el, label) => {
+      const r = el.getBoundingClientRect();
+      popHeader.textContent = label;
+      pop.style.display = 'block';
+      pop.dataset.label = label;
+      // position: prefer to the right of cell; fall back to below
+      const popW = 280;
+      const popH = 240;
+      let left = r.right + 8;
+      let top = r.top;
+      if (left + popW > window.innerWidth - 12) { left = r.left - popW - 8; }
+      if (left < 12) { left = Math.max(12, r.left); top = r.bottom + 6; }
+      if (top + popH > window.innerHeight - 12) top = window.innerHeight - popH - 12;
+      pop.style.left = left + 'px';
+      pop.style.top = top + 'px';
+    };
+
+    const closePop = () => { pop.style.display = 'none'; };
+
+    // attach to empty cells (workbench uke + dag-tline empties)
+    const wireEmptyCells = () => {
+      document.querySelectorAll('.event-empty').forEach(el => {
+        if (el.dataset.wired) return;
+        el.dataset.wired = '1';
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // derive label from grid position
+          const cell = el.parentElement;
+          // grid order: corner, 7 day-heads, then for each hour: time-label + 7 cells
+          const grid = cell.parentElement;
+          const idx = [...grid.children].indexOf(cell);
+          // first row: 1 corner + 7 day-heads = 8 cells before time/cell rows
+          // each hour row: 8 cells. cell index in row = (idx - 8) % 8; 0 = time-label, 1-7 = day cells
+          const inRow = (idx - 8) % 8;
+          const rowNum = Math.floor((idx - 8) / 8); // 0-based hour index
+          const dayHeadIdx = inRow; // 1..7
+          const dayHead = grid.children[dayHeadIdx];
+          const dayCode = dayHead?.textContent?.match(/^[A-ZÆØÅ]+/)?.[0] || 'DAG';
+          const dnum = dayHead?.querySelector('.dnum')?.textContent || '';
+          const hour = 8 + rowNum;
+          const label = `${dayCode} ${dnum}. MAI · ${String(hour).padStart(2,'0')}:00`;
+          openAt(el, label);
+        });
+      });
+      // dag-tline empties
+      document.querySelectorAll('.dt-empty').forEach(el => {
+        if (el.dataset.wired) return;
+        el.dataset.wired = '1';
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openAt(el, 'MAN 19. MAI · 11:00');
+        });
+      });
+    };
+    wireEmptyCells();
+
+    // close on outside click
+    document.addEventListener('click', (e) => {
+      if (pop.style.display === 'block' && !pop.contains(e.target)) closePop();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
+    document.querySelector('#slot-pop-close')?.addEventListener('click', closePop);
+
+    // action wiring
+    document.getElementById('slot-action-new')?.addEventListener('click', () => {
+      closePop();
+      showToast('Åpner ny økt …');
+    });
+    document.getElementById('slot-action-ai')?.addEventListener('click', () => {
+      const result = document.getElementById('slot-ai-result');
+      result.style.display = 'flex';
+      result.querySelector('.streaming').style.display = 'block';
+      result.querySelector('.actions').style.display = 'none';
+      // fake streaming
+      const text = 'Forslag: Approach 100—150m blokk · 60 min · SLAG-pill. Møter direkte ditt prio-1-gap (−0,42 SG).';
+      const out = result.querySelector('.streaming');
+      out.textContent = '';
+      let i = 0;
+      const tick = () => {
+        if (i < text.length) { out.textContent += text[i++]; setTimeout(tick, 18); }
+        else result.querySelector('.actions').style.display = 'flex';
+      };
+      tick();
+    });
+    document.getElementById('slot-action-coach')?.addEventListener('click', () => {
+      closePop();
+      openModal('ask-coach');
+    });
+    document.getElementById('slot-action-rest')?.addEventListener('click', () => {
+      closePop();
+      showToast('Hviledag markert');
+    });
+    document.getElementById('slot-ai-accept')?.addEventListener('click', () => {
+      closePop();
+      showToast('Økt lagt inn');
+    });
+    document.getElementById('slot-ai-dismiss')?.addEventListener('click', () => {
+      document.getElementById('slot-ai-result').style.display = 'none';
+    });
+  })();
+
+  // ============ TRACKMAN IMPORT ============
+  (() => {
+    const SESSIONS = [
+      { id: 1, date: '18. MAI', ttl: 'Driver-økt', metrics: 'CS 113 mph · Smash 1,49 · 84 reps', pill: 'tek' },
+      { id: 2, date: '16. MAI', ttl: 'Iron 7', metrics: 'Carry 160 m · Spinn 6 920 rpm · 96 reps', pill: 'tek' },
+      { id: 3, date: '14. MAI', ttl: 'Pitch 50—100m', metrics: 'Landing ±2,8 m · 156 reps · 74% mål', pill: 'slag' },
+      { id: 4, date: '11. MAI', ttl: 'Putting blokk', metrics: '0—3m 89% · 3—6m 55% · 80 putts', pill: 'slag' },
+      { id: 5, date: '9. MAI', ttl: 'Iron 8 · approach', metrics: 'Carry 142 m · Dispersjon ±5,2 m · 64 reps', pill: 'tek' },
+      { id: 6, date: '8. MAI', ttl: 'Wedge 60° spinn-test', metrics: 'Spinn 9 800 rpm · Apex 22 m · 40 reps', pill: 'slag' },
+      { id: 7, date: '6. MAI', ttl: 'Driver-økt', metrics: 'CS 111 mph · Smash 1,46 · 72 reps', pill: 'tek' },
+      { id: 8, date: '4. MAI', ttl: 'Iron 5 · low-trajectory', metrics: 'Carry 188 m · Apex 18 m · 48 reps', pill: 'tek' },
+      { id: 9, date: '2. MAI', ttl: 'Pitch fra rough', metrics: 'Spinn 8 200 rpm · Landing ±3,5 m · 60 reps', pill: 'slag' },
+      { id: 10, date: '30. APR', ttl: 'Putting 3—6m', metrics: '52% · snitt 0,42m fra hull · 120 putts', pill: 'slag' },
+    ];
+
+    let step = 1;
+    const labels = {
+      1: 'STEG 1 AV 3 · VELG KILDE',
+      2: 'STEG 2 AV 3 · MAP DATA',
+      3: 'STEG 3 AV 3 · BEKREFT',
+    };
+    const labelEl = document.getElementById('tm-step-label');
+    const dots = document.querySelectorAll('#tm-stepper .dot');
+    const backBtn = document.getElementById('tm-back');
+    const nextBtn = document.getElementById('tm-next');
+    const nextLbl = document.getElementById('tm-next-label');
+
+    const setStep = (n) => {
+      step = n;
+      labelEl.textContent = labels[n];
+      dots.forEach(d => {
+        const s = +d.dataset.step;
+        d.classList.toggle('active', s === n);
+        d.classList.toggle('done', s < n);
+      });
+      document.querySelectorAll('#modal-tm-import .step-view').forEach(v => {
+        v.classList.toggle('active', +v.dataset.stepView === n);
+      });
+      backBtn.style.visibility = n === 1 ? 'hidden' : '';
+      const cnt = countChecked();
+      if (n === 3) {
+        nextLbl.textContent = `Importer ${cnt} økter`;
+        nextBtn.querySelector('svg').style.display = 'none';
+        renderSummary();
+      } else {
+        nextLbl.textContent = 'Neste';
+        nextBtn.querySelector('svg').style.display = '';
+      }
+    };
+
+    const countChecked = () => document.querySelectorAll('#tm-sessions .session-row.checked').length;
+
+    // source cards
+    document.querySelector('[data-field="tm-source"]').addEventListener('click', (e) => {
+      const card = e.target.closest('.source-card');
+      if (!card) return;
+      card.parentElement.querySelectorAll('.source-card').forEach(c => c.classList.toggle('active', c === card));
+      const v = card.dataset.val;
+      document.querySelector('[data-source-pane="account"]').style.display = v === 'account' ? 'flex' : 'none';
+      document.querySelector('[data-source-pane="csv"]').style.display = v === 'csv' ? 'flex' : 'none';
+    });
+
+    // session rows
+    document.getElementById('tm-sessions').addEventListener('click', (e) => {
+      const row = e.target.closest('.session-row');
+      if (!row) return;
+      row.classList.toggle('checked');
+    });
+    document.getElementById('tm-select-all').addEventListener('click', () => {
+      document.querySelectorAll('#tm-sessions .session-row').forEach(r => r.classList.add('checked'));
+    });
+    document.getElementById('tm-select-none').addEventListener('click', () => {
+      document.querySelectorAll('#tm-sessions .session-row').forEach(r => r.classList.remove('checked'));
+    });
+
+    // goals chips multi
+    document.querySelector('[data-field="tm-goals"]').addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip');
+      if (!btn) return;
+      btn.classList.toggle('active');
+      if (btn.classList.contains('active')) btn.classList.add(`chip-${btn.dataset.val === 'top10' ? 'slag' : btn.dataset.val === 'srixon' ? 'tek' : 'fys'}`);
+      else { btn.classList.remove('chip-slag','chip-tek','chip-fys'); }
+    });
+
+    // replace toggle
+    const replaceToggle = document.getElementById('tm-replace-toggle');
+    replaceToggle?.addEventListener('click', () => {
+      replaceToggle.classList.toggle('on');
+      replaceToggle.setAttribute('aria-pressed', replaceToggle.classList.contains('on'));
+    });
+
+    const renderSummary = () => {
+      const list = document.getElementById('tm-summary-list');
+      const checked = [...document.querySelectorAll('#tm-sessions .session-row.checked')].map(r => +r.dataset.id);
+      const data = SESSIONS.filter(s => checked.includes(s.id));
+      document.getElementById('tm-count').textContent = data.length;
+      list.innerHTML = data.map(s => `
+        <div class="import-summary-card">
+          <span class="date">${s.date}</span>
+          <div>
+            <div class="ttl">${s.ttl}</div>
+            <div class="metrics">${s.metrics}</div>
+          </div>
+          <span class="pill pill-${s.pill}">${s.pill.toUpperCase()}</span>
+        </div>
+      `).join('');
+    };
+
+    // nav
+    backBtn.addEventListener('click', () => setStep(Math.max(1, step - 1)));
+    nextBtn.addEventListener('click', () => {
+      if (step < 3) {
+        if (step === 2 && countChecked() === 0) {
+          showToast('Velg minst én økt'); return;
+        }
+        setStep(step + 1);
+        return;
+      }
+      const checked = [...document.querySelectorAll('#tm-sessions .session-row.checked')].map(r => +r.dataset.id);
+      const payload = {
+        source: document.querySelector('[data-field="tm-source"] .source-card.active').dataset.val,
+        sessions: checked,
+        discipline: document.getElementById('tm-discipline').value,
+        drill: document.getElementById('tm-drill').value,
+        goals: [...document.querySelectorAll('[data-field="tm-goals"] .chip.active')].map(c => c.dataset.val),
+        note: document.getElementById('tm-note').value,
+        replace: replaceToggle.classList.contains('on'),
+      };
+      console.log('POST /api/sessions/bulk-import', payload);
+      closeModal();
+      showToast(`${checked.length} TrackMan-økter importert`);
+      setStep(1);
+    });
+
+  // ============ DISCIPLINE DRILL-DOWN ============
+  (() => {
+    const DATA = {
+      fys: {
+        name: 'Fys', full: 'FYS — Fysisk', kind: 'fys',
+        actual: 20, target: 20, mins: 30, plannedTotal: 195,
+        descr: 'FYS = fysisk trening — styrke, mobilitet, kondisjon. Bygger motoren bak alle slag.',
+        tags: ['Beinbøy + core', 'Mobilitet rotasjon', 'Intervall 4×4', 'Skulder-prep'],
+        contribs: [
+          { dt: 'TIR 20/5', ttl: 'Beinbøy + core', meta: '11:00 — 11:30 · egen-økt', status: 'success', statusLabel: 'FULLFØRT', mins: 30 },
+        ],
+      },
+      tek: {
+        name: 'Tek', full: 'TEK — Teknikk', kind: 'tek',
+        actual: 32, target: 30, mins: 150, plannedTotal: 195,
+        descr: 'TEK = teknisk kvalitetstrening med fokus på <em class="italic-accent">kraftutvikling</em>, swing-mekanikk og repetisjon. Skal være langsom og gjentakende — ikke spillsimulering.',
+        tags: ['Iron-progresjon', 'Driver grunntrening', 'Spin-kontroll', 'CS-progresjon'],
+        contribs: [
+          { dt: 'MAN 19/5', ttl: 'Iron-progresjon CS70 → CS80', meta: '14:00 — 15:30 · 240 reps · av Anders', status: 'success', statusLabel: 'FULLFØRT', mins: 90 },
+          { dt: 'FRE 23/5', ttl: 'Driver grunntrening', meta: '11:00 — 12:00 · 120 reps · av Anders', status: 'forest', statusLabel: 'PLANLAGT', mins: 60 },
+        ],
+      },
+      slag: {
+        name: 'Slag', full: 'SLAG — Slag-spesifikk', kind: 'slag',
+        actual: 28, target: 30, mins: 90, plannedTotal: 195,
+        descr: 'SLAG = slag-spesifikk presisjonstrening — pitch, chip, putting, bunker. <em class="italic-accent">Approach-fokus</em> i denne perioden pga. SG-gapet.',
+        tags: ['Pitch 50—100m', 'Putting blokk', 'Bunker', 'Approach 100—150m'],
+        contribs: [
+          { dt: 'MAN 19/5', ttl: 'Pitch 50—100m, lav', meta: '09:00 — 10:00 · 184 reps · 71% mål', status: 'success', statusLabel: 'FULLFØRT', mins: 60 },
+          { dt: 'ONS 21/5', ttl: 'Bunker-eskalering', meta: '09:00 — 10:30 · 80 reps · selvplanlagt', status: 'lime', statusLabel: 'SELVPLAN', mins: 90 },
+        ],
+      },
+      spill: {
+        name: 'Spill', full: 'SPILL — Spill-simulering', kind: 'spill',
+        actual: 15, target: 15, mins: 240, plannedTotal: 195,
+        descr: 'SPILL = simulering av ekte runder — strategi, klubbvalg, mental kapasitet. Ekte hull eller 9-hull-simulering.',
+        tags: ['9-hulls sim', 'Strategi-runde', 'Klubbvalg-drill', 'Score-runde'],
+        contribs: [
+          { dt: 'LØR 24/5', ttl: 'Bossum Open · Runde 1', meta: '09:00 — 13:00 · 18 hull · turnering', status: 'danger', statusLabel: 'TURNERING', mins: 240 },
+        ],
+      },
+      turn: {
+        name: 'Turn', full: 'TURN — Turnerings-spesifikk', kind: 'turn',
+        actual: 5, target: 5, mins: 15, plannedTotal: 195,
+        descr: 'TURN = turnerings-forberedelse — mental visualisering, ritualer, pre-shot routine.',
+        tags: ['Mental visualisering', 'Pre-shot routine', 'Pust-øvelser', 'Score-tracking'],
+        contribs: [
+          { dt: 'MAN 19/5', ttl: 'Mental visualisering', meta: '16:00 — 16:15 · pre-Sørlands', status: 'muted', statusLabel: 'FULLFØRT', mins: 15 },
+        ],
+      },
+    };
+
+    const open = (key) => {
+      const d = DATA[key]; if (!d) return;
+      const m = document.getElementById('modal-disc');
+      m.querySelector('#disc-pill').textContent = key.toUpperCase();
+      m.querySelector('#disc-pill').className = 'disc-pill-lg kind-' + d.kind;
+      m.querySelector('#disc-title').textContent = d.full;
+      const diff = d.actual - d.target;
+      const diffStr = diff === 0 ? '±0 pp' : (diff > 0 ? `+${diff}` : `${diff}`) + ' pp';
+      m.querySelector('#disc-caption').textContent = `Uke 21 · ${d.target}% mål · ${d.actual}% faktisk · ${diffStr}`;
+      m.querySelector('#disc-num').textContent = `${d.actual}%`;
+      const diffEl = m.querySelector('#disc-diff');
+      diffEl.textContent = (diff > 0 ? '↑ ' : diff < 0 ? '↓ ' : '') + diffStr + ' mot mål';
+      diffEl.className = 'diff' + (diff >= 0 ? ' up' : '');
+      m.querySelector('#disc-totals').textContent = `${d.mins} min av ${d.plannedTotal} min planlagt`;
+      m.querySelector('#disc-name').textContent = key.toUpperCase();
+      m.querySelector('#disc-cta-name').textContent = key.toUpperCase();
+      m.querySelector('#disc-descr').innerHTML = d.descr;
+      m.querySelector('#disc-tags').innerHTML = d.tags.map(t => `<span class="equip-tag">${t}</span>`).join('');
+      const badgeClass = { success: 'badge badge-success', forest: 'badge badge-forest', lime: 'badge badge-lime', danger: 'badge badge-danger', muted: 'badge badge-muted' };
+      m.querySelector('#disc-contribs').innerHTML = d.contribs.map(c => `
+        <div class="contrib-row">
+          <span class="dt">${c.dt}</span>
+          <div>
+            <div class="ttl">${c.ttl}</div>
+            <div class="meta">${c.meta}</div>
+          </div>
+          <span class="${badgeClass[c.status]}">${c.statusLabel}</span>
+          <span class="mins">${c.mins} min</span>
+        </div>
+      `).join('');
+      openModal('disc');
+    };
+
+  // ============ NOTIFICATIONS POPOVER ============
+  (() => {
+    const NOTIFS = [
+      { id: 1, type: 'coach', kind: 'coach', who: 'AK', eyebrow: 'COACH-MELDING · 2 T SIDEN', ttl: 'Anders sendte deg en melding', snippet: '"Du har vært jevn denne uka, Markus. Hold trykket inn mot Sørlandsåpent."', unread: true },
+      { id: 2, type: 'coach', kind: 'drill', icon: 'ic-target', eyebrow: 'NY DRILL · 5 T SIDEN', ttl: 'Ny drill tildelt: Bunker-eskalering', snippet: 'SLAG · 80 reps · planlagt Tir 20. mai 09:00. Tildelt av Anders.', unread: true },
+      { id: 3, type: 'tour', kind: 'tour', icon: 'ic-flag', eyebrow: 'TURNERING · 1 D SIDEN', ttl: 'Sørlandsåpent om 21 dager', snippet: 'Klar for å bygge form? Du har 12 økter på planen som peker mot dette hovedmålet.', unread: true },
+      { id: 4, type: 'goal', kind: 'streak', icon: 'ic-flame', eyebrow: 'STREAK · 1 D SIDEN', ttl: 'Du nådde 11 av 14 dagers streak', snippet: 'Lengste streak hittil: 23 dager. Hold gang i FYS på torsdag for å fortsette.', unread: false },
+      { id: 5, type: 'plan', kind: 'plan', icon: 'ic-sparkles', eyebrow: 'PLAN-JUSTERING · 3 D SIDEN', ttl: 'Plan-justering godkjent', snippet: 'Anders la til 2 approach-økter denne uka. Begge er nå synlige i kalenderen.', unread: false },
+      { id: 6, type: 'goal', kind: 'goal', icon: 'ic-up', eyebrow: 'MÅL-FREMGANG · 4 D SIDEN', ttl: 'HCP-mål nådde 60% fremgang', snippet: 'Du har forbedret deg +0,3 slag siste 30 dager. Sesongmål: under +2,0.', unread: false },
+    ];
+
+    const pop = document.getElementById('notif-pop');
+    const bell = document.getElementById('bell-btn');
+    const bellDot = document.getElementById('bell-dot');
+    const list = document.getElementById('notif-list');
+    const unreadEl = document.getElementById('notif-unread');
+    let activeFilter = 'all';
+
+    const render = () => {
+      const filtered = activeFilter === 'all' ? NOTIFS : NOTIFS.filter(n => n.type === activeFilter);
+      list.innerHTML = filtered.map(n => {
+        const av = n.kind === 'coach'
+          ? `<div class="avatar" style="background:var(--primary);color:var(--accent);">${n.who}</div>`
+          : `<div class="ic-wrap ${n.kind}"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#${n.icon}"/></svg></div>`;
+        return `
+          <div class="notif-row ${n.unread ? 'unread' : ''}" data-id="${n.id}">
+            ${av}
+            <div class="body">
+              <div class="eyebrow">${n.eyebrow}</div>
+              <div class="ttl">${n.ttl}</div>
+              <div class="snippet">${n.snippet}</div>
+            </div>
+            <span class="dot"></span>
+          </div>
+        `;
+      }).join('');
+      const unread = NOTIFS.filter(n => n.unread).length;
+      unreadEl.textContent = unread === 0 ? 'ALLE LEST' : `${unread} ULESTE`;
+      bellDot.style.display = unread === 0 ? 'none' : '';
+    };
+    render();
+
+    const openPop = () => {
+      const r = bell.getBoundingClientRect();
+      let left = r.right - 380;
+      if (left < 16) left = 16;
+      pop.style.left = left + 'px';
+      pop.style.top = (r.bottom + 8) + 'px';
+      pop.classList.add('open');
+    };
+    const closePop = () => pop.classList.remove('open');
+
+    bell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      pop.classList.contains('open') ? closePop() : openPop();
+    });
+    document.addEventListener('click', (e) => {
+      if (pop.classList.contains('open') && !pop.contains(e.target)) closePop();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
+
+    document.querySelector('[data-field="notif-tabs"]').addEventListener('click', (e) => {
+      const t = e.target.closest('.notif-tab');
+      if (!t) return;
+      activeFilter = t.dataset.filter;
+      pop.querySelectorAll('.notif-tab').forEach(b => b.classList.toggle('active', b === t));
+      render();
+    });
+
+    list.addEventListener('click', (e) => {
+      const row = e.target.closest('.notif-row');
+      if (!row) return;
+      const id = +row.dataset.id;
+      const n = NOTIFS.find(x => x.id === id);
+      if (n) n.unread = false;
+      render();
+      showToast('Varsel åpnet');
+    });
+
+  // ============ MESSAGES DRAWER ============
+  (() => {
+    const THREADS = [
+      {
+        id: 'anders',
+        nm: 'Anders Kristiansen',
+        role: 'HEAD COACH · sist sett for 5 min siden',
+        avatar: 'AK',
+        avatarStyle: 'background:var(--primary); color:var(--accent);',
+        snip: '"Du har vært jevn denne uka, Markus. Hold trykket inn mot Sørlandsåpent."',
+        ts: '2 t siden',
+        unread: true,
+        messages: [
+          { kind: 'sep', text: 'Søndag 17. mai' },
+          { kind: 'them', text: 'Hei Markus, jeg har satt opp iron-progresjon og driver-grunntrening denne uka.', ts: '17/5 · 14:22' },
+          { kind: 'me', text: 'Takk! Approach-data ser dårlig ut — kan vi få inn noe der?', ts: '17/5 · 15:01' },
+          { kind: 'them', text: 'Helt enig. Jeg ser approach −0,42 SG mot kategori-snitt. Legger inn pitch 50—100m i tillegg.', ts: '17/5 · 15:14' },
+          { kind: 'sep', text: 'Mandag 18. mai' },
+          { kind: 'me', text: 'Bra. Hva med Sørlandsåpent — er Bossum-banen lik Mandal?', ts: '18/5 · 09:42' },
+          { kind: 'them', text: 'Begge er park-links med smale fairways. Bossum har litt færre par-3-utfordringer, men forhøyede greener — så approach-fokus passer perfekt.', ts: '18/5 · 11:10' },
+          { kind: 'sep', text: 'I dag' },
+          { kind: 'them', text: 'Du har vært jevn denne uka, Markus. Hold trykket inn mot Sørlandsåpent.', ts: '14:32', unread: true },
+        ],
+      },
+      {
+        id: 'hub',
+        nm: 'AK Golf Hub',
+        role: 'SYSTEM',
+        avatar: 'AK',
+        avatarStyle: 'background:rgba(0,88,64,0.13); color:var(--primary);',
+        snip: 'Velkommen til Spesialisering-perioden. Du har 6 uker fokus på CS70→CS80.',
+        ts: '5 d siden',
+        unread: false,
+        messages: [
+          { kind: 'sep', text: 'Søndag 12. mai' },
+          { kind: 'system', text: 'Du startet en ny periode: Spesialisering, uke 17—22. Fokus: CS70 → CS80.' },
+          { kind: 'them', text: 'Velkommen til Spesialisering-perioden. Du har 6 uker fokus på CS70→CS80. Bygg på iron-grunntreningen.', ts: '12/5 · 06:00' },
+        ],
+      },
+    ];
+
+    const drawer = document.getElementById('msg-drawer');
+    const backdrop = document.getElementById('drawer-backdrop');
+    const head = document.getElementById('msg-head');
+    const threadList = document.getElementById('thread-list');
+    const chatView = document.getElementById('chat-view');
+    const stream = document.getElementById('chat-stream');
+    const input = document.getElementById('msg-input');
+    let activeThread = null;
+
+    const open = () => {
+      drawer.classList.add('open');
+      backdrop.classList.add('open');
+      activeThread = null;
+      renderHead();
+      renderList();
+    };
+    const close = () => {
+      drawer.classList.remove('open');
+      backdrop.classList.remove('open');
+    };
+    backdrop.addEventListener('click', close);
+    document.getElementById('msg-btn').addEventListener('click', open);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('open')) close(); });
+
+    const renderHead = () => {
+      if (!activeThread) {
+        head.innerHTML = `
+          <div class="title-only">Meldinger</div>
+          <button class="back-btn" id="close-drawer" aria-label="Lukk">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        `;
+      } else {
+        const t = THREADS.find(x => x.id === activeThread);
+        head.innerHTML = `
+          <button class="back-btn" id="back-to-list" aria-label="Tilbake">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="who">
+            <div class="avatar" style="${t.avatarStyle}">${t.avatar}</div>
+            <div>
+              <div class="nm">${t.nm}</div>
+              <div class="role">${t.role}</div>
+            </div>
+          </div>
+          <button class="back-btn" id="close-drawer" aria-label="Lukk">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        `;
+      }
+      // wire buttons
+      document.getElementById('close-drawer')?.addEventListener('click', close);
+      document.getElementById('back-to-list')?.addEventListener('click', () => {
+        activeThread = null; renderHead(); renderList();
+      });
+    };
+
+    const renderList = () => {
+      threadList.style.display = '';
+      chatView.style.display = 'none';
+      threadList.innerHTML = THREADS.map(t => `
+        <div class="thread-row ${t.unread ? 'unread' : ''}" data-id="${t.id}">
+          <div class="avatar" style="${t.avatarStyle}">${t.avatar}</div>
+          <div class="body">
+            <div class="nm">${t.nm}</div>
+            <div class="role">${t.role}</div>
+            <div class="snip">${t.snip}</div>
+          </div>
+          <div class="meta">
+            <span class="ts">${t.ts}</span>
+            <span class="lime-dot"></span>
+          </div>
+        </div>
+      `).join('');
+      threadList.querySelectorAll('.thread-row').forEach(r => {
+        r.addEventListener('click', () => openThread(r.dataset.id));
+      });
+    };
+
+    const openThread = (id) => {
+      activeThread = id;
+      const t = THREADS.find(x => x.id === id);
+      if (t) t.unread = false;
+      threadList.style.display = 'none';
+      chatView.style.display = 'flex';
+      renderHead();
+      renderStream(t);
+      setTimeout(() => { stream.scrollTop = stream.scrollHeight; }, 30);
+    };
+
+    const renderStream = (t) => {
+      stream.innerHTML = t.messages.map(m => {
+        if (m.kind === 'sep') return `<div class="day-separator">${m.text}</div>`;
+        if (m.kind === 'system') return `<div class="msg-system">${m.text}</div>`;
+        const mine = m.kind === 'me';
+        const av = mine ? '' : `<div class="avatar" style="${t.avatarStyle}">${t.avatar}</div>`;
+        return `
+          <div class="msg-row ${mine ? 'mine' : ''}">
+            ${av}
+            <div>
+              <div class="msg-bubble">${m.text}</div>
+              <div class="ts">${m.ts || ''}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    };
+
+    // send
+    const send = () => {
+      const txt = input.value.trim();
+      if (!txt) return;
+      const t = THREADS.find(x => x.id === activeThread);
+      if (!t) return;
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,'0');
+      const mm = String(now.getMinutes()).padStart(2,'0');
+      t.messages.push({ kind: 'me', text: txt, ts: `${hh}:${mm}` });
+      input.value = '';
+      input.style.height = '40px';
+      renderStream(t);
+      setTimeout(() => { stream.scrollTop = stream.scrollHeight; }, 30);
+    };
+    document.getElementById('msg-send').addEventListener('click', send);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+    });
+    input.addEventListener('input', () => {
+      input.style.height = '40px';
+      input.style.height = Math.min(120, input.scrollHeight) + 'px';
+    });
+
+  // ============ EVENT PREVIEW POPOVER ============
+  (() => {
+    const pop = document.getElementById('event-pop');
+    const popHead = document.getElementById('event-pop-head');
+
+    const STATUS_BADGE = {
+      fullfort:  { cls: 'badge badge-success', text: 'FULLFØRT' },
+      planlagt:  { cls: 'badge badge-forest',  text: 'PLANLAGT' },
+      selvplan:  { cls: 'badge badge-lime',    text: 'SELVPLAN' },
+      turnering: { cls: 'badge badge-danger',  text: 'TURNERING' },
+    };
+
+    const openAt = (target, ev) => {
+      // discipline class on head for tinting
+      popHead.className = 'head ' + ev.k;
+      document.getElementById('ep-pill').className = 'pill pill-' + ev.k;
+      document.getElementById('ep-pill').textContent = ev.k.toUpperCase();
+      const st = STATUS_BADGE[ev.status] || STATUS_BADGE.planlagt;
+      const stEl = document.getElementById('ep-status');
+      stEl.className = st.cls;
+      stEl.textContent = ev.statusText || st.text;
+      document.getElementById('ep-title').textContent = ev.t;
+      document.getElementById('ep-when').textContent = `${ev.dayLabel} · ${ev.time}`;
+      document.getElementById('ep-duration').textContent = ev.dur + ' min';
+      document.getElementById('ep-reps').textContent = ev.reps ? ev.reps + (ev.k === 'spill' ? ' hull' : ' reps') : '—';
+      document.getElementById('ep-drill').textContent = ev.drill || '—';
+      document.getElementById('ep-focus').innerHTML = ev.focus || '—';
+      document.getElementById('ep-assigned').textContent = ev.assigned || '—';
+      document.getElementById('ep-goal').innerHTML = ev.goal || '—';
+
+      // log action only enabled for not-yet-done
+      const logBtn = document.getElementById('ep-log');
+      const editBtn = document.getElementById('ep-edit');
+      if (ev.status === 'fullfort') {
+        logBtn.style.display = 'none';
+        editBtn.textContent = 'Se logg';
+      } else {
+        logBtn.style.display = '';
+        editBtn.textContent = 'Endre';
+      }
+
+      // position next to event element
+      const r = target.getBoundingClientRect();
+      const popW = 320, popH = 480;
+      let left = r.right + 8;
+      let top = r.top;
+      if (left + popW > window.innerWidth - 12) { left = r.left - popW - 8; }
+      if (left < 12) { left = Math.max(12, r.left); top = r.bottom + 6; }
+      if (top + popH > window.innerHeight - 12) top = Math.max(12, window.innerHeight - popH - 12);
+      pop.style.left = left + 'px';
+      pop.style.top = top + 'px';
+      pop.classList.add('open');
+      pop._currentEv = ev;
+    };
+
+    const closePop = () => { pop.classList.remove('open'); pop._currentEv = null; };
+
+    // delegate click on .event elements in uke-grid
+    document.addEventListener('click', (e) => {
+      const ev = e.target.closest('.event[data-event-id]');
+      if (ev) {
+        e.stopPropagation();
+        const data = (window.__UKE_EVENTS || {})[ev.dataset.eventId];
+        if (data) openAt(ev, data);
+        return;
+      }
+      // close on outside click
+      if (pop.classList.contains('open') && !pop.contains(e.target)) closePop();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
+
+    document.getElementById('ep-close').addEventListener('click', closePop);
+
+    document.getElementById('ep-open').addEventListener('click', () => {
+      closePop();
+      // jump to Økt-zoom
+      document.body.dataset.zoom = 'okt';
+      document.querySelectorAll('.zoom-tab').forEach(b => b.classList.toggle('active', b.dataset.zoom === 'okt'));
+      const bread = document.getElementById('zoom-bread-val');
+      if (bread) bread.textContent = pop._currentEv?.t || 'Økt-detalj';
+      // scroll to top so user sees the zoom view
+      window.scrollTo({ top: 200, behavior: 'smooth' });
+    });
+    document.getElementById('ep-edit').addEventListener('click', () => {
+      closePop();
+      openModal('edit-session');
+    });
+    document.getElementById('ep-log').addEventListener('click', () => {
+      closePop();
+      openModal('log-session');
+    });
+  })();
+</script>
+
+</body>
+</html>
