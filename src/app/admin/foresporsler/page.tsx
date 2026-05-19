@@ -79,7 +79,7 @@ export default async function ForespørslerPage() {
   // eslint-disable-next-line react-hooks/purity
   const sjuDagerSiden = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const planlagt7d = requests.filter(
-    (r) => r.status === "SCHEDULED" && r.createdAt.getTime() >= sjuDagerSiden,
+    (r) => r.status === "APPROVED" && r.createdAt.getTime() >= sjuDagerSiden,
   ).length;
   const avslatt7d = requests.filter(
     (r) => r.status === "DECLINED" && r.createdAt.getTime() >= sjuDagerSiden,
@@ -207,19 +207,19 @@ export default async function ForespørslerPage() {
                         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1.5">
                             <Calendar className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
-                            {formaterDato(req.preferredAt)}
+                            {formaterDato(req.preferredDate)}
                           </span>
-                          {req.pyramidArea && (
+                          {req.preferredArea && (
                             <span className="flex items-center gap-1.5">
                               <Clock className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
-                              Fokus: {PYR_LABEL[req.pyramidArea] ?? req.pyramidArea}
+                              Fokus: {PYR_LABEL[req.preferredArea] ?? req.preferredArea}
                             </span>
                           )}
                         </div>
 
-                        {req.notes && (
+                        {req.reason && (
                           <p className="text-sm text-foreground/70 italic">
-                            &ldquo;{req.notes}&rdquo;
+                            &ldquo;{req.reason}&rdquo;
                           </p>
                         )}
 
@@ -235,7 +235,7 @@ export default async function ForespørslerPage() {
                     {/* Book-snarvei */}
                     <div className="border-t border-border px-5 py-3">
                       <Link
-                        href={`/admin/bookings/ny?spillerId=${req.user.id}&note=${encodeURIComponent(req.notes ?? "")}`}
+                        href={`/admin/bookings/ny?spillerId=${req.user.id}&note=${encodeURIComponent(req.reason ?? "")}`}
                         className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-1.5 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
                       >
                         <Calendar className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -276,7 +276,7 @@ export default async function ForespørslerPage() {
                         {req.user.name}
                       </span>
                       <span className="ml-2 text-xs text-muted-foreground">
-                        · {formaterDato(req.preferredAt)}
+                        · {formaterDato(req.preferredDate)}
                       </span>
                     </div>
                     <span

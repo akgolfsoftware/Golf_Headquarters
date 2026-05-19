@@ -12,7 +12,7 @@ export async function avslaaForespørsel(requestId: string) {
 
   await prisma.sessionRequest.update({
     where: { id: requestId },
-    data: { status: "DECLINED" },
+    data: { status: "DECLINED", respondedAt: new Date() },
   });
 
   revalidatePath("/admin/foresporsler");
@@ -27,7 +27,7 @@ export async function markerSomPlanlagt(requestId: string) {
 
   await prisma.sessionRequest.update({
     where: { id: requestId },
-    data: { status: "SCHEDULED" },
+    data: { status: "APPROVED", respondedAt: new Date() },
   });
 
   revalidatePath("/admin/foresporsler");

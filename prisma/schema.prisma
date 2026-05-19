@@ -150,6 +150,32 @@ enum PeriodeType {
   FERIE
 }
 
+// Workbench v2 — Sprint 1 enums
+
+enum GoalCategory {
+  OUTCOME // Resultatmål
+  PROCESS // Prosessmål
+}
+
+enum SessionNoteType {
+  SELF
+  COACH_QUESTION
+  VIDEO
+}
+
+enum SessionRequestStatus {
+  PENDING
+  APPROVED
+  DECLINED
+  CANCELLED
+}
+
+enum PlanAdjustmentStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
 // ---------- Models ----------
 
 model User {
@@ -201,8 +227,14 @@ model User {
   friendshipsB Friendship[] @relation("FriendshipUserB")
 
   // Documents og session-requests (Fase 1.17)
-  documents       Document[]
-  sessionRequests SessionRequest[]
+  documents               Document[]
+  sessionRequestsAsPlayer SessionRequest[] @relation("SessionRequestUser")
+  sessionRequestsAsCoach  SessionRequest[] @relation("SessionRequestCoach")
+
+  // Workbench v2 — Sprint 1
+  planAdjustmentsAsPlayer PlanAdjustment[]        @relation("PlanAdjustmentUser")
+  planAdjustmentsAsCoach  PlanAdjustment[]        @relation("PlanAdjustmentCoach")
+  tournamentPreparations  TournamentPreparation[]
 
   // CoachHQ-relasjoner (Fase 2.1)
   tournamentResults TournamentResult[]
@@ -846,22 +878,26 @@ model AgentRun {
 // Goals/Achievements/Friendship (Fase 1.14)
 
 model Goal {
-  id          String    @id @default(cuid())
+  id          String       @id @default(cuid())
   userId      String
   // Type: HCP_TARGET | ROUNDS_PER_MONTH | SG_AREA | FREE_TEXT
   type        String
+  // Resultatmål (OUTCOME) vs prosessmål (PROCESS).
+  // Alle eksisterende mål defaulter til OUTCOME — kan endres manuelt.
+  category    GoalCategory @default(OUTCOME)
   title       String
   targetValue Float?
   targetDate  DateTime?
   // Status: ACTIVE | ACHIEVED | ABANDONED
-  status      String    @default("ACTIVE")
+  status      String       @default("ACTIVE")
   payload     Json?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, status])
+  @@index([userId, category, status])
   @@map("goals")
 }
 
@@ -914,20 +950,30 @@ model Document {
 }
 
 model SessionRequest {
-  id          String    @id @default(cuid())
+  id          String               @id @default(cuid())
   userId      String
   coachId     String?
-  preferredAt DateTime?
-  pyramidArea String?
-  notes       String?
-  // PENDING | SCHEDULED | DECLINED
-  status      String    @default("PENDING")
+
+  preferredArea PyramidArea?
+  preferredDate DateTime?
+  preferredTime String? // "morgen" | "ettermiddag" | "kveld" etc.
+  durationMin   Int?
+
+  reason  String               @default("")
+  status  SessionRequestStatus @default(PENDING)
+
+  approvedSessionId String?
+  coachResponse     String?
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  respondedAt DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User  @relation("SessionRequestUser", fields: [userId], references: [id], onDelete: Cascade)
+  coach User? @relation("SessionRequestCoach", fields: [coachId], references: [id], onDelete: SetNull)
 
   @@index([userId, status])
+  @@index([coachId, status])
   @@map("session_requests")
 }
 
@@ -1255,9 +1301,10 @@ model Tournament {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  course  CourseDefinition?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
-  results TournamentResult[]
-  entries TournamentEntry[]
+  course       CourseDefinition?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  results      TournamentResult[]
+  entries      TournamentEntry[]
+  preparations TournamentPreparation[]
 
   @@index([startDate])
   @@map("tournaments")
@@ -1609,6 +1656,7 @@ model TrainingSessionV2 {
   trengerOppmerksomhet Boolean  @default(false)
   drillLoggInterval    Int      @default(1)
   drills               TrainingDrillV2[]
+  drillInstances       SessionDrillInstance[]
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
@@ -1949,4 +1997,117 @@ model CaddieMessage {
   @@index([userId, conversationId, createdAt])
   @@index([conversationId, createdAt])
   @@map("caddie_messages")
+}
+
+// ---------- Workbench v2 — Sprint 1 (Live Session Logger + Plan/Turnering) ----------
+
+// Live Session Logger — én instans per drill i en konkret økt.
+// Snapshot-er drillName så vi ikke mister info hvis drill-malen slettes.
+model SessionDrillInstance {
+  id           String      @id @default(cuid())
+  sessionId    String
+  drillId      String? // optional — kan logges uten å være knyttet til en bestemt drill-mal
+  drillName    String // snapshot
+  orderIndex   Int
+  plannedReps  Int?
+  plannedSets  Int?
+  pyramideArea PyramidArea
+  fase         String?
+  belastning   String?
+  praksisType  String?
+  omrade       String?
+
+  session TrainingSessionV2  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sets    SessionSet[]
+  notes   SessionDrillNote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId, orderIndex])
+  @@map("session_drill_instances")
+}
+
+model SessionSet {
+  id              String    @id @default(cuid())
+  drillInstanceId String
+  setNumber       Int
+  reps            Int
+  completedAt     DateTime?
+  durationSec     Int?
+
+  drillInstance SessionDrillInstance @relation(fields: [drillInstanceId], references: [id], onDelete: Cascade)
+  createdAt     DateTime             @default(now())
+
+  @@index([drillInstanceId, setNumber])
+  @@map("session_sets")
+}
+
+// Notater og spørsmål knyttet til en drill-instans i en økt.
+// COACH_QUESTION dekker "Spørsmål til coach" use-caset via isAnswered + answerContent.
+model SessionDrillNote {
+  id                String          @id @default(cuid())
+  drillInstanceId   String
+  type              SessionNoteType
+  content           String? // tekst for SELF + COACH_QUESTION
+  videoUrl          String? // for VIDEO type (Vercel Blob URL)
+  videoThumbnailUrl String?
+  isAnswered        Boolean         @default(false)
+  answerContent     String?
+  answeredAt        DateTime?
+
+  drillInstance SessionDrillInstance @relation(fields: [drillInstanceId], references: [id], onDelete: Cascade)
+  createdAt     DateTime             @default(now())
+
+  @@index([drillInstanceId, type])
+  @@map("session_drill_notes")
+}
+
+// Spillerens forespørsel om plan-justering for en konkret uke.
+model PlanAdjustment {
+  id        String   @id @default(cuid())
+  userId    String
+  coachId   String?
+  weekStart DateTime // mandag i berørt uke
+
+  description String
+  focusAreas  PyramidArea[]
+  status      PlanAdjustmentStatus @default(PENDING)
+
+  coachResponse String?
+  createdAt     DateTime  @default(now())
+  respondedAt   DateTime?
+
+  user  User  @relation("PlanAdjustmentUser", fields: [userId], references: [id], onDelete: Cascade)
+  coach User? @relation("PlanAdjustmentCoach", fields: [coachId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status])
+  @@map("plan_adjustments")
+}
+
+// "Forbered meg"-plan for én spiller mot én turnering.
+model TournamentPreparation {
+  id           String @id @default(cuid())
+  userId       String
+  tournamentId String
+
+  variant         String // "konservativ" | "standard" | "aggressiv"
+  targetFinish    String? // "Top 10", "Top 5", "Vinne"
+  totalDays       Int
+  sessionsPlanned Int     @default(0)
+  sessionsDone    Int     @default(0)
+
+  aiSummary String?
+
+  status String @default("ACTIVE") // ACTIVE | COMPLETED | ABANDONED
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tournamentId])
+  @@index([userId, status])
+  @@map("tournament_preparations")
 }

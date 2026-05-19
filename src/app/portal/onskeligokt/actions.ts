@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { PyramidArea } from "@/generated/prisma/client";
 
 export type OnskeligOktInput = {
   preferredAt?: string;
@@ -12,17 +13,24 @@ export type OnskeligOktInput = {
   coachId?: string;
 };
 
+const PYRAMID_VALUES = new Set<string>(Object.values(PyramidArea));
+
 export async function sendOnskeligOkt(input: OnskeligOktInput) {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
+
+  const preferredArea =
+    input.pyramidArea && PYRAMID_VALUES.has(input.pyramidArea)
+      ? (input.pyramidArea as PyramidArea)
+      : null;
 
   await prisma.sessionRequest.create({
     data: {
       userId: user.id,
       coachId: input.coachId || null,
-      preferredAt: input.preferredAt ? new Date(input.preferredAt) : null,
-      pyramidArea: input.pyramidArea || null,
-      notes: input.notes || null,
+      preferredDate: input.preferredAt ? new Date(input.preferredAt) : null,
+      preferredArea,
+      reason: input.notes ?? "",
     },
   });
 
