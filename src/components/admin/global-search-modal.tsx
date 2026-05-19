@@ -23,10 +23,180 @@ import {
   CornerDownLeft,
   Search,
   User,
+  UserPlus,
+  Users,
   X,
+  Zap,
+  MessageSquare,
+  Sparkles,
+  ClipboardCheck,
+  Activity,
+  TrendingUp,
+  Download,
+  Sun,
+  LogOut,
+  Calendar,
+  FlaskConical,
+  Megaphone,
 } from "lucide-react";
 
 const ICON_STROKE = 1.5;
+
+// Hurtig-handlinger for CoachHQ. Disse er statiske, filtreres lokalt på
+// label + description + keywords (alle case-insensitive). De vises ALLTID
+// øverst i modalen — også når query er tom — som onboarding-/discoverability-hint.
+//
+// `kind` skiller mellom ren navigasjon og custom handler. Custom-handler
+// brukes for view-mode-toggle (cookie + redirect), logg-ut, etc.
+
+type ActionKind =
+  | { type: "navigate"; href: string }
+  | { type: "view-mode-player" }
+  | { type: "open-caddie" }
+  | { type: "logout" };
+
+type Action = {
+  id: string;
+  label: string;
+  description: string;
+  keywords: string[];
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number; "aria-hidden"?: boolean }>;
+  kind: ActionKind;
+};
+
+const ACTIONS: Action[] = [
+  // --- Opprett-handlinger ---
+  {
+    id: "new-plan",
+    label: "Ny treningsplan",
+    description: "Opprett plan for en spiller",
+    keywords: ["plan", "trening", "ny", "create", "lag"],
+    icon: ClipboardList,
+    kind: { type: "navigate", href: "/admin/plans/new" },
+  },
+  {
+    id: "ai-plan",
+    label: "Generer AI-plan",
+    description: "La Caddie lage forslag til treningsplan",
+    keywords: ["ai", "plan", "generer", "auto", "caddie", "ml", "claude"],
+    icon: Sparkles,
+    kind: { type: "navigate", href: "/admin/plans/new?ai=1" },
+  },
+  {
+    id: "new-player",
+    label: "Registrer ny spiller",
+    description: "Legg til ny spiller i porteføljen",
+    keywords: ["spiller", "elev", "ny", "create", "register", "legg til"],
+    icon: UserPlus,
+    kind: { type: "navigate", href: "/admin/elever/ny" },
+  },
+  {
+    id: "send-message",
+    label: "Send melding",
+    description: "Skriv til spiller eller gruppe",
+    keywords: ["melding", "message", "chat", "send", "skriv"],
+    icon: MessageSquare,
+    kind: { type: "navigate", href: "/admin/messages" },
+  },
+  {
+    id: "bulk-broadcast",
+    label: "Bulk-melding",
+    description: "Send samme melding til mange spillere",
+    keywords: ["bulk", "broadcast", "alle", "gruppe", "massemelding"],
+    icon: Megaphone,
+    kind: { type: "navigate", href: "/admin/messages?bulk=1" },
+  },
+  {
+    id: "new-group",
+    label: "Lag ny gruppe",
+    description: "Opprett treningsgruppe med medlemmer",
+    keywords: ["gruppe", "team", "group", "ny", "wang"],
+    icon: Users,
+    kind: { type: "navigate", href: "/admin/groups" },
+  },
+  {
+    id: "log-test",
+    label: "Logg test-resultat",
+    description: "Registrer score fra SG- eller fys-test",
+    keywords: ["test", "logg", "resultat", "score", "sg", "fys"],
+    icon: FlaskConical,
+    kind: { type: "navigate", href: "/admin/tester" },
+  },
+  // --- Hub-handlinger ---
+  {
+    id: "daily-brief",
+    label: "Daglig brief",
+    description: "Morgens første-stop med agent-insights",
+    keywords: ["brief", "morgen", "daglig", "oversikt", "start", "dagen"],
+    icon: Sun,
+    kind: { type: "navigate", href: "/admin/brief" },
+  },
+  {
+    id: "open-caddie",
+    label: "Spør Caddie",
+    description: "Åpne Caddie-chat for assistanse",
+    keywords: ["caddie", "ai", "chat", "spør", "assistent", "claude"],
+    icon: Sparkles,
+    kind: { type: "open-caddie" },
+  },
+  {
+    id: "approvals",
+    label: "Godkjenninger",
+    description: "Vent-på-deg agent-aksjoner og forslag",
+    keywords: ["godkjenninger", "approvals", "inbox", "agent", "pending"],
+    icon: ClipboardCheck,
+    kind: { type: "navigate", href: "/admin/godkjenninger" },
+  },
+  {
+    id: "trackman-import",
+    label: "Importer TrackMan",
+    description: "Last opp CSV eller koble TrackMan-data",
+    keywords: ["trackman", "import", "csv", "data", "swing"],
+    icon: Activity,
+    kind: { type: "navigate", href: "/admin/trackman" },
+  },
+  {
+    id: "wagr",
+    label: "WAGR-benchmark",
+    description: "Sammenlign spillere mot World Amateur ranking",
+    keywords: ["wagr", "ranking", "benchmark", "amatør", "amateur", "talent"],
+    icon: TrendingUp,
+    kind: { type: "navigate", href: "/admin/talent/wagr-benchmark" },
+  },
+  {
+    id: "export-report",
+    label: "Eksporter rapport",
+    description: "Last ned spillerrapport eller statistikk",
+    keywords: ["rapport", "report", "eksport", "pdf", "last ned"],
+    icon: Download,
+    kind: { type: "navigate", href: "/admin/reports" },
+  },
+  {
+    id: "next-booking",
+    label: "Neste booking",
+    description: "Hopp til kommende time i kalender",
+    keywords: ["booking", "neste", "kalender", "time", "økt"],
+    icon: Calendar,
+    kind: { type: "navigate", href: "/admin/calendar" },
+  },
+  // --- System ---
+  {
+    id: "view-mode-player",
+    label: "Bytt til Player-view",
+    description: "Se plattformen som spilleren ser den",
+    keywords: ["player", "spiller", "view", "bytt", "preview", "se som"],
+    icon: User,
+    kind: { type: "view-mode-player" },
+  },
+  {
+    id: "logout",
+    label: "Logg ut",
+    description: "Avslutt økten og gå til innlogging",
+    keywords: ["logg ut", "logout", "sign out", "avslutt"],
+    icon: LogOut,
+    kind: { type: "logout" },
+  },
+];
 
 type Player = {
   id: string;
@@ -68,11 +238,13 @@ type ApiResponse = {
 
 type FlatItem = {
   key: string;
-  href: string;
-  category: "players" | "plans" | "bookings" | "routes";
+  category: "actions" | "players" | "plans" | "bookings" | "routes";
   primary: string;
   secondary: string;
   avatarUrl: string | null;
+  // Naviger- eller action-target. Action har eget action-felt, andre har href.
+  href?: string;
+  action?: Action;
 };
 
 const EMPTY: ApiResponse = { players: [], plans: [], bookings: [], routes: [] };
@@ -99,6 +271,20 @@ function initials(name: string): string {
     .join("");
 }
 
+/**
+ * Filtrer ACTIONS lokalt på label + description + keywords.
+ * Tom query gir hele lista (max 8 for ikke å oversvømme).
+ */
+function matchActions(query: string): Action[] {
+  const q = query.trim().toLowerCase();
+  if (q.length === 0) return ACTIONS.slice(0, 8);
+  return ACTIONS.filter((a) => {
+    if (a.label.toLowerCase().includes(q)) return true;
+    if (a.description.toLowerCase().includes(q)) return true;
+    return a.keywords.some((k) => k.includes(q));
+  }).slice(0, 8);
+}
+
 export function GlobalSearchModal() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -112,10 +298,25 @@ export function GlobalSearchModal() {
   const lastActiveRef = useRef<HTMLElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  // Hurtig-handlinger filtreres lokalt og vises alltid øverst.
+  // Med tom query: 8 første actions som "starting point".
+  const matchedActions = useMemo(() => matchActions(query), [query]);
+
   // Flate ut alle resultater til én liste i visnings-rekkefølge.
   // Brukes for tastaturnav (pilene) og Enter-navigasjon.
+  // Actions kommer ALLTID øverst.
   const flatItems = useMemo<FlatItem[]>(() => {
     const items: FlatItem[] = [];
+    for (const a of matchedActions) {
+      items.push({
+        key: `action-${a.id}`,
+        category: "actions",
+        primary: a.label,
+        secondary: a.description,
+        avatarUrl: null,
+        action: a,
+      });
+    }
     for (const p of results.players) {
       items.push({
         key: `player-${p.id}`,
@@ -157,7 +358,7 @@ export function GlobalSearchModal() {
       });
     }
     return items;
-  }, [results]);
+  }, [results, matchedActions]);
 
   const totalCount = flatItems.length;
 
@@ -216,15 +417,18 @@ export function GlobalSearchModal() {
     if (!open) return;
     const q = query.trim();
     if (q.length < 2) {
-      setResults(EMPTY);
-      setLoading(false);
+      // Reset via mikrotask for å unngå cascading renders i samme commit.
+      queueMicrotask(() => {
+        setResults(EMPTY);
+        setLoading(false);
+      });
       return;
     }
 
-    setLoading(true);
     const controller = new AbortController();
     abortRef.current?.abort();
     abortRef.current = controller;
+    queueMicrotask(() => setLoading(true));
 
     const timer = setTimeout(async () => {
       try {
@@ -269,6 +473,61 @@ export function GlobalSearchModal() {
     router.push(href);
   }
 
+  /**
+   * Håndter valg av FlatItem (Enter eller klikk).
+   * Action har enten navigate-href eller custom handler (view-mode, logout, caddie).
+   */
+  async function handleSelect(item: FlatItem) {
+    // Action med custom handler
+    if (item.action) {
+      const action = item.action;
+      switch (action.kind.type) {
+        case "navigate":
+          navigateTo(action.kind.href);
+          return;
+        case "view-mode-player": {
+          closeModal();
+          try {
+            const res = await fetch("/api/view-mode", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ mode: "player" }),
+            });
+            if (res.ok) {
+              const data = (await res.json()) as { redirect?: string };
+              router.push(data.redirect ?? "/portal");
+            }
+          } catch {
+            // Stille feile — bruker kan klikke igjen
+          }
+          return;
+        }
+        case "open-caddie": {
+          closeModal();
+          // Caddie er på Hub-siden — naviger dit og dispatch event som
+          // CaddieChat-komponenten kan lytte på for å auto-fokusere input.
+          router.push("/admin");
+          requestAnimationFrame(() => {
+            window.dispatchEvent(new CustomEvent("caddie:focus"));
+          });
+          return;
+        }
+        case "logout": {
+          closeModal();
+          // Logg ut via /api/auth/logout (route handler kalles via skjult skjema).
+          const form = document.createElement("form");
+          form.method = "POST";
+          form.action = "/api/auth/logout";
+          document.body.appendChild(form);
+          form.submit();
+          return;
+        }
+      }
+    }
+    // Standard navigasjon for ikke-action items (players, plans, bookings, routes).
+    if (item.href) navigateTo(item.href);
+  }
+
   function onInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Escape") {
       e.preventDefault();
@@ -292,7 +551,7 @@ export function GlobalSearchModal() {
     if (e.key === "Enter") {
       e.preventDefault();
       const target = flatItems[highlight];
-      if (target) navigateTo(target.href);
+      if (target) void handleSelect(target);
       return;
     }
     if (e.key === "Tab") {
@@ -330,7 +589,10 @@ export function GlobalSearchModal() {
   if (!open) return null;
 
   const hasQuery = query.trim().length >= 2;
-  const showEmptyState = !hasQuery;
+  // Vi viser ALDRI helt tom state lenger — actions vises alltid øverst.
+  // "EmptyState" er kun et lite hint hvis ingen actions match og query er kort.
+  const hasActions = matchedActions.length > 0;
+  const showInitialHint = !hasQuery && !hasActions;
   const showNoResults = hasQuery && !loading && totalCount === 0;
 
   // Indekser per kategori for å gi riktig flat-highlight.
@@ -390,7 +652,7 @@ export function GlobalSearchModal() {
 
         {/* Resultater */}
         <div className="max-h-[60vh] overflow-y-auto p-2">
-          {showEmptyState && (
+          {showInitialHint && (
             <div className="flex flex-col items-center justify-center gap-2 px-4 py-12 text-center">
               <Search
                 className="h-6 w-6 text-muted-foreground/60"
@@ -398,10 +660,7 @@ export function GlobalSearchModal() {
                 aria-hidden
               />
               <p className="text-sm text-muted-foreground">
-                Skriv for å søke...
-              </p>
-              <p className="font-mono text-[11px] text-muted-foreground/70">
-                Minst 2 tegn
+                Skriv for å søke eller velg en hurtig-handling…
               </p>
             </div>
           )}
@@ -418,8 +677,48 @@ export function GlobalSearchModal() {
             </div>
           )}
 
-          {!showEmptyState && totalCount > 0 && (
+          {totalCount > 0 && (
             <div className="space-y-4">
+              {matchedActions.length > 0 && (
+                <Section
+                  title="Hurtig-handlinger"
+                  icon={<Zap strokeWidth={ICON_STROKE} aria-hidden />}
+                >
+                  {matchedActions.map((a) => {
+                    const idx = flatIndex++;
+                    const active = idx === highlight;
+                    const Icon = a.icon;
+                    return (
+                      <ResultRow
+                        key={`action-${a.id}`}
+                        active={active}
+                        onClick={() =>
+                          void handleSelect({
+                            key: `action-${a.id}`,
+                            category: "actions",
+                            primary: a.label,
+                            secondary: a.description,
+                            avatarUrl: null,
+                            action: a,
+                          })
+                        }
+                        leading={
+                          <IconBubble>
+                            <Icon
+                              className="h-3.5 w-3.5"
+                              strokeWidth={ICON_STROKE}
+                              aria-hidden
+                            />
+                          </IconBubble>
+                        }
+                        primary={a.label}
+                        secondary={a.description}
+                      />
+                    );
+                  })}
+                </Section>
+              )}
+
               {results.players.length > 0 && (
                 <Section title="Spillere" icon={<User strokeWidth={ICON_STROKE} aria-hidden />}>
                   {results.players.map((p) => {
@@ -609,7 +908,7 @@ function ResultRow({
       <button
         type="button"
         onClick={onClick}
-        aria-selected={active}
+        data-active={active}
         className={`flex w-full items-center gap-4 rounded-md px-2 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
           active ? "bg-secondary" : "hover:bg-secondary/60"
         }`}
@@ -637,8 +936,8 @@ function ResultRow({
 
 function Avatar({ name, url }: { name: string; url: string | null }) {
   if (url) {
-    // eslint-disable-next-line @next/next/no-img-element
     return (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={url}
         alt=""
