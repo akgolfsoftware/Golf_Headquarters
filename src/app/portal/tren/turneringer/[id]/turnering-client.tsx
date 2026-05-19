@@ -6,10 +6,10 @@
  * <style>-blokk med tdc- prefiks for å unngå kollisjoner med PortalShell.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { useToast } from "@/components/shared/toast-provider";
 import {
   AlertTriangle,
-  Check,
   ChevronDown,
   Clock,
   Flag,
@@ -24,6 +24,12 @@ import {
   TrendingUp,
   X,
 } from "lucide-react";
+import {
+  prepareForTournament,
+  logTournamentResult,
+  withdrawFromTournament,
+  requestTournamentFocus,
+} from "./actions";
 
 type ModalName =
   | "forbered-meg"
@@ -242,23 +248,19 @@ function badgeForStatus(status: PrepStatus): { cls: string; text: string } {
 }
 
 export function TurneringDetaljClient({
+  tournamentId,
   tournamentName,
 }: {
+  tournamentId: string;
   tournamentName: string | null;
 }) {
+  const toaster = useToast();
   const [participantsOpen, setParticipantsOpen] = useState(true);
   const [modal, setModal] = useState<ModalName>(null);
-  const [toast, setToast] = useState<{ text: string; show: boolean }>({
-    text: "",
-    show: false,
-  });
   const visningsnavn = tournamentName ?? "Sørlandsåpent";
 
   const showToast = (text: string) => {
-    setToast({ text, show: true });
-    window.setTimeout(() => {
-      setToast((t) => ({ ...t, show: false }));
-    }, 2800);
+    toaster.success(text);
   };
 
   const closeModal = () => setModal(null);
@@ -683,27 +685,30 @@ export function TurneringDetaljClient({
       {/* ============ MODALER ============ */}
       <ForberedMegModal
         open={modal === "forbered-meg"}
+        tournamentId={tournamentId}
         tournamentName={visningsnavn}
         onClose={closeModal}
-        onAccept={() => {
+        onSuccess={(msg) => {
           closeModal();
-          showToast("21-dagers plan opprettet");
+          showToast(msg);
         }}
       />
       <LoggResultatModal
         open={modal === "logg-resultat"}
+        tournamentId={tournamentId}
         tournamentName={visningsnavn}
         onClose={closeModal}
-        onSave={() => {
+        onSuccess={() => {
           closeModal();
           showToast("Resultat lagret");
         }}
       />
       <AvregistrerModal
         open={modal === "avregistrer"}
+        tournamentId={tournamentId}
         tournamentName={visningsnavn}
         onClose={closeModal}
-        onConfirm={() => {
+        onSuccess={() => {
           closeModal();
           showToast(`Avregistrert fra ${visningsnavn}`);
         }}
@@ -714,16 +719,16 @@ export function TurneringDetaljClient({
       />
       <BeOmTurneringsPlanModal
         open={modal === "be-om-plan"}
+        tournamentId={tournamentId}
         tournamentName={visningsnavn}
         onClose={closeModal}
-        onSend={() => {
+        onSuccess={() => {
           closeModal();
           showToast("Forespørsel sendt til Anders");
         }}
       />
 
-      {/* ============ TOAST ============ */}
-      <TdcToast text={toast.text} show={toast.show} />
+      {/* Toast håndteres nå av global ToastProvider. */}
     </div>
   );
 }
@@ -792,18 +797,7 @@ function TdcModalClose({ onClose }: { onClose: () => void }) {
   );
 }
 
-function TdcToast({ text, show }: { text: string; show: boolean }) {
-  return (
-    <div
-      className={`tdc-toast${show ? " tdc-toast-show" : ""}`}
-      role="status"
-      aria-live="polite"
-    >
-      <Check size={14} strokeWidth={2.5} aria-hidden />
-      <span>{text}</span>
-    </div>
-  );
-}
+// TdcToast er erstattet av global ToastProvider — se useToast.
 
 /* =============================================================
    3A — ForberedMegModal
@@ -841,17 +835,21 @@ const PREP_VARIANTS: {
 
 function ForberedMegModal({
   open,
+  tournamentId,
   tournamentName,
   onClose,
-  onAccept,
+  onSuccess,
 }: {
   open: boolean;
+  tournamentId: string;
   tournamentName: string;
   onClose: () => void;
-  onAccept: () => void;
+  onSuccess: (msg: string) => void;
 }) {
   const [variant, setVariant] = useState<PrepPlanVariant>("standard");
   const [replace, setReplace] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   return (
     <TdcModalBackdrop open={open} onClose={onClose} width={640}>
@@ -927,6 +925,13 @@ function ForberedMegModal({
           />
           <span>Erstatt eksisterende uplanlagt tid i kalenderen</span>
         </label>
+
+        {error && (
+          <div className="tdc-danger-callout" role="alert">
+            <AlertTriangle size={14} strokeWidth={1.75} aria-hidden />
+            <div>{error}</div>
+          </div>
+        )}
       </div>
 
       <footer className="tdc-modal-footer">
@@ -934,16 +939,33 @@ function ForberedMegModal({
           type="button"
           className="tdc-btn tdc-btn-outline"
           onClick={onClose}
+          disabled={isPending}
         >
           Avbryt
         </button>
         <button
           type="button"
           className="tdc-btn tdc-btn-primary"
-          onClick={onAccept}
+          disabled={isPending}
+          onClick={() => {
+            setError(null);
+            startTransition(async () => {
+              const result = await prepareForTournament({
+                tournamentId,
+                variant,
+              });
+              if ("error" in result) {
+                setError(result.error);
+                return;
+              }
+              onSuccess(
+                `${result.data?.sessionsPlanned ?? 0}-økters plan opprettet for ${tournamentName}`,
+              );
+            });
+          }}
         >
           <Sparkles size={14} strokeWidth={1.75} aria-hidden />
-          Bygg planen
+          {isPending ? "Bygger…" : "Bygg planen"}
         </button>
       </footer>
     </TdcModalBackdrop>
@@ -963,33 +985,38 @@ type RoundEntry = {
 
 function LoggResultatModal({
   open,
+  tournamentId,
   tournamentName,
   onClose,
-  onSave,
+  onSuccess,
 }: {
   open: boolean;
+  tournamentId: string;
   tournamentName: string;
   onClose: () => void;
-  onSave: () => void;
+  onSuccess: () => void;
 }) {
   if (!open) return null;
   return (
     <LoggResultatModalInner
+      tournamentId={tournamentId}
       tournamentName={tournamentName}
       onClose={onClose}
-      onSave={onSave}
+      onSuccess={onSuccess}
     />
   );
 }
 
 function LoggResultatModalInner({
+  tournamentId,
   tournamentName,
   onClose,
-  onSave,
+  onSuccess,
 }: {
+  tournamentId: string;
   tournamentName: string;
   onClose: () => void;
-  onSave: () => void;
+  onSuccess: () => void;
 }) {
   const [step, setStep] = useState<1 | 2>(1);
   const [rounds, setRounds] = useState<RoundEntry[]>([
@@ -1002,6 +1029,8 @@ function LoggResultatModalInner({
   const [sgTotal, setSgTotal] = useState("");
   const [fungerte, setFungerte] = useState("");
   const [forbedres, setForbedres] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const updateRound = (idx: number, patch: Partial<RoundEntry>) => {
     setRounds((rs) => rs.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
@@ -1138,6 +1167,15 @@ function LoggResultatModalInner({
         )}
       </div>
 
+      {error && (
+        <div className="tdc-modal-body" style={{ paddingTop: 0 }}>
+          <div className="tdc-danger-callout" role="alert">
+            <AlertTriangle size={14} strokeWidth={1.75} aria-hidden />
+            <div>{error}</div>
+          </div>
+        </div>
+      )}
+
       <footer className="tdc-modal-footer">
         {step === 1 ? (
           <>
@@ -1162,16 +1200,53 @@ function LoggResultatModalInner({
               type="button"
               className="tdc-btn tdc-btn-outline"
               onClick={() => setStep(1)}
+              disabled={isPending}
             >
               ← Tilbake
             </button>
             <button
               type="button"
               className="tdc-btn tdc-btn-primary"
-              onClick={onSave}
+              disabled={isPending}
+              onClick={() => {
+                setError(null);
+                const parsedRounds = rounds
+                  .map((r, i) => ({
+                    roundNumber: i + 1,
+                    score: Number(r.score),
+                    weather: r.weather,
+                    notes: r.notat || undefined,
+                  }))
+                  .filter((r) => Number.isFinite(r.score) && r.score !== 0);
+                if (parsedRounds.length === 0) {
+                  setError("Skriv inn minst én runde-score");
+                  return;
+                }
+                const placementNum = plassering ? Number(plassering) : undefined;
+                const sgNum = sgTotal
+                  ? Number(sgTotal.replace(",", "."))
+                  : undefined;
+                startTransition(async () => {
+                  const result = await logTournamentResult({
+                    tournamentId,
+                    rounds: parsedRounds,
+                    finalPlacement:
+                      placementNum && Number.isFinite(placementNum)
+                        ? placementNum
+                        : undefined,
+                    sgTotal:
+                      sgNum && Number.isFinite(sgNum) ? sgNum : undefined,
+                  });
+                  if ("error" in result) {
+                    setError(result.error);
+                    return;
+                  }
+                  onSuccess();
+                });
+              }}
             >
               <Trophy size={14} strokeWidth={1.75} aria-hidden />
-              Lagre resultat
+              {isPending ? "Lagrer…" : "Lagre resultat"}
             </button>
           </>
         )}
@@ -1193,17 +1268,21 @@ const REASONS: { id: AvregReason; label: string }[] = [
 
 function AvregistrerModal({
   open,
+  tournamentId,
   tournamentName,
   onClose,
-  onConfirm,
+  onSuccess,
 }: {
   open: boolean;
+  tournamentId: string;
   tournamentName: string;
   onClose: () => void;
-  onConfirm: () => void;
+  onSuccess: () => void;
 }) {
   const [reason, setReason] = useState<AvregReason>("skade");
   const [annetText, setAnnetText] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   return (
     <TdcModalBackdrop open={open} onClose={onClose} width={440}>
@@ -1260,6 +1339,13 @@ function AvregistrerModal({
             />
           )}
         </div>
+
+        {error && (
+          <div className="tdc-danger-callout" role="alert">
+            <AlertTriangle size={14} strokeWidth={1.75} aria-hidden />
+            <div>{error}</div>
+          </div>
+        )}
       </div>
 
       <footer className="tdc-modal-footer">
@@ -1267,15 +1353,32 @@ function AvregistrerModal({
           type="button"
           className="tdc-btn tdc-btn-outline"
           onClick={onClose}
+          disabled={isPending}
         >
           Avbryt
         </button>
         <button
           type="button"
           className="tdc-btn tdc-btn-danger"
-          onClick={onConfirm}
+          disabled={isPending}
+          onClick={() => {
+            setError(null);
+            startTransition(async () => {
+              const result = await withdrawFromTournament({
+                tournamentId,
+                reason,
+                otherText:
+                  reason === "annet" && annetText ? annetText : undefined,
+              });
+              if ("error" in result) {
+                setError(result.error);
+                return;
+              }
+              onSuccess();
+            });
+          }}
         >
-          Bekreft avregistrering
+          {isPending ? "Avregistrerer…" : "Bekreft avregistrering"}
         </button>
       </footer>
     </TdcModalBackdrop>
@@ -1462,19 +1565,23 @@ const URGENCY_OPTIONS: { id: PlanUrgency; label: string }[] = [
 
 function BeOmTurneringsPlanModal({
   open,
+  tournamentId,
   tournamentName,
   onClose,
-  onSend,
+  onSuccess,
 }: {
   open: boolean;
+  tournamentId: string;
   tournamentName: string;
   onClose: () => void;
-  onSend: () => void;
+  onSuccess: () => void;
 }) {
   const [kind, setKind] = useState<PlanRequestKind>("juster");
   const [fokus, setFokus] = useState<Set<string>>(new Set());
   const [begrunnelse, setBegrunnelse] = useState("");
   const [urgency, setUrgency] = useState<PlanUrgency>("naar-passer");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const toggleFokus = (id: string) => {
     setFokus((s) => {
@@ -1603,6 +1710,13 @@ function BeOmTurneringsPlanModal({
             ))}
           </div>
         </fieldset>
+
+        {error && (
+          <div className="tdc-danger-callout" role="alert">
+            <AlertTriangle size={14} strokeWidth={1.75} aria-hidden />
+            <div>{error}</div>
+          </div>
+        )}
       </div>
 
       <footer className="tdc-modal-footer">
@@ -1610,17 +1724,54 @@ function BeOmTurneringsPlanModal({
           type="button"
           className="tdc-btn tdc-btn-outline"
           onClick={onClose}
+          disabled={isPending}
         >
           Avbryt
         </button>
         <button
           type="button"
           className="tdc-btn tdc-btn-primary"
-          onClick={onSend}
-          disabled={begrunnelse.length < 10}
+          onClick={() => {
+            setError(null);
+            const helpTypeMap: Record<PlanRequestKind, "scratch" | "adjust" | "focus"> = {
+              scratch: "scratch",
+              juster: "adjust",
+              fokus: "focus",
+            };
+            const urgencyMap: Record<PlanUrgency, "low" | "normal" | "high"> = {
+              "naar-passer": "low",
+              "innen-24t": "normal",
+              "i-dag": "high",
+            };
+            const areaMap: Record<string, "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"> = {
+              fys: "FYS",
+              tek: "TEK",
+              slag: "SLAG",
+              spill: "SPILL",
+              turn: "TURN",
+            };
+            const focusAreas = Array.from(fokus)
+              .map((id) => areaMap[id])
+              .filter(Boolean);
+            startTransition(async () => {
+              const result = await requestTournamentFocus({
+                tournamentId,
+                helpType: helpTypeMap[kind],
+                focusAreas: focusAreas.length ? focusAreas : undefined,
+                description: begrunnelse.trim(),
+                urgency: urgencyMap[urgency],
+              });
+              if ("error" in result) {
+                setError(result.error);
+                return;
+              }
+              onSuccess();
+            });
+          }}
+          disabled={begrunnelse.length < 10 || isPending}
         >
           <Send size={14} strokeWidth={1.75} aria-hidden />
-          Send forespørsel
+          {isPending ? "Sender…" : "Send forespørsel"}
         </button>
       </footer>
     </TdcModalBackdrop>

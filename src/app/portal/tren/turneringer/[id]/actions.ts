@@ -11,6 +11,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { generateTournamentPrep } from "@/lib/ai-plan/tournament-prep";
 
 export type ActionResult<T = void> =
   | { success: true; data?: T }
@@ -61,30 +62,24 @@ export async function prepareForTournament(
     };
     const total = sessionsPerVariant[parsed.data.variant];
 
-    // Bygg N planlagte TrainingSessionV2-rader spredt fra nå til turneringens start.
-    const start = tournament.startDate;
-    const sessions = Array.from({ length: total }, (_, i) => {
-      const offsetDays = Math.round((daysUntil / (total + 1)) * (i + 1));
-      const d = new Date(start);
-      d.setDate(d.getDate() - (daysUntil - offsetDays));
-      d.setHours(15, 0, 0, 0);
-      const end = new Date(d.getTime() + 90 * 60_000);
-      return {
-        d,
-        end,
-        focus: i % 5,
-      };
+    // Be AI om personlig plan (eller fallback hvis AI Gateway ikke er konfigurert).
+    const { sessions: plannedSessions } = await generateTournamentPrep({
+      userId: user.id,
+      tournamentId: parsed.data.tournamentId,
+      variant: parsed.data.variant,
+      totalSessions: total,
+      daysUntil,
     });
 
-    const focusToArea = (
-      n: number,
-    ): "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN" => {
-      if (n === 0) return "FYS";
-      if (n === 1) return "TEK";
-      if (n === 2) return "SLAG";
-      if (n === 3) return "SPILL";
-      return "TURN";
-    };
+    // Map daysBefore → konkret startTime/endTime.
+    const start = tournament.startDate;
+    const concreteSessions = plannedSessions.map((s) => {
+      const d = new Date(start);
+      d.setDate(d.getDate() - s.daysBefore);
+      d.setHours(15, 0, 0, 0);
+      const end = new Date(d.getTime() + s.durationMin * 60_000);
+      return { ...s, startTime: d, endTime: end };
+    });
 
     const result = await prisma.$transaction(async (tx) => {
       const prep = await tx.tournamentPreparation.upsert({
@@ -110,25 +105,27 @@ export async function prepareForTournament(
         select: { id: true },
       });
 
-      for (const s of sessions) {
+      for (const s of concreteSessions) {
         await tx.trainingSessionV2.create({
           data: {
-            title: `Forbered: ${tournament.name}`,
+            title: `Forbered: ${tournament.name} — ${s.title}`,
             studentId: user.id,
             coachId: user.id, // TODO: bruk primary coach når relasjon finnes
-            startTime: s.d,
-            endTime: s.end,
+            startTime: s.startTime,
+            endTime: s.endTime,
             miljo: "M3",
             practiceType: "BLOKK",
+            status: "PLANNED",
+            notes: s.rationale,
             isCoachCreated: false,
             generertFra: "TournamentPreparation",
             generertFraId: prep.id,
             drillInstances: {
               create: [
                 {
-                  drillName: `${focusToArea(s.focus)}-fokus`,
+                  drillName: s.title,
                   orderIndex: 0,
-                  pyramideArea: focusToArea(s.focus),
+                  pyramideArea: s.pyramidArea,
                 },
               ],
             },
@@ -254,9 +251,6 @@ export async function withdrawFromTournament(
     });
     if (!entry) return { error: "Påmelding ikke funnet" };
 
-    // TournamentEntry har ikke status-felt. Vi markerer ved å sette
-    // priority=WITHDRAWN-prefix i notes + slette etterpå. TODO: legg til
-    // dedikert status-enum (WITHDRAWN) i schema.
     const reasonText =
       parsed.data.reason === "annet" && parsed.data.otherText
         ? parsed.data.otherText
@@ -265,7 +259,9 @@ export async function withdrawFromTournament(
     await prisma.tournamentEntry.update({
       where: { id: entry.id },
       data: {
-        notes: `[WITHDRAWN ${new Date().toISOString()}: ${reasonText}]${entry.notes ? "\n" + entry.notes : ""}`,
+        entryStatus: "WITHDRAWN",
+        withdrawnAt: new Date(),
+        withdrawnReason: reasonText,
       },
     });
 

@@ -337,21 +337,13 @@ export async function finishSession(
     if (owns.error || !owns.session) return { error: owns.error ?? "Økt ikke funnet" };
     const sess = owns.session;
 
-    // TrainingSessionV2 har (foreløpig) ikke status-felt. Vi markerer
-    // fullført ved å sette endTime=now + prefikse notes med [COMPLETED:<ISO>].
-    // TODO Sprint 3: legg til SessionStatusV2-enum (PLANNED|ACTIVE|COMPLETED|SKIPPED).
     const now = new Date();
-    const completedMarker = `[COMPLETED:${now.toISOString()}]`;
-    const existing = sess.notes ?? "";
-    const nextNotes = existing.includes("[COMPLETED:")
-      ? existing
-      : `${completedMarker}${existing ? "\n" + existing : ""}`;
 
     await prisma.trainingSessionV2.update({
       where: { id: parsed.data.sessionId },
       data: {
+        status: "COMPLETED",
         endTime: now,
-        notes: nextNotes,
         trengerOppmerksomhet: false,
       },
     });

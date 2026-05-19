@@ -4,9 +4,11 @@ import { PortalSidebar } from "./sidebar";
 import { BottomNav } from "./bottom-nav";
 import { PortalGlobalSearchModal } from "./global-search-modal";
 import { PortalSearchTriggerButton } from "./search-trigger-button";
-import { UserMenu } from "@/components/shared/user-menu";
+import { ProfileMenu } from "@/components/shared/profile-menu";
 import { ViewModeToggle } from "@/components/shared/view-mode-toggle";
 import { NotificationBell } from "@/components/shared/notification-bell";
+import { ToastProvider } from "@/components/shared/toast-provider";
+import { CmdPalette } from "@/components/shared/cmd-palette";
 
 export async function PortalShell({
   children,
@@ -27,6 +29,7 @@ export async function PortalShell({
     .catch(() => 0);
 
   return (
+    <ToastProvider>
     <div className="flex min-h-screen min-h-dvh bg-background">
       <a
         href="#portal-main"
@@ -59,7 +62,12 @@ export async function PortalShell({
               notifications={notifications}
               basePath="/portal/varsler"
             />
-            <UserMenu name={user.name} email={user.email} avatarUrl={user.avatarUrl} />
+            <ProfileMenu
+              name={user.name}
+              email={user.email}
+              avatarUrl={user.avatarUrl}
+              hcp={user.hcp ?? null}
+            />
           </div>
         </header>
         <main
@@ -74,6 +82,8 @@ export async function PortalShell({
       <PortalGlobalSearchModal
         canSwitchToCoach={user.role === "ADMIN" || user.role === "COACH"}
       />
+      <CmdPalette />
     </div>
+    </ToastProvider>
   );
 }

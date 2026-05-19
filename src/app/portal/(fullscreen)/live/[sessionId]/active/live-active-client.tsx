@@ -4,7 +4,8 @@
 // Speiler iPhone 1 fra public/design/live-session-logger/index.html.
 // Bruker hele viewporten (mobil-først) — ingen iPhone-frame.
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   Activity,
   ArrowLeft,
@@ -26,6 +27,14 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  addDrill,
+  addSet as addSetAction,
+  completeSet,
+  finishSession,
+  logRep,
+  saveDrillNote,
+} from "./actions";
 import type {
   LiveDrill,
   LiveDrillSet,
@@ -46,7 +55,11 @@ const disciplineStyles: Record<
 };
 
 export function LiveActiveClient({ data }: Props) {
+  const router = useRouter();
   const [drills, setDrills] = useState<LiveDrill[]>(data.drills);
+  const [pendingError, setPendingError] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
+  const [isFinishing, startFinishTransition] = useTransition();
 
   const totalReps = useMemo(() => {
     const logged = drills.reduce(
@@ -57,6 +70,23 @@ export function LiveActiveClient({ data }: Props) {
     // Hold visning konsistent med dummy-data fra prototypen hvis ingenting er endret.
     return logged > 0 ? logged : data.totalReps;
   }, [drills, data.totalReps]);
+
+  // Best-effort wrapper for server actions. Aktive økt-IDer i dummy-data er
+  // ikke ekte Prisma-rader, så feil tolereres stille (vi viser inline-toast).
+  // Når data hentes fra DB, vil disse kallene faktisk persistere.
+  function callAction<R>(fn: () => Promise<{ error: string } | { success: true; data?: R }>) {
+    startTransition(async () => {
+      try {
+        const result = await fn();
+        if (result && "error" in result && result.error) {
+          setPendingError(result.error);
+          window.setTimeout(() => setPendingError(null), 3000);
+        }
+      } catch {
+        // stille feil under utvikling
+      }
+    });
+  }
 
   function toggleSetDone(drillId: string, setId: string) {
     setDrills((prev) =>
@@ -72,6 +102,8 @@ export function LiveActiveClient({ data }: Props) {
         return { ...d, sets, completedSets };
       }),
     );
+    // 17. completeSet — markér sett ferdig på server.
+    callAction(() => completeSet({ setId }));
   }
 
   function updateSetReps(drillId: string, setId: string, value: string) {
@@ -95,6 +127,7 @@ export function LiveActiveClient({ data }: Props) {
   }
 
   function addRepsToActiveSet(drillId: string, delta: number) {
+    let activeSetId: string | null = null;
     setDrills((prev) =>
       prev.map((d) => {
         if (d.id !== drillId) return d;
@@ -103,11 +136,17 @@ export function LiveActiveClient({ data }: Props) {
         if (activeIndex === -1) return d;
         const sets = d.sets.map((s, i) => {
           if (i !== activeIndex) return s;
+          activeSetId = s.id;
           return { ...s, reps: (s.reps ?? 0) + delta };
         });
         return { ...d, sets };
       }),
     );
+    // 16. logRep — legg til reps på server.
+    if (activeSetId) {
+      const setId = activeSetId;
+      callAction(() => logRep({ setId, addReps: delta }));
+    }
   }
 
   function toggleExpanded(drillId: string) {
@@ -136,6 +175,49 @@ export function LiveActiveClient({ data }: Props) {
         };
       }),
     );
+    // 18. addSet — opprett sett på server.
+    callAction(() => addSetAction({ drillInstanceId: drillId }));
+  }
+
+  function handleAddDrill() {
+    // 19. addDrill — legg til drill mid-økt.
+    callAction(() =>
+      addDrill({
+        sessionId: data.sessionId,
+        drillName: "Ny drill",
+        pyramidArea: "TEK",
+      }),
+    );
+  }
+
+  function handleSaveNote(
+    drillId: string,
+    type: "SELF" | "COACH_QUESTION" | "VIDEO",
+    content: string,
+  ) {
+    // 20. saveDrillNote — notat til seg selv / coach / video.
+    if (!content.trim() && type !== "VIDEO") return;
+    callAction(() =>
+      saveDrillNote({
+        drillInstanceId: drillId,
+        type,
+        content: type === "VIDEO" ? undefined : content,
+        videoUrl: type === "VIDEO" ? "vercel-blob://placeholder" : undefined,
+      }),
+    );
+  }
+
+  function handleFinishSession() {
+    // 21. finishSession — avslutt økt + notifiser coach.
+    startFinishTransition(async () => {
+      const result = await finishSession({ sessionId: data.sessionId });
+      if ("error" in result) {
+        setPendingError(result.error);
+        window.setTimeout(() => setPendingError(null), 3000);
+        return;
+      }
+      router.push("/portal/tren");
+    });
   }
 
   return (
@@ -159,12 +241,23 @@ export function LiveActiveClient({ data }: Props) {
         </div>
         <button
           type="button"
-          className="bg-accent text-foreground rounded-full px-4 py-[9px] font-semibold text-[13px] inline-flex items-center gap-1.5"
+          onClick={handleFinishSession}
+          disabled={isFinishing}
+          className="bg-accent text-foreground rounded-full px-4 py-[9px] font-semibold text-[13px] inline-flex items-center gap-1.5 disabled:opacity-60"
         >
           <X className="w-[13px] h-[13px]" strokeWidth={2} />
-          Avslutt
+          {isFinishing ? "Avslutter…" : "Avslutt"}
         </button>
       </header>
+
+      {pendingError ? (
+        <div
+          role="alert"
+          className="mx-4 mt-2 rounded-lg border border-destructive/35 bg-destructive/10 text-destructive px-3 py-2 text-[12px]"
+        >
+          {pendingError}
+        </div>
+      ) : null}
 
       {/* Stats strip */}
       <div className="grid grid-cols-3 gap-2 px-4 py-3 bg-background border-b border-border">
@@ -200,11 +293,13 @@ export function LiveActiveClient({ data }: Props) {
             onShortcut={(delta) => addRepsToActiveSet(d.id, delta)}
             onToggleExpanded={() => toggleExpanded(d.id)}
             onAddSet={() => addSet(d.id)}
+            onSaveNote={(type, content) => handleSaveNote(d.id, type, content)}
           />
         ))}
 
         <button
           type="button"
+          onClick={handleAddDrill}
           className="m-4 mb-6 w-[calc(100%-32px)] py-3 border border-dashed border-[#005840]/40 text-[#005840] rounded-xl font-semibold text-[13px] flex items-center justify-center gap-1.5"
         >
           <Plus className="w-[14px] h-[14px]" strokeWidth={2} />
@@ -278,6 +373,7 @@ function DrillCard({
   onShortcut,
   onToggleExpanded,
   onAddSet,
+  onSaveNote,
 }: {
   drill: LiveDrill;
   onToggleSet: (setId: string) => void;
@@ -285,6 +381,10 @@ function DrillCard({
   onShortcut: (delta: number) => void;
   onToggleExpanded: () => void;
   onAddSet: () => void;
+  onSaveNote: (
+    type: "SELF" | "COACH_QUESTION" | "VIDEO",
+    content: string,
+  ) => void;
 }) {
   const isActive = drill.expanded;
   const styles = disciplineStyles[drill.discipline];
@@ -360,6 +460,7 @@ function DrillCard({
           onSetReps={onSetReps}
           onShortcut={onShortcut}
           onAddSet={onAddSet}
+          onSaveNote={onSaveNote}
         />
       ) : null}
     </article>
@@ -372,12 +473,17 @@ function ActiveBody({
   onSetReps,
   onShortcut,
   onAddSet,
+  onSaveNote,
 }: {
   drill: LiveDrill;
   onToggleSet: (setId: string) => void;
   onSetReps: (setId: string, value: string) => void;
   onShortcut: (delta: number) => void;
   onAddSet: () => void;
+  onSaveNote: (
+    type: "SELF" | "COACH_QUESTION" | "VIDEO",
+    content: string,
+  ) => void;
 }) {
   const activeIdx = drill.sets.findIndex((s) => !s.done);
 
@@ -506,17 +612,20 @@ function ActiveBody({
           icon={<Pencil className="w-3.5 h-3.5" strokeWidth={1.75} />}
           label="Notat til meg selv"
           placeholder="Hva la jeg merke til?"
+          onSave={(text) => onSaveNote("SELF", text)}
         />
         <NoteRow
           icon={<MessageCircle className="w-3.5 h-3.5" strokeWidth={1.75} />}
           label="Spørsmål til Anders"
           placeholder="Hva bør coach svare på?"
+          onSave={(text) => onSaveNote("COACH_QUESTION", text)}
         />
         <NoteRow
           icon={<Video className="w-3.5 h-3.5" strokeWidth={1.75} />}
           label="Send video til Anders"
           placeholder="Tap for å ta opp eller velg fra galleri"
           dashed
+          onSave={() => onSaveNote("VIDEO", "")}
         />
       </div>
     </>
@@ -647,14 +756,36 @@ function NoteRow({
   label,
   placeholder,
   dashed = false,
+  onSave,
 }: {
   icon: React.ReactNode;
   label: string;
   placeholder: string;
   dashed?: boolean;
+  onSave: (text: string) => void;
 }) {
+  const [text, setText] = useState("");
+  const [editing, setEditing] = useState(false);
+
+  const handleSave = () => {
+    if (dashed) {
+      // Video-rad — kall save uten innhold (action stubber video-URL).
+      onSave("");
+      return;
+    }
+    if (text.trim()) {
+      onSave(text.trim());
+      setText("");
+    }
+    setEditing(false);
+  };
+
   return (
     <div
+      onClick={() => {
+        if (!editing && !dashed) setEditing(true);
+        if (dashed) handleSave();
+      }}
       className={cn(
         "grid grid-cols-[32px_1fr] gap-2.5 px-3 py-2.5 rounded-xl items-center cursor-text",
         dashed
@@ -669,7 +800,28 @@ function NoteRow({
         <div className="font-semibold text-xs text-foreground mb-0.5">
           {label}
         </div>
-        <div className="text-[11px] text-muted-foreground">{placeholder}</div>
+        {editing ? (
+          <input
+            autoFocus
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onBlur={handleSave}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSave();
+              if (e.key === "Escape") {
+                setText("");
+                setEditing(false);
+              }
+            }}
+            placeholder={placeholder}
+            className="w-full bg-transparent border-none outline-none text-[11px] text-foreground p-0 font-sans"
+          />
+        ) : (
+          <div className="text-[11px] text-muted-foreground">
+            {text || placeholder}
+          </div>
+        )}
       </div>
     </div>
   );

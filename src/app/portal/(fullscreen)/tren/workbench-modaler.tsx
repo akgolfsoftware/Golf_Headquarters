@@ -2,10 +2,19 @@
 
 // Workbench v2 — modaler, popovers og drawer.
 // Holdes adskilt fra hovedklienten for å holde fil-størrelse håndterlig.
-// Alle modaler bruker `useState` på parent — kobles til server actions
-// (Prisma) i senere fase.
+// Modaler kaller server actions internt via `useTransition` —
+// `onSubmit(msg)` brukes for å trigge toast i parent etter suksess.
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
+import {
+  askCoach,
+  createGoal,
+  editSession,
+  requestPlanAdjust,
+  logSession,
+  importTrackMan,
+  aiSuggestWeek,
+} from "./actions";
 
 /* ─── Felles ───────────────────────────────────────────────────────── */
 
@@ -117,6 +126,29 @@ function ModalBackdrop({
   );
 }
 
+/* ─── Inline error-melding for modal-forms ─────────────────────────── */
+
+function InlineError({ message }: { message: string | null }) {
+  if (!message) return null;
+  return (
+    <div
+      role="alert"
+      style={{
+        background: "rgba(163, 45, 45, 0.08)",
+        border: "1px solid rgba(163, 45, 45, 0.35)",
+        color: "var(--danger, #A32D2D)",
+        borderRadius: 8,
+        padding: "8px 12px",
+        fontSize: 12.5,
+        fontFamily: "var(--font-body)",
+        marginTop: 4,
+      }}
+    >
+      {message}
+    </div>
+  );
+}
+
 /* ─── Ask Coach Modal ──────────────────────────────────────────────── */
 
 export function AskCoachModal({
@@ -131,6 +163,8 @@ export function AskCoachModal({
   const [discipline, setDiscipline] = useState<DisciplineKey>("slag");
   const [text, setText] = useState("");
   const [urgency, setUrgency] = useState<"normal" | "7d" | "tour">("normal");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const counterColor =
     text.length === 0
       ? "var(--muted-soft)"
@@ -256,21 +290,43 @@ export function AskCoachModal({
               ))}
             </div>
           </div>
+
+          <InlineError message={error} />
         </div>
 
         <footer className="modal-footer">
           <div className="left-meta">Sendes som push + e-post</div>
-          <button className="btn-ghost" onClick={onClose}>
+          <button className="btn-ghost" onClick={onClose} disabled={isPending}>
             Avbryt
           </button>
           <button
             className="btn btn-primary"
+            disabled={isPending}
             onClick={() => {
               if (text.trim().length < 10) return;
-              onSubmit("Forespørsel sendt til Anders");
-              setText("");
-              setDiscipline("slag");
-              setUrgency("normal");
+              setError(null);
+              startTransition(async () => {
+                const result = await askCoach({
+                  subject: `${discipline.toUpperCase()} · ${
+                    urgency === "tour"
+                      ? "Før turnering"
+                      : urgency === "7d"
+                      ? "Innen 7 dager"
+                      : "Vanlig"
+                  }`,
+                  message: text.trim(),
+                  priority:
+                    urgency === "tour" ? "urgent" : urgency === "7d" ? "normal" : "low",
+                });
+                if ("error" in result) {
+                  setError(result.error);
+                  return;
+                }
+                onSubmit("Forespørsel sendt til Anders");
+                setText("");
+                setDiscipline("slag");
+                setUrgency("normal");
+              });
             }}
           >
             <svg
@@ -285,7 +341,7 @@ export function AskCoachModal({
               <line x1="22" y1="2" x2="11" y2="13" />
               <polygon points="22 2 15 22 11 13 2 9 22 2" />
             </svg>
-            Send forespørsel
+            {isPending ? "Sender…" : "Send forespørsel"}
           </button>
         </footer>
       </div>
@@ -308,6 +364,8 @@ export function PlanAdjustModal({
   const [disciplines, setDisciplines] = useState<DisciplineKey[]>(["slag"]);
   const [text, setText] = useState("");
   const [urgency, setUrgency] = useState<"normal" | "24h" | "today">("normal");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const toggleDisc = (k: DisciplineKey) => {
     setDisciplines((prev) =>
@@ -526,22 +584,66 @@ export function PlanAdjustModal({
               ))}
             </div>
           </div>
+
+          <InlineError message={error} />
         </div>
 
         <footer className="modal-footer">
           <div className="left-meta">Sendes som push + e-post til Anders</div>
-          <button className="btn-ghost" onClick={onClose}>
+          <button className="btn-ghost" onClick={onClose} disabled={isPending}>
             Avbryt
           </button>
           <button
             className="btn btn-primary"
+            disabled={isPending}
             onClick={() => {
               if (text.trim().length < 10) return;
-              onSubmit("Plan-justering sendt til Anders");
-              setText("");
-              setType("more");
-              setDisciplines(["slag"]);
-              setUrgency("normal");
+              setError(null);
+              startTransition(async () => {
+                // Mandag i inneværende uke som weekStart.
+                const today = new Date();
+                const day = (today.getDay() + 6) % 7;
+                const weekStart = new Date(today);
+                weekStart.setDate(today.getDate() - day);
+                weekStart.setHours(0, 0, 0, 0);
+
+                const areaMap: Record<DisciplineKey, "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"> = {
+                  fys: "FYS",
+                  tek: "TEK",
+                  slag: "SLAG",
+                  spill: "SPILL",
+                  turn: "TURN",
+                };
+                const focusAreas = disciplines.length
+                  ? disciplines.map((d) => areaMap[d])
+                  : ["SLAG" as const];
+
+                const prefix =
+                  type === "more"
+                    ? "[MER]"
+                    : type === "less"
+                    ? "[MINDRE]"
+                    : type === "volume"
+                    ? "[VOLUM]"
+                    : "[ANNET]";
+                const urgencyTag =
+                  urgency === "today" ? "[I DAG]" : urgency === "24h" ? "[24T]" : "[NÅR PASSER]";
+
+                const result = await requestPlanAdjust({
+                  weekStart,
+                  description: `${prefix} ${urgencyTag}\n${text.trim()}`,
+                  focusAreas,
+                });
+                if ("error" in result) {
+                  setError(result.error);
+                  return;
+                }
+                onSubmit("Plan-justering sendt til Anders");
+                setText("");
+                setType("more");
+                setDisciplines(["slag"]);
+                setUrgency("normal");
+              });
             }}
           >
             <svg
@@ -556,7 +658,7 @@ export function PlanAdjustModal({
               <line x1="22" y1="2" x2="11" y2="13" />
               <polygon points="22 2 15 22 11 13 2 9 22 2" />
             </svg>
-            Send forespørsel
+            {isPending ? "Sender…" : "Send forespørsel"}
           </button>
         </footer>
       </div>
@@ -579,6 +681,15 @@ export function NewGoalModal({
   const [prio, setPrio] = useState<1 | 2 | 3>(2);
   const [disciplines, setDisciplines] = useState<DisciplineKey[]>(["slag"]);
   const [title, setTitle] = useState("Top 10 i Bossum Open");
+  const [category, setCategory] = useState<"OUTCOME" | "PROCESS">("OUTCOME");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  // Synkroniser category med type (resultat → OUTCOME, prosess/streak → PROCESS)
+  // når brukeren ikke har overstyrt manuelt.
+  const computedCategory: "OUTCOME" | "PROCESS" =
+    type === "resultat" ? "OUTCOME" : "PROCESS";
+  const effectiveCategory = category || computedCategory;
 
   const toggleDisc = (k: DisciplineKey) =>
     setDisciplines((p) => (p.includes(k) ? p.filter((d) => d !== k) : [...p, k]));
@@ -599,6 +710,32 @@ export function NewGoalModal({
         <div className="modal-body">
           <div className="field">
             <label className="field-label">
+              Mål-kategori<span className="req">*</span>
+            </label>
+            <div className="segmented">
+              {(
+                [
+                  ["OUTCOME", "Outcome — utfall"],
+                  ["PROCESS", "Process — atferd"],
+                ] as const
+              ).map(([k, lbl]) => (
+                <button
+                  key={k}
+                  type="button"
+                  className={effectiveCategory === k ? "active" : ""}
+                  onClick={() => setCategory(k)}
+                >
+                  {lbl}
+                </button>
+              ))}
+            </div>
+            <div className="field-helper">
+              Outcome = resultat (plassering, HCP). Process = vane (snitt, antall dager).
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="field-label">
               Mål-type<span className="req">*</span>
             </label>
             <div className="type-seg">
@@ -613,7 +750,10 @@ export function NewGoalModal({
                   key={k}
                   type="button"
                   className={type === k ? "active" : ""}
-                  onClick={() => setType(k)}
+                  onClick={() => {
+                    setType(k);
+                    setCategory(k === "resultat" ? "OUTCOME" : "PROCESS");
+                  }}
                 >
                   <Icon id={icon} />
                   {lbl}
@@ -832,18 +972,43 @@ export function NewGoalModal({
               placeholder="F.eks: For å komme inn på laget, må jeg slå Hampus."
             />
           </div>
+
+          <InlineError message={error} />
         </div>
 
         <footer className="modal-footer">
           <div className="left-meta">Synlig for Anders</div>
-          <button className="btn-ghost" onClick={onClose}>
+          <button className="btn-ghost" onClick={onClose} disabled={isPending}>
             Avbryt
           </button>
           <button
             className="btn btn-primary"
+            disabled={isPending}
             onClick={() => {
               if (!title.trim()) return;
-              onSubmit("Mål opprettet");
+              setError(null);
+              startTransition(async () => {
+                const result = await createGoal({
+                  title: title.trim(),
+                  category: effectiveCategory,
+                  type:
+                    type === "resultat"
+                      ? "turnering"
+                      : type === "prosess"
+                      ? "prosess"
+                      : "streak",
+                  description: `Prioritet ${prio}${
+                    disciplines.length
+                      ? ` · Disipliner: ${disciplines.map((d) => d.toUpperCase()).join(", ")}`
+                      : ""
+                  }`,
+                });
+                if ("error" in result) {
+                  setError(result.error);
+                  return;
+                }
+                onSubmit("Mål opprettet");
+              });
             }}
           >
             <svg
@@ -857,7 +1022,7 @@ export function NewGoalModal({
             >
               <use href="#ic-plus" />
             </svg>
-            Opprett mål
+            {isPending ? "Oppretter…" : "Opprett mål"}
           </button>
         </footer>
       </div>
@@ -871,13 +1036,20 @@ export function EditSessionModal({
   open,
   onClose,
   onSubmit,
+  sessionId,
 }: {
   open: boolean;
   onClose: () => void;
   onSubmit: (msg: string) => void;
+  sessionId?: string;
 }) {
   const [duration, setDuration] = useState(90);
   const [dirty, setDirty] = useState(false);
+  const [title, setTitle] = useState("Iron-progresjon CS70 → CS80");
+  const [startAt, setStartAt] = useState("2026-05-21T14:00");
+  const [notes, setNotes] = useState("240 reps · CS70→CS80 · Bay 4");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   return (
     <ModalBackdrop open={open} onClose={onClose}>
@@ -903,8 +1075,11 @@ export function EditSessionModal({
               id="edit-title-input"
               className="field-input"
               type="text"
-              defaultValue="Iron-progresjon CS70 → CS80"
-              onChange={() => setDirty(true)}
+              value={title}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setDirty(true);
+              }}
             />
           </div>
 
@@ -917,8 +1092,11 @@ export function EditSessionModal({
                 id="edit-when"
                 className="field-input"
                 type="datetime-local"
-                defaultValue="2026-05-21T14:00"
-                onChange={() => setDirty(true)}
+                value={startAt}
+                onChange={(e) => {
+                  setStartAt(e.target.value);
+                  setDirty(true);
+                }}
               />
             </div>
             <div className="field">
@@ -971,8 +1149,11 @@ export function EditSessionModal({
               id="edit-focus"
               className="field-input"
               rows={3}
-              defaultValue="240 reps · CS70→CS80 · Bay 4"
-              onChange={() => setDirty(true)}
+              value={notes}
+              onChange={(e) => {
+                setNotes(e.target.value);
+                setDirty(true);
+              }}
             />
           </div>
 
@@ -1016,31 +1197,53 @@ export function EditSessionModal({
               </span>
             </div>
           )}
+
+          <InlineError message={error} />
         </div>
 
         <footer className="modal-footer">
           <button
             className="btn-danger-ghost footer-left"
             type="button"
+            disabled={isPending}
             onClick={() => {
-              onSubmit("Økt slettet");
+              // TODO Sprint 3: dedikert deleteSession-action. For nå viser vi toast.
+              onSubmit("Sletting krever bekreftelse — kontakt coach");
               setDirty(false);
             }}
           >
             <Icon id="ic-trash" />
             Slett økt
           </button>
-          <button className="btn-ghost" onClick={onClose}>
+          <button className="btn-ghost" onClick={onClose} disabled={isPending}>
             Avbryt
           </button>
           <button
             className="btn btn-primary"
+            disabled={isPending}
             onClick={() => {
-              onSubmit("Økt oppdatert");
-              setDirty(false);
+              if (!sessionId) {
+                setError("Ingen økt valgt — kan ikke lagre");
+                return;
+              }
+              setError(null);
+              startTransition(async () => {
+                const result = await editSession({
+                  sessionId,
+                  startAt: startAt ? new Date(startAt) : undefined,
+                  durationMin: duration,
+                  notes: notes.trim(),
+                });
+                if ("error" in result) {
+                  setError(result.error);
+                  return;
+                }
+                onSubmit("Økt oppdatert");
+                setDirty(false);
+              });
             }}
           >
-            Lagre endringer
+            {isPending ? "Lagrer…" : "Lagre endringer"}
           </button>
         </footer>
       </div>
@@ -1413,6 +1616,8 @@ export function LogSessionModal({
   const [title, setTitle] = useState("Egen putting-økt");
   const [reps, setReps] = useState(120);
   const [goals, setGoals] = useState<string[]>(["top10", "srixon"]);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   // Reset to step 1 when modal closes (sync state derived from prop)
   const [prevOpen, setPrevOpen] = useState(open);
   if (prevOpen !== open) {
@@ -1837,6 +2042,8 @@ export function LogSessionModal({
                   ))}
                 </div>
               </div>
+
+              <InlineError message={error} />
             </div>
           )}
         </div>
@@ -1845,6 +2052,7 @@ export function LogSessionModal({
           <button
             className="btn-ghost"
             type="button"
+            disabled={isPending}
             style={{ visibility: step === 1 ? "hidden" : undefined }}
             onClick={() => setStep((step - 1) as 1 | 2 | 3)}
           >
@@ -1872,15 +2080,44 @@ export function LogSessionModal({
           </button>
           <button
             className="btn btn-primary"
+            disabled={isPending}
             onClick={() => {
               if (step < 3) {
                 setStep((step + 1) as 1 | 2 | 3);
-              } else {
-                onSubmit("Økt logget — pyramide oppdatert");
+                return;
               }
+              setError(null);
+              const areaMap: Record<DisciplineKey, "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"> = {
+                fys: "FYS",
+                tek: "TEK",
+                slag: "SLAG",
+                spill: "SPILL",
+                turn: "TURN",
+              };
+              const primaryArea = disciplines[0] ? areaMap[disciplines[0]] : "SLAG";
+              startTransition(async () => {
+                const result = await logSession({
+                  date: new Date(),
+                  drillName: title.trim() || "Egen-logget økt",
+                  pyramidArea: primaryArea,
+                  durationMin: duration,
+                  sets:
+                    source === "manual" && reps > 0
+                      ? [{ setNumber: 1, reps }]
+                      : [],
+                  notes: `Vurdering ${rating}/5${
+                    goals.length ? ` · Mål: ${goals.join(", ")}` : ""
+                  }`,
+                });
+                if ("error" in result) {
+                  setError(result.error);
+                  return;
+                }
+                onSubmit("Økt logget — pyramide oppdatert");
+              });
             }}
           >
-            <span>{step === 3 ? "Logg økt" : "Neste"}</span>
+            <span>{step === 3 ? (isPending ? "Logger…" : "Logg økt") : "Neste"}</span>
             {step !== 3 && (
               <svg
                 fill="none"
@@ -1938,6 +2175,8 @@ export function TrackManImportModal({
   const [checked, setChecked] = useState<number[]>([1, 2, 3, 4, 5]);
   const [replaceManual, setReplaceManual] = useState(false);
   const [goalChips, setGoalChips] = useState<string[]>(["top10"]);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const [prevOpen, setPrevOpen] = useState(open);
   if (prevOpen !== open) {
     setPrevOpen(open);
@@ -2353,6 +2592,8 @@ export function TrackManImportModal({
                   onClick={() => setReplaceManual((p) => !p)}
                 />
               </div>
+
+              <InlineError message={error} />
             </div>
           )}
         </div>
@@ -2361,6 +2602,7 @@ export function TrackManImportModal({
           <button
             className="btn-ghost"
             type="button"
+            disabled={isPending}
             style={{ visibility: step === 1 ? "hidden" : undefined }}
             onClick={() => setStep((step - 1) as 1 | 2 | 3)}
           >
@@ -2383,11 +2625,12 @@ export function TrackManImportModal({
             </svg>
             Forrige
           </button>
-          <button className="btn-ghost" onClick={onClose}>
+          <button className="btn-ghost" onClick={onClose} disabled={isPending}>
             Avbryt
           </button>
           <button
             className="btn btn-primary"
+            disabled={isPending}
             onClick={() => {
               if (step < 3) {
                 if (step === 2 && checked.length === 0) {
@@ -2395,13 +2638,50 @@ export function TrackManImportModal({
                   return;
                 }
                 setStep((step + 1) as 1 | 2 | 3);
-              } else {
-                onSubmit(`${checked.length} TrackMan-økter importert`);
+                return;
               }
+              setError(null);
+              const monthMap: Record<string, number> = {
+                JAN: 0, FEB: 1, MAR: 2, APR: 3, MAI: 4, JUN: 5,
+                JUL: 6, AUG: 7, SEP: 8, OKT: 9, NOV: 10, DES: 11,
+              };
+              const sessions = TM_SESSIONS.filter((s) => checked.includes(s.id)).map(
+                (s) => {
+                  // s.date er "18. MAI" → bygg dato i inneværende år.
+                  const [dayStr, monStr] = s.date.split(" ");
+                  const day = Number(dayStr.replace(".", ""));
+                  const mon = monthMap[monStr] ?? 0;
+                  const year = new Date().getFullYear();
+                  const recordedAt = new Date(year, mon, day, 12, 0, 0);
+                  const repsMatch = s.metrics.match(/(\d+)\s*(?:reps|putts)/i);
+                  return {
+                    recordedAt,
+                    shotCount: repsMatch ? Number(repsMatch[1]) : 0,
+                    environment: "RANGE_OUTDOOR_MAT" as const,
+                  };
+                },
+              );
+              startTransition(async () => {
+                const result = await importTrackMan({
+                  source: source === "csv" ? "csv" : "trackman_account",
+                  sessions,
+                });
+                if ("error" in result) {
+                  setError(result.error);
+                  return;
+                }
+                onSubmit(
+                  `${result.data?.count ?? checked.length} TrackMan-økter importert`,
+                );
+              });
             }}
           >
             <span>
-              {step === 3 ? `Importer ${checked.length} økter` : "Neste"}
+              {step === 3
+                ? isPending
+                  ? "Importerer…"
+                  : `Importer ${checked.length} økter`
+                : "Neste"}
             </span>
             {step !== 3 && (
               <svg
@@ -3219,6 +3499,8 @@ export function NyEktModal({
   const [linkedGoals, setLinkedGoals] = useState<string[]>([]);
   const [drillQuery, setDrillQuery] = useState("");
   const [prevOpen, setPrevOpen] = useState(open);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   // Re-sync state on every open with new prefilled values.
   if (prevOpen !== open) {
@@ -3576,21 +3858,58 @@ export function NyEktModal({
         </div>
 
         <footer className="modal-footer">
+          <InlineError message={error} />
           <div className="left-meta">Lagres som planlagt i Uke 21</div>
-          <button className="btn-ghost" onClick={onClose}>
+          <button className="btn-ghost" onClick={onClose} disabled={isPending}>
             Avbryt
           </button>
           <button
             className="btn btn-primary"
+            disabled={isPending}
             onClick={() => {
               if (!title.trim() || !datetime) return;
-              onSubmit(
-                ctaTime ? `Økt planlagt · ${ctaTime}` : "Økt opprettet",
-              );
+              setError(null);
+              const areaMap: Record<DisciplineKey, "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"> = {
+                fys: "FYS",
+                tek: "TEK",
+                slag: "SLAG",
+                spill: "SPILL",
+                turn: "TURN",
+              };
+              startTransition(async () => {
+                // Ny økt — bruk logSession til å opprette en TrainingSessionV2.
+                // editSession krever eksisterende sessionId; her oppretter vi en ny.
+                const result = await logSession({
+                  date: new Date(datetime),
+                  drillName: title.trim(),
+                  pyramidArea: areaMap[discipline],
+                  durationMin: duration,
+                  sets: [],
+                  notes: [
+                    focus ? `Fokus: ${focus}` : null,
+                    place ? `Sted: ${place}` : null,
+                    drill ? `Drill: ${drill}` : null,
+                    linkedGoals.length
+                      ? `Mål: ${linkedGoals.join(", ")}`
+                      : null,
+                  ]
+                    .filter(Boolean)
+                    .join("\n"),
+                });
+                if ("error" in result) {
+                  setError(result.error);
+                  return;
+                }
+                onSubmit(
+                  ctaTime ? `Økt planlagt · ${ctaTime}` : "Økt opprettet",
+                );
+              });
             }}
           >
             <Icon id="ic-plus" />
-            Lagre{ctaTime ? ` · ${ctaTime}` : ""}
+            {isPending
+              ? "Lagrer…"
+              : `Lagre${ctaTime ? ` · ${ctaTime}` : ""}`}
           </button>
         </footer>
       </div>
@@ -3637,6 +3956,8 @@ export function AiForeslaUkeModal({
   const [chips, setChips] = useState<string[]>([]);
   const [keepAnders, setKeepAnders] = useState(true);
   const [prevOpen, setPrevOpen] = useState(open);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   if (prevOpen !== open) {
     setPrevOpen(open);
@@ -3665,6 +3986,17 @@ export function AiForeslaUkeModal({
         setPhase("suggestion");
       }
     }, 60);
+
+    // Kall aiSuggestWeek best-effort (svar brukes ikke ennå i UI som viser
+    // hardkodet AI_DAYS — Sprint 3 vil mappe svaret til prod-data).
+    const weekStart = new Date();
+    const day = (weekStart.getDay() + 6) % 7;
+    weekStart.setDate(weekStart.getDate() - day + 7); // neste uke
+    weekStart.setHours(0, 0, 0, 0);
+    void aiSuggestWeek({ weekStart }).catch(() => {
+      // stille feil — UI viser uansett mock-forslag
+    });
+
     return () => window.clearInterval(tick);
   }, [open, phase]);
 
@@ -4068,6 +4400,8 @@ export function AiForeslaUkeModal({
                   Behold Anders&apos; tildelte økter alltid
                 </span>
               </label>
+
+              <InlineError message={error} />
             </div>
           )}
         </div>
@@ -4119,17 +4453,67 @@ export function AiForeslaUkeModal({
               <div className="left-meta">Refresher ukeplan</div>
               <button
                 className="btn-ghost"
+                disabled={isPending}
                 onClick={() => setPhase("suggestion")}
               >
                 Tilbake
               </button>
               <button
                 className="btn btn-primary"
-                onClick={() =>
-                  onSubmit(`Uke 22 oppdatert · ${sessionCount} økter lagt til`)
-                }
+                disabled={isPending}
+                onClick={() => {
+                  setError(null);
+                  const areaMap: Record<
+                    DisciplineKey,
+                    "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"
+                  > = {
+                    fys: "FYS",
+                    tek: "TEK",
+                    slag: "SLAG",
+                    spill: "SPILL",
+                    turn: "TURN",
+                  };
+                  // Bygg dato pr. økt med neste mandag som start.
+                  const weekStart = new Date();
+                  const day = (weekStart.getDay() + 6) % 7;
+                  weekStart.setDate(weekStart.getDate() - day + 7);
+                  weekStart.setHours(0, 0, 0, 0);
+                  const norskDayOffset: Record<string, number> = {
+                    Man: 0, Tir: 1, Ons: 2, Tor: 3, Fre: 4, Lør: 5, Søn: 6,
+                  };
+                  // Hopp over Anders' tildelte (kept) hvis brukeren beholder.
+                  const toCreate = AI_DAYS.filter(
+                    (s) => !(keepAnders && s.kept),
+                  );
+                  startTransition(async () => {
+                    let createdCount = 0;
+                    for (const s of toCreate) {
+                      const offset = norskDayOffset[s.day] ?? 0;
+                      const d = new Date(weekStart);
+                      d.setDate(d.getDate() + offset);
+                      const [h, m] = s.time.split(":").map(Number);
+                      d.setHours(h, m, 0, 0);
+                      const r = await logSession({
+                        date: d,
+                        drillName: s.title,
+                        pyramidArea: areaMap[s.kind],
+                        durationMin: s.min,
+                        sets: [],
+                        notes: "AI-generert ukeplan",
+                      });
+                      if ("success" in r) createdCount++;
+                    }
+                    if (createdCount === 0) {
+                      setError("Kunne ikke opprette økter — sjekk tilkobling");
+                      return;
+                    }
+                    onSubmit(
+                      `Uke 22 oppdatert · ${createdCount} økter lagt til`,
+                    );
+                  });
+                }}
               >
-                Bekreft
+                {isPending ? "Lagrer…" : "Bekreft"}
               </button>
             </>
           )}

@@ -35,5 +35,5 @@ export default async function TurneringDetaljPage({
     turneringNavn = null;
   }
 
-  return <TurneringDetaljClient tournamentName={turneringNavn} />;
+  return <TurneringDetaljClient tournamentId={id} tournamentName={turneringNavn} />;
 }

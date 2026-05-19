@@ -9,6 +9,11 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import {
+  generateWeekSuggestions,
+  type WeekSuggestion as AiWeekSuggestion,
+} from "@/lib/ai-plan/week-suggest";
+import { parseTrackManCsv } from "@/lib/trackman/parse-csv";
 
 /* ─── Felles typer ──────────────────────────────────────────────────── */
 
@@ -330,7 +335,10 @@ const TrackManSessionInput = z.object({
 });
 const TrackManImportInput = z.object({
   source: z.enum(["csv", "trackman_account"]),
-  sessions: z.array(TrackManSessionInput).min(1, "Velg minst én økt"),
+  // Enten gi pre-strukturerte sessions, eller send rå CSV-tekst som parses server-side.
+  sessions: z.array(TrackManSessionInput).optional(),
+  csvText: z.string().optional(),
+  environment: TrackManEnvironmentEnum.optional(),
 });
 export type TrackManSessionInput = z.infer<typeof TrackManSessionInput>;
 export type TrackManImportInput = z.infer<typeof TrackManImportInput>;
@@ -343,11 +351,41 @@ export async function importTrackMan(
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Ugyldig input" };
   }
+  if (
+    (!parsed.data.sessions || parsed.data.sessions.length === 0) &&
+    !parsed.data.csvText
+  ) {
+    return { error: "Du må sende enten sessions[] eller csvText" };
+  }
 
   try {
-    // TODO Sprint 3: faktisk CSV-parser + TrackMan API-integrasjon.
+    // Hvis csvText er gitt: parse til strukturerte sessions først.
+    let sessions: Array<{
+      recordedAt: Date;
+      shotCount: number;
+      rawJson?: unknown;
+      environment?: z.infer<typeof TrackManEnvironmentEnum>;
+    }> = parsed.data.sessions ?? [];
+
+    if (parsed.data.csvText) {
+      const result = parseTrackManCsv(parsed.data.csvText);
+      if (!result.ok) {
+        return { error: `CSV-parsing feilet: ${result.error}` };
+      }
+      sessions = result.sessions.map((s) => ({
+        recordedAt: s.recordedAt,
+        shotCount: s.shotCount,
+        rawJson: s.rawJson,
+        environment: parsed.data.environment,
+      }));
+    }
+
+    if (sessions.length === 0) {
+      return { error: "Ingen økter å importere" };
+    }
+
     const created = await prisma.trackManSession.createMany({
-      data: parsed.data.sessions.map((s) => ({
+      data: sessions.map((s) => ({
         userId: user.id,
         recordedAt: s.recordedAt,
         source: parsed.data.source === "csv" ? "csv-import" : "api",
@@ -414,17 +452,22 @@ export async function askCoachQuestion(
   }
 }
 
-/* ─── 8. uploadSessionVideo — video til coach (stub) ───────────────── */
+/* ─── 8. uploadSessionVideo — video til coach via Vercel Blob ─────── */
 
 const UploadVideoInput = z.object({
   drillInstanceId: z.string().min(1),
-  videoBlobUrl: z.string().optional(), // ekte URL kommer fra klient når Vercel Blob er på plass
+  // Klient sender enten en allerede-opplastet blob-URL (recommended path), eller
+  // base64-kodet video som vi laster opp server-side til Vercel Blob.
+  videoBlobUrl: z.string().url().optional(),
+  videoBase64: z.string().optional(),
+  filename: z.string().max(120).optional(),
+  contentType: z.string().max(120).optional(),
 });
 export type UploadVideoInput = z.infer<typeof UploadVideoInput>;
 
 export async function uploadSessionVideo(
   input: UploadVideoInput,
-): Promise<ActionResult<{ noteId: string }>> {
+): Promise<ActionResult<{ noteId: string; videoUrl: string }>> {
   const user = await requirePortalUser();
   const parsed = UploadVideoInput.safeParse(input);
   if (!parsed.success) {
@@ -441,18 +484,62 @@ export async function uploadSessionVideo(
       return { error: "Ikke tilgang" };
     }
 
-    // TODO Sprint 3: faktisk Vercel Blob-upload + thumbnail-generering.
+    // Resolve video-URL:
+    // 1) Klient har allerede lastet opp via @vercel/blob/client → URL gitt.
+    // 2) Klient sender base64 → vi laster opp server-side hvis token er satt.
+    // 3) Fallback: lagre placeholder + advar i log.
+    //
+    // TODO: thumbnail-generering (ffmpeg-via-edge-function eller @vercel/og).
+    //   ENV som trengs: BLOB_READ_WRITE_TOKEN.
+    let videoUrl = parsed.data.videoBlobUrl ?? null;
+
+    if (!videoUrl && parsed.data.videoBase64) {
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        console.warn(
+          "[uploadSessionVideo] BLOB_READ_WRITE_TOKEN mangler — beholder placeholder. " +
+            "Sett BLOB_READ_WRITE_TOKEN i .env.local for å aktivere ekte upload.",
+        );
+        videoUrl = "vercel-blob://placeholder";
+      } else {
+        // Eksempel-payload: { videoBase64: "data:video/mp4;base64,AAAA...", filename: "swing.mp4" }
+        const { put } = await import("@vercel/blob");
+        const base64 = parsed.data.videoBase64.replace(
+          /^data:[^;]+;base64,/,
+          "",
+        );
+        const buffer = Buffer.from(base64, "base64");
+        const filename =
+          parsed.data.filename ??
+          `session-${parsed.data.drillInstanceId}-${Date.now()}.mp4`;
+        const path = `sessions/${user.id}/${filename}`;
+        const blob = await put(path, buffer, {
+          access: "public",
+          contentType: parsed.data.contentType ?? "video/mp4",
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+        });
+        videoUrl = blob.url;
+      }
+    }
+
+    if (!videoUrl) {
+      // Verken URL eller base64 — placeholder for nå.
+      videoUrl = "vercel-blob://placeholder";
+    }
+
     const note = await prisma.sessionDrillNote.create({
       data: {
         drillInstanceId: parsed.data.drillInstanceId,
         type: "VIDEO",
-        videoUrl: parsed.data.videoBlobUrl ?? "vercel-blob://placeholder",
+        videoUrl,
       },
-      select: { id: true },
+      select: { id: true, videoUrl: true },
     });
 
     revalidatePath("/portal/tren");
-    return { success: true, data: { noteId: note.id } };
+    return {
+      success: true,
+      data: { noteId: note.id, videoUrl: note.videoUrl ?? videoUrl },
+    };
   } catch (err) {
     console.error("uploadSessionVideo failed", err);
     return { error: "Kunne ikke laste opp video" };
@@ -508,71 +595,27 @@ const AiSuggestWeekInput = z.object({
 });
 export type AiSuggestWeekInput = z.infer<typeof AiSuggestWeekInput>;
 
-export type WeekSuggestion = {
-  variant: "konservativ" | "standard" | "aggressiv";
-  totalSessions: number;
-  focusBlend: string;
-  sessions: Array<{
-    day: number; // 0=mandag
-    title: string;
-    pyramidArea: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
-    durationMin: number;
-  }>;
-};
+export type WeekSuggestion = AiWeekSuggestion;
 
 export async function aiSuggestWeek(
   input: AiSuggestWeekInput,
-): Promise<ActionResult<{ suggestions: WeekSuggestion[] }>> {
-  await requirePortalUser();
+): Promise<ActionResult<{ suggestions: WeekSuggestion[]; usedAi: boolean }>> {
+  const user = await requirePortalUser();
   const parsed = AiSuggestWeekInput.safeParse(input);
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Ugyldig input" };
   }
 
-  // TODO Sprint 3: kall faktisk AI Gateway med spiller-kontekst + ukens fokus.
-  const suggestions: WeekSuggestion[] = [
-    {
-      variant: "konservativ",
-      totalSessions: 5,
-      focusBlend: "TEK 40 % · SLAG 30 % · SPILL 30 %",
-      sessions: [
-        { day: 0, title: "Tek — grunnbevegelse", pyramidArea: "TEK", durationMin: 60 },
-        { day: 1, title: "Slag — banespill", pyramidArea: "SLAG", durationMin: 75 },
-        { day: 3, title: "Tek — kort spill", pyramidArea: "TEK", durationMin: 60 },
-        { day: 4, title: "Spill — runde 9 hull", pyramidArea: "SPILL", durationMin: 120 },
-        { day: 6, title: "FYS — restitusjon", pyramidArea: "FYS", durationMin: 45 },
-      ],
-    },
-    {
-      variant: "standard",
-      totalSessions: 6,
-      focusBlend: "TEK 30 % · SLAG 30 % · SPILL 25 % · FYS 15 %",
-      sessions: [
-        { day: 0, title: "FYS — styrke", pyramidArea: "FYS", durationMin: 60 },
-        { day: 1, title: "Tek — putting", pyramidArea: "TEK", durationMin: 60 },
-        { day: 2, title: "Slag — jern", pyramidArea: "SLAG", durationMin: 75 },
-        { day: 3, title: "Tek — chip", pyramidArea: "TEK", durationMin: 60 },
-        { day: 4, title: "Spill — runde 18 hull", pyramidArea: "SPILL", durationMin: 240 },
-        { day: 5, title: "Slag — wedge under press", pyramidArea: "SLAG", durationMin: 60 },
-      ],
-    },
-    {
-      variant: "aggressiv",
-      totalSessions: 7,
-      focusBlend: "SLAG 35 % · SPILL 25 % · TEK 20 % · TURN 10 % · FYS 10 %",
-      sessions: [
-        { day: 0, title: "FYS — styrke", pyramidArea: "FYS", durationMin: 60 },
-        { day: 1, title: "Slag — driving", pyramidArea: "SLAG", durationMin: 90 },
-        { day: 2, title: "Tek — putting", pyramidArea: "TEK", durationMin: 60 },
-        { day: 3, title: "Slag — jern under press", pyramidArea: "SLAG", durationMin: 90 },
-        { day: 4, title: "Spill — runde 18 hull", pyramidArea: "SPILL", durationMin: 240 },
-        { day: 5, title: "Turn — simulering", pyramidArea: "TURN", durationMin: 90 },
-        { day: 6, title: "Tek — kort spill", pyramidArea: "TEK", durationMin: 60 },
-      ],
-    },
-  ];
-
-  return { success: true, data: { suggestions } };
+  try {
+    const { suggestions, usedAi } = await generateWeekSuggestions(
+      user.id,
+      parsed.data.weekStart,
+    );
+    return { success: true, data: { suggestions, usedAi } };
+  } catch (err) {
+    console.error("aiSuggestWeek failed", err);
+    return { error: "Kunne ikke generere uke-forslag" };
+  }
 }
 
 // Re-eksporter felles enum-typer for å hjelpe klient-koden.

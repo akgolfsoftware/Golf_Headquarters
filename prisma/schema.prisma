@@ -44,6 +44,26 @@ enum SessionStatus {
   CANCELLED
 }
 
+// Status-enum for TrainingSessionV2. Holdes adskilt fra eldre SessionStatus
+// for å unngå migrasjonskonflikt i eksisterende felter.
+enum SessionStatusV2 {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  SKIPPED
+}
+
+// Påmeldingsstatus for TournamentEntry. Erstatter notes-prefiks-hack i
+// withdrawFromTournament.
+enum TournamentEntryStatus {
+  PLANNED     // meldt på
+  CONFIRMED   // bekreftet av spiller
+  WITHDRAWN   // trukket
+  COMPLETED   // gjennomført
+  DNF         // started, men trakk
+}
+
 enum PyramidArea {
   FYS
   TEK
@@ -1379,6 +1399,9 @@ model TournamentEntry {
   // Felles
   category      String?              // "A-rekke", "Åpen NM", "Kretsmesterskap"
   priority      String   @default("NORMAL")  // MAJOR | NORMAL | LOCAL
+  entryStatus   TournamentEntryStatus @default(PLANNED)
+  withdrawnAt   DateTime?
+  withdrawnReason String?
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -1645,6 +1668,7 @@ model TrainingSessionV2 {
   endTime              DateTime
   miljo                MMiljo
   practiceType         PracticeType
+  status               SessionStatusV2 @default(PLANNED)
   notes                String?
   isCoachCreated       Boolean  @default(true)
   rrule                String?

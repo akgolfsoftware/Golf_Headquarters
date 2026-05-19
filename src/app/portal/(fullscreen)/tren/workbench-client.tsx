@@ -11,6 +11,7 @@
 
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/shared/toast-provider";
 import "./workbench-v2.css";
 import {
   AiForeslaUkeModal,
@@ -28,7 +29,6 @@ import {
   NyEktModal,
   NyEktPrefill,
   PlanAdjustModal,
-  Toast,
   TrackManImportModal,
   UkeEvent,
 } from "./workbench-modaler";
@@ -320,15 +320,12 @@ type Router = ReturnType<typeof useRouter>;
 
 export function WorkbenchClient() {
   const router = useRouter();
+  const toaster = useToast();
   const [mode, setMode] = useState<Mode>("status");
   const [zoom, setZoom] = useState<Zoom>("uke");
   const [modal, setModal] = useState<ModalName>(null);
   const [discKey, setDiscKey] = useState<DisciplineKey>("tek");
   const [nyEktPrefill, setNyEktPrefill] = useState<NyEktPrefill | undefined>(undefined);
-  const [toast, setToast] = useState<{ text: string; show: boolean }>({
-    text: "",
-    show: false,
-  });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifRect, setNotifRect] = useState<DOMRect | null>(null);
@@ -355,10 +352,12 @@ export function WorkbenchClient() {
     { left: number; top: number } | null
   >(null);
 
-  const showToast = useCallback((text: string) => {
-    setToast({ text, show: true });
-    window.setTimeout(() => setToast((p) => ({ ...p, show: false })), 2600);
-  }, []);
+  const showToast = useCallback(
+    (text: string) => {
+      toaster.success(text);
+    },
+    [toaster],
+  );
 
   const openModal = (n: ModalName) => setModal(n);
   const closeModal = () => setModal(null);
@@ -536,11 +535,24 @@ export function WorkbenchClient() {
         {/* ===== MAIN ===== */}
         <main className="main">
           <header className="topbar">
-            <div className="search">
+            <button
+              type="button"
+              className="search"
+              onClick={() => window.dispatchEvent(new CustomEvent("cmd-palette:open"))}
+              aria-label="Åpne globalt søk (Cmd+K)"
+            >
               <Icon id="ic-search" />
-              <input placeholder="Søk drill, plan eller mål…" />
+              <input
+                placeholder="Søk drill, plan eller mål…"
+                readOnly
+                tabIndex={-1}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.dispatchEvent(new CustomEvent("cmd-palette:open"));
+                }}
+              />
               <span className="kbd">⌘K</span>
-            </div>
+            </button>
             <div className="breadcrumb" style={{ marginLeft: 0 }}>
               Workbench &nbsp;/&nbsp;{" "}
               <span className="current">
@@ -927,7 +939,7 @@ export function WorkbenchClient() {
         onAskCoach={() => openModal("ask-coach")}
       />
 
-      <Toast text={toast.text} show={toast.show} />
+      {/* Toast håndteres nå av global ToastProvider. */}
     </div>
   );
 }
