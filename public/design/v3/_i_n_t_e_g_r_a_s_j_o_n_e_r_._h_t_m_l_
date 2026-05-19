@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Integrasjoner — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding-bottom: 0; }
+
+  /* ---- top nav ---- */
+  .topnav {
+    display: flex; align-items: center; gap: 18px;
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #fff;
+  }
+  .topnav .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 700; color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .brand img { height: 22px; width: auto; display: block; }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+
+  /* ---- settings layout ---- */
+  .settings-shell {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 40px 24px 96px;
+    display: grid; grid-template-columns: 220px 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .side-rail {
+    position: sticky; top: 32px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .side-rail .rail-label {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); padding: 0 12px 8px;
+  }
+  .side-rail a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 10px;
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--muted); text-decoration: none;
+    font-weight: 500;
+  }
+  .side-rail a svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .side-rail a:hover { background: var(--border-soft); color: var(--fg); }
+  .side-rail a.active {
+    background: var(--fg); color: var(--bg);
+  }
+
+  /* ---- page header ---- */
+  .ph {
+    display: flex; flex-direction: column; gap: 8px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border-soft);
+    margin-bottom: 32px;
+  }
+  .ph .eyebrow-row {
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .ph .eyebrow-row .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); }
+  .ph h1 {
+    font-family: var(--font-display); font-size: 38px;
+    font-weight: 600; letter-spacing: -0.02em; line-height: 1.05;
+  }
+  .ph h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .ph .ph-sub {
+    margin-top: 4px;
+    font-size: 14px; color: var(--muted); max-width: 540px;
+  }
+
+  /* ---- summary strip ---- */
+  .summary {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 36px;
+  }
+  .summary-cell {
+    background: #fff;
+    padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .summary-cell .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .summary-cell .val {
+    font-family: var(--font-mono); font-size: 22px;
+    font-weight: 500; color: var(--fg); letter-spacing: -0.01em;
+    line-height: 1; font-variant-numeric: tabular-nums;
+  }
+  .summary-cell .val small {
+    font-size: 13px; color: var(--muted); font-weight: 400;
+    margin-left: 2px;
+  }
+  .summary-cell .delta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--success); font-weight: 500;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .summary-cell .delta.muted { color: var(--muted); }
+
+  /* ---- section header ---- */
+  .sec-h {
+    display: flex; align-items: baseline; gap: 14px;
+    margin: 0 0 16px;
+  }
+  .sec-h h2 {
+    font-family: var(--font-display); font-size: 14px;
+    font-weight: 600; color: var(--fg); letter-spacing: -0.005em;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .sec-h .count {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); font-weight: 500;
+  }
+
+  /* ---- grid ---- */
+  .int-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  /* ---- card ---- */
+  .icard {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 16px;
+    position: relative;
+    transition: border-color .15s;
+  }
+  .icard:hover { border-color: #D7D5CD; }
+  .icard.connected { background: #fff; }
+
+  .icard-head {
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .icard-logo {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: var(--border-soft);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .icard-logo svg { width: 26px; height: 26px; }
+  .icard-meta { flex: 1; min-width: 0; }
+  .icard-name {
+    font-family: var(--font-display); font-size: 15px;
+    font-weight: 600; color: var(--fg);
+    line-height: 1.25;
+  }
+  .icard-cat {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600;
+    margin-top: 3px;
+  }
+  .icard-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase;
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .icard-status.on {
+    background: rgba(0,88,64,0.10); color: var(--primary);
+  }
+  .icard-status.off {
+    background: var(--border-soft); color: var(--muted);
+  }
+  .icard-status .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+  }
+  .icard-status.on .dot { box-shadow: 0 0 0 3px rgba(0,88,64,0.12); }
+
+  .icard-desc {
+    font-size: 13px; color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .icard-data {
+    display: flex; flex-direction: column; gap: 5px;
+    padding: 12px 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted);
+  }
+  .icard-data .row {
+    display: flex; justify-content: space-between; gap: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .icard-data .row .k { color: var(--muted); letter-spacing: 0.04em; }
+  .icard-data .row .v { color: var(--fg); font-weight: 500; }
+
+  .icard-foot {
+    display: flex; align-items: center; gap: 8px;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+  .icard-foot .btn {
+    padding: 8px 14px; font-size: 12px;
+  }
+  .icard-foot .btn-ghost-icon {
+    background: transparent; border: 0; padding: 0;
+    width: 32px; height: 32px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); cursor: pointer;
+  }
+  .icard-foot .btn-ghost-icon:hover { background: var(--border-soft); color: var(--fg); }
+  .icard-foot .btn-ghost-icon svg { width: 15px; height: 15px; }
+  .icard-foot .btn-ghost-icon.spinning svg {
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* badge */
+  .badge-pro {
+    position: absolute; top: 14px; right: 14px;
+    font-family: var(--font-mono); font-size: 9px;
+    font-weight: 700; letter-spacing: 0.10em;
+    color: var(--primary); background: rgba(209,248,67,0.32);
+    padding: 3px 7px; border-radius: 4px;
+  }
+
+  /* ---- help footer ---- */
+  .help-foot {
+    margin-top: 56px; padding: 28px 28px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .help-foot .ico {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: rgba(209,248,67,0.32);
+    color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .help-foot .ico svg { width: 22px; height: 22px; }
+  .help-foot .txt { flex: 1; }
+  .help-foot .t {
+    font-family: var(--font-display); font-size: 15px;
+    font-weight: 600; color: var(--fg);
+  }
+  .help-foot .s {
+    font-size: 13px; color: var(--muted); margin-top: 2px;
+  }
+  .help-foot a.lnk {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 600; color: var(--fg);
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+  }
+  .help-foot a.lnk:hover { background: var(--bg); }
+  .help-foot a.lnk svg { width: 14px; height: 14px; }
+
+  /* ---- toast ---- */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--fg); color: #fff;
+    font-size: 13px; font-weight: 500;
+    padding: 12px 18px 12px 14px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 10px;
+    opacity: 0; pointer-events: none;
+    transition: all .25s ease;
+    z-index: 100;
+    box-shadow: 0 12px 32px rgba(10,31,23,0.18);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+  }
+</style>
+</head>
+<body data-screen-label="Integrasjoner">
+
+<!-- Lucide-style icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-chev-l" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+    <symbol id="ic-chev-r" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+    <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+    <symbol id="ic-set" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="ic-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+    <symbol id="ic-credit" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+    <symbol id="ic-arrow-r" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="ic-msg-help" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
+  </defs>
+</svg>
+
+<!-- ===== TOP NAV ===== -->
+<nav class="topnav">
+  <a href="Workbench v2.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+    <img src="assets/logo-primary-on-light.svg" alt="AK Golf" />
+  </a>
+  <div class="crumbs">
+    <a href="#" style="color:var(--muted); text-decoration:none;">Innstillinger</a>
+    &nbsp;/&nbsp;
+    <span class="current">Integrasjoner</span>
+  </div>
+</nav>
+
+<div class="settings-shell">
+
+  <!-- ===== LEFT RAIL ===== -->
+  <aside class="side-rail" aria-label="Innstillinger-meny">
+    <div class="rail-label">Konto</div>
+    <a href="#"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-set"/></svg>Profil</a>
+    <a href="#"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg>Varsler</a>
+    <a href="#"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-lock"/></svg>Personvern</a>
+    <a href="#"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-credit"/></svg>Abonnement</a>
+
+    <div class="rail-label" style="margin-top:24px;">Data</div>
+    <a href="#" class="active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>Integrasjoner</a>
+    <a href="#"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg>Eksport</a>
+
+    <div class="rail-label" style="margin-top:24px;">Støtte</div>
+    <a href="#"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-help"/></svg>Hjelpesenter</a>
+    <a href="Kontakt support.html"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg-help"/></svg>Kontakt support</a>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main>
+
+    <!-- header -->
+    <div class="ph">
+      <div class="eyebrow-row">
+        <span>Innstillinger</span><span class="dot"></span>
+        <span>Data</span><span class="dot"></span>
+        <span>Integrasjoner</span>
+      </div>
+      <h1>Koble til der <em>data finnes</em></h1>
+      <div class="ph-sub">Koble PlayerHQ til eksterne tjenester slik at handicap, runder, shot-data, søvn og puls samles ett sted — uten manuell jobb.</div>
+    </div>
+
+    <!-- summary strip -->
+    <div class="summary" role="group" aria-label="Status oversikt">
+      <div class="summary-cell">
+        <span class="lbl">Tilkoblet</span>
+        <span class="val">3<small>/ 8</small></span>
+        <span class="delta muted">aktive kilder</span>
+      </div>
+      <div class="summary-cell">
+        <span class="lbl">Sist synket</span>
+        <span class="val">08<small>:23</small></span>
+        <span class="delta muted">19.05 — i dag</span>
+      </div>
+      <div class="summary-cell">
+        <span class="lbl">Nye rader</span>
+        <span class="val">47</span>
+        <span class="delta">siste 24 t</span>
+      </div>
+      <div class="summary-cell">
+        <span class="lbl">Datapunkter</span>
+        <span class="val">12 480</span>
+        <span class="delta muted">totalt</span>
+      </div>
+    </div>
+
+    <!-- ===== Tilkoblet ===== -->
+    <div class="sec-h">
+      <h2>Tilkoblet</h2>
+      <span class="count">3 aktive</span>
+    </div>
+    <div class="int-grid">
+
+      <!-- GolfBox -->
+      <div class="icard connected">
+        <div class="icard-head">
+          <div class="icard-logo" style="background:#0B5F30;">
+            <!-- GolfBox monogram: green box with white "G" -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="20" height="20" rx="4" fill="#0B5F30"/>
+              <path d="M12 6.5a5.5 5.5 0 1 0 5.5 5.5h-4.5" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="icard-meta">
+            <div class="icard-name">GolfBox</div>
+            <div class="icard-cat">Handicap · Runder</div>
+          </div>
+          <span class="icard-status on"><span class="dot"></span>Tilkoblet</span>
+        </div>
+        <div class="icard-desc">Handicap, registrerte runder og klubb-medlemskap synkes automatisk fra norske golfklubber.</div>
+        <div class="icard-data">
+          <div class="row"><span class="k">Sist synket</span><span class="v">19.05.2026 · 08:23</span></div>
+          <div class="row"><span class="k">Siste runde</span><span class="v">GFGK · 18.05 · 74</span></div>
+        </div>
+        <div class="icard-foot">
+          <button class="btn btn-outline" style="font-weight:500;">Administrer</button>
+          <button class="btn-ghost-icon" aria-label="Last inn på nytt" title="Last inn på nytt" onclick="syncCard(this)">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- TrackMan Performance Studio -->
+      <div class="icard connected">
+        <div class="icard-head">
+          <div class="icard-logo" style="background:#0A0A0A;">
+            <!-- TrackMan: orange dot on black -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="20" height="20" rx="4" fill="#0A0A0A"/>
+              <circle cx="9" cy="12" r="2.5" fill="#FF6B00"/>
+              <path d="M9 12 L18 8 M9 12 L18 12 M9 12 L18 16" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="icard-meta">
+            <div class="icard-name">TrackMan Performance Studio</div>
+            <div class="icard-cat">Shot-data · Range-økter</div>
+          </div>
+          <span class="icard-status on"><span class="dot"></span>Tilkoblet</span>
+        </div>
+        <div class="icard-desc">Klubb-data, ballhastighet, launch og spin per shot fra studio-økter ved AK Golf-anlegget.</div>
+        <div class="icard-data">
+          <div class="row"><span class="k">Sist synket</span><span class="v">14.05.2026 · 16:45</span></div>
+          <div class="row"><span class="k">Siste økt</span><span class="v">47 shots · Iron CS70→CS80</span></div>
+        </div>
+        <div class="icard-foot">
+          <button class="btn btn-outline" style="font-weight:500;">Administrer</button>
+          <button class="btn-ghost-icon" aria-label="Last inn på nytt" title="Last inn på nytt" onclick="syncCard(this)">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Apple Health -->
+      <div class="icard connected">
+        <div class="icard-head">
+          <div class="icard-logo" style="background:#FBFAF8;">
+            <!-- Apple Health heart -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="20" height="20" rx="5" fill="#FBFAF8"/>
+              <path d="M12 17.5s-5.5-3.4-5.5-7.5a3 3 0 0 1 5.5-1.7A3 3 0 0 1 17.5 10c0 4.1-5.5 7.5-5.5 7.5z" fill="#FB2F4D"/>
+            </svg>
+          </div>
+          <div class="icard-meta">
+            <div class="icard-name">Apple Health</div>
+            <div class="icard-cat">Søvn · Puls · HRV</div>
+          </div>
+          <span class="icard-status on"><span class="dot"></span>Tilkoblet</span>
+        </div>
+        <div class="icard-desc">Søvnkvalitet, hvilepuls og HRV fra iPhone og Apple Watch — brukes til form og restitusjons-trender.</div>
+        <div class="icard-data">
+          <div class="row"><span class="k">Sist synket</span><span class="v">19.05.2026 · 06:00</span></div>
+          <div class="row"><span class="k">I natt</span><span class="v">7 t 12 min · HRV 64 ms</span></div>
+        </div>
+        <div class="icard-foot">
+          <button class="btn btn-outline" style="font-weight:500;">Administrer</button>
+          <button class="btn-ghost-icon" aria-label="Last inn på nytt" title="Last inn på nytt" onclick="syncCard(this)">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== Tilgjengelig ===== -->
+    <div class="sec-h">
+      <h2>Tilgjengelig</h2>
+      <span class="count">5 ikke tilkoblet</span>
+    </div>
+    <div class="int-grid">
+
+      <!-- TrackMan Connect -->
+      <div class="icard">
+        <div class="icard-head">
+          <div class="icard-logo" style="background:#0A0A0A;">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="20" height="20" rx="4" fill="#0A0A0A"/>
+              <circle cx="9" cy="12" r="2.5" fill="#FF6B00"/>
+              <path d="M14 9.5 L18 12 L14 14.5 Z" fill="#fff"/>
+            </svg>
+          </div>
+          <div class="icard-meta">
+            <div class="icard-name">TrackMan Connect</div>
+            <div class="icard-cat">Personlige range-økter</div>
+          </div>
+          <span class="icard-status off"><span class="dot"></span>Ikke tilkoblet</span>
+        </div>
+        <div class="icard-desc">Range-økter fra TrackMan-baser utenfor AK Golf — Driving Range, Bayhill og andre offentlige anlegg.</div>
+        <div class="icard-foot">
+          <button class="btn btn-forest btn-sm"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>Koble til</button>
+          <button class="btn-ghost-icon" aria-label="Mer info" title="Mer info">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-help"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Strava -->
+      <div class="icard">
+        <div class="icard-head">
+          <div class="icard-logo" style="background:#FC4C02;">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="20" height="20" rx="4" fill="#FC4C02"/>
+              <path d="M9 17 L13.5 9 L17 15 L14.5 15 L13.5 13 L11.5 17 Z" fill="#fff"/>
+            </svg>
+          </div>
+          <div class="icard-meta">
+            <div class="icard-name">Strava</div>
+            <div class="icard-cat">Kondisjon · Løping · Sykling</div>
+          </div>
+          <span class="icard-status off"><span class="dot"></span>Ikke tilkoblet</span>
+        </div>
+        <div class="icard-desc">Kondisjons-økter (løping, sykling, tur) logges som FYS-økter i pyramiden din.</div>
+        <div class="icard-foot">
+          <button class="btn btn-forest btn-sm"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>Koble til</button>
+          <button class="btn-ghost-icon" aria-label="Mer info" title="Mer info">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-help"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Garmin -->
+      <div class="icard">
+        <div class="icard-head">
+          <div class="icard-logo" style="background:#000000;">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="20" height="20" rx="4" fill="#000"/>
+              <path d="M12 6 L17 17 L7 17 Z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M12 11 L14 15 L10 15 Z" fill="#007CC3"/>
+            </svg>
+          </div>
+          <div class="icard-meta">
+            <div class="icard-name">Garmin Connect</div>
+            <div class="icard-cat">Steg · Treningsintensitet</div>
+          </div>
+          <span class="icard-status off"><span class="dot"></span>Ikke tilkoblet</span>
+        </div>
+        <div class="icard-desc">Daglige steg, hvilepuls, body-battery og treningsbelastning fra Garmin-klokken.</div>
+        <div class="icard-foot">
+          <button class="btn btn-forest btn-sm"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>Koble til</button>
+          <button class="btn-ghost-icon" aria-label="Mer info" title="Mer info">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-help"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Spotify -->
+      <div class="icard">
+        <span class="badge-pro">PRO</span>
+        <div class="icard-head">
+          <div class="icard-logo" style="background:#1DB954;">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="20" height="20" rx="4" fill="#1DB954"/>
+              <path d="M7 10c3-1 7-1 10 1" stroke="#000" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+              <path d="M8 13c2.5-.8 5.5-.8 8 .8" stroke="#000" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+              <path d="M9 15.6c2-.5 4-.4 5.8.6" stroke="#000" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="icard-meta">
+            <div class="icard-name">Spotify</div>
+            <div class="icard-cat">Treningsplaylister</div>
+          </div>
+          <span class="icard-status off"><span class="dot"></span>Ikke tilkoblet</span>
+        </div>
+        <div class="icard-desc">Knytt egne playlister til økt-typer. Starter automatisk når du trykker «Start økt».</div>
+        <div class="icard-foot">
+          <button class="btn btn-forest btn-sm"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>Koble til</button>
+          <button class="btn-ghost-icon" aria-label="Mer info" title="Mer info">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-help"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Google / Apple Calendar -->
+      <div class="icard" style="grid-column: span 2;">
+        <div class="icard-head">
+          <div class="icard-logo" style="background:#fff; border:1px solid var(--border);">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="5" width="18" height="16" rx="2" fill="#fff" stroke="#0A1F17" stroke-width="1.6"/>
+              <line x1="3" y1="10" x2="21" y2="10" stroke="#0A1F17" stroke-width="1.4"/>
+              <line x1="8" y1="3" x2="8" y2="7" stroke="#0A1F17" stroke-width="1.6" stroke-linecap="round"/>
+              <line x1="16" y1="3" x2="16" y2="7" stroke="#0A1F17" stroke-width="1.6" stroke-linecap="round"/>
+              <rect x="6" y="13" width="4" height="3" rx="0.5" fill="#FB2F4D"/>
+              <rect x="14" y="13" width="4" height="3" rx="0.5" fill="#005840"/>
+            </svg>
+          </div>
+          <div class="icard-meta">
+            <div class="icard-name">Google Calendar &amp; Apple Calendar</div>
+            <div class="icard-cat">Kalender-synk</div>
+          </div>
+          <span class="icard-status off"><span class="dot"></span>Ikke tilkoblet</span>
+        </div>
+        <div class="icard-desc">Push planlagte og fullførte økter til din personlige kalender. Velg én eller begge tjenester — synkroniseringen går én vei (PlayerHQ → kalender).</div>
+        <div class="icard-foot">
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-forest btn-sm"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>Koble til Google</button>
+            <button class="btn btn-outline btn-sm"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>Koble til Apple</button>
+          </div>
+          <button class="btn-ghost-icon" aria-label="Mer info" title="Mer info">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-help"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== Help footer ===== -->
+    <div class="help-foot">
+      <div class="ico">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-help"/></svg>
+      </div>
+      <div class="txt">
+        <div class="t">Får du ikke koblet til?</div>
+        <div class="s">Vi har laget en kort guide for hver tjeneste. Eller send oss et spørsmål — vi svarer innen 4 timer på hverdager.</div>
+      </div>
+      <a href="Kontakt support.html" class="lnk">
+        Kontakt support
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-r"/></svg>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast">
+  <span class="dot"></span>
+  <span id="toast-msg">Synket — 12 nye rader hentet</span>
+</div>
+
+<script>
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window._tt);
+    window._tt = setTimeout(()=> t.classList.remove('show'), 2600);
+  }
+  function syncCard(btn) {
+    if (btn.classList.contains('spinning')) return;
+    btn.classList.add('spinning');
+    const card = btn.closest('.icard');
+    const name = card.querySelector('.icard-name').textContent;
+    setTimeout(()=> {
+      btn.classList.remove('spinning');
+      const n = Math.floor(Math.random()*18) + 3;
+      showToast(`${name} synket — ${n} nye rader hentet`);
+      // bump "sist synket" to nå
+      const row = card.querySelector('.icard-data .row .v');
+      if (row) row.textContent = '19.05.2026 · 14:32';
+    }, 1100);
+  }
+</script>
+</body>
+</html>

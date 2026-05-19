@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Faktura #2026-0247 — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding-bottom: 0; }
+
+  .topnav {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #fff;
+  }
+  .topnav .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    text-transform: uppercase; font-weight: 700;
+    text-decoration: none;
+  }
+  .topnav .back-link:hover { color: var(--fg); }
+  .topnav .back-link svg { width: 14px; height: 14px; }
+  .topnav .name {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 700; color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+
+  .page {
+    max-width: 800px; margin: 0 auto;
+    padding: 40px 24px 96px;
+    display: flex; flex-direction: column; gap: 28px;
+  }
+
+  /* hero */
+  .invoice-hero {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap;
+  }
+  .invoice-hero .left { display: flex; flex-direction: column; gap: 6px; }
+  .invoice-hero .eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700;
+  }
+  .invoice-hero h1 {
+    font-family: var(--font-display); font-size: 36px;
+    font-weight: 600; letter-spacing: -0.02em; line-height: 1.05;
+  }
+  .invoice-hero h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .invoice-hero .num {
+    font-family: var(--font-mono); font-size: 14px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    margin-top: 4px;
+  }
+  .invoice-hero .num strong {
+    color: var(--fg); font-weight: 700;
+  }
+  .invoice-hero .actions {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .status-badge.paid { background: rgba(44,125,82,0.12); color: var(--success); }
+  .status-badge svg { width: 12px; height: 12px; }
+  .btn-action {
+    background: var(--card); color: var(--fg);
+    border: 1px solid var(--border);
+    padding: 9px 14px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 12.5px; font-weight: 600;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-action:hover { border-color: var(--primary); }
+  .btn-action svg { width: 13px; height: 13px; }
+  .btn-action.primary { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .btn-action.primary:hover { background: var(--primary-dark); }
+
+  /* meta grid */
+  .meta-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+  }
+  .meta-block { display: flex; flex-direction: column; gap: 6px; }
+  .meta-block .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .meta-block .nm {
+    font-family: var(--font-display); font-size: 14.5px;
+    font-weight: 600; color: var(--fg);
+  }
+  .meta-block .addr {
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--muted); line-height: 1.55;
+  }
+  .meta-grid-2 {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px;
+    padding-top: 18px; margin-top: 18px;
+    border-top: 1px solid var(--border-soft);
+    grid-column: 1 / -1;
+  }
+  .meta-mini { display: flex; flex-direction: column; gap: 4px; }
+  .meta-mini .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .meta-mini .val {
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--fg); font-weight: 600;
+    font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
+  }
+
+  /* table */
+  .table-wrap {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .table-wrap caption {
+    text-align: left; padding: 18px 24px 4px;
+    font-family: var(--font-display); font-size: 14px;
+    font-weight: 600; color: var(--fg); caption-side: top;
+  }
+  table.lines {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--font-body); font-size: 13.5px;
+  }
+  table.lines thead th {
+    text-align: left;
+    padding: 12px 24px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 700;
+    border-top: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--bg);
+  }
+  table.lines thead th.num { text-align: right; }
+  table.lines tbody td {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-soft);
+    vertical-align: top;
+  }
+  table.lines tbody td.num {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  table.lines tbody tr:last-child td { border-bottom: 0; }
+  .line-title {
+    font-family: var(--font-display); font-size: 14px;
+    font-weight: 600; color: var(--fg);
+  }
+  .line-sub {
+    font-family: var(--font-body); font-size: 12px;
+    color: var(--muted); margin-top: 4px; line-height: 1.4;
+  }
+  .mva-pill {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); font-weight: 600;
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 2px 7px; border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  /* totals */
+  .totals {
+    margin-left: auto; width: 320px; max-width: 100%;
+    padding: 18px 24px 22px;
+    border-top: 1px solid var(--border-soft);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .total-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 12.5px;
+    color: var(--muted); letter-spacing: 0.02em;
+    padding: 4px 0;
+  }
+  .total-row .v { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .total-row.grand {
+    padding-top: 12px; margin-top: 4px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-display); font-size: 14px;
+    color: var(--fg); font-weight: 600;
+  }
+  .total-row.grand .v {
+    font-family: var(--font-mono); font-size: 22px;
+    font-weight: 700; letter-spacing: -0.01em;
+  }
+
+  /* payment-info */
+  .pay-info {
+    background: rgba(44,125,82,0.06);
+    border: 1px solid rgba(44,125,82,0.18);
+    border-left: 3px solid var(--success);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .pay-info .ic {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(44,125,82,0.12); color: var(--success);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pay-info .ic svg { width: 18px; height: 18px; }
+  .pay-info .txt { font-family: var(--font-body); font-size: 13px; color: var(--fg); line-height: 1.5; }
+  .pay-info .txt strong { font-weight: 700; }
+  .pay-info .txt .mono { font-family: var(--font-mono); }
+
+  /* action footer */
+  .action-row {
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+    padding: 18px 0 0;
+    border-top: 1px dashed var(--border);
+  }
+  .action-row .left {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .action-row .right { margin-left: auto; display: flex; gap: 8px; }
+
+  /* print */
+  @media print {
+    body { background: #fff; }
+    .topnav, .action-row, .invoice-hero .actions { display: none !important; }
+    .page { padding: 0; max-width: 100%; }
+    .meta-grid, .table-wrap, .pay-info {
+      box-shadow: none;
+      border-color: #ccc;
+    }
+    .invoice-hero h1 em { color: var(--fg); }
+  }
+
+  @media (max-width: 640px) {
+    .meta-grid { grid-template-columns: 1fr; }
+    .meta-grid-2 { grid-template-columns: 1fr 1fr; }
+    table.lines thead th, table.lines tbody td { padding: 12px 14px; }
+    .invoice-hero { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body data-screen-label="Faktura detalj">
+
+<nav class="topnav">
+  <a href="Workbench v2.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    Tilbake til abonnement
+  </a>
+  <span class="name">AK GOLF · PLAYERHQ</span>
+  <span class="crumbs">MEG / ABONNEMENT / <span class="current">FAKTURA #2026-0247</span></span>
+</nav>
+
+<main class="page">
+
+  <header class="invoice-hero">
+    <div class="left">
+      <span class="eyebrow">AK GOLF · FAKTURA</span>
+      <h1>Faktura <em>#2026-0247</em></h1>
+      <div class="num">Fakturadato <strong>19. mai 2026</strong> · Forfaller 02. juni 2026</div>
+    </div>
+    <div class="actions">
+      <span class="status-badge paid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Betalt
+      </span>
+      <button class="btn-action">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        Skriv ut
+      </button>
+      <button class="btn-action">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        Send på e-post
+      </button>
+      <button class="btn-action primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Last ned PDF
+      </button>
+    </div>
+  </header>
+
+  <!-- meta -->
+  <section class="meta-grid">
+    <div class="meta-block">
+      <span class="lbl">Fakturert til</span>
+      <span class="nm">Markus Røinås Pedersen</span>
+      <span class="addr">Storgata 14<br>1606 Fredrikstad<br>Norge</span>
+    </div>
+    <div class="meta-block">
+      <span class="lbl">Fakturert fra</span>
+      <span class="nm">AK Golf Academy AS</span>
+      <span class="addr">Skedsmovollen 2<br>2007 Kjeller<br>Org.nr 999 888 777 MVA</span>
+    </div>
+
+    <div class="meta-grid-2">
+      <div class="meta-mini">
+        <span class="lbl">Fakturadato</span>
+        <span class="val">19.05.2026</span>
+      </div>
+      <div class="meta-mini">
+        <span class="lbl">Forfallsdato</span>
+        <span class="val">02.06.2026</span>
+      </div>
+      <div class="meta-mini">
+        <span class="lbl">KID-nummer</span>
+        <span class="val">1234 5678 90123</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- linjer -->
+  <section class="table-wrap" aria-labelledby="linjer">
+    <table class="lines">
+      <caption id="linjer">Linjer</caption>
+      <thead>
+        <tr>
+          <th scope="col">Beskrivelse</th>
+          <th scope="col" class="num">Antall</th>
+          <th scope="col" class="num">Stk-pris</th>
+          <th scope="col" class="num">MVA</th>
+          <th scope="col" class="num">Sum</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="line-title">Pro-abonnement — mai 2026</div>
+            <div class="line-sub">PlayerHQ Pro · Månedlig fakturering · 01.05.2026 – 31.05.2026</div>
+          </td>
+          <td class="num">1</td>
+          <td class="num">240,00 kr</td>
+          <td class="num"><span class="mva-pill">25 %</span></td>
+          <td class="num">240,00 kr</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <div class="total-row"><span>Netto</span><span class="v">240,00 kr</span></div>
+      <div class="total-row"><span>MVA (25 %)</span><span class="v">60,00 kr</span></div>
+      <div class="total-row grand"><span>Total</span><span class="v">300,00 kr</span></div>
+    </div>
+  </section>
+
+  <!-- betaling -->
+  <section class="pay-info">
+    <span class="ic">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+    </span>
+    <span class="txt">
+      <strong>Betalt 19. mai 2026 kl. 11:42</strong> via <span class="mono">Visa ···· 4242</span>. Transaksjons-ID <span class="mono">stripe_3O6sLk</span>.
+    </span>
+  </section>
+
+  <footer class="action-row">
+    <span class="left">Spørsmål om fakturaen? <a href="Kontakt support.html" style="color: var(--primary); font-weight: 600;">Kontakt support</a></span>
+    <div class="right">
+      <button class="btn-action">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        Send på e-post
+      </button>
+      <button class="btn-action primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Last ned PDF
+      </button>
+    </div>
+  </footer>
+
+</main>
+
+</body>
+</html>
