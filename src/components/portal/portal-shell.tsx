@@ -71,7 +71,9 @@ export async function PortalShell({
         </main>
       </div>
       <BottomNav />
-      <PortalGlobalSearchModal />
+      <PortalGlobalSearchModal
+        canSwitchToCoach={user.role === "ADMIN" || user.role === "COACH"}
+      />
     </div>
   );
 }

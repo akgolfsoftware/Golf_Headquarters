@@ -16,16 +16,188 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  Activity,
+  BookOpen,
+  CalendarCheck,
   CalendarDays,
   ClipboardList,
   Compass,
   CornerDownLeft,
+  Dumbbell,
+  Flag,
+  FlaskConical,
+  LineChart,
+  LogOut,
+  MessageSquare,
+  Moon,
   Search,
   Target,
+  TrendingUp,
+  UserCog,
   X,
+  Zap,
 } from "lucide-react";
 
 const ICON_STROKE = 1.5;
+
+// Hurtig-handlinger for PlayerHQ. Statiske, filtreres lokalt på label +
+// description + keywords. Vises ALLTID øverst i modalen — også når query
+// er tom — som onboarding-/discoverability-hint.
+//
+// Skiller mellom ren navigasjon og custom handler (view-mode bytte, theme
+// toggle, logg-ut etc.).
+
+type ActionKind =
+  | { type: "navigate"; href: string }
+  | { type: "view-mode-coach" }
+  | { type: "toggle-theme" }
+  | { type: "logout" };
+
+type Action = {
+  id: string;
+  label: string;
+  description: string;
+  keywords: string[];
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number; "aria-hidden"?: boolean }>;
+  kind: ActionKind;
+  // Kun synlig for ADMIN/COACH-roller. Brukes for "Bytt til Coach-view".
+  requireCoachRole?: boolean;
+};
+
+const ACTIONS: Action[] = [
+  // --- Logg / spill-handlinger ---
+  {
+    id: "log-training",
+    label: "Logg trening",
+    description: "Registrer en ny treningsøkt",
+    keywords: ["logg", "trening", "ny", "økt", "session", "registrer"],
+    icon: Dumbbell,
+    kind: { type: "navigate", href: "/portal/ny-okt" },
+  },
+  {
+    id: "request-session",
+    label: "Be om økt fra coach",
+    description: "Send ønske om coaching-time",
+    keywords: ["be om", "ønske", "coach", "time", "request", "spørr"],
+    icon: CalendarCheck,
+    kind: { type: "navigate", href: "/portal/onskeligokt" },
+  },
+  {
+    id: "book-time",
+    label: "Book time",
+    description: "Velg coach og ledig tid",
+    keywords: ["book", "booking", "time", "bestill", "reserver"],
+    icon: CalendarDays,
+    kind: { type: "navigate", href: "/portal/booking" },
+  },
+  {
+    id: "message-coach",
+    label: "Send melding til coach",
+    description: "Skriv direkte til din coach",
+    keywords: ["melding", "coach", "skriv", "chat", "kontakt", "message"],
+    icon: MessageSquare,
+    kind: { type: "navigate", href: "/portal/coach" },
+  },
+  // --- Plan / fremgang ---
+  {
+    id: "active-plan",
+    label: "Min aktive plan",
+    description: "Se denne ukens treningsplan",
+    keywords: ["plan", "treningsplan", "aktiv", "uke", "økter"],
+    icon: ClipboardList,
+    kind: { type: "navigate", href: "/portal/tren" },
+  },
+  {
+    id: "year-plan",
+    label: "Årsplan",
+    description: "Sesongoversikt med periodisering",
+    keywords: ["årsplan", "sesong", "periodisering", "år", "year"],
+    icon: Flag,
+    kind: { type: "navigate", href: "/portal/tren/aarsplan" },
+  },
+  {
+    id: "tournaments",
+    label: "Mine turneringer",
+    description: "Planlagte og fullførte turneringer",
+    keywords: ["turnering", "konkurranse", "tournament", "match"],
+    icon: TrendingUp,
+    kind: { type: "navigate", href: "/portal/tren/turneringer" },
+  },
+  {
+    id: "tests",
+    label: "Mine tester",
+    description: "SG- og fys-tester med score",
+    keywords: ["test", "score", "sg", "fys", "resultat"],
+    icon: FlaskConical,
+    kind: { type: "navigate", href: "/portal/tren/tester" },
+  },
+  {
+    id: "drill-library",
+    label: "Drill-bibliotek",
+    description: "Søk i øvelser og favoritter",
+    keywords: ["drill", "øvelse", "bibliotek", "mal", "exercise"],
+    icon: BookOpen,
+    kind: { type: "navigate", href: "/portal/tren/ovelser" },
+  },
+  {
+    id: "analysis",
+    label: "Treningsanalyse",
+    description: "SG-trend og innsikter",
+    keywords: ["analyse", "sg", "innsikt", "tall", "stat"],
+    icon: Activity,
+    kind: { type: "navigate", href: "/portal/analyse" },
+  },
+  {
+    id: "stats",
+    label: "Statistikk",
+    description: "Runder, scoring og HCP",
+    keywords: ["statistikk", "stats", "score", "hcp", "runder"],
+    icon: LineChart,
+    kind: { type: "navigate", href: "/portal/statistikk" },
+  },
+  {
+    id: "challenges",
+    label: "Utfordringer",
+    description: "Aktive drill-konkurranser",
+    keywords: ["utfordring", "challenge", "konkurranse", "spill"],
+    icon: Target,
+    kind: { type: "navigate", href: "/portal/utfordringer" },
+  },
+  // --- System ---
+  {
+    id: "profile",
+    label: "Min profil",
+    description: "HCP, klubb, mål og innstillinger",
+    keywords: ["profil", "min side", "innstillinger", "hcp", "klubb"],
+    icon: UserCog,
+    kind: { type: "navigate", href: "/portal/meg" },
+  },
+  {
+    id: "toggle-theme",
+    label: "Bytt tema",
+    description: "Bytt mellom lyst og mørkt tema",
+    keywords: ["tema", "dark", "light", "mørkt", "lyst", "theme", "mode"],
+    icon: Moon,
+    kind: { type: "toggle-theme" },
+  },
+  {
+    id: "view-mode-coach",
+    label: "Bytt til Coach-view",
+    description: "Hopp tilbake til CoachHQ (kun for coach/admin)",
+    keywords: ["coach", "coachhq", "admin", "bytt", "view"],
+    icon: UserCog,
+    kind: { type: "view-mode-coach" },
+    requireCoachRole: true,
+  },
+  {
+    id: "logout",
+    label: "Logg ut",
+    description: "Avslutt økten og gå til innlogging",
+    keywords: ["logg ut", "logout", "sign out", "avslutt"],
+    icon: LogOut,
+    kind: { type: "logout" },
+  },
+];
 
 type Plan = {
   id: string;
@@ -66,11 +238,31 @@ type ApiResponse = {
 
 type FlatItem = {
   key: string;
-  href: string;
-  category: "plans" | "bookings" | "goals" | "routes";
+  category: "actions" | "plans" | "bookings" | "goals" | "routes";
   primary: string;
   secondary: string;
+  href?: string;
+  action?: Action;
 };
+
+/**
+ * Filtrer ACTIONS lokalt på label + description + keywords.
+ * Tom query gir 8 første (etter role-filter).
+ */
+function matchActions(query: string, canSwitchToCoach: boolean): Action[] {
+  const available = canSwitchToCoach
+    ? ACTIONS
+    : ACTIONS.filter((a) => !a.requireCoachRole);
+  const q = query.trim().toLowerCase();
+  if (q.length === 0) return available.slice(0, 8);
+  return available
+    .filter((a) => {
+      if (a.label.toLowerCase().includes(q)) return true;
+      if (a.description.toLowerCase().includes(q)) return true;
+      return a.keywords.some((k) => k.includes(q));
+    })
+    .slice(0, 8);
+}
 
 const EMPTY: ApiResponse = { routes: [], plans: [], bookings: [], goals: [] };
 
@@ -87,7 +279,11 @@ function formatDateTime(iso: string): string {
   }
 }
 
-export function PortalGlobalSearchModal() {
+export function PortalGlobalSearchModal({
+  canSwitchToCoach = false,
+}: {
+  canSwitchToCoach?: boolean;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -99,8 +295,23 @@ export function PortalGlobalSearchModal() {
   const lastActiveRef = useRef<HTMLElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  // Hurtig-handlinger filtreres lokalt og vises alltid øverst.
+  const matchedActions = useMemo(
+    () => matchActions(query, canSwitchToCoach),
+    [query, canSwitchToCoach]
+  );
+
   const flatItems = useMemo<FlatItem[]>(() => {
     const items: FlatItem[] = [];
+    for (const a of matchedActions) {
+      items.push({
+        key: `action-${a.id}`,
+        category: "actions",
+        primary: a.label,
+        secondary: a.description,
+        action: a,
+      });
+    }
     for (const p of results.plans) {
       items.push({
         key: `plan-${p.id}`,
@@ -138,7 +349,7 @@ export function PortalGlobalSearchModal() {
       });
     }
     return items;
-  }, [results]);
+  }, [results, matchedActions]);
 
   const totalCount = flatItems.length;
 
@@ -240,6 +451,73 @@ export function PortalGlobalSearchModal() {
     router.push(href);
   }
 
+  /**
+   * Håndter valg av FlatItem (Enter eller klikk).
+   * Action har enten navigate-href eller custom handler
+   * (view-mode-coach, toggle-theme, logout).
+   */
+  async function handleSelect(item: FlatItem) {
+    if (item.action) {
+      const action = item.action;
+      switch (action.kind.type) {
+        case "navigate":
+          navigateTo(action.kind.href);
+          return;
+        case "view-mode-coach": {
+          closeModal();
+          try {
+            const res = await fetch("/api/view-mode", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ mode: "coach" }),
+            });
+            if (res.ok) {
+              const data = (await res.json()) as { redirect?: string };
+              router.push(data.redirect ?? "/admin");
+            }
+          } catch {
+            // Stille feil — bruker kan prøve igjen
+          }
+          return;
+        }
+        case "toggle-theme": {
+          closeModal();
+          // Toggle .dark-klassen på <html>-elementet og persister i localStorage.
+          // Samme mekanisme som ThemeToggle-komponenten bruker.
+          const root = document.documentElement;
+          const isDark = root.classList.contains("dark");
+          if (isDark) {
+            root.classList.remove("dark");
+            try {
+              localStorage.setItem("akgolf-theme", "light");
+            } catch {
+              // Ignorer hvis storage er blokkert (private mode etc.)
+            }
+          } else {
+            root.classList.add("dark");
+            try {
+              localStorage.setItem("akgolf-theme", "dark");
+            } catch {
+              // Ignorer hvis storage er blokkert
+            }
+          }
+          return;
+        }
+        case "logout": {
+          closeModal();
+          // POST-form til /api/auth/logout
+          const form = document.createElement("form");
+          form.method = "POST";
+          form.action = "/api/auth/logout";
+          document.body.appendChild(form);
+          form.submit();
+          return;
+        }
+      }
+    }
+    if (item.href) navigateTo(item.href);
+  }
+
   function onInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Escape") {
       e.preventDefault();
@@ -259,7 +537,7 @@ export function PortalGlobalSearchModal() {
     if (e.key === "Enter") {
       e.preventDefault();
       const target = flatItems[highlight];
-      if (target) navigateTo(target.href);
+      if (target) void handleSelect(target);
     }
   }
 
@@ -307,18 +585,20 @@ export function PortalGlobalSearchModal() {
         </div>
 
         <div className="max-h-[60vh] overflow-y-auto py-2">
-          {query.trim().length < 2 ? (
-            <Placeholder loading={false} />
-          ) : loading && totalCount === 0 ? (
+          {totalCount === 0 && loading ? (
             <Placeholder loading={true} />
           ) : totalCount === 0 ? (
-            <EmptyResults query={query} />
+            query.trim().length >= 2 ? (
+              <EmptyResults query={query} />
+            ) : (
+              <Placeholder loading={false} />
+            )
           ) : (
             <Results
               items={flatItems}
               highlight={highlight}
               onHover={setHighlight}
-              onSelect={navigateTo}
+              onSelect={(item) => void handleSelect(item)}
             />
           )}
         </div>
@@ -345,14 +625,7 @@ function Placeholder({ loading }: { loading: boolean }) {
       {loading ? (
         <p className="animate-pulse">Søker…</p>
       ) : (
-        <>
-          <p>Skriv minst 2 tegn for å søke.</p>
-          <p className="mt-2 text-xs">
-            Eksempler: <span className="font-mono">«kalender»</span>,{" "}
-            <span className="font-mono">«personlig»</span>,{" "}
-            <span className="font-mono">«HCP 14»</span>
-          </p>
-        </>
+        <p>Skriv for å søke eller velg en hurtig-handling…</p>
       )}
     </div>
   );
@@ -372,7 +645,7 @@ type ResultsProps = {
   items: FlatItem[];
   highlight: number;
   onHover: (idx: number) => void;
-  onSelect: (href: string) => void;
+  onSelect: (item: FlatItem) => void;
 };
 
 function Results({ items, highlight, onHover, onSelect }: ResultsProps) {
@@ -395,7 +668,7 @@ function Results({ items, highlight, onHover, onSelect }: ResultsProps) {
               role="option"
               aria-selected={highlight === idx}
               onMouseEnter={() => onHover(idx)}
-              onClick={() => onSelect(item.href)}
+              onClick={() => onSelect(item)}
               className={
                 "mx-2 flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm transition" +
                 (highlight === idx
@@ -403,7 +676,7 @@ function Results({ items, highlight, onHover, onSelect }: ResultsProps) {
                   : " text-foreground hover:bg-secondary/60")
               }
             >
-              <KategoriIkon kategori={item.category} />
+              <ItemIkon item={item} />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{item.primary}</p>
                 <p className="truncate text-xs text-muted-foreground">
@@ -424,8 +697,24 @@ function Results({ items, highlight, onHover, onSelect }: ResultsProps) {
   );
 }
 
+function ItemIkon({ item }: { item: FlatItem }) {
+  // Action har eget ikon, fall back til kategori-ikon for andre.
+  if (item.action) {
+    const Icon = item.action.icon;
+    return (
+      <Icon
+        className="h-3.5 w-3.5 text-muted-foreground"
+        strokeWidth={ICON_STROKE}
+        aria-hidden
+      />
+    );
+  }
+  return <KategoriIkon kategori={item.category} />;
+}
+
 function kategoriLabel(k: FlatItem["category"]): string {
   switch (k) {
+    case "actions": return "Hurtig-handlinger";
     case "plans": return "Mine planer";
     case "bookings": return "Mine bookinger";
     case "goals": return "Mine mål";
@@ -436,6 +725,7 @@ function kategoriLabel(k: FlatItem["category"]): string {
 function KategoriIkon({ kategori }: { kategori: FlatItem["category"] }) {
   const props = { className: "h-3.5 w-3.5 text-muted-foreground", strokeWidth: ICON_STROKE };
   switch (kategori) {
+    case "actions": return <Zap {...props} />;
     case "plans": return <ClipboardList {...props} />;
     case "bookings": return <CalendarDays {...props} />;
     case "goals": return <Target {...props} />;
