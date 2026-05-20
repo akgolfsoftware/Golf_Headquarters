@@ -318,6 +318,12 @@ model User {
   sgInsights     SgInsight[]
   bestSessionRef BestSessionReference?
 
+  // Teknisk utviklingsplan
+  technicalPlans       TechnicalPlan[]      @relation("TechPlanUser")
+  createdTechPlans     TechnicalPlan[]      @relation("TechPlanCreator")
+  techPlanAudits       TechnicalPlanAudit[]
+  techPlanSuggestions  PlanSuggestion[]     @relation("SuggestionDecider")
+
   @@map("users")
 }
 
@@ -836,7 +842,8 @@ model TrackManSession {
   environment TrackManEnvironment?
   createdAt   DateTime             @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shots TrackManShot[]
 
   @@index([userId, recordedAt])
   @@map("trackman_sessions")
@@ -2159,4 +2166,446 @@ model TournamentPreparation {
   @@unique([userId, tournamentId])
   @@index([userId, status])
   @@map("tournament_preparations")
+}
+
+// ============================================================================
+// TEKNISK UTVIKLINGSPLAN (P1.0 - P10.0 svingposisjoner)
+// ============================================================================
+//
+// Coach + spiller redigerer sammen en langsiktig teknisk plan knyttet til
+// en sesongfase (PeriodBlock). Planen brytes ned i 10 P-posisjoner med
+// arbeidsoppgaver i prioritert rekkefølge. Hver oppgave har:
+// - Rep-mål delt i 3 hastigheter (Dry / Lav / Full)
+// - TM-mål per måling (spredning, verdier, kausale parametre)
+// - Koblet til drill-bibliotek for auto-rep-telling
+//
+// TM-data driver planen:
+// - Match-algoritme kobler TrackManShot → PositionTask via kølle/område
+// - 2-spors progress: reps + TM-trend
+// - AI Caddie genererer PlanSuggestion ukentlig
+
+enum TechPlanStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum PositionTaskStatus {
+  PENDING // ikke startet
+  ACTIVE // aktiv, logger reps
+  DONE // ferdig (rep + TM bekreftet)
+  ARCHIVED // tatt ut av plan
+}
+
+enum TrackStatus {
+  PAA_VEI // begge spor positive
+  STAGNERER // reps fortsetter, TM uendret >14d
+  FERDIG // begge spor mål-nådd
+  INAKTIV // ingen reps >14d
+  AVSLAATT // diagnostic_override, ingen TM-validering
+}
+
+enum RepHastighet {
+  DRY // uten ball
+  LAV // CS50-CS70
+  FULL // CS80-CS100
+}
+
+enum TmGoalType {
+  PRIMARY // spredningsmål (dispersion, std, axis-avvik) — viktigst
+  SECONDARY // verdimål (smash mean, ball speed, carry)
+  CAUSAL // tekniske parameter-mål (dynamic loft, attack angle)
+  HIT_RATE // pass/fail-protokoll (8/10 innenfor ±2°) — drill-mål
+}
+
+enum TmGoalProtocol {
+  ROLLING_WINDOW // siste N slag — rullende vindu
+  BEST_OF_N // beste N i én økt
+  STREAK // streak av on-rad treff
+  SESSION_GATE // én økt må passere før neste fase
+}
+
+enum TmGoalComparison {
+  LESS_THAN
+  GREATER_THAN
+  RANGE
+  EQUAL
+}
+
+enum ClubTargetStatus {
+  OPPNAADD // siste 10 slag i mål-range
+  PAA_VEI_KT // ≥50 % av siste 10 i range (suffix _KT for å unngå kollisjon)
+  IKKE_BEGYNT
+}
+
+enum SuggestionType {
+  NEW_TASK
+  ARCHIVE_TASK
+  RE_PRIORITIZE
+  CHANGE_CUE
+  ADJUST_GOAL
+  ADD_CLUB_TARGET
+}
+
+enum SuggestionStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EDITED // godkjent etter justering
+}
+
+// ----------------------------------------------------------------------------
+// TechnicalPlan — én plan per spiller per periodeblokk
+// ----------------------------------------------------------------------------
+model TechnicalPlan {
+  id            String         @id @default(cuid())
+  userId        String // spiller
+  periodBlockId String? // knyttet til sesongfase (GRUNN/SPESIALISERING/TURNERING…)
+  navn          String // "Teknisk utviklingsplan vår 2026"
+  status        TechPlanStatus @default(DRAFT)
+  startDato     DateTime
+  sluttDato     DateTime?
+
+  // Opprettet av (coach eller spiller)
+  opprettetAvId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user        User                      @relation("TechPlanUser", fields: [userId], references: [id], onDelete: Cascade)
+  opprettetAv User                      @relation("TechPlanCreator", fields: [opprettetAvId], references: [id])
+  positions   TechnicalPlanPosition[]
+  clubTargets TechnicalPlanClubTarget[]
+  audits      TechnicalPlanAudit[]
+  suggestions PlanSuggestion[]
+
+  @@index([userId, status])
+  @@index([periodBlockId])
+  @@map("technical_plans")
+}
+
+// ----------------------------------------------------------------------------
+// TechnicalPlanPosition — én rad per P1.0 - P10.0 per plan
+// ----------------------------------------------------------------------------
+model TechnicalPlanPosition {
+  id      String @id @default(cuid())
+  planId  String
+  pNummer String // "P1.0" - "P10.0"
+  navn    String // "Topp-posisjon" - menneskelesbart
+  // Ytre prio — drag-and-drop på P-rader. Lavest = øverst.
+  sortOrder Int
+
+  // Visuelt flagg — om denne P er hovedfokus (lime venstre-stripe)
+  hovedfokus Boolean @default(false)
+
+  plan  TechnicalPlan  @relation(fields: [planId], references: [id], onDelete: Cascade)
+  tasks PositionTask[]
+
+  @@unique([planId, pNummer])
+  @@index([planId, sortOrder])
+  @@map("technical_plan_positions")
+}
+
+// ----------------------------------------------------------------------------
+// PositionTask — arbeidsoppgaver innen hver P
+// ----------------------------------------------------------------------------
+model PositionTask {
+  id         String @id @default(cuid())
+  positionId String
+
+  // Indre prio — drag-and-drop innen samme P. Lavest = øverst.
+  sortOrder Int
+
+  // Innhold
+  tittel      String
+  beskrivelse String?
+  bildeUrl    String? // Supabase Storage
+  videoUrl    String? // Supabase Storage eller ekstern lenke
+
+  // Kategorisering
+  pyramide PyramidArea
+  omraade  String // "Tee Total" | "App 150-200" | "Putt 3-5m" osv. — SG-bucket
+  koller   String[] // ["7-jern"] eller ["Alle køller"]
+  lFase    LFase? // MORAD lærefase
+  cs       CSNivaa? // ferdighet
+  miljo    MMiljo? // miljø
+  prPress  PRPress? // press-nivå
+  slagType String? // "fullsving" | "pitch" | "chip" | "putt" | "bunker" (legacy / fri tekst)
+
+  // Rep-mål per hastighet
+  repsMaalDry  Int @default(0)
+  repsMaalLav  Int @default(0)
+  repsMaalFull Int @default(0)
+
+  // Aggregert fremdrift (oppdateres ved log-insert)
+  repsGjortDry  Int @default(0)
+  repsGjortLav  Int @default(0)
+  repsGjortFull Int @default(0)
+
+  // 2-spors status
+  status               PositionTaskStatus @default(PENDING)
+  trackStatus          TrackStatus        @default(PAA_VEI)
+  trackStatusUpdatedAt DateTime?
+
+  // Diagnostisk støtte ved opprettelse
+  // [{ metric: string, baseline: number, target: number, support: bool }]
+  diagnosticMetrics  Json?
+  diagnosticOverride Boolean @default(false) // coach overstyrte TM-evidens
+
+  // Prediksjon
+  estimatedCompleteAt DateTime?
+
+  // Sist trent (oppdateres ved hver TrackManShot eller PositionTaskLog)
+  lastRepLoggedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  position      TechnicalPlanPosition @relation(fields: [positionId], references: [id], onDelete: Cascade)
+  logs          PositionTaskLog[]
+  tmGoals       PositionTaskTmGoal[]
+  trackmanShots TrackManShot[]
+
+  @@index([positionId, sortOrder])
+  @@index([status, trackStatus])
+  @@map("position_tasks")
+}
+
+// ----------------------------------------------------------------------------
+// PositionTaskLog — én rad per logget rep (manuelt eller via TrackMan)
+// ----------------------------------------------------------------------------
+model PositionTaskLog {
+  id     String @id @default(cuid())
+  taskId String
+
+  // Logger — fra hvilken kontekst
+  // Optional fordi reps kan logges manuelt uten session-kontekst
+  sessionV2Id     String? // TrainingSessionV2 (live-økt counter)
+  trackmanShotId  String? @unique // hvis fra TrackMan-import
+  loggedByUserId  String // hvem klikket logg-knappen / importerte
+
+  reps      Int
+  hastighet RepHastighet
+  notater   String?
+
+  loggedAt DateTime @default(now())
+
+  task         PositionTask    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  trackmanShot TrackManShot?   @relation(fields: [trackmanShotId], references: [id])
+
+  @@index([taskId, loggedAt])
+  @@index([sessionV2Id])
+  @@map("position_task_logs")
+}
+
+// ----------------------------------------------------------------------------
+// PositionTaskTmGoal — TM-mål per oppgave (spredning som primær)
+// ----------------------------------------------------------------------------
+//
+// Coach + spiller setter konkrete TM-mål som måler om den tekniske
+// endringen virker. Tre typer mål:
+// - PRIMARY: spredningsmål (dispersion, std, axis-avvik)
+// - SECONDARY: verdimål (smash mean, ball speed, carry)
+// - CAUSAL: tekniske parameter-mål (dynamic loft, attack angle)
+//
+// Oppgaven anses "TM-ferdig" når ≥3/4 primære nådd + ≥2/3 sekundære
+// nådd + stabilt siste 14 dager.
+model PositionTaskTmGoal {
+  id     String @id @default(cuid())
+  taskId String
+
+  metric String // "dispersion_m_std" | "spin_axis_avg_deg" | "smash_factor_mean" | "smash_factor_std" | osv.
+  klubb  String // "7-jern" | "Driver" | "Alle køller"
+
+  // Baseline (utgangspunktet)
+  baselineValue Float
+  baselineFrom  String // "auto-30d" | "manual"
+  baselineDate  DateTime
+  baselineN     Int? // antall slag baseline bygger på
+
+  // Mål
+  targetValue Float
+  targetType  TmGoalType
+  comparison  TmGoalComparison
+  rangeMax    Float? // hvis comparison = RANGE
+
+  // Progress (oppdateres ved hver TM-import)
+  currentValue Float?
+  progressPct  Int? // 0-100 (hvor mye av baseline → target distansen er dekket)
+  inTarget     Boolean @default(false)
+  lastUpdated  DateTime?
+
+  // ----- HIT_RATE-spesifikke felt (Mekanisme 7) -----
+  // Pass/fail-protokoll: "8/10 slag innenfor ±2° face angle"
+  // Kun relevant når targetType = HIT_RATE.
+  protocol     TmGoalProtocol? // ROLLING_WINDOW | BEST_OF_N | STREAK | SESSION_GATE
+  windowSize   Int? // antall slag i vinduet (f.eks. 10)
+  requiredHits Int? // antall som må passere (f.eks. 8)
+  corridorMin  Float? // nedre grense for "treff" (f.eks. -2.0)
+  corridorMax  Float? // øvre grense for "treff" (f.eks. +2.0)
+  // Aktuell status — oppdateres etter hver økt
+  currentHits      Int? // antall treff i siste vindu
+  currentBatchSize Int? // antall slag i siste vindu
+  bestHits         Int? // beste resultat i en enkelt økt (for BEST_OF_N)
+  currentStreak    Int? // nåværende streak (for STREAK)
+  bestStreak       Int? // lengste streak hittil
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task PositionTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, targetType])
+  @@map("position_task_tm_goals")
+}
+
+// ----------------------------------------------------------------------------
+// TechnicalPlanClubTarget — TM-mål per kølle for hele planen
+// ----------------------------------------------------------------------------
+// Ikke knyttet til en spesifikk oppgave — dette er overordnede mål for
+// hva spilleren skal oppnå med hver kølle denne perioden.
+model TechnicalPlanClubTarget {
+  id     String @id @default(cuid())
+  planId String
+
+  club String // "Driver" | "7-jern" | "PW" osv.
+
+  // Primær måling (én per kølle — fokus-måling)
+  primaryMetric  String // "smashFactor" | "ballSpeed" | "spinRate" osv.
+  primaryGoalMin Float?
+  primaryGoalMax Float? // null = bare min-grense
+
+  // Sekundære mål — som JSON-array
+  // [{ metric, goalMin, goalMax }, ...]
+  secondaryGoals Json
+
+  // Aktuelle verdier (oppdateres ved hver TM-sync)
+  currentValue   Float?
+  currentValueAt DateTime?
+  status         ClubTargetStatus @default(IKKE_BEGYNT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  plan TechnicalPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, club])
+  @@index([planId, status])
+  @@map("technical_plan_club_targets")
+}
+
+// ----------------------------------------------------------------------------
+// TechnicalPlanAudit — audit-logg for felles redigering
+// ----------------------------------------------------------------------------
+model TechnicalPlanAudit {
+  id      String @id @default(cuid())
+  planId  String
+  actorId String
+
+  action  String // "TASK_ADD" | "TASK_EDIT" | "PRIO_CHANGE" | "STATUS_CHANGE" osv.
+  target  String? // task-id eller andre relevante ID
+  payload Json? // før/etter-verdier
+
+  createdAt DateTime @default(now())
+
+  plan  TechnicalPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  actor User          @relation(fields: [actorId], references: [id])
+
+  @@index([planId, createdAt])
+  @@map("technical_plan_audits")
+}
+
+// ----------------------------------------------------------------------------
+// TrackManShot — granulær slag-data fra TrackMan-import
+// ----------------------------------------------------------------------------
+//
+// Når en TrackManSession importeres (CSV/API), oppretter vi én TrackManShot
+// per slag i sesjonen. Hvert slag matches mot en PositionTask via:
+// 1) drill-kontekst (sterkest) — hvis live-økt drill var linket til task
+// 2) kølle + område (hovedstrategi)
+// 3) manuell tagging (fallback)
+//
+// Disse driver auto-oppdatering av PositionTask.repsGjort* og
+// PositionTaskTmGoal.currentValue.
+model TrackManShot {
+  id        String @id @default(cuid())
+  sessionId String
+  shotNumber Int
+
+  // Slag-identifikasjon
+  club String // "7-jern" | "Driver" osv. (parsed fra CSV)
+
+  // Ball-data
+  ballSpeed     Float? // mph
+  smashFactor   Float?
+  launchAngle   Float? // grader
+  spinRate      Float? // rpm
+  spinAxis      Float? // grader (sidespinn)
+  carryDistance Float? // meter
+  totalDistance Float? // meter
+  apexHeight    Float? // meter
+  landAngle     Float? // grader
+  side          Float? // meter (dispersion offline)
+
+  // Klubb-data
+  clubSpeed      Float? // mph
+  attackAngle    Float? // grader
+  clubPath       Float? // grader
+  faceAngle      Float? // grader
+  faceToPath     Float? // grader
+  dynamicLoft    Float? // grader
+  strikePatternX Float? // -1..1 (toe-heel)
+  strikePatternY Float? // -1..1 (low-high)
+
+  // Sync-felt
+  positionTaskId String? // kobling til arbeidsoppgave (null = umatchet)
+  matchSource    String? // "auto-club" | "auto-drill" | "manual"
+  matchConfidence String? // "high" | "medium" | "low"
+
+  // Klassifisering
+  hastighet RepHastighet? // LAV/FULL (basert på Club Speed vs. spillers max)
+  outlier   Boolean       @default(false) // ekstrem verdi, ekskludert fra trends
+
+  recordedAt DateTime
+  createdAt  DateTime @default(now())
+
+  session TrackManSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  task    PositionTask?    @relation(fields: [positionTaskId], references: [id], onDelete: SetNull)
+  log     PositionTaskLog?
+
+  @@index([sessionId, club])
+  @@index([positionTaskId, recordedAt])
+  @@index([positionTaskId, hastighet])
+  @@map("trackman_shots")
+}
+
+// ----------------------------------------------------------------------------
+// PlanSuggestion — AI Caddie sine forslag til plan-endringer
+// ----------------------------------------------------------------------------
+//
+// Genereres periodisk (etter TM-import + søndag-batch) av Caddie. Coach
+// godkjenner / avviser / justerer før de tas inn i planen.
+model PlanSuggestion {
+  id     String @id @default(cuid())
+  planId String
+
+  type    SuggestionType
+  payload Json // forslag-detaljer (task-data, ny prio osv.)
+  evidence Json // TM-data og SG-data som backer forslaget
+
+  reason String? // kort menneskelesbar forklaring
+
+  status     SuggestionStatus @default(PENDING)
+  decidedAt  DateTime?
+  decidedById String?
+  decisionNote String? // justeringer hvis EDITED
+
+  createdAt DateTime @default(now())
+
+  plan TechnicalPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  decidedBy User?    @relation("SuggestionDecider", fields: [decidedById], references: [id])
+
+  @@index([planId, status])
+  @@index([type, status])
+  @@map("plan_suggestions")
 }
