@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Anlegg — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 48px; }
+
+  .loc-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; margin-bottom: 18px; }
+  .loc-cover {
+    height: 96px; padding: 22px 28px;
+    background: linear-gradient(110deg, #006C50 0%, #003A2A 70%, #0A1F17 100%);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .loc-cover.gfgk { background: linear-gradient(110deg, #2C7D52 0%, #1A4D2E 70%, #0A1F17 100%); }
+  .loc-cover.bossum { background: linear-gradient(110deg, #88B45A 0%, #2C7D52 70%, #1A4D2E 100%); }
+  .loc-cover::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 14px, rgba(209,248,67,0.04) 14px, rgba(209,248,67,0.04) 16px);
+    pointer-events: none;
+  }
+  .num-tag {
+    position: relative; z-index: 1;
+    width: 48px; height: 48px; border-radius: 12px;
+    background: rgba(209,248,67,0.20); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 18px; font-weight: 700;
+    border: 1.5px solid rgba(209,248,67,0.40); flex-shrink: 0;
+  }
+  .titles { position: relative; z-index: 1; flex: 1; min-width: 0; }
+  .titles .nm {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 700; color: #fff; letter-spacing: -0.01em; line-height: 1.2;
+  }
+  .titles .nm em { font-family: var(--font-serif); font-style: italic; color: var(--accent); font-weight: 400; }
+  .titles .addr {
+    font-family: var(--font-mono); font-size: 11px;
+    color: rgba(209,248,67,0.75); letter-spacing: 0.06em;
+    margin-top: 3px; text-transform: uppercase; font-weight: 600;
+  }
+  .loc-status {
+    position: relative; z-index: 1;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; border-radius: 999px;
+    background: rgba(209,248,67,0.25); color: var(--accent);
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .loc-status .pulse { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .expand-btn {
+    position: relative; z-index: 1;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(209,248,67,0.25);
+    color: var(--accent); cursor: pointer;
+    width: 38px; height: 38px; border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .expand-btn:hover { background: rgba(255,255,255,0.18); }
+  .expand-btn svg { width: 16px; height: 16px; transition: transform 200ms; }
+  .loc-card.open .expand-btn svg { transform: rotate(180deg); }
+
+  .loc-kpi {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    background: var(--card); border-bottom: 1px solid var(--border);
+  }
+  .kpi-item { padding: 16px 24px; border-right: 1px solid var(--border-soft); }
+  .kpi-item:last-child { border-right: 0; }
+  .kpi-item .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+  .kpi-item .val { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--fg); margin-top: 4px; line-height: 1; letter-spacing: -0.01em; }
+  .kpi-item .val.good { color: var(--success); }
+  .kpi-item .sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; margin-top: 3px; }
+
+  .fac-table-wrap { display: none; }
+  .loc-card.open .fac-table-wrap { display: block; }
+  .fac-table { width: 100%; border-collapse: collapse; }
+  .fac-table thead { background: var(--bg); }
+  .fac-table thead th {
+    text-align: left; padding: 12px 22px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 700;
+    border-bottom: 1px solid var(--border);
+  }
+  .fac-table thead th.right { text-align: right; }
+  .fac-table tbody tr { border-bottom: 1px solid var(--border-soft); cursor: pointer; transition: background 120ms; }
+  .fac-table tbody tr:last-child { border-bottom: 0; }
+  .fac-table tbody tr:hover { background: var(--bg); }
+  .fac-table td { padding: 12px 22px; vertical-align: middle; font-variant-numeric: tabular-nums; }
+  .fac-table td.right { text-align: right; }
+
+  .fac-name { display: flex; align-items: center; gap: 10px; }
+  .fac-name .ic {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--bg); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .fac-name .ic svg { width: 13px; height: 13px; }
+  .fac-name .nm { font-family: var(--font-display); font-size: 13.5px; font-weight: 600; color: var(--fg); line-height: 1.2; }
+  .fac-name .sub { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.06em; margin-top: 2px; }
+
+  .type-chip-sm {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 999px;
+    background: var(--bg); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--fg); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  .belegg { display: flex; align-items: center; gap: 8px; min-width: 140px; }
+  .belegg-bar { flex: 1; height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; }
+  .belegg-bar .fill { height: 100%; border-radius: 999px; }
+  .belegg-bar .fill.low { background: var(--accent); }
+  .belegg-bar .fill.med { background: #88B45A; }
+  .belegg-bar .fill.high { background: var(--primary); }
+  .belegg .pct { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; color: var(--fg); min-width: 38px; text-align: right; }
+
+  .edit-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 12px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--border);
+    font-family: var(--font-body); font-size: 11.5px;
+    font-weight: 600; color: var(--fg); cursor: pointer;
+  }
+  .edit-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .edit-btn svg { width: 11px; height: 11px; }
+
+  .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat-cell { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); padding: 16px 18px; }
+  .stat-cell .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+  .stat-cell .val { font-family: var(--font-mono); font-size: 26px; font-weight: 700; line-height: 1; margin-top: 6px; letter-spacing: -0.01em; color: var(--fg); }
+  .stat-cell .val.good { color: var(--success); }
+  .stat-cell .sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; margin-top: 3px; }
+</style>
+</head>
+<body data-screen-label="CoachHQ Anlegg liste">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+    <symbol id="ic-building" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></symbol>
+    <symbol id="ic-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-chev-d" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-tv" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 16 21 12 17"/></symbol>
+    <symbol id="ic-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="assets/logo-white-on-green.svg" alt="AK Golf" class="brand-logo" />
+      <div class="name">AK GOLF</div>
+      <div class="meta">COACHHQ · HEAD COACH</div>
+    </div>
+    <div class="sidebar-profile coach">
+      <div class="avatar">AK</div>
+      <div><div class="nm">Anders K.</div><div class="role">38 SPILLERE</div></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Daglig</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Kalender</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>Innboks<span class="badge-count">7</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operasjon</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Stall</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-card"/></svg>Bookinger</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-building"/></svg>Anlegg</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grid"/></svg>Kapasitet</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Statistikk</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+        <input placeholder="Søk anlegg…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="breadcrumb">CoachHQ &nbsp;/&nbsp; Operasjon &nbsp;/&nbsp; <span class="current">Anlegg</span></div>
+      <div style="margin-left:auto;">
+        <button aria-label="Varsler" style="width:38px;height:38px;border-radius:10px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;color:var(--fg);cursor:pointer;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="page-coach">
+
+      <div class="coach-header">
+        <div class="left">
+          <span class="eyebrow">FYSISK INFRASTRUKTUR</span>
+          <h1><em>3 lokasjoner</em> · 14 fasiliteter</h1>
+          <div class="sub">
+            <span class="ok">78 % snitt-belegg</span>
+            <span class="dot"></span>13 aktive
+            <span class="dot"></span>1 vedlikehold
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm">Importer fra GolfBox</button>
+          <button class="btn btn-primary btn-sm">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+            Nytt anlegg
+          </button>
+        </div>
+      </div>
+
+      <div class="stat-strip">
+        <div class="stat-cell"><span class="lbl">FASILITETER</span><span class="val">14</span><span class="sub">13 aktive · 1 vedlikehold</span></div>
+        <div class="stat-cell"><span class="lbl">BELEGG SNITT 30D</span><span class="val good">78 %</span><span class="sub">↑ 4 pp vs april</span></div>
+        <div class="stat-cell"><span class="lbl">OMSETNING 30D</span><span class="val">485k</span><span class="sub">kr · ALLE LOKASJONER</span></div>
+        <div class="stat-cell"><span class="lbl">SNITT-PRIS PR SLOT</span><span class="val">820</span><span class="sub">kr · 1:1 dominant</span></div>
+      </div>
+
+      <!-- LOC 1: Performance Studio -->
+      <div class="loc-card open">
+        <div class="loc-cover">
+          <div class="num-tag">01</div>
+          <div class="titles">
+            <div class="nm">Performance Studio <em>Fredrikstad</em></div>
+            <div class="addr">STORGATA 14 · 1606 FREDRIKSTAD · HJEMMEBASE</div>
+          </div>
+          <span class="loc-status"><span class="pulse"></span>AKTIV</span>
+          <button class="expand-btn" onclick="this.closest('.loc-card').classList.toggle('open');">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-d"/></svg>
+          </button>
+        </div>
+        <div class="loc-kpi">
+          <div class="kpi-item"><span class="lbl">FASILITETER</span><span class="val">4</span><span class="sub">4 BAYS</span></div>
+          <div class="kpi-item"><span class="lbl">BELEGG 30D</span><span class="val good">84 %</span><span class="sub">↑ 6 pp</span></div>
+          <div class="kpi-item"><span class="lbl">OMSETNING 30D</span><span class="val">312k</span><span class="sub">kr</span></div>
+          <div class="kpi-item"><span class="lbl">BOOKINGER 30D</span><span class="val">428</span><span class="sub">snitt 14/dag</span></div>
+        </div>
+        <div class="fac-table-wrap">
+          <table class="fac-table">
+            <thead><tr><th>Fasilitet</th><th>Type</th><th>Kapasitet</th><th>Belegg 30d</th><th class="right">Omsetning</th><th class="right"></th></tr></thead>
+            <tbody>
+              <tr onclick="window.location.href='CoachHQ Anlegg detalj.html';">
+                <td><div class="fac-name"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-tv"/></svg></div><div><div class="nm">Bay 1 · Trackman</div><div class="sub">10 × 6 M · INDOOR</div></div></div></td>
+                <td><span class="type-chip-sm">TEK · 1:1</span></td>
+                <td><span style="font-family:var(--font-mono); font-size:11.5px; font-weight:600;">1 spiller</span></td>
+                <td><div class="belegg"><div class="belegg-bar"><div class="fill med" style="width:74%"></div></div><span class="pct">74 %</span></div></td>
+                <td class="right"><span style="font-family:var(--font-mono); font-weight:700;">72 800</span></td>
+                <td class="right"><button class="edit-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-edit"/></svg>Rediger</button></td>
+              </tr>
+              <tr onclick="window.location.href='CoachHQ Anlegg detalj.html';">
+                <td><div class="fac-name"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-tv"/></svg></div><div><div class="nm">Bay 2 · Trackman 4 + GC Quad</div><div class="sub">FOR-DEMO BAY · TOPP-MODUL</div></div></div></td>
+                <td><span class="type-chip-sm">TEK · 1:1</span></td>
+                <td><span style="font-family:var(--font-mono); font-size:11.5px; font-weight:600;">1 spiller</span></td>
+                <td><div class="belegg"><div class="belegg-bar"><div class="fill high" style="width:92%"></div></div><span class="pct">92 %</span></div></td>
+                <td class="right"><span style="font-family:var(--font-mono); font-weight:700;">89 200</span></td>
+                <td class="right"><button class="edit-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-edit"/></svg>Rediger</button></td>
+              </tr>
+              <tr onclick="window.location.href='CoachHQ Anlegg detalj.html';">
+                <td><div class="fac-name"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-tv"/></svg></div><div><div class="nm">Bay 3 · Foresight Sim</div><div class="sub">BIGSCREEN · GRUPPER OPP TIL 4</div></div></div></td>
+                <td><span class="type-chip-sm">GRUPPE</span></td>
+                <td><span style="font-family:var(--font-mono); font-size:11.5px; font-weight:600;">4 spillere</span></td>
+                <td><div class="belegg"><div class="belegg-bar"><div class="fill med" style="width:68%"></div></div><span class="pct">68 %</span></div></td>
+                <td class="right"><span style="font-family:var(--font-mono); font-weight:700;">94 400</span></td>
+                <td class="right"><button class="edit-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-edit"/></svg>Rediger</button></td>
+              </tr>
+              <tr onclick="window.location.href='CoachHQ Anlegg detalj.html';">
+                <td><div class="fac-name"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg></div><div><div class="nm">Putt-studio</div><div class="sub">PUTTING INDOOR · CAPTO</div></div></div></td>
+                <td><span class="type-chip-sm">SLAG · 1:1</span></td>
+                <td><span style="font-family:var(--font-mono); font-size:11.5px; font-weight:600;">2 spillere</span></td>
+                <td><div class="belegg"><div class="belegg-bar"><div class="fill high" style="width:88%"></div></div><span class="pct">88 %</span></div></td>
+                <td class="right"><span style="font-family:var(--font-mono); font-weight:700;">55 600</span></td>
+                <td class="right"><button class="edit-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-edit"/></svg>Rediger</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- LOC 2: GFGK -->
+      <div class="loc-card">
+        <div class="loc-cover gfgk">
+          <div class="num-tag">02</div>
+          <div class="titles">
+            <div class="nm">GFGK · <em>Gamle Fredrikstad</em></div>
+            <div class="addr">SUTRSVIKVEIEN 90 · 1604 FREDRIKSTAD · HJEMMEBANE</div>
+          </div>
+          <span class="loc-status"><span class="pulse"></span>AKTIV</span>
+          <button class="expand-btn" onclick="this.closest('.loc-card').classList.toggle('open');">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-d"/></svg>
+          </button>
+        </div>
+        <div class="loc-kpi">
+          <div class="kpi-item"><span class="lbl">FASILITETER</span><span class="val">6</span><span class="sub">RANGE · GREEN · BANE</span></div>
+          <div class="kpi-item"><span class="lbl">BELEGG 30D</span><span class="val good">71 %</span><span class="sub">SESONG-AVHENGIG</span></div>
+          <div class="kpi-item"><span class="lbl">OMSETNING 30D</span><span class="val">126k</span><span class="sub">kr</span></div>
+          <div class="kpi-item"><span class="lbl">BOOKINGER 30D</span><span class="val">186</span><span class="sub">+8 banespill</span></div>
+        </div>
+      </div>
+
+      <!-- LOC 3: Bossum -->
+      <div class="loc-card">
+        <div class="loc-cover bossum">
+          <div class="num-tag">03</div>
+          <div class="titles">
+            <div class="nm">Bossum Range</div>
+            <div class="addr">BOSSUMVEIEN 56 · 1605 FREDRIKSTAD · WANG-PARTNER</div>
+          </div>
+          <span class="loc-status" style="background: rgba(184,133,42,0.25); color: #F4D38C;"><span class="pulse"></span>1 VEDLIKEHOLD</span>
+          <button class="expand-btn" onclick="this.closest('.loc-card').classList.toggle('open');">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-d"/></svg>
+          </button>
+        </div>
+        <div class="loc-kpi">
+          <div class="kpi-item"><span class="lbl">FASILITETER</span><span class="val">4</span><span class="sub">3 aktive · 1 vedlikehold</span></div>
+          <div class="kpi-item"><span class="lbl">BELEGG 30D</span><span class="val">62 %</span><span class="sub">UTE-AVHENGIG</span></div>
+          <div class="kpi-item"><span class="lbl">OMSETNING 30D</span><span class="val">47k</span><span class="sub">kr</span></div>
+          <div class="kpi-item"><span class="lbl">BOOKINGER 30D</span><span class="val">94</span><span class="sub">WANG-BLOKKER</span></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

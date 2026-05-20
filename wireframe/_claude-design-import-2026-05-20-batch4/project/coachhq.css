@@ -1,0 +1,170 @@
+/* ============================================================
+   AK Golf — CoachHQ shared styles
+   Extends workbench-v2.css with coach-perspective patterns
+   ============================================================ */
+
+/* coach profile in sidebar */
+.sidebar-profile.coach .avatar {
+  background: var(--accent);
+  color: var(--primary);
+}
+.sidebar-profile.coach .role {
+  font-family: var(--font-mono); font-size: 9.5px;
+  color: rgba(209,248,67,0.65);
+  letter-spacing: 0.10em; margin-top: 2px;
+  text-transform: uppercase;
+}
+
+/* Page container reused */
+.page-coach {
+  padding: 32px 40px 96px;
+  display: flex; flex-direction: column;
+  gap: 28px;
+  max-width: 1480px;
+}
+
+/* page header */
+.coach-header {
+  display: flex; align-items: flex-end;
+  justify-content: space-between; gap: 24px;
+  flex-wrap: wrap;
+}
+.coach-header .left { display: flex; flex-direction: column; gap: 6px; }
+.coach-header h1 {
+  font-family: var(--font-display);
+  font-size: 32px; font-weight: 700;
+  letter-spacing: -0.02em; line-height: 1.05;
+}
+.coach-header h1 em {
+  font-family: var(--font-serif); font-style: italic;
+  font-weight: 400; color: var(--primary);
+}
+.coach-header .sub {
+  font-family: var(--font-mono); font-size: 11.5px;
+  color: var(--muted); letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.coach-header .actions {
+  display: flex; gap: 8px; align-items: center;
+}
+
+/* status-bullets in sub */
+.coach-header .sub .dot {
+  display: inline-block; width: 5px; height: 5px;
+  border-radius: 50%; background: var(--muted);
+  margin: 0 8px 1.5px; vertical-align: middle;
+}
+.coach-header .sub .ok { color: var(--success); font-weight: 600; }
+.coach-header .sub .warn { color: var(--warning); font-weight: 600; }
+.coach-header .sub .err { color: var(--danger); font-weight: 600; }
+
+/* small team pills */
+.team-pill {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: var(--r-pill);
+  font-family: var(--font-mono); font-size: 9.5px;
+  font-weight: 700; letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+.team-pill.ak    { background: rgba(209,248,67,0.32); color: #4A5418; }
+.team-pill.wang  { background: rgba(0,88,64,0.13);    color: var(--primary); }
+.team-pill.both  { background: rgba(44,125,82,0.16);  color: var(--slag); }
+
+/* status badge */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 9px; border-radius: var(--r-pill);
+  font-family: var(--font-mono); font-size: 9.5px;
+  font-weight: 700; letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+.status-badge.aktiv  { background: rgba(209,248,67,0.40); color: #3B4310; }
+.status-badge.pause  { background: rgba(94,92,87,0.14);   color: var(--muted); }
+.status-badge.ingen  { background: rgba(163,45,45,0.10);  color: var(--danger); }
+.status-badge.utest  { background: rgba(184,133,42,0.15); color: var(--warning); }
+.status-badge .pulse {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor;
+}
+
+/* filter strip */
+.filter-strip {
+  display: flex; align-items: center;
+  gap: 8px; flex-wrap: wrap;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 12px 16px;
+  position: sticky; top: var(--topbar-h); z-index: 20;
+}
+.filter-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+  background: #fff; color: var(--fg);
+  font-family: var(--font-body); font-size: 12.5px;
+  font-weight: 500; cursor: pointer; line-height: 1;
+}
+.filter-pill .count {
+  font-family: var(--font-mono); font-size: 10.5px;
+  font-weight: 600; color: var(--muted);
+}
+.filter-pill:hover { background: var(--bg); }
+.filter-pill.active {
+  background: var(--fg); color: var(--accent);
+  border-color: var(--fg);
+}
+.filter-pill.active .count { color: rgba(209,248,67,0.7); }
+.filter-strip .divider {
+  width: 1px; height: 22px; background: var(--border);
+  margin: 0 4px;
+}
+.filter-strip .search-mini {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; padding: 7px 12px;
+  width: 220px; margin-left: auto;
+}
+.filter-strip .search-mini input {
+  flex: 1; border: 0; background: transparent;
+  font: inherit; font-size: 12.5px;
+  color: var(--fg); outline: none;
+}
+.filter-strip .search-mini input::placeholder { color: var(--muted-soft); }
+.filter-strip .search-mini svg {
+  width: 13px; height: 13px; color: var(--muted-soft);
+}
+.filter-strip .sort-trigger {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 12px; border-radius: 10px;
+  border: 1px solid var(--border); background: #fff;
+  font-family: var(--font-body); font-size: 12.5px;
+  color: var(--fg); cursor: pointer;
+}
+.filter-strip .sort-trigger .lbl {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--muted); letter-spacing: 0.08em;
+  text-transform: uppercase; font-weight: 600;
+}
+.filter-strip .sort-trigger svg { width: 12px; height: 12px; opacity: 0.6; }
+
+/* player avatar */
+.p-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.p-avatar.lg { width: 64px; height: 64px; font-size: 22px; }
+.p-avatar.md { width: 48px; height: 48px; font-size: 16px; }
+.p-avatar.sm { width: 28px; height: 28px; font-size: 11px; }
+
+/* color variants */
+.p-avatar.c1 { background: #E8EFD9; color: #2C7D52; }
+.p-avatar.c2 { background: #DCE7E1; color: #005840; }
+.p-avatar.c3 { background: #F2E7D8; color: #B8852A; }
+.p-avatar.c4 { background: #E8D9D9; color: #A32D2D; }
+.p-avatar.c5 { background: #D8E3DE; color: #1A4D2E; }
+.p-avatar.c6 { background: #EBE3D9; color: #6E5A2A; }
+.p-avatar.c7 { background: #DAD9C7; color: #4A5418; }
+.p-avatar.c8 { background: #D7E6E2; color: #2A6A56; }

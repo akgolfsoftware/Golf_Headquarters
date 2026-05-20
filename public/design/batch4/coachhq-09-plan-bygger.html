@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Ny plan for Markus — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 72px; }
+
+  /* page header / toolbar */
+  .builder-bar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: center;
+    position: sticky; top: var(--topbar-h); z-index: 20;
+  }
+  .bb-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
+  .bb-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 600;
+    text-decoration: none;
+  }
+  .bb-back:hover { color: var(--fg); }
+  .bb-back svg { width: 12px; height: 12px; }
+  .bb-meta { display: flex; flex-direction: column; gap: 2px; }
+  .bb-meta h1 {
+    font-family: var(--font-display); font-size: 22px; font-weight: 700;
+    letter-spacing: -0.015em; line-height: 1.15;
+  }
+  .bb-meta h1 em {
+    font-family: var(--font-serif); font-style: italic; font-weight: 400;
+    color: var(--primary);
+  }
+  .bb-meta .span {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .bb-meta .span strong { color: var(--fg); font-weight: 700; }
+  .autosave {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-soft); letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 600;
+    margin-left: 12px;
+  }
+  .autosave .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--success);
+  }
+  .bb-actions {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .bb-actions .ai-btn {
+    background: rgba(209,248,67,0.20);
+    border: 1px solid rgba(209,248,67,0.45);
+    color: var(--fg);
+    padding: 9px 14px; border-radius: 999px;
+    font-size: 12.5px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer; font-family: var(--font-body);
+  }
+  .bb-actions .ai-btn svg { width: 13px; height: 13px; color: var(--primary); }
+  .bb-actions .ai-btn:hover { background: rgba(209,248,67,0.30); }
+
+  /* === 3-col layout === */
+  .builder {
+    display: grid;
+    grid-template-columns: 260px 1fr 320px;
+    gap: 16px;
+    padding: 16px 24px 24px;
+    align-items: flex-start;
+    max-width: 1680px;
+  }
+
+  /* === LEFT: template library === */
+  .lib {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    position: sticky; top: calc(var(--topbar-h) + 84px);
+    max-height: calc(100vh - var(--topbar-h) - 100px);
+  }
+  .lib-head {
+    padding: 14px 14px 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .lib-head h2 {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 600; letter-spacing: 0.06em;
+    color: var(--fg); text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .lib-head h2 .ct {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); font-weight: 600; letter-spacing: 0.06em;
+  }
+  .lib-search {
+    margin-top: 10px;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 10px;
+  }
+  .lib-search svg { width: 12px; height: 12px; color: var(--muted-soft); }
+  .lib-search input {
+    flex: 1; background: transparent; border: 0; outline: none;
+    font: inherit; font-size: 12px; color: var(--fg);
+  }
+  .lib-search input::placeholder { color: var(--muted-soft); }
+
+  .lib-chips {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 10px;
+  }
+  .lib-chip {
+    padding: 4px 9px; border-radius: 999px;
+    background: var(--bg); color: var(--muted);
+    border: 1px solid var(--border-soft);
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; line-height: 1;
+  }
+  .lib-chip:hover { color: var(--fg); }
+  .lib-chip.active { background: var(--fg); color: var(--accent); border-color: var(--fg); }
+
+  .lib-list {
+    flex: 1; overflow-y: auto;
+    padding: 8px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .drill-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: grid; grid-template-columns: 28px 1fr auto;
+    gap: 10px; align-items: center;
+    cursor: grab;
+    transition: border-color 140ms, box-shadow 140ms;
+  }
+  .drill-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(10,31,23,0.06);
+  }
+  .drill-card.dragging { opacity: 0.5; cursor: grabbing; }
+  .drill-card .ic {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .drill-card .ic svg { width: 14px; height: 14px; }
+  .drill-card.tek .ic { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .drill-card.fys .ic { background: rgba(26,77,46,0.12); color: var(--fys); }
+  .drill-card.spill .ic { background: rgba(44,125,82,0.14); color: var(--slag); }
+  .drill-card.mental .ic { background: rgba(75,61,122,0.14); color: #4B3D7A; }
+  .drill-card.turn .ic { background: rgba(209,248,67,0.40); color: #3B4310; }
+
+  .drill-card .body { min-width: 0; }
+  .drill-card .nm {
+    font-family: var(--font-display); font-size: 12.5px; font-weight: 600;
+    color: var(--fg); line-height: 1.2;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .drill-card .params {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.02em; margin-top: 2px;
+  }
+  .drill-card .min {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    color: var(--fg); letter-spacing: 0.04em;
+    background: var(--bg); padding: 3px 7px; border-radius: 999px;
+  }
+  .drill-card .grip {
+    color: var(--muted-soft);
+    margin-left: 4px;
+    cursor: grab;
+  }
+  .drill-card .grip svg { width: 12px; height: 12px; }
+
+  /* === MIDDLE: calendar === */
+  .cal-wrap {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .cal-top {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .cal-top h2 {
+    font-family: var(--font-display); font-size: 17px;
+    font-weight: 600; letter-spacing: -0.005em;
+  }
+  .cal-top .range {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cal-zoom {
+    margin-left: auto;
+    display: flex; gap: 0;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 999px; padding: 3px;
+  }
+  .cal-zoom button {
+    background: transparent; border: 0;
+    padding: 6px 12px; border-radius: 999px;
+    font-family: var(--font-display); font-size: 12px; font-weight: 600;
+    color: var(--muted); cursor: pointer; line-height: 1;
+  }
+  .cal-zoom button.active { background: var(--fg); color: var(--accent); }
+
+  .cal-day-head {
+    display: grid;
+    grid-template-columns: 40px repeat(7, 1fr);
+    gap: 6px;
+  }
+  .cal-day-head .col {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.10em;
+    color: var(--muted); text-align: center;
+    padding: 4px 0;
+    text-transform: uppercase;
+  }
+  .cal-day-head .col.weekend { color: var(--muted-soft); }
+
+  .cal-grid {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .cal-week {
+    display: grid;
+    grid-template-columns: 40px repeat(7, 1fr);
+    gap: 6px;
+    align-items: stretch;
+  }
+  .cal-week .wk {
+    background: var(--bg); border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.04em;
+    padding: 4px 0;
+  }
+
+  .cal-cell {
+    min-height: 116px;
+    background: #fff; border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 6px;
+    display: flex; flex-direction: column;
+    gap: 4px;
+    position: relative;
+    transition: background 140ms, border-color 140ms;
+  }
+  .cal-cell.weekend { background: #FBF9F4; }
+  .cal-cell.today {
+    background: rgba(209,248,67,0.10);
+    border-color: rgba(209,248,67,0.45);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .cal-cell.dragover {
+    background: rgba(209,248,67,0.16);
+    border-color: var(--accent);
+    border-style: dashed;
+  }
+  .cal-cell .dnum {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    color: var(--fg);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .cal-cell.dim .dnum { color: var(--muted-soft); }
+  .cal-cell .today-pip {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 700;
+    background: var(--accent); color: var(--fg);
+    padding: 1px 5px; border-radius: 3px;
+    letter-spacing: 0.10em;
+  }
+
+  /* dropped session blocks */
+  .ses-blk {
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-family: var(--font-display); font-size: 10.5px; font-weight: 600;
+    color: var(--fg); line-height: 1.2;
+    cursor: pointer;
+    border-left: 3px solid var(--primary);
+    background: rgba(0,88,64,0.06);
+    display: flex; flex-direction: column; gap: 2px;
+    transition: background 140ms;
+  }
+  .ses-blk:hover { background: rgba(0,88,64,0.12); }
+  .ses-blk .top-row {
+    display: flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono); font-size: 8.5px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .ses-blk .top-row .dur {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+  }
+  .ses-blk.tek    { border-left-color: var(--tek);   background: rgba(0,88,64,0.06); }
+  .ses-blk.fys    { border-left-color: var(--fys);   background: rgba(26,77,46,0.08); }
+  .ses-blk.spill  { border-left-color: var(--slag);  background: rgba(44,125,82,0.08); }
+  .ses-blk.mental { border-left-color: #4B3D7A;      background: rgba(75,61,122,0.06); }
+  .ses-blk.turn   { border-left-color: #C8B72A;      background: rgba(209,248,67,0.22); }
+
+  .ses-blk.ai-suggest {
+    background: repeating-linear-gradient(45deg,
+      rgba(209,248,67,0.18) 0,
+      rgba(209,248,67,0.18) 6px,
+      rgba(209,248,67,0.08) 6px,
+      rgba(209,248,67,0.08) 12px);
+    border-left-color: var(--accent);
+    border: 1px dashed rgba(209,248,67,0.55);
+    border-left: 3px solid var(--accent);
+  }
+  .ses-blk.ai-suggest .top-row { color: #4A5418; }
+  .ses-blk.ai-suggest .top-row::before { content: '✦ '; }
+
+  /* empty cell add button */
+  .empty-add {
+    margin: auto auto 4px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--bg); color: var(--muted);
+    border: 1px dashed var(--border);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 140ms, background 140ms;
+  }
+  .cal-cell:hover .empty-add { opacity: 1; }
+  .empty-add:hover { background: var(--accent); color: var(--fg); border-color: var(--accent); }
+  .empty-add svg { width: 12px; height: 12px; }
+
+  /* === RIGHT: config === */
+  .config {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 16px;
+    position: sticky; top: calc(var(--topbar-h) + 84px);
+    max-height: calc(100vh - var(--topbar-h) - 100px);
+    overflow-y: auto;
+  }
+  .config-sec { display: flex; flex-direction: column; gap: 8px; }
+  .config-sec h3 {
+    font-family: var(--font-display); font-size: 11px;
+    font-weight: 600; letter-spacing: 0.10em;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .config input[type=text], .config textarea {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--fg); outline: none; width: 100%;
+    line-height: 1.4;
+  }
+  .config textarea { min-height: 60px; resize: vertical; }
+  .config input[type=text]:focus, .config textarea:focus {
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0,88,64,0.08);
+  }
+  .date-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .date-field {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .date-field .lbl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-soft); letter-spacing: 0.08em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .date-field input {
+    font-family: var(--font-mono); font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* KPI mål-rader */
+  .kpi-goal {
+    display: grid; grid-template-columns: 1fr 70px;
+    gap: 8px; align-items: center;
+  }
+  .kpi-goal .nm {
+    font-family: var(--font-body); font-size: 12.5px;
+    color: var(--fg); font-weight: 500;
+  }
+  .kpi-goal .nm small {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-weight: 500; display: block; margin-top: 1px;
+  }
+  .kpi-goal input {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    text-align: center;
+    padding: 6px 8px;
+    color: var(--primary);
+  }
+
+  /* Volume sliders */
+  .vol-row {
+    display: grid; grid-template-columns: 80px 1fr 44px;
+    gap: 10px; align-items: center;
+  }
+  .vol-row .nm {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.06em; color: var(--muted);
+    text-transform: uppercase;
+  }
+  .vol-row input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 4px;
+    background: var(--bg); border-radius: 999px; outline: none;
+  }
+  .vol-row.tek input[type=range]    { accent-color: var(--tek); }
+  .vol-row.fys input[type=range]    { accent-color: var(--fys); }
+  .vol-row.mental input[type=range] { accent-color: #4B3D7A; }
+  .vol-row .val {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--fg); text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .vol-bar {
+    margin-top: 6px;
+    display: flex; height: 8px; border-radius: 999px;
+    overflow: hidden; border: 1px solid var(--border-soft);
+  }
+  .vol-bar > div {
+    height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: #fff;
+  }
+  .vol-bar .tek    { background: var(--tek); width: 60%; }
+  .vol-bar .fys    { background: var(--fys); width: 30%; }
+  .vol-bar .mental { background: #4B3D7A;    width: 10%; }
+
+  /* sticky footer */
+  .sticky-bar {
+    position: fixed; bottom: 0; left: var(--sidebar-w); right: 0;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex; gap: 10px; align-items: center;
+    z-index: 25;
+  }
+  .sticky-bar .stats {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .sticky-bar .stats strong { color: var(--fg); font-weight: 700; }
+  .sticky-bar .stats .pip {
+    width: 4px; height: 4px; border-radius: 50%; background: var(--muted-soft);
+  }
+  .sticky-bar .stats .ok { color: var(--success); font-weight: 700; }
+  .sticky-bar .right { margin-left: auto; display: flex; gap: 8px; }
+
+  .btn-prev {
+    background: transparent; color: var(--muted);
+    padding: 9px 14px; border-radius: 999px; border: 0; cursor: pointer;
+    font-size: 13px; font-weight: 600;
+  }
+  .btn-prev:hover { color: var(--fg); background: var(--bg); }
+  .btn-save-mal {
+    background: #fff; color: var(--fg);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 9px 16px; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-save-mal:hover { background: var(--bg); }
+  .btn-save-mal svg { width: 13px; height: 13px; }
+  .btn-publish {
+    background: var(--primary); color: var(--accent);
+    border: 0; border-radius: 999px;
+    padding: 10px 20px; font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-body);
+  }
+  .btn-publish:hover { background: var(--primary-dark); }
+  .btn-publish svg { width: 13px; height: 13px; }
+
+  @media (max-width: 1300px) {
+    .builder { grid-template-columns: 240px 1fr 280px; }
+  }
+  @media (max-width: 1080px) {
+    .builder { grid-template-columns: 1fr; }
+    .lib, .config { position: relative; top: auto; max-height: none; }
+  }
+</style>
+</head>
+<body data-screen-label="09 CoachHQ Plan-bygger">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-chev-l" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+    <symbol id="ic-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="ic-sparkle" viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 10l-5.6 2.4L12 18l-2.4-5.6L4 10l5.6-2.4L12 2z"/></symbol>
+    <symbol id="ic-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="ic-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></symbol>
+    <symbol id="ic-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+    <symbol id="ic-coffee" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="assets/logo-white-on-green.svg" alt="AK Golf" class="brand-logo" />
+      <div class="name">AK GOLF</div>
+      <div class="meta">COACHHQ · HEAD COACH</div>
+    </div>
+    <div class="sidebar-profile coach">
+      <div class="avatar">AK</div>
+      <div>
+        <div class="nm">Anders K.</div>
+        <div class="role">38 SPILLERE</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Daglig</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Kalender</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>Meldinger<span class="badge-count">7</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operasjon</div>
+      <button class="nav-item" onclick="location.href='CoachHQ Stall-oversikt.html'"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Stall</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Planer</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg>Turneringer</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Statistikk</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Mål</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+        <input placeholder="Søk spiller, økt eller plan…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="breadcrumb">
+        CoachHQ &nbsp;/&nbsp; Planer &nbsp;/&nbsp; <span class="current">Ny plan for Markus</span>
+      </div>
+    </header>
+
+    <!-- Builder bar -->
+    <div class="builder-bar">
+      <div class="bb-left">
+        <a href="CoachHQ 10 Plan-mal-bibliotek.html" class="bb-back">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-l"/></svg>
+          Maler
+        </a>
+        <div class="bb-meta">
+          <h1>Ny plan for <em>Markus</em></h1>
+          <span class="span"><strong>4 uker</strong> · 20. mai → 16. juni · BASERT PÅ MAL <strong>SG-PUTT</strong></span>
+        </div>
+        <span class="autosave"><span class="dot"></span>Lagret 14:23</span>
+      </div>
+      <div class="bb-actions">
+        <button class="ai-btn">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sparkle"/></svg>
+          AI-forslag
+        </button>
+        <button class="btn btn-outline btn-sm">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-eye"/></svg>
+          Forhåndsvis
+        </button>
+        <button class="btn btn-primary btn-sm" id="publish-top">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-send"/></svg>
+          Publiser plan
+        </button>
+      </div>
+    </div>
+
+    <!-- Builder layout -->
+    <div class="builder">
+
+      <!-- LEFT: library -->
+      <aside class="lib">
+        <div class="lib-head">
+          <h2>Mal-bibliotek <span class="ct">42</span></h2>
+          <div class="lib-search">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+            <input placeholder="Søk drill…" />
+          </div>
+          <div class="lib-chips">
+            <button class="lib-chip active">Alle</button>
+            <button class="lib-chip">Tek</button>
+            <button class="lib-chip">Fys</button>
+            <button class="lib-chip">Spill</button>
+            <button class="lib-chip">Mental</button>
+          </div>
+        </div>
+        <div class="lib-list" id="lib-list">
+
+          <div class="drill-card tek" draggable="true" data-cat="tek" data-name="Putt 4×8" data-min="45">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg></span>
+            <div class="body">
+              <div class="nm">Putt 4×8</div>
+              <div class="params">4 BALLER × 8 AVSTANDER</div>
+            </div>
+            <span class="min">45m</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+          <div class="drill-card tek" draggable="true" data-cat="tek" data-name="Wedge 50–80m" data-min="60">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg></span>
+            <div class="body">
+              <div class="nm">Wedge 50–80m</div>
+              <div class="params">30 BALLER · TM-TAGGET</div>
+            </div>
+            <span class="min">60m</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+          <div class="drill-card tek" draggable="true" data-cat="tek" data-name="Jern 7 · 150m" data-min="45">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg></span>
+            <div class="body">
+              <div class="nm">Jern 7 · 150m</div>
+              <div class="params">DISP × 5 PIN-POSISJONER</div>
+            </div>
+            <span class="min">45m</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+          <div class="drill-card tek" draggable="true" data-cat="tek" data-name="Chipping 15–25m" data-min="40">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg></span>
+            <div class="body">
+              <div class="nm">Chipping 15–25m</div>
+              <div class="params">LOW-FLIGHT · 4 STYR</div>
+            </div>
+            <span class="min">40m</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+          <div class="drill-card fys" draggable="true" data-cat="fys" data-name="Base-styrke" data-min="60">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-activity"/></svg></span>
+            <div class="body">
+              <div class="nm">Base-styrke</div>
+              <div class="params">FULLKROPP · 5×5</div>
+            </div>
+            <span class="min">60m</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+          <div class="drill-card fys" draggable="true" data-cat="fys" data-name="CMJ + plyometri" data-min="45">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-activity"/></svg></span>
+            <div class="body">
+              <div class="nm">CMJ + plyometri</div>
+              <div class="params">EKSPLOSIVITET · 8×3</div>
+            </div>
+            <span class="min">45m</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+          <div class="drill-card fys" draggable="true" data-cat="fys" data-name="Mobilitet · hofte" data-min="30">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-activity"/></svg></span>
+            <div class="body">
+              <div class="nm">Mobilitet · hofte</div>
+              <div class="params">FLOW · DAGLIG</div>
+            </div>
+            <span class="min">30m</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+          <div class="drill-card spill" draggable="true" data-cat="spill" data-name="Bane-rutine 9 hull" data-min="180">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg></span>
+            <div class="body">
+              <div class="nm">Bane-rutine 9 hull</div>
+              <div class="params">FULL RUNDE · LOGG</div>
+            </div>
+            <span class="min">3 t</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+          <div class="drill-card spill" draggable="true" data-cat="spill" data-name="Skills-game · short" data-min="60">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg></span>
+            <div class="body">
+              <div class="nm">Skills-game · short</div>
+              <div class="params">POENG-RUNDE · 9 STATIONS</div>
+            </div>
+            <span class="min">60m</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+          <div class="drill-card mental" draggable="true" data-cat="mental" data-name="Pre-shot rutine" data-min="20">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sparkle"/></svg></span>
+            <div class="body">
+              <div class="nm">Pre-shot rutine</div>
+              <div class="params">VIDEO + REFLEKSJON</div>
+            </div>
+            <span class="min">20m</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+          <div class="drill-card turn" draggable="true" data-cat="turn" data-name="Hvile-dag" data-min="0">
+            <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-coffee"/></svg></span>
+            <div class="body">
+              <div class="nm">Hvile-dag</div>
+              <div class="params">REKOVERY · SØVN</div>
+            </div>
+            <span class="min">—</span>
+            <span class="grip"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-grip"/></svg></span>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- MIDDLE: calendar -->
+      <section class="cal-wrap">
+        <div class="cal-top">
+          <h2>4-ukers plan</h2>
+          <span class="range">20. MAI 2026 → 16. JUNI 2026</span>
+          <div class="cal-zoom">
+            <button>Dag</button>
+            <button class="active">Uke</button>
+            <button>4 uker</button>
+          </div>
+        </div>
+
+        <div class="cal-day-head">
+          <span class="col"></span>
+          <span class="col">Man</span>
+          <span class="col">Tir</span>
+          <span class="col">Ons</span>
+          <span class="col">Tor</span>
+          <span class="col">Fre</span>
+          <span class="col weekend">Lør</span>
+          <span class="col weekend">Søn</span>
+        </div>
+
+        <div class="cal-grid" id="cal-grid">
+
+          <!-- Uke 1 -->
+          <div class="cal-week">
+            <span class="wk">U21</span>
+            <div class="cal-cell"><div class="dnum">20<button class="empty-add"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg></button></div>
+              <div class="ses-blk tek"><span class="top-row">14:00<span class="dur">45m</span></span>Putt 4×8</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">21</div>
+              <div class="ses-blk fys"><span class="top-row">17:00<span class="dur">60m</span></span>Base-styrke</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">22</div>
+              <div class="ses-blk tek"><span class="top-row">14:00<span class="dur">60m</span></span>Wedge 50–80m</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">23</div></div>
+            <div class="cal-cell"><div class="dnum">24</div>
+              <div class="ses-blk tek"><span class="top-row">14:00<span class="dur">40m</span></span>Chipping 15–25m</div>
+            </div>
+            <div class="cal-cell weekend"><div class="dnum">25</div>
+              <div class="ses-blk spill"><span class="top-row">10:00<span class="dur">3 t</span></span>Bane 9 hull</div>
+            </div>
+            <div class="cal-cell weekend"><div class="dnum">26</div>
+              <div class="ses-blk turn"><span class="top-row">HVILE</span>Rekovery</div>
+            </div>
+          </div>
+
+          <!-- Uke 2 -->
+          <div class="cal-week">
+            <span class="wk">U22</span>
+            <div class="cal-cell today"><div class="dnum">27<span class="today-pip">I DAG</span></div>
+              <div class="ses-blk tek"><span class="top-row">14:00<span class="dur">45m</span></span>Putt 4×8</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">28</div>
+              <div class="ses-blk fys"><span class="top-row">17:00<span class="dur">45m</span></span>CMJ + plyometri</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">29</div>
+              <div class="ses-blk tek"><span class="top-row">14:00<span class="dur">45m</span></span>Jern 7 · 150m</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">30</div>
+              <div class="ses-blk mental"><span class="top-row">15:00<span class="dur">20m</span></span>Pre-shot rutine</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">31</div>
+              <div class="ses-blk tek ai-suggest"><span class="top-row">14:00<span class="dur">40m</span></span>Chipping low-flight</div>
+            </div>
+            <div class="cal-cell weekend"><div class="dnum">1</div>
+              <div class="ses-blk spill"><span class="top-row">10:00<span class="dur">3 t</span></span>Bane 9 hull</div>
+            </div>
+            <div class="cal-cell weekend"><div class="dnum">2</div>
+              <div class="ses-blk turn"><span class="top-row">HVILE</span>Rekovery</div>
+            </div>
+          </div>
+
+          <!-- Uke 3 -->
+          <div class="cal-week">
+            <span class="wk">U23</span>
+            <div class="cal-cell"><div class="dnum">3</div>
+              <div class="ses-blk tek"><span class="top-row">14:00<span class="dur">45m</span></span>Putt 4×8</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">4</div>
+              <div class="ses-blk fys"><span class="top-row">17:00<span class="dur">60m</span></span>Base-styrke</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">5</div>
+              <div class="ses-blk tek"><span class="top-row">14:00<span class="dur">60m</span></span>Wedge 50–80m</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">6</div>
+              <div class="ses-blk fys"><span class="top-row">12:00<span class="dur">30m</span></span>Mobilitet</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">7</div>
+              <div class="ses-blk tek"><span class="top-row">14:00<span class="dur">45m</span></span>Jern 7 · 150m</div>
+            </div>
+            <div class="cal-cell weekend"><div class="dnum">8</div>
+              <div class="ses-blk spill"><span class="top-row">10:00<span class="dur">60m</span></span>Skills-game</div>
+            </div>
+            <div class="cal-cell weekend"><div class="dnum">9</div>
+              <div class="ses-blk turn"><span class="top-row">HVILE</span>Rekovery</div>
+            </div>
+          </div>
+
+          <!-- Uke 4 -->
+          <div class="cal-week">
+            <span class="wk">U24</span>
+            <div class="cal-cell"><div class="dnum">10</div>
+              <div class="ses-blk tek"><span class="top-row">14:00<span class="dur">45m</span></span>Putt 4×8</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">11</div>
+              <div class="ses-blk fys"><span class="top-row">17:00<span class="dur">45m</span></span>CMJ + plyometri</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">12</div>
+              <div class="ses-blk tek"><span class="top-row">14:00<span class="dur">60m</span></span>Wedge 50–80m</div>
+            </div>
+            <div class="cal-cell"><div class="dnum">13</div></div>
+            <div class="cal-cell"><div class="dnum">14</div>
+              <div class="ses-blk mental"><span class="top-row">15:00<span class="dur">20m</span></span>Pre-shot rutine</div>
+            </div>
+            <div class="cal-cell weekend"><div class="dnum">15</div>
+              <div class="ses-blk spill"><span class="top-row">10:00<span class="dur">3 t</span></span>Bane 18 hull</div>
+            </div>
+            <div class="cal-cell weekend"><div class="dnum">16</div>
+              <div class="ses-blk turn"><span class="top-row">EVAL</span>Plan-evaluering</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RIGHT: config -->
+      <aside class="config">
+        <div class="config-sec">
+          <h3>Plan-tittel</h3>
+          <input type="text" value="Wedge & Putt — 4 uker mot Sørlandsåpent" />
+        </div>
+
+        <div class="config-sec">
+          <h3>Periode</h3>
+          <div class="date-grid">
+            <div class="date-field">
+              <span class="lbl">START</span>
+              <input type="text" value="20.05.2026" />
+            </div>
+            <div class="date-field">
+              <span class="lbl">SLUTT</span>
+              <input type="text" value="16.06.2026" />
+            </div>
+          </div>
+        </div>
+
+        <div class="config-sec">
+          <h3>Mål for perioden</h3>
+          <textarea>Bygge tempo og distanse-kontroll i wedge 50–80m. Stabilisere putt-rytme 1–2m. Klar for Sørlandsåpent 18.–20. juni.</textarea>
+        </div>
+
+        <div class="config-sec">
+          <h3>KPI-mål</h3>
+          <div class="kpi-goal">
+            <span class="nm">SG-Putt<small>SISTE: −0,12</small></span>
+            <input type="text" value="+0,30" />
+          </div>
+          <div class="kpi-goal">
+            <span class="nm">CMJ-hopphøyde<small>SISTE: 54 cm</small></span>
+            <input type="text" value="56 cm" />
+          </div>
+          <div class="kpi-goal">
+            <span class="nm">Wedge 60m disp<small>SISTE: 6,4 m</small></span>
+            <input type="text" value="≤ 4 m" />
+          </div>
+        </div>
+
+        <div class="config-sec">
+          <h3>Volum-fordeling</h3>
+          <div class="vol-bar">
+            <div class="tek">60 %</div>
+            <div class="fys">30 %</div>
+            <div class="mental">10 %</div>
+          </div>
+          <div class="vol-row tek">
+            <span class="nm">Teknisk</span>
+            <input type="range" min="0" max="100" value="60" />
+            <span class="val">60 %</span>
+          </div>
+          <div class="vol-row fys">
+            <span class="nm">Fysisk</span>
+            <input type="range" min="0" max="100" value="30" />
+            <span class="val">30 %</span>
+          </div>
+          <div class="vol-row mental">
+            <span class="nm">Mental</span>
+            <input type="range" min="0" max="100" value="10" />
+            <span class="val">10 %</span>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+
+  </main>
+</div>
+
+<!-- Sticky footer -->
+<footer class="sticky-bar">
+  <div class="stats">
+    <span><strong>24</strong> økter plassert</span>
+    <span class="pip"></span>
+    <span><strong>18,5 t</strong> totalt</span>
+    <span class="pip"></span>
+    <span class="ok">VOLUM I MÅL</span>
+    <span class="pip"></span>
+    <span><strong>1</strong> AI-forslag venter</span>
+  </div>
+  <div class="right">
+    <button class="btn-prev">Forrige steg</button>
+    <button class="btn-save-mal">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-save"/></svg>
+      Lagre som mal
+    </button>
+    <button class="btn-publish" id="publish">
+      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-send"/></svg>
+      Publiser plan
+    </button>
+  </div>
+</footer>
+
+<script>
+  // Library chip filter
+  document.querySelectorAll('.lib-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.lib-chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      const cat = c.textContent.toLowerCase();
+      document.querySelectorAll('.drill-card').forEach(d => {
+        if (cat === 'alle') { d.style.display = ''; return; }
+        d.style.display = d.classList.contains(cat) ? '' : 'none';
+      });
+    });
+  });
+
+  // Drag & drop
+  let dragged = null;
+  document.querySelectorAll('.drill-card').forEach(d => {
+    d.addEventListener('dragstart', () => {
+      dragged = d;
+      d.classList.add('dragging');
+    });
+    d.addEventListener('dragend', () => {
+      d.classList.remove('dragging');
+      dragged = null;
+    });
+  });
+  document.querySelectorAll('.cal-cell').forEach(cell => {
+    cell.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      cell.classList.add('dragover');
+    });
+    cell.addEventListener('dragleave', () => cell.classList.remove('dragover'));
+    cell.addEventListener('drop', (e) => {
+      e.preventDefault();
+      cell.classList.remove('dragover');
+      if (!dragged) return;
+      const cat = dragged.getAttribute('data-cat');
+      const nm = dragged.getAttribute('data-name');
+      const min = dragged.getAttribute('data-min');
+      const dur = (+min === 0) ? '—' : (min >= 60 ? Math.round(min/60*10)/10 + ' t' : min + 'm');
+      const blk = document.createElement('div');
+      blk.className = `ses-blk ${cat}`;
+      blk.innerHTML = `<span class="top-row">14:00<span class="dur">${dur}</span></span>${nm}`;
+      cell.appendChild(blk);
+    });
+  });
+
+  // Volume sliders sync
+  const vbar = document.querySelector('.vol-bar');
+  const sliders = document.querySelectorAll('.vol-row input[type=range]');
+  sliders.forEach((s, i) => {
+    s.addEventListener('input', () => {
+      const val = s.value;
+      s.parentElement.querySelector('.val').textContent = val + ' %';
+      vbar.children[i].textContent = val + ' %';
+      vbar.children[i].style.width = val + ' %';
+    });
+  });
+</script>
+
+</body>
+</html>

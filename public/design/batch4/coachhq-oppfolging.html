@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Oppfølging · 12 åpne — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 48px; }
+
+  /* group section */
+  .task-group {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    overflow: hidden;
+  }
+  .task-group-head {
+    padding: 14px 22px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .task-group-head h3 {
+    font-family: var(--font-display); font-size: 14px;
+    font-weight: 600; letter-spacing: -0.01em;
+  }
+  .task-group-head h3.urgent { color: var(--danger); }
+  .task-group-head .ct {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 700;
+    padding: 2px 8px; border-radius: 999px;
+    background: var(--card);
+  }
+  .task-group-head.urgent .ct {
+    background: var(--danger); color: #fff;
+  }
+  .task-group-head .timestamp {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 600;
+  }
+
+  /* row */
+  .task-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border-soft);
+    transition: background 120ms;
+    cursor: pointer;
+  }
+  .task-row:last-child { border-bottom: 0; }
+  .task-row:hover {
+    background: var(--bg);
+  }
+  .task-row.done {
+    opacity: 0.55;
+  }
+  .task-row.done .t-title {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  /* checkbox */
+  .cb-task {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    background: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 120ms;
+  }
+  .cb-task:hover { border-color: var(--primary); }
+  .cb-task svg { width: 11px; height: 11px; display: none; }
+  .cb-task.done {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .cb-task.done svg { display: block; color: var(--fg); }
+
+  /* prio stripe */
+  .task-row {
+    position: relative;
+  }
+  .task-row .prio {
+    position: absolute;
+    left: 0; top: 14px; bottom: 14px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+  }
+  .task-row .prio.high { background: var(--danger); }
+  .task-row .prio.med  { background: var(--warning); }
+  .task-row .prio.low  { background: var(--success); }
+  .task-row .prio.none { background: transparent; }
+
+  .task-info { min-width: 0; }
+  .t-title {
+    font-family: var(--font-body); font-size: 14px;
+    font-weight: 500; color: var(--fg);
+    line-height: 1.3;
+  }
+  .t-title em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .t-meta {
+    margin-top: 5px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+    flex-wrap: wrap;
+  }
+  .t-meta .player-mini {
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .t-meta .player-mini .p-avatar { width: 18px; height: 18px; font-size: 8.5px; border: 0; }
+  .t-meta .player-mini .nm { color: var(--fg); font-weight: 600; font-family: var(--font-body); font-size: 11.5px; }
+  .t-meta .sep { width: 3px; height: 3px; border-radius: 50%; background: var(--muted-soft); }
+  .t-meta .cat-pill {
+    padding: 2px 7px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .cat-pill.foreldre { background: rgba(184,133,42,0.15); color: var(--warning); }
+  .cat-pill.video    { background: rgba(0,88,64,0.12); color: var(--primary); }
+  .cat-pill.test     { background: rgba(44,125,82,0.16); color: var(--slag); }
+  .cat-pill.plan     { background: rgba(209,248,67,0.32); color: #3B4310; }
+  .cat-pill.ring     { background: rgba(184,133,42,0.15); color: var(--warning); }
+  .cat-pill.faktura  { background: rgba(163,45,45,0.10); color: var(--danger); }
+  .cat-pill.skade    { background: rgba(163,45,45,0.10); color: var(--danger); }
+  .cat-pill.notat    { background: rgba(94,92,87,0.10); color: var(--muted); }
+  .cat-pill.varsel   { background: rgba(136,180,90,0.20); color: #4D7A2E; }
+
+  /* due-chip */
+  .due-chip {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 700;
+    white-space: nowrap;
+  }
+  .due-chip.today { color: var(--danger); font-weight: 700; }
+  .due-chip.tomorrow { color: var(--warning); }
+  .due-chip.soon { color: var(--fg); }
+  .due-chip.snoozed { color: var(--muted-soft); font-style: italic; }
+
+  /* quick action */
+  .quick-row {
+    display: flex; align-items: center; gap: 4px;
+    opacity: 0;
+    transition: opacity 120ms;
+  }
+  .task-row:hover .quick-row { opacity: 1; }
+  .task-row.has-cta .quick-row { opacity: 1; }
+
+  .qa-btn {
+    background: transparent; border: 0;
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    color: var(--muted); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 120ms;
+  }
+  .qa-btn:hover { background: var(--card); color: var(--fg); }
+  .qa-btn svg { width: 13px; height: 13px; }
+  .qa-cta {
+    padding: 7px 14px;
+    background: var(--accent); color: var(--fg);
+    border: 0; border-radius: 999px;
+    font-family: var(--font-body); font-size: 12px;
+    font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    line-height: 1;
+  }
+  .qa-cta.outline {
+    background: #fff; border: 1px solid var(--border);
+  }
+  .qa-cta:hover { background: #C5EE2D; }
+  .qa-cta.outline:hover { border-color: var(--primary); color: var(--primary); background: #fff; }
+  .qa-cta svg { width: 11px; height: 11px; }
+
+  /* KPI strip */
+  .stat-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  }
+  .stat-cell {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 16px 18px;
+  }
+  .stat-cell .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .stat-cell .val {
+    font-family: var(--font-mono); font-size: 26px;
+    font-weight: 700; color: var(--fg); line-height: 1;
+    margin-top: 6px; letter-spacing: -0.01em;
+  }
+  .stat-cell .val.urgent { color: var(--danger); }
+  .stat-cell .val.good { color: var(--success); }
+  .stat-cell .sub {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em; margin-top: 3px;
+  }
+
+  /* empty (decorative) */
+  .empty-coffee {
+    text-align: center; padding: 32px 24px;
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: var(--r-card);
+  }
+  .empty-coffee .ic {
+    width: 50px; height: 50px; border-radius: 50%;
+    background: rgba(184,133,42,0.12);
+    color: var(--warning);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 10px;
+  }
+  .empty-coffee .ic svg { width: 24px; height: 24px; }
+  .empty-coffee h4 {
+    font-family: var(--font-display); font-size: 15px;
+    font-weight: 600; margin-bottom: 4px;
+  }
+  .empty-coffee p {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body data-screen-label="CoachHQ Oppfolging">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="ic-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+    <symbol id="ic-video" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></symbol>
+    <symbol id="ic-snooze" viewBox="0 0 24 24"><path d="M2 12a10 10 0 1 0 20 0 10 10 0 0 0-20 0z"/><path d="M9 8h6l-6 8h6"/></symbol>
+    <symbol id="ic-arrow-r" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="ic-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+    <symbol id="ic-coffee" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></symbol>
+    <symbol id="ic-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+    <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+    <symbol id="ic-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="assets/logo-white-on-green.svg" alt="AK Golf" class="brand-logo" />
+      <div class="name">AK GOLF</div>
+      <div class="meta">COACHHQ · HEAD COACH</div>
+    </div>
+    <div class="sidebar-profile coach">
+      <div class="avatar">AK</div>
+      <div>
+        <div class="nm">Anders K.</div>
+        <div class="role">38 SPILLERE</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Daglig</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Kalender</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>Innboks<span class="badge-count">7</span></button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenninger<span class="badge-count">8</span></button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Oppfølging<span class="badge-count">12</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operasjon</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Stall</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Planer</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg>Turneringer</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Statistikk</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Mål</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+        <input placeholder="Søk i oppfølging…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="breadcrumb">
+        CoachHQ &nbsp;/&nbsp; <span class="current">Oppfølging</span>
+      </div>
+      <div style="margin-left:auto; display:flex; align-items:center; gap:4px;">
+        <button aria-label="Varsler" style="width:38px;height:38px;border-radius:10px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;color:var(--fg);cursor:pointer;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="page-coach">
+
+      <!-- HEADER -->
+      <div class="coach-header">
+        <div class="left">
+          <span class="eyebrow">DAGLIG · MIN HUSKELISTE</span>
+          <h1>Oppfølging · <em>12 åpne</em></h1>
+          <div class="sub">
+            <span class="err">3 forfaller i dag</span>
+            <span class="dot"></span>
+            4 denne uka
+            <span class="dot"></span>
+            5 senere
+            <span class="dot"></span>
+            <span class="ok">9 fullført siste 7d</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-snooze"/></svg>
+            Snoozet (2)
+          </button>
+          <button class="btn btn-primary btn-sm">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+            Ny oppfølging
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI strip -->
+      <div class="stat-strip">
+        <div class="stat-cell">
+          <span class="lbl">FORFALLER I DAG</span>
+          <span class="val urgent">3</span>
+          <span class="sub">Ring · Video · Sjekk test</span>
+        </div>
+        <div class="stat-cell">
+          <span class="lbl">FERDIG-RATE 30D</span>
+          <span class="val good">87 %</span>
+          <span class="sub">↑ 4 pp vs forrige måned</span>
+        </div>
+        <div class="stat-cell">
+          <span class="lbl">SNITT-LØSNING</span>
+          <span class="val">2,1 d</span>
+          <span class="sub">FRA OPPRETTET TIL FULLFØRT</span>
+        </div>
+        <div class="stat-cell">
+          <span class="lbl">DELEGERT</span>
+          <span class="val">4</span>
+          <span class="sub">til Hans, Erling</span>
+        </div>
+      </div>
+
+      <!-- Filter strip -->
+      <div class="filter-strip" style="position:static;">
+        <button class="filter-pill active">Alle <span class="count">12</span></button>
+        <button class="filter-pill">I dag <span class="count">3</span></button>
+        <button class="filter-pill">Denne uka <span class="count">4</span></button>
+        <button class="filter-pill">Senere <span class="count">5</span></button>
+        <button class="filter-pill">Snoozet <span class="count">2</span></button>
+        <div class="divider"></div>
+        <button class="filter-pill">Mine</button>
+        <button class="filter-pill">Delegert <span class="count">4</span></button>
+        <div class="search-mini" style="margin-left:auto;">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+          <input placeholder="Søk oppgave…" />
+        </div>
+      </div>
+
+      <!-- I DAG GROUP -->
+      <div class="task-group">
+        <div class="task-group-head urgent">
+          <h3 class="urgent">I dag · tirsdag 20. mai</h3>
+          <span class="ct">3 åpne</span>
+          <span class="timestamp">SNITT VARIGHET 15 MIN</span>
+        </div>
+
+        <div class="task-row has-cta">
+          <span class="prio high"></span>
+          <span class="cb-task" onclick="this.classList.toggle('done'); this.closest('.task-row').classList.toggle('done');">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Ring Sofies foreldre om <em>sommer-camp</em></div>
+            <div class="t-meta">
+              <span class="player-mini"><span class="p-avatar c3">SH</span><span class="nm">Sofie Hagen</span></span>
+              <span class="sep"></span>
+              <span class="cat-pill foreldre">Foreldre</span>
+              <span class="sep"></span>
+              <span>FAR: PER · MOR: ANNE</span>
+            </div>
+          </div>
+          <span class="due-chip today">FORFALLER I DAG</span>
+          <div class="quick-row">
+            <button class="qa-cta">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-phone"/></svg>
+              Ring nå
+            </button>
+            <button class="qa-btn" title="Snooze"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-snooze"/></svg></button>
+            <button class="qa-btn" title="Mer"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+
+        <div class="task-row has-cta">
+          <span class="prio high"></span>
+          <span class="cb-task" onclick="this.classList.toggle('done'); this.closest('.task-row').classList.toggle('done');">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Send video-feedback om Markus' <em>sving</em> fra 17.5</div>
+            <div class="t-meta">
+              <span class="player-mini"><span class="p-avatar c1">MR</span><span class="nm">Markus R.P.</span></span>
+              <span class="sep"></span>
+              <span class="cat-pill video">Video</span>
+              <span class="sep"></span>
+              <span>RÅMATERIALE: 02:14 · TRACKMAN BAY 2</span>
+            </div>
+          </div>
+          <span class="due-chip today">FORFALLER I DAG</span>
+          <div class="quick-row">
+            <button class="qa-cta">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-video"/></svg>
+              Åpne video
+            </button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-snooze"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+
+        <div class="task-row has-cta">
+          <span class="prio med"></span>
+          <span class="cb-task" onclick="this.classList.toggle('done'); this.closest('.task-row').classList.toggle('done');">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Sjekk Mikkels fysiske test fra forrige uke</div>
+            <div class="t-meta">
+              <span class="player-mini"><span class="p-avatar c6">ML</span><span class="nm">Mikkel L.</span></span>
+              <span class="sep"></span>
+              <span class="cat-pill test">Test</span>
+              <span class="sep"></span>
+              <span>CMJ · BENKPRESS · ROTASJON</span>
+            </div>
+          </div>
+          <span class="due-chip today">FORFALLER I DAG</span>
+          <div class="quick-row">
+            <button class="qa-cta outline">
+              Åpne test
+              <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-r"/></svg>
+            </button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-snooze"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DENNE UKA GROUP -->
+      <div class="task-group">
+        <div class="task-group-head">
+          <h3>Denne uka · 21 — 25. mai</h3>
+          <span class="ct">4 åpne</span>
+        </div>
+
+        <div class="task-row">
+          <span class="prio med"></span>
+          <span class="cb-task" onclick="this.classList.toggle('done'); this.closest('.task-row').classList.toggle('done');">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Plan-evaluering med Emma — gjennomgang sesong-mål Q2</div>
+            <div class="t-meta">
+              <span class="player-mini"><span class="p-avatar c3">ES</span><span class="nm">Emma Solvik</span></span>
+              <span class="sep"></span>
+              <span class="cat-pill plan">Plan</span>
+              <span class="sep"></span>
+              <span>30 MIN · STUDIO ELLER ZOOM</span>
+            </div>
+          </div>
+          <span class="due-chip tomorrow">ONSDAG 21.5</span>
+          <div class="quick-row">
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-snooze"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <span class="prio med"></span>
+          <span class="cb-task" onclick="this.classList.toggle('done'); this.closest('.task-row').classList.toggle('done');">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Sjekk hvordan ny iron-økt fungerer for Markus</div>
+            <div class="t-meta">
+              <span class="player-mini"><span class="p-avatar c1">MR</span><span class="nm">Markus R.P.</span></span>
+              <span class="sep"></span>
+              <span class="cat-pill notat">Notat</span>
+              <span class="sep"></span>
+              <span>FØRSTE GJENNOMFØRING 22.5</span>
+            </div>
+          </div>
+          <span class="due-chip soon">TORSDAG 22.5</span>
+          <div class="quick-row">
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-edit"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-snooze"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+
+        <div class="task-row has-cta">
+          <span class="prio high"></span>
+          <span class="cb-task" onclick="this.classList.toggle('done'); this.closest('.task-row').classList.toggle('done');">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Følg opp Karolines utestående faktura · 4 250 kr</div>
+            <div class="t-meta">
+              <span class="player-mini"><span class="p-avatar c3">KE</span><span class="nm">Karoline E.</span></span>
+              <span class="sep"></span>
+              <span class="cat-pill faktura">Faktura</span>
+              <span class="sep"></span>
+              <span>FORFALT FOR 12 DAGER</span>
+            </div>
+          </div>
+          <span class="due-chip soon">FREDAG 23.5</span>
+          <div class="quick-row">
+            <button class="qa-cta">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-card"/></svg>
+              Åpne faktura
+            </button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-snooze"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <span class="prio low"></span>
+          <span class="cb-task" onclick="this.classList.toggle('done'); this.closest('.task-row').classList.toggle('done');">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Bestill 4 sleeves Pro V1 til Sørlandsåpent-pakke</div>
+            <div class="t-meta">
+              <span class="cat-pill varsel">Innkjøp</span>
+              <span class="sep"></span>
+              <span>BUDSJETT 1 800 KR · LEVERANDØR PRO SHOP</span>
+            </div>
+          </div>
+          <span class="due-chip soon">LØRDAG 24.5</span>
+          <div class="quick-row">
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-snooze"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SENERE GROUP -->
+      <div class="task-group">
+        <div class="task-group-head">
+          <h3>Senere · neste 14 dager</h3>
+          <span class="ct">5 åpne</span>
+        </div>
+
+        <div class="task-row">
+          <span class="prio high"></span>
+          <span class="cb-task">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Foreldremøte AK Academy · gjennomgang sesong-status</div>
+            <div class="t-meta">
+              <span class="cat-pill foreldre">Foreldre</span>
+              <span class="sep"></span>
+              <span>24 FAMILIER PÅMELDT · GFGK KLUBBHUS</span>
+            </div>
+          </div>
+          <span class="due-chip">TIRSDAG 27.5</span>
+          <div class="quick-row">
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-edit"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <span class="prio med"></span>
+          <span class="cb-task">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Følg opp Sigrids rapport om <em>albue-issue</em></div>
+            <div class="t-meta">
+              <span class="player-mini"><span class="p-avatar c5">SB</span><span class="nm">Sigrid Brun</span></span>
+              <span class="sep"></span>
+              <span class="cat-pill skade">Skade</span>
+              <span class="sep"></span>
+              <span>FYSIO: KARI HØILUND · BOOKING ANBEFALT</span>
+            </div>
+          </div>
+          <span class="due-chip">TORSDAG 29.5</span>
+          <div class="quick-row">
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-heart"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <span class="prio low"></span>
+          <span class="cb-task">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Send invitasjon til pre-camp Sørlandsåpent</div>
+            <div class="t-meta">
+              <span class="cat-pill varsel">Varsel</span>
+              <span class="sep"></span>
+              <span>6 SPILLERE · MAL: PRE-TURNERING-CAMP-2026</span>
+            </div>
+          </div>
+          <span class="due-chip">SØNDAG 1.6</span>
+          <div class="quick-row">
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <span class="prio low"></span>
+          <span class="cb-task">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Kvartalsvis sjekk: Markus korsspill (50—80m)</div>
+            <div class="t-meta">
+              <span class="player-mini"><span class="p-avatar c1">MR</span><span class="nm">Markus R.P.</span></span>
+              <span class="sep"></span>
+              <span class="cat-pill test">Test</span>
+              <span class="sep"></span>
+              <span>SISTE: APR 2026 — STATUS LØST</span>
+            </div>
+          </div>
+          <span class="due-chip">14.7</span>
+          <div class="quick-row">
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-snooze"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <span class="prio low"></span>
+          <span class="cb-task">
+            <svg fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+          </span>
+          <div class="task-info">
+            <div class="t-title">Send personlig hilsen til Henrik 19-årsdag</div>
+            <div class="t-meta">
+              <span class="player-mini"><span class="p-avatar c7">HV</span><span class="nm">Henrik V.</span></span>
+              <span class="sep"></span>
+              <span class="cat-pill notat">Personlig</span>
+            </div>
+          </div>
+          <span class="due-chip">3.6</span>
+          <div class="quick-row">
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg></button>
+            <button class="qa-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SNOOZED -->
+      <div class="empty-coffee">
+        <div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-coffee"/></svg></div>
+        <h4>2 oppgaver er snooozet til etter Sørlandsåpent</h4>
+        <p>NM-PLANLEGGINGS-MØTE · NYTT WEBINAR-OPPSETT</p>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // filter pill toggle
+  document.querySelectorAll('.filter-pill').forEach(p => {
+    p.onclick = (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.filter-pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+    };
+  });
+</script>
+</body>
+</html>

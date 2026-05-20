@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Putt 4×8 · Markus — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 0; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: rgba(10,31,23,0.50);
+    z-index: 80;
+  }
+
+  /* simulated background page (calendar) */
+  .bg-page {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    padding: 80px 60px;
+    z-index: 0;
+    opacity: 0.30;
+  }
+  .bg-page h2 {
+    font-family: var(--font-display); font-size: 24px;
+    color: var(--muted);
+  }
+
+  /* MODAL */
+  .session-modal {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 760px; max-width: calc(100vw - 32px);
+    height: 86vh; max-height: 880px;
+    background: var(--card);
+    border-radius: var(--r-card);
+    box-shadow: 0 24px 80px rgba(10,31,23,0.32);
+    z-index: 90;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+  }
+
+  /* HEADER */
+  .sm-head {
+    padding: 22px 28px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .sm-head .left { flex: 1; }
+  .sm-head .pre {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--primary); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .sm-head .pre svg { width: 12px; height: 12px; }
+  .sm-head h2 {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 600; letter-spacing: -0.01em;
+    line-height: 1.2; margin-top: 6px;
+  }
+  .sm-head h2 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .sm-head .when {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    margin-top: 8px; display: flex; align-items: center;
+    gap: 8px; flex-wrap: wrap;
+  }
+  .sm-head .when .dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--muted-soft);
+  }
+  .sm-head .right {
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .status-pill-lg {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 11px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+  .status-pill-lg.venter {
+    background: rgba(209,248,67,0.40); color: #3B4310;
+  }
+  .status-pill-lg.planlagt {
+    background: rgba(0,88,64,0.10); color: var(--primary);
+  }
+  .status-pill-lg.gjennomfort {
+    background: rgba(44,125,82,0.15); color: var(--success);
+  }
+  .status-pill-lg .pulse {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+  }
+  .sm-close {
+    width: 32px; height: 32px; border: 0;
+    background: transparent; border-radius: 8px;
+    color: var(--muted); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .sm-close:hover { background: var(--bg); color: var(--fg); }
+  .sm-close svg { width: 16px; height: 16px; }
+
+  /* BODY */
+  .sm-body {
+    overflow-y: auto;
+    padding: 24px 28px;
+    display: flex; flex-direction: column; gap: 22px;
+  }
+
+  /* plan-blokk */
+  .plan-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  .pb-item {
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .pb-item.span-3 { grid-column: span 3; }
+  .pb-item .k {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .pb-item .v {
+    font-family: var(--font-body); font-size: 13.5px;
+    color: var(--fg); font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pb-item .v.mono { font-family: var(--font-mono); }
+  .pb-item .v .p-avatar {
+    width: 22px; height: 22px; font-size: 9.5px;
+    border: 0;
+  }
+  .pb-item svg.ic { width: 12px; height: 12px; color: var(--muted); }
+
+  /* section heading */
+  .sm-section-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .sm-section-head h3 {
+    font-family: var(--font-display); font-size: 15px;
+    font-weight: 600; letter-spacing: -0.01em;
+  }
+  .sm-section-head .h-sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .sm-section-head .add-btn {
+    background: transparent; border: 0;
+    color: var(--primary); cursor: pointer;
+    font-family: var(--font-body); font-size: 12px;
+    font-weight: 600;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .sm-section-head .add-btn svg { width: 12px; height: 12px; }
+
+  /* drill cards */
+  .drill-list {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .drill-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    align-items: center;
+    transition: all 120ms;
+  }
+  .drill-card:hover {
+    border-color: var(--primary);
+    background: rgba(0,88,64,0.02);
+  }
+  .drill-num {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--bg);
+    font-family: var(--font-mono); font-size: 13px;
+    font-weight: 700; color: var(--fg);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .drill-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .drill-info .nm {
+    font-family: var(--font-display); font-size: 14px;
+    font-weight: 600; color: var(--fg);
+  }
+  .drill-info .params {
+    display: flex; gap: 8px; align-items: center;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+    flex-wrap: wrap;
+  }
+  .drill-info .params .sep {
+    width: 3px; height: 3px; border-radius: 50%;
+    background: var(--muted-soft);
+  }
+  .drill-info .crit {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--success); letter-spacing: 0.02em;
+    background: rgba(44,125,82,0.06);
+    padding: 4px 8px; border-radius: 6px;
+    display: inline-flex; align-items: center; gap: 5px;
+    align-self: flex-start;
+  }
+  .drill-info .crit svg { width: 10px; height: 10px; }
+  .drill-card .swap {
+    background: transparent; border: 0;
+    color: var(--muted); cursor: pointer;
+    font-family: var(--font-body); font-size: 11.5px;
+    font-weight: 600;
+    padding: 6px 10px; border-radius: 8px;
+    opacity: 0; transition: opacity 120ms;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .drill-card:hover .swap { opacity: 1; }
+  .drill-card .swap:hover {
+    background: var(--bg); color: var(--primary);
+  }
+  .drill-card .swap svg { width: 11px; height: 11px; }
+
+  /* notat-felt */
+  .note-card {
+    background: linear-gradient(160deg, #006C50 0%, #003A2A 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 20px 22px;
+    display: flex; flex-direction: column; gap: 12px;
+    position: relative; overflow: hidden;
+  }
+  .note-card::before {
+    content: ''; position: absolute;
+    top: -50%; right: -10%;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.10), transparent 70%);
+  }
+  .note-card h4 {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 600; color: #fff;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .note-card h4 .ic-circle {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .note-card h4 .ic-circle svg { width: 11px; height: 11px; }
+  .note-card textarea {
+    width: 100%; resize: none;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(209,248,67,0.20);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: #fff;
+    font-family: var(--font-body); font-size: 13.5px;
+    line-height: 1.55; outline: none;
+    min-height: 88px;
+    position: relative; z-index: 1;
+  }
+  .note-card textarea::placeholder { color: rgba(255,255,255,0.40); }
+  .note-card textarea:focus {
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.10);
+  }
+  .note-card .nc-meta {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: rgba(209,248,67,0.55); letter-spacing: 0.10em;
+    text-transform: uppercase;
+    position: relative; z-index: 1;
+  }
+
+  /* trackman block */
+  .tm-card {
+    background: rgba(0,88,64,0.04);
+    border: 1px dashed rgba(0,88,64,0.30);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .tm-card .ic-tm {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--primary); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .tm-card .ic-tm svg { width: 18px; height: 18px; }
+  .tm-card .info { flex: 1; }
+  .tm-card .ttl {
+    font-family: var(--font-display); font-size: 14px;
+    font-weight: 600;
+  }
+  .tm-card .desc {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    margin-top: 3px;
+  }
+
+  /* footer */
+  .sm-foot {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--card);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sm-foot .left-act {
+    margin-right: auto;
+  }
+  .btn-danger-ghost {
+    background: transparent; border: 0;
+    font-family: var(--font-body); font-size: 12.5px;
+    font-weight: 600; color: var(--danger);
+    cursor: pointer; padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-danger-ghost:hover { background: rgba(163,45,45,0.06); }
+  .btn-danger-ghost svg { width: 13px; height: 13px; }
+  .btn-reject {
+    background: #fff; color: var(--fg);
+    border: 1px solid var(--border);
+    padding: 9px 16px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-reject:hover { border-color: var(--danger); color: var(--danger); }
+  .btn-approve {
+    background: var(--primary); color: var(--accent);
+    padding: 9px 18px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 13px; font-weight: 600;
+    border: 0; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-approve:hover { background: #00472F; }
+  .btn-approve svg { width: 13px; height: 13px; }
+</style>
+</head>
+<body data-screen-label="CoachHQ Okt-detalj coach-modal">
+
+<!-- SVG sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="ic-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+    <symbol id="ic-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></symbol>
+    <symbol id="ic-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 5.7L19.6 10.6 13.9 12.5 12 18.2 10.1 12.5 4.4 10.6 10.1 8.7Z"/></symbol>
+    <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="ic-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  </defs>
+</svg>
+
+<!-- Background sim -->
+<div class="bg-page">
+  <h2>Kalender · Uke 21</h2>
+</div>
+
+<!-- MODAL -->
+<div class="session-modal" role="dialog" aria-modal="true" aria-labelledby="sm-title">
+
+  <!-- HEAD -->
+  <div class="sm-head">
+    <div class="left">
+      <span class="pre">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>
+        VENTER GODKJENNING · ØKT-FORSLAG FRA MARKUS
+      </span>
+      <h2 id="sm-title">Putt 4×8 · <em>Markus</em></h2>
+      <div class="when">
+        <span><strong style="color:var(--fg);">Tirsdag 21. mai</strong></span>
+        <span class="dot"></span>
+        <span>16:00 → 17:00</span>
+        <span class="dot"></span>
+        <span>60 MIN</span>
+        <span class="dot"></span>
+        <span>PERFORMANCE STUDIO · BAY 2</span>
+      </div>
+    </div>
+    <div class="right">
+      <span class="status-pill-lg venter"><span class="pulse"></span>VENTER GODKJENNING</span>
+      <button class="sm-close" aria-label="Lukk" onclick="window.history.back()">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="sm-body">
+
+    <!-- Plan-blokk -->
+    <div class="plan-block">
+      <div class="pb-item">
+        <span class="k">Type</span>
+        <span class="v">
+          <span class="pill pill-slag">SLAG</span>
+          Teknisk · Putt
+        </span>
+      </div>
+      <div class="pb-item">
+        <span class="k">Varighet</span>
+        <span class="v mono">
+          <svg class="ic" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clock"/></svg>
+          60 min
+        </span>
+      </div>
+      <div class="pb-item">
+        <span class="k">Lokasjon</span>
+        <span class="v">
+          <svg class="ic" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-pin"/></svg>
+          Performance Studio · Bay 2
+        </span>
+      </div>
+      <div class="pb-item">
+        <span class="k">Spiller</span>
+        <span class="v">
+          <span class="p-avatar c1">MR</span>
+          Markus Røinås Pedersen
+        </span>
+      </div>
+      <div class="pb-item">
+        <span class="k">Mål</span>
+        <span class="v">
+          <svg class="ic" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>
+          Putt 0—3 m · 85% treff
+        </span>
+      </div>
+      <div class="pb-item">
+        <span class="k">Forventet RPE</span>
+        <span class="v mono">4 / 10 · Lett</span>
+      </div>
+    </div>
+
+    <!-- Drilrer -->
+    <div>
+      <div class="sm-section-head">
+        <h3>Drilrer · 3 stk · 195 reps totalt</h3>
+        <button class="add-btn">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+          Legg til drill
+        </button>
+      </div>
+      <div class="drill-list">
+
+        <div class="drill-card">
+          <span class="drill-num">1</span>
+          <div class="drill-info">
+            <span class="nm">8 puttinger fra 3 m</span>
+            <div class="params">
+              <span>4 SETT × 8 REPS</span>
+              <span class="sep"></span>
+              <span>20 MIN</span>
+              <span class="sep"></span>
+              <span>STRAIGHT BREAK</span>
+            </div>
+            <span class="crit">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+              Suksess: 6 av 8 i bollen
+            </span>
+          </div>
+          <button class="swap">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg>
+            Bytt drill
+          </button>
+        </div>
+
+        <div class="drill-card">
+          <span class="drill-num">2</span>
+          <div class="drill-info">
+            <span class="nm">Lange putts 8—12 m · distanse-kontroll</span>
+            <div class="params">
+              <span>3 SETT × 15 REPS</span>
+              <span class="sep"></span>
+              <span>25 MIN</span>
+              <span class="sep"></span>
+              <span>BLOKK</span>
+            </div>
+            <span class="crit">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+              Suksess: 80% innenfor 1 m radius
+            </span>
+          </div>
+          <button class="swap">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg>
+            Bytt drill
+          </button>
+        </div>
+
+        <div class="drill-card">
+          <span class="drill-num">3</span>
+          <div class="drill-info">
+            <span class="nm">Press-runde 9 hull · pretend-bane</span>
+            <div class="params">
+              <span>1 RUNDE × 9 HULL</span>
+              <span class="sep"></span>
+              <span>15 MIN</span>
+              <span class="sep"></span>
+              <span>RANDOMIZED</span>
+            </div>
+            <span class="crit">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+              Suksess: maks 18 putts på 9 hull
+            </span>
+          </div>
+          <button class="swap">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg>
+            Bytt drill
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coach-notat (Anders' fokus) -->
+    <div class="note-card">
+      <h4>
+        <span class="ic-circle">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sparkle"/></svg>
+        </span>
+        Hva skal vi fokusere på · til Markus
+      </h4>
+      <textarea placeholder="Skriv din kontekst til økten — sett tone, peker på fokus-områder…">Fokus på rytme i stroke — la skuldrene styre. Vi har sett at du blir litt rask når presset øker (jf. runde 15.5). Sett tempoet bevisst lavt i sett 1—2, så bygg opp. Hvis du føler du er på, prøv siste sett uten å se på ballen.</textarea>
+      <div class="nc-meta">PRIVAT NOTAT · SENDES TIL MARKUS NÅR DU GODKJENNER</div>
+    </div>
+
+    <!-- Trackman -->
+    <div class="tm-card">
+      <div class="ic-tm">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-download"/></svg>
+      </div>
+      <div class="info">
+        <div class="ttl">Trackman-data importeres automatisk etter økt</div>
+        <div class="desc">BAY 2 SYNKER · PUTT-MODUL · CIRKA 95 SLAG</div>
+      </div>
+      <button class="btn btn-outline btn-xs" style="margin-left:auto;">Endre kilde</button>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="sm-foot">
+    <div class="left-act">
+      <button class="btn-danger-ghost">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-trash"/></svg>
+        Slett økt
+      </button>
+    </div>
+    <button class="btn btn-outline btn-sm">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-edit"/></svg>
+      Rediger
+    </button>
+    <button class="btn-reject">Avvis</button>
+    <button class="btn-approve">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+      Godkjenn og send til Markus
+    </button>
+  </div>
+
+</div>
+
+</body>
+</html>
