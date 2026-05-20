@@ -78,12 +78,12 @@ export default function PriserSide() {
     <div className="bg-background text-foreground">
       {/* Hero */}
       <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-16 md:pt-28 md:pb-20 text-center">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-12 pb-12 sm:pt-20 sm:pb-16 md:pt-28 md:pb-20 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             <CircleDot className="h-3 w-3 text-primary" strokeWidth={2} />
             Priser
           </div>
-          <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
+          <h1 className="mt-6 font-display text-4xl sm:text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
             Enkelt og{" "}
             <em className="font-display font-normal italic text-primary">
               ærlig
@@ -98,7 +98,7 @@ export default function PriserSide() {
       </section>
 
       {/* Tier-kort */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 max-w-4xl mx-auto">
           {TIERS.map((tier) => (
             <TierCard key={tier.navn} tier={tier} />
@@ -108,12 +108,12 @@ export default function PriserSide() {
 
       {/* FAQ */}
       <section className="border-t border-border bg-card">
-        <div className="mx-auto max-w-3xl px-6 py-24">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-24">
           <div className="text-center">
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Spørsmål og svar
             </span>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight">
               Ofte stilte spørsmål om{" "}
               <em className="font-display font-normal italic text-primary">
                 priser
@@ -130,8 +130,8 @@ export default function PriserSide() {
       </section>
 
       {/* CTA */}
-      <section className="mx-auto max-w-7xl px-6 pb-24">
-        <div className="relative overflow-hidden rounded-2xl bg-primary px-8 py-16 text-primary-foreground md:px-16 md:py-20 text-center">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 pb-16 sm:pb-24">
+        <div className="relative overflow-hidden rounded-2xl bg-primary px-5 py-10 sm:px-8 sm:py-16 text-primary-foreground md:px-16 md:py-20 text-center">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full"
@@ -141,22 +141,22 @@ export default function PriserSide() {
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] opacity-80">
               Kom i gang
             </span>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
               Klar til å ta neste steg?
             </h2>
             <p className="mt-6 text-[16px] leading-[1.6] opacity-90">
               Start med GRATIS-kontoen i dag. Ingen kredittkort nødvendig.
             </p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-center gap-3 sm:gap-4">
               <Link
                 href="/registrer"
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-4 text-[15px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
               >
                 Opprett gratis konto
               </Link>
               <Link
                 href="/kontakt"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent px-6 py-4 text-[15px] font-semibold transition-colors hover:bg-white/10"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-6 text-[15px] font-semibold transition-colors hover:bg-white/10"
               >
                 Snakk med oss
               </Link>
@@ -171,7 +171,7 @@ export default function PriserSide() {
 function TierCard({ tier }: { tier: Tier }) {
   return (
     <div
-      className={`relative flex flex-col rounded-2xl border bg-card p-8 ${
+      className={`relative flex flex-col rounded-2xl border bg-card p-5 sm:p-8 ${
         tier.anbefalt ? "ring-2 ring-primary border-primary/40" : "border-border"
       }`}
     >

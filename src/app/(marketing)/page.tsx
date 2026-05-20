@@ -64,7 +64,7 @@ export default function Hjem() {
               "radial-gradient(60% 50% at 50% 0%, rgba(209,248,67,0.18) 0%, rgba(209,248,67,0) 60%), radial-gradient(40% 40% at 90% 30%, rgba(0,88,64,0.10) 0%, rgba(0,88,64,0) 70%)",
           }}
         />
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-24 md:pt-28 md:pb-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-12 pb-16 sm:pt-20 sm:pb-24 md:pt-28 md:pb-32">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-muted-foreground">
             <span className="grid h-5 w-5 place-items-center rounded-full bg-accent text-accent-foreground">
               <Sparkles className="h-3 w-3" strokeWidth={2} />
@@ -72,7 +72,7 @@ export default function Hjem() {
             Ny sesong · Plasser åpne fra 1. mai
           </div>
 
-          <h1 className="max-w-5xl font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
+          <h1 className="max-w-5xl font-display text-4xl sm:text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
             Bli en bedre golfspiller.{" "}
             <em className="font-display font-normal italic text-primary">
               Sammen.
@@ -84,17 +84,17 @@ export default function Hjem() {
             for spillere som vil mer enn å bare slå baller.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-4">
             <Link
               href="/booking"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-4 text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               Book gratis kartleggings-økt
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </Link>
             <Link
               href="/coaching"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-4 text-[15px] font-semibold text-foreground transition-colors hover:bg-secondary"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border bg-card px-6 text-[15px] font-semibold text-foreground transition-colors hover:bg-secondary"
             >
               Se tjenestene
             </Link>
@@ -117,7 +117,7 @@ export default function Hjem() {
       </section>
 
       {/* Tjenester */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24">
         <SectionHeader
           tag="Tjenester"
           title={
@@ -139,8 +139,8 @@ export default function Hjem() {
       </section>
 
       {/* PlayerHQ-strip */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
-        <div className="grid grid-cols-1 gap-8 rounded-2xl border border-primary/20 bg-primary/5 p-8 sm:p-12 md:grid-cols-[1fr_1.2fr] md:items-center">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24">
+        <div className="grid grid-cols-1 gap-8 rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:p-8 md:p-12 md:grid-cols-[1fr_1.2fr] md:items-center">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-primary px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary-foreground">
@@ -150,7 +150,7 @@ export default function Hjem() {
                 Beta
               </span>
             </div>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-tight tracking-tight">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-tight tracking-tight">
               PlayerHQ —{" "}
               <em className="font-display font-normal italic text-primary">
                 spillerportalen
@@ -184,7 +184,7 @@ export default function Hjem() {
       </section>
 
       {/* Anlegg + partnere */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24">
         <SectionHeader
           tag="Anlegg og partnere"
           title={
@@ -237,8 +237,8 @@ export default function Hjem() {
       </section>
 
       {/* Final CTA */}
-      <section className="mx-auto max-w-7xl px-6 pb-24">
-        <div className="relative overflow-hidden rounded-2xl bg-primary px-8 py-16 text-primary-foreground md:px-16 md:py-20">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 pb-16 sm:pb-24">
+        <div className="relative overflow-hidden rounded-2xl bg-primary px-5 py-10 sm:px-8 sm:py-16 text-primary-foreground md:px-16 md:py-20">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full"
@@ -248,7 +248,7 @@ export default function Hjem() {
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] opacity-80">
               Neste sesong
             </span>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-6xl">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-6xl">
               Klar for{" "}
               <em className="font-display font-normal italic">
                 neste steg
@@ -259,17 +259,17 @@ export default function Hjem() {
               Vi har plass til 20 nye spillere i 2026-sesongen. Book en gratis
               30-minutters kartleggings-økt så finner vi ut om vi er rett match.
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-4">
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-4">
               <Link
                 href="/booking"
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-4 text-[15px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
               >
                 <CalendarCheck className="h-4 w-4" strokeWidth={2} />
                 Book kartleggings-økt
               </Link>
               <Link
                 href="/coaching"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent px-6 py-4 text-[15px] font-semibold transition-colors hover:bg-white/10"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-6 text-[15px] font-semibold transition-colors hover:bg-white/10"
               >
                 Se priser
               </Link>
@@ -296,7 +296,7 @@ function SectionHeader({
         <CircleDot className="h-3 w-3 text-primary" strokeWidth={2} />
         {tag}
       </div>
-      <h2 className="mt-6 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+      <h2 className="mt-6 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
         {title}
       </h2>
       {intro && (
