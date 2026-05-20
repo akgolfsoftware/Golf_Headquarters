@@ -168,7 +168,7 @@ export function SpillerOnboardingWizard() {
           >
             CoachHQ · Stallen · Onboarding
           </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
+          <h1 className="mt-2 font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
             Ny{" "}
             <em className="font-normal text-primary md:italic">spiller</em>
           </h1>
@@ -181,7 +181,7 @@ export function SpillerOnboardingWizard() {
 
       <ProgressStripe current={steg} />
 
-      <div className="rounded-2xl border border-border bg-card px-6 py-6">
+      <div className="rounded-2xl border border-border bg-card px-4 py-4 sm:px-6 sm:py-6">
         {steg === 1 && (
           <Steg1Identitet
             navn={navn}
@@ -243,12 +243,12 @@ export function SpillerOnboardingWizard() {
         </div>
       )}
 
-      <div className="flex items-center justify-between border-t border-border pt-4">
+      <div className="flex items-center justify-between gap-2 border-t border-border pt-4">
         <button
           type="button"
           onClick={forrige}
           disabled={steg === 1 || pending}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex h-11 items-center gap-1.5 rounded-md border border-border bg-transparent px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
         >
           <ChevronLeft className="h-4 w-4" strokeWidth={1.75} />
           Tilbake
@@ -259,7 +259,7 @@ export function SpillerOnboardingWizard() {
             type="button"
             onClick={neste}
             disabled={!!stegFeil || pending}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex h-11 items-center gap-1.5 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           >
             Neste
             <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
@@ -269,7 +269,7 @@ export function SpillerOnboardingWizard() {
             type="button"
             onClick={sendInn}
             disabled={pending || !!stegFeil}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex h-11 items-center gap-1.5 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {sendInvitasjon ? (
               <Send className="h-4 w-4" strokeWidth={1.75} />
@@ -677,7 +677,7 @@ function Steg4Velkomst({
           value={velkomstMelding}
           onChange={(e) => setVelkomstMelding(e.target.value)}
           rows={5}
-          className="w-full resize-y rounded-md border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="w-full resize-y rounded-md border border-input bg-background px-4 py-3 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           placeholder="Hei og velkommen…"
         />
         <p className="text-xs text-muted-foreground">
@@ -768,7 +768,7 @@ function FeltTekst({
         inputMode={inputMode}
         max={maxDato}
         aria-invalid={error ? true : undefined}
-        className={`h-10 rounded-md border bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+        className={`h-11 rounded-md border bg-card px-4 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
           error ? "border-destructive" : "border-input"
         }`}
       />

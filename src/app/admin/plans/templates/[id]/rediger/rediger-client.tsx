@@ -199,7 +199,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
   return (
     <div className="space-y-6">
       {/* Hero */}
-      <header className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 sm:flex-row sm:items-start sm:justify-between">
+      <header className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:p-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1 space-y-2">
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             CoachHQ · Treningsplaner · Mal-editor
@@ -610,7 +610,7 @@ function FeltTekst({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={error ? true : undefined}
-        className={`h-10 rounded-md border bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+        className={`h-11 rounded-md border bg-card px-4 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
           error ? "border-destructive" : "border-input"
         }`}
       />
@@ -656,7 +656,7 @@ function FeltTall({
         max={max}
         step={step}
         aria-invalid={error ? true : undefined}
-        className={`h-10 rounded-md border bg-card px-4 text-sm font-mono tabular-nums text-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+        className={`h-11 rounded-md border bg-card px-4 text-base sm:text-sm font-mono tabular-nums text-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
           error ? "border-destructive" : "border-input"
         }`}
       />

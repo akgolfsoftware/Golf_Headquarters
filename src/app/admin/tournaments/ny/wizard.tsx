@@ -235,7 +235,7 @@ export function NyTurneringWizard({ courses }: { courses: Course[] }) {
     <div className="flex flex-col gap-6">
       <StegBar step={step} />
 
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm md:p-8">
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6 md:p-8">
         {step === 1 && <StegType state={state} update={update} />}
         {step === 2 && (
           <StegDetaljer state={state} update={update} courses={courses} />
@@ -256,10 +256,10 @@ export function NyTurneringWizard({ courses }: { courses: Course[] }) {
         )}
       </div>
 
-      <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-3 rounded-full border border-border bg-card/95 px-4 py-3 shadow-lg backdrop-blur">
+      <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-3 rounded-2xl sm:rounded-full border border-border bg-card/95 px-3 sm:px-4 py-3 shadow-lg backdrop-blur">
         <Link
           href="/admin/tournaments"
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-input bg-card px-4 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          className="inline-flex h-11 items-center gap-2 rounded-full border border-input bg-card px-4 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />
           Avbryt
@@ -271,7 +271,7 @@ export function NyTurneringWizard({ courses }: { courses: Course[] }) {
               type="button"
               onClick={tilbake}
               disabled={pending}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-input bg-card px-4 text-xs font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
+              className="inline-flex h-11 items-center gap-2 rounded-full border border-input bg-card px-4 text-xs font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
             >
               <ArrowLeft className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />
               Forrige
@@ -282,7 +282,7 @@ export function NyTurneringWizard({ courses }: { courses: Course[] }) {
               type="button"
               onClick={neste}
               disabled={pending || !!stepError}
-              className="inline-flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               Neste
               <ArrowRight className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />
@@ -292,7 +292,7 @@ export function NyTurneringWizard({ courses }: { courses: Course[] }) {
               type="button"
               onClick={submit}
               disabled={pending}
-              className="inline-flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               <Check className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />
               {pending ? "Oppretter…" : "Opprett turnering"}
@@ -873,4 +873,4 @@ function Sum({
 }
 
 const inputCls =
-  "h-10 w-full rounded-md border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30";
+  "h-11 w-full rounded-md border border-input bg-card px-4 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30";
