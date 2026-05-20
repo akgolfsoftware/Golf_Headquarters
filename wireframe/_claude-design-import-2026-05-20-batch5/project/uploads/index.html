@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding — 1704 Wireframes</title>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles-opt1.css">
+  <link rel="stylesheet" href="styles-opt2.css">
+  <link rel="stylesheet" href="styles-opt3.css">
+  <link rel="stylesheet" href="styles-opt4.css">
+  <link rel="stylesheet" href="styles-opt5.css">
+</head>
+<body>
+
+<div class="completion-banner" id="completion-banner" style="display:none;">
+  ✦ Visual designs complete — all options now have Clean + Polished variants
+  <button onclick="this.parentElement.style.display='none'" style="float:right;background:none;border:none;cursor:pointer;font-size:16px;">×</button>
+</div>
+
+<div class="page-wrapper">
+
+  <div class="title-bar">
+    <span><span id="feature-name">Onboarding</span> — <span id="project-name">AK Golf Platform · Portal</span></span>
+    <span class="rec">★ Recommended: Option <span id="rec-number">1</span></span>
+  </div>
+
+  <nav class="main-tabs">
+    <button class="tab-btn active" data-tab="option-1">1: Linear Steps</button>
+    <button class="tab-btn" data-tab="option-2">2: Chat Onboarding</button>
+    <button class="tab-btn" data-tab="option-3">3: Goal First</button>
+    <button class="tab-btn" data-tab="option-4">4: Single Scroll</button>
+    <button class="tab-btn" data-tab="option-5">5: Gamified</button>
+    <button class="tab-btn" data-tab="summary">Summary</button>
+  </nav>
+
+  <!-- ===== OPTION 1: Linear Steps (SAFE) ===== -->
+  <div class="option-panel active" id="option-1">
+    <h2>Option 1: <span class="opt-name">Linear Steps</span></h2>
+    <p class="option-description">Klassisk 5-stegs onboarding: velkommen → handicap → mål → klubb → ferdig. Ett steg om gangen, progress-dots øverst, Neste/Forrige. Matcher portal-DNA fra booking-wizard.</p>
+    <div class="sub-tab-bar" id="frame-opt1-tabs">
+      <button class="sub-tab-btn active" data-variant="wireframe" data-frame="frame-opt1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTsketch1"><g fill="#555" stroke="#fff" stroke-linejoin="round" stroke-width="4"><rect width="36" height="36" x="6" y="6" rx="3"/><path stroke-linecap="round" d="M18.6 16h10.8l3.6 4.706L24 32l-9-11.294z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTsketch1)"/></svg>
+        <span class="sub-tab-label">Wireframe</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="clean" data-frame="frame-opt1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTpaint1"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m15.536 22.898l9.899 9.9m-9.899-9.9L7.05 31.383a7 7 0 1 0 9.9 9.9l8.485-8.486m-9.899 0l-4.243 4.243"/><path fill="#555" d="m25.435 32.797l14.907-6.432c2.688-1.16 3.809-4.379 2.086-6.745C38.264 13.903 32.65 8.89 28.51 5.823c-2.29-1.696-5.33-.64-6.46 1.975l-6.514 15.1z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTpaint1)"/></svg>
+        <span class="sub-tab-label">Clean</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="polished" data-frame="frame-opt1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTdiamond1"><path fill="#555" stroke="#fff" stroke-width="4" d="M5.939 13.934L23.036 4.53a2 2 0 0 1 1.928 0l17.097 9.404a2 2 0 0 1 .683 2.888l-17.098 24.79a2 2 0 0 1-3.292 0L5.256 16.823a2 2 0 0 1 .683-2.888Z"/></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTdiamond1)"/></svg>
+        <span class="sub-tab-label">Polished</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+    </div>
+    <div class="browser-frame wireframe" id="frame-opt1">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">akgolf.no/portal/onboarding</div>
+        <div class="browser-controls">─ □ ✕</div>
+      </div>
+      <div class="browser-content">
+        <div class="wf-portal-shell">
+          <aside class="wf-sidebar">
+            <div class="wf-sidebar-logo">AK</div>
+            <nav class="wf-sidebar-nav">
+              <a class="wf-side-item">Oversikt</a>
+              <a class="wf-side-item">Planlegg</a>
+              <a class="wf-side-item">Tren</a>
+              <a class="wf-side-item">Spill</a>
+              <a class="wf-side-item">Analyser</a>
+              <a class="wf-side-item">Mer</a>
+            </nav>
+            <div class="wf-sidebar-user">EH</div>
+          </aside>
+
+          <main class="wf-main">
+            <header class="wf-wizard-header">
+              <div>
+                <div class="wf-crumbs">Portal / Onboarding</div>
+                <h1 class="wf-wizard-title">Velkommen til Portalen<span class="wf-marker">1</span></h1>
+              </div>
+              <button class="wf-btn wf-btn-ghost">Hopp over</button>
+            </header>
+
+            <div class="wf-progress-row">
+              <div class="wf-progress-dot wf-done">1</div>
+              <div class="wf-progress-bar wf-done"></div>
+              <div class="wf-progress-dot wf-active">2</div>
+              <div class="wf-progress-bar"></div>
+              <div class="wf-progress-dot">3</div>
+              <div class="wf-progress-bar"></div>
+              <div class="wf-progress-dot">4</div>
+              <div class="wf-progress-bar"></div>
+              <div class="wf-progress-dot">5</div>
+            </div>
+            <div class="wf-progress-labels">
+              <span>Velkommen</span><span class="wf-active">Handicap</span><span>Mål</span><span>Klubb &amp; fokus</span><span>Ferdig</span>
+            </div>
+
+            <section class="wf-step-card">
+              <div class="wf-step-label">STEG 2 AV 5</div>
+              <h2 class="wf-step-title">Hva er handicapet ditt?<span class="wf-marker">2</span></h2>
+              <p class="wf-step-desc">Vi bruker handicapet ditt til å foreslå riktig nivå på trening og spill. Du kan endre det senere.</p>
+
+              <div class="wf-hcp-field">
+                <label class="wf-field-label">HANDICAP (HCP)</label>
+                <div class="wf-hcp-input-row">
+                  <input type="text" class="wf-input wf-hcp-input" value="18.4" readonly>
+                  <div class="wf-hcp-range">
+                    <div class="wf-range-track">
+                      <div class="wf-range-fill" style="width:46%"></div>
+                      <div class="wf-range-thumb" style="left:46%"></div>
+                    </div>
+                    <div class="wf-range-marks">
+                      <span>+5</span><span>9</span><span>18</span><span>27</span><span>54</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="wf-hcp-chips">
+                  <span class="wf-chip">Nybegynner (36+)</span>
+                  <span class="wf-chip wf-chip-active">Mellomnivå (15–27)</span>
+                  <span class="wf-chip">Lavt (5–14)</span>
+                  <span class="wf-chip">Scratch (0–4)</span>
+                  <span class="wf-chip">Vet ikke enda</span>
+                </div>
+              </div>
+
+              <div class="wf-ai-box">
+                <div class="wf-ai-label">AI-VEILEDNING</div>
+                <p>Med HCP 18 er typisk fokusområde SLAG og SPILL. Vi bygger planen din rundt dette.<span class="wf-marker">3</span></p>
+              </div>
+            </section>
+
+            <footer class="wf-step-nav">
+              <button class="wf-btn wf-btn-secondary">← Forrige</button>
+              <div class="wf-step-count">2 / 5</div>
+              <button class="wf-btn wf-btn-cta">Neste →<span class="wf-marker">4</span></button>
+            </footer>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div class="wf-annotations">
+      <h3>UX-notater</h3>
+      <ul>
+        <li><strong>1 — Tydelig kontekst:</strong> Brødsmuler + "Hopp over" gir brukeren alltid vei ut. Matcher portal-DNA.</li>
+        <li><strong>2 — Ett steg, én beslutning:</strong> HCP-input dominerer canvasen. Slider + chips dekker både presise og usikre brukere.</li>
+        <li><strong>3 — AI som kontekst:</strong> Lilla AI-boks forklarer hvorfor vi spør — bygger tillit uten å styre.</li>
+        <li><strong>4 — Sticky bunn-nav:</strong> Forrige/Neste alltid synlig. Primær CTA lime, sekundær som ghost.</li>
+        <li>— Trygg løsning: Brukere som kjenner wizards (booking, Stripe-checkout) gjenkjenner mønsteret umiddelbart.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== OPTION 2: Chat Onboarding ===== -->
+  <div class="option-panel" id="option-2">
+    <h2>Option 2: <span class="opt-name">Chat Onboarding</span></h2>
+    <p class="option-description">Samtalebasert — coachen stiller spørsmål, bruker svarer med chips. Føles som en coach som snakker med deg. Ingen skjema, kun dialog.</p>
+    <div class="sub-tab-bar" id="frame-opt2-tabs">
+      <button class="sub-tab-btn active" data-variant="wireframe" data-frame="frame-opt2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTsketch2"><g fill="#555" stroke="#fff" stroke-linejoin="round" stroke-width="4"><rect width="36" height="36" x="6" y="6" rx="3"/><path stroke-linecap="round" d="M18.6 16h10.8l3.6 4.706L24 32l-9-11.294z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTsketch2)"/></svg>
+        <span class="sub-tab-label">Wireframe</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="clean" data-frame="frame-opt2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTpaint2"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m15.536 22.898l9.899 9.9m-9.899-9.9L7.05 31.383a7 7 0 1 0 9.9 9.9l8.485-8.486m-9.899 0l-4.243 4.243"/><path fill="#555" d="m25.435 32.797l14.907-6.432c2.688-1.16 3.809-4.379 2.086-6.745C38.264 13.903 32.65 8.89 28.51 5.823c-2.29-1.696-5.33-.64-6.46 1.975l-6.514 15.1z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTpaint2)"/></svg>
+        <span class="sub-tab-label">Clean</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="polished" data-frame="frame-opt2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTdiamond2"><path fill="#555" stroke="#fff" stroke-width="4" d="M5.939 13.934L23.036 4.53a2 2 0 0 1 1.928 0l17.097 9.404a2 2 0 0 1 .683 2.888l-17.098 24.79a2 2 0 0 1-3.292 0L5.256 16.823a2 2 0 0 1 .683-2.888Z"/></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTdiamond2)"/></svg>
+        <span class="sub-tab-label">Polished</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+    </div>
+    <div class="browser-frame wireframe" id="frame-opt2">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">akgolf.no/portal/onboarding</div>
+        <div class="browser-controls">─ □ ✕</div>
+      </div>
+      <div class="browser-content">
+        <div class="wf-portal-shell">
+          <aside class="wf-sidebar">
+            <div class="wf-sidebar-logo">AK</div>
+            <nav class="wf-sidebar-nav">
+              <a class="wf-side-item">Oversikt</a>
+              <a class="wf-side-item">Planlegg</a>
+              <a class="wf-side-item">Tren</a>
+              <a class="wf-side-item">Spill</a>
+              <a class="wf-side-item">Analyser</a>
+              <a class="wf-side-item">Mer</a>
+            </nav>
+            <div class="wf-sidebar-user">EH</div>
+          </aside>
+
+          <main class="wf-main wf-main-chat">
+            <header class="wf-chat-header">
+              <div>
+                <div class="wf-crumbs">Portal / Onboarding</div>
+                <h1 class="wf-wizard-title">La oss bli kjent<span class="wf-marker">1</span></h1>
+              </div>
+              <div class="wf-chat-progress">3 av 8 spørsmål</div>
+            </header>
+
+            <div class="wf-chat-stage">
+              <div class="wf-chat-feed">
+
+                <div class="wf-chat-msg wf-chat-msg-system">
+                  <div class="wf-chat-avatar">AK</div>
+                  <div class="wf-chat-bubble">
+                    <p>Hei! Jeg er coachen din i Portalen. Før vi starter — hva heter du?</p>
+                  </div>
+                </div>
+                <div class="wf-chat-msg wf-chat-msg-user">
+                  <div class="wf-chat-bubble wf-chat-bubble-user">Erik Hansen</div>
+                </div>
+
+                <div class="wf-chat-msg wf-chat-msg-system">
+                  <div class="wf-chat-avatar">AK</div>
+                  <div class="wf-chat-bubble">
+                    <p>Hyggelig, Erik. Hva er handicapet ditt?</p>
+                  </div>
+                </div>
+                <div class="wf-chat-msg wf-chat-msg-user">
+                  <div class="wf-chat-bubble wf-chat-bubble-user">HCP 18</div>
+                </div>
+
+                <div class="wf-chat-msg wf-chat-msg-system">
+                  <div class="wf-chat-avatar">AK</div>
+                  <div class="wf-chat-bubble">
+                    <p>Hva er målet ditt med Portalen?<span class="wf-marker">2</span></p>
+                  </div>
+                </div>
+
+                <div class="wf-chat-input-row">
+                  <span class="wf-chat-chip wf-chat-chip-active">Senke HCP</span>
+                  <span class="wf-chat-chip">Bli bedre totalt</span>
+                  <span class="wf-chat-chip">Konkurrere mer</span>
+                  <span class="wf-chat-chip">Bare spille mer golf</span>
+                </div>
+
+                <div class="wf-ai-box wf-ai-chat">
+                  <div class="wf-ai-label">AI-VEILEDNING</div>
+                  <p>Vanlig mål for HCP 18: senke til 12 på én sesong. Bygger vi plan mot det?<span class="wf-marker">3</span></p>
+                </div>
+              </div>
+
+              <aside class="wf-chat-preview">
+                <div class="wf-preview-title">Profilen din<span class="wf-marker">4</span></div>
+                <div class="wf-preview-row"><span>Navn</span><strong>Erik H.</strong></div>
+                <div class="wf-preview-row"><span>Handicap</span><strong>18</strong></div>
+                <div class="wf-preview-row"><span>Mål</span><strong>—</strong></div>
+                <div class="wf-preview-row"><span>Klubb</span><strong>—</strong></div>
+                <div class="wf-preview-row"><span>Fokus</span><strong>—</strong></div>
+                <div class="wf-preview-row"><span>Tid/uke</span><strong>—</strong></div>
+                <div class="wf-preview-divider"></div>
+                <button class="wf-btn wf-btn-secondary wf-btn-block" disabled>Fullfør onboarding</button>
+                <p class="wf-preview-note">Svar på alle spørsmål for å fullføre.</p>
+              </aside>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div class="wf-annotations">
+      <h3>UX-notater</h3>
+      <ul>
+        <li><strong>1 — Samtale slår skjema:</strong> Lavere cognitive load. Bruker svarer ett spørsmål om gangen.</li>
+        <li><strong>2 — Chip-basert input:</strong> Faste valg gir kontrollert input. Reduserer skrivefriksjon.</li>
+        <li><strong>3 — AI som samtalepartner:</strong> Lilla AI-boks som rådgiver, ikke autoritet. Foreslår, bruker bestemmer.</li>
+        <li><strong>4 — Live preview-panel:</strong> Profilen bygges opp til høyre mens samtalen skrider frem. Konkret fremgang.</li>
+        <li>— Risiko: Lengre å fullføre enn skjema. Passer best første gang, føles personlig.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== OPTION 3: Goal First ===== -->
+  <div class="option-panel" id="option-3">
+    <h2>Option 3: <span class="opt-name">Goal First</span></h2>
+    <p class="option-description">Start med målet — "Hva vil du oppnå?" — bygg resten av onboarding rundt det valget. Motivasjon først, data etterpå.</p>
+    <div class="sub-tab-bar" id="frame-opt3-tabs">
+      <button class="sub-tab-btn active" data-variant="wireframe" data-frame="frame-opt3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTsketch3"><g fill="#555" stroke="#fff" stroke-linejoin="round" stroke-width="4"><rect width="36" height="36" x="6" y="6" rx="3"/><path stroke-linecap="round" d="M18.6 16h10.8l3.6 4.706L24 32l-9-11.294z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTsketch3)"/></svg>
+        <span class="sub-tab-label">Wireframe</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="clean" data-frame="frame-opt3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTpaint3"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m15.536 22.898l9.899 9.9m-9.899-9.9L7.05 31.383a7 7 0 1 0 9.9 9.9l8.485-8.486m-9.899 0l-4.243 4.243"/><path fill="#555" d="m25.435 32.797l14.907-6.432c2.688-1.16 3.809-4.379 2.086-6.745C38.264 13.903 32.65 8.89 28.51 5.823c-2.29-1.696-5.33-.64-6.46 1.975l-6.514 15.1z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTpaint3)"/></svg>
+        <span class="sub-tab-label">Clean</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="polished" data-frame="frame-opt3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTdiamond3"><path fill="#555" stroke="#fff" stroke-width="4" d="M5.939 13.934L23.036 4.53a2 2 0 0 1 1.928 0l17.097 9.404a2 2 0 0 1 .683 2.888l-17.098 24.79a2 2 0 0 1-3.292 0L5.256 16.823a2 2 0 0 1 .683-2.888Z"/></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTdiamond3)"/></svg>
+        <span class="sub-tab-label">Polished</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+    </div>
+    <div class="browser-frame wireframe" id="frame-opt3">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">akgolf.no/portal/onboarding</div>
+        <div class="browser-controls">─ □ ✕</div>
+      </div>
+      <div class="browser-content">
+        <div class="wf-portal-shell">
+          <aside class="wf-sidebar">
+            <div class="wf-sidebar-logo">AK</div>
+            <nav class="wf-sidebar-nav">
+              <a class="wf-side-item">Oversikt</a>
+              <a class="wf-side-item">Planlegg</a>
+              <a class="wf-side-item">Tren</a>
+              <a class="wf-side-item">Spill</a>
+              <a class="wf-side-item">Analyser</a>
+              <a class="wf-side-item">Mer</a>
+            </nav>
+            <div class="wf-sidebar-user">EH</div>
+          </aside>
+
+          <main class="wf-main wf-main-goal">
+            <header class="wf-goal-header">
+              <div class="wf-step-label">STEG 1 AV 4 · START MED MÅLET<span class="wf-marker">1</span></div>
+              <h1 class="wf-goal-hero-title">Hva vil du oppnå med Portalen?</h1>
+              <p class="wf-goal-hero-sub">Velg målet ditt så bygger vi treningsplanen og Portalen rundt det.</p>
+            </header>
+
+            <div class="wf-goal-grid">
+              <div class="wf-goal-card">
+                <div class="wf-goal-icon">↓</div>
+                <div class="wf-goal-title">Senke HCP<span class="wf-marker">2</span></div>
+                <div class="wf-goal-desc">Fra HCP 18 til 12 på én sesong. Fokus på slag- og spillferdigheter.</div>
+                <div class="wf-goal-meta">Typisk 12 uker · 6 t/uke</div>
+              </div>
+
+              <div class="wf-goal-card wf-goal-selected">
+                <div class="wf-goal-icon">↗</div>
+                <div class="wf-goal-title">Bli bedre totalt</div>
+                <div class="wf-goal-desc">Helhetlig utvikling via Treningspyramiden. FYS, TEK, SLAG, SPILL, TURN.</div>
+                <div class="wf-goal-meta">Typisk 16 uker · 5 t/uke</div>
+                <div class="wf-goal-badge">VALGT</div>
+              </div>
+
+              <div class="wf-goal-card">
+                <div class="wf-goal-icon">♦</div>
+                <div class="wf-goal-title">Konkurrere mer</div>
+                <div class="wf-goal-desc">Klargjøring for klubbturneringer og eksterne cups. Mentalt + fysisk.</div>
+                <div class="wf-goal-meta">Typisk 20 uker · 8 t/uke</div>
+              </div>
+
+              <div class="wf-goal-card">
+                <div class="wf-goal-icon">●</div>
+                <div class="wf-goal-title">Bare spille mer</div>
+                <div class="wf-goal-desc">Lett fokus — logg runder, se statistikk, booke simulatortid.</div>
+                <div class="wf-goal-meta">Fleksibelt · 2 t/uke</div>
+              </div>
+            </div>
+
+            <div class="wf-ai-box wf-ai-goal">
+              <div class="wf-ai-label">AI-VEILEDNING</div>
+              <p>Basert på HCP 18 anbefaler vi "Bli bedre totalt" — det gir raskest resultat for mellomnivå-spillere.<span class="wf-marker">3</span></p>
+            </div>
+
+            <footer class="wf-step-nav wf-step-nav-goal">
+              <button class="wf-btn wf-btn-ghost">Hopp over</button>
+              <button class="wf-btn wf-btn-cta">Neste: Handicap &amp; klubb →<span class="wf-marker">4</span></button>
+            </footer>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div class="wf-annotations">
+      <h3>UX-notater</h3>
+      <ul>
+        <li><strong>1 — Motivasjon først:</strong> Starter med "hvorfor" fremfor "hva". Brukeren bruker 10 sek på å velge mål, resten av onboarding får mening.</li>
+        <li><strong>2 — Fire konkrete mål:</strong> Hvert mål har forventet tidsramme + ukentlig timebruk — bruker ser realitetsjekk.</li>
+        <li><strong>3 — AI foreslår basert på HCP:</strong> Men kun som hint — ingen autoplayed valg.</li>
+        <li><strong>4 — Stegrekkefølge snudd:</strong> Etter mål-valg kommer handicap, klubb, tid — rask og personalisert.</li>
+        <li>— Sterk for motivasjonsdrevne brukere. Risiko: Brukere uten klart mål kan få velgeangst.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== OPTION 4: Single Scroll ===== -->
+  <div class="option-panel" id="option-4">
+    <h2>Option 4: <span class="opt-name">Single Scroll</span></h2>
+    <p class="option-description">Én lang side med alle spørsmål stabled — brukeren scroller gjennom alt, fyller ut underveis. Ingen steg-skifte. Raskt for erfarne.</p>
+    <div class="sub-tab-bar" id="frame-opt4-tabs">
+      <button class="sub-tab-btn active" data-variant="wireframe" data-frame="frame-opt4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTsketch4"><g fill="#555" stroke="#fff" stroke-linejoin="round" stroke-width="4"><rect width="36" height="36" x="6" y="6" rx="3"/><path stroke-linecap="round" d="M18.6 16h10.8l3.6 4.706L24 32l-9-11.294z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTsketch4)"/></svg>
+        <span class="sub-tab-label">Wireframe</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="clean" data-frame="frame-opt4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTpaint4"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m15.536 22.898l9.899 9.9m-9.899-9.9L7.05 31.383a7 7 0 1 0 9.9 9.9l8.485-8.486m-9.899 0l-4.243 4.243"/><path fill="#555" d="m25.435 32.797l14.907-6.432c2.688-1.16 3.809-4.379 2.086-6.745C38.264 13.903 32.65 8.89 28.51 5.823c-2.29-1.696-5.33-.64-6.46 1.975l-6.514 15.1z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTpaint4)"/></svg>
+        <span class="sub-tab-label">Clean</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="polished" data-frame="frame-opt4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTdiamond4"><path fill="#555" stroke="#fff" stroke-width="4" d="M5.939 13.934L23.036 4.53a2 2 0 0 1 1.928 0l17.097 9.404a2 2 0 0 1 .683 2.888l-17.098 24.79a2 2 0 0 1-3.292 0L5.256 16.823a2 2 0 0 1 .683-2.888Z"/></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTdiamond4)"/></svg>
+        <span class="sub-tab-label">Polished</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+    </div>
+    <div class="browser-frame wireframe" id="frame-opt4">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">akgolf.no/portal/onboarding</div>
+        <div class="browser-controls">─ □ ✕</div>
+      </div>
+      <div class="browser-content">
+        <div class="wf-portal-shell">
+          <aside class="wf-sidebar">
+            <div class="wf-sidebar-logo">AK</div>
+            <nav class="wf-sidebar-nav">
+              <a class="wf-side-item">Oversikt</a>
+              <a class="wf-side-item">Planlegg</a>
+              <a class="wf-side-item">Tren</a>
+              <a class="wf-side-item">Spill</a>
+              <a class="wf-side-item">Analyser</a>
+              <a class="wf-side-item">Mer</a>
+            </nav>
+            <div class="wf-sidebar-user">EH</div>
+          </aside>
+
+          <main class="wf-main wf-main-scroll">
+            <header class="wf-scroll-header">
+              <div class="wf-crumbs">Portal / Onboarding</div>
+              <h1 class="wf-wizard-title">Sett opp profilen din<span class="wf-marker">1</span></h1>
+              <p class="wf-scroll-sub">Fyll ut i din egen takt — vi lagrer automatisk mens du scroller.</p>
+              <div class="wf-scroll-progress-bar">
+                <div class="wf-scroll-progress-fill" style="width:42%"></div>
+                <div class="wf-scroll-progress-text">42% ferdig · 5 av 12 felt</div>
+              </div>
+            </header>
+
+            <div class="wf-scroll-stack">
+              <section class="wf-scroll-section wf-scroll-done">
+                <div class="wf-scroll-num">01 ✓</div>
+                <div class="wf-scroll-body">
+                  <div class="wf-scroll-q">Hva heter du?</div>
+                  <div class="wf-scroll-a"><strong>Erik Hansen</strong></div>
+                </div>
+              </section>
+
+              <section class="wf-scroll-section wf-scroll-done">
+                <div class="wf-scroll-num">02 ✓</div>
+                <div class="wf-scroll-body">
+                  <div class="wf-scroll-q">Handicap</div>
+                  <div class="wf-scroll-a"><strong>HCP 18.4</strong></div>
+                </div>
+              </section>
+
+              <section class="wf-scroll-section wf-scroll-active">
+                <div class="wf-scroll-num">03</div>
+                <div class="wf-scroll-body">
+                  <div class="wf-scroll-q">Hva er målet ditt?<span class="wf-marker">2</span></div>
+                  <div class="wf-chip-row">
+                    <span class="wf-chip wf-chip-active">Senke HCP</span>
+                    <span class="wf-chip">Bli bedre totalt</span>
+                    <span class="wf-chip">Konkurrere</span>
+                    <span class="wf-chip">Spille mer</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="wf-scroll-section">
+                <div class="wf-scroll-num">04</div>
+                <div class="wf-scroll-body">
+                  <div class="wf-scroll-q">Hvilken klubb spiller du på?</div>
+                  <input type="text" class="wf-input wf-scroll-input" placeholder="Søk etter klubb...">
+                </div>
+              </section>
+
+              <section class="wf-scroll-section">
+                <div class="wf-scroll-num">05</div>
+                <div class="wf-scroll-body">
+                  <div class="wf-scroll-q">Fokusområder<span class="wf-marker">3</span></div>
+                  <div class="wf-pyramid-chips">
+                    <span class="wf-chip">FYS</span>
+                    <span class="wf-chip">TEK</span>
+                    <span class="wf-chip">SLAG</span>
+                    <span class="wf-chip">SPILL</span>
+                    <span class="wf-chip">TURN</span>
+                  </div>
+                  <p class="wf-scroll-hint">Treningspyramiden fra Norges Golfforbund — velg 1–3 lag som hovedfokus.</p>
+                </div>
+              </section>
+
+              <section class="wf-scroll-section">
+                <div class="wf-scroll-num">06</div>
+                <div class="wf-scroll-body">
+                  <div class="wf-scroll-q">Tid per uke</div>
+                  <div class="wf-chip-row">
+                    <span class="wf-chip">2–3 t</span>
+                    <span class="wf-chip">4–6 t</span>
+                    <span class="wf-chip">7–10 t</span>
+                    <span class="wf-chip">10+ t</span>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <footer class="wf-scroll-sticky-cta">
+              <div class="wf-scroll-summary">5 av 12 felt fylt</div>
+              <button class="wf-btn wf-btn-cta">Fullfør onboarding →<span class="wf-marker">4</span></button>
+            </footer>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div class="wf-annotations">
+      <h3>UX-notater</h3>
+      <ul>
+        <li><strong>1 — Alt på én side:</strong> Ingen side-skifter. Brukeren ser totalomfanget og kan scrolle frem og tilbake.</li>
+        <li><strong>2 — Progresjon via scroll:</strong> Aktivt felt markert, fullførte med ✓. Progress-bar i topp viser % ferdig.</li>
+        <li><strong>3 — Pyramide inline:</strong> FYS/TEK/SLAG/SPILL/TURN som chips — ingen visuell pyramide (den er for senere).</li>
+        <li><strong>4 — Sticky CTA i bunn:</strong> "Fullfør"-knappen henger alltid i bunn — lav friksjon til ferdig.</li>
+        <li>— Rask for erfarne. Risiko: Føles overveldende for nybegynnere som ser alle spørsmål samtidig.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== OPTION 5: Gamified ===== -->
+  <div class="option-panel" id="option-5">
+    <h2>Option 5: <span class="opt-name">Gamified</span></h2>
+    <p class="option-description">XP-følelse med progress-bar, levels og unlock-animasjoner. Hvert steg gir XP, neste steg "låses opp" når du fullfører. Motiverende men risiko for å føles barnslig.</p>
+    <div class="sub-tab-bar" id="frame-opt5-tabs">
+      <button class="sub-tab-btn active" data-variant="wireframe" data-frame="frame-opt5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTsketch5"><g fill="#555" stroke="#fff" stroke-linejoin="round" stroke-width="4"><rect width="36" height="36" x="6" y="6" rx="3"/><path stroke-linecap="round" d="M18.6 16h10.8l3.6 4.706L24 32l-9-11.294z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTsketch5)"/></svg>
+        <span class="sub-tab-label">Wireframe</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="clean" data-frame="frame-opt5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTpaint5"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m15.536 22.898l9.899 9.9m-9.899-9.9L7.05 31.383a7 7 0 1 0 9.9 9.9l8.485-8.486m-9.899 0l-4.243 4.243"/><path fill="#555" d="m25.435 32.797l14.907-6.432c2.688-1.16 3.809-4.379 2.086-6.745C38.264 13.903 32.65 8.89 28.51 5.823c-2.29-1.696-5.33-.64-6.46 1.975l-6.514 15.1z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTpaint5)"/></svg>
+        <span class="sub-tab-label">Clean</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="polished" data-frame="frame-opt5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTdiamond5"><path fill="#555" stroke="#fff" stroke-width="4" d="M5.939 13.934L23.036 4.53a2 2 0 0 1 1.928 0l17.097 9.404a2 2 0 0 1 .683 2.888l-17.098 24.79a2 2 0 0 1-3.292 0L5.256 16.823a2 2 0 0 1 .683-2.888Z"/></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTdiamond5)"/></svg>
+        <span class="sub-tab-label">Polished</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+    </div>
+    <div class="browser-frame wireframe" id="frame-opt5">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">akgolf.no/portal/onboarding</div>
+        <div class="browser-controls">─ □ ✕</div>
+      </div>
+      <div class="browser-content">
+        <div class="wf-portal-shell">
+          <aside class="wf-sidebar">
+            <div class="wf-sidebar-logo">AK</div>
+            <nav class="wf-sidebar-nav">
+              <a class="wf-side-item">Oversikt</a>
+              <a class="wf-side-item">Planlegg</a>
+              <a class="wf-side-item">Tren</a>
+              <a class="wf-side-item">Spill</a>
+              <a class="wf-side-item">Analyser</a>
+              <a class="wf-side-item">Mer</a>
+            </nav>
+            <div class="wf-sidebar-user">EH</div>
+          </aside>
+
+          <main class="wf-main wf-main-game">
+            <header class="wf-game-header">
+              <div class="wf-game-xp-row">
+                <div class="wf-game-level">LVL 1</div>
+                <div class="wf-game-xp-bar">
+                  <div class="wf-game-xp-fill" style="width:60%"></div>
+                  <div class="wf-game-xp-text">60 / 100 XP<span class="wf-marker">1</span></div>
+                </div>
+                <div class="wf-game-streak">3-dagers streak</div>
+              </div>
+              <h1 class="wf-wizard-title">Bygg spillerprofilen din</h1>
+              <p class="wf-scroll-sub">Hvert steg gir XP. Når du når 100 XP låses Portalen opp.</p>
+            </header>
+
+            <div class="wf-game-stack">
+              <div class="wf-game-step wf-game-done">
+                <div class="wf-game-step-icon">✓</div>
+                <div class="wf-game-step-body">
+                  <div class="wf-game-step-title">Velkommen fullført<span class="wf-marker">2</span></div>
+                  <div class="wf-game-step-desc">Du er med i Portalen. +20 XP</div>
+                </div>
+                <div class="wf-game-step-xp">+20</div>
+              </div>
+
+              <div class="wf-game-step wf-game-done">
+                <div class="wf-game-step-icon">✓</div>
+                <div class="wf-game-step-body">
+                  <div class="wf-game-step-title">Handicap registrert</div>
+                  <div class="wf-game-step-desc">HCP 18.4 · Mellomnivå. +20 XP</div>
+                </div>
+                <div class="wf-game-step-xp">+20</div>
+              </div>
+
+              <div class="wf-game-step wf-game-done">
+                <div class="wf-game-step-icon">✓</div>
+                <div class="wf-game-step-body">
+                  <div class="wf-game-step-title">Mål satt</div>
+                  <div class="wf-game-step-desc">Bli bedre totalt. +20 XP</div>
+                </div>
+                <div class="wf-game-step-xp">+20</div>
+              </div>
+
+              <div class="wf-game-step wf-game-active">
+                <div class="wf-game-step-icon">▶</div>
+                <div class="wf-game-step-body">
+                  <div class="wf-game-step-title">Velg klubb<span class="wf-marker">3</span></div>
+                  <div class="wf-game-step-desc">Koble Portalen til hjemmeklubben din. +20 XP</div>
+                  <input type="text" class="wf-input wf-game-input" placeholder="Søk etter klubb...">
+                  <button class="wf-btn wf-btn-cta wf-btn-small">Lagre &amp; fortsett</button>
+                </div>
+                <div class="wf-game-step-xp">+20</div>
+              </div>
+
+              <div class="wf-game-step wf-game-locked">
+                <div class="wf-game-step-icon">🔒</div>
+                <div class="wf-game-step-body">
+                  <div class="wf-game-step-title">Interesseområder</div>
+                  <div class="wf-game-step-desc">Låses opp når klubb er valgt. +20 XP</div>
+                </div>
+                <div class="wf-game-step-xp">+20</div>
+              </div>
+
+              <div class="wf-game-step wf-game-locked">
+                <div class="wf-game-step-icon">🔒</div>
+                <div class="wf-game-step-body">
+                  <div class="wf-game-step-title">LEVEL UP — Portalen klar</div>
+                  <div class="wf-game-step-desc">Du låser opp hele Portalen og starter første uke.</div>
+                </div>
+                <div class="wf-game-step-xp">★</div>
+              </div>
+            </div>
+
+            <div class="wf-ai-box wf-ai-game">
+              <div class="wf-ai-label">COACH-TIPS</div>
+              <p>Du er 2 steg fra å låse opp Portalen. Gjennomsnittlig fullføringstid: 4 minutter.<span class="wf-marker">4</span></p>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div class="wf-annotations">
+      <h3>UX-notater</h3>
+      <ul>
+        <li><strong>1 — XP-bar øverst:</strong> Visuell fremgang som "level" — får brukeren til å ville fullføre. +20 XP per steg.</li>
+        <li><strong>2 — Fullførte steg som trofé-stakk:</strong> Brukeren ser hvor langt de har kommet. Gjennomføringslister gir dopamin.</li>
+        <li><strong>3 — Aktiv steg fremhevet:</strong> Kun ett steg kan fylles ut om gangen. Andre er låst (🔒) eller fullført (✓).</li>
+        <li><strong>4 — Coach-tips i bunn:</strong> "AI-veiledning" omdøpt til "Coach-tips" for å passe gamified tone uten å miste autoritet.</li>
+        <li>— Motiverende for nybegynnere. Risiko: Kan føles barnslig for 45+ målgruppen. Passer best for Junior Academy-tier.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== SUMMARY ===== -->
+  <div class="option-panel" id="summary">
+    <h2>Oppsummering &amp; anbefaling</h2>
+    <p class="option-description">Alle fem opsjoner vurdert mot målet: <strong>Aktivere ny portal-bruker på under 4 minutter uten å skremme bort.</strong></p>
+
+    <table class="wf-summary-table">
+      <thead>
+        <tr><th>Opsjon</th><th>Filosofi</th><th>Tid til fullført</th><th>Læringskurve</th><th>Målgruppe</th><th>Score</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Linear Steps</strong></td>
+          <td>Klassisk 5-stegs wizard med progress-dots</td>
+          <td>2–3 min</td>
+          <td>Null — kjent mønster</td>
+          <td>Alle (30–60)</td>
+          <td>★★★★★</td>
+        </tr>
+        <tr>
+          <td><strong>2. Chat Onboarding</strong></td>
+          <td>Samtale med AK-coach, chips-basert svar</td>
+          <td>3–5 min</td>
+          <td>Null — alle kan chatte</td>
+          <td>Nybegynnere, lav teknisk erfaring</td>
+          <td>★★★★☆</td>
+        </tr>
+        <tr>
+          <td><strong>3. Goal First</strong></td>
+          <td>Mål som inngang, data etterpå</td>
+          <td>2–3 min</td>
+          <td>Lav</td>
+          <td>Motivasjonsdrevne, resultat-orienterte</td>
+          <td>★★★★☆</td>
+        </tr>
+        <tr>
+          <td><strong>4. Single Scroll</strong></td>
+          <td>Alt på én side, scroll gjennom</td>
+          <td>1–2 min (for rask)</td>
+          <td>Lav</td>
+          <td>Erfarne, utålmodige</td>
+          <td>★★★☆☆</td>
+        </tr>
+        <tr>
+          <td><strong>5. Gamified</strong></td>
+          <td>XP-bar, level, unlock-animasjoner</td>
+          <td>3–4 min</td>
+          <td>Null</td>
+          <td>Junior Academy, 15–25</td>
+          <td>★★★☆☆</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="wf-recommendation">
+      <h3>Anbefaling: Option 1 — Linear Steps</h3>
+      <p>Trygg, forutsigbar, matcher portal-DNA (booking-wizard og planlegger bruker samme mønster). Brukere 30–60 år forventer et wizard-mønster ved "Velkommen". Option 3 (Goal First) er sterkt alternativ — mål-først gir sterkere motivasjon, men Linear Steps er mindre risikabelt for en første portal-release.</p>
+      <p><strong>Strategisk flow:</strong> Start med Option 1 som MVP-onboarding. Vurder Option 3 som A/B-test etter 3 måneder for å se om mål-først øker 7-dagers retention. Option 5 (Gamified) reserveres for Junior Academy-tier (under 25 år). Option 2 (Chat) kan tilbys som "Snakk med AK-coach i stedet"-knapp for de som vil ha guidet onboarding.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer class="skill-footer">
+  This design was crafted by the <a href="https://github.com/Magdoub/claude-wireframe-skill">Wireframe skill</a> — follow on GitHub
+</footer>
+
+<script>
+(function() {
+  // Main tab switching
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  var panels = document.querySelectorAll('.option-panel');
+  tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      tabBtns.forEach(function(b) { b.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      var target = document.getElementById(btn.dataset.tab);
+      if (target) target.classList.add('active');
+    });
+  });
+
+  // Sub-tab switching
+  var subBtns = document.querySelectorAll('.sub-tab-btn');
+  subBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var frameId = btn.dataset.frame;
+      var siblings = btn.parentElement.querySelectorAll('.sub-tab-btn');
+      siblings.forEach(function(s) { s.classList.remove('active'); });
+      btn.classList.add('active');
+      var frame = document.getElementById(frameId);
+      if (frame) {
+        frame.classList.remove('wireframe', 'clean', 'polished');
+        frame.classList.add(btn.dataset.variant);
+      }
+    });
+  });
+
+  // Completion banner — one-time load check
+  window.addEventListener('load', function() {
+    var badges = document.querySelectorAll('.sub-tab-badge');
+    var anyVisible = false;
+    badges.forEach(function(b) {
+      if (getComputedStyle(b).display !== 'none') anyVisible = true;
+    });
+    if (!anyVisible && badges.length > 0) {
+      var banner = document.getElementById('completion-banner');
+      if (banner) {
+        banner.style.display = 'block';
+        setTimeout(function() { banner.style.display = 'none'; }, 8000);
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

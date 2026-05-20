@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>GFGK · Anlegg — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 80px; }
+
+  /* Hero */
+  .hero {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 22px 32px 18px;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end;
+  }
+  .hero .eyebrow {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    color: var(--primary); letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: var(--font-display); font-size: 32px; font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1.05; margin-top: 6px;
+  }
+  .hero h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+  .hero h1 .tail { font-family: var(--font-body); font-weight: 500; color: var(--muted); font-size: 22px; }
+  .hero .actions { display: flex; gap: 8px; align-items: center; }
+  .btn-pill {
+    border: 0; border-radius: 999px; padding: 10px 18px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: var(--font-body);
+    display: inline-flex; align-items: center; gap: 7px; line-height: 1.1;
+  }
+  .btn-pill svg { width: 13px; height: 13px; }
+  .btn-pill.lime { background: var(--accent); color: var(--fg); box-shadow: 0 6px 14px rgba(209,248,67,0.30); }
+  .btn-pill.lime:hover { background: #BFE933; }
+  .btn-pill.forest { background: var(--primary); color: var(--accent); }
+  .btn-pill.forest:hover { background: var(--primary-dark); }
+  .btn-pill.outline { background: #fff; color: var(--fg); border: 1px solid var(--border); }
+  .btn-pill.outline:hover { background: var(--bg); }
+  .toggle-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 14px; background: #fff; border: 1px solid var(--border); border-radius: 999px;
+    font-family: var(--font-body); font-size: 12.5px; font-weight: 600; color: var(--fg); cursor: pointer;
+  }
+  .toggle-btn.on { background: var(--fg); color: var(--accent); border-color: var(--fg); }
+  .toggle-btn .sw {
+    width: 22px; height: 12px; border-radius: 999px;
+    background: var(--border); position: relative; transition: background 150ms;
+  }
+  .toggle-btn .sw::after {
+    content: ''; position: absolute; left: 1.5px; top: 1.5px;
+    width: 9px; height: 9px; border-radius: 50%; background: #fff; transition: left 150ms;
+  }
+  .toggle-btn.on .sw { background: var(--accent); }
+  .toggle-btn.on .sw::after { left: 11.5px; background: var(--fg); }
+
+  /* Mode bar */
+  .mode-bar {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 0 32px; display: flex; align-items: stretch;
+    position: sticky; top: var(--topbar-h); z-index: 19;
+  }
+  .mode-tab {
+    background: transparent; border: 0; padding: 12px 22px;
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -1px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .mode-tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+  .mode-tab svg { width: 16px; height: 16px; }
+  body[data-mode="kart"]      .v-kalender { display: none !important; }
+  body[data-mode="kalender"]  .v-kart     { display: none !important; }
+
+  body.dl .gfgk-page::before {
+    content: 'DAGLIG-LEDER-VISNING · READ-ONLY · UTNYTTELSE OG INNTEKTSDATA SYNLIG';
+    display: block;
+    background: linear-gradient(90deg, rgba(184,133,42,0.18), rgba(184,133,42,0.10));
+    border: 1px solid rgba(184,133,42,0.30); border-radius: var(--r-card);
+    padding: 10px 16px;
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    color: var(--warning); letter-spacing: 0.10em;
+  }
+
+  .gfgk-page {
+    padding: 18px 32px 32px; max-width: 1680px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+
+  /* Status strip */
+  .status-strip {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 10px 16px;
+    display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.10em; font-weight: 600; text-transform: uppercase;
+  }
+  .status-strip strong { color: var(--fg); font-weight: 700; }
+  .status-strip .pip { display: inline-flex; align-items: center; gap: 6px; }
+  .status-strip .pip .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .status-strip .pip.busy   .dot { background: var(--accent); box-shadow: 0 0 0 3px rgba(209,248,67,0.30); animation: blink 1.6s infinite; }
+  .status-strip .pip.booked .dot { background: var(--primary); }
+  .status-strip .pip.free   .dot { background: #fff; border: 1px solid var(--muted-soft); }
+  .status-strip .pip.conf   .dot { background: var(--danger); animation: blink 1.4s infinite; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+
+  /* MAP */
+  .map-canvas {
+    background:
+      linear-gradient(rgba(10,31,23,0.18), rgba(10,31,23,0.06)),
+      url('assets/gfgk-aerial.png') center/cover no-repeat,
+      linear-gradient(165deg, #F4F2EA 0%, #ECECDF 100%);
+    border: 1px solid var(--border); border-radius: var(--r-card);
+    overflow: hidden; position: relative;
+    aspect-ratio: 2006 / 1032;
+  }
+  .map-canvas .map-photo-attr {
+    position: absolute; bottom: 8px; left: 12px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    color: #FAFAF7; letter-spacing: 0.14em; text-transform: uppercase;
+    background: rgba(10,31,23,0.60); padding: 4px 8px; border-radius: 4px;
+    pointer-events: none; z-index: 2;
+  }
+  .map-canvas .compass {
+    position: absolute; top: 14px; left: 14px;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(250,250,247,0.92); border: 1.5px solid var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; z-index: 2;
+    box-shadow: 0 4px 12px rgba(10,31,23,0.18);
+  }
+  .map-canvas .compass::before {
+    content: ''; width: 0; height: 0;
+    border-left: 6px solid transparent; border-right: 6px solid transparent;
+    border-bottom: 16px solid var(--primary);
+    position: absolute; top: 8px;
+  }
+  .map-canvas .compass::after {
+    content: 'N'; position: absolute; top: 24px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--primary); letter-spacing: 0.06em;
+  }
+
+  /* Markers — absolute positioned HTML over photo */
+  .map-marker {
+    position: absolute; z-index: 3;
+    width: 40px; height: 40px;
+    transform: translate(-50%, -50%);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: transform 160ms ease;
+  }
+  .map-marker:hover { transform: translate(-50%, -50%) scale(1.10); z-index: 4; }
+  .map-marker .ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 2.5px solid;
+    box-shadow: 0 4px 14px rgba(10,31,23,0.30), 0 0 0 4px rgba(250,250,247,0.85);
+  }
+  .map-marker .bg {
+    position: absolute; inset: 5px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    line-height: 1;
+  }
+  .map-marker .pulse {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 2px solid; opacity: 0;
+  }
+  .map-marker.busy   .ring,  .map-marker.busy   .pulse { border-color: var(--accent); }
+  .map-marker.busy   .bg     { background: var(--accent); color: var(--fg); }
+  .map-marker.busy   .pulse  { animation: pulseRing 1.8s infinite; }
+  .map-marker.booked .ring   { border-color: var(--primary); }
+  .map-marker.booked .bg     { background: var(--primary); color: var(--accent); }
+  .map-marker.free   .ring   { border-color: rgba(255,255,255,0.95); }
+  .map-marker.free   .bg     { background: #FAFAF7; color: var(--fg); }
+  .map-marker.conf   .ring,  .map-marker.conf   .pulse { border-color: var(--danger); }
+  .map-marker.conf   .bg     { background: var(--danger); color: #fff; }
+  .map-marker.conf   .pulse  { animation: pulseRing 1.4s infinite; }
+  @keyframes pulseRing {
+    0%   { transform: scale(1);   opacity: 0.65; }
+    100% { transform: scale(1.9); opacity: 0; }
+  }
+  .map-marker .label-chip {
+    position: absolute; left: 50%; bottom: -30px;
+    transform: translateX(-50%);
+    background: rgba(10,31,23,0.85); color: #FAFAF7;
+    padding: 3px 8px; border-radius: 5px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    white-space: nowrap; pointer-events: none;
+    opacity: 0; transition: opacity 140ms ease;
+  }
+  .map-marker:hover .label-chip { opacity: 1; }
+  .map-marker .label-chip.stuck { opacity: 1; }
+  .map-marker.is-default .ring {
+    box-shadow: 0 4px 14px rgba(10,31,23,0.40), 0 0 0 4px rgba(209,248,67,0.85);
+    border-color: var(--accent);
+  }
+  .label-chip .default-tag {
+    margin-left: 6px;
+    background: var(--accent); color: var(--fg);
+    padding: 1px 5px; border-radius: 3px;
+    font-size: 8.5px; font-weight: 800; letter-spacing: 0.10em;
+  }
+
+  .map-tooltip {
+    position: absolute; pointer-events: none;
+    background: var(--fg); color: #fff;
+    padding: 9px 12px; border-radius: 8px;
+    font-family: var(--font-body); font-size: 12px; line-height: 1.4;
+    box-shadow: 0 8px 24px rgba(10,31,23,0.30);
+    transform: translate(-50%, calc(-100% - 14px));
+    z-index: 5; opacity: 0; transition: opacity 150ms ease; white-space: nowrap;
+  }
+  .map-tooltip.show { opacity: 1; }
+  .map-tooltip::after {
+    content: ''; position: absolute;
+    bottom: -5px; left: 50%; transform: translateX(-50%);
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 5px solid var(--fg);
+  }
+  .map-tooltip .nm { font-family: var(--font-display); font-weight: 600; }
+  .map-tooltip .st {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; margin-top: 2px;
+  }
+  .map-tooltip .st.busy   { color: var(--accent); }
+  .map-tooltip .st.booked { color: rgba(209,248,67,0.7); }
+  .map-tooltip .st.free   { color: rgba(255,255,255,0.65); }
+  .map-tooltip .st.conf   { color: #FFB4A8; }
+
+  .map-footer {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 10px 18px;
+    background: linear-gradient(180deg, transparent 0%, rgba(10,31,23,0.55) 100%);
+    backdrop-filter: blur(2px);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: rgba(255,255,255,0.85); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .map-footer .hint {
+    display: inline-flex; align-items: center; gap: 8px;
+    pointer-events: auto;
+  }
+  .map-footer .hint svg { width: 13px; height: 13px; color: var(--accent); }
+  .map-footer .updated {
+    display: inline-flex; align-items: center; gap: 8px;
+    pointer-events: auto;
+    color: rgba(255,255,255,0.70);
+  }
+  .map-footer .updated svg { width: 12px; height: 12px; }
+  /* hide old photo-attribution since footer now serves that role visually */
+  .map-canvas .map-photo-attr { display: none; }
+
+  .legend {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 12px 16px;
+    display: flex; flex-wrap: wrap; gap: 16px; align-items: center;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .sw {
+    width: 14px; height: 14px; border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--border);
+  }
+  .legend .item.busy   .sw { background: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .legend .item.booked .sw { background: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+  .legend .item.free   .sw { background: #fff; box-shadow: 0 0 0 1px var(--muted-soft); }
+  .legend .item.conf   .sw { background: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
+  .legend .sep { width: 1px; height: 16px; background: var(--border-soft); }
+
+  /* CALENDAR */
+  .cal-filter {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .seg-zoom { display: flex; background: var(--bg); border-radius: 999px; padding: 3px; }
+  .seg-zoom button {
+    background: transparent; border: 0; padding: 6px 14px; border-radius: 999px;
+    font-family: var(--font-display); font-size: 12px; font-weight: 600;
+    color: var(--muted); cursor: pointer; line-height: 1;
+  }
+  .seg-zoom button.active { background: var(--fg); color: var(--accent); }
+  .cal-filter .nav-arrows { display: flex; gap: 2px; }
+  .cal-filter .nav-arrows button {
+    width: 30px; height: 30px; border-radius: 6px;
+    background: #fff; border: 1px solid var(--border); color: var(--muted); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .cal-filter .nav-arrows svg { width: 12px; height: 12px; }
+  .cal-filter .when {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .cal-filter .when strong { color: var(--fg); font-weight: 700; }
+  .cal-filter .right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .cal-filter select.sel {
+    appearance: none;
+    background: var(--bg) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235E5C57' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 10px center;
+    padding: 7px 28px 7px 10px;
+    border: 1px solid var(--border); border-radius: 8px;
+    font: 12px var(--font-body); font-weight: 500;
+    color: var(--fg); outline: none; cursor: pointer;
+  }
+
+  .cal-wrap {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); overflow: hidden;
+  }
+  .cal-head {
+    display: grid; grid-template-columns: 220px 1fr;
+    border-bottom: 1px solid var(--border); background: var(--bg);
+  }
+  .cal-head .col-fac {
+    padding: 10px 16px; border-right: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.10em; color: var(--muted); text-transform: uppercase;
+  }
+  .cal-head .col-time {
+    display: grid; grid-template-columns: repeat(16, 1fr);
+    /* 06–22, 16 hours */
+  }
+  .cal-head .col-time span {
+    padding: 10px 0; text-align: center;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    color: var(--muted-soft); letter-spacing: 0.08em;
+    border-right: 1px solid var(--border-soft);
+  }
+  .cal-head .col-time span:last-child { border-right: 0; }
+
+  .cal-row {
+    display: grid; grid-template-columns: 220px 1fr;
+    border-bottom: 1px solid var(--border-soft); min-height: 78px;
+  }
+  .cal-row:last-child { border-bottom: 0; }
+  .fac {
+    padding: 12px 16px; border-right: 1px solid var(--border);
+    background: var(--card);
+    display: flex; flex-direction: column; gap: 5px; justify-content: center;
+  }
+  .fac-top { display: flex; align-items: center; gap: 8px; }
+  .fac-ic {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(0,88,64,0.08); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .fac-ic svg { width: 14px; height: 14px; }
+  .fac-ic.green  { background: rgba(44,125,82,0.16); color: var(--slag); }
+  .fac-ic.range  { background: rgba(75,61,122,0.10); color: #4B3D7A; }
+  .fac-ic.short  { background: rgba(184,133,42,0.15); color: var(--warning); }
+  .fac-ic.course { background: rgba(209,248,67,0.40); color: #3B4310; }
+  .fac-nm { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--fg); line-height: 1.2; }
+  .fac-nm .num {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted); margin-right: 4px; letter-spacing: 0.04em;
+  }
+  .fac-meta {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .fac-meta strong { color: var(--fg); font-weight: 700; }
+  .stat-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .stat-dot.busy { background: var(--accent); }
+  .stat-dot.booked { background: var(--primary); }
+  .stat-dot.free { background: var(--muted-soft); }
+
+  .time-area {
+    position: relative; display: grid; grid-template-columns: repeat(32, 1fr);
+    background-image:
+      linear-gradient(to right, transparent calc((100% / 16) - 1px), var(--border-soft) calc((100% / 16) - 1px), var(--border-soft) calc((100% / 16))),
+      repeating-linear-gradient(to right, transparent 0, transparent calc((100% / 32) - 1px), rgba(94,92,87,0.04) calc((100% / 32) - 1px), rgba(94,92,87,0.04) calc((100% / 32)));
+    background-size: calc(100% / 16) 100%, calc(100% / 32) 100%;
+  }
+
+  .booking {
+    margin: 6px 2px; border-radius: 7px;
+    padding: 6px 8px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 3px;
+    overflow: hidden; font-family: var(--font-body);
+    transition: transform 100ms ease, box-shadow 120ms ease;
+    border-left: 3px solid; z-index: 2; position: relative;
+  }
+  .booking:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(10,31,23,0.10); z-index: 3; }
+  .booking.privat { background: rgba(0,88,64,0.10); border-left-color: var(--primary); color: var(--fg); }
+  .booking.gruppe { background: rgba(209,248,67,0.32); border-left-color: #4A5418; color: #2A3014; }
+  .booking.dropin { background: rgba(0,88,64,0.20); border-left-color: var(--primary-dark); color: var(--fg); }
+  .booking.foreldre {
+    background: var(--card); color: var(--fg);
+    background-image: repeating-linear-gradient(45deg, transparent 0, transparent 6px, rgba(94,92,87,0.07) 6px, rgba(94,92,87,0.07) 12px);
+    border: 1px dashed var(--muted-soft); border-left: 3px solid var(--muted-soft);
+  }
+  .booking.conflict {
+    background: rgba(163,45,45,0.10); color: var(--fg);
+    border: 1px solid rgba(163,45,45,0.30); border-left: 3px solid var(--danger);
+  }
+  .booking .b-time {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    letter-spacing: 0.04em; opacity: 0.78; font-variant-numeric: tabular-nums;
+  }
+  .booking .b-title {
+    font-family: var(--font-display); font-size: 12px; font-weight: 600;
+    line-height: 1.2; overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .booking .b-meta { display: flex; align-items: center; gap: 5px; margin-top: auto; }
+  .booking .b-meta .av {
+    width: 16px; height: 16px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 8px; font-weight: 700;
+    background: var(--primary); color: var(--accent); flex-shrink: 0;
+  }
+  .booking .b-meta .pill {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    background: rgba(255,255,255,0.50); color: inherit;
+    padding: 1px 5px; border-radius: 3px;
+  }
+  body.dl .booking .b-meta .av { opacity: 0; }
+
+  /* DRAWER */
+  .drawer-bd {
+    position: fixed; inset: 0; z-index: 60;
+    background: rgba(10,31,23,0.46); backdrop-filter: blur(4px);
+    display: none; opacity: 0; transition: opacity 200ms ease;
+  }
+  .drawer-bd.open { display: block; opacity: 1; }
+  .drawer {
+    position: fixed; top: 0; bottom: 0; right: 0; z-index: 61;
+    width: 440px; max-width: 100vw;
+    background: var(--card);
+    box-shadow: -16px 0 40px rgba(10,31,23,0.20);
+    display: flex; flex-direction: column; overflow: hidden;
+    transform: translateX(100%);
+    transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head {
+    padding: 18px 20px 16px;
+    background: linear-gradient(135deg, #005840 0%, #003A2A 100%);
+    color: #fff; position: relative; overflow: hidden;
+  }
+  .drawer-head::after {
+    content: ''; position: absolute; top: -40%; right: -10%;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.18), transparent 70%);
+  }
+  .drawer-head .top { display: flex; align-items: flex-start; gap: 12px; position: relative; z-index: 1; }
+  .drawer-head .num {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--accent); color: var(--fg);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  }
+  .drawer-head .stack { flex: 1; }
+  .drawer-head .label {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    color: rgba(209,248,67,0.65); letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .drawer-head h3 {
+    font-family: var(--font-display); font-size: 20px; font-weight: 600;
+    letter-spacing: -0.01em; line-height: 1.2; margin-top: 4px;
+  }
+  .drawer-head h3 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--accent); }
+  .drawer-head .close-x {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(255,255,255,0.10); border: 0; cursor: pointer; color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .drawer-head .close-x svg { width: 13px; height: 13px; }
+  .drawer-head .status-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-top: 12px; position: relative; z-index: 1;
+  }
+  .drawer-head .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.16);
+    padding: 4px 9px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: #fff; letter-spacing: 0.04em;
+  }
+  .drawer-head .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .drawer-body {
+    flex: 1; overflow-y: auto;
+    padding: 18px 20px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .photo-ph {
+    height: 140px; border-radius: 12px;
+    background:
+      linear-gradient(165deg, rgba(0,88,64,0.10), rgba(209,248,67,0.15)),
+      repeating-linear-gradient(135deg, transparent 0, transparent 8px, rgba(94,92,87,0.04) 8px, rgba(94,92,87,0.04) 10px);
+    border: 1px solid var(--border); position: relative;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted-soft);
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .photo-ph::after {
+    content: 'BILDE-PLACEHOLDER'; position: absolute;
+    bottom: 10px; right: 10px;
+    background: rgba(255,255,255,0.8); padding: 3px 8px; border-radius: 4px; font-weight: 700;
+  }
+  .drawer-body .description {
+    font-family: var(--font-body); font-size: 13.5px;
+    color: var(--fg); line-height: 1.55;
+  }
+  .drawer-body .description em { font-family: var(--font-serif); font-style: italic; color: var(--primary); }
+  .drawer h4 {
+    font-family: var(--font-display); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.10em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .today-row {
+    display: grid; grid-template-columns: 80px 1fr auto;
+    gap: 10px; align-items: center;
+    padding: 9px 12px; background: var(--bg);
+    border: 1px solid var(--border-soft); border-radius: 9px;
+    margin-bottom: 6px;
+  }
+  .today-row .t {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--fg); letter-spacing: 0.04em; font-variant-numeric: tabular-nums;
+  }
+  .today-row .who { font-family: var(--font-body); font-size: 12.5px; font-weight: 500; color: var(--fg); line-height: 1.3; }
+  .today-row .who .sub {
+    font-family: var(--font-mono); font-size: 9.5px; color: var(--muted);
+    letter-spacing: 0.04em; font-weight: 500; margin-top: 1px;
+  }
+  .today-row .pill {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px;
+  }
+  .today-row .pill.tek  { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .today-row .pill.slag { background: rgba(44,125,82,0.16); color: var(--slag); }
+  .today-row .pill.fys  { background: rgba(26,77,46,0.12); color: var(--fys); }
+  .today-row .pill.spill{ background: rgba(136,180,90,0.20); color: #4D7A2E; }
+  .today-row .pill.turn { background: rgba(209,248,67,0.30); color: #4A5418; }
+  .drawer-foot {
+    padding: 14px 20px; border-top: 1px solid var(--border-soft);
+    background: #FBFAF5; display: flex; gap: 8px;
+  }
+  .drawer-foot button {
+    flex: 1; padding: 10px 14px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 12.5px; font-weight: 600;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .drawer-foot svg { width: 13px; height: 13px; }
+  .drawer-foot .btn-book { background: var(--accent); color: var(--fg); border: 0; }
+  .drawer-foot .btn-cal { background: #fff; color: var(--fg); border: 1px solid var(--border); }
+
+  /* MODAL */
+  .modal-bd {
+    position: fixed; inset: 0; z-index: 70;
+    background: rgba(10,31,23,0.46); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-bd.open { display: flex; }
+  .modal {
+    background: var(--card); border-radius: 20px;
+    width: 640px; max-width: 100%; max-height: calc(100vh - 48px);
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 32px 80px rgba(10,31,23,0.28);
+    animation: in 220ms ease-out;
+  }
+  @keyframes in { from { opacity: 0; transform: translateY(8px) scale(0.985); } to { opacity: 1; transform: none; } }
+  .m-head {
+    padding: 22px 24px 16px; border-bottom: 1px solid var(--border-soft);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+  }
+  .m-head .cap {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .m-head h2 { font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin-top: 4px; }
+  .x-btn {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 0; background: transparent; cursor: pointer; color: var(--muted);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .x-btn svg { width: 16px; height: 16px; }
+  .m-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field-label {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase; color: var(--muted);
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .field-label .req { color: var(--danger); }
+  .field-label .help { font-weight: 500; letter-spacing: 0.04em; color: var(--muted-soft); text-transform: none; }
+  .default-pill {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    background: rgba(209,248,67,0.30); color: #3B4310;
+    padding: 2px 7px; border-radius: 999px;
+  }
+  .text-input, select.text-input, textarea.textarea-input {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 14px; outline: none;
+    font: 13.5px/1.4 var(--font-body); color: var(--fg); width: 100%;
+  }
+  textarea.textarea-input { min-height: 64px; resize: vertical; }
+  select.text-input {
+    appearance: none;
+    background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235E5C57' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 12px center;
+    padding-right: 36px;
+  }
+  .text-input:focus, select.text-input:focus, textarea.textarea-input:focus {
+    border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,88,64,0.10);
+  }
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .trio { display: grid; grid-template-columns: 1.4fr 0.8fr 0.8fr; gap: 10px; }
+
+  .type-radio { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .type-radio button {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 8px;
+    font-family: var(--font-body); font-size: 12px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 4px; line-height: 1.2;
+  }
+  .type-radio button.active {
+    background: rgba(0,88,64,0.06); color: var(--fg);
+    border-color: var(--primary); box-shadow: 0 0 0 2px rgba(0,88,64,0.10);
+  }
+  .type-radio button svg { width: 14px; height: 14px; color: var(--primary); }
+
+  .player-pickrow {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 10px;
+  }
+  .pl-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent); color: var(--fg);
+    padding: 3px 4px 3px 8px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 12px; font-weight: 600; line-height: 1;
+  }
+  .pl-chip .x {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: rgba(10,31,23,0.10); color: var(--fg); border: 0; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .pl-chip .x svg { width: 9px; height: 9px; }
+  .player-pickrow input {
+    flex: 1; min-width: 80px;
+    background: transparent; border: 0; outline: none;
+    font: 13px var(--font-body); color: var(--fg);
+  }
+
+  .disc-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .disc-chip {
+    padding: 6px 12px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer; line-height: 1;
+  }
+  .disc-chip.active.fys   { background: rgba(26,77,46,0.15);  color: var(--fys);    border-color: var(--fys); }
+  .disc-chip.active.tek   { background: rgba(0,88,64,0.13);   color: var(--primary); border-color: var(--primary); }
+  .disc-chip.active.slag  { background: rgba(44,125,82,0.16); color: var(--slag);   border-color: var(--slag); }
+  .disc-chip.active.spill { background: rgba(136,180,90,0.20);color: #4D7A2E;        border-color: #88B45A; }
+  .disc-chip.active.turn  { background: rgba(209,248,67,0.32);color: #4A5418;        border-color: var(--accent); }
+
+  .conflict {
+    background: rgba(163,45,45,0.06);
+    border: 1px solid rgba(163,45,45,0.30);
+    border-left: 3px solid var(--danger);
+    border-radius: 10px; padding: 12px 14px;
+    display: grid; grid-template-columns: 20px 1fr;
+    gap: 12px; align-items: flex-start;
+  }
+  .conflict .ic { color: var(--danger); margin-top: 1px; }
+  .conflict .ic svg { width: 16px; height: 16px; }
+  .conflict .body { font-family: var(--font-body); font-size: 12.5px; color: var(--fg); line-height: 1.5; }
+  .conflict .body strong { font-family: var(--font-display); font-weight: 600; }
+  .conflict .suggest { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .conflict .suggest button {
+    background: #fff; border: 1px solid var(--border); color: var(--fg);
+    padding: 5px 10px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+  }
+  .plan-link {
+    background: rgba(0,88,64,0.04);
+    border: 1px solid rgba(0,88,64,0.15);
+    border-radius: 10px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--primary); letter-spacing: 0.04em; font-weight: 600;
+  }
+  .plan-link svg { width: 13px; height: 13px; }
+  .plan-link a { color: var(--primary); text-decoration: underline; }
+  .cb-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0; cursor: pointer; user-select: none;
+  }
+  .cb-row .box {
+    width: 18px; height: 18px; border-radius: 5px;
+    border: 1.5px solid var(--border); background: #fff;
+    display: inline-flex; align-items: center; justify-content: center; color: transparent;
+  }
+  .cb-row.on .box { background: var(--primary); border-color: var(--primary); color: var(--accent); }
+  .cb-row .box svg { width: 10px; height: 10px; }
+  .cb-row .lbl { font-family: var(--font-body); font-size: 13px; color: var(--fg); }
+
+  .m-foot {
+    padding: 14px 24px; border-top: 1px solid var(--border-soft);
+    background: #FBFAF5;
+    display: flex; gap: 8px; align-items: center;
+  }
+  .m-foot .total {
+    margin-right: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .m-foot .total strong { color: var(--fg); font-weight: 700; }
+  .btn-ghost {
+    background: transparent; color: var(--muted);
+    padding: 10px 16px; border-radius: 999px; border: 0; cursor: pointer;
+    font-size: 13px; font-weight: 600;
+  }
+  .btn-confirm {
+    background: var(--accent); color: var(--fg);
+    border: 0; padding: 11px 20px; border-radius: 999px;
+    font-size: 13.5px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .btn-confirm svg { width: 13px; height: 13px; }
+  .btn-confirm.alt { background: var(--primary); color: var(--accent); }
+
+  /* Sticky footer */
+  .sticky-foot {
+    position: fixed; bottom: 0; left: var(--sidebar-w); right: 0;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex; align-items: center; gap: 18px; z-index: 25;
+  }
+  .sticky-foot .cap {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sticky-foot .cap strong { color: var(--fg); font-weight: 700; }
+  .sticky-foot .cap-bar {
+    width: 90px; height: 6px;
+    background: var(--bg); border-radius: 999px; overflow: hidden;
+    border: 1px solid var(--border-soft);
+  }
+  .sticky-foot .cap-bar > div { height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--primary)); }
+  .sticky-foot .kpi-row { display: flex; gap: 10px; margin-left: 8px; }
+  .sticky-foot .kpi {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 999px; padding: 6px 14px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.06em;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .sticky-foot .kpi strong { color: var(--fg); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .sticky-foot .kpi .pip { width: 6px; height: 6px; border-radius: 50%; }
+  .sticky-foot .kpi.ok .pip { background: var(--success); }
+  .sticky-foot .kpi.warn .pip { background: var(--warning); }
+  .sticky-foot .kpi.err .pip { background: var(--danger); }
+  .sticky-foot .right { margin-left: auto; display: flex; gap: 8px; }
+
+  @media (max-width: 900px) {
+    .duo, .trio { grid-template-columns: 1fr; }
+    .type-radio { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body data-mode="kart" data-screen-label="CoachHQ Anlegg GFGK">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="ic-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+    <symbol id="ic-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="ic-filter" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
+    <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="ic-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 4 13V8h7a7 7 0 0 1 7 7v5z"/><line x1="11" y1="20" x2="2" y2="11"/></symbol>
+    <symbol id="ic-build" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></symbol>
+    <symbol id="ic-warn" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+    <symbol id="ic-chev-l" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+    <symbol id="ic-chev-r" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="ic-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+    <symbol id="ic-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+    <symbol id="ic-map" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="assets/logo-white-on-green.svg" alt="AK Golf" class="brand-logo" />
+      <div class="name">AK GOLF</div>
+      <div class="meta">COACHHQ · PRO</div>
+    </div>
+    <div class="sidebar-profile coach">
+      <div class="avatar">AK</div>
+      <div>
+        <div class="nm">Anders K.</div>
+        <div class="role">38 SPILLERE</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Daglig</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Kalender</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>Meldinger<span class="badge-count">7</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operasjon</div>
+      <button class="nav-item" onclick="location.href='CoachHQ Stall-oversikt.html'"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Stall</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Planer</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Bookinger</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-pin"/></svg>Anlegg</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-activity"/></svg>Kapasitet</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Statistikk</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Mål</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+        <input placeholder="Søk spiller, økt eller anlegg…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="breadcrumb">
+        Operasjon &nbsp;/&nbsp; Anlegg &nbsp;/&nbsp; <span class="current">GFGK</span>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <span class="eyebrow">ANLEGG · GAMLE FREDRIKSTAD GOLFKLUBB · 7 FASILITETER</span>
+        <h1>GFGK <em>anlegg</em> <span class="tail">— kalender, booking og aktivitet</span></h1>
+      </div>
+      <div class="actions">
+        <button class="btn-pill lime" id="new-booking-btn">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+          Ny booking
+        </button>
+        <button class="btn-pill forest">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-download"/></svg>
+          Eksporter kalender
+        </button>
+        <button class="btn-pill outline">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-filter"/></svg>
+          Filtre
+        </button>
+        <button class="toggle-btn" id="dl-toggle" style="width: 17px; height: 1px">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-eye"/></svg>
+          Daglig-leder
+          <span class="sw"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Mode bar -->
+    <nav class="mode-bar">
+      <button class="mode-tab active" data-mode="kart">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-map"/></svg>
+        Kart
+      </button>
+      <button class="mode-tab" data-mode="kalender">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>
+        Kalender
+      </button>
+    </nav>
+
+    <div class="gfgk-page">
+
+      <!-- ============ KART VIEW ============ -->
+      <section class="v-kart" style="display:flex;flex-direction:column;gap:16px;">
+
+        <div class="status-strip">
+          <span><strong>5</strong> FASILITETER PÅ KARTET <span style="font-weight:500;color:var(--muted-soft);">· 9-HULL OG HULL 4/5 KUN I KALENDER</span></span>
+          <span class="pip busy"><span class="dot"></span><strong>4</strong> OPPTATT NÅ</span>
+          <span class="pip booked"><span class="dot"></span><strong>12</strong> RESERVERT I DAG</span>
+          <span class="pip free"><span class="dot"></span><strong>3</strong> LEDIG NÅ</span>
+          <span class="pip conf"><span class="dot"></span><strong>3</strong> KONFLIKTER</span>
+        </div>
+
+        <div class="map-canvas">
+          <span class="compass"></span>
+          <span class="map-photo-attr">GFGK · DRONE · OKT 2024</span>
+
+          <!-- Markers positioned on photo (% coords) -->
+          <div class="map-marker booked is-default" data-fac="1" data-name="Performance Studio"
+               data-status="Reservert kl 14:00 · Emma S. (privat) · ANDERS DEFAULT" data-cls="booked"
+               style="left:78%; top:72%;">
+            <span class="pulse"></span><span class="ring"></span>
+            <span class="bg">1</span>
+            <span class="label-chip stuck">Performance Studio<span class="default-tag">DEFAULT</span></span>
+          </div>
+
+          <div class="map-marker busy" data-fac="2" data-name="Driving Range · 1. etg"
+               data-status="Opptatt nå · Henrik V. & Ida M. (par-time)" data-cls="busy"
+               style="left:55%; top:72%;">
+            <span class="pulse"></span><span class="ring"></span>
+            <span class="bg">2</span>
+            <span class="label-chip">Range · 1. etg</span>
+          </div>
+
+          <div class="map-marker free" data-fac="3" data-name="Driving Range · 2. etg"
+               data-status="Ledig — neste booking 14:00" data-cls="free"
+               style="left:40%; top:74%;">
+            <span class="pulse"></span><span class="ring"></span>
+            <span class="bg">3</span>
+            <span class="label-chip">Range · 2. etg</span>
+          </div>
+
+          <div class="map-marker busy" data-fac="4" data-name="Putting Green"
+               data-status="Opptatt nå · Erik – putting-klinikk (8 spillere)" data-cls="busy"
+               style="left:67%; top:38%;">
+            <span class="pulse"></span><span class="ring"></span>
+            <span class="bg">4</span>
+            <span class="label-chip">Putting Green</span>
+          </div>
+
+          <div class="map-marker conf" data-fac="5" data-name="Nærspillsområde"
+               data-status="Konflikt 15:00 · Sigrid + Junior-gruppe" data-cls="conf"
+               style="left:30%; top:50%;">
+            <span class="pulse"></span><span class="ring"></span>
+            <span class="bg">5</span>
+            <span class="label-chip">Nærspillsområde</span>
+          </div>
+
+          <div class="map-marker booked" data-fac="6" data-name="9-hullsbanen"
+               data-status="Reservert 17:00–19:00 · Junior-sim (8 spillere)" data-cls="booked"
+               style="left:62%; top:32%; display:none;">
+            <span class="pulse"></span><span class="ring"></span>
+            <span class="bg">6</span>
+            <span class="label-chip">9-hullsbanen</span>
+          </div>
+
+          <div class="map-marker booked" data-fac="7" data-name="Hull 4/5 (scenario)"
+               data-status="Reservert 19:00 · A1-spillere scenario" data-cls="booked"
+               style="left:88%; top:45%; display:none;">
+            <span class="pulse"></span><span class="ring"></span>
+            <span class="bg">7</span>
+            <span class="label-chip">Hull 4 / 5</span>
+          </div>
+
+          <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background grass texture -->
+            <rect width="1600" height="880" fill="#EFEDE0"/>
+            <!-- Subtle terrain -->
+            <ellipse cx="800" cy="500" rx="900" ry="380" fill="#C8D2B0" opacity="0.45"/>
+            <ellipse cx="1200" cy="700" rx="500" ry="200" fill="#C8D2B0" opacity="0.35"/>
+
+            <!-- Forest / tree edges -->
+            <g fill="#3A5A40" opacity="0.65">
+              <ellipse cx="60" cy="80" rx="80" ry="60"/>
+              <ellipse cx="140" cy="40" rx="60" ry="50"/>
+              <ellipse cx="220" cy="90" rx="70" ry="55"/>
+              <ellipse cx="1480" cy="120" rx="90" ry="65"/>
+              <ellipse cx="1560" cy="220" rx="60" ry="80"/>
+              <ellipse cx="80" cy="780" rx="90" ry="70"/>
+              <ellipse cx="220" cy="830" rx="100" ry="60"/>
+              <ellipse cx="1450" cy="800" rx="120" ry="70"/>
+              <ellipse cx="1550" cy="700" rx="60" ry="100"/>
+            </g>
+
+            <!-- Lake -->
+            <ellipse cx="1100" cy="560" rx="120" ry="60" fill="#2A6FDB" opacity="0.55"/>
+            <ellipse cx="1100" cy="560" rx="80" ry="40" fill="#2A6FDB" opacity="0.40"/>
+
+            <!-- 9-hole course fairways -->
+            <g stroke="none" fill="#5B7E4C" opacity="0.55">
+              <!-- Hull 1 -->
+              <path d="M 250 200 Q 380 180, 500 250 L 540 290 Q 420 320, 280 280 Z"/>
+              <!-- Hull 2 -->
+              <path d="M 580 320 Q 720 280, 880 350 L 920 400 Q 760 420, 600 380 Z"/>
+              <!-- Hull 3 -->
+              <path d="M 940 420 Q 1080 380, 1220 460 L 1240 520 Q 1100 540, 960 480 Z"/>
+              <!-- Hull 4 -->
+              <path d="M 1240 540 Q 1320 600, 1300 700 L 1250 720 Q 1230 640, 1220 580 Z"/>
+              <!-- Hull 5 -->
+              <path d="M 1180 740 Q 1080 760, 970 720 L 950 670 Q 1070 660, 1180 700 Z"/>
+              <!-- Hull 6 -->
+              <path d="M 930 690 Q 800 720, 670 690 L 650 640 Q 790 620, 920 650 Z"/>
+              <!-- Hull 7 -->
+              <path d="M 630 660 Q 500 700, 380 650 L 360 600 Q 490 580, 620 610 Z"/>
+              <!-- Hull 8 -->
+              <path d="M 340 580 Q 280 540, 280 460 L 320 440 Q 360 500, 360 560 Z"/>
+              <!-- Hull 9 (back to clubhouse) -->
+              <path d="M 290 420 Q 350 380, 420 360 L 440 380 Q 380 410, 310 440 Z"/>
+            </g>
+
+            <!-- Greens (lime fill, forest border) -->
+            <g stroke="#005840" stroke-width="2">
+              <ellipse cx="510" cy="270" rx="22" ry="16" fill="#D1F843"/>
+              <ellipse cx="900" cy="370" rx="22" ry="16" fill="#D1F843"/>
+              <ellipse cx="1230" cy="490" rx="22" ry="16" fill="#D1F843"/>
+              <ellipse cx="1290" cy="700" rx="22" ry="16" fill="#D1F843"/>
+              <ellipse cx="980" cy="710" rx="22" ry="16" fill="#D1F843"/>
+              <ellipse cx="670" cy="690" rx="22" ry="16" fill="#D1F843"/>
+              <ellipse cx="390" cy="640" rx="22" ry="16" fill="#D1F843"/>
+              <ellipse cx="290" cy="440" rx="22" ry="16" fill="#D1F843"/>
+              <ellipse cx="420" cy="370" rx="22" ry="16" fill="#D1F843"/>
+            </g>
+
+            <!-- Tee markers (lime small circles) -->
+            <g fill="#D1F843" stroke="#005840" stroke-width="1.5">
+              <circle cx="270" cy="220" r="6"/>
+              <circle cx="590" cy="330" r="6"/>
+              <circle cx="940" cy="420" r="6"/>
+              <circle cx="1240" cy="550" r="6"/>
+              <circle cx="1175" cy="730" r="6"/>
+              <circle cx="930" cy="685" r="6"/>
+              <circle cx="630" cy="660" r="6"/>
+              <circle cx="345" cy="580" r="6"/>
+              <circle cx="305" cy="420" r="6"/>
+            </g>
+
+            <!-- Sand bunkers -->
+            <g fill="#E6D9B8">
+              <ellipse cx="480" cy="290" rx="14" ry="9"/>
+              <ellipse cx="540" cy="285" rx="10" ry="7"/>
+              <ellipse cx="870" cy="390" rx="14" ry="9"/>
+              <ellipse cx="1210" cy="510" rx="12" ry="8"/>
+              <ellipse cx="660" cy="710" rx="12" ry="8"/>
+              <ellipse cx="280" cy="460" rx="11" ry="7"/>
+            </g>
+
+            <!-- Clubhouse + Performance Studio building -->
+            <g>
+              <rect x="100" y="320" width="160" height="100" rx="6" fill="#FAFAF7" stroke="#005840" stroke-width="2.5"/>
+              <rect x="100" y="320" width="160" height="22" fill="#005840"/>
+              <text x="180" y="335" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="11" font-weight="700" fill="#D1F843" letter-spacing="1">KLUBBHUS · GFGK</text>
+              <text x="180" y="378" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="13" font-weight="600" fill="#0A1F17">Performance Studio</text>
+              <text x="180" y="397" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="600" fill="#5E5C57" letter-spacing="1">TRACKMAN + LÆRINGS-UTSTYR</text>
+            </g>
+
+            <!-- Driving range area (matte-form) -->
+            <g>
+              <rect x="780" y="100" width="280" height="80" rx="8" fill="#005840" opacity="0.85"/>
+              <rect x="780" y="100" width="280" height="80" rx="8" fill="none" stroke="#005840" stroke-width="2"/>
+              <!-- range tee mats -->
+              <g fill="#D1F843">
+                <rect x="790" y="112" width="20" height="14" rx="3"/>
+                <rect x="820" y="112" width="20" height="14" rx="3"/>
+                <rect x="850" y="112" width="20" height="14" rx="3"/>
+                <rect x="880" y="112" width="20" height="14" rx="3"/>
+                <rect x="910" y="112" width="20" height="14" rx="3"/>
+                <rect x="940" y="112" width="20" height="14" rx="3"/>
+              </g>
+              <g fill="#BFE933">
+                <rect x="800" y="150" width="20" height="14" rx="3"/>
+                <rect x="830" y="150" width="20" height="14" rx="3"/>
+                <rect x="860" y="150" width="20" height="14" rx="3"/>
+                <rect x="890" y="150" width="20" height="14" rx="3"/>
+              </g>
+              <text x="920" y="195" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#003A2A" letter-spacing="1">DRIVING RANGE · 1. & 2. ETG</text>
+            </g>
+
+            <!-- Putting green dedicated area -->
+            <g>
+              <ellipse cx="500" cy="460" rx="58" ry="38" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+              <!-- holes -->
+              <circle cx="475" cy="450" r="3" fill="#0A1F17"/>
+              <circle cx="510" cy="445" r="3" fill="#0A1F17"/>
+              <circle cx="530" cy="470" r="3" fill="#0A1F17"/>
+              <circle cx="490" cy="475" r="3" fill="#0A1F17"/>
+              <circle cx="515" cy="480" r="3" fill="#0A1F17"/>
+              <text x="500" y="510" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#3B4310" letter-spacing="1">PUTTING GREEN</text>
+            </g>
+
+            <!-- Nærspillsområde -->
+            <g>
+              <path d="M 640 470 Q 700 450, 750 470 L 760 530 Q 720 560, 660 540 L 630 510 Z" fill="#5B7E4C" opacity="0.7" stroke="#005840" stroke-width="2"/>
+              <ellipse cx="690" cy="495" rx="18" ry="12" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+              <ellipse cx="735" cy="520" rx="10" ry="7" fill="#E6D9B8"/>
+              <ellipse cx="660" cy="525" rx="10" ry="7" fill="#E6D9B8"/>
+              <text x="695" y="568" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#0A1F17" letter-spacing="1">NÆRSPILLSOMRÅDE</text>
+            </g>
+
+            <!-- Hull 4/5 highlighted area badge -->
+            <g>
+              <rect x="1230" y="630" width="80" height="20" rx="10" fill="#005840"/>
+              <text x="1270" y="644" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#D1F843" letter-spacing="1">HULL 4 / 5</text>
+            </g>
+
+            <!-- North compass -->
+            <g transform="translate(80, 720)">
+              <circle cx="0" cy="0" r="22" fill="#FAFAF7" stroke="#005840" stroke-width="1.5"/>
+              <polygon points="0,-12 5,8 0,4 -5,8" fill="#005840"/>
+              <text x="0" y="-26" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#5E5C57">N</text>
+            </g>
+
+            <!-- ====== MARKERS (7 facilities) ====== -->
+            <!-- 1. Performance Studio — booked (Anders' default) -->
+            <g class="map-marker booked" data-fac="1"
+               data-name="Performance Studio"
+               data-status="Reservert kl 14:00 · Emma S. (privat)"
+               data-cls="booked"
+               transform="translate(180, 320)">
+              <circle class="ring" cx="0" cy="0" r="18"/>
+              <circle class="bg"   cx="0" cy="0" r="16"/>
+              <text x="0" y="5" text-anchor="middle">1</text>
+            </g>
+
+            <!-- 2. Driving Range 1. etg — busy now -->
+            <g class="map-marker busy" data-fac="2"
+               data-name="Driving Range · 1. etg"
+               data-status="Opptatt nå · Henrik V. & Ida M. (par-time)"
+               data-cls="busy"
+               transform="translate(840, 140)">
+              <circle class="ring" cx="0" cy="0" r="18"/>
+              <circle class="bg"   cx="0" cy="0" r="16"/>
+              <text x="0" y="5" text-anchor="middle">2</text>
+            </g>
+
+            <!-- 3. Driving Range 2. etg — free -->
+            <g class="map-marker free" data-fac="3"
+               data-name="Driving Range · 2. etg"
+               data-status="Ledig — neste booking 14:00"
+               data-cls="free"
+               transform="translate(960, 140)">
+              <circle class="ring" cx="0" cy="0" r="18"/>
+              <circle class="bg"   cx="0" cy="0" r="16"/>
+              <text x="0" y="5" text-anchor="middle">3</text>
+            </g>
+
+            <!-- 4. Putting green — busy now (Erik's klinikk) -->
+            <g class="map-marker busy" data-fac="4"
+               data-name="Putting Green"
+               data-status="Opptatt nå · Erik – putting-klinikk (8 spillere)"
+               data-cls="busy"
+               transform="translate(500, 460)">
+              <circle class="ring" cx="0" cy="0" r="18"/>
+              <circle class="bg"   cx="0" cy="0" r="16"/>
+              <text x="0" y="5" text-anchor="middle">4</text>
+            </g>
+
+            <!-- 5. Nærspillsområde — conflict -->
+            <g class="map-marker conf" data-fac="5"
+               data-name="Nærspillsområde"
+               data-status="Konflikt 15:00 · Sigrid + Junior-gruppe"
+               data-cls="conf"
+               transform="translate(695, 495)">
+              <circle class="ring" cx="0" cy="0" r="18"/>
+              <circle class="bg"   cx="0" cy="0" r="16"/>
+              <text x="0" y="5" text-anchor="middle">5</text>
+            </g>
+
+            <!-- 6. 9-hullsbanen — booked (junior turnerings-sim 17:00) -->
+            <g class="map-marker booked" data-fac="6"
+               data-name="9-hullsbanen"
+               data-status="Reservert 17:00–19:00 · Junior-sim (8 spillere)"
+               data-cls="booked"
+               transform="translate(820, 490)">
+              <circle class="ring" cx="0" cy="0" r="18"/>
+              <circle class="bg"   cx="0" cy="0" r="16"/>
+              <text x="0" y="5" text-anchor="middle">6</text>
+            </g>
+
+            <!-- 7. Hull 4/5 — booked 19:00 -->
+            <g class="map-marker booked" data-fac="7"
+               data-name="Hull 4/5 (scenario)"
+               data-status="Reservert 19:00 · A1-spillere scenario"
+               data-cls="booked"
+               transform="translate(1270, 660)">
+              <circle class="ring" cx="0" cy="0" r="18"/>
+              <circle class="bg"   cx="0" cy="0" r="16"/>
+              <text x="0" y="5" text-anchor="middle">7</text>
+            </g>
+          </svg>
+
+          <div class="map-tooltip" id="map-tooltip">
+            <div class="nm">—</div>
+            <div class="st">—</div>
+          </div>
+
+          <div class="map-footer">
+            <span class="hint">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-pin"/></svg>
+              Klikk på en fasilitet for detaljer
+            </span>
+            <span class="updated">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clock"/></svg>
+              SIST OPPDATERT: 12:34
+            </span>
+          </div>
+        </div>
+
+        <div class="legend">
+          <span class="item busy"><span class="sw"></span><strong style="color:var(--fg);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;">Opptatt nå</strong></span>
+          <span class="item booked"><span class="sw"></span><strong style="color:var(--fg);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;">Reservert i dag</strong></span>
+          <span class="item free"><span class="sw"></span><strong style="color:var(--fg);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;">Ledig</strong></span>
+          <span class="item conf"><span class="sw"></span><strong style="color:var(--fg);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;">Konflikt</strong></span>
+          <span class="sep"></span>
+          <span>MANDAG 20. MAI 2026 · ALLE 7 FASILITETER VISES</span>
+        </div>
+
+      </section>
+
+      <!-- ============ KALENDER VIEW ============ -->
+      <section class="v-kalender" style="display:flex;flex-direction:column;gap:14px;">
+
+        <div class="cal-filter">
+          <div class="seg-zoom">
+            <button>Dag</button>
+            <button class="active">Uke</button>
+            <button>Måned</button>
+            <button>Sesong</button>
+          </div>
+          <div class="nav-arrows">
+            <button aria-label="Forrige"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-l"/></svg></button>
+            <button aria-label="Neste"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-r"/></svg></button>
+          </div>
+          <span class="when"><strong>MANDAG 20. MAI 2026</strong> · UKE 21</span>
+          <div class="right">
+            <select class="sel">
+              <option>Alle coacher</option>
+              <option>Anders K.</option>
+              <option>Erik Solli</option>
+              <option>Maja Hagen</option>
+            </select>
+            <select class="sel">
+              <option>Alle fasiliteter</option>
+              <option>Performance Studio</option>
+              <option>Driving Range 1. etg</option>
+              <option>Driving Range 2. etg</option>
+              <option>Putting Green</option>
+              <option>Nærspillsområde</option>
+              <option>9-hullsbanen</option>
+              <option>Hull 4/5</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="cal-wrap">
+          <div class="cal-head">
+            <div class="col-fac">Fasilitet</div>
+            <div class="col-time">
+              <span>06</span><span>07</span><span>08</span><span>09</span>
+              <span>10</span><span>11</span><span>12</span><span>13</span>
+              <span>14</span><span>15</span><span>16</span><span>17</span>
+              <span>18</span><span>19</span><span>20</span><span>21</span>
+            </div>
+          </div>
+
+          <!-- 1. Performance Studio -->
+          <div class="cal-row">
+            <div class="fac">
+              <div class="fac-top">
+                <span class="fac-ic"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-build"/></svg></span>
+                <div class="fac-nm"><span class="num">1</span>Performance Studio</div>
+              </div>
+              <div class="fac-meta"><span class="stat-dot booked"></span>4 / 8 BOOKET · <strong>1-2 SPILLERE</strong></div>
+            </div>
+            <div class="time-area">
+              <!-- 09:00–10:00 — Markus, privat, TEK iron -->
+              <div class="booking privat" style="grid-column: 7 / 9;">
+                <span class="b-time">09:00–10:00</span>
+                <span class="b-title">Markus R.P. · iron-progresjon</span>
+                <span class="b-meta">
+                  <span class="av">AK</span>
+                  <span class="pill">TEK</span>
+                  <span class="pill">PRIVAT</span>
+                </span>
+              </div>
+              <!-- 10:30–11:30 — Joachim, putting -->
+              <div class="booking privat" style="grid-column: 10 / 12;">
+                <span class="b-time">10:30–11:30</span>
+                <span class="b-title">Joachim T. · putting</span>
+                <span class="b-meta">
+                  <span class="av">AK</span>
+                  <span class="pill">SLAG</span>
+                </span>
+              </div>
+              <!-- 14:00–15:00 — Emma, strategi -->
+              <div class="booking privat" style="grid-column: 17 / 19;">
+                <span class="b-time">14:00–15:00</span>
+                <span class="b-title">Emma S. · strategi</span>
+                <span class="b-meta">
+                  <span class="av">AK</span>
+                  <span class="pill">SPILL</span>
+                </span>
+              </div>
+              <!-- 16:00–17:30 — Gruppe A1 -->
+              <div class="booking gruppe" style="grid-column: 21 / 24;">
+                <span class="b-time">16:00–17:30</span>
+                <span class="b-title">Gruppe A1 · Anders + 3 spillere</span>
+                <span class="b-meta">
+                  <span class="av">AK</span>
+                  <span class="pill">TEK</span>
+                  <span class="pill">SPILL</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Driving Range 1. etg -->
+          <div class="cal-row">
+            <div class="fac">
+              <div class="fac-top">
+                <span class="fac-ic range"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg></span>
+                <div class="fac-nm"><span class="num">2</span>Driving Range · 1. etg</div>
+              </div>
+              <div class="fac-meta"><span class="stat-dot busy"></span>2 / 6 MATTER · <strong>OPPTATT NÅ</strong></div>
+            </div>
+            <div class="time-area">
+              <div class="booking privat" style="grid-column: 13 / 15;">
+                <span class="b-time">12:00–13:00</span>
+                <span class="b-title">Henrik V. + Ida M. · par-time TEK swing</span>
+                <span class="b-meta">
+                  <span class="av">AK</span>
+                  <span class="pill">TEK</span>
+                </span>
+              </div>
+              <div class="booking dropin" style="grid-column: 21 / 25;">
+                <span class="b-time">16:00–18:00</span>
+                <span class="b-title">Drop-in driving (medlemmer)</span>
+                <span class="b-meta">
+                  <span class="pill">DROP-IN</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Driving Range 2. etg -->
+          <div class="cal-row">
+            <div class="fac">
+              <div class="fac-top">
+                <span class="fac-ic range"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg></span>
+                <div class="fac-nm"><span class="num">3</span>Driving Range · 2. etg</div>
+              </div>
+              <div class="fac-meta"><span class="stat-dot free"></span>1 / 4 MATTER · <strong>LEDIG</strong></div>
+            </div>
+            <div class="time-area">
+              <div class="booking dropin" style="grid-column: 7 / 9;">
+                <span class="b-time">09:00–10:00</span>
+                <span class="b-title">Drop-in driving (10 spillere)</span>
+                <span class="b-meta">
+                  <span class="pill">DROP-IN</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Putting Green -->
+          <div class="cal-row">
+            <div class="fac">
+              <div class="fac-top">
+                <span class="fac-ic green"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-leaf"/></svg></span>
+                <div class="fac-nm"><span class="num">4</span>Putting Green</div>
+              </div>
+              <div class="fac-meta"><span class="stat-dot busy"></span>8 / 10 SPILLERE · <strong>ERIK-KLINIKK NÅ</strong></div>
+            </div>
+            <div class="time-area">
+              <div class="booking gruppe" style="grid-column: 11 / 13;">
+                <span class="b-time">11:00–12:00</span>
+                <span class="b-title">Putting-klinikk · Erik Solli</span>
+                <span class="b-meta">
+                  <span class="av" style="background:#B8852A;">ES</span>
+                  <span class="pill">SLAG</span>
+                </span>
+              </div>
+              <div class="booking gruppe" style="grid-column: 25 / 27;">
+                <span class="b-time">18:00–19:00</span>
+                <span class="b-title">Junior-gruppe</span>
+                <span class="b-meta">
+                  <span class="av" style="background:#4B3D7A;color:#fff;">MH</span>
+                  <span class="pill">SLAG</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Nærspillsområde -->
+          <div class="cal-row">
+            <div class="fac">
+              <div class="fac-top">
+                <span class="fac-ic short"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-warn"/></svg></span>
+                <div class="fac-nm"><span class="num">5</span>Nærspillsområde</div>
+              </div>
+              <div class="fac-meta"><span class="stat-dot booked"></span>2 BOOKINGER · <strong style="color:var(--danger);">KONFLIKT 15:00</strong></div>
+            </div>
+            <div class="time-area">
+              <div class="booking gruppe" style="grid-column: 19 / 21;">
+                <span class="b-time">15:00–16:00</span>
+                <span class="b-title">Sigrid B. + Nora L. · gruppe</span>
+                <span class="b-meta">
+                  <span class="av" style="background:#4B3D7A;color:#fff;">MH</span>
+                  <span class="pill">SLAG</span>
+                </span>
+              </div>
+              <div class="booking conflict" style="grid-column: 20 / 22;">
+                <span class="b-time">15:30–16:30</span>
+                <span class="b-title">Konflikt · Junior · Maja</span>
+                <span class="b-meta">
+                  <span class="pill">KONFLIKT</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. 9-hullsbanen -->
+          <div class="cal-row">
+            <div class="fac">
+              <div class="fac-top">
+                <span class="fac-ic course"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg></span>
+                <div class="fac-nm"><span class="num">6</span>9-hullsbanen</div>
+              </div>
+              <div class="fac-meta"><span class="stat-dot booked"></span>8 / 8 KL 17 · <strong>JUNIOR-SIM</strong></div>
+            </div>
+            <div class="time-area">
+              <div class="booking gruppe" style="grid-column: 23 / 27;">
+                <span class="b-time">17:00–19:00</span>
+                <span class="b-title">Junior-turnerings-simulering (8 spillere)</span>
+                <span class="b-meta">
+                  <span class="av">AK</span>
+                  <span class="pill">TURN</span>
+                  <span class="pill">SPILL</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Hull 4/5 -->
+          <div class="cal-row">
+            <div class="fac">
+              <div class="fac-top">
+                <span class="fac-ic course"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg></span>
+                <div class="fac-nm"><span class="num">7</span>Hull 4 / 5 · scenario</div>
+              </div>
+              <div class="fac-meta"><span class="stat-dot booked"></span>4 / 4 KL 19 · <strong>A1 SCENARIO</strong></div>
+            </div>
+            <div class="time-area">
+              <div class="booking gruppe" style="grid-column: 27 / 29;">
+                <span class="b-time">19:00–20:00</span>
+                <span class="b-title">A1-spillere scenario-trening</span>
+                <span class="b-meta">
+                  <span class="av">AK</span>
+                  <span class="pill">TURN</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- Drawer (fra map markers) -->
+<div class="drawer-bd" id="dr-bd"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="top">
+      <span class="num" id="dr-num">1</span>
+      <div class="stack">
+        <span class="label">FASILITET · GFGK</span>
+        <h3 id="dr-title">Performance <em>Studio</em></h3>
+      </div>
+      <button class="close-x" id="dr-close" aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+      </button>
+    </div>
+    <div class="status-row">
+      <span class="pill"><span class="dot"></span><span id="dr-status">RESERVERT KL 14:00</span></span>
+      <span class="pill">KAPASITET <strong style="color:var(--accent);margin-left:4px;" id="dr-cap">1–2 SPILLERE</strong></span>
+    </div>
+  </div>
+
+  <div class="drawer-body">
+    <div class="photo-ph">DROPP BILDE HER</div>
+    <p class="description" id="dr-desc">
+      <em>Default-fasilitet</em> for Anders' privattimer. TrackMan + læringsutstyr, perfekt for fokusert teknisk arbeid og videoanalyse.
+    </p>
+
+    <div>
+      <h4>Dagens aktivitet · mandag 20. mai</h4>
+      <div id="dr-today">
+        <div class="today-row">
+          <span class="t">09:00</span>
+          <div class="who">Markus R.P.<span class="sub">PRIVAT · ANDERS · 60 MIN</span></div>
+          <span class="pill tek">TEK</span>
+        </div>
+        <div class="today-row">
+          <span class="t">10:30</span>
+          <div class="who">Joachim T.<span class="sub">PRIVAT · ANDERS · 60 MIN</span></div>
+          <span class="pill slag">SLAG</span>
+        </div>
+        <div class="today-row">
+          <span class="t">14:00</span>
+          <div class="who">Emma S.<span class="sub">PRIVAT · ANDERS · 60 MIN</span></div>
+          <span class="pill spill">SPILL</span>
+        </div>
+        <div class="today-row">
+          <span class="t">16:00</span>
+          <div class="who">Gruppe A1 · 4 spillere<span class="sub">GRUPPE · ANDERS · 90 MIN</span></div>
+          <span class="pill turn">TURN</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-foot">
+    <button class="btn-book" id="dr-book">
+      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+      Ny booking på denne fasiliteten
+    </button>
+    <button class="btn-cal" id="dr-cal">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>
+      Se i kalender
+    </button>
+  </div>
+</aside>
+
+<!-- New booking modal -->
+<div class="modal-bd" id="m-bd">
+  <div class="modal" role="dialog" aria-labelledby="m-title" aria-modal="true">
+    <div class="m-head">
+      <div>
+        <span class="cap">OPERASJON · NY BOOKING</span>
+        <h2 id="m-title">Ny booking</h2>
+      </div>
+      <button class="x-btn" id="m-close" aria-label="Lukk"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg></button>
+    </div>
+
+    <div class="m-body">
+
+      <div class="field">
+        <label class="field-label">Spiller(e) / Gruppe <span class="req">*</span></label>
+        <div class="player-pickrow">
+          <span class="pl-chip">Markus R.P.<button class="x"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg></button></span>
+          <span class="pl-chip">Joachim T.<button class="x"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg></button></span>
+          <input type="text" placeholder="Søk spiller eller velg gruppe …" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Type <span class="req">*</span></label>
+        <div class="type-radio">
+          <button class="active">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>
+            Privat
+          </button>
+          <button>
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>
+            Gruppe
+          </button>
+          <button>
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clock"/></svg>
+            Drop-in
+          </button>
+          <button>
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg>
+            Klinikk
+          </button>
+        </div>
+      </div>
+
+      <div class="duo">
+        <div class="field">
+          <label class="field-label">Coach</label>
+          <select class="text-input">
+            <option>Anders K. (deg)</option>
+            <option>Erik Solli</option>
+            <option>Maja Hagen</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Fasilitet <span class="default-pill">DEFAULT</span></label>
+          <select class="text-input">
+            <option>Performance Studio</option>
+            <option>Driving Range · 1. etg</option>
+            <option>Driving Range · 2. etg</option>
+            <option>Putting Green</option>
+            <option>Nærspillsområde</option>
+            <option>9-hullsbanen</option>
+            <option>Hull 4 / 5</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="trio">
+        <div class="field">
+          <label class="field-label">Dato <span class="req">*</span></label>
+          <input type="text" class="text-input" value="20.05.2026" style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;" />
+        </div>
+        <div class="field">
+          <label class="field-label">Fra</label>
+          <input type="text" class="text-input" value="09:00" style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;" />
+        </div>
+        <div class="field">
+          <label class="field-label">Til</label>
+          <input type="text" class="text-input" value="10:00" style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;" />
+        </div>
+      </div>
+
+      <!-- Conflict alert (Performance Studio default booket av Joachim, demoer flyten) -->
+      <div class="conflict">
+        <span class="ic"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-warn"/></svg></span>
+        <div class="body">
+          <strong>Performance Studio</strong> er allerede booket 09:00–10:00 av <strong>Markus R.P.</strong> Velg annet tidspunkt eller fasilitet.
+          <div class="suggest">
+            <button>Driving Range 1. etg · 09:00</button>
+            <button>Performance Studio · 10:30</button>
+            <button>Performance Studio · 11:00</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Discipline <span class="help">flere mulig</span></label>
+        <div class="disc-row">
+          <button class="disc-chip fys">FYS</button>
+          <button class="disc-chip tek active">TEK</button>
+          <button class="disc-chip slag">SLAG</button>
+          <button class="disc-chip spill">SPILL</button>
+          <button class="disc-chip turn">TURN</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Notat</label>
+        <textarea class="textarea-input">Markus skal jobbe med iron-progresjon (CS75 → CS80). Fortsetter sekvensen fra forrige uke.</textarea>
+      </div>
+
+      <div class="plan-link">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>
+        Fra plan: <a href="#">Spesialisering vår</a> · økt 7 av 17 · auto-fylt fra mal
+      </div>
+
+      <div class="cb-row on">
+        <span class="box"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg></span>
+        <span class="lbl">Send melding til spiller med forberedelse</span>
+      </div>
+
+    </div>
+
+    <div class="m-foot">
+      <div class="total">VARIGHET <strong>60 MIN</strong> · 2 SPILLERE · <strong>1 200 KR</strong></div>
+      <button class="btn-ghost" id="m-cancel">Avbryt</button>
+      <button class="btn-confirm alt">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+        Bekreft + send forberedelse
+      </button>
+      <button class="btn-confirm">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+        Bekreft booking
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky footer -->
+<footer class="sticky-foot">
+  <span class="cap"><strong>ANDERS' UKE 21</strong> · 28 / 35 BOOKET<span class="cap-bar"><div style="width:80%;"></div></span><strong>80 %</strong> KAPASITET</span>
+  <div class="kpi-row">
+    <span class="kpi ok"><span class="pip"></span><strong>9</strong> ØKTER I DAG</span>
+    <span class="kpi ok"><span class="pip"></span><strong>18</strong> SPILLERE</span>
+    <span class="kpi err"><span class="pip"></span><strong>2</strong> KONFLIKTER</span>
+    <span class="kpi warn dl-only"><span class="pip"></span>MTD <strong>47 250 KR</strong></span>
+  </div>
+  <div class="right">
+    <button class="btn-pill outline">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-download"/></svg>
+      Eksporter dag
+    </button>
+    <button class="btn-pill lime" onclick="document.getElementById('m-bd').classList.add('open');">
+      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+      Ny booking
+    </button>
+  </div>
+</footer>
+
+<style>
+  body.dl .dl-only { display: inline-flex !important; }
+  .dl-only { display: none !important; }
+</style>
+
+<script>
+  // Mode tabs
+  document.querySelectorAll('.mode-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.mode-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.body.setAttribute('data-mode', t.getAttribute('data-mode'));
+    });
+  });
+
+  // DL toggle
+  const dlBtn = document.getElementById('dl-toggle');
+  dlBtn.addEventListener('click', () => {
+    const on = dlBtn.classList.toggle('on');
+    document.body.classList.toggle('dl', on);
+  });
+
+  // Map markers — hover tooltip + click drawer
+  const tooltip = document.getElementById('map-tooltip');
+  const drawer = document.getElementById('drawer');
+  const drBd = document.getElementById('dr-bd');
+  const drTitle = document.getElementById('dr-title');
+  const drNum = document.getElementById('dr-num');
+  const drStatus = document.getElementById('dr-status');
+
+  document.querySelectorAll('.map-marker').forEach(m => {
+    m.addEventListener('mouseenter', (e) => {
+      const rect = m.getBoundingClientRect();
+      const canvasRect = m.closest('.map-canvas').getBoundingClientRect();
+      tooltip.style.left = (rect.left - canvasRect.left + rect.width/2) + 'px';
+      tooltip.style.top = (rect.top - canvasRect.top) + 'px';
+      tooltip.querySelector('.nm').textContent = m.getAttribute('data-name');
+      const cls = m.getAttribute('data-cls') || 'free';
+      const st = tooltip.querySelector('.st');
+      st.className = 'st ' + cls;
+      st.textContent = m.getAttribute('data-status');
+      tooltip.classList.add('show');
+    });
+    m.addEventListener('mouseleave', () => { tooltip.classList.remove('show'); });
+    m.addEventListener('click', () => {
+      drNum.textContent = m.getAttribute('data-fac');
+      const name = m.getAttribute('data-name');
+      drTitle.innerHTML = name.replace(/\s(\S+)$/, ' <em>$1</em>');
+      drStatus.textContent = m.getAttribute('data-status').toUpperCase();
+      drBd.classList.add('open');
+      setTimeout(() => drawer.classList.add('open'), 10);
+    });
+  });
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    setTimeout(() => drBd.classList.remove('open'), 280);
+  }
+  document.getElementById('dr-close').addEventListener('click', closeDrawer);
+  drBd.addEventListener('click', closeDrawer);
+
+  // Booking modal
+  const mBd = document.getElementById('m-bd');
+  document.getElementById('new-booking-btn').addEventListener('click', () => mBd.classList.add('open'));
+  document.getElementById('m-close').addEventListener('click', () => mBd.classList.remove('open'));
+  document.getElementById('m-cancel').addEventListener('click', () => mBd.classList.remove('open'));
+  mBd.addEventListener('click', (e) => { if (e.target === mBd) mBd.classList.remove('open'); });
+  document.getElementById('dr-book').addEventListener('click', () => {
+    closeDrawer();
+    setTimeout(() => mBd.classList.add('open'), 200);
+  });
+  document.getElementById('dr-cal').addEventListener('click', () => {
+    closeDrawer();
+    document.querySelector('.mode-tab[data-mode="kalender"]').click();
+  });
+
+  // Modal interactivity
+  document.querySelectorAll('.type-radio button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.type-radio button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.disc-chip').forEach(c => {
+    c.addEventListener('click', () => c.classList.toggle('active'));
+  });
+  document.querySelectorAll('.cb-row').forEach(r => {
+    r.addEventListener('click', () => r.classList.toggle('on'));
+  });
+  document.querySelectorAll('.pl-chip .x').forEach(x => {
+    x.addEventListener('click', (e) => { e.preventDefault(); x.closest('.pl-chip').remove(); });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeDrawer(); mBd.classList.remove('open'); }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Rediger profil — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  body { margin: 0; background: var(--bg); padding-bottom: 0; }
+
+  /* ── topnav ─────────────────────────────────────────── */
+  .topnav {
+    display: flex; align-items: center;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #fff; gap: 16px;
+  }
+  .topnav .name {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 700; color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    text-transform: uppercase; font-weight: 600;
+    text-decoration: none;
+  }
+  .back-link:hover { color: var(--fg); }
+  .back-link svg { width: 14px; height: 14px; }
+
+  /* ── faded host page behind modal ───────────────────── */
+  .host {
+    position: relative;
+    max-width: 1080px; margin: 0 auto;
+    padding: 32px 24px 96px;
+    filter: blur(2px) saturate(0.85);
+    opacity: 0.55;
+    pointer-events: none;
+    user-select: none;
+  }
+  .host-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .host-head .eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+    font-weight: 700;
+  }
+  .host-head h1 {
+    font-family: var(--font-display); font-size: 32px;
+    font-weight: 600; letter-spacing: -0.015em; margin-top: 6px;
+  }
+  .host-head h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .profil-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 28px;
+    display: grid; grid-template-columns: 96px 1fr auto;
+    gap: 22px; align-items: center;
+  }
+  .profil-card .pc-av {
+    width: 96px; height: 96px; border-radius: 50%;
+    background: var(--primary); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 32px; font-weight: 700;
+  }
+  .profil-card .pc-name {
+    font-family: var(--font-display); font-size: 22px; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .profil-card .pc-meta {
+    margin-top: 6px;
+    display: flex; gap: 18px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .profil-card .pc-meta strong {
+    color: var(--fg); font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .grid-stub {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+    margin-top: 24px;
+  }
+  .stub {
+    height: 180px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 16px;
+  }
+
+  /* ── backdrop ───────────────────────────────────────── */
+  .backdrop {
+    position: fixed; inset: 0;
+    background: rgba(10,31,23,0.42);
+    backdrop-filter: blur(6px);
+    z-index: 50;
+    display: flex; align-items: flex-start; justify-content: center;
+    overflow-y: auto;
+    padding: 80px 24px 48px;
+  }
+
+  /* ── modal ──────────────────────────────────────────── */
+  .modal {
+    width: 560px; max-width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(10,31,23,0.30);
+    display: flex; flex-direction: column;
+    max-height: calc(100vh - 128px);
+    overflow: hidden;
+  }
+  .m-head {
+    padding: 22px 26px 18px;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  }
+  .m-head .eyebrow {
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700;
+  }
+  .m-head h2 {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 600; letter-spacing: -0.01em; line-height: 1.15;
+    margin-top: 4px;
+  }
+  .m-head h2 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .m-close {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 0; background: transparent;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); flex-shrink: 0; cursor: pointer;
+  }
+  .m-close:hover { background: var(--bg); color: var(--fg); }
+  .m-close svg { width: 16px; height: 16px; }
+
+  .m-body {
+    padding: 22px 26px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 22px;
+  }
+
+  /* avatar block */
+  .avatar-block {
+    display: grid; grid-template-columns: 96px 1fr;
+    gap: 18px; align-items: center;
+  }
+  .av-wrap { position: relative; width: 96px; height: 96px; }
+  .av-img {
+    width: 96px; height: 96px; border-radius: 50%;
+    background: var(--primary); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 32px; font-weight: 700;
+  }
+  .av-edit {
+    position: absolute; bottom: 0; right: 0;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent); color: var(--fg);
+    border: 2px solid #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .av-edit svg { width: 14px; height: 14px; }
+  .av-actions { display: flex; gap: 8px; }
+  .av-link {
+    background: transparent; border: 0;
+    font-family: var(--font-body); font-size: 13px; font-weight: 600;
+    color: var(--primary); cursor: pointer; padding: 6px 0;
+  }
+  .av-link:hover { text-decoration: underline; }
+  .av-link.danger { color: var(--danger); }
+  .av-helper {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-soft); letter-spacing: 0.02em;
+    margin-top: 4px;
+  }
+
+  /* section header */
+  .sec {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .sec-h {
+    font-family: var(--font-display); font-size: 12px;
+    font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase; color: var(--muted);
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  /* field */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-label {
+    font-family: var(--font-mono); font-size: 10.5px;
+    font-weight: 600; letter-spacing: 0.10em;
+    text-transform: uppercase; color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .field-label .req { color: var(--danger); }
+  .field-label .lock {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-soft); font-weight: 600;
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 2px 6px; border-radius: 4px; letter-spacing: 0.04em;
+    text-transform: none;
+  }
+  .field-input, select.field-input {
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--fg); background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 11px 14px; line-height: 1.4;
+    outline: none; width: 100%;
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  .field-input::placeholder { color: var(--muted-soft); }
+  .field-input:focus, select.field-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0,88,64,0.10);
+  }
+  .field-input:disabled, .field-input.locked {
+    background: var(--bg); color: var(--muted);
+    cursor: not-allowed;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-validate {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--success); letter-spacing: 0.02em;
+    margin-top: 2px;
+  }
+  .field-validate svg { width: 11px; height: 11px; }
+  .field-error {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--danger); letter-spacing: 0.02em;
+    margin-top: 2px;
+  }
+  .field-error svg { width: 11px; height: 11px; }
+  select.field-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235E5C57' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+  .hcp-display {
+    display: flex; align-items: baseline; gap: 10px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 11px 14px;
+  }
+  .hcp-display .val {
+    font-family: var(--font-mono); font-size: 16px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+  }
+  .hcp-display .src {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .hcp-display .src svg { width: 10px; height: 10px; }
+
+  /* footer */
+  .m-foot {
+    padding: 16px 26px;
+    border-top: 1px solid var(--border-soft);
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(6px);
+    display: flex; gap: 10px; align-items: center; justify-content: flex-end;
+  }
+  .m-foot .dirty {
+    margin-right: auto;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--warning); letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .m-foot .dirty .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--warning);
+  }
+  .btn-ghost-m {
+    background: transparent; color: var(--muted);
+    padding: 10px 18px; border-radius: 999px;
+    font-size: 13px; font-weight: 600; border: 0;
+    font-family: var(--font-body); cursor: pointer;
+  }
+  .btn-ghost-m:hover { background: var(--bg); color: var(--fg); }
+  .btn-primary-m {
+    background: var(--primary); color: var(--accent);
+    padding: 10px 20px; border-radius: 999px;
+    font-size: 13px; font-weight: 600; border: 0;
+    font-family: var(--font-body); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary-m:hover { background: var(--primary-dark); }
+  .btn-primary-m svg { width: 14px; height: 14px; }
+
+  /* mobile */
+  @media (max-width: 640px) {
+    .modal { max-height: 90vh; border-radius: 16px 16px 0 0; align-self: flex-end; }
+    .backdrop { padding: 0; align-items: flex-end; }
+    .field-grid-2 { grid-template-columns: 1fr; }
+    .grid-stub { grid-template-columns: 1fr; }
+    .profil-card { grid-template-columns: 1fr; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="Workbench v2.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    Tilbake
+  </a>
+  <span class="name">AK GOLF · PLAYERHQ</span>
+  <span class="crumbs">/portal/meg/profil · <span class="current">Rediger</span></span>
+</nav>
+
+<!-- Faded host page behind the modal -->
+<main class="host" data-screen-label="01 Profil-side (host)">
+  <div class="host-head">
+    <div>
+      <div class="eyebrow">PLAYERHQ · MEG</div>
+      <h1>Min <em>profil</em></h1>
+    </div>
+  </div>
+  <div class="profil-card">
+    <div class="pc-av">MR</div>
+    <div>
+      <div class="pc-name">Markus Røinås Pedersen</div>
+      <div class="pc-meta">
+        <span>HCP <strong>+3,5</strong></span>
+        <span>A1 · Elite junior</span>
+        <span>Gamle Fredrikstad GK</span>
+        <span>18 år</span>
+      </div>
+    </div>
+    <button class="btn btn-primary">Rediger profil</button>
+  </div>
+  <div class="grid-stub">
+    <div class="stub"></div>
+    <div class="stub"></div>
+  </div>
+</main>
+
+<!-- Modal backdrop -->
+<div class="backdrop" data-screen-label="01 Rediger profil — modal">
+  <div class="modal" role="dialog" aria-labelledby="m-title" aria-modal="true">
+    <header class="m-head">
+      <div>
+        <div class="eyebrow">PLAYERHQ · MEG</div>
+        <h2 id="m-title">Rediger <em>profil</em></h2>
+      </div>
+      <button class="m-close" aria-label="Lukk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </header>
+
+    <div class="m-body">
+
+      <!-- Avatar -->
+      <div class="avatar-block">
+        <div class="av-wrap">
+          <div class="av-img">MR</div>
+          <button class="av-edit" aria-label="Bytt profilbilde">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          </button>
+        </div>
+        <div>
+          <div class="av-actions">
+            <button class="av-link">Last opp nytt bilde</button>
+            <button class="av-link danger">Fjern</button>
+          </div>
+          <div class="av-helper">JPG eller PNG · maks 5 MB · kvadrat anbefales</div>
+        </div>
+      </div>
+
+      <!-- Personalia -->
+      <section class="sec">
+        <h3 class="sec-h">Personalia</h3>
+        <div class="field">
+          <label class="field-label" for="navn">Fullt navn <span class="req">*</span></label>
+          <input id="navn" class="field-input" type="text" value="Markus Røinås Pedersen">
+          <div class="field-validate">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Gyldig
+          </div>
+        </div>
+        <div class="field-grid-2">
+          <div class="field">
+            <label class="field-label" for="fodt">Fødselsdato <span class="req">*</span></label>
+            <input id="fodt" class="field-input" type="text" value="12.04.2008">
+          </div>
+          <div class="field">
+            <label class="field-label">
+              Handicap
+              <span class="lock" title="Synket fra GolfBox">låst</span>
+            </label>
+            <div class="hcp-display">
+              <span class="val">+3,5</span>
+              <span class="src">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                GolfBox
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Kontakt -->
+      <section class="sec">
+        <h3 class="sec-h">Kontakt</h3>
+        <div class="field">
+          <label class="field-label" for="epost">E-post <span class="req">*</span></label>
+          <input id="epost" class="field-input" type="email" value="markus.rp@example.com">
+        </div>
+        <div class="field">
+          <label class="field-label" for="tlf">Telefon <span class="req">*</span></label>
+          <input id="tlf" class="field-input" type="tel" value="+47 412 33 555">
+        </div>
+        <div class="field">
+          <label class="field-label" for="adr">Adresse</label>
+          <input id="adr" class="field-input" type="text" value="Storgata 14, 1606 Fredrikstad">
+        </div>
+      </section>
+
+      <!-- Klubb -->
+      <section class="sec">
+        <h3 class="sec-h">Klubb-tilknytning</h3>
+        <div class="field">
+          <label class="field-label" for="klubb">Hjemmeklubb <span class="req">*</span></label>
+          <select id="klubb" class="field-input">
+            <option>Gamle Fredrikstad GK</option>
+            <option>Oslo Golfklubb</option>
+            <option>Asker Golfklubb</option>
+            <option>Sarpsborg Golfklubb</option>
+            <option>Larvik Golfklubb</option>
+          </select>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="m-foot">
+      <span class="dirty"><span class="dot"></span>Ulagrede endringer</span>
+      <button class="btn-ghost-m">Avbryt</button>
+      <button class="btn-primary-m">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Lagre endringer
+      </button>
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>

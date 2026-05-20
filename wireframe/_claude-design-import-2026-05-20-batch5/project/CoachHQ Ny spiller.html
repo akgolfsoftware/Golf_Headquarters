@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Ny spiller — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 0; }
+
+  /* WIZARD layout: full route */
+  .wiz-shell {
+    min-height: 100vh;
+    background: var(--bg);
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  .wiz-top {
+    padding: 22px 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    display: flex; align-items: center; gap: 24px;
+  }
+  .wiz-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-size: 14px;
+    font-weight: 700; color: var(--primary);
+    letter-spacing: -0.01em;
+  }
+  .wiz-brand .dot {
+    width: 6px; height: 6px; background: var(--accent);
+    border-radius: 50%;
+  }
+  .wiz-top h1 {
+    font-family: var(--font-display); font-size: 18px;
+    font-weight: 600; letter-spacing: -0.01em;
+    color: var(--fg);
+  }
+  .wiz-top h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .wiz-top .right {
+    margin-left: auto; display: flex; align-items: center; gap: 12px;
+  }
+  .wiz-top .save-draft {
+    background: transparent; border: 0;
+    font-family: var(--font-body); font-size: 12.5px;
+    font-weight: 500; color: var(--muted); cursor: pointer;
+    padding: 8px 12px; border-radius: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .wiz-top .save-draft:hover { color: var(--fg); background: var(--bg); }
+  .wiz-top .save-draft svg { width: 13px; height: 13px; }
+  .wiz-top .close-x {
+    width: 36px; height: 36px; border-radius: 10px;
+    border: 1px solid var(--border); background: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); cursor: pointer;
+  }
+  .wiz-top .close-x:hover { color: var(--fg); background: var(--bg); }
+  .wiz-top .close-x svg { width: 16px; height: 16px; }
+
+  /* progress */
+  .wiz-progress {
+    padding: 28px 40px 20px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px;
+  }
+  .wiz-step-dot {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .wiz-step-dot .num {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 13px;
+    font-weight: 700;
+    background: #fff; border: 1.5px solid var(--border);
+    color: var(--muted); flex-shrink: 0;
+    transition: all 180ms;
+  }
+  .wiz-step-dot .num svg { width: 14px; height: 14px; color: var(--accent); }
+  .wiz-step-dot.done .num {
+    background: var(--primary); color: var(--accent);
+    border-color: var(--primary);
+  }
+  .wiz-step-dot.active .num {
+    background: var(--fg); color: var(--accent);
+    border-color: var(--fg);
+    box-shadow: 0 0 0 4px rgba(209,248,67,0.30);
+  }
+  .wiz-step-dot .lbl {
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 600; letter-spacing: 0.10em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .wiz-step-dot.active .lbl { color: var(--fg); }
+  .wiz-step-dot.done .lbl { color: var(--muted); }
+  .wiz-bar {
+    width: 60px; height: 2px;
+    background: var(--border); border-radius: 2px;
+    margin: 0 8px;
+  }
+  .wiz-bar.done { background: var(--primary); }
+
+  /* body */
+  .wiz-body {
+    padding: 36px 24px 200px;
+    max-width: 760px; margin: 0 auto;
+    width: 100%;
+  }
+  .wiz-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+  }
+  .wiz-card .step-eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--primary); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .wiz-card h2 {
+    font-family: var(--font-display); font-size: 30px;
+    font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.1; margin-top: 8px;
+  }
+  .wiz-card h2 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .wiz-card .step-desc {
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--muted); margin-top: 8px; line-height: 1.5;
+    max-width: 540px;
+  }
+
+  /* fields (reuse from edit modal) */
+  .field-grid { display: grid; gap: 16px; margin-top: 28px; }
+  .field-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .field-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field.span-2 { grid-column: span 2; }
+  .field-label {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .field-label .req { color: var(--danger); margin-left: 4px; }
+  .field-hint {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .field-hint.ok { color: var(--success); }
+  .field-hint.warn { color: var(--warning); }
+  .input-row {
+    display: flex; align-items: center;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px; gap: 8px;
+    transition: all 120ms;
+  }
+  .input-row:focus-within {
+    border-color: var(--primary); background: #fff;
+    box-shadow: 0 0 0 3px rgba(0,88,64,0.10);
+  }
+  .input-row svg {
+    width: 14px; height: 14px;
+    color: var(--muted-soft); flex-shrink: 0;
+  }
+  .input-row input, .input-row select {
+    flex: 1; border: 0; background: transparent;
+    font: inherit; font-family: var(--font-body); font-size: 14px;
+    color: var(--fg); outline: none; min-width: 0;
+  }
+  .input-row.mono input { font-family: var(--font-mono); font-size: 13.5px; }
+  .input-row input::placeholder { color: var(--muted-soft); }
+  .input-row .suffix {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted); flex-shrink: 0;
+  }
+  .input-row.with-status::after {
+    content: ''; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--success);
+    flex-shrink: 0;
+  }
+  .input-row.has-error {
+    border-color: var(--danger);
+  }
+  .input-row.has-error::after {
+    content: ''; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--danger);
+    flex-shrink: 0;
+  }
+
+  /* radio cards for team & tier */
+  .radio-cards {
+    display: grid; gap: 12px;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 8px;
+  }
+  .radio-cards.cols-2 { grid-template-columns: 1fr 1fr; }
+  .radio-card {
+    border: 1.5px solid var(--border);
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: all 120ms;
+    position: relative; min-height: 100px;
+  }
+  .radio-card:hover { border-color: var(--primary); }
+  .radio-card.active {
+    border-color: var(--primary);
+    background: rgba(0,88,64,0.04);
+  }
+  .radio-card.tier.active {
+    background: var(--fg); color: #fff;
+    border-color: var(--fg);
+  }
+  .radio-card .name {
+    font-family: var(--font-display); font-size: 15px;
+    font-weight: 600; color: var(--fg);
+  }
+  .radio-card.tier.active .name { color: var(--accent); }
+  .radio-card .sub {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .radio-card.tier.active .sub { color: rgba(209,248,67,0.55); }
+  .radio-card .price {
+    font-family: var(--font-mono); font-size: 18px;
+    color: var(--primary); font-weight: 700;
+    margin-top: auto;
+  }
+  .radio-card.tier.active .price { color: var(--accent); }
+  .radio-card .price small {
+    font-size: 11px; color: var(--muted); font-weight: 400;
+  }
+  .radio-card.tier.active .price small { color: rgba(209,248,67,0.5); }
+  .radio-card.active::after {
+    content: ''; position: absolute;
+    top: 12px; right: 12px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23D1F843' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-position: center; background-repeat: no-repeat;
+  }
+  .radio-card.tier.active::after {
+    background-color: var(--accent);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230A1F17' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+  }
+
+  /* foreldre add */
+  .parent-block {
+    margin-top: 20px;
+    padding: 18px 20px;
+    background: rgba(0,88,64,0.04);
+    border: 1px dashed rgba(0,88,64,0.30);
+    border-radius: 14px;
+  }
+  .parent-block .head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .parent-block .head h4 {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 600;
+  }
+  .parent-block .head .badge {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--primary); background: rgba(0,88,64,0.10);
+    padding: 2px 8px; border-radius: 999px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  /* preview email */
+  .email-preview {
+    margin-top: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .email-preview-head {
+    background: #fff;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .email-preview-head .traffic {
+    display: flex; gap: 5px; margin-right: 8px;
+  }
+  .email-preview-head .traffic span {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #E5C8C8;
+  }
+  .email-preview-head .traffic span:nth-child(2) { background: #F2DBA5; }
+  .email-preview-head .traffic span:nth-child(3) { background: #C8E0BD; }
+  .email-preview-body {
+    padding: 22px 24px;
+    background: #fff;
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--fg); line-height: 1.6;
+  }
+  .email-preview-body .from {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .email-preview-body .from strong {
+    color: var(--fg); font-weight: 700;
+  }
+  .email-preview-body h4 {
+    font-family: var(--font-display); font-size: 18px;
+    font-weight: 700; margin: 16px 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .email-preview-body .cta {
+    display: inline-block; margin: 12px 0;
+    background: var(--primary); color: var(--accent);
+    padding: 10px 20px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 13px;
+    font-weight: 600; text-decoration: none;
+  }
+
+  /* toggle row */
+  .toggle-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; margin-top: 16px;
+  }
+  .toggle-row .copy { flex: 1; }
+  .toggle-row .nm {
+    font-family: var(--font-body); font-size: 13.5px;
+    font-weight: 600; color: var(--fg);
+  }
+  .toggle-row .ds {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em; margin-top: 3px;
+  }
+  .switch {
+    width: 38px; height: 22px;
+    background: var(--border); border-radius: 999px;
+    position: relative; cursor: pointer;
+    transition: all 150ms; flex-shrink: 0;
+  }
+  .switch::after {
+    content: ''; position: absolute;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; top: 3px; left: 3px;
+    transition: all 150ms;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.20);
+  }
+  .switch.on { background: var(--primary); }
+  .switch.on::after { left: 19px; }
+
+  /* footer fixed */
+  .wiz-foot {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    padding: 14px 40px;
+    display: flex; align-items: center; gap: 16px;
+    z-index: 10;
+  }
+  .wiz-foot .step-info {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .wiz-foot .step-info strong { color: var(--fg); font-weight: 700; }
+  .wiz-foot .right {
+    margin-left: auto;
+    display: flex; gap: 8px;
+  }
+
+  /* small chip */
+  .info-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border-radius: 999px;
+    background: rgba(0,88,64,0.06);
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--primary); font-weight: 600;
+    letter-spacing: 0.06em;
+    margin-top: 12px;
+  }
+  .info-chip svg { width: 12px; height: 12px; }
+</style>
+</head>
+<body data-screen-label="CoachHQ Ny spiller wizard">
+
+<!-- SVG sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></symbol>
+    <symbol id="ic-mail" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+    <symbol id="ic-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-hash" viewBox="0 0 24 24"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></symbol>
+    <symbol id="ic-chev-l" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+    <symbol id="ic-chev-r" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></symbol>
+    <symbol id="ic-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+    <symbol id="ic-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+    <symbol id="ic-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 5.7L19.6 10.6 13.9 12.5 12 18.2 10.1 12.5 4.4 10.6 10.1 8.7Z"/></symbol>
+  </defs>
+</svg>
+
+<div class="wiz-shell">
+
+  <!-- TOP BAR -->
+  <header class="wiz-top">
+    <div class="wiz-brand">
+      <span class="dot"></span>
+      AK GOLF · COACHHQ
+    </div>
+    <h1>Opprett <em>ny spiller</em></h1>
+    <div class="right">
+      <button class="save-draft">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-save"/></svg>
+        Lagre kladd
+      </button>
+      <button class="close-x" aria-label="Lukk" onclick="window.location.href='CoachHQ Stall-oversikt.html'">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- PROGRESS -->
+    <div class="wiz-progress">
+      <div class="wiz-step-dot done" data-step="1">
+        <span class="num">
+          <svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+        </span>
+        <span class="lbl">Grunninfo</span>
+      </div>
+      <div class="wiz-bar done"></div>
+      <div class="wiz-step-dot active" data-step="2">
+        <span class="num">2</span>
+        <span class="lbl">Team &amp; abonnement</span>
+      </div>
+      <div class="wiz-bar"></div>
+      <div class="wiz-step-dot" data-step="3">
+        <span class="num">3</span>
+        <span class="lbl">Invitasjon</span>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="wiz-body">
+      <div class="wiz-card">
+        <span class="step-eyebrow">STEG 2 AV 3 · TEAM &amp; ABONNEMENT</span>
+        <h2>Hvor skal <em>Markus</em> trene — og hvilken plan?</h2>
+        <p class="step-desc">
+          Velg team og abonnement-tier. Hvis spilleren er junior (under 18), legger
+          du til foresatt på neste rad. Disse valgene bestemmer hvilken plan-mal som
+          tildeles automatisk og hvordan fakturering settes opp.
+        </p>
+
+        <!-- Team -->
+        <div class="field" style="margin-top: 28px;">
+          <label class="field-label">Team-tilknytning<span class="req">*</span></label>
+          <div class="radio-cards">
+            <div class="radio-card active">
+              <span class="name">AK Academy</span>
+              <span class="sub">24 SPILLERE · GFGK</span>
+              <span class="price" style="font-size:11px;">Hjemmebasert program</span>
+            </div>
+            <div class="radio-card">
+              <span class="name">WANG Toppidrett</span>
+              <span class="sub">12 SPILLERE · FREDRIKSTAD</span>
+              <span class="price" style="font-size:11px;">Skole-integrert</span>
+            </div>
+            <div class="radio-card">
+              <span class="name">Begge</span>
+              <span class="sub">2 SPILLERE</span>
+              <span class="price" style="font-size:11px;">AK + WANG kombi</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tier -->
+        <div class="field" style="margin-top: 24px;">
+          <label class="field-label">Abonnement-tier<span class="req">*</span></label>
+          <div class="radio-cards cols-2">
+            <div class="radio-card">
+              <span class="name">Gratis</span>
+              <span class="sub">BASE-FUNKSJONER</span>
+              <span class="price">0 kr<small> /mnd</small></span>
+            </div>
+            <div class="radio-card tier active">
+              <span class="name">Pro</span>
+              <span class="sub">FULL TILGANG · TRACKMAN · AI</span>
+              <span class="price">300 kr<small> /mnd</small></span>
+            </div>
+          </div>
+          <div class="info-chip">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-info"/></svg>
+            Junior-rabatt aktivert · 50% av Pro = 150 kr/mnd
+          </div>
+        </div>
+
+        <!-- Start dato & coach -->
+        <div class="field-grid cols-2">
+          <div class="field">
+            <label class="field-label">Start-dato</label>
+            <div class="input-row mono">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>
+              <input type="text" value="19.05.2026" />
+            </div>
+            <span class="field-hint">Første faktura sendes 01.06.2026</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Coach-tilknytning</label>
+            <div class="input-row">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user"/></svg>
+              <select>
+                <option>Anders Kristiansen · Head coach</option>
+                <option>Hans Brennum · Putting</option>
+                <option>Erling Sand · Mental</option>
+              </select>
+            </div>
+            <span class="field-hint">Du er head coach for Markus</span>
+          </div>
+        </div>
+
+        <!-- Foreldre block -->
+        <div class="parent-block">
+          <div class="head">
+            <h4>Foresatt (kreves for junior under 18)</h4>
+            <span class="badge">Påkrevd</span>
+          </div>
+          <div class="field-grid cols-2" style="margin-top: 0;">
+            <div class="field">
+              <label class="field-label">Navn på foresatt<span class="req">*</span></label>
+              <div class="input-row">
+                <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user"/></svg>
+                <input type="text" value="Jonas Røinås Pedersen" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label">E-post foresatt<span class="req">*</span></label>
+              <div class="input-row with-status">
+                <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-mail"/></svg>
+                <input type="email" value="jonas@familie.no" />
+              </div>
+              <span class="field-hint ok">Foresatt får egen tilgang for fakturahistorikk</span>
+            </div>
+          </div>
+          <button class="save-draft" style="margin-top:12px; padding-left:0;">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+            Legg til en til
+          </button>
+        </div>
+
+        <!-- toggle -->
+        <div class="toggle-row">
+          <div class="copy">
+            <div class="nm">Send velkomst-melding fra Anders</div>
+            <div class="ds">PERSONLIG MELDING I INNBOKSEN VED FØRSTE INNLOGGING</div>
+          </div>
+          <span class="switch on" onclick="this.classList.toggle('on')"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <div class="wiz-foot">
+    <div class="step-info">STEG <strong>2</strong> AV <strong>3</strong> · ~30 SEK GJENSTÅR</div>
+    <div class="right">
+      <button class="btn btn-outline btn-sm">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-l"/></svg>
+        Tilbake
+      </button>
+      <button class="btn btn-forest btn-sm" onclick="document.body.dataset.step='3'; render();">
+        Neste · Invitasjon
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-r"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // simple radio toggling
+  document.querySelectorAll('.radio-cards').forEach(group => {
+    group.querySelectorAll('.radio-card').forEach(c => {
+      c.onclick = () => {
+        group.querySelectorAll('.radio-card').forEach(x => x.classList.remove('active'));
+        c.classList.add('active');
+      };
+    });
+  });
+</script>
+</body>
+</html>

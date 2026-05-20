@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>AI drill-forslag — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding-bottom: 0; }
+
+  .topnav {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #fff;
+  }
+  .topnav .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    text-transform: uppercase; font-weight: 700;
+    text-decoration: none;
+  }
+  .topnav .back-link svg { width: 14px; height: 14px; }
+  .topnav .name {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 700; color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+
+  .page {
+    max-width: 880px; margin: 0 auto;
+    padding: 40px 24px 64px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+
+  /* hero */
+  .hero { display: flex; flex-direction: column; gap: 14px; }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700;
+  }
+  .hero .eyebrow svg { width: 14px; height: 14px; color: var(--primary); }
+  .hero h1 {
+    font-family: var(--font-display); font-size: 40px;
+    font-weight: 600; letter-spacing: -0.02em; line-height: 1.05;
+  }
+  .hero h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .hero .sub {
+    font-family: var(--font-body); font-size: 15px;
+    color: var(--muted); line-height: 1.55; max-width: 580px;
+  }
+
+  /* weakness analysis */
+  .weakness {
+    background: linear-gradient(160deg, rgba(209,248,67,0.20), rgba(209,248,67,0.06));
+    border: 1px solid var(--accent);
+    border-left: 4px solid var(--accent);
+    border-radius: 16px;
+    padding: 22px 24px;
+    display: grid; grid-template-columns: 36px 1fr auto; gap: 18px;
+    align-items: center;
+  }
+  .weakness .ic {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--fg); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .weakness .ic svg { width: 16px; height: 16px; }
+  .weakness h2 {
+    font-family: var(--font-display); font-size: 17px;
+    font-weight: 600; letter-spacing: -0.01em; line-height: 1.3;
+  }
+  .weakness h2 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .weakness .body {
+    font-family: var(--font-body); font-size: 13.5px;
+    color: var(--fg); line-height: 1.5; margin-top: 4px;
+  }
+  .weakness .body strong { font-weight: 700; }
+  .weakness .body .mono {
+    font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+    background: rgba(0,88,64,0.10);
+    color: var(--primary); padding: 1px 6px; border-radius: 4px;
+    font-size: 12.5px; letter-spacing: 0.02em;
+  }
+  .weakness .body .mono.down { color: var(--danger); background: rgba(163,45,45,0.10); }
+  .weakness .stat {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+    padding-left: 24px; border-left: 1px solid rgba(0,88,64,0.20);
+  }
+  .weakness .stat .k {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .weakness .stat .delta {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono); font-size: 18px;
+    font-weight: 700; color: var(--danger);
+    font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+  }
+  .weakness .stat .delta svg { width: 14px; height: 14px; }
+  .weakness .stat .from-to {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+
+  /* drill cards */
+  .drills { display: flex; flex-direction: column; gap: 14px; }
+  .drill {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 22px 24px;
+    display: grid; grid-template-columns: 56px 1fr 220px; gap: 22px;
+    align-items: flex-start;
+  }
+  .drill.top {
+    border-color: var(--primary);
+    border-width: 1.5px;
+    box-shadow: 0 0 0 4px rgba(0,88,64,0.08);
+  }
+  .drill .badge-ic {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: rgba(0,88,64,0.08); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .drill .badge-ic svg { width: 26px; height: 26px; }
+  .drill.tek .badge-ic { background: rgba(0,88,64,0.10); color: var(--tek); }
+  .drill.slag .badge-ic { background: rgba(44,125,82,0.13); color: var(--slag); }
+  .drill.fys .badge-ic { background: rgba(26,77,46,0.10); color: var(--fys); }
+
+  .drill .body { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .drill .head {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .drill h3 {
+    font-family: var(--font-display); font-size: 19px;
+    font-weight: 600; letter-spacing: -0.01em;
+  }
+  .drill .meta {
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .drill .meta .pill {
+    padding: 2px 8px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    font-weight: 700; letter-spacing: 0.10em;
+  }
+  .pill-tek   { background: rgba(0,88,64,0.13);     color: var(--tek); }
+  .pill-slag  { background: rgba(44,125,82,0.16);   color: var(--slag); }
+  .pill-fys   { background: rgba(26,77,46,0.15);    color: var(--fys); }
+
+  .drill .desc {
+    font-family: var(--font-body); font-size: 13.5px;
+    color: var(--fg); line-height: 1.55;
+  }
+  .drill .desc strong { font-weight: 600; }
+  .drill .reasons {
+    background: var(--bg); border: 1px solid var(--border-soft);
+    border-radius: 10px; padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .drill .reasons .ttl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .drill .reasons .r {
+    display: flex; gap: 8px;
+    font-family: var(--font-body); font-size: 12.5px;
+    color: var(--fg); line-height: 1.4;
+  }
+  .drill .reasons .r svg { width: 12px; height: 12px; color: var(--primary); flex-shrink: 0; margin-top: 3px; }
+  .drill .reasons .r strong { font-weight: 600; }
+  .drill .reasons .r .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* right side: match + actions */
+  .drill .right {
+    display: flex; flex-direction: column; gap: 14px;
+    padding-left: 22px;
+    border-left: 1px solid var(--border-soft);
+    min-height: 100%;
+  }
+  .ms { display: flex; flex-direction: column; gap: 6px; }
+  .ms-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .ms .k {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .ms .v {
+    font-family: var(--font-mono); font-size: 22px;
+    font-weight: 700; color: var(--fg);
+    font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+  }
+  .ms .v small { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; }
+  .ms-bar {
+    height: 8px; background: var(--bg);
+    border: 1px solid var(--border-soft);
+    border-radius: 999px; overflow: hidden;
+  }
+  .ms-bar .fill { height: 100%; background: var(--accent); border-radius: 999px; }
+  .drill .actions {
+    margin-top: auto; display: flex; flex-direction: column; gap: 8px;
+  }
+  .btn-add {
+    background: var(--primary); color: var(--accent);
+    border: 0; padding: 10px 16px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-add:hover { background: var(--primary-dark); }
+  .btn-add svg { width: 13px; height: 13px; }
+  .btn-out {
+    background: transparent; color: var(--fg);
+    border: 1px solid var(--border); padding: 10px 16px;
+    border-radius: 999px;
+    font-family: var(--font-body); font-size: 12.5px; font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-out:hover { border-color: var(--primary); }
+  .est-time {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+    padding: 6px 0;
+    border-top: 1px dashed var(--border-soft);
+  }
+  .est-time strong { color: var(--fg); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* footer feedback */
+  .fb-row {
+    margin-top: 12px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .fb-row .txt {
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--muted); line-height: 1.45;
+  }
+  .fb-row .actions {
+    margin-left: auto; display: flex; gap: 8px;
+  }
+  .fb-row .actions button {
+    background: transparent; border: 1px solid var(--border);
+    padding: 7px 12px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 12px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .fb-row .actions button:hover { color: var(--fg); border-color: var(--muted); }
+  .fb-row .actions button svg { width: 12px; height: 12px; }
+  .fb-row .actions button.up:hover { color: var(--success); border-color: var(--success); }
+  .fb-row .actions button.dn:hover { color: var(--danger); border-color: var(--danger); }
+
+  @media (max-width: 780px) {
+    .weakness { grid-template-columns: 36px 1fr; }
+    .weakness .stat { display: none; }
+    .drill { grid-template-columns: 1fr; gap: 16px; }
+    .drill .right {
+      border-left: 0; padding-left: 0;
+      border-top: 1px solid var(--border-soft);
+      padding-top: 14px;
+    }
+  }
+</style>
+</head>
+<body data-screen-label="AI foreslå drill">
+
+<nav class="topnav">
+  <a href="Workbench v2.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    Tilbake
+  </a>
+  <span class="name">AK GOLF · PLAYERHQ</span>
+  <span class="crumbs">TREN / DRILLS / <span class="current">AI-FORSLAG</span></span>
+</nav>
+
+<main class="page">
+
+  <header class="hero">
+    <span class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"></path></svg>
+      KI-FORSLAG · DRILLS
+    </span>
+    <h1>AI har funnet din <em>svake</em> flanke.</h1>
+    <p class="sub">Basert på siste 30 dager — her er tre drills som adresserer mønsteret direkte. Legg dem til workbench-en din eller spør coach om vurdering.</p>
+  </header>
+
+  <!-- weakness analysis -->
+  <section class="weakness" aria-label="Analyse">
+    <span class="ic">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+    </span>
+    <div>
+      <h2>Vi ser en <em>FIR-bekymring</em> i tee-spillet ditt</h2>
+      <p class="body">Fairway-treff har sunket fra <span class="mono">78 %</span> til <span class="mono down">71 %</span> de siste fire ukene. <strong>62 % av missene</strong> går mot venstre — peer-gruppen din misser bare 41 % venstre. Det ser ut som et åpent klubbblad gjennom impact.</p>
+    </div>
+    <div class="stat">
+      <span class="k">FIR · 30 dager</span>
+      <span class="delta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
+        −7,0%
+      </span>
+      <span class="from-to">78 % → 71 %</span>
+    </div>
+  </section>
+
+  <!-- drills -->
+  <div class="drills">
+
+    <!-- 1 — top match -->
+    <article class="drill top tek">
+      <span class="badge-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+      </span>
+      <div class="body">
+        <div class="head">
+          <h3>Driver — face-control gateways</h3>
+          <div class="meta">
+            <span class="pill pill-tek">TEK</span>
+            <span>60 min</span>
+            <span>120 reps</span>
+            <span>Anbefales 3×/uke</span>
+          </div>
+        </div>
+        <p class="desc">Bygg tee-vinduer 8 yards bredt mellom alignment-stenger. Foreldelse av klubbflate gjennom impact — start halv-fart, eskalér til full swing. <strong>Du har gjort denne drillen 0 ganger</strong> siste 90 dager.</p>
+        <div class="reasons">
+          <span class="ttl">HVORFOR DENNE</span>
+          <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Adresserer <strong>venstre-miss</strong> direkte med vinduer på begge sider.</span></div>
+          <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>3 A1-spillere har <span class="mono">+9 %</span> FIR etter 4 uker med denne drillen.</span></div>
+          <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Passer i workbench-en din — det er <strong>ledig tid på range</strong> 22.05 og 24.05.</span></div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="ms">
+          <div class="ms-head"><span class="k">Match</span><span class="v">95<small>%</small></span></div>
+          <div class="ms-bar"><div class="fill" style="width: 95%"></div></div>
+        </div>
+        <div class="est-time">
+          <span>Estimert effekt</span>
+          <strong>+4 % FIR</strong>
+        </div>
+        <div class="actions">
+          <button class="btn-add">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Legg til i plan
+          </button>
+          <button class="btn-out">Forhåndsvis</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2 -->
+    <article class="drill slag">
+      <span class="badge-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+      </span>
+      <div class="body">
+        <div class="head">
+          <h3>Tee til mål — 9-shot matrise</h3>
+          <div class="meta">
+            <span class="pill pill-slag">SLAG</span>
+            <span>45 min</span>
+            <span>81 reps</span>
+            <span>2×/uke</span>
+          </div>
+        </div>
+        <p class="desc">9 kombinasjoner av høyde × form (low/mid/high · fade/straight/draw). Tving deg til å eie hvert ball-flight — særlig <strong>low-draw</strong> som motvirker den åpne klubbflaten din.</p>
+        <div class="reasons">
+          <span class="ttl">HVORFOR DENNE</span>
+          <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Lærer deg <strong>kontrollert draw</strong> — direkte motgift for venstre-miss.</span></div>
+          <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Du gjorde denne sist <span class="mono">14.03.2026</span> — score <span class="mono">5,2/9</span>.</span></div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="ms">
+          <div class="ms-head"><span class="k">Match</span><span class="v">87<small>%</small></span></div>
+          <div class="ms-bar"><div class="fill" style="width: 87%"></div></div>
+        </div>
+        <div class="est-time">
+          <span>Estimert effekt</span>
+          <strong>+2,5 % FIR</strong>
+        </div>
+        <div class="actions">
+          <button class="btn-add">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Legg til i plan
+          </button>
+          <button class="btn-out">Forhåndsvis</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3 -->
+    <article class="drill fys">
+      <span class="badge-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+      </span>
+      <div class="body">
+        <div class="head">
+          <h3>Trail-side rotasjon — fluidity</h3>
+          <div class="meta">
+            <span class="pill pill-fys">FYS</span>
+            <span>20 min</span>
+            <span>Mobilitet</span>
+            <span>Daglig</span>
+          </div>
+        </div>
+        <p class="desc">Hofte- og bryst-rotasjon på trail-siden. Bedre mobilitet her gjør at klubbflaten kan lukkes naturlig gjennom impact — uten å manipulere hender.</p>
+        <div class="reasons">
+          <span class="ttl">HVORFOR DENNE</span>
+          <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Stivhet i trail-hofte er ofte den <strong>fysiske rotårsaken</strong> til åpen flate.</span></div>
+          <div class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>FYS-balansen din ligger <span class="mono">−12 %</span> under pyramide-mål.</span></div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="ms">
+          <div class="ms-head"><span class="k">Match</span><span class="v">76<small>%</small></span></div>
+          <div class="ms-bar"><div class="fill" style="width: 76%"></div></div>
+        </div>
+        <div class="est-time">
+          <span>Estimert effekt</span>
+          <strong>Indirekte</strong>
+        </div>
+        <div class="actions">
+          <button class="btn-add">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Legg til i plan
+          </button>
+          <button class="btn-out">Forhåndsvis</button>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- feedback -->
+  <div class="fb-row">
+    <span class="txt">Treffer forslagene målet? AI lærer av tilbakemeldingen din.</span>
+    <div class="actions">
+      <button class="up">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+        Treff
+      </button>
+      <button class="dn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>
+        Bom
+      </button>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

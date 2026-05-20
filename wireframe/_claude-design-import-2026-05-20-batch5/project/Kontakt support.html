@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Kontakt support — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding: 0; }
+
+  .topnav {
+    display: flex; align-items: center; gap: 18px;
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #fff; position: sticky; top: 0; z-index: 10;
+  }
+  .topnav img.brand-img { height: 22px; }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .topnav .crumbs a { color: var(--muted); text-decoration: none; }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+
+  /* shell */
+  .shell {
+    max-width: 720px; margin: 0 auto;
+    padding: 48px 24px 140px;
+  }
+
+  /* header */
+  .ph { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+  .ph .eyebrow {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .ph h1 {
+    font-family: var(--font-display); font-size: 44px;
+    font-weight: 600; letter-spacing: -0.025em; line-height: 1.04;
+  }
+  .ph h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .ph .sub { font-size: 15px; color: var(--muted); max-width: 480px; line-height: 1.5; }
+
+  /* SLA strip */
+  .sla {
+    display: inline-flex; align-items: center; gap: 12px;
+    margin: 22px 0 36px;
+    padding: 10px 16px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px;
+  }
+  .sla .pulse {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--success); position: relative;
+  }
+  .sla .pulse::after {
+    content: ''; position: absolute; inset: -4px; border-radius: 50%;
+    border: 2px solid var(--success); opacity: 0.4;
+    animation: pulse 1.8s ease-out infinite;
+  }
+  @keyframes pulse {
+    0%   { transform: scale(0.6); opacity: 0.55; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+  .sla .label { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; }
+  .sla .val { font-family: var(--font-mono); font-weight: 500; color: var(--fg); font-variant-numeric: tabular-nums; }
+  .sla .sep { width: 1px; height: 14px; background: var(--border); }
+
+  /* form sections */
+  .form { display: flex; flex-direction: column; gap: 36px; }
+  .fsec { display: flex; flex-direction: column; gap: 14px; }
+  .fsec-h {
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .fsec-h .num {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    color: var(--muted); letter-spacing: 0.04em;
+    width: 24px;
+  }
+  .fsec-h .t {
+    font-family: var(--font-display); font-size: 17px;
+    font-weight: 600; color: var(--fg);
+  }
+  .fsec-h .opt {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600;
+    margin-left: 6px;
+  }
+  .fsec-body { padding-left: 34px; display:flex; flex-direction:column; gap:14px; }
+
+  /* category grid */
+  .cat-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .cat-card {
+    cursor: pointer; position: relative;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: all .15s;
+    text-align: left;
+  }
+  .cat-card:hover { border-color: #C4C2BB; }
+  .cat-card input { position: absolute; opacity: 0; pointer-events: none; }
+  .cat-card .ico {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: var(--border-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--fg);
+  }
+  .cat-card .ico svg { width: 17px; height: 17px; }
+  .cat-card .nm {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 600; color: var(--fg); line-height: 1.25;
+  }
+  .cat-card .ex {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .cat-card .tick {
+    position: absolute; top: 12px; right: 12px;
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #fff;
+  }
+  .cat-card .tick svg { width: 11px; height: 11px; color: #fff; opacity: 0; }
+  .cat-card input:checked ~ .tick {
+    background: var(--primary); border-color: var(--primary);
+  }
+  .cat-card input:checked ~ .tick svg { opacity: 1; }
+  .cat-card input:checked ~ .ico {
+    background: rgba(0,88,64,0.10); color: var(--primary);
+  }
+  .cat-card input:checked + .body, .cat-card:has(input:checked) {
+    border-color: var(--fg); background: #FCFCFA;
+  }
+
+  /* form fields */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 600; color: var(--fg);
+  }
+  .field .hint {
+    font-size: 12px; color: var(--muted);
+  }
+  .input, .textarea {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--fg);
+    width: 100%;
+    transition: border-color .15s;
+  }
+  .input:focus, .textarea:focus {
+    outline: none; border-color: var(--fg);
+  }
+  .textarea { min-height: 132px; resize: vertical; font-family: var(--font-body); line-height: 1.5; }
+  .field .meta-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em; font-variant-numeric: tabular-nums;
+  }
+  .field .meta-row .cnt { font-weight: 600; }
+  .field .meta-row .cnt.warn { color: var(--warning); }
+  .field .meta-row .cnt.over { color: var(--danger); }
+
+  /* dropzone */
+  .dropzone {
+    background: #fff;
+    border: 1.5px dashed var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    transition: all .15s;
+    cursor: pointer;
+  }
+  .dropzone:hover, .dropzone.over {
+    border-color: var(--primary); background: rgba(209,248,67,0.08);
+  }
+  .dropzone .ico-up {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--border-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted);
+  }
+  .dropzone .ico-up svg { width: 18px; height: 18px; }
+  .dropzone .t {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 600; color: var(--fg);
+  }
+  .dropzone .t strong { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+  .dropzone .s {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .files {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .file-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .file-item .thumb {
+    width: 38px; height: 38px; border-radius: 6px;
+    background: var(--border-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .file-item .thumb svg { width: 18px; height: 18px; }
+  .file-item .fi-meta { flex: 1; min-width: 0; }
+  .file-item .fi-name { font-size: 13px; font-weight: 500; color: var(--fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .file-item .fi-sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 2px;
+  }
+  .file-item .fi-bar {
+    height: 3px; background: var(--success);
+    border-radius: 2px;
+    width: 100%;
+  }
+  .file-item .rm {
+    background: transparent; border: 0; padding: 0;
+    width: 26px; height: 26px; border-radius: 6px;
+    color: var(--muted); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .file-item .rm:hover { background: var(--border-soft); color: var(--danger); }
+  .file-item .rm svg { width: 14px; height: 14px; }
+
+  /* checkbox */
+  .check-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+  }
+  .check-row input { margin: 0; appearance: none; flex-shrink:0;
+    width: 18px; height: 18px; border: 1.5px solid var(--border);
+    border-radius: 5px; background: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+  }
+  .check-row input:checked {
+    background: var(--primary); border-color: var(--primary);
+  }
+  .check-row input:checked::after {
+    content: ''; width: 9px; height: 5px;
+    border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+    transform: rotate(-45deg); margin-top: -2px;
+  }
+  .check-row .cr-txt { font-size: 13px; color: var(--fg); }
+  .check-row .cr-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* tech details */
+  .tech {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .tech summary {
+    list-style: none; cursor: pointer;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .tech summary::-webkit-details-marker { display: none; }
+  .tech summary .ico {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--border-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted);
+  }
+  .tech summary .ico svg { width: 14px; height: 14px; }
+  .tech summary .t { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--fg); }
+  .tech summary .s { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-left: 6px; letter-spacing: 0.06em; }
+  .tech summary .chev { margin-left: auto; color: var(--muted); transition: transform .2s; }
+  .tech summary .chev svg { width: 16px; height: 16px; }
+  .tech[open] summary .chev { transform: rotate(180deg); }
+  .tech .tech-body {
+    padding: 6px 16px 18px;
+    display: grid; grid-template-columns: 140px 1fr;
+    gap: 6px 16px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--fg);
+    border-top: 1px solid var(--border-soft);
+    padding-top: 14px;
+    margin-top: 4px;
+  }
+  .tech .tech-body .k { color: var(--muted); letter-spacing: 0.06em; }
+  .tech .tech-body .v { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+  /* sticky submit */
+  .submit-bar {
+    position: sticky; bottom: 0;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    padding: 14px 0;
+    margin-top: 36px;
+  }
+  .submit-bar .inner {
+    max-width: 720px; margin: 0 auto;
+    padding: 0 24px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .submit-bar .live-chat {
+    margin-right: auto;
+    font-size: 12px; color: var(--muted);
+  }
+  .submit-bar .live-chat a {
+    color: var(--fg); font-weight: 600; text-decoration: none;
+    border-bottom: 1px solid var(--fg);
+    padding-bottom: 1px;
+  }
+  .submit-bar .live-chat a:hover { color: var(--primary); border-color: var(--primary); }
+  .submit-bar .btn { padding: 11px 18px; }
+  .submit-bar .btn-primary[disabled] {
+    background: var(--border); color: var(--muted-soft); cursor: not-allowed;
+  }
+  .submit-bar .btn svg { width: 14px; height: 14px; }
+
+  /* live region */
+  .sr { position: absolute; left: -9999px; }
+</style>
+</head>
+<body data-screen-label="Kontakt support">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-credit" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="ic-alert" viewBox="0 0 24 24"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+    <symbol id="ic-key" viewBox="0 0 24 24"><path d="M21 2l-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/><path d="M15.5 7.5l3 3 3-3-3-3z"/></symbol>
+    <symbol id="ic-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></symbol>
+    <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+    <symbol id="ic-img" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></symbol>
+    <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-chev-d" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="ic-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+    <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="ic-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="4"/><line x1="15" y1="2" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="22"/><line x1="15" y1="20" x2="15" y2="22"/><line x1="20" y1="9" x2="22" y2="9"/><line x1="20" y1="14" x2="22" y2="14"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="2" y1="14" x2="4" y2="14"/></symbol>
+  </defs>
+</svg>
+
+<nav class="topnav">
+  <a href="Workbench v2.html" style="text-decoration:none;">
+    <img class="brand-img" src="assets/logo-primary-on-light.svg" alt="AK Golf" />
+  </a>
+  <div class="crumbs">
+    <a href="#">Innstillinger</a>
+    &nbsp;/&nbsp; <a href="#">Hjelp</a>
+    &nbsp;/&nbsp; <span class="current">Kontakt support</span>
+  </div>
+</nav>
+
+<div class="shell">
+
+  <div class="ph">
+    <span class="eyebrow">Støtte · Direkte kontakt</span>
+    <h1>Kontakt <em>support</em></h1>
+    <p class="sub">Beskriv problemet du opplever, så får vi det riktig første gang. Jo mer kontekst — desto raskere svar.</p>
+  </div>
+
+  <div class="sla" role="status" aria-live="polite">
+    <span class="pulse"></span>
+    <span class="label">Svartid</span>
+    <span class="val">~4 timer</span>
+    <span class="sep"></span>
+    <span class="label">Hverdager</span>
+    <span class="val">08:00–17:00</span>
+  </div>
+
+  <form class="form" id="supportForm" onsubmit="return submitForm(event)">
+
+    <!-- ===== 1. Kategori ===== -->
+    <section class="fsec">
+      <div class="fsec-h">
+        <span class="num">01</span>
+        <span class="t">Hva gjelder det?</span>
+      </div>
+      <div class="fsec-body">
+        <div class="cat-grid" role="radiogroup" aria-label="Kategori">
+
+          <label class="cat-card">
+            <input type="radio" name="kategori" value="booking" required>
+            <span class="ico"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-credit"/></svg></span>
+            <span class="nm">Booking &amp; betaling</span>
+            <span class="ex">Faktura, refunderinger, double-charge</span>
+            <span class="tick"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg></span>
+          </label>
+
+          <label class="cat-card">
+            <input type="radio" name="kategori" value="coach-meldinger" required>
+            <span class="ico"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg></span>
+            <span class="nm">Coach-meldinger</span>
+            <span class="ex">Mangler svar, varsler, vedlegg</span>
+            <span class="tick"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg></span>
+          </label>
+
+          <label class="cat-card">
+            <input type="radio" name="kategori" value="app-feil" required checked>
+            <span class="ico"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-alert"/></svg></span>
+            <span class="nm">App-feil / bug</span>
+            <span class="ex">Krasj, frys, layout-feil</span>
+            <span class="tick"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg></span>
+          </label>
+
+          <label class="cat-card">
+            <input type="radio" name="kategori" value="konto" required>
+            <span class="ico"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-key"/></svg></span>
+            <span class="nm">Konto &amp; login</span>
+            <span class="ex">Glemt passord, 2FA, sperret konto</span>
+            <span class="tick"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg></span>
+          </label>
+
+          <label class="cat-card">
+            <input type="radio" name="kategori" value="data-synk" required>
+            <span class="ico"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg></span>
+            <span class="nm">Data &amp; synk</span>
+            <span class="ex">GolfBox, TrackMan, Apple Health</span>
+            <span class="tick"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg></span>
+          </label>
+
+          <label class="cat-card">
+            <input type="radio" name="kategori" value="annet" required>
+            <span class="ico"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-help"/></svg></span>
+            <span class="nm">Annet</span>
+            <span class="ex">Generelle spørsmål, forslag</span>
+            <span class="tick"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg></span>
+          </label>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2. Detaljer ===== -->
+    <section class="fsec">
+      <div class="fsec-h">
+        <span class="num">02</span>
+        <span class="t">Beskriv problemet</span>
+      </div>
+      <div class="fsec-body">
+
+        <div class="field">
+          <label for="emne">Emne</label>
+          <input id="emne" class="input" type="text" name="emne" minlength="5" maxlength="100" required
+                 value="Live-økt fryser når jeg starter time-på"
+                 placeholder="F.eks. Live-økt fryser når jeg starter time-på">
+          <div class="meta-row"><span class="hint">Kort tittel — gjør det enklere å sortere.</span><span class="cnt" id="emne-cnt">47 / 100</span></div>
+        </div>
+
+        <div class="field">
+          <label for="besk">Beskrivelse</label>
+          <textarea id="besk" class="textarea" name="beskrivelse" minlength="20" maxlength="1000" required placeholder="Hva skjedde? Hva forventet du? Hvor og når oppstod problemet?">I går kveld krasjet appen tre ganger når jeg trykket Start på en putting-økt. Jeg fikk valgt drill og sett opp settene, men i det jeg trykket «Start time-på» frøs hele skjermen i ca. 5 sekunder før appen lukket seg.
+
+Skjedde på Iphone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.</textarea>
+          <div class="meta-row"><span class="hint">Inkluder steg du tok, hvilken side du var på, og tid/dato.</span><span class="cnt" id="besk-cnt">271 / 1000</span></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== 3. Vedlegg ===== -->
+    <section class="fsec">
+      <div class="fsec-h">
+        <span class="num">03</span>
+        <span class="t">Vedlegg</span>
+        <span class="opt">Valgfritt</span>
+      </div>
+      <div class="fsec-body">
+
+        <label class="dropzone" id="drop">
+          <input type="file" multiple accept="image/png,image/jpeg,application/pdf" style="display:none;" id="filein">
+          <span class="ico-up"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-upload"/></svg></span>
+          <span class="t">Slipp filer her eller <strong>velg fra enheten</strong></span>
+          <span class="s">JPG · PNG · PDF — maks 10 MB hver, opptil 3 filer</span>
+        </label>
+
+        <div class="files" id="files">
+          <!-- pre-filled examples -->
+          <div class="file-item">
+            <div class="thumb" style="background:linear-gradient(135deg,#005840 0%,#88B45A 100%);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-img"/></svg>
+            </div>
+            <div class="fi-meta">
+              <div class="fi-name">skjermbilde-1.png</div>
+              <div class="fi-sub"><span>847 KB</span><span>·</span><span style="color:var(--success);">Lastet opp</span></div>
+              <div style="height:3px; background:var(--border-soft); border-radius:2px; margin-top:6px; overflow:hidden;">
+                <div class="fi-bar"></div>
+              </div>
+            </div>
+            <button type="button" class="rm" aria-label="Fjern vedlegg"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg></button>
+          </div>
+          <div class="file-item">
+            <div class="thumb" style="background:linear-gradient(135deg,#1A4D2E 0%,#005840 100%);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-img"/></svg>
+            </div>
+            <div class="fi-meta">
+              <div class="fi-name">skjermbilde-2.png</div>
+              <div class="fi-sub"><span>1,2 MB</span><span>·</span><span style="color:var(--success);">Lastet opp</span></div>
+              <div style="height:3px; background:var(--border-soft); border-radius:2px; margin-top:6px; overflow:hidden;">
+                <div class="fi-bar"></div>
+              </div>
+            </div>
+            <button type="button" class="rm" aria-label="Fjern vedlegg"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg></button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== 4. Tilgang ===== -->
+    <section class="fsec">
+      <div class="fsec-h">
+        <span class="num">04</span>
+        <span class="t">Tilgang</span>
+      </div>
+      <div class="fsec-body">
+
+        <label class="check-row">
+          <input type="checkbox" name="tillat_profil_innsyn">
+          <div>
+            <div class="cr-txt">Tillat at support kan se profilen min</div>
+            <div class="cr-sub">Lar oss reprodusere problemet og sjekke planen din direkte. Du kan trekke tilgangen når som helst i «Personvern».</div>
+          </div>
+        </label>
+
+        <!-- auto-attached tech -->
+        <details class="tech">
+          <summary>
+            <span class="ico"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cpu"/></svg></span>
+            <span class="t">Tekniske detaljer</span>
+            <span class="s">Automatisk vedlagt — kun lest av support</span>
+            <span class="chev"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-d"/></svg></span>
+          </summary>
+          <div class="tech-body">
+            <span class="k">App-versjon</span><span class="v">0.9.4 (build 2026.05.18)</span>
+            <span class="k">Plattform</span><span class="v">iOS 18.4 · iPhone 15 Pro</span>
+            <span class="k">Sist innlogget</span><span class="v">19.05.2026 · 14:12</span>
+            <span class="k">Brukerkonto</span><span class="v">Markus Røinås Pedersen · A1</span>
+            <span class="k">Klubb</span><span class="v">GFGK · medlem #4082</span>
+            <span class="k">Region</span><span class="v">eu-north-1 · Oslo</span>
+            <span class="k">Tilkobling</span><span class="v">Wi-Fi · 5 ms</span>
+            <span class="k">Session-ID</span><span class="v">sess_8a2f4c91e7d6</span>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+  </form>
+</div>
+
+<!-- sticky submit -->
+<div class="submit-bar">
+  <div class="inner">
+    <div class="live-chat">Eller <a href="#">åpne live-chat</a> — vanligvis svar innen 2 min</div>
+    <button type="button" class="btn btn-outline">Avbryt</button>
+    <button type="submit" form="supportForm" class="btn btn-primary" id="submit-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-send"/></svg>
+      Send melding
+    </button>
+  </div>
+</div>
+
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+  // counters
+  function bindCounter(id, max) {
+    const el = document.getElementById(id);
+    const cnt = document.getElementById(id+'-cnt');
+    if (!el || !cnt) return;
+    const upd = () => {
+      const n = el.value.length;
+      cnt.textContent = `${n} / ${max}`;
+      cnt.classList.toggle('warn', n > max * 0.8 && n <= max);
+      cnt.classList.toggle('over', n > max);
+    };
+    el.addEventListener('input', upd);
+    upd();
+  }
+  bindCounter('emne', 100);
+  bindCounter('besk', 1000);
+
+  // file remove
+  document.querySelectorAll('.file-item .rm').forEach(btn => {
+    btn.addEventListener('click', () => btn.closest('.file-item').remove());
+  });
+
+  // dropzone visual
+  const drop = document.getElementById('drop');
+  ['dragover','dragenter'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { drop.classList.remove('over'); }));
+
+  function submitForm(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true; btn.textContent = 'Sender…';
+    setTimeout(() => {
+      document.getElementById('live').textContent = 'Melding sendt. Ticket-ID #PHQ-4082.';
+      btn.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg> Sendt — ticket #PHQ-4082';
+      btn.style.background = 'var(--success)';
+      btn.style.color = '#fff';
+    }, 900);
+    return false;
+  }
+</script>
+</body>
+</html>
