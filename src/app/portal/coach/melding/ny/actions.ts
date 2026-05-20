@@ -1,0 +1,56 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import type { Prisma } from "@/generated/prisma/client";
+import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { prisma } from "@/lib/prisma";
+
+export type NyMeldingInput = {
+  recipientId: string;
+  subject: string;
+  body: string;
+};
+
+export async function sendMessage(input: NyMeldingInput) {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("unauthenticated");
+  if (user.tier === "GRATIS") throw new Error("upgrade-required");
+  if (!input.subject.trim()) throw new Error("missing-subject");
+  if (!input.body.trim()) throw new Error("missing-body");
+
+  const session = await prisma.coachingSession.create({
+    data: {
+      userId: user.id,
+      coachId: input.recipientId,
+      kind: "DIRECT",
+      messages: [
+        {
+          role: "user",
+          content: `**${input.subject.trim()}**\n\n${input.body.trim()}`,
+          ts: new Date().toISOString(),
+        },
+      ] as Prisma.InputJsonValue[],
+    },
+  });
+
+  revalidatePath("/portal/coach/melding");
+  redirect(`/portal/coach/melding/${session.id}`);
+}
+
+// Stub for Vercel Blob — kontrakten tas i bruk når Blob er konfigurert.
+export async function uploadMessageAttachment(formData: FormData): Promise<{
+  url: string;
+  name: string;
+  size: number;
+}> {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("unauthenticated");
+  void formData;
+  // TODO: integrer med @vercel/blob put() — returner ekte URL.
+  return {
+    url: "/placeholder.png",
+    name: "screenshot-trackman-1422.png",
+    size: 240_000,
+  };
+}
