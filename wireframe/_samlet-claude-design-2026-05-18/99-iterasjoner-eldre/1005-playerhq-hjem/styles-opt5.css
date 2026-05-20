@@ -1,0 +1,213 @@
+/* Option 5 — Game Map. Stablet pyramide (5 tiers) med offisielle AK-farger. */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:ital,wght@0,500;0,600;1,400&family=JetBrains+Mono:wght@500;600&display=swap');
+
+/* ============================================================
+   Pyramide layout (felles for alle varianter)
+   FYS bredest nederst → TURN smalest øverst.
+   --w styrer tier-bredde, --p styrer fyllgrad i %.
+   ============================================================ */
+#frame-opt5 .o5-pyramide {
+  width: 420px; padding: 16px 0 0;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 7px;
+  position: relative;
+}
+
+#frame-opt5 .o5-tier {
+  width: var(--w); height: 48px; border-radius: 10px;
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.08em;
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 200ms ease;
+  cursor: default;
+}
+#frame-opt5 .o5-tier:hover { filter: brightness(1.04); }
+#frame-opt5 .o5-tier::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: var(--p);
+  background: var(--tier-fill);
+  z-index: 0;
+}
+#frame-opt5 .o5-tier > span,
+#frame-opt5 .o5-tier > b { position: relative; z-index: 1; }
+#frame-opt5 .o5-tier > b {
+  font-family: ui-monospace, monospace;
+  font-size: 14px; font-weight: 600; letter-spacing: 0.02em;
+}
+#frame-opt5 .o5-tier > b::after { content: "%"; font-size: 9px; opacity: 0.55; margin-left: 1px; font-weight: 500; }
+
+#frame-opt5 .o5-pyr-foot {
+  margin-top: 18px;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+  position: relative;
+}
+#frame-opt5 .o5-pyr-foot b { font-size: 30px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-family: ui-monospace, monospace; }
+#frame-opt5 .o5-pyr-foot small { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 8px; opacity: 0.7; }
+
+/* ============================================================
+   Wireframe sub-tab — strict B&W
+   ============================================================ */
+#frame-opt5.wireframe .o5-tier { background: #eee; color: #333; --tier-fill: #999; border: 1px solid #ccc; }
+#frame-opt5.wireframe .o5-tier > b { color: #000; }
+#frame-opt5.wireframe .o5-pyr-foot b { color: #000; }
+#frame-opt5.wireframe .o5-pyr-foot small { color: #666; }
+
+/* ============================================================
+   Browser chrome
+   ============================================================ */
+#frame-opt5.clean .browser-dots span:nth-child(1),
+#frame-opt5.polished .browser-dots span:nth-child(1) { background: #ff5f57; }
+#frame-opt5.clean .browser-dots span:nth-child(2),
+#frame-opt5.polished .browser-dots span:nth-child(2) { background: #febc2e; }
+#frame-opt5.clean .browser-dots span:nth-child(3),
+#frame-opt5.polished .browser-dots span:nth-child(3) { background: #28c840; }
+
+/* ============================================================
+   CLEAN — offisielle AK Golf pyramide-farger
+   FYS #005840 · TEK #1A7D56 · SLAG #D1F843 · SPILL #B8852A · TURN #5E5C57
+   ============================================================ */
+#frame-opt5.clean .browser-content { background: #FAFAF7; color: #0A1F17; }
+#frame-opt5.clean .o5-eyebrow { color: #6B7280; }
+#frame-opt5.clean .o5-greeting { color: #0A1F17; }
+#frame-opt5.clean .o5-greeting em { color: #005840; }
+
+/* Hver tier: tonal "track"-bakgrunn + solid farget fyll for completion%.
+   Tekst skifter farge ved tier-fill-grensen via mix-blend i pseudo (forenklet:
+   bruker hvit tekst over fylt del og tier-mørk farge over track-del — løsning
+   her er "alltid hvit på fylt, alltid mørk på track" gjennom et 2-lags trick) */
+#frame-opt5.clean .o5-tier-fys   { background: rgba(0,88,64,0.10);    color: #FFFFFF; --tier-fill: #005840; }
+#frame-opt5.clean .o5-tier-tek   { background: rgba(26,125,86,0.12);  color: #FFFFFF; --tier-fill: #1A7D56; }
+#frame-opt5.clean .o5-tier-slag  { background: rgba(209,248,67,0.28); color: #2F3B0E; --tier-fill: #D1F843; }
+#frame-opt5.clean .o5-tier-spill { background: rgba(184,133,42,0.14); color: #FFFFFF; --tier-fill: #B8852A; }
+#frame-opt5.clean .o5-tier-turn  { background: rgba(94,92,87,0.14);   color: #FFFFFF; --tier-fill: #5E5C57; }
+#frame-opt5.clean .o5-tier-fys   > b,
+#frame-opt5.clean .o5-tier-tek   > b,
+#frame-opt5.clean .o5-tier-spill > b,
+#frame-opt5.clean .o5-tier-turn  > b { color: #FFFFFF; }
+#frame-opt5.clean .o5-tier-slag  > b { color: #2F3B0E; }
+#frame-opt5.clean .o5-pyr-foot b { color: #005840; }
+#frame-opt5.clean .o5-pyr-foot small { color: #6B7280; }
+
+#frame-opt5.clean .o5-orb { background: #FFFFFF; border-color: #E5E7EB; color: #0A1F17; }
+#frame-opt5.clean .o5-orb .o5-label { color: #6B7280; }
+#frame-opt5.clean .o5-strong { color: #0A1F17; }
+#frame-opt5.clean .o5-meta { color: #6B7280; }
+#frame-opt5.clean .o5-bignum { color: #005840; }
+#frame-opt5.clean .o5-cta { background: #005840; color: #FFFFFF; }
+#frame-opt5.clean .o5-bl .o5-grid i { background: #E5E7EB; }
+#frame-opt5.clean .o5-bl .o5-grid i.on { background: #005840; }
+#frame-opt5.clean .o5-foot { color: #6B7280; border-top-color: #E5E7EB; }
+#frame-opt5.clean .o5-foot a { color: #0A1F17; }
+#frame-opt5.clean .o5-foot span { color: #D1D5DB; }
+
+/* ============================================================
+   POLISHED — gradients, depth, motion
+   ============================================================ */
+#frame-opt5.polished .browser-content { background: #FAFAF7; color: #0A1F17; font-family: 'Inter', -apple-system, sans-serif; }
+#frame-opt5.polished .o5-eyebrow { color: #6B7280; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+#frame-opt5.polished .o5-greeting { font-family: 'Inter Tight', sans-serif; color: #0A1F17; font-weight: 500; }
+#frame-opt5.polished .o5-greeting em { font-family: 'Inter Tight', sans-serif; font-style: italic; color: #005840; font-weight: 400; }
+
+/* Tier-bakgrunner: subtilt løftet med skygge */
+#frame-opt5.polished .o5-tier {
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,88,64,0.05);
+  cursor: pointer;
+}
+#frame-opt5.polished .o5-tier > b { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+#frame-opt5.polished .o5-tier:hover { transform: translateX(0) scale(1.02); }
+
+#frame-opt5.polished .o5-tier-fys   { background: rgba(0,88,64,0.10);   color: #003D2C; --tier-fill: linear-gradient(90deg, #005840 0%, #006B4D 100%); }
+#frame-opt5.polished .o5-tier-tek   { background: rgba(26,125,86,0.12); color: #0F4F37; --tier-fill: linear-gradient(90deg, #1A7D56 0%, #229066 100%); }
+#frame-opt5.polished .o5-tier-slag  { background: rgba(209,248,67,0.28);color: #5C6B0E; --tier-fill: linear-gradient(90deg, #B8C82E 0%, #D1F843 100%); }
+#frame-opt5.polished .o5-tier-spill { background: rgba(184,133,42,0.14);color: #6F4F18; --tier-fill: linear-gradient(90deg, #B8852A 0%, #D19A35 100%); }
+#frame-opt5.polished .o5-tier-turn  { background: rgba(94,92,87,0.14);  color: #2F2E2C; --tier-fill: linear-gradient(90deg, #5E5C57 0%, #767470 100%); }
+
+#frame-opt5.polished .o5-tier::before {
+  background: var(--tier-fill);
+  box-shadow: 0 0 12px rgba(0,88,64,0.18);
+}
+#frame-opt5.polished .o5-tier-slag::before { box-shadow: 0 0 14px rgba(209,248,67,0.45); }
+
+#frame-opt5.polished .o5-tier > b { color: #FFFFFF; }
+#frame-opt5.polished .o5-tier-slag > b { color: #2F3B0E; }
+
+/* Stagger entry-animasjon */
+#frame-opt5.polished .o5-tier { animation: o5-rise 600ms ease-out both; }
+#frame-opt5.polished .o5-tier-fys   { animation-delay: 0ms; }
+#frame-opt5.polished .o5-tier-tek   { animation-delay: 80ms; }
+#frame-opt5.polished .o5-tier-slag  { animation-delay: 160ms; }
+#frame-opt5.polished .o5-tier-spill { animation-delay: 240ms; }
+#frame-opt5.polished .o5-tier-turn  { animation-delay: 320ms; }
+@keyframes o5-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#frame-opt5.polished .o5-pyr-foot b { color: #005840; font-family: 'JetBrains Mono', monospace; }
+#frame-opt5.polished .o5-pyr-foot small { color: #6B7280; font-family: 'Inter', sans-serif; }
+#frame-opt5.polished .o5-pyr-foot { position: relative; }
+#frame-opt5.polished .o5-pyr-foot::after {
+  content: ""; position: absolute; top: 4px; right: -14px;
+  width: 8px; height: 8px; border-radius: 50%; background: #D1F843;
+  box-shadow: 0 0 0 0 rgba(209,248,67,0.6); animation: o5-pulse 2s infinite;
+}
+@keyframes o5-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(209,248,67,0.6); }
+  70%  { box-shadow: 0 0 0 10px rgba(209,248,67,0); }
+  100% { box-shadow: 0 0 0 0 rgba(209,248,67,0); }
+}
+
+#frame-opt5.polished .o5-orb {
+  background: #FFFFFF;
+  border: 1px solid rgba(0,88,64,0.08);
+  color: #0A1F17;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,88,64,0.06);
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+#frame-opt5.polished .o5-orb:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 16px 36px rgba(0,88,64,0.10);
+}
+#frame-opt5.polished .o5-orb .o5-label { color: #6B7280; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.12em; }
+#frame-opt5.polished .o5-strong { font-family: 'Inter Tight', sans-serif; font-weight: 600; }
+#frame-opt5.polished .o5-meta { color: #6B7280; }
+#frame-opt5.polished .o5-bignum { font-family: 'JetBrains Mono', monospace; color: #005840; }
+#frame-opt5.polished .o5-tl { position: relative; }
+#frame-opt5.polished .o5-tl::before {
+  content: ""; position: absolute; left: 0; top: 16px; bottom: 16px; width: 3px;
+  background: linear-gradient(180deg, #D1F843 0%, #005840 100%);
+  border-radius: 0 2px 2px 0;
+}
+#frame-opt5.polished .o5-cta {
+  background: linear-gradient(135deg, #005840 0%, #00432F 100%);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0,88,64,0.25);
+  transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+}
+#frame-opt5.polished .o5-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,88,64,0.35); }
+#frame-opt5.polished .o5-bl .o5-grid i { background: #E5E7EB; transition: background 200ms ease; }
+#frame-opt5.polished .o5-bl .o5-grid i.on { background: #005840; }
+#frame-opt5.polished .o5-foot { color: #6B7280; border-top-color: rgba(0,88,64,0.10); font-family: 'Inter', sans-serif; }
+#frame-opt5.polished .o5-foot a { color: #0A1F17; transition: color 150ms ease; }
+#frame-opt5.polished .o5-foot a:hover { color: #005840; }
+#frame-opt5.polished .o5-foot span { color: #D1D5DB; }
+
+@media (prefers-reduced-motion: reduce) {
+  #frame-opt5.polished .o5-tier,
+  #frame-opt5.polished .o5-pyr-foot::after { animation: none; }
+}
+
+/* ============================================================
+   Self-reveal (N=5)
+   ============================================================ */
+#frame-opt5-tabs .sub-tab-badge { display: none; }
+#frame-opt5-tabs .sub-tab-btn[data-variant="clean"] svg { color: #1565C0; }
+#frame-opt5-tabs .sub-tab-btn[data-variant="polished"] svg { color: #2E7D32; }
+#frame-opt5-tabs .sub-tab-btn[data-variant="clean"]:hover svg { color: #1976D2; }
+#frame-opt5-tabs .sub-tab-btn[data-variant="polished"]:hover svg { color: #43A047; }
+#frame-opt5-tabs .sub-tab-btn.active[data-variant="clean"] svg { color: #0D47A1; }
+#frame-opt5-tabs .sub-tab-btn.active[data-variant="polished"] svg { color: #1B5E20; }

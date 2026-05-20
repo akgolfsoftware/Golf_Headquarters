@@ -1,0 +1,278 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Spiller-detalj · Markus R. Pedersen</title>
+<style>
+  .tabs-row { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .tab { padding: 12px 18px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; border: 0; background: transparent; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--primary); border-bottom-color: var(--accent); font-weight: 600; }
+
+  .mini-heatmap { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); padding: 16px 20px; }
+  .mh-rows { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+  .mh-row { display: grid; grid-template-columns: 56px repeat(4, 1fr) 50px; gap: 4px; align-items: center; }
+  .mh-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); font-weight: 600; }
+  .mh-cell { aspect-ratio: 2.4; border-radius: 4px; min-height: 22px; }
+  .mh-total { font-family: var(--font-mono); font-size: 11px; font-weight: 600; text-align: right; }
+  .mh-axis { display: grid; grid-template-columns: 56px repeat(4, 1fr) 50px; gap: 4px; font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); margin-top: 8px; }
+  .mh-axis span { text-align: center; }
+
+  .agent-strip { display: flex; gap: 8px; align-items: center; padding: 12px 16px; background: rgba(209,248,67,0.14); border: 1px solid rgba(184,200,46,0.30); border-radius: var(--r-card); margin-top: 16px; }
+  .agent-strip-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: var(--text-inverse); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; font-family: var(--font-mono); }
+
+  .quick-action { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 120ms ease; border: 1px solid var(--border); background: var(--bg); margin-bottom: 6px; }
+  .quick-action:hover { background: rgba(0,88,64,0.04); border-color: var(--primary); }
+  .quick-action-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-elev); border: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .quick-action b { font-size: 13px; }
+  .quick-action small { font-size: 11px; color: var(--text-secondary); display: block; }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="hub.html">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="plans.html">Treningsplaner</a>
+      <a href="elever.html" class="active">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="approvals.html">Godkjenninger</a>
+      <a href="bookings.html">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="finance.html">Økonomi</a>
+      <a href="facilities.html">Fasiliteter</a>
+      <a href="settings-bruker.html">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="dash-hero">
+      <div class="dash-hero-photo">
+        <div class="dash-hero-avatar">M</div>
+        <span class="dash-hero-status"></span>
+      </div>
+      <div class="dash-hero-text">
+        <span class="page-eyebrow">Spiller-detalj · hurtigblikk</span>
+        <h1 class="page-title"><em>Markus</em> R. Pedersen</h1>
+        <div class="dash-hero-meta">A2 · HCP <b>7,4</b> · GFGK · siden mars 2024 · PRO · <b>17 år</b></div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <a class="btn btn-ghost" href="360-profil.html" style="text-decoration:none;">Se 360-profil</a>
+        <button class="btn btn-primary">Book økt</button>
+      </div>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Akkurat nå</span>
+      <button class="action-item action-item-success">Plan: <b>Sørlandsåpent</b> aktiv</button>
+      <button class="action-item">Siste økt <b>i går</b></button>
+      <button class="action-item">Neste økt <b>i dag 14:00</b></button>
+      <button class="action-item action-item-warn"><b>1</b> agent-forslag</button>
+    </div>
+
+    <div class="tabs-row">
+      <button class="tab active">Status</button>
+      <button class="tab">Plan</button>
+      <button class="tab">Sessions</button>
+      <button class="tab">Tester</button>
+      <button class="tab">Tournaments</button>
+      <button class="tab">Notater</button>
+    </div>
+
+    <div class="cal-with-drawer">
+      <div>
+        <!-- Stat-rich rad -->
+        <section class="kpi-strip" style="margin-bottom: 16px;">
+          <div class="stat-rich">
+            <div class="stat-rich-head"><span class="stat-rich-label">HCP</span><span class="stat-rich-delta stat-rich-delta-up">−0,8</span></div>
+            <div class="stat-rich-value">7,4</div>
+            <div class="stat-rich-sub">90d trend ned · A2-band</div>
+          </div>
+          <div class="stat-rich">
+            <div class="stat-rich-head"><span class="stat-rich-label">SG total · 30d</span><span class="stat-rich-delta stat-rich-delta-up">+0,38</span></div>
+            <div class="stat-rich-value">+1,24</div>
+            <div class="stat-rich-sub">snitt 6 runder</div>
+          </div>
+          <div class="stat-rich">
+            <div class="stat-rich-head"><span class="stat-rich-label">Økter · 7d</span><span class="stat-rich-delta stat-rich-delta-flat">→ 0</span></div>
+            <div class="stat-rich-value">8</div>
+            <div class="stat-rich-sub">av 8 mål · 100 %</div>
+          </div>
+          <div class="stat-rich">
+            <div class="stat-rich-head"><span class="stat-rich-label">Plan-fremdrift</span><span class="stat-rich-delta stat-rich-delta-up">+2 uke</span></div>
+            <div class="stat-rich-value">68 %</div>
+            <div class="stat-rich-sub">13/19 økter · 21d til peak</div>
+          </div>
+        </section>
+
+        <!-- Pyramide-tiers -->
+        <section class="card" style="padding:20px 24px; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+            <div>
+              <div class="card-label">Pyramide · uke 19</div>
+              <h3 style="margin-top:4px;">Hvor er Markus akkurat nå</h3>
+            </div>
+            <span class="pill pill-success">SLAG topp</span>
+          </div>
+          <div class="pyr-tiers">
+            <div class="pyr-tier pyr-tier-turn" style="--w: 28%; --p: 30%;"><span>TURN</span><b>30</b></div>
+            <div class="pyr-tier pyr-tier-spill" style="--w: 46%; --p: 55%;"><span>SPILL</span><b>55</b></div>
+            <div class="pyr-tier pyr-tier-slag" style="--w: 64%; --p: 90%;"><span>SLAG</span><b>90</b></div>
+            <div class="pyr-tier pyr-tier-tek" style="--w: 82%; --p: 62%;"><span>TEK</span><b>62</b></div>
+            <div class="pyr-tier pyr-tier-fys" style="--w: 100%; --p: 80%;"><span>FYS</span><b>80</b></div>
+          </div>
+        </section>
+
+        <!-- Heatmap mini -->
+        <section class="mini-heatmap" style="margin-bottom: 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <div class="card-label">Treningsvolum · 4 uker</div>
+              <h3 style="margin-top:4px;">Hvor har fokus ligget?</h3>
+            </div>
+            <span class="num" style="font-size:11px; color:var(--text-secondary);">u18–u21</span>
+          </div>
+          <div class="mh-rows">
+            <div class="mh-row">
+              <span class="mh-label">FYS</span>
+              <div class="mh-cell hm-fys-3"></div>
+              <div class="mh-cell hm-fys-2"></div>
+              <div class="mh-cell hm-fys-2"></div>
+              <div class="mh-cell hm-fys-1 hm-current-week"></div>
+              <span class="mh-total">9 t</span>
+            </div>
+            <div class="mh-row">
+              <span class="mh-label">TEK</span>
+              <div class="mh-cell hm-tek-3"></div>
+              <div class="mh-cell hm-tek-3"></div>
+              <div class="mh-cell hm-tek-4"></div>
+              <div class="mh-cell hm-tek-2 hm-current-week"></div>
+              <span class="mh-total">14 t</span>
+            </div>
+            <div class="mh-row">
+              <span class="mh-label">SLAG</span>
+              <div class="mh-cell hm-slag-3"></div>
+              <div class="mh-cell hm-slag-3"></div>
+              <div class="mh-cell hm-slag-4"></div>
+              <div class="mh-cell hm-slag-5 hm-current-week"></div>
+              <span class="mh-total">18 t</span>
+            </div>
+            <div class="mh-row">
+              <span class="mh-label">SPILL</span>
+              <div class="mh-cell hm-spill-2"></div>
+              <div class="mh-cell hm-spill-3"></div>
+              <div class="mh-cell hm-spill-3"></div>
+              <div class="mh-cell hm-spill-5 hm-current-week"></div>
+              <span class="mh-total">12 t</span>
+            </div>
+            <div class="mh-row">
+              <span class="mh-label">TURN</span>
+              <div class="mh-cell hm-empty"></div>
+              <div class="mh-cell hm-turn-2"></div>
+              <div class="mh-cell hm-turn-3"></div>
+              <div class="mh-cell hm-turn-2 hm-current-week"></div>
+              <span class="mh-total">5 t</span>
+            </div>
+          </div>
+          <div class="mh-axis">
+            <span></span>
+            <span>u18</span><span>u19</span><span>u20</span><span style="color:var(--primary); font-weight:700;">u21</span>
+            <span>SUM</span>
+          </div>
+          <p style="font-size:11px; color:var(--text-secondary); margin-top:10px; line-height:1.5;">SLAG + SPILL eksploderer denne uka — Bjaavann sandbase-tilpasning. Riktig prioritering før peak.</p>
+        </section>
+
+        <!-- Aktiv plan-link -->
+        <section class="card-featured" style="padding:18px 22px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div class="card-label">Aktiv plan</div>
+            <h3 style="margin-top:4px;">Sørlandsåpent-oppkjøring 2026</h3>
+            <p style="font-size:12px; color:var(--text-secondary); margin-top:4px;">Fase 3 av 5 · Spesifikk · Bjaavann · 12.05–04.06</p>
+            <div style="height:6px; background:var(--border); border-radius:3px; margin-top:10px; width:240px;">
+              <div style="width:68%; height:100%; background:var(--primary); border-radius:3px;"></div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="num" style="font-size:24px; font-weight:600;">13<span style="font-size:14px; color:var(--text-secondary);">/19</span></div>
+            <div style="font-size:11px; color:var(--text-secondary);">økter ferdig</div>
+            <button class="btn btn-primary" style="margin-top:8px; padding:6px 14px; font-size:12px;">Åpne plan →</button>
+          </div>
+        </section>
+
+        <!-- Agent-forslag -->
+        <div class="agent-strip">
+          <span class="agent-strip-icon">A</span>
+          <div style="flex:1; font-size:12px;"><b>Test-agent foreslår:</b> reduser FYS-volum i taper-uka. Begrunnelse: HRV-trend +8 % (god restitusjon).</div>
+          <button class="btn btn-ghost" style="padding:6px 14px; font-size:12px;">Avvis</button>
+          <button class="btn btn-primary" style="padding:6px 14px; font-size:12px;">Godkjenn</button>
+        </div>
+      </div>
+
+      <!-- DRAWER: coach-handlinger -->
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div>
+            <div class="drawer-meta">Coach-handlinger</div>
+            <h3>Markus R. Pedersen</h3>
+            <div class="drawer-meta" style="margin-top:4px; text-transform:none; letter-spacing:0;">17 år · junior · A2 PRO</div>
+            <div style="margin-top:8px; display:flex; gap:6px;">
+              <span class="pill pill-success">På plan</span>
+              <span class="pill pill-info">Aktiv nå</span>
+            </div>
+          </div>
+          <button class="drawer-close" title="Lukk">×</button>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Hurtighandlinger</div>
+          <div class="quick-action">
+            <span class="quick-action-icon">→</span>
+            <div><b>Send melding</b><small>Direkte til Markus</small></div>
+          </div>
+          <div class="quick-action">
+            <span class="quick-action-icon">+</span>
+            <div><b>Book økt</b><small>Ledig: i morgen 13:00, 16:00</small></div>
+          </div>
+          <div class="quick-action">
+            <span class="quick-action-icon">↻</span>
+            <div><b>Endre plan</b><small>Sørlandsåpent-oppkjøring · fase 3</small></div>
+          </div>
+          <div class="quick-action">
+            <span class="quick-action-icon">A</span>
+            <div><b>Endre kategori</b><small>Nå A2 · vurder A1 etter Sørlandsåpent</small></div>
+          </div>
+          <div class="quick-action">
+            <span class="quick-action-icon" style="color:var(--danger); border-color:rgba(239,68,68,0.30);">!</span>
+            <div><b>Marker skadet</b><small>Pause plan og varsle agent</small></div>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Foreldre-kontakt</div>
+          <div style="font-size:12px; line-height:1.6;">
+            <div style="padding:6px 0; display:flex; justify-content:space-between;"><span><b>Stine Pedersen</b><br><small style="color:var(--text-secondary);">Mor · primærkontakt</small></span><span class="num" style="font-size:11px; color:var(--text-secondary);">+47 922 11 553</span></div>
+            <div style="padding:6px 0; display:flex; justify-content:space-between;"><span><b>Trond R. Pedersen</b><br><small style="color:var(--text-secondary);">Far</small></span><span class="num" style="font-size:11px; color:var(--text-secondary);">+47 481 22 904</span></div>
+          </div>
+          <button class="btn btn-ghost" style="margin-top:8px; padding:6px 14px; font-size:12px; width:100%;">Send foreldre-oppdatering</button>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Sist coach-notat</div>
+          <div style="background:var(--bg); padding:12px; border-radius:8px; border-left:3px solid var(--primary); font-size:12px; line-height:1.5;">
+            «Putt-formen er rå nå — vi bruker neste økt på pitch i stedet. Bjaavann-bunkere fortsatt litt usikre, må jobbe lav trajectory ut av sand neste uke.»
+            <div style="margin-top:8px; font-family:var(--font-mono); font-size:10px; color:var(--text-secondary);">— Anders · i går 16:42</div>
+          </div>
+        </div>
+
+        <div class="drawer-section" style="padding-bottom:0;">
+          <a href="#" style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--bg); border-radius:8px; border:1px solid var(--border); text-decoration:none; color:var(--text); font-size:13px; font-weight:600;">
+            <span>Se 360-profil</span>
+            <span style="color:var(--primary);">→</span>
+          </a>
+          <p style="font-size:11px; color:var(--text-secondary); margin-top:6px; line-height:1.5;">Full deep-dive: SG-historikk, alle tester, alle turneringer, hele plan-loggen og mental-vurderinger.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>

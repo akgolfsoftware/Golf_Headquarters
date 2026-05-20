@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>AK Golf · komplett planleggingsflyt</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/dark-shell.css">
+<style>
+  body { min-width: 1280px; background: var(--bg-deep); }
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 56px 48px 80px;
+  }
+
+  .hero {
+    display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: end;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 600 11px/1 var(--font-sans); letter-spacing: .12em;
+    text-transform: uppercase; color: var(--brand-accent);
+    margin-bottom: 18px;
+  }
+  .hero .eyebrow .dt { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-accent); box-shadow: 0 0 8px var(--brand-accent); }
+  .hero h1 {
+    margin: 0;
+    font: 600 52px/1.1 var(--font-tight);
+    letter-spacing: -.025em; color: var(--ink-dk);
+    text-wrap: balance;
+  }
+  .hero h1 em {
+    font-style: italic; font-weight: 400; color: var(--ink-dk-muted);
+    display: block;
+  }
+  .hero .sub {
+    margin-top: 22px;
+    font: 400 17px/1.55 var(--font-tight);
+    color: var(--ink-dk-muted);
+    max-width: 620px;
+  }
+  .hero-meta {
+    display: grid; gap: 20px;
+    padding: 22px 24px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    min-width: 280px;
+  }
+  .hero-meta .row { display: flex; justify-content: space-between; font-size: 12px; }
+  .hero-meta .row .k { font: 500 10px/1 var(--font-sans); letter-spacing: .10em; text-transform: uppercase; color: var(--ink-dk-subtle); }
+  .hero-meta .row .v { font: 500 12px/1 var(--font-mono); color: var(--ink-dk); }
+  .hero-meta .row .v.acc { color: var(--brand-accent); }
+
+  .section-eye {
+    font: 600 11px/1 var(--font-sans); letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-dk-subtle);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-eye::before, .section-eye::after {
+    content: ""; flex: 1; height: 1px; background: var(--border-soft);
+  }
+  .section-eye::after { display: none; }
+
+  /* Card grid */
+  .grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px;
+    margin-bottom: 48px;
+  }
+  .grid.solo { grid-template-columns: 1fr 1fr; }
+  .card-link {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex; flex-direction: column;
+    transition: border-color 200ms, transform 200ms;
+  }
+  .card-link:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+
+  .preview {
+    aspect-ratio: 16 / 8;
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Card header with idx */
+  .card-h {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding: 18px 22px 6px;
+  }
+  .card-h .idx {
+    font: 600 11px/1 var(--font-mono); color: var(--brand-accent);
+    letter-spacing: .12em;
+  }
+  .card-h .kbd {
+    font: 600 10px/1 var(--font-mono);
+    padding: 4px 8px; border-radius: 5px;
+    background: var(--bg-elev-2); color: var(--ink-dk-muted);
+    border: 1px solid var(--border);
+  }
+  .card-body { padding: 6px 22px 22px; }
+  .card-body h3 {
+    margin: 0 0 6px;
+    font: 600 22px/1.15 var(--font-tight);
+    letter-spacing: -.015em;
+    color: var(--ink-dk);
+  }
+  .card-body h3 em { font-style: italic; font-weight: 400; color: var(--ink-dk-muted); }
+  .card-body p {
+    margin: 0;
+    font: 400 13.5px/1.5 var(--font-sans);
+    color: var(--ink-dk-muted);
+  }
+  .card-tags {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px;
+  }
+  .tag {
+    font: 600 9px/1 var(--font-mono); letter-spacing: .06em;
+    padding: 4px 8px; border-radius: 4px;
+    background: var(--bg-elev-2); color: var(--ink-dk-muted);
+    text-transform: uppercase;
+  }
+  .tag.acc { color: var(--brand-accent); background: rgba(209,248,67,0.08); }
+  .tag.mod { color: var(--status-warn); background: rgba(244,196,48,0.10); }
+
+  /* Inline preview SVGs */
+  .pv-year {
+    display: grid; grid-template-columns: 64px repeat(12, 1fr); gap: 1px;
+    width: 80%; padding: 16px;
+    border-radius: 8px;
+    background: var(--bg-surface);
+  }
+  .pv-year .row { display: contents; }
+  .pv-year .pl {
+    background: var(--bg-elev-2); border-radius: 3px;
+    padding: 2px 4px; font: 600 7px/1 var(--font-mono); color: var(--ink-dk-muted);
+    align-self: center;
+  }
+  .pv-year .blk { height: 12px; border-radius: 2px; }
+  .pv-year .blk.g { background: var(--periode-grunn); }
+  .pv-year .blk.s { background: var(--periode-spes); }
+  .pv-year .blk.t { background: var(--periode-turn); }
+  .pv-year .blk.e { background: var(--bg-elev); }
+
+  .pv-month {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;
+    width: 70%; padding: 12px;
+  }
+  .pv-month .d {
+    height: 30px; border-radius: 3px;
+    background: var(--bg-elev); position: relative;
+    display: flex; align-items: flex-end; padding: 2px;
+  }
+  .pv-month .d.t { background: rgba(209,248,67,0.15); box-shadow: inset 0 0 0 1px var(--brand-accent); }
+  .pv-month .d .b { width: 100%; height: 3px; border-radius: 2px; background: var(--pyr-tek-d); margin-bottom: 1px; }
+  .pv-month .d .b.fys { background: var(--pyr-fys-d); }
+  .pv-month .d .b.slag { background: var(--pyr-slag-d); }
+  .pv-month .d .b.spill { background: var(--pyr-spill-d); }
+  .pv-month .d .b.turn { background: var(--pyr-turn-d); }
+
+  .pv-week {
+    display: grid; grid-template-columns: 32px repeat(7, 1fr); gap: 2px;
+    width: 80%; padding: 14px;
+  }
+  .pv-week .hr { background: var(--bg-elev); border-radius: 2px; height: 18px; }
+  .pv-week .col-slot { background: var(--bg-elev); border-radius: 2px; height: 18px; position: relative; }
+  .pv-week .ev {
+    position: absolute; left: 1px; right: 1px;
+    border-radius: 2px;
+    background: var(--pyr-tek-d);
+  }
+
+  .pv-day {
+    width: 80%; padding: 14px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .pv-day .row {
+    display: grid; grid-template-columns: 30px 1fr; gap: 8px; align-items: center;
+  }
+  .pv-day .row .t { font: 500 9px/1 var(--font-mono); color: var(--ink-dk-subtle); text-align: right; }
+  .pv-day .row .b {
+    background: rgba(46,140,106,0.25); border-radius: 4px;
+    box-shadow: inset 3px 0 0 var(--pyr-tek-d);
+    height: 22px;
+  }
+  .pv-day .row .b.slag.live {
+    background: var(--brand-accent);
+    box-shadow: 0 0 0 1px var(--brand-accent), 0 0 16px rgba(209,248,67,0.3);
+  }
+  .pv-day .row .b.fys { background: rgba(22,163,74,0.25); box-shadow: inset 3px 0 0 var(--pyr-fys-d); }
+  .pv-day .row .b.slag { background: rgba(209,248,67,0.18); box-shadow: inset 3px 0 0 var(--pyr-slag-d); }
+
+  .pv-modal {
+    width: 78%; padding: 18px;
+    border-radius: 10px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .pv-modal .col {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .pv-modal .ttl {
+    font: 600 11px/1 var(--font-tight); color: var(--ink-dk);
+    margin-bottom: 4px;
+  }
+  .pv-modal .ln {
+    height: 12px; border-radius: 2px; background: var(--bg-elev);
+  }
+  .pv-modal .ln.big { height: 18px; }
+  .pv-modal .ln.acc { background: var(--brand-accent); width: 40%; }
+  .pv-modal .ln.warn { background: rgba(244,196,48,0.3); }
+
+  .pv-periode {
+    width: 78%; padding: 18px;
+    border-radius: 10px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .pv-periode .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .pv-periode .ptc { height: 36px; border-radius: 6px; background: var(--bg-elev); }
+  .pv-periode .ptc.on { background: rgba(0,88,64,0.30); border: 1px solid var(--brand-accent); }
+  .pv-periode .pyr-bar-mini { display: flex; height: 14px; border-radius: 4px; overflow: hidden; }
+  .pv-periode .pyr-bar-mini span:nth-child(1) { background: var(--pyr-fys-d); width: 18%; }
+  .pv-periode .pyr-bar-mini span:nth-child(2) { background: var(--pyr-tek-d); width: 30%; }
+  .pv-periode .pyr-bar-mini span:nth-child(3) { background: var(--pyr-slag-d); width: 32%; }
+  .pv-periode .pyr-bar-mini span:nth-child(4) { background: var(--pyr-spill-d); width: 16%; }
+  .pv-periode .pyr-bar-mini span:nth-child(5) { background: var(--pyr-turn-d); width: 4%; }
+  .pv-periode .stat-line { display: flex; justify-content: space-between; font: 500 9px/1 var(--font-mono); color: var(--ink-dk-subtle); padding: 4px 0; border-bottom: 1px solid var(--border-soft); }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 32px;
+    color: var(--ink-dk-subtle);
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+  .footer p { margin: 0 0 4px; }
+  .footer code {
+    background: var(--bg-surface);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 11.5px;
+    color: var(--ink-dk-muted);
+    border: 1px solid var(--border);
+  }
+</style>
+</head>
+<body data-screen-label="Planleggingsflyt — oversikt">
+  <div class="wrap">
+
+    <header class="hero">
+      <div>
+        <div class="eyebrow"><span class="dt"></span>feature/treningskalender · v1.0 · klar for review</div>
+        <h1>Komplett planleggingsflyt <em>· årsplan, periode, måned, uke, økt</em></h1>
+        <p class="sub">Mørkt CoachHQ-skall (#0A1F18) med tre-panels layout: rail → nav → PlanSidebar → innholdsflate. Visningene deler både sidebar og spillerkontekst, og snakker sammen via tastatursnarveiene <code style="font-family:var(--font-mono);">1 · 2 · 3 · 4</code>. Modaler åpnes som overlay over respektiv visning.</p>
+      </div>
+      <div class="hero-meta">
+        <div class="row"><span class="k">Bredde</span><span class="v">1920 px</span></div>
+        <div class="row"><span class="k">Stack</span><span class="v">Next 14 · Prisma · date-fns · rrule</span></div>
+        <div class="row"><span class="k">Constraints</span><span class="v">serverside</span></div>
+        <div class="row"><span class="k">Skjermer</span><span class="v acc">4 visninger · 2 modaler</span></div>
+        <div class="row"><span class="k">Pyramide</span><span class="v">FYS · TEK · SLAG · SPILL · TURN</span></div>
+        <div class="row"><span class="k">Aktiv spiller</span><span class="v">Markus Pedersen · A-lag</span></div>
+      </div>
+    </header>
+
+    <!-- KALENDERVISNINGER -->
+    <div class="section-eye">Kalendervisninger · 4 visninger som deler PlanSidebar</div>
+    <div class="grid">
+
+      <a class="card-link" href="01-aarsplan.html">
+        <div class="preview">
+          <div class="pv-year">
+            <div class="pl">Markus</div>
+            <div class="blk g"></div><div class="blk g"></div><div class="blk s"></div><div class="blk s"></div><div class="blk s"></div><div class="blk t"></div><div class="blk s"></div><div class="blk t"></div><div class="blk s"></div><div class="blk s"></div><div class="blk t"></div><div class="blk g"></div>
+            <div class="pl">Eline</div>
+            <div class="blk g"></div><div class="blk g"></div><div class="blk g"></div><div class="blk s"></div><div class="blk s"></div><div class="blk t"></div><div class="blk s"></div><div class="blk s"></div><div class="blk s"></div><div class="blk s"></div><div class="blk s"></div><div class="blk g"></div>
+            <div class="pl">Astrid</div>
+            <div class="blk g"></div><div class="blk s"></div><div class="blk s"></div><div class="blk t"></div><div class="blk s"></div><div class="blk t"></div><div class="blk s"></div><div class="blk s"></div><div class="blk s"></div><div class="blk t"></div><div class="blk g"></div><div class="blk g"></div>
+            <div class="pl">Sondre</div>
+            <div class="blk g"></div><div class="blk g"></div><div class="blk g"></div><div class="blk s"></div><div class="blk s"></div><div class="blk t"></div><div class="blk s"></div><div class="blk s"></div><div class="blk s"></div><div class="blk g"></div><div class="blk g"></div><div class="blk g"></div>
+            <div class="pl">Jakob</div>
+            <div class="blk s"></div><div class="blk t"></div><div class="blk s"></div><div class="blk t"></div><div class="blk t"></div><div class="blk s"></div><div class="blk t"></div><div class="blk t"></div><div class="blk s"></div><div class="blk s"></div><div class="blk t"></div><div class="blk g"></div>
+          </div>
+        </div>
+        <div class="card-h"><span class="idx">01 · ÅR</span><span class="kbd">1</span></div>
+        <div class="card-body">
+          <h3>Årsplan <em>· Gantt over 52 uker</em></h3>
+          <p>Én rad per spiller. Periodeblokker (GRUNN/SPES/TURN) fyller uke-spans. Klikk og dra over uker → opprett periode. Turneringer som diamant-marker, mini-pyramide per rad.</p>
+          <div class="card-tags">
+            <span class="tag">6 spillere</span>
+            <span class="tag">14 perioder</span>
+            <span class="tag">11 turneringer</span>
+            <span class="tag acc">drag-to-create</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-link" href="02-maanedsplan.html">
+        <div class="preview">
+          <div class="pv-month">
+            <div class="d"></div><div class="d"></div><div class="d"></div><div class="d"><div class="b fys"></div></div><div class="d"><div class="b slag"></div></div><div class="d"></div><div class="d"></div>
+            <div class="d"><div class="b fys"></div></div><div class="d"><div class="b"></div></div><div class="d"><div class="b fys"></div></div><div class="d"><div class="b"></div></div><div class="d"><div class="b slag"></div></div><div class="d"><div class="b spill"></div></div><div class="d"></div>
+            <div class="d"><div class="b fys"></div><div class="b"></div></div><div class="d"><div class="b"></div><div class="b slag"></div></div><div class="d t"><div class="b"></div><div class="b slag"></div><div class="b fys"></div></div><div class="d"><div class="b fys"></div></div><div class="d"><div class="b"></div></div><div class="d"><div class="b spill"></div></div><div class="d"></div>
+            <div class="d"><div class="b turn"></div></div><div class="d"><div class="b spill"></div></div><div class="d"><div class="b turn"></div></div><div class="d"><div class="b fys"></div></div><div class="d"><div class="b turn"></div></div><div class="d"><div class="b turn"></div></div><div class="d"><div class="b turn"></div></div>
+            <div class="d"><div class="b fys"></div></div><div class="d"><div class="b turn"></div></div><div class="d"><div class="b"></div></div><div class="d"></div><div class="d"><div class="b slag"></div></div><div class="d"><div class="b spill"></div></div><div class="d"></div>
+          </div>
+        </div>
+        <div class="card-h"><span class="idx">02 · MÅNED</span><span class="kbd">2</span></div>
+        <div class="card-body">
+          <h3>Månedsplan <em>· 5×7 rutenett med pyramidefordeling</em></h3>
+          <p>Top: dynamisk 5-segment pyramide-bar (planlagt vs. periode-default — pulserer ved &gt;10 % avvik). Ukemal-meny via høyreklikk på ukenummer; baseuke med gul venstrekant. Turneringsuker rammet inn.</p>
+          <div class="card-tags">
+            <span class="tag">5 uker</span>
+            <span class="tag">22 økter</span>
+            <span class="tag">2 pyr-avvik</span>
+            <span class="tag mod">baseuke u19</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-link" href="03-ukeplan.html">
+        <div class="preview">
+          <div class="pv-week">
+            <div class="hr"></div><div class="hr"></div><div class="hr"></div><div class="hr"></div><div class="hr"></div><div class="hr"></div><div class="hr"></div><div class="hr"></div>
+            <div class="hr"></div>
+            <div class="col-slot"><div class="ev" style="background:var(--pyr-fys-d); top:0; height:9px;"></div></div>
+            <div class="col-slot"></div><div class="col-slot"></div>
+            <div class="col-slot"><div class="ev" style="background:var(--pyr-fys-d); top:0; height:9px;"></div></div>
+            <div class="col-slot"></div><div class="col-slot"></div><div class="col-slot"></div>
+            <div class="hr"></div>
+            <div class="col-slot"></div>
+            <div class="col-slot"><div class="ev" style="background:var(--pyr-tek-d); top:0; height:18px;"></div></div>
+            <div class="col-slot"><div class="ev" style="background:var(--pyr-tek-d); top:0; height:18px;"></div></div>
+            <div class="col-slot"></div><div class="col-slot"></div>
+            <div class="col-slot"><div class="ev" style="background:var(--pyr-spill-d); top:0; height:32px;"></div></div>
+            <div class="col-slot"></div>
+            <div class="hr"></div>
+            <div class="col-slot"><div class="ev" style="background:var(--pyr-tek-d); top:0; height:18px;"></div></div>
+            <div class="col-slot"></div><div class="col-slot"></div><div class="col-slot"></div><div class="col-slot"></div>
+            <div class="col-slot" style="background:rgba(244,196,48,0.10);"><div class="ev" style="background:var(--pyr-spill-d); height:18px;"></div></div>
+            <div class="col-slot"></div>
+            <div class="hr"></div>
+            <div class="col-slot"></div>
+            <div class="col-slot"><div class="ev" style="background:var(--pyr-slag-d); top:0; height:18px;"></div></div>
+            <div class="col-slot"><div class="ev" style="background:var(--brand-accent); top:0; height:18px; box-shadow:0 0 8px var(--brand-accent);"></div></div>
+            <div class="col-slot"><div class="ev" style="background:var(--pyr-slag-d); top:0; height:18px;"></div></div>
+            <div class="col-slot"></div>
+            <div class="col-slot" style="background:rgba(244,196,48,0.10);"></div>
+            <div class="col-slot"></div>
+          </div>
+        </div>
+        <div class="card-h"><span class="idx">03 · UKE</span><span class="kbd">3</span></div>
+        <div class="card-body">
+          <h3>Ukeplan <em>· 7-kolonne timegrid 06–22</em></h3>
+          <p>Drag-and-drop økt-blokker. Live nå-økt markert med lime fyll og kantglow. Myelin-banner foreslår ny bunker-økt; turneringsbanner viser 7-dagerslås når Bossum nærmer seg. Belastnings-bar over headeren.</p>
+          <div class="card-tags">
+            <span class="tag">11 økter</span>
+            <span class="tag">704/800 min</span>
+            <span class="tag acc">LIVE nå</span>
+            <span class="tag mod">myelin-varsel</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-link" href="04-dagsplan.html">
+        <div class="preview">
+          <div class="pv-day">
+            <div class="row"><span class="t">07</span><div class="b fys" style="width:55%;"></div></div>
+            <div class="row"><span class="t">09</span><div class="b" style="width:80%;"></div></div>
+            <div class="row"><span class="t">12</span><div class="b" style="opacity:0.4; width:70%;"></div></div>
+            <div class="row"><span class="t">14</span><div class="b slag live" style="width:88%;"></div></div>
+            <div class="row"><span class="t">17</span><div class="b fys" style="width:50%;"></div></div>
+            <div class="row" style="margin-top:8px;"><span class="t" style="color:var(--brand-accent);">●</span><span style="font: 500 10px/1 var(--font-mono); color: var(--ink-dk-subtle);">LIVE · 14:18 · 12 min igjen</span></div>
+          </div>
+        </div>
+        <div class="card-h"><span class="idx">04 · DAG</span><span class="kbd">4</span></div>
+        <div class="card-body">
+          <h3>Dagsplan <em>· enkolonne timegrid</em></h3>
+          <p>Brede økt-blokker med antall driller + praksistype-badge. Live-økt prominent som lime kort med pågående drill, suksesslogg og hopp-over-knapp. Dagsstatistikk og pyramide-fordeling i høyrekolonnen.</p>
+          <div class="card-tags">
+            <span class="tag">4 økter</span>
+            <span class="tag">165 min</span>
+            <span class="tag mod">+21 over TAK</span>
+            <span class="tag acc">live-økt drill 4/6</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- MODALER -->
+    <div class="section-eye">Modaler · åpnes som overlay over kalendervisningene</div>
+    <div class="grid">
+
+      <a class="card-link" href="05-oktplan-modal.html">
+        <div class="preview">
+          <div class="pv-modal">
+            <div class="col">
+              <div class="ttl">Press-utfordring · putts 1–3m</div>
+              <div class="ln big" style="background: rgba(0,88,64,0.30); border: 1px solid var(--brand-primary);"></div>
+              <div class="ln"></div><div class="ln" style="width:70%;"></div>
+              <div style="display:flex; gap:4px; margin-top:4px;">
+                <div style="flex:1; height: 18px; border-radius:3px; background: var(--bg-elev);"></div>
+                <div style="flex:1; height: 18px; border-radius:3px; background: rgba(0,88,64,0.4);"></div>
+                <div style="flex:1; height: 18px; border-radius:3px; background: var(--bg-elev);"></div>
+                <div style="flex:1; height: 18px; border-radius:3px; background: var(--bg-elev);"></div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="ttl">Driller · 6 · 90 min</div>
+              <div class="ln big" style="background: var(--bg-elev);"></div>
+              <div class="ln big" style="background: var(--bg-elev);"></div>
+              <div class="ln big" style="background: rgba(209,248,67,0.10); box-shadow: 0 0 0 1px var(--brand-accent);"></div>
+              <div class="ln big" style="background: var(--bg-elev);"></div>
+              <div class="ln big" style="background: var(--bg-elev);"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-h"><span class="idx">05 · ØKTPLAN</span><span class="kbd">ESC</span></div>
+        <div class="card-body">
+          <h3>Øktplan-modal <em>· metadata + drill-liste</em></h3>
+          <p>To-kolonne. Venstre: praksistype 2×2-velger, dato/tid/varighet, spiller, M-miljø, RecurrenceSelector, periode-constraints. Høyre: sorterbar drill-liste — ekspandert drill viser pyramide, L-fase, CS-slider, M-grid, PR-press, deep practice + suksessrate.</p>
+          <div class="card-tags">
+            <span class="tag">6 driller</span>
+            <span class="tag">CS80 / PR4</span>
+            <span class="tag acc">drill 4/6 logget</span>
+            <span class="tag mod">SPES-constraints</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-link" href="06-periode-modal.html">
+        <div class="preview">
+          <div class="pv-periode">
+            <div class="ttl" style="font: 600 11px/1 var(--font-tight); color: var(--ink-dk);">Periodetype</div>
+            <div class="grid3">
+              <div class="ptc"></div>
+              <div class="ptc on"></div>
+              <div class="ptc"></div>
+            </div>
+            <div class="pyr-bar-mini"><span></span><span></span><span></span><span></span><span></span></div>
+            <div>
+              <div class="stat-line"><span>Effektiv TAK</span><span style="color:var(--brand-accent);">800 min</span></div>
+              <div class="stat-line"><span>CS-maks</span><span>CS 80</span></div>
+              <div class="stat-line"><span>L-faser tillatt</span><span>3 av 5</span></div>
+              <div class="stat-line" style="color:var(--status-warn);"><span>Advarsler</span><span>2</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-h"><span class="idx">06 · PERIODE</span><span class="kbd">ESC</span></div>
+        <div class="card-body">
+          <h3>Periode-modal <em>· redigering + constraints</em></h3>
+          <p>Venstre: type-velger (GRUNN/SPES/TURN), datoer, varighet, redigerbar pyramide-override med live sum-validering. Høyre: auto-beregnet TAK, L-faser-chips, sirkulær CS-maks-gauge med periodetype-strek, og advarsler om eksisterende økter som bryter regler.</p>
+          <div class="card-tags">
+            <span class="tag">u9–u19</span>
+            <span class="tag">11 uker</span>
+            <span class="tag">7 700 min</span>
+            <span class="tag mod">2 advarsler</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-link" href="07-live-okt-brief.html">
+        <div class="preview">
+          <div class="pv-day">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <div style="font: 600 11px/1 var(--font-tight); color: var(--ink-dk);">Klar til start</div>
+              <div style="font: 600 9px/1 var(--font-mono); color: var(--brand-primary); background: rgba(0,88,64,0.10); padding: 3px 6px; border-radius: 100px;">● BRIEF</div>
+            </div>
+            <div class="row"><span class="t">90m</span><div class="b" style="background:var(--brand-primary); box-shadow:none; height:24px; display:flex; align-items:center; justify-content:center; color:var(--brand-accent); font: 600 9px/1 var(--font-mono); letter-spacing:.08em;">▶ START ØKT</div></div>
+            <div class="row"><span class="t">1</span><div class="b fys" style="height:14px;"></div></div>
+            <div class="row"><span class="t">2</span><div class="b" style="height:14px;"></div></div>
+            <div class="row"><span class="t">3</span><div class="b" style="height:14px;"></div></div>
+            <div class="row"><span class="t">4</span><div class="b" style="height:14px;"></div></div>
+            <div class="row"><span class="t">5</span><div class="b slag" style="height:14px;"></div></div>
+            <div class="row"><span class="t">6</span><div class="b" style="background: rgba(183,201,125,0.30); box-shadow: inset 3px 0 0 #8AA152; height:14px;"></div></div>
+          </div>
+        </div>
+        <div class="card-h"><span class="idx">07 · LIVE BRIEF</span><span class="kbd">START</span></div>
+        <div class="card-body">
+          <h3>Live økt — brief <em>· før spilleren starter</em></h3>
+          <p>Pre-start oversikt: dato, total tid, drillerliste med pyramide-fargete chips, coach-kommentar (editorial italic på dyp grønn), praksistype, sammendrag-rail og en bold lime "Start økt"-CTA. Også sjekkliste for utstyr og kontekst-strip.</p>
+          <div class="card-tags">
+            <span class="tag">90 min · 6 driller</span>
+            <span class="tag">184 reps</span>
+            <span class="tag acc">START → AKTIV</span>
+            <span class="tag mod">CS70 → CS80</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card-link" href="08-live-okt-aktiv.html">
+        <div class="preview">
+          <div class="pv-day" style="width: 84%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <div style="display:flex; align-items:center; gap:6px;"><span style="width:6px; height:6px; border-radius:50%; background:var(--brand-accent); box-shadow:0 0 8px var(--brand-accent);"></span><span style="font: 700 9px/1 var(--font-mono); color: var(--brand-accent); letter-spacing:.10em;">LIVE</span></div>
+              <div style="font: 600 14px/1 var(--font-mono); color: var(--brand-primary); letter-spacing:-.01em;">23:14</div>
+            </div>
+            <div class="row" style="margin-top:4px;"><span class="t">1</span><div class="b" style="background:var(--brand-primary); box-shadow:none; height:12px; opacity:.7;"></div></div>
+            <div class="row"><span class="t">2</span><div class="b" style="background:var(--brand-accent); box-shadow:0 0 0 1px var(--brand-accent), 0 0 12px rgba(209,248,67,0.4); color:#0A1F18; font: 700 8px/1 var(--font-mono); letter-spacing:.08em; padding:0 4px; height:14px;">● NÅ · 9/36 REPS</div></div>
+            <div class="row"><span class="t">3</span><div class="b" style="height:12px;"></div></div>
+            <div class="row"><span class="t">4</span><div class="b" style="height:12px;"></div></div>
+            <div class="row"><span class="t">5</span><div class="b slag" style="height:12px;"></div></div>
+            <div class="row"><span class="t">6</span><div class="b" style="background: rgba(183,201,125,0.30); box-shadow: inset 3px 0 0 #8AA152; height:12px;"></div></div>
+            <div style="margin-top:6px; display:flex; gap:4px;">
+              <div style="flex: 0.26; height:5px; background:var(--brand-primary); border-radius:100px;"></div>
+              <div style="flex: 0.74; height:5px; background:var(--bg-elev); border-radius:100px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-h"><span class="idx">08 · LIVE AKTIV</span><span class="kbd">NÅ</span></div>
+        <div class="card-body">
+          <h3>Live økt — aktiv <em>· timer, reps og kommentarer</em></h3>
+          <p>Tre-kolonne live-arbeidsflate: drill-stack med done/active/upcoming-status, stort ringtelleverk for reps med lime tap-knapp og godkjent/bommet/angre, drill-timing + tempo-snitt, og sticky coach-kommentar + sjekkpunkt-liste + notatfelt på høyre side. Live timer teller opp ekte sekunder.</p>
+          <div class="card-tags">
+            <span class="tag">drill 2/6</span>
+            <span class="tag">9/36 reps</span>
+            <span class="tag acc">live timer</span>
+            <span class="tag mod">tap + reflektér</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p><strong style="color:var(--ink-dk);">Filer:</strong> 6 planleggings-skjermer + 2 live-økt-skjermer · <code>assets/dark-shell.css</code> + <code>assets/light-shell-v2.css</code> · <code>assets/tokens.css</code>. Hele PlanSidebar-spec implementert (mini-kalender · spillertogglene · pyramide-filter · kapasitets-load med daglig fordeling · myelin-tracker · periodeinfo).</p>
+      <p><strong style="color:var(--ink-dk);">Snarveier:</strong> <code>1</code> ÅR · <code>2</code> MÅNED · <code>3</code> UKE · <code>4</code> DAG · <code>5</code> ØKT-MODAL · <code>6</code> PERIODE · <code>7</code> LIVE BRIEF · <code>8</code> LIVE AKTIV · <code>ESC</code> lukk modal.</p>
+      <p><strong style="color:var(--ink-dk);">Neste:</strong> hook opp <code>actions.ts</code> (createPeriode, getSessionsForRange, …), implementer drag-and-drop med dnd-kit, og koble myelin-tracker + kapasitets-load til serverside-beregning. Backend-typer er allerede definert i <code>ak-taxonomy.ts</code> og <code>periode-constraints.ts</code>.</p>
+    </footer>
+
+  </div>
+
+<script>
+  // Theme: dark | light. Default light per AK Golf Brand request.
+  (function(){
+    var saved = localStorage.getItem('ak-theme') || 'light';
+    if (saved === 'light') document.body.classList.add('light');
+    window.addEventListener('DOMContentLoaded', function(){
+      var t = document.getElementById('__themetoggle');
+      if (!t) return;
+      function paint(){
+        var isLight = document.body.classList.contains('light');
+        t.querySelector('.opt.l').classList.toggle('on', isLight);
+        t.querySelector('.opt.d').classList.toggle('on', !isLight);
+      }
+      paint();
+      t.addEventListener('click', function(e){
+        var pick = e.target.closest('.opt');
+        if (!pick) return;
+        var wantLight = pick.classList.contains('l');
+        document.body.classList.toggle('light', wantLight);
+        localStorage.setItem('ak-theme', wantLight ? 'light' : 'dark');
+        paint();
+      });
+    });
+  })();
+</script>
+</body>
+</html>

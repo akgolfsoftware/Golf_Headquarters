@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AK Golf · Atelier · Edition XIX · Daglig Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F4F2EC;
+    --bg-tint: #EEEBE2;
+    --fg: #1A1814;
+    --fg-soft: #4A463E;
+    --fg-mute: #8A857B;
+    --hair: #D8D4C8;
+    --hair-strong: #BCB7A8;
+    --rust: #B85A2C;
+    --lime: #D1F843;
+    --forest: #1F3F2E;
+    --white: #FBFAF6;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+  }
+
+  .mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+  .mono-upper {
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 10.5px;
+    font-weight: 400;
+  }
+  .garamond { font-family: 'EB Garamond', serif; }
+  .anton { font-family: 'Anton', sans-serif; letter-spacing: -0.005em; }
+
+  /* ---------- LAYOUT ---------- */
+  .app {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar {
+    border-right: 0.5px solid var(--hair);
+    padding: 28px 22px 28px 22px;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .sb-logo {
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 11px;
+    color: var(--fg);
+  }
+  .sb-edition {
+    margin-top: 6px;
+    color: var(--fg-mute);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .sb-profile {
+    margin-top: 48px;
+    padding-bottom: 24px;
+    border-bottom: 0.5px solid var(--hair);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sb-avatar {
+    width: 36px; height: 36px;
+    background: var(--forest);
+    color: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  .sb-name {
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+  }
+  .sb-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--fg-mute);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .sb-section {
+    margin-top: 28px;
+  }
+  .sb-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    margin-bottom: 12px;
+  }
+  .sb-nav {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sb-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    color: var(--fg-soft);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    border-bottom: 0.5px solid transparent;
+    transition: color 0.15s;
+  }
+  .sb-nav a:hover { color: var(--fg); }
+  .sb-nav a.active {
+    color: var(--fg);
+    border-bottom: 0.5px solid var(--fg);
+  }
+  .sb-nav a .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--fg-mute);
+    letter-spacing: 0.08em;
+  }
+
+  .sb-foot {
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 0.5px solid var(--hair);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+  }
+
+  /* ---------- MAIN ---------- */
+  .main { padding: 0 56px 96px 56px; }
+
+  /* Top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 0;
+    border-bottom: 0.5px solid var(--hair);
+  }
+  .search {
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 0.5px solid var(--hair-strong);
+    padding: 6px 0;
+    width: 320px;
+  }
+  .search input {
+    border: 0; background: transparent; outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--fg);
+    flex: 1;
+  }
+  .search input::placeholder { color: var(--fg-mute); }
+  .search .kbd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--fg-mute);
+    letter-spacing: 0.1em;
+  }
+  .top-icons { display: flex; gap: 18px; color: var(--fg-soft); }
+  .top-icons svg { width: 16px; height: 16px; stroke-width: 1.25; }
+
+  /* Tag pill row */
+  .tagrow {
+    display: flex;
+    gap: 0;
+    padding: 18px 0 22px 0;
+    border-bottom: 0.5px solid var(--hair);
+    align-items: center;
+  }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+    padding: 0 18px;
+    border-right: 0.5px solid var(--hair);
+  }
+  .tag:first-child { padding-left: 0; color: var(--rust); }
+  .tag:last-child { border-right: 0; }
+  .tag.hl { color: var(--rust); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 72px;
+    padding: 64px 0 56px 0;
+    border-bottom: 0.5px solid var(--hair);
+    align-items: start;
+  }
+  .hero-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    margin-bottom: 36px;
+    display: flex; gap: 16px; align-items: center;
+  }
+  .hero-kicker .dash {
+    flex: 0 0 56px; height: 0.5px; background: var(--fg-mute);
+  }
+  .hero-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 120px;
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    text-transform: uppercase;
+  }
+  .hero-title .ital {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 96px;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: var(--fg);
+    display: block;
+    margin-top: 4px;
+    line-height: 1;
+  }
+  .hero-sub {
+    margin-top: 36px;
+    font-family: 'EB Garamond', serif;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--fg-soft);
+    max-width: 540px;
+  }
+  .hero-actions {
+    margin-top: 36px;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 14px 22px;
+    border: 0.5px solid var(--fg);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: 0.15s;
+  }
+  .btn-primary {
+    background: var(--forest);
+    color: var(--bg);
+    border-color: var(--forest);
+  }
+  .btn-primary:hover { background: #18301f; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--fg);
+  }
+  .btn-ghost:hover { background: var(--bg-tint); }
+
+  /* Coach portrait */
+  .portrait {
+    position: relative;
+  }
+  .portrait-tag {
+    position: absolute;
+    top: 12px; left: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: rgba(0,0,0,0.55);
+    padding: 6px 10px;
+    display: flex; align-items: center; gap: 8px;
+    z-index: 2;
+  }
+  .portrait-tag .dot {
+    width: 6px; height: 6px; background: var(--lime);
+    display: inline-block;
+  }
+  .portrait-frame {
+    border: 0.5px solid var(--hair-strong);
+    padding: 12px;
+    background: var(--white);
+  }
+  .portrait-img {
+    width: 100%;
+    height: 480px;
+    background-image: url('https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=800&h=1200&fit=crop&crop=faces&sat=-30');
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(0.5) contrast(1.05);
+  }
+  .portrait-caption {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--hair);
+  }
+  .portrait-caption .name {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--fg);
+    margin-bottom: 4px;
+  }
+  .portrait-caption .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+  }
+
+  /* ---------- QUOTE BLOCK ---------- */
+  .quote {
+    padding: 72px 0 64px 0;
+    border-bottom: 0.5px solid var(--hair);
+    display: grid;
+    grid-template-columns: 80px 1fr 200px;
+    gap: 32px;
+    align-items: start;
+  }
+  .quote-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+  }
+  .quote-body {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.45;
+    color: var(--fg);
+    max-width: 720px;
+  }
+  .quote-body .initial {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 64px;
+    color: var(--rust);
+    float: left;
+    line-height: 0.85;
+    padding-right: 12px;
+    padding-top: 6px;
+  }
+  .quote-attr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  /* ---------- KPI GRID ---------- */
+  .section-head {
+    padding: 56px 0 24px 0;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .section-head h2 {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 32px;
+    color: var(--fg);
+  }
+  .section-head .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 0.5px solid var(--hair);
+    border-left: 0.5px solid var(--hair);
+  }
+  .kpi {
+    border-right: 0.5px solid var(--hair);
+    border-bottom: 0.5px solid var(--hair);
+    padding: 32px 28px 36px 28px;
+    background: var(--white);
+    display: flex; flex-direction: column; gap: 24px;
+    min-height: 220px;
+    position: relative;
+  }
+  .kpi-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+  }
+  .kpi-eyebrow .roman {
+    color: var(--rust);
+    margin-right: 8px;
+  }
+  .kpi-value {
+    font-family: 'Anton', sans-serif;
+    font-size: 72px;
+    line-height: 0.9;
+    color: var(--fg);
+    margin-top: auto;
+  }
+  .kpi-value.hl { color: var(--rust); }
+  .kpi-delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--fg-soft);
+    border-top: 0.5px solid var(--hair);
+    padding-top: 12px;
+  }
+  .kpi-delta .pos { color: var(--forest); }
+  .kpi-delta .neg { color: var(--rust); }
+
+  /* ---------- TIMELINE / TODAY'S DRAWING ---------- */
+  .drawing {
+    padding: 72px 0 56px 0;
+  }
+  .drawing-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 28px;
+    border-bottom: 0.5px solid var(--hair);
+    margin-bottom: 64px;
+  }
+  .drawing-head h2 {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 38px;
+  }
+  .drawing-head .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+  }
+
+  .timeline {
+    position: relative;
+    padding: 60px 0 0 0;
+  }
+  .timeline-line {
+    position: absolute;
+    left: 0; right: 0; top: 60px;
+    height: 0.5px;
+    background: var(--hair-strong);
+  }
+  .timeline-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .stop {
+    text-align: left;
+    padding: 0 20px 0 0;
+    position: relative;
+  }
+  .stop:before {
+    content: '';
+    position: absolute;
+    top: -64px;
+    left: 0;
+    width: 9px; height: 9px;
+    background: var(--fg);
+    border-radius: 50%;
+  }
+  .stop:nth-child(3):before {
+    background: var(--rust);
+  }
+  .stop-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--fg-mute);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .stop-player {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 12px;
+  }
+  .stop-avatar {
+    width: 30px; height: 30px;
+    background: var(--bg-tint);
+    border: 0.5px solid var(--hair-strong);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--fg);
+  }
+  .stop-name {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--fg);
+  }
+  .stop-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+    line-height: 1.6;
+  }
+
+  /* ---------- ARCHITECTURAL ACCENT BLOCK ---------- */
+  .accent-row {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    padding-top: 56px;
+    border-top: 0.5px solid var(--hair);
+  }
+  .accent-bg {
+    background-image: url('https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=600&fit=crop&sat=-50');
+    background-size: cover;
+    background-position: center;
+    height: 280px;
+    filter: grayscale(0.7) contrast(1.05) brightness(0.95);
+    border: 0.5px solid var(--hair-strong);
+  }
+  .accent-text h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 18px;
+  }
+  .accent-text p {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--fg);
+    max-width: 460px;
+  }
+  .accent-text .lime-mark {
+    background: var(--lime);
+    padding: 0 2px;
+  }
+
+  /* ---------- COLOPHON ---------- */
+  .colophon {
+    margin-top: 96px;
+    padding-top: 28px;
+    border-top: 0.5px solid var(--fg);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .colophon-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+  }
+  .colophon-mark {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div>
+      <div class="sb-logo">AK Golf / Atelier</div>
+      <div class="sb-edition">Edition Nº 19 — Mai 2026</div>
+    </div>
+
+    <div class="sb-profile">
+      <div class="sb-avatar">AK</div>
+      <div>
+        <div class="sb-name">Anders K.</div>
+        <div class="sb-role">Director</div>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">I · Daglig</div>
+      <ul class="sb-nav">
+        <li><a href="#" class="active">Briefing <span class="num">01</span></a></li>
+        <li><a href="#">Dagens kø <span class="num">02</span></a></li>
+        <li><a href="#">Brief til økt <span class="num">03</span></a></li>
+      </ul>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">II · Operasjon</div>
+      <ul class="sb-nav">
+        <li><a href="#">Stall <span class="num">04</span></a></li>
+        <li><a href="#">Kalender <span class="num">05</span></a></li>
+        <li><a href="#">Godkjenninger <span class="num">06</span></a></li>
+        <li><a href="#">Fakturering <span class="num">07</span></a></li>
+      </ul>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">III · Innsikt</div>
+      <ul class="sb-nav">
+        <li><a href="#">Rapporter <span class="num">08</span></a></li>
+        <li><a href="#">Sørlandsåpent <span class="num">09</span></a></li>
+        <li><a href="#">Arkiv <span class="num">10</span></a></li>
+      </ul>
+    </div>
+
+    <div class="sb-foot">© AK Golf · MMXXVI</div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input placeholder="Søk spiller, økt, dokument…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="top-icons">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+    </div>
+
+    <!-- Tag row -->
+    <div class="tagrow">
+      <span class="tag">19 · 05 · 26</span>
+      <span class="tag">Briefing / Man</span>
+      <span class="tag">5 / 8 · Sess</span>
+      <span class="tag hl">12 · Appr.</span>
+      <span class="tag">21d · Sørl.</span>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-left">
+        <div class="hero-kicker">
+          <span class="dash"></span>
+          Atelier No. 19 — Daglig Briefing
+        </div>
+        <h1 class="hero-title">
+          God morgen,
+          <span class="ital">Anders.</span>
+        </h1>
+        <p class="hero-sub">
+          Tre uker til Sørlandsåpent. Trettiåtte spillere i porteføljen. Fem økter i dag — én med Markus før Bossum, to juniorer på chip & run, og to evalueringer.
+        </p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary">Gå til økt
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M1 5h12M9 1l4 4-4 4"/></svg>
+          </a>
+          <a href="#" class="btn btn-ghost">Se kalender</a>
+        </div>
+      </div>
+
+      <div class="portrait">
+        <div class="portrait-tag"><span class="dot"></span>On Studio · 09:42</div>
+        <div class="portrait-frame">
+          <div class="portrait-img" role="img" aria-label="Anders Kristiansen portrait"></div>
+        </div>
+        <div class="portrait-caption">
+          <div class="name">Anders Kristiansen</div>
+          <div class="meta">Head Coach · AK Golf · Oslo</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUOTE BLOCK -->
+    <section class="quote">
+      <div class="quote-label">Pull-quote<br/>Nº I</div>
+      <div class="quote-body">
+        <span class="initial">M</span>arkus rister på neste økt. Putt-formen er topp — vi fokuserer på lav trajectory før Bossum, og bygger ro i pre-shot-rutinen før helgen.
+      </div>
+      <div class="quote-attr">
+        Anders K.<br/>Prep Notes<br/>19. mai 2026
+      </div>
+    </section>
+
+    <!-- KPI -->
+    <div class="section-head">
+      <h2>Stallen, i tall.</h2>
+      <span class="meta">Plate Nº II · Operasjon</span>
+    </div>
+
+    <section class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-eyebrow"><span class="roman">I</span>Aktive i stallen</div>
+        <div class="kpi-value">38</div>
+        <div class="kpi-delta"><span class="pos">+3</span> siden april · Snitt 4,2 økt/mnd</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-eyebrow"><span class="roman">II</span>Dagens kø</div>
+        <div class="kpi-value">5<span style="font-size:42px;color:var(--fg-mute);">/8</span></div>
+        <div class="kpi-delta">Neste kl. 09:30 · Markus R.</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-eyebrow"><span class="roman">III</span>Godkjenninger</div>
+        <div class="kpi-value hl">12</div>
+        <div class="kpi-delta"><span class="neg">●</span> Krever review · 4 plan, 8 video</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-eyebrow"><span class="roman">IV</span>Inntekt MTD</div>
+        <div class="kpi-value">47<span style="font-size:42px;color:var(--fg-mute);">k</span></div>
+        <div class="kpi-delta"><span class="pos">+18 %</span> vs. april · Mål 62k</div>
+      </div>
+    </section>
+
+    <!-- TODAY'S DRAWING -->
+    <section class="drawing">
+      <div class="drawing-head">
+        <h2>Today's drawing.</h2>
+        <span class="sub">Plate Nº III · 19.05.26 — 5 økter</span>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-line"></div>
+        <div class="timeline-row">
+          <div class="stop">
+            <div class="stop-time">09:30</div>
+            <div class="stop-player">
+              <div class="stop-avatar">MR</div>
+              <div class="stop-name">Markus R.</div>
+            </div>
+            <div class="stop-title">Pre-Bossum<br/>Lav trajectory</div>
+          </div>
+          <div class="stop">
+            <div class="stop-time">11:00</div>
+            <div class="stop-player">
+              <div class="stop-avatar">JS</div>
+              <div class="stop-name">Jenny S.</div>
+            </div>
+            <div class="stop-title">Junior · Chip<br/>&amp; run · 60 min</div>
+          </div>
+          <div class="stop">
+            <div class="stop-time">13:30</div>
+            <div class="stop-player">
+              <div class="stop-avatar">TH</div>
+              <div class="stop-name">Theo H.</div>
+            </div>
+            <div class="stop-title">Evaluering<br/>Mid-season</div>
+          </div>
+          <div class="stop">
+            <div class="stop-time">15:00</div>
+            <div class="stop-player">
+              <div class="stop-avatar">EB</div>
+              <div class="stop-name">Emilie B.</div>
+            </div>
+            <div class="stop-title">Junior · Putt<br/>Pre-shot rutine</div>
+          </div>
+          <div class="stop">
+            <div class="stop-time">17:00</div>
+            <div class="stop-player">
+              <div class="stop-avatar">PV</div>
+              <div class="stop-name">Petter V.</div>
+            </div>
+            <div class="stop-title">Evaluering<br/>Sørlandsåpent</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accent row -->
+      <div class="accent-row">
+        <div class="accent-bg" role="img" aria-label="Architectural background"></div>
+        <div class="accent-text">
+          <h3>Nota Bene · Sørlandsåpent</h3>
+          <p>
+            Tre uker til kvalifisering. Fire spillere er <span class="lime-mark">påmeldte</span>, to står på reserveliste. Reise og logistikk er bekreftet — siste prep-økt onsdag 12. juni.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Colophon -->
+    <footer class="colophon">
+      <div class="colophon-text">AK Golf · Atelier 19 · 1/1 · Anders Kristiansen, Director · MMXXVI</div>
+      <div class="colophon-mark">— Fin —</div>
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>

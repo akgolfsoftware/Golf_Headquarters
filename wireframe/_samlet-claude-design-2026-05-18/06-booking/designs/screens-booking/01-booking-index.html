@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Booking — Forside</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="_shared/arketype-g.css" />
+<style>
+  .b1-hero {
+    background: linear-gradient(180deg, #FAFAF7 0%, #F0F2F0 100%);
+    padding: 96px 48px 96px;
+    text-align: center;
+    position: relative;
+  }
+  .g-frame.is-dark .b1-hero { background: linear-gradient(180deg, #143028 0%, #0F2A22 100%); }
+  .b1-cards {
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    max-width: 1100px; margin: -56px auto 0; padding: 0 48px;
+    position: relative; z-index: 2;
+  }
+  .b1-card { padding: 32px 28px; display:flex; flex-direction:column; gap: 16px; }
+  .b1-card .tile-row { display:flex; align-items:center; justify-content:space-between; }
+  .b1-card h3 {
+    font-family:'Instrument Serif'; font-weight:400; font-size: 28px;
+    line-height: 1.05; margin: 0; color: var(--g-fg); letter-spacing: -0.01em;
+  }
+  .b1-card h3 em { font-style: italic; color: var(--g-primary); }
+  .b1-card .desc { font-size: 14px; color: var(--g-muted); line-height: 1.5; margin: 0; }
+  .b1-card .price { font-family:'JetBrains Mono'; font-size: 12px; color: var(--g-muted); margin-top: 4px; }
+  .b1-card .price b { font-family:'Instrument Serif'; font-style:italic; font-size: 22px; color: var(--g-primary); font-weight:400; margin-right: 6px; }
+  .b1-card .arrow {
+    margin-top: auto; padding-top: 12px; border-top: 1px solid var(--g-line-soft);
+    display:flex; align-items:center; justify-content:space-between;
+    font-size: 13px; font-weight: 500; color: var(--g-fg);
+  }
+  .b1-card .arrow .ic { color: var(--g-primary); }
+  .b1-trust {
+    max-width: 1100px; margin: 56px auto 0; padding: 0 48px;
+    display:flex; align-items:center; justify-content:center; gap: 32px;
+    font-family:'JetBrains Mono'; font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--g-muted); flex-wrap: wrap;
+  }
+  .b1-trust .sep { color: var(--g-subtle); }
+  .b1-faq {
+    max-width: 800px; margin: 80px auto 0; padding: 0 48px 80px;
+  }
+  .b1-faq h2 {
+    font-family:'Instrument Serif'; font-weight: 400; font-size: 36px;
+    color: var(--g-fg); letter-spacing: -0.01em; margin: 0 0 24px;
+  }
+  .b1-faq h2 em { font-style: italic; color: var(--g-primary); }
+  .b1-faq-list { border-top: 1px solid var(--g-line-soft); }
+  .b1-faq-item { border-bottom: 1px solid var(--g-line-soft); padding: 20px 0; }
+  .b1-faq-q {
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:'Inter Tight'; font-size: 16px; font-weight: 500;
+    color: var(--g-fg); cursor: pointer;
+  }
+  .b1-faq-q .chev {
+    width: 28px; height: 28px; border-radius: 100px;
+    display:inline-flex; align-items:center; justify-content:center;
+    background: var(--g-bg-alt); color: var(--g-muted);
+    font-size: 12px; font-family:'JetBrains Mono';
+    transition: transform 200ms;
+  }
+  .b1-faq-item.is-open .b1-faq-q .chev { transform: rotate(180deg); background: rgba(0,88,64,0.08); color: var(--g-primary); }
+  .g-frame.is-dark .b1-faq-item.is-open .b1-faq-q .chev { background: rgba(209,248,67,0.15); }
+  .b1-faq-a {
+    font-size: 14px; line-height: 1.6; color: var(--g-muted);
+    padding-top: 14px; max-width: 620px;
+  }
+  .b1-foot {
+    border-top: 1px solid var(--g-line-soft);
+    padding: 28px 48px; display:flex; justify-content:space-between;
+    font-family:'JetBrains Mono'; font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--g-subtle);
+  }
+</style>
+</head>
+<body class="g-canvas" data-screen-label="booking · 01 forside">
+
+<header>
+  <div class="g-label"><span class="dot"></span> BOOKING · 01 FORSIDE · ARKETYPE G · PRE-WIZARD</div>
+  <h1>Book din neste <em>økt</em></h1>
+  <p class="sub">Forside — første touchpoint. Kategori-velger (Coaching / TrackMan / Junior). Reduserer valg-paralyse. Ingen progress-stripe ennå.</p>
+  <div class="meta">
+    <span><b>URL</b> /</span>
+    <span><b>Tier</b> Public, ingen auth</span>
+    <span><b>Cards</b> 3 categories</span>
+    <span><b>States</b> Light · Dark · Hover · FAQ open · Mobile</span>
+  </div>
+</header>
+
+<div class="g-grid">
+
+  <!-- 1. LIGHT — DEFAULT ---------------------------------------------- -->
+  <section class="g-cap">
+    <h2 class="cap-title">1 — Lyst tema, default</h2>
+    <p>Gradient hero, 3 kategori-cards som overlapper -56px, tillit-bånd, FAQ.</p>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav">
+        <span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span>
+        <span class="g-side"><a href="#">Min side →</a></span>
+      </div>
+      <!-- Ingen progress-stripe på forside -->
+      <div class="b1-hero">
+        <div class="g-eyebrow">VÅR 2026 · LEDIGE TIDER NESTE 4 UKER</div>
+        <h1 class="g-title">Book din neste <em>økt</em></h1>
+        <p class="g-sub">Personlig coaching, TrackMan-økt eller junior-time. Velg hva du vil bestille — vi finner ledig tid sammen med en av våre coacher.</p>
+      </div>
+      <div class="b1-cards">
+        <div class="g-card b1-card">
+          <div class="tile-row"><span class="g-tile g-tile--primary">1:1</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig nå</span></div>
+          <div>
+            <h3>Personlig <em>coaching</em></h3>
+            <p class="desc">Én-til-én med PGA-coach. 60 eller 90 min. Indoor eller utendørs.</p>
+            <div class="price">fra <b>1 600 kr</b> · per time</div>
+          </div>
+          <div class="arrow"><span>Velg coach →</span><span class="ic">›</span></div>
+        </div>
+        <div class="g-card b1-card">
+          <div class="tile-row"><span class="g-tile g-tile--accent">TM</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig nå</span></div>
+          <div>
+            <h3>TrackMan-<em>økt</em></h3>
+            <p class="desc">Selvspill med data, eller med coach. Mulligan Indoor Fredrikstad.</p>
+            <div class="price">fra <b>800 kr</b> · per time</div>
+          </div>
+          <div class="arrow"><span>Velg anlegg →</span><span class="ic">›</span></div>
+        </div>
+        <div class="g-card b1-card">
+          <div class="tile-row"><span class="g-tile g-tile--gold">JR</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig nå</span></div>
+          <div>
+            <h3>Junior-<em>time</em></h3>
+            <p class="desc">Under 16 år. Spesialisert coach. Egne tider på GFGK Range.</p>
+            <div class="price">fra <b>600 kr</b> · per 45 min</div>
+          </div>
+          <div class="arrow"><span>Velg coach →</span><span class="ic">›</span></div>
+        </div>
+      </div>
+      <div class="b1-trust">
+        <span>PGA-coacher</span><span class="sep">·</span>
+        <span>Sikker betaling — Stripe &amp; Vipps</span><span class="sep">·</span>
+        <span>Fri avbestilling 24t før</span>
+      </div>
+      <div class="b1-faq">
+        <h2>Ofte stilte <em>spørsmål</em></h2>
+        <div class="b1-faq-list">
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Hvor mye koster en time?</span><span class="chev">▾</span></div></div>
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Kan jeg avbestille?</span><span class="chev">▾</span></div></div>
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Hva inngår i en TrackMan-økt?</span><span class="chev">▾</span></div></div>
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Trenger jeg eget utstyr?</span><span class="chev">▾</span></div></div>
+        </div>
+      </div>
+      <div class="b1-foot">
+        <span>AK GOLF GROUP · ORG.NR 919 234 567</span>
+        <span>booking@akgolf.no · +47 69 30 12 00</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. DARK --------------------------------------------------------- -->
+  <section class="g-cap">
+    <h2 class="cap-title">2 — Mørkt tema</h2>
+    <p>Identisk struktur, dark surface. Lime accent bytter primary-tone.</p>
+    <div class="g-frame is-dark" style="margin-top:18px">
+      <div class="g-topnav">
+        <span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span>
+        <span class="g-side"><a href="#">Min side →</a></span>
+      </div>
+      <div class="b1-hero">
+        <div class="g-eyebrow">VÅR 2026 · LEDIGE TIDER NESTE 4 UKER</div>
+        <h1 class="g-title">Book din neste <em>økt</em></h1>
+        <p class="g-sub">Personlig coaching, TrackMan-økt eller junior-time. Velg hva du vil bestille — vi finner ledig tid sammen med en av våre coacher.</p>
+      </div>
+      <div class="b1-cards">
+        <div class="g-card b1-card">
+          <div class="tile-row"><span class="g-tile g-tile--primary">1:1</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig nå</span></div>
+          <div><h3>Personlig <em>coaching</em></h3><p class="desc">Én-til-én med PGA-coach. 60 eller 90 min.</p><div class="price">fra <b>1 600 kr</b> · per time</div></div>
+          <div class="arrow"><span>Velg coach →</span><span class="ic">›</span></div>
+        </div>
+        <div class="g-card b1-card">
+          <div class="tile-row"><span class="g-tile g-tile--accent">TM</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig nå</span></div>
+          <div><h3>TrackMan-<em>økt</em></h3><p class="desc">Selvspill eller med coach. Mulligan Indoor.</p><div class="price">fra <b>800 kr</b> · per time</div></div>
+          <div class="arrow"><span>Velg anlegg →</span><span class="ic">›</span></div>
+        </div>
+        <div class="g-card b1-card">
+          <div class="tile-row"><span class="g-tile g-tile--gold">JR</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig nå</span></div>
+          <div><h3>Junior-<em>time</em></h3><p class="desc">Under 16 år. Egne tider på GFGK Range.</p><div class="price">fra <b>600 kr</b> · per 45 min</div></div>
+          <div class="arrow"><span>Velg coach →</span><span class="ic">›</span></div>
+        </div>
+      </div>
+      <div class="b1-trust">
+        <span>PGA-coacher</span><span class="sep">·</span>
+        <span>Sikker betaling — Stripe &amp; Vipps</span><span class="sep">·</span>
+        <span>Fri avbestilling 24t før</span>
+      </div>
+      <div class="b1-faq">
+        <h2>Ofte stilte <em>spørsmål</em></h2>
+        <div class="b1-faq-list">
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Hvor mye koster en time?</span><span class="chev">▾</span></div></div>
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Kan jeg avbestille?</span><span class="chev">▾</span></div></div>
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Hva inngår i en TrackMan-økt?</span><span class="chev">▾</span></div></div>
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Trenger jeg eget utstyr?</span><span class="chev">▾</span></div></div>
+        </div>
+      </div>
+      <div class="b1-foot"><span>AK GOLF GROUP · ORG.NR 919 234 567</span><span>booking@akgolf.no · +47 69 30 12 00</span></div>
+    </div>
+  </section>
+
+  <!-- 3. HOVER + FAQ OPEN --------------------------------------------- -->
+  <section class="g-cap">
+    <h2 class="cap-title">3 — Hover på "Personlig coaching" + FAQ åpen</h2>
+    <p>Card lifts -3px med accent border. FAQ-rad 1 åpen med svar.</p>
+    <div class="g-frame" style="margin-top:18px">
+      <div class="g-topnav">
+        <span class="g-brand"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span>
+        <span class="g-side"><a href="#">Min side →</a></span>
+      </div>
+      <div class="b1-hero">
+        <div class="g-eyebrow">VÅR 2026 · LEDIGE TIDER NESTE 4 UKER</div>
+        <h1 class="g-title">Book din neste <em>økt</em></h1>
+        <p class="g-sub">Personlig coaching, TrackMan-økt eller junior-time. Velg hva du vil bestille.</p>
+      </div>
+      <div class="b1-cards">
+        <div class="g-card b1-card is-hover">
+          <div class="tile-row"><span class="g-tile g-tile--primary">1:1</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig nå</span></div>
+          <div><h3>Personlig <em>coaching</em></h3><p class="desc">Én-til-én med PGA-coach. 60 eller 90 min.</p><div class="price">fra <b>1 600 kr</b> · per time</div></div>
+          <div class="arrow"><span>Velg coach →</span><span class="ic" style="color:var(--g-primary)">›</span></div>
+        </div>
+        <div class="g-card b1-card">
+          <div class="tile-row"><span class="g-tile g-tile--accent">TM</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig nå</span></div>
+          <div><h3>TrackMan-<em>økt</em></h3><p class="desc">Selvspill eller med coach.</p><div class="price">fra <b>800 kr</b> · per time</div></div>
+          <div class="arrow"><span>Velg anlegg →</span><span class="ic">›</span></div>
+        </div>
+        <div class="g-card b1-card">
+          <div class="tile-row"><span class="g-tile g-tile--gold">JR</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig nå</span></div>
+          <div><h3>Junior-<em>time</em></h3><p class="desc">Under 16 år.</p><div class="price">fra <b>600 kr</b> · per 45 min</div></div>
+          <div class="arrow"><span>Velg coach →</span><span class="ic">›</span></div>
+        </div>
+      </div>
+      <div class="b1-trust">
+        <span>PGA-coacher</span><span class="sep">·</span>
+        <span>Sikker betaling — Stripe &amp; Vipps</span><span class="sep">·</span>
+        <span>Fri avbestilling 24t før</span>
+      </div>
+      <div class="b1-faq">
+        <h2>Ofte stilte <em>spørsmål</em></h2>
+        <div class="b1-faq-list">
+          <div class="b1-faq-item is-open">
+            <div class="b1-faq-q"><span>Hvor mye koster en time?</span><span class="chev">▾</span></div>
+            <div class="b1-faq-a">Personlig coaching koster fra 1 600 kr per time. TrackMan-økter med selvspill starter på 800 kr per time, mens junior-timer (under 16 år) er fra 600 kr per 45 min. Faste priser — ingen overraskelser ved booking.</div>
+          </div>
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Kan jeg avbestille?</span><span class="chev">▾</span></div></div>
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Hva inngår i en TrackMan-økt?</span><span class="chev">▾</span></div></div>
+          <div class="b1-faq-item"><div class="b1-faq-q"><span>Trenger jeg eget utstyr?</span><span class="chev">▾</span></div></div>
+        </div>
+      </div>
+      <div class="b1-foot"><span>AK GOLF GROUP · ORG.NR 919 234 567</span><span>booking@akgolf.no</span></div>
+    </div>
+  </section>
+
+  <!-- 4. MOBIL -------------------------------------------------------- -->
+  <section class="g-cap">
+    <h2 class="cap-title">4 — Mobil ≤640px</h2>
+    <p>Cards stables vertikalt, hero-tekst 36px, padding 24px.</p>
+    <div class="g-frame is-mobile" style="margin-top:18px">
+      <div class="g-topnav" style="padding: 0 18px; height: 56px">
+        <span class="g-brand" style="font-size: 12px"><span class="dot"></span>AK Golf<span class="sep">·</span>Booking</span>
+        <span class="g-side" style="font-size: 12px"><a href="#">Min side →</a></span>
+      </div>
+      <div class="b1-hero" style="padding: 48px 24px 60px">
+        <div class="g-eyebrow" style="font-size: 10px">VÅR 2026 · LEDIGE TIDER</div>
+        <h1 class="g-title" style="font-size: 36px">Book din neste <em>økt</em></h1>
+        <p class="g-sub" style="font-size: 14px">Velg hva du vil bestille.</p>
+      </div>
+      <div class="b1-cards" style="grid-template-columns: 1fr; padding: 0 24px; gap: 14px; margin-top: -32px">
+        <div class="g-card b1-card" style="padding: 22px">
+          <div class="tile-row"><span class="g-tile g-tile--primary" style="width: 44px; height: 44px; font-size: 12px">1:1</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig</span></div>
+          <div><h3 style="font-size: 22px">Personlig <em>coaching</em></h3><div class="price">fra <b style="font-size: 18px">1 600 kr</b></div></div>
+          <div class="arrow" style="font-size: 12px"><span>Velg coach →</span><span class="ic">›</span></div>
+        </div>
+        <div class="g-card b1-card" style="padding: 22px">
+          <div class="tile-row"><span class="g-tile g-tile--accent" style="width: 44px; height: 44px; font-size: 12px">TM</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig</span></div>
+          <div><h3 style="font-size: 22px">TrackMan-<em>økt</em></h3><div class="price">fra <b style="font-size: 18px">800 kr</b></div></div>
+          <div class="arrow" style="font-size: 12px"><span>Velg anlegg →</span><span class="ic">›</span></div>
+        </div>
+        <div class="g-card b1-card" style="padding: 22px">
+          <div class="tile-row"><span class="g-tile g-tile--gold" style="width: 44px; height: 44px; font-size: 12px">JR</span><span class="g-pill g-pill--success"><span class="g-dot g-dot--success"></span>Ledig</span></div>
+          <div><h3 style="font-size: 22px">Junior-<em>time</em></h3><div class="price">fra <b style="font-size: 18px">600 kr</b></div></div>
+          <div class="arrow" style="font-size: 12px"><span>Velg coach →</span><span class="ic">›</span></div>
+        </div>
+      </div>
+      <div class="b1-trust" style="padding: 0 24px; margin-top: 32px; gap: 12px; font-size: 9px">
+        <span>PGA-coacher</span><span class="sep">·</span><span>Stripe / Vipps</span><span class="sep">·</span><span>24t fri avbest.</span>
+      </div>
+      <div class="b1-faq" style="margin-top: 48px; padding: 0 24px 40px">
+        <h2 style="font-size: 24px">Ofte stilte <em>spørsmål</em></h2>
+        <div class="b1-faq-list">
+          <div class="b1-faq-item" style="padding: 14px 0"><div class="b1-faq-q" style="font-size: 14px"><span>Hvor mye koster en time?</span><span class="chev" style="width:22px;height:22px;font-size:10px">▾</span></div></div>
+          <div class="b1-faq-item" style="padding: 14px 0"><div class="b1-faq-q" style="font-size: 14px"><span>Kan jeg avbestille?</span><span class="chev" style="width:22px;height:22px;font-size:10px">▾</span></div></div>
+          <div class="b1-faq-item" style="padding: 14px 0"><div class="b1-faq-q" style="font-size: 14px"><span>TrackMan-økt?</span><span class="chev" style="width:22px;height:22px;font-size:10px">▾</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

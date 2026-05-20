@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Planlegg · Periode-modal · CoachHQ</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/dark-shell.css">
+<link rel="stylesheet" href="assets/light-shell-v2.css">
+<style>
+  body { min-width: 1920px; background: var(--bg-deep); }
+
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(6, 18, 14, 0.84);
+    backdrop-filter: blur(8px);
+    z-index: 90;
+    display: flex; justify-content: center; align-items: center;
+    padding: 40px;
+  }
+  .modal {
+    width: 100%;
+    max-width: 1180px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 28px;
+    background: linear-gradient(180deg, var(--bg-elev) 0%, var(--bg-surface) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-head .ttl {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .modal-head .ttl h2 {
+    margin: 0;
+    font: 600 22px/1 var(--font-tight); color: var(--ink-dk);
+    letter-spacing: -.015em;
+  }
+  .modal-head .ttl h2 em { font-style: italic; font-weight: 400; color: var(--ink-dk-muted); }
+  .modal-head .ttl .crumb { font: 500 11px/1 var(--font-mono); color: var(--ink-dk-subtle); }
+  .modal-head .close {
+    width: 32px; height: 32px;
+    background: var(--bg-elev-2);
+    border: 0; border-radius: 8px;
+    color: var(--ink-dk-muted); cursor: pointer;
+    display: grid; place-items: center;
+  }
+
+  .modal-body {
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: 0;
+  }
+
+  /* LEFT — form */
+  .form-col {
+    padding: 24px 28px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 22px;
+    background: var(--bg-deep);
+    overflow-y: auto;
+  }
+  .form-sec { display: flex; flex-direction: column; gap: 10px; }
+  .form-sec .lbl {
+    font: 600 10px/1 var(--font-sans); letter-spacing: .10em;
+    text-transform: uppercase; color: var(--ink-dk-subtle);
+  }
+
+  /* Period type radio cards */
+  .ptype-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .ptype-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    position: relative;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .ptype-card .sw {
+    width: 32px; height: 6px; border-radius: 3px;
+    background: var(--periode-grunn);
+  }
+  .ptype-card.spes .sw { background: var(--periode-spes); }
+  .ptype-card.turn .sw { background: var(--periode-turn); }
+  .ptype-card .pn { font: 700 11px/1 var(--font-mono); letter-spacing: .06em; color: var(--ink-dk); }
+  .ptype-card .pd { font: 500 11px/1.4 var(--font-sans); color: var(--ink-dk-muted); }
+  .ptype-card.on {
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 1px var(--brand-accent), 0 12px 28px rgba(209,248,67,0.10);
+  }
+  .ptype-card.on.grunn { border-color: #0F4A35; box-shadow: 0 0 0 1px #0F4A35; background: rgba(0,59,42,0.30); }
+  .ptype-card.on.spes  { border-color: #00734D; box-shadow: 0 0 0 1px #00734D; background: rgba(0,88,64,0.20); }
+  .ptype-card.on.turn  { border-color: var(--brand-accent); box-shadow: 0 0 0 1px var(--brand-accent); background: rgba(209,248,67,0.10); }
+  .ptype-card .check {
+    position: absolute; top: 14px; right: 14px;
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 50%;
+  }
+  .ptype-card.on .check {
+    background: var(--brand-accent); border-color: var(--brand-accent);
+  }
+  .ptype-card.on .check::after {
+    content: ""; position: absolute;
+    width: 6px; height: 3px;
+    border-left: 1.5px solid var(--brand-accent-on);
+    border-bottom: 1.5px solid var(--brand-accent-on);
+    transform: rotate(-45deg);
+    top: 5px; left: 4px;
+  }
+
+  /* Form row helpers */
+  .form-row {
+    display: grid; grid-template-columns: 100px 1fr; gap: 12px; align-items: center;
+  }
+  .form-row .k { font: 500 12px/1 var(--font-sans); color: var(--ink-dk-muted); }
+  .input {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 10px;
+    color: var(--ink-dk);
+    font: 500 12.5px/1.2 var(--font-sans);
+    outline: none;
+  }
+  .input:focus { border-color: var(--brand-accent); }
+  .input.mono { font-family: var(--font-mono); }
+  .input.lg { padding: 10px 12px; font-size: 13.5px; }
+
+  .dt-pair { display: flex; gap: 8px; }
+  .dt-pair .input { flex: 1; }
+  .dt-pair .arrow { color: var(--ink-dk-subtle); font: 500 14px/1 var(--font-mono); align-self: center; }
+
+  .player-pick {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 6px 10px 6px 6px;
+    cursor: pointer;
+  }
+  .player-pick .av-s { width:24px; height:24px; font-size:9.5px; }
+  .player-pick .nm { font: 500 13px/1 var(--font-sans); color: var(--ink-dk); }
+  .player-pick .role { font: 500 10px/1 var(--font-mono); color: var(--ink-dk-subtle); margin-left:auto; }
+
+  /* Pyramide override editor */
+  .pyr-editor {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .pyr-editor .bar {
+    display: flex; height: 32px; border-radius: 6px; overflow: hidden;
+    background: var(--bg-elev-2);
+  }
+  .pyr-editor .bar .seg {
+    display: flex; align-items: center; justify-content: center;
+    font: 700 13px/1 var(--font-mono);
+  }
+  .pyr-editor .bar .seg.fys { background: var(--pyr-fys-d); color: #ECF8EE; }
+  .pyr-editor .bar .seg.tek { background: var(--pyr-tek-d); color: #ECF8EE; }
+  .pyr-editor .bar .seg.slag { background: var(--pyr-slag-d); color: var(--brand-accent-on); }
+  .pyr-editor .bar .seg.spill { background: var(--pyr-spill-d); color: var(--brand-accent-on); }
+  .pyr-editor .bar .seg.turn { background: var(--pyr-turn-d); color: var(--bg-deep); }
+  .pyr-editor .inputs {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+  }
+  .pyr-editor .inputs .cell {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .pyr-editor .inputs .cell .nm { font: 700 9.5px/1 var(--font-mono); color: var(--ink-dk-subtle); letter-spacing: .04em; text-align: center; }
+  .pyr-editor .inputs .cell input {
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 4px;
+    color: var(--ink-dk); text-align: center;
+    font: 600 14px/1 var(--font-mono);
+    outline: none;
+  }
+  .pyr-editor .meta-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font: 500 11px/1 var(--font-mono); color: var(--ink-dk-subtle);
+  }
+  .pyr-editor .meta-row .reset {
+    background: var(--bg-elev-2); color: var(--ink-dk);
+    border: 0; padding: 5px 10px; border-radius: 5px;
+    font: 600 10.5px/1 var(--font-mono); cursor: pointer;
+  }
+  .pyr-editor .meta-row .sum { color: var(--status-ok); }
+
+  /* RIGHT — constraints */
+  .constr-col {
+    padding: 24px 28px;
+    display: flex; flex-direction: column; gap: 18px;
+    overflow-y: auto;
+    background: var(--bg-surface);
+  }
+  .cs-card {
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .cs-card .h {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .cs-card .h .ttl { font: 600 13px/1 var(--font-tight); color: var(--ink-dk); letter-spacing: -.005em; }
+  .cs-card .h .mt { font: 500 11px/1 var(--font-mono); color: var(--ink-dk-subtle); }
+
+  /* TAK section */
+  .tak-rows { display: flex; flex-direction: column; gap: 8px; }
+  .tak-row {
+    display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center;
+    padding: 6px 0;
+    font: 500 12.5px/1 var(--font-sans);
+  }
+  .tak-row .k { color: var(--ink-dk-muted); }
+  .tak-row .v { font-family: var(--font-mono); color: var(--ink-dk); font-size: 13px; }
+  .tak-effective {
+    margin-top: 10px;
+    padding: 12px 14px;
+    background: rgba(209,248,67,0.10);
+    border: 1px solid rgba(209,248,67,0.3);
+    border-radius: 8px;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .tak-effective .k { color: var(--brand-accent); font: 700 10px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+  .tak-effective .v { font: 600 24px/1 var(--font-mono); color: var(--brand-accent); }
+  .tak-effective .v small { font-size: 12px; color: rgba(209,248,67,0.75); margin-left: 4px; font-weight: 500; }
+
+  /* L-faser chips */
+  .lphases { display: flex; gap: 6px; flex-wrap: wrap; }
+  .lp-chip {
+    padding: 7px 12px;
+    border-radius: 100px;
+    font: 600 11px/1 var(--font-mono); letter-spacing: .04em;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .lp-chip.ok { background: rgba(76,195,138,0.15); color: var(--status-ok); border: 1px solid rgba(76,195,138,0.3); }
+  .lp-chip.no { background: rgba(217,69,69,0.10); color: var(--status-alarm); border: 1px solid rgba(217,69,69,0.3); }
+  .lp-chip .ic { width: 11px; height: 11px; }
+
+  /* CS gauge */
+  .cs-gauge { display: grid; grid-template-columns: 140px 1fr; gap: 18px; align-items: center; }
+  .cs-circle {
+    width: 140px; height: 140px; position: relative;
+  }
+  .cs-circle svg { transform: rotate(-90deg); }
+  .cs-circle .v {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  }
+  .cs-circle .v .num { font: 600 28px/1 var(--font-mono); color: var(--ink-dk); letter-spacing: -.01em; }
+  .cs-circle .v .lbl { font: 500 10px/1 var(--font-mono); color: var(--ink-dk-subtle); letter-spacing: .06em; text-transform: uppercase; }
+  .cs-side { display: flex; flex-direction: column; gap: 8px; font: 500 12.5px/1.4 var(--font-sans); }
+  .cs-side .row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border-soft); }
+  .cs-side .row:last-child { border: 0; }
+  .cs-side .row .k { color: var(--ink-dk-muted); }
+  .cs-side .row .v { font-family: var(--font-mono); color: var(--ink-dk); }
+  .cs-side .row .v.max { color: var(--brand-accent); }
+
+  /* Advarsler */
+  .warn-block {
+    padding: 12px 14px;
+    background: rgba(244,196,48,0.10);
+    border: 1px solid rgba(244,196,48,0.25);
+    border-left: 3px solid var(--status-warn);
+    border-radius: 8px;
+    display: flex; gap: 12px;
+  }
+  .warn-block .ic { color: var(--status-warn); margin-top: 2px; flex-shrink: 0; }
+  .warn-block .body { flex: 1; }
+  .warn-block .ttl { font: 600 12.5px/1.3 var(--font-tight); color: var(--ink-dk); letter-spacing: -.005em; }
+  .warn-block .lede { font: 500 11.5px/1.4 var(--font-sans); color: var(--ink-dk-muted); margin-top: 3px; }
+  .warn-block .link { font: 600 11px/1 var(--font-mono); color: var(--status-warn); margin-top: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+
+  /* Footer */
+  .modal-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 28px;
+    background: var(--bg-elev);
+    border-top: 1px solid var(--border);
+  }
+  .modal-foot .left { font: 500 11px/1.4 var(--font-mono); color: var(--ink-dk-subtle); }
+  .modal-foot .right { display: flex; gap: 8px; }
+</style>
+</head>
+<body>
+
+<!-- Background context -->
+<div class="app" data-screen-label="Planlegg — Periode-modal (Vår-spesialisering)" style="filter: blur(2px); opacity: 0.5;">
+  <aside class="rail">
+    <div class="rail-logo">AK</div>
+    <div class="rail-ic"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/></svg></div>
+    <div class="rail-ic active"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></div>
+    <div class="rail-spacer"></div>
+    <div class="rail-avatar">AK</div>
+  </aside>
+  <nav class="nav">
+    <div class="nav-brand"><div class="nav-brand-title">AK Golf</div><div class="nav-brand-sub">CoachHQ</div></div>
+    <div class="nav-section">Planlegg</div>
+    <div class="nav-item active"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Kalender</div>
+  </nav>
+  <aside class="plan-sidebar"></aside>
+  <main class="main"></main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop">
+  <div class="modal">
+
+    <header class="modal-head">
+      <div class="ttl">
+        <div>
+          <div class="crumb">Markus Pedersen · sesong 2026 · uke 9–19</div>
+          <h2>Periode <em>· Vår-spesialisering</em></h2>
+        </div>
+        <span class="periode-badge spes" style="font-size:10px; padding: 4px 10px;">SPES</span>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <span class="pill" style="background:rgba(46,140,106,0.16); color: #8CD4B0; padding: 3px 10px; border-radius: 100px; font: 600 10px/1 var(--font-mono); letter-spacing: .06em;">11 UKER · 7 700 MIN</span>
+        <button class="close"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+    </header>
+
+    <div class="modal-body">
+
+      <!-- LEFT FORM -->
+      <div class="form-col">
+
+        <div class="form-sec">
+          <div class="lbl">Periodetype</div>
+          <div class="ptype-grid">
+            <div class="ptype-card grunn">
+              <div class="check"></div>
+              <div class="sw"></div>
+              <div class="pn">GRUNN</div>
+              <div class="pd">Bred utvikling · høyt volum · lav CS</div>
+            </div>
+            <div class="ptype-card spes on">
+              <div class="check"></div>
+              <div class="sw"></div>
+              <div class="pn">SPESIALISERING</div>
+              <div class="pd">Komponentfokus · medium CS · L-KØLLE</div>
+            </div>
+            <div class="ptype-card turn">
+              <div class="check"></div>
+              <div class="sw"></div>
+              <div class="pn">TURNERING</div>
+              <div class="pd">Vedlikehold · høy CS · mental fokus</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-sec">
+          <div class="lbl">Detaljer</div>
+          <div class="form-row">
+            <span class="k">Periodenavn</span>
+            <input class="input lg" value="Vår-spesialisering" />
+          </div>
+          <div class="form-row">
+            <span class="k">Spiller</span>
+            <div class="player-pick">
+              <div class="av-s av-1">MP</div>
+              <span class="nm">Markus Pedersen</span>
+              <span class="role">A-lag · 17</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="k">Datoer</span>
+            <div class="dt-pair">
+              <input class="input mono" value="23. feb 2026 · u9" />
+              <span class="arrow">→</span>
+              <input class="input mono" value="10. mai 2026 · u19" />
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="k">Varighet</span>
+            <div style="display:flex; align-items:baseline; gap:10px;">
+              <span class="num" style="font:600 18px/1 var(--font-mono); color: var(--ink-dk);">11 uker</span>
+              <span style="font: 500 11px/1 var(--font-mono); color: var(--ink-dk-subtle);">· 77 dager · ≈ 7 700 min planlagt</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-sec">
+          <div class="lbl">Pyramide-override <span style="color:var(--ink-dk-faint); text-transform: none; letter-spacing: 0; font-weight: 400;">(valgfritt — viser SPES-default)</span></div>
+          <div class="pyr-editor">
+            <div class="bar">
+              <div class="seg fys" style="width:18%;">18</div>
+              <div class="seg tek" style="width:30%;">30</div>
+              <div class="seg slag" style="width:32%;">32</div>
+              <div class="seg spill" style="width:16%;">16</div>
+              <div class="seg turn" style="width:4%;">4</div>
+            </div>
+            <div class="inputs">
+              <div class="cell"><span class="nm">FYS</span><input value="18" /></div>
+              <div class="cell"><span class="nm">TEK</span><input value="30" /></div>
+              <div class="cell"><span class="nm">SLAG</span><input value="32" /></div>
+              <div class="cell"><span class="nm">SPILL</span><input value="16" /></div>
+              <div class="cell"><span class="nm">TURN</span><input value="4" /></div>
+            </div>
+            <div class="meta-row">
+              <span>Sum: <span class="sum">100 ✓</span></span>
+              <button class="reset">↺ Tilbakestill til A–K-default</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-sec">
+          <div class="lbl">Notat</div>
+          <div class="input" style="min-height: 60px; line-height:1.4;">Slå ned slag-volum mot Bossum Open. Fokus på impact-konsistens i 7-9-jern; pre-shot under press. Maks 2 K-økter/uke.</div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT CONSTRAINTS -->
+      <div class="constr-col">
+
+        <!-- Volum-TAK -->
+        <div class="cs-card">
+          <div class="h">
+            <div class="ttl">Volum-tak</div>
+            <span class="mt">fra periode-constraints.ts</span>
+          </div>
+          <div class="tak-rows">
+            <div class="tak-row"><span class="k">P-fase-grense</span><span class="v">850 min / uke</span></div>
+            <div class="tak-row"><span class="k">Periodetype-grense (SPES)</span><span class="v">800 min / uke</span></div>
+            <div class="tak-row"><span class="k">Aldersjustering · 17 år</span><span class="v">× 0,95</span></div>
+          </div>
+          <div class="tak-effective">
+            <span class="k">Effektiv TAK</span>
+            <span class="v">800 <small>min / uke</small></span>
+          </div>
+        </div>
+
+        <!-- L-faser -->
+        <div class="cs-card">
+          <div class="h">
+            <div class="ttl">Tillatte L-faser</div>
+            <span class="mt">SPES-default</span>
+          </div>
+          <div class="lphases">
+            <span class="lp-chip ok"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>L-KROPP</span>
+            <span class="lp-chip ok"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>L-ARM</span>
+            <span class="lp-chip ok"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>L-KØLLE</span>
+            <span class="lp-chip no"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>L-BALL</span>
+            <span class="lp-chip no"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>L-AUTO</span>
+          </div>
+        </div>
+
+        <!-- CS-maks gauge -->
+        <div class="cs-card">
+          <div class="h">
+            <div class="ttl">Challenge-stress (CS)</div>
+            <span class="mt">periodetype-maks: 80</span>
+          </div>
+          <div class="cs-gauge">
+            <div class="cs-circle">
+              <svg width="140" height="140" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="58" fill="none" stroke="#1B201F" stroke-width="14"/>
+                <circle cx="70" cy="70" r="58" fill="none" stroke="url(#csgrad)" stroke-width="14" stroke-dasharray="291.6" stroke-dashoffset="58.3" stroke-linecap="round"/>
+                <defs>
+                  <linearGradient id="csgrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#4CC38A"/>
+                    <stop offset="0.55" stop-color="#F4C430"/>
+                    <stop offset="1" stop-color="#E07A5F"/>
+                  </linearGradient>
+                </defs>
+                <!-- Max line at 80% -->
+                <line x1="70" y1="9" x2="70" y2="23"
+                      stroke="#D1F843" stroke-width="3" stroke-linecap="round"
+                      transform="rotate(288 70 70)"/>
+              </svg>
+              <div class="v">
+                <div class="num">80</div>
+                <div class="lbl">CS-MAKS</div>
+              </div>
+            </div>
+            <div class="cs-side">
+              <div class="row"><span class="k">Periodetype-maks</span><span class="v max">CS 80</span></div>
+              <div class="row"><span class="k">Min anbefalt</span><span class="v">CS 50</span></div>
+              <div class="row"><span class="k">Snitt planlagt</span><span class="v">CS 67</span></div>
+              <div class="row"><span class="k">Antall økter > CS75</span><span class="v">22 / 56</span></div>
+              <div class="row"><span class="k">PR-press maks</span><span class="v">PR 4</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Advarsler -->
+        <div class="cs-card">
+          <div class="h">
+            <div class="ttl">Advarsler</div>
+            <span class="mt">2 funnet</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="warn-block">
+              <svg class="ic ic-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+              <div class="body">
+                <div class="ttl">3 økter bruker L-AUTO — ikke tillatt i SPES-periode.</div>
+                <div class="lede">Uke 13, uke 16, uke 17. Foreslår å justere ned til L-KØLLE eller flytte til turneringsperiode.</div>
+                <a class="link">Vis 3 økter →</a>
+              </div>
+            </div>
+            <div class="warn-block">
+              <svg class="ic ic-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+              <div class="body">
+                <div class="ttl">Uke 14 over TAK (820 / 800 min).</div>
+                <div class="lede">+20 min over grensen. Anbefales å trekke 1 random-økt onsdag eller flytte fredag-økten til uke 15.</div>
+                <a class="link">Åpne uke 14 →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <footer class="modal-foot">
+      <div class="left">
+        <span class="num" style="color:var(--ink-dk);">14 perioder</span> i sesong 2026 · ingen overlapp · sist endret <span class="num">12. mai 14:02</span> av Anders K.
+      </div>
+      <div class="right">
+        <button class="btn btn-danger"><svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Slett periode</button>
+        <button class="btn btn-ghost">Avbryt</button>
+        <button class="btn btn-success">Lagre endringer<svg class="ic ic-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === '1') location.href = '01-aarsplan.html';
+    if (e.key === '2') location.href = '02-maanedsplan.html';
+    if (e.key === '3') location.href = '03-ukeplan.html';
+    if (e.key === '4') location.href = '04-dagsplan.html';
+    if (e.key === 'Escape') location.href = '01-aarsplan.html';
+  });
+</script>
+
+<script>
+  // Theme: dark | light. Default light per AK Golf Brand request.
+  (function(){
+    var saved = localStorage.getItem('ak-theme') || 'light';
+    if (saved === 'light') document.body.classList.add('light');
+    window.addEventListener('DOMContentLoaded', function(){
+      var t = document.getElementById('__themetoggle');
+      if (!t) return;
+      function paint(){
+        var isLight = document.body.classList.contains('light');
+        t.querySelector('.opt.l').classList.toggle('on', isLight);
+        t.querySelector('.opt.d').classList.toggle('on', !isLight);
+      }
+      paint();
+      t.addEventListener('click', function(e){
+        var pick = e.target.closest('.opt');
+        if (!pick) return;
+        var wantLight = pick.classList.contains('l');
+        document.body.classList.toggle('light', wantLight);
+        localStorage.setItem('ak-theme', wantLight ? 'light' : 'dark');
+        paint();
+      });
+    });
+  })();
+</script>
+</body>
+</html>

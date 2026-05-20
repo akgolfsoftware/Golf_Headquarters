@@ -1,0 +1,248 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Plan-redigering · Sørlandsåpent 2026</title>
+<style>
+  .tabs-row { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .tab { padding: 12px 18px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; border: 0; background: transparent; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--primary); border-bottom-color: var(--accent); font-weight: 600; }
+  .tab .num-pill { font-family: var(--font-mono); font-size: 10px; padding: 2px 7px; border-radius: 10px; background: var(--bg); color: var(--text-secondary); margin-left: 6px; }
+  .tab.active .num-pill { background: rgba(0,88,64,0.10); color: var(--primary); }
+
+  .phase.phase-editable { cursor: pointer; transition: filter 120ms ease, box-shadow 120ms ease; }
+  .phase.phase-editable:hover { filter: brightness(1.02); box-shadow: 0 4px 14px rgba(0,88,64,0.12); }
+  .phase.phase-selected { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .add-phase-btn { display: flex; align-items: center; justify-content: center; padding: 14px; border: 2px dashed var(--border-strong); border-radius: var(--r-card); background: transparent; cursor: pointer; font-family: inherit; font-size: 13px; color: var(--text-secondary); width: 100%; margin-top: 4px; }
+  .add-phase-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(0,88,64,0.03); }
+
+  .form-row { margin-bottom: 14px; }
+  .form-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px; display: block; font-weight: 600; }
+  .form-input { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-elev); font-family: inherit; font-size: 13px; color: var(--text); }
+  .form-input:focus { outline: none; border-color: var(--primary); }
+  .form-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .slider-row { display: grid; grid-template-columns: 56px 1fr 36px; align-items: center; gap: 10px; padding: 4px 0; }
+  .slider-row label { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+  .slider-track { height: 6px; background: var(--border); border-radius: 3px; position: relative; }
+  .slider-fill { height: 100%; border-radius: 3px; }
+  .slider-val { font-family: var(--font-mono); font-size: 12px; font-weight: 600; text-align: right; }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; font-size: 12px; }
+  .toggle-pill { width: 32px; height: 18px; background: var(--primary); border-radius: 12px; position: relative; }
+  .toggle-pill::after { content: ""; position: absolute; right: 2px; top: 2px; width: 14px; height: 14px; background: var(--bg-elev); border-radius: 50%; }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="hub.html">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="plans.html" class="active">Treningsplaner</a>
+      <a href="elever.html">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="approvals.html">Godkjenninger</a>
+      <a href="bookings.html">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="finance.html">Økonomi</a>
+      <a href="facilities.html">Fasiliteter</a>
+      <a href="settings-bruker.html">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Treningsplaner · Markus R. Pedersen · A2 · HCP 7,4</span>
+      <h1 class="page-title">Endrer: <em>Sørlandsåpent-oppkjøring</em> 2026</h1>
+      <p class="page-lede">Aktiv plan med fortløpende justeringer. Klikk en fase i tidslinjen for å redigere — endringer logges i versjonshistorikk.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Plan-status</span>
+      <button class="action-item action-item-success">Aktiv plan</button>
+      <button class="action-item"><b>13/19</b> ferdig</button>
+      <button class="action-item">Sist endret <b>2d</b> siden</button>
+      <button class="action-item action-item-warn"><b>1</b> agent-forslag venter</button>
+      <button class="btn btn-ghost" style="margin-left:auto;">Versjonshistorikk</button>
+      <button class="btn btn-primary">Lagre alle endringer</button>
+    </div>
+
+    <div class="tabs-row">
+      <button class="tab active">Faser <span class="num-pill">5</span></button>
+      <button class="tab">Økter <span class="num-pill">19</span></button>
+      <button class="tab">Pyramide</button>
+      <button class="tab">Tester</button>
+      <button class="tab">Mål</button>
+    </div>
+
+    <div class="cal-with-drawer">
+      <div>
+        <section class="phases" style="--n: 5;">
+          <article class="phase phase-done phase-editable">
+            <div class="phase-eyebrow"><span>Fase 1 · uke 19</span><span><i class="phase-status-dot phase-status-done"></i>Ferdig</span></div>
+            <h3 class="phase-title">Base</h3>
+            <div class="phase-dates">12.05–18.05</div>
+            <div class="phase-mini-pyr">
+              <div class="phase-mini-pyr-bar"><i style="width:25%; background:var(--pyr-fys);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:25%; background:var(--pyr-tek);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:25%; background:#B8C82E;"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:15%; background:var(--pyr-spill);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:10%; background:var(--pyr-turn);"></i></div>
+            </div>
+            <div class="phase-stats"><span><b>5/5</b> økter</span><span>Låst</span></div>
+          </article>
+
+          <article class="phase phase-done phase-editable">
+            <div class="phase-eyebrow"><span>Fase 2 · uke 20</span><span><i class="phase-status-dot phase-status-done"></i>Ferdig</span></div>
+            <h3 class="phase-title">Forberedelse</h3>
+            <div class="phase-dates">19.05–25.05</div>
+            <div class="phase-mini-pyr">
+              <div class="phase-mini-pyr-bar"><i style="width:15%; background:var(--pyr-fys);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:30%; background:var(--pyr-tek);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:30%; background:#B8C82E;"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:15%; background:var(--pyr-spill);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:10%; background:var(--pyr-turn);"></i></div>
+            </div>
+            <div class="phase-stats"><span><b>6/6</b> økter</span><span>Låst</span></div>
+          </article>
+
+          <article class="phase phase-current phase-editable phase-selected">
+            <div class="phase-eyebrow"><span>Fase 3 · uke 21</span><span><i class="phase-status-dot phase-status-current"></i>Redigerer</span></div>
+            <h3 class="phase-title">Spesifikk</h3>
+            <div class="phase-dates">26.05–01.06 · Bjaavann</div>
+            <div class="phase-mini-pyr">
+              <div class="phase-mini-pyr-bar"><i style="width:10%; background:var(--pyr-fys);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:15%; background:var(--pyr-tek);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:35%; background:#D1F843;"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:30%; background:#D19A35;"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:10%; background:#A5A39E;"></i></div>
+            </div>
+            <div class="phase-stats"><span><b>2/5</b> økter</span><span>Aktiv</span></div>
+          </article>
+
+          <article class="phase phase-future phase-editable">
+            <div class="phase-eyebrow"><span>Fase 4 · uke 22</span><span><i class="phase-status-dot phase-status-future"></i>Kommende</span></div>
+            <h3 class="phase-title">Taper</h3>
+            <div class="phase-dates">27.05–01.06</div>
+            <div class="phase-mini-pyr">
+              <div class="phase-mini-pyr-bar"><i style="width:5%; background:var(--pyr-fys);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:5%; background:var(--pyr-tek);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:30%; background:#B8C82E;"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:30%; background:var(--pyr-spill);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:30%; background:var(--pyr-turn);"></i></div>
+            </div>
+            <div class="phase-stats"><span><b>0/3</b> økter</span><span>Endre</span></div>
+          </article>
+
+          <article class="phase phase-peak phase-editable">
+            <div class="phase-eyebrow"><span>Peak · 02–04.06</span><span><i class="phase-status-dot phase-status-peak"></i>Target</span></div>
+            <h3 class="phase-title">Sørlandsåpent</h3>
+            <div class="phase-dates">72 hull · Bjaavann</div>
+            <div class="phase-mini-pyr" style="opacity:0.55;">
+              <div class="phase-mini-pyr-bar"><i style="width:0%;"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:0%;"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:100%; background:#B8C82E;"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:100%; background:var(--pyr-spill);"></i></div>
+              <div class="phase-mini-pyr-bar"><i style="width:100%; background:var(--pyr-turn);"></i></div>
+            </div>
+            <div class="phase-stats"><span><b>3 dager</b></span><span>Mål: topp-10</span></div>
+          </article>
+        </section>
+
+        <button class="add-phase-btn">+ Legg til ny fase</button>
+
+        <div style="margin-top: 20px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.30); border-radius: var(--r-card); padding: 14px 16px; display: flex; align-items: center; gap: 14px;">
+          <span class="pill pill-warning">Agent-forslag</span>
+          <div style="flex:1; font-size:12px;"><b>Test-agent foreslår:</b> reduser FYS i taper-uka basert på HRV-trend +8 %.</div>
+          <button class="btn btn-ghost" style="padding:6px 14px; font-size:12px;">Avvis</button>
+          <button class="btn btn-primary" style="padding:6px 14px; font-size:12px;">Godkjenn</button>
+        </div>
+      </div>
+
+      <!-- DRAWER: Spesifikk-fase edit -->
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div>
+            <div class="drawer-meta">Fase 3 av 5 · redigerer</div>
+            <h3>Spesifikk · Bjaavann</h3>
+            <div class="drawer-meta" style="margin-top:4px; text-transform:none; letter-spacing:0;">7 dager · 5 økter</div>
+            <div style="margin-top:8px; display:flex; gap:6px;">
+              <span class="pill pill-info">Aktiv fase</span>
+              <span class="pill pill-warning">Endret</span>
+            </div>
+          </div>
+          <button class="drawer-close" title="Lukk">×</button>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Datoer</div>
+          <div class="form-row-grid">
+            <div><label class="form-label">Start</label><input type="text" class="form-input" value="26.05.2026"></div>
+            <div><label class="form-label">Slutt</label><input type="text" class="form-input" value="01.06.2026"></div>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Pyramide-allokasjon</div>
+          <div class="slider-row">
+            <label>FYS</label>
+            <div class="slider-track"><div class="slider-fill" style="width:10%; background:var(--pyr-fys);"></div></div>
+            <span class="slider-val">10 %</span>
+          </div>
+          <div class="slider-row">
+            <label>TEK</label>
+            <div class="slider-track"><div class="slider-fill" style="width:15%; background:var(--pyr-tek);"></div></div>
+            <span class="slider-val">15 %</span>
+          </div>
+          <div class="slider-row">
+            <label>SLAG</label>
+            <div class="slider-track"><div class="slider-fill" style="width:35%; background:#B8C82E;"></div></div>
+            <span class="slider-val">35 %</span>
+          </div>
+          <div class="slider-row">
+            <label>SPILL</label>
+            <div class="slider-track"><div class="slider-fill" style="width:30%; background:var(--pyr-spill);"></div></div>
+            <span class="slider-val">30 %</span>
+          </div>
+          <div class="slider-row">
+            <label>TURN</label>
+            <div class="slider-track"><div class="slider-fill" style="width:10%; background:var(--pyr-turn);"></div></div>
+            <span class="slider-val">10 %</span>
+          </div>
+          <p style="font-size:10px; color:var(--text-secondary); margin-top:6px; font-family:var(--font-mono);">Total: 100 % · 16 t planlagt</p>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Antall økter</div>
+          <input type="text" class="form-input" value="5">
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Mål for fasen</div>
+          <textarea class="form-input" rows="3" style="resize:vertical; font-family:inherit;">Bunker u&d 8/10 · Pitch 50–100m ±5m · 2 sim-runder Bjaavann &lt;75</textarea>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Agent-forslag</div>
+          <div class="toggle-row"><span>Aktiver periodiserings-agent</span><span class="toggle-pill"></span></div>
+          <div class="toggle-row"><span>Auto-godkjenn små justeringer</span><span class="toggle-pill" style="background:var(--border);"></span></div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Versjonshistorikk · 3 endringer</div>
+          <ul style="list-style:none; padding:0; margin:0; font-size:11px; line-height:1.5;">
+            <li style="padding:4px 0; color:var(--text-secondary);"><b style="color:var(--text);">28.05 14:22</b> · SLAG +5 % (Anders)</li>
+            <li style="padding:4px 0; color:var(--text-secondary);"><b style="color:var(--text);">26.05 09:11</b> · Sim-runde lagt til (agent)</li>
+            <li style="padding:4px 0; color:var(--text-secondary);"><b style="color:var(--text);">24.05 18:40</b> · PYRAMID_ADJUST godkjent</li>
+          </ul>
+        </div>
+
+        <div class="drawer-section" style="display:flex; flex-direction:column; gap:8px; padding-bottom:0;">
+          <button class="btn btn-primary">Lagre endringer</button>
+          <button class="btn btn-ghost">Slett fase</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>

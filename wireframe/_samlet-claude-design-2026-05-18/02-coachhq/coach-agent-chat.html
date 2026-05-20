@@ -1,0 +1,197 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>AI-chat — 360-profil</title>
+<style>
+.chat-shell { display: grid; grid-template-columns: 280px 1fr; gap: 16px; height: calc(100vh - 200px); }
+.chat-history { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; display: flex; flex-direction: column; }
+.chat-history-head { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.chat-history-items { overflow-y: auto; flex: 1; padding: 8px; }
+.chat-history-item { padding: 10px 12px; border-radius: 8px; margin-bottom: 4px; cursor: pointer; }
+.chat-history-item:hover { background: var(--bg); }
+.chat-history-item.active { background: rgba(0,88,64,0.06); }
+.chat-history-item b { font-size: 13px; display: block; margin-bottom: 2px; }
+.chat-history-item small { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+.chat-detail { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); display: flex; flex-direction: column; overflow: hidden; }
+.chat-detail-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+.chat-msg { display: flex; gap: 12px; }
+.chat-msg-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 600; font-size: 13px; flex-shrink: 0; }
+.chat-msg-coach .chat-msg-icon { background: var(--primary); color: var(--text-inverse); }
+.chat-msg-ai .chat-msg-icon { background: rgba(209,248,67,0.40); color: #2F3B0E; }
+.chat-msg-content { flex: 1; background: var(--bg); padding: 12px 14px; border-radius: 10px; font-size: 13px; line-height: 1.6; }
+.chat-msg-coach .chat-msg-content { background: rgba(0,88,64,0.06); }
+.chat-msg-meta { font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary); margin-bottom: 4px; letter-spacing: 0.06em; text-transform: uppercase; }
+.chat-compose { padding: 14px 20px; border-top: 1px solid var(--border); background: var(--bg); }
+.chat-suggestions { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.chat-suggestion { padding: 6px 12px; border-radius: 14px; background: var(--bg-elev); border: 1px solid var(--border); font-size: 11px; cursor: pointer; }
+.chat-suggestion:hover { background: rgba(0,88,64,0.04); border-color: var(--primary); }
+.chat-input-row { display: flex; gap: 10px; align-items: flex-end; }
+.chat-input-row textarea { flex: 1; border: 1px solid var(--border); border-radius: 14px; padding: 10px 14px; font-family: inherit; font-size: 13px; resize: vertical; min-height: 44px; outline: 0; background: var(--bg-elev); }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="hub.html">Hub</a>
+      <a href="daglig-brief.html">Daglig Brief</a>
+      <a href="plans.html">Treningsplaner</a>
+      <a href="elever.html" class="active">Elever</a>
+      <a href="coaching-board.html">Coaching Board</a>
+      <a href="approvals.html">Godkjenninger</a>
+      <a href="kalender.html">Kalender</a>
+      <a href="bookings.html">Bookinger</a>
+      <a href="sessions.html">Tester</a>
+      <a href="agenter.html">Agenter</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="finance.html">Økonomi</a>
+      <a href="settings-bruker.html">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">/admin/elever/markus-r-pedersen/ai · AI-coach assistent</span>
+      <h1 class="page-title"><em>AI-chat</em> · Markus R Pedersen</h1>
+      <p class="page-lede">Spør AI-coachen om alt rundt Markus — utvikling, planjustering, sammenligning. Den har full kontekst på hans 360-profil.</p>
+    </header>
+
+    <div class="chat-shell">
+      <div class="chat-history">
+        <div class="chat-history-head">
+          <b style="font-size:13px;">Tidligere samtaler</b>
+        </div>
+        <div class="chat-history-items">
+
+          <div class="chat-history-item active">
+            <b>Plan-justering taper-fase</b>
+            <small>i dag · 8 meldinger</small>
+          </div>
+
+          <div class="chat-history-item">
+            <b>Sammenligning vs Joachim S</b>
+            <small>i går · 14 meldinger</small>
+          </div>
+
+          <div class="chat-history-item">
+            <b>SG-trend siste 90d</b>
+            <small>07.05 · 6 meldinger</small>
+          </div>
+
+          <div style="margin-top:14px; padding:10px 12px; font-family:var(--font-mono); font-size:9px; color:var(--text-secondary); letter-spacing:0.10em; text-transform:uppercase;">Kontekst</div>
+          <div style="padding:0 12px; font-size:12px; line-height:1.5; color:var(--text-secondary);">
+            AI-coachen har tilgang til:
+            <ul style="padding-left:14px; margin-top:6px;">
+              <li>Hele 360-profilen</li>
+              <li>Sesongplanen 2026</li>
+              <li>Sist 90d aktivitet</li>
+              <li>Mac O'Grady-prinsipper</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-detail">
+        <div class="chat-detail-head">
+          <span class="avatar" style="width:40px; height:40px; font-size:14px;">M</span>
+          <div style="flex:1;">
+            <b>Plan-justering taper-fase</b>
+            <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary);">Markus R Pedersen · HCP 7,4 · A2 · GFGK</div>
+          </div>
+          <button class="btn btn-ghost">Eksporter →</button>
+          <a href="360-profil.html" class="btn btn-ghost">360-profil →</a>
+        </div>
+
+        <div class="chat-body">
+
+          <div class="chat-msg chat-msg-coach">
+            <div class="chat-msg-icon">AK</div>
+            <div style="flex:1;">
+              <div class="chat-msg-meta">Anders · 09:14</div>
+              <div class="chat-msg-content">Markus har topp putt-form (+0,4 SG) men korthold er svakt. Hvordan bør jeg justere planen for taper-fasen?</div>
+            </div>
+          </div>
+
+          <div class="chat-msg chat-msg-ai">
+            <div class="chat-msg-icon">AI</div>
+            <div style="flex:1;">
+              <div class="chat-msg-meta">AI-coach · 09:14</div>
+              <div class="chat-msg-content">
+                Basert på 90d-data ser jeg at Markus har bygget putt-formen jevnt fra +0,1 til +0,4 SG. Korthold (ARG) er på -0,1. For taper-fasen vil jeg foreslå:
+                <br><br>
+                <b>Justeringer:</b>
+                <ol style="padding-left:18px; margin-top:6px;">
+                  <li>Reduser PUTT-volum 30% — formen er etablert, hold den.</li>
+                  <li>Øk SLAG fra 75 til 90 — fokuser pitch 50–100m i 5 av 6 økter.</li>
+                  <li>Hold TURN på 30 — to taper-runder før Sørlandsåpent.</li>
+                </ol>
+                Hovedmål: bygge selvtillit på avstanden 50–100m, der han mister mest slag.
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-msg chat-msg-coach">
+            <div class="chat-msg-icon">AK</div>
+            <div style="flex:1;">
+              <div class="chat-msg-meta">Anders · 09:16</div>
+              <div class="chat-msg-content">Hvilken Mac O'Grady-tilnærming bør vi bruke for pitch?</div>
+            </div>
+          </div>
+
+          <div class="chat-msg chat-msg-ai">
+            <div class="chat-msg-icon">AI</div>
+            <div style="flex:1;">
+              <div class="chat-msg-meta">AI-coach · 09:16</div>
+              <div class="chat-msg-content">
+                Mac O'Grady's «Lever-og-vinkel»-prinsipp passer Markus' kropp og sving godt. Konkret:
+                <br><br>
+                • <b>L-fase:</b> Fokus på «KØLLE» — korte armer, kontrollert lengde. Han har tendens til å åpne opp for tidlig.<br>
+                • <b>Trajectory:</b> Lav (M3-miljø). Treningssetting Mulligan med 3 mål — 60m / 80m / 100m.<br>
+                • <b>Volumforslag:</b> 80 ball per økt, 4 økter denne uka.
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-msg chat-msg-coach">
+            <div class="chat-msg-icon">AK</div>
+            <div style="flex:1;">
+              <div class="chat-msg-meta">Anders · 09:18</div>
+              <div class="chat-msg-content">Lag en testforslag jeg kan kjøre på fredag for å måle baseline.</div>
+            </div>
+          </div>
+
+          <div class="chat-msg chat-msg-ai">
+            <div class="chat-msg-icon">AI</div>
+            <div style="flex:1;">
+              <div class="chat-msg-meta">AI-coach · 09:18</div>
+              <div class="chat-msg-content">
+                <b>Pitch baseline-test · Markus R · 15. mai</b><br>
+                10 slag fra 60m, 10 fra 80m, 10 fra 100m. Mål: avstand til mål (radius), prosent innenfor 4m.
+                <br><br>
+                Forventet baseline (basert på A2-snitt): 65% innenfor 4m. Markus' nåværende anslag: 58%.
+                <br><br>
+                Vil du at jeg lager en ferdig test-mal i Tester-modulen?
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="chat-compose">
+          <div class="chat-suggestions">
+            <button class="chat-suggestion">Foreslå plan-justering</button>
+            <button class="chat-suggestion">Hva er svakeste SG?</button>
+            <button class="chat-suggestion">Lag testforslag</button>
+            <button class="chat-suggestion">Sammenlign med A2-snitt</button>
+            <button class="chat-suggestion">Foreslå neste 7 økter</button>
+          </div>
+          <div class="chat-input-row">
+            <textarea placeholder="Spør AI-coachen om Markus..."></textarea>
+            <button class="btn btn-primary">Send →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

@@ -190,7 +190,7 @@ export default async function AuditLogDetailPage({
       </Link>
 
       {/* Hero */}
-      <header className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 sm:flex-row sm:items-start sm:justify-between">
+      <header className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:p-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1 space-y-3">
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             CoachHQ · Audit · Detalj

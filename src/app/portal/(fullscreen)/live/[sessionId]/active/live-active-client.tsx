@@ -227,7 +227,7 @@ export function LiveActiveClient({ data }: Props) {
         <button
           type="button"
           aria-label="Tilbake"
-          className="w-9 h-9 flex items-center justify-center rounded-full border border-border bg-card text-foreground"
+          className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-card text-foreground"
         >
           <ArrowLeft className="w-[18px] h-[18px]" strokeWidth={1.75} />
         </button>

@@ -1,0 +1,111 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>Empty-list · katalog</title>
+<style>
+  .el-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .el-demo { background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 10px; padding: 28px 20px; min-height: 220px; display: flex; align-items: center; justify-content: center; margin: 10px 0 12px; text-align: center; }
+  .el-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); padding-top: 10px; border-top: 1px solid var(--border); }
+  .el-icon { width: 56px; height: 56px; border-radius: 14px; background: var(--bg-elev); border: 1px dashed var(--border-strong); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-family: var(--font-display); font-size: 24px; color: var(--text-muted); }
+  .el-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; color: var(--text); }
+  .el-text { font-size: 12px; color: var(--text-secondary); line-height: 1.55; max-width: 300px; margin: 0 auto 14px; }
+  .el-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .el-search-pill { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; padding: 4px 10px; border-radius: var(--r-pill); background: var(--bg-elev); border: 1px solid var(--border); color: var(--text-secondary); margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="../../coachhq/hub.html">Hub</a>
+      <a href="../../coachhq/elever.html">Elever</a>
+      <a href="../../coachhq/plans.html">Treningsplaner</a>
+      <a href="../../coachhq/bookings.html">Bookinger</a>
+      <a href="../../coachhq/approvals.html">Godkjenninger</a>
+      <a href="../../coachhq/analytics.html">Analytics</a>
+      <a href="../../coachhq/finance.html">Økonomi</a>
+      <a href="../../coachhq/facilities.html">Fasiliteter</a>
+      <a href="../../coachhq/settings-bruker.html" class="active">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Designsystem · Claude Design</span>
+      <h1 class="page-title"><em>Empty-list</em> · katalog</h1>
+      <p class="page-lede">Tomme lister i tabeller, grids og side-panels. Hver variant skal forklare HVORFOR lista er tom og hva brukeren kan gjøre.</p>
+    </header>
+
+    <div class="el-grid">
+      <div class="card">
+        <div class="card-label">Tom liste · ingen data</div>
+        <h3>Ingen elementer</h3>
+        <div class="el-demo">
+          <div>
+            <div class="el-icon">≡</div>
+            <div class="el-title">Du har ingen treningsplaner</div>
+            <p class="el-text">Lag din første plan fra en mal eller bygg fra bunnen.</p>
+            <div class="el-actions">
+              <button class="btn btn-primary">+ Ny plan</button>
+              <button class="btn btn-ghost">Bla i maler</button>
+            </div>
+          </div>
+        </div>
+        <div class="el-meta">Brukes på · plans, bookinger, godkjenninger uten data</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Filter · 0 treff</div>
+        <h3>Filter ga ingen treff</h3>
+        <div class="el-demo">
+          <div>
+            <div class="el-icon" style="background:rgba(245,158,11,0.10); border-color:rgba(245,158,11,0.30); color:#B45309;">⊘</div>
+            <div class="el-title">Ingen elever matcher filteret</div>
+            <p class="el-text">Aktive filtre: HCP &lt; 5 · Status = Aktiv · Klubb = GFGK</p>
+            <div class="el-search-pill">3 filtre aktive</div>
+            <div class="el-actions">
+              <button class="btn btn-primary">Tilbakestill filtre</button>
+              <button class="btn btn-ghost">Endre filter</button>
+            </div>
+          </div>
+        </div>
+        <div class="el-meta">Brukes på · filtrerte tabeller, segment-views</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Søk · uten treff</div>
+        <h3>Søk ga ingen resultater</h3>
+        <div class="el-demo">
+          <div>
+            <div class="el-search-pill">Søkte etter: "trackman v4 demo"</div>
+            <div class="el-icon" style="background:rgba(107,114,128,0.10); color:#4B5563;">?</div>
+            <div class="el-title">Ingen treff på søket</div>
+            <p class="el-text">Sjekk staving eller prøv færre søkeord. Du kan også søke i arkiverte elementer.</p>
+            <div class="el-actions">
+              <button class="btn btn-primary">Søk i arkiv</button>
+              <button class="btn btn-ghost">Rydd søk</button>
+            </div>
+          </div>
+        </div>
+        <div class="el-meta">Brukes på · global search, øvelse-bibliotek, plan-bibliotek</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Alle slettet</div>
+        <h3>Liste tømt</h3>
+        <div class="el-demo">
+          <div>
+            <div class="el-icon" style="background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.25); color:#B91C1C;">✕</div>
+            <div class="el-title">Alle elementer er slettet</div>
+            <p class="el-text">Du slettet 7 utkast. Du kan gjenopprette dem fra papirkurven i 30 dager.</p>
+            <div class="el-actions">
+              <button class="btn btn-primary">Åpne papirkurv</button>
+              <button class="btn btn-ghost">Gjenopprett alle</button>
+            </div>
+          </div>
+        </div>
+        <div class="el-meta">Brukes på · etter bulk-delete, etter mass-arkivering</div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

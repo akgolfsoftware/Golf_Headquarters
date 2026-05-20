@@ -1,0 +1,316 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Turneringer</title></head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="#">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="#">Treningsplaner</a>
+      <a href="#">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="#">Godkjenninger</a>
+      <a href="#">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="#" class="active">Analytics</a>
+      <a href="#">Økonomi</a>
+      <a href="#">Fasiliteter</a>
+      <a href="#">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Analytics · turneringskalender</span>
+      <h1 class="page-title"><em>Turneringer</em> · sesong 2026</h1>
+      <p class="page-lede">Påmeldte, oppkjøring og resultater på tvers av stallen. Tournament-agent overvåker taper-fase automatisk.</p>
+    </header>
+
+    <!-- 1. ACTION-STRIP — handlingsorientert inngang -->
+    <div class="action-strip">
+      <span class="action-strip-label">Neste 7 dager</span>
+      <button class="action-item action-item-danger"><b>3</b> frister utløper</button>
+      <button class="action-item action-item-warn"><b>2</b> spillere mangler påmelding</button>
+      <button class="action-item action-item-info"><b>5</b> foreldre venter info</button>
+      <button class="action-item action-item-warn"><b>1</b> trekking foreslås</button>
+      <button class="action-item action-item-success"><b>11</b> ting på plan</button>
+      <button class="btn btn-primary" style="margin-left: auto;">+ Påmelding</button>
+    </div>
+
+    <!-- 2. FRIST-STRIP — påmeldingsfrister med countdown -->
+    <div class="frist-strip">
+      <div class="frist-row frist-urgent">
+        <span class="frist-tag frist-tag-urgent">Frist 3d</span>
+        <div class="frist-text"><b>Mulligan Indoor Cup</b> · 28.06 · ikke startet påmelding · <span class="num">8 plasser</span> tilgjengelig</div>
+        <span class="frist-meta">Lukker fre 13.06 23:59</span>
+        <button class="btn btn-primary" style="padding:6px 14px; font-size:12px;">Påmeld stallen</button>
+      </div>
+      <div class="frist-row frist-soon">
+        <span class="frist-tag frist-tag-soon">Frist 11d</span>
+        <div class="frist-text"><b>NM Junior</b> · 12–14.07 · <span class="num">2 av 5</span> påmeldt · mangler Lina H., Sofie B., Mathias K.</div>
+        <span class="frist-meta">Lukker man 23.06 23:59</span>
+        <button class="btn btn-ghost" style="padding:6px 14px; font-size:12px;">Send påminnelse</button>
+      </div>
+      <div class="frist-row frist-soon">
+        <span class="frist-tag frist-tag-soon">Frist 14d</span>
+        <div class="frist-text"><b>GFGK Åpent</b> · 14.06 · <span class="num">5 av 6</span> påmeldt · venter bekreftelse fra Aksel L.</div>
+        <span class="frist-meta">Lukker tor 26.06 23:59</span>
+        <button class="btn btn-ghost" style="padding:6px 14px; font-size:12px;">Send påminnelse</button>
+      </div>
+    </div>
+
+    <div class="cal-bar">
+      <div class="cal-nav">
+        <button title="Mai">‹</button>
+        <button title="Juli">›</button>
+      </div>
+      <h3><em>juni</em> 2026</h3>
+      <div class="chips" style="margin: 0 0 0 auto;">
+        <button class="chip active">Måned</button>
+        <button class="chip">Liste</button>
+        <button class="chip">Sesong</button>
+      </div>
+    </div>
+
+    <!-- 3. CALENDAR + DRAWER side-by-side -->
+    <div class="cal-with-drawer">
+      <div>
+        <div class="cal-grid">
+          <div class="cal-head">Man</div><div class="cal-head">Tir</div><div class="cal-head">Ons</div><div class="cal-head">Tor</div><div class="cal-head">Fre</div><div class="cal-head">Lør</div><div class="cal-head">Søn</div>
+
+          <div class="cal-day"><span class="cal-date">1</span></div>
+          <div class="cal-day">
+            <span class="cal-date">2</span>
+            <span class="cal-event cal-event-major cal-event-start">
+              <b>Sørlandsåpent</b><br>
+              <span style="opacity:0.85; font-weight:400; font-size:10px;">Bjaavann</span>
+              <span class="cal-event-avatars"><i class="av-mini">M</i><i class="av-mini">E</i><i class="av-mini">J</i><i class="av-mini">L</i><i class="av-mini">A</i></span>
+            </span>
+          </div>
+          <div class="cal-day">
+            <span class="cal-date">3</span>
+            <span class="cal-event cal-event-major cal-event-mid"><span style="opacity:0.7; font-size:10px;">↳ runde 2</span></span>
+          </div>
+          <div class="cal-day">
+            <span class="cal-date">4</span>
+            <span class="cal-event cal-event-major cal-event-end"><span style="opacity:0.7; font-size:10px;">↳ finale</span></span>
+          </div>
+          <div class="cal-day"><span class="cal-date">5</span></div>
+          <div class="cal-day"><span class="cal-date">6</span></div>
+          <div class="cal-day"><span class="cal-date">7</span></div>
+
+          <div class="cal-day"><span class="cal-date">8</span></div>
+          <div class="cal-day"><span class="cal-date">9</span></div>
+          <div class="cal-day cal-day-today"><span class="cal-date">10</span><span class="cal-event cal-event-muted" style="font-size:10px;">Coaching board: Sørl-prep</span></div>
+          <div class="cal-day"><span class="cal-date">11</span></div>
+          <div class="cal-day"><span class="cal-date">12</span></div>
+          <div class="cal-day"><span class="cal-date">13</span></div>
+          <div class="cal-day">
+            <span class="cal-date">14</span>
+            <span class="cal-event cal-event-secondary">
+              <b>GFGK Åpent</b><br>
+              <span style="opacity:0.85; font-weight:400; font-size:10px;">36 hull · GFGK</span>
+              <span class="cal-event-avatars"><i class="av-mini">E</i><i class="av-mini">J</i><i class="av-mini">L</i><i class="av-mini">M</i><span class="avatar-stack-more" style="margin-left:-2px; width:14px; height:14px; font-size:8px; border-width:1.5px;">+1</span></span>
+            </span>
+          </div>
+
+          <div class="cal-day"><span class="cal-date">15</span></div>
+          <div class="cal-day"><span class="cal-date">16</span></div>
+          <div class="cal-day"><span class="cal-date">17</span></div>
+          <div class="cal-day"><span class="cal-date">18</span></div>
+          <div class="cal-day"><span class="cal-date">19</span></div>
+          <div class="cal-day"><span class="cal-date">20</span></div>
+          <div class="cal-day">
+            <span class="cal-date">21</span>
+            <span class="cal-event cal-event-tertiary">
+              <b>Junior-treff GFGK</b><br>
+              <span style="opacity:0.85; font-weight:400; font-size:10px;">9-hulls · stableford</span>
+              <span class="cal-event-avatars"><i class="av-mini">L</i><i class="av-mini">M</i><i class="av-mini">S</i><i class="av-mini">N</i></span>
+            </span>
+          </div>
+
+          <div class="cal-day"><span class="cal-date">22</span></div>
+          <div class="cal-day"><span class="cal-date">23</span></div>
+          <div class="cal-day"><span class="cal-date">24</span></div>
+          <div class="cal-day"><span class="cal-date">25</span></div>
+          <div class="cal-day"><span class="cal-date">26</span></div>
+          <div class="cal-day"><span class="cal-date">27</span></div>
+          <div class="cal-day">
+            <span class="cal-date">28</span>
+            <span class="cal-event cal-event-secondary">
+              <b>Mulligan Indoor Cup</b><br>
+              <span style="opacity:0.85; font-weight:400; font-size:10px;">Trackman · 3 baner</span>
+              <span class="cal-event-avatars"><i class="av-mini">M</i><i class="av-mini">E</i><i class="av-mini">J</i><i class="av-mini">A</i><i class="av-mini">L</i><span class="avatar-stack-more" style="margin-left:-2px; width:14px; height:14px; font-size:8px; border-width:1.5px;">+3</span></span>
+            </span>
+          </div>
+
+          <div class="cal-day"><span class="cal-date">29</span></div>
+          <div class="cal-day"><span class="cal-date">30</span></div>
+          <div class="cal-day cal-day-other"><span class="cal-date">1</span></div>
+          <div class="cal-day cal-day-other"><span class="cal-date">2</span></div>
+          <div class="cal-day cal-day-other"><span class="cal-date">3</span></div>
+          <div class="cal-day cal-day-other"><span class="cal-date">4</span></div>
+          <div class="cal-day cal-day-other"><span class="cal-date">5</span><span class="cal-event cal-event-muted" style="font-size:10px;">Sommer-pause</span></div>
+        </div>
+
+        <div class="cal-legend">
+          <span><i style="background: var(--primary); border-left: 3px solid var(--accent);"></i>Hovedturnering</span>
+          <span><i style="background: var(--pyr-spill);"></i>Klubb</span>
+          <span><i style="background: var(--pyr-tek);"></i>Junior</span>
+          <span><i style="background: var(--text-muted);"></i>Annet</span>
+          <span style="margin-left: auto;">10. juni er i dag</span>
+        </div>
+
+        <!-- 4. SPILLER-LANES — flyttet inn i venstre kolonne for å fjerne dead space -->
+        <section class="section" style="margin-top: 24px; margin-bottom: 0;">
+          <div class="section-head">
+            <h2 style="font-size: 16px;">Sesong per spiller</h2>
+            <div class="chips" style="margin: 0;">
+              <button class="chip active" style="font-size: 11px; padding: 4px 10px;">Alle 5</button>
+              <button class="chip" style="font-size: 11px; padding: 4px 10px;">Junior</button>
+              <button class="chip" style="font-size: 11px; padding: 4px 10px;">Bare påmeldte</button>
+            </div>
+          </div>
+
+          <div class="lanes">
+            <div class="lanes-axis">
+              <div class="lanes-axis-label">Spiller</div>
+              <div class="lanes-axis-months">
+                <span>apr</span><span>mai</span><span>jun</span><span>jul</span><span>aug</span><span>sep</span>
+              </div>
+            </div>
+
+            <div class="lane">
+              <div class="lane-player">
+                <span class="avatar">M</span>
+                <div class="lane-player-info"><b>Markus R.</b><small>HCP 7,4 · A2</small></div>
+              </div>
+              <div class="lane-track">
+                <span class="lane-event" style="left:2%;" title="Sesongåpning AK · 05.04">1</span>
+                <span class="lane-event" style="left:9%;" title="Vårspretten T-3 · 18.04">★</span>
+                <span class="lane-event lane-event-major" style="left:34%;" title="Sørlandsåpent · 02-04.06">★</span>
+                <span class="lane-event lane-event-secondary" style="left:49%;" title="Mulligan Cup · 28.06">M</span>
+                <span class="lane-event lane-event-future" style="left:57%;" title="NM Junior · 12-14.07">N</span>
+                <span class="lane-event lane-event-future" style="left:99%;" title="Höstcup GFGK · 30.09">H</span>
+              </div>
+              <div class="lane-summary"><b>6</b><br>turneringer</div>
+            </div>
+
+            <div class="lane">
+              <div class="lane-player">
+                <span class="avatar">E</span>
+                <div class="lane-player-info"><b>Emma S.</b><small>HCP 9,2 · A3</small></div>
+              </div>
+              <div class="lane-track">
+                <span class="lane-event lane-event-major" style="left:34%;" title="Sørlandsåpent · 02-04.06">★</span>
+                <span class="lane-event lane-event-secondary" style="left:41%;" title="GFGK Åpent · 14.06">G</span>
+              </div>
+              <div class="lane-summary"><b>2</b><br>for lite?</div>
+            </div>
+
+            <div class="lane">
+              <div class="lane-player">
+                <span class="avatar">J</span>
+                <div class="lane-player-info"><b>Joachim T.</b><small>HCP 6,8 · A2</small></div>
+              </div>
+              <div class="lane-track">
+                <span class="lane-event" style="left:2%;" title="Sesongåpning · 05.04">1</span>
+                <span class="lane-event lane-event-major" style="left:34%;" title="Sørlandsåpent · 02-04.06">★</span>
+                <span class="lane-event lane-event-secondary" style="left:41%;" title="GFGK Åpent · 14.06">G</span>
+                <span class="lane-event lane-event-secondary" style="left:49%;" title="Mulligan Cup · 28.06">M</span>
+                <span class="lane-event lane-event-future" style="left:57%;" title="NM Junior · 12-14.07">N</span>
+              </div>
+              <div class="lane-summary"><b>5</b><br>taper-stress?</div>
+            </div>
+
+            <div class="lane">
+              <div class="lane-player">
+                <span class="avatar">L</span>
+                <div class="lane-player-info"><b>Lina H.</b><small>HCP 11,4 · A3</small></div>
+              </div>
+              <div class="lane-track">
+                <span class="lane-event" style="left:9%;" title="Vårspretten · 18.04">2</span>
+                <span class="lane-event lane-event-secondary" style="left:41%;" title="GFGK Åpent · 14.06">G</span>
+                <span class="lane-event lane-event-tertiary" style="left:45%;" title="Junior-treff · 21.06">J</span>
+                <span class="lane-event lane-event-future" style="left:99%;" title="Höstcup GFGK · 30.09">H</span>
+              </div>
+              <div class="lane-summary"><b>4</b><br>balansert</div>
+            </div>
+
+            <div class="lane">
+              <div class="lane-player">
+                <span class="avatar">A</span>
+                <div class="lane-player-info"><b>Aksel L.</b><small>HCP 8,6 · A3</small></div>
+              </div>
+              <div class="lane-track">
+                <span class="lane-event" style="left:2%;" title="Sesongåpning · 05.04">1</span>
+                <span class="lane-event lane-event-skip" style="left:34%;" title="Sørlandsåpent · trekkes">★</span>
+                <span class="lane-event lane-event-future" style="left:49%;" title="Mulligan Cup · 28.06">M</span>
+              </div>
+              <div class="lane-summary" style="color: var(--danger);"><b>2</b><br>skadet</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- DRAWER for valgt turnering -->
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div>
+            <div class="drawer-meta">Hovedturnering · 21 dager</div>
+            <h3>Sørlandsåpent</h3>
+            <div class="drawer-meta" style="margin-top: 4px; text-transform: none; letter-spacing: 0;">02–04.06 · Bjaavann GK · 72 hull strokeplay</div>
+          </div>
+          <button class="drawer-close" title="Lukk">×</button>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Påmeldte (5 av 5)</div>
+          <table class="tbl" style="border: 0;">
+            <tbody>
+              <tr><td><span class="avatar avatar-sm">M</span> Markus R.</td><td><span class="pill pill-success">På plan</span></td><td class="num" style="text-align:right;">SG +1,2</td></tr>
+              <tr><td><span class="avatar avatar-sm">E</span> Emma S.</td><td><span class="pill pill-success">På plan</span></td><td class="num" style="text-align:right;">SG +0,7</td></tr>
+              <tr><td><span class="avatar avatar-sm">J</span> Joachim T.</td><td><span class="pill pill-warning">SLAG henger</span></td><td class="num" style="text-align:right;">SG +0,2</td></tr>
+              <tr><td><span class="avatar avatar-sm">L</span> Lina H.</td><td><span class="pill pill-success">På plan</span></td><td class="num" style="text-align:right;">SG +0,4</td></tr>
+              <tr><td><span class="avatar avatar-sm">A</span> Aksel L.</td><td><span class="pill pill-danger">Skadet</span></td><td class="num" style="text-align:right;">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Logistikk</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
+            <div><div class="card-label">Reise</div><b class="num">~4 t</b><br><span style="color:var(--text-secondary);">Fredrikstad → Kristiansand</span></div>
+            <div><div class="card-label">Overnatting</div><b>2 netter</b><br><span style="color:var(--text-secondary);">Bjaavann Hotell · ikke bookt</span></div>
+            <div><div class="card-label">Banetype</div><b>Sandbase</b><br><span style="color:var(--text-secondary);">Krev bunker-fokus</span></div>
+            <div><div class="card-label">Påmeldingsavgift</div><b class="num">1 200 kr</b><br><span style="color:var(--text-secondary);">Per spiller · betalt</span></div>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">2025 — samme turnering</div>
+          <p style="font-size: 12px; line-height: 1.6;">Stallen hadde <b>3 påmeldte</b> — Markus T-12, Joachim cut, Emma trakk seg. Snitt SG +0,3 mot egen baseline.</p>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Tournament-agent · 1 forslag</div>
+          <div style="background: rgba(245,158,11,0.08); padding: 10px; border-radius: 8px; border-left: 3px solid var(--warning);">
+            <b style="font-size: 12px;">Trekk Aksel L.</b>
+            <p style="font-size: 11px; margin-top: 4px;">Skadet ankel 06.06 · restituerer ikke før 04.06.</p>
+            <div style="margin-top: 8px;"><button class="btn btn-primary" style="padding:5px 12px; font-size:11px;">Trekk</button> <button class="btn btn-ghost" style="padding:5px 12px; font-size:11px;">Vent 3d</button></div>
+          </div>
+        </div>
+
+        <div class="drawer-section" style="display:flex; flex-direction:column; gap: 8px;">
+          <button class="btn btn-primary">Send foreldre-info</button>
+          <button class="btn btn-ghost">Eksporter startlister</button>
+          <button class="btn btn-ghost">Last opp innbydelse</button>
+          <a class="btn btn-link" href="plan-detalj.html" style="padding-left:0; text-decoration:none;">Se full plan →</a>
+        </div>
+      </aside>
+    </div>
+
+  </main>
+</div>
+</body></html>

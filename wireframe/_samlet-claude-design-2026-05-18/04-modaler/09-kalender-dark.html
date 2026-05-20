@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="nb" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<title>Kalender · dark · CoachHQ</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<style>
+  body { min-width: 1440px; background: var(--surface); }
+  .main { padding: 32px 40px 48px; }
+
+  .layout { display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; }
+
+  /* === Day-grid === */
+  .cal-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: var(--shadow-card); overflow: hidden;
+  }
+  .cal-head { display: flex; align-items: center; padding: 18px 24px; border-bottom: 1px solid var(--line); }
+  .cal-head h2 { margin: 0; font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: -0.015em; color: var(--ink); }
+  .cal-head .meta { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+  .cal-head .ctrl { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .cal-head .arrow {
+    width: 32px; height: 32px; display: grid; place-items: center;
+    border-radius: 8px; border: 1px solid var(--line); background: var(--card); cursor: pointer; color: var(--ink-muted);
+  }
+
+  .week-row {
+    display: grid; grid-template-columns: 56px repeat(7, 1fr);
+    border-bottom: 1px solid var(--line); background: var(--surface-alt);
+  }
+  .week-row > div {
+    padding: 12px 12px; font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-subtle); font-weight: 600;
+  }
+  .week-row .dh { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+  .week-row .dh .num { font-family: var(--font-mono); font-size: 18px; color: var(--ink); letter-spacing: 0; text-transform: none; font-weight: 500; }
+  .week-row .dh.is-today .num {
+    color: var(--accent-on);
+    background: var(--accent); padding: 0 8px; border-radius: 8px;
+    align-self: flex-start;
+  }
+
+  .grid {
+    display: grid; grid-template-columns: 56px repeat(7, 1fr);
+    grid-auto-rows: 56px;
+    position: relative;
+  }
+  .hour-label {
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 6px 8px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--ink-subtle);
+    text-align: right;
+  }
+  .cell {
+    border-right: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+    position: relative;
+  }
+  .cell.is-today { background: rgba(209,248,67,0.04); }
+
+  /* Now-line */
+  .now-line {
+    position: absolute;
+    left: 56px; right: 0;
+    height: 2px;
+    background: var(--accent);
+    z-index: 5;
+    pointer-events: none;
+    box-shadow: 0 0 12px rgba(209,248,67,0.5);
+  }
+  .now-line::before {
+    content: "";
+    position: absolute; left: -5px; top: -3px;
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(209,248,67,0.15);
+  }
+  .now-line::after {
+    content: "09:42";
+    position: absolute;
+    left: -54px; top: -8px;
+    font-family: var(--font-mono); font-size: 10px; color: var(--accent);
+    background: var(--card); padding: 1px 4px; border-radius: 4px;
+    border: 1px solid var(--accent);
+  }
+
+  /* Event blocks */
+  .ev {
+    position: absolute; left: 4px; right: 4px;
+    padding: 7px 9px;
+    border-radius: 8px;
+    display: flex; flex-direction: column; gap: 2px;
+    overflow: hidden;
+    cursor: pointer;
+    font-size: 11.5px;
+    z-index: 2;
+  }
+  .ev .t { font-family: var(--font-mono); font-size: 10px; opacity: 0.7; }
+  .ev .name { font-weight: 500; line-height: 1.2; }
+  .ev .meta { font-size: 10.5px; opacity: 0.75; }
+
+  .ev-own {
+    background: rgba(0,88,64,0.22);
+    border-left: 2px solid var(--brand-primary);
+    color: #B5E6CE;
+  }
+  .ev-own.live {
+    background: var(--ink); color: var(--accent);
+    border-left: 0; box-shadow: 0 0 0 2px var(--accent), 0 12px 32px rgba(0,0,0,0.4);
+  }
+  .ev-own.live .name { color: var(--surface); }
+  .ev-own.live .meta { color: rgba(255,255,255,0.7); }
+  .ev-group {
+    background: rgba(209,248,67,0.18);
+    border-left: 2px solid var(--accent);
+    color: var(--accent);
+  }
+  .ev-group .name { color: #ECFCC0; }
+  .ev-others {
+    background: var(--surface-alt);
+    border-left: 2px solid var(--ink-subtle);
+    color: var(--ink-muted);
+  }
+  .ev-block {
+    background: repeating-linear-gradient(135deg, var(--line-soft) 0 4px, var(--card) 4px 8px);
+    color: var(--ink-subtle);
+    font-style: italic;
+  }
+
+  /* === Sidebar === */
+  .side { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 24px; }
+  .side-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; }
+  .side-title { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-subtle); font-weight: 600; margin-bottom: 14px; }
+
+  .live-card { background: var(--ink); color: var(--surface); border-radius: 18px; padding: 22px 24px; position: relative; overflow: hidden; border: 1px solid var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 20px 60px rgba(0,0,0,0.4); }
+  .live-card::before { content: ""; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(209,248,67,0.18), transparent 65%); }
+  .live-card .badge { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--accent); display: inline-flex; align-items: center; gap: 6px; }
+  .live-card .badge .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: livepulse 1.6s ease-in-out infinite; }
+  @keyframes livepulse { 50% { opacity: 0.4; } }
+  .live-card h3 { font-family: var(--font-display); font-size: 24px; font-weight: 600; letter-spacing: -0.015em; margin: 8px 0 2px; color: var(--surface); }
+  .live-card .sub { font-size: 13px; color: rgba(255,255,255,0.55); }
+  .live-card .progress { display: flex; align-items: center; gap: 10px; margin-top: 16px; font-size: 11px; color: rgba(255,255,255,0.55); }
+  .live-card .bar { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+  .live-card .bar .fill { height: 100%; background: var(--accent); width: 63%; border-radius: 2px; }
+  .live-card .v { font-family: var(--font-mono); font-size: 11px; color: var(--surface); font-weight: 500; }
+  .live-card .actions { display: flex; gap: 8px; margin-top: 18px; }
+  .live-card .btn-on-dark {
+    height: 32px; padding: 0 12px; font-size: 12px; font-weight: 500;
+    border-radius: 10px; border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(255,255,255,0.06); color: var(--surface); cursor: pointer;
+  }
+  .live-card .btn-on-dark.primary { background: var(--accent); color: var(--accent-on); border-color: transparent; font-weight: 600; }
+
+  .up-next-row {
+    display: grid; grid-template-columns: 44px 1fr auto;
+    gap: 12px; padding: 12px 0; border-top: 1px solid var(--line-soft);
+    align-items: center;
+  }
+  .up-next-row:first-of-type { border-top: 0; padding-top: 0; }
+  .up-next-row .t { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-subtle); }
+  .up-next-row .who .n { font-size: 13.5px; font-weight: 500; color: var(--ink); line-height: 1.2; }
+  .up-next-row .who .m { font-size: 11.5px; color: var(--ink-muted); margin-top: 2px; }
+  .up-next-row .tag { font-family: var(--font-mono); font-size: 10px; padding: 3px 6px; border-radius: 4px; }
+
+  /* Theme toggle row */
+  .theme-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 999px;
+    font-size: 12px; color: var(--ink-muted);
+  }
+  .theme-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+</style>
+</head>
+<body data-screen-label="09 Kalender Dark">
+<div class="shell">
+
+  <aside class="rail">
+    <div class="logo">AK</div>
+    <button class="rail-btn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    <div class="rail-spacer"></div>
+    <div class="rail-avatar">AK</div>
+  </aside>
+
+  <nav class="nav">
+    <div class="nav-title">CoachHQ</div>
+    <a href="index.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Dashbord</a>
+    <a href="#" class="is-active"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Kalender</a>
+    <a href="02-kapasitet.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> Kapasitet</a>
+    <a href="04-meldinger.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Meldinger</a>
+    <a href="03-lag-snitt.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/></svg> Lag-snitt</a>
+    <a href="05-oppfolgingsko.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Oppfoelging</a>
+    <div class="nav-divider"></div>
+    <div class="tier-card"><b>Uke 20 · mai</b><div class="meta">14. mai · torsdag</div></div>
+  </nav>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <span class="page-eyebrow"><span class="dot"></span>/admin/kalender · uke · dark</span>
+        <h1 class="page-title">Uke 20 <em>· dark mode</em></h1>
+        <p class="page-hero-fragment italic-edit">Studio-lys. Late nights. Banen i mai.</p>
+      </div>
+      <div class="row gap-2">
+        <div class="theme-bar"><span class="dot"></span><span>dark mode aktiv</span></div>
+        <div class="seg"><button>Uke</button><button class="is-active">Dag</button><button>Maaned</button></div>
+        <button class="btn btn-accent">Ny oekt</button>
+      </div>
+    </header>
+
+    <div class="layout">
+
+      <div class="cal-card">
+        <div class="cal-head">
+          <div>
+            <h2>Torsdag 14. mai</h2>
+            <div class="meta">5 oekter · 82 % belegg · 1 paagar naa</div>
+          </div>
+          <div class="ctrl">
+            <button class="arrow"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+            <button class="arrow"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+        </div>
+
+        <div class="week-row">
+          <div></div>
+          <div class="dh"><span>man</span><span class="num">11</span></div>
+          <div class="dh"><span>tir</span><span class="num">12</span></div>
+          <div class="dh"><span>ons</span><span class="num">13</span></div>
+          <div class="dh is-today"><span>tor</span><span class="num">14</span></div>
+          <div class="dh"><span>fre</span><span class="num">15</span></div>
+          <div class="dh"><span>loer</span><span class="num">16</span></div>
+          <div class="dh"><span>soen</span><span class="num">17</span></div>
+        </div>
+
+        <div class="grid" id="grid">
+          <!-- Hour rows: 07–19 -->
+          <!-- 07 -->
+          <div class="hour-label">07:00</div>
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+          <div class="cell is-today"></div>
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+          <!-- 08 -->
+          <div class="hour-label">08:00</div>
+          <div class="cell"></div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-own" style="top: 0; height: 110px;"><span class="t">08:00–09:45</span><span class="name">Jakob Tonsberg</span><span class="meta">senior · GFGK</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell is-today"></div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-own" style="top: 0; height: 56px;"><span class="t">08:00–09:00</span><span class="name">Eline Krogh</span><span class="meta">junior · Bossum</span></div>
+          </div>
+          <div class="cell"></div><div class="cell"></div>
+          <!-- 09 -->
+          <div class="hour-label">09:00</div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-own" style="top: 0; height: 110px;"><span class="t">09:00–10:45</span><span class="name">Astrid Kvam</span><span class="meta">senior · Bossum</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-others" style="top: 0; height: 56px;"><span class="t">09:00–10:00</span><span class="name">Stine · Studio 3</span><span class="meta">junior · video-coaching</span></div>
+          </div>
+          <div class="cell is-today" style="position: relative;">
+            <div class="ev ev-own live" style="top: 0; height: 110px;"><span class="t">09:00–10:45 · NAA</span><span class="name">Mathias Pedersen</span><span class="meta">A-lag · Studio 2 · 22 min igjen</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <!-- 10 -->
+          <div class="hour-label">10:00</div>
+          <div class="cell"></div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-own" style="top: 0; height: 56px;"><span class="t">10:00–11:00</span><span class="name">Sondre Berg</span><span class="meta">junior · GFGK</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell is-today"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <!-- 11 -->
+          <div class="hour-label">11:00</div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-own" style="top: 0; height: 56px;"><span class="t">11:00–12:00</span><span class="name">Henrik Norvik</span><span class="meta">senior · Bossum</span></div>
+          </div>
+          <div class="cell is-today" style="position: relative;">
+            <div class="ev ev-own" style="top: 0; height: 56px;"><span class="t">11:00–12:00</span><span class="name">Astrid Kvam</span><span class="meta">senior · Bossum</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-own" style="top: 0; height: 56px;"><span class="t">11:00–12:00</span><span class="name">Eline Krogh</span><span class="meta">junior · GFGK</span></div>
+          </div>
+          <div class="cell"></div>
+          <!-- 12 -->
+          <div class="hour-label">12:00</div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-block" style="top: 0; height: 56px;"><span class="t">12:00–13:00</span><span class="name">lunsj</span></div>
+          </div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-block" style="top: 0; height: 56px;"><span class="t">12:00–13:00</span><span class="name">lunsj</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell is-today" style="position: relative;">
+            <div class="ev ev-others" style="top: 0; height: 56px;"><span class="t">12:00–12:30</span><span class="name">Lise · foreldre-samtale</span><span class="meta">video · @deg</span></div>
+          </div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-block" style="top: 0; height: 56px;"><span class="t">12:00–13:00</span><span class="name">lunsj</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <!-- 13 -->
+          <div class="hour-label">13:00</div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-own" style="top: 0; height: 56px;"><span class="t">13:00–14:00</span><span class="name">Markus Roinaas P.</span><span class="meta">A-lag · Studio 1</span></div>
+          </div>
+          <div class="cell is-today"></div>
+          <div class="cell"></div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-own" style="top: 0; height: 56px;"><span class="t">13:00–14:00</span><span class="name">Sondre Berg</span><span class="meta">junior · GFGK</span></div>
+          </div>
+          <div class="cell"></div>
+          <!-- 14 -->
+          <div class="hour-label">14:00</div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-others" style="top: 0; height: 56px;"><span class="t">14:00–15:00</span><span class="name">Stine · Studio 3</span><span class="meta">video-coaching</span></div>
+          </div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-own" style="top: 0; height: 56px;"><span class="t">14:00–15:00</span><span class="name">Sondre Berg</span><span class="meta">junior · GFGK</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell is-today"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <!-- 15 -->
+          <div class="hour-label">15:00</div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell is-today" style="position: relative;">
+            <div class="ev ev-group" style="top: 0; height: 110px;"><span class="t">15:00–16:30</span><span class="name">Junior · slag-fundament</span><span class="meta">gruppe (6) · GFGK</span></div>
+          </div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-group" style="top: 0; height: 56px;"><span class="t">15:00–16:00</span><span class="name">KM · forberedelse</span><span class="meta">A-lag (4)</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <!-- 16 -->
+          <div class="hour-label">16:00</div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-group" style="top: 0; height: 56px;"><span class="t">16:00–17:00</span><span class="name">WANG · gruppe</span><span class="meta">videregaaende (5)</span></div>
+          </div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-group" style="top: 0; height: 56px;"><span class="t">16:00–17:00</span><span class="name">Junior · putting</span><span class="meta">gruppe (5)</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell is-today"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <!-- 17 -->
+          <div class="hour-label">17:00</div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-group" style="top: 0; height: 110px;"><span class="t">17:00–18:30</span><span class="name">A-lag · slag</span><span class="meta">gruppe (8) · Studio 1+2</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-group" style="top: 0; height: 110px;"><span class="t">17:00–18:30</span><span class="name">WANG · ekstra</span><span class="meta">gruppe (4)</span></div>
+          </div>
+          <div class="cell is-today" style="position: relative;">
+            <div class="ev ev-group" style="top: 0; height: 110px;"><span class="t">17:00–18:30</span><span class="name">A-lag · slag</span><span class="meta">gruppe (8) · Studio 1+2</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <!-- 18 -->
+          <div class="hour-label">18:00</div>
+          <div class="cell"></div>
+          <div class="cell" style="position: relative;">
+            <div class="ev ev-others" style="top: 0; height: 56px;"><span class="t">18:00–19:00</span><span class="name">Bjørn · Studio 2</span><span class="meta">senior</span></div>
+          </div>
+          <div class="cell"></div>
+          <div class="cell is-today"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+
+          <!-- Now-line: 09:42 = inside row index 3 (09:00 row), offset 42/60 = 70% of 56px = ~39px from row top -->
+          <div class="now-line" style="top: calc(3 * 56px + 39px);"></div>
+        </div>
+      </div>
+
+      <aside class="side">
+
+        <div class="live-card">
+          <span class="badge"><span class="pulse"></span>PAAGAR NAA · 09:42</span>
+          <h3>Mathias Pedersen</h3>
+          <div class="sub">A-lag · Studio 2 · slag-fundament</div>
+          <div class="progress">
+            <span>tid</span>
+            <div class="bar"><div class="fill"></div></div>
+            <span class="v">38/60</span>
+          </div>
+          <div class="actions">
+            <button class="btn-on-dark primary">Aapne live-noter</button>
+            <button class="btn-on-dark">Avslutt</button>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-title">Opp neste · i dag</div>
+          <div class="up-next-row">
+            <div class="t">11:00</div>
+            <div class="who"><div class="n">Astrid Kvam</div><div class="m">senior · 60 min · Bossum</div></div>
+            <span class="tag" style="background: var(--brand-primary-soft); color: var(--brand-primary);">solo</span>
+          </div>
+          <div class="up-next-row">
+            <div class="t">12:00</div>
+            <div class="who"><div class="n">Lise · foreldre-samtale</div><div class="m">video · 20 min · @deg</div></div>
+            <span class="tag" style="background: var(--surface-alt); color: var(--ink-muted);">samtale</span>
+          </div>
+          <div class="up-next-row">
+            <div class="t">15:00</div>
+            <div class="who"><div class="n">Junior · slag-fundament</div><div class="m">gruppe (6) · 90 min · GFGK</div></div>
+            <span class="tag" style="background: rgba(209,248,67,0.18); color: var(--accent);">gruppe</span>
+          </div>
+          <div class="up-next-row">
+            <div class="t">17:00</div>
+            <div class="who"><div class="n">A-lag · slag</div><div class="m">gruppe (8) · 90 min · Studio 1+2</div></div>
+            <span class="tag" style="background: rgba(209,248,67,0.18); color: var(--accent);">gruppe</span>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-title">I dag · oppsummert</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 26px; color: var(--ink); font-weight: 500;">5</div>
+              <div style="font-size: 11px; color: var(--ink-subtle);">oekter</div>
+            </div>
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 26px; color: var(--accent); font-weight: 500;">82<small style="font-size: 14px; color: var(--ink-muted); margin-left: 2px;">%</small></div>
+              <div style="font-size: 11px; color: var(--ink-subtle);">belegg</div>
+            </div>
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 26px; color: var(--ink); font-weight: 500;">17</div>
+              <div style="font-size: 11px; color: var(--ink-subtle);">elever paavirket</div>
+            </div>
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 26px; color: var(--ink); font-weight: 500;">2</div>
+              <div style="font-size: 11px; color: var(--ink-subtle);">oppsummeringer venter</div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <footer style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-subtle); display: flex; justify-content: space-between;">
+      <span>AK Golf Platform · CoachHQ · /admin/kalender · dark</span>
+      <span class="mono">torsdag 14. mai · 09:42</span>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

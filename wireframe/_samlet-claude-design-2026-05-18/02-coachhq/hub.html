@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Hub Dashboard</title></head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="#" class="active">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="#">Treningsplaner</a>
+      <a href="#">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="#">Godkjenninger</a>
+      <a href="#">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="#">Analytics</a>
+      <a href="#">Økonomi</a>
+      <a href="#">Fasiliteter</a>
+      <a href="#">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="dash-hero">
+      <div class="dash-hero-photo">
+        <span class="dash-hero-avatar">AK</span>
+        <span class="dash-hero-status" title="Aktiv nå"></span>
+      </div>
+      <div class="dash-hero-text">
+        <span class="page-eyebrow">Mandag 11. mai · uke 19 · 09:42</span>
+        <h1 class="page-title"><em>Godmorgen,</em> Anders</h1>
+        <p class="page-lede">7 nye signaler i natt · 3 plan-justeringer venter godkjenning · neste booking om 1t 18min.</p>
+        <p class="dash-hero-meta"><b>Anders Kristiansen</b> · Hovedcoach + Admin · 14 spillere · 56 økter denne mnd</p>
+      </div>
+    </header>
+
+    <section class="kpi-strip">
+      <div class="kpi"><div class="kpi-label">Aktive spillere</div><div class="kpi-value num">38</div><div class="kpi-trend up">+2 siste 30d</div></div>
+      <div class="kpi"><div class="kpi-label">Bookinger i dag</div><div class="kpi-value num">12</div><div class="kpi-trend">3 ferdig · 9 igjen</div></div>
+      <div class="kpi"><div class="kpi-label">Ventende meldinger</div><div class="kpi-value num">5</div><div class="kpi-trend down">2 over SLA</div></div>
+      <div class="kpi"><div class="kpi-label">Omsetning denne mnd</div><div class="kpi-value num">142 800</div><div class="kpi-trend up">+8% mot april</div></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Modul-snarveier</h2></div>
+      <div class="bento" style="grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr;">
+        <a class="card" href="approvals.html" style="text-decoration:none; color:inherit;">
+          <div class="card-label">Godkjenninger</div>
+          <h3>3 plan-aksjoner</h3>
+          <p>Foreslått av plan-watcher kl 06:00. Mandag-batch.</p>
+          <span class="pill pill-warning" style="margin-top:12px;">Trenger handling</span>
+        </a>
+        <a class="card" href="#" style="text-decoration:none; color:inherit;">
+          <div class="card-label">Uleste meldinger</div>
+          <h3>5 fra spillere</h3>
+          <p>Markus R · Emma S · Joachim T · 2 fra foresatte</p>
+          <span class="pill pill-danger" style="margin-top:12px;">2 over SLA</span>
+        </a>
+        <a class="card" href="elever.html" style="text-decoration:none; color:inherit;">
+          <div class="card-label">Spillere uten plan</div>
+          <h3>4 av 38</h3>
+          <p>Nye fra forrige uke · trenger periodisering.</p>
+          <span class="pill pill-info" style="margin-top:12px;">Plan-builder</span>
+        </a>
+        <a class="card" href="sessions.html" style="text-decoration:none; color:inherit;">
+          <div class="card-label">Tester forfaller</div>
+          <h3>7 denne uka</h3>
+          <p>NGF-batch · 4 spillere har levert · 3 igjen.</p>
+          <span class="pill pill-muted" style="margin-top:12px;">Påminn</span>
+        </a>
+        <a class="card" href="finance.html" style="text-decoration:none; color:inherit;">
+          <div class="card-label">Utestående faktura</div>
+          <h3>3 200 kr</h3>
+          <p>2 spillere · 14 og 21 dager forsinket.</p>
+          <span class="pill pill-warning" style="margin-top:12px;">Følg opp</span>
+        </a>
+        <a class="card" href="tournaments.html" style="text-decoration:none; color:inherit;">
+          <div class="card-label">Tournament-watch</div>
+          <h3>Sørlandsåpent · 3 uker</h3>
+          <p>5 spillere påmeldt · taper-fase aktiv for 3.</p>
+          <span class="pill pill-success" style="margin-top:12px;">På plan</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Siste aktivitet</h2><a href="#" class="btn-link">Se alle →</a></div>
+      <div class="card card-flush" style="padding:0;">
+        <table class="tbl">
+          <thead><tr><th>Tid</th><th>Hendelse</th><th>Spiller</th><th>Detaljer</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="num">09:38</td><td>Runde registrert</td><td>Markus R.</td><td>Bossum 78 · SG +1,2</td><td><span class="pill pill-success">Ny</span></td></tr>
+            <tr><td class="num">09:12</td><td>Plan-aksjon foreslått</td><td>Emma S.</td><td>PYRAMID_ADJUST · øk SLAG</td><td><span class="pill pill-warning">Godkjenn</span></td></tr>
+            <tr><td class="num">08:55</td><td>Booking flyttet</td><td>Joachim T.</td><td>14:00 → 16:00 · Mulligan</td><td><span class="pill pill-muted">Bekreftet</span></td></tr>
+            <tr><td class="num">08:14</td><td>Test fullført</td><td>Lina H.</td><td>Bunker 7/10 (forrige 6/10)</td><td><span class="pill pill-success">+1</span></td></tr>
+            <tr><td class="num">07:42</td><td>Melding mottatt</td><td>Foresatt (Aksel L.)</td><td>«Kan vi flytte fredag?»</td><td><span class="pill pill-danger">SLA 2t</span></td></tr>
+            <tr><td class="num">06:00</td><td>Plan-watcher kjørte</td><td>System</td><td>3 forslag · 38 spillere skannet</td><td><span class="pill pill-info">Auto</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+</body></html>

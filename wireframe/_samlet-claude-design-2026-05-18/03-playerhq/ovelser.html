@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Øvelser</title></head>
+<body>
+<div class="app app--player">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>player</em></div>
+    <nav class="app-nav">
+      <a href="#">Hjem</a>
+      <a href="#" class="active">Tren</a>
+      <a href="#">Mål</a>
+      <a href="#">Coach</a>
+      <a href="#">Meg</a>
+    </nav>
+    <div class="app-tier">PRO</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Tren · øvelse-bibliotek</span>
+      <h1 class="page-title"><em>Øvelser</em> · 200+ å velge fra</h1>
+      <p class="page-lede">Filtrer på pyramide-område, vanskelighet eller utstyr. Coachens anbefalinger vises øverst.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Bibliotek</span>
+      <button class="action-item"><b>200+</b> øvelser</button>
+      <button class="action-item action-item-success"><b>24</b> favoritter</button>
+      <button class="action-item action-item-info"><b>8</b> anbefalt av coach</button>
+      <button class="action-item"><b>12</b> nye denne mnd</button>
+    </div>
+
+    <div class="search-row">
+      <div class="search-input">
+        <span class="search-prefix">Søk</span>
+        <input type="text" placeholder="200+ øvelser — navn, område, utstyr...">
+      </div>
+      <select class="sort-select">
+        <option>Coach-anbefalt først</option>
+        <option>Mine favoritter</option>
+        <option>Sist gjort</option>
+        <option>Vanskelighet</option>
+      </select>
+    </div>
+
+    <div class="chips">
+      <button class="chip active">Alle</button>
+      <button class="chip" style="background: rgba(0,88,64,0.10); color: var(--pyr-fys); border-color: rgba(0,88,64,0.20);">FYS</button>
+      <button class="chip" style="background: rgba(26,125,86,0.12); color: var(--pyr-tek); border-color: rgba(26,125,86,0.25);">TEK</button>
+      <button class="chip" style="background: rgba(209,248,67,0.32); color: #5C6B0E; border-color: rgba(184,200,46,0.30);">SLAG</button>
+      <button class="chip" style="background: rgba(184,133,42,0.16); color: #6F4F18; border-color: rgba(184,133,42,0.30);">SPILL</button>
+      <button class="chip" style="background: rgba(94,92,87,0.16); color: #2F2E2C; border-color: rgba(94,92,87,0.30);">TURN</button>
+      <span style="flex:1"></span>
+      <button class="chip">★ Favoritter</button>
+      <button class="chip">Anbefalt</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+
+      <article class="card-featured">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 10px;">
+          <span class="pill" style="background: rgba(26,125,86,0.12); color: var(--pyr-tek);">TEK</span>
+          <button style="background:none; border:0; cursor:pointer; font-size: 18px; color: var(--accent-dark);">★</button>
+        </div>
+        <h3 style="font-style: italic;">Driver low-launch tee</h3>
+        <p style="margin-top: 4px;">Spin-rate +200 rpm. TrackMan-baserte ball-flight ranges.</p>
+        <div style="display:flex; gap: 8px; margin-top: 12px; align-items: center;">
+          <span class="num" style="font-size: 13px; color: var(--accent-dark); letter-spacing: 0.05em;">★★★★☆</span>
+          <span class="num" style="font-size:11px; color:var(--text-secondary);">25 min</span>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px;">Trenger: TrackMan, driver, 50 baller</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-info">Anbefalt av coach</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sist 06.05</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 10px;">
+          <span class="pill" style="background: rgba(209,248,67,0.32); color: #5C6B0E;">SLAG</span>
+          <button style="background:none; border:0; cursor:pointer; font-size: 18px; color: var(--accent-dark);">★</button>
+        </div>
+        <h3 style="font-style: italic;">Putt-gate 4m</h3>
+        <p>Stroke-konsistens. Gate 5cm bredere enn ballen, 10×.</p>
+        <div style="display:flex; gap: 8px; margin-top: 12px; align-items: center;">
+          <span class="num" style="font-size: 13px; color: var(--accent-dark); letter-spacing: 0.05em;">★★☆☆☆</span>
+          <span class="num" style="font-size:11px; color:var(--text-secondary);">15 min</span>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px;">Trenger: putter, 2 tees, 1 ball</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-info">Anbefalt av coach</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sist 08.05</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 10px;">
+          <span class="pill" style="background: rgba(184,133,42,0.16); color: #6F4F18;">SPILL</span>
+          <button style="background:none; border:0; cursor:pointer; font-size: 18px; color: var(--text-muted);">☆</button>
+        </div>
+        <h3 style="font-style: italic;">Bunker-explosion 30m</h3>
+        <p>Klassisk splash-out fra bunker, mål 5m fra flagg.</p>
+        <div style="display:flex; gap: 8px; margin-top: 12px; align-items: center;">
+          <span class="num" style="font-size: 13px; color: var(--accent-dark); letter-spacing: 0.05em;">★★★☆☆</span>
+          <span class="num" style="font-size:11px; color:var(--text-secondary);">30 min</span>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px;">Trenger: bunker, sand wedge, 20 baller</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-info">Anbefalt av coach</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sist 04.05</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 10px;">
+          <span class="pill" style="background: rgba(209,248,67,0.32); color: #5C6B0E;">SLAG</span>
+          <button style="background:none; border:0; cursor:pointer; font-size: 18px; color: var(--accent-dark);">★</button>
+        </div>
+        <h3 style="font-style: italic;">Lag-putt distanse</h3>
+        <p>Distansekontroll fra 10–25m. Mål: alle innen 1m.</p>
+        <div style="display:flex; gap: 8px; margin-top: 12px; align-items: center;">
+          <span class="num" style="font-size: 13px; color: var(--accent-dark); letter-spacing: 0.05em;">★★☆☆☆</span>
+          <span class="num" style="font-size:11px; color:var(--text-secondary);">20 min</span>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px;">Trenger: putter, 5 baller</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Egen øvelse</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sist 02.05</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 10px;">
+          <span class="pill" style="background: rgba(209,248,67,0.32); color: #5C6B0E;">SLAG</span>
+          <button style="background:none; border:0; cursor:pointer; font-size: 18px; color: var(--text-muted);">☆</button>
+        </div>
+        <h3 style="font-style: italic;">Pitch 50m karriér</h3>
+        <p>Carry-distanse 50m, 3 ulike trajectorier.</p>
+        <div style="display:flex; gap: 8px; margin-top: 12px; align-items: center;">
+          <span class="num" style="font-size: 13px; color: var(--accent-dark); letter-spacing: 0.05em;">★★★☆☆</span>
+          <span class="num" style="font-size:11px; color:var(--text-secondary);">25 min</span>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px;">Trenger: pitch wedge, 30 baller</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Bibliotek</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Aldri gjort</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 10px;">
+          <span class="pill" style="background: rgba(209,248,67,0.32); color: #5C6B0E;">SLAG</span>
+          <button style="background:none; border:0; cursor:pointer; font-size: 18px; color: var(--accent-dark);">★</button>
+        </div>
+        <h3 style="font-style: italic;">Chip-and-run kort</h3>
+        <p>Lavt chip 8–15m, rull til flagg. Klubb-valg fritt.</p>
+        <div style="display:flex; gap: 8px; margin-top: 12px; align-items: center;">
+          <span class="num" style="font-size: 13px; color: var(--accent-dark); letter-spacing: 0.05em;">★★☆☆☆</span>
+          <span class="num" style="font-size:11px; color:var(--text-secondary);">20 min</span>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px;">Trenger: 7-jern + PW, 15 baller</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Bibliotek</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sist 28.04</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 10px;">
+          <span class="pill" style="background: rgba(184,133,42,0.16); color: #6F4F18;">SPILL</span>
+          <button style="background:none; border:0; cursor:pointer; font-size: 18px; color: var(--text-muted);">☆</button>
+        </div>
+        <h3 style="font-style: italic;">Sand wedge-spin kontroll</h3>
+        <p>Spin 5500–7500 rpm. Carry 60–80m.</p>
+        <div style="display:flex; gap: 8px; margin-top: 12px; align-items: center;">
+          <span class="num" style="font-size: 13px; color: var(--accent-dark); letter-spacing: 0.05em;">★★★★☆</span>
+          <span class="num" style="font-size:11px; color:var(--text-secondary);">30 min</span>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px;">Trenger: TrackMan, sand wedge, 40 baller</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Bibliotek</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sist 24.04</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 10px;">
+          <span class="pill" style="background: rgba(26,125,86,0.12); color: var(--pyr-tek);">TEK</span>
+          <button style="background:none; border:0; cursor:pointer; font-size: 18px; color: var(--accent-dark);">★</button>
+        </div>
+        <h3 style="font-style: italic;">Iron compression test</h3>
+        <p>7-jern smash factor 1,33+. Konsistent center-strike.</p>
+        <div style="display:flex; gap: 8px; margin-top: 12px; align-items: center;">
+          <span class="num" style="font-size: 13px; color: var(--accent-dark); letter-spacing: 0.05em;">★★★☆☆</span>
+          <span class="num" style="font-size:11px; color:var(--text-secondary);">25 min</span>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px;">Trenger: TrackMan, 7-jern, 30 baller</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Bibliotek</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sist 30.04</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 10px;">
+          <span class="pill" style="background: rgba(94,92,87,0.16); color: #2F2E2C;">TURN</span>
+          <button style="background:none; border:0; cursor:pointer; font-size: 18px; color: var(--accent-dark);">★</button>
+        </div>
+        <h3 style="font-style: italic;">Sim-runde Bjaavann</h3>
+        <p>Full 18-hulls runde på Bjaavann i simulator.</p>
+        <div style="display:flex; gap: 8px; margin-top: 12px; align-items: center;">
+          <span class="num" style="font-size: 13px; color: var(--accent-dark); letter-spacing: 0.05em;">★★★★★</span>
+          <span class="num" style="font-size:11px; color:var(--text-secondary);">90 min</span>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px;">Trenger: Mulligan-simulator, full kølle-set</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-info">Anbefalt av coach</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Aldri gjort</span>
+        </div>
+      </article>
+
+    </div>
+  </main>
+</div>
+</body></html>

@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Trening — Øyvind Rohjan · AK Golf Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAFAF7;
+    --cream-2: #F4F1E8;
+    --ink: #0A1F17;
+    --ink-2: #1F3B30;
+    --muted: #6B6A63;
+    --hairline: #E0DCD0;
+    --hairline-strong: #C9C4B5;
+    --primary: #005840;
+    --primary-soft: #E8EFEB;
+    --accent: #D1F843;
+    --card: #FFFFFF;
+    --shadow: 0 8px 24px rgba(10, 31, 23, 0.06);
+    --shadow-lg: 0 16px 40px rgba(10, 31, 23, 0.10);
+    --serif: 'Instrument Serif', 'Times New Roman', serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--cream); color: var(--ink); font-family: var(--sans); font-weight: 400; -webkit-font-smoothing: antialiased; }
+  body { font-size: 15px; line-height: 1.55; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Top bar */
+  .topbar { position: sticky; top: 0; z-index: 50; background: rgba(250, 250, 247, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .topbar-inner { max-width: 1320px; margin: 0 auto; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { font-family: var(--serif); font-style: italic; font-size: 22px; letter-spacing: 0.01em; }
+  .brand span { font-family: var(--sans); font-style: normal; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-left: 12px; }
+  .topnav { display: flex; gap: 32px; font-size: 13px; letter-spacing: 0.04em; }
+  .topnav a { color: var(--muted); }
+  .topnav a.active { color: var(--ink); }
+  .topnav a.active::after { content: ''; display: block; height: 1px; background: var(--ink); margin-top: 4px; }
+
+  /* HERO */
+  .hero { position: relative; width: 100%; height: 600px; overflow: hidden; }
+  .hero-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1592919505780-303950717480?w=1920&h=1200&fit=crop'); background-size: cover; background-position: center; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,31,23,0.15) 0%, rgba(10,31,23,0.05) 35%, rgba(250,250,247,0.0) 55%, rgba(250,250,247,0.85) 92%, var(--cream) 100%); }
+  .hero-content { position: absolute; inset: 0; max-width: 1320px; margin: 0 auto; padding: 40px; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 56px; }
+  .eyebrow { font-family: var(--sans); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(255,255,255,0.85); margin-bottom: 28px; }
+  .eyebrow.dark { color: var(--muted); }
+  .hero h1 { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--ink); font-size: 96px; line-height: 0.96; letter-spacing: -0.02em; max-width: 900px; margin-bottom: 20px; }
+  .hero h1 em { color: var(--primary); }
+  .hero-sub { font-size: 19px; color: var(--ink-2); max-width: 540px; margin-bottom: 36px; font-weight: 300; }
+  .profile-pill { display: inline-flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--hairline); border-radius: 999px; padding: 10px 22px 10px 10px; box-shadow: var(--shadow); width: fit-content; }
+  .profile-pill img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+  .profile-pill .name { font-size: 14px; font-weight: 500; }
+  .profile-pill .dot { width: 3px; height: 3px; background: var(--hairline-strong); border-radius: 50%; }
+  .profile-pill .meta { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  /* container */
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
+
+  /* KPI strip */
+  .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); margin-top: 0; padding: 36px 0; }
+  .kpi { padding: 0 40px; border-right: 1px solid var(--hairline); }
+  .kpi:last-child { border-right: none; }
+  .kpi-label { font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .kpi-value { font-family: var(--mono); font-size: 38px; font-weight: 500; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+  .kpi-value small { font-family: var(--serif); font-style: italic; font-size: 24px; color: var(--muted); margin-left: 4px; font-weight: 400; }
+  .kpi-delta { margin-top: 10px; font-family: var(--mono); font-size: 12px; color: var(--primary); }
+  .kpi-delta.muted { color: var(--muted); }
+  .kpi-delta .arrow { display: inline-block; margin-right: 4px; }
+
+  /* Section */
+  section { padding: 96px 0; border-bottom: 1px solid var(--hairline); }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 48px; }
+  .section-title { font-family: var(--serif); font-style: italic; font-size: 52px; line-height: 1; letter-spacing: -0.01em; font-weight: 400; }
+  .section-title em { color: var(--primary); }
+  .section-caption { font-size: 13px; color: var(--muted); max-width: 360px; text-align: right; }
+
+  /* GANTT — sesongplan */
+  .gantt { background: var(--card); border: 1px solid var(--hairline); border-radius: 4px; box-shadow: var(--shadow); padding: 40px; }
+  .gantt-months { display: grid; grid-template-columns: repeat(12, 1fr); border-bottom: 1px solid var(--hairline); padding-bottom: 14px; margin-bottom: 32px; }
+  .gantt-month { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; text-align: center; position: relative; }
+  .gantt-month.current { color: var(--primary); font-weight: 600; }
+  .gantt-month.current::after { content: ''; position: absolute; bottom: -15px; left: 50%; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; transform: translateX(-50%); }
+  .gantt-row { position: relative; height: 28px; margin-bottom: 14px; }
+  .gantt-track { position: absolute; inset: 0; background: var(--cream-2); border-radius: 2px; }
+  .gantt-block { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; padding: 0 14px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); border-radius: 2px; }
+  .b-basis { background: #E5E0CC; }
+  .b-oppbygging { background: #C9D9B8; }
+  .b-spesialisering { background: var(--accent); color: var(--primary); font-weight: 600; }
+  .b-konkurranse { background: var(--primary); color: var(--accent); }
+  .b-overgang { background: #DDD7C6; color: var(--muted); }
+  .gantt-row-label { position: absolute; left: -110px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); width: 100px; text-align: right; }
+  .gantt-content { position: relative; margin-left: 110px; }
+  .flags { position: relative; margin-left: 110px; margin-top: 28px; height: 36px; border-top: 1px dashed var(--hairline-strong); padding-top: 14px; }
+  .flag { position: absolute; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; color: var(--ink); letter-spacing: 0.08em; }
+  .flag svg { display: block; margin: 0 auto 4px; }
+  .flag.major svg path { fill: var(--primary); }
+
+  /* Two-column periodisering */
+  .two-col { display: grid; grid-template-columns: 1.1fr 1fr; gap: 60px; align-items: start; }
+  .period-card { background: var(--card); border: 1px solid var(--hairline); border-radius: 4px; padding: 48px; box-shadow: var(--shadow); }
+  .period-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--primary); margin-bottom: 16px; }
+  .period-title { font-family: var(--serif); font-style: italic; font-size: 40px; line-height: 1.05; margin-bottom: 8px; font-weight: 400; }
+  .period-dates { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 28px; letter-spacing: 0.06em; }
+  .period-text { color: var(--ink-2); font-size: 15px; line-height: 1.7; margin-bottom: 32px; max-width: 460px; }
+  .period-text em { font-family: var(--serif); font-style: italic; }
+  .dist-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .dist-bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; margin-bottom: 18px; background: var(--cream-2); }
+  .dist-seg { height: 100%; }
+  .seg-tur { background: var(--primary); }
+  .seg-spill { background: #4A8F6E; }
+  .seg-slag { background: var(--accent); }
+  .seg-tek { background: #B8CC7A; }
+  .seg-fys { background: #D5CFAB; }
+  .dist-legend { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--muted); }
+  .dist-legend span b { display: block; color: var(--ink); font-size: 15px; font-weight: 600; margin-bottom: 4px; font-family: var(--mono); }
+  .dist-legend span i { color: var(--muted); font-style: normal; font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; }
+
+  /* CS chart card */
+  .cs-card { background: var(--card); border: 1px solid var(--hairline); border-radius: 4px; padding: 40px; box-shadow: var(--shadow); margin-bottom: 24px; }
+  .cs-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; }
+  .cs-title { font-family: var(--serif); font-style: italic; font-size: 26px; }
+  .cs-meta { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; }
+  .cs-chart { height: 140px; position: relative; margin-bottom: 16px; }
+  .cs-scale { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .cs-track { position: relative; height: 22px; background: var(--cream-2); border-radius: 999px; overflow: hidden; margin: 24px 0 16px; }
+  .cs-fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, var(--primary), #4A8F6E); border-radius: 999px; }
+  .cs-marker { position: absolute; top: -8px; width: 2px; height: 38px; background: var(--ink); }
+  .cs-marker.goal { background: var(--primary); }
+  .cs-marker-label { position: absolute; top: -28px; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--ink); white-space: nowrap; }
+
+  .countdown { background: var(--ink); color: var(--cream); border-radius: 4px; padding: 32px; display: flex; align-items: center; justify-content: space-between; }
+  .countdown .left { }
+  .countdown-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .countdown-name { font-family: var(--serif); font-style: italic; font-size: 32px; line-height: 1; }
+  .countdown-days { font-family: var(--mono); font-size: 64px; font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--accent); }
+  .countdown-days small { font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.5); display: block; letter-spacing: 0.18em; text-transform: uppercase; margin-top: 6px; font-weight: 400; }
+
+  /* Week — kalender-toggle */
+  .week-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+  .chip-row { display: inline-flex; gap: 0; background: var(--card); border: 1px solid var(--hairline); border-radius: 999px; padding: 4px; }
+  .chip-row button { background: transparent; border: 0; padding: 9px 22px; font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); border-radius: 999px; cursor: pointer; font-weight: 500; }
+  .chip-row button.active { background: var(--ink); color: var(--cream); }
+  .week-nav { display: flex; align-items: center; gap: 24px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--muted); }
+  .week-nav .iconbtn { width: 36px; height: 36px; border: 1px solid var(--hairline); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--card); cursor: pointer; }
+
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 16px; }
+  .day-col { background: var(--card); border: 1px solid var(--hairline); border-radius: 4px; padding: 18px; min-height: 280px; display: flex; flex-direction: column; }
+  .day-col.today { border-color: var(--primary); border-width: 1.5px; box-shadow: var(--shadow); }
+  .day-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 14px; border-bottom: 1px solid var(--hairline); margin-bottom: 14px; }
+  .day-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .day-num { font-family: var(--serif); font-style: italic; font-size: 28px; line-height: 1; color: var(--ink); }
+  .today .day-num { color: var(--primary); }
+  .session { padding: 10px 0; border-bottom: 1px dashed var(--hairline); }
+  .session:last-child { border-bottom: 0; }
+  .session-time { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 4px; }
+  .session-title { font-size: 13px; line-height: 1.3; margin-bottom: 6px; font-weight: 500; }
+  .tag { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+  .tag.fys::before { background: #D5CFAB; }
+  .tag.tek::before { background: #B8CC7A; }
+  .tag.slag::before { background: var(--accent); }
+  .tag.spill::before { background: #4A8F6E; }
+  .tag.turn::before { background: var(--primary); }
+  .day-rest { margin: auto 0; text-align: center; font-family: var(--serif); font-style: italic; color: var(--muted); font-size: 18px; padding: 30px 0; }
+
+  /* Today — fokus-kort med foto */
+  .today-card { position: relative; height: 440px; border-radius: 6px; overflow: hidden; box-shadow: var(--shadow-lg); margin-bottom: 0; }
+  .today-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=1600&h=900&fit=crop'); background-size: cover; background-position: center; }
+  .today-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,31,23,0.75) 0%, rgba(10,31,23,0.45) 50%, rgba(0,88,64,0.65) 100%); }
+  .today-inner { position: absolute; inset: 0; padding: 56px; color: var(--cream); display: flex; flex-direction: column; justify-content: space-between; }
+  .today-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .today-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); }
+  .today-time { font-family: var(--mono); font-size: 13px; letter-spacing: 0.1em; color: rgba(255,255,255,0.7); }
+  .today-mid h2 { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 78px; line-height: 1; margin-bottom: 20px; max-width: 700px; letter-spacing: -0.01em; }
+  .today-mid h2 em { color: var(--accent); }
+  .today-meta { display: flex; gap: 36px; font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.85); letter-spacing: 0.06em; }
+  .today-meta span b { font-family: var(--mono); font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.55); letter-spacing: 0.2em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .today-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+  .btn-start { background: var(--accent); color: var(--primary); border: none; padding: 18px 36px; border-radius: 999px; font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; }
+  .btn-start svg { width: 14px; height: 14px; }
+  .today-disciplines { display: flex; gap: 10px; }
+  .today-disciplines .tag { color: rgba(255,255,255,0.9); }
+
+  /* Quote */
+  .quote { padding: 96px 0; text-align: center; border-bottom: 1px solid var(--hairline); }
+  .quote blockquote { font-family: var(--serif); font-style: italic; font-size: 56px; line-height: 1.15; max-width: 1000px; margin: 0 auto 40px; letter-spacing: -0.01em; font-weight: 400; color: var(--ink); }
+  .quote blockquote em { color: var(--primary); }
+  .quote-attr { display: inline-flex; align-items: center; gap: 14px; }
+  .quote-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #4A8F6E); display: flex; align-items: center; justify-content: center; color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 22px; }
+  .quote-attr .who { text-align: left; }
+  .quote-attr .who b { display: block; font-weight: 500; font-size: 14px; }
+  .quote-attr .who span { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
+
+  /* Pyramide + Streak */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .panel { background: var(--card); border: 1px solid var(--hairline); border-radius: 4px; padding: 48px; box-shadow: var(--shadow); }
+  .panel h3 { font-family: var(--serif); font-style: italic; font-size: 32px; margin-bottom: 6px; font-weight: 400; }
+  .panel .panel-sub { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; margin-bottom: 32px; }
+
+  /* Pyramide */
+  .pyramide { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .pyr-row { display: flex; gap: 6px; }
+  .pyr-cell { width: 44px; height: 44px; border: 1px solid var(--hairline); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: var(--muted); background: var(--cream); }
+  .pyr-cell.done { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .pyr-cell.cur { background: var(--accent); color: var(--primary); border-color: var(--accent); font-weight: 600; }
+  .pyr-meta { display: flex; justify-content: space-between; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+  .pyr-meta b { color: var(--ink); font-family: var(--mono); font-weight: 500; font-size: 18px; display: block; margin-top: 4px; letter-spacing: -0.01em; }
+
+  /* Streak */
+  .streak-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .streak-cell { aspect-ratio: 1; border-radius: 3px; border: 1px solid var(--hairline); background: var(--cream); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .streak-cell.hit { background: var(--primary); border-color: var(--primary); color: var(--accent); }
+  .streak-cell.miss { background: var(--cream-2); border-color: var(--hairline); color: var(--hairline-strong); }
+  .streak-cell.today { background: var(--accent); border-color: var(--accent); color: var(--primary); font-weight: 600; }
+
+  /* Footer */
+  footer { padding: 60px 0 80px; }
+  footer .foot-row { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.14em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">AK Golf <span>Academy</span></div>
+    <nav class="topnav">
+      <a href="#">Hjem</a>
+      <a href="#" class="active">Trening</a>
+      <a href="#">Statistikk</a>
+      <a href="#">Coach</a>
+      <a href="#">Profil</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" style="padding: 0; border: none;">
+  <div class="hero-img"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="eyebrow">Årsplan 2026 &nbsp;·&nbsp; Uke 19 &nbsp;·&nbsp; Spesialisering</div>
+    <h1><em>Tre uker</em> til <br/>Sørlandsåpent.</h1>
+    <p class="hero-sub">Putt-formen er topp. Kortspill trenger fokus de neste fjorten dagene.</p>
+    <div class="profile-pill">
+      <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces" alt="Øyvind Rohjan" />
+      <span class="name">Øyvind Rohjan</span>
+      <span class="dot"></span>
+      <span class="meta">HCP +3,5</span>
+      <span class="dot"></span>
+      <span class="meta">GFGK</span>
+    </div>
+  </div>
+</section>
+
+<!-- KPI -->
+<div class="wrap">
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-label">Handicap</div>
+      <div class="kpi-value">+3,5</div>
+      <div class="kpi-delta"><span class="arrow">↓</span> 0,4 siste 90 dager</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">SG Total</div>
+      <div class="kpi-value">+2,1</div>
+      <div class="kpi-delta muted">Bossum · runde 68</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Streak</div>
+      <div class="kpi-value">11<small>/14</small></div>
+      <div class="kpi-delta">økter fullført</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Pyramide</div>
+      <div class="kpi-value">12<small>/16</small></div>
+      <div class="kpi-delta muted">nivå spesialisering</div>
+    </div>
+  </div>
+</div>
+
+<!-- SESONGEN — Gantt -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title"><em>Sesongen</em> i ett øyekast</h2>
+      <p class="section-caption">Åtte faser fra basistrening i januar til overgang i november. Du står midt i spesialiseringen.</p>
+    </div>
+
+    <div class="gantt">
+      <div class="gantt-content">
+        <div class="gantt-months">
+          <div class="gantt-month">Jan</div>
+          <div class="gantt-month">Feb</div>
+          <div class="gantt-month">Mar</div>
+          <div class="gantt-month">Apr</div>
+          <div class="gantt-month current">Mai</div>
+          <div class="gantt-month">Jun</div>
+          <div class="gantt-month">Jul</div>
+          <div class="gantt-month">Aug</div>
+          <div class="gantt-month">Sep</div>
+          <div class="gantt-month">Okt</div>
+          <div class="gantt-month">Nov</div>
+          <div class="gantt-month">Des</div>
+        </div>
+      </div>
+
+      <div class="gantt-row">
+        <div class="gantt-row-label">Periode</div>
+        <div class="gantt-content" style="height: 100%; position: relative;">
+          <div class="gantt-track"></div>
+          <div class="gantt-block b-basis" style="left: 0%; width: 16.6%;">Basis</div>
+          <div class="gantt-block b-oppbygging" style="left: 16.6%; width: 16.6%;">Oppbygging</div>
+          <div class="gantt-block b-spesialisering" style="left: 33.2%; width: 16.6%;">Spesialisering</div>
+          <div class="gantt-block b-konkurranse" style="left: 49.8%; width: 33.3%;">Konkurranse</div>
+          <div class="gantt-block b-overgang" style="left: 83.1%; width: 16.9%;">Overgang</div>
+        </div>
+      </div>
+
+      <div class="flags">
+        <div class="flag" style="left: 41.6%;">
+          <svg width="14" height="16" viewBox="0 0 14 16"><path d="M2 0 L2 16 L4 16 L4 9 L13 5 L4 1 L4 0 Z" fill="#6B6A63"/></svg>
+          Klubbmesterskap
+        </div>
+        <div class="flag major" style="left: 49.8%;">
+          <svg width="14" height="16" viewBox="0 0 14 16"><path d="M2 0 L2 16 L4 16 L4 9 L13 5 L4 1 L4 0 Z"/></svg>
+          Sørlandsåpent
+        </div>
+        <div class="flag" style="left: 58%;">
+          <svg width="14" height="16" viewBox="0 0 14 16"><path d="M2 0 L2 16 L4 16 L4 9 L13 5 L4 1 L4 0 Z" fill="#6B6A63"/></svg>
+          NM Match
+        </div>
+        <div class="flag" style="left: 70%;">
+          <svg width="14" height="16" viewBox="0 0 14 16"><path d="M2 0 L2 16 L4 16 L4 9 L13 5 L4 1 L4 0 Z" fill="#6B6A63"/></svg>
+          Nordic Tour
+        </div>
+        <div class="flag major" style="left: 79%;">
+          <svg width="14" height="16" viewBox="0 0 14 16"><path d="M2 0 L2 16 L4 16 L4 9 L13 5 L4 1 L4 0 Z"/></svg>
+          NM Slag
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERIODISERING -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">Denne <em>perioden</em></h2>
+      <p class="section-caption">Spesialiseringen er en seks-ukers blokk hvor teknisk presisjon og turneringsforberedelse veies tyngst.</p>
+    </div>
+
+    <div class="two-col">
+      <div class="period-card">
+        <div class="period-eyebrow">Blokk 03 · Spesialisering</div>
+        <h3 class="period-title"><em>Spesialisering</em><br/>seks uker</h3>
+        <div class="period-dates">1. mai — 11. juni 2026</div>
+        <p class="period-text">
+          Du er midtveis i blokken. <em>Fokus</em> er fortsatt teknisk renhet i jernspillet og
+          kvalitet i kortspillet — særlig pitch og chip fra 50 til 100 meter.
+          Volumet er ned 12 % fra forrige blokk; intensiteten opp 18 %.
+        </p>
+
+        <div class="dist-label">Fordeling — denne uken</div>
+        <div class="dist-bar">
+          <div class="dist-seg seg-tur" style="width: 5%;"></div>
+          <div class="dist-seg seg-spill" style="width: 15%;"></div>
+          <div class="dist-seg seg-slag" style="width: 30%;"></div>
+          <div class="dist-seg seg-tek" style="width: 30%;"></div>
+          <div class="dist-seg seg-fys" style="width: 20%;"></div>
+        </div>
+        <div class="dist-legend">
+          <span><b>5%</b><i>Tur</i></span>
+          <span><b>15%</b><i>Spill</i></span>
+          <span><b>30%</b><i>Slag</i></span>
+          <span><b>30%</b><i>Tek</i></span>
+          <span><b>20%</b><i>Fys</i></span>
+        </div>
+      </div>
+
+      <div>
+        <div class="cs-card">
+          <div class="cs-head">
+            <div class="cs-title"><em>CS-maks</em></div>
+            <div class="cs-meta">Mål — 80 innen 1. juni</div>
+          </div>
+          <div class="cs-track">
+            <div class="cs-fill" style="width: 87.5%;"></div>
+            <div class="cs-marker" style="left: 87.5%;">
+              <div class="cs-marker-label">Nå · 70</div>
+            </div>
+            <div class="cs-marker goal" style="left: 100%;">
+              <div class="cs-marker-label" style="color: var(--primary);">Mål · 80</div>
+            </div>
+          </div>
+          <div class="cs-scale">
+            <span>0</span><span>20</span><span>40</span><span>60</span><span>80</span>
+          </div>
+        </div>
+
+        <div class="countdown">
+          <div class="left">
+            <div class="countdown-eyebrow">Neste turnering</div>
+            <div class="countdown-name"><em>Sørlandsåpent</em><br/>Mandal GK</div>
+          </div>
+          <div class="countdown-days">
+            21
+            <small>dager igjen</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DENNE UKEN -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">Denne <em>uken</em></h2>
+      <p class="section-caption">Sju dager, ti planlagte økter. Tirsdag er hviledag. Søndag er foreldredag — kort runde med pappa på Bossum.</p>
+    </div>
+
+    <div class="week-controls">
+      <div class="chip-row">
+        <button>Dag</button>
+        <button class="active">Uke</button>
+        <button>Måned</button>
+        <button>Sesong</button>
+      </div>
+      <div class="week-nav">
+        <button class="iconbtn"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.5 2L3.5 6L7.5 10" stroke="#0A1F17" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <span>Uke 19 · 11.—17. mai</span>
+        <button class="iconbtn"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2L8.5 6L4.5 10" stroke="#0A1F17" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+
+    <div class="week-grid">
+      <div class="day-col">
+        <div class="day-head"><span class="day-name">Man</span><span class="day-num">11</span></div>
+        <div class="session">
+          <div class="session-time">07:00 — 08:00</div>
+          <div class="session-title">Styrke · ben + core</div>
+          <span class="tag fys">Fys</span>
+        </div>
+        <div class="session">
+          <div class="session-time">16:00 — 17:30</div>
+          <div class="session-title">Jernspill · 7-jern presisjon</div>
+          <span class="tag tek">Tek</span>
+        </div>
+      </div>
+
+      <div class="day-col">
+        <div class="day-head"><span class="day-name">Tir</span><span class="day-num">12</span></div>
+        <div class="day-rest">Hvile</div>
+      </div>
+
+      <div class="day-col">
+        <div class="day-head"><span class="day-name">Ons</span><span class="day-num">13</span></div>
+        <div class="session">
+          <div class="session-time">15:00 — 16:30</div>
+          <div class="session-title">Drivingrange · kontrollslag</div>
+          <span class="tag slag">Slag</span>
+        </div>
+        <div class="session">
+          <div class="session-time">17:00 — 18:00</div>
+          <div class="session-title">Putt · 3–5m konvertering</div>
+          <span class="tag tek">Tek</span>
+        </div>
+      </div>
+
+      <div class="day-col today">
+        <div class="day-head"><span class="day-name">Tor · I dag</span><span class="day-num">14</span></div>
+        <div class="session">
+          <div class="session-time">14:00 — 15:30</div>
+          <div class="session-title">Pitch 50–100m</div>
+          <span class="tag slag">Slag</span>
+        </div>
+        <div class="session">
+          <div class="session-time">16:00 — 17:00</div>
+          <div class="session-title">Video-debrief m/ Anders</div>
+          <span class="tag tek">Tek</span>
+        </div>
+      </div>
+
+      <div class="day-col">
+        <div class="day-head"><span class="day-name">Fre</span><span class="day-num">15</span></div>
+        <div class="session">
+          <div class="session-time">09:00 — 12:00</div>
+          <div class="session-title">9 hull · Bossum scoringsrunde</div>
+          <span class="tag spill">Spill</span>
+        </div>
+      </div>
+
+      <div class="day-col">
+        <div class="day-head"><span class="day-name">Lør</span><span class="day-num">16</span></div>
+        <div class="session">
+          <div class="session-time">10:00 — 14:00</div>
+          <div class="session-title">Klubbcup · stableford</div>
+          <span class="tag turn">Turn</span>
+        </div>
+        <div class="session">
+          <div class="session-time">15:00 — 15:45</div>
+          <div class="session-title">Restitusjon · mobilitet</div>
+          <span class="tag fys">Fys</span>
+        </div>
+      </div>
+
+      <div class="day-col">
+        <div class="day-head"><span class="day-name">Søn</span><span class="day-num">17</span></div>
+        <div class="session">
+          <div class="session-time">11:00 — 14:00</div>
+          <div class="session-title">9 hull · m/ pappa</div>
+          <span class="tag spill">Spill</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- I DAG — fokus-kort -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">I <em>dag</em></h2>
+      <p class="section-caption">Den ene økten som teller mest akkurat nå. Start når du er klar — pulsklokka og Trackman kobles automatisk.</p>
+    </div>
+
+    <div class="today-card">
+      <div class="today-bg"></div>
+      <div class="today-overlay"></div>
+      <div class="today-inner">
+        <div class="today-top">
+          <div class="today-eyebrow">Dagens fokusøkt · Pitch &amp; Wedge</div>
+          <div class="today-time">14:00 — 15:30 · GFGK kortspillsbane</div>
+        </div>
+
+        <div class="today-mid">
+          <h2><em>Pitch</em><br/>50–100 m.</h2>
+          <div class="today-meta">
+            <span><b>Varighet</b>90 min</span>
+            <span><b>Mål</b>SG-pitch +0,3</span>
+            <span><b>Repetisjoner</b>60 slag · 3 mål</span>
+            <span><b>Coach</b>Anders K.</span>
+          </div>
+        </div>
+
+        <div class="today-bottom">
+          <div class="today-disciplines">
+            <span class="tag slag">Slag · pitch</span>
+            <span class="tag tek">Tek · trajectory</span>
+          </div>
+          <button class="btn-start">
+            <svg viewBox="0 0 14 14" fill="currentColor"><path d="M2 1 L12 7 L2 13 Z"/></svg>
+            Start økten
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COACH QUOTE -->
+<section class="quote">
+  <div class="wrap">
+    <blockquote>
+      «Hold fokus på <em>lav trajectory</em>. Du har trent godt — ikke press for hardt før helga.»
+    </blockquote>
+    <div class="quote-attr">
+      <div class="quote-avatar">AK</div>
+      <div class="who">
+        <b>Anders Kristiansen</b>
+        <span>Hovedtrener · AK Golf Academy</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PYRAMIDE + STREAK -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title"><em>Progresjon</em> og rytme</h2>
+      <p class="section-caption">Pyramiden viser hvor langt du har kommet i blokken. Streaken viser hvor disiplinert du har vært de siste to ukene.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h3>Pyramide</h3>
+        <div class="panel-sub">Spesialisering · 12 av 16 fullført</div>
+        <div class="pyramide">
+          <div class="pyr-row">
+            <div class="pyr-cell">16</div>
+          </div>
+          <div class="pyr-row">
+            <div class="pyr-cell">14</div>
+            <div class="pyr-cell">15</div>
+          </div>
+          <div class="pyr-row">
+            <div class="pyr-cell cur">12</div>
+            <div class="pyr-cell">13</div>
+            <div class="pyr-cell">—</div>
+          </div>
+          <div class="pyr-row">
+            <div class="pyr-cell done">8</div>
+            <div class="pyr-cell done">9</div>
+            <div class="pyr-cell done">10</div>
+            <div class="pyr-cell done">11</div>
+          </div>
+          <div class="pyr-row">
+            <div class="pyr-cell done">1</div>
+            <div class="pyr-cell done">2</div>
+            <div class="pyr-cell done">3</div>
+            <div class="pyr-cell done">4</div>
+            <div class="pyr-cell done">5</div>
+          </div>
+        </div>
+        <div class="pyr-meta">
+          <span>Fullført<b>12</b></span>
+          <span>Aktiv<b>1</b></span>
+          <span>Igjen<b>3</b></span>
+          <span>Estimert ferdig<b>09. jun</b></span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Streak</h3>
+        <div class="panel-sub">Siste 14 dager · 11 økter fullført</div>
+        <div class="streak-grid">
+          <div class="streak-cell hit">✓</div>
+          <div class="streak-cell hit">✓</div>
+          <div class="streak-cell miss">·</div>
+          <div class="streak-cell hit">✓</div>
+          <div class="streak-cell hit">✓</div>
+          <div class="streak-cell hit">✓</div>
+          <div class="streak-cell hit">✓</div>
+          <div class="streak-cell miss">·</div>
+          <div class="streak-cell hit">✓</div>
+          <div class="streak-cell hit">✓</div>
+          <div class="streak-cell hit">✓</div>
+          <div class="streak-cell miss">·</div>
+          <div class="streak-cell hit">✓</div>
+          <div class="streak-cell today">I dag</div>
+        </div>
+        <div class="pyr-meta">
+          <span>Treff<b>11</b></span>
+          <span>Bom<b>3</b></span>
+          <span>Lengste<b>5</b></span>
+          <span>Snitt/uke<b>5,5</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>AK Golf Academy · PlayerHQ</span>
+      <span>Sist synket · I dag 13:42</span>
+      <span>Versjon 2.6 · Mai 2026</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

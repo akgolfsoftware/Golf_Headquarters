@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoachHQ Hub — 1705 Wireframes</title>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles-opt1.css">
+  <link rel="stylesheet" href="styles-opt2.css">
+  <link rel="stylesheet" href="styles-opt3.css">
+  <link rel="stylesheet" href="styles-opt4.css">
+  <link rel="stylesheet" href="styles-opt5.css">
+</head>
+<body>
+
+<div class="completion-banner" id="completion-banner" style="display:none;">
+  ✦ Visual designs complete — all options now have Clean + Polished variants
+  <button onclick="this.parentElement.style.display='none'" style="float:right;background:none;border:none;cursor:pointer;font-size:16px;">×</button>
+</div>
+
+<div class="page-wrapper">
+
+  <div class="title-bar">
+    <span><span id="feature-name">CoachHQ Hub</span> — <span id="project-name">AK Golf HQ</span></span>
+    <span class="rec">★ Anbefalt: Option <span id="rec-number">2</span></span>
+  </div>
+
+  <nav class="main-tabs">
+    <button class="tab-btn active" data-tab="option-1">1: Glass Sidebar</button>
+    <button class="tab-btn" data-tab="option-2">2: Cockpit Strip</button>
+    <button class="tab-btn" data-tab="option-3">3: Command Rail</button>
+    <button class="tab-btn" data-tab="option-4">4: Action Feed</button>
+    <button class="tab-btn" data-tab="option-5">5: Morning Brief</button>
+    <button class="tab-btn" data-tab="summary">Summary</button>
+  </nav>
+
+  <!-- ===== OPTION 1 ===== -->
+  <div class="option-panel active" id="option-1">
+    <h2>Option 1: <span class="opt-name">Glass Sidebar</span></h2>
+    <p class="option-description">Trygg utvidelse av eksisterende mønster — 8-element glass-sidebar med asymmetrisk bento-dashboard. Konsoliderer 27 punkter til 8 uten å endre grunnstrukturen.</p>
+    <div class="sub-tab-bar" id="frame-opt1-tabs">
+      <button class="sub-tab-btn active" data-variant="wireframe" data-frame="frame-opt1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTsketch1"><g fill="#555" stroke="#fff" stroke-linejoin="round" stroke-width="4"><rect width="36" height="36" x="6" y="6" rx="3"/><path stroke-linecap="round" d="M18.6 16h10.8l3.6 4.706L24 32l-9-11.294z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTsketch1)"/></svg>
+        <span class="sub-tab-label">Wireframe</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="clean" data-frame="frame-opt1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTpaint1"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m15.536 22.898l9.899 9.9m-9.899-9.9L7.05 31.383a7 7 0 1 0 9.9 9.9l8.485-8.486m-9.899 0l-4.243 4.243"/><path fill="#555" d="m25.435 32.797l14.907-6.432c2.688-1.16 3.809-4.379 2.086-6.745C38.264 13.903 32.65 8.89 28.51 5.823c-2.29-1.696-5.33-.64-6.46 1.975l-6.514 15.1z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTpaint1)"/></svg>
+        <span class="sub-tab-label">Clean</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="polished" data-frame="frame-opt1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTdiamond1"><path fill="#555" stroke="#fff" stroke-width="4" d="M5.939 13.934L23.036 4.53a2 2 0 0 1 1.928 0l17.097 9.404a2 2 0 0 1 .683 2.888l-17.098 24.79a2 2 0 0 1-3.292 0L5.256 16.823a2 2 0 0 1 .683-2.888Z"/></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTdiamond1)"/></svg>
+        <span class="sub-tab-label">Polished</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+    </div>
+    <div class="browser-frame wireframe" id="frame-opt1">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">akgolf.no/admin/hub</div>
+        <div class="browser-controls">─ □ ✕</div>
+      </div>
+      <div class="browser-content" style="padding:0;">
+        <div class="opt1-layout">
+          <aside class="opt1-sidebar">
+            <div class="opt1-logo">
+              <div class="opt1-logo-mark"></div>
+              <span>AK GOLF</span>
+            </div>
+            <nav class="opt1-nav">
+              <a href="#" class="opt1-nav-item active">
+                <span class="opt1-nav-icon">◈</span>
+                <span>I dag</span>
+                <span class="opt1-badge">3</span>
+              </a>
+              <a href="#" class="opt1-nav-item">
+                <span class="opt1-nav-icon">◉</span>
+                <span>Spillere</span>
+                <span class="opt1-badge">12</span>
+              </a>
+              <a href="#" class="opt1-nav-item">
+                <span class="opt1-nav-icon">◧</span>
+                <span>Plans</span>
+              </a>
+              <a href="#" class="opt1-nav-item">
+                <span class="opt1-nav-icon">◫</span>
+                <span>Kalender</span>
+              </a>
+              <a href="#" class="opt1-nav-item">
+                <span class="opt1-nav-icon">◰</span>
+                <span>Anlegg</span>
+              </a>
+              <a href="#" class="opt1-nav-item">
+                <span class="opt1-nav-icon">◴</span>
+                <span>Innsikt</span>
+              </a>
+              <a href="#" class="opt1-nav-item">
+                <span class="opt1-nav-icon">◷</span>
+                <span>AI Lab</span>
+                <span class="opt1-badge opt1-badge-new">NY</span>
+              </a>
+              <div class="opt1-nav-divider"></div>
+              <a href="#" class="opt1-nav-item opt1-nav-muted">
+                <span class="opt1-nav-icon">⊙</span>
+                <span>Innstillinger</span>
+              </a>
+            </nav>
+            <div class="opt1-upgrade">
+              <div class="opt1-upgrade-label">GRATIS PLAN</div>
+              <div class="opt1-upgrade-text">Oppgrader for ubegrenset AI</div>
+              <button class="opt1-upgrade-btn">Oppgrader →</button>
+            </div>
+          </aside>
+
+          <main class="opt1-main">
+            <div class="opt1-ticker">
+              <span class="opt1-ticker-dot"></span>
+              <span>3 godkjenninger venter · Emil — plan utløper fredag · Ny test klar for Markus · Gruppe B avlyst</span>
+            </div>
+
+            <div class="opt1-bento-row">
+              <div class="opt1-hero-card">
+                <div class="opt1-hero-eyebrow">DAGLIG BRIEF <span class="wf-marker">①</span></div>
+                <div class="opt1-hero-title"><em>God morgen, Anders.</em></div>
+                <div class="opt1-hero-sub">Tirsdag 7. mai 2026</div>
+                <div class="opt1-agenda-items">
+                  <div class="opt1-agenda-item">
+                    <span class="opt1-agenda-time">14:00</span>
+                    <span class="opt1-agenda-who">Markus Roinas-Pedersen</span>
+                    <span class="opt1-agenda-where">Performance Studio</span>
+                  </div>
+                  <div class="opt1-agenda-item">
+                    <span class="opt1-agenda-time">15:30</span>
+                    <span class="opt1-agenda-who">Sofia Grøttvik</span>
+                    <span class="opt1-agenda-where">Bane-analyse</span>
+                  </div>
+                  <div class="opt1-agenda-item opt1-agenda-item-muted">
+                    <span class="opt1-agenda-time">16:30</span>
+                    <span class="opt1-agenda-who">Gruppe B</span>
+                    <span class="opt1-agenda-where">Putt-session — avlyst</span>
+                  </div>
+                </div>
+                <div class="opt1-hero-actions">
+                  <button class="opt1-btn-primary">Se full agenda →</button>
+                  <button class="opt1-btn-ghost">3 godkjenninger</button>
+                </div>
+              </div>
+
+              <div class="opt1-kpi-col">
+                <div class="opt1-kpi-card">
+                  <div class="opt1-kpi-label">AKTIVE SPILLERE</div>
+                  <div class="opt1-kpi-value">12</div>
+                  <div class="opt1-kpi-sub">av 15 totalt</div>
+                </div>
+                <div class="opt1-kpi-card">
+                  <div class="opt1-kpi-label">SNITT HCP</div>
+                  <div class="opt1-kpi-value">5,2</div>
+                  <div class="opt1-kpi-sub">↓ 0,3 siste mnd</div>
+                </div>
+                <div class="opt1-kpi-card opt1-kpi-accent">
+                  <div class="opt1-kpi-label">NESTE ØKT</div>
+                  <div class="opt1-kpi-value">14:00</div>
+                  <div class="opt1-kpi-sub">Markus · Performance</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="opt1-section-label">SPILLERE — SISTE AKTIVITET <span class="wf-marker">②</span></div>
+            <div class="opt1-roster">
+              <div class="opt1-roster-row">
+                <div class="opt1-roster-avatar"></div>
+                <div class="opt1-roster-info">
+                  <div class="opt1-roster-name">Markus Roinas-Pedersen</div>
+                  <div class="opt1-roster-meta">HCP 2,4 · Plan aktiv · Sist aktiv: i dag</div>
+                </div>
+                <div class="opt1-roster-status opt1-status-green">Bra form</div>
+                <div class="opt1-roster-arrow">→</div>
+              </div>
+              <div class="opt1-roster-row">
+                <div class="opt1-roster-avatar"></div>
+                <div class="opt1-roster-info">
+                  <div class="opt1-roster-name">Emil Olsen</div>
+                  <div class="opt1-roster-meta">HCP 4,1 · Plan utløper fredag</div>
+                </div>
+                <div class="opt1-roster-status opt1-status-yellow">Følg opp</div>
+                <div class="opt1-roster-arrow">→</div>
+              </div>
+              <div class="opt1-roster-row">
+                <div class="opt1-roster-avatar"></div>
+                <div class="opt1-roster-info">
+                  <div class="opt1-roster-name">Sofia Grøttvik</div>
+                  <div class="opt1-roster-meta">HCP 6,8 · Test klar i morgen</div>
+                </div>
+                <div class="opt1-roster-status opt1-status-green">På plan</div>
+                <div class="opt1-roster-arrow">→</div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div class="wf-annotations">
+      <h3>Annoteringer</h3>
+      <ul>
+        <li><strong>①</strong> Daglig Brief er eneste hero-element — resten av sidebaren er sekundært. Tydelig hierarki.</li>
+        <li><strong>②</strong> Spillerliste viser kun de 3 mest aktuelle. Badge-tall gir kontekst uten å åpne seksjonen.</li>
+        <li>Sidebar konsolidert fra 27 → 8 punkter. Lav overgangsrisiko for eksisterende brukere.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== OPTION 2 ===== -->
+  <div class="option-panel" id="option-2">
+    <h2>Option 2: <span class="opt-name">Cockpit Strip</span></h2>
+    <p class="option-description">Sidebaren forsvinner — erstattet av et horisontalt cockpit-instrumentpanel med 8 seksjonspills. Tre parallelle innholdssoner gir coachen hele bildet på én gang.</p>
+    <div class="sub-tab-bar" id="frame-opt2-tabs">
+      <button class="sub-tab-btn active" data-variant="wireframe" data-frame="frame-opt2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTsketch2"><g fill="#555" stroke="#fff" stroke-linejoin="round" stroke-width="4"><rect width="36" height="36" x="6" y="6" rx="3"/><path stroke-linecap="round" d="M18.6 16h10.8l3.6 4.706L24 32l-9-11.294z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTsketch2)"/></svg>
+        <span class="sub-tab-label">Wireframe</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="clean" data-frame="frame-opt2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTpaint2"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m15.536 22.898l9.899 9.9m-9.899-9.9L7.05 31.383a7 7 0 1 0 9.9 9.9l8.485-8.486m-9.899 0l-4.243 4.243"/><path fill="#555" d="m25.435 32.797l14.907-6.432c2.688-1.16 3.809-4.379 2.086-6.745C38.264 13.903 32.65 8.89 28.51 5.823c-2.29-1.696-5.33-.64-6.46 1.975l-6.514 15.1z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTpaint2)"/></svg>
+        <span class="sub-tab-label">Clean</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="polished" data-frame="frame-opt2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTdiamond2"><path fill="#555" stroke="#fff" stroke-width="4" d="M5.939 13.934L23.036 4.53a2 2 0 0 1 1.928 0l17.097 9.404a2 2 0 0 1 .683 2.888l-17.098 24.79a2 2 0 0 1-3.292 0L5.256 16.823a2 2 0 0 1 .683-2.888Z"/></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTdiamond2)"/></svg>
+        <span class="sub-tab-label">Polished</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+    </div>
+    <div class="browser-frame wireframe" id="frame-opt2">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">akgolf.no/admin/hub</div>
+        <div class="browser-controls">─ □ ✕</div>
+      </div>
+      <div class="browser-content" style="padding:0;">
+        <div class="opt2-strip">
+          <div class="opt2-logo">AK GOLF</div>
+          <div class="opt2-pills">
+            <button class="opt2-pill opt2-pill-active">I dag <span class="opt2-pill-badge">3</span></button>
+            <button class="opt2-pill">Spillere <span class="opt2-pill-badge">12</span></button>
+            <button class="opt2-pill">Plans</button>
+            <button class="opt2-pill">Kalender</button>
+            <button class="opt2-pill">Anlegg</button>
+            <button class="opt2-pill">Innsikt</button>
+            <button class="opt2-pill">AI Lab</button>
+            <button class="opt2-pill opt2-pill-settings">⊙</button>
+          </div>
+          <div class="opt2-search">
+            <input type="text" placeholder="Søk... ⌘K" class="opt2-search-input">
+          </div>
+        </div>
+
+        <div class="opt2-zones">
+          <div class="opt2-zone opt2-zone-a">
+            <div class="opt2-zone-label">I DAG <span class="wf-marker">①</span></div>
+            <div class="opt2-date">Tirsdag, 7. mai 2026</div>
+            <div class="opt2-sessions">
+              <div class="opt2-session">
+                <div class="opt2-session-time">14:00</div>
+                <div class="opt2-session-info">
+                  <div class="opt2-session-name">Markus Roinas-Pedersen</div>
+                  <div class="opt2-session-type">Performance Studio · 60 min</div>
+                </div>
+                <button class="opt2-session-btn">Start</button>
+              </div>
+              <div class="opt2-session">
+                <div class="opt2-session-time">15:30</div>
+                <div class="opt2-session-info">
+                  <div class="opt2-session-name">Sofia Grøttvik</div>
+                  <div class="opt2-session-type">Bane-analyse · 45 min</div>
+                </div>
+                <button class="opt2-session-btn opt2-session-btn-ghost">Forbered</button>
+              </div>
+            </div>
+            <div class="opt2-divider"></div>
+            <div class="opt2-zone-label">GODKJENNINGER <span class="wf-marker">②</span></div>
+            <div class="opt2-approval">
+              <div class="opt2-approval-item">
+                <div class="opt2-approval-text">Emil — periodisering Q3 2026</div>
+                <div class="opt2-approval-actions">
+                  <button class="opt2-approve-btn">✓</button>
+                  <button class="opt2-reject-btn">✕</button>
+                </div>
+              </div>
+              <div class="opt2-approval-item">
+                <div class="opt2-approval-text">Plan mal «Vinter» endret av AI</div>
+                <div class="opt2-approval-actions">
+                  <button class="opt2-approve-btn">✓</button>
+                  <button class="opt2-reject-btn">✕</button>
+                </div>
+              </div>
+              <div class="opt2-approval-item">
+                <div class="opt2-approval-text">Ny spiller: Kristoffer Haug</div>
+                <div class="opt2-approval-actions">
+                  <button class="opt2-approve-btn">✓</button>
+                  <button class="opt2-reject-btn">✕</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="opt2-zone opt2-zone-b">
+            <div class="opt2-zone-label">SPILLERE <span class="wf-marker">③</span></div>
+            <div class="opt2-roster-list">
+              <div class="opt2-roster-item">
+                <div class="opt2-avatar"></div>
+                <div class="opt2-roster-details">
+                  <div class="opt2-roster-name">Markus R.</div>
+                  <div class="opt2-roster-stat">HCP 2,4</div>
+                </div>
+                <div class="opt2-roster-tag opt2-tag-green">Bra form</div>
+              </div>
+              <div class="opt2-roster-item">
+                <div class="opt2-avatar"></div>
+                <div class="opt2-roster-details">
+                  <div class="opt2-roster-name">Emil O.</div>
+                  <div class="opt2-roster-stat">HCP 4,1</div>
+                </div>
+                <div class="opt2-roster-tag opt2-tag-yellow">Følg opp</div>
+              </div>
+              <div class="opt2-roster-item">
+                <div class="opt2-avatar"></div>
+                <div class="opt2-roster-details">
+                  <div class="opt2-roster-name">Sofia G.</div>
+                  <div class="opt2-roster-stat">HCP 6,8</div>
+                </div>
+                <div class="opt2-roster-tag opt2-tag-green">På plan</div>
+              </div>
+              <div class="opt2-roster-item">
+                <div class="opt2-avatar"></div>
+                <div class="opt2-roster-details">
+                  <div class="opt2-roster-name">Lars K.</div>
+                  <div class="opt2-roster-stat">HCP 9,2</div>
+                </div>
+                <div class="opt2-roster-tag opt2-tag-gray">Inaktiv</div>
+              </div>
+            </div>
+            <div class="opt2-see-all">Se alle 12 spillere →</div>
+            <div class="opt2-divider"></div>
+            <div class="opt2-zone-label">UKENS KPI</div>
+            <div class="opt2-kpi-row">
+              <div class="opt2-kpi-mini">
+                <div class="opt2-kpi-val">8/12</div>
+                <div class="opt2-kpi-lbl">Aktive planer</div>
+              </div>
+              <div class="opt2-kpi-mini">
+                <div class="opt2-kpi-val">5,2</div>
+                <div class="opt2-kpi-lbl">Snitt HCP</div>
+              </div>
+              <div class="opt2-kpi-mini">
+                <div class="opt2-kpi-val">↓0,3</div>
+                <div class="opt2-kpi-lbl">HCP trend</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="opt2-zone opt2-zone-c">
+            <div class="opt2-zone-label">AI FEED <span class="wf-marker">④</span></div>
+            <div class="opt2-ai-list">
+              <div class="opt2-ai-item">
+                <div class="opt2-ai-icon">◈</div>
+                <div class="opt2-ai-text">Emil kan øke treningsvolum 15% — SG OTT har økt 3 måneder på rad</div>
+                <div class="opt2-ai-action">Se →</div>
+              </div>
+              <div class="opt2-ai-item">
+                <div class="opt2-ai-icon">◧</div>
+                <div class="opt2-ai-text">Markus: Ny periodiseringsplan klar for Q3 — godkjenning venter</div>
+                <div class="opt2-ai-action">Godkjenn</div>
+              </div>
+              <div class="opt2-ai-item">
+                <div class="opt2-ai-icon">◉</div>
+                <div class="opt2-ai-text">Sofia trenger en test — sist testet for 6 uker siden</div>
+                <div class="opt2-ai-action">Planlegg</div>
+              </div>
+              <div class="opt2-ai-item">
+                <div class="opt2-ai-icon">◷</div>
+                <div class="opt2-ai-text">3 spillere uten plan de neste 2 ukene</div>
+                <div class="opt2-ai-action">Se alle</div>
+              </div>
+            </div>
+            <div class="opt2-ai-cta">Åpne AI Lab →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wf-annotations">
+      <h3>Annoteringer</h3>
+      <ul>
+        <li><strong>①</strong> I dag-sonen viser neste 2 timer + godkjenninger — det coachen trenger FØR de begynner å jobbe.</li>
+        <li><strong>②</strong> Inline-godkjenning ✓/✕ direkte i hver rad — ingen ekstra sidenavigasjon.</li>
+        <li><strong>③</strong> Roster-listen er statusbasert, ikke alfabetisk — viktigste alltid øverst.</li>
+        <li><strong>④</strong> AI Feed alltid synlig men i bakgrunnen. Prioritert av AI, ikke av tid.</li>
+        <li>Cockpit-strip matcher cockpit-stadium-estetikken direkte — horisontale pills over vertikal sidebar.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== OPTION 3 ===== -->
+  <div class="option-panel" id="option-3">
+    <h2>Option 3: <span class="opt-name">Command Rail</span></h2>
+    <p class="option-description">48px ikonrail med 8 seksjoner og tooltips. En stor TODAY HUB-kort øverst, med 4 spoke-kort under som viser live-preview av hver seksjon.</p>
+    <div class="sub-tab-bar" id="frame-opt3-tabs">
+      <button class="sub-tab-btn active" data-variant="wireframe" data-frame="frame-opt3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTsketch3"><g fill="#555" stroke="#fff" stroke-linejoin="round" stroke-width="4"><rect width="36" height="36" x="6" y="6" rx="3"/><path stroke-linecap="round" d="M18.6 16h10.8l3.6 4.706L24 32l-9-11.294z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTsketch3)"/></svg>
+        <span class="sub-tab-label">Wireframe</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="clean" data-frame="frame-opt3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTpaint3"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m15.536 22.898l9.899 9.9m-9.899-9.9L7.05 31.383a7 7 0 1 0 9.9 9.9l8.485-8.486m-9.899 0l-4.243 4.243"/><path fill="#555" d="m25.435 32.797l14.907-6.432c2.688-1.16 3.809-4.379 2.086-6.745C38.264 13.903 32.65 8.89 28.51 5.823c-2.29-1.696-5.33-.64-6.46 1.975l-6.514 15.1z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTpaint3)"/></svg>
+        <span class="sub-tab-label">Clean</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="polished" data-frame="frame-opt3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTdiamond3"><path fill="#555" stroke="#fff" stroke-width="4" d="M5.939 13.934L23.036 4.53a2 2 0 0 1 1.928 0l17.097 9.404a2 2 0 0 1 .683 2.888l-17.098 24.79a2 2 0 0 1-3.292 0L5.256 16.823a2 2 0 0 1 .683-2.888Z"/></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTdiamond3)"/></svg>
+        <span class="sub-tab-label">Polished</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+    </div>
+    <div class="browser-frame wireframe" id="frame-opt3">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">akgolf.no/admin/hub</div>
+        <div class="browser-controls">─ □ ✕</div>
+      </div>
+      <div class="browser-content" style="padding:0;">
+        <div class="opt3-layout">
+          <aside class="opt3-rail">
+            <div class="opt3-rail-logo">◈</div>
+            <nav class="opt3-rail-nav">
+              <a href="#" class="opt3-icon-btn opt3-icon-active" title="I dag">◈</a>
+              <a href="#" class="opt3-icon-btn" title="Spillere">◉<span class="opt3-icon-badge">12</span></a>
+              <a href="#" class="opt3-icon-btn" title="Plans">◧</a>
+              <a href="#" class="opt3-icon-btn" title="Kalender">◫</a>
+              <a href="#" class="opt3-icon-btn" title="Anlegg">◰</a>
+              <a href="#" class="opt3-icon-btn" title="Innsikt">◴</a>
+              <a href="#" class="opt3-icon-btn" title="AI Lab">◷</a>
+            </nav>
+            <div class="opt3-rail-bottom">
+              <a href="#" class="opt3-icon-btn" title="Innstillinger">⊙</a>
+              <div class="opt3-rail-avatar"></div>
+            </div>
+          </aside>
+
+          <main class="opt3-main">
+            <div class="opt3-hub-card">
+              <div class="opt3-hub-top">
+                <div>
+                  <div class="opt3-hub-eyebrow">I DAG — TIRSDAG 7. MAI 2026 <span class="wf-marker">①</span></div>
+                  <div class="opt3-hub-title">3 godkjenninger · 2 tester ventende · Neste økt 14:00</div>
+                </div>
+                <div class="opt3-hub-actions">
+                  <button class="opt3-hub-btn-primary">Start 14:00-økt</button>
+                  <button class="opt3-hub-btn-ghost">Godkjenn alle (3)</button>
+                  <button class="opt3-hub-btn-ghost">Se kalender</button>
+                </div>
+              </div>
+              <div class="opt3-hub-sessions">
+                <div class="opt3-hub-session opt3-hub-session-next">
+                  <div class="opt3-hub-sess-time">14:00</div>
+                  <div class="opt3-hub-sess-info">Markus Roinas-Pedersen · Performance Studio · 60 min</div>
+                  <div class="opt3-hub-sess-tag">NESTE</div>
+                </div>
+                <div class="opt3-hub-session">
+                  <div class="opt3-hub-sess-time">15:30</div>
+                  <div class="opt3-hub-sess-info">Sofia Grøttvik · Bane-analyse · 45 min</div>
+                </div>
+                <div class="opt3-hub-session opt3-hub-session-cancelled">
+                  <div class="opt3-hub-sess-time">16:30</div>
+                  <div class="opt3-hub-sess-info">Gruppe B · Putt-session — avlyst</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="opt3-spoke-label">SEKSJONER <span class="wf-marker">②</span></div>
+            <div class="opt3-spokes">
+              <a href="#" class="opt3-spoke">
+                <div class="opt3-spoke-head">
+                  <span class="opt3-spoke-icon">◉</span>
+                  <span class="opt3-spoke-title">Spillere</span>
+                  <span class="opt3-spoke-count">12</span>
+                </div>
+                <div class="opt3-spoke-preview">
+                  <div class="opt3-spoke-row"><div class="opt3-spoke-dot opt3-dot-green"></div>Markus — bra form</div>
+                  <div class="opt3-spoke-row"><div class="opt3-spoke-dot opt3-dot-yellow"></div>Emil — følg opp</div>
+                  <div class="opt3-spoke-row opt3-spoke-row-more">+10 spillere →</div>
+                </div>
+              </a>
+              <a href="#" class="opt3-spoke">
+                <div class="opt3-spoke-head">
+                  <span class="opt3-spoke-icon">◧</span>
+                  <span class="opt3-spoke-title">Plans</span>
+                  <span class="opt3-spoke-count">3 aktive</span>
+                </div>
+                <div class="opt3-spoke-preview">
+                  <div class="opt3-spoke-row"><div class="opt3-spoke-dot opt3-dot-green"></div>Q2 Periodisering aktiv</div>
+                  <div class="opt3-spoke-row"><div class="opt3-spoke-dot opt3-dot-gray"></div>Vinterplan — arkivert</div>
+                  <div class="opt3-spoke-row opt3-spoke-row-more">+ Ny plan →</div>
+                </div>
+              </a>
+              <a href="#" class="opt3-spoke">
+                <div class="opt3-spoke-head">
+                  <span class="opt3-spoke-icon">◫</span>
+                  <span class="opt3-spoke-title">Kalender</span>
+                  <span class="opt3-spoke-count">5 denne uka</span>
+                </div>
+                <div class="opt3-spoke-preview">
+                  <div class="opt3-spoke-row"><div class="opt3-spoke-dot opt3-dot-black"></div>Man: Gruppe A · 10:00</div>
+                  <div class="opt3-spoke-row"><div class="opt3-spoke-dot opt3-dot-black"></div>Tir: Markus · 14:00</div>
+                  <div class="opt3-spoke-row opt3-spoke-row-more">Se full uke →</div>
+                </div>
+              </a>
+              <a href="#" class="opt3-spoke">
+                <div class="opt3-spoke-head">
+                  <span class="opt3-spoke-icon">◴</span>
+                  <span class="opt3-spoke-title">Innsikt</span>
+                  <span class="opt3-spoke-count">Oppdatert i dag</span>
+                </div>
+                <div class="opt3-spoke-preview">
+                  <div class="opt3-spoke-row"><div class="opt3-spoke-dot opt3-dot-green"></div>SG OTT opp 0,4 snitt</div>
+                  <div class="opt3-spoke-row"><div class="opt3-spoke-dot opt3-dot-yellow"></div>Putt svakt — se detaljer</div>
+                  <div class="opt3-spoke-row opt3-spoke-row-more">Full rapport →</div>
+                </div>
+              </a>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div class="wf-annotations">
+      <h3>Annoteringer</h3>
+      <ul>
+        <li><strong>①</strong> TODAY HUB er 100% av skjermbredden — ett enkelt mål for dagen med 3 handlingsknapper direkte.</li>
+        <li><strong>②</strong> 4 spoke-kort med live-preview — status i en seksjon uten å navigere dit.</li>
+        <li>Ikonrail er 48px — gir mer innholdsplass enn 240px glass-sidebar.</li>
+        <li>Tooltip ved hover erstatter sidebar-tekst mer elegant enn tradisjonell nav.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== OPTION 4 ===== -->
+  <div class="option-panel" id="option-4">
+    <h2>Option 4: <span class="opt-name">Action Feed</span></h2>
+    <p class="option-description">En prioritert handlingsfeed viser kun det som trenger oppmerksomhet akkurat nå — sortert av AI-urgency, ikke kronologi. Statistikk-rail til høyre for kontekst.</p>
+    <div class="sub-tab-bar" id="frame-opt4-tabs">
+      <button class="sub-tab-btn active" data-variant="wireframe" data-frame="frame-opt4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTsketch4"><g fill="#555" stroke="#fff" stroke-linejoin="round" stroke-width="4"><rect width="36" height="36" x="6" y="6" rx="3"/><path stroke-linecap="round" d="M18.6 16h10.8l3.6 4.706L24 32l-9-11.294z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTsketch4)"/></svg>
+        <span class="sub-tab-label">Wireframe</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="clean" data-frame="frame-opt4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTpaint4"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m15.536 22.898l9.899 9.9m-9.899-9.9L7.05 31.383a7 7 0 1 0 9.9 9.9l8.485-8.486m-9.899 0l-4.243 4.243"/><path fill="#555" d="m25.435 32.797l14.907-6.432c2.688-1.16 3.809-4.379 2.086-6.745C38.264 13.903 32.65 8.89 28.51 5.823c-2.29-1.696-5.33-.64-6.46 1.975l-6.514 15.1z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTpaint4)"/></svg>
+        <span class="sub-tab-label">Clean</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="polished" data-frame="frame-opt4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTdiamond4"><path fill="#555" stroke="#fff" stroke-width="4" d="M5.939 13.934L23.036 4.53a2 2 0 0 1 1.928 0l17.097 9.404a2 2 0 0 1 .683 2.888l-17.098 24.79a2 2 0 0 1-3.292 0L5.256 16.823a2 2 0 0 1 .683-2.888Z"/></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTdiamond4)"/></svg>
+        <span class="sub-tab-label">Polished</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+    </div>
+    <div class="browser-frame wireframe" id="frame-opt4">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">akgolf.no/admin/hub</div>
+        <div class="browser-controls">─ □ ✕</div>
+      </div>
+      <div class="browser-content" style="padding:0;">
+        <div class="opt4-layout">
+          <aside class="opt4-rail">
+            <div class="opt4-rail-logo">◈</div>
+            <a href="#" class="opt4-icon active">◈</a>
+            <a href="#" class="opt4-icon">◉</a>
+            <a href="#" class="opt4-icon">◧</a>
+            <a href="#" class="opt4-icon">◫</a>
+            <a href="#" class="opt4-icon">◰</a>
+            <a href="#" class="opt4-icon">◴</a>
+            <a href="#" class="opt4-icon">◷</a>
+            <div class="opt4-rail-spacer"></div>
+            <a href="#" class="opt4-icon">⊙</a>
+          </aside>
+
+          <main class="opt4-feed">
+            <div class="opt4-feed-header">
+              <div class="opt4-feed-title">DETTE TRENGER OPPMERKSOMHET <span class="wf-marker">①</span></div>
+              <div class="opt4-feed-sub">Tirsdag 7. mai 2026 · 7 elementer</div>
+            </div>
+
+            <div class="opt4-feed-item opt4-item-urgent">
+              <div class="opt4-item-prio">!</div>
+              <div class="opt4-item-body">
+                <div class="opt4-item-title">Økt starter om 47 min — Markus Roinas-Pedersen</div>
+                <div class="opt4-item-meta">Performance Studio · 14:00 · 60 min</div>
+              </div>
+              <div class="opt4-item-actions">
+                <button class="opt4-act-btn opt4-act-primary">Start økt</button>
+                <button class="opt4-act-btn opt4-act-ghost">Detaljer</button>
+              </div>
+            </div>
+
+            <div class="opt4-feed-item">
+              <div class="opt4-item-prio opt4-prio-yellow">~</div>
+              <div class="opt4-item-body">
+                <div class="opt4-item-title">Emil Olsen — plan utløper fredag</div>
+                <div class="opt4-item-meta">Q2 2026 periodisering · Startet 1. mars</div>
+              </div>
+              <div class="opt4-item-actions">
+                <button class="opt4-act-btn opt4-act-primary">Forleng</button>
+                <button class="opt4-act-btn opt4-act-ghost">Ny plan</button>
+              </div>
+            </div>
+
+            <div class="opt4-feed-item">
+              <div class="opt4-item-prio opt4-prio-yellow">~</div>
+              <div class="opt4-item-body">
+                <div class="opt4-item-title">Godkjenning venter: Ny periodisering Q3 — Emil</div>
+                <div class="opt4-item-meta">Foreslått av AI · Endret treningsvolum +15%</div>
+              </div>
+              <div class="opt4-item-actions">
+                <button class="opt4-act-btn opt4-act-primary">Godkjenn</button>
+                <button class="opt4-act-btn opt4-act-ghost">Se plan</button>
+              </div>
+            </div>
+
+            <div class="opt4-feed-item">
+              <div class="opt4-item-prio opt4-prio-blue">i</div>
+              <div class="opt4-item-body">
+                <div class="opt4-item-title">Sofia Grøttvik — SG Test anbefalt</div>
+                <div class="opt4-item-meta">Sist testet for 6 uker siden · Tilgjengelig i morgen</div>
+              </div>
+              <div class="opt4-item-actions">
+                <button class="opt4-act-btn opt4-act-primary">Planlegg test</button>
+              </div>
+            </div>
+
+            <div class="opt4-feed-item opt4-item-done">
+              <div class="opt4-item-prio opt4-prio-green">✓</div>
+              <div class="opt4-item-body">
+                <div class="opt4-item-title">Ukensrapport sendt til 12 spillere</div>
+                <div class="opt4-item-meta">Sendt mandag 06:00 · 10/12 åpnet</div>
+              </div>
+              <div class="opt4-item-actions">
+                <button class="opt4-act-btn opt4-act-ghost">Se rapport</button>
+              </div>
+            </div>
+          </main>
+
+          <aside class="opt4-stats">
+            <div class="opt4-stats-label">I DAG <span class="wf-marker">②</span></div>
+            <div class="opt4-schedule">
+              <div class="opt4-sched-item opt4-sched-next">
+                <div class="opt4-sched-time">14:00</div>
+                <div class="opt4-sched-name">Markus R.</div>
+              </div>
+              <div class="opt4-sched-item">
+                <div class="opt4-sched-time">15:30</div>
+                <div class="opt4-sched-name">Sofia G.</div>
+              </div>
+              <div class="opt4-sched-item opt4-sched-cancelled">
+                <div class="opt4-sched-time">16:30</div>
+                <div class="opt4-sched-name">Gruppe B</div>
+              </div>
+            </div>
+            <div class="opt4-stats-divider"></div>
+            <div class="opt4-stats-label">DENNE UKA</div>
+            <div class="opt4-stat-rows">
+              <div class="opt4-stat-row">
+                <span>Aktive planer</span>
+                <span>8/12</span>
+              </div>
+              <div class="opt4-stat-row">
+                <span>Snitt HCP</span>
+                <span>5,2</span>
+              </div>
+              <div class="opt4-stat-row">
+                <span>Tester gjennomført</span>
+                <span>3/5</span>
+              </div>
+              <div class="opt4-stat-row">
+                <span>AI-godkjenninger</span>
+                <span>1/3</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <div class="wf-annotations">
+      <h3>Annoteringer</h3>
+      <ul>
+        <li><strong>①</strong> Feeden er sortert etter AI-urgency, ikke kronologisk. Uferdig handling alltid øverst.</li>
+        <li><strong>②</strong> Stats-rail er read-only — kun kontekst. Alle handlinger skjer i feeden til venstre.</li>
+        <li>Grønt ✓-element bekrefter hva som ER gjort — kognitivt anker for coachen.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== OPTION 5 ===== -->
+  <div class="option-panel" id="option-5">
+    <h2>Option 5: <span class="opt-name">Morning Brief</span></h2>
+    <p class="option-description">Avisforside-mønster med redaksjonell masthead, agenda-spalte til venstre og 8 seksjonsknapper til høyre — maksimal informasjon ved første blikk.</p>
+    <div class="sub-tab-bar" id="frame-opt5-tabs">
+      <button class="sub-tab-btn active" data-variant="wireframe" data-frame="frame-opt5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTsketch5"><g fill="#555" stroke="#fff" stroke-linejoin="round" stroke-width="4"><rect width="36" height="36" x="6" y="6" rx="3"/><path stroke-linecap="round" d="M18.6 16h10.8l3.6 4.706L24 32l-9-11.294z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTsketch5)"/></svg>
+        <span class="sub-tab-label">Wireframe</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="clean" data-frame="frame-opt5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTpaint5"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m15.536 22.898l9.899 9.9m-9.899-9.9L7.05 31.383a7 7 0 1 0 9.9 9.9l8.485-8.486m-9.899 0l-4.243 4.243"/><path fill="#555" d="m25.435 32.797l14.907-6.432c2.688-1.16 3.809-4.379 2.086-6.745C38.264 13.903 32.65 8.89 28.51 5.823c-2.29-1.696-5.33-.64-6.46 1.975l-6.514 15.1z"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTpaint5)"/></svg>
+        <span class="sub-tab-label">Clean</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+      <button class="sub-tab-btn" data-variant="polished" data-frame="frame-opt5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><defs><mask id="ipTdiamond5"><path fill="#555" stroke="#fff" stroke-width="4" d="M5.939 13.934L23.036 4.53a2 2 0 0 1 1.928 0l17.097 9.404a2 2 0 0 1 .683 2.888l-17.098 24.79a2 2 0 0 1-3.292 0L5.256 16.823a2 2 0 0 1 .683-2.888Z"/></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTdiamond5)"/></svg>
+        <span class="sub-tab-label">Polished</span>
+        <span class="sub-tab-badge">generating...</span>
+      </button>
+    </div>
+    <div class="browser-frame wireframe" id="frame-opt5">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">akgolf.no/admin/hub</div>
+        <div class="browser-controls">─ □ ✕</div>
+      </div>
+      <div class="browser-content" style="padding:0;">
+        <div class="opt5-masthead">
+          <div class="opt5-masthead-left">
+            <div class="opt5-masthead-date">TIRSDAG 7. MAI 2026</div>
+            <div class="opt5-masthead-brand">AK GOLF COACHING HQ</div>
+          </div>
+          <div class="opt5-masthead-center">
+            <div class="opt5-masthead-greeting"><em>God morgen, Anders</em></div>
+            <div class="opt5-masthead-summary">7 ting trenger oppmerksomhet i dag</div>
+          </div>
+          <div class="opt5-masthead-right">
+            <input type="text" placeholder="Søk... ⌘K" class="opt5-search">
+          </div>
+        </div>
+
+        <div class="opt5-body">
+          <div class="opt5-agenda-col">
+            <div class="opt5-col-label">PROGRAM I DAG <span class="wf-marker">①</span></div>
+            <div class="opt5-timeline">
+              <div class="opt5-tl-item opt5-tl-next">
+                <div class="opt5-tl-time">14:00</div>
+                <div class="opt5-tl-content">
+                  <div class="opt5-tl-who">Markus Roinas-Pedersen</div>
+                  <div class="opt5-tl-where">Performance Studio · 60 min</div>
+                </div>
+                <div class="opt5-tl-tag">NESTE</div>
+              </div>
+              <div class="opt5-tl-item">
+                <div class="opt5-tl-time">15:30</div>
+                <div class="opt5-tl-content">
+                  <div class="opt5-tl-who">Sofia Grøttvik</div>
+                  <div class="opt5-tl-where">Bane-analyse · 45 min</div>
+                </div>
+              </div>
+              <div class="opt5-tl-item opt5-tl-cancelled">
+                <div class="opt5-tl-time">16:30</div>
+                <div class="opt5-tl-content">
+                  <div class="opt5-tl-who">Gruppe B</div>
+                  <div class="opt5-tl-where">Putt-session — avlyst</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="opt5-col-label">GODKJENNINGER <span class="wf-marker">②</span></div>
+            <div class="opt5-approvals">
+              <div class="opt5-approval">
+                <div class="opt5-approval-text">Emil — periodisering Q3 2026</div>
+                <div class="opt5-approval-btns">
+                  <button class="opt5-appr-y">Godkjenn</button>
+                  <button class="opt5-appr-n">Se →</button>
+                </div>
+              </div>
+              <div class="opt5-approval">
+                <div class="opt5-approval-text">Plan mal «Vinter» — AI-endring</div>
+                <div class="opt5-approval-btns">
+                  <button class="opt5-appr-y">Godkjenn</button>
+                  <button class="opt5-appr-n">Se →</button>
+                </div>
+              </div>
+              <div class="opt5-approval">
+                <div class="opt5-approval-text">Ny spiller: Kristoffer Haug</div>
+                <div class="opt5-approval-btns">
+                  <button class="opt5-appr-y">Godkjenn</button>
+                  <button class="opt5-appr-n">Se →</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="opt5-col-label">KOMMENDE TESTER</div>
+            <div class="opt5-tests">
+              <div class="opt5-test-row">
+                <span>Markus — SG Test</span>
+                <span class="opt5-test-date">fredag 9. mai</span>
+                <button class="opt5-test-btn">Planlegg</button>
+              </div>
+              <div class="opt5-test-row">
+                <span>Sofia — Bane-evaluering</span>
+                <span class="opt5-test-date">neste uke</span>
+                <button class="opt5-test-btn">Planlegg</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="opt5-sections-col">
+            <div class="opt5-col-label">SEKSJONER <span class="wf-marker">③</span></div>
+            <div class="opt5-sections-grid">
+              <a href="#" class="opt5-section">
+                <div class="opt5-section-icon">◈</div>
+                <div class="opt5-section-name">I dag</div>
+                <div class="opt5-section-sub">3 ventende</div>
+              </a>
+              <a href="#" class="opt5-section">
+                <div class="opt5-section-icon">◉</div>
+                <div class="opt5-section-name">Spillere</div>
+                <div class="opt5-section-sub">12 aktive</div>
+              </a>
+              <a href="#" class="opt5-section">
+                <div class="opt5-section-icon">◧</div>
+                <div class="opt5-section-name">Plans</div>
+                <div class="opt5-section-sub">8 aktive</div>
+              </a>
+              <a href="#" class="opt5-section">
+                <div class="opt5-section-icon">◫</div>
+                <div class="opt5-section-name">Kalender</div>
+                <div class="opt5-section-sub">5 denne uka</div>
+              </a>
+              <a href="#" class="opt5-section">
+                <div class="opt5-section-icon">◰</div>
+                <div class="opt5-section-name">Anlegg</div>
+                <div class="opt5-section-sub">2 lokasjoner</div>
+              </a>
+              <a href="#" class="opt5-section">
+                <div class="opt5-section-icon">◴</div>
+                <div class="opt5-section-name">Innsikt</div>
+                <div class="opt5-section-sub">Oppdatert i dag</div>
+              </a>
+              <a href="#" class="opt5-section">
+                <div class="opt5-section-icon">◷</div>
+                <div class="opt5-section-name">AI Lab</div>
+                <div class="opt5-section-sub">4 forslag</div>
+              </a>
+              <a href="#" class="opt5-section opt5-section-muted">
+                <div class="opt5-section-icon">⊙</div>
+                <div class="opt5-section-name">Innstillinger</div>
+                <div class="opt5-section-sub">Konto, abonnement</div>
+              </a>
+            </div>
+
+            <div class="opt5-col-label">UKENS TALL</div>
+            <div class="opt5-week-kpis">
+              <div class="opt5-wkpi">
+                <div class="opt5-wkpi-val">12</div>
+                <div class="opt5-wkpi-lbl">Aktive spillere</div>
+              </div>
+              <div class="opt5-wkpi">
+                <div class="opt5-wkpi-val">5,2</div>
+                <div class="opt5-wkpi-lbl">Snitt HCP</div>
+              </div>
+              <div class="opt5-wkpi">
+                <div class="opt5-wkpi-val">↓0,3</div>
+                <div class="opt5-wkpi-lbl">HCP trend</div>
+              </div>
+              <div class="opt5-wkpi">
+                <div class="opt5-wkpi-val">8/12</div>
+                <div class="opt5-wkpi-lbl">Aktive planer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wf-annotations">
+      <h3>Annoteringer</h3>
+      <ul>
+        <li><strong>①</strong> Tidslinje-layout ligner fysisk agenda/kalender — kognitivt kjent mønster for coacher.</li>
+        <li><strong>②</strong> Alle 3 godkjenninger i én scrollbar kolonne — ingen ekstra sidenavigasjon.</li>
+        <li><strong>③</strong> 8 seksjoner som klikkbare grid-kort med live-tall. Ingen sidebar.</li>
+        <li>Masthead-mønsteret er bevisst anti-AI — redaksjonell dagsansvar fremfor generisk «Welcome back!».</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== SUMMARY ===== -->
+  <div class="option-panel" id="summary">
+    <h2>Oppsummering og anbefaling</h2>
+    <p class="option-description">Scoring etter: Sidebar-konsolidering (27→8), Anti-AI-distinctiveness og Cockpit-stadium match.</p>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Alternativ</th>
+          <th>UX-mønster</th>
+          <th>Konsolidering</th>
+          <th>Distinctiveness</th>
+          <th>Cockpit-match</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1: Glass Sidebar</td>
+          <td>Safe / Sidebar</td>
+          <td>★★★★☆</td>
+          <td>★★☆☆☆</td>
+          <td>★★★☆☆</td>
+        </tr>
+        <tr class="summary-rec-row">
+          <td><strong>2: Cockpit Strip ★</strong></td>
+          <td>Dashboard-First</td>
+          <td>★★★★★</td>
+          <td>★★★★★</td>
+          <td>★★★★★</td>
+        </tr>
+        <tr>
+          <td>3: Command Rail</td>
+          <td>Hub-and-Spoke</td>
+          <td>★★★★★</td>
+          <td>★★★★☆</td>
+          <td>★★★★☆</td>
+        </tr>
+        <tr>
+          <td>4: Action Feed</td>
+          <td>Feed-Based</td>
+          <td>★★★★☆</td>
+          <td>★★★☆☆</td>
+          <td>★★★☆☆</td>
+        </tr>
+        <tr>
+          <td>5: Morning Brief</td>
+          <td>Agenda-First</td>
+          <td>★★★★★</td>
+          <td>★★★★☆</td>
+          <td>★★★☆☆</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="summary-rationale">
+      <h3>Anbefaling: Option 2 — Cockpit Strip</h3>
+      <p>Cockpit Strip eliminerer sidebaren helt og erstatter den med et horisontalt instrumentpanel — det eneste alternativet som fullt ut realiserer cockpit-stadium-estetikken og konsoliderer navigasjonen strukturelt. 3-sone-layouten (I dag · Spillere · AI) gir coachen hele bildet uten å scrolle. Option 3 (Command Rail) er sterkt andreavalg for team som foretrekker ikonrail fremfor horisontale pills.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer class="skill-footer">
+  Wireframe generert for AK Golf CoachHQ — cockpit-stadium layout exploration · 17. mai 2026
+</footer>
+
+<script>
+(function() {
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  var panels = document.querySelectorAll('.option-panel');
+  tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      tabBtns.forEach(function(b) { b.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      var target = document.getElementById(btn.dataset.tab);
+      if (target) target.classList.add('active');
+    });
+  });
+
+  var subBtns = document.querySelectorAll('.sub-tab-btn');
+  subBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var frameId = btn.dataset.frame;
+      var siblings = btn.parentElement.querySelectorAll('.sub-tab-btn');
+      siblings.forEach(function(s) { s.classList.remove('active'); });
+      btn.classList.add('active');
+      var frame = document.getElementById(frameId);
+      if (frame) {
+        frame.classList.remove('wireframe', 'clean', 'polished');
+        frame.classList.add(btn.dataset.variant);
+      }
+    });
+  });
+
+  window.addEventListener('load', function() {
+    var badges = document.querySelectorAll('.sub-tab-badge');
+    var anyVisible = false;
+    badges.forEach(function(b) {
+      if (getComputedStyle(b).display !== 'none') anyVisible = true;
+    });
+    if (!anyVisible && badges.length > 0) {
+      var banner = document.getElementById('completion-banner');
+      if (banner) {
+        banner.style.display = 'block';
+        setTimeout(function() { banner.style.display = 'none'; }, 8000);
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

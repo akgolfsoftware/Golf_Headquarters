@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>E-postmaler</title></head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="#">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="#">Treningsplaner</a>
+      <a href="#">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="#">Godkjenninger</a>
+      <a href="#">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="#">Analytics</a>
+      <a href="#">Økonomi</a>
+      <a href="#">Fasiliteter</a>
+      <a href="#" class="active">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Innstillinger · automatisering</span>
+      <h1 class="page-title"><em>E-postmaler</em> · automatikk og manuell utsending</h1>
+      <p class="page-lede">Maler som triggers automatisk eller sendes manuelt. Personalisering med {{spiller}}, {{coach}}, {{tid}}.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Mal-bibliotek</span>
+      <button class="action-item"><b>18</b> maler</button>
+      <button class="action-item action-item-success"><b>Booking-bekreftelse</b> 142× mnd</button>
+      <button class="action-item action-item-info"><b>6</b> auto · <b>12</b> manuell</button>
+      <button class="btn btn-primary" style="margin-left: auto;">+ Ny mal</button>
+    </div>
+
+    <div class="search-row">
+      <div class="search-input">
+        <span class="search-prefix">Søk</span>
+        <input type="text" placeholder="18 maler — emne, trigger, kategori...">
+      </div>
+      <select class="sort-select">
+        <option>Mest sendt mnd</option>
+        <option>Sist redigert</option>
+        <option>Trigger-type</option>
+        <option>Navn A–Å</option>
+      </select>
+    </div>
+
+    <div class="chips">
+      <button class="chip active">Alle (18)</button>
+      <button class="chip">Onboarding (3)</button>
+      <button class="chip">Påminnelser (4)</button>
+      <button class="chip">Faktura (3)</button>
+      <button class="chip">Kampanjer (4)</button>
+      <button class="chip">Booking (4)</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+
+      <article class="card-featured">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-success">Auto · trigger</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sendt 142× mnd</span>
+        </div>
+        <h3 style="font-style: italic;">Booking-bekreftelse</h3>
+        <div style="margin-top: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.5; color: var(--text-secondary);">
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Bekreftelse: din time hos AK Golf</div>
+          Hei {{spiller}}, vi har bekreftet din booking {{tid}}<br>
+          {{tjeneste}} med {{coach}} på {{sted}}...
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Booking</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Endret 04.05</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-success">Auto · 24t før</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sendt 138× mnd</span>
+        </div>
+        <h3 style="font-style: italic;">Booking-påminnelse 24t</h3>
+        <div style="margin-top: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.5; color: var(--text-secondary);">
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Påminnelse: time i morgen</div>
+          Hei {{spiller}}, du har time i morgen kl {{tid}}<br>
+          Husk vannflaske og innesko hvis indoor...
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Påminnelser</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Endret 02.05</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-warning">Auto · 7 dager etter</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sendt 18× mnd</span>
+        </div>
+        <h3 style="font-style: italic;">Faktura-purring</h3>
+        <div style="margin-top: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.5; color: var(--text-secondary);">
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Vennlig påminnelse: faktura {{nr}}</div>
+          Hei {{spiller}}, vi ser at faktura nr. {{nr}}<br>
+          ikke er betalt ennå. Forfall var {{forfall}}...
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Faktura</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Endret 14.04</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-info">Manuell</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sendt 12× mnd</span>
+        </div>
+        <h3 style="font-style: italic;">Velkomst ny spiller</h3>
+        <div style="margin-top: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.5; color: var(--text-secondary);">
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Velkommen til AK Golf, {{spiller}}!</div>
+          Vi gleder oss til å følge deg på golfreisen.<br>
+          Her er det viktigste å vite om plattformen...
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Onboarding</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Endret 28.04</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-info">Manuell</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sendt 38× mnd</span>
+        </div>
+        <h3 style="font-style: italic;">Sesongstart-info</h3>
+        <div style="margin-top: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.5; color: var(--text-secondary);">
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Sesongen er i gang!</div>
+          Hei {{spiller}}, banene er nå åpne på GFGK<br>
+          og Bossum. Her er årets program og priser...
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Onboarding</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Endret 18.04</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-info">Manuell</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sendt 24× mnd</span>
+        </div>
+        <h3 style="font-style: italic;">Velkomst-foresatt</h3>
+        <div style="margin-top: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.5; color: var(--text-secondary);">
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Foreldreinfo om {{spiller}}</div>
+          Hei {{foresatt}}, takk for at vi får følge<br>
+          {{spiller}} på treningsplattformen vår...
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Onboarding</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Endret 22.04</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-info">Manuell · kampanje</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sendt 86× mnd</span>
+        </div>
+        <h3 style="font-style: italic;">Kampanje sommer-camp</h3>
+        <div style="margin-top: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.5; color: var(--text-secondary);">
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Sommer-camp 2026 — meld på nå</div>
+          {{spiller}}, sommer-campen er åpnet for<br>
+          påmelding. Tre nivåer, fra junior til elite...
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Kampanjer</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Endret 06.05</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-success">Auto · etter test</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sendt 22× mnd</span>
+        </div>
+        <h3 style="font-style: italic;">Test-resultat-rapport</h3>
+        <div style="margin-top: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.5; color: var(--text-secondary);">
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Dine test-resultater er klare</div>
+          Hei {{spiller}}, her er rapporten fra<br>
+          {{test}}. Du forbedret {{delta}} fra forrige...
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Påminnelser</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Endret 30.04</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-success">Auto · på fødselsdag</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Sendt 4× mnd</span>
+        </div>
+        <h3 style="font-style: italic;">Birthday-hilsen</h3>
+        <div style="margin-top: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.5; color: var(--text-secondary);">
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Gratulerer med dagen, {{spiller}}!</div>
+          Hele AK Golf-teamet sender de beste<br>
+          gratulasjoner. Som bursdagsgave: 20 % rabatt...
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+          <span class="pill pill-muted">Kampanjer</span>
+          <span class="num" style="font-size:10px; color:var(--text-secondary);">Endret 10.03</span>
+        </div>
+      </article>
+
+    </div>
+  </main>
+</div>
+</body></html>

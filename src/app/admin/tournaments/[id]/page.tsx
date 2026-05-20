@@ -71,7 +71,7 @@ export default async function TurneringDetalj({
   return (
     <div className="space-y-8">
       {/* Tournament-hero på mørk bakgrunn, matcher klubb-lagoppstilling-demo */}
-      <section className="overflow-hidden rounded-2xl border border-border bg-[#0A1F17] p-8 text-[#F5F4EE]">
+      <section className="overflow-hidden rounded-2xl border border-border bg-[#0A1F17] p-4 sm:p-6 md:p-8 text-[#F5F4EE]">
         <Link
           href="/admin/tournaments"
           className="font-mono text-[10px] uppercase tracking-[0.10em] text-accent hover:opacity-80"
@@ -84,11 +84,11 @@ export default async function TurneringDetalj({
               {tournament.format}
               {tournament.course && ` · ${tournament.course.name}`}
             </div>
-            <h1 className="mt-2 font-display text-3xl font-semibold italic leading-tight tracking-tight">
+            <h1 className="mt-2 font-display text-2xl sm:text-3xl font-semibold italic leading-tight tracking-tight">
               <em className="font-normal italic text-accent">{titleLead}</em>
               {titleTrail && ` ${titleTrail}`}
             </h1>
-            <div className="mt-4 flex flex-wrap items-center gap-6 font-mono text-[11px] tracking-[0.04em] text-[rgba(245,244,238,0.6)]">
+            <div className="mt-4 flex flex-wrap items-center gap-3 sm:gap-6 font-mono text-[11px] tracking-[0.04em] text-[rgba(245,244,238,0.6)]">
               <span>
                 Når: <b className="font-medium text-white">{periodStr}</b>
               </span>

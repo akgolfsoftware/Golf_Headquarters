@@ -1,0 +1,282 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Treningsplaner</title></head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="#">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="#" class="active">Treningsplaner</a>
+      <a href="#">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="#">Godkjenninger</a>
+      <a href="#">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="#">Analytics</a>
+      <a href="#">Økonomi</a>
+      <a href="#">Fasiliteter</a>
+      <a href="#">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Periodisering · 32 planer · uke 21 · 2026</span>
+      <h1 class="page-title"><em>Treningsplaner</em> · status</h1>
+      <p class="page-lede">Dra plan-kort mellom kolonner for å endre status. Klikk et kort for full plan-detalj og agent-historikk.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Status</span>
+      <button class="action-item action-item-success"><b>28</b> aktive planer</button>
+      <button class="action-item action-item-warn"><b>4</b> utløper denne uka</button>
+      <button class="action-item action-item-danger"><b>4</b> spillere uten plan</button>
+      <button class="action-item action-item-info"><b>2</b> venter agent-justering</button>
+      <button class="btn btn-primary" style="margin-left: auto;">+ Ny plan</button>
+    </div>
+
+    <div class="search-row">
+      <div class="search-input"><span class="search-prefix">Søk</span><input placeholder="Spillernavn, plan-navn, mål, fase..."></div>
+      <select class="sort-select"><option>Nyeste først</option><option>Utløper snart</option><option>Spiller A–Å</option></select>
+    </div>
+
+    <div class="chips">
+      <button class="chip active">Alle (32)</button>
+      <button class="chip">Mine spillere (18)</button>
+      <button class="chip">Per coach</button>
+      <button class="chip">A1 (6)</button>
+      <button class="chip">A2 (14)</button>
+      <button class="chip">A3 (12)</button>
+    </div>
+
+    <div class="cal-with-drawer">
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start;">
+
+        <div class="card-flush">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: rgba(16,185,129,0.10); border: 1px solid rgba(16,185,129,0.30); border-radius: var(--r-card); margin-bottom: 10px;">
+            <b style="font-family: var(--font-display); font-size: 14px; color: #047857;">Aktiv</b>
+            <span class="num" style="font-size: 13px; color: #047857; font-weight: 600;">24</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap: 10px;">
+
+            <article class="card" style="padding: 14px; cursor: grab; border-color: var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.04), inset 3px 0 0 var(--accent);">
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">MR</span><div style="line-height:1.2;"><b style="font-size:12px;">Markus R. Pedersen</b><br><small style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">A2 · HCP 7,4</small></div></div>
+              <h4 style="font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 14px; margin-bottom: 8px;">Sørlandsåpent-oppkjøring</h4>
+              <div style="display:flex; flex-direction:column; gap: 2px;">
+                <i style="height:5px; width: 10%; background: var(--pyr-fys); border-radius:2px;"></i>
+                <i style="height:5px; width: 15%; background: var(--pyr-tek); border-radius:2px;"></i>
+                <i style="height:5px; width: 35%; background: #B8C82E; border-radius:2px;"></i>
+                <i style="height:5px; width: 30%; background: var(--pyr-spill); border-radius:2px;"></i>
+                <i style="height:5px; width: 10%; background: var(--pyr-turn); border-radius:2px;"></i>
+              </div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin: 8px 0;">12.05–04.06 · <b style="color:var(--text);">13/19</b> økter</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;"><span class="pill pill-success">På plan</span><span class="pill pill-info">Justert i går</span></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">JT</span><div style="line-height:1.2;"><b style="font-size:12px;">Joachim T. Andersen</b><br><small style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">A2 · HCP 4,1</small></div></div>
+              <h4 style="font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 14px; margin-bottom: 8px;">Spesifikk SLAG-fokus</h4>
+              <div style="display:flex; flex-direction:column; gap: 2px;">
+                <i style="height:5px; width: 8%; background: var(--pyr-fys); border-radius:2px;"></i>
+                <i style="height:5px; width: 18%; background: var(--pyr-tek); border-radius:2px;"></i>
+                <i style="height:5px; width: 40%; background: #B8C82E; border-radius:2px;"></i>
+                <i style="height:5px; width: 24%; background: var(--pyr-spill); border-radius:2px;"></i>
+                <i style="height:5px; width: 10%; background: var(--pyr-turn); border-radius:2px;"></i>
+              </div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin: 8px 0;">01.05–15.06 · <b style="color:var(--text);">8/14</b> økter</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;"><span class="pill pill-warning">SLAG henger</span></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">LH</span><div style="line-height:1.2;"><b style="font-size:12px;">Lina Hansen</b><br><small style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">A3 · HCP 18,2</small></div></div>
+              <h4 style="font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 14px; margin-bottom: 8px;">Sommer-base 2026</h4>
+              <div style="display:flex; flex-direction:column; gap: 2px;">
+                <i style="height:5px; width: 25%; background: var(--pyr-fys); border-radius:2px;"></i>
+                <i style="height:5px; width: 28%; background: var(--pyr-tek); border-radius:2px;"></i>
+                <i style="height:5px; width: 22%; background: #B8C82E; border-radius:2px;"></i>
+                <i style="height:5px; width: 15%; background: var(--pyr-spill); border-radius:2px;"></i>
+                <i style="height:5px; width: 10%; background: var(--pyr-turn); border-radius:2px;"></i>
+              </div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin: 8px 0;">01.05–15.08 · <b style="color:var(--text);">5/24</b> økter</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;"><span class="pill pill-success">På plan</span></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">SB</span><div style="line-height:1.2;"><b style="font-size:12px;">Sofie Berg</b><br><small style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">A3 · HCP 22,5</small></div></div>
+              <h4 style="font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 14px; margin-bottom: 8px;">Junior-camp-prep</h4>
+              <div style="display:flex; flex-direction:column; gap: 2px;">
+                <i style="height:5px; width: 18%; background: var(--pyr-fys); border-radius:2px;"></i>
+                <i style="height:5px; width: 32%; background: var(--pyr-tek); border-radius:2px;"></i>
+                <i style="height:5px; width: 25%; background: #B8C82E; border-radius:2px;"></i>
+                <i style="height:5px; width: 18%; background: var(--pyr-spill); border-radius:2px;"></i>
+                <i style="height:5px; width: 7%; background: var(--pyr-turn); border-radius:2px;"></i>
+              </div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin: 8px 0;">15.04–15.06 · <b style="color:var(--text);">12/16</b> økter</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;"><span class="pill pill-success">På plan</span><span class="pill pill-info">Agent-justert</span></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">MK</span><div style="line-height:1.2;"><b style="font-size:12px;">Mathias Kvam</b><br><small style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">A3 · HCP 28,4</small></div></div>
+              <h4 style="font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 14px; margin-bottom: 8px;">Onboarding-base</h4>
+              <div style="display:flex; flex-direction:column; gap: 2px;">
+                <i style="height:5px; width: 22%; background: var(--pyr-fys); border-radius:2px;"></i>
+                <i style="height:5px; width: 38%; background: var(--pyr-tek); border-radius:2px;"></i>
+                <i style="height:5px; width: 20%; background: #B8C82E; border-radius:2px;"></i>
+                <i style="height:5px; width: 12%; background: var(--pyr-spill); border-radius:2px;"></i>
+                <i style="height:5px; width: 8%; background: var(--pyr-turn); border-radius:2px;"></i>
+              </div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin: 8px 0;">20.04–01.07 · <b style="color:var(--text);">3/12</b> økter</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;"><span class="pill pill-info">Ny spiller</span></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">JS</span><div style="line-height:1.2;"><b style="font-size:12px;">Joachim S. Berg</b><br><small style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">A1 · HCP 1,8</small></div></div>
+              <h4 style="font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 14px; margin-bottom: 8px;">Elite-konkurranse 2026</h4>
+              <div style="display:flex; flex-direction:column; gap: 2px;">
+                <i style="height:5px; width: 12%; background: var(--pyr-fys); border-radius:2px;"></i>
+                <i style="height:5px; width: 20%; background: var(--pyr-tek); border-radius:2px;"></i>
+                <i style="height:5px; width: 28%; background: #B8C82E; border-radius:2px;"></i>
+                <i style="height:5px; width: 22%; background: var(--pyr-spill); border-radius:2px;"></i>
+                <i style="height:5px; width: 18%; background: var(--pyr-turn); border-radius:2px;"></i>
+              </div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin: 8px 0;">01.03–30.09 · <b style="color:var(--text);">22/40</b> økter</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;"><span class="pill pill-success">På plan</span><span class="pill pill-muted">Helår</span></div>
+            </article>
+
+            <button class="btn btn-link" style="padding: 8px 0; font-size: 12px; color: var(--text-secondary);">+ Vis 18 planer til</button>
+          </div>
+        </div>
+
+        <div class="card-flush">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: rgba(245,158,11,0.14); border: 1px solid rgba(245,158,11,0.30); border-radius: var(--r-card); margin-bottom: 10px;">
+            <div><b style="font-family: var(--font-display); font-size: 14px; color: #B45309;">Utløper snart</b><br><small style="font-family:var(--font-mono); font-size:9px; color:#B45309; letter-spacing:0.06em;">NESTE 14 DAGER</small></div>
+            <span class="num" style="font-size: 13px; color: #B45309; font-weight: 600;">4</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap: 10px;">
+
+            <article class="card" style="padding: 14px; cursor: grab; border-left: 3px solid var(--warning); box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">EM</span><div style="line-height:1.2;"><b style="font-size:12px;">Emma Strand</b><br><small style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">A2 · HCP 9,3</small></div></div>
+              <h4 style="font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 14px; margin-bottom: 8px;">Vårspretten-recovery</h4>
+              <div style="display:flex; flex-direction:column; gap: 2px;">
+                <i style="height:5px; width: 30%; background: var(--pyr-fys); border-radius:2px;"></i>
+                <i style="height:5px; width: 22%; background: var(--pyr-tek); border-radius:2px;"></i>
+                <i style="height:5px; width: 18%; background: #B8C82E; border-radius:2px;"></i>
+                <i style="height:5px; width: 18%; background: var(--pyr-spill); border-radius:2px;"></i>
+                <i style="height:5px; width: 12%; background: var(--pyr-turn); border-radius:2px;"></i>
+              </div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin: 8px 0;">15.04–18.05 · <b style="color:var(--text);">10/12</b> økter</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;"><span class="pill pill-warning">8 dager igjen</span><span class="pill pill-muted">Ny plan?</span></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; border-left: 3px solid var(--warning); box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">AL</span><div style="line-height:1.2;"><b style="font-size:12px;">Aksel Lien</b><br><small style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">A2 · HCP 6,2</small></div></div>
+              <h4 style="font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 14px; margin-bottom: 8px;">Skadet-rehab-plan</h4>
+              <div style="display:flex; flex-direction:column; gap: 2px;">
+                <i style="height:5px; width: 45%; background: var(--pyr-fys); border-radius:2px;"></i>
+                <i style="height:5px; width: 30%; background: var(--pyr-tek); border-radius:2px;"></i>
+                <i style="height:5px; width: 12%; background: #B8C82E; border-radius:2px;"></i>
+                <i style="height:5px; width: 8%; background: var(--pyr-spill); border-radius:2px;"></i>
+                <i style="height:5px; width: 5%; background: var(--pyr-turn); border-radius:2px;"></i>
+              </div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin: 8px 0;">01.04–22.05 · <b style="color:var(--text);">14/16</b> økter</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;"><span class="pill pill-warning">12 dager</span><span class="pill pill-info">Rehab</span></div>
+            </article>
+
+            <article class="card" style="padding: 14px; cursor: grab; border-left: 3px solid var(--warning); box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">MA</span><div style="line-height:1.2;"><b style="font-size:12px;">Maria Hagen</b><br><small style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">A3 · HCP 15,8</small></div></div>
+              <h4 style="font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 14px; margin-bottom: 8px;">Mai-base</h4>
+              <div style="display:flex; flex-direction:column; gap: 2px;">
+                <i style="height:5px; width: 20%; background: var(--pyr-fys); border-radius:2px;"></i>
+                <i style="height:5px; width: 30%; background: var(--pyr-tek); border-radius:2px;"></i>
+                <i style="height:5px; width: 25%; background: #B8C82E; border-radius:2px;"></i>
+                <i style="height:5px; width: 15%; background: var(--pyr-spill); border-radius:2px;"></i>
+                <i style="height:5px; width: 10%; background: var(--pyr-turn); border-radius:2px;"></i>
+              </div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin: 8px 0;">15.04–24.05 · <b style="color:var(--text);">7/10</b> økter</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;"><span class="pill pill-warning">14 dager</span></div>
+            </article>
+
+            <button class="btn btn-link" style="padding: 8px 0; font-size: 12px; color: var(--text-secondary);">+ 1 til</button>
+          </div>
+        </div>
+
+        <div class="card-flush">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: rgba(107,114,128,0.10); border: 1px solid var(--border-strong); border-radius: var(--r-card); margin-bottom: 10px;">
+            <div><b style="font-family: var(--font-display); font-size: 14px; color: #4B5563;">Utløpt / arkivert</b><br><small style="font-family:var(--font-mono); font-size:9px; color:#4B5563; letter-spacing:0.06em;">MER ENN 30 DAGER</small></div>
+            <span class="num" style="font-size: 13px; color: #4B5563; font-weight: 600;">1</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap: 10px;">
+
+            <article class="card" style="padding: 14px; cursor: grab; opacity: 0.85; border-left: 3px solid var(--text-muted); box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;"><span class="avatar avatar-sm">NL</span><div style="line-height:1.2;"><b style="font-size:12px;">Nora Larsen</b><br><small style="font-family:var(--font-mono); font-size:9px; color:var(--text-secondary);">A3 · HCP 24,1</small></div></div>
+              <h4 style="font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 14px; margin-bottom: 8px;">Vinter-base</h4>
+              <div style="display:flex; flex-direction:column; gap: 2px;">
+                <i style="height:5px; width: 35%; background: var(--pyr-fys); border-radius:2px;"></i>
+                <i style="height:5px; width: 30%; background: var(--pyr-tek); border-radius:2px;"></i>
+                <i style="height:5px; width: 18%; background: #B8C82E; border-radius:2px;"></i>
+                <i style="height:5px; width: 12%; background: var(--pyr-spill); border-radius:2px;"></i>
+                <i style="height:5px; width: 5%; background: var(--pyr-turn); border-radius:2px;"></i>
+              </div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary); margin: 8px 0;">15.01–12.04 · <b style="color:var(--text);">18/20</b> økter</div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;"><span class="pill pill-danger">Utløpt 12.04</span><span class="pill pill-warning">Trenger ny plan</span></div>
+            </article>
+
+            <button class="btn btn-link" style="padding: 8px 0; font-size: 12px; color: var(--text-secondary);">Se alle arkiverte (12) →</button>
+          </div>
+        </div>
+
+      </div>
+
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div>
+            <div class="drawer-meta">Aktiv plan · Markus R. Pedersen</div>
+            <h3>Sørlandsåpent-oppkjøring 2026</h3>
+            <div class="drawer-meta" style="margin-top: 4px; text-transform: none; letter-spacing: 0;">12.05–04.06 · 5 faser · 19 økter</div>
+            <div style="margin-top: 8px; display: flex; gap: 6px;">
+              <span class="pill pill-success">På plan</span>
+              <span class="pill pill-info">13/19 ferdig</span>
+              <span class="pill pill-muted">21d til peak</span>
+            </div>
+          </div>
+          <button class="drawer-close" title="Lukk">×</button>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Hovedmål</div>
+          <p style="font-size: 12px; line-height: 1.6;">Topp-10 på <b>Sørlandsåpent 02–04. juni</b>. Lukke SG arg-gap (-0,1 → +0,3) på Bjaavanns sandbase via SLAG- og SPILL-fokus i spesifikk-fase.</p>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Faser</div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; justify-content:space-between; padding:6px 10px; background:rgba(0,88,64,0.04); border-radius:6px; font-size:11px;"><span>1 · Base</span><span class="num" style="color:var(--success);">5/5 ✓</span></div>
+            <div style="display:flex; justify-content:space-between; padding:6px 10px; background:rgba(0,88,64,0.04); border-radius:6px; font-size:11px;"><span>2 · Forberedelse</span><span class="num" style="color:var(--success);">6/6 ✓</span></div>
+            <div style="display:flex; justify-content:space-between; padding:6px 10px; background:rgba(0,88,64,0.10); border-radius:6px; font-size:11px; box-shadow: inset 2px 0 0 var(--accent);"><span><b>3 · Spesifikk · Bjaavann</b></span><span class="num">2/5</span></div>
+            <div style="display:flex; justify-content:space-between; padding:6px 10px; background:var(--bg); border-radius:6px; font-size:11px;"><span>4 · Taper</span><span class="num" style="color:var(--text-muted);">0/3</span></div>
+            <div style="display:flex; justify-content:space-between; padding:6px 10px; background:rgba(209,248,67,0.20); border-radius:6px; font-size:11px;"><span>Peak · Sørlandsåpent</span><span class="num" style="color:#5C6B0E;">3 dager</span></div>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Sist agent-justering</div>
+          <div style="background: var(--bg); padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--primary); font-size: 11px; line-height: 1.5;">
+            <b style="font-size:11px;">PYRAMID_ADJUST · 24.05</b> <span class="pill pill-success" style="font-size:9px;">✓</span><br>
+            <span style="color:var(--text-secondary);">Plan-watcher: «Øk SLAG +10 %, reduser FYS −5 %.» Bjaavann sandbase + SG arg.</span>
+          </div>
+        </div>
+
+        <div class="drawer-section" style="display:flex; flex-direction:column; gap: 8px; padding-bottom: 0;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button class="btn btn-ghost">Endre</button>
+            <button class="btn btn-ghost">Forleng</button>
+          </div>
+          <button class="btn btn-ghost">Avslutt plan</button>
+          <a class="btn btn-link" href="plan-detalj.html" style="padding-left: 0; text-decoration:none;">Se full plan-detalj →</a>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>

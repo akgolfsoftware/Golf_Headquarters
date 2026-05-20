@@ -1,0 +1,272 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Coach-profil · Anders Kristiansen</title>
+<style>
+  .tabs-row { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .tab { padding: 12px 18px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; border: 0; background: transparent; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--primary); border-bottom-color: var(--accent); font-weight: 600; }
+
+  .tag-pill { display: inline-block; padding: 5px 11px; border-radius: 14px; background: rgba(0,88,64,0.06); border: 1px solid rgba(0,88,64,0.16); font-size: 11px; font-weight: 500; color: var(--primary); margin-right: 6px; margin-bottom: 6px; }
+  .cert-row { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .cert-row:last-child { border-bottom: 0; }
+  .cert-row b { font-weight: 600; }
+  .cert-row small { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); display: block; margin-top: 2px; }
+  .cert-date { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+
+  .activity-item { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); align-items: center; font-size: 13px; }
+  .activity-item:last-child { border-bottom: 0; }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+  .activity-dot.success { background: var(--success); }
+  .activity-dot.warn { background: var(--warning); }
+  .activity-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="hub.html">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="plans.html">Treningsplaner</a>
+      <a href="elever.html">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="approvals.html">Godkjenninger</a>
+      <a href="bookings.html">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="finance.html">Økonomi</a>
+      <a href="facilities.html">Fasiliteter</a>
+      <a href="settings-bruker.html" class="active">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="dash-hero">
+      <div class="dash-hero-photo">
+        <div class="dash-hero-avatar">AK</div>
+        <span class="dash-hero-status"></span>
+      </div>
+      <div class="dash-hero-text">
+        <span class="page-eyebrow">Min coach-profil</span>
+        <h1 class="page-title"><em>Anders</em> Kristiansen</h1>
+        <div class="dash-hero-meta">Hovedcoach + Admin · <b>GFGK</b> · siden <b>2018</b> · <b>PGA Class A</b></div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-ghost">Del profil</button>
+        <button class="btn btn-primary">Rediger</button>
+      </div>
+    </header>
+
+    <div class="tabs-row">
+      <button class="tab active">Oversikt</button>
+      <button class="tab">Spillere</button>
+      <button class="tab">Tilgjengelighet</button>
+      <button class="tab">Sertifiseringer</button>
+      <button class="tab">Innstillinger</button>
+    </div>
+
+    <div class="cal-with-drawer">
+      <div>
+        <!-- Stat-rich rad -->
+        <section class="kpi-strip" style="margin-bottom:20px;">
+          <div class="stat-rich">
+            <div class="stat-rich-head">
+              <span class="stat-rich-label">Aktive spillere</span>
+              <span class="stat-rich-delta stat-rich-delta-up">+3</span>
+            </div>
+            <div class="stat-rich-value">38</div>
+            <div class="stat-rich-sub">3 nye denne mnd · 24 PRO</div>
+          </div>
+          <div class="stat-rich">
+            <div class="stat-rich-head">
+              <span class="stat-rich-label">Økter denne mnd</span>
+              <span class="stat-rich-delta stat-rich-delta-up">+12</span>
+            </div>
+            <div class="stat-rich-value">142</div>
+            <div class="stat-rich-sub">snitt 5,6 t/dag · av 160 mål</div>
+          </div>
+          <div class="stat-rich">
+            <div class="stat-rich-head">
+              <span class="stat-rich-label">Inntekt denne mnd</span>
+              <span class="stat-rich-delta stat-rich-delta-up">+8 %</span>
+            </div>
+            <div class="stat-rich-value">218 k</div>
+            <div class="stat-rich-sub">NOK · av 250 k mål</div>
+          </div>
+          <div class="stat-rich">
+            <div class="stat-rich-head">
+              <span class="stat-rich-label">Spiller-NPS</span>
+              <span class="stat-rich-delta stat-rich-delta-up">+4</span>
+            </div>
+            <div class="stat-rich-value">+72</div>
+            <div class="stat-rich-sub">26 svar · 96 % anbefaling</div>
+          </div>
+        </section>
+
+        <!-- Pyramide-fokus -->
+        <section class="card" style="padding: 20px 24px; margin-bottom: 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+            <div>
+              <div class="card-label">Pyramide-fokus · siste 90d</div>
+              <h3 style="margin-top:4px;">Hvor er du sterkest som coach?</h3>
+            </div>
+            <span class="pill pill-success">Top 5 % i SLAG/PUTT</span>
+          </div>
+          <div class="pyr-tiers">
+            <div class="pyr-tier pyr-tier-turn" style="--w: 30%; --p: 18%;"><span>TURN</span><b>18</b></div>
+            <div class="pyr-tier pyr-tier-spill" style="--w: 50%; --p: 42%;"><span>SPILL</span><b>42</b></div>
+            <div class="pyr-tier pyr-tier-slag" style="--w: 75%; --p: 95%;"><span>SLAG</span><b>95</b></div>
+            <div class="pyr-tier pyr-tier-tek" style="--w: 88%; --p: 78%;"><span>TEK</span><b>78</b></div>
+            <div class="pyr-tier pyr-tier-fys" style="--w: 100%; --p: 35%;"><span>FYS</span><b>35</b></div>
+          </div>
+          <p style="font-size:11px; color:var(--text-secondary); margin-top:10px; line-height:1.5;">SLAG (korthold) og TEK (sving) er dine signaturområder. FYS og TURN delegeres typisk til spesialister.</p>
+        </section>
+
+        <!-- Spesialiteter -->
+        <section class="card" style="padding: 20px 24px; margin-bottom: 16px;">
+          <div class="card-label">Spesialiteter</div>
+          <h3 style="margin-bottom:14px; margin-top:4px;">Tagger og fokusområder</h3>
+          <div>
+            <span class="tag-pill">Korthold &lt;100m</span>
+            <span class="tag-pill">Bunker</span>
+            <span class="tag-pill">Putt-stroke</span>
+            <span class="tag-pill">Junior-utvikling</span>
+            <span class="tag-pill">Periodisering</span>
+            <span class="tag-pill">A1–A2 elite</span>
+            <span class="tag-pill">TrackMan-analyse</span>
+            <span class="tag-pill">Mental forberedelse</span>
+            <span class="tag-pill">Skolegolf</span>
+          </div>
+        </section>
+
+        <!-- Sertifiseringer -->
+        <section class="card" style="padding: 20px 24px; margin-bottom: 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+            <div>
+              <div class="card-label">Sertifiseringer</div>
+              <h3 style="margin-top:4px;">5 aktive · 1 utløper snart</h3>
+            </div>
+            <button class="btn btn-ghost" style="padding:6px 14px; font-size:12px;">+ Legg til</button>
+          </div>
+          <div>
+            <div class="cert-row">
+              <div><b>PGA Class A</b><small>PGA of Norway</small></div>
+              <span class="cert-date">Utstedt 2018</span>
+              <span class="pill pill-success">Permanent</span>
+            </div>
+            <div class="cert-row">
+              <div><b>TrackMan Master Level 3</b><small>TrackMan Academy</small></div>
+              <span class="cert-date">→ feb 2027</span>
+              <span class="pill pill-success">Aktiv</span>
+            </div>
+            <div class="cert-row">
+              <div><b>NGF Trener 2</b><small>Norges Golfforbund</small></div>
+              <span class="cert-date">→ aug 2026</span>
+              <span class="pill pill-warning">Utløper 3 mnd</span>
+            </div>
+            <div class="cert-row">
+              <div><b>Førstehjelp m/HLR</b><small>Røde Kors</small></div>
+              <span class="cert-date">→ mar 2027</span>
+              <span class="pill pill-success">Aktiv</span>
+            </div>
+            <div class="cert-row">
+              <div><b>BodiTrak Force Plate Specialist</b><small>BodiTrak</small></div>
+              <span class="cert-date">Utstedt 2024</span>
+              <span class="pill pill-success">Permanent</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Aktivitetsfeed -->
+        <section class="card" style="padding: 20px 24px;">
+          <div class="card-label">Aktivitet siste 7 dager</div>
+          <h3 style="margin-bottom:8px; margin-top:4px;">Hva har skjedd</h3>
+          <div>
+            <div class="activity-item">
+              <span class="activity-dot success"></span>
+              <div><b>Joachim Tveit promotert til A1</b><br><small style="color:var(--text-secondary);">Etter agent-anbefaling og test-deltas</small></div>
+              <span class="activity-meta">i går</span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-dot"></span>
+              <div><b>3 nye spillere onboardet</b><br><small style="color:var(--text-secondary);">Mathias K., Sofie B., Mia K.</small></div>
+              <span class="activity-meta">man 04.05</span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-dot warn"></span>
+              <div><b>Aksel Lien markert skadet (ankel)</b><br><small style="color:var(--text-secondary);">2 ukers pause anbefalt</small></div>
+              <span class="activity-meta">søn 03.05</span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-dot success"></span>
+              <div><b>Sørlandsåpent-plan godkjent for Markus</b><br><small style="color:var(--text-secondary);">5 faser · peak 02–04. juni</small></div>
+              <span class="activity-meta">tor 30.04</span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-dot"></span>
+              <div><b>Test-runde Q2 fullført — 18 spillere</b><br><small style="color:var(--text-secondary);">Snitt CMJ +2,3 cm vs Q1</small></div>
+              <span class="activity-meta">tir 28.04</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- DRAWER: Akkurat nå -->
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div>
+            <div class="drawer-meta">Status · live</div>
+            <h3>Akkurat nå</h3>
+            <div style="margin-top:8px; display:flex; gap:6px;">
+              <span class="pill pill-success">I økt</span>
+              <span class="pill pill-info">Mulligan Indoor</span>
+            </div>
+          </div>
+          <button class="drawer-close" title="Lukk">×</button>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Pågår nå</div>
+          <div style="background:rgba(209,248,67,0.18); border-left:3px solid var(--accent); padding:10px 12px; border-radius:6px;">
+            <b style="font-size:13px;">Markus R. Pedersen · 14:00–15:00</b>
+            <div style="font-size:11px; margin-top:2px;">Pitch 50–100m, lav trajectory · 24 min igjen</div>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Neste 3 økter</div>
+          <div style="display:flex; flex-direction:column; gap:8px; font-size:12px;">
+            <div style="padding:10px 12px; background:var(--bg); border-radius:6px; border:1px solid var(--border);">
+              <div style="display:flex; justify-content:space-between;"><b>Lina Hagen</b><span class="num" style="color:var(--text-secondary);">15:30</span></div>
+              <small style="color:var(--text-secondary);">SG-analyse · 45 min</small>
+            </div>
+            <div style="padding:10px 12px; background:var(--bg); border-radius:6px; border:1px solid var(--border);">
+              <div style="display:flex; justify-content:space-between;"><b>Joakim Berg</b><span class="num" style="color:var(--text-secondary);">17:00</span></div>
+              <small style="color:var(--text-secondary);">Sim-runde Bjaavann · 90 min</small>
+            </div>
+            <div style="padding:10px 12px; background:var(--bg); border-radius:6px; border:1px solid var(--border);">
+              <div style="display:flex; justify-content:space-between;"><b>WANG-gruppe (5)</b><span class="num" style="color:var(--text-secondary);">i morgen 08:00</span></div>
+              <small style="color:var(--text-secondary);">Felles teknikk-økt · 120 min</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">I dag · oppsummert</div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; padding:6px 0;"><span>Økter ferdig</span><span class="num" style="font-weight:600;">3</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; padding:6px 0;"><span>Økter gjenstår</span><span class="num" style="font-weight:600;">3</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; padding:6px 0;"><span>Total tid</span><span class="num" style="font-weight:600;">7,5 t</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; padding:6px 0;"><span>Inntekt i dag</span><span class="num" style="font-weight:600;">9 200 kr</span></div>
+        </div>
+
+        <div class="drawer-section" style="display:flex; flex-direction:column; gap:8px; padding-bottom:0;">
+          <button class="btn btn-primary">Endre tilgjengelighet</button>
+          <button class="btn btn-ghost">Sett pause (ferie/sykdom)</button>
+          <button class="btn btn-ghost">Be om hjelp · co-coach</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>

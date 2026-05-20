@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Coach · ny melding</title>
+<style>
+.compose-shell { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
+.compose-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); padding: 24px 28px; }
+.compose-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.compose-row:last-child { border-bottom: 0; }
+.compose-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-secondary); padding-top: 6px; }
+.compose-input, .compose-select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; background: var(--bg); outline: 0; }
+.compose-input:focus, .compose-select:focus { border-color: var(--primary); }
+.compose-textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; min-height: 160px; resize: vertical; background: var(--bg); outline: 0; }
+.compose-recipient { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; }
+.attach-zone { border: 2px dashed var(--border-strong); border-radius: 10px; padding: 24px; text-align: center; background: var(--bg); cursor: pointer; }
+.attach-zone:hover { border-color: var(--primary); background: rgba(0,88,64,0.02); }
+.thread-preview { padding: 12px 14px; background: var(--bg); border-radius: 8px; margin-bottom: 8px; font-size: 12px; cursor: pointer; }
+.thread-preview:hover { background: rgba(0,88,64,0.04); }
+.thread-preview b { display: block; font-size: 13px; margin-bottom: 3px; }
+.thread-preview small { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div class="app app--player">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>player</em></div>
+    <nav class="app-nav">
+      <a href="hjem.html">Hjem</a>
+      <a href="treningsplan.html">Tren</a>
+      <a href="mal-oversikt.html">Mål</a>
+      <a href="coach-detalj.html" class="active">Coach</a>
+      <a href="meg-profil.html">Meg</a>
+    </nav>
+    <div class="app-tier">PRO</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">/portal/coach/message · ny melding</span>
+      <h1 class="page-title"><em>Send</em> melding til Anders</h1>
+      <p class="page-lede">Coachen din svarer vanligvis innen 4 timer på hverdager. Legg gjerne ved video eller bilde.</p>
+    </header>
+
+    <div class="compose-shell">
+      <div class="compose-card">
+        <div class="compose-row">
+          <div class="compose-label">Til</div>
+          <div class="compose-recipient">
+            <span class="avatar">AK</span>
+            <div style="flex:1;">
+              <b style="font-size:14px;">Anders Kristiansen</b>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-secondary);">Hovedcoach · siste sett: nå · snitt svartid 3t 14m</div>
+            </div>
+            <span class="pill pill-success">Aktiv</span>
+          </div>
+        </div>
+
+        <div class="compose-row">
+          <div class="compose-label">Tema</div>
+          <select class="compose-select">
+            <option>Velg tema...</option>
+            <option>Plan — spørsmål eller endring</option>
+            <option selected>Tilbakemelding på økt</option>
+            <option>Spørsmål om teknikk</option>
+            <option>Booking — flytte eller avlyse</option>
+            <option>Skade eller helse</option>
+            <option>Annet</option>
+          </select>
+        </div>
+
+        <div class="compose-row">
+          <div class="compose-label">Emne</div>
+          <input type="text" class="compose-input" placeholder="Kort overskrift..." value="Pitch-økten i går — det funket!">
+        </div>
+
+        <div class="compose-row">
+          <div class="compose-label">Melding</div>
+          <textarea class="compose-textarea" placeholder="Skriv til Anders her...">Hei Anders!
+
+Pitch-økten i går satt! Følte virkelig at L-fasen klikket — KØLLE-prinsippet endret alt. Slo 12 av 15 innenfor 3 meter fra 80m.
+
+Tror jeg er klar for å øke volumet litt — kanskje 100 ball per økt i stedet for 80? Spør gjerne hvis du vil se video-loop.
+
+Markus</textarea>
+        </div>
+
+        <div class="compose-row">
+          <div class="compose-label">Vedlegg</div>
+          <div class="attach-zone">
+            <b style="font-size:14px;">Legg ved foto eller video</b>
+            <p style="font-size:12px; color:var(--text-secondary); margin-top:4px;">JPG, PNG, MP4 · maks 100 MB · slipp filer her eller klikk for å velge</p>
+            <button class="btn btn-ghost" style="margin-top:12px;">Velg fil →</button>
+          </div>
+        </div>
+
+        <div class="compose-row" style="border-bottom:0;">
+          <div class="compose-label"></div>
+          <div style="display:flex; gap:10px; justify-content:flex-end;">
+            <button class="btn btn-ghost">Lagre kladd</button>
+            <button class="btn btn-ghost">Forhåndsvis</button>
+            <button class="btn btn-primary">Send melding →</button>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="compose-card" style="margin-bottom:16px;">
+          <div class="card-label">Tidligere tråder</div>
+          <div style="margin-top:12px;">
+            <div class="thread-preview">
+              <b>Putt-formen er rå nå...</b>
+              <small>i dag 08:14 · uleste svar</small>
+            </div>
+            <div class="thread-preview">
+              <b>Bunker-test +1</b>
+              <small>10.05 · lukket</small>
+            </div>
+            <div class="thread-preview">
+              <b>Plan-justering taper-fase</b>
+              <small>09.05 · lukket</small>
+            </div>
+            <div class="thread-preview">
+              <b>Sørlandsåpent-prep</b>
+              <small>05.05 · lukket</small>
+            </div>
+          </div>
+          <a href="coach-detalj.html" class="btn btn-link" style="margin-top:8px;">Se alle tråder →</a>
+        </div>
+
+        <div class="compose-card">
+          <div class="card-label">Tips</div>
+          <ul style="font-size:13px; padding-left:18px; margin-top:10px; line-height:1.7; color:var(--text-secondary);">
+            <li>Legg ved kort video (5–15 sek) for raskere feedback</li>
+            <li>Skriv én ting per melding — lettere å svare på</li>
+            <li>Sjekk hjelp-artiklene først for vanlige spørsmål</li>
+            <li>Akutte saker (skade, avlysning samme dag) — ring direkte</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>

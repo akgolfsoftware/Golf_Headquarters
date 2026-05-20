@@ -1,0 +1,176 @@
+/* === Option 3: Command Rail — Clean + Polished === */
+/* Cockpit Stadium Light · #005840 · #D1F843 · #FAFAF7 */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Geist:wght@400;500;600&display=swap');
+
+/* ── Shared base ── */
+#frame-opt3.clean .opt3-layout,
+#frame-opt3.polished .opt3-layout { background: #FAFAF7; }
+
+#frame-opt3.clean .opt3-main,
+#frame-opt3.polished .opt3-main { background: #FAFAF7; font-family: 'Geist', sans-serif; }
+
+/* Rail — both variants */
+#frame-opt3.clean .opt3-rail { background: #003D2C; }
+#frame-opt3.polished .opt3-rail { background: linear-gradient(180deg, #003D2C 0%, #005840 100%); }
+
+#frame-opt3.clean .opt3-rail-logo,
+#frame-opt3.polished .opt3-rail-logo { color: #D1F843; border-bottom-color: rgba(255,255,255,0.1); }
+
+#frame-opt3.clean .opt3-icon-btn,
+#frame-opt3.polished .opt3-icon-btn { color: rgba(255,255,255,0.4); transition: background 150ms ease-out, color 150ms ease-out; }
+
+#frame-opt3.clean .opt3-icon-btn:hover,
+#frame-opt3.polished .opt3-icon-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+#frame-opt3.clean .opt3-icon-active,
+#frame-opt3.polished .opt3-icon-active { color: #fff; background: rgba(255,255,255,0.1); }
+
+#frame-opt3.clean .opt3-icon-active::before,
+#frame-opt3.polished .opt3-icon-active::before { background: #D1F843; width: 3px; }
+
+#frame-opt3.clean .opt3-icon-badge,
+#frame-opt3.polished .opt3-icon-badge { background: #D1F843; color: #003D2C; }
+
+#frame-opt3.clean .opt3-rail-bottom,
+#frame-opt3.polished .opt3-rail-bottom { border-top-color: rgba(255,255,255,0.1); }
+
+/* Hub card sessions — shared */
+#frame-opt3.clean .opt3-hub-session,
+#frame-opt3.polished .opt3-hub-session { border-bottom-color: #F1EEE5; font-family: 'Geist', sans-serif; }
+
+#frame-opt3.clean .opt3-hub-sess-time,
+#frame-opt3.polished .opt3-hub-sess-time { color: #0A1F17; }
+
+#frame-opt3.clean .opt3-hub-sess-info,
+#frame-opt3.polished .opt3-hub-sess-info { color: #5E5C57; }
+
+#frame-opt3.clean .opt3-hub-session-cancelled .opt3-hub-sess-info,
+#frame-opt3.polished .opt3-hub-session-cancelled .opt3-hub-sess-info { color: #C5C3BC; }
+
+/* NESTE session highlight */
+#frame-opt3.clean .opt3-hub-session-next,
+#frame-opt3.polished .opt3-hub-session-next {
+  border-radius: 8px; padding: 8px; margin: -8px;
+  border-left: 3px solid #D1F843; border-bottom: none;
+}
+#frame-opt3.clean .opt3-hub-session-next { background: #F1EEE5; }
+#frame-opt3.polished .opt3-hub-session-next { background: rgba(209,248,67,0.12); }
+
+#frame-opt3.clean .opt3-hub-session-next .opt3-hub-sess-time,
+#frame-opt3.polished .opt3-hub-session-next .opt3-hub-sess-time { color: #005840; font-weight: 700; }
+
+#frame-opt3.clean .opt3-hub-session-next .opt3-hub-sess-tag,
+#frame-opt3.polished .opt3-hub-session-next .opt3-hub-sess-tag {
+  background: #D1F843; border-color: #D1F843;
+  color: #003D2C; font-weight: 600;
+}
+
+/* Dots — shared */
+#frame-opt3.clean .opt3-dot-green, #frame-opt3.polished .opt3-dot-green { background: #1A7D56; }
+#frame-opt3.clean .opt3-dot-yellow, #frame-opt3.polished .opt3-dot-yellow { background: #B8852A; }
+#frame-opt3.clean .opt3-dot-gray, #frame-opt3.polished .opt3-dot-gray { background: #C5C3BC; }
+#frame-opt3.clean .opt3-dot-black, #frame-opt3.polished .opt3-dot-black { background: #0A1F17; }
+
+/* Spoke rows — shared */
+#frame-opt3.clean .opt3-spoke-row,
+#frame-opt3.polished .opt3-spoke-row { color: #5E5C57; font-family: 'Geist', sans-serif; }
+
+#frame-opt3.clean .opt3-spoke-row-more,
+#frame-opt3.polished .opt3-spoke-row-more { color: #005840; font-weight: 500; }
+
+#frame-opt3.clean .opt3-spoke-count,
+#frame-opt3.polished .opt3-spoke-count { color: #9D9C95; }
+
+/* ── CLEAN ── */
+#frame-opt3.clean .opt3-hub-card {
+  background: #fff; border: 1px solid #E5E3DD;
+  border-top: 3px solid #005840; border-radius: 12px; padding: 20px 16px 16px;
+}
+
+#frame-opt3.clean .opt3-hub-eyebrow { font-size: 10px; letter-spacing: 0.08em; color: #5E5C57; margin-bottom: 6px; }
+#frame-opt3.clean .opt3-hub-title { font-size: 15px; font-weight: 600; color: #0A1F17; }
+
+#frame-opt3.clean .opt3-hub-btn-primary {
+  background: #005840; color: #fff; border: none; border-radius: 20px;
+  padding: 7px 14px; font-family: 'Geist', sans-serif; font-size: 12px; cursor: pointer;
+}
+#frame-opt3.clean .opt3-hub-btn-primary:hover { background: #003D2C; }
+
+#frame-opt3.clean .opt3-hub-btn-ghost {
+  background: none; color: #005840; border: 1px solid #E5E3DD; border-radius: 20px;
+  padding: 7px 14px; font-family: 'Geist', sans-serif; font-size: 12px; cursor: pointer;
+}
+#frame-opt3.clean .opt3-hub-btn-ghost:hover { border-color: #005840; }
+
+#frame-opt3.clean .opt3-spoke-label { font-size: 10px; letter-spacing: 0.08em; color: #9D9C95; }
+
+#frame-opt3.clean .opt3-spoke {
+  background: #F1EEE5; border: 1px solid #E5E3DD; border-radius: 12px; padding: 14px;
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+#frame-opt3.clean .opt3-spoke:hover { border-color: #005840; box-shadow: 0 2px 8px rgba(0,88,64,0.08); }
+#frame-opt3.clean .opt3-spoke-title { font-family: 'Geist', sans-serif; color: #0A1F17; }
+
+/* ── POLISHED ── */
+#frame-opt3.polished .opt3-hub-card {
+  background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(0,88,64,0.08); border: 1px solid rgba(229,227,221,0.6);
+  border-top: 3px solid #D1F843; border-radius: 12px; padding: 20px 16px 16px;
+}
+
+#frame-opt3.polished .opt3-hub-eyebrow {
+  font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.12em; color: #005840; margin-bottom: 6px;
+}
+#frame-opt3.polished .opt3-hub-title { font-size: 15px; font-weight: 600; color: #0A1F17; }
+
+#frame-opt3.polished .opt3-hub-btn-primary {
+  background: #005840; color: #D1F843; border: none; border-radius: 20px;
+  padding: 7px 14px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: background 150ms ease-out, transform 150ms ease-out;
+}
+#frame-opt3.polished .opt3-hub-btn-primary:hover { background: #003D2C; transform: scale(0.98); }
+
+#frame-opt3.polished .opt3-hub-btn-ghost {
+  background: none; color: #005840; border: 1px solid rgba(229,227,221,0.8); border-radius: 20px;
+  padding: 7px 14px; font-family: 'Geist', sans-serif; font-size: 12px;
+  cursor: pointer; transition: border-color 150ms ease-out;
+}
+#frame-opt3.polished .opt3-hub-btn-ghost:hover { border-color: #005840; }
+
+#frame-opt3.polished .opt3-spoke-label {
+  font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 0.1em; color: #005840;
+}
+
+#frame-opt3.polished .opt3-spoke {
+  background: #F1EEE5; border: 1px solid #E5E3DD; border-radius: 12px; padding: 14px;
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out, border-color 200ms ease-out;
+}
+#frame-opt3.polished .opt3-spoke:hover {
+  transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,88,64,0.1); border-color: #005840;
+}
+
+#frame-opt3.polished .opt3-spoke-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.06em; color: #0A1F17; flex: 1;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #frame-opt3.polished .opt3-spokes .opt3-spoke:nth-child(1) { animation: fadeUp 0.3s ease-out 0s both; }
+  #frame-opt3.polished .opt3-spokes .opt3-spoke:nth-child(2) { animation: fadeUp 0.3s ease-out 0.05s both; }
+  #frame-opt3.polished .opt3-spokes .opt3-spoke:nth-child(3) { animation: fadeUp 0.3s ease-out 0.1s both; }
+  #frame-opt3.polished .opt3-spokes .opt3-spoke:nth-child(4) { animation: fadeUp 0.3s ease-out 0.15s both; }
+}
+
+/* ── Self-reveal N=3 ── */
+#frame-opt3-tabs .sub-tab-badge { display: none; }
+#frame-opt3-tabs .sub-tab-btn[data-variant="clean"] { color: #64B5F6; }
+#frame-opt3-tabs .sub-tab-btn[data-variant="clean"]:hover { color: #1E88E5; }
+#frame-opt3-tabs .sub-tab-btn[data-variant="clean"].active { color: #1565C0; border-bottom-color: #1565C0; }
+#frame-opt3-tabs .sub-tab-btn[data-variant="polished"] { color: #81C784; }
+#frame-opt3-tabs .sub-tab-btn[data-variant="polished"]:hover { color: #43A047; }
+#frame-opt3-tabs .sub-tab-btn[data-variant="polished"].active { color: #2E7D32; border-bottom-color: #2E7D32; }

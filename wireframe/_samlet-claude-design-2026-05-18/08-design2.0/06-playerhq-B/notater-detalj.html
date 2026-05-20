@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Notat · Coach</title>
+<style>
+.tabs { display:flex; gap:0; border-bottom:1px solid var(--border); margin-bottom:20px; }
+.tabs a { padding:12px 18px; font-size:13px; color:var(--text-secondary); text-decoration:none; border-bottom:2px solid transparent; font-weight:500; }
+.tabs a.active { color:var(--primary); border-bottom-color:var(--accent); font-weight:600; }
+.note-body { font-size:15px; line-height:1.75; color:var(--text); }
+.note-body p { margin-bottom:14px; }
+.note-actionable { background:rgba(209,248,67,0.20); padding:2px 6px; border-radius:4px; font-weight:500; box-shadow:inset 0 -2px 0 rgba(184,200,46,0.55); }
+.note-attach { display:flex; gap:12px; margin-top:18px; padding:14px; background:var(--bg); border-radius:12px; border:1px solid var(--border); }
+.note-thumb { width:80px; height:80px; border-radius:8px; background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%); display:flex; align-items:center; justify-content:center; color:var(--accent); font-family:var(--font-mono); font-size:11px; font-weight:600; flex-shrink:0; }
+</style></head>
+<body>
+<div class="app app--player">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>player</em></div>
+    <nav class="app-nav">
+      <a href="hjem.html">Hjem</a>
+      <a href="#">Tren</a>
+      <a href="#">Mål</a>
+      <a href="coach-notes.html" class="active">Coach</a>
+      <a href="#">Meg</a>
+    </nav>
+    <div class="app-tier">PRO</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:8px;">
+        <span class="avatar" style="width:44px; height:44px; font-size:14px;">AK</span>
+        <div>
+          <span class="page-eyebrow">Coach · Anders K.</span>
+          <p style="font-family:var(--font-mono); font-size:12px; color:var(--text-secondary); margin-top:2px;">Søndag 10. mai · 21:42 · Etter runde</p>
+        </div>
+      </div>
+      <h1 class="page-title"><em>Coach-notat</em> · søndag 10. mai</h1>
+      <p class="page-lede">Anders' refleksjon etter Bossum 78. Marker som lest når du har lest gjennom og reflektert.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Notat</span>
+      <button class="action-item action-item-warn"><b>0</b> ganger lest</button>
+      <button class="action-item"><b>3</b> relaterte notater</button>
+      <button class="action-item action-item-info"><b>Knytt</b> til økt 09.05</button>
+      <button class="action-item"><b>2</b> actionable</button>
+      <button class="btn btn-ghost" style="margin-left:auto;">Del med foreldre</button>
+      <button class="btn btn-primary">Marker som lest</button>
+    </div>
+
+    <nav class="tabs">
+      <a href="#" class="active">Notatet</a>
+      <a href="#">Relaterte</a>
+      <a href="#">Kommentarer</a>
+      <a href="#">Vedlegg</a>
+    </nav>
+
+    <div class="cal-with-drawer">
+      <div>
+        <section class="card-featured">
+          <div class="card-label">Etter runde · Bossum 78 · SG +1,2</div>
+          <h2 style="font-family:var(--font-display); font-size:24px; font-weight:600; letter-spacing:-0.01em; margin:8px 0 18px;">Bossum 78 — du leverte under press</h2>
+
+          <div class="note-body">
+            <p>Markus, det her var en av de mest modne rundene jeg har sett deg spille. 78 på Bossum med vinden som kom inn fra sørvest — det er ikke en lett dag. Det jeg legger merke til er ikke skåren, men hvordan du holdt rutinen gjennom hele bagen.</p>
+
+            <p><span class="note-actionable">Pre-shot rutinen var konsistent på alle par-3.</span> Du ventet på vinden, sjekket avstand to ganger, og forpliktet deg til klubben. Det er nøyaktig det vi har jobbet med siden mars. Hold på det.</p>
+
+            <p>Det jeg vil ta tak i før Sørlandsåpent: <span class="note-actionable">korthold fra 50–100m</span>. Du hadde tre situasjoner i dag der du valgte 56-graders i stedet for 60. Det var riktig valg på hull 7, men feil på hull 14 — der trengte du høyde over bunker, ikke roll. Vi tar dette på Mulligan denne uka.</p>
+
+            <p>Putt-formen er fortsatt rå (+0,8 SG-putt). Ikke rør den. Vi bytter dagens planlagte putt-økt til pitch i stedet. Du fikser putten på Bjaavann uansett — det er korthold som avgjør om du kommer i topp-10 eller topp-20.</p>
+
+            <p>Mentalt: Du var rolig på hull 14 etter dobbeltbogeyen. Det er ny Markus. For et halvt år siden hadde du kastet bort hull 15 og 16 også. I dag bogeyet du 15, parret 16, og kom inn med birdie på 18. Det er turneringsrutine.</p>
+
+            <p>Vi snakkes 14:00 i morgen. Kom uthvilt — vi kjører pitch lav trajectory mot Bjaavann-vinden.</p>
+
+            <p style="color:var(--text-secondary); font-style:italic;">— Anders</p>
+          </div>
+
+          <div class="note-attach">
+            <div class="note-thumb">VIDEO<br>0:42</div>
+            <div style="flex:1;">
+              <b style="font-size:13px;">Hull 14 — bunker-utslag</b>
+              <p style="font-size:12px; color:var(--text-secondary); margin-top:4px;">Slow-motion. Se hofteposisjon ved kontakt — du åpnet litt for tidlig.</p>
+              <button class="btn btn-link" style="padding:6px 0; font-size:12px;">Spill av →</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div>
+            <div class="drawer-meta">Din respons</div>
+            <h3>Svar Anders</h3>
+          </div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">Skriv kommentar</div>
+          <div style="background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px; font-size:13px; color:var(--text-muted); min-height:80px;">Skriv en respons til Anders…</div>
+          <a href="coach-detalj.html" class="btn btn-primary" style="margin-top:10px; width:100%;">Send svar</a>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">Knytt til økt</div>
+          <div style="font-size:12px; padding:10px; background:var(--bg); border-radius:8px; border-left:3px solid var(--primary);">
+            <b>Runde Bossum</b><br>
+            <small style="color:var(--text-secondary); font-family:var(--font-mono);">09.05 · 18 hull · 78</small>
+          </div>
+          <button class="btn btn-link" style="padding:6px 0;">Bytt økt →</button>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">Hurtig-handling</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button class="btn btn-ghost" style="justify-content:flex-start;">Marker som lest</button>
+            <button class="btn btn-ghost" style="justify-content:flex-start;">Del med foreldre</button>
+            <button class="btn btn-ghost" style="justify-content:flex-start;">Lagre som favoritt</button>
+          </div>
+        </div>
+        <div class="drawer-section" style="padding-bottom:0;">
+          <div class="drawer-label">Relaterte notater</div>
+          <p style="font-size:12px; padding:6px 0; border-bottom:1px solid var(--border);"><b>04.05</b> · Bossum 73 — driver-AoA</p>
+          <p style="font-size:12px; padding:6px 0; border-bottom:1px solid var(--border);"><b>28.04</b> · Klubbm. GFGK 78</p>
+          <p style="font-size:12px; padding:6px 0;"><b>15.04</b> · Pitch-rutine, lav vind</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>

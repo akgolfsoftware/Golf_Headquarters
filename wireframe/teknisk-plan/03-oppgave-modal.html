@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Teknisk Utviklingsplan — Oppgave-modal</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root {
+    --brand-primary: #005840;
+    --brand-primary-hover: #00472f;
+    --brand-primary-soft: #E8F0EC;
+    --brand-primary-deep: #003B2A;
+    --brand-accent: #D1F843;
+    --brand-accent-hover: #C2EE2F;
+    --brand-accent-on: #0A1F18;
+    --ink: #0A1F18;
+    --ink-muted: #5E5C57;
+    --ink-subtle: #9C9990;
+    --surface: #FAFAF7;
+    --surface-alt: #F5F2EA;
+    --surface-card: #FFFFFF;
+    --line: #E5E3DD;
+    --line-soft: #EFEDE6;
+    --pyr-fys: #005840;
+    --pyr-tek: #1A7D56;
+    --pyr-slag: #D1F843;
+    --pyr-spill: #B8852A;
+    --pyr-turn: #5E5C57;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: rgba(10,31,24,.55); backdrop-filter: blur(4px); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; line-height: 1.5; padding: 32px; min-height: 100vh; }
+  .canvas { max-width: 720px; margin: 0 auto; }
+
+  .modal { background: var(--surface-card); border-radius: 20px; overflow: hidden; box-shadow: 0 24px 80px rgba(10,31,24,.30), 0 2px 8px rgba(10,31,24,.10); border: 1px solid var(--line); }
+  .modal-head { display: flex; justify-content: space-between; align-items: flex-start; padding: 22px 28px 18px; border-bottom: 1px solid var(--line-soft); }
+  .modal-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted); }
+  .modal-title { font-family: 'Inter Tight', sans-serif; font-style: italic; font-weight: 400; font-size: 26px; line-height: 1.15; letter-spacing: -.01em; color: var(--ink); margin-top: 4px; }
+  .modal-x { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--ink-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+  .modal-body { padding: 24px 28px; max-height: calc(100vh - 220px); overflow-y: auto; }
+  .modal-foot { display: flex; justify-content: space-between; gap: 12px; padding: 16px 28px; border-top: 1px solid var(--line-soft); background: var(--surface); }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; border: 1px solid transparent; cursor: pointer; }
+  .btn-primary { background: var(--brand-primary); color: #fff; }
+  .btn-primary:hover { background: var(--brand-primary-hover); }
+  .btn-secondary { background: var(--surface-card); color: var(--ink); border-color: var(--line); }
+  .btn-ghost { background: transparent; color: var(--ink-muted); }
+  .btn-danger { background: transparent; color: #A32D2D; }
+
+  /* Form */
+  .section { margin-bottom: 24px; }
+  .section-h { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line-soft); }
+  .field { margin-bottom: 14px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .label { display: block; font-size: 12px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .label .req { color: var(--brand-primary); margin-left: 3px; }
+  .help { font-size: 11px; color: var(--ink-subtle); margin-top: 4px; }
+  input.text, textarea.text { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font: inherit; font-size: 14px; color: var(--ink); }
+  input.text:focus, textarea.text:focus { outline: 0; border-color: var(--brand-primary); }
+  textarea.text { min-height: 80px; resize: vertical; line-height: 1.5; }
+
+  /* Segmented control for enum-felter */
+  .seg { display: flex; gap: 4px; background: var(--surface-alt); padding: 4px; border-radius: 10px; flex-wrap: wrap; }
+  .seg-btn { padding: 6px 12px; border-radius: 7px; font-size: 12px; font-weight: 500; color: var(--ink-muted); border: 0; background: transparent; cursor: pointer; font-family: 'JetBrains Mono', monospace; letter-spacing: .04em; }
+  .seg-btn:hover { color: var(--ink); }
+  .seg-btn.active { background: var(--surface-card); color: var(--ink); font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .seg-btn .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+
+  /* Pyramide select */
+  .pyr-select .seg-btn.active.pyr-fys { background: rgba(0,88,64,.15); color: var(--pyr-fys); }
+  .pyr-select .seg-btn.active.pyr-tek { background: rgba(26,125,86,.18); color: var(--pyr-tek); }
+  .pyr-select .seg-btn.active.pyr-slag { background: rgba(209,248,67,.40); color: var(--brand-primary-deep); }
+  .pyr-select .seg-btn.active.pyr-spill { background: rgba(184,133,42,.18); color: var(--pyr-spill); }
+  .pyr-select .seg-btn.active.pyr-turn { background: rgba(94,92,87,.18); color: var(--pyr-turn); }
+
+  /* L-fase select */
+  .l-select .seg-btn.active { background: rgba(124,82,176,.18); color: #5A3B8A; }
+  /* CS select */
+  .cs-select .seg-btn.active { background: var(--brand-primary); color: #fff; }
+  /* Miljø select */
+  .m-select .seg-btn.active { background: rgba(120,170,200,.30); color: #2C5775; }
+  /* PR select */
+  .pr-select .seg-btn.active { background: rgba(163,45,45,.18); color: #A32D2D; }
+
+  /* Multi-select chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { padding: 6px 12px; border-radius: 100px; border: 1px solid var(--line); background: #fff; font-size: 12px; cursor: pointer; }
+  .chip.selected { background: var(--brand-primary-soft); border-color: var(--brand-primary); color: var(--brand-primary); font-weight: 600; }
+
+  /* Media upload */
+  .media { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .media-slot { aspect-ratio: 16/10; border: 2px dashed var(--line); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: all .15s; background: var(--surface); }
+  .media-slot:hover { border-color: var(--brand-primary); background: var(--brand-primary-soft); }
+  .media-slot.has-file { border-style: solid; border-color: var(--brand-primary); background: var(--brand-primary-soft); }
+  .media-slot .ic { font-size: 22px; color: var(--brand-primary); }
+  .media-slot .ttl { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+  .media-slot .sub { font-size: 10px; color: var(--ink-subtle); font-family: 'JetBrains Mono', monospace; letter-spacing: .04em; text-transform: uppercase; }
+
+  /* Rep-mål inputs */
+  .rep-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .rep-box { background: var(--surface-alt); border: 1px solid var(--line-soft); border-radius: 10px; padding: 12px; }
+  .rep-box .h { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .rep-box .h-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .rep-box .h-name { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .rep-box.dry .h-dot { background: #9C9990; }
+  .rep-box.dry .h-name { color: #5E5C57; }
+  .rep-box.lav .h-dot { background: var(--pyr-tek); }
+  .rep-box.lav .h-name { color: var(--pyr-tek); }
+  .rep-box.full .h-dot { background: var(--brand-primary); }
+  .rep-box.full .h-name { color: var(--brand-primary); }
+  .rep-box .desc { font-size: 10px; color: var(--ink-muted); margin-bottom: 8px; line-height: 1.4; }
+  .rep-box input { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: #fff; font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 16px; color: var(--ink); text-align: center; }
+  .rep-box input:focus { outline: 0; border-color: var(--brand-primary); }
+
+  /* Sammendrag-preview */
+  .preview { background: var(--brand-primary-soft); border: 1px solid rgba(0,88,64,.15); border-radius: 12px; padding: 14px 16px; margin-top: 16px; }
+  .preview-h { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--brand-primary); margin-bottom: 8px; }
+  .preview-title { font-family: 'Inter Tight', sans-serif; font-size: 14px; font-weight: 600; color: var(--ink); }
+  .preview-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .preview-tags .tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; background: var(--surface-card); border: 1px solid var(--line); color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+<div class="modal">
+
+  <div class="modal-head">
+    <div>
+      <div class="modal-eyebrow">P4.0 · TOPP-POSISJON · NY OPPGAVE</div>
+      <div class="modal-title">Legg til arbeidsoppgave</div>
+    </div>
+    <button class="modal-x">✕</button>
+  </div>
+
+  <div class="modal-body">
+
+    <!-- BASIS -->
+    <div class="section">
+      <div class="section-h">Beskrivelse</div>
+
+      <div class="field">
+        <label class="label">Tittel <span class="req">*</span></label>
+        <input class="text" type="text" value="Venstre håndledd flat" placeholder="F.eks. 'Venstre håndledd flat på toppen'" />
+        <div class="help">Kort, konkret formulering — det skal være lett å huske under trening.</div>
+      </div>
+
+      <div class="field">
+        <label class="label">Beskrivelse</label>
+        <textarea class="text" placeholder="Hva skal kjennes? Hvilken posisjon? Hvilke cues skal brukes?">Ved P4.0 skal venstre håndledd være helt flat — ingen cupping. Cue: 'pannerett' eller bildet av en bordplate. Sjekk mot speil eller video.</textarea>
+      </div>
+    </div>
+
+    <!-- KATEGORISERING -->
+    <div class="section">
+      <div class="section-h">Kategorisering</div>
+
+      <div class="field">
+        <label class="label">Pyramide-område <span class="req">*</span></label>
+        <div class="seg pyr-select">
+          <button class="seg-btn pyr-fys"><span class="dot" style="background:var(--pyr-fys)"></span>FYS</button>
+          <button class="seg-btn pyr-tek active"><span class="dot" style="background:var(--pyr-tek)"></span>TEK</button>
+          <button class="seg-btn pyr-slag"><span class="dot" style="background:var(--pyr-slag)"></span>SLAG</button>
+          <button class="seg-btn pyr-spill"><span class="dot" style="background:var(--pyr-spill)"></span>SPILL</button>
+          <button class="seg-btn pyr-turn"><span class="dot" style="background:var(--pyr-turn)"></span>TURN</button>
+        </div>
+        <div class="help">Hva slags fokus har oppgaven? Teknisk, slagprogresjon, banespill osv.</div>
+      </div>
+
+      <div class="field">
+        <label class="label">Område <span class="req">*</span></label>
+        <div class="help" style="margin-top:0;margin-bottom:8px">Matcher Strokes Gained-buckets. Velg én hoved-kategori, deretter sub-område.</div>
+
+        <!-- Hovedkategorier (tabs) -->
+        <div class="seg" style="margin-bottom:10px">
+          <button class="seg-btn">Tee</button>
+          <button class="seg-btn active">Approach</button>
+          <button class="seg-btn">Around Green</button>
+          <button class="seg-btn">Putt</button>
+        </div>
+
+        <!-- Sub-valg basert på aktivt hovedvalg (Approach) -->
+        <div class="chips">
+          <button class="chip">Approach 200+</button>
+          <button class="chip selected">Approach 150–200</button>
+          <button class="chip">Approach 100–150</button>
+          <button class="chip">Approach 50–100</button>
+        </div>
+
+        <!-- Alle SG-buckets shown som referanse (collapsed alternativer) -->
+        <details style="margin-top:10px">
+          <summary style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-subtle);letter-spacing:.08em;text-transform:uppercase;cursor:pointer">Se alle 16 SG-buckets</summary>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;padding:10px;background:var(--surface-alt);border-radius:8px">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-muted);font-weight:700;letter-spacing:.08em;margin-bottom:5px">TEE</div>
+              <div class="chips"><button class="chip">Tee Total</button></div>
+            </div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-muted);font-weight:700;letter-spacing:.08em;margin-bottom:5px">APPROACH</div>
+              <div class="chips">
+                <button class="chip">200+ m</button>
+                <button class="chip selected">150–200 m</button>
+                <button class="chip">100–150 m</button>
+                <button class="chip">50–100 m</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-muted);font-weight:700;letter-spacing:.08em;margin-bottom:5px">AROUND GREEN</div>
+              <div class="chips">
+                <button class="chip">Chip</button>
+                <button class="chip">Pitch</button>
+                <button class="chip">Lob</button>
+                <button class="chip">Bunker</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-muted);font-weight:700;letter-spacing:.08em;margin-bottom:5px">PUTT</div>
+              <div class="chips">
+                <button class="chip">Putt 0–3 m</button>
+                <button class="chip">Putt 3–5 m</button>
+                <button class="chip">Putt 5–10 m</button>
+                <button class="chip">Putt 10–15 m</button>
+                <button class="chip">Putt 15–25 m</button>
+                <button class="chip">Putt 25–40 m</button>
+                <button class="chip">Putt 40 m+</button>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="field">
+        <label class="label">Køllevalg</label>
+        <div class="chips">
+          <button class="chip">Alle køller</button>
+          <button class="chip">Driver</button>
+          <button class="chip">3-tre</button>
+          <button class="chip">Hybrid</button>
+          <button class="chip">5-jern</button>
+          <button class="chip">6-jern</button>
+          <button class="chip selected">7-jern</button>
+          <button class="chip">8-jern</button>
+          <button class="chip">9-jern</button>
+          <button class="chip">PW</button>
+          <button class="chip">SW / LW</button>
+          <button class="chip">Putter</button>
+        </div>
+        <div class="help">Multi-select. Velg "Alle køller" eller spesifikk(e).</div>
+      </div>
+    </div>
+
+    <!-- MAC O'GRADY-skala -->
+    <div class="section">
+      <div class="section-h">Trenings-modalitet (MORAD-skala)</div>
+
+      <div class="field-row">
+        <div class="field">
+          <label class="label">L-fase (lærefase)</label>
+          <div class="seg l-select">
+            <button class="seg-btn">L_KROPP</button>
+            <button class="seg-btn active">L_ARM</button>
+            <button class="seg-btn">L_KOLLE</button>
+            <button class="seg-btn">L_BALL</button>
+            <button class="seg-btn">L_AUTO</button>
+          </div>
+          <div class="help">Kropp → Arm → Kølle → Ball → Auto. Hva er fokuspunktet?</div>
+        </div>
+
+        <div class="field">
+          <label class="label">CS-nivå (ferdighet)</label>
+          <div class="seg cs-select">
+            <button class="seg-btn">CS50</button>
+            <button class="seg-btn">CS60</button>
+            <button class="seg-btn active">CS70</button>
+            <button class="seg-btn">CS80</button>
+            <button class="seg-btn">CS90</button>
+            <button class="seg-btn">CS100</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label class="label">Miljø (M)</label>
+          <div class="seg m-select">
+            <button class="seg-btn">M0</button>
+            <button class="seg-btn">M1</button>
+            <button class="seg-btn active">M2</button>
+            <button class="seg-btn">M3</button>
+            <button class="seg-btn">M4</button>
+            <button class="seg-btn">M5</button>
+          </div>
+          <div class="help">M0 = ingen, M5 = full press-modus</div>
+        </div>
+
+        <div class="field">
+          <label class="label">PR (press-nivå)</label>
+          <div class="seg pr-select">
+            <button class="seg-btn">PR1</button>
+            <button class="seg-btn active">PR2</button>
+            <button class="seg-btn">PR3</button>
+            <button class="seg-btn">PR4</button>
+            <button class="seg-btn">PR5</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEDIA -->
+    <div class="section">
+      <div class="section-h">Bilde / video (valgfritt)</div>
+      <div class="media">
+        <div class="media-slot has-file">
+          <div class="ic">▶</div>
+          <div class="ttl">P4-position-demo.mp4</div>
+          <div class="sub">Sist oppdatert · 12. mai</div>
+        </div>
+        <div class="media-slot">
+          <div class="ic">📷</div>
+          <div class="ttl">Legg til bilde</div>
+          <div class="sub">JPG / PNG · max 5MB</div>
+        </div>
+      </div>
+      <div class="help" style="margin-top: 10px">Du kan også lime inn en YouTube/Vimeo-URL i beskrivelsen.</div>
+    </div>
+
+    <!-- REP-MÅL -->
+    <div class="section">
+      <div class="section-h">Rep-mål per hastighet</div>
+      <div class="rep-grid">
+        <div class="rep-box dry">
+          <div class="h">
+            <span class="h-dot"></span>
+            <span class="h-name">Dry-swing</span>
+          </div>
+          <div class="desc">Uten ball — fokus på posisjon og rotasjon</div>
+          <input type="number" value="1000" />
+        </div>
+        <div class="rep-box lav">
+          <div class="h">
+            <span class="h-dot"></span>
+            <span class="h-name">Lav (CS50-70)</span>
+          </div>
+          <div class="desc">Med ball, halv-tempo — integrer i swing</div>
+          <input type="number" value="500" />
+        </div>
+        <div class="rep-box full">
+          <div class="h">
+            <span class="h-dot"></span>
+            <span class="h-name">Full (CS80-100)</span>
+          </div>
+          <div class="desc">Med ball, full hastighet — overfør til spill</div>
+          <input type="number" value="200" />
+        </div>
+      </div>
+      <div class="help" style="margin-top: 10px">Default følger MORAD-tradisjonen (mye dry-swing, gradvis bygge opp). Coach overstyrer.</div>
+    </div>
+
+    <!-- LINK TIL DRILL-BIBLIOTEK -->
+    <div class="section">
+      <div class="section-h">Linkede drills fra øvelsesbanken</div>
+      <div class="chips">
+        <button class="chip selected">Speil-test P4 (drill #DM-104)</button>
+        <button class="chip selected">Tørr swing m. towel (drill #DM-218)</button>
+        <button class="chip">+ Søk i drill-bibliotek</button>
+      </div>
+      <div class="help" style="margin-top: 10px">Når disse drillene loggføres i en treningsøkt, vil reps automatisk telles mot denne oppgaven.</div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="section">
+      <div class="section-h">Forhåndsvisning</div>
+      <div class="preview">
+        <div class="preview-h">Slik ser oppgaven ut i plan-listen</div>
+        <div class="preview-title">Venstre håndledd flat</div>
+        <div class="preview-tags">
+          <span class="tag">TEK</span>
+          <span class="tag">APP 150-200</span>
+          <span class="tag">7-jern</span>
+          <span class="tag">L_ARM</span>
+          <span class="tag">CS70</span>
+          <span class="tag">M2</span>
+          <span class="tag">PR2</span>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-subtle);margin-top:6px">Mål: 1000 dry · 500 lav · 200 full</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-foot">
+    <button class="btn btn-danger">Slett oppgave</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost">Avbryt</button>
+      <button class="btn btn-primary">Lagre oppgave</button>
+    </div>
+  </div>
+
+</div>
+
+</div>
+</body>
+</html>

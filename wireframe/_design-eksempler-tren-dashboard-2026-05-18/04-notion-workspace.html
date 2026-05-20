@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trening — Øyvind / Sesong 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #FFFFFF;
+    --bg-sidebar: #F7F6F3;
+    --bg-hover: #EFEFEC;
+    --bg-block-hover: #F7F6F3;
+    --fg: #37352F;
+    --fg-muted: #787774;
+    --fg-light: #9B9A97;
+    --border: #EAEAE8;
+    --border-strong: #DDDDDA;
+    --accent-peach: #FAEBDD;
+    --accent-peach-fg: #854D0E;
+    --accent-sky: #DEEBF6;
+    --accent-sky-fg: #1E40AF;
+    --accent-lavender: #E8DEEE;
+    --accent-lavender-fg: #6B21A8;
+    --accent-sage: #DDEDEA;
+    --accent-sage-fg: #14532D;
+    --accent-ochre: #FDECC8;
+    --accent-ochre-fg: #92400E;
+    --accent-pink: #F4DFEB;
+    --accent-pink-fg: #9D174D;
+    --accent-blue-tint: #F1F5FA;
+    --shadow: 0 1px 2px rgba(15,15,15,0.04);
+    --radius: 4px;
+  }
+  html, body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  /* Sidebar */
+  .sidebar { background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 8px 0; font-size: 13px; }
+  .sb-workspace { display: flex; align-items: center; gap: 8px; padding: 6px 12px; margin: 0 4px; border-radius: var(--radius); cursor: pointer; }
+  .sb-workspace:hover { background: var(--bg-hover); }
+  .sb-ws-icon { width: 20px; height: 20px; border-radius: var(--radius); background: linear-gradient(135deg, #14532D, #16a34a); color: white; display: grid; place-items: center; font-weight: 600; font-size: 11px; }
+  .sb-ws-name { font-weight: 600; flex: 1; }
+  .sb-search { margin: 8px 8px 4px; padding: 6px 8px; display: flex; align-items: center; gap: 6px; color: var(--fg-light); border-radius: var(--radius); cursor: pointer; font-size: 13px; }
+  .sb-search:hover { background: var(--bg-hover); }
+  .sb-section { padding: 12px 0 4px; }
+  .sb-section-title { padding: 4px 14px; font-size: 11px; font-weight: 600; color: var(--fg-light); text-transform: uppercase; letter-spacing: 0.04em; }
+  .sb-item { display: flex; align-items: center; gap: 4px; padding: 4px 8px 4px 14px; margin: 0 4px; border-radius: var(--radius); cursor: pointer; color: var(--fg); user-select: none; }
+  .sb-item:hover { background: var(--bg-hover); }
+  .sb-item.active { background: #E9E8E4; font-weight: 500; }
+  .sb-chevron { width: 14px; height: 14px; color: var(--fg-light); flex-shrink: 0; display: grid; place-items: center; border-radius: 3px; }
+  .sb-chevron:hover { background: var(--border-strong); }
+  .sb-icon { width: 16px; height: 16px; flex-shrink: 0; color: var(--fg-muted); }
+  .sb-label { flex: 1; font-size: 13px; }
+  .sb-children { padding-left: 12px; }
+  .sb-bottom { margin-top: auto; padding: 8px 0; border-top: 1px solid var(--border); }
+  /* Main */
+  .main { background: var(--bg); overflow-y: auto; }
+  .cover { width: 100%; height: 200px; background-image: url('https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?w=1600&h=300&fit=crop'); background-size: cover; background-position: center; position: relative; }
+  .page { max-width: 960px; margin: 0 auto; padding: 0 96px 120px; position: relative; }
+  .page-emblem { width: 78px; height: 78px; background: white; border-radius: var(--radius); display: grid; place-items: center; font-size: 48px; margin-top: -40px; box-shadow: var(--shadow); position: relative; z-index: 2; }
+  .page-emblem svg { width: 56px; height: 56px; color: #14532D; }
+  .page-title { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; margin: 16px 0 12px; color: var(--fg); }
+  /* Page properties */
+  .page-props { margin: 0 0 24px; }
+  .prop-row { display: grid; grid-template-columns: 160px 1fr; padding: 4px 0; align-items: center; min-height: 32px; }
+  .prop-row:hover { background: var(--bg-block-hover); border-radius: var(--radius); }
+  .prop-label { display: flex; align-items: center; gap: 6px; padding: 0 6px; color: var(--fg-muted); font-size: 13px; }
+  .prop-label svg { width: 14px; height: 14px; }
+  .prop-value { padding: 4px 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; }
+  .tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 3px; font-size: 12px; font-weight: 500; line-height: 1.4; }
+  .tag.peach { background: var(--accent-peach); color: var(--accent-peach-fg); }
+  .tag.sky { background: var(--accent-sky); color: var(--accent-sky-fg); }
+  .tag.lavender { background: var(--accent-lavender); color: var(--accent-lavender-fg); }
+  .tag.sage { background: var(--accent-sage); color: var(--accent-sage-fg); }
+  .tag.ochre { background: var(--accent-ochre); color: var(--accent-ochre-fg); }
+  .tag.pink { background: var(--accent-pink); color: var(--accent-pink-fg); }
+  .tag.gray { background: #EAEAE8; color: #57534E; }
+  .person { display: inline-flex; align-items: center; gap: 6px; padding: 2px 6px 2px 2px; border-radius: 20px; background: #EFEFEC; font-size: 12px; }
+  .avatar { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+  .avatar-coach { width: 20px; height: 20px; border-radius: 50%; background: #14532D; color: white; display: grid; place-items: center; font-size: 10px; font-weight: 600; }
+  /* Blocks */
+  .block { position: relative; margin: 4px 0; padding: 4px 0; }
+  .block:hover > .block-handles { opacity: 1; }
+  .block-handles { position: absolute; left: -48px; top: 6px; display: flex; gap: 2px; opacity: 0; transition: opacity 0.1s; }
+  .handle { width: 18px; height: 22px; display: grid; place-items: center; color: var(--fg-light); border-radius: 3px; cursor: pointer; }
+  .handle:hover { background: var(--bg-hover); }
+  .handle svg { width: 14px; height: 14px; }
+  /* Toggle block */
+  .toggle { padding: 4px 2px; }
+  .toggle-header { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 0; }
+  .toggle-chevron { width: 18px; height: 18px; display: grid; place-items: center; color: var(--fg-muted); }
+  .toggle-title { font-weight: 600; font-size: 16px; }
+  .toggle-body { padding: 8px 2px 8px 24px; }
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .kpi { padding: 4px 0; }
+  .kpi-label { font-size: 11px; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 500; color: var(--fg); display: flex; align-items: baseline; gap: 8px; }
+  .kpi-trend { font-size: 12px; display: inline-flex; align-items: center; gap: 2px; font-family: 'JetBrains Mono', monospace; }
+  .kpi-trend.up { color: #16a34a; }
+  .kpi-trend.down { color: #16a34a; }
+  .kpi-trend.flat { color: var(--fg-muted); }
+  /* Heading block */
+  .h1-block { font-size: 30px; font-weight: 700; margin: 32px 0 4px; letter-spacing: -0.01em; }
+  .h2-block { font-size: 24px; font-weight: 600; margin: 28px 0 4px; letter-spacing: -0.01em; }
+  .h3-block { font-size: 18px; font-weight: 600; margin: 20px 0 2px; }
+  /* Database */
+  .db { margin: 8px 0 4px; }
+  .db-header { display: flex; align-items: center; gap: 4px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+  .db-title { font-weight: 600; font-size: 14px; padding: 4px 6px; cursor: pointer; border-radius: 3px; }
+  .db-title:hover { background: var(--bg-hover); }
+  .db-views { display: flex; gap: 2px; flex: 1; margin-left: 12px; }
+  .db-view { padding: 4px 8px; font-size: 13px; color: var(--fg-muted); cursor: pointer; border-radius: 3px; display: flex; align-items: center; gap: 4px; }
+  .db-view svg { width: 14px; height: 14px; }
+  .db-view:hover { background: var(--bg-hover); }
+  .db-view.active { color: var(--fg); border-bottom: 2px solid var(--fg); border-radius: 0; padding-bottom: 4px; }
+  .db-actions { display: flex; gap: 2px; align-items: center; color: var(--fg-muted); }
+  .db-action { padding: 4px 8px; font-size: 13px; cursor: pointer; border-radius: 3px; display: flex; align-items: center; gap: 4px; }
+  .db-action:hover { background: var(--bg-hover); }
+  .db-action.primary { background: #2383E2; color: white; font-weight: 500; }
+  .db-action.primary:hover { background: #1F76CC; }
+  /* Table view */
+  .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .table th { text-align: left; padding: 6px 8px; font-weight: 500; color: var(--fg-muted); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 12px; }
+  .table th:last-child { border-right: none; }
+  .table td { padding: 6px 8px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); vertical-align: middle; }
+  .table td:last-child { border-right: none; }
+  .table tr:hover td { background: var(--bg-block-hover); }
+  .table tr.active-row td { background: #FFF8E1; }
+  .table .col-icon { width: 22px; color: var(--fg-light); }
+  .table td .row-title { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--fg); }
+  /* Timeline */
+  .timeline-wrap { padding: 12px 0; }
+  .timeline-axis { display: grid; grid-template-columns: 140px repeat(12, 1fr); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-muted); border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 6px; }
+  .timeline-axis .month { text-align: center; }
+  .timeline-row { display: grid; grid-template-columns: 140px 1fr; padding: 4px 0; align-items: center; gap: 8px; }
+  .timeline-label { font-size: 13px; color: var(--fg); display: flex; align-items: center; gap: 6px; }
+  .timeline-bars { position: relative; height: 28px; background: repeating-linear-gradient(to right, transparent 0, transparent calc(100% / 12 - 1px), var(--border) calc(100% / 12 - 1px), var(--border) calc(100% / 12)); border-radius: 3px; }
+  .bar { position: absolute; top: 4px; height: 20px; border-radius: 3px; padding: 2px 8px; font-size: 11px; font-weight: 500; display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
+  /* Board */
+  .board { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; padding: 12px 0; overflow-x: auto; }
+  .board-col { background: var(--bg-sidebar); border-radius: var(--radius); padding: 10px; min-height: 220px; }
+  .board-col-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 12px; }
+  .board-col-title { font-weight: 600; color: var(--fg); text-transform: capitalize; }
+  .board-col-count { color: var(--fg-light); font-family: 'JetBrains Mono', monospace; }
+  .card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 8px; margin-bottom: 6px; box-shadow: var(--shadow); font-size: 12px; }
+  .card-tag { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .card-title { font-weight: 500; margin-bottom: 4px; }
+  .card-meta { display: flex; gap: 6px; align-items: center; color: var(--fg-muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+  .card-status { font-size: 10px; padding: 1px 5px; border-radius: 3px; font-weight: 500; }
+  /* Callout */
+  .callout { background: var(--accent-blue-tint); border-radius: var(--radius); padding: 16px; display: flex; gap: 12px; margin: 12px 0; }
+  .callout-icon { width: 24px; height: 24px; flex-shrink: 0; color: var(--accent-sky-fg); display: grid; place-items: center; }
+  .callout-body { flex: 1; }
+  .callout-title { font-weight: 600; margin-bottom: 6px; }
+  .callout-props { display: flex; gap: 16px; margin: 8px 0; font-size: 12px; color: var(--fg-muted); }
+  .callout-prop { display: flex; align-items: center; gap: 4px; }
+  .callout-prop svg { width: 12px; height: 12px; }
+  .callout-actions { margin-top: 10px; display: flex; gap: 6px; }
+  .btn { padding: 4px 10px; border-radius: 3px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid var(--border-strong); background: white; color: var(--fg); display: inline-flex; align-items: center; gap: 4px; }
+  .btn svg { width: 12px; height: 12px; }
+  .btn.primary { background: #2383E2; color: white; border-color: #2383E2; }
+  /* Mention block */
+  .mention-block { padding: 8px 0; }
+  .mention-header { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--fg-muted); margin-bottom: 6px; }
+  .mention-chip { display: inline-flex; align-items: center; gap: 4px; background: var(--accent-blue-tint); color: var(--accent-sky-fg); padding: 1px 6px 1px 2px; border-radius: 10px; font-size: 12px; font-weight: 500; }
+  .quote-block { border-left: 3px solid var(--fg); padding: 4px 0 4px 14px; font-size: 15px; color: var(--fg); margin: 4px 0; }
+  /* Chart */
+  .chart { margin: 12px 0; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: white; }
+  .chart-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+  .chart-title { font-weight: 600; font-size: 14px; }
+  .chart-meta { font-size: 11px; color: var(--fg-muted); font-family: 'JetBrains Mono', monospace; }
+  .bars { display: grid; grid-template-columns: 90px 1fr 60px; gap: 12px; align-items: center; padding: 4px 0; font-size: 12px; }
+  .bar-label { color: var(--fg); }
+  .bar-track { background: var(--bg-sidebar); border-radius: 2px; height: 18px; position: relative; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 2px; }
+  .bar-value { font-family: 'JetBrains Mono', monospace; color: var(--fg-muted); text-align: right; font-size: 11px; }
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+  /* Breadcrumb */
+  .topbar { height: 44px; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid var(--border); background: white; gap: 8px; font-size: 13px; color: var(--fg-muted); }
+  .crumb { display: flex; align-items: center; gap: 4px; cursor: pointer; padding: 2px 6px; border-radius: 3px; }
+  .crumb:hover { background: var(--bg-hover); }
+  .crumb svg { width: 14px; height: 14px; }
+  .crumb.current { color: var(--fg); }
+  .topbar-spacer { flex: 1; }
+  .topbar-action { padding: 4px 8px; border-radius: 3px; cursor: pointer; color: var(--fg-muted); font-size: 12px; }
+  .topbar-action:hover { background: var(--bg-hover); }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-workspace">
+      <div class="sb-ws-icon">AK</div>
+      <div class="sb-ws-name">AK Golf</div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7l5 5 5-5M7 13l5 5 5-5"/></svg>
+    </div>
+    <div class="sb-search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span>Søk...</span>
+    </div>
+    <div class="sb-item">
+      <span class="sb-chevron"></span>
+      <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+      <span class="sb-label">Nylig besøkt</span>
+    </div>
+    <div class="sb-item">
+      <span class="sb-chevron"></span>
+      <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      <span class="sb-label">Inbox</span>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">Workspace</div>
+      <div class="sb-item">
+        <span class="sb-chevron">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 6l6 6-6 6V6z"/></svg>
+        </span>
+        <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+        <span class="sb-label">Hjem</span>
+      </div>
+      <div class="sb-item">
+        <span class="sb-chevron">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M6 9l6 6 6-6H6z"/></svg>
+        </span>
+        <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+        <span class="sb-label">Trening</span>
+      </div>
+      <div class="sb-children">
+        <div class="sb-item">
+          <span class="sb-chevron"></span>
+          <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+          <span class="sb-label">Årsplan 2026</span>
+        </div>
+        <div class="sb-item">
+          <span class="sb-chevron"></span>
+          <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <span class="sb-label">Perioder</span>
+        </div>
+        <div class="sb-item active">
+          <span class="sb-chevron"></span>
+          <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+          <span class="sb-label">Ukeplan</span>
+        </div>
+        <div class="sb-item">
+          <span class="sb-chevron"></span>
+          <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          <span class="sb-label">Økt-arkiv</span>
+        </div>
+      </div>
+      <div class="sb-item">
+        <span class="sb-chevron">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 6l6 6-6 6V6z"/></svg>
+        </span>
+        <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        <span class="sb-label">Mål</span>
+      </div>
+      <div class="sb-item">
+        <span class="sb-chevron">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 6l6 6-6 6V6z"/></svg>
+        </span>
+        <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>
+        <span class="sb-label">Statistikk</span>
+      </div>
+      <div class="sb-item">
+        <span class="sb-chevron">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 6l6 6-6 6V6z"/></svg>
+        </span>
+        <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg>
+        <span class="sb-label">Coach</span>
+      </div>
+    </div>
+
+    <div class="sb-bottom">
+      <div class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        <span class="sb-label">New page</span>
+      </div>
+      <div class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+        <span class="sb-label">Trash</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+        <span>Trening</span>
+      </div>
+      <span style="color: var(--fg-light)">/</span>
+      <div class="crumb current">Ukeplan</div>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-action">Del</div>
+      <div class="topbar-action">Kommentarer</div>
+      <div class="topbar-action">Oppdateringer</div>
+      <div class="topbar-action">Favoritter</div>
+      <div class="topbar-action">⋯</div>
+    </div>
+
+    <div class="cover"></div>
+
+    <div class="page">
+      <div class="page-emblem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-0.5 8-5 8-10V6l-8-4z"/>
+          <circle cx="12" cy="11" r="2.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <h1 class="page-title">Trening — Øyvind / Sesong 2026</h1>
+
+      <div class="page-props">
+        <div class="prop-row">
+          <div class="prop-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41L13.42 20.58a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/></svg>
+            <span>Tags</span>
+          </div>
+          <div class="prop-value">
+            <span class="tag sage">HCP +3,5</span>
+            <span class="tag sky">A1</span>
+            <span class="tag peach">GFGK</span>
+            <span class="tag lavender">Pro</span>
+          </div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+            <span>Periode</span>
+          </div>
+          <div class="prop-value">
+            <span class="tag ochre">Spesialisering · uke 7/10</span>
+          </div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg>
+            <span>Coach</span>
+          </div>
+          <div class="prop-value">
+            <span class="person">
+              <span class="avatar-coach">AK</span>
+              <span>Anders K.</span>
+            </span>
+          </div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span>Sist oppdatert</span>
+          </div>
+          <div class="prop-value">
+            <span class="mono" style="color: var(--fg-muted)">19. mai 2026 · 08:42</span>
+          </div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+            <span>Spiller</span>
+          </div>
+          <div class="prop-value">
+            <span class="person">
+              <img class="avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces" alt="Øyvind">
+              <span>Øyvind Rohjan</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOGGLE: Status -->
+      <div class="block">
+        <div class="block-handles">
+          <span class="handle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span class="handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></span>
+        </div>
+        <div class="toggle">
+          <div class="toggle-header">
+            <span class="toggle-chevron">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 9l6 6 6-6H6z"/></svg>
+            </span>
+            <span class="toggle-title">Status denne uka</span>
+            <span class="tag gray" style="margin-left: 8px">uke 21 · 2026</span>
+          </div>
+          <div class="toggle-body">
+            <div class="kpi-row">
+              <div class="kpi">
+                <div class="kpi-label">HCP</div>
+                <div class="kpi-value">
+                  +3,5
+                  <span class="kpi-trend down">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5H7z"/></svg>
+                    0,4
+                  </span>
+                </div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">SG total</div>
+                <div class="kpi-value">
+                  +2,1
+                  <span class="kpi-trend up">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5H7z"/></svg>
+                    0,3
+                  </span>
+                </div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Streak</div>
+                <div class="kpi-value">11<span style="font-size: 14px; color: var(--fg-muted)">/14</span></div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Pyramide</div>
+                <div class="kpi-value">12<span style="font-size: 14px; color: var(--fg-muted)">/16</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- DATABASE: Årsplan (Timeline) -->
+      <div class="block">
+        <div class="block-handles">
+          <span class="handle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span class="handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></span>
+        </div>
+        <h2 class="h2-block">Årsplan</h2>
+        <div class="db">
+          <div class="db-header">
+            <div class="db-views">
+              <div class="db-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Table</div>
+              <div class="db-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="6" height="18"/><rect x="11" y="3" width="6" height="11"/><rect x="19" y="3" width="2" height="6"/></svg>Board</div>
+              <div class="db-view active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h10M3 12h6M3 18h14M15 4l4 4-4 4M9 10l4 4-4 4M17 16l4 4-4 4" stroke-linecap="round"/></svg>Timeline</div>
+              <div class="db-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Gallery</div>
+              <div class="db-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>Calendar</div>
+            </div>
+            <div class="db-actions">
+              <span class="db-action">Filter</span>
+              <span class="db-action">Sort</span>
+              <span class="db-action">⋯</span>
+              <span class="db-action primary">+ Ny</span>
+            </div>
+          </div>
+
+          <div class="timeline-wrap">
+            <div class="timeline-axis">
+              <div></div>
+              <div class="month">Jan</div><div class="month">Feb</div><div class="month">Mar</div><div class="month">Apr</div><div class="month">Mai</div><div class="month">Jun</div>
+              <div class="month">Jul</div><div class="month">Aug</div><div class="month">Sep</div><div class="month">Okt</div><div class="month">Nov</div><div class="month">Des</div>
+            </div>
+            <div class="timeline-row">
+              <div class="timeline-label"><span class="tag sage" style="font-size: 11px">BASIS</span></div>
+              <div class="timeline-bars">
+                <div class="bar" style="left: 0%; width: 16.6%; background: var(--accent-sage); color: var(--accent-sage-fg);">Grunntrening</div>
+              </div>
+            </div>
+            <div class="timeline-row">
+              <div class="timeline-label"><span class="tag sky" style="font-size: 11px">OPPBYGGING</span></div>
+              <div class="timeline-bars">
+                <div class="bar" style="left: 16.6%; width: 16.6%; background: var(--accent-sky); color: var(--accent-sky-fg);">Volum + teknikk</div>
+              </div>
+            </div>
+            <div class="timeline-row">
+              <div class="timeline-label"><span class="tag ochre" style="font-size: 11px">SPESIALISERING</span></div>
+              <div class="timeline-bars">
+                <div class="bar" style="left: 33.3%; width: 25%; background: var(--accent-ochre); color: var(--accent-ochre-fg); outline: 2px solid var(--accent-ochre-fg); outline-offset: -2px;">Pitch + scoring · aktiv</div>
+              </div>
+            </div>
+            <div class="timeline-row">
+              <div class="timeline-label"><span class="tag pink" style="font-size: 11px">KONKURRANSE</span></div>
+              <div class="timeline-bars">
+                <div class="bar" style="left: 58.3%; width: 25%; background: var(--accent-pink); color: var(--accent-pink-fg);">Turneringer · NM, Tour</div>
+              </div>
+            </div>
+            <div class="timeline-row">
+              <div class="timeline-label"><span class="tag lavender" style="font-size: 11px">RESTITUSJON</span></div>
+              <div class="timeline-bars">
+                <div class="bar" style="left: 83.3%; width: 16.7%; background: var(--accent-lavender); color: var(--accent-lavender-fg);">Aktiv hvile</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATABASE: Perioder (Table) -->
+      <div class="block">
+        <div class="block-handles">
+          <span class="handle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span class="handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></span>
+        </div>
+        <h2 class="h2-block">Perioder</h2>
+        <div class="db">
+          <div class="db-header">
+            <div class="db-views">
+              <div class="db-view active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Table</div>
+              <div class="db-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="6" height="18"/><rect x="11" y="3" width="6" height="11"/></svg>Board</div>
+              <div class="db-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Calendar</div>
+            </div>
+            <div class="db-actions">
+              <span class="db-action">Filter</span>
+              <span class="db-action">Sort: Start ↑</span>
+              <span class="db-action primary">+ Ny periode</span>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="col-icon"></th>
+                <th style="width: 24%">Navn</th>
+                <th>Type</th>
+                <th>Start</th>
+                <th>Slutt</th>
+                <th>CS-maks</th>
+                <th>Fokus</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--fg-light)" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg></td>
+                <td><div class="row-title">Grunntrening</div></td>
+                <td><span class="tag sage">BASIS</span></td>
+                <td><span class="mono">2026-01-06</span></td>
+                <td><span class="mono">2026-02-28</span></td>
+                <td><span class="mono">62%</span></td>
+                <td>Mobilitet, fundament</td>
+                <td><span class="tag gray">Fullført</span></td>
+              </tr>
+              <tr>
+                <td><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--fg-light)" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg></td>
+                <td><div class="row-title">Volum + teknikk</div></td>
+                <td><span class="tag sky">OPPBYGGING</span></td>
+                <td><span class="mono">2026-03-01</span></td>
+                <td><span class="mono">2026-04-30</span></td>
+                <td><span class="mono">78%</span></td>
+                <td>Range-volum, swing</td>
+                <td><span class="tag gray">Fullført</span></td>
+              </tr>
+              <tr class="active-row">
+                <td><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-ochre-fg)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></td>
+                <td><div class="row-title">Pitch + scoring</div></td>
+                <td><span class="tag ochre">SPESIALISERING</span></td>
+                <td><span class="mono">2026-05-01</span></td>
+                <td><span class="mono">2026-07-15</span></td>
+                <td><span class="mono">92%</span></td>
+                <td>Pitch 50–100m, putt</td>
+                <td><span class="tag ochre">Aktiv · uke 7/10</span></td>
+              </tr>
+              <tr>
+                <td><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--fg-light)" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></td>
+                <td><div class="row-title">Turneringer NM / Tour</div></td>
+                <td><span class="tag pink">KONKURRANSE</span></td>
+                <td><span class="mono">2026-07-20</span></td>
+                <td><span class="mono">2026-09-30</span></td>
+                <td><span class="mono">100%</span></td>
+                <td>Peaking, taper</td>
+                <td><span class="tag gray">Planlagt</span></td>
+              </tr>
+              <tr>
+                <td><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--fg-light)" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></td>
+                <td><div class="row-title">Aktiv hvile</div></td>
+                <td><span class="tag lavender">RESTITUSJON</span></td>
+                <td><span class="mono">2026-10-01</span></td>
+                <td><span class="mono">2026-12-15</span></td>
+                <td><span class="mono">45%</span></td>
+                <td>Cross-training, mental</td>
+                <td><span class="tag gray">Planlagt</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DATABASE: Ukens økter (Board) -->
+      <div class="block">
+        <div class="block-handles">
+          <span class="handle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span class="handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></span>
+        </div>
+        <h2 class="h2-block">Ukens økter</h2>
+        <div class="db">
+          <div class="db-header">
+            <div class="db-views">
+              <div class="db-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>Table</div>
+              <div class="db-view active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="6" height="18"/><rect x="11" y="3" width="6" height="11"/><rect x="19" y="3" width="2" height="6"/></svg>Board</div>
+              <div class="db-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Calendar</div>
+            </div>
+            <div class="db-actions">
+              <span class="db-action">Group: Day</span>
+              <span class="db-action">Filter</span>
+              <span class="db-action primary">+ Ny økt</span>
+            </div>
+          </div>
+          <div class="board">
+            <div class="board-col">
+              <div class="board-col-header"><span class="board-col-title">Man</span><span class="board-col-count">2</span></div>
+              <div class="card">
+                <div class="card-title"><span class="card-tag" style="background: var(--accent-ochre-fg)"></span>Pitch 50–100m</div>
+                <div class="card-meta"><span>09:00</span><span class="card-status" style="background: var(--accent-sage); color: var(--accent-sage-fg)">Fullført</span></div>
+              </div>
+              <div class="card">
+                <div class="card-title"><span class="card-tag" style="background: var(--accent-pink-fg)"></span>Putt-drill</div>
+                <div class="card-meta"><span>16:30</span><span class="card-status" style="background: var(--accent-sage); color: var(--accent-sage-fg)">Fullført</span></div>
+              </div>
+            </div>
+            <div class="board-col">
+              <div class="board-col-header"><span class="board-col-title">Tir</span><span class="board-col-count">1</span></div>
+              <div class="card">
+                <div class="card-title"><span class="card-tag" style="background: var(--accent-sky-fg)"></span>Range — driver</div>
+                <div class="card-meta"><span>10:00</span><span class="card-status" style="background: var(--accent-sage); color: var(--accent-sage-fg)">Fullført</span></div>
+              </div>
+            </div>
+            <div class="board-col">
+              <div class="board-col-header"><span class="board-col-title">Ons</span><span class="board-col-count">2</span></div>
+              <div class="card" style="border-color: var(--accent-ochre-fg); border-width: 2px;">
+                <div class="card-title"><span class="card-tag" style="background: var(--accent-ochre-fg)"></span>Pitch lav trajectory</div>
+                <div class="card-meta"><span>09:00</span><span class="card-status" style="background: var(--accent-ochre); color: var(--accent-ochre-fg)">I dag</span></div>
+              </div>
+              <div class="card">
+                <div class="card-title"><span class="card-tag" style="background: var(--accent-lavender-fg)"></span>Styrke</div>
+                <div class="card-meta"><span>17:00</span><span class="card-status" style="background: #EAEAE8; color: var(--fg-muted)">Planlagt</span></div>
+              </div>
+            </div>
+            <div class="board-col">
+              <div class="board-col-header"><span class="board-col-title">Tor</span><span class="board-col-count">1</span></div>
+              <div class="card">
+                <div class="card-title"><span class="card-tag" style="background: var(--accent-pink-fg)"></span>Bane — 9 hull</div>
+                <div class="card-meta"><span>10:00</span><span class="card-status" style="background: #EAEAE8; color: var(--fg-muted)">Planlagt</span></div>
+              </div>
+            </div>
+            <div class="board-col">
+              <div class="board-col-header"><span class="board-col-title">Fre</span><span class="board-col-count">2</span></div>
+              <div class="card">
+                <div class="card-title"><span class="card-tag" style="background: var(--accent-ochre-fg)"></span>Chip + bunker</div>
+                <div class="card-meta"><span>09:30</span><span class="card-status" style="background: #EAEAE8; color: var(--fg-muted)">Planlagt</span></div>
+              </div>
+              <div class="card">
+                <div class="card-title"><span class="card-tag" style="background: var(--accent-sky-fg)"></span>Coach-time</div>
+                <div class="card-meta"><span>14:00</span><span class="card-status" style="background: #EAEAE8; color: var(--fg-muted)">Planlagt</span></div>
+              </div>
+            </div>
+            <div class="board-col">
+              <div class="board-col-header"><span class="board-col-title">Lør</span><span class="board-col-count">1</span></div>
+              <div class="card">
+                <div class="card-title"><span class="card-tag" style="background: var(--accent-pink-fg)"></span>Turnering — Bossum</div>
+                <div class="card-meta"><span>08:00</span><span class="card-status" style="background: var(--accent-pink); color: var(--accent-pink-fg)">Comp</span></div>
+              </div>
+            </div>
+            <div class="board-col">
+              <div class="board-col-header"><span class="board-col-title">Søn</span><span class="board-col-count">1</span></div>
+              <div class="card">
+                <div class="card-title"><span class="card-tag" style="background: var(--accent-lavender-fg)"></span>Mobilitet + film</div>
+                <div class="card-meta"><span>11:00</span><span class="card-status" style="background: #EAEAE8; color: var(--fg-muted)">Planlagt</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALLOUT: Dagens fokus -->
+      <div class="block">
+        <div class="block-handles">
+          <span class="handle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span class="handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></span>
+        </div>
+        <div class="callout">
+          <div class="callout-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.7.7 1 1.6 1 2.5V18h6v-.8c0-.9.3-1.8 1-2.5A7 7 0 0012 2z"/></svg>
+          </div>
+          <div class="callout-body">
+            <div class="callout-title">Dagens fokus — Pitch 50–100m, lav trajectory</div>
+            <div style="color: var(--fg-muted); font-size: 13px;">8 repetisjoner per distanse, gap-test mellom hver runde. Hold ball-flight under 3m peak — TrackMan-validert.</div>
+            <div class="callout-props">
+              <div class="callout-prop">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                09:00 — 10:30
+              </div>
+              <div class="callout-prop">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Bossum Range, bay 4
+              </div>
+              <div class="callout-prop">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg>
+                Anders K.
+              </div>
+            </div>
+            <div class="callout-actions">
+              <button class="btn primary">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+                Start økt
+              </button>
+              <button class="btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0115-6.7L21 8M21 3v5h-5M21 12a9 9 0 01-15 6.7L3 16M3 21v-5h5"/></svg>
+                Endre
+              </button>
+              <button class="btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/></svg>
+                Kommenter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MENTION block -->
+      <div class="block">
+        <div class="block-handles">
+          <span class="handle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span class="handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></span>
+        </div>
+        <div class="mention-block">
+          <div class="mention-header">
+            <span>Coach-melding fra</span>
+            <span class="mention-chip">
+              <span class="avatar-coach" style="width: 16px; height: 16px; font-size: 9px;">AK</span>
+              @Anders K.
+            </span>
+            <span class="mono" style="color: var(--fg-light); margin-left: 4px;">i går · 19:14</span>
+          </div>
+          <div class="quote-block">
+            «Fokuser på trajectory-kontrollen i morgen — vi så på TrackMan-loggene at peak-height varierte fra 2,4 til 4,8m på samme distanse. Mål: hold under 3m på alle 24 ball. Hvis du nailer det, er du klar for Bossum-turneringen på lørdag.»
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART block -->
+      <div class="block">
+        <div class="block-handles">
+          <span class="handle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span class="handle"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></span>
+        </div>
+        <h3 class="h3-block">Pyramide-distribusjon</h3>
+        <div class="chart">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Volum per disiplin · uke 21</div>
+              <div style="color: var(--fg-muted); font-size: 12px; margin-top: 2px;">Mål 16 enheter · Faktisk 12 · 75% av plan</div>
+            </div>
+            <div class="chart-meta">16 / 12 enheter</div>
+          </div>
+          <div class="bars">
+            <div class="bar-label">Pitch</div>
+            <div class="bar-track"><div class="bar-fill" style="width: 100%; background: var(--accent-ochre-fg);"></div></div>
+            <div class="bar-value">4/4</div>
+          </div>
+          <div class="bars">
+            <div class="bar-label">Putt</div>
+            <div class="bar-track"><div class="bar-fill" style="width: 75%; background: var(--accent-pink-fg);"></div></div>
+            <div class="bar-value">3/4</div>
+          </div>
+          <div class="bars">
+            <div class="bar-label">Range</div>
+            <div class="bar-track"><div class="bar-fill" style="width: 75%; background: var(--accent-sky-fg);"></div></div>
+            <div class="bar-value">3/4</div>
+          </div>
+          <div class="bars">
+            <div class="bar-label">Bane</div>
+            <div class="bar-track"><div class="bar-fill" style="width: 50%; background: var(--accent-sage-fg);"></div></div>
+            <div class="bar-value">1/2</div>
+          </div>
+          <div class="bars">
+            <div class="bar-label">Styrke</div>
+            <div class="bar-track"><div class="bar-fill" style="width: 50%; background: var(--accent-lavender-fg);"></div></div>
+            <div class="bar-value">1/2</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div style="color: var(--fg-light); font-size: 12px; padding: 16px 0; display: flex; gap: 12px; align-items: center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Skriv «/» for å legge til en blokk</span>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

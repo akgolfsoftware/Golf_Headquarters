@@ -165,7 +165,7 @@ export function EditorClient({ template, testRecipient }: Props) {
             <ArrowLeft size={11} strokeWidth={1.75} />
             Tilbake til maler
           </a>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
+          <h1 className="mt-2 font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
             {name || "Ny mal"}.{" "}
             <em className="font-normal text-primary md:italic">
               {active ? "Aktiv" : "Utkast"}.
@@ -254,7 +254,7 @@ export function EditorClient({ template, testRecipient }: Props) {
             </span>
           </header>
 
-          <div className="space-y-4 p-6">
+          <div className="space-y-4 p-4 sm:p-6">
             <Felt label="Mal-navn">
               <input
                 type="text"
@@ -326,7 +326,7 @@ export function EditorClient({ template, testRecipient }: Props) {
             </span>
           </header>
 
-          <div className="space-y-4 p-6">
+          <div className="space-y-4 p-4 sm:p-6">
             <div className="rounded-md border border-border bg-background/60 px-4 py-3">
               <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                 Fra
@@ -354,7 +354,7 @@ export function EditorClient({ template, testRecipient }: Props) {
               </div>
             </div>
 
-            <div className="rounded-md border border-border bg-white p-6 text-foreground dark:bg-background/60">
+            <div className="rounded-md border border-border bg-white p-4 sm:p-6 text-foreground dark:bg-background/60">
               <pre className="whitespace-pre-wrap font-sans text-[13px] leading-relaxed">
                 {previewBody || "—"}
               </pre>
@@ -371,7 +371,7 @@ export function EditorClient({ template, testRecipient }: Props) {
 }
 
 const inputClass =
-  "w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-md border border-input bg-card px-4 py-3 text-base sm:text-sm sm:py-2.5 outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function Felt({
   label,

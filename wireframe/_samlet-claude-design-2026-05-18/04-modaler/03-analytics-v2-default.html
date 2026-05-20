@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>03 Analytics V2 · CoachHQ · AK Golf</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="tokens.css">
+<style>
+.filter-bar{position:sticky;top:0;background:var(--surface);padding:14px 0;margin:0 0 24px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line-soft);z-index:10}
+body.dark .filter-bar{background:var(--surface)}
+.flt-group{display:flex;align-items:center;gap:8px}
+.flt-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-subtle);font-weight:500}
+.select{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;background:var(--surface-card);border:1px solid var(--line);border-radius:10px;font-size:13px;font-weight:500;color:var(--ink)}
+body.dark .select{background:#161B19;border-color:#22282A}
+.select svg{width:12px;height:12px;color:var(--ink-subtle)}
+.chip-row{display:flex;gap:6px}
+.chip{padding:6px 12px;border-radius:9999px;border:1px solid var(--line);font-size:12px;font-weight:500;color:var(--ink-muted);background:var(--surface-card)}
+body.dark .chip{background:#161B19;border-color:#22282A}
+.chip.active{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+body.dark .chip.active{background:#F2F1EC;color:#0B0F0E}
+
+.quad{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;grid-template-rows:auto auto}
+.quad-card{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-card);padding:24px;box-shadow:var(--shadow-card);min-height:340px;display:flex;flex-direction:column}
+body.dark .quad-card{border-color:#22282A}
+.quad-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px}
+.quad-title{font-family:var(--font-tight);font-size:16px;font-weight:600;letter-spacing:-.01em}
+.quad-sub{font-size:12px;color:var(--ink-muted);margin-top:2px}
+
+/* HCP chart */
+.chart-wrap{flex:1;position:relative}
+.chart-svg{width:100%;height:100%}
+
+/* legend */
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-muted);margin-top:14px}
+.legend-row{display:flex;align-items:center;gap:6px}
+.legend-pip{width:14px;height:2px;background:var(--ink-subtle);border-radius:1px}
+.legend-pip.accent{background:var(--brand-accent);height:3px}
+.legend-pip.primary{background:var(--brand-primary)}
+.legend-pip.dashed{background:linear-gradient(90deg,var(--ink-subtle) 50%,transparent 50%);background-size:6px 2px}
+
+/* volume bars */
+.vol-grid{display:grid;grid-template-columns:repeat(13,1fr);gap:6px;align-items:flex-end;flex:1;padding:0 4px}
+.vol-week{display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.vol-stack{width:100%;display:flex;flex-direction:column-reverse;border-radius:4px;overflow:hidden;min-height:30%}
+.vol-stack span{display:block;width:100%}
+.vol-lbl{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)}
+
+/* tabular */
+.agent-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.agent-tbl th{text-align:left;padding:8px 10px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-subtle);font-weight:500;border-bottom:1px solid var(--line-soft)}
+.agent-tbl th:not(:first-child){text-align:right}
+.agent-tbl td{padding:12px 10px;border-bottom:1px solid var(--line-soft);font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.agent-tbl td:first-child{font-family:var(--font-sans)}
+.agent-tbl td:not(:first-child){text-align:right}
+.agent-tbl tr:last-child td{border-bottom:none}
+.bar-mini{display:inline-block;height:6px;border-radius:3px;background:var(--brand-primary);vertical-align:middle;margin-right:8px}
+
+.delta-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:9999px;font-family:var(--font-mono);font-size:11px;font-weight:600}
+.delta-pill.up{background:var(--success-bg);color:var(--success)}
+.delta-pill.dn{background:var(--danger-bg);color:var(--danger)}
+</style>
+</head>
+<body>
+<div class="app" data-screen-label="03 Analytics V2 — default">
+  <aside class="rail">
+    <div class="rail-logo">AK</div>
+    <div class="rail-icons">
+      <a href="#" class="rail-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a>
+      <a href="#" class="rail-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></a>
+      <a href="#" class="rail-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v2"/></svg></a>
+      <a href="#" class="rail-ic active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></a>
+    </div>
+    <div class="rail-bottom"><div class="av rail-avatar">AK</div></div>
+  </aside>
+
+  <aside class="nav">
+    <div class="nav-head"><div class="nav-head-title">CoachHQ</div><div class="nav-head-sub">AK Golf · Admin</div></div>
+    <a href="#" class="nav-item">Hub</a>
+    <a href="#" class="nav-item">Daglig brief</a>
+    <a href="#" class="nav-item">Spillere<span class="badge">38</span></a>
+    <a href="#" class="nav-item">Timeplan</a>
+    <a href="#" class="nav-item">Godkjenninger<span class="badge">3</span></a>
+    <a href="#" class="nav-item active">Analytics V2</a>
+    <a href="#" class="nav-item">Økonomi</a>
+    <a href="#" class="nav-item">Fasiliteter</a>
+    <a href="#" class="nav-item">Rapporter</a>
+    <div class="nav-section">System</div>
+    <a href="#" class="nav-item">Revisjonslogg</a>
+    <a href="#" class="nav-item">Innstillinger</a>
+  </aside>
+
+  <main class="main">
+    <header class="hero">
+      <div>
+        <div class="hero-eyebrow">CoachHQ · Stallens utvikling</div>
+        <h1 class="hero-title"><em>Stallen samlet · siste 90 dager.</em></h1>
+        <div class="hero-sub">38 spillere · 482 treningstimer · Sammenligning mot samme periode i fjor</div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-secondary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Sammenlign</button>
+        <button class="btn btn-primary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Eksporter</button>
+      </div>
+    </header>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="flt-group">
+        <span class="flt-lbl">Periode</span>
+        <span class="select">Siste 90 dager <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <div class="flt-group">
+        <span class="flt-lbl">Segment</span>
+        <div class="chip-row">
+          <span class="chip active">Alle (38)</span>
+          <span class="chip">Pro+ (12)</span>
+          <span class="chip">Elite (6)</span>
+          <span class="chip">Kategori A–K (18)</span>
+          <span class="chip">WANG (8)</span>
+        </div>
+      </div>
+      <span class="spacer"></span>
+      <div class="flt-group">
+        <span class="flt-lbl">Sammenlign</span>
+        <span class="select">Samme periode i fjor <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="kpi-strip">
+      <div class="kpi"><div class="kpi-label">Snitt-HCP</div><div class="kpi-value">12,4</div><div class="kpi-foot"><span class="delta delta-up">−1,2</span><span>vs samme periode i fjor</span></div></div>
+      <div class="kpi"><div class="kpi-label">Total treningsvolum</div><div class="kpi-value">482<span style="font-size:14px;color:var(--ink-muted);font-weight:400"> t</span></div><div class="kpi-foot"><span class="delta delta-up">+18,2%</span><span>478 t i samme periode i fjor</span></div></div>
+      <div class="kpi"><div class="kpi-label">Agent-godkjenning</div><div class="kpi-value">84<span style="font-size:14px;color:var(--ink-muted);font-weight:400"> %</span></div><div class="kpi-foot"><span class="delta delta-up">+4 pp</span><span>av 75 anbefalinger</span></div></div>
+      <div class="kpi"><div class="kpi-label">Pyramide-balanse</div><div class="kpi-value">7,8<span style="font-size:14px;color:var(--ink-muted);font-weight:400">/10</span></div><div class="kpi-foot"><span class="delta delta-up">+0,4</span><span>over coaching-snitt</span></div></div>
+    </div>
+
+    <!-- 4 quadrants -->
+    <div class="quad">
+      <!-- Kvadrant 1: HCP-utvikling -->
+      <div class="quad-card">
+        <div class="quad-head">
+          <div>
+            <div class="quad-title">HCP-utvikling · 38 spillere</div>
+            <div class="quad-sub">Lavere er bedre · snitt fra 13,6 → 12,4</div>
+          </div>
+          <span class="delta-pill up">↓ −1,2 vs i fjor</span>
+        </div>
+        <div class="chart-wrap" style="height:240px">
+          <svg class="chart-svg" viewBox="0 0 600 240" preserveAspectRatio="none">
+            <!-- grid -->
+            <g stroke="var(--line-soft)" stroke-width="1">
+              <line x1="0" y1="0" x2="600" y2="0"/>
+              <line x1="0" y1="60" x2="600" y2="60"/>
+              <line x1="0" y1="120" x2="600" y2="120"/>
+              <line x1="0" y1="180" x2="600" y2="180"/>
+              <line x1="0" y1="240" x2="600" y2="240"/>
+            </g>
+            <!-- individual semi-transparent lines (simplified, 8 lines) -->
+            <g fill="none" stroke="var(--ink-subtle)" stroke-width="1.25" opacity="0.32" stroke-linejoin="round">
+              <polyline points="0,70 60,72 120,68 180,75 240,62 300,55 360,58 420,52 480,48 540,45 600,42"/>
+              <polyline points="0,110 60,118 120,108 180,100 240,112 300,98 360,92 420,88 480,82 540,78 600,72"/>
+              <polyline points="0,140 60,135 120,142 180,130 240,128 300,118 360,124 420,112 480,108 540,98 600,92"/>
+              <polyline points="0,165 60,170 120,160 180,150 240,162 300,148 360,138 420,142 480,128 540,124 600,118"/>
+              <polyline points="0,90 60,95 120,82 180,86 240,72 300,68 360,75 420,62 480,58 540,52 600,48"/>
+              <polyline points="0,200 60,195 120,210 180,188 240,180 300,170 360,178 420,162 480,158 540,148 600,140"/>
+              <polyline points="0,52 60,48 120,55 180,42 240,38 300,32 360,40 420,28 480,32 540,22 600,18"/>
+              <polyline points="0,178 60,182 120,170 180,175 240,160 300,168 360,152 420,148 480,142 540,138 600,132"/>
+            </g>
+            <!-- compare overlay (prior year), dashed muted -->
+            <polyline fill="none" stroke="var(--ink-subtle)" stroke-width="1.5" stroke-dasharray="4 4" points="0,98 60,102 120,96 180,100 240,94 300,98 360,92 420,96 480,90 540,94 600,88"/>
+            <!-- average thick lime -->
+            <polyline fill="none" stroke="var(--brand-accent)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" points="0,128 60,130 120,124 180,120 240,114 300,108 360,104 420,98 480,92 540,86 600,82"/>
+            <!-- end dot -->
+            <circle cx="600" cy="82" r="5" fill="var(--brand-accent)" stroke="var(--surface-card)" stroke-width="2"/>
+            <!-- y-axis labels -->
+            <g font-family="JetBrains Mono" font-size="10" fill="var(--ink-subtle)">
+              <text x="6" y="14">15</text>
+              <text x="6" y="74">13</text>
+              <text x="6" y="134">12</text>
+              <text x="6" y="194">11</text>
+            </g>
+          </svg>
+        </div>
+        <div class="legend">
+          <span class="legend-row"><span class="legend-pip accent"></span> Snitt stall</span>
+          <span class="legend-row"><span class="legend-pip"></span> Individuelle spillere</span>
+          <span class="legend-row"><span class="legend-pip dashed"></span> Samme periode i fjor (snitt)</span>
+        </div>
+      </div>
+
+      <!-- Kvadrant 2: Treningsvolum -->
+      <div class="quad-card">
+        <div class="quad-head">
+          <div>
+            <div class="quad-title">Treningsvolum · per uke</div>
+            <div class="quad-sub">Coaching · Selvtrening · Gruppe · Runder</div>
+          </div>
+          <span class="delta-pill up">+18,2 %</span>
+        </div>
+        <div class="vol-grid">
+          <div class="vol-week"><div class="vol-stack" style="height:55%"><span style="background:var(--pyr-turn);height:14%"></span><span style="background:var(--pyr-fys);height:18%"></span><span style="background:var(--pyr-tek);height:34%"></span><span style="background:var(--brand-accent);height:34%"></span></div><div class="vol-lbl">U7</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:58%"><span style="background:var(--pyr-turn);height:12%"></span><span style="background:var(--pyr-fys);height:22%"></span><span style="background:var(--pyr-tek);height:36%"></span><span style="background:var(--brand-accent);height:30%"></span></div><div class="vol-lbl">U8</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:62%"><span style="background:var(--pyr-turn);height:10%"></span><span style="background:var(--pyr-fys);height:24%"></span><span style="background:var(--pyr-tek);height:38%"></span><span style="background:var(--brand-accent);height:28%"></span></div><div class="vol-lbl">U9</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:66%"><span style="background:var(--pyr-turn);height:14%"></span><span style="background:var(--pyr-fys);height:22%"></span><span style="background:var(--pyr-tek);height:34%"></span><span style="background:var(--brand-accent);height:30%"></span></div><div class="vol-lbl">U10</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:70%"><span style="background:var(--pyr-turn);height:12%"></span><span style="background:var(--pyr-fys);height:26%"></span><span style="background:var(--pyr-tek);height:34%"></span><span style="background:var(--brand-accent);height:28%"></span></div><div class="vol-lbl">U11</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:74%"><span style="background:var(--pyr-turn);height:14%"></span><span style="background:var(--pyr-fys);height:24%"></span><span style="background:var(--pyr-tek);height:36%"></span><span style="background:var(--brand-accent);height:26%"></span></div><div class="vol-lbl">U12</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:78%"><span style="background:var(--pyr-turn);height:12%"></span><span style="background:var(--pyr-fys);height:28%"></span><span style="background:var(--pyr-tek);height:34%"></span><span style="background:var(--brand-accent);height:26%"></span></div><div class="vol-lbl">U13</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:80%"><span style="background:var(--pyr-turn);height:14%"></span><span style="background:var(--pyr-fys);height:24%"></span><span style="background:var(--pyr-tek);height:36%"></span><span style="background:var(--brand-accent);height:26%"></span></div><div class="vol-lbl">U14</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:82%"><span style="background:var(--pyr-turn);height:12%"></span><span style="background:var(--pyr-fys);height:26%"></span><span style="background:var(--pyr-tek);height:34%"></span><span style="background:var(--brand-accent);height:28%"></span></div><div class="vol-lbl">U15</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:84%"><span style="background:var(--pyr-turn);height:14%"></span><span style="background:var(--pyr-fys);height:26%"></span><span style="background:var(--pyr-tek);height:34%"></span><span style="background:var(--brand-accent);height:26%"></span></div><div class="vol-lbl">U16</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:88%"><span style="background:var(--pyr-turn);height:12%"></span><span style="background:var(--pyr-fys);height:28%"></span><span style="background:var(--pyr-tek);height:34%"></span><span style="background:var(--brand-accent);height:26%"></span></div><div class="vol-lbl">U17</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:92%"><span style="background:var(--pyr-turn);height:14%"></span><span style="background:var(--pyr-fys);height:26%"></span><span style="background:var(--pyr-tek);height:36%"></span><span style="background:var(--brand-accent);height:24%"></span></div><div class="vol-lbl">U18</div></div>
+          <div class="vol-week"><div class="vol-stack" style="height:100%"><span style="background:var(--pyr-turn);height:14%"></span><span style="background:var(--pyr-fys);height:28%"></span><span style="background:var(--pyr-tek);height:34%"></span><span style="background:var(--brand-accent);height:24%"></span></div><div class="vol-lbl">U19</div></div>
+        </div>
+        <div class="legend">
+          <span class="legend-row"><span class="legend-pip" style="background:var(--brand-accent);width:10px;height:10px;border-radius:3px"></span> Coaching</span>
+          <span class="legend-row"><span class="legend-pip" style="background:var(--pyr-tek);width:10px;height:10px;border-radius:3px"></span> Selvtrening</span>
+          <span class="legend-row"><span class="legend-pip" style="background:var(--pyr-fys);width:10px;height:10px;border-radius:3px"></span> Gruppe</span>
+          <span class="legend-row"><span class="legend-pip" style="background:var(--pyr-turn);width:10px;height:10px;border-radius:3px"></span> Runder</span>
+        </div>
+      </div>
+
+      <!-- Kvadrant 3: Pyramide-balanse -->
+      <div class="quad-card">
+        <div class="quad-head">
+          <div>
+            <div class="quad-title">Pyramide-balanse · andel over tid</div>
+            <div class="quad-sub">FYS / TEK / SLAG / SPILL / TURN</div>
+          </div>
+          <div class="price-toggle" style="font-size:11px"><button class="on">Andel %</button><button>Volum t</button></div>
+        </div>
+        <div class="chart-wrap" style="height:240px">
+          <svg class="chart-svg" viewBox="0 0 600 240" preserveAspectRatio="none">
+            <!-- stacked area: FYS at bottom -->
+            <polygon fill="var(--pyr-fys)" opacity=".85" points="0,240 0,200 100,196 200,190 300,188 400,184 500,180 600,178 600,240"/>
+            <polygon fill="var(--pyr-tek)" opacity=".9" points="0,200 100,196 200,190 300,188 400,184 500,180 600,178 600,120 500,115 400,118 300,114 200,112 100,118 0,124"/>
+            <polygon fill="var(--pyr-slag)" opacity=".95" points="0,124 100,118 200,112 300,114 400,118 500,115 600,120 600,72 500,68 400,72 300,66 200,62 100,68 0,74"/>
+            <polygon fill="var(--pyr-spill)" opacity=".9" points="0,74 100,68 200,62 300,66 400,72 500,68 600,72 600,36 500,30 400,34 300,28 200,32 100,30 0,38"/>
+            <polygon fill="var(--pyr-turn)" opacity=".85" points="0,38 100,30 200,32 300,28 400,34 500,30 600,36 600,0 0,0"/>
+            <g font-family="JetBrains Mono" font-size="9" fill="rgba(255,255,255,.85)">
+              <text x="540" y="218">FYS 28%</text>
+              <text x="540" y="160">TEK 32%</text>
+              <text x="540" y="100">SLAG 22%</text>
+              <text x="540" y="56">SPILL 12%</text>
+              <text x="540" y="22">TURN 6%</text>
+            </g>
+          </svg>
+        </div>
+        <div class="legend">
+          <span class="legend-row" style="font-family:var(--font-mono);color:var(--ink)">Bygger TEK-volum mot Sørlandsåpent (uke 22). SPILL ned 4 pp.</span>
+        </div>
+      </div>
+
+      <!-- Kvadrant 4: Agent-effektivitet -->
+      <div class="quad-card">
+        <div class="quad-head">
+          <div>
+            <div class="quad-title">Agent-effektivitet</div>
+            <div class="quad-sub">Godkjennings-rate og snitt-responstid</div>
+          </div>
+          <a href="#" class="btn-link">Drill-down →</a>
+        </div>
+        <table class="agent-tbl">
+          <thead><tr><th>Agent</th><th>Anbefalt</th><th>Godkjent</th><th>Avslått</th><th>Snitt-respons</th></tr></thead>
+          <tbody>
+            <tr><td><span class="bar-mini" style="width:60px;background:var(--pyr-tek)"></span>Periodisering</td><td>47</td><td style="color:var(--success)">38 <span class="subtle">(81 %)</span></td><td>9</td><td>1 t 24 min</td></tr>
+            <tr><td><span class="bar-mini" style="width:30px;background:var(--pyr-fys)"></span>Deload</td><td>23</td><td style="color:var(--success)">19 <span class="subtle">(83 %)</span></td><td>4</td><td>2 t 08 min</td></tr>
+            <tr><td><span class="bar-mini" style="width:8px;background:var(--brand-accent)"></span>Escalation</td><td>5</td><td style="color:var(--success)">5 <span class="subtle">(100 %)</span></td><td>0</td><td>14 min</td></tr>
+            <tr><td><span class="bar-mini" style="width:22px;background:var(--pyr-spill)"></span>Plan-watcher</td><td>18</td><td style="color:var(--success)">14 <span class="subtle">(78 %)</span></td><td>4</td><td>3 t 12 min</td></tr>
+            <tr><td><span class="bar-mini" style="width:14px;background:var(--pyr-turn)"></span>Faktura</td><td>12</td><td>11 <span class="subtle">(92 %)</span></td><td>1</td><td>42 min</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

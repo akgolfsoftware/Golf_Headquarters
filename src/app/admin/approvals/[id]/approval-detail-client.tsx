@@ -86,7 +86,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
       </div>
 
       {/* Hero: spiller + tittel */}
-      <header className="flex flex-col gap-5 rounded-lg border border-border bg-card p-6 shadow-sm sm:flex-row sm:items-center">
+      <header className="flex flex-col gap-5 rounded-lg border border-border bg-card p-4 sm:p-6 shadow-sm sm:flex-row sm:items-center">
         <div
           aria-hidden="true"
           className="grid h-16 w-16 shrink-0 place-items-center rounded-full font-mono text-base font-semibold text-white ring-2 ring-accent"
@@ -112,7 +112,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
             {detail.player.name} · {detail.player.meta}
           </p>
         </div>
-        <div className="flex shrink-0 flex-col items-end gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        <div className="flex shrink-0 flex-col items-start sm:items-end gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           <span>Konfidens {confidencePct}%</span>
           <span>Basis: {detail.aiReasoning.history}</span>
         </div>
@@ -150,7 +150,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
       )}
 
       {/* AI-begrunnelse */}
-      <section className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary to-primary/85 p-6 text-primary-foreground shadow-sm">
+      <section className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary to-primary/85 p-4 sm:p-6 text-primary-foreground shadow-sm">
         <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-accent/80">
           <Sparkles size={12} strokeWidth={1.75} />
           AI-begrunnelse

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>A04 — Hub og dedikerte ruter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #FAFAF7;
+    --fg: #0A1F17;
+    --forest: #005840;
+    --forest-dark: #003A2A;
+    --lime: #D1F843;
+    --card: #FFFFFF;
+    --border: #E5E3DD;
+    --muted: #5E5C57;
+    --soft: #F1EEE5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display { font-family: 'Inter Tight', sans-serif; letter-spacing: -0.02em; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .italic-serif { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; }
+
+  /* App shell */
+  .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; }
+  .brand-dot { width: 24px; height: 24px; background: var(--forest); border-radius: 6px; display: grid; place-items: center; }
+  .brand-dot svg { color: var(--lime); }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 8px 8px 4px; }
+  .nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 8px;
+    color: var(--fg); text-decoration: none;
+    font-size: 13px; font-weight: 500;
+  }
+  .nav a:hover { background: var(--soft); }
+  .nav a.active { background: var(--forest); color: #fff; }
+  .nav a.active svg { color: var(--lime); }
+  .nav svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* Topbar */
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar {
+    height: 56px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; background: var(--card);
+  }
+  .crumbs { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .crumbs strong { color: var(--fg); font-weight: 600; }
+  .top-right { display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--forest); color: var(--lime); display: grid; place-items: center; font-weight: 600; font-size: 12px; }
+  .top-btn { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 8px; color: var(--muted); cursor: pointer; }
+  .top-btn:hover { background: var(--soft); color: var(--fg); }
+  .top-btn svg { width: 16px; height: 16px; }
+
+  /* Content */
+  .content { padding: 32px; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+  /* Hero */
+  .hero { margin-bottom: 32px; }
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .hero h1 { font-family: 'Inter Tight', sans-serif; font-size: 32px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
+  .hero h1 .italic-serif { font-size: 38px; color: var(--forest); }
+  .hero .sub { color: var(--muted); margin-top: 8px; font-size: 15px; max-width: 560px; }
+
+  /* Hub grid */
+  .hub-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+  .hub-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    min-height: 280px;
+    display: flex; flex-direction: column;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    cursor: pointer;
+    position: relative;
+  }
+  .hub-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -16px rgba(0, 88, 64, 0.18);
+    border-color: var(--forest);
+  }
+  .hub-icon {
+    width: 40px; height: 40px;
+    color: var(--forest);
+    margin-bottom: 16px;
+  }
+  .hub-icon svg { width: 40px; height: 40px; }
+  .hub-card h3 { font-family: 'Inter Tight', sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .hub-card .desc { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+  .hub-viz { flex: 1; display: flex; align-items: center; justify-content: flex-start; margin-bottom: 14px; min-height: 72px; }
+  .hub-foot { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 12px; margin-top: auto; }
+  .hub-status { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.02em; }
+  .hub-cta { color: var(--forest); font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 4px; }
+  .hub-cta svg { width: 14px; height: 14px; }
+
+  /* Mini visualisations */
+  .mini-bars { display: flex; align-items: flex-end; gap: 6px; height: 64px; }
+  .mini-bars .bar { width: 18px; background: var(--forest); border-radius: 3px 3px 0 0; }
+  .mini-bars .bar.accent { background: var(--lime); }
+  .mini-bars .bar.muted { background: var(--soft); }
+  .mini-bars .label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); }
+
+  .mini-gantt { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 240px; }
+  .gantt-row { display: flex; align-items: center; gap: 6px; }
+  .gantt-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); width: 40px; flex-shrink: 0; }
+  .gantt-track { flex: 1; height: 10px; background: var(--soft); border-radius: 4px; position: relative; }
+  .gantt-seg { position: absolute; top: 0; height: 100%; border-radius: 4px; }
+
+  .mini-progress { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 240px; }
+  .prog-row { display: flex; flex-direction: column; gap: 4px; }
+  .prog-head { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); }
+  .prog-bar { height: 6px; background: var(--soft); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--forest); border-radius: 3px; }
+
+  .mini-line { width: 100%; max-width: 240px; height: 64px; }
+
+  .mini-sg { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 240px; }
+  .sg-row { display: flex; align-items: center; gap: 8px; }
+  .sg-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); width: 32px; }
+  .sg-track { flex: 1; height: 8px; background: var(--soft); border-radius: 4px; position: relative; overflow: hidden; }
+  .sg-fill { position: absolute; top: 0; height: 100%; background: var(--forest); }
+  .sg-fill.neg { background: #A32D2D; }
+  .sg-val { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--fg); width: 30px; text-align: right; }
+
+  .mini-map { width: 100%; max-width: 240px; height: 72px; position: relative; background: var(--soft); border-radius: 8px; overflow: hidden; }
+  .pin { position: absolute; width: 22px; height: 22px; transform: translate(-50%, -100%); color: var(--forest); }
+  .pin svg { width: 22px; height: 22px; }
+
+  /* Annotation note */
+  .note-row { display: flex; gap: 14px; align-items: center; margin: 8px 0 28px; flex-wrap: wrap; }
+  .note-chip {
+    background: var(--lime);
+    color: var(--forest-dark);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .note-chip svg { width: 12px; height: 12px; }
+  .note-arrow {
+    background: var(--card);
+    border: 1px dashed var(--forest);
+    color: var(--forest);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-style: italic;
+  }
+
+  /* Bottom situation strip */
+  .situation {
+    background: var(--forest);
+    color: #fff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .situation-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--lime);
+    text-transform: uppercase;
+  }
+  .kpi-row { display: flex; gap: 12px; flex-wrap: wrap; flex: 1; justify-content: flex-end; }
+  .kpi {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(209, 248, 67, 0.2);
+    border-radius: 10px;
+    padding: 10px 16px;
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 120px;
+  }
+  .kpi-val { font-family: 'Inter Tight', sans-serif; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  .kpi-key { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+  .footer strong { color: var(--fg); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-dot">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L12 22"/><circle cx="12" cy="6" r="3"/></svg>
+      </div>
+      <span>AK Golf</span>
+    </div>
+    <nav class="nav">
+      <div class="nav-label">Spiller</div>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 12 2 21 9 21 20 14 20 14 14 10 14 10 20 3 20 Z"/></svg>Hjem</a>
+      <a href="#" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Min workbench</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Min uke</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Mine mål</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Statistikk</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>Turneringer</a>
+      <div class="nav-label" style="margin-top: 16px;">Verktøy</div>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>AI-coach</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Innstillinger</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="crumbs">
+        <span>PlayerHQ</span>
+        <span>/</span>
+        <strong>Min workbench</strong>
+      </div>
+      <div class="top-right">
+        <div class="top-btn" title="Søk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="top-btn" title="Varsler">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        </div>
+        <div class="avatar">MK</div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="eyebrow">Workbench · Min platform</div>
+        <h1>Min <span class="italic-serif">workbench</span></h1>
+        <p class="sub">Velg hva du vil planlegge denne uken. Hver flate er en dedikert rute — full skjerm, full fokus.</p>
+      </div>
+
+      <!-- HUB GRID 3x2 -->
+      <div class="hub-grid">
+
+        <!-- 1. MIN UKE -->
+        <div class="hub-card">
+          <div class="hub-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          </div>
+          <h3>Min uke</h3>
+          <p class="desc">Bygg ukens økter — drill, range, fysisk, runde.</p>
+          <div class="hub-viz">
+            <div class="mini-bars">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="bar accent" style="height:48px;"></div><span class="label">MAN</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="bar" style="height:32px;"></div><span class="label">TIR</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="bar" style="height:56px;"></div><span class="label">ONS</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="bar muted" style="height:18px;"></div><span class="label">TOR</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="bar" style="height:44px;"></div><span class="label">FRE</span></div>
+            </div>
+          </div>
+          <div class="hub-foot">
+            <span class="hub-status">5 økter · 8t 30min</span>
+            <span class="hub-cta">Åpne <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+          </div>
+        </div>
+
+        <!-- 2. MIN ÅRSPLAN -->
+        <div class="hub-card">
+          <div class="hub-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 8 3 16 6 23 3 23 18 16 21 8 18 1 21"/><line x1="8" y1="3" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="21"/></svg>
+          </div>
+          <h3>Min årsplan</h3>
+          <p class="desc">Sesongoversikt og periodisering uke for uke.</p>
+          <div class="hub-viz">
+            <div class="mini-gantt">
+              <div class="gantt-row"><span class="gantt-label">JAN-MAR</span><div class="gantt-track"><div class="gantt-seg" style="left:0;width:30%;background:var(--forest-dark);"></div></div></div>
+              <div class="gantt-row"><span class="gantt-label">APR-JUN</span><div class="gantt-track"><div class="gantt-seg" style="left:30%;width:30%;background:var(--forest);"></div></div></div>
+              <div class="gantt-row"><span class="gantt-label">JUL-SEP</span><div class="gantt-track"><div class="gantt-seg" style="left:60%;width:25%;background:var(--lime);"></div></div></div>
+              <div class="gantt-row"><span class="gantt-label">OKT-DES</span><div class="gantt-track"><div class="gantt-seg" style="left:85%;width:15%;background:var(--soft);border:1px solid var(--border);"></div></div></div>
+            </div>
+          </div>
+          <div class="hub-foot">
+            <span class="hub-status">Uke 17-22 · Spesialisering</span>
+            <span class="hub-cta">Åpne <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+          </div>
+        </div>
+
+        <!-- 3. MINE MÅL -->
+        <div class="hub-card">
+          <div class="hub-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <h3>Mine mål</h3>
+          <p class="desc">Resultatmål og prosessmål — fra HCP til drill-frekvens.</p>
+          <div class="hub-viz">
+            <div class="mini-progress">
+              <div class="prog-row">
+                <div class="prog-head"><span>HCP 4,2 → 3,5</span><span>72%</span></div>
+                <div class="prog-bar"><div class="prog-fill" style="width:72%;"></div></div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-head"><span>SG-Putting +0,3</span><span>45%</span></div>
+                <div class="prog-bar"><div class="prog-fill" style="width:45%;background:var(--lime);"></div></div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-head"><span>Drills 4×/uke</span><span>88%</span></div>
+                <div class="prog-bar"><div class="prog-fill" style="width:88%;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="hub-foot">
+            <span class="hub-status">3 aktive mål</span>
+            <span class="hub-cta">Åpne <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+          </div>
+        </div>
+
+        <!-- 4. MIN STATISTIKK -->
+        <div class="hub-card">
+          <div class="hub-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+          </div>
+          <h3>Min statistikk</h3>
+          <p class="desc">HCP, SG-tall og benchmarks mot målgruppe.</p>
+          <div class="hub-viz">
+            <svg class="mini-line" viewBox="0 0 240 64" preserveAspectRatio="none">
+              <polyline fill="none" stroke="#E5E3DD" stroke-width="1" stroke-dasharray="2 3" points="0,32 240,32"/>
+              <polyline fill="none" stroke="#005840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                points="0,42 20,38 40,40 60,34 80,30 100,32 120,26 140,28 160,22 180,24 200,18 220,20 240,14"/>
+              <circle cx="240" cy="14" r="3" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="hub-foot">
+            <span class="hub-status">Snitt 72,4 · siste 10 runder</span>
+            <span class="hub-cta">Åpne <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+          </div>
+        </div>
+
+        <!-- 5. MIN INNSIKT (SG-Hub) -->
+        <div class="hub-card">
+          <div class="hub-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <h3>Min innsikt</h3>
+          <p class="desc">Slag-analyse, DataGolf-kobling og slag-prioritering.</p>
+          <div class="hub-viz">
+            <div class="mini-sg">
+              <div class="sg-row"><span class="sg-label">OTT</span><div class="sg-track"><div class="sg-fill" style="left:50%;width:18%;"></div></div><span class="sg-val">+0,4</span></div>
+              <div class="sg-row"><span class="sg-label">APP</span><div class="sg-track"><div class="sg-fill neg" style="left:30%;width:20%;"></div></div><span class="sg-val">-0,6</span></div>
+              <div class="sg-row"><span class="sg-label">ARG</span><div class="sg-track"><div class="sg-fill" style="left:50%;width:8%;"></div></div><span class="sg-val">+0,2</span></div>
+              <div class="sg-row"><span class="sg-label">PUT</span><div class="sg-track"><div class="sg-fill neg" style="left:38%;width:12%;"></div></div><span class="sg-val">-0,3</span></div>
+            </div>
+          </div>
+          <div class="hub-foot">
+            <span class="hub-status">Slag-prioritering klar</span>
+            <span class="hub-cta">Åpne <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+          </div>
+        </div>
+
+        <!-- 6. MINE TURNERINGER -->
+        <div class="hub-card">
+          <div class="hub-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          </div>
+          <h3>Mine turneringer</h3>
+          <p class="desc">Bane- og turneringsvalg — kobling til årsplan.</p>
+          <div class="hub-viz">
+            <div class="mini-map">
+              <svg viewBox="0 0 240 72" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;">
+                <path d="M0,50 Q40,40 80,45 T160,42 T240,38" fill="none" stroke="#E5E3DD" stroke-width="1.5"/>
+                <path d="M0,30 Q60,28 120,32 T240,28" fill="none" stroke="#E5E3DD" stroke-width="1" stroke-dasharray="3 3"/>
+              </svg>
+              <div class="pin" style="left:22%;top:62%;">
+                <svg viewBox="0 0 24 24" fill="#005840" stroke="#fff" stroke-width="1.5"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#D1F843"/></svg>
+              </div>
+              <div class="pin" style="left:54%;top:48%;">
+                <svg viewBox="0 0 24 24" fill="#005840" stroke="#fff" stroke-width="1.5"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#D1F843"/></svg>
+              </div>
+              <div class="pin" style="left:82%;top:70%;">
+                <svg viewBox="0 0 24 24" fill="#005840" stroke="#fff" stroke-width="1.5"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#D1F843"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="hub-foot">
+            <span class="hub-status">Sørlandsåpent · 21 dager</span>
+            <span class="hub-cta">Åpne <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ANNOTATION ROW -->
+      <div class="note-row">
+        <span class="note-arrow">← Hub navigerer til dedikerte sider</span>
+        <span class="note-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          Hver dedikert side er FULL skjerm (egen rute)
+        </span>
+        <span class="note-arrow">Eksempel: MIN UKE → /portal/tren (TPK05 design)</span>
+      </div>
+
+      <!-- SITUATION STRIP -->
+      <div class="situation">
+        <div>
+          <div class="situation-label">I dag · mandag 19. mai</div>
+          <div style="font-family:'Inter Tight',sans-serif;font-size:18px;font-weight:600;margin-top:4px;">Dagens situasjon</div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-val">5</div>
+            <div class="kpi-key">Økter uke 21</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-val">1</div>
+            <div class="kpi-key">Fullført i dag</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-val">21 dg</div>
+            <div class="kpi-key">Til Sørlandsåpent</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-val">4,2</div>
+            <div class="kpi-key">HCP nå</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        <strong>Arkitektur:</strong> hub er enkel oversikt + navigasjon. Hver MVP-funksjon har dedikert full skjerm.<br/>
+        Klarest separasjon, mest sider å vedlikeholde. Best for fokus per oppgave — krever flere route-handlere og delt state mellom ruter.
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

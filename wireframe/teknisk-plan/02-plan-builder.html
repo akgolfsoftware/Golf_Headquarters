@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Teknisk Utviklingsplan — Plan-builder</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root {
+    --brand-primary: #005840;
+    --brand-primary-hover: #00472f;
+    --brand-primary-soft: #E8F0EC;
+    --brand-primary-deep: #003B2A;
+    --brand-accent: #D1F843;
+    --brand-accent-hover: #C2EE2F;
+    --brand-accent-on: #0A1F18;
+    --ink: #0A1F18;
+    --ink-muted: #5E5C57;
+    --ink-subtle: #9C9990;
+    --surface: #FAFAF7;
+    --surface-alt: #F5F2EA;
+    --surface-card: #FFFFFF;
+    --line: #E5E3DD;
+    --line-soft: #EFEDE6;
+    --pyr-fys: #005840;
+    --pyr-tek: #1A7D56;
+    --pyr-slag: #D1F843;
+    --pyr-spill: #B8852A;
+    --pyr-turn: #5E5C57;
+    --success: #1A7D56;
+    --success-bg: #E5F1EA;
+    --warning: #B8852A;
+    --warning-bg: #FFF0D6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #EDEAE2; color: var(--ink); font-family: 'Inter', system-ui, sans-serif; line-height: 1.5; padding: 32px 24px 96px; }
+  .canvas { max-width: 1280px; margin: 0 auto; }
+
+  /* Header */
+  .head { margin-bottom: 32px; }
+  .head .crumb { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-subtle); margin-bottom: 8px; }
+  .head .crumb b { color: var(--ink); font-weight: 500; }
+  .head h1 { font-family: 'Inter Tight', sans-serif; font-weight: 400; font-style: italic; font-size: 44px; letter-spacing: -.02em; line-height: 1.05; margin: 6px 0 8px; }
+  .head h1 em { color: var(--brand-primary); font-weight: 500; }
+  .head .meta { display: flex; flex-wrap: wrap; gap: 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-subtle); letter-spacing: .06em; text-transform: uppercase; margin-top: 10px; }
+  .head .meta b { color: var(--ink); font-weight: 500; margin-right: 4px; }
+  .head .actions { display: flex; gap: 8px; margin-top: 18px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 100px; font-size: 13px; font-weight: 500; border: 1px solid transparent; cursor: pointer; }
+  .btn-primary { background: var(--brand-primary); color: #fff; }
+  .btn-primary:hover { background: var(--brand-primary-hover); }
+  .btn-accent { background: var(--brand-accent); color: var(--brand-accent-on); font-weight: 600; }
+  .btn-secondary { background: var(--surface-card); color: var(--ink); border-color: var(--line); }
+  .btn-ghost { background: transparent; color: var(--ink-muted); }
+  .btn-ghost:hover { color: var(--ink); }
+
+  /* Layout */
+  .layout { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
+
+  /* Plan-list */
+  .plan-list { background: var(--surface-card); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; box-shadow: 0 16px 32px -16px rgba(10,31,24,.12); }
+  .plan-head { padding: 20px 24px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: baseline; justify-content: space-between; }
+  .plan-head h2 { font-family: 'Inter Tight', sans-serif; font-weight: 500; font-size: 18px; }
+  .plan-head .hint { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-subtle); letter-spacing: .08em; text-transform: uppercase; }
+
+  .p-list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+  /* P-row (kollapset) */
+  .p-row { background: var(--surface-card); border: 1.5px solid var(--line); border-radius: 14px; transition: all .15s; }
+  .p-row.is-dragging { opacity: 0.5; transform: rotate(-1deg) scale(1.02); box-shadow: 0 12px 32px rgba(10,31,24,.18); }
+  .p-row.is-open { border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(0,88,64,.08); }
+  .p-row.is-priority { border-left: 4px solid var(--brand-accent); }
+
+  .p-row-head { display: flex; align-items: center; gap: 14px; padding: 14px 18px; cursor: pointer; }
+  .p-handle { color: var(--ink-subtle); cursor: grab; font-size: 14px; line-height: 1; font-family: monospace; letter-spacing: -2px; user-select: none; }
+  .p-handle:hover { color: var(--ink); }
+  .p-prio { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--brand-primary); font-weight: 700; background: var(--brand-primary-soft); padding: 3px 7px; border-radius: 5px; letter-spacing: .04em; min-width: 24px; text-align: center; }
+  .p-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--brand-primary); background: var(--brand-primary-soft); padding: 4px 10px; border-radius: 6px; font-weight: 600; }
+  .p-name { font-family: 'Inter Tight', sans-serif; font-weight: 500; font-size: 16px; flex: 1; }
+  .p-pyr { display: inline-flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); padding: 3px 7px; border-radius: 5px; background: var(--surface-alt); }
+  .p-pyr .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .p-cnt { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-subtle); }
+  .p-progress-mini { width: 60px; height: 4px; background: var(--line); border-radius: 100px; overflow: hidden; }
+  .p-progress-mini > div { height: 100%; background: var(--brand-primary); }
+  .p-chev { color: var(--ink-subtle); font-size: 12px; }
+
+  /* Tasks */
+  .p-tasks { padding: 0 18px 16px 60px; display: flex; flex-direction: column; gap: 8px; }
+  .p-tasks .task-add { padding: 10px 14px; border: 1.5px dashed var(--line); border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-subtle); text-align: center; cursor: pointer; transition: all .15s; }
+  .p-tasks .task-add:hover { border-color: var(--brand-primary); color: var(--brand-primary); background: var(--brand-primary-soft); }
+
+  .task { background: var(--surface-alt); border: 1px solid var(--line-soft); border-radius: 10px; padding: 12px 14px; display: flex; gap: 12px; align-items: center; transition: all .15s; }
+  .task.is-dragging { opacity: 0.5; transform: rotate(0.5deg) scale(1.01); box-shadow: 0 8px 20px rgba(10,31,24,.15); }
+  .task:hover { border-color: var(--brand-primary); }
+  .task-handle { color: var(--ink-subtle); cursor: grab; font-size: 12px; font-family: monospace; line-height: 1; letter-spacing: -2px; user-select: none; }
+  .task-prio { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--brand-primary); background: #fff; padding: 3px 7px; border-radius: 5px; min-width: 22px; text-align: center; border: 1px solid var(--brand-primary-soft); }
+  .task-body { flex: 1; min-width: 0; }
+  .task-title { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+  .task-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; align-items: center; }
+  .tag { display: inline-flex; align-items: center; gap: 4px; font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; line-height: 1.3; }
+  .tag .d { width: 5px; height: 5px; border-radius: 50%; }
+  /* Pyramide-tags */
+  .tag-pyr-tek { background: rgba(26,125,86,.12); color: var(--pyr-tek); }
+  .tag-pyr-slag { background: rgba(209,248,67,.30); color: var(--brand-primary-deep); }
+  .tag-pyr-fys { background: rgba(0,88,64,.12); color: var(--brand-primary); }
+  .tag-pyr-spill { background: rgba(184,133,42,.15); color: var(--pyr-spill); }
+  .tag-pyr-turn { background: rgba(94,92,87,.15); color: var(--pyr-turn); }
+  /* Slagtype */
+  .tag-slag { background: var(--surface-card); color: var(--ink-muted); border: 1px solid var(--line); }
+  /* Område */
+  .tag-omr { background: var(--surface-alt); color: var(--ink); border: 1px solid var(--line-soft); }
+  /* L-fase (Mac O'Grady) */
+  .tag-l { background: rgba(124,82,176,.12); color: #5A3B8A; }
+  /* CS-nivå - gradient bg basert på nivå */
+  .tag-cs { background: rgba(0,88,64,.10); color: var(--brand-primary); font-variant-numeric: tabular-nums; }
+  .tag-cs-50 { background: rgba(0,88,64,.06); }
+  .tag-cs-70 { background: rgba(0,88,64,.14); }
+  .tag-cs-80 { background: rgba(0,88,64,.20); }
+  .tag-cs-100 { background: var(--brand-primary); color: #fff; }
+  /* Miljø */
+  .tag-m { background: rgba(120,170,200,.18); color: #2C5775; }
+  /* PR / press */
+  .tag-pr { background: rgba(163,45,45,.10); color: #A32D2D; }
+  .tag-pr-3 { background: rgba(163,45,45,.18); }
+  .tag-pr-5 { background: #A32D2D; color: #fff; }
+  /* Separator dot */
+  .tag-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-subtle); opacity: .4; }
+
+  .task-meta { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-subtle); margin-top: 6px; letter-spacing: .04em; }
+  .task-reps { display: flex; gap: 10px; margin-top: 6px; }
+  .task-rep { flex: 1; }
+  .task-rep-lbl { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--ink-subtle); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 3px; }
+  .task-rep-bar { height: 4px; background: var(--line); border-radius: 100px; overflow: hidden; }
+  .task-rep-bar > div { height: 100%; }
+  .task-rep-bar .dry { background: #9C9990; }
+  .task-rep-bar .lav { background: #1A7D56; }
+  .task-rep-bar .full { background: var(--brand-primary); }
+  .task-rep-cnt { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--ink); margin-top: 3px; }
+  .task-actions { display: flex; gap: 6px; }
+  .task-action { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--line); background: #fff; color: var(--ink-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; }
+  .task-action:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+
+  /* Image preview thumb on task */
+  .task-thumb { width: 36px; height: 36px; border-radius: 7px; background: var(--brand-primary-soft); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); font-size: 12px; }
+
+  /* Add P-button */
+  .add-p-row { padding: 16px; border: 2px dashed var(--line); border-radius: 14px; text-align: center; color: var(--ink-subtle); margin-top: 8px; cursor: pointer; transition: all .15s; }
+  .add-p-row:hover { border-color: var(--brand-primary); color: var(--brand-primary); background: var(--brand-primary-soft); }
+  .add-p-row .ttl { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+
+  /* Sidebar — sammendrag */
+  .side { display: flex; flex-direction: column; gap: 16px; }
+  .side-card { background: var(--surface-card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: 0 8px 16px -8px rgba(10,31,24,.08); }
+  .side-card h3 { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 12px; }
+  .side-stat { display: flex; align-items: baseline; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--line-soft); }
+  .side-stat:last-child { border-bottom: 0; }
+  .side-stat-lbl { font-size: 13px; color: var(--ink-muted); }
+  .side-stat-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; color: var(--ink); }
+
+  .side-pyramide { display: flex; flex-direction: column; gap: 6px; }
+  .pyr-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .pyr-row .pyr-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .pyr-row .pyr-name { flex: 1; color: var(--ink-muted); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
+  .pyr-row .pyr-cnt { font-family: 'JetBrains Mono', monospace; font-weight: 500; color: var(--ink); }
+
+  .side-coach { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--brand-primary-soft); border-radius: 12px; border: 1px solid rgba(0,88,64,.15); }
+  .side-coach-av { width: 36px; height: 36px; border-radius: 50%; background: var(--brand-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-family: 'Inter Tight', sans-serif; font-size: 14px; }
+  .side-coach-info { flex: 1; }
+  .side-coach-info b { display: block; font-size: 13px; color: var(--ink); }
+  .side-coach-info span { display: block; font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+
+  /* Hint banner */
+  .hint-banner { background: rgba(209,248,67,.18); border: 1px solid rgba(0,88,64,.15); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start; font-size: 12.5px; line-height: 1.5; color: var(--ink); margin-bottom: 16px; }
+  .hint-banner .icon { background: var(--brand-accent); color: var(--brand-accent-on); width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+  .hint-banner b { color: var(--brand-primary-deep); font-weight: 600; }
+
+  /* Visualisering av drag */
+  .drag-indicator { position: absolute; left: 0; right: 0; height: 3px; background: var(--brand-accent); border-radius: 100px; box-shadow: 0 0 0 2px rgba(209,248,67,.3); pointer-events: none; }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+<header class="head">
+  <div class="crumb">PlayerHQ <b>›</b> Markus R.P. <b>›</b> Teknisk plan</div>
+  <h1>Teknisk utviklingsplan · vår <em>2026</em></h1>
+  <div class="meta">
+    <span><b>SPILLER</b> Markus R.P.</span>
+    <span><b>COACH</b> Anders K.</span>
+    <span><b>PERIODE</b> Spesialisering · 15. apr → 30. juni</span>
+    <span><b>STATUS</b> Aktiv · Begge redigerer</span>
+  </div>
+  <div class="actions">
+    <button class="btn btn-primary">💾 Lagre endringer</button>
+    <button class="btn btn-secondary">Send til Markus for godkjenning</button>
+    <button class="btn btn-ghost">Forhåndsvis som spiller</button>
+  </div>
+</header>
+
+<div class="hint-banner">
+  <span class="icon">i</span>
+  <div>
+    <b>To nivåer av drag-and-drop:</b> Dra hele P-rader (⋮⋮ på venstre side) for å endre <b>prioritets-rekkefølge</b> på posisjoner. Inne i hver P kan du dra oppgaver for å sette <b>prio 1, 2, 3</b>. P-er med <span style="border-left: 3px solid var(--brand-accent); padding-left: 4px;">lime venstre-stripe</span> er hovedfokus i denne perioden.
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- VENSTRE: P-listen i prioritert rekkefølge -->
+  <div class="plan-list">
+    <div class="plan-head">
+      <h2>10 svingposisjoner · prioritert</h2>
+      <span class="hint">⋮⋮ Dra for å endre rekkefølge</span>
+    </div>
+    <div class="p-list">
+
+      <!-- PRIO 1: P4.0 (Topp-posisjon) - åpen, høyest prioritet, lime-stripe -->
+      <div class="p-row is-open is-priority">
+        <div class="p-row-head">
+          <span class="p-handle">⋮⋮</span>
+          <span class="p-prio">P1</span>
+          <span class="p-num">P4.0</span>
+          <span class="p-name">Topp-posisjon</span>
+          <span class="p-pyr"><span class="dot" style="background:var(--pyr-tek)"></span>TEK</span>
+          <span class="p-cnt">3 oppg · 540 / 2200 reps</span>
+          <span class="p-progress-mini"><div style="width:25%"></div></span>
+          <span class="p-chev">▴</span>
+        </div>
+        <div class="p-tasks">
+          <!-- Task prio 1 -->
+          <div class="task">
+            <span class="task-handle">⋮⋮</span>
+            <span class="task-prio">1</span>
+            <div class="task-thumb">▶</div>
+            <div class="task-body">
+              <div class="task-title">Venstre håndledd flat</div>
+              <div class="task-tags">
+                <span class="tag tag-pyr-tek"><span class="d" style="background:var(--pyr-tek)"></span>TEK</span>
+                <span class="tag tag-slag">App 150-200</span>
+                <span class="tag tag-omr">7-jern</span>
+                <span class="tag tag-l">L_ARM</span>
+                <span class="tag tag-cs tag-cs-70">CS70</span>
+                <span class="tag tag-m">M2</span>
+                <span class="tag tag-pr">PR2</span>
+              </div>
+              <div class="task-meta">Mål: 1000 dry · 500 lav · 200 full · Sist trent fre 16. mai</div>
+              <div class="task-reps">
+                <div class="task-rep">
+                  <div class="task-rep-lbl">Dry</div>
+                  <div class="task-rep-bar"><div class="dry" style="width:75%"></div></div>
+                  <div class="task-rep-cnt">750 / 1000</div>
+                </div>
+                <div class="task-rep">
+                  <div class="task-rep-lbl">Lav (CS50-70)</div>
+                  <div class="task-rep-bar"><div class="lav" style="width:52%"></div></div>
+                  <div class="task-rep-cnt">260 / 500</div>
+                </div>
+                <div class="task-rep">
+                  <div class="task-rep-lbl">Full (CS80-100)</div>
+                  <div class="task-rep-bar"><div class="full" style="width:35%"></div></div>
+                  <div class="task-rep-cnt">70 / 200</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-actions">
+              <button class="task-action" title="Rediger">✎</button>
+              <button class="task-action" title="Vis video">▶</button>
+              <button class="task-action" title="Mer">⋯</button>
+            </div>
+          </div>
+
+          <!-- Task prio 2 -->
+          <div class="task">
+            <span class="task-handle">⋮⋮</span>
+            <span class="task-prio">2</span>
+            <div class="task-thumb">📷</div>
+            <div class="task-body">
+              <div class="task-title">Skuldre 90° rotert</div>
+              <div class="task-tags">
+                <span class="tag tag-pyr-tek"><span class="d" style="background:var(--pyr-tek)"></span>TEK</span>
+                <span class="tag tag-slag">Tee Total</span>
+                <span class="tag tag-omr">Alle køller</span>
+                <span class="tag tag-l">L_KROPP</span>
+                <span class="tag tag-cs tag-cs-50">CS50</span>
+                <span class="tag tag-m">M1</span>
+                <span class="tag tag-pr">PR1</span>
+              </div>
+              <div class="task-meta">Mål: 600 dry · 300 lav · 100 full · Sist trent ons 14. mai</div>
+              <div class="task-reps">
+                <div class="task-rep">
+                  <div class="task-rep-lbl">Dry</div>
+                  <div class="task-rep-bar"><div class="dry" style="width:45%"></div></div>
+                  <div class="task-rep-cnt">270 / 600</div>
+                </div>
+                <div class="task-rep">
+                  <div class="task-rep-lbl">Lav</div>
+                  <div class="task-rep-bar"><div class="lav" style="width:20%"></div></div>
+                  <div class="task-rep-cnt">60 / 300</div>
+                </div>
+                <div class="task-rep">
+                  <div class="task-rep-lbl">Full</div>
+                  <div class="task-rep-bar"><div class="full" style="width:0%"></div></div>
+                  <div class="task-rep-cnt">0 / 100</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-actions">
+              <button class="task-action">✎</button>
+              <button class="task-action">▶</button>
+              <button class="task-action">⋯</button>
+            </div>
+          </div>
+
+          <!-- Task prio 3 -->
+          <div class="task">
+            <span class="task-handle">⋮⋮</span>
+            <span class="task-prio">3</span>
+            <div class="task-thumb">📷</div>
+            <div class="task-body">
+              <div class="task-title">Vekt 70/30 høyre</div>
+              <div class="task-tags">
+                <span class="tag tag-pyr-tek"><span class="d" style="background:var(--pyr-tek)"></span>TEK</span>
+                <span class="tag tag-slag">Tee Total</span>
+                <span class="tag tag-omr">Driver</span>
+                <span class="tag tag-l">L_KROPP</span>
+                <span class="tag tag-cs tag-cs-50">CS50</span>
+                <span class="tag tag-m">M0</span>
+                <span class="tag tag-pr">PR1</span>
+              </div>
+              <div class="task-meta">Mål: 400 dry · 200 lav · 80 full · Ny denne uka</div>
+              <div class="task-reps">
+                <div class="task-rep">
+                  <div class="task-rep-lbl">Dry</div>
+                  <div class="task-rep-bar"><div class="dry" style="width:20%"></div></div>
+                  <div class="task-rep-cnt">80 / 400</div>
+                </div>
+                <div class="task-rep">
+                  <div class="task-rep-lbl">Lav</div>
+                  <div class="task-rep-bar"><div class="lav" style="width:0%"></div></div>
+                  <div class="task-rep-cnt">0 / 200</div>
+                </div>
+                <div class="task-rep">
+                  <div class="task-rep-lbl">Full</div>
+                  <div class="task-rep-bar"><div class="full" style="width:0%"></div></div>
+                  <div class="task-rep-cnt">0 / 80</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-actions">
+              <button class="task-action">✎</button>
+              <button class="task-action">▶</button>
+              <button class="task-action">⋯</button>
+            </div>
+          </div>
+
+          <div class="task-add">+ Legg til oppgave på P4.0</div>
+        </div>
+      </div>
+
+      <!-- PRIO 2: P7.0 (Impact) -->
+      <div class="p-row is-priority">
+        <div class="p-row-head">
+          <span class="p-handle">⋮⋮</span>
+          <span class="p-prio">P2</span>
+          <span class="p-num">P7.0</span>
+          <span class="p-name">Impact</span>
+          <span class="p-pyr"><span class="dot" style="background:var(--pyr-slag)"></span>SLAG</span>
+          <span class="p-cnt">2 oppgaver · 180 / 1100 reps</span>
+          <span class="p-progress-mini"><div style="width:16%"></div></span>
+          <span class="p-chev">▾</span>
+        </div>
+      </div>
+
+      <!-- PRIO 3: P2.0 (Kølleskaft) -->
+      <div class="p-row is-priority">
+        <div class="p-row-head">
+          <span class="p-handle">⋮⋮</span>
+          <span class="p-prio">P3</span>
+          <span class="p-num">P2.0</span>
+          <span class="p-name">Kølleskaft parallelt (baksving)</span>
+          <span class="p-pyr"><span class="dot" style="background:var(--pyr-tek)"></span>TEK</span>
+          <span class="p-cnt">2 oppgaver · 420 / 1600 reps</span>
+          <span class="p-progress-mini"><div style="width:26%"></div></span>
+          <span class="p-chev">▾</span>
+        </div>
+      </div>
+
+      <!-- Resten av P-ene (lavere prioritet, ingen lime-stripe) -->
+      <div class="p-row">
+        <div class="p-row-head">
+          <span class="p-handle">⋮⋮</span>
+          <span class="p-prio">4</span>
+          <span class="p-num">P1.0</span>
+          <span class="p-name">Oppstilling</span>
+          <span class="p-pyr"><span class="dot" style="background:var(--pyr-tek)"></span>TEK</span>
+          <span class="p-cnt">1 oppgave · 200 / 500 reps</span>
+          <span class="p-progress-mini"><div style="width:40%"></div></span>
+          <span class="p-chev">▾</span>
+        </div>
+      </div>
+
+      <div class="p-row">
+        <div class="p-row-head">
+          <span class="p-handle">⋮⋮</span>
+          <span class="p-prio">5</span>
+          <span class="p-num">P10.0</span>
+          <span class="p-name">Finish</span>
+          <span class="p-pyr"><span class="dot" style="background:var(--pyr-tek)"></span>TEK</span>
+          <span class="p-cnt">1 oppgave · 0 / 300 reps</span>
+          <span class="p-progress-mini"><div style="width:0%"></div></span>
+          <span class="p-chev">▾</span>
+        </div>
+      </div>
+
+      <div class="p-row">
+        <div class="p-row-head">
+          <span class="p-handle">⋮⋮</span>
+          <span class="p-prio">6</span>
+          <span class="p-num">P3.0</span>
+          <span class="p-name">Venstre arm parallell (baksving)</span>
+          <span class="p-pyr" style="opacity:.5">Ingen oppg</span>
+          <span class="p-cnt">0 oppgaver</span>
+          <span class="p-progress-mini"></span>
+          <span class="p-chev">▾</span>
+        </div>
+      </div>
+
+      <div class="p-row">
+        <div class="p-row-head">
+          <span class="p-handle">⋮⋮</span>
+          <span class="p-prio">7</span>
+          <span class="p-num">P5.0</span>
+          <span class="p-name">Venstre arm parallell (nedsving)</span>
+          <span class="p-pyr" style="opacity:.5">Ingen oppg</span>
+          <span class="p-cnt">0 oppgaver</span>
+          <span class="p-progress-mini"></span>
+          <span class="p-chev">▾</span>
+        </div>
+      </div>
+
+      <div class="p-row">
+        <div class="p-row-head">
+          <span class="p-handle">⋮⋮</span>
+          <span class="p-prio">8</span>
+          <span class="p-num">P6.0</span>
+          <span class="p-name">Kølleskaft parallelt (nedsving)</span>
+          <span class="p-pyr" style="opacity:.5">Ingen oppg</span>
+          <span class="p-cnt">0 oppgaver</span>
+          <span class="p-progress-mini"></span>
+          <span class="p-chev">▾</span>
+        </div>
+      </div>
+
+      <div class="p-row">
+        <div class="p-row-head">
+          <span class="p-handle">⋮⋮</span>
+          <span class="p-prio">9</span>
+          <span class="p-num">P8.0</span>
+          <span class="p-name">Kølleskaft parallelt (etter impact)</span>
+          <span class="p-pyr" style="opacity:.5">Ingen oppg</span>
+          <span class="p-cnt">0 oppgaver</span>
+          <span class="p-progress-mini"></span>
+          <span class="p-chev">▾</span>
+        </div>
+      </div>
+
+      <div class="p-row">
+        <div class="p-row-head">
+          <span class="p-handle">⋮⋮</span>
+          <span class="p-prio">10</span>
+          <span class="p-num">P9.0</span>
+          <span class="p-name">Høyre arm parallell</span>
+          <span class="p-pyr" style="opacity:.5">Ingen oppg</span>
+          <span class="p-cnt">0 oppgaver</span>
+          <span class="p-progress-mini"></span>
+          <span class="p-chev">▾</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HØYRE: Sammendrag -->
+  <div class="side">
+
+    <div class="side-card">
+      <h3>Plan-sammendrag</h3>
+      <div class="side-stat"><span class="side-stat-lbl">Aktive oppgaver</span><span class="side-stat-val">9 stk</span></div>
+      <div class="side-stat"><span class="side-stat-lbl">Totalt rep-mål</span><span class="side-stat-val">8 200</span></div>
+      <div class="side-stat"><span class="side-stat-lbl">Gjort så langt</span><span class="side-stat-val">1 340 (16 %)</span></div>
+      <div class="side-stat"><span class="side-stat-lbl">Snitt-tempo/uke</span><span class="side-stat-val">~280 reps</span></div>
+      <div class="side-stat"><span class="side-stat-lbl">Estimert ferdig</span><span class="side-stat-val">12. juli</span></div>
+    </div>
+
+    <div class="side-card">
+      <h3>Pyramide-fordeling</h3>
+      <div class="side-pyramide">
+        <div class="pyr-row"><span class="pyr-dot" style="background:var(--pyr-fys)"></span><span class="pyr-name">FYS</span><span class="pyr-cnt">0 oppg</span></div>
+        <div class="pyr-row"><span class="pyr-dot" style="background:var(--pyr-tek)"></span><span class="pyr-name">TEK</span><span class="pyr-cnt">7 oppg</span></div>
+        <div class="pyr-row"><span class="pyr-dot" style="background:var(--pyr-slag)"></span><span class="pyr-name">SLAG</span><span class="pyr-cnt">2 oppg</span></div>
+        <div class="pyr-row"><span class="pyr-dot" style="background:var(--pyr-spill)"></span><span class="pyr-name">SPILL</span><span class="pyr-cnt">0 oppg</span></div>
+        <div class="pyr-row"><span class="pyr-dot" style="background:var(--pyr-turn)"></span><span class="pyr-name">TURN</span><span class="pyr-cnt">0 oppg</span></div>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <h3>Coach</h3>
+      <div class="side-coach">
+        <div class="side-coach-av">AK</div>
+        <div class="side-coach-info">
+          <b>Anders Kristiansen</b>
+          <span>Sist redigert · for 2 timer siden</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <h3>Aktivitet</h3>
+      <div class="side-stat"><span class="side-stat-lbl">Markus la til</span><span class="side-stat-val">i går</span></div>
+      <div class="side-stat"><span class="side-stat-lbl">Anders endret prio</span><span class="side-stat-val">2t siden</span></div>
+      <div class="side-stat"><span class="side-stat-lbl">Markus logget reps</span><span class="side-stat-val">fre 16. mai</span></div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</body>
+</html>

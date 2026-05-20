@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AT04 — TrainingPeaks Coach · CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Anton&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --bg-grad: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 240px);
+    --panel: #FFFFFF;
+    --panel-2: #F8FAFC;
+    --fg: #1A2937;
+    --fg-muted: #5E6B7A;
+    --fg-soft: #8A95A3;
+    --border: #E3E8EE;
+    --border-strong: #CDD5DF;
+    --tp-blue: #0066CC;
+    --tp-blue-soft: #E6F0FB;
+    --sport-green: #00A86B;
+    --green-soft: #E5F6EE;
+    --alert: #FF8C00;
+    --alert-soft: #FFF1E0;
+    --danger: #D33B3B;
+    --danger-soft: #FBE5E5;
+    --lime: #D1F843;
+    --shadow-sm: 0 1px 2px rgba(15,30,50,0.04);
+    --shadow: 0 2px 8px rgba(15,30,50,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+  body { background-image: var(--bg-grad); min-height: 100vh; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+  .display { font-family: 'Anton', sans-serif; letter-spacing: 0.01em; text-transform: uppercase; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  /* LAYOUT */
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar { background: #FFFFFF; border-right: 1px solid var(--border); padding: 20px 14px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 6px 8px 18px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
+  .brand-mark { width: 26px; height: 26px; border-radius: 4px; background: var(--tp-blue); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  .brand-name { font-weight: 700; font-size: 13px; letter-spacing: 0.02em; }
+  .brand-sub { font-size: 10px; color: var(--fg-soft); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
+  .cmdk { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--panel-2); margin-bottom: 16px; font-size: 12px; color: var(--fg-muted); }
+  .cmdk .kbd { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; background: #fff; border: 1px solid var(--border); padding: 1px 5px; border-radius: 3px; }
+  .nav-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--fg-soft); padding: 14px 8px 6px; }
+  .nav a { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 4px; font-size: 13px; color: var(--fg); }
+  .nav a:hover { background: var(--panel-2); }
+  .nav a.active { background: var(--tp-blue-soft); color: var(--tp-blue); font-weight: 600; }
+  .nav a .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-strong); }
+  .nav a.active .dot { background: var(--tp-blue); }
+  .nav a .num { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-soft); }
+  .nav a.active .num { color: var(--tp-blue); }
+  .sidebar-foot { margin-top: 22px; padding: 10px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 4px; font-size: 11px; color: var(--fg-muted); }
+  .sidebar-foot strong { color: var(--fg); display: block; font-size: 12px; margin-bottom: 3px; }
+
+  /* MAIN */
+  .main { padding: 22px 32px 60px; max-width: 1480px; }
+
+  /* TOP STRIP */
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 18px; border-bottom: 1px solid var(--border); margin-bottom: 26px; }
+  .crumbs { display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-soft); letter-spacing: 0.06em; }
+  .crumbs strong { color: var(--fg); font-weight: 600; }
+  .crumbs .sep { opacity: 0.4; }
+  .top-actions { display: flex; align-items: center; gap: 10px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; border: 1px solid var(--border); background: #fff; color: var(--fg-muted); }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sport-green); }
+  .pill.blue { background: var(--tp-blue-soft); border-color: #BBD9F2; color: var(--tp-blue); }
+  .pill.alert { background: var(--alert-soft); border-color: #F6CFA1; color: #B36300; }
+  .pill.green { background: var(--green-soft); border-color: #B4E2CC; color: #007048; }
+  .pill.lime { background: var(--lime); border-color: #B5DA2C; color: #2A3A00; }
+  .pill.danger { background: var(--danger-soft); border-color: #F0B6B6; color: #962525; }
+
+  /* HERO */
+  .hero { display: grid; grid-template-columns: 1fr 400px; gap: 28px; margin-bottom: 30px; }
+  .hero-left h1 { font-family: 'Anton', sans-serif; font-size: 100px; line-height: 0.92; letter-spacing: 0.005em; color: var(--fg); }
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; margin: 18px 0 24px; }
+  .hero-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-muted); letter-spacing: 0.04em; }
+
+  .tss-card { margin-top: 22px; display: grid; grid-template-columns: auto 1fr auto; gap: 22px; align-items: center; padding: 22px 26px; border: 1px solid var(--border); border-left: 4px solid var(--tp-blue); border-radius: 4px; background: #fff; box-shadow: var(--shadow-sm); }
+  .tss-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: var(--fg-soft); }
+  .tss-value { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 700; color: var(--tp-blue); line-height: 1; margin-top: 4px; }
+  .tss-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-muted); margin-top: 6px; letter-spacing: 0.04em; }
+  .tss-status { display: grid; gap: 6px; }
+  .tss-status-row { font-size: 12px; color: var(--fg-muted); display: flex; align-items: center; gap: 8px; }
+  .tss-status-row strong { color: var(--fg); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .hero-actions { margin-top: 22px; display: flex; gap: 10px; }
+  .btn { padding: 10px 18px; border-radius: 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; transition: 0.15s; }
+  .btn-primary { background: var(--tp-blue); color: #fff; }
+  .btn-primary:hover { background: #00528E; }
+  .btn-outline { border: 1px solid var(--border-strong); color: var(--fg); background: #fff; }
+  .btn-outline:hover { border-color: var(--fg); }
+
+  /* COACH PORTRAIT */
+  .portrait { position: relative; border-radius: 4px; overflow: hidden; height: 600px; background: #1A2937; box-shadow: var(--shadow); }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; }
+  .portrait-top { position: absolute; top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: center; }
+  .portrait-top .pill-dark { background: rgba(255,255,255,0.95); color: var(--fg); border: 0; backdrop-filter: blur(6px); font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 5px 10px; border-radius: 4px; letter-spacing: 0.06em; }
+  .portrait-cert { position: absolute; top: 50%; left: 14px; transform: translateY(-50%); background: var(--tp-blue); color: #fff; padding: 8px 12px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; box-shadow: var(--shadow); }
+  .portrait-bottom { position: absolute; left: 14px; right: 14px; bottom: 14px; background: #fff; padding: 14px 16px; border-radius: 4px; box-shadow: var(--shadow); }
+  .portrait-bottom h4 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--fg); margin-bottom: 4px; }
+  .portrait-bottom .role { font-size: 11px; color: var(--fg-muted); margin-bottom: 10px; }
+  .portrait-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .portrait-stat .num { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--tp-blue); }
+  .portrait-stat .lbl { font-size: 9px; letter-spacing: 0.1em; color: var(--fg-soft); text-transform: uppercase; font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+
+  /* KPI STRIP */
+  .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 30px; }
+  .kpi { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 16px 18px; box-shadow: var(--shadow-sm); }
+  .kpi .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--fg-soft); text-transform: uppercase; }
+  .kpi .value { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; color: var(--fg); margin-top: 8px; line-height: 1; }
+  .kpi .sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-muted); margin-top: 8px; letter-spacing: 0.03em; }
+  .kpi.accent .value { color: var(--tp-blue); }
+  .kpi.green .value { color: var(--sport-green); }
+  .kpi.lime { border-top: 3px solid var(--lime); }
+
+  /* SECTION */
+  .section { margin-bottom: 34px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .section-head h2 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg); }
+  .section-head .meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-soft); letter-spacing: 0.06em; }
+
+  /* PMC CHART */
+  .pmc { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 20px; box-shadow: var(--shadow-sm); }
+  .pmc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .pmc-title h3 { font-size: 15px; font-weight: 700; }
+  .pmc-title p { font-size: 11px; color: var(--fg-muted); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+  .pmc-legend { display: flex; gap: 14px; }
+  .pmc-legend .leg { display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.04em; color: var(--fg-muted); }
+  .pmc-legend .swatch { width: 14px; height: 3px; border-radius: 1px; }
+  .pmc-chart { width: 100%; height: 260px; display: block; }
+  .pmc-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .pmc-sum-cell .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-soft); letter-spacing: 0.1em; text-transform: uppercase; }
+  .pmc-sum-cell .val { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; margin-top: 4px; }
+  .pmc-sum-cell .delta { font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-top: 2px; }
+  .delta-up { color: var(--sport-green); }
+  .delta-down { color: var(--danger); }
+
+  /* TABLE */
+  .table-wrap { background: #fff; border: 1px solid var(--border); border-radius: 4px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  table.athletes { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.athletes thead th { background: var(--panel-2); padding: 10px 14px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-soft); border-bottom: 1px solid var(--border); font-weight: 600; }
+  table.athletes tbody td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  table.athletes tbody tr:hover { background: var(--panel-2); }
+  table.athletes tbody tr:last-child td { border-bottom: 0; }
+  .ath-name { display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 30px; height: 30px; border-radius: 4px; background: var(--tp-blue-soft); color: var(--tp-blue); display: grid; place-items: center; font-weight: 700; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+  .avatar.green { background: var(--green-soft); color: var(--sport-green); }
+  .avatar.orange { background: var(--alert-soft); color: var(--alert); }
+  .avatar.danger { background: var(--danger-soft); color: var(--danger); }
+  .num-cell { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+  .tsb-cell { font-family: 'JetBrains Mono', monospace; font-weight: 700; padding: 3px 8px; border-radius: 4px; display: inline-block; min-width: 50px; text-align: center; font-size: 11px; }
+  .tsb-fresh { background: var(--green-soft); color: var(--sport-green); }
+  .tsb-tired { background: var(--alert-soft); color: var(--alert); }
+  .tsb-neutral { background: var(--panel-2); color: var(--fg-muted); }
+  .tsb-danger { background: var(--danger-soft); color: var(--danger); }
+  .trend-svg { display: inline-block; vertical-align: middle; }
+  .compliance-bar { width: 90px; height: 6px; background: var(--panel-2); border-radius: 2px; position: relative; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+  .compliance-bar > span { display: block; height: 100%; background: var(--sport-green); }
+  .row-actions { display: flex; gap: 4px; }
+  .btn-mini { padding: 4px 9px; border-radius: 4px; font-size: 10px; font-weight: 600; border: 1px solid var(--border); background: #fff; color: var(--fg); letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Inter', sans-serif; }
+  .btn-mini.primary { background: var(--tp-blue); color: #fff; border-color: var(--tp-blue); }
+  .btn-mini:hover { border-color: var(--fg); }
+
+  /* WORKOUTS LIST */
+  .workouts { display: grid; gap: 10px; }
+  .workout { display: grid; grid-template-columns: 80px 200px 1fr 90px 70px 80px; gap: 18px; align-items: center; background: #fff; border: 1px solid var(--border); border-left: 3px solid var(--tp-blue); border-radius: 4px; padding: 14px 18px; box-shadow: var(--shadow-sm); }
+  .workout.green { border-left-color: var(--sport-green); }
+  .workout.orange { border-left-color: var(--alert); }
+  .workout.completed { border-left-color: var(--sport-green); background: #FAFEFB; }
+  .wo-time { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 16px; color: var(--fg); }
+  .wo-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-soft); margin-top: 2px; letter-spacing: 0.06em; }
+  .wo-athlete { display: flex; align-items: center; gap: 10px; }
+  .wo-athlete .who { font-weight: 600; font-size: 13px; }
+  .wo-athlete .who small { display: block; font-size: 10px; color: var(--fg-soft); font-family: 'JetBrains Mono', monospace; margin-top: 1px; letter-spacing: 0.04em; }
+  .wo-detail h4 { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .wo-detail p { font-size: 11px; color: var(--fg-muted); line-height: 1.4; }
+  .wo-detail .note { margin-top: 6px; font-size: 11px; color: var(--tp-blue); font-style: italic; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em; }
+  .wo-metric { text-align: center; }
+  .wo-metric .v { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 18px; }
+  .wo-metric .l { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--fg-soft); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+  .wo-status { text-align: right; }
+
+  /* HEATMAP */
+  .heatmap-wrap { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 22px; box-shadow: var(--shadow-sm); }
+  .heatmap-grid { display: grid; grid-template-columns: 130px repeat(12, 1fr); gap: 4px; align-items: center; }
+  .heatmap-grid .hm-head { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--fg-soft); letter-spacing: 0.08em; text-align: center; }
+  .heatmap-grid .hm-name { font-size: 12px; font-weight: 600; padding-right: 8px; }
+  .heatmap-grid .hm-cell { aspect-ratio: 1.4 / 1; border-radius: 2px; display: grid; place-items: center; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(0,0,0,0.55); cursor: pointer; transition: 0.1s; }
+  .heatmap-grid .hm-cell:hover { transform: scale(1.15); outline: 1px solid var(--fg); z-index: 2; }
+  .hm-green { background: #00A86B; color: #fff !important; }
+  .hm-green-2 { background: #4FC396; color: #fff !important; }
+  .hm-yellow { background: #F5D547; }
+  .hm-orange { background: #FF8C00; color: #fff !important; }
+  .hm-red { background: #D33B3B; color: #fff !important; }
+  .hm-empty { background: #F1F4F8; color: var(--fg-soft) !important; }
+  .heatmap-legend { display: flex; gap: 14px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-muted); letter-spacing: 0.06em; }
+  .heatmap-legend .leg { display: flex; align-items: center; gap: 6px; }
+  .heatmap-legend .sw { width: 14px; height: 14px; border-radius: 2px; }
+
+  /* TASKS */
+  .tasks-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  .tasks { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; box-shadow: var(--shadow-sm); }
+  .tasks h3 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; color: var(--fg); }
+  .task { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .task:last-child { border-bottom: 0; }
+  .task .check { width: 16px; height: 16px; border-radius: 3px; border: 1.5px solid var(--border-strong); flex-shrink: 0; }
+  .task.done .check { background: var(--sport-green); border-color: var(--sport-green); position: relative; }
+  .task.done .check::after { content: ''; position: absolute; left: 4px; top: 1px; width: 5px; height: 9px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg); }
+  .task .body { flex: 1; }
+  .task .body strong { font-size: 13px; font-weight: 600; display: block; }
+  .task .body small { font-size: 10px; color: var(--fg-soft); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; }
+  .task.done .body strong { color: var(--fg-soft); text-decoration: line-through; }
+  .task .pill { flex-shrink: 0; }
+
+  .quick-stats { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; box-shadow: var(--shadow-sm); }
+  .quick-stats h3 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; }
+  .qs-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .qs-row:last-child { border-bottom: 0; }
+  .qs-row .k { color: var(--fg-muted); }
+  .qs-row .v { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+
+  /* FOOTER */
+  .footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-soft); letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">A</div>
+      <div>
+        <div class="brand-name">AK GOLF · COACH</div>
+        <div class="brand-sub">v4.2 · TPCT</div>
+      </div>
+    </div>
+
+    <div class="cmdk">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      Søk athlete, workout...
+      <span class="kbd">⌘K</span>
+    </div>
+
+    <div class="nav-label">DAGLIG</div>
+    <nav class="nav">
+      <a href="#" class="active"><span class="dot"></span> Dashboard <span class="num">·</span></a>
+      <a href="#"><span class="dot"></span> Today's Plan <span class="num">5</span></a>
+      <a href="#"><span class="dot"></span> Inbox <span class="num">12</span></a>
+      <a href="#"><span class="dot"></span> Approvals <span class="num">12</span></a>
+    </nav>
+
+    <div class="nav-label">OPERASJON</div>
+    <nav class="nav">
+      <a href="#"><span class="dot"></span> Athletes <span class="num">38</span></a>
+      <a href="#"><span class="dot"></span> Calendar</a>
+      <a href="#"><span class="dot"></span> Workout Library <span class="num">247</span></a>
+      <a href="#"><span class="dot"></span> Plans <span class="num">14</span></a>
+      <a href="#"><span class="dot"></span> Booking</a>
+    </nav>
+
+    <div class="nav-label">INNSIKT</div>
+    <nav class="nav">
+      <a href="#"><span class="dot"></span> Performance</a>
+      <a href="#"><span class="dot"></span> Compliance</a>
+      <a href="#"><span class="dot"></span> Reports</a>
+      <a href="#"><span class="dot"></span> Revenue</a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <strong>System OK</strong>
+      Last sync: 06:42<br/>
+      38 athletes · 5 plans active
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="crumbs">
+        <strong>COACHHQ</strong>
+        <span class="sep">/</span>
+        <span>DASHBOARD</span>
+        <span class="sep">/</span>
+        <span>TIRSDAG 19. MAI 2026 · UKE 21</span>
+      </div>
+      <div class="top-actions">
+        <span class="pill green"><span class="dot"></span> ALL SYSTEMS NOMINAL</span>
+        <span class="pill alert">12 APPROVALS</span>
+        <span class="pill blue">TPCT L4</span>
+        <span class="pill">06:42 LOCAL</span>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-left">
+        <div class="hero-meta">COACH DASHBOARD · TUE MAY 19 2026 · MESOCYCLE W3/W4</div>
+        <h1>GOD MORGEN,<br/>ANDERS.</h1>
+        <div class="hero-tags">
+          <span class="pill lime">FORM ZONE</span>
+          <span class="pill blue">38 ATHLETES</span>
+          <span class="pill">5 SESSIONS TODAY</span>
+          <span class="pill alert">12 OVERDUE</span>
+          <span class="pill green">CTL TRENDING ↑</span>
+        </div>
+
+        <div class="tss-card">
+          <div>
+            <div class="tss-label">PLANNED TSS · TODAY</div>
+            <div class="tss-value mono">247</div>
+            <div class="tss-sub">↑ 14 vs gj.snitt · IF 0.82</div>
+          </div>
+          <div class="tss-status">
+            <div class="tss-status-row">Coach Status: <strong>38 athletes</strong></div>
+            <div class="tss-status-row">Today's load: <strong>5 sessions · 6.5h on plan</strong></div>
+            <div class="tss-status-row">Pending: <strong>12 approvals · 3 plan adjustments</strong></div>
+            <div class="tss-status-row">Next session: <strong>09:00 — Markus R-P (PMC threshold)</strong></div>
+          </div>
+          <div>
+            <svg width="60" height="60" viewBox="0 0 60 60">
+              <circle cx="30" cy="30" r="26" fill="none" stroke="#E3E8EE" stroke-width="4"/>
+              <circle cx="30" cy="30" r="26" fill="none" stroke="#0066CC" stroke-width="4" stroke-dasharray="163.4" stroke-dashoffset="32.7" transform="rotate(-90 30 30)" stroke-linecap="round"/>
+              <text x="30" y="35" text-anchor="middle" font-family="JetBrains Mono" font-size="14" font-weight="700" fill="#0066CC">80%</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary">REVIEW WORKOUTS
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <button class="btn btn-outline">CALENDAR</button>
+          <button class="btn btn-outline">QUICK MESSAGE</button>
+        </div>
+      </div>
+
+      <div class="portrait">
+        <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=800&h=1200&fit=crop&crop=faces" alt="Coach Anders" />
+        <div class="portrait-top">
+          <div class="pill-dark">COACH PROFILE · LEVEL 4 CERTIFIED · 38 ATHLETES</div>
+        </div>
+        <div class="portrait-cert">TPCT CERTIFIED</div>
+        <div class="portrait-bottom">
+          <h4>ANDERS KRISTIANSEN, MS</h4>
+          <p class="role">CERTIFIED PERFORMANCE COACH</p>
+          <div class="portrait-stats">
+            <div class="portrait-stat"><div class="num">47</div><div class="lbl">ECONOMIES</div></div>
+            <div class="portrait-stat"><div class="num">142</div><div class="lbl">SESSIONS</div></div>
+            <div class="portrait-stat"><div class="num">12</div><div class="lbl">PRs</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI STRIP -->
+    <section class="kpi-strip">
+      <div class="kpi accent">
+        <div class="label">TOTAL TSS · WEEK</div>
+        <div class="value">1247</div>
+        <div class="sub">planned 1180 · +5.7%</div>
+      </div>
+      <div class="kpi">
+        <div class="label">AVG CTL</div>
+        <div class="value">87.4</div>
+        <div class="sub">90-d trend ↑ +6.2</div>
+      </div>
+      <div class="kpi green">
+        <div class="label">COMPLIANCE</div>
+        <div class="value">89%</div>
+        <div class="sub">target 85% · ↑ 2pt</div>
+      </div>
+      <div class="kpi lime">
+        <div class="label">INNTEKT MTD</div>
+        <div class="value">47k</div>
+        <div class="sub">på vei mot 62k</div>
+      </div>
+    </section>
+
+    <!-- PERFORMANCE MANAGEMENT CHART -->
+    <section class="section">
+      <div class="section-head">
+        <h2>PERFORMANCE MANAGEMENT CHART · 90 DAYS</h2>
+        <span class="meta">SQUAD AGGREGATE · TSS-BASED · UPDATED 06:42</span>
+      </div>
+
+      <div class="pmc">
+        <div class="pmc-head">
+          <div class="pmc-title">
+            <h3>Squad Fitness · Fatigue · Form</h3>
+            <p>CTL=42d EWMA · ATL=7d EWMA · TSB=CTL−ATL</p>
+          </div>
+          <div class="pmc-legend">
+            <div class="leg"><div class="swatch" style="background:#0066CC"></div> CTL · FITNESS</div>
+            <div class="leg"><div class="swatch" style="background:#FF8C00"></div> ATL · FATIGUE</div>
+            <div class="leg"><div class="swatch" style="background:#00A86B"></div> TSB · FORM</div>
+            <div class="leg"><div class="swatch" style="background:#D1F843"></div> DAILY TSS</div>
+          </div>
+        </div>
+
+        <svg class="pmc-chart" viewBox="0 0 1000 260" preserveAspectRatio="none">
+          <!-- Background grid -->
+          <g stroke="#E3E8EE" stroke-width="1">
+            <line x1="40" y1="40" x2="980" y2="40"/>
+            <line x1="40" y1="80" x2="980" y2="80"/>
+            <line x1="40" y1="120" x2="980" y2="120" stroke="#CDD5DF"/>
+            <line x1="40" y1="160" x2="980" y2="160"/>
+            <line x1="40" y1="200" x2="980" y2="200"/>
+          </g>
+          <!-- Y-axis labels -->
+          <g font-family="JetBrains Mono" font-size="9" fill="#8A95A3" text-anchor="end">
+            <text x="35" y="44">120</text>
+            <text x="35" y="84">90</text>
+            <text x="35" y="124">60</text>
+            <text x="35" y="164">30</text>
+            <text x="35" y="204">0</text>
+          </g>
+          <!-- Form zone shading -->
+          <rect x="40" y="105" width="940" height="30" fill="#D1F843" opacity="0.18"/>
+          <text x="50" y="118" font-family="JetBrains Mono" font-size="9" fill="#5E6B7A" letter-spacing="1">OPTIMAL FORM ZONE (TSB +5 to +15)</text>
+
+          <!-- Daily TSS bars (light) -->
+          <g fill="#D1F843" opacity="0.7">
+            <rect x="60" y="190" width="6" height="30"/><rect x="80" y="170" width="6" height="50"/><rect x="100" y="200" width="6" height="20"/>
+            <rect x="120" y="160" width="6" height="60"/><rect x="140" y="185" width="6" height="35"/><rect x="160" y="150" width="6" height="70"/>
+            <rect x="180" y="195" width="6" height="25"/><rect x="200" y="175" width="6" height="45"/><rect x="220" y="165" width="6" height="55"/>
+            <rect x="240" y="155" width="6" height="65"/><rect x="260" y="200" width="6" height="20"/><rect x="280" y="145" width="6" height="75"/>
+            <rect x="300" y="170" width="6" height="50"/><rect x="320" y="180" width="6" height="40"/><rect x="340" y="160" width="6" height="60"/>
+            <rect x="360" y="140" width="6" height="80"/><rect x="380" y="195" width="6" height="25"/><rect x="400" y="155" width="6" height="65"/>
+            <rect x="420" y="170" width="6" height="50"/><rect x="440" y="135" width="6" height="85"/><rect x="460" y="180" width="6" height="40"/>
+            <rect x="480" y="150" width="6" height="70"/><rect x="500" y="165" width="6" height="55"/><rect x="520" y="125" width="6" height="95"/>
+            <rect x="540" y="190" width="6" height="30"/><rect x="560" y="145" width="6" height="75"/><rect x="580" y="160" width="6" height="60"/>
+            <rect x="600" y="130" width="6" height="90"/><rect x="620" y="170" width="6" height="50"/><rect x="640" y="140" width="6" height="80"/>
+            <rect x="660" y="180" width="6" height="40"/><rect x="680" y="120" width="6" height="100"/><rect x="700" y="155" width="6" height="65"/>
+            <rect x="720" y="165" width="6" height="55"/><rect x="740" y="135" width="6" height="85"/><rect x="760" y="175" width="6" height="45"/>
+            <rect x="780" y="150" width="6" height="70"/><rect x="800" y="125" width="6" height="95"/><rect x="820" y="160" width="6" height="60"/>
+            <rect x="840" y="140" width="6" height="80"/><rect x="860" y="170" width="6" height="50"/><rect x="880" y="130" width="6" height="90"/>
+            <rect x="900" y="155" width="6" height="65"/><rect x="920" y="145" width="6" height="75"/>
+          </g>
+
+          <!-- CTL (blue, rising smooth) -->
+          <path d="M 60,180 C 130,175 200,168 280,158 C 360,150 440,140 520,128 C 600,118 680,108 760,95 C 840,85 900,78 920,72" fill="none" stroke="#0066CC" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- ATL (orange, more volatile) -->
+          <path d="M 60,170 C 100,178 140,160 180,170 C 220,180 260,150 300,165 C 340,175 380,140 420,160 C 460,170 500,125 540,150 C 580,170 620,115 660,140 C 700,160 740,105 780,130 C 820,150 860,90 900,115 C 915,125 920,115 920,115" fill="none" stroke="#FF8C00" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- TSB (green, oscillating around 0) -->
+          <path d="M 60,125 C 100,118 140,135 180,120 C 220,108 260,140 300,118 C 340,108 380,138 420,118 C 460,108 500,135 540,120 C 580,108 620,140 660,118 C 700,108 740,138 780,118 C 820,108 860,135 900,118 C 915,115 920,118 920,118" fill="none" stroke="#00A86B" stroke-width="2.5" stroke-linecap="round"/>
+
+          <!-- Today pin -->
+          <line x1="920" y1="40" x2="920" y2="220" stroke="#1A2937" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <circle cx="920" cy="72" r="5" fill="#0066CC" stroke="#fff" stroke-width="2"/>
+          <circle cx="920" cy="115" r="5" fill="#FF8C00" stroke="#fff" stroke-width="2"/>
+          <circle cx="920" cy="118" r="5" fill="#00A86B" stroke="#fff" stroke-width="2"/>
+          <rect x="855" y="20" width="70" height="16" rx="2" fill="#1A2937"/>
+          <text x="890" y="32" font-family="JetBrains Mono" font-size="9" fill="#fff" text-anchor="middle" letter-spacing="1">TODAY</text>
+
+          <!-- X-axis labels -->
+          <g font-family="JetBrains Mono" font-size="9" fill="#8A95A3">
+            <text x="60" y="240">-90D</text>
+            <text x="240" y="240">-60D</text>
+            <text x="450" y="240">-45D</text>
+            <text x="660" y="240">-21D</text>
+            <text x="820" y="240">-7D</text>
+            <text x="905" y="240">TODAY</text>
+          </g>
+        </svg>
+
+        <div class="pmc-summary">
+          <div class="pmc-sum-cell">
+            <div class="lbl">CTL · FITNESS</div>
+            <div class="val" style="color:#0066CC">87.4</div>
+            <div class="delta delta-up">↑ +6.2 (42d)</div>
+          </div>
+          <div class="pmc-sum-cell">
+            <div class="lbl">ATL · FATIGUE</div>
+            <div class="val" style="color:#FF8C00">79.1</div>
+            <div class="delta delta-up">↑ +3.8 (7d)</div>
+          </div>
+          <div class="pmc-sum-cell">
+            <div class="lbl">TSB · FORM</div>
+            <div class="val" style="color:#00A86B">+8.3</div>
+            <div class="delta delta-up">OPTIMAL ZONE</div>
+          </div>
+          <div class="pmc-sum-cell">
+            <div class="lbl">RAMP RATE</div>
+            <div class="val">+5.8</div>
+            <div class="delta delta-down">↓ keep &lt; 8.0</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATHLETES DASHBOARD -->
+    <section class="section">
+      <div class="section-head">
+        <h2>ATHLETES DASHBOARD · TOP 8 BY LOAD</h2>
+        <span class="meta">38 ACTIVE · SORTED BY CTL DESCENDING</span>
+      </div>
+      <div class="table-wrap">
+        <table class="athletes">
+          <thead>
+            <tr>
+              <th>ATHLETE</th>
+              <th>TODAY TSS</th>
+              <th>CTL</th>
+              <th>TSB</th>
+              <th>TREND · 14D</th>
+              <th>COMPLIANCE</th>
+              <th>LAST WORKOUT</th>
+              <th>NEXT UP</th>
+              <th>ACTION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="ath-name"><div class="avatar">MR</div><div><strong>Markus Roinås-P.</strong><br/><small style="color:var(--fg-soft);font-family:'JetBrains Mono'">U21 · Elite</small></div></div></td>
+              <td class="num-cell">142</td>
+              <td class="num-cell">102.4</td>
+              <td><span class="tsb-cell tsb-fresh">+12.4</span></td>
+              <td><svg class="trend-svg" width="60" height="20" viewBox="0 0 60 20"><polyline points="0,12 10,10 20,11 30,7 40,8 50,4 60,2" fill="none" stroke="#00A86B" stroke-width="1.5"/></svg></td>
+              <td><div class="compliance-bar"><span style="width:94%"></span></div><span class="num-cell">94%</span></td>
+              <td class="num-cell">17/5 · Threshold</td>
+              <td>09:00 · PMC test</td>
+              <td><div class="row-actions"><button class="btn-mini primary">Review</button><button class="btn-mini">Msg</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="ath-name"><div class="avatar green">JH</div><div><strong>Joachim Hagen</strong><br/><small style="color:var(--fg-soft);font-family:'JetBrains Mono'">U18 · Pro</small></div></div></td>
+              <td class="num-cell">98</td>
+              <td class="num-cell">94.7</td>
+              <td><span class="tsb-cell tsb-fresh">+9.1</span></td>
+              <td><svg class="trend-svg" width="60" height="20" viewBox="0 0 60 20"><polyline points="0,14 10,11 20,9 30,10 40,6 50,5 60,3" fill="none" stroke="#00A86B" stroke-width="1.5"/></svg></td>
+              <td><div class="compliance-bar"><span style="width:91%;background:#00A86B"></span></div><span class="num-cell">91%</span></td>
+              <td class="num-cell">17/5 · Endurance</td>
+              <td>11:30 · Recovery</td>
+              <td><div class="row-actions"><button class="btn-mini primary">Review</button><button class="btn-mini">Adjust</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="ath-name"><div class="avatar orange">SL</div><div><strong>Sigurd Larsen</strong><br/><small style="color:var(--fg-soft);font-family:'JetBrains Mono'">U21 · Performance</small></div></div></td>
+              <td class="num-cell">175</td>
+              <td class="num-cell">91.2</td>
+              <td><span class="tsb-cell tsb-tired">-14.2</span></td>
+              <td><svg class="trend-svg" width="60" height="20" viewBox="0 0 60 20"><polyline points="0,6 10,8 20,10 30,12 40,14 50,15 60,16" fill="none" stroke="#FF8C00" stroke-width="1.5"/></svg></td>
+              <td><div class="compliance-bar"><span style="width:78%;background:#FF8C00"></span></div><span class="num-cell">78%</span></td>
+              <td class="num-cell">18/5 · VO2max</td>
+              <td>13:30 · Light tech</td>
+              <td><div class="row-actions"><button class="btn-mini primary">Review</button><button class="btn-mini">Adjust</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="ath-name"><div class="avatar">EB</div><div><strong>Emil Bjørnstad</strong><br/><small style="color:var(--fg-soft);font-family:'JetBrains Mono'">U16 · Pro</small></div></div></td>
+              <td class="num-cell">85</td>
+              <td class="num-cell">88.5</td>
+              <td><span class="tsb-cell tsb-fresh">+6.7</span></td>
+              <td><svg class="trend-svg" width="60" height="20" viewBox="0 0 60 20"><polyline points="0,12 10,10 20,11 30,9 40,7 50,8 60,5" fill="none" stroke="#00A86B" stroke-width="1.5"/></svg></td>
+              <td><div class="compliance-bar"><span style="width:88%"></span></div><span class="num-cell">88%</span></td>
+              <td class="num-cell">17/5 · Tempo</td>
+              <td>15:00 · Putting</td>
+              <td><div class="row-actions"><button class="btn-mini primary">Review</button><button class="btn-mini">Msg</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="ath-name"><div class="avatar green">TW</div><div><strong>Tobias Wang</strong><br/><small style="color:var(--fg-soft);font-family:'JetBrains Mono'">U18 · Elite</small></div></div></td>
+              <td class="num-cell">120</td>
+              <td class="num-cell">85.9</td>
+              <td><span class="tsb-cell tsb-neutral">+1.2</span></td>
+              <td><svg class="trend-svg" width="60" height="20" viewBox="0 0 60 20"><polyline points="0,10 10,11 20,9 30,12 40,8 50,11 60,9" fill="none" stroke="#5E6B7A" stroke-width="1.5"/></svg></td>
+              <td><div class="compliance-bar"><span style="width:85%"></span></div><span class="num-cell">85%</span></td>
+              <td class="num-cell">17/5 · Threshold</td>
+              <td>16:30 · Iron play</td>
+              <td><div class="row-actions"><button class="btn-mini primary">Review</button><button class="btn-mini">Msg</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="ath-name"><div class="avatar danger">NL</div><div><strong>Nora Lien</strong><br/><small style="color:var(--fg-soft);font-family:'JetBrains Mono'">U21 · Performance</small></div></div></td>
+              <td class="num-cell">0</td>
+              <td class="num-cell">82.1</td>
+              <td><span class="tsb-cell tsb-danger">-18.7</span></td>
+              <td><svg class="trend-svg" width="60" height="20" viewBox="0 0 60 20"><polyline points="0,5 10,7 20,10 30,12 40,15 50,17 60,18" fill="none" stroke="#D33B3B" stroke-width="1.5"/></svg></td>
+              <td><div class="compliance-bar"><span style="width:62%;background:#D33B3B"></span></div><span class="num-cell">62%</span></td>
+              <td class="num-cell">15/5 · Missed</td>
+              <td>Rest day</td>
+              <td><div class="row-actions"><button class="btn-mini primary">Review</button><button class="btn-mini">Adjust</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="ath-name"><div class="avatar">IK</div><div><strong>Ida Kvalheim</strong><br/><small style="color:var(--fg-soft);font-family:'JetBrains Mono'">U16 · Pro</small></div></div></td>
+              <td class="num-cell">72</td>
+              <td class="num-cell">78.4</td>
+              <td><span class="tsb-cell tsb-fresh">+8.9</span></td>
+              <td><svg class="trend-svg" width="60" height="20" viewBox="0 0 60 20"><polyline points="0,13 10,11 20,9 30,8 40,6 50,5 60,4" fill="none" stroke="#00A86B" stroke-width="1.5"/></svg></td>
+              <td><div class="compliance-bar"><span style="width:96%;background:#00A86B"></span></div><span class="num-cell">96%</span></td>
+              <td class="num-cell">17/5 · Endurance</td>
+              <td>18:00 · Driver</td>
+              <td><div class="row-actions"><button class="btn-mini primary">Review</button><button class="btn-mini">Msg</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="ath-name"><div class="avatar green">HØ</div><div><strong>Henrik Østby</strong><br/><small style="color:var(--fg-soft);font-family:'JetBrains Mono'">U18 · Performance</small></div></div></td>
+              <td class="num-cell">95</td>
+              <td class="num-cell">75.6</td>
+              <td><span class="tsb-cell tsb-neutral">+3.4</span></td>
+              <td><svg class="trend-svg" width="60" height="20" viewBox="0 0 60 20"><polyline points="0,11 10,10 20,8 30,9 40,7 50,8 60,6" fill="none" stroke="#00A86B" stroke-width="1.5"/></svg></td>
+              <td><div class="compliance-bar"><span style="width:82%"></span></div><span class="num-cell">82%</span></td>
+              <td class="num-cell">17/5 · Tempo</td>
+              <td>19:30 · Recovery</td>
+              <td><div class="row-actions"><button class="btn-mini primary">Review</button><button class="btn-mini">Msg</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TODAY'S WORKOUTS -->
+    <section class="section">
+      <div class="section-head">
+        <h2>TODAY'S PLANNED WORKOUTS · 5 SESSIONS</h2>
+        <span class="meta">TOTAL PLANNED · 6h 30min · 247 TSS</span>
+      </div>
+      <div class="workouts">
+
+        <div class="workout">
+          <div>
+            <div class="wo-time mono">09:00</div>
+            <div class="wo-date">TUE 19/5</div>
+          </div>
+          <div class="wo-athlete">
+            <div class="avatar">MR</div>
+            <div class="who">Markus Roinås-P.<small>U21 · ELITE</small></div>
+          </div>
+          <div class="wo-detail">
+            <h4>Threshold intervaller — 4×8min @ FTP</h4>
+            <p>Warm-up 15min · Main: 4×8min @ 95-105% FTP · 4min rest · Cool-down 10min</p>
+            <p class="note">Note: Hold rytme rolig på de to første intervallene — vi tester PMC etterpå.</p>
+          </div>
+          <div class="wo-metric"><div class="v">90min</div><div class="l">DURATION</div></div>
+          <div class="wo-metric"><div class="v" style="color:#0066CC">87</div><div class="l">TSS</div></div>
+          <div class="wo-status"><span class="pill blue">PLANNED</span></div>
+        </div>
+
+        <div class="workout green">
+          <div>
+            <div class="wo-time mono">11:30</div>
+            <div class="wo-date">TUE 19/5</div>
+          </div>
+          <div class="wo-athlete">
+            <div class="avatar green">JH</div>
+            <div class="who">Joachim Hagen<small>U18 · PRO</small></div>
+          </div>
+          <div class="wo-detail">
+            <h4>Recovery / active mobility</h4>
+            <p>30min zone 1 mobility + putting touch · low intensity</p>
+            <p class="note">Note: TSB høyt — vi holder dette lett før helgens turnering.</p>
+          </div>
+          <div class="wo-metric"><div class="v">30min</div><div class="l">DURATION</div></div>
+          <div class="wo-metric"><div class="v" style="color:#00A86B">22</div><div class="l">TSS</div></div>
+          <div class="wo-status"><span class="pill green">IN PROGRESS</span></div>
+        </div>
+
+        <div class="workout orange">
+          <div>
+            <div class="wo-time mono">13:30</div>
+            <div class="wo-date">TUE 19/5</div>
+          </div>
+          <div class="wo-athlete">
+            <div class="avatar orange">SL</div>
+            <div class="who">Sigurd Larsen<small>U21 · PERFORMANCE</small></div>
+          </div>
+          <div class="wo-detail">
+            <h4>Lett teknikk — wedges 50-100m</h4>
+            <p>45min · feel-fokus · ingen hard fysisk belastning</p>
+            <p class="note">Note: TSB -14, kjør dette lett. Vurder å redusere torsdagens VO2max.</p>
+          </div>
+          <div class="wo-metric"><div class="v">45min</div><div class="l">DURATION</div></div>
+          <div class="wo-metric"><div class="v" style="color:#FF8C00">35</div><div class="l">TSS</div></div>
+          <div class="wo-status"><span class="pill alert">REVIEW</span></div>
+        </div>
+
+        <div class="workout">
+          <div>
+            <div class="wo-time mono">15:00</div>
+            <div class="wo-date">TUE 19/5</div>
+          </div>
+          <div class="wo-athlete">
+            <div class="avatar">EB</div>
+            <div class="who">Emil Bjørnstad<small>U16 · PRO</small></div>
+          </div>
+          <div class="wo-detail">
+            <h4>Putting blocks — 30/60/90 cm</h4>
+            <p>60min strukturert blokk-trening · måler treff-prosent · video</p>
+            <p class="note">Note: Filmer fra to vinkler — analyser etter for set-up consistency.</p>
+          </div>
+          <div class="wo-metric"><div class="v">60min</div><div class="l">DURATION</div></div>
+          <div class="wo-metric"><div class="v" style="color:#0066CC">48</div><div class="l">TSS</div></div>
+          <div class="wo-status"><span class="pill blue">PLANNED</span></div>
+        </div>
+
+        <div class="workout">
+          <div>
+            <div class="wo-time mono">16:30</div>
+            <div class="wo-date">TUE 19/5</div>
+          </div>
+          <div class="wo-athlete">
+            <div class="avatar green">TW</div>
+            <div class="who">Tobias Wang<small>U18 · ELITE</small></div>
+          </div>
+          <div class="wo-detail">
+            <h4>Iron play — 6-iron pinpoint</h4>
+            <p>75min · skive 8m radius · Trackman dispersion-mål</p>
+            <p class="note">Note: Mål er 70%+ innenfor 8m fra 150m. Hold tempo strukturert.</p>
+          </div>
+          <div class="wo-metric"><div class="v">75min</div><div class="l">DURATION</div></div>
+          <div class="wo-metric"><div class="v" style="color:#0066CC">55</div><div class="l">TSS</div></div>
+          <div class="wo-status"><span class="pill blue">PLANNED</span></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- COMPLIANCE HEATMAP -->
+    <section class="section">
+      <div class="section-head">
+        <h2>COMPLIANCE HEAT-MAP · 12 UKER × 8 SPILLERE</h2>
+        <span class="meta">SQUAD AGGREGATE 89% · TARGET 85%</span>
+      </div>
+      <div class="heatmap-wrap">
+        <div class="heatmap-grid">
+          <div></div>
+          <div class="hm-head">W10</div><div class="hm-head">W11</div><div class="hm-head">W12</div><div class="hm-head">W13</div>
+          <div class="hm-head">W14</div><div class="hm-head">W15</div><div class="hm-head">W16</div><div class="hm-head">W17</div>
+          <div class="hm-head">W18</div><div class="hm-head">W19</div><div class="hm-head">W20</div><div class="hm-head">W21</div>
+
+          <div class="hm-name">Markus R-P</div>
+          <div class="hm-cell hm-green">96</div><div class="hm-cell hm-green">92</div><div class="hm-cell hm-green-2">88</div><div class="hm-cell hm-green">94</div>
+          <div class="hm-cell hm-green">91</div><div class="hm-cell hm-green">95</div><div class="hm-cell hm-green-2">87</div><div class="hm-cell hm-green">93</div>
+          <div class="hm-cell hm-green">96</div><div class="hm-cell hm-green">94</div><div class="hm-cell hm-green">92</div><div class="hm-cell hm-green">94</div>
+
+          <div class="hm-name">Joachim Hagen</div>
+          <div class="hm-cell hm-green-2">88</div><div class="hm-cell hm-green">91</div><div class="hm-cell hm-green">93</div><div class="hm-cell hm-green-2">85</div>
+          <div class="hm-cell hm-green-2">89</div><div class="hm-cell hm-green">92</div><div class="hm-cell hm-green">94</div><div class="hm-cell hm-green-2">88</div>
+          <div class="hm-cell hm-green-2">86</div><div class="hm-cell hm-green">91</div><div class="hm-cell hm-green-2">89</div><div class="hm-cell hm-green">91</div>
+
+          <div class="hm-name">Sigurd Larsen</div>
+          <div class="hm-cell hm-green-2">85</div><div class="hm-cell hm-yellow">78</div><div class="hm-cell hm-yellow">75</div><div class="hm-cell hm-green-2">82</div>
+          <div class="hm-cell hm-yellow">79</div><div class="hm-cell hm-yellow">74</div><div class="hm-cell hm-orange">68</div><div class="hm-cell hm-yellow">76</div>
+          <div class="hm-cell hm-yellow">71</div><div class="hm-cell hm-orange">65</div><div class="hm-cell hm-yellow">73</div><div class="hm-cell hm-yellow">78</div>
+
+          <div class="hm-name">Emil Bjørnstad</div>
+          <div class="hm-cell hm-green-2">87</div><div class="hm-cell hm-green-2">85</div><div class="hm-cell hm-green-2">89</div><div class="hm-cell hm-green">91</div>
+          <div class="hm-cell hm-green-2">86</div><div class="hm-cell hm-green-2">88</div><div class="hm-cell hm-green-2">87</div><div class="hm-cell hm-green-2">89</div>
+          <div class="hm-cell hm-green-2">88</div><div class="hm-cell hm-green-2">85</div><div class="hm-cell hm-green-2">87</div><div class="hm-cell hm-green-2">88</div>
+
+          <div class="hm-name">Tobias Wang</div>
+          <div class="hm-cell hm-green-2">86</div><div class="hm-cell hm-green-2">88</div><div class="hm-cell hm-green-2">84</div><div class="hm-cell hm-green-2">87</div>
+          <div class="hm-cell hm-green-2">85</div><div class="hm-cell hm-green-2">89</div><div class="hm-cell hm-yellow">79</div><div class="hm-cell hm-green-2">86</div>
+          <div class="hm-cell hm-green-2">88</div><div class="hm-cell hm-green-2">85</div><div class="hm-cell hm-green-2">84</div><div class="hm-cell hm-green-2">85</div>
+
+          <div class="hm-name">Nora Lien</div>
+          <div class="hm-cell hm-yellow">72</div><div class="hm-cell hm-yellow">75</div><div class="hm-cell hm-orange">68</div><div class="hm-cell hm-orange">63</div>
+          <div class="hm-cell hm-yellow">71</div><div class="hm-cell hm-orange">59</div><div class="hm-cell hm-red">48</div><div class="hm-cell hm-orange">55</div>
+          <div class="hm-cell hm-orange">62</div><div class="hm-cell hm-red">45</div><div class="hm-cell hm-red">42</div><div class="hm-cell hm-orange">62</div>
+
+          <div class="hm-name">Ida Kvalheim</div>
+          <div class="hm-cell hm-green">94</div><div class="hm-cell hm-green">96</div><div class="hm-cell hm-green">92</div><div class="hm-cell hm-green">95</div>
+          <div class="hm-cell hm-green">93</div><div class="hm-cell hm-green">97</div><div class="hm-cell hm-green">95</div><div class="hm-cell hm-green">96</div>
+          <div class="hm-cell hm-green">94</div><div class="hm-cell hm-green">98</div><div class="hm-cell hm-green">95</div><div class="hm-cell hm-green">96</div>
+
+          <div class="hm-name">Henrik Østby</div>
+          <div class="hm-cell hm-green-2">84</div><div class="hm-cell hm-green-2">82</div><div class="hm-cell hm-green-2">85</div><div class="hm-cell hm-green-2">83</div>
+          <div class="hm-cell hm-green-2">81</div><div class="hm-cell hm-green-2">86</div><div class="hm-cell hm-green-2">84</div><div class="hm-cell hm-yellow">79</div>
+          <div class="hm-cell hm-green-2">82</div><div class="hm-cell hm-green-2">85</div><div class="hm-cell hm-green-2">83</div><div class="hm-cell hm-green-2">82</div>
+        </div>
+
+        <div class="heatmap-legend">
+          <div class="leg"><div class="sw hm-green"></div> 90%+ OPTIMAL</div>
+          <div class="leg"><div class="sw hm-green-2"></div> 80-89% GOOD</div>
+          <div class="leg"><div class="sw hm-yellow"></div> 70-79% WATCH</div>
+          <div class="leg"><div class="sw hm-orange"></div> 50-69% AT-RISK</div>
+          <div class="leg"><div class="sw hm-red"></div> &lt;50% INTERVENE</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASKS + QUICK STATS -->
+    <section class="section">
+      <div class="tasks-grid">
+
+        <div class="tasks">
+          <h3>TODAY'S COACH TASKS</h3>
+
+          <div class="task">
+            <div class="check"></div>
+            <div class="body">
+              <strong>Review 5 completed workouts (Mon 18/5)</strong>
+              <small>OVERDUE 14h · TSS-validation + technique notes</small>
+            </div>
+            <span class="pill alert">PRIORITY</span>
+          </div>
+
+          <div class="task">
+            <div class="check"></div>
+            <div class="body">
+              <strong>Approve 12 pending plan adjustments</strong>
+              <small>4 mesocycle shifts · 8 individual session-edits</small>
+            </div>
+            <span class="pill blue">12 ITEMS</span>
+          </div>
+
+          <div class="task">
+            <div class="check"></div>
+            <div class="body">
+              <strong>Send weekly summary to Markus R-P</strong>
+              <small>Auto-draft ready · review + send · est. 8min</small>
+            </div>
+            <span class="pill">WEEKLY</span>
+          </div>
+
+          <div class="task">
+            <div class="check"></div>
+            <div class="body">
+              <strong>Plan next mesocycle for Joachim Hagen</strong>
+              <small>4-week build · target peak W25 · base CTL 95</small>
+            </div>
+            <span class="pill blue">PLANNING</span>
+          </div>
+
+          <div class="task done">
+            <div class="check"></div>
+            <div class="body">
+              <strong>Morning PMC review · squad-wide</strong>
+              <small>Completed 06:42 · 38/38 athletes synced</small>
+            </div>
+            <span class="pill green">DONE</span>
+          </div>
+
+          <div class="task done">
+            <div class="check"></div>
+            <div class="body">
+              <strong>Adjust Nora Lien's plan — intervention</strong>
+              <small>Completed 06:55 · Reduced load · scheduled 1:1 Fri</small>
+            </div>
+            <span class="pill green">DONE</span>
+          </div>
+        </div>
+
+        <div class="quick-stats">
+          <h3>QUICK STATS · WEEK 21</h3>
+          <div class="qs-row"><span class="k">Sessions logged</span><span class="v">142 / 165</span></div>
+          <div class="qs-row"><span class="k">Approvals processed</span><span class="v">86 / 98</span></div>
+          <div class="qs-row"><span class="k">Avg session TSS</span><span class="v">68.4</span></div>
+          <div class="qs-row"><span class="k">Athletes in form zone</span><span class="v" style="color:#00A86B">22 / 38</span></div>
+          <div class="qs-row"><span class="k">Athletes overreached</span><span class="v" style="color:#FF8C00">7 / 38</span></div>
+          <div class="qs-row"><span class="k">Athletes at-risk</span><span class="v" style="color:#D33B3B">3 / 38</span></div>
+          <div class="qs-row"><span class="k">Avg reply-time inbox</span><span class="v">2h 14m</span></div>
+          <div class="qs-row"><span class="k">PRs registered MTD</span><span class="v">12</span></div>
+          <div class="qs-row"><span class="k">Coach hours logged</span><span class="v">38.2 / 40</span></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div>AK GOLF · COACHHQ · v4.2.0 · TPCT-CERT</div>
+      <div>BUILD 2026.05.19 · 06:42 · NEXT SYNC 07:00</div>
+      <div>OPERATING ZONE · OPTIMAL · CTL +6.2</div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

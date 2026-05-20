@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PlayerHQ Trening — Cream Classic Editorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #FAFAF7;
+    --fg: #0A1F17;
+    --primary: #005840;
+    --primary-deep: #003D2C;
+    --accent: #D1F843;
+    --card: #FFFFFF;
+    --border: #E5E3DD;
+    --muted: #5E5C57;
+    --muted-bg: #F1EEE5;
+    --basis: #6B8FB8;
+    --oppbygging: #4A8C6F;
+    --spes: #D1F843;
+    --konkurranse: #E08A4A;
+    --overgang: #B5B0A5;
+    --warn: #E08A4A;
+    --danger: #A32D2D;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .container { max-width: 1440px; margin: 0 auto; padding: 32px 48px 80px; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-feature-settings: 'tnum'; }
+  .display { font-family: 'Inter Tight', sans-serif; letter-spacing: -0.02em; }
+  .serif-it { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+
+  /* TOPP-HEADER */
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; margin-bottom: 32px; }
+  .top-left { flex: 1; }
+  .top h1 { font-family: 'Inter Tight', sans-serif; font-size: 56px; font-weight: 600; line-height: 1.02; letter-spacing: -0.03em; margin: 12px 0 16px; max-width: 820px; }
+  .top h1 .it { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; font-size: 60px; }
+  .top .sub { font-size: 16px; color: var(--muted); max-width: 680px; line-height: 1.5; }
+  .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--card); box-shadow: 0 0 0 1px var(--border); flex-shrink: 0; cursor: pointer; }
+  .avatar-with-label { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .avatar-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* HERO BANNER */
+  .hero-band { position: relative; height: 300px; border-radius: 16px; overflow: hidden; margin-bottom: 32px; background: var(--primary-deep); }
+  .hero-band img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,31,23,0.15) 0%, rgba(10,31,23,0.55) 100%); }
+  .kpi-row { position: absolute; left: 24px; right: 24px; bottom: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .kpi { background: rgba(255,255,255,0.96); backdrop-filter: blur(8px); border-radius: 12px; padding: 16px 18px; border: 1px solid rgba(255,255,255,0.4); }
+  .kpi .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 8px; }
+  .kpi .val { font-family: 'Inter Tight', sans-serif; font-size: 32px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: var(--fg); }
+  .kpi .delta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+  .kpi .delta.up { color: var(--primary); }
+  .kpi .delta.down { color: var(--primary); }
+  .kpi .delta svg { width: 12px; height: 12px; }
+
+  /* SECTION GENERIC */
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 24px; }
+  .sec-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+  .sec-head h2 { font-family: 'Inter Tight', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+  .sec-head .meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* GANTT */
+  .gantt-wrap { position: relative; }
+  .gantt-axis { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 0; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .gantt-axis div { padding: 4px 0; text-align: center; border-left: 1px solid var(--border); }
+  .gantt-axis div:first-child { border-left: none; text-align: left; }
+  .gantt-svg { width: 100%; height: 240px; display: block; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .gantt-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; font-size: 12px; color: var(--muted); }
+  .gantt-legend .item { display: flex; align-items: center; gap: 6px; }
+  .gantt-legend .sw { width: 14px; height: 14px; border-radius: 3px; }
+
+  /* PERIOD STRIP */
+  .periode-strip { display: grid; grid-template-columns: 1.2fr 2fr 1fr; gap: 32px; align-items: center; }
+  .periode-now { }
+  .periode-now .tag { display: inline-block; background: var(--accent); color: var(--primary-deep); padding: 4px 10px; border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; margin-bottom: 12px; }
+  .periode-now h3 { font-family: 'Inter Tight', sans-serif; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; }
+  .periode-now .dates { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .dist-wrap { }
+  .dist-bar { height: 36px; border-radius: 8px; overflow: hidden; display: flex; border: 1px solid var(--border); }
+  .dist-bar .seg { display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--card); }
+  .dist-labels { display: grid; grid-template-columns: 20% 30% 30% 15% 5%; margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .dist-labels div { padding-left: 4px; }
+  .periode-meta { text-align: right; }
+  .periode-meta .row { margin-bottom: 12px; }
+  .periode-meta .row:last-child { margin-bottom: 0; }
+  .periode-meta .k { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+  .periode-meta .v { font-family: 'Inter Tight', sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 4px; background: var(--muted-bg); padding: 4px; border-radius: 999px; width: fit-content; }
+  .tab { padding: 8px 18px; border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; cursor: pointer; }
+  .tab.active { background: var(--fg); color: var(--bg); }
+
+  /* WEEK GRID */
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; margin-top: 8px; }
+  .day-col { display: flex; flex-direction: column; gap: 8px; }
+  .day-head { display: flex; flex-direction: column; gap: 2px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .day-head .name { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .day-head .num { font-family: 'Inter Tight', sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .day-head.today .num { color: var(--primary); }
+  .day-head.today .name { color: var(--primary); }
+  .okt { background: var(--bg); border: 1px solid var(--border); border-left-width: 3px; border-radius: 8px; padding: 10px 12px; font-size: 12px; line-height: 1.35; cursor: pointer; transition: transform .12s ease; }
+  .okt:hover { transform: translateY(-1px); }
+  .okt.fys { border-left-color: var(--basis); }
+  .okt.tek { border-left-color: var(--oppbygging); }
+  .okt.slag { border-left-color: var(--konkurranse); }
+  .okt.spill { border-left-color: var(--spes); }
+  .okt.turn { border-left-color: var(--danger); }
+  .okt .t { font-weight: 600; color: var(--fg); margin-bottom: 4px; font-size: 13px; line-height: 1.25; }
+  .okt .m { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.06em; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .okt .m svg { width: 10px; height: 10px; }
+  .day-col.rest { opacity: 0.5; }
+  .day-col.rest .okt-rest { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); text-align: center; padding: 20px 8px; border: 1px dashed var(--border); border-radius: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* FOKUS CARD */
+  .fokus { background: var(--primary-deep); color: #F5F4EE; border-radius: 16px; padding: 36px 40px; margin-bottom: 24px; position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; }
+  .fokus::before { content: ''; position: absolute; right: -80px; top: -80px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgba(209,248,67,0.15) 0%, transparent 70%); }
+  .fokus .eb { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .fokus .eb svg { width: 14px; height: 14px; }
+  .fokus h2 { font-family: 'Inter Tight', sans-serif; font-size: 40px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 16px; }
+  .fokus h2 .it { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; font-size: 42px; }
+  .fokus .meta { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: rgba(245,244,238,0.7); letter-spacing: 0.06em; display: flex; gap: 20px; flex-wrap: wrap; }
+  .fokus .meta span { display: flex; align-items: center; gap: 6px; }
+  .fokus .meta svg { width: 12px; height: 12px; }
+  .fokus .cta { background: var(--accent); color: var(--primary-deep); padding: 18px 28px; border-radius: 999px; font-family: 'Inter Tight', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; display: inline-flex; align-items: center; gap: 10px; border: none; cursor: pointer; white-space: nowrap; box-shadow: 0 4px 0 rgba(0,0,0,0.15); transition: transform .12s ease; }
+  .fokus .cta:hover { transform: translateY(-2px); }
+  .fokus .cta svg { width: 18px; height: 18px; }
+
+  /* TWO COL */
+  .two-col { display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .pyramid-card .pyramid { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .pyr-row { display: grid; grid-template-columns: 80px 1fr 48px; gap: 12px; align-items: center; }
+  .pyr-row .lbl { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  .pyr-row .bar { height: 28px; background: var(--muted-bg); border-radius: 6px; overflow: hidden; position: relative; }
+  .pyr-row .fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--card); }
+  .pyr-row .num { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; text-align: right; color: var(--fg); }
+
+  /* STREAK */
+  .streak-card { }
+  .streak-vis { display: grid; grid-template-columns: repeat(14, 1fr); gap: 6px; margin-top: 8px; }
+  .streak-dot { aspect-ratio: 1; border-radius: 4px; background: var(--muted-bg); position: relative; }
+  .streak-dot.done { background: var(--primary); }
+  .streak-dot.today { background: var(--accent); box-shadow: 0 0 0 2px var(--primary-deep); }
+  .streak-dot.miss { background: var(--muted-bg); border: 1px dashed var(--border); }
+  .streak-meta { display: flex; justify-content: space-between; margin-top: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .streak-big { font-family: 'Inter Tight', sans-serif; font-size: 48px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; margin-top: 12px; }
+  .streak-big small { font-size: 16px; color: var(--muted); font-weight: 500; margin-left: 6px; }
+
+  /* COACH MSG */
+  .coach-msg { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; display: grid; grid-template-columns: 64px 1fr; gap: 20px; align-items: start; }
+  .coach-msg img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid var(--card); box-shadow: 0 0 0 1px var(--border); }
+  .coach-msg .eb { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 6px; }
+  .coach-msg .name { font-family: 'Inter Tight', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+  .coach-msg .quote { font-family: 'Inter Tight', sans-serif; font-size: 22px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.35; color: var(--fg); }
+  .coach-msg .quote .it { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; font-size: 24px; }
+
+  /* SMALL */
+  .icon { width: 14px; height: 14px; display: inline-block; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- TOPP HEADER -->
+  <header class="top">
+    <div class="top-left">
+      <div class="eyebrow">PlayerHQ &middot; Trening &middot; År 2026</div>
+      <h1 class="display"><span class="serif-it">Øyvind</span> — sesongen i ett øye</h1>
+      <p class="sub">Tre uker til Sørlandsåpent. Pyramide-distribusjon på sporet. 12 av 16 økter denne uken — hold tempoet, ikke press for hardt før helga.</p>
+    </div>
+    <div class="avatar-with-label">
+      <img class="avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces" alt="Øyvind Rohjan" />
+      <div class="avatar-label">Øyvind R. &middot; HCP +3,5</div>
+    </div>
+  </header>
+
+  <!-- HERO BANNER -->
+  <section class="hero-band">
+    <img src="https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=1600&h=400&fit=crop" alt="Golfbane" />
+    <div class="hero-overlay"></div>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="lbl">Handicap</div>
+        <div class="val mono">+3,5</div>
+        <div class="delta down">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          0,4 siste 90 d
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">SG Total</div>
+        <div class="val mono">+2,1</div>
+        <div class="delta">Bossum 68 &middot; 4 mai</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Streak</div>
+        <div class="val mono">11<span style="color:var(--muted);font-size:18px;">/14d</span></div>
+        <div class="delta up">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+          Beste på 2 mnd
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Pyramide uke</div>
+        <div class="val mono">12<span style="color:var(--muted);font-size:18px;">/16</span></div>
+        <div class="delta">4 økter igjen til søndag</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÅRSPLAN GANTT -->
+  <section class="section">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow" style="margin-bottom:6px;">Årsplan 2026</div>
+        <h2 class="display">Hele sesongen i én tidslinje</h2>
+      </div>
+      <div class="meta">5 perioder &middot; 2 turneringer &middot; CS-progresjon</div>
+    </div>
+
+    <div class="gantt-axis">
+      <div></div>
+      <div>Jan</div><div>Feb</div><div>Mar</div><div>Apr</div><div>Mai</div><div>Jun</div><div>Jul</div><div>Aug</div><div>Sep</div><div>Okt</div><div>Nov</div><div>Des</div>
+    </div>
+
+    <svg class="gantt-svg" viewBox="0 0 1200 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- month gridlines -->
+      <g stroke="#E5E3DD" stroke-width="1">
+        <line x1="80" y1="0" x2="80" y2="240"/>
+        <line x1="173" y1="0" x2="173" y2="240"/>
+        <line x1="267" y1="0" x2="267" y2="240"/>
+        <line x1="360" y1="0" x2="360" y2="240"/>
+        <line x1="453" y1="0" x2="453" y2="240"/>
+        <line x1="547" y1="0" x2="547" y2="240"/>
+        <line x1="640" y1="0" x2="640" y2="240"/>
+        <line x1="733" y1="0" x2="733" y2="240"/>
+        <line x1="827" y1="0" x2="827" y2="240"/>
+        <line x1="920" y1="0" x2="920" y2="240"/>
+        <line x1="1013" y1="0" x2="1013" y2="240"/>
+        <line x1="1107" y1="0" x2="1107" y2="240"/>
+      </g>
+
+      <!-- row labels -->
+      <g font-family="JetBrains Mono, monospace" font-size="10" fill="#5E5C57" letter-spacing="1">
+        <text x="0" y="48">PERIODE</text>
+        <text x="0" y="110">TURN</text>
+        <text x="0" y="172">CS-MAKS</text>
+      </g>
+
+      <!-- PERIOD BARS row 1 (y=30, h=36) -->
+      <!-- BASIS jan-mar -->
+      <rect x="80" y="30" width="280" height="36" rx="6" fill="#6B8FB8"/>
+      <text x="92" y="53" font-family="JetBrains Mono, monospace" font-size="11" fill="#FFFFFF" font-weight="600" letter-spacing="1">BASIS</text>
+
+      <!-- OPPBYGGING apr-mai -->
+      <rect x="360" y="30" width="187" height="36" rx="6" fill="#4A8C6F"/>
+      <text x="372" y="53" font-family="JetBrains Mono, monospace" font-size="11" fill="#FFFFFF" font-weight="600" letter-spacing="1">OPPBYGGING</text>
+
+      <!-- SPESIALISERING jun-aug -->
+      <rect x="547" y="30" width="280" height="36" rx="6" fill="#D1F843"/>
+      <text x="559" y="53" font-family="JetBrains Mono, monospace" font-size="11" fill="#0A1F17" font-weight="600" letter-spacing="1">SPESIALISERING</text>
+
+      <!-- KONKURRANSE sep-okt -->
+      <rect x="827" y="30" width="186" height="36" rx="6" fill="#E08A4A"/>
+      <text x="839" y="53" font-family="JetBrains Mono, monospace" font-size="11" fill="#FFFFFF" font-weight="600" letter-spacing="1">KONKURRANSE</text>
+
+      <!-- OVERGANG nov-des -->
+      <rect x="1013" y="30" width="187" height="36" rx="6" fill="#B5B0A5"/>
+      <text x="1025" y="53" font-family="JetBrains Mono, monospace" font-size="11" fill="#0A1F17" font-weight="600" letter-spacing="1">OVERGANG</text>
+
+      <!-- TURNERINGER row 2 (y=92, h=36) -->
+      <!-- Sørlandsåpent 31. mai (mai = x:453-547, day 31/31 ≈ 547) -->
+      <g>
+        <rect x="510" y="92" width="80" height="36" rx="6" fill="#0A1F17"/>
+        <text x="518" y="115" font-family="JetBrains Mono, monospace" font-size="10" fill="#D1F843" font-weight="600">SØRLANDS</text>
+        <text x="518" y="125" font-family="JetBrains Mono, monospace" font-size="9" fill="#FFFFFF">31. mai</text>
+      </g>
+      <!-- Bossum Open 24. juni -->
+      <g>
+        <rect x="615" y="92" width="80" height="36" rx="6" fill="#0A1F17"/>
+        <text x="623" y="115" font-family="JetBrains Mono, monospace" font-size="10" fill="#D1F843" font-weight="600">BOSSUM OP.</text>
+        <text x="623" y="125" font-family="JetBrains Mono, monospace" font-size="9" fill="#FFFFFF">24. juni</text>
+      </g>
+      <!-- NM medio august -->
+      <g>
+        <rect x="775" y="92" width="60" height="36" rx="6" fill="#0A1F17"/>
+        <text x="783" y="115" font-family="JetBrains Mono, monospace" font-size="10" fill="#D1F843" font-weight="600">NM</text>
+        <text x="783" y="125" font-family="JetBrains Mono, monospace" font-size="9" fill="#FFFFFF">15. aug</text>
+      </g>
+
+      <!-- CS MAKS row 3 (y=154, h=60) area chart-ish -->
+      <g>
+        <!-- y-axis ticks right -->
+        <text x="1170" y="160" font-family="JetBrains Mono, monospace" font-size="9" fill="#5E5C57">CS90</text>
+        <text x="1170" y="190" font-family="JetBrains Mono, monospace" font-size="9" fill="#5E5C57">CS65</text>
+        <text x="1170" y="218" font-family="JetBrains Mono, monospace" font-size="9" fill="#5E5C57">CS40</text>
+        <!-- area -->
+        <path d="M 80 210 L 173 205 L 267 200 L 360 190 L 453 178 L 510 168 L 547 165 L 640 160 L 733 158 L 827 162 L 920 168 L 1013 185 L 1107 200 L 1107 220 L 80 220 Z" fill="#005840" fill-opacity="0.12"/>
+        <path d="M 80 210 L 173 205 L 267 200 L 360 190 L 453 178 L 510 168 L 547 165 L 640 160 L 733 158 L 827 162 L 920 168 L 1013 185 L 1107 200" stroke="#005840" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- key dots -->
+        <circle cx="510" cy="168" r="4" fill="#D1F843" stroke="#0A1F17" stroke-width="2"/>
+        <circle cx="733" cy="158" r="4" fill="#D1F843" stroke="#0A1F17" stroke-width="2"/>
+      </g>
+
+      <!-- I-DAG PIN 19. mai (mai = 453-547, dag 19/31 ≈ 510) -->
+      <g>
+        <line x1="510" y1="0" x2="510" y2="240" stroke="#A32D2D" stroke-width="2" stroke-dasharray="4 3"/>
+        <rect x="478" y="2" width="64" height="20" rx="4" fill="#A32D2D"/>
+        <text x="510" y="16" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#FFFFFF" font-weight="600" letter-spacing="1">I DAG</text>
+      </g>
+    </svg>
+
+    <div class="gantt-legend">
+      <div class="item"><div class="sw" style="background:#6B8FB8"></div>Basis</div>
+      <div class="item"><div class="sw" style="background:#4A8C6F"></div>Oppbygging</div>
+      <div class="item"><div class="sw" style="background:#D1F843"></div>Spesialisering</div>
+      <div class="item"><div class="sw" style="background:#E08A4A"></div>Konkurranse</div>
+      <div class="item"><div class="sw" style="background:#B5B0A5"></div>Overgang</div>
+      <div class="item"><div class="sw" style="background:#0A1F17"></div>Turnering</div>
+      <div class="item"><div class="sw" style="background:#A32D2D"></div>I dag (19. mai)</div>
+    </div>
+  </section>
+
+  <!-- PERIODE STRIP -->
+  <section class="section">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow" style="margin-bottom:6px;">Aktiv periode &middot; uke 20 av sesongen</div>
+        <h2 class="display">Oppbygging — fokus på <span class="serif-it">presisjon</span></h2>
+      </div>
+      <div class="meta">Uke 17 — 22 &middot; 6 uker</div>
+    </div>
+
+    <div class="periode-strip">
+      <div class="periode-now">
+        <div class="tag">Nå</div>
+        <h3>Oppbygging</h3>
+        <div class="dates">15. apr — 26. mai &middot; 6 uker</div>
+      </div>
+      <div class="dist-wrap">
+        <div class="dist-bar">
+          <div class="seg" style="background:#6B8FB8; width:20%;">FYS 20</div>
+          <div class="seg" style="background:#4A8C6F; width:30%;">TEK 30</div>
+          <div class="seg" style="background:#E08A4A; width:30%;">SLAG 30</div>
+          <div class="seg" style="background:#D1F843; color:#0A1F17; width:15%;">SPILL 15</div>
+          <div class="seg" style="background:#A32D2D; width:5%; font-size:9px;">T 5</div>
+        </div>
+        <div class="dist-labels">
+          <div>FYS</div><div>TEKNIKK</div><div>SLAG</div><div>SPILL</div><div>TURN</div>
+        </div>
+      </div>
+      <div class="periode-meta">
+        <div class="row">
+          <div class="k">CS-maks mål</div>
+          <div class="v mono">CS 72</div>
+        </div>
+        <div class="row">
+          <div class="k">Ukentlig volum</div>
+          <div class="v mono">16 økter</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAGENS FOKUS -->
+  <section class="fokus">
+    <div>
+      <div class="eb">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Dagens fokus &middot; tirsdag 19. mai
+      </div>
+      <h2>Pitch <span class="it">50–100m</span>, lav trajectory</h2>
+      <div class="meta">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Kl 14:00 &middot; 60 min</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Mulligan Indoor &middot; Bay 2</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Med Anders K.</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>CS 68 &middot; Trackman</span>
+      </div>
+    </div>
+    <button class="cta">
+      Start økt
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </section>
+
+  <!-- UKENS PLAN -->
+  <section class="section">
+    <div class="sec-head" style="align-items:center;">
+      <div>
+        <div class="eyebrow" style="margin-bottom:6px;">Treningsplan &middot; uke 20</div>
+        <h2 class="display">Denne uken — 12 av 16 økter</h2>
+      </div>
+      <div class="tabs">
+        <div class="tab">I dag</div>
+        <div class="tab active">Uke 20</div>
+        <div class="tab">Måned 5</div>
+        <div class="tab">Sesong 2026</div>
+      </div>
+    </div>
+
+    <div class="week-grid">
+      <div class="day-col">
+        <div class="day-head"><div class="name">Man</div><div class="num">18</div></div>
+        <div class="okt fys">
+          <div class="t">Styrke A — core &amp; rotasjon</div>
+          <div class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>07:00 &middot; 45 min</div>
+        </div>
+        <div class="okt tek">
+          <div class="t">Iron-progresjon 7→PW</div>
+          <div class="m">15:00 &middot; 75 min &middot; Mulligan</div>
+        </div>
+      </div>
+
+      <div class="day-col">
+        <div class="day-head today"><div class="name">Tir</div><div class="num">19</div></div>
+        <div class="okt slag" style="background:var(--accent); border-color:var(--accent); border-left-color:var(--primary-deep);">
+          <div class="t">Pitch 50–100m, lav</div>
+          <div class="m" style="color:var(--primary-deep)">14:00 &middot; 60 min &middot; Anders K.</div>
+        </div>
+        <div class="okt spill">
+          <div class="t">Putting 0–3m, rutine</div>
+          <div class="m">16:30 &middot; 30 min</div>
+        </div>
+      </div>
+
+      <div class="day-col">
+        <div class="day-head"><div class="name">Ons</div><div class="num">20</div></div>
+        <div class="okt fys">
+          <div class="t">FYS — bevegelighet hofte</div>
+          <div class="m">07:00 &middot; 30 min</div>
+        </div>
+        <div class="okt tek">
+          <div class="t">Driver — face/path 0,3°</div>
+          <div class="m">14:00 &middot; 60 min &middot; Trackman</div>
+        </div>
+      </div>
+
+      <div class="day-col">
+        <div class="day-head"><div class="name">Tor</div><div class="num">21</div></div>
+        <div class="okt slag">
+          <div class="t">Wedges — distanse-matrise</div>
+          <div class="m">15:00 &middot; 90 min</div>
+        </div>
+        <div class="okt spill">
+          <div class="t">Short game shapes</div>
+          <div class="m">16:30 &middot; 45 min</div>
+        </div>
+      </div>
+
+      <div class="day-col">
+        <div class="day-head"><div class="name">Fre</div><div class="num">22</div></div>
+        <div class="okt fys">
+          <div class="t">Styrke B — bein, eksplosiv</div>
+          <div class="m">07:00 &middot; 45 min</div>
+        </div>
+        <div class="okt tek">
+          <div class="t">Iron-tempo &middot; metronome</div>
+          <div class="m">14:00 &middot; 60 min</div>
+        </div>
+      </div>
+
+      <div class="day-col">
+        <div class="day-head"><div class="name">Lør</div><div class="num">23</div></div>
+        <div class="okt turn">
+          <div class="t">9-hulls scoring-runde</div>
+          <div class="m">09:30 &middot; 150 min &middot; Bossum</div>
+        </div>
+        <div class="okt spill">
+          <div class="t">Putting on-course</div>
+          <div class="m">Etter runde</div>
+        </div>
+      </div>
+
+      <div class="day-col rest">
+        <div class="day-head"><div class="name">Søn</div><div class="num">24</div></div>
+        <div class="okt-rest">Hvile &middot; mobility 20 min valgfritt</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TWO COL: PYRAMID + STREAK -->
+  <div class="two-col">
+    <section class="section pyramid-card">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow" style="margin-bottom:6px;">Pyramide &middot; ukentlig fordeling</div>
+          <h2 class="display">Distribusjon mot mål</h2>
+        </div>
+        <div class="meta">Uke 20 av 52</div>
+      </div>
+      <div class="pyramid">
+        <div class="pyr-row">
+          <div class="lbl">Turnering</div>
+          <div class="bar"><div class="fill" style="width:5%; background:#A32D2D;"></div></div>
+          <div class="num">5%</div>
+        </div>
+        <div class="pyr-row">
+          <div class="lbl">Spill</div>
+          <div class="bar"><div class="fill" style="width:15%; background:#D1F843; color:#0A1F17;"></div></div>
+          <div class="num">15%</div>
+        </div>
+        <div class="pyr-row">
+          <div class="lbl">Slag</div>
+          <div class="bar"><div class="fill" style="width:30%; background:#E08A4A;">Slag</div></div>
+          <div class="num">30%</div>
+        </div>
+        <div class="pyr-row">
+          <div class="lbl">Teknikk</div>
+          <div class="bar"><div class="fill" style="width:30%; background:#4A8C6F;">Teknikk</div></div>
+          <div class="num">30%</div>
+        </div>
+        <div class="pyr-row">
+          <div class="lbl">Fysisk</div>
+          <div class="bar"><div class="fill" style="width:20%; background:#6B8FB8;">Fysisk</div></div>
+          <div class="num">20%</div>
+        </div>
+      </div>
+      <p style="margin-top:20px; font-size:13px; color:var(--muted); line-height:1.5;">På sporet i alle lag. Slag-volumet er fortsatt litt under mål — legg én ekstra wedge-økt på torsdag for å lukke gapet.</p>
+    </section>
+
+    <section class="section streak-card">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow" style="margin-bottom:6px;">Streak &middot; siste 14 dager</div>
+          <h2 class="display">Konsistens</h2>
+        </div>
+        <div class="meta">Mål: 12/14</div>
+      </div>
+      <div class="streak-vis">
+        <div class="streak-dot done" title="6 mai"></div>
+        <div class="streak-dot done"></div>
+        <div class="streak-dot done"></div>
+        <div class="streak-dot miss"></div>
+        <div class="streak-dot done"></div>
+        <div class="streak-dot done"></div>
+        <div class="streak-dot done"></div>
+        <div class="streak-dot done"></div>
+        <div class="streak-dot done"></div>
+        <div class="streak-dot miss"></div>
+        <div class="streak-dot done"></div>
+        <div class="streak-dot done"></div>
+        <div class="streak-dot done"></div>
+        <div class="streak-dot today" title="i dag"></div>
+      </div>
+      <div class="streak-meta">
+        <span>6. mai</span>
+        <span>I dag &middot; 19. mai</span>
+      </div>
+      <div class="streak-big mono">11<small>av 14 dager</small></div>
+      <p style="margin-top:12px; font-size:13px; color:var(--muted); line-height:1.5;">Beste streak siden mars. To bom — 9. mai (sykdom) og 15. mai (reise).</p>
+    </section>
+  </div>
+
+  <!-- COACH MELDING -->
+  <section class="coach-msg">
+    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=faces" alt="Anders Kristiansen" />
+    <div>
+      <div class="eb">Melding fra coach &middot; 19. mai 06:42</div>
+      <div class="name">Anders Kristiansen</div>
+      <div class="quote">«Hold fokus på <span class="it">lav trajectory</span> denne uken. Du har trent godt — ikke press for hardt før helga. Lørdagens 9-hulls på Bossum er primær-test før Sørlandsåpent.»</div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

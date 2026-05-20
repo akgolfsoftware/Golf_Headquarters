@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<title>Teknisk Utviklingsplan — Live tracker (spiller)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root {
+    --brand-primary: #005840; --brand-accent: #D1F843; --brand-accent-on: #0A1F18;
+    --brand-primary-soft: #E8F0EC; --brand-primary-deep: #003B2A;
+    --ink: #0A1F18; --ink-muted: #5E5C57; --ink-subtle: #9C9990;
+    --surface: #FAFAF7; --surface-alt: #F5F2EA; --surface-card: #FFFFFF;
+    --line: #E5E3DD; --line-soft: #EFEDE6;
+    --pyr-tek: #1A7D56; --success: #1A7D56; --success-bg: #E5F1EA;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #EDEAE2; color: var(--ink); font-family: 'Inter', system-ui, sans-serif; line-height: 1.5; padding: 32px 24px 96px; }
+  .canvas { max-width: 800px; margin: 0 auto; }
+
+  /* Mobil-mockup wrapper */
+  .phone-wrap { display: flex; gap: 32px; align-items: flex-start; }
+  .phone-info { flex: 1; padding-top: 20px; }
+  .phone-info .label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-subtle); margin-bottom: 6px; }
+  .phone-info h1 { font-family: 'Inter Tight', sans-serif; font-style: italic; font-weight: 400; font-size: 28px; color: var(--ink); line-height: 1.2; }
+  .phone-info h1 em { color: var(--brand-primary); font-weight: 500; }
+  .phone-info p { color: var(--ink-muted); font-size: 13.5px; margin-top: 10px; }
+  .phone-info ul { list-style: none; margin-top: 16px; }
+  .phone-info li { padding: 6px 0; font-size: 12.5px; color: var(--ink); border-bottom: 1px dashed var(--line-soft); }
+  .phone-info li:last-child { border: 0; }
+  .phone-info li b { color: var(--brand-primary); font-family: 'JetBrains Mono', monospace; font-size: 10px; margin-right: 6px; letter-spacing: .04em; }
+
+  .phone { width: 380px; flex-shrink: 0; background: #0F1413; border-radius: 36px; padding: 12px; box-shadow: 0 24px 64px rgba(10,31,24,.25); }
+  .phone-screen { background: var(--surface); border-radius: 26px; overflow: hidden; min-height: 780px; }
+  .phone-notch { width: 80px; height: 22px; background: #0F1413; border-radius: 100px; margin: -4px auto 4px; }
+
+  /* Phone content */
+  .ph-head { padding: 18px 18px 14px; background: var(--surface-card); border-bottom: 1px solid var(--line); }
+  .ph-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--brand-primary); font-weight: 500; margin-bottom: 10px; }
+  .ph-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-subtle); }
+  .ph-title { font-family: 'Inter Tight', sans-serif; font-style: italic; font-size: 22px; font-weight: 400; line-height: 1.2; margin-top: 4px; }
+  .ph-title em { color: var(--brand-primary); font-weight: 600; }
+  .ph-meta { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-muted); margin-top: 6px; letter-spacing: .04em; }
+
+  .ph-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 14px; background: var(--surface-card); border-bottom: 1px solid var(--line-soft); }
+  .ph-stat { text-align: center; padding: 10px; background: var(--surface-alt); border-radius: 10px; }
+  .ph-stat .num { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: var(--brand-primary); }
+  .ph-stat .lbl { font-family: 'JetBrains Mono', monospace; font-size: 8.5px; color: var(--ink-muted); letter-spacing: .06em; text-transform: uppercase; margin-top: 2px; }
+
+  /* Quick-log button */
+  .ph-quick { padding: 12px 14px; display: flex; gap: 8px; align-items: center; background: var(--brand-accent); color: var(--brand-accent-on); border-bottom: 1px solid rgba(0,0,0,.05); cursor: pointer; }
+  .ph-quick .ic { background: var(--brand-primary); color: var(--brand-accent); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  .ph-quick .info { flex: 1; }
+  .ph-quick .ttl { font-size: 13px; font-weight: 700; }
+  .ph-quick .sub { font-size: 10.5px; opacity: .7; }
+  .ph-quick .chev { font-size: 18px; opacity: .5; }
+
+  /* Tasks list */
+  .ph-section { padding: 14px 14px 8px; background: var(--surface); }
+  .ph-section-h { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-muted); letter-spacing: .08em; text-transform: uppercase; padding: 0 4px 8px; display: flex; justify-content: space-between; align-items: center; }
+  .ph-section-h .pn { background: var(--brand-primary-soft); color: var(--brand-primary); padding: 3px 7px; border-radius: 4px; font-weight: 700; }
+
+  .ph-task { background: var(--surface-card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+  .ph-task-h { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  .ph-task-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--brand-primary); background: var(--brand-primary-soft); padding: 3px 6px; border-radius: 4px; flex-shrink: 0; }
+  .ph-task-name { font-size: 13px; font-weight: 600; line-height: 1.3; flex: 1; }
+  .ph-task-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 8px; }
+  .ph-tag { font-family: 'JetBrains Mono', monospace; font-size: 8px; padding: 2px 5px; border-radius: 3px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .ph-tag-tek { background: rgba(26,125,86,.12); color: var(--pyr-tek); }
+  .ph-tag-slag { background: var(--surface-alt); color: var(--ink); }
+  .ph-tag-cs { background: rgba(0,88,64,.12); color: var(--brand-primary); }
+  .ph-tag-l { background: rgba(124,82,176,.12); color: #5A3B8A; }
+
+  .ph-task-progress { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .ph-pb { background: var(--surface-alt); border-radius: 6px; padding: 6px 8px; }
+  .ph-pb-lbl { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--ink-subtle); letter-spacing: .06em; text-transform: uppercase; }
+  .ph-pb-bar { height: 3px; background: var(--line); border-radius: 100px; overflow: hidden; margin: 4px 0; }
+  .ph-pb-bar > div { height: 100%; }
+  .ph-pb-bar .dry { background: #9C9990; }
+  .ph-pb-bar .lav { background: var(--pyr-tek); }
+  .ph-pb-bar .full { background: var(--brand-primary); }
+  .ph-pb-cnt { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600; color: var(--ink); }
+
+  /* Counter row */
+  .ph-counters { display: flex; gap: 4px; margin-top: 8px; }
+  .ph-counter { flex: 1; background: var(--brand-primary); color: #fff; border-radius: 6px; padding: 7px; text-align: center; cursor: pointer; }
+  .ph-counter .c-lbl { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: .04em; text-transform: uppercase; opacity: .75; }
+  .ph-counter .c-add { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+
+  /* Sparkline */
+  .ph-spark { display: flex; gap: 2px; align-items: flex-end; height: 18px; margin-top: 4px; }
+  .ph-spark .bar { flex: 1; background: var(--brand-primary); border-radius: 2px; opacity: .8; }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="phone-wrap">
+
+    <div class="phone-info">
+      <div class="label">SPILLER-VIEW · LIVE TRACKER</div>
+      <h1>Hva Markus ser i <em>PlayerHQ</em></h1>
+      <p>Mobil-optimalisert read-modus. Spiller ser sin tekniske plan, progress per oppgave, og kan hurtig-logge reps via counter-knapper (+10 / +20 / +50 per hastighet).</p>
+      <ul>
+        <li><b>STATS</b>Total fremdrift + denne uka + neste mål</li>
+        <li><b>QUICK-LOG</b>Sticky CTA øverst for å logge reps raskt</li>
+        <li><b>P4.0 ÅPEN</b>Hovedfokus først, andre P-er kollapset</li>
+        <li><b>COUNTERS</b>+ Dry / + Lav / + Full per oppgave</li>
+        <li><b>SPARKLINE</b>Siste 7 dager pr oppgave</li>
+        <li><b>FELLES REDIGERING</b>Hvis coach legger til oppgave, vises gult merke</li>
+      </ul>
+    </div>
+
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-notch"></div>
+
+        <!-- Header -->
+        <div class="ph-head">
+          <div class="ph-back">← Tilbake</div>
+          <div class="ph-eyebrow">TEKNISK PLAN · VÅR 2026</div>
+          <div class="ph-title">Mine <em>arbeidsoppgaver</em></div>
+          <div class="ph-meta">9 oppgaver · 5 P · Coach Anders K.</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="ph-stats">
+          <div class="ph-stat">
+            <div class="num">16 %</div>
+            <div class="lbl">Total</div>
+          </div>
+          <div class="ph-stat">
+            <div class="num">280</div>
+            <div class="lbl">Reps · uke</div>
+          </div>
+          <div class="ph-stat">
+            <div class="num">12. jul</div>
+            <div class="lbl">Estimert</div>
+          </div>
+        </div>
+
+        <!-- Quick-log -->
+        <div class="ph-quick">
+          <div class="ic">+</div>
+          <div class="info">
+            <div class="ttl">Logg reps</div>
+            <div class="sub">Velg oppgave og hastighet</div>
+          </div>
+          <div class="chev">›</div>
+        </div>
+
+        <!-- P4.0 Topp-posisjon (åpen) -->
+        <div class="ph-section">
+          <div class="ph-section-h">
+            <span><span class="pn">P4.0</span> Topp-posisjon · prio 1</span>
+            <span>3 oppg</span>
+          </div>
+
+          <div class="ph-task">
+            <div class="ph-task-h">
+              <span class="ph-task-num">1</span>
+              <span class="ph-task-name">Venstre håndledd flat</span>
+            </div>
+            <div class="ph-task-tags">
+              <span class="ph-tag ph-tag-tek">TEK</span>
+              <span class="ph-tag ph-tag-slag">App 150-200</span>
+              <span class="ph-tag ph-tag-slag">7-jern</span>
+              <span class="ph-tag ph-tag-l">L_ARM</span>
+              <span class="ph-tag ph-tag-cs">CS70</span>
+            </div>
+            <div class="ph-task-progress">
+              <div class="ph-pb">
+                <div class="ph-pb-lbl">Dry</div>
+                <div class="ph-pb-bar"><div class="dry" style="width:75%"></div></div>
+                <div class="ph-pb-cnt">750/1000</div>
+              </div>
+              <div class="ph-pb">
+                <div class="ph-pb-lbl">Lav</div>
+                <div class="ph-pb-bar"><div class="lav" style="width:52%"></div></div>
+                <div class="ph-pb-cnt">260/500</div>
+              </div>
+              <div class="ph-pb">
+                <div class="ph-pb-lbl">Full</div>
+                <div class="ph-pb-bar"><div class="full" style="width:35%"></div></div>
+                <div class="ph-pb-cnt">70/200</div>
+              </div>
+            </div>
+            <div class="ph-counters">
+              <div class="ph-counter">
+                <div class="c-lbl">Dry</div>
+                <div class="c-add">+10</div>
+              </div>
+              <div class="ph-counter">
+                <div class="c-lbl">Lav</div>
+                <div class="c-add">+10</div>
+              </div>
+              <div class="ph-counter">
+                <div class="c-lbl">Full</div>
+                <div class="c-add">+10</div>
+              </div>
+            </div>
+            <div class="ph-spark">
+              <div class="bar" style="height:30%"></div>
+              <div class="bar" style="height:55%"></div>
+              <div class="bar" style="height:40%"></div>
+              <div class="bar" style="height:0%; opacity:.2"></div>
+              <div class="bar" style="height:80%"></div>
+              <div class="bar" style="height:60%"></div>
+              <div class="bar" style="height:90%"></div>
+            </div>
+          </div>
+
+          <div class="ph-task">
+            <div class="ph-task-h">
+              <span class="ph-task-num">2</span>
+              <span class="ph-task-name">Skuldre 90° rotert</span>
+            </div>
+            <div class="ph-task-tags">
+              <span class="ph-tag ph-tag-tek">TEK</span>
+              <span class="ph-tag ph-tag-slag">Tee Total</span>
+              <span class="ph-tag ph-tag-slag">Alle køller</span>
+              <span class="ph-tag ph-tag-l">L_KROPP</span>
+              <span class="ph-tag ph-tag-cs">CS50</span>
+            </div>
+            <div class="ph-task-progress">
+              <div class="ph-pb">
+                <div class="ph-pb-lbl">Dry</div>
+                <div class="ph-pb-bar"><div class="dry" style="width:45%"></div></div>
+                <div class="ph-pb-cnt">270/600</div>
+              </div>
+              <div class="ph-pb">
+                <div class="ph-pb-lbl">Lav</div>
+                <div class="ph-pb-bar"><div class="lav" style="width:20%"></div></div>
+                <div class="ph-pb-cnt">60/300</div>
+              </div>
+              <div class="ph-pb">
+                <div class="ph-pb-lbl">Full</div>
+                <div class="ph-pb-bar"><div class="full" style="width:0%"></div></div>
+                <div class="ph-pb-cnt">0/100</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- P7 collapsed -->
+        <div class="ph-section">
+          <div class="ph-section-h" style="border:0">
+            <span><span class="pn">P7.0</span> Impact · prio 2</span>
+            <span>2 oppg · 16 % ›</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

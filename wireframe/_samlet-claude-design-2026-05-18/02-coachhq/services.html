@@ -1,0 +1,174 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Tjenester</title></head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="#">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="#">Treningsplaner</a>
+      <a href="#">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="#">Godkjenninger</a>
+      <a href="bookings.html">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="#">Analytics</a>
+      <a href="#">Økonomi</a>
+      <a href="#">Fasiliteter</a>
+      <a href="settings-bruker.html" class="active">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Bookinger · tjeneste-typer</span>
+      <h1 class="page-title"><em>Tjenester</em> · katalog og priser</h1>
+      <p class="page-lede">Det spillerne kan booke. Aktive tjenester vises i booking-flyten. Skru av for å midlertidig stenge.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Tjeneste-katalog</span>
+      <button class="action-item action-item-success"><b>12</b> aktive tjenester</button>
+      <button class="action-item"><b>Privattime 60</b> mest bookt</button>
+      <button class="action-item action-item-info"><b>1 480</b> kr snittpris</button>
+      <button class="btn btn-primary" style="margin-left: auto;">+ Ny tjeneste</button>
+    </div>
+
+    <div class="search-row">
+      <div class="search-input">
+        <span class="search-prefix">Søk</span>
+        <input type="text" placeholder="12 tjenester — navn, kategori, pris...">
+      </div>
+      <select class="sort-select">
+        <option>Mest bookt mnd</option>
+        <option>Pris høy → lav</option>
+        <option>Pris lav → høy</option>
+        <option>Navn A–Å</option>
+      </select>
+    </div>
+
+    <div class="chips">
+      <button class="chip active">Aktive (12)</button>
+      <button class="chip">Inaktive (3)</button>
+      <span style="flex:1"></span>
+      <button class="chip">Privat</button>
+      <button class="chip">Gruppe</button>
+      <button class="chip">Camp</button>
+      <button class="chip">Mulligan</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+
+      <article class="card-featured">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-success">Mest bookt</span>
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary);"><input type="checkbox" checked style="accent-color: var(--primary);">Aktiv</label>
+        </div>
+        <h3 style="font-style: italic;">Privattime 60 min</h3>
+        <div class="num" style="font-size: 32px; font-weight: 600; line-height: 1; margin: 14px 0 4px; letter-spacing: -0.02em;">1 800<span style="font-size:14px; color:var(--text-secondary); font-weight: 500;"> kr</span></div>
+        <div style="display:flex; gap:6px; margin-top: 10px;">
+          <span class="pill pill-muted">60 min</span>
+          <span class="pill pill-info">Privat</span>
+        </div>
+        <p style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">Bookt <b class="num" style="color: var(--text);">142×</b> denne mnd</p>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-muted">Privat</span>
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary);"><input type="checkbox" checked style="accent-color: var(--primary);">Aktiv</label>
+        </div>
+        <h3 style="font-style: italic;">Privattime 30 min</h3>
+        <div class="num" style="font-size: 32px; font-weight: 600; line-height: 1; margin: 14px 0 4px; letter-spacing: -0.02em;">950<span style="font-size:14px; color:var(--text-secondary); font-weight: 500;"> kr</span></div>
+        <div style="display:flex; gap:6px; margin-top: 10px;">
+          <span class="pill pill-muted">30 min</span>
+          <span class="pill pill-info">Privat</span>
+        </div>
+        <p style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">Bookt <b class="num" style="color: var(--text);">68×</b> denne mnd</p>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-muted">Privat</span>
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary);"><input type="checkbox" checked style="accent-color: var(--primary);">Aktiv</label>
+        </div>
+        <h3 style="font-style: italic;">Privattime 90 min</h3>
+        <div class="num" style="font-size: 32px; font-weight: 600; line-height: 1; margin: 14px 0 4px; letter-spacing: -0.02em;">2 600<span style="font-size:14px; color:var(--text-secondary); font-weight: 500;"> kr</span></div>
+        <div style="display:flex; gap:6px; margin-top: 10px;">
+          <span class="pill pill-muted">90 min</span>
+          <span class="pill pill-info">Privat</span>
+        </div>
+        <p style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">Bookt <b class="num" style="color: var(--text);">24×</b> denne mnd</p>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill" style="background: rgba(184,133,42,0.14); color: #6F4F18;">Gruppe</span>
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary);"><input type="checkbox" checked style="accent-color: var(--primary);">Aktiv</label>
+        </div>
+        <h3 style="font-style: italic;">Gruppeøkt junior</h3>
+        <div class="num" style="font-size: 32px; font-weight: 600; line-height: 1; margin: 14px 0 4px; letter-spacing: -0.02em;">450<span style="font-size:14px; color:var(--text-secondary); font-weight: 500;"> kr</span></div>
+        <div style="display:flex; gap:6px; margin-top: 10px;">
+          <span class="pill pill-muted">75 min · 4–6 spillere</span>
+        </div>
+        <p style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">Bookt <b class="num" style="color: var(--text);">86×</b> denne mnd</p>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill" style="background: rgba(184,133,42,0.14); color: #6F4F18;">Gruppe</span>
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary);"><input type="checkbox" checked style="accent-color: var(--primary);">Aktiv</label>
+        </div>
+        <h3 style="font-style: italic;">Gruppeøkt voksen</h3>
+        <div class="num" style="font-size: 32px; font-weight: 600; line-height: 1; margin: 14px 0 4px; letter-spacing: -0.02em;">550<span style="font-size:14px; color:var(--text-secondary); font-weight: 500;"> kr</span></div>
+        <div style="display:flex; gap:6px; margin-top: 10px;">
+          <span class="pill pill-muted">75 min · 4–6 spillere</span>
+        </div>
+        <p style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">Bookt <b class="num" style="color: var(--text);">42×</b> denne mnd</p>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill" style="background: rgba(94,92,87,0.16); color: #2F2E2C;">Mulligan</span>
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary);"><input type="checkbox" checked style="accent-color: var(--primary);">Aktiv</label>
+        </div>
+        <h3 style="font-style: italic;">Mulligan-leie 60 min</h3>
+        <div class="num" style="font-size: 32px; font-weight: 600; line-height: 1; margin: 14px 0 4px; letter-spacing: -0.02em;">650<span style="font-size:14px; color:var(--text-secondary); font-weight: 500;"> kr</span></div>
+        <div style="display:flex; gap:6px; margin-top: 10px;">
+          <span class="pill pill-muted">60 min · uten coach</span>
+        </div>
+        <p style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">Bookt <b class="num" style="color: var(--text);">118×</b> denne mnd</p>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill" style="background: rgba(209,248,67,0.32); color: #5C6B0E;">Camp</span>
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary);"><input type="checkbox" checked style="accent-color: var(--primary);">Aktiv</label>
+        </div>
+        <h3 style="font-style: italic;">Camp-pakke 1 dag</h3>
+        <div class="num" style="font-size: 32px; font-weight: 600; line-height: 1; margin: 14px 0 4px; letter-spacing: -0.02em;">2 400<span style="font-size:14px; color:var(--text-secondary); font-weight: 500;"> kr</span></div>
+        <div style="display:flex; gap:6px; margin-top: 10px;">
+          <span class="pill pill-muted">6 timer · sesong-camp</span>
+        </div>
+        <p style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">Bookt <b class="num" style="color: var(--text);">14×</b> denne mnd</p>
+      </article>
+
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+          <span class="pill pill-info">Pakke</span>
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary);"><input type="checkbox" checked style="accent-color: var(--primary);">Aktiv</label>
+        </div>
+        <h3 style="font-style: italic;">Sesong-pakke 10 økter</h3>
+        <div class="num" style="font-size: 32px; font-weight: 600; line-height: 1; margin: 14px 0 4px; letter-spacing: -0.02em;">16 000<span style="font-size:14px; color:var(--text-secondary); font-weight: 500;"> kr</span></div>
+        <div style="display:flex; gap:6px; margin-top: 10px;">
+          <span class="pill pill-muted">10 × 60 min</span>
+          <span class="pill pill-success">−11 %</span>
+        </div>
+        <p style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">Solgt <b class="num" style="color: var(--text);">9×</b> denne mnd</p>
+      </article>
+
+    </div>
+  </main>
+</div>
+</body></html>

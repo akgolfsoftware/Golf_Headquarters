@@ -119,7 +119,7 @@ export function SummaryClient({ data }: Props) {
       }
     >
       {/* Topbar */}
-      <header className="sticky top-0 z-10 flex items-center justify-between px-8 py-6">
+      <header className="sticky top-0 z-10 flex items-center justify-between px-4 py-4 sm:px-8 sm:py-6">
         <div className="flex items-center gap-2 font-mono text-[13px] font-semibold tracking-[0.08em] tabular-nums">
           <span
             className="inline-block h-1.5 w-1.5 rounded-full"
@@ -130,7 +130,7 @@ export function SummaryClient({ data }: Props) {
         <Link
           href="/portal/tren"
           aria-label="Lukk"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border bg-transparent"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-md border bg-transparent"
           style={{
             borderColor: "var(--ak-border-strong)",
             color: "var(--ak-cream-70)",

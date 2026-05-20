@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PlayerHQ · Trening · Øyvind Rohjan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #FAFAF7;
+    --fg: #0A0E0C;
+    --muted: #6B6A64;
+    --hairline: #0A0E0C;
+    --hairline-soft: #E5E3DD;
+    --primary: #005840;
+    --accent: #D1F843;
+    --serif: "Newsreader", Georgia, serif;
+    --tight: "Inter Tight", system-ui, sans-serif;
+    --sans: "Inter", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.035 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    z-index: 9999;
+    opacity: .6;
+    mix-blend-mode: multiply;
+  }
+  .wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 56px;
+  }
+  .grid12 {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: 24px;
+  }
+
+  /* Hairlines */
+  .rule-top { border-top: 6px solid var(--hairline); }
+  .rule-section { border-top: 1.5px solid var(--hairline); }
+  .rule-soft { border-top: 1px solid var(--hairline-soft); }
+  .rule-bottom { border-bottom: 6px solid var(--hairline); }
+
+  /* Eyebrow */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg);
+  }
+  .eyebrow-muted { color: var(--muted); }
+
+  /* Typography */
+  h1.display {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 80px;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+  }
+  h1.display em { font-style: italic; font-weight: 400; }
+  h2.section {
+    font-family: var(--tight);
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+  h2.section em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .lede {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--fg);
+    max-width: 60ch;
+  }
+  .body {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .caption {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .num {
+    font-family: var(--mono);
+    font-feature-settings: "tnum" 1;
+  }
+
+  /* Section header bar */
+  .section-head {
+    padding: 22px 0 28px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .section-head .eyebrow { color: var(--fg); }
+  .section-head .meta { color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+
+  /* Spacing */
+  .pad-top-l { padding-top: 96px; }
+  .pad-top-xl { padding-top: 128px; }
+  .pad-bottom-l { padding-bottom: 96px; }
+
+  /* TOP */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0 22px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .topbar .left, .topbar .right { display: flex; gap: 28px; align-items: center; }
+  .topbar .right span { color: var(--muted); }
+
+  .hero {
+    padding: 56px 0 64px;
+    display: grid;
+    grid-template-columns: 8fr 4fr;
+    gap: 48px;
+    align-items: end;
+  }
+  .hero .profile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 14px;
+  }
+  .avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(40%) contrast(1.05);
+  }
+  .profile .id { text-align: right; font-family: var(--mono); font-size: 12px; letter-spacing: .04em; }
+  .profile .id strong { font-family: var(--tight); font-weight: 600; font-size: 13px; display: block; letter-spacing: 0; }
+  .profile .id span { color: var(--muted); }
+
+  /* Hero image strip */
+  .hero-strip {
+    height: 220px;
+    width: 100%;
+    background-image: url("https://images.unsplash.com/photo-1535132011086-b8818f016104?w=1600&h=440&fit=crop&sat=-100");
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%) contrast(1.08);
+    margin-top: 28px;
+  }
+  .strip-caption {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  /* KPI table */
+  .kpi-table {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-top: 1.5px solid var(--hairline);
+    border-bottom: 1.5px solid var(--hairline);
+    margin-top: 40px;
+  }
+  .kpi-cell {
+    padding: 28px 24px 24px;
+    border-right: 1px solid var(--hairline-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .kpi-cell:last-child { border-right: none; }
+  .kpi-cell .kpi-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .kpi-cell .kpi-value {
+    font-family: var(--mono);
+    font-size: 38px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--fg);
+  }
+  .kpi-cell .kpi-delta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .04em;
+    color: var(--primary);
+  }
+  .kpi-cell .kpi-delta.neg { color: #A32D2D; }
+
+  /* Section number */
+  .secnum {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+
+  /* Gantt */
+  .gantt {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .gantt-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .gantt-row { display: grid; grid-template-columns: 120px 1fr; gap: 16px; align-items: center; }
+  .gantt-row .lbl { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .gantt-track {
+    position: relative;
+    height: 22px;
+    background: transparent;
+    border-top: 1px solid var(--hairline-soft);
+  }
+  .gantt-bar {
+    position: absolute; top: 4px; bottom: 4px;
+    background: var(--fg);
+  }
+  .gantt-bar.accent { background: var(--accent); }
+  .gantt-bar.primary { background: var(--primary); }
+  .gantt-bar.muted { background: #C8C5BC; }
+  .gantt-months {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    margin-top: 16px;
+    border-top: 1.5px solid var(--hairline);
+    padding-top: 10px;
+  }
+  .gantt-months span { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .tournaments {
+    position: relative;
+    margin-top: 18px;
+    height: 60px;
+  }
+  .t-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: var(--fg);
+  }
+  .t-tag {
+    position: absolute;
+    bottom: 0;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding-left: 6px;
+  }
+  .t-tag::before {
+    content: "";
+    position: absolute;
+    left: 0; top: -40px;
+    height: 36px;
+    width: 1px;
+    background: var(--fg);
+  }
+
+  /* Two-col period */
+  .period-grid {
+    display: grid;
+    grid-template-columns: 8fr 4fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .stable-bar {
+    display: flex;
+    height: 56px;
+    border-top: 1.5px solid var(--hairline);
+    border-bottom: 1.5px solid var(--hairline);
+    margin-top: 28px;
+  }
+  .stable-seg {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 14px;
+    border-right: 1px solid var(--hairline-soft);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .stable-seg:last-child { border-right: none; }
+  .stable-seg .pct { font-size: 18px; letter-spacing: -0.01em; color: var(--fg); }
+  .stable-seg .lab { color: var(--muted); margin-top: 4px; font-size: 10px; }
+
+  .period-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 32px;
+    margin-top: 32px;
+  }
+  .meta-pair { border-top: 1px solid var(--hairline-soft); padding-top: 10px; }
+  .meta-pair .k { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .meta-pair .v { font-family: var(--tight); font-size: 18px; font-weight: 500; margin-top: 4px; }
+
+  /* CS bar chart */
+  .cs-chart {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    height: 180px;
+    align-items: end;
+    margin-top: 28px;
+    padding-top: 8px;
+    border-top: 1.5px solid var(--hairline);
+  }
+  .cs-bar { background: var(--fg); width: 100%; position: relative; }
+  .cs-bar.cur { background: var(--accent); }
+  .cs-labels {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+    border-top: 1px solid var(--hairline-soft);
+    padding-top: 8px;
+  }
+  .cs-labels span { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; color: var(--muted); text-align: center; }
+  .cs-values {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .cs-values span { font-family: var(--mono); font-size: 12px; text-align: center; color: var(--fg); }
+
+  /* Week */
+  .week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+    border-top: 1.5px solid var(--hairline);
+    padding-top: 18px;
+  }
+  .day { display: flex; flex-direction: column; gap: 8px; }
+  .day .dh { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 8px; border-bottom: 1px solid var(--hairline-soft); }
+  .day .dh .dn { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .day .dh .dd { font-family: var(--serif); font-style: italic; font-size: 26px; font-weight: 300; }
+  .day.today .dh .dd { color: var(--primary); }
+  .sess {
+    background: var(--fg);
+    color: var(--bg);
+    padding: 10px 10px 12px;
+    font-family: var(--tight);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+  .sess .t { font-family: var(--mono); font-size: 10px; letter-spacing: .08em; opacity: .7; margin-bottom: 4px; }
+  .sess.accent { background: var(--accent); color: var(--fg); }
+  .sess.primary { background: var(--primary); color: var(--bg); }
+  .sess.outline { background: transparent; color: var(--fg); border: 1px solid var(--fg); }
+  .sess.muted { background: #E5E3DD; color: var(--fg); }
+  .day .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 2px 6px; border: 1px solid var(--hairline-soft); }
+
+  /* Today */
+  .today-block {
+    margin-top: 12px;
+    border-top: 1.5px solid var(--hairline);
+    border-bottom: 1.5px solid var(--hairline);
+    padding: 64px 0 64px;
+    text-align: center;
+  }
+  .today-block .eyebrow { color: var(--muted); }
+  .today-block h2 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 64px;
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin-top: 18px;
+  }
+  .today-block h2 em { font-style: italic; }
+  .today-meta {
+    display: flex;
+    gap: 56px;
+    justify-content: center;
+    margin-top: 32px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .today-meta div { display: flex; flex-direction: column; gap: 4px; }
+  .today-meta .k { color: var(--muted); font-size: 10px; }
+  .today-meta .v { color: var(--fg); font-size: 14px; }
+  .cta {
+    display: inline-block;
+    margin-top: 40px;
+    background: var(--accent);
+    color: var(--fg);
+    padding: 18px 36px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--fg);
+  }
+
+  /* Pyramide + streak */
+  .twocol-equal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    margin-top: 24px;
+    border-top: 1.5px solid var(--hairline);
+    padding-top: 32px;
+  }
+  .pyramide {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    align-items: end;
+    height: 220px;
+    margin-top: 24px;
+  }
+  .pyr-col { display: flex; flex-direction: column; align-items: stretch; }
+  .pyr-bar { background: var(--fg); }
+  .pyr-bar.over { background: var(--accent); margin-top: 0; }
+  .pyr-target { border-top: 1px dashed var(--fg); height: 1px; }
+  .pyr-labels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 10px; border-top: 1px solid var(--hairline-soft); padding-top: 10px; }
+  .pyr-labels div { display: flex; flex-direction: column; gap: 4px; }
+  .pyr-labels .nm { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .pyr-labels .vl { font-family: var(--mono); font-size: 14px; }
+
+  .streak {
+    display: grid;
+    grid-template-columns: repeat(14, 1fr);
+    gap: 6px;
+    margin-top: 24px;
+  }
+  .sq { aspect-ratio: 1/1; background: #E5E3DD; }
+  .sq.done { background: var(--fg); }
+  .sq.today { background: var(--accent); border: 1px solid var(--fg); }
+  .streak-foot { display: flex; justify-content: space-between; margin-top: 14px; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+  /* Coach */
+  .coach {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 40px;
+    align-items: center;
+    border-top: 1.5px solid var(--hairline);
+    padding: 48px 0 56px;
+    margin-top: 24px;
+  }
+  .coach .ca {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background-image: url("https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=faces&sat=-50");
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(60%) contrast(1.05);
+  }
+  .coach blockquote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 32px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    max-width: 30ch;
+  }
+  .coach .byline {
+    margin-top: 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Colophon */
+  .colophon {
+    margin-top: 0;
+    border-top: 6px solid var(--hairline);
+    padding: 28px 0 56px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* utilities */
+  .col-8 { grid-column: span 8; }
+  .col-4 { grid-column: span 4; }
+  .col-12 { grid-column: span 12; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- TOP BAR -->
+  <div class="rule-top"></div>
+  <div class="topbar">
+    <div class="left">
+      <span>PlayerHQ</span>
+      <span style="color: var(--muted)">Trening</span>
+      <span style="color: var(--muted)">Mandag 19. mai 2026 · uke 19</span>
+    </div>
+    <div class="right">
+      <span>AK Golf Academy</span>
+      <span>v 1.0</span>
+    </div>
+  </div>
+  <div class="rule-section"></div>
+
+  <!-- 01 / OVERSIKT -->
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">01 / Oversikt</div>
+      <div class="meta">Forberedelses­fase · uke 19 av 52</div>
+    </div>
+    <div class="hero">
+      <div>
+        <h1 class="display"><em>Sesongen</em> — mandag<br/>19. mai 2026.</h1>
+        <p class="lede" style="margin-top: 28px;">Tre uker til Sørlandsåpent. Du ligger 0,4 slag bedre enn for nitti dager siden, og slår nå pitchene dine 4 av 5 ganger innenfor seks meter fra flagget.</p>
+      </div>
+      <div class="profile">
+        <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces');"></div>
+        <div class="id">
+          <strong>Øyvind Rohjan</strong>
+          <span>HCP +3,5 · Performance</span>
+          <span>Bossum Golfklubb</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-strip" role="img" aria-label="Golfbane, svart-hvitt"></div>
+    <div class="strip-caption">
+      <span>Bossum Golf · 14. mai 2026 — siste runde</span>
+      <span>Scorekort: −3 (68) · 11 GIR · 1,72 putts/hull</span>
+    </div>
+
+    <div class="kpi-table">
+      <div class="kpi-cell">
+        <div class="kpi-label">HCP</div>
+        <div class="kpi-value">+3,5</div>
+        <div class="kpi-delta">↓ 0,4 / 90d</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">SG Total</div>
+        <div class="kpi-value">+2,1</div>
+        <div class="kpi-delta">↑ 0,6 / 30d</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Streak</div>
+        <div class="kpi-value">11<span style="color:var(--muted)">/14</span></div>
+        <div class="kpi-delta">d sammenhengende</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Pyramide</div>
+        <div class="kpi-value">12<span style="color:var(--muted)">/16</span></div>
+        <div class="kpi-delta">økter denne uka</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Vekt</div>
+        <div class="kpi-value">75<span style="font-size:18px;color:var(--muted)"> kg</span></div>
+        <div class="kpi-delta">stabilt 30d</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 / ÅRSPLAN -->
+  <section class="pad-top-xl">
+    <div class="rule-section"></div>
+    <div class="section-head">
+      <div class="eyebrow">02 / Årsplan</div>
+      <div class="meta">2026 · 52 uker</div>
+    </div>
+    <h2 class="section">Sesongkartet <em>fra januar til desember.</em></h2>
+    <p class="body" style="margin-top: 16px; max-width: 58ch;">Fire periodiserings­blokker, tolv måneder, fire A-turneringer. Du er nå tre uker inn i konkurransefasen.</p>
+
+    <div style="margin-top: 48px;">
+      <div class="gantt-rows">
+        <div class="gantt-row">
+          <div class="lbl">Forberedelse</div>
+          <div class="gantt-track">
+            <div class="gantt-bar muted" style="left: 0%; width: 33%;"></div>
+          </div>
+        </div>
+        <div class="gantt-row">
+          <div class="lbl">Konkurranse I</div>
+          <div class="gantt-track">
+            <div class="gantt-bar primary" style="left: 33%; width: 25%;"></div>
+          </div>
+        </div>
+        <div class="gantt-row">
+          <div class="lbl">Topping</div>
+          <div class="gantt-track">
+            <div class="gantt-bar accent" style="left: 38%; width: 8%;"></div>
+          </div>
+        </div>
+        <div class="gantt-row">
+          <div class="lbl">Konkurranse II</div>
+          <div class="gantt-track">
+            <div class="gantt-bar primary" style="left: 58%; width: 25%;"></div>
+          </div>
+        </div>
+        <div class="gantt-row">
+          <div class="lbl">Restitusjon</div>
+          <div class="gantt-track">
+            <div class="gantt-bar muted" style="left: 83%; width: 17%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gantt-months">
+        <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>Mai</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Okt</span><span>Nov</span><span>Des</span>
+      </div>
+
+      <div class="tournaments">
+        <div class="t-tag" style="left: 39%;">Sørlandsåpent · 09.06</div>
+        <div class="t-tag" style="left: 54%;">NM Match · 22.07</div>
+        <div class="t-tag" style="left: 68%;">Norgescup F · 18.08</div>
+        <div class="t-tag" style="left: 80%;">Tour Final · 28.09</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 / DENNE PERIODEN -->
+  <section class="pad-top-xl">
+    <div class="rule-section"></div>
+    <div class="section-head">
+      <div class="eyebrow">03 / Denne perioden</div>
+      <div class="meta">Konkurranse I · uke 18 — 24</div>
+    </div>
+    <h2 class="section">Sju ukers blokk, <em>fokus på korte jern.</em></h2>
+
+    <div class="period-grid" style="margin-top: 40px;">
+      <div>
+        <p class="body" style="max-width: 58ch;">Fasen bygger toppform mot Sørlandsåpent. Volumet er moderat, intensiteten høy. Vekten ligger på 50–125 meter inn — den scoring-distansen som forskjellen mellom topp 10 og kuttgrense oftest avgjøres på.</p>
+
+        <div class="caption" style="margin-top: 40px;">Fordeling — periodens 16 økter</div>
+        <div class="stable-bar">
+          <div class="stable-seg" style="flex: 32;">
+            <div class="pct num">32%</div>
+            <div class="lab">Turnering &amp; spill</div>
+          </div>
+          <div class="stable-seg" style="flex: 28;">
+            <div class="pct num">28%</div>
+            <div class="lab">Spilløkt</div>
+          </div>
+          <div class="stable-seg" style="flex: 22;">
+            <div class="pct num">22%</div>
+            <div class="lab">Slag­trening</div>
+          </div>
+          <div class="stable-seg" style="flex: 12;">
+            <div class="pct num">12%</div>
+            <div class="lab">Teknisk</div>
+          </div>
+          <div class="stable-seg" style="flex: 6;">
+            <div class="pct num">6%</div>
+            <div class="lab">Fysisk</div>
+          </div>
+        </div>
+
+        <div class="period-meta">
+          <div class="meta-pair">
+            <div class="k">Hovedmål</div>
+            <div class="v">Pitch 50–100m, lav trajectory</div>
+          </div>
+          <div class="meta-pair">
+            <div class="k">Sekundærmål</div>
+            <div class="v">Driver kontroll, snitt 268m</div>
+          </div>
+          <div class="meta-pair">
+            <div class="k">Volum / uke</div>
+            <div class="v" style="font-family: var(--mono);">12 t · 4 økter</div>
+          </div>
+          <div class="meta-pair">
+            <div class="k">Intensitet</div>
+            <div class="v" style="font-family: var(--mono);">7 / 10</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="caption">CS-progresjon · 6 mnd</div>
+        <div class="cs-chart">
+          <div class="cs-bar" style="height: 48%;"></div>
+          <div class="cs-bar" style="height: 58%;"></div>
+          <div class="cs-bar" style="height: 64%;"></div>
+          <div class="cs-bar" style="height: 72%;"></div>
+          <div class="cs-bar" style="height: 78%;"></div>
+          <div class="cs-bar cur" style="height: 88%;"></div>
+        </div>
+        <div class="cs-labels">
+          <span>Des</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>Mai</span>
+        </div>
+        <div class="cs-values">
+          <span>CS 70</span><span>72</span><span>74</span><span>76</span><span>78</span><span>CS 80</span>
+        </div>
+        <p class="body" style="margin-top: 24px;">CS 80 nås i uke 21. Fra og med uke 22 settes nytt mål på CS 85.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 / UKE 19 -->
+  <section class="pad-top-xl">
+    <div class="rule-section"></div>
+    <div class="section-head">
+      <div class="eyebrow">04 / Uke 19</div>
+      <div class="meta">Mandag 19. mai — søndag 25. mai</div>
+    </div>
+    <h2 class="section">Sju dager. <em>Fire økter, én runde.</em></h2>
+
+    <div class="week">
+      <div class="day today">
+        <div class="dh"><span class="dn">Man</span><span class="dd">19</span></div>
+        <div class="sess accent">
+          <div class="t">09:00 · 90 min</div>
+          Pitch 50–100m
+        </div>
+        <div class="tags"><span class="tag">Slag</span><span class="tag">Lav traj</span></div>
+      </div>
+      <div class="day">
+        <div class="dh"><span class="dn">Tir</span><span class="dd">20</span></div>
+        <div class="sess outline">
+          <div class="t">07:00 · 45 min</div>
+          Styrke A
+        </div>
+        <div class="sess">
+          <div class="t">17:00 · 60 min</div>
+          Driver kontroll
+        </div>
+        <div class="tags"><span class="tag">Fys</span><span class="tag">Teknisk</span></div>
+      </div>
+      <div class="day">
+        <div class="dh"><span class="dn">Ons</span><span class="dd">21</span></div>
+        <div class="sess primary">
+          <div class="t">10:00 · 4 t</div>
+          18 hull Bossum
+        </div>
+        <div class="tags"><span class="tag">Spill</span><span class="tag">Runde</span></div>
+      </div>
+      <div class="day">
+        <div class="dh"><span class="dn">Tor</span><span class="dd">22</span></div>
+        <div class="sess muted">
+          <div class="t">— · hviledag</div>
+          Mobility 20 min
+        </div>
+        <div class="tags"><span class="tag">Resti</span></div>
+      </div>
+      <div class="day">
+        <div class="dh"><span class="dn">Fre</span><span class="dd">23</span></div>
+        <div class="sess">
+          <div class="t">09:00 · 75 min</div>
+          Putting 3–6m
+        </div>
+        <div class="sess outline">
+          <div class="t">15:00 · 60 min</div>
+          Coach-økt AK
+        </div>
+        <div class="tags"><span class="tag">Putt</span><span class="tag">Coach</span></div>
+      </div>
+      <div class="day">
+        <div class="dh"><span class="dn">Lør</span><span class="dd">24</span></div>
+        <div class="sess primary">
+          <div class="t">08:30 · 5 t</div>
+          18 hull Larvik
+        </div>
+        <div class="tags"><span class="tag">Spill</span><span class="tag">Bortebane</span></div>
+      </div>
+      <div class="day">
+        <div class="dh"><span class="dn">Søn</span><span class="dd">25</span></div>
+        <div class="sess muted">
+          <div class="t">10:00 · 45 min</div>
+          Reflek­sjon
+        </div>
+        <div class="tags"><span class="tag">Mental</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 / I DAG -->
+  <section class="pad-top-xl">
+    <div class="section-head">
+      <div class="eyebrow">05 / I dag</div>
+      <div class="meta">Mandag 19. mai · 09:00</div>
+    </div>
+
+    <div class="today-block">
+      <div class="eyebrow">Dagens økt</div>
+      <h2><em>Pitch 50–100m</em><br/>— lav trajectory.</h2>
+      <div class="today-meta">
+        <div><span class="k">Varighet</span><span class="v num">90 min</span></div>
+        <div><span class="k">Sted</span><span class="v">Bossum · range</span></div>
+        <div><span class="k">Utstyr</span><span class="v">50° · 56° · 60°</span></div>
+        <div><span class="k">Mål</span><span class="v">40 baller, 4/5 innenfor 6m</span></div>
+        <div><span class="k">Coach</span><span class="v">Anders K.</span></div>
+      </div>
+      <a class="cta" href="#">Start økt →</a>
+    </div>
+  </section>
+
+  <!-- 06 / PYRAMIDE & STREAK -->
+  <section class="pad-top-xl">
+    <div class="rule-section"></div>
+    <div class="section-head">
+      <div class="eyebrow">06 / Pyramide &amp; Streak</div>
+      <div class="meta">Uke 19 · 14 dager</div>
+    </div>
+    <h2 class="section">Konsistens, <em>uke for uke.</em></h2>
+
+    <div class="twocol-equal">
+      <div>
+        <div class="caption">Treningspyramide · uke 19</div>
+        <div class="pyramide">
+          <div class="pyr-col">
+            <div class="pyr-bar over" style="height: 95%;"></div>
+          </div>
+          <div class="pyr-col">
+            <div class="pyr-bar" style="height: 80%;"></div>
+          </div>
+          <div class="pyr-col">
+            <div class="pyr-bar" style="height: 60%;"></div>
+          </div>
+          <div class="pyr-col">
+            <div class="pyr-bar" style="height: 30%;"></div>
+          </div>
+        </div>
+        <div class="pyr-labels">
+          <div><span class="nm">Spill</span><span class="vl num">5 / 4</span></div>
+          <div><span class="nm">Slag</span><span class="vl num">4 / 5</span></div>
+          <div><span class="nm">Teknisk</span><span class="vl num">2 / 4</span></div>
+          <div><span class="nm">Fysisk</span><span class="vl num">1 / 3</span></div>
+        </div>
+        <p class="body" style="margin-top: 28px; max-width: 50ch;">Spill-volum over mål, fysisk under. Coach foreslår å bytte én slagøkt mot en kort styrke­økt onsdag morgen.</p>
+      </div>
+
+      <div>
+        <div class="caption">Streak · siste 14 dager</div>
+        <div class="streak">
+          <div class="sq done"></div><div class="sq done"></div><div class="sq done"></div>
+          <div class="sq"></div>
+          <div class="sq done"></div><div class="sq done"></div><div class="sq done"></div>
+          <div class="sq done"></div><div class="sq done"></div><div class="sq done"></div>
+          <div class="sq"></div>
+          <div class="sq done"></div><div class="sq done"></div>
+          <div class="sq today"></div>
+        </div>
+        <div class="streak-foot">
+          <span>06.05</span>
+          <span style="color: var(--fg);">11 av 14 dager</span>
+          <span>19.05</span>
+        </div>
+        <p class="body" style="margin-top: 28px; max-width: 50ch;">To hviledager og én glipp (16.05). Lengste streak inneværende sesong: 22 dager (mars).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 / COACH -->
+  <section class="pad-top-xl">
+    <div class="section-head">
+      <div class="eyebrow">07 / Coach</div>
+      <div class="meta">Anders Kristiansen · AK Golf Academy</div>
+    </div>
+    <div class="coach">
+      <div class="ca" role="img" aria-label="Anders Kristiansen"></div>
+      <div>
+        <blockquote>«Hold fokus på lav trajectory denne uka. Du har trent godt, og pitchen begynner å sitte. Ikke jag avstandene — la kontrollen komme først.»</blockquote>
+        <div class="byline">Anders K. · sendt 18. mai, 21:14</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLOPHON -->
+  <div class="colophon">
+    <span>PlayerHQ · Trening · v 1.0</span>
+    <span>Øyvind Rohjan · HCP +3,5</span>
+    <span>Generert 19. mai 2026</span>
+  </div>
+
+</div>
+
+</body>
+</html>

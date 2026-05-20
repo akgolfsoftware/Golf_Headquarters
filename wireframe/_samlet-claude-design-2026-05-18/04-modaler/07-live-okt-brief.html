@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Planlegg · Live økt — brief · CoachHQ</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/dark-shell.css">
+<link rel="stylesheet" href="assets/light-shell-v2.css">
+<style>
+  body { min-width: 1920px; }
+  .main { padding: 20px 28px 48px; }
+
+  /* ─── Live hero (brief) ─── */
+  .lb-hero {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    align-items: end;
+    margin-bottom: 20px;
+  }
+  body.light .lb-hero { box-shadow: 0 1px 3px rgba(10,31,24,0.06), 0 1px 2px rgba(10,31,24,0.04); }
+
+  .lb-hero .left { display: flex; flex-direction: column; gap: 14px; }
+  .lb-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 600 10px/1 var(--font-sans); letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-dk-subtle);
+  }
+  .lb-eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(0,88,64,0.12);
+  }
+  .lb-title {
+    font: 500 36px/1.1 var(--font-tight);
+    letter-spacing: -.02em; color: var(--ink-dk);
+  }
+  .lb-title em {
+    font-style: italic; font-weight: 400;
+    color: var(--ink-dk-muted);
+  }
+  .lb-sub {
+    font: 400 italic 16px/1.4 var(--font-tight);
+    color: var(--ink-dk-muted);
+    max-width: 540px;
+  }
+  .lb-meta-row {
+    display: flex; gap: 20px; align-items: center;
+    margin-top: 6px; flex-wrap: wrap;
+  }
+  .lb-meta-row .mt {
+    display: inline-flex; align-items: center; gap: 6px;
+    font: 500 12px/1 var(--font-mono); color: var(--ink-dk-muted);
+  }
+  .lb-meta-row .mt b { color: var(--ink-dk); font-weight: 600; }
+  .lb-meta-row .mt svg { width: 13px; height: 13px; color: var(--ink-dk-subtle); }
+
+  .lb-hero .right {
+    display: flex; flex-direction: column; gap: 12px;
+    align-items: stretch;
+  }
+  .lb-cta-card {
+    background: var(--brand-primary);
+    border-radius: 14px; padding: 18px 20px;
+    color: #FFFFFF;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .lb-cta-card .when { font: 500 11px/1 var(--font-sans); letter-spacing: .10em; text-transform: uppercase; opacity: .65; }
+  .lb-cta-card .time-big { font: 600 28px/1 var(--font-mono); letter-spacing: -.01em; }
+  .lb-cta-card .place { font: 500 13px/1.4 var(--font-sans); opacity: .85; }
+  .lb-start-btn {
+    background: var(--brand-accent);
+    color: var(--brand-accent-on);
+    border: 0; border-radius: 12px;
+    padding: 18px 24px;
+    font: 600 16px/1 var(--font-tight); letter-spacing: -.01em;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background 120ms;
+  }
+  .lb-start-btn:hover { background: var(--brand-accent-hover); }
+  .lb-start-btn svg { width: 18px; height: 18px; stroke-width: 2.5; }
+  .lb-altrow {
+    display: flex; gap: 8px;
+  }
+  .lb-altrow .btn { flex: 1; justify-content: center; }
+
+  /* ─── Praksistype row ─── */
+  .pt-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; margin-bottom: 18px;
+  }
+  .pt-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  body.light .pt-card { box-shadow: 0 1px 2px rgba(10,31,24,0.04); }
+  .pt-card.on {
+    border: 2px solid var(--brand-primary);
+    background: rgba(0,88,64,0.04);
+    padding: 13px 15px;
+  }
+  .pt-card .ic-wrap {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--bg-elev); color: var(--ink-dk-muted);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .pt-card.on .ic-wrap { background: var(--brand-primary); color: var(--brand-accent); }
+  .pt-card .pt-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .pt-card .pt-info .nm { font: 600 13px/1.2 var(--font-tight); color: var(--ink-dk); }
+  .pt-card .pt-info .ds { font: 500 11px/1.3 var(--font-sans); color: var(--ink-dk-subtle); }
+
+  /* ─── Pyramide distribusjon strip ─── */
+  .pyr-strip-section { margin-bottom: 22px; }
+  .pyr-strip-h {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .pyr-strip-h .ttl { font: 600 11px/1 var(--font-sans); letter-spacing: .10em; text-transform: uppercase; color: var(--ink-dk-subtle); }
+  .pyr-strip-h .mt { font: 500 11px/1 var(--font-mono); color: var(--ink-dk-subtle); }
+  .pyr-strip-bar {
+    display: flex; height: 10px; border-radius: 100px; overflow: hidden;
+    background: var(--bg-elev-2);
+  }
+  .pyr-strip-bar .seg { display: flex; align-items: center; justify-content: center; }
+  .pyr-strip-l2 {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px;
+  }
+  .pyr-strip-l2 .ce {
+    background: var(--bg-elev);
+    border-radius: 6px; padding: 6px 8px;
+    display: flex; align-items: center; gap: 6px;
+    font: 500 11px/1 var(--font-mono); color: var(--ink-dk-muted);
+  }
+  .pyr-strip-l2 .ce .pyr-dot { width: 8px; height: 8px; }
+  .pyr-strip-l2 .ce .pn { color: var(--ink-dk); }
+
+  /* ─── Two-column body ─── */
+  .lb-body {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+  }
+
+  /* ─── Drill list (collapsed, brief) ─── */
+  .drill-list-h {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .drill-list-h .ttl { font: 600 16px/1 var(--font-tight); color: var(--ink-dk); letter-spacing: -.01em; }
+  .drill-list-h .sum { font: 500 12px/1 var(--font-mono); color: var(--ink-dk-subtle); }
+
+  .drills-brief { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .drill-b {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 28px 1fr auto auto;
+    align-items: center;
+    gap: 14px;
+  }
+  body.light .drill-b { box-shadow: 0 1px 2px rgba(10,31,24,0.04); }
+  .drill-b .num {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--bg-elev); color: var(--ink-dk-muted);
+    display: grid; place-items: center;
+    font: 700 12px/1 var(--font-mono);
+  }
+  .drill-b .nm-col {
+    display: flex; flex-direction: column; gap: 4px; min-width: 0;
+  }
+  .drill-b .nm {
+    font: 500 14px/1.25 var(--font-tight);
+    color: var(--ink-dk); letter-spacing: -.005em;
+  }
+  .drill-b .params {
+    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+  }
+  .drill-b .param {
+    font: 500 10.5px/1 var(--font-mono); color: var(--ink-dk-muted);
+    padding: 2px 6px; border-radius: 4px;
+    background: var(--bg-elev);
+    letter-spacing: .04em;
+  }
+  .drill-b .param.tek-c   { background: rgba(0,88,64,0.10); color: #003B2A; }
+  .drill-b .param.slag-c  { background: rgba(42,125,90,0.12); color: #1F5C40; }
+  .drill-b .param.fys-c   { background: rgba(0,59,42,0.10); color: #003B2A; }
+  .drill-b .param.spill-c { background: rgba(183,201,125,0.30); color: #3D4A18; }
+  .drill-b .param.turn-c  { background: rgba(209,248,67,0.30); color: #0A1F18; }
+  .drill-b .reps {
+    font: 600 13px/1 var(--font-mono); color: var(--ink-dk);
+    text-align: right;
+  }
+  .drill-b .reps small { display: block; font: 500 10px/1 var(--font-mono); color: var(--ink-dk-subtle); font-weight: 400; margin-top: 3px; }
+  .drill-b .du {
+    font: 600 13px/1 var(--font-mono); color: var(--ink-dk);
+    text-align: right;
+  }
+  .drill-b .du small { display: block; font: 500 10px/1 var(--font-mono); color: var(--ink-dk-subtle); font-weight: 400; margin-top: 3px; }
+
+  /* ─── Coach kommentar (editorial card) ─── */
+  .coach-card {
+    background: var(--brand-primary);
+    color: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  body.light .coach-card { box-shadow: 0 4px 16px rgba(0,88,64,0.18); }
+  .coach-card .av-c {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--brand-accent); color: var(--brand-accent-on);
+    display: grid; place-items: center;
+    font: 700 13px/1 var(--font-sans);
+  }
+  .coach-card .body { display: flex; flex-direction: column; gap: 10px; }
+  .coach-card .who {
+    font: 600 10px/1 var(--font-sans); letter-spacing: .12em;
+    text-transform: uppercase; opacity: .65;
+  }
+  .coach-card .who b { opacity: 1; color: #FFFFFF; font-weight: 600; }
+  .coach-card .quote {
+    font: 400 italic 19px/1.45 var(--font-tight);
+    color: rgba(255,255,255,0.94);
+    text-wrap: pretty;
+  }
+  .coach-card .meta {
+    font: 500 11px/1 var(--font-mono);
+    color: rgba(255,255,255,0.65);
+    margin-top: 4px;
+  }
+
+  /* ─── Right column cards ─── */
+  .side-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  body.light .side-card { box-shadow: 0 1px 3px rgba(10,31,24,0.06); }
+  .side-card .sh {
+    font: 600 10px/1 var(--font-sans); letter-spacing: .10em;
+    text-transform: uppercase; color: var(--ink-dk-subtle);
+    margin-bottom: 12px;
+  }
+  .side-stat {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 8px 0; border-bottom: 1px solid var(--border-soft);
+  }
+  .side-stat:last-child { border-bottom: 0; }
+  .side-stat .k { font: 500 12px/1.3 var(--font-sans); color: var(--ink-dk-muted); }
+  .side-stat .v { font: 600 13px/1 var(--font-mono); color: var(--ink-dk); }
+  .side-stat .v.big { font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+
+  /* Sjekkliste */
+  .check-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0;
+    font: 500 12.5px/1.3 var(--font-sans); color: var(--ink-dk);
+  }
+  .check-row .cb {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid var(--ink-dk-faint);
+    flex-shrink: 0;
+    display: grid; place-items: center;
+  }
+  .check-row.on .cb { background: var(--brand-primary); border-color: var(--brand-primary); }
+  .check-row.on .cb::after {
+    content: ''; width: 8px; height: 4px;
+    border-left: 1.5px solid #FFFFFF; border-bottom: 1.5px solid #FFFFFF;
+    transform: rotate(-45deg) translate(1px, -1px);
+  }
+
+  /* Periode-info-mini */
+  .periode-mini {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-top: 1px solid var(--border-soft);
+  }
+  .periode-mini .pn { font: 600 12px/1.2 var(--font-tight); color: var(--ink-dk); flex: 1; }
+  .periode-mini .pm { font: 500 11px/1 var(--font-mono); color: var(--ink-dk-subtle); }
+
+  /* View tabs underline state for "Live" */
+  .view-tab.live-active {
+    color: var(--brand-primary);
+    border-bottom: 2px solid var(--brand-primary);
+  }
+  .view-tab.live-active::before {
+    content: ''; display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--brand-primary);
+    margin-right: 6px;
+    animation: live-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes live-pulse {
+    0%, 100% { opacity: 0.4; box-shadow: 0 0 0 0 rgba(0,88,64,0.0); }
+    50% { opacity: 1; box-shadow: 0 0 0 3px rgba(0,88,64,0.18); }
+  }
+</style>
+</head>
+<body>
+<div class="app" data-screen-label="Planlegg — Live økt brief (tor 14. mai 14:00)">
+
+  <!-- Rail -->
+  <aside class="rail">
+    <div class="rail-logo">AK</div>
+    <div class="rail-ic" title="Søk"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+    <div class="rail-ic active" title="Planlegg"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+    <div class="rail-ic" title="Spillere"><svg class="ic" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+    <div class="rail-ic" title="Statistikk"><svg class="ic" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/></svg></div>
+    <div class="rail-ic" title="Meldinger"><svg class="ic" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    <div class="rail-spacer"></div>
+    <div class="rail-avatar">MP</div>
+  </aside>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-brand"><div class="nav-brand-title">AK Golf</div><div class="nav-brand-sub">Markus · Spiller</div></div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/></svg>Hjem</div>
+    <div class="nav-item active"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Tren</div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>Mål</div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/></svg>Statistikk</div>
+    <div class="nav-section">Verktøy</div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Meldinger</div>
+    <div class="nav-item"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="m18 14 1 8-7-4-7 4 1-8"/></svg>Mål &amp; milepæler</div>
+    <div class="nav-foot"><div class="av">MP</div><div><div class="name">Markus P.</div><div class="role">Kat. B · 14 år</div></div></div>
+  </nav>
+
+  <!-- Plan sidebar -->
+  <aside class="plan-sidebar">
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Mai 2026</div><div class="ps-link">I dag</div></div>
+      <div class="mini-cal">
+        <div class="mini-cal-month">
+          <div class="mini-cal-month-h"><span class="mt">Mai</span><span class="yr">2026</span></div>
+          <div class="mini-cal-grid">
+            <div class="mini-cal-dow">m</div><div class="mini-cal-dow">t</div><div class="mini-cal-dow">o</div><div class="mini-cal-dow">t</div><div class="mini-cal-dow">f</div><div class="mini-cal-dow">l</div><div class="mini-cal-dow">s</div>
+            <div class="mini-cal-day is-out">28</div><div class="mini-cal-day is-out">29</div><div class="mini-cal-day is-out">30</div><div class="mini-cal-day">1</div><div class="mini-cal-day has-session">2</div><div class="mini-cal-day">3</div><div class="mini-cal-day">4</div>
+            <div class="mini-cal-day has-session">5</div><div class="mini-cal-day has-session">6</div><div class="mini-cal-day">7</div><div class="mini-cal-day has-session">8</div><div class="mini-cal-day">9</div><div class="mini-cal-day">10</div><div class="mini-cal-day has-tour">11</div>
+            <div class="mini-cal-day has-session">12</div><div class="mini-cal-day has-session">13</div><div class="mini-cal-day is-today">14</div><div class="mini-cal-day has-session">15</div><div class="mini-cal-day">16</div><div class="mini-cal-day">17</div><div class="mini-cal-day">18</div>
+            <div class="mini-cal-day has-session">19</div><div class="mini-cal-day has-session">20</div><div class="mini-cal-day has-session">21</div><div class="mini-cal-day">22</div><div class="mini-cal-day has-tour">23</div><div class="mini-cal-day has-tour">24</div><div class="mini-cal-day has-tour">25</div>
+            <div class="mini-cal-day">26</div><div class="mini-cal-day has-session">27</div><div class="mini-cal-day has-session">28</div><div class="mini-cal-day">29</div><div class="mini-cal-day">30</div><div class="mini-cal-day">31</div><div class="mini-cal-day is-out">1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Dagens økter</div><div class="ps-meta">3 · 95 min</div></div>
+      <div class="spiller-list">
+        <div class="spiller-row off"><div class="av-s" style="background:rgba(0,59,42,0.20); color:#003B2A; font-weight:700">F</div><div class="nm" style="font-weight:500">Morgentur · FYS<span class="cat a">B</span></div><div class="dt" style="background:var(--brand-primary)"></div></div>
+        <div class="spiller-row on" style="background:rgba(0,88,64,0.08); border-radius:6px;"><div class="av-s" style="background:var(--brand-primary); color:#fff">T</div><div class="nm" style="font-weight:600">Iron-progresjon · TEK<span class="cat a">NÅ</span></div><div class="dt"></div></div>
+        <div class="spiller-row off"><div class="av-s" style="background:rgba(183,201,125,0.35); color:#3D4A18; font-weight:700">S</div><div class="nm" style="font-weight:500">Putting 0–3m · SLAG<span class="cat c">PL</span></div><div class="dt"></div></div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Dagens pyramide</div><div class="ps-meta">95 min</div></div>
+      <div class="pyr-bar">
+        <div class="pyr-bar-seg fys" style="flex:0.35">FYS</div>
+        <div class="pyr-bar-seg tek" style="flex:0.45">TEK</div>
+        <div class="pyr-bar-seg slag" style="flex:0.20">SLG</div>
+      </div>
+      <div class="pyr-filter" style="margin-top:8px">
+        <div class="pyr-row pyr-fys"><div class="cb" style="background:var(--pyr-fys-d); border-color:var(--pyr-fys-d)"></div><div class="nm">FYS</div><div class="mt">35%</div></div>
+        <div class="pyr-row pyr-tek on"><div class="cb"></div><div class="nm">TEK</div><div class="mt">45%</div></div>
+        <div class="pyr-row pyr-slag"><div class="cb" style="background:var(--pyr-slag-d); border-color:var(--pyr-slag-d)"></div><div class="nm">SLAG</div><div class="mt">20%</div></div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Treningshelse</div><div class="ps-link">7d</div></div>
+      <div class="myelin-list">
+        <div class="myelin-row"><span class="dt ok"></span><span class="nm">Driver</span><span class="ago">2 d</span></div>
+        <div class="myelin-row"><span class="dt ok"></span><span class="nm">Iron lang</span><span class="ago">i dag</span></div>
+        <div class="myelin-row"><span class="dt warn"></span><span class="nm">Iron midt</span><span class="ago">9 d</span></div>
+        <div class="myelin-row"><span class="dt warn"></span><span class="nm">Pitch &amp; Chip</span><span class="ago">12 d</span></div>
+        <div class="myelin-row"><span class="dt alarm"></span><span class="nm">Bunker</span><span class="ago">28 d</span></div>
+        <div class="myelin-row"><span class="dt ok"></span><span class="nm">Putting</span><span class="ago">1 d</span></div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <div class="ps-section-h"><div class="ps-title">Periode</div><div class="ps-link">7 dager igjen</div></div>
+      <div class="periode-info">
+        <div class="periode-info-h">
+          <div class="nm">Vår-spesialisering</div>
+          <div class="periode-badge spes">SPES</div>
+        </div>
+        <div class="pyr-bar" style="height:6px">
+          <div class="pyr-bar-seg fys" style="flex:0.20"></div>
+          <div class="pyr-bar-seg tek" style="flex:0.30"></div>
+          <div class="pyr-bar-seg slag" style="flex:0.30"></div>
+          <div class="pyr-bar-seg spill" style="flex:0.15"></div>
+          <div class="pyr-bar-seg turn" style="flex:0.05"></div>
+        </div>
+        <div class="periode-stat"><span class="k">CS-maks</span><span class="v">CS80</span></div>
+        <div class="periode-stat"><span class="k">Neste turnering</span><span class="v">Bossum Open · 7 d</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-eyebrow"><span class="dt"></span>Tren · /live/iron-progresjon-mai-14</div>
+        <nav class="view-tabs">
+          <a class="view-tab" href="01-aarsplan.html">ÅR</a>
+          <a class="view-tab" href="02-maanedsplan.html">MÅNED</a>
+          <a class="view-tab" href="03-ukeplan.html">UKE</a>
+          <a class="view-tab" href="04-dagsplan.html">DAG</a>
+          <a class="view-tab live-active" href="07-live-okt-brief.html">LIVE</a>
+        </nav>
+      </div>
+      <div class="spiller-ctx">
+        <div class="av av-1">MP</div>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div class="nm">Markus Pedersen</div>
+          <div class="role">KAT. B · 14 år</div>
+        </div>
+        <svg class="ic ic-sm chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+
+    <!-- Page head -->
+    <div class="page-head">
+      <div class="page-eyebrow">Brief · tor 14. mai · uke 20</div>
+      <h1 class="page-title">Iron-progresjon, <em>CS70 → CS80</em></h1>
+      <p class="page-sub">Iron 7 og 9 fra 130 og 100 m. Tre runder, voksende krav. Du tapper hver rep, appen logger tempo og lufttid.</p>
+    </div>
+
+    <!-- HERO with start CTA -->
+    <div class="lb-hero">
+      <div class="left">
+        <div class="lb-eyebrow"><span class="dot"></span>Klar til start</div>
+        <div class="lb-title">90 minutter, <em>seks driller, 184 reps</em></div>
+        <div class="lb-sub">"Vi har ikke trent iron-midt på ni dager. Hold tempo rolig, så lover jeg det blir nydelig kontakt på Bossum."</div>
+        <div class="lb-meta-row">
+          <span class="mt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b>14:00–15:30</b> · 90 min</span>
+          <span class="mt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="2.5"/></svg>Range · matte 4</span>
+          <span class="mt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Blokk-praksis · stille</span>
+          <span class="mt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 12h18M12 3v18"/></svg>L3 → L4 progressiv</span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="lb-cta-card">
+          <div class="when">Nå · tor 14. mai</div>
+          <div class="time-big">14:00</div>
+          <div class="place">Anders kommer ut 14:15. Du varmer opp alene de første 15 min.</div>
+        </div>
+        <button class="lb-start-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4" fill="currentColor"/></svg>
+          Start økt
+        </button>
+        <div class="lb-altrow">
+          <button class="btn btn-ghost"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Tilpass</button>
+          <button class="btn btn-ghost"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Utsett 15 min</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coach kommentar -->
+    <div class="coach-card">
+      <div class="av-c">AK</div>
+      <div class="body">
+        <div class="who"><b>Anders Klepp</b> · hovedcoach · postet i går 18:42</div>
+        <div class="quote">Du hadde tendens forrige uke til å haste reps når kontakten var god. I dag setter vi mellompausen til 40 sekunder mellom hver rep — det er ikke for hvile, det er for å gjenta swing-tanken. Hvis du bommer to på rad, gå tilbake til CS70 og bygg opp igjen.</div>
+        <div class="meta">3 sjekkpunkter · 1 vedlegg (video, 0:48) · besvares før Bossum</div>
+      </div>
+    </div>
+
+    <!-- Praksistype -->
+    <div class="pt-row">
+      <div class="pt-card on">
+        <div class="ic-wrap"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></div>
+        <div class="pt-info"><div class="nm">Blokk-praksis</div><div class="ds">Samme drill i serie</div></div>
+      </div>
+      <div class="pt-card">
+        <div class="ic-wrap"><svg class="ic" viewBox="0 0 24 24"><path d="M8 5h13M3 12h18M8 19h13"/></svg></div>
+        <div class="pt-info"><div class="nm">Random-praksis</div><div class="ds">Drillene blandes</div></div>
+      </div>
+      <div class="pt-card">
+        <div class="ic-wrap"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg></div>
+        <div class="pt-info"><div class="nm">Konkurranse</div><div class="ds">Press med score</div></div>
+      </div>
+      <div class="pt-card">
+        <div class="ic-wrap"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2v6m0 12v-6M2 12h6m12 0h-6"/></svg></div>
+        <div class="pt-info"><div class="nm">Spillsimulering</div><div class="ds">Som på banen</div></div>
+      </div>
+    </div>
+
+    <!-- Body two-col -->
+    <div class="lb-body">
+
+      <div>
+
+        <!-- Pyramide-fordeling -->
+        <div class="pyr-strip-section">
+          <div class="pyr-strip-h">
+            <div class="ttl">Dagens pyramide-fordeling</div>
+            <div class="mt">90 min · 4 områder</div>
+          </div>
+          <div class="pyr-strip-bar">
+            <div class="seg fys" style="flex:0.10"></div>
+            <div class="seg tek" style="flex:0.55"></div>
+            <div class="seg slag" style="flex:0.25"></div>
+            <div class="seg spill" style="flex:0.10"></div>
+          </div>
+          <div class="pyr-strip-l2">
+            <div class="ce"><span class="pyr-dot fys"></span><span class="pn">FYS</span><span style="margin-left:auto">10 m</span></div>
+            <div class="ce"><span class="pyr-dot tek"></span><span class="pn">TEK</span><span style="margin-left:auto">50 m</span></div>
+            <div class="ce"><span class="pyr-dot slag"></span><span class="pn">SLAG</span><span style="margin-left:auto">22 m</span></div>
+            <div class="ce"><span class="pyr-dot spill"></span><span class="pn">SPILL</span><span style="margin-left:auto">8 m</span></div>
+            <div class="ce" style="opacity:.5"><span class="pyr-dot turn"></span><span class="pn">TURN</span><span style="margin-left:auto">—</span></div>
+          </div>
+        </div>
+
+        <!-- Drill list -->
+        <div class="drill-list-h">
+          <div class="ttl">Driller i økten</div>
+          <div class="sum">6 driller · 184 reps · 90 min</div>
+        </div>
+        <div class="drills-brief">
+
+          <div class="drill-b">
+            <div class="num">1</div>
+            <div class="nm-col">
+              <div class="nm">Dynamisk oppvarming + bevegelsesbatteri</div>
+              <div class="params">
+                <span class="param fys-c">FYS</span>
+                <span class="param">L1 · CS40</span>
+                <span class="param">M0 stille</span>
+                <span class="param">Foam roller · band</span>
+              </div>
+            </div>
+            <div class="reps">12<small>reps</small></div>
+            <div class="du">10<small>min</small></div>
+          </div>
+
+          <div class="drill-b">
+            <div class="num">2</div>
+            <div class="nm-col">
+              <div class="nm">Iron 9 · 100 m · CS70 · target gate 4 m</div>
+              <div class="params">
+                <span class="param tek-c">TEK</span>
+                <span class="param">L3 · CS70</span>
+                <span class="param">M1 stille range</span>
+                <span class="param">INN100 · target gate</span>
+              </div>
+            </div>
+            <div class="reps">36<small>reps</small></div>
+            <div class="du">18<small>min</small></div>
+          </div>
+
+          <div class="drill-b">
+            <div class="num">3</div>
+            <div class="nm-col">
+              <div class="nm">Iron 7 · 130 m · CS75 · høyde-callout</div>
+              <div class="params">
+                <span class="param tek-c">TEK</span>
+                <span class="param">L3 · CS75</span>
+                <span class="param">M1 stille range</span>
+                <span class="param">INN150 · ball-flight call</span>
+              </div>
+            </div>
+            <div class="reps">36<small>reps</small></div>
+            <div class="du">20<small>min</small></div>
+          </div>
+
+          <div class="drill-b">
+            <div class="num">4</div>
+            <div class="nm-col">
+              <div class="nm">Iron 7+9 · alternert · CS80</div>
+              <div class="params">
+                <span class="param tek-c">TEK</span>
+                <span class="param">L4 · CS80</span>
+                <span class="param">M2 noe distraksjon</span>
+                <span class="param">Random · 2 klubber</span>
+              </div>
+            </div>
+            <div class="reps">40<small>reps</small></div>
+            <div class="du">12<small>min</small></div>
+          </div>
+
+          <div class="drill-b">
+            <div class="num">5</div>
+            <div class="nm-col">
+              <div class="nm">Slag-ladder · 100 m gate · 9 / 8 / 7 i serie</div>
+              <div class="params">
+                <span class="param slag-c">SLAG</span>
+                <span class="param">L4 · CS80</span>
+                <span class="param">M2 noe distraksjon</span>
+                <span class="param">INN100 · ladder</span>
+              </div>
+            </div>
+            <div class="reps">45<small>reps</small></div>
+            <div class="du">22<small>min</small></div>
+          </div>
+
+          <div class="drill-b">
+            <div class="num">6</div>
+            <div class="nm-col">
+              <div class="nm">Cool-down · stretch + breathing reset</div>
+              <div class="params">
+                <span class="param spill-c">SPILL</span>
+                <span class="param">L1 · CS30</span>
+                <span class="param">M0 stille</span>
+                <span class="param">Reflection log</span>
+              </div>
+            </div>
+            <div class="reps">15<small>reps</small></div>
+            <div class="du">8<small>min</small></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right -->
+      <aside>
+
+        <div class="side-card">
+          <div class="sh">Sammendrag</div>
+          <div class="side-stat"><span class="k">Total tid</span><span class="v big">90 min</span></div>
+          <div class="side-stat"><span class="k">Reps</span><span class="v">184</span></div>
+          <div class="side-stat"><span class="k">Driller</span><span class="v">6</span></div>
+          <div class="side-stat"><span class="k">Primær</span><span class="v" style="color:var(--pyr-tek-d)">TEK · iron</span></div>
+          <div class="side-stat"><span class="k">CS-progresjon</span><span class="v">70 → 80</span></div>
+          <div class="side-stat"><span class="k">Periode-tak</span><span class="v" style="color:var(--brand-primary)">62 min igjen</span></div>
+        </div>
+
+        <div class="side-card">
+          <div class="sh">Før du starter</div>
+          <div class="check-row on"><div class="cb"></div>Hentet sekken? (PW–SW, 9, 7, putter)</div>
+          <div class="check-row on"><div class="cb"></div>Drukket vann?</div>
+          <div class="check-row"><div class="cb"></div>Sjekk værvarsel — vind &lt; 7 m/s</div>
+          <div class="check-row"><div class="cb"></div>Telefon i flymodus (ekstern timer ok)</div>
+        </div>
+
+        <div class="side-card">
+          <div class="sh">Kontekst</div>
+          <div class="periode-mini" style="border-top:0; padding-top:0">
+            <div class="pn">Vår-spesialisering</div>
+            <div class="periode-badge spes">SPES</div>
+          </div>
+          <div class="periode-mini">
+            <div class="pn">Bossum Open</div>
+            <div class="pm">7 d</div>
+          </div>
+          <div class="periode-mini">
+            <div class="pn">Forrige iron-økt</div>
+            <div class="pm" style="color:var(--status-warn)">9 d siden</div>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Theme bootstrap (sync with planner)
+  (function(){
+    var saved = localStorage.getItem('ak-theme') || 'light';
+    if (saved === 'light') document.body.classList.add('light');
+  })();
+  // Start-økt → go to active screen
+  document.querySelector('.lb-start-btn').addEventListener('click', function(){
+    window.location.href = '08-live-okt-aktiv.html';
+  });
+</script>
+
+</body>
+</html>

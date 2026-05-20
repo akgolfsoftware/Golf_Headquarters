@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ — Analytics · Pilot Pakke 4</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#EDEAE2;color:var(--ink);font-family:var(--font-body)}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:64px;padding:64px 24px 96px}
+  .ab{display:flex;flex-direction:column;gap:16px;max-width:1448px;width:100%}
+  .ab-label{display:flex;align-items:baseline;gap:16px;color:#3a3935;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em}
+  .ab-label .num{font-family:var(--font-mono);font-size:13px;color:#9C9990;font-weight:500}
+  .ab-label .ttl{font-size:20px}
+  .ab-label .meta{font-family:var(--font-body);font-size:13px;color:#7a7872;font-style:italic;font-weight:400;margin-left:auto}
+  .ab-frame{background:var(--surface);border:1px solid #D8D5CC;border-radius:24px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(10,31,24,.18),0 2px 4px rgba(10,31,24,.04);position:relative}
+  .ab-frame svg:not([fill]):not(.spark):not(.donut):not(.line){stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  .deck-head{max-width:1448px;width:100%;display:flex;flex-direction:column;gap:12px;padding:0 4px;margin-bottom:8px}
+  .deck-head .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-subtle);text-transform:uppercase}
+  .deck-head h1{font-family:var(--font-display);font-size:36px;font-weight:600;letter-spacing:-.02em;margin:0;color:var(--ink)}
+  .deck-head .sub{font-size:14px;color:var(--ink-muted);max-width:760px;line-height:1.55}
+
+  /* SHELL — coachHQ to-lags sidebar */
+  .app{display:flex;min-height:1080px;background:var(--surface)}
+  .app--med{min-height:920px}.app--short{min-height:740px}
+  .rail{width:56px;background:#0F2A22;display:flex;flex-direction:column;align-items:center;padding:14px 0 12px;gap:6px;flex-shrink:0;border-right:1px solid #1c3b32}
+  .rail .logo{width:36px;height:36px;border-radius:10px;background:var(--brand-accent);color:#0A1F18;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11px;margin-bottom:8px}
+  .rail .ri{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:rgba(245,244,238,.6);cursor:pointer}
+  .rail .ri:hover{background:rgba(255,255,255,.06);color:#F5F4EE}
+  .rail .ri.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}
+  .rail .ri svg{width:18px;height:18px}
+  .rail .div{height:1px;background:rgba(255,255,255,.08);width:24px;margin:6px 0}
+  .rail .av{margin-top:auto;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:12px;display:flex;align-items:center;justify-content:center}
+
+  .nav{width:200px;background:#FAFAF7;border-right:1px solid #F0EDE5;padding:18px 12px 14px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+  .nav .label{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);padding:6px 10px 4px}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13px;color:var(--ink-muted);cursor:pointer;line-height:1.2;position:relative}
+  .nav-item:hover{background:#F0EDE5;color:var(--ink)}
+  .nav-item.active{background:rgba(209,248,67,.30);color:#0A1F18;font-weight:500}
+  .nav-item.active::before{content:"";position:absolute;left:-12px;top:6px;bottom:6px;width:3px;background:var(--brand-primary);border-radius:0 3px 3px 0}
+  .nav-item svg{width:16px;height:16px;flex-shrink:0}
+  .nav-item .count{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);background:#F0EDE5;padding:2px 6px;border-radius:5px}
+  .nav-item.active .count{background:rgba(0,88,64,.16);color:var(--brand-primary)}
+  .nav-foot{margin-top:auto;display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid #F0EDE5}
+  .nav-foot .crt{font-size:11px;color:var(--ink-subtle);padding:4px 8px;line-height:1.3}
+  .nav-foot .crt strong{color:var(--ink);font-family:var(--font-mono);font-weight:600}
+
+  .main{flex:1;padding:30px 36px 36px;min-width:0;display:flex;flex-direction:column;gap:20px;overflow:hidden}
+
+  .hero{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+  .hero .crumb{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px}
+  .hero h1{font-family:var(--font-display);font-size:38px;font-weight:400;font-style:italic;letter-spacing:-.02em;color:var(--ink);margin:0;line-height:1.05;max-width:780px}
+  .hero h1 .em{font-style:normal;font-weight:600;color:var(--brand-primary)}
+  .hero .meta{font-size:13px;color:var(--ink-muted);margin-top:8px;font-family:var(--font-mono)}
+  .period{display:flex;align-items:center;gap:8px;background:var(--surface-card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;cursor:pointer;font-size:13px;color:var(--ink);position:relative}
+  .period:hover{border-color:var(--brand-primary)}
+  .period .lbl{font-family:var(--font-mono);font-size:11px;color:var(--ink-subtle);letter-spacing:.04em;text-transform:uppercase}
+  .period .v{font-weight:500}
+  .period svg{width:14px;height:14px;color:var(--ink-subtle)}
+  .period.open{border-color:var(--brand-primary);box-shadow:0 0 0 3px rgba(0,88,64,.12)}
+  .period .menu{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface-card);border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 32px -10px rgba(10,31,24,.18);padding:6px;min-width:200px;z-index:20;display:flex;flex-direction:column;gap:1px}
+  .period .menu .it{padding:8px 12px;border-radius:8px;font-size:13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+  .period .menu .it:hover{background:#F0EDE5}
+  .period .menu .it.sel{background:rgba(0,88,64,.10);color:var(--brand-primary);font-weight:500}
+  .period .menu .it .k{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle)}
+  .period .menu .it.sel .k{color:var(--brand-primary)}
+  .period .menu .div{height:1px;background:var(--line-soft);margin:4px 0}
+
+  /* KPI strip */
+  .kpis{display:grid;grid-template-columns:1.5fr 1fr 1.2fr 1.2fr 1fr;gap:12px}
+  .kpi{padding:18px 20px;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;cursor:pointer;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow-card);position:relative;overflow:hidden}
+  .kpi:hover{transform:translateY(-1px);box-shadow:0 14px 28px -12px rgba(10,31,24,.16);border-color:rgba(0,88,64,.30)}
+  .kpi .h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);display:flex;align-items:center;gap:6px}
+  .kpi .h .ic{width:18px;height:18px;color:var(--ink-muted)}
+  .kpi .v{font-family:var(--font-mono);font-size:36px;font-weight:600;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:8px}
+  .kpi .v .u{font-size:14px;color:var(--ink-subtle);font-weight:500}
+  .kpi .v .arr{font-size:14px;color:var(--status-success)}
+  .kpi .v .arr.dn{color:var(--status-danger)}
+  .kpi .sub{font-size:11px;color:var(--ink-muted);font-family:var(--font-mono)}
+  .kpi.hero-kpi{background:linear-gradient(135deg,#0F2A22 0%,#163027 60%,#0A1F18 100%);color:#F5F4EE;border-color:#274d41}
+  .kpi.hero-kpi .h{color:rgba(209,248,67,.7)}
+  .kpi.hero-kpi .v{color:#F5F4EE}
+  .kpi.hero-kpi .v .arr{color:var(--brand-accent)}
+  .kpi.hero-kpi .sub{color:rgba(245,244,238,.65)}
+  .kpi .avs{display:flex;gap:-6px;margin-top:4px}
+  .kpi .av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:10px;display:flex;align-items:center;justify-content:center;border:2px solid var(--surface-card);margin-left:-6px;cursor:pointer;position:relative}
+  .kpi .av:first-child{margin-left:0}
+  .kpi .av.dn{background:linear-gradient(135deg,#7C2D2D,#B84141)}
+  .kpi .av-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+  .kpi .av-row .stack{display:flex}
+  .kpi .av-row .num{font-family:var(--font-mono);font-size:12px;color:var(--ink-muted)}
+  .kpi .bar-mini{height:6px;background:#F0EDE5;border-radius:3px;margin-top:8px;overflow:hidden}
+  .kpi .bar-mini .fl{height:100%;background:var(--brand-primary);border-radius:3px}
+
+  /* MAIN CHART */
+  .chart-card{background:var(--surface-card);border:1px solid var(--line);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);position:relative}
+  .chart-card .h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:16px}
+  .chart-card h3{font-family:var(--font-display);font-size:18px;font-weight:600;margin:0;letter-spacing:-.01em}
+  .chart-card h3 .meta{font-weight:400;color:var(--ink-subtle);font-family:var(--font-body);font-size:12px;margin-left:8px;font-style:italic}
+  .toggle{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-muted)}
+  .toggle .sw{width:34px;height:20px;background:#E8E5DC;border-radius:10px;position:relative;cursor:pointer;flex-shrink:0}
+  .toggle .sw::before{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+  .toggle.on .sw{background:var(--brand-primary)}
+  .toggle.on .sw::before{left:16px}
+  .chart-svg{width:100%;height:240px;display:block}
+  .legend{display:flex;gap:20px;justify-content:center;margin-top:10px}
+  .legend .lg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-muted);cursor:pointer}
+  .legend .lg .dt{width:10px;height:10px;border-radius:50%}
+  .legend .lg.off{opacity:.4;text-decoration:line-through}
+
+  /* BENTO row */
+  .bento{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}
+  .bento .card{background:var(--surface-card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+  .bento .card:hover{border-color:rgba(0,88,64,.30)}
+  .bento .card .h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle)}
+  .bento .card h3{font-family:var(--font-display);font-size:15px;font-weight:600;margin:0;letter-spacing:-.01em;color:var(--ink)}
+  .bento .heatmap{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:6px}
+  .bento .heatmap .cell{aspect-ratio:1;border-radius:4px;cursor:pointer;position:relative}
+  .bento .heatmap .cell:hover{outline:2px solid var(--brand-primary);outline-offset:1px;z-index:2}
+  .bento .heatmap-rows{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+  .bento .heatmap-row{display:flex;align-items:center;gap:8px}
+  .bento .heatmap-row .lbl{width:46px;font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-subtle);text-align:right;flex-shrink:0}
+  .bento .heatmap-row .grid{display:grid;grid-template-columns:repeat(38,1fr);gap:2px;flex:1}
+  .bento .heatmap-row .c{aspect-ratio:1;border-radius:2px;cursor:pointer}
+  .bento .heatmap-row .c:hover{outline:1.5px solid #0F2A22;outline-offset:1px;z-index:2}
+  .bento .donut-big{position:relative;width:120px;height:120px;margin:6px auto 4px}
+  .bento .donut-big svg{width:120px;height:120px;transform:rotate(-90deg)}
+  .bento .donut-big .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:600}
+  .bento .donut-big .num .pct{font-size:28px;color:var(--ink)}
+  .bento .donut-big .num .lbl{font-size:9px;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+  .bento .pct-big{font-family:var(--font-mono);font-size:36px;font-weight:600;color:var(--ink);line-height:1}
+  .bento .stars{display:flex;align-items:center;gap:3px;margin-top:4px}
+  .bento .stars .s{width:14px;height:14px;color:var(--brand-accent)}
+  .bento .stars .s.empty{color:#E8E5DC}
+  .bento .rating-big{font-family:var(--font-mono);font-size:36px;font-weight:600;color:var(--ink);line-height:1}
+  .bento .rating-big .of{font-size:14px;color:var(--ink-subtle);font-weight:500}
+  .bento .sub{font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+  .bento .sub .delta{color:var(--status-success);font-weight:600}
+  .bento .sub .delta.dn{color:var(--status-danger)}
+
+  /* Player table */
+  .table-card{background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden}
+  .table-card .h{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 12px;gap:12px;flex-wrap:wrap}
+  .table-card h3{font-family:var(--font-display);font-size:17px;font-weight:600;margin:0;letter-spacing:-.01em}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{padding:5px 11px;border-radius:100px;border:1px solid var(--line);font-size:12px;color:var(--ink-muted);cursor:pointer;display:inline-flex;align-items:center;gap:5px;background:var(--surface)}
+  .chip:hover{border-color:var(--brand-primary);color:var(--brand-primary)}
+  .chip.sel{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
+  .chip.sel .x{font-family:var(--font-mono);font-size:11px;opacity:.7;cursor:pointer}
+  .chip .ct{font-family:var(--font-mono);font-size:10px;opacity:.7}
+  .ttable{width:100%;font-size:13px;border-collapse:collapse}
+  .ttable th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);padding:8px 16px;border-bottom:1px solid var(--line);background:var(--surface);cursor:pointer;user-select:none}
+  .ttable th:hover{color:var(--ink)}
+  .ttable th .ic{display:inline-block;margin-left:4px;color:var(--ink-disabled)}
+  .ttable th.asc .ic,.ttable th.desc .ic{color:var(--brand-primary)}
+  .ttable td{padding:10px 16px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+  .ttable tr{cursor:pointer}
+  .ttable tr:hover td{background:#FAFAF7}
+  .ttable td.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+  .ttable td.delta{font-family:var(--font-mono);color:var(--status-success);font-weight:500}
+  .ttable td.delta.dn{color:var(--status-danger)}
+  .ttable td .av-name{display:flex;align-items:center;gap:10px}
+  .ttable td .av-name .av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ttable td .av-name .n{font-weight:500;color:var(--ink)}
+  .ttable td .av-name .role{font-family:var(--font-mono);font-size:10px;color:var(--ink-subtle);text-transform:uppercase;letter-spacing:.04em}
+  .pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  .pill.up{background:rgba(16,185,129,.12);color:#0a6b48}
+  .pill.flat{background:#F0EDE5;color:var(--ink-muted)}
+  .pill.down{background:rgba(239,68,68,.12);color:#b73838}
+  .ttable td .arr{color:var(--ink-disabled)}
+  tr:hover .arr{color:var(--brand-primary)}
+
+  /* Tooltip */
+  .tt{position:absolute;background:#0F2A22;color:#F5F4EE;padding:10px 14px;border-radius:10px;font-size:12px;box-shadow:0 12px 30px -10px rgba(0,0,0,.45);z-index:10;pointer-events:none;min-width:160px}
+  .tt::after{content:"";position:absolute;width:10px;height:10px;background:#0F2A22;transform:rotate(45deg)}
+  .tt.bottom::after{bottom:-5px;left:50%;margin-left:-5px}
+  .tt .l1{font-family:var(--font-mono);font-size:9px;color:rgba(245,244,238,.55);text-transform:uppercase;letter-spacing:.06em}
+  .tt .l2{font-family:var(--font-display);font-size:14px;font-weight:600;color:#F5F4EE;margin-top:2px}
+  .tt .l3{font-family:var(--font-mono);font-size:11px;color:var(--brand-accent);margin-top:4px;font-weight:600}
+  .tt .l4{font-size:11px;color:rgba(245,244,238,.7);margin-top:2px}
+
+  .anno{position:absolute;font-family:var(--font-mono);font-size:10px;color:#F5F4EE;background:#0A1F18;padding:3px 8px;border-radius:6px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;z-index:6;white-space:nowrap}
+  .anno::before{content:"";position:absolute;width:10px;height:10px;background:#0A1F18;transform:rotate(45deg)}
+  .anno.bottom::before{bottom:-4px;left:50%;margin-left:-5px}
+  .anno.right::before{right:-4px;top:50%;margin-top:-5px}
+  .anno.left::before{left:-4px;top:50%;margin-top:-5px}
+
+  @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+  .skel{background:linear-gradient(90deg,var(--surface-alt) 0%,#F5F2EA 50%,var(--surface-alt) 100%);background-size:800px 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+
+  /* DARK */
+  .dark .ab-frame{border-color:#1c3b32}
+  .dark .app{background:#0F2A22}
+  .dark .nav{background:#0B221C;border-right-color:#1c3b32}
+  .dark .nav .label{color:#7a8580}
+  .dark .nav-item{color:#9D9C95}
+  .dark .nav-item:hover{background:#163027;color:#F5F4EE}
+  .dark .nav-item.active{background:rgba(209,248,67,.16);color:var(--brand-accent)}
+  .dark .nav-item.active::before{background:var(--brand-accent)}
+  .dark .nav-item .count{background:#163027;color:#9D9C95}
+  .dark .nav-foot{border-top-color:#1c3b32}
+  .dark .nav-foot .crt{color:#9D9C95}
+  .dark .nav-foot .crt strong{color:#F5F4EE}
+  .dark .hero h1{color:#F5F4EE}
+  .dark .hero h1 .em{color:var(--brand-accent)}
+  .dark .hero .crumb,.dark .hero .meta{color:#9D9C95}
+  .dark .period{background:#163027;border-color:#274d41;color:#F5F4EE}
+  .dark .period:hover{border-color:var(--brand-accent)}
+  .dark .period .lbl{color:#7a8580}
+  .dark .kpi{background:#163027;border-color:#274d41}
+  .dark .kpi .h{color:#7a8580}
+  .dark .kpi .v{color:#F5F4EE}
+  .dark .kpi .sub{color:#9D9C95}
+  .dark .kpi .av{border-color:#163027}
+  .dark .kpi .bar-mini{background:#0F2A22}
+  .dark .chart-card{background:#163027;border-color:#274d41}
+  .dark .chart-card h3{color:#F5F4EE}
+  .dark .toggle{color:#9D9C95}
+  .dark .toggle .sw{background:#274d41}
+  .dark .legend .lg{color:#9D9C95}
+  .dark .bento .card{background:#163027;border-color:#274d41}
+  .dark .bento .card h3{color:#F5F4EE}
+  .dark .bento .card .h{color:#7a8580}
+  .dark .bento .pct-big,.dark .bento .rating-big,.dark .bento .donut-big .num .pct{color:#F5F4EE}
+  .dark .bento .sub{color:#9D9C95}
+  .dark .table-card{background:#163027;border-color:#274d41}
+  .dark .table-card h3{color:#F5F4EE}
+  .dark .ttable th{background:#0F2A22;color:#7a8580;border-bottom-color:#274d41}
+  .dark .ttable td{border-bottom-color:#274d41}
+  .dark .ttable tr:hover td{background:#1f3d33}
+  .dark .ttable td .av-name .n{color:#F5F4EE}
+  .dark .ttable td.num{color:#F5F4EE}
+  .dark .chip{background:#163027;border-color:#274d41;color:#9D9C95}
+  .dark .chip:hover{border-color:var(--brand-accent);color:var(--brand-accent)}
+  .dark .chip.sel{background:var(--brand-accent);color:#0A1F18;border-color:var(--brand-accent)}
+  .dark .pill.flat{background:#0F2A22;color:#9D9C95}
+
+  /* MOBILE */
+  .mobile-wrap{display:flex;justify-content:center;padding:32px;background:linear-gradient(180deg,#F5F2EA 0,#EDEAE2 100%)}
+  .mobile{width:392px;background:var(--surface-card);border-radius:36px;border:1px solid var(--line);box-shadow:0 24px 48px -16px rgba(10,31,24,.16);overflow:hidden}
+  .m-status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 4px;font-family:var(--font-mono);font-size:12px;color:var(--ink);font-weight:500}
+  .m-top{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;border-bottom:1px solid var(--line-soft)}
+  .m-top .ham{width:32px;height:32px;border-radius:9px;background:#0F2A22;color:#F5F4EE;display:flex;align-items:center;justify-content:center}
+  .m-top .ttl{font-family:var(--font-display);font-size:14px;font-weight:600}
+  .m-hero{padding:14px 18px 12px}
+  .m-hero h1{font-family:var(--font-display);font-size:22px;font-weight:400;font-style:italic;margin:0;line-height:1.15}
+  .m-hero h1 .em{font-style:normal;font-weight:600;color:var(--brand-primary)}
+  .m-hero .meta{font-size:11px;color:var(--ink-muted);margin-top:4px;font-family:var(--font-mono)}
+  .m-period{margin:0 18px 10px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:12px;display:flex;justify-content:space-between;align-items:center}
+  .m-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 18px 12px}
+  .m-kpi{padding:12px;background:var(--surface-card);border:1px solid var(--line);border-radius:12px}
+  .m-kpi.hero-k{background:#0F2A22;color:#F5F4EE;border-color:#274d41;grid-column:span 2}
+  .m-kpi .h{font-family:var(--font-mono);font-size:9px;color:var(--ink-subtle);letter-spacing:.06em;text-transform:uppercase}
+  .m-kpi.hero-k .h{color:rgba(209,248,67,.7)}
+  .m-kpi .v{font-family:var(--font-mono);font-size:22px;font-weight:600;margin-top:2px}
+  .m-kpi.hero-k .v{font-size:36px}
+  .m-kpi .v .arr{font-size:11px;color:var(--status-success);margin-left:4px}
+  .m-kpi.hero-k .v .arr{color:var(--brand-accent)}
+  .m-kpi .sub{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);margin-top:2px}
+  .m-kpi.hero-k .sub{color:rgba(245,244,238,.65)}
+  .m-chart{margin:0 18px 12px;padding:14px;background:var(--surface-card);border:1px solid var(--line);border-radius:14px}
+  .m-chart .h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:8px}
+  .m-table{margin:0 0 12px}
+  .m-table .h{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);padding:0 18px 8px}
+  .m-table .scroll{overflow-x:auto;padding:0 18px 4px}
+  .m-row{display:grid;grid-template-columns:160px 50px 60px 60px 28px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:12px}
+  .m-row .av-name{display:flex;align-items:center;gap:8px}
+  .m-row .av-name .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .m-row .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+  .m-row .delta{font-family:var(--font-mono);color:var(--status-success);font-weight:500}
+  .m-row .delta.dn{color:var(--status-danger)}
+  .m-tabs{display:flex;justify-content:space-around;padding:8px 8px 22px;border-top:1px solid var(--line-soft);background:var(--surface-card)}
+  .m-tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--ink-subtle);padding:6px 8px}
+  .m-tab.active{color:var(--brand-primary);font-weight:600}
+  .m-tab.active .icw{background:rgba(0,88,64,.10)}
+  .m-tab .icw{width:36px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <header class="deck-head">
+    <span class="eyebrow">Pilot · CoachHQ · Analytics</span>
+    <h1>Hvordan stallen utvikler seg</h1>
+    <p class="sub">KPI-strip, SG-trend per gruppe, pyramide-heatmap, completion / approval / rating bento, og spillerliste-tabell. 9 artboards inkl. tooltip-states, dropdown, filter-chip, loading, empty og mobil.</p>
+  </header>
+
+  <!-- 01 LIGHT -->
+  <section class="ab" data-screen-label="01 Lyst · full data">
+    <div class="ab-label"><span class="num">01</span><span class="ttl">Lyst tema — full data</span><span class="meta">1448 × 1080</span></div>
+    <div class="ab-frame">
+      <div class="app">
+        <aside class="rail">
+          <div class="logo">AK</div>
+          <div class="ri" title="Hjem"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <div class="ri" title="Spillere"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div>
+          <div class="ri" title="Treningsplaner"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <div class="ri" title="Økter"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="ri active" title="Analytics"><svg viewBox="0 0 24 24"><line x1="3" y1="20" x2="21" y2="20"/><line x1="6" y1="20" x2="6" y2="10"/><line x1="11" y1="20" x2="11" y2="4"/><line x1="16" y1="20" x2="16" y2="14"/></svg></div>
+          <div class="div"></div>
+          <div class="ri" title="Godkjenninger"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="av">EH</div>
+        </aside>
+        <aside class="nav">
+          <div class="label">CoachHQ</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Hub</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Spillere<span class="count">38</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Planer<span class="count">12</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>Økter<span class="count">142</span></div>
+          <div class="nav-item active"><svg viewBox="0 0 24 24"><line x1="3" y1="20" x2="21" y2="20"/><line x1="6" y1="20" x2="6" y2="10"/><line x1="11" y1="20" x2="11" y2="4"/><line x1="16" y1="20" x2="16" y2="14"/></svg>Analytics</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Godkjenninger<span class="count">7</span></div>
+          <div class="label" style="margin-top:14px">Drilldown</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg>SG-bryt</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg>Pyramide</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/></svg>Rapporter</div>
+          <div class="nav-foot"><div class="crt">Coach <strong>Erik H.</strong><br>Bærum GK · 38 spillere</div></div>
+        </aside>
+        <main class="main">
+          <header class="hero">
+            <div>
+              <div class="crumb">Analytics · onsdag 13. mai</div>
+              <h1>Analytics — <span class="em">hvordan stallen</span> utvikler seg.</h1>
+              <div class="meta">38 spillere · 142 økter · oppdatert 09:14</div>
+            </div>
+            <div class="period">
+              <span class="lbl">Periode</span>
+              <span class="v">Siste 30 dager</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </header>
+
+          <!-- KPIs -->
+          <div class="kpis">
+            <div class="kpi hero-kpi">
+              <div class="h"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>Snitt SG-forbedring</div>
+              <div class="v">+0,42 <span class="arr">↑</span></div>
+              <div class="sub">vs forrige 30 d: +0,18 · stall snitt</div>
+            </div>
+            <div class="kpi">
+              <div class="h"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Økter (30 d)</div>
+              <div class="v">142 <span class="arr">↑ +18</span></div>
+              <div class="sub">vs forrige 30 d: 124</div>
+            </div>
+            <div class="kpi">
+              <div class="h"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/></svg>Topp 3 forbedring</div>
+              <div class="av-row">
+                <div class="stack"><div class="av">SH</div><div class="av">MR</div><div class="av">JL</div></div>
+                <span class="num">+1,8 / +1,4 / +1,2</span>
+              </div>
+              <div class="sub">SG-delta · Henrik / Markus / Jonas</div>
+            </div>
+            <div class="kpi">
+              <div class="h"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 7 9 13 13 9 21 17"/></svg>Bunn 3 utvikling</div>
+              <div class="av-row">
+                <div class="stack"><div class="av dn">PV</div><div class="av dn">AK</div><div class="av dn">MN</div></div>
+                <span class="num">−0,7 / −0,5 / −0,3</span>
+              </div>
+              <div class="sub">Pia / Andreas / Mia · trenger fokus</div>
+            </div>
+            <div class="kpi">
+              <div class="h"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Coach-belegg</div>
+              <div class="v">82 <span class="u">%</span></div>
+              <div class="bar-mini"><div class="fl" style="width:82%"></div></div>
+              <div class="sub">131 av 160 timer booket</div>
+            </div>
+          </div>
+
+          <!-- MAIN CHART -->
+          <section class="chart-card">
+            <div class="h">
+              <h3>SG-trend per spillergruppe<span class="meta">12 uker · gjennomsnittlig SG total</span></h3>
+              <div class="toggle on"><span>Sammenlign mot forrige sesong</span><div class="sw"></div></div>
+            </div>
+            <svg class="chart-svg" viewBox="0 0 1200 240" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="ga1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#005840" stop-opacity=".18"/><stop offset="100%" stop-color="#005840" stop-opacity="0"/></linearGradient>
+              </defs>
+              <!-- grid -->
+              <line x1="40" y1="50" x2="1180" y2="50" stroke="#F0EDE5" stroke-width="1"/>
+              <line x1="40" y1="100" x2="1180" y2="100" stroke="#F0EDE5" stroke-width="1"/>
+              <line x1="40" y1="150" x2="1180" y2="150" stroke="#F0EDE5" stroke-width="1"/>
+              <line x1="40" y1="200" x2="1180" y2="200" stroke="#F0EDE5" stroke-width="1"/>
+              <text x="20" y="54" font-family="JetBrains Mono" font-size="10" fill="#9C9990">+1,5</text>
+              <text x="20" y="104" font-family="JetBrains Mono" font-size="10" fill="#9C9990">+1,0</text>
+              <text x="20" y="154" font-family="JetBrains Mono" font-size="10" fill="#9C9990">+0,5</text>
+              <text x="20" y="204" font-family="JetBrains Mono" font-size="10" fill="#9C9990">0,0</text>
+              <!-- prev season ghost -->
+              <path d="M40,150 L130,148 L220,140 L310,138 L400,135 L490,130 L580,125 L670,120 L760,115 L850,110 L940,108 L1030,105 L1120,100" fill="none" stroke="#005840" stroke-width="1.5" stroke-dasharray="4 4" opacity=".35"/>
+              <!-- talent (primary) -->
+              <path d="M40,140 L130,135 L220,128 L310,118 L400,108 L490,95 L580,82 L670,72 L760,60 L850,50 L940,42 L1030,36 L1120,30" fill="none" stroke="#005840" stroke-width="2.8" stroke-linejoin="round"/>
+              <path d="M40,140 L130,135 L220,128 L310,118 L400,108 L490,95 L580,82 L670,72 L760,60 L850,50 L940,42 L1030,36 L1120,30 L1120,240 L40,240 Z" fill="url(#ga1)" opacity=".4"/>
+              <!-- mid (slag-color brown) -->
+              <path d="M40,160 L130,158 L220,155 L310,150 L400,145 L490,142 L580,135 L670,128 L760,122 L850,118 L940,112 L1030,108 L1120,98" fill="none" stroke="#A6651E" stroke-width="2.4" stroke-linejoin="round"/>
+              <!-- junior (tek green-grey) -->
+              <path d="M40,170 L130,172 L220,168 L310,170 L400,165 L490,160 L580,155 L670,148 L760,142 L850,140 L940,135 L1030,130 L1120,124" fill="none" stroke="#7A998C" stroke-width="2.4" stroke-linejoin="round"/>
+              <!-- focus point -->
+              <circle cx="850" cy="50" r="5" fill="#005840" stroke="#FAFAF7" stroke-width="2"/>
+              <!-- x labels -->
+              <g font-family="JetBrains Mono" font-size="10" fill="#9C9990">
+                <text x="40" y="232" text-anchor="middle">u 6</text>
+                <text x="220" y="232" text-anchor="middle">u 8</text>
+                <text x="400" y="232" text-anchor="middle">u 10</text>
+                <text x="580" y="232" text-anchor="middle">u 12</text>
+                <text x="760" y="232" text-anchor="middle">u 14</text>
+                <text x="940" y="232" text-anchor="middle">u 16</text>
+                <text x="1120" y="232" text-anchor="middle">u 18</text>
+              </g>
+            </svg>
+            <div class="legend">
+              <div class="lg"><div class="dt" style="background:#005840"></div>Talent (12)</div>
+              <div class="lg"><div class="dt" style="background:#A6651E"></div>Mid-tier (18)</div>
+              <div class="lg"><div class="dt" style="background:#7A998C"></div>Junior (8)</div>
+              <div class="lg" style="opacity:.6"><div class="dt" style="background:#005840;border:1.5px dashed #fff"></div>Forrige sesong</div>
+            </div>
+          </section>
+
+          <!-- BENTO -->
+          <div class="bento">
+            <div class="card">
+              <div class="h">Pyramide-heatmap · 38 spillere × 5 lag</div>
+              <h3 style="margin-top:-2px">Hvor stallen står per ferdighet</h3>
+              <div class="heatmap-rows">
+                <div class="heatmap-row"><span class="lbl">FYS</span><div class="grid">
+                  <!-- 38 cells with varied intensity for FYS (red family) -->
+                  <span class="c" style="background:#FBE5E5"></span><span class="c" style="background:#F0B5B5"></span><span class="c" style="background:#E58585"></span><span class="c" style="background:#D45050"></span><span class="c" style="background:#A32D2D"></span>
+                  <span class="c" style="background:#F0B5B5"></span><span class="c" style="background:#E58585"></span><span class="c" style="background:#FBE5E5"></span><span class="c" style="background:#D45050"></span><span class="c" style="background:#A32D2D"></span>
+                  <span class="c" style="background:#E58585"></span><span class="c" style="background:#D45050"></span><span class="c" style="background:#F0B5B5"></span><span class="c" style="background:#FBE5E5"></span><span class="c" style="background:#E58585"></span>
+                  <span class="c" style="background:#A32D2D"></span><span class="c" style="background:#D45050"></span><span class="c" style="background:#E58585"></span><span class="c" style="background:#F0B5B5"></span><span class="c" style="background:#D45050"></span>
+                  <span class="c" style="background:#FBE5E5"></span><span class="c" style="background:#E58585"></span><span class="c" style="background:#D45050"></span><span class="c" style="background:#A32D2D"></span><span class="c" style="background:#D45050"></span>
+                  <span class="c" style="background:#F0B5B5"></span><span class="c" style="background:#FBE5E5"></span><span class="c" style="background:#E58585"></span><span class="c" style="background:#D45050"></span><span class="c" style="background:#A32D2D"></span>
+                  <span class="c" style="background:#E58585"></span><span class="c" style="background:#D45050"></span><span class="c" style="background:#F0B5B5"></span><span class="c" style="background:#FBE5E5"></span><span class="c" style="background:#A32D2D"></span>
+                  <span class="c" style="background:#E58585"></span><span class="c" style="background:#D45050"></span><span class="c" style="background:#F0B5B5"></span>
+                </div></div>
+                <div class="heatmap-row"><span class="lbl">TEK</span><div class="grid">
+                  <span class="c" style="background:#E1E8E5"></span><span class="c" style="background:#C2D1CB"></span><span class="c" style="background:#9DB5AB"></span><span class="c" style="background:#7A998C"></span><span class="c" style="background:#56796D"></span>
+                  <span class="c" style="background:#9DB5AB"></span><span class="c" style="background:#7A998C"></span><span class="c" style="background:#C2D1CB"></span><span class="c" style="background:#56796D"></span><span class="c" style="background:#7A998C"></span>
+                  <span class="c" style="background:#9DB5AB"></span><span class="c" style="background:#56796D"></span><span class="c" style="background:#C2D1CB"></span><span class="c" style="background:#7A998C"></span><span class="c" style="background:#56796D"></span>
+                  <span class="c" style="background:#7A998C"></span><span class="c" style="background:#9DB5AB"></span><span class="c" style="background:#56796D"></span><span class="c" style="background:#C2D1CB"></span><span class="c" style="background:#7A998C"></span>
+                  <span class="c" style="background:#56796D"></span><span class="c" style="background:#7A998C"></span><span class="c" style="background:#9DB5AB"></span><span class="c" style="background:#C2D1CB"></span><span class="c" style="background:#56796D"></span>
+                  <span class="c" style="background:#7A998C"></span><span class="c" style="background:#9DB5AB"></span><span class="c" style="background:#56796D"></span><span class="c" style="background:#7A998C"></span><span class="c" style="background:#C2D1CB"></span>
+                  <span class="c" style="background:#56796D"></span><span class="c" style="background:#7A998C"></span><span class="c" style="background:#9DB5AB"></span><span class="c" style="background:#56796D"></span><span class="c" style="background:#7A998C"></span>
+                  <span class="c" style="background:#9DB5AB"></span><span class="c" style="background:#7A998C"></span><span class="c" style="background:#56796D"></span>
+                </div></div>
+                <div class="heatmap-row"><span class="lbl">SLAG</span><div class="grid">
+                  <span class="c" style="background:#F4E4D1"></span><span class="c" style="background:#E5C091"></span><span class="c" style="background:#D29A56"></span><span class="c" style="background:#A6651E"></span><span class="c" style="background:#7A4910"></span>
+                  <span class="c" style="background:#D29A56"></span><span class="c" style="background:#A6651E"></span><span class="c" style="background:#E5C091"></span><span class="c" style="background:#7A4910"></span><span class="c" style="background:#A6651E"></span>
+                  <span class="c" style="background:#D29A56"></span><span class="c" style="background:#7A4910"></span><span class="c" style="background:#E5C091"></span><span class="c" style="background:#A6651E"></span><span class="c" style="background:#7A4910"></span>
+                  <span class="c" style="background:#A6651E"></span><span class="c" style="background:#D29A56"></span><span class="c" style="background:#7A4910"></span><span class="c" style="background:#E5C091"></span><span class="c" style="background:#A6651E"></span>
+                  <span class="c" style="background:#7A4910"></span><span class="c" style="background:#A6651E"></span><span class="c" style="background:#D29A56"></span><span class="c" style="background:#E5C091"></span><span class="c" style="background:#7A4910"></span>
+                  <span class="c" style="background:#A6651E"></span><span class="c" style="background:#D29A56"></span><span class="c" style="background:#7A4910"></span><span class="c" style="background:#A6651E"></span><span class="c" style="background:#E5C091"></span>
+                  <span class="c" style="background:#7A4910"></span><span class="c" style="background:#A6651E"></span><span class="c" style="background:#D29A56"></span><span class="c" style="background:#7A4910"></span><span class="c" style="background:#A6651E"></span>
+                  <span class="c" style="background:#D29A56"></span><span class="c" style="background:#A6651E"></span><span class="c" style="background:#7A4910"></span>
+                </div></div>
+                <div class="heatmap-row"><span class="lbl">SPL</span><div class="grid">
+                  <span class="c" style="background:#D5E1DA"></span><span class="c" style="background:#A8C0B5"></span><span class="c" style="background:#7DA092"></span><span class="c" style="background:#4D7D6B"></span><span class="c" style="background:#264E3B"></span>
+                  <span class="c" style="background:#7DA092"></span><span class="c" style="background:#4D7D6B"></span><span class="c" style="background:#A8C0B5"></span><span class="c" style="background:#264E3B"></span><span class="c" style="background:#4D7D6B"></span>
+                  <span class="c" style="background:#7DA092"></span><span class="c" style="background:#264E3B"></span><span class="c" style="background:#A8C0B5"></span><span class="c" style="background:#4D7D6B"></span><span class="c" style="background:#264E3B"></span>
+                  <span class="c" style="background:#4D7D6B"></span><span class="c" style="background:#7DA092"></span><span class="c" style="background:#264E3B"></span><span class="c" style="background:#A8C0B5"></span><span class="c" style="background:#4D7D6B"></span>
+                  <span class="c" style="background:#264E3B"></span><span class="c" style="background:#4D7D6B"></span><span class="c" style="background:#7DA092"></span><span class="c" style="background:#A8C0B5"></span><span class="c" style="background:#264E3B"></span>
+                  <span class="c" style="background:#4D7D6B"></span><span class="c" style="background:#7DA092"></span><span class="c" style="background:#264E3B"></span><span class="c" style="background:#4D7D6B"></span><span class="c" style="background:#A8C0B5"></span>
+                  <span class="c" style="background:#264E3B"></span><span class="c" style="background:#4D7D6B"></span><span class="c" style="background:#7DA092"></span><span class="c" style="background:#264E3B"></span><span class="c" style="background:#4D7D6B"></span>
+                  <span class="c" style="background:#7DA092"></span><span class="c" style="background:#4D7D6B"></span><span class="c" style="background:#264E3B"></span>
+                </div></div>
+                <div class="heatmap-row"><span class="lbl">TUR</span><div class="grid">
+                  <span class="c" style="background:#C5C9C2"></span><span class="c" style="background:#8E948A"></span><span class="c" style="background:#5A6056"></span><span class="c" style="background:#2D332B"></span><span class="c" style="background:#0A1F18"></span>
+                  <span class="c" style="background:#5A6056"></span><span class="c" style="background:#2D332B"></span><span class="c" style="background:#8E948A"></span><span class="c" style="background:#0A1F18"></span><span class="c" style="background:#2D332B"></span>
+                  <span class="c" style="background:#5A6056"></span><span class="c" style="background:#0A1F18"></span><span class="c" style="background:#8E948A"></span><span class="c" style="background:#2D332B"></span><span class="c" style="background:#0A1F18"></span>
+                  <span class="c" style="background:#2D332B"></span><span class="c" style="background:#5A6056"></span><span class="c" style="background:#0A1F18"></span><span class="c" style="background:#8E948A"></span><span class="c" style="background:#2D332B"></span>
+                  <span class="c" style="background:#0A1F18"></span><span class="c" style="background:#2D332B"></span><span class="c" style="background:#5A6056"></span><span class="c" style="background:#8E948A"></span><span class="c" style="background:#0A1F18"></span>
+                  <span class="c" style="background:#2D332B"></span><span class="c" style="background:#5A6056"></span><span class="c" style="background:#0A1F18"></span><span class="c" style="background:#2D332B"></span><span class="c" style="background:#8E948A"></span>
+                  <span class="c" style="background:#0A1F18"></span><span class="c" style="background:#2D332B"></span><span class="c" style="background:#5A6056"></span><span class="c" style="background:#0A1F18"></span><span class="c" style="background:#2D332B"></span>
+                  <span class="c" style="background:#5A6056"></span><span class="c" style="background:#2D332B"></span><span class="c" style="background:#0A1F18"></span>
+                </div></div>
+              </div>
+              <div class="sub" style="margin-top:14px"><span>Lyse celler = lavt mestringsnivå · mørke = høyt</span><span class="delta">Snitt 67 % ↑ +5 %</span></div>
+            </div>
+            <div class="card">
+              <div class="h">Test-completion</div>
+              <div class="donut-big"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#F0EDE5" stroke-width="3.5"/><circle cx="18" cy="18" r="14" fill="none" stroke="#005840" stroke-width="3.5" stroke-dasharray="76 87.96" stroke-linecap="round"/></svg><span class="num"><span class="pct">86 %</span><span class="lbl">Fullført</span></span></div>
+              <div class="sub"><span>33 / 38 spillere</span><span class="delta">+11 %</span></div>
+            </div>
+            <div class="card">
+              <div class="h">Plan-godkjenning</div>
+              <div class="pct-big">94<span style="font-size:18px;color:var(--ink-subtle);font-weight:500"> %</span></div>
+              <svg class="spark" viewBox="0 0 100 32" style="width:100%;height:32px;margin-top:6px">
+                <path d="M0,22 L14,20 L28,18 L42,16 L56,14 L70,12 L84,10 L100,8" fill="none" stroke="#005840" stroke-width="2"/>
+                <path d="M0,22 L14,20 L28,18 L42,16 L56,14 L70,12 L84,10 L100,8 L100,32 L0,32 Z" fill="#005840" opacity=".10"/>
+              </svg>
+              <div class="sub"><span>14 av 15 godkjent</span><span class="delta">+3 %</span></div>
+            </div>
+            <div class="card">
+              <div class="h">Snitt øktrating</div>
+              <div class="rating-big">4,7<span class="of"> / 5</span></div>
+              <div class="stars"><svg class="s" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg><svg class="s" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg><svg class="s" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg><svg class="s" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg><svg class="s" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2 12 17"/></svg></div>
+              <div class="sub" style="margin-top:auto"><span>91 ratings · 30d</span><span class="delta">+0,2</span></div>
+            </div>
+          </div>
+
+          <!-- TABLE -->
+          <section class="table-card">
+            <div class="h">
+              <h3>Spillerliste · 38 spillere</h3>
+              <div class="chips">
+                <span class="chip sel">Alle <span class="ct">38</span></span>
+                <span class="chip">Talent <span class="ct">12</span></span>
+                <span class="chip">Mid-tier <span class="ct">18</span></span>
+                <span class="chip">Junior <span class="ct">8</span></span>
+                <span class="chip">Pro <span class="ct">9</span></span>
+                <span class="chip">Free <span class="ct">29</span></span>
+              </div>
+            </div>
+            <table class="ttable">
+              <thead><tr>
+                <th style="width:30%">Spiller</th>
+                <th class="num">HCP <span class="ic">⇅</span></th>
+                <th class="desc">SG-delta (30 d) <span class="ic">↓</span></th>
+                <th>Økter</th>
+                <th>Status</th>
+                <th></th>
+              </tr></thead>
+              <tbody>
+                <tr><td><div class="av-name"><div class="av">SH</div><div><div class="n">Henrik Sørli</div><div class="role">Talent · Pro</div></div></div></td><td class="num">6,2</td><td class="delta">+1,8</td><td class="num">11</td><td><span class="pill up">↑ Trender opp</span></td><td><span class="arr">→</span></td></tr>
+                <tr><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A6651E,#7A4910)">MR</div><div><div class="n">Markus Rønning</div><div class="role">Mid-tier · Pro</div></div></div></td><td class="num">12,4</td><td class="delta">+1,4</td><td class="num">9</td><td><span class="pill up">↑ Trender opp</span></td><td><span class="arr">→</span></td></tr>
+                <tr><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#7A998C,#56796D)">JL</div><div><div class="n">Jonas Lien</div><div class="role">Junior · Free</div></div></div></td><td class="num">18,1</td><td class="delta">+1,2</td><td class="num">8</td><td><span class="pill up">↑ Trender opp</span></td><td><span class="arr">→</span></td></tr>
+                <tr><td><div class="av-name"><div class="av">EH</div><div><div class="n">Ellen Hauge</div><div class="role">Talent · Pro</div></div></div></td><td class="num">5,8</td><td class="delta">+0,6</td><td class="num">12</td><td><span class="pill flat">→ Stabil</span></td><td><span class="arr">→</span></td></tr>
+                <tr><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A6651E,#7A4910)">KB</div><div><div class="n">Kristian Berg</div><div class="role">Mid-tier · Free</div></div></div></td><td class="num">14,6</td><td class="delta">+0,3</td><td class="num">5</td><td><span class="pill flat">→ Stabil</span></td><td><span class="arr">→</span></td></tr>
+                <tr><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A32D2D,#7C2020)">PV</div><div><div class="n">Pia Vik</div><div class="role">Mid-tier · Free</div></div></div></td><td class="num">16,2</td><td class="delta dn">−0,7</td><td class="num">3</td><td><span class="pill down">↓ Trenger fokus</span></td><td><span class="arr">→</span></td></tr>
+                <tr><td><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A32D2D,#7C2020)">AK</div><div><div class="n">Andreas Krog</div><div class="role">Junior · Free</div></div></div></td><td class="num">22,4</td><td class="delta dn">−0,5</td><td class="num">2</td><td><span class="pill down">↓ Trenger fokus</span></td><td><span class="arr">→</span></td></tr>
+              </tbody>
+            </table>
+          </section>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 DARK -->
+  <section class="ab dark" data-screen-label="02 Mørkt">
+    <div class="ab-label"><span class="num">02</span><span class="ttl">Mørkt tema — full data</span><span class="meta">1448 × 920</span></div>
+    <div class="ab-frame">
+      <div class="app app--med">
+        <aside class="rail">
+          <div class="logo">AK</div>
+          <div class="ri"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <div class="ri"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/></svg></div>
+          <div class="ri"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg></div>
+          <div class="ri active"><svg viewBox="0 0 24 24"><line x1="3" y1="20" x2="21" y2="20"/><line x1="6" y1="20" x2="6" y2="10"/><line x1="11" y1="20" x2="11" y2="4"/><line x1="16" y1="20" x2="16" y2="14"/></svg></div>
+          <div class="av">EH</div>
+        </aside>
+        <aside class="nav">
+          <div class="label">CoachHQ</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7"/></svg>Hub</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/></svg>Spillere<span class="count">38</span></div>
+          <div class="nav-item active"><svg viewBox="0 0 24 24"><line x1="3" y1="20" x2="21" y2="20"/><line x1="6" y1="20" x2="6" y2="10"/></svg>Analytics</div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Godkjenninger<span class="count">7</span></div>
+          <div class="nav-foot"><div class="crt">Coach <strong>Erik H.</strong><br>Bærum GK</div></div>
+        </aside>
+        <main class="main">
+          <header class="hero">
+            <div><div class="crumb">Analytics</div><h1><span class="em">Hvordan stallen</span> utvikler seg.</h1><div class="meta">38 spillere · 142 økter</div></div>
+            <div class="period"><span class="lbl">Periode</span><span class="v">30 d</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </header>
+          <div class="kpis">
+            <div class="kpi hero-kpi"><div class="h">SG-forbedring</div><div class="v">+0,42 <span class="arr">↑</span></div><div class="sub">+0,18 forrige</div></div>
+            <div class="kpi"><div class="h">Økter</div><div class="v">142 <span class="arr">↑+18</span></div><div class="sub">vs 124</div></div>
+            <div class="kpi"><div class="h">Topp 3</div><div class="av-row"><div class="stack"><div class="av">SH</div><div class="av">MR</div><div class="av">JL</div></div><span class="num" style="color:#9D9C95">+1,8/+1,4/+1,2</span></div><div class="sub">Henrik / Markus / Jonas</div></div>
+            <div class="kpi"><div class="h">Bunn 3</div><div class="av-row"><div class="stack"><div class="av dn">PV</div><div class="av dn">AK</div><div class="av dn">MN</div></div><span class="num" style="color:#9D9C95">−0,7/−0,5/−0,3</span></div><div class="sub">Trenger fokus</div></div>
+            <div class="kpi"><div class="h">Belegg</div><div class="v">82 <span class="u" style="color:#9D9C95">%</span></div><div class="bar-mini" style="background:#0F2A22"><div class="fl" style="background:var(--brand-accent)"></div></div><div class="sub">131/160 t</div></div>
+          </div>
+          <section class="chart-card">
+            <div class="h"><h3>SG-trend per gruppe<span class="meta">12 uker</span></h3><div class="toggle on"><span>Sammenlign forrige sesong</span><div class="sw"></div></div></div>
+            <svg class="chart-svg" viewBox="0 0 1200 240" preserveAspectRatio="none">
+              <line x1="40" y1="50" x2="1180" y2="50" stroke="#274d41" stroke-width="1"/>
+              <line x1="40" y1="100" x2="1180" y2="100" stroke="#274d41" stroke-width="1"/>
+              <line x1="40" y1="150" x2="1180" y2="150" stroke="#274d41" stroke-width="1"/>
+              <line x1="40" y1="200" x2="1180" y2="200" stroke="#274d41" stroke-width="1"/>
+              <path d="M40,150 L220,140 L400,135 L580,125 L760,115 L940,108 L1120,100" fill="none" stroke="#7a8580" stroke-width="1.5" stroke-dasharray="4 4" opacity=".6"/>
+              <path d="M40,140 L220,128 L400,108 L580,82 L760,60 L940,42 L1120,30" fill="none" stroke="#D1F843" stroke-width="2.8"/>
+              <path d="M40,160 L220,155 L400,145 L580,135 L760,122 L940,112 L1120,98" fill="none" stroke="#D29A56" stroke-width="2.4"/>
+              <path d="M40,170 L220,168 L400,165 L580,155 L760,142 L940,135 L1120,124" fill="none" stroke="#9DB5AB" stroke-width="2.4"/>
+              <circle cx="850" cy="50" r="5" fill="#D1F843"/>
+            </svg>
+            <div class="legend">
+              <div class="lg"><div class="dt" style="background:#D1F843"></div>Talent</div>
+              <div class="lg"><div class="dt" style="background:#D29A56"></div>Mid-tier</div>
+              <div class="lg"><div class="dt" style="background:#9DB5AB"></div>Junior</div>
+              <div class="lg" style="opacity:.6"><div class="dt" style="background:#7a8580"></div>Forrige sesong</div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 HOVER chart tooltip -->
+  <section class="ab" data-screen-label="03 Hover · chart tooltip">
+    <div class="ab-label"><span class="num">03</span><span class="ttl">Hover på chart-datapunkt</span><span class="meta">1448 × 460</span></div>
+    <div class="ab-frame">
+      <div style="padding:36px;background:var(--surface);position:relative">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:14px">Datapunkt-tooltip viser uke, gruppe, SG-verdi og delta vs forrige uke</div>
+        <section class="chart-card" style="position:relative">
+          <div class="h"><h3>SG-trend per gruppe</h3></div>
+          <svg class="chart-svg" viewBox="0 0 1200 240" preserveAspectRatio="none">
+            <line x1="40" y1="50" x2="1180" y2="50" stroke="#F0EDE5"/>
+            <line x1="40" y1="100" x2="1180" y2="100" stroke="#F0EDE5"/>
+            <line x1="40" y1="150" x2="1180" y2="150" stroke="#F0EDE5"/>
+            <line x1="40" y1="200" x2="1180" y2="200" stroke="#F0EDE5"/>
+            <path d="M40,140 L220,128 L400,108 L580,82 L760,60 L940,42 L1120,30" fill="none" stroke="#005840" stroke-width="2.8"/>
+            <path d="M40,160 L220,155 L400,145 L580,135 L760,122 L940,112 L1120,98" fill="none" stroke="#A6651E" stroke-width="2.4"/>
+            <path d="M40,170 L220,168 L400,165 L580,155 L760,142 L940,135 L1120,124" fill="none" stroke="#7A998C" stroke-width="2.4"/>
+            <line x1="760" y1="20" x2="760" y2="220" stroke="#005840" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>
+            <circle cx="760" cy="60" r="6" fill="#005840" stroke="#FAFAF7" stroke-width="2"/>
+            <circle cx="760" cy="122" r="4" fill="#A6651E"/>
+            <circle cx="760" cy="142" r="4" fill="#7A998C"/>
+          </svg>
+          <div class="tt bottom" style="left:calc(63% - 90px);top:30px;width:200px"><div class="l1">Uke 14 · 6.–12. apr</div><div class="l2">Talent (12 spillere)</div><div class="l3">+1,12 SG · ↑ +0,18 vs u13</div><div class="l4">Mid-tier: +0,68 · Junior: +0,42</div></div>
+          <span class="anno bottom" style="left:62%;bottom:60px">DATAPUNKT · TOOLTIP</span>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 HOVER heatmap -->
+  <section class="ab" data-screen-label="04 Hover · heatmap-celle">
+    <div class="ab-label"><span class="num">04</span><span class="ttl">Hover på heatmap-celle</span><span class="meta">1448 × 380</span></div>
+    <div class="ab-frame">
+      <div style="padding:36px;background:var(--surface);position:relative">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:14px">Celle-tooltip viser spillernavn, ferdighet og % mestret · klikk → spiller-detalj</div>
+        <div style="background:var(--surface-card);border:1px solid var(--line);border-radius:18px;padding:20px;position:relative;box-shadow:var(--shadow-card)">
+          <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;margin:0 0 4px">Pyramide-heatmap</h3>
+          <div style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-mono);margin-bottom:12px">38 spillere × 5 lag</div>
+          <div class="heatmap-rows" style="display:flex;flex-direction:column;gap:5px">
+            <div class="heatmap-row" style="display:flex;gap:8px;align-items:center"><span class="lbl" style="width:46px;font-family:var(--font-mono);font-size:9px;font-weight:600;color:var(--ink-subtle);text-align:right;letter-spacing:.04em;text-transform:uppercase">FYS</span><div class="grid" style="display:grid;grid-template-columns:repeat(38,1fr);gap:2px;flex:1">
+              <span class="c" style="background:#FBE5E5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#F0B5B5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#E58585;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#D45050;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#A32D2D;aspect-ratio:1;border-radius:2px"></span>
+              <span class="c" style="background:#F0B5B5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#E58585;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#A32D2D;aspect-ratio:1;border-radius:2px;outline:2px solid #0F2A22;outline-offset:1px;position:relative"></span><span class="c" style="background:#D45050;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#A32D2D;aspect-ratio:1;border-radius:2px"></span>
+              <span class="c" style="background:#E58585;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#D45050;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#F0B5B5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#FBE5E5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#E58585;aspect-ratio:1;border-radius:2px"></span>
+              <span class="c" style="background:#A32D2D;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#D45050;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#E58585;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#F0B5B5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#D45050;aspect-ratio:1;border-radius:2px"></span>
+              <span class="c" style="background:#FBE5E5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#E58585;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#D45050;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#A32D2D;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#D45050;aspect-ratio:1;border-radius:2px"></span>
+              <span class="c" style="background:#F0B5B5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#FBE5E5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#E58585;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#D45050;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#A32D2D;aspect-ratio:1;border-radius:2px"></span>
+              <span class="c" style="background:#E58585;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#D45050;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#F0B5B5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#FBE5E5;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#A32D2D;aspect-ratio:1;border-radius:2px"></span>
+              <span class="c" style="background:#E58585;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#D45050;aspect-ratio:1;border-radius:2px"></span><span class="c" style="background:#F0B5B5;aspect-ratio:1;border-radius:2px"></span>
+            </div></div>
+          </div>
+          <div class="tt bottom" style="left:calc(46px + 8% + 80px);top:18px;width:200px"><div class="l1">Sak Henrik · FYS · spiller 8</div><div class="l2">92 % mestret</div><div class="l3">Topp 5 i stallen · ↑ +6 % siste mnd</div><div class="l4">Klikk for full profil →</div></div>
+          <span class="anno bottom" style="left:calc(46px + 8% + 60px);top:62px">CELLE · TOOLTIP</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 DROPDOWN open -->
+  <section class="ab" data-screen-label="05 Periode-dropdown · open">
+    <div class="ab-label"><span class="num">05</span><span class="ttl">Periode-velger åpen</span><span class="meta">1448 × 380</span></div>
+    <div class="ab-frame">
+      <div style="padding:36px;background:var(--surface);position:relative">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:14px">Default · hover · open · item-hover · item-selected</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1.4fr;gap:24px;align-items:flex-start">
+          <div>
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--ink-subtle);margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase">Default</div>
+            <div class="period"><span class="lbl">Periode</span><span class="v">Siste 30 dager</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--ink-subtle);margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase">Hover</div>
+            <div class="period" style="border-color:var(--brand-primary)"><span class="lbl">Periode</span><span class="v">Siste 30 dager</span><svg viewBox="0 0 24 24" style="color:var(--brand-primary)"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--ink-subtle);margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase">Focus / Open</div>
+            <div class="period open"><span class="lbl">Periode</span><span class="v">Siste 30 dager</span><svg viewBox="0 0 24 24" style="color:var(--brand-primary);transform:rotate(180deg)"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--ink-subtle);margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase">Open · m. items</div>
+            <div class="period open" style="position:relative">
+              <span class="lbl">Periode</span><span class="v">Siste 30 dager</span>
+              <svg viewBox="0 0 24 24" style="color:var(--brand-primary);transform:rotate(180deg)"><polyline points="6 9 12 15 18 9"/></svg>
+              <div class="menu" style="display:flex">
+                <div class="it"><span>Siste 7 dager</span><span class="k">7d</span></div>
+                <div class="it" style="background:#F0EDE5"><span>Siste 14 dager</span><span class="k">14d</span></div>
+                <div class="it sel"><span>Siste 30 dager</span><span class="k">30d ✓</span></div>
+                <div class="it"><span>Siste 90 dager</span><span class="k">90d</span></div>
+                <div class="it"><span>Sesong 2026</span><span class="k">YTD</span></div>
+                <div class="div"></div>
+                <div class="it"><span>Custom-periode …</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 FILTER chip selected -->
+  <section class="ab" data-screen-label="06 Filter-chips · selected">
+    <div class="ab-label"><span class="num">06</span><span class="ttl">Filter-chip aktive states</span><span class="meta">1448 × 320</span></div>
+    <div class="ab-frame">
+      <div style="padding:36px;background:var(--surface)">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-subtle);margin-bottom:14px">Default · hover · selected (multi) · disabled</div>
+        <div style="background:var(--surface-card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow-card)">
+          <div style="font-family:var(--font-display);font-size:14px;font-weight:600;margin-bottom:12px">3 filtre aktive — viser 21 av 38 spillere</div>
+          <div class="chips">
+            <span class="chip">Alle <span class="ct">38</span></span>
+            <span class="chip sel">Talent <span class="ct">12</span><span class="x">×</span></span>
+            <span class="chip sel">Mid-tier <span class="ct">18</span><span class="x">×</span></span>
+            <span class="chip">Junior <span class="ct">8</span></span>
+            <span class="chip" style="border-color:var(--brand-primary);color:var(--brand-primary)">Pro <span class="ct">9</span></span>
+            <span class="chip sel">Free <span class="ct">29</span><span class="x">×</span></span>
+            <span class="chip" style="opacity:.4;cursor:not-allowed">Inaktiv <span class="ct">0</span></span>
+            <span class="chip" style="border-style:dashed;color:var(--brand-primary)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Legg til</span>
+            <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--brand-primary);font-weight:600;cursor:pointer;align-self:center">Nullstill alle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 LOADING -->
+  <section class="ab" data-screen-label="07 Loading">
+    <div class="ab-label"><span class="num">07</span><span class="ttl">Loading-state</span><span class="meta">1448 × 720</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="rail">
+          <div class="logo">AK</div>
+          <div class="ri active"><svg viewBox="0 0 24 24"><line x1="3" y1="20" x2="21" y2="20"/><line x1="6" y1="20" x2="6" y2="10"/></svg></div>
+          <div class="av">EH</div>
+        </aside>
+        <aside class="nav"><div class="label">CoachHQ</div><div class="nav-item active">Analytics</div></aside>
+        <main class="main">
+          <header class="hero"><div><div class="crumb">Analytics · synkroniserer</div><h1 style="color:var(--ink-subtle)">Henter data …</h1></div></header>
+          <div class="kpis">
+            <div class="kpi" style="cursor:default"><div class="skel" style="width:100px;height:10px"></div><div class="skel" style="width:140px;height:36px;margin-top:8px"></div><div class="skel" style="width:80%;height:11px;margin-top:6px"></div></div>
+            <div class="kpi" style="cursor:default"><div class="skel" style="width:80px;height:10px"></div><div class="skel" style="width:90px;height:36px;margin-top:8px"></div></div>
+            <div class="kpi" style="cursor:default"><div class="skel" style="width:90px;height:10px"></div><div class="skel" style="width:100%;height:32px;margin-top:8px;border-radius:16px"></div></div>
+            <div class="kpi" style="cursor:default"><div class="skel" style="width:100px;height:10px"></div><div class="skel" style="width:100%;height:32px;margin-top:8px;border-radius:16px"></div></div>
+            <div class="kpi" style="cursor:default"><div class="skel" style="width:80px;height:10px"></div><div class="skel" style="width:80px;height:36px;margin-top:8px"></div><div class="skel" style="width:100%;height:6px;margin-top:8px;border-radius:3px"></div></div>
+          </div>
+          <section class="chart-card">
+            <div class="h"><div class="skel" style="width:240px;height:16px"></div></div>
+            <div style="height:240px;position:relative;overflow:hidden">
+              <svg viewBox="0 0 1200 240" preserveAspectRatio="none" style="width:100%;height:240px;opacity:.4">
+                <line x1="40" y1="50" x2="1180" y2="50" stroke="#F0EDE5"/>
+                <line x1="40" y1="100" x2="1180" y2="100" stroke="#F0EDE5"/>
+                <line x1="40" y1="150" x2="1180" y2="150" stroke="#F0EDE5"/>
+                <line x1="40" y1="200" x2="1180" y2="200" stroke="#F0EDE5"/>
+              </svg>
+              <div class="skel" style="position:absolute;left:5%;right:5%;top:40%;height:3px"></div>
+              <div class="skel" style="position:absolute;left:5%;right:5%;top:55%;height:3px"></div>
+              <div class="skel" style="position:absolute;left:5%;right:5%;top:70%;height:3px"></div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 EMPTY -->
+  <section class="ab" data-screen-label="08 Empty · ingen data i periode">
+    <div class="ab-label"><span class="num">08</span><span class="ttl">Empty — ingen data i valgt periode</span><span class="meta">1448 × 660</span></div>
+    <div class="ab-frame">
+      <div class="app app--short">
+        <aside class="rail">
+          <div class="logo">AK</div>
+          <div class="ri active"><svg viewBox="0 0 24 24"><line x1="3" y1="20" x2="21" y2="20"/></svg></div>
+          <div class="av">EH</div>
+        </aside>
+        <aside class="nav"><div class="label">CoachHQ</div><div class="nav-item active">Analytics</div></aside>
+        <main class="main">
+          <header class="hero">
+            <div><div class="crumb">Analytics · 7 d valgt</div><h1>Ingen data i <span class="em">valgt periode</span>.</h1><div class="meta">Stallen logget ikke økter de siste 7 dagene</div></div>
+            <div class="period"><span class="lbl">Periode</span><span class="v">Siste 7 dager</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </header>
+          <div class="kpis">
+            <div class="kpi" style="cursor:default"><div class="h">SG-forbedring</div><div class="v" style="color:var(--ink-disabled)">— <span class="u" style="color:var(--ink-disabled)">SG</span></div><div class="sub" style="color:var(--ink-disabled)">Ingen data</div></div>
+            <div class="kpi" style="cursor:default"><div class="h">Økter</div><div class="v" style="color:var(--ink-disabled)">0</div><div class="sub" style="color:var(--ink-disabled)">7 d</div></div>
+            <div class="kpi" style="cursor:default"><div class="h">Topp 3</div><div class="v" style="color:var(--ink-disabled)">—</div><div class="sub" style="color:var(--ink-disabled)">Krever data</div></div>
+            <div class="kpi" style="cursor:default"><div class="h">Bunn 3</div><div class="v" style="color:var(--ink-disabled)">—</div><div class="sub" style="color:var(--ink-disabled)">Krever data</div></div>
+            <div class="kpi" style="cursor:default"><div class="h">Belegg</div><div class="v" style="color:var(--ink-disabled)">— %</div></div>
+          </div>
+          <div style="padding:48px 36px;background:linear-gradient(135deg,#FAFAF7 0%,#F5F2EA 100%);border:2px dashed #D8D5CC;border-radius:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px">
+            <div style="width:56px;height:56px;border-radius:16px;background:var(--accent-bg);color:#0A1F18;display:flex;align-items:center;justify-content:center;margin-bottom:6px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+            <h2 style="font-family:var(--font-display);font-size:24px;font-style:italic;font-weight:400;margin:0">Ingen data i de siste 7 dagene.</h2>
+            <p style="font-size:14px;color:var(--ink-muted);max-width:520px;margin:0 0 12px">Velg en større periode for å se trender, eller logg en økt fra Hub-skjermen.</p>
+            <div style="display:flex;gap:10px"><button style="background:var(--brand-primary);color:#fff;padding:12px 22px;border-radius:12px;border:none;font-size:13px;font-weight:500;cursor:pointer">Bytt til 30 d →</button><button style="background:var(--surface-card);color:var(--ink);padding:12px 22px;border-radius:12px;border:1px solid var(--line);font-size:13px;font-weight:500;cursor:pointer">Logg første økt</button></div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 MOBILE -->
+  <section class="ab" data-screen-label="09 Mobil">
+    <div class="ab-label"><span class="num">09</span><span class="ttl">Mobil ≤ 768 px (tabell scroll-X)</span><span class="meta">392 px</span></div>
+    <div class="ab-frame">
+      <div class="mobile-wrap">
+        <div class="mobile">
+          <div class="m-status"><span>09:14</span><span><svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="19" height="9" rx="2"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/></svg></span></div>
+          <div class="m-top"><div class="ham"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><div class="ttl">Analytics</div><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#005840,#1A7D56);color:#fff;font-family:var(--font-display);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center">EH</div></div>
+          <div class="m-hero"><h1><span class="em">Hvordan stallen</span> utvikler seg.</h1><div class="meta">38 spillere · 142 økter</div></div>
+          <div class="m-period"><span style="color:var(--ink-subtle);font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase">Periode</span><span style="display:flex;align-items:center;gap:6px">Siste 30 dager <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+          <div class="m-kpis">
+            <div class="m-kpi hero-k"><div class="h">SG-forbedring</div><div class="v">+0,42 <span class="arr">↑</span></div><div class="sub">vs +0,18 forrige</div></div>
+            <div class="m-kpi"><div class="h">Økter</div><div class="v">142<span class="arr">↑18</span></div><div class="sub">vs 124</div></div>
+            <div class="m-kpi"><div class="h">Belegg</div><div class="v">82 %</div><div class="sub">131/160 t</div></div>
+          </div>
+          <div class="m-chart">
+            <div class="h">SG-trend · 12 uker</div>
+            <svg viewBox="0 0 360 100" preserveAspectRatio="none" width="100%" height="100">
+              <line x1="0" y1="20" x2="360" y2="20" stroke="#F0EDE5"/>
+              <line x1="0" y1="50" x2="360" y2="50" stroke="#F0EDE5"/>
+              <line x1="0" y1="80" x2="360" y2="80" stroke="#F0EDE5"/>
+              <path d="M10,60 L60,52 L110,42 L160,32 L210,24 L260,18 L310,14 L355,10" fill="none" stroke="#005840" stroke-width="2.5"/>
+              <path d="M10,68 L60,62 L110,58 L160,52 L210,46 L260,42 L310,38 L355,34" fill="none" stroke="#A6651E" stroke-width="2"/>
+              <path d="M10,72 L60,68 L110,66 L160,62 L210,58 L260,54 L310,50 L355,46" fill="none" stroke="#7A998C" stroke-width="2"/>
+            </svg>
+            <div style="display:flex;gap:10px;justify-content:center;margin-top:6px;font-family:var(--font-mono);font-size:9px;color:var(--ink-subtle)"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#005840;margin-right:3px"></span>Talent</span><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#A6651E;margin-right:3px"></span>Mid</span><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#7A998C;margin-right:3px"></span>Junior</span></div>
+          </div>
+          <div class="m-table">
+            <div class="h">Spillere · scroll →</div>
+            <div class="scroll">
+              <div class="m-row" style="font-family:var(--font-mono);font-size:9px;color:var(--ink-subtle);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)"><span>Navn</span><span>HCP</span><span>SG-Δ</span><span>Økter</span><span></span></div>
+              <div class="m-row"><div class="av-name"><div class="av">SH</div><div><div style="font-weight:500;color:var(--ink)">Henrik S.</div><div style="font-size:9px;color:var(--ink-subtle);font-family:var(--font-mono);text-transform:uppercase">Talent</div></div></div><span class="num">6,2</span><span class="delta">+1,8</span><span class="num">11</span><span style="color:var(--ink-disabled)">›</span></div>
+              <div class="m-row"><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A6651E,#7A4910)">MR</div><div><div style="font-weight:500;color:var(--ink)">Markus R.</div><div style="font-size:9px;color:var(--ink-subtle);font-family:var(--font-mono);text-transform:uppercase">Mid</div></div></div><span class="num">12,4</span><span class="delta">+1,4</span><span class="num">9</span><span style="color:var(--ink-disabled)">›</span></div>
+              <div class="m-row"><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#7A998C,#56796D)">JL</div><div><div style="font-weight:500;color:var(--ink)">Jonas L.</div><div style="font-size:9px;color:var(--ink-subtle);font-family:var(--font-mono);text-transform:uppercase">Junior</div></div></div><span class="num">18,1</span><span class="delta">+1,2</span><span class="num">8</span><span style="color:var(--ink-disabled)">›</span></div>
+              <div class="m-row"><div class="av-name"><div class="av" style="background:linear-gradient(135deg,#A32D2D,#7C2020)">PV</div><div><div style="font-weight:500;color:var(--ink)">Pia V.</div><div style="font-size:9px;color:var(--ink-subtle);font-family:var(--font-mono);text-transform:uppercase">Mid</div></div></div><span class="num">16,2</span><span class="delta dn">−0,7</span><span class="num">3</span><span style="color:var(--ink-disabled)">›</span></div>
+            </div>
+          </div>
+          <div class="m-tabs">
+            <div class="m-tab"><div class="icw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7"/></svg></div>Hub</div>
+            <div class="m-tab"><div class="icw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/></svg></div>Spillere</div>
+            <div class="m-tab active"><div class="icw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="20" x2="21" y2="20"/><line x1="6" y1="20" x2="6" y2="10"/><line x1="11" y1="20" x2="11" y2="4"/><line x1="16" y1="20" x2="16" y2="14"/></svg></div>Analytics</div>
+            <div class="m-tab"><div class="icw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>Godkj</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

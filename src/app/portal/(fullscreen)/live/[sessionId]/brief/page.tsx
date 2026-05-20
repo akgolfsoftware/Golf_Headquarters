@@ -92,17 +92,17 @@ export default async function LiveBriefPage({
     user.tier !== "GRATIS" && erEier && session.status !== "COMPLETED";
 
   return (
-    <div className="mx-auto max-w-[1100px] space-y-6 px-6 py-8">
+    <div className="mx-auto max-w-[1100px] space-y-6 px-4 py-6 sm:px-6 sm:py-8">
       <Link
         href={`/portal/tren/${session.id}`}
-        className="inline-flex items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex h-11 items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         Tilbake til økt-detalj
       </Link>
 
       {/* Hero — brief */}
-      <section className="grid grid-cols-1 gap-8 rounded-2xl border border-border bg-card p-8 lg:grid-cols-[1fr_380px]">
+      <section className="grid grid-cols-1 gap-6 rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8 md:gap-8 lg:grid-cols-[1fr_380px]">
         <div className="flex flex-col gap-3.5">
           <div className="inline-flex items-center gap-2 font-sans text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
             <span
@@ -111,7 +111,7 @@ export default async function LiveBriefPage({
             />
             {session.plan.name} · {session.pyramidArea}
           </div>
-          <h1 className="font-display text-[36px] font-medium leading-[1.1] -tracking-[0.02em] text-foreground">
+          <h1 className="font-display text-[28px] font-medium leading-[1.1] -tracking-[0.02em] text-foreground sm:text-[36px]">
             {PYR_LABEL[session.pyramidArea]}-økt{" "}
             <em className="font-normal italic text-muted-foreground">
               {session.title}
@@ -243,7 +243,7 @@ export default async function LiveBriefPage({
             {session.drills.map((d, i) => (
               <div
                 key={d.id}
-                className="grid grid-cols-[28px_1fr_auto_auto] items-center gap-3.5 rounded-xl border border-border bg-card px-4 py-3.5"
+                className="grid grid-cols-[28px_1fr_auto] items-center gap-3 rounded-xl border border-border bg-card px-3 py-3 sm:grid-cols-[28px_1fr_auto_auto] sm:gap-3.5 sm:px-4 sm:py-3.5"
               >
                 <div className="grid h-7 w-7 place-items-center rounded-md bg-secondary font-mono text-[12px] font-bold text-muted-foreground">
                   {String(i + 1).padStart(2, "0")}

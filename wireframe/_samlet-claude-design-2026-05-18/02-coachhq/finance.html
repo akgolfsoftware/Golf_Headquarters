@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Økonomi</title></head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="#">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="#">Treningsplaner</a>
+      <a href="#">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="#">Godkjenninger</a>
+      <a href="#">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="#">Analytics</a>
+      <a href="#" class="active">Økonomi</a>
+      <a href="#">Fasiliteter</a>
+      <a href="#">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Mai 2026 · MVA-pliktig</span>
+      <h1 class="page-title">Økonomi</h1>
+      <p class="page-lede">Inntekt, utestående og likviditet på tvers av alle tjenester.</p>
+    </header>
+
+    <div class="chips">
+      <button class="chip active">Mai 2026</button>
+      <button class="chip">YTD</button>
+      <button class="chip">Sammenlign år</button>
+      <span style="flex:1"></span>
+      <button class="chip">Eksporter til Tripletex</button>
+      <button class="chip">Send purring</button>
+    </div>
+
+    <section class="kpi-strip">
+      <div class="kpi"><div class="kpi-label">Omsetning denne mnd</div><div class="kpi-value num">142 800</div><div class="kpi-trend up">+8 % mot april</div></div>
+      <div class="kpi"><div class="kpi-label">Utestående</div><div class="kpi-value num">3 200</div><div class="kpi-trend down">2 fakturaer · 14d og 21d</div></div>
+      <div class="kpi"><div class="kpi-label">Snitt per økt</div><div class="kpi-value num">1 480</div><div class="kpi-trend">96 økter · MVA inkl.</div></div>
+      <div class="kpi"><div class="kpi-label">YTD 2026</div><div class="kpi-value num">612 400</div><div class="kpi-trend up">+14 % mot 2025</div></div>
+    </section>
+
+    <section class="section">
+      <div class="bento" style="grid-template-columns: 1.4fr 1fr; gap:16px;">
+        <div class="card">
+          <div class="card-label">Inntekt per måned · siste 12</div>
+          <h3 style="margin-bottom:14px;">Sesongprofil</h3>
+          <div style="display:flex; align-items:flex-end; gap:6px; height:160px;">
+            <div style="flex:1; background:var(--primary); height:38%; border-radius:4px 4px 0 0;" title="jun"></div>
+            <div style="flex:1; background:var(--primary); height:54%; border-radius:4px 4px 0 0;"></div>
+            <div style="flex:1; background:var(--primary); height:78%; border-radius:4px 4px 0 0;"></div>
+            <div style="flex:1; background:var(--primary); height:92%; border-radius:4px 4px 0 0;"></div>
+            <div style="flex:1; background:var(--primary); height:88%; border-radius:4px 4px 0 0;"></div>
+            <div style="flex:1; background:var(--primary); height:62%; border-radius:4px 4px 0 0;"></div>
+            <div style="flex:1; background:var(--primary); height:34%; border-radius:4px 4px 0 0;"></div>
+            <div style="flex:1; background:var(--primary); height:42%; border-radius:4px 4px 0 0;"></div>
+            <div style="flex:1; background:var(--primary); height:58%; border-radius:4px 4px 0 0;"></div>
+            <div style="flex:1; background:var(--primary); height:74%; border-radius:4px 4px 0 0;"></div>
+            <div style="flex:1; background:var(--primary); height:88%; border-radius:4px 4px 0 0;"></div>
+            <div style="flex:1; background:var(--accent); height:96%; border-radius:4px 4px 0 0;" title="mai (denne)"></div>
+          </div>
+          <div style="display:flex; gap:6px; margin-top:8px; font-family:var(--font-mono); font-size:9px; color:var(--text-muted);">
+            <span style="flex:1; text-align:center;">jun</span><span style="flex:1; text-align:center;">jul</span><span style="flex:1; text-align:center;">aug</span><span style="flex:1; text-align:center;">sep</span><span style="flex:1; text-align:center;">okt</span><span style="flex:1; text-align:center;">nov</span><span style="flex:1; text-align:center;">des</span><span style="flex:1; text-align:center;">jan</span><span style="flex:1; text-align:center;">feb</span><span style="flex:1; text-align:center;">mar</span><span style="flex:1; text-align:center;">apr</span><span style="flex:1; text-align:center; color:var(--text);">mai</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Inntekt per tjeneste · mai</div>
+          <table class="tbl" style="border:0;">
+            <tbody>
+              <tr><td>Privattime 60min</td><td class="num" style="text-align:right;">68 400</td></tr>
+              <tr><td>Privattime 30min</td><td class="num" style="text-align:right;">22 100</td></tr>
+              <tr><td>Gruppeøkt junior</td><td class="num" style="text-align:right;">28 800</td></tr>
+              <tr><td>Mulligan-leie</td><td class="num" style="text-align:right;">14 200</td></tr>
+              <tr><td>Camp / event</td><td class="num" style="text-align:right;">9 300</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Utestående fakturaer</h2><a href="#" class="btn-link">Send batch-purring →</a></div>
+      <table class="tbl">
+        <thead><tr><th>Faktura</th><th>Spiller / kunde</th><th>Beløp</th><th>Forfall</th><th>Forsinket</th><th>Handling</th></tr></thead>
+        <tbody>
+          <tr><td class="num">F-2026-0142</td><td>Aksel L. (foresatt)</td><td class="num">1 800</td><td>20.04.2026</td><td><span class="pill pill-danger">21 dager</span></td><td><button class="btn btn-ghost" style="padding:6px 12px; font-size:11px;">Purr</button></td></tr>
+          <tr><td class="num">F-2026-0156</td><td>Lina H.</td><td class="num">1 400</td><td>27.04.2026</td><td><span class="pill pill-warning">14 dager</span></td><td><button class="btn btn-ghost" style="padding:6px 12px; font-size:11px;">Purr</button></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <div class="bento" style="grid-template-columns: 1fr 1fr 1fr; gap:16px;">
+        <div class="card"><div class="card-label">Likviditet (kontoer)</div><div class="num" style="font-size:24px; font-weight:600; margin-top:6px;">284 600</div><p style="margin-top:6px;">3 kontoer · oppdatert 09:42</p></div>
+        <div class="card"><div class="card-label">MVA-skyldig (Q2)</div><div class="num" style="font-size:24px; font-weight:600; margin-top:6px;">38 200</div><p style="margin-top:6px;">Forfall 31.08.2026</p></div>
+        <div class="card"><div class="card-label">Forventet juni</div><div class="num" style="font-size:24px; font-weight:600; margin-top:6px;">~165 000</div><p style="margin-top:6px;">Basert på bookinger · 92 % conf.</p></div>
+      </div>
+    </section>
+  </main>
+</div>
+</body></html>

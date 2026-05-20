@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../base.css"><title>AgentFeedbackModal</title></head>
+<body style="background: rgba(10,31,24,0.5); padding: 80px 40px;">
+<div class="modal" style="background: white; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+    <div>
+      <span class="page-eyebrow">Agent-action #ACT-2026-0412 · godkjent kl 09:18</span>
+      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-top: 4px;">Hjelp <em style="color: var(--primary); font-weight: 400;">agenten</em> å lære</h2>
+    </div>
+    <button style="background: transparent; border: 0; font-size: 24px; cursor: pointer; color: var(--text-secondary);">×</button>
+  </div>
+
+  <p style="color: var(--text-secondary); font-size: 13px; margin: 12px 0 20px;">Tilbakemelding gjør agenten skarpere. Tar 30 sekunder, helt valgfritt.</p>
+
+  <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;">
+    <div class="card-label" style="margin-bottom: 6px;">Action-sammendrag</div>
+    <p style="font-size: 13px; line-height: 1.5;"><b>Foreslått:</b> Bytt onsdagens driver-økt med Approach 80 min for Markus R.</p>
+    <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Du <b style="color: var(--success);">godkjente</b> · 84% confidence</p>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <label class="card-label" style="display: block; margin-bottom: 10px;">Hvorfor godkjente du?</label>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
+      <span class="chip active">Riktig diagnose</span>
+      <span class="chip">Bra timing</span>
+      <span class="chip active">Treffer NM-mål</span>
+      <span class="chip">Spilleren trengte byttet</span>
+      <span class="chip">Annet</span>
+    </div>
+    <textarea placeholder="Eventuelle nyanser..." style="width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 13px; min-height: 80px; background: var(--bg); resize: vertical;">Diagnosen var spot on — jeg så det samme på Bossum. Kunne foreslått 90 min i stedet for 80 fordi vi har god tid på onsdag.</textarea>
+  </div>
+
+  <div style="margin-bottom: 8px;">
+    <label class="card-label" style="display: block; margin-bottom: 10px;">Skala-vurdering (valgfritt)</label>
+    <div style="display: flex; gap: 6px;">
+      <button style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: white; font-family: var(--font-mono); font-size: 13px;">1</button>
+      <button style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: white; font-family: var(--font-mono); font-size: 13px;">2</button>
+      <button style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: white; font-family: var(--font-mono); font-size: 13px;">3</button>
+      <button style="flex: 1; padding: 12px; border: 2px solid var(--primary); border-radius: 10px; background: rgba(0,88,64,0.06); font-family: var(--font-mono); font-size: 13px; color: var(--primary); font-weight: 600;">4</button>
+      <button style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: white; font-family: var(--font-mono); font-size: 13px;">5</button>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); margin-top: 6px;">
+      <span>Dårlig</span>
+      <span>Utmerket</span>
+    </div>
+  </div>
+
+  <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+    <button class="btn btn-ghost">Hopp over</button>
+    <button class="btn btn-primary">Lagre</button>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Geist:wght@400;500;600&display=swap');
+
+/* Option 5: Morning Brief — Cockpit Stadium Light */
+#frame-opt5.clean .opt5-masthead,
+#frame-opt5.polished .opt5-masthead {
+  background: #ffffff;
+  border-bottom: 2px solid #005840;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  font-family: 'Geist', system-ui, sans-serif;
+}
+#frame-opt5.clean .opt5-masthead-date,
+#frame-opt5.polished .opt5-masthead-date {
+  font-size: 11px; font-weight: 500; letter-spacing: .06em;
+  text-transform: uppercase; color: #6B7280;
+}
+#frame-opt5.clean .opt5-masthead-brand,
+#frame-opt5.polished .opt5-masthead-brand {
+  font-family: 'Bebas Neue', sans-serif; font-size: 26px;
+  letter-spacing: .04em; color: #005840; line-height: 1;
+}
+#frame-opt5.clean .opt5-masthead-greeting,
+#frame-opt5.polished .opt5-masthead-greeting {
+  font-style: italic; font-size: 18px; color: #005840; font-weight: 400;
+}
+#frame-opt5.clean .opt5-masthead-summary,
+#frame-opt5.polished .opt5-masthead-summary { font-size: 13px; color: #6B7280; }
+#frame-opt5.clean .opt5-masthead-right,
+#frame-opt5.polished .opt5-masthead-right { margin-left: auto; }
+#frame-opt5.clean .opt5-search,
+#frame-opt5.polished .opt5-search {
+  font-size: 13px; padding: 8px 12px; border: 1px solid #E5E7EB;
+  border-radius: 8px; background: #FAFAF7; color: #0A1F17;
+  outline: none; width: 200px;
+}
+
+/* Body */
+#frame-opt5.clean .opt5-body,
+#frame-opt5.polished .opt5-body {
+  display: flex; background: #FAFAF7; min-height: 480px;
+}
+#frame-opt5.clean .opt5-agenda-col,
+#frame-opt5.polished .opt5-agenda-col {
+  background: #F5F3EC; width: 300px; flex-shrink: 0;
+  padding: 24px; border-right: 1px solid #E5E3DD;
+}
+#frame-opt5.clean .opt5-sections-col,
+#frame-opt5.polished .opt5-sections-col {
+  flex: 1; padding: 24px 32px; background: #FAFAF7;
+}
+#frame-opt5.clean .opt5-col-label,
+#frame-opt5.polished .opt5-col-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; color: #6B7280;
+  margin-bottom: 12px; margin-top: 24px;
+}
+#frame-opt5.clean .opt5-col-label:first-child,
+#frame-opt5.polished .opt5-col-label:first-child { margin-top: 0; }
+
+#frame-opt5.clean .opt5-tl-item,
+#frame-opt5.polished .opt5-tl-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid #E5E3DD;
+}
+#frame-opt5.clean .opt5-tl-next,
+#frame-opt5.polished .opt5-tl-next {
+  border-left: 3px solid #D1F843;
+  padding-left: 12px; margin-left: -12px;
+  background: rgba(209,248,67,.05);
+}
+#frame-opt5.clean .opt5-tl-cancelled,
+#frame-opt5.polished .opt5-tl-cancelled { opacity: .45; text-decoration: line-through; }
+#frame-opt5.clean .opt5-tl-time,
+#frame-opt5.polished .opt5-tl-time {
+  font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+  color: #005840; min-width: 44px; letter-spacing: .02em;
+}
+#frame-opt5.clean .opt5-tl-who,
+#frame-opt5.polished .opt5-tl-who { font-size: 13px; font-weight: 600; color: #0A1F17; }
+#frame-opt5.clean .opt5-tl-where,
+#frame-opt5.polished .opt5-tl-where { font-size: 12px; color: #6B7280; }
+#frame-opt5.clean .opt5-tl-tag,
+#frame-opt5.polished .opt5-tl-tag {
+  font-size: 10px; font-weight: 600; background: #005840; color: #D1F843;
+  padding: 2px 7px; border-radius: 4px; letter-spacing: .06em;
+  margin-left: auto; align-self: center;
+}
+
+#frame-opt5.clean .opt5-approval,
+#frame-opt5.polished .opt5-approval {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 8px 0; border-bottom: 1px solid #E5E3DD;
+  font-size: 12px; color: #0A1F17;
+}
+#frame-opt5.clean .opt5-appr-y,
+#frame-opt5.polished .opt5-appr-y {
+  background: #005840; color: #fff; border: none; border-radius: 6px;
+  padding: 5px 10px; font-size: 11px; font-weight: 600; cursor: pointer;
+  transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+}
+#frame-opt5.clean .opt5-appr-y:hover,
+#frame-opt5.polished .opt5-appr-y:hover {
+  transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,88,64,.25);
+}
+#frame-opt5.clean .opt5-appr-n,
+#frame-opt5.polished .opt5-appr-n {
+  background: transparent; color: #6B7280; border: 1px solid #E5E3DD;
+  border-radius: 6px; padding: 5px 10px; font-size: 11px; cursor: pointer;
+}
+
+#frame-opt5.clean .opt5-test-row,
+#frame-opt5.polished .opt5-test-row {
+  display: flex; align-items: center; gap: 8px; padding: 6px 0;
+  font-size: 12px; color: #0A1F17; border-bottom: 1px solid #E5E3DD;
+}
+#frame-opt5.clean .opt5-test-date,
+#frame-opt5.polished .opt5-test-date { color: #6B7280; margin-left: auto; }
+#frame-opt5.clean .opt5-test-btn,
+#frame-opt5.polished .opt5-test-btn {
+  background: transparent; color: #005840; border: 1px solid #005840;
+  border-radius: 6px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer;
+}
+
+/* Sections grid */
+#frame-opt5.clean .opt5-sections-grid,
+#frame-opt5.polished .opt5-sections-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+#frame-opt5.clean .opt5-section,
+#frame-opt5.polished .opt5-section {
+  background: #fff; border: 1px solid #E5E3DD; border-radius: 12px;
+  padding: 16px; text-decoration: none; color: #0A1F17; display: block;
+  transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+}
+#frame-opt5.clean .opt5-section:hover,
+#frame-opt5.polished .opt5-section:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,88,64,.08);
+  border-top: 2px solid #D1F843;
+  padding-top: 14px;
+}
+#frame-opt5.clean .opt5-section-icon,
+#frame-opt5.polished .opt5-section-icon {
+  font-size: 18px; margin-bottom: 6px; color: #005840; display: block;
+}
+#frame-opt5.clean .opt5-section-name,
+#frame-opt5.polished .opt5-section-name {
+  font-family: 'Bebas Neue', sans-serif; font-size: 15px;
+  letter-spacing: .04em; color: #005840; display: block;
+}
+#frame-opt5.clean .opt5-section-sub,
+#frame-opt5.polished .opt5-section-sub {
+  font-size: 11px; color: #6B7280; display: block; margin-top: 2px;
+}
+#frame-opt5.clean .opt5-section-muted,
+#frame-opt5.polished .opt5-section-muted { opacity: .6; }
+
+#frame-opt5.clean .opt5-week-kpis,
+#frame-opt5.polished .opt5-week-kpis { display: flex; gap: 32px; margin-top: 4px; }
+#frame-opt5.clean .opt5-wkpi-val,
+#frame-opt5.polished .opt5-wkpi-val {
+  font-family: 'Bebas Neue', sans-serif; font-size: 28px;
+  color: #005840; line-height: 1; letter-spacing: .02em;
+}
+#frame-opt5.clean .opt5-wkpi-lbl,
+#frame-opt5.polished .opt5-wkpi-lbl { font-size: 11px; color: #6B7280; margin-top: 3px; }
+
+/* Polished overrides */
+#frame-opt5.polished .opt5-masthead {
+  background: linear-gradient(135deg, #FAFAF7 0%, #F0EDE4 100%);
+  border-bottom: 3px solid #D1F843;
+}
+#frame-opt5.polished .opt5-masthead-greeting { font-size: 20px; color: #005840; }
+
+@media (prefers-reduced-motion: no-preference) {
+  #frame-opt5.polished .opt5-sections-grid .opt5-section {
+    opacity: 0; transform: translateY(8px);
+    animation: opt5-fade-up 200ms ease-out forwards;
+  }
+  #frame-opt5.polished .opt5-sections-grid .opt5-section:nth-child(1) { animation-delay: .00s; }
+  #frame-opt5.polished .opt5-sections-grid .opt5-section:nth-child(2) { animation-delay: .04s; }
+  #frame-opt5.polished .opt5-sections-grid .opt5-section:nth-child(3) { animation-delay: .08s; }
+  #frame-opt5.polished .opt5-sections-grid .opt5-section:nth-child(4) { animation-delay: .12s; }
+  #frame-opt5.polished .opt5-sections-grid .opt5-section:nth-child(5) { animation-delay: .16s; }
+  #frame-opt5.polished .opt5-sections-grid .opt5-section:nth-child(6) { animation-delay: .20s; }
+  #frame-opt5.polished .opt5-sections-grid .opt5-section:nth-child(7) { animation-delay: .24s; }
+  #frame-opt5.polished .opt5-sections-grid .opt5-section:nth-child(8) { animation-delay: .28s; }
+  @keyframes opt5-fade-up { to { opacity: 1; transform: translateY(0); } }
+}
+
+/* --- Self-reveal: N=5 --- */
+#frame-opt5-tabs .sub-tab-badge { display: none; }
+#frame-opt5-tabs .sub-tab-btn[data-variant="clean"] { color: #64B5F6; }
+#frame-opt5-tabs .sub-tab-btn[data-variant="clean"]:hover { color: #1E88E5; }
+#frame-opt5-tabs .sub-tab-btn[data-variant="clean"].active { color: #1565C0; border-bottom-color: #1565C0; }
+#frame-opt5-tabs .sub-tab-btn[data-variant="polished"] { color: #81C784; }
+#frame-opt5-tabs .sub-tab-btn[data-variant="polished"]:hover { color: #43A047; }
+#frame-opt5-tabs .sub-tab-btn[data-variant="polished"].active { color: #2E7D32; border-bottom-color: #2E7D32; }

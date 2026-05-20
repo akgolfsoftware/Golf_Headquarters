@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="UTF-8"><link rel="stylesheet" href="../base.css"><title>Talent-pipeline</title>
+<style>
+  .tabs-row { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .tab { padding: 12px 18px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; border: 0; background: transparent; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--primary); border-bottom-color: var(--accent); font-weight: 600; }
+  .tab .num-pill { font-family: var(--font-mono); font-size: 10px; padding: 2px 7px; border-radius: 10px; background: var(--bg); color: var(--text-secondary); margin-left: 6px; }
+  .tab.active .num-pill { background: rgba(0,88,64,0.10); color: var(--primary); }
+
+  .kanban { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .kanban-col { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-card); padding: 14px; display: flex; flex-direction: column; gap: 8px; min-height: 540px; }
+  .kanban-col-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+  .kanban-col-head b { font-family: var(--font-display); font-size: 14px; font-weight: 600; }
+  .kanban-col-head .num { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+  .kanban-col-head .col-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
+  .talent-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; cursor: pointer; transition: filter 120ms ease, border-color 120ms ease; }
+  .talent-card:hover { filter: brightness(0.985); border-color: var(--border-strong); }
+  .talent-card.selected { border-color: var(--primary); box-shadow: inset 3px 0 0 var(--accent); background: rgba(0,88,64,0.04); }
+  .talent-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .talent-card b { font-size: 13px; line-height: 1.2; }
+  .talent-card small { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); display: block; }
+  .talent-card-actions { display: flex; gap: 4px; margin-top: 8px; }
+  .talent-card-actions button { font-size: 10px; padding: 3px 8px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-elev); cursor: pointer; font-family: inherit; color: var(--text-secondary); }
+  .promo-arrow { font-family: var(--font-mono); font-size: 9px; padding: 4px 8px; background: rgba(209,248,67,0.30); border-radius: 8px; color: #5C6B0E; font-weight: 700; letter-spacing: 0.06em; text-align: center; margin: 4px 0; }
+</style>
+</head>
+<body>
+<div class="app app--coach">
+  <aside class="app-sidebar">
+    <div class="app-logo">AK Golf<br><em>coach</em></div>
+    <nav class="app-nav">
+      <a href="hub.html">Hub</a>
+      <a href="#">Daglig Brief</a>
+      <a href="plans.html">Treningsplaner</a>
+      <a href="elever.html" class="active">Elever</a>
+      <a href="#">Coaching Board</a>
+      <a href="approvals.html">Godkjenninger</a>
+      <a href="bookings.html">Bookinger</a>
+      <a href="#">Tester</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="finance.html">Økonomi</a>
+      <a href="facilities.html">Fasiliteter</a>
+      <a href="settings-bruker.html">Innstillinger</a>
+    </nav>
+    <div class="app-tier">ADMIN</div>
+  </aside>
+
+  <main class="app-main">
+    <header class="page-head">
+      <span class="page-eyebrow">Talent-pipeline · A1–A5</span>
+      <h1 class="page-title"><em>Talent-pipeline</em> · stallen samlet</h1>
+      <p class="page-lede">38 spillere fordelt på fem A-kategorier. Periodiserings-agent foreslår promosjoner basert på HCP-fall, SG-trender og test-deltas.</p>
+    </header>
+
+    <div class="action-strip">
+      <span class="action-strip-label">Pipeline</span>
+      <button class="action-item"><b>38</b> spillere fordelt</button>
+      <button class="action-item action-item-success"><b>3</b> promosjoner siste mnd</button>
+      <button class="action-item action-item-info"><b>1</b> kandidat klar</button>
+      <button class="action-item action-item-warn"><b>2</b> risiker degradering</button>
+      <button class="btn btn-ghost" style="margin-left: auto;">Eksporter</button>
+      <button class="btn btn-primary">+ Manuell endring</button>
+    </div>
+
+    <div class="tabs-row">
+      <button class="tab active">Pipeline <span class="num-pill">38</span></button>
+      <button class="tab">Promosjoner <span class="num-pill">3</span></button>
+      <button class="tab">Risiko <span class="num-pill">2</span></button>
+      <button class="tab">Talent-tester</button>
+      <button class="tab">Historikk</button>
+    </div>
+
+    <div class="cal-with-drawer">
+      <div>
+        <div class="kanban">
+          <!-- A1 Elite -->
+          <div class="kanban-col">
+            <div class="kanban-col-head">
+              <b><span class="col-dot" style="background: var(--success);"></span>A1 Elite</b>
+              <span class="num">3</span>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">JS</span><div><b>Joachim Solberg</b><small>HCP 4,2 · WANG</small></div></div>
+              <small style="color:var(--text-secondary);">i kategori 14 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">JB</span><div><b>Joakim Berg</b><small>HCP 5,4 · WANG</small></div></div>
+              <small style="color:var(--text-secondary);">i kategori 8 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">EH</span><div><b>Even Halvorsen</b><small>HCP 3,8 · GFGK</small></div></div>
+              <small style="color:var(--text-secondary);">i kategori 22 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+          </div>
+
+          <!-- A2 Topp -->
+          <div class="kanban-col">
+            <div class="kanban-col-head">
+              <b><span class="col-dot" style="background: var(--primary);"></span>A2 Topp</b>
+              <span class="num">8</span>
+            </div>
+            <div class="promo-arrow">↑ 1 KANDIDAT KLAR FOR A1</div>
+            <div class="talent-card selected">
+              <div class="talent-card-head"><span class="avatar avatar-sm">JT</span><div><b>Joachim Tveit</b><small>HCP 6,8 · GFGK</small></div></div>
+              <small style="color:var(--success); font-weight:600;">↗ Promo-kandidat · 9 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">M</span><div><b>Markus R. Pedersen</b><small>HCP 7,4 · GFGK</small></div></div>
+              <small style="color:var(--text-secondary);">i kategori 6 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">SO</span><div><b>Sondre Olsen</b><small>HCP 6,2 · WANG</small></div></div>
+              <small style="color:var(--text-secondary);">i kategori 11 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">IF</span><div><b>Ida Fredriksen</b><small>HCP 7,8 · GFGK</small></div></div>
+              <small style="color:var(--text-secondary);">i kategori 4 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">+4</span><div><b>4 til</b><small>vis alle</small></div></div>
+            </div>
+          </div>
+
+          <!-- A3 Konkurranse -->
+          <div class="kanban-col">
+            <div class="kanban-col-head">
+              <b><span class="col-dot" style="background: var(--info);"></span>A3 Konkurranse</b>
+              <span class="num">14</span>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">L</span><div><b>Lina Hagen</b><small>HCP 11,4 · WANG</small></div></div>
+              <small style="color:var(--text-secondary);">i kategori 7 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">E</span><div><b>Emma Solheim</b><small>HCP 9,2 · GFGK</small></div></div>
+              <small style="color:var(--warning); font-weight:600;">⚠ Risiko · degradering</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">A</span><div><b>Aksel Lien</b><small>HCP 8,6 · GFGK</small></div></div>
+              <small style="color:var(--text-secondary);">skadet ankel</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">+11</span><div><b>11 til</b><small>vis alle</small></div></div>
+            </div>
+          </div>
+
+          <!-- A4 Trening -->
+          <div class="kanban-col">
+            <div class="kanban-col-head">
+              <b><span class="col-dot" style="background: var(--text-muted);"></span>A4 Trening</b>
+              <span class="num">9</span>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">SB</span><div><b>Sofie Bø</b><small>HCP 14,2 · Mulligan</small></div></div>
+              <small style="color:var(--text-secondary);">i kategori 5 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">MK</span><div><b>Mathias Knutsen</b><small>HCP 18,3 · Mulligan</small></div></div>
+              <small style="color:var(--info); font-weight:600;">Ny · 12 dager</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">N</span><div><b>Nora Larsen</b><small>HCP 16,8 · Bossum</small></div></div>
+              <small style="color:var(--warning); font-weight:600;">⚠ Uten plan</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">+6</span><div><b>6 til</b><small>vis alle</small></div></div>
+            </div>
+          </div>
+
+          <!-- A5 Mosjon -->
+          <div class="kanban-col">
+            <div class="kanban-col-head">
+              <b><span class="col-dot" style="background: #B8C5BD;"></span>A5 Mosjon</b>
+              <span class="num">4</span>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">MK</span><div><b>Mia Karlsen</b><small>HCP 22,5 · Mulligan</small></div></div>
+              <small style="color:var(--text-secondary);">i kategori 9 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">PK</span><div><b>Per Kristensen</b><small>HCP 24,1 · Bossum</small></div></div>
+              <small style="color:var(--text-secondary);">i kategori 18 mnd</small>
+              <div class="talent-card-actions"><button>Detalj</button><button>Endre</button></div>
+            </div>
+            <div class="talent-card">
+              <div class="talent-card-head"><span class="avatar avatar-sm">+2</span><div><b>2 til</b><small>vis alle</small></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DRAWER: Joachim Tveit promo-kandidat -->
+      <aside class="drawer">
+        <div class="drawer-head">
+          <div style="display:flex; gap:14px; align-items:flex-start;">
+            <span class="avatar" style="width:48px; height:48px; font-size:18px;">JT</span>
+            <div>
+              <div class="drawer-meta">A2 · GFGK · siden aug 2024</div>
+              <h3 style="margin-top:2px;">Joachim Tveit</h3>
+              <div style="margin-top:6px; display:flex; gap:6px;">
+                <span class="pill pill-success">Promo-kandidat</span>
+                <span class="player-tier tier-pro">PRO</span>
+                <span class="player-tier" style="background:rgba(0,88,64,0.06);">HCP 6,8</span>
+              </div>
+            </div>
+          </div>
+          <button class="drawer-close" title="Lukk">×</button>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Hvorfor vurdert for A1</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="background: rgba(16,185,129,0.08); padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--success);">
+              <b style="font-size:12px;">HCP-fall</b><div style="font-size:11px; margin-top:2px; color:var(--text-secondary);">9,4 → 6,8 siste 9 mnd <span class="num" style="color:var(--success); font-weight:600;">−2,6</span></div>
+            </div>
+            <div style="background: rgba(16,185,129,0.08); padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--success);">
+              <b style="font-size:12px;">SG-trend siste 90d</b><div style="font-size:11px; margin-top:2px; color:var(--text-secondary);">+0,18 → +0,84 <span class="num" style="color:var(--success); font-weight:600;">+0,66</span></div>
+            </div>
+            <div style="background: rgba(16,185,129,0.08); padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--success);">
+              <b style="font-size:12px;">Test-deltas (Q1 → Q2)</b><div style="font-size:11px; margin-top:2px; color:var(--text-secondary);">CMJ +4 cm · 7-jern carry +6 m · putt 6ft 7/10 → 9/10</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Hva mangler for A1</div>
+          <ul style="list-style:none; padding:0; margin:0; font-size:12px; line-height:1.6;">
+            <li style="padding:6px 0; display:flex; justify-content:space-between;"><span><b>2 turneringer top-10</b><br><small style="color:var(--text-secondary);">Har 1/2 — Sørlandsåpent gjenstår</small></span><span class="pill pill-warning">Pågår</span></li>
+            <li style="padding:6px 0; display:flex; justify-content:space-between;"><span><b>HCP &lt; 5,5</b><br><small style="color:var(--text-secondary);">Nå: 6,8</small></span><span class="pill pill-muted">−1,3</span></li>
+          </ul>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-label">Pyramide · uke 19</div>
+          <div class="pyr-tiers">
+            <div class="pyr-tier pyr-tier-turn" style="--w: 32%; --p: 55%;"><span>TURN</span><b>55</b></div>
+            <div class="pyr-tier pyr-tier-spill" style="--w: 50%; --p: 62%;"><span>SPILL</span><b>62</b></div>
+            <div class="pyr-tier pyr-tier-slag" style="--w: 68%; --p: 42%;"><span>SLAG</span><b>42</b></div>
+            <div class="pyr-tier pyr-tier-tek" style="--w: 84%; --p: 70%;"><span>TEK</span><b>70</b></div>
+            <div class="pyr-tier pyr-tier-fys" style="--w: 100%; --p: 78%;"><span>FYS</span><b>78</b></div>
+          </div>
+        </div>
+
+        <div class="drawer-section" style="display:flex; flex-direction:column; gap:8px; padding-bottom:0;">
+          <button class="btn btn-primary">Godkjenn promotion til A1</button>
+          <button class="btn btn-ghost">Utsett · vurder neste mnd</button>
+          <button class="btn btn-link" style="padding-left:0;">Se 360-profil →</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</body></html>

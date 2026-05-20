@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ Hub — Performance Athletic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,500;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{font-family:'Inter Tight','Inter',sans-serif;background:#1a1a1a;color:#e5e5e5;min-height:100vh}
+
+  .doc-head{padding:32px 48px 16px;background:#0d0d0d;border-bottom:1px solid #2a2a2a}
+  .doc-head h1{font-family:'Inter Tight',sans-serif;font-style:italic;font-weight:500;font-size:32px;letter-spacing:-0.01em;color:#fff;margin-bottom:6px}
+  .doc-head p{font-size:13px;color:#a0a0a0;line-height:1.5;max-width:900px}
+  .doc-meta{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.08em}
+
+  .deck{display:flex;gap:24px;padding:32px 48px 64px;justify-content:center;align-items:flex-start;flex-wrap:wrap}
+  .panel-wrap{display:flex;flex-direction:column;gap:14px;width:1100px;max-width:100%}
+  .panel-tag{display:flex;align-items:baseline;gap:10px;padding:0 4px}
+  .panel-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:#666;letter-spacing:0.1em}
+  .panel-title{font-size:14px;font-weight:600;color:#fff;letter-spacing:-0.01em}
+  .panel-desc{font-size:11px;color:#888;line-height:1.5;padding:0 4px}
+
+  /* Desktop frame */
+  .desktop{width:1100px;max-width:100%;height:780px;border-radius:14px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.6),0 0 0 1px #2a2a2a;background:#FAFAF7;display:flex}
+
+  /* SIDEBAR — forest green, ikke svart */
+  .ch-sidebar{width:230px;flex-shrink:0;background:#1A4D2E;color:#B8C9BC;padding:20px 0;display:flex;flex-direction:column;background-image:linear-gradient(180deg,#1F5535 0%,#163E25 100%)}
+  .ch-logo{padding:0 20px 20px;font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:700;letter-spacing:-0.01em;color:#fff;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.10);margin-bottom:14px}
+  .ch-logo em{font-style:italic;font-weight:400;color:#D1F843;font-size:11px;letter-spacing:0.05em}
+  .ch-nav-group{padding:14px 12px 8px 20px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#7FB48F;text-transform:uppercase;font-weight:600}
+  .ch-nav a{display:flex;align-items:center;gap:10px;padding:8px 20px;color:#D5E2D8;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:-0.005em;border-left:2px solid transparent;transition:background .15s}
+  .ch-nav a:hover{background:rgba(255,255,255,0.06);color:#fff}
+  .ch-nav a.active{background:rgba(209,248,67,0.14);color:#fff;border-left-color:#D1F843}
+  .ch-nav a .ic{width:16px;height:16px;display:inline-block;flex-shrink:0;opacity:0.7}
+  .ch-coach-pill{margin:auto 12px 14px;padding:10px;background:rgba(255,255,255,0.06);border-radius:10px;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,0.08)}
+  .ch-coach-pill img{width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:center 30%}
+  .ch-coach-pill .nm{font-size:12px;font-weight:600;color:#fff;line-height:1.1}
+  .ch-coach-pill .rl{font-size:10px;color:#9CA3AF;font-family:'JetBrains Mono',monospace}
+
+  /* MAIN */
+  .ch-main{flex:1;overflow-y:auto;background:#FAFAF7}
+
+  /* HERO */
+  .ch-hero{position:relative;height:200px;width:100%;overflow:hidden}
+  .ch-hero img{width:100%;height:100%;object-fit:cover;object-position:center 35%;display:block}
+  .ch-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,18,16,0.35) 0%,rgba(6,18,16,0.1) 35%,rgba(250,250,247,0) 80%,rgba(250,250,247,0.4) 100%)}
+  .ch-hero-meta{position:absolute;top:28px;left:32px;right:32px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+  .ch-eyebrow-light{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.95);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,0.4)}
+  .ch-eyebrow-light em{font-style:normal;color:#D1F843}
+  .ch-weather{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.9);letter-spacing:0.08em;text-shadow:0 1px 4px rgba(0,0,0,0.4);display:flex;align-items:center;gap:6px}
+  .ch-weather span.dot{width:7px;height:7px;background:#D1F843;border-radius:50%;box-shadow:0 0 8px rgba(209,248,67,0.6)}
+
+  /* BODY */
+  .ch-body{padding:24px 32px 32px;background:#FAFAF7}
+  .ch-greeting-row{display:flex;align-items:center;gap:14px;margin-bottom:24px;position:relative;z-index:4}
+  .ch-avatar{position:relative;width:72px;height:72px;border-radius:50%;overflow:hidden;border:3px solid #fff;box-shadow:0 6px 18px rgba(0,0,0,0.18);background:#005840;flex-shrink:0}
+  .ch-avatar img{width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block}
+  .ch-avatar-status{position:absolute;width:14px;height:14px;background:#D1F843;border-radius:50%;border:2px solid #fff;bottom:2px;right:2px;z-index:11}
+  .ch-greeting{font-family:'Inter Tight',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.025em;line-height:1.05;color:#0A1F17;margin:0}
+  .ch-greeting em{font-family:'Inter Tight',sans-serif;font-style:italic;font-weight:500;color:#005840;display:block;font-size:16px;margin-bottom:2px;letter-spacing:-0.005em}
+  .ch-greeting-meta{font-size:11px;color:#6B7280;margin-top:6px;font-family:'JetBrains Mono',monospace;letter-spacing:0.02em}
+  .ch-greeting-meta b{color:#0A1F17}
+
+  /* KPI strip — 4 cards */
+  .ch-kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+  .ch-kpi{background:#fff;border:1px solid #E5E7EB;border-radius:14px;padding:14px}
+  .ch-kpi-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:#6B7280;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:6px}
+  .ch-kpi-val{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600;color:#0A1F17;letter-spacing:-0.02em;line-height:1}
+  .ch-kpi-val small{font-size:11px;color:#6B7280;font-weight:400}
+  .ch-kpi-trend{font-size:10px;color:#005840;font-weight:500;margin-top:4px;font-family:'JetBrains Mono',monospace}
+  .ch-kpi-trend.urgent{color:#A32D2D}
+
+  /* ASYMMETRIC BENTO — 1.5fr 1fr */
+  .ch-bento{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:18px}
+
+  /* FEATURED — "Dagens første action" — naturlig grønn gradient */
+  .ch-featured{background:linear-gradient(135deg,#1A7D56 0%,#005840 60%,#1A4D2E 100%);color:#fff;border-radius:18px;padding:20px;position:relative;overflow:hidden;min-height:200px;display:flex;flex-direction:column}
+  .ch-featured-bg{position:absolute;inset:0;z-index:0}
+  .ch-featured-bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:0.32;filter:saturate(1.1)}
+  .ch-featured-overlay{position:absolute;inset:0;background:linear-gradient(115deg,rgba(0,88,64,0.92) 0%,rgba(0,88,64,0.78) 50%,rgba(0,61,44,0.55) 100%);z-index:1}
+  .ch-featured::after{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:#D1F843;border-radius:50%;opacity:0.12;z-index:2}
+  .ch-featured > *{position:relative;z-index:3}
+  .ch-card-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:#D1F843;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .ch-card-label .pulse{width:7px;height:7px;background:#D1F843;border-radius:50%;box-shadow:0 0 0 0 rgba(209,248,67,0.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(209,248,67,0.6)}70%{box-shadow:0 0 0 12px rgba(209,248,67,0)}100%{box-shadow:0 0 0 0 rgba(209,248,67,0)}}
+  .ch-featured h2{font-family:'Inter Tight',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.02em;line-height:1.1;margin-bottom:10px;max-width:380px;text-shadow:0 1px 8px rgba(0,0,0,0.2)}
+  .ch-featured h2 em{font-family:'Inter Tight',sans-serif;font-style:italic;font-weight:500;color:#D1F843;display:inline}
+  .ch-action-list{margin-bottom:16px;flex:1}
+  .ch-action{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:13px;color:rgba(255,255,255,0.92)}
+  .ch-action:last-child{border:0}
+  .ch-action .num{width:24px;height:24px;background:#D1F843;color:#005840;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+  .ch-action .num.neutral{background:rgba(255,255,255,0.12);color:#fff}
+  .ch-action .meta{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:0.04em}
+  .ch-btn{background:#D1F843;color:#005840;font-weight:700;font-size:13px;padding:11px 22px;border-radius:999px;border:0;font-family:'Inter Tight',sans-serif;letter-spacing:-0.005em;box-shadow:0 6px 14px rgba(209,248,67,0.25);align-self:flex-start;display:inline-flex;align-items:center;gap:6px}
+
+  /* SPILLERKØ — 1fr */
+  .ch-queue{background:#fff;border:1px solid #E5E7EB;border-radius:18px;padding:16px;min-height:200px}
+  .ch-queue-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:#6B7280;margin-bottom:14px}
+  .ch-queue-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F3F4F6}
+  .ch-queue-item:last-child{border:0}
+  .ch-queue-item img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#005840}
+  .ch-queue-item-info{flex:1;min-width:0}
+  .ch-queue-item .nm{font-size:13px;font-weight:600;color:#0A1F17;letter-spacing:-0.005em;line-height:1.1}
+  .ch-queue-item .det{font-size:10px;color:#6B7280;font-family:'JetBrains Mono',monospace;margin-top:2px;letter-spacing:0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ch-queue-item .stat{font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;font-weight:700;padding:3px 8px;border-radius:999px;flex-shrink:0}
+  .ch-queue-item .stat.warn{background:#FEF3C7;color:#92400E}
+  .ch-queue-item .stat.urgent{background:#FEE2E2;color:#A32D2D}
+  .ch-queue-item .stat.ok{background:#D1FAE5;color:#065F46}
+
+  /* DAY-CALENDAR (kompakt, 05-22) */
+  .ch-day-cal{background:#fff;border:1px solid #E5E7EB;border-radius:18px;padding:14px 16px 16px;display:flex;flex-direction:column}
+  .ch-day-cal-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .ch-day-cal-header .lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:#6B7280}
+  .ch-day-cal-header .gcal-tag{margin-left:auto;display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#6B7280;letter-spacing:0.06em;text-transform:uppercase}
+  .ch-day-cal-header .gcal-tag .gbadge{width:14px;height:14px;background:#F1EEE5;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#6B7280;border:1px solid #E5E7EB;font-family:'JetBrains Mono',monospace}
+  .ch-day-cal-grid{position:relative;display:grid;grid-template-columns:36px 1fr;gap:0}
+  .ch-day-cal-hour{font-family:'JetBrains Mono',monospace;font-size:9px;color:#9CA3AF;letter-spacing:0.02em;text-align:right;padding-right:8px;border-top:1px solid #E5E7EB;height:36px;line-height:36px;border-right:1px solid #E5E7EB}
+  .ch-day-cal-hour:first-of-type{border-top:0}
+  /* 20-min intervaller: solid linje på hver time + 2 dashed linjer per 20 min */
+  .ch-day-cal-slot{border-top:1px solid #E5E7EB;height:36px;position:relative;background-image:repeating-linear-gradient(to right,#D5DCDD 0,#D5DCDD 3px,transparent 3px,transparent 7px),repeating-linear-gradient(to right,#D5DCDD 0,#D5DCDD 3px,transparent 3px,transparent 7px);background-position:0 12px,0 24px;background-size:100% 1px,100% 1px;background-repeat:no-repeat,no-repeat}
+  .ch-day-cal-slot:first-of-type{border-top:0}
+  .ch-day-cal-slot:hover{background-color:#F9FAFB;cursor:pointer}
+
+  .ch-day-event{position:absolute;left:42px;right:4px;background:#fff;border:1px solid #E5E7EB;border-left:3px solid #005840;border-radius:6px;padding:3px 7px;display:flex;align-items:center;gap:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06);min-height:20px}
+  .ch-day-event img{width:14px;height:14px;border-radius:50%;flex-shrink:0;object-fit:cover;object-position:center 30%;background:#005840}
+  .ch-day-event .ne{font-weight:600;color:#0A1F17;line-height:1.1;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.005em;font-size:11px}
+  .ch-day-event .tm{font-family:'JetBrains Mono',monospace;font-size:9px;color:#6B7280;flex-shrink:0;letter-spacing:0.02em}
+  .ch-day-event.gcal{background:#F5F1E8;border-left-color:#9CA3AF;border-color:#E5E7EB}
+  .ch-day-event.gcal .ne{color:#5B6261;font-style:italic;font-weight:500}
+  .ch-day-event.gcal .gbadge{width:14px;height:14px;background:#fff;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#9CA3AF;border:1px solid #E5E7EB;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+  .ch-day-event.live{border-left-color:#D1F843;background:#FEFFF0}
+  .ch-day-event.group{border-left-color:#1A7D56}
+  .ch-day-event.new-player{border-left-color:#B8852A}
+
+  .ch-day-cal-now{position:absolute;left:36px;right:0;height:2px;background:#D1F843;z-index:5}
+  .ch-day-cal-now::before{content:'';width:8px;height:8px;background:#D1F843;border-radius:50%;position:absolute;left:-4px;top:-3px;box-shadow:0 0 0 2px rgba(209,248,67,0.3),0 0 10px rgba(209,248,67,0.5)}
+  .ch-day-cal-now::after{content:'NÅ · 10:15';position:absolute;right:4px;top:-9px;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#0A1F17;background:#D1F843;padding:2px 6px;border-radius:999px;letter-spacing:0.08em}
+
+  /* BOTTOM ROW — calendar bredere enn plans */
+  .ch-bottom-row{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+
+  /* Plans status */
+  .ch-plans{background:#fff;border:1px solid #E5E7EB;border-radius:18px;padding:16px}
+  .ch-plans-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:11px}
+  .ch-plans-label{flex:1;color:#0A1F17;font-weight:500}
+  .ch-plans-bar{flex:1.5;height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden}
+  .ch-plans-fill{height:100%;background:#005840;border-radius:3px}
+  .ch-plans-fill.warn{background:#F59E0B}
+  .ch-plans-fill.urgent{background:#A32D2D}
+  .ch-plans-num{width:42px;text-align:right;font-family:'JetBrains Mono',monospace;color:#0A1F17;font-weight:600;font-size:11px}
+</style>
+</head>
+<body>
+
+<div class="doc-head">
+  <h1>CoachHQ Hub — Performance Athletic</h1>
+  <p>Anders' operativsystem. Hero med jernsett, profil-avatar ved siden av italic editorial greeting, asymmetrisk bento med dagens prioriteter (godkjenninger som hero-action) og spillerkø. KPI-strip øverst, dagens agenda + plan-status under.</p>
+  <div class="doc-meta">COACHHQ · v1 med foto · 2026-05-17</div>
+</div>
+
+<div class="deck">
+
+  <div class="panel-wrap">
+    <div class="panel-tag">
+      <span class="panel-num">02.v1</span>
+      <span class="panel-title">CoachHQ Hub — Daglig hub for coach</span>
+    </div>
+    <div class="panel-desc">Hero (jernsett 200px) → profil + greeting → KPI-strip → asymmetrisk bento (dagens action + spillerkø) → dagens agenda + plan-status</div>
+
+    <div class="desktop">
+
+      <!-- SIDEBAR -->
+      <aside class="ch-sidebar">
+        <div class="ch-logo">AK GOLF <em>· coachhq</em></div>
+
+        <div class="ch-nav-group">Daglig</div>
+        <nav class="ch-nav">
+          <a href="#" class="active">▣ I dag</a>
+          <a href="#">▢ Kalender</a>
+          <a href="#">▢ Innboks <span style="margin-left:auto;font-size:9px;background:#D1F843;color:#005840;padding:1px 6px;border-radius:999px;font-weight:700">3</span></a>
+        </nav>
+
+        <div class="ch-nav-group">Operasjon</div>
+        <nav class="ch-nav">
+          <a href="#">▢ Spillere</a>
+          <a href="#">▢ Plans</a>
+          <a href="#">▢ Anlegg</a>
+        </nav>
+
+        <div class="ch-nav-group">Vurdere</div>
+        <nav class="ch-nav">
+          <a href="#">▢ Innsikt</a>
+          <a href="#">▢ AI Lab</a>
+        </nav>
+
+        <div class="ch-nav-group">System</div>
+        <nav class="ch-nav">
+          <a href="#">▢ Innstillinger</a>
+        </nav>
+
+        <div class="ch-coach-pill">
+          <img src="brain/photos/profil-anders.jpg" alt="Anders" onerror="this.style.display='none'">
+          <div>
+            <div class="nm">Anders K.</div>
+            <div class="rl">HEAD COACH</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="ch-main">
+
+        <!-- HERO -->
+        <div class="ch-hero">
+          <img src="brain/photos/hero-iron.jpg" alt="Hero — jernsett" onerror="this.style.background='#005840'">
+          <div class="ch-hero-overlay"></div>
+          <div class="ch-hero-meta">
+            <span class="ch-eyebrow-light">MAN 11. MAI · UKE 19 <em>·</em> AGENCYOS</span>
+            <span class="ch-weather"><span class="dot"></span>5 PÅ MULLIGAN · 3 GFGK · 14°C</span>
+          </div>
+        </div>
+
+        <div class="ch-body">
+
+          <!-- GREETING ROW -->
+          <div class="ch-greeting-row">
+            <div class="ch-avatar">
+              <img src="brain/photos/profil-anders.jpg" alt="Anders Kristiansen">
+              <span class="ch-avatar-status"></span>
+            </div>
+            <div>
+              <h1 class="ch-greeting"><em>God morgen,</em>Anders</h1>
+              <div class="ch-greeting-meta">38 aktive spillere · <b>5 økter</b> i dag · neste kl 09:30 m/ Markus</div>
+            </div>
+          </div>
+
+          <!-- KPI STRIP -->
+          <div class="ch-kpi-strip">
+            <div class="ch-kpi">
+              <div class="ch-kpi-label">AKTIVE SPILLERE</div>
+              <div class="ch-kpi-val">38</div>
+              <div class="ch-kpi-trend">+2 siste uke</div>
+            </div>
+            <div class="ch-kpi">
+              <div class="ch-kpi-label">DAGENS ØKTER</div>
+              <div class="ch-kpi-val">5<small>/8</small></div>
+              <div class="ch-kpi-trend">neste 09:30</div>
+            </div>
+            <div class="ch-kpi">
+              <div class="ch-kpi-label">GODKJENNINGER</div>
+              <div class="ch-kpi-val">12</div>
+              <div class="ch-kpi-trend urgent">5 over 24t</div>
+            </div>
+            <div class="ch-kpi">
+              <div class="ch-kpi-label">INNTEKT MTD</div>
+              <div class="ch-kpi-val">47k</div>
+              <div class="ch-kpi-trend">+12 % vs april</div>
+            </div>
+          </div>
+
+          <!-- ASYMMETRIC BENTO: featured + spillerkø -->
+          <div class="ch-bento">
+
+            <!-- FEATURED — Dagens første action -->
+            <div class="ch-featured">
+              <div class="ch-featured-bg">
+                <img src="brain/photos/hero-divot.jpg" alt="">
+              </div>
+              <div class="ch-featured-overlay"></div>
+              <div class="ch-card-label"><span class="pulse"></span>Dagens første prioritet</div>
+              <h2>12 godkjenninger venter <em>periodiserings-agenten</em></h2>
+              <div class="ch-action-list">
+                <div class="ch-action"><span class="num">5</span><span>Plan-endringer over 24 t</span><span class="meta">URGENT</span></div>
+                <div class="ch-action"><span class="num neutral">4</span><span>Nye SG-data klar for review</span><span class="meta">i dag</span></div>
+                <div class="ch-action"><span class="num neutral">3</span><span>Spillere uten plan før Sørlandsåpent</span><span class="meta">3 uker</span></div>
+              </div>
+              <button class="ch-btn">Åpne kø →</button>
+            </div>
+
+            <!-- SPILLERKØ -->
+            <div class="ch-queue">
+              <div class="ch-queue-label">Spillerkø · 5 trenger oppmerksomhet</div>
+              <div class="ch-queue-item">
+                <img src="brain/photos/profil-anders.jpg" alt="">
+                <div class="ch-queue-item-info">
+                  <div class="nm">Markus R. Pedersen</div>
+                  <div class="det">HCP 7,4 · ikke logget på 4d</div>
+                </div>
+                <span class="stat urgent">PÅMINN</span>
+              </div>
+              <div class="ch-queue-item">
+                <img src="brain/photos/profil-anders.jpg" alt="">
+                <div class="ch-queue-item-info">
+                  <div class="nm">Øyvind Rohjan</div>
+                  <div class="det">HCP +3,5 · 3 uker til Sørlandsåpent</div>
+                </div>
+                <span class="stat warn">PLAN</span>
+              </div>
+              <div class="ch-queue-item">
+                <img src="brain/photos/profil-anders.jpg" alt="">
+                <div class="ch-queue-item-info">
+                  <div class="nm">Emma Lien</div>
+                  <div class="det">A2 · ny SG-data fra Bossum</div>
+                </div>
+                <span class="stat ok">REVIEW</span>
+              </div>
+              <div class="ch-queue-item">
+                <img src="brain/photos/profil-anders.jpg" alt="">
+                <div class="ch-queue-item-info">
+                  <div class="nm">Sander Voll</div>
+                  <div class="det">Junior · venter foreldre-godkj.</div>
+                </div>
+                <span class="stat warn">VENT</span>
+              </div>
+              <div class="ch-queue-item">
+                <img src="brain/photos/profil-anders.jpg" alt="">
+                <div class="ch-queue-item-info">
+                  <div class="nm">Ida Tornes</div>
+                  <div class="det">A3 · skadepause uke 2/4</div>
+                </div>
+                <span class="stat warn">SKADE</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- BOTTOM ROW: agenda + plan-status -->
+          <div class="ch-bottom-row">
+
+            <div class="ch-day-cal">
+              <div class="ch-day-cal-header">
+                <div class="lbl">Dagens kalender · 05–22</div>
+                <div class="gcal-tag"><span class="gbadge">G</span>Google synced</div>
+              </div>
+              <div class="ch-day-cal-grid">
+                <!-- 18 hour rows: 05 → 22 -->
+                <div class="ch-day-cal-hour">05</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">06</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">07</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">08</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">09</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">10</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">11</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">12</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">13</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">14</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">15</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">16</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">17</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">18</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">19</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">20</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">21</div><div class="ch-day-cal-slot"></div>
+                <div class="ch-day-cal-hour">22</div><div class="ch-day-cal-slot"></div>
+
+                <!-- 05:30 — Morgentrening (Google, 30min) -->
+                <div class="ch-day-event gcal" style="top:18px;height:18px">
+                  <span class="gbadge">G</span>
+                  <span class="ne">Egen morgentrening · gym</span>
+                  <span class="tm">05:30</span>
+                </div>
+
+                <!-- 07:00 — Frokost (Google, 60min) -->
+                <div class="ch-day-event gcal" style="top:72px;height:36px">
+                  <span class="gbadge">G</span>
+                  <span class="ne">Frokost m/ familien</span>
+                  <span class="tm">07:00</span>
+                </div>
+
+                <!-- 09:30 — Markus (60min, live) -->
+                <div class="ch-day-event live" style="top:162px;height:36px">
+                  <img src="brain/photos/profil-anders.jpg" alt="">
+                  <span class="ne">Markus R. Pedersen · Mulligan</span>
+                  <span class="tm">09:30 · NESTE</span>
+                </div>
+
+                <!-- 11:00 — Øyvind (90min) -->
+                <div class="ch-day-event" style="top:216px;height:54px">
+                  <img src="brain/photos/profil-anders.jpg" alt="">
+                  <span class="ne">Øyvind Rohjan · GFGK · plan-review</span>
+                  <span class="tm">11:00</span>
+                </div>
+
+                <!-- 12:30 — Lunsj (Google, 30min) -->
+                <div class="ch-day-event gcal" style="top:270px;height:18px">
+                  <span class="gbadge">G</span>
+                  <span class="ne">Lunsj · Mulligan</span>
+                  <span class="tm">12:30</span>
+                </div>
+
+                <!-- 13:00 — Emma (60min) -->
+                <div class="ch-day-event" style="top:288px;height:36px">
+                  <img src="brain/photos/profil-anders.jpg" alt="">
+                  <span class="ne">Emma Lien · Mulligan · SG-deep</span>
+                  <span class="tm">13:00</span>
+                </div>
+
+                <!-- 15:00 — Junior-gruppe (120min, group) -->
+                <div class="ch-day-event group" style="top:360px;height:72px">
+                  <img src="brain/photos/profil-anders.jpg" alt="">
+                  <span class="ne">Junior-gruppe (4) · Bossum · putting</span>
+                  <span class="tm">15:00</span>
+                </div>
+
+                <!-- 16:30 — Foreldremøte (Google, 30min) -->
+                <div class="ch-day-event gcal" style="top:414px;height:18px">
+                  <span class="gbadge">G</span>
+                  <span class="ne">Foreldremøte · Sanders foresatte</span>
+                  <span class="tm">16:30</span>
+                </div>
+
+                <!-- 17:30 — Sander (45min, new player) -->
+                <div class="ch-day-event new-player" style="top:450px;height:27px">
+                  <img src="brain/photos/profil-anders.jpg" alt="">
+                  <span class="ne">Sander Voll · Mulligan · intro-økt</span>
+                  <span class="tm">17:30 · NY</span>
+                </div>
+
+                <!-- 19:00 — Middag (Google, 60min) -->
+                <div class="ch-day-event gcal" style="top:504px;height:36px">
+                  <span class="gbadge">G</span>
+                  <span class="ne">Middag familie</span>
+                  <span class="tm">19:00</span>
+                </div>
+
+                <!-- 21:00 — Plan-arbeid (Google, 60min) -->
+                <div class="ch-day-event gcal" style="top:576px;height:36px">
+                  <span class="gbadge">G</span>
+                  <span class="ne">Plan-arbeid · prep neste uke</span>
+                  <span class="tm">21:00</span>
+                </div>
+
+                <!-- NOW-LINE at 10:15 → 5h 15min from 05:00 = 5.25 × 36 = 189px -->
+                <div class="ch-day-cal-now" style="top:189px"></div>
+              </div>
+            </div>
+
+            <div class="ch-plans">
+              <div class="ch-queue-label">Plan-status · 38 spillere</div>
+              <div class="ch-plans-row">
+                <span class="ch-plans-label">Aktive planer</span>
+                <div class="ch-plans-bar"><div class="ch-plans-fill" style="width:84%"></div></div>
+                <span class="ch-plans-num">32/38</span>
+              </div>
+              <div class="ch-plans-row">
+                <span class="ch-plans-label">Behov for review</span>
+                <div class="ch-plans-bar"><div class="ch-plans-fill warn" style="width:24%"></div></div>
+                <span class="ch-plans-num">9/38</span>
+              </div>
+              <div class="ch-plans-row">
+                <span class="ch-plans-label">Uten plan</span>
+                <div class="ch-plans-bar"><div class="ch-plans-fill urgent" style="width:16%"></div></div>
+                <span class="ch-plans-num">6/38</span>
+              </div>
+              <div class="ch-plans-row">
+                <span class="ch-plans-label">Pre-Sørlandsåpent</span>
+                <div class="ch-plans-bar"><div class="ch-plans-fill warn" style="width:60%"></div></div>
+                <span class="ch-plans-num">9/15</span>
+              </div>
+              <div style="margin-top:14px;padding:10px;background:#F1EEE5;border-radius:10px;font-size:11px;color:#0A1F17;line-height:1.5">
+                <b>Smart-suggest:</b> 6 spillere uten plan og 3 uker til Sørlandsåpent. <a href="#" style="color:#005840;font-weight:600">Generer planer batch →</a>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoachHQ — Strava Activity · AK Golf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#FAFAFA;
+    --fg:#242428;
+    --muted:#6B6B72;
+    --line:#E5E5E7;
+    --card:#FFFFFF;
+    --orange:#FC4C02;
+    --orange-dark:#D63E00;
+    --lime:#D1F843;
+    --green:#00C16A;
+    --ink:#0F0F11;
+    --radius:6px;
+  }
+  html,body{background:var(--bg);color:var(--fg);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:'IBM Plex Mono',monospace;letter-spacing:-0.01em}
+  .anton{font-family:'Anton',sans-serif;letter-spacing:0.01em;text-transform:uppercase}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  /* ===== Layout ===== */
+  .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+  /* ===== Sidebar ===== */
+  .sidebar{background:#fff;border-right:1px solid var(--line);padding:20px 16px;display:flex;flex-direction:column;gap:24px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  .brand{display:flex;align-items:center;gap:10px;padding:4px 6px}
+  .brand-mark{width:28px;height:28px;border-radius:var(--radius);background:var(--ink);display:grid;place-items:center;color:var(--orange);font-family:'Anton';font-size:14px}
+  .brand-text{font-size:11px;font-weight:600;letter-spacing:0.08em;color:var(--fg)}
+  .brand-text span{color:var(--orange)}
+  .brand-tier{font-family:'IBM Plex Mono';font-size:9px;color:var(--muted);letter-spacing:0.1em;margin-top:2px}
+
+  .search{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#F4F4F5;border:1px solid var(--line);border-radius:var(--radius);font-size:13px;color:var(--muted)}
+  .search kbd{margin-left:auto;font-family:'IBM Plex Mono';font-size:10px;background:#fff;border:1px solid var(--line);padding:1px 5px;border-radius:3px;color:var(--muted)}
+
+  .profile-card{background:#F8F8F9;border:1px solid var(--line);border-radius:var(--radius);padding:12px;display:flex;align-items:center;gap:10px}
+  .avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FC4C02,#D1F843);display:grid;place-items:center;font-family:'Anton';color:#fff;font-size:13px;position:relative}
+  .avatar::after{content:"";position:absolute;bottom:0;right:0;width:9px;height:9px;background:var(--green);border:2px solid #F8F8F9;border-radius:50%}
+  .profile-name{font-weight:600;font-size:13px;color:var(--ink)}
+  .profile-meta{font-family:'IBM Plex Mono';font-size:10px;color:var(--muted);letter-spacing:0.04em;margin-top:2px}
+
+  .nav-group{display:flex;flex-direction:column;gap:2px}
+  .nav-label{font-family:'IBM Plex Mono';font-size:10px;color:var(--muted);letter-spacing:0.12em;padding:0 8px;margin-bottom:6px;text-transform:uppercase}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:var(--radius);font-size:13px;color:var(--fg);transition:background .15s}
+  .nav-item:hover{background:#F4F4F5}
+  .nav-item.active{background:#F4F4F5;font-weight:600}
+  .nav-item.active::before{content:"";width:3px;height:14px;background:var(--orange);border-radius:2px;margin-left:-8px;margin-right:5px}
+  .nav-item svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+  .nav-badge{margin-left:auto;font-family:'IBM Plex Mono';font-size:10px;background:var(--orange);color:#fff;padding:1px 5px;border-radius:3px}
+  .nav-badge.muted{background:#E5E5E7;color:var(--muted)}
+
+  /* ===== Main ===== */
+  .main{padding:24px 32px 64px;max-width:1440px}
+
+  /* Tag pills */
+  .tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:32px}
+  .tag{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:0.08em;padding:5px 10px;border:1px solid var(--line);border-radius:99px;color:var(--fg);background:#fff;display:inline-flex;align-items:center;gap:6px;text-transform:uppercase}
+  .tag.race{background:var(--ink);color:var(--orange);border-color:var(--ink)}
+  .tag.urgent{background:var(--orange);color:#fff;border-color:var(--orange)}
+  .tag.lime{background:var(--lime);color:var(--ink);border-color:var(--lime)}
+  .tag-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+  /* Hero */
+  .hero{display:grid;grid-template-columns:1fr 380px;gap:32px;margin-bottom:32px;border-bottom:1px solid var(--line);padding-bottom:32px}
+  .hero-left{display:flex;flex-direction:column}
+  .kom-badge{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;padding:6px 12px;border-radius:var(--radius);width:fit-content;margin-bottom:18px;font-family:'IBM Plex Mono';font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase}
+  .kom-crown{width:14px;height:14px}
+  .hero-title{font-family:'Anton';font-size:100px;line-height:0.92;color:var(--ink);letter-spacing:0.005em;margin-bottom:20px}
+  .hero-title em{font-style:normal;color:var(--orange)}
+  .hero-sub{font-size:15px;color:var(--muted);margin-bottom:28px;max-width:540px}
+  .hero-sub strong{color:var(--ink);font-weight:600}
+  .hero-cta{display:flex;gap:10px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;border:1px solid transparent;transition:transform .12s, background .12s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-primary{background:var(--orange);color:#fff}
+  .btn-primary:hover{background:var(--orange-dark)}
+  .btn-ghost{background:#fff;border-color:var(--line);color:var(--fg)}
+  .btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+  /* Coach portrait */
+  .coach-card{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--ink);height:560px;display:flex;flex-direction:column;justify-content:space-between}
+  .coach-img{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=800&h=1200&fit=crop&crop=faces') center/cover;opacity:0.85}
+  .coach-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(15,15,17,0.55) 0%, rgba(15,15,17,0.1) 35%, rgba(15,15,17,0.85) 100%)}
+  .coach-top{position:relative;padding:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .streak-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(252,76,2,0.95);color:#fff;padding:6px 10px;border-radius:99px;font-family:'IBM Plex Mono';font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase}
+  .streak-pill svg{width:12px;height:12px}
+  .on-fire{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,0.5);color:#fff;padding:6px 10px;border-radius:99px;font-family:'IBM Plex Mono';font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;backdrop-filter:blur(8px)}
+  .coach-bottom{position:relative;padding:18px;color:#fff}
+  .coach-mark{font-family:'Anton';font-size:64px;line-height:0.9;letter-spacing:0.01em}
+  .coach-tier{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:0.16em;color:var(--lime);margin-top:4px;margin-bottom:14px}
+  .coach-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.18)}
+  .coach-stat-num{font-family:'IBM Plex Mono';font-size:16px;font-weight:600;color:#fff}
+  .coach-stat-num .unit{font-size:10px;color:rgba(255,255,255,0.6);margin-left:2px}
+  .coach-stat-lbl{font-family:'IBM Plex Mono';font-size:9px;letter-spacing:0.1em;color:rgba(255,255,255,0.55);text-transform:uppercase;margin-top:2px}
+
+  /* Section header */
+  .sec-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;padding-top:6px}
+  .sec-h h2{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;font-weight:500}
+  .sec-h a{font-family:'IBM Plex Mono';font-size:11px;color:var(--orange);letter-spacing:0.06em}
+
+  /* Body grid */
+  .body-grid{display:grid;grid-template-columns:1fr 360px;gap:28px;margin-bottom:36px}
+
+  /* Activity feed */
+  .feed{display:flex;flex-direction:column;gap:12px}
+  .activity{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;transition:border-color .15s}
+  .activity:hover{border-color:#d4d4d8}
+  .activity-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .a-avatar{width:36px;height:36px;border-radius:50%;background:#E5E5E7;display:grid;place-items:center;font-family:'Anton';color:var(--ink);font-size:13px;flex-shrink:0}
+  .a-avatar.orange{background:linear-gradient(135deg,#FC4C02,#FFA07A);color:#fff}
+  .a-avatar.lime{background:linear-gradient(135deg,#D1F843,#A3D900);color:var(--ink)}
+  .a-avatar.dark{background:var(--ink);color:var(--lime)}
+  .a-avatar.blue{background:linear-gradient(135deg,#3B82F6,#60A5FA);color:#fff}
+  .a-meta{flex:1;min-width:0}
+  .a-name{font-weight:600;color:var(--ink);font-size:13px}
+  .a-time{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);margin-top:1px}
+  .a-icon{width:32px;height:32px;display:grid;place-items:center;background:#F4F4F5;border-radius:var(--radius);color:var(--orange)}
+  .a-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+
+  .a-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:14px;line-height:1.35}
+  .a-title .accent{color:var(--orange)}
+
+  .route-map{background:#F4F4F5;border-radius:var(--radius);padding:12px;margin-bottom:14px;position:relative;overflow:hidden}
+  .route-map svg{display:block;width:100%;height:auto}
+  .route-map-lbl{position:absolute;top:10px;left:12px;font-family:'IBM Plex Mono';font-size:9px;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase}
+
+  .bar-row{display:flex;align-items:flex-end;gap:3px;height:54px;margin-bottom:14px;padding:6px 4px;background:#F4F4F5;border-radius:var(--radius)}
+  .bar{flex:1;background:var(--orange);border-radius:2px 2px 0 0;min-height:8%}
+
+  .a-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:12px}
+  .a-stat-lbl{font-family:'IBM Plex Mono';font-size:9px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:3px}
+  .a-stat-val{font-family:'IBM Plex Mono';font-size:16px;font-weight:600;color:var(--ink)}
+  .a-stat-val .unit{font-size:10px;color:var(--muted);margin-left:2px;font-weight:400}
+
+  .a-actions{display:flex;align-items:center;gap:14px}
+  .kudos{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border:1px solid var(--orange);color:var(--orange);border-radius:99px;font-family:'IBM Plex Mono';font-size:11px;font-weight:600;letter-spacing:0.05em;transition:all .15s}
+  .kudos:hover{background:var(--orange);color:#fff}
+  .kudos svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+  .kudos.given{background:var(--orange);color:#fff}
+  .a-comments{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-family:'IBM Plex Mono';font-size:11px}
+  .a-comments svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+  .a-pr{margin-left:auto;font-family:'IBM Plex Mono';font-size:10px;background:var(--lime);color:var(--ink);padding:3px 8px;border-radius:3px;font-weight:600;letter-spacing:0.05em}
+
+  /* Sidebar widgets */
+  .side-col{display:flex;flex-direction:column;gap:20px}
+  .widget{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+  .widget-h{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .widget-h .sub{font-family:'IBM Plex Mono';font-size:10px;color:var(--orange);text-transform:none;letter-spacing:0.04em}
+
+  /* Goal rings */
+  .goals{display:flex;justify-content:space-around;align-items:center;padding:6px 0 12px}
+  .ring-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .ring-wrap svg{width:84px;height:84px;display:block}
+  .ring-num{font-family:'IBM Plex Mono';font-size:16px;font-weight:600;color:var(--ink)}
+  .ring-num .denom{color:var(--muted);font-size:11px}
+  .ring-lbl{font-family:'IBM Plex Mono';font-size:9px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase}
+  .ring-pct{font-family:'IBM Plex Mono';font-size:10px;font-weight:600}
+
+  /* Course map */
+  .course-map{position:relative;background:#F4F4F5;border-radius:var(--radius);padding:14px;overflow:hidden}
+  .course-map svg{display:block;width:100%;height:auto}
+  .course-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-family:'IBM Plex Mono';font-size:10px;color:var(--muted)}
+  .legend-dot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:middle}
+
+  /* KPI strip */
+  .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
+  .kpi-h{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .pr-badge{font-family:'IBM Plex Mono';font-size:9px;background:var(--lime);color:var(--ink);padding:2px 6px;border-radius:3px;font-weight:600;letter-spacing:0.06em}
+  .pr-badge.orange{background:var(--orange);color:#fff}
+  .kpi-val{font-family:'IBM Plex Mono';font-size:36px;font-weight:600;color:var(--ink);line-height:1;margin-bottom:6px;letter-spacing:-0.02em}
+  .kpi-val .unit{font-size:14px;color:var(--muted);margin-left:4px;font-weight:400}
+  .kpi-trend{font-family:'IBM Plex Mono';font-size:11px;color:var(--green)}
+  .kpi-trend.urgent{color:var(--orange)}
+  .kpi-trend svg{width:11px;height:11px;display:inline-block;vertical-align:-1px}
+  .kpi-mini{margin-top:8px;height:24px}
+
+  /* Leaderboard */
+  .leaderboard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .lb-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .lb-head h3{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;font-weight:500;display:flex;align-items:center;gap:8px}
+  .lb-head h3 svg{width:14px;height:14px;color:var(--orange)}
+  .lb-table{width:100%;border-collapse:collapse}
+  .lb-table th{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;text-align:left;padding:10px 20px;border-bottom:1px solid var(--line);font-weight:500}
+  .lb-table td{padding:14px 20px;border-bottom:1px solid var(--line);font-size:13px}
+  .lb-table tr:last-child td{border-bottom:none}
+  .lb-table tr:hover td{background:#FAFAFA}
+  .rank{font-family:'Anton';font-size:18px;color:var(--ink);width:36px}
+  .rank.gold{color:var(--orange)}
+  .lb-name{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--ink)}
+  .lb-name .a-avatar{width:28px;height:28px;font-size:11px}
+  .lb-score{font-family:'IBM Plex Mono';font-weight:600;color:var(--ink)}
+  .lb-trend{font-family:'IBM Plex Mono';font-size:12px;color:var(--green);display:inline-flex;align-items:center;gap:4px}
+  .lb-trend.down{color:var(--muted)}
+  .lb-trend svg{width:11px;height:11px}
+  .lb-bar{width:100%;height:6px;background:#F4F4F5;border-radius:3px;overflow:hidden}
+  .lb-bar-fill{height:100%;background:var(--orange);border-radius:3px}
+
+  /* Scrollbar */
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-thumb{background:#D4D4D8;border-radius:4px}
+  ::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div>
+      <div class="brand">
+        <div class="brand-mark">AK</div>
+        <div>
+          <div class="brand-text">AK GOLF <span>/ COACHHQ</span></div>
+          <div class="brand-tier">PRO · v2.4</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="search">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      Søk spillere, økter…
+      <kbd>⌘K</kbd>
+    </div>
+
+    <div class="profile-card">
+      <div class="avatar">AK</div>
+      <div>
+        <div class="profile-name">Anders Kristiansen</div>
+        <div class="profile-meta">HEAD COACH · STREAK 47</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Daglig</div>
+      <a class="nav-item active" href="#">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Hub
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Kalender
+        <span class="nav-badge">5</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+        Godkjenninger
+        <span class="nav-badge">12</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Innboks
+        <span class="nav-badge muted">3</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Operasjon</div>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+        Spillere
+        <span class="nav-badge muted">38</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Programmer
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Fakturaer
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        Aktivitet
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Innsikt</div>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Stallen
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24"><path d="M2 12h6l3-9 4 18 3-9h4"/></svg>
+        Performance
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.16.66.42.86.75"/></svg>
+        Innstillinger
+      </a>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <!-- Tag row -->
+    <div class="tag-row">
+      <span class="tag race"><span class="tag-dot"></span>RACE 19</span>
+      <span class="tag">COACH BRIEFING</span>
+      <span class="tag">5 / 8 SESSIONS</span>
+      <span class="tag urgent">12 APPROVALS</span>
+      <span class="tag lime">21D TIL SØRLANDSÅPENT</span>
+      <span class="tag">STREAK 47D</span>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-left">
+        <div class="kom-badge">
+          <svg class="kom-crown" viewBox="0 0 24 24" fill="currentColor"><path d="M2 18h20l-2-11-5 4-3-7-3 7-5-4z"/></svg>
+          DU HAR 5 SEGMENTER Å SLÅ I DAG
+        </div>
+        <h1 class="hero-title">God morgen,<br><em>Anders.</em></h1>
+        <p class="hero-sub"><strong>38 spillere</strong> i stallen · <strong>12 godkjenninger</strong> venter · <strong>5 økonomiske aktiviteter</strong> å logge. Solnedgang Bossum kl 21:14 — du har 14 timer dagslys.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary">
+            START LOGG
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <button class="btn btn-ghost">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Kalender
+          </button>
+        </div>
+      </div>
+
+      <div class="coach-card">
+        <div class="coach-img"></div>
+        <div class="coach-top">
+          <span class="streak-pill">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9 6 6 9 6 14a6 6 0 0 0 12 0c0-2-1-4-2-5-1 2-2 3-3 3 1-3 0-7-1-10z"/></svg>
+            STREAK 47 DAGER
+          </span>
+          <span class="on-fire">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="#FC4C02"><path d="M12 2C9 6 6 9 6 14a6 6 0 0 0 12 0c0-2-1-4-2-5-1 2-2 3-3 3 1-3 0-7-1-10z"/></svg>
+            ON FIRE
+          </span>
+        </div>
+        <div class="coach-bottom">
+          <div class="coach-mark">AK</div>
+          <div class="coach-tier">ELITE PRO · HEAD COACH</div>
+          <div class="coach-stats">
+            <div>
+              <div class="coach-stat-num">238<span class="unit">km</span></div>
+              <div class="coach-stat-lbl">Logged</div>
+            </div>
+            <div>
+              <div class="coach-stat-num">47<span class="unit">h</span></div>
+              <div class="coach-stat-lbl">Training</div>
+            </div>
+            <div>
+              <div class="coach-stat-num">89<span class="unit">%</span></div>
+              <div class="coach-stat-lbl">Adherence</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI strip -->
+    <div class="kpi-strip">
+      <div class="kpi">
+        <div class="kpi-h">AKTIVE STALLEN <span class="pr-badge">PR</span></div>
+        <div class="kpi-val">38</div>
+        <div class="kpi-trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg> +2 denne uken</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-h">DAGENS KØ</div>
+        <div class="kpi-val">5<span class="unit">/ 8</span></div>
+        <svg class="kpi-mini" viewBox="0 0 200 24" preserveAspectRatio="none">
+          <rect x="0" y="6" width="125" height="12" fill="#FC4C02" rx="2"/>
+          <rect x="125" y="6" width="75" height="12" fill="#F4F4F5" rx="2"/>
+        </svg>
+      </div>
+      <div class="kpi">
+        <div class="kpi-h">GODKJENNINGER <span class="pr-badge orange">URGENT</span></div>
+        <div class="kpi-val" style="color:#FC4C02">12</div>
+        <div class="kpi-trend urgent">3 over 24t — handle nå</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-h">INNTEKT MTD <span class="pr-badge">PR</span></div>
+        <div class="kpi-val">47<span class="unit">k</span></div>
+        <div class="kpi-trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg> +12% vs forrige</div>
+      </div>
+    </div>
+
+    <!-- Section: Activity Feed -->
+    <div class="sec-h">
+      <h2>ACTIVITY FEED · STALLEN</h2>
+      <a href="#">SE ALLE 24 →</a>
+    </div>
+
+    <div class="body-grid">
+
+      <!-- Feed column -->
+      <div class="feed">
+
+        <!-- Activity 1 -->
+        <article class="activity">
+          <div class="activity-head">
+            <div class="a-avatar orange">MR</div>
+            <div class="a-meta">
+              <div class="a-name">Markus Roinås Pedersen</div>
+              <div class="a-time">FOR 23 MIN SIDEN · GFGK</div>
+            </div>
+            <div class="a-icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+          </div>
+          <div class="a-title">Logget <span class="accent">Pitch 50–100m</span> — slo personlig rekord på carry-konsistens</div>
+
+          <div class="route-map">
+            <div class="route-map-lbl">DISPERSION · 247 SLAG</div>
+            <svg viewBox="0 0 400 100" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#FC4C02" stop-opacity="0.2"/>
+                  <stop offset="50%" stop-color="#FC4C02" stop-opacity="0.9"/>
+                  <stop offset="100%" stop-color="#FC4C02" stop-opacity="0.4"/>
+                </linearGradient>
+              </defs>
+              <path d="M10,80 Q60,30 110,55 T210,40 T310,60 T390,35" fill="none" stroke="url(#grad1)" stroke-width="2.5"/>
+              <circle cx="10" cy="80" r="3" fill="#FC4C02"/>
+              <circle cx="110" cy="55" r="3" fill="#FC4C02"/>
+              <circle cx="210" cy="40" r="3" fill="#FC4C02"/>
+              <circle cx="310" cy="60" r="3" fill="#FC4C02"/>
+              <circle cx="390" cy="35" r="4" fill="#0F0F11"/>
+            </svg>
+          </div>
+
+          <div class="a-stats">
+            <div><div class="a-stat-lbl">VARIGHET</div><div class="a-stat-val">60<span class="unit">min</span></div></div>
+            <div><div class="a-stat-lbl">REPS</div><div class="a-stat-val">247</div></div>
+            <div><div class="a-stat-lbl">SNITT CARRY</div><div class="a-stat-val">72<span class="unit">m</span></div></div>
+            <div><div class="a-stat-lbl">DISP.</div><div class="a-stat-val">±4.2<span class="unit">m</span></div></div>
+          </div>
+
+          <div class="a-actions">
+            <button class="kudos given">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9V5a3 3 0 0 0-6 0v4H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+              Gi kudos · 12
+            </button>
+            <span class="a-comments">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              3 kommentarer
+            </span>
+            <span class="a-pr">PR · CARRY KONSISTENS</span>
+          </div>
+        </article>
+
+        <!-- Activity 2 -->
+        <article class="activity">
+          <div class="activity-head">
+            <div class="a-avatar lime">ES</div>
+            <div class="a-meta">
+              <div class="a-name">Emma Stensrud</div>
+              <div class="a-time">FOR 1 TIME SIDEN · BOSSUM</div>
+            </div>
+            <div class="a-icon">
+              <svg viewBox="0 0 24 24"><path d="M2 12h6l3-9 4 18 3-9h4"/></svg>
+            </div>
+          </div>
+          <div class="a-title">Fullførte <span class="accent">Iron-progresjon</span> — nådde CS80 mål på 7-jern</div>
+
+          <div class="bar-row">
+            <div class="bar" style="height:35%"></div>
+            <div class="bar" style="height:42%"></div>
+            <div class="bar" style="height:55%"></div>
+            <div class="bar" style="height:48%"></div>
+            <div class="bar" style="height:62%"></div>
+            <div class="bar" style="height:71%"></div>
+            <div class="bar" style="height:65%"></div>
+            <div class="bar" style="height:78%"></div>
+            <div class="bar" style="height:82%"></div>
+            <div class="bar" style="height:74%"></div>
+            <div class="bar" style="height:88%"></div>
+            <div class="bar" style="height:92%"></div>
+            <div class="bar" style="height:85%"></div>
+            <div class="bar" style="height:96%"></div>
+            <div class="bar" style="height:100%;background:#0F0F11"></div>
+          </div>
+
+          <div class="a-stats">
+            <div><div class="a-stat-lbl">VARIGHET</div><div class="a-stat-val">75<span class="unit">min</span></div></div>
+            <div><div class="a-stat-lbl">CLUB SPEED</div><div class="a-stat-val">80.2<span class="unit">mph</span></div></div>
+            <div><div class="a-stat-lbl">BPM AVG</div><div class="a-stat-val">142</div></div>
+            <div><div class="a-stat-lbl">RPE</div><div class="a-stat-val">7<span class="unit">/10</span></div></div>
+          </div>
+
+          <div class="a-actions">
+            <button class="kudos">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-6 0v4H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2z"/></svg>
+              Gi kudos · 8
+            </button>
+            <span class="a-comments">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              1 kommentar
+            </span>
+            <span class="a-pr">MILEPÆL · CS80 NÅDD</span>
+          </div>
+        </article>
+
+        <!-- Activity 3 -->
+        <article class="activity">
+          <div class="activity-head">
+            <div class="a-avatar dark">JT</div>
+            <div class="a-meta">
+              <div class="a-name">Joachim Tønnesen</div>
+              <div class="a-time">FOR 2 TIMER SIDEN · GFGK · BUNKER</div>
+            </div>
+            <div class="a-icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg>
+            </div>
+          </div>
+          <div class="a-title">La til <span class="accent">Bunker-økt</span> — fem stjerner fra coach, klar for konkurranse</div>
+
+          <div class="route-map">
+            <div class="route-map-lbl">SAND DISTANCE · 5 STARS</div>
+            <svg viewBox="0 0 400 100" preserveAspectRatio="none">
+              <ellipse cx="100" cy="60" rx="80" ry="22" fill="#FFE8D6" stroke="#FC4C02" stroke-width="1" stroke-dasharray="3 2"/>
+              <ellipse cx="280" cy="50" rx="60" ry="18" fill="#FFE8D6" stroke="#FC4C02" stroke-width="1" stroke-dasharray="3 2"/>
+              <circle cx="50" cy="60" r="3" fill="#FC4C02"/>
+              <circle cx="80" cy="55" r="3" fill="#FC4C02"/>
+              <circle cx="110" cy="65" r="3" fill="#FC4C02"/>
+              <circle cx="140" cy="58" r="3" fill="#FC4C02"/>
+              <circle cx="250" cy="50" r="3" fill="#FC4C02"/>
+              <circle cx="290" cy="45" r="3" fill="#FC4C02"/>
+              <circle cx="320" cy="55" r="3" fill="#FC4C02"/>
+              <path d="M50,60 L355,15" stroke="#0F0F11" stroke-width="1.5" stroke-dasharray="2 3"/>
+              <circle cx="355" cy="15" r="5" fill="#D1F843" stroke="#0F0F11" stroke-width="1.5"/>
+            </svg>
+          </div>
+
+          <div class="a-stats">
+            <div><div class="a-stat-lbl">VARIGHET</div><div class="a-stat-val">45<span class="unit">min</span></div></div>
+            <div><div class="a-stat-lbl">SLAG</div><div class="a-stat-val">84</div></div>
+            <div><div class="a-stat-lbl">UT-RATIO</div><div class="a-stat-val">92<span class="unit">%</span></div></div>
+            <div><div class="a-stat-lbl">RATING</div><div class="a-stat-val">5.0</div></div>
+          </div>
+
+          <div class="a-actions">
+            <button class="kudos">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-6 0v4H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2z"/></svg>
+              Gi kudos · 5
+            </button>
+            <span class="a-comments">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              0 kommentarer
+            </span>
+          </div>
+        </article>
+
+        <!-- Activity 4 -->
+        <article class="activity">
+          <div class="activity-head">
+            <div class="a-avatar blue">SL</div>
+            <div class="a-meta">
+              <div class="a-name">Sigrid Lien</div>
+              <div class="a-time">I GÅR KL 19:42 · HJEMME</div>
+            </div>
+            <div class="a-icon">
+              <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            </div>
+          </div>
+          <div class="a-title">Sendte <span class="accent">video-analyse</span> — driver fra Sørlandsåpent-prep</div>
+
+          <div class="bar-row">
+            <div class="bar" style="height:60%;background:#3B82F6"></div>
+            <div class="bar" style="height:75%;background:#3B82F6"></div>
+            <div class="bar" style="height:88%;background:#3B82F6"></div>
+            <div class="bar" style="height:65%;background:#3B82F6"></div>
+            <div class="bar" style="height:92%;background:#3B82F6"></div>
+            <div class="bar" style="height:78%;background:#3B82F6"></div>
+            <div class="bar" style="height:85%;background:#3B82F6"></div>
+            <div class="bar" style="height:70%;background:#3B82F6"></div>
+            <div class="bar" style="height:95%;background:#0F0F11"></div>
+          </div>
+
+          <div class="a-stats">
+            <div><div class="a-stat-lbl">LENGDE</div><div class="a-stat-val">2:14</div></div>
+            <div><div class="a-stat-lbl">VINKLER</div><div class="a-stat-val">3</div></div>
+            <div><div class="a-stat-lbl">BALL SPEED</div><div class="a-stat-val">152<span class="unit">mph</span></div></div>
+            <div><div class="a-stat-lbl">ATTACK</div><div class="a-stat-val">+2.1°</div></div>
+          </div>
+
+          <div class="a-actions">
+            <button class="kudos">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-6 0v4H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2z"/></svg>
+              Gi kudos · 4
+            </button>
+            <span class="a-comments">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              2 kommentarer
+            </span>
+            <span class="a-pr">VENTER GODKJENNING</span>
+          </div>
+        </article>
+
+        <!-- Activity 5 -->
+        <article class="activity">
+          <div class="activity-head">
+            <div class="a-avatar orange">NH</div>
+            <div class="a-meta">
+              <div class="a-name">Nora Hansen</div>
+              <div class="a-time">I GÅR KL 17:08 · BOSSUM RANGE</div>
+            </div>
+            <div class="a-icon">
+              <svg viewBox="0 0 24 24"><path d="M2 12h6l3-9 4 18 3-9h4"/></svg>
+            </div>
+          </div>
+          <div class="a-title">Kondisjonsøkt — <span class="accent">10 km tempo</span> som del av off-course program</div>
+
+          <div class="route-map">
+            <div class="route-map-lbl">PACE · 5:12 /KM</div>
+            <svg viewBox="0 0 400 100" preserveAspectRatio="none">
+              <path d="M10,70 L50,68 L80,40 L130,42 L170,75 L220,65 L260,30 L310,28 L350,55 L390,52" fill="none" stroke="#FC4C02" stroke-width="2.5"/>
+              <path d="M10,70 L50,68 L80,40 L130,42 L170,75 L220,65 L260,30 L310,28 L350,55 L390,52 L390,95 L10,95 Z" fill="#FC4C02" fill-opacity="0.08"/>
+              <circle cx="10" cy="70" r="3" fill="#0F0F11"/>
+              <circle cx="390" cy="52" r="4" fill="#D1F843" stroke="#0F0F11" stroke-width="1.5"/>
+            </svg>
+          </div>
+
+          <div class="a-stats">
+            <div><div class="a-stat-lbl">DISTANSE</div><div class="a-stat-val">10.2<span class="unit">km</span></div></div>
+            <div><div class="a-stat-lbl">TID</div><div class="a-stat-val">53:14</div></div>
+            <div><div class="a-stat-lbl">BPM AVG</div><div class="a-stat-val">158</div></div>
+            <div><div class="a-stat-lbl">STIGNING</div><div class="a-stat-val">82<span class="unit">m</span></div></div>
+          </div>
+
+          <div class="a-actions">
+            <button class="kudos">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-6 0v4H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2z"/></svg>
+              Gi kudos · 9
+            </button>
+            <span class="a-comments">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              1 kommentar
+            </span>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Side widgets -->
+      <aside class="side-col">
+
+        <!-- Goal rings -->
+        <div class="widget">
+          <div class="widget-h">UKENS MÅL <span class="sub">5 dager igjen</span></div>
+          <div class="goals">
+            <!-- Ring 1: weekly -->
+            <div class="ring-wrap">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#F4F4F5" stroke-width="10"/>
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#FC4C02" stroke-width="10" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="100.3" transform="rotate(-90 50 50)"/>
+                <text x="50" y="48" text-anchor="middle" font-family="IBM Plex Mono" font-size="16" font-weight="600" fill="#0F0F11">5/8</text>
+                <text x="50" y="62" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6B6B72">62%</text>
+              </svg>
+              <div class="ring-lbl">UKE</div>
+            </div>
+            <!-- Ring 2: month -->
+            <div class="ring-wrap">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#F4F4F5" stroke-width="10"/>
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#A3D900" stroke-width="10" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="63.3" transform="rotate(-90 50 50)"/>
+                <text x="50" y="48" text-anchor="middle" font-family="IBM Plex Mono" font-size="16" font-weight="600" fill="#0F0F11">23/30</text>
+                <text x="50" y="62" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6B6B72">76%</text>
+              </svg>
+              <div class="ring-lbl">MÅNED</div>
+            </div>
+            <!-- Ring 3: year -->
+            <div class="ring-wrap">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#F4F4F5" stroke-width="10"/>
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#6B6B72" stroke-width="10" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="161.0" transform="rotate(-90 50 50)"/>
+                <text x="50" y="46" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" font-weight="600" fill="#0F0F11">142</text>
+                <text x="50" y="58" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6B6B72">/365</text>
+                <text x="50" y="70" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6B6B72">39%</text>
+              </svg>
+              <div class="ring-lbl">ÅR</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course heatmap -->
+        <div class="widget">
+          <div class="widget-h">BOSSUM GOLF <span class="sub">Siste 30d</span></div>
+          <div class="course-map">
+            <svg viewBox="0 0 320 220" preserveAspectRatio="xMidYMid meet">
+              <!-- Course outline -->
+              <path d="M20,30 Q60,10 120,25 Q200,15 280,40 Q310,80 295,140 Q280,200 220,210 Q140,215 70,200 Q15,180 10,120 Q5,60 20,30 Z" fill="#E8F5E9" stroke="#86CD86" stroke-width="1.5"/>
+              <!-- Fairways -->
+              <path d="M40,50 Q80,45 110,70 Q140,100 130,140 Q120,180 80,180" fill="none" stroke="#A3D900" stroke-width="14" stroke-linecap="round" opacity="0.6"/>
+              <path d="M150,40 Q200,50 230,90 Q260,130 240,170 Q220,200 180,195" fill="none" stroke="#A3D900" stroke-width="14" stroke-linecap="round" opacity="0.6"/>
+              <!-- Heatmap dots: training intensity -->
+              <circle cx="80" cy="70" r="14" fill="#FC4C02" opacity="0.7"/>
+              <circle cx="80" cy="70" r="22" fill="#FC4C02" opacity="0.25"/>
+              <circle cx="135" cy="130" r="18" fill="#FC4C02" opacity="0.8"/>
+              <circle cx="135" cy="130" r="28" fill="#FC4C02" opacity="0.2"/>
+              <circle cx="200" cy="95" r="10" fill="#FC4C02" opacity="0.6"/>
+              <circle cx="200" cy="95" r="18" fill="#FC4C02" opacity="0.2"/>
+              <circle cx="240" cy="160" r="12" fill="#FC4C02" opacity="0.5"/>
+              <circle cx="240" cy="160" r="20" fill="#FC4C02" opacity="0.18"/>
+              <circle cx="105" cy="175" r="8" fill="#FC4C02" opacity="0.5"/>
+              <!-- Greens -->
+              <circle cx="80" cy="180" r="6" fill="#0F0F11"/>
+              <circle cx="180" cy="195" r="6" fill="#0F0F11"/>
+              <!-- Flag markers -->
+              <g transform="translate(80,180)">
+                <line x1="0" y1="0" x2="0" y2="-14" stroke="#0F0F11" stroke-width="1.5"/>
+                <polygon points="0,-14 8,-11 0,-8" fill="#FC4C02"/>
+              </g>
+              <g transform="translate(180,195)">
+                <line x1="0" y1="0" x2="0" y2="-14" stroke="#0F0F11" stroke-width="1.5"/>
+                <polygon points="0,-14 8,-11 0,-8" fill="#FC4C02"/>
+              </g>
+              <!-- Labels -->
+              <text x="155" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6B6B72" letter-spacing="1">TRENINGSDISTRIBUSJON</text>
+            </svg>
+            <div class="course-legend">
+              <span><span class="legend-dot" style="background:#FC4C02"></span>Høy aktivitet</span>
+              <span><span class="legend-dot" style="background:#FC4C02;opacity:0.3"></span>Moderat</span>
+              <span><span class="legend-dot" style="background:#A3D900"></span>Fairway</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next session -->
+        <div class="widget">
+          <div class="widget-h">NESTE ØKT <span class="sub">om 47 min</span></div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div class="a-avatar orange" style="width:44px;height:44px;font-size:14px">MR</div>
+            <div style="flex:1">
+              <div style="font-weight:600;color:#0F0F11;font-size:14px;margin-bottom:4px">Markus Roinås Pedersen</div>
+              <div class="mono" style="font-size:11px;color:#6B6B72;letter-spacing:0.04em;margin-bottom:10px">10:00–11:30 · GFGK PERF.STUDIO</div>
+              <div style="font-size:13px;color:#242428;line-height:1.4">Driver-progresjon · Sørlandsåpent-prep · Trackman</div>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="margin-top:14px;width:100%;justify-content:center">
+            ÅPNE BRIEFING
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+      </aside>
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="sec-h">
+      <h2>UKENS LEADERBOARD · TRAINING LOAD</h2>
+      <a href="#">SE FULL TABELL →</a>
+    </div>
+
+    <div class="leaderboard">
+      <div class="lb-head">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 18h20l-2-11-5 4-3-7-3 7-5-4z"/></svg>
+          KOM · UKE 20
+        </h3>
+        <span class="mono" style="font-size:11px;color:#6B6B72">12.–18. mai</span>
+      </div>
+      <table class="lb-table">
+        <thead>
+          <tr>
+            <th>RANK</th>
+            <th>SPILLER</th>
+            <th>LOAD</th>
+            <th style="width:30%">PROGRESJON</th>
+            <th>TREND</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="rank gold">01</span></td>
+            <td><div class="lb-name"><div class="a-avatar orange">MR</div>Markus Roinås Pedersen</div></td>
+            <td class="lb-score">847</td>
+            <td><div class="lb-bar"><div class="lb-bar-fill" style="width:100%"></div></div></td>
+            <td><span class="lb-trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>+18%</span></td>
+          </tr>
+          <tr>
+            <td><span class="rank">02</span></td>
+            <td><div class="lb-name"><div class="a-avatar lime">ES</div>Emma Stensrud</div></td>
+            <td class="lb-score">782</td>
+            <td><div class="lb-bar"><div class="lb-bar-fill" style="width:92%"></div></div></td>
+            <td><span class="lb-trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>+12%</span></td>
+          </tr>
+          <tr>
+            <td><span class="rank">03</span></td>
+            <td><div class="lb-name"><div class="a-avatar blue">SL</div>Sigrid Lien</div></td>
+            <td class="lb-score">694</td>
+            <td><div class="lb-bar"><div class="lb-bar-fill" style="width:82%"></div></div></td>
+            <td><span class="lb-trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>+8%</span></td>
+          </tr>
+          <tr>
+            <td><span class="rank">04</span></td>
+            <td><div class="lb-name"><div class="a-avatar dark">JT</div>Joachim Tønnesen</div></td>
+            <td class="lb-score">612</td>
+            <td><div class="lb-bar"><div class="lb-bar-fill" style="width:72%"></div></div></td>
+            <td><span class="lb-trend down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/></svg>+0%</span></td>
+          </tr>
+          <tr>
+            <td><span class="rank">05</span></td>
+            <td><div class="lb-name"><div class="a-avatar orange">NH</div>Nora Hansen</div></td>
+            <td class="lb-score">548</td>
+            <td><div class="lb-bar"><div class="lb-bar-fill" style="width:65%"></div></div></td>
+            <td><span class="lb-trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>+4%</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

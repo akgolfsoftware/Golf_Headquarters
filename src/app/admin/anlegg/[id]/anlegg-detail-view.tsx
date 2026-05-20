@@ -97,7 +97,7 @@ export function AnleggDetailView({ data }: { data: AnleggDetailData }) {
       </nav>
 
       {/* Status-strip */}
-      <div className="flex flex-wrap items-center gap-6 rounded-lg border border-border bg-card px-4 py-4">
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6 rounded-lg border border-border bg-card px-3 py-3 sm:px-4 sm:py-4">
         <Stat
           label="Fasiliteter"
           value={String(data.stats.total)}
@@ -497,7 +497,7 @@ function FasilitetsDrawer({
     <div
       role="dialog"
       aria-label={facility.name}
-      className="fixed inset-y-0 right-0 z-40 flex w-full max-w-md flex-col gap-4 overflow-y-auto border-l border-border bg-card p-6 shadow-2xl"
+      className="fixed inset-0 md:inset-y-0 md:left-auto md:right-0 z-40 flex w-full md:max-w-md flex-col gap-4 overflow-y-auto border-l border-border bg-card p-4 sm:p-6 shadow-2xl"
     >
       <div className="flex items-start justify-between gap-4">
         <div>

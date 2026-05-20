@@ -347,7 +347,7 @@ function BenchmarkScale({
   const overSnitt = current.score >= benchmark.snitt;
 
   return (
-    <section className="grid gap-6 rounded-lg border border-primary/15 bg-gradient-to-br from-primary/5 to-card p-6 sm:grid-cols-[1fr_1.4fr] sm:items-center">
+    <section className="grid gap-6 rounded-lg border border-primary/15 bg-gradient-to-br from-primary/5 to-card p-4 sm:p-6 sm:grid-cols-[1fr_1.4fr] sm:items-center">
       <div>
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
           Benchmark · kategori-elite
