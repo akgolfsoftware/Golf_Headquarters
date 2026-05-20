@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>App-feedback — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* faux app behind */
+  .stage {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .stage::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 600px 300px at 20% 20%, rgba(0,88,64,0.06), transparent 70%),
+      radial-gradient(ellipse 500px 280px at 85% 75%, rgba(209,248,67,0.10), transparent 70%);
+  }
+
+  /* mock sidebar + content blurred */
+  .mock {
+    position: absolute; inset: 0;
+    display: flex;
+    filter: blur(2.5px) saturate(0.85);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .mock-side {
+    width: 220px; background: var(--primary);
+    padding: 24px 14px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .mock-side .b {
+    height: 8px; border-radius: 4px;
+    background: rgba(209,248,67,0.25);
+  }
+  .mock-side .b.w70 { width: 70%; }
+  .mock-side .b.w90 { width: 90%; }
+  .mock-side .b.w50 { width: 50%; }
+  .mock-side .b.tall { height: 36px; border-radius: 8px; background: rgba(209,248,67,0.35); }
+  .mock-content {
+    flex: 1; padding: 32px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .mock-content .row { display: flex; gap: 16px; }
+  .mock-content .c {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+    min-height: 80px; flex: 1;
+  }
+  .mock-content .c.lg { min-height: 220px; }
+
+  /* dim overlay */
+  .backdrop {
+    position: fixed; inset: 0;
+    background: rgba(10, 31, 23, 0.42);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 50;
+  }
+
+  /* MODAL */
+  .modal-wrap {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 60; padding: 24px;
+  }
+  .modal {
+    width: 480px; max-width: 100%;
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -20px rgba(10,31,23,0.45),
+      0 12px 32px rgba(10,31,23,0.20);
+    display: flex; flex-direction: column;
+    max-height: calc(100vh - 48px);
+  }
+
+  /* header */
+  .m-head {
+    padding: 26px 26px 0;
+    position: relative;
+  }
+  .m-eyebrow {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .m-title {
+    font-family: var(--font-display); font-size: 24px;
+    font-weight: 600; letter-spacing: -0.02em; line-height: 1.15;
+    color: var(--fg);
+  }
+  .m-title em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .m-close {
+    position: absolute; top: 18px; right: 18px;
+    width: 32px; height: 32px;
+    background: transparent; border: 0;
+    border-radius: 8px; cursor: pointer;
+    color: var(--muted);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .m-close:hover { background: var(--border-soft); color: var(--fg); }
+  .m-close svg { width: 16px; height: 16px; }
+
+  /* body */
+  .m-body {
+    padding: 22px 26px 22px;
+    display: flex; flex-direction: column; gap: 22px;
+    overflow-y: auto;
+  }
+  .field-block { display: flex; flex-direction: column; gap: 10px; }
+  .fb-label {
+    font-family: var(--font-display); font-size: 12px;
+    font-weight: 600; color: var(--fg);
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .fb-label .req {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600;
+  }
+
+  /* NPS */
+  .nps-q {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .nps-grid {
+    display: grid; grid-template-columns: repeat(11, 1fr);
+    gap: 4px;
+  }
+  .nps-cell {
+    aspect-ratio: 1 / 1;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-mono); font-size: 14px;
+    font-weight: 500;
+    color: var(--fg);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all .12s ease;
+    position: relative;
+    font-variant-numeric: tabular-nums;
+    padding: 0;
+  }
+  .nps-cell:hover {
+    background: var(--accent); border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .nps-cell.sel-detractor { background: rgba(163,45,45,0.10); border-color: rgba(163,45,45,0.35); color: var(--danger); }
+  .nps-cell.sel-passive { background: rgba(184,133,42,0.12); border-color: rgba(184,133,42,0.40); color: var(--warning); }
+  .nps-cell.sel-promoter { background: rgba(0,88,64,0.10); border-color: rgba(0,88,64,0.30); color: var(--primary); }
+  .nps-cell.selected {
+    background: var(--primary) !important;
+    color: var(--accent) !important;
+    border-color: var(--primary) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,88,64,0.25);
+  }
+  .nps-foot {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.08em;
+    text-transform: uppercase; font-weight: 600;
+    margin-top: 8px;
+  }
+  .nps-foot .center {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--fg); font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .nps-foot .center.show { opacity: 1; }
+  .nps-foot .center .seg {
+    margin-left: 6px;
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 9px; letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .nps-foot .center .seg.detractor { background: rgba(163,45,45,0.12); color: var(--danger); }
+  .nps-foot .center .seg.passive { background: rgba(184,133,42,0.14); color: var(--warning); }
+  .nps-foot .center .seg.promoter { background: rgba(0,88,64,0.12); color: var(--primary); }
+
+  /* type chips */
+  .chips {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .chip {
+    cursor: pointer; position: relative;
+    padding: 8px 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+    color: var(--fg);
+    display: inline-flex; align-items: center; gap: 7px;
+    transition: all .12s;
+  }
+  .chip svg { width: 13px; height: 13px; color: var(--muted); }
+  .chip input { position: absolute; opacity: 0; pointer-events: none; }
+  .chip:hover { border-color: #B8B5AD; }
+  .chip:has(input:checked) {
+    background: var(--fg); color: #fff;
+    border-color: var(--fg);
+  }
+  .chip:has(input:checked) svg { color: var(--accent); }
+
+  /* dynamic prompt */
+  .dyn-prompt {
+    background: linear-gradient(180deg, #FCFCFA, #fff);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: all .2s;
+  }
+  .dyn-prompt .dpt {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 600; color: var(--fg);
+  }
+  .dyn-prompt textarea {
+    background: transparent;
+    border: 0; padding: 0;
+    width: 100%;
+    font: inherit; font-size: 14px; font-family: var(--font-body);
+    color: var(--fg); resize: none;
+    min-height: 72px; line-height: 1.5;
+    outline: none;
+  }
+  .dyn-prompt textarea::placeholder { color: var(--muted-soft); }
+  .dyn-prompt .meta {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .dyn-prompt .meta .cnt.warn { color: var(--warning); font-weight: 600; }
+
+  /* anonymous */
+  .anon-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    cursor: pointer;
+  }
+  .anon-row input { margin: 0; appearance: none; flex-shrink: 0;
+    width: 18px; height: 18px; border: 1.5px solid var(--border);
+    border-radius: 5px; background: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .anon-row input:checked {
+    background: var(--primary); border-color: var(--primary);
+  }
+  .anon-row input:checked::after {
+    content: ''; width: 9px; height: 5px;
+    border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+    transform: rotate(-45deg); margin-top: -2px;
+  }
+  .anon-row .at {
+    font-size: 13px; color: var(--fg); font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .anon-row .at svg { width: 14px; height: 14px; color: var(--muted); }
+  .anon-row .as { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* footer */
+  .m-foot {
+    padding: 16px 26px 22px;
+    border-top: 1px solid var(--border-soft);
+    background: #FBFAF7;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .m-foot .meta {
+    margin-right: auto;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .m-foot .meta .src { color: var(--fg); font-weight: 500; }
+  .m-foot .btn { padding: 10px 18px; }
+  .m-foot .btn-primary[disabled] {
+    background: var(--border); color: var(--muted-soft); cursor: not-allowed;
+  }
+  .m-foot .btn svg { width: 13px; height: 13px; }
+
+  /* trigger button on stage (faux) */
+  .float-trigger {
+    position: fixed; bottom: 28px; right: 28px;
+    z-index: 30;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 999px;
+    background: var(--fg); color: #fff;
+    font-size: 13px; font-weight: 500; border: 0; cursor: pointer;
+    box-shadow: 0 8px 20px rgba(10,31,23,0.2);
+    filter: blur(2.5px); opacity: 0.5;
+  }
+</style>
+</head>
+<body data-screen-label="App-feedback (modal)">
+
+<!-- ===== faux app behind ===== -->
+<div class="stage" aria-hidden="true">
+  <div class="mock">
+    <div class="mock-side">
+      <div class="b w70"></div>
+      <div class="b w50" style="height:6px;"></div>
+      <div class="b tall"></div>
+      <div class="b w90"></div>
+      <div class="b w70"></div>
+      <div class="b w90"></div>
+      <div class="b w50"></div>
+      <div class="b w70"></div>
+    </div>
+    <div class="mock-content">
+      <div class="b" style="width:280px; height:32px; background:rgba(10,31,23,0.08); border-radius:6px;"></div>
+      <div class="row">
+        <div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div>
+      </div>
+      <div class="row">
+        <div class="c lg" style="flex:2;"></div>
+        <div class="c lg"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="float-trigger" aria-hidden="true">Gi tilbakemelding</button>
+
+<!-- ===== Backdrop + Modal ===== -->
+<div class="backdrop" id="backdrop"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-bug" viewBox="0 0 24 24"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M19 7l-3 2"/><path d="M5 7l3 2"/><path d="M19 13h-3"/><path d="M5 13h3"/><path d="M19 19l-3-2"/><path d="M5 19l3-2"/><path d="M12 20v-6"/></symbol>
+    <symbol id="ic-light" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 3 7h8c1-2 3-4 3-7a7 7 0 0 0-7-7z"/></symbol>
+    <symbol id="ic-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+    <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+    <symbol id="ic-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol>
+    <symbol id="ic-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+    <symbol id="ic-loc" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  </defs>
+</svg>
+
+<div class="modal-wrap">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+
+    <div class="m-head">
+      <div class="m-eyebrow">Tilbakemelding · 30 sek</div>
+      <h2 class="m-title" id="m-title">Hva synes du om <em>PlayerHQ</em>?</h2>
+      <button class="m-close" aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+      </button>
+    </div>
+
+    <div class="m-body">
+
+      <!-- NPS -->
+      <div class="field-block">
+        <div class="fb-label">Hvor sannsynlig er det at du anbefaler PlayerHQ til en venn? <span class="req">Påkrevd</span></div>
+        <div class="nps-grid" role="radiogroup" aria-label="NPS-vurdering 0 til 10" id="nps">
+          <button type="button" class="nps-cell" data-v="0" aria-label="0 av 10">0</button>
+          <button type="button" class="nps-cell" data-v="1" aria-label="1 av 10">1</button>
+          <button type="button" class="nps-cell" data-v="2" aria-label="2 av 10">2</button>
+          <button type="button" class="nps-cell" data-v="3" aria-label="3 av 10">3</button>
+          <button type="button" class="nps-cell" data-v="4" aria-label="4 av 10">4</button>
+          <button type="button" class="nps-cell" data-v="5" aria-label="5 av 10">5</button>
+          <button type="button" class="nps-cell" data-v="6" aria-label="6 av 10">6</button>
+          <button type="button" class="nps-cell" data-v="7" aria-label="7 av 10">7</button>
+          <button type="button" class="nps-cell" data-v="8" aria-label="8 av 10">8</button>
+          <button type="button" class="nps-cell selected" data-v="9" aria-label="9 av 10">9</button>
+          <button type="button" class="nps-cell" data-v="10" aria-label="10 av 10">10</button>
+        </div>
+        <div class="nps-foot">
+          <span>Ikke i det hele tatt</span>
+          <span class="center show" id="nps-center">Valgt: 9 <span class="seg promoter">Ambassadør</span></span>
+          <span>Helt sikkert</span>
+        </div>
+      </div>
+
+      <!-- Type chips -->
+      <div class="field-block">
+        <div class="fb-label">Type tilbakemelding <span class="req">Påkrevd</span></div>
+        <div class="chips" role="radiogroup" aria-label="Type">
+          <label class="chip"><input type="radio" name="type" value="bug"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bug"/></svg>Bug</label>
+          <label class="chip"><input type="radio" name="type" value="forslag" checked><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-light"/></svg>Forslag</label>
+          <label class="chip"><input type="radio" name="type" value="ros"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-heart"/></svg>Ros</label>
+          <label class="chip"><input type="radio" name="type" value="sporsmal"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-help"/></svg>Spørsmål</label>
+        </div>
+      </div>
+
+      <!-- Dynamic textarea -->
+      <div class="field-block">
+        <div class="fb-label" id="dyn-label-row">
+          <span id="dyn-label">Hva liker du best?</span>
+          <span class="req">Valgfritt</span>
+        </div>
+        <div class="dyn-prompt">
+          <textarea id="tekst" maxlength="500" placeholder="Skriv her — så detaljert eller kort du vil.">Hadde vært kult å kunne dele PR-en min direkte til Instagram-story med stats påklistret — gjerne med pyramide-figuren og siste rundes scorecard som et lite kort over.</textarea>
+          <div class="meta">
+            <span>Hjelper teamet å forstå hva som funker</span>
+            <span class="cnt" id="tekst-cnt">187 / 500</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Anon -->
+      <label class="anon-row">
+        <input type="checkbox" id="anon">
+        <div>
+          <div class="at">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-eye-off"/></svg>
+            Send anonymt
+          </div>
+          <div class="as">Vi kobler ikke svaret til kontoen din. Da kan vi heller ikke følge opp direkte.</div>
+        </div>
+      </label>
+
+    </div>
+
+    <div class="m-foot">
+      <div class="meta">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-loc"/></svg>
+        Fra <span class="src">/portal/statistikk</span> · v0.9.4
+      </div>
+      <button type="button" class="btn btn-outline">Avbryt</button>
+      <button type="button" class="btn btn-primary" id="send" onclick="send()">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-send"/></svg>
+        Send
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let nps = 9;
+  let type = 'forslag';
+
+  const labels = {
+    low:  'Hva burde vi forbedre?',
+    mid:  'Hva mangler for å gi 10?',
+    high: 'Hva liker du best?'
+  };
+  function segOf(v) {
+    if (v == null) return null;
+    if (v <= 6) return 'detractor';
+    if (v <= 8) return 'passive';
+    return 'promoter';
+  }
+  function labelOf(v) {
+    if (v == null) return labels.high;
+    if (v <= 6) return labels.low;
+    if (v <= 8) return labels.mid;
+    return labels.high;
+  }
+  function segName(seg) {
+    return { detractor: 'Kritiker', passive: 'Passiv', promoter: 'Ambassadør' }[seg];
+  }
+
+  const grid = document.getElementById('nps');
+  function paintNps() {
+    [...grid.children].forEach(c => {
+      const v = +c.dataset.v;
+      c.classList.remove('selected','sel-detractor','sel-passive','sel-promoter');
+    });
+    if (nps == null) return;
+    const seg = segOf(nps);
+    [...grid.children].forEach(c => {
+      const v = +c.dataset.v;
+      if (segOf(v) === seg) c.classList.add('sel-' + seg);
+      if (v === nps) c.classList.add('selected');
+    });
+    const center = document.getElementById('nps-center');
+    center.classList.add('show');
+    center.innerHTML = `Valgt: ${nps} <span class="seg ${seg}">${segName(seg)}</span>`;
+    document.getElementById('dyn-label').textContent = labelOf(nps);
+  }
+  grid.addEventListener('click', e => {
+    const cell = e.target.closest('.nps-cell');
+    if (!cell) return;
+    nps = +cell.dataset.v;
+    paintNps();
+    updateSend();
+  });
+  paintNps();
+
+  // type
+  document.querySelectorAll('input[name=type]').forEach(r => {
+    r.addEventListener('change', () => { type = r.value; updateSend(); });
+  });
+
+  // counter
+  const ta = document.getElementById('tekst');
+  const cnt = document.getElementById('tekst-cnt');
+  function upd() {
+    const n = ta.value.length;
+    cnt.textContent = `${n} / 500`;
+    cnt.classList.toggle('warn', n > 450);
+  }
+  ta.addEventListener('input', upd);
+  upd();
+
+  // submit gating
+  function updateSend() {
+    const btn = document.getElementById('send');
+    btn.disabled = !(nps != null && type);
+  }
+  updateSend();
+
+  function send() {
+    const btn = document.getElementById('send');
+    btn.disabled = true;
+    btn.innerHTML = 'Sender…';
+    setTimeout(() => {
+      btn.innerHTML = '✓ Takk for tilbakemeldingen!';
+      btn.style.background = 'var(--primary)';
+      btn.style.color = '#fff';
+    }, 700);
+  }
+
+  // close button (purely visual)
+  document.querySelector('.m-close').addEventListener('click', () => {
+    document.querySelector('.modal').style.transform = 'scale(0.96)';
+    document.querySelector('.modal').style.opacity = '0.4';
+    document.querySelector('.modal').style.transition = 'all .2s';
+  });
+</script>
+</body>
+</html>

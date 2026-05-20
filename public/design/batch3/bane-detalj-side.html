@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>GFGK Old Course — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding-bottom: 96px; }
+
+  .topnav {
+    display: flex; align-items: center;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #fff; gap: 16px;
+  }
+  .topnav .name {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 700; color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    text-transform: uppercase; font-weight: 600;
+    text-decoration: none;
+  }
+  .back-link:hover { color: var(--fg); }
+  .back-link svg { width: 14px; height: 14px; }
+
+  .page {
+    max-width: 1200px; margin: 0 auto;
+    padding: 48px 24px 32px;
+    display: flex; flex-direction: column; gap: 32px;
+  }
+
+  /* Hero */
+  .hero {
+    display: grid; grid-template-columns: 1fr 280px;
+    gap: 32px; align-items: end;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 10px;
+  }
+  .hero-title {
+    font-family: var(--font-display); font-size: 48px;
+    font-weight: 600; letter-spacing: -0.02em; line-height: 1.05;
+  }
+  .hero-title em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .hero-meta {
+    margin-top: 16px;
+    display: flex; gap: 22px; flex-wrap: wrap;
+  }
+  .hero-meta .item {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .hero-meta .item .k {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    font-weight: 600;
+  }
+  .hero-meta .item .v {
+    font-family: var(--font-mono); font-size: 18px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+
+  /* Map mini */
+  .map-mini {
+    width: 280px; height: 180px;
+    border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: pointer; position: relative;
+    background: linear-gradient(140deg, #DDE6CE 0%, #B4C99D 100%);
+    transition: box-shadow 120ms;
+  }
+  .map-mini:hover { box-shadow: 0 4px 20px rgba(10,31,23,0.08); }
+  .map-mini svg { width: 100%; height: 100%; display: block; }
+  .map-mini .pin {
+    position: absolute; bottom: 12px; left: 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--card); border-radius: 999px;
+    padding: 6px 12px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--fg);
+    box-shadow: 0 2px 6px rgba(10,31,23,0.12);
+  }
+  .map-mini .pin svg { width: 12px; height: 12px; color: var(--danger); }
+
+  /* Hero stats */
+  .hero-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; overflow: hidden;
+  }
+  .h-stat {
+    padding: 22px 24px;
+    border-right: 1px solid var(--border-soft);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .h-stat:last-child { border-right: 0; }
+  .h-stat .lbl {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    font-weight: 600;
+  }
+  .h-stat .val {
+    font-family: var(--font-mono); font-size: 36px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .h-stat .val.pos { color: var(--success); }
+  .h-stat .sub {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 4px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 6px;
+    align-self: flex-start;
+  }
+  .tab-btn {
+    background: transparent; border: 0;
+    padding: 10px 18px;
+    font-family: var(--font-display); font-size: 13.5px; font-weight: 600;
+    color: var(--muted); cursor: pointer; border-radius: 10px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .tab-btn svg { width: 14px; height: 14px; }
+  .tab-btn:hover { color: var(--fg); }
+  .tab-btn.active { background: var(--fg); color: var(--accent); }
+
+  .pane { display: none; flex-direction: column; gap: 18px; }
+  .pane.active { display: flex; }
+
+  /* HOLES TAB */
+  .holes-head {
+    display: grid;
+    grid-template-columns: 42px 44px 110px 1fr 78px 78px 78px 70px;
+    gap: 14px; align-items: center;
+    padding: 6px 18px 10px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .holes-head .center { text-align: center; }
+  .holes-head .right { text-align: right; }
+  .holes-wrap {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .hole-row {
+    display: grid;
+    grid-template-columns: 42px 44px 110px 1fr 78px 78px 78px 70px;
+    gap: 14px; align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-soft);
+    cursor: pointer;
+    transition: background 100ms;
+  }
+  .hole-row:hover { background: var(--bg); }
+  .hole-row:last-child { border-bottom: 0; }
+  .hole-row .num {
+    font-family: var(--font-mono); font-size: 16px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+  }
+  .hole-row .par {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+    color: var(--muted); font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+  .hole-row .len {
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 600;
+    color: var(--muted); font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .hole-row .diff-bar {
+    height: 14px; background: var(--bg);
+    border-radius: 5px; position: relative; overflow: hidden;
+  }
+  .hole-row .diff-bar .fill {
+    position: absolute; top: 0; bottom: 0; border-radius: 4px;
+  }
+  .hole-row .diff-bar .center-mark {
+    position: absolute; left: 50%; top: -3px; bottom: -3px;
+    width: 1.5px; background: var(--border);
+  }
+  .hole-row .num-val {
+    font-family: var(--font-mono); font-size: 13.5px; font-weight: 700;
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .hole-row .num-val.over { color: var(--danger); }
+  .hole-row .num-val.under { color: var(--success); }
+  .hole-row .num-val.even { color: var(--muted); }
+  .hole-row .sg {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .hole-row .sg.pos { color: var(--success); }
+  .hole-row .sg.neg { color: var(--danger); }
+  .hole-row .sg.flat { color: var(--muted); }
+  .hole-row .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700;
+    padding: 3px 8px; border-radius: 999px;
+  }
+  .hole-row .tag.hard { background: rgba(163,45,45,0.10); color: var(--danger); }
+  .hole-row .tag.easy { background: rgba(209,248,67,0.30); color: #4A5418; }
+  .hole-row .tag svg { width: 10px; height: 10px; }
+
+  /* Holes summary card under table */
+  .holes-summary {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .hs-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 22px;
+  }
+  .hs-card.hard { border-left: 3px solid var(--danger); }
+  .hs-card.easy { border-left: 3px solid var(--accent); }
+  .hs-card .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .hs-card .hole-num {
+    font-family: var(--font-mono); font-size: 36px; font-weight: 700;
+    color: var(--fg); margin: 6px 0 4px;
+    font-variant-numeric: tabular-nums; line-height: 1;
+  }
+  .hs-card .desc {
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--muted); line-height: 1.45;
+  }
+  .hs-card .desc strong { color: var(--fg); font-family: var(--font-mono); font-weight: 700; }
+
+  /* TIMELINE TAB */
+  .scatter {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px 28px;
+  }
+  .scatter-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 14px;
+  }
+  .scatter-head .ttl {
+    font-family: var(--font-display); font-size: 16px; font-weight: 600;
+  }
+  .scatter-head .sub {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .scatter-legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    margin-bottom: 18px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .scatter-legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .scatter-legend .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .chart {
+    position: relative; height: 320px;
+  }
+  .chart .yaxis {
+    position: absolute; left: 0; top: 0; bottom: 22px;
+    width: 36px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-soft); text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .chart .plot {
+    position: absolute; left: 46px; right: 8px; top: 0; bottom: 22px;
+    border-left: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .chart .gridline {
+    position: absolute; left: 0; right: 0;
+    border-top: 1px dashed var(--border-soft);
+    pointer-events: none;
+  }
+  .chart .par-line {
+    position: absolute; left: 0; right: 0;
+    border-top: 1.5px solid var(--primary); opacity: 0.6;
+  }
+  .chart .par-line::after {
+    content: 'PAR 71';
+    position: absolute; right: 8px; top: -18px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--primary); letter-spacing: 0.10em;
+    background: var(--card); padding: 0 6px;
+  }
+  .chart .dot {
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    transform: translate(-50%, 50%);
+    border: 2px solid var(--card);
+  }
+  .chart .dot.under { background: var(--success); }
+  .chart .dot.even { background: var(--muted); }
+  .chart .dot.over { background: var(--danger); }
+  .chart .dot.best {
+    background: var(--accent); width: 14px; height: 14px;
+    border-color: var(--primary);
+  }
+  .chart .trend-line {
+    position: absolute; left: 46px; right: 8px; top: 0; bottom: 22px;
+    pointer-events: none;
+  }
+  .chart .xaxis {
+    position: absolute; left: 46px; right: 8px; bottom: 0;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-soft);
+  }
+
+  /* STRATEGI TAB */
+  .strat-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .strat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 20px;
+    border-left: 3px solid var(--primary);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .strat-card.self { border-left-color: var(--accent); }
+  .strat-card.hole-pin .hole-tag {
+    align-self: flex-start;
+    padding: 3px 9px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    background: var(--bg); color: var(--primary);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .strat-card .author {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;
+    font-weight: 700;
+    display: flex; gap: 8px; align-items: baseline;
+  }
+  .strat-card .author .who { color: var(--fg); }
+  .strat-card .author .when { color: var(--muted-soft); font-weight: 500; }
+  .strat-card .body {
+    font-size: 14px; line-height: 1.55; color: var(--fg);
+  }
+  .strat-card .body strong { font-family: var(--font-display); font-weight: 600; }
+
+  /* FOTO TAB */
+  .photo-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .photo-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    aspect-ratio: 4 / 3;
+    position: relative;
+    cursor: pointer; transition: transform 120ms;
+  }
+  .photo-card:hover { transform: translateY(-2px); }
+  .photo-card svg { width: 100%; height: 100%; display: block; }
+  .photo-card .caption {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 12px 14px;
+    background: linear-gradient(transparent, rgba(10,31,23,0.65));
+    color: #fff;
+  }
+  .photo-card .caption .h {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .photo-card .caption .t {
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+    margin-top: 3px;
+  }
+
+  /* Sticky footer */
+  .page-foot {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex; align-items: center; gap: 10px;
+    z-index: 10;
+  }
+  .page-foot .left-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .page-foot .left-meta strong { color: var(--fg); font-weight: 700; }
+  .page-foot .actions {
+    margin-left: auto; display: flex; gap: 8px;
+  }
+  .btn-forest-cta {
+    background: var(--primary); color: var(--accent);
+    border: 0; border-radius: var(--r-pill);
+    padding: 11px 22px; font-size: 13px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+    font-family: var(--font-body);
+  }
+  .btn-forest-cta:hover { background: var(--primary-dark); }
+  .btn-forest-cta svg { width: 14px; height: 14px; }
+
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; }
+    .map-mini { width: 100%; }
+    .hero-stats { grid-template-columns: 1fr 1fr; }
+    .holes-head, .hole-row { grid-template-columns: 36px 36px 1fr 60px 60px 60px; }
+    .holes-head > :nth-child(3),
+    .hole-row > :nth-child(3) { display: none; }
+    .holes-head > :nth-child(7),
+    .hole-row > :nth-child(7) { display: none; }
+    .strat-grid, .photo-grid, .holes-summary { grid-template-columns: 1fr; }
+    .hero-title { font-size: 36px; }
+  }
+</style>
+</head>
+<body data-screen-label="Bane-detalj side">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-map-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="ic-notebook" viewBox="0 0 24 24"><path d="M2 6h4v12H2z"/><path d="M6 4h14v16H6z"/><path d="M10 9h6"/><path d="M10 13h6"/></symbol>
+    <symbol id="ic-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></symbol>
+    <symbol id="ic-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+    <symbol id="ic-trophy" viewBox="0 0 24 24"><path d="M6 9H4a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h3"/><path d="M18 9h2a2 2 0 0 0 2-2V6a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></symbol>
+  </defs>
+</svg>
+
+<header class="topnav">
+  <a href="Workbench v2.html" class="back-link">
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-left"/></svg>
+    Baner
+  </a>
+  <div class="name">AK GOLF</div>
+  <div class="crumbs">
+    PlayerHQ &nbsp;/&nbsp; Mål &nbsp;/&nbsp; Baner &nbsp;/&nbsp; <span class="current">GFGK Old Course</span>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <div class="hero-eyebrow">PLAYERHQ · BANER · GREÅKER FRIDALEN GK</div>
+      <h1 class="hero-title"><em>GFGK Old Course</em></h1>
+      <div class="hero-meta">
+        <div class="item"><span class="k">Par</span><span class="v">71</span></div>
+        <div class="item"><span class="k">Slope</span><span class="v">130</span></div>
+        <div class="item"><span class="k">Rating</span><span class="v">71,4</span></div>
+        <div class="item"><span class="k">Lengde</span><span class="v">6 412 m</span></div>
+        <div class="item"><span class="k">Designet</span><span class="v">1923 · DJ Ross</span></div>
+      </div>
+    </div>
+
+    <div class="map-mini" id="map-mini" role="button" tabindex="0">
+      <svg viewBox="0 0 280 180" xmlns="http://www.w3.org/2000/svg">
+        <!-- background fairways/water -->
+        <rect width="280" height="180" fill="#B4C99D"/>
+        <!-- fairway shapes -->
+        <path d="M20 30 Q60 20 90 50 T160 70 Q200 80 240 50" stroke="#8FAB6F" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M30 130 Q70 110 120 130 T220 120" stroke="#8FAB6F" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M40 90 Q80 80 110 100" stroke="#8FAB6F" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <!-- water -->
+        <ellipse cx="200" cy="115" rx="32" ry="14" fill="#7AA4B3" opacity="0.85"/>
+        <!-- bunkers -->
+        <ellipse cx="80" cy="42" rx="6" ry="3" fill="#E8D9A9"/>
+        <ellipse cx="150" cy="62" rx="8" ry="4" fill="#E8D9A9"/>
+        <ellipse cx="190" cy="55" rx="5" ry="3" fill="#E8D9A9"/>
+        <ellipse cx="110" cy="120" rx="7" ry="3" fill="#E8D9A9"/>
+        <!-- greens (small darker circles) -->
+        <circle cx="40" cy="35" r="5" fill="#5E8C3F"/>
+        <circle cx="235" cy="48" r="5" fill="#5E8C3F"/>
+        <circle cx="220" cy="123" r="5" fill="#5E8C3F"/>
+        <circle cx="115" cy="100" r="5" fill="#5E8C3F"/>
+        <!-- compass -->
+        <text x="252" y="20" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#0A1F17" opacity="0.65">N ↑</text>
+      </svg>
+      <div class="pin">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-map-pin"/></svg>
+        FREDRIKSTAD · 1,1 KM
+      </div>
+    </div>
+  </section>
+
+  <!-- HERO STATS -->
+  <section class="hero-stats">
+    <div class="h-stat">
+      <span class="lbl">Runder</span>
+      <span class="val">28</span>
+      <span class="sub">SIDEN MAI 2024 · 11 I 2026</span>
+    </div>
+    <div class="h-stat">
+      <span class="lbl">Beste</span>
+      <span class="val">67</span>
+      <span class="sub">−4 · 14. JUNI 2025</span>
+    </div>
+    <div class="h-stat">
+      <span class="lbl">Snitt</span>
+      <span class="val">73,2</span>
+      <span class="sub">+2,2 PR. RUNDE</span>
+    </div>
+    <div class="h-stat">
+      <span class="lbl">SG total</span>
+      <span class="val pos">+1,4</span>
+      <span class="sub">T2G +0,8 · PUTT +0,6</span>
+    </div>
+  </section>
+
+  <!-- TABS -->
+  <nav class="tabs" data-field="tabs">
+    <button class="tab-btn active" data-tab="holes">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg>
+      Hull-for-hull
+    </button>
+    <button class="tab-btn" data-tab="timeline">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>
+      Tidslinje
+    </button>
+    <button class="tab-btn" data-tab="strategy">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-notebook"/></svg>
+      Strategi-notater
+    </button>
+    <button class="tab-btn" data-tab="photos">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-camera"/></svg>
+      Foto
+    </button>
+  </nav>
+
+  <!-- HOLES PANE -->
+  <section class="pane active" data-pane="holes">
+    <div class="holes-summary">
+      <div class="hs-card hard">
+        <span class="lbl">Vanskeligst</span>
+        <div class="hole-num">17</div>
+        <div class="desc"><strong>Snitt 4.8</strong> på par 4 · bunker høyre. Anders anbefaler 3-wood fra tee — du straffes for driver 4 av 5 runder her.</div>
+      </div>
+      <div class="hs-card easy">
+        <span class="lbl">Lettest</span>
+        <div class="hole-num">6</div>
+        <div class="desc"><strong>Snitt 3.4</strong> på par 4 · driveable for de fleste A1. Du har birdied her 11 av 28 runder.</div>
+      </div>
+    </div>
+
+    <div class="holes-head">
+      <span>Hull</span>
+      <span class="center">Par</span>
+      <span>Lengde</span>
+      <span>Vanskelighet</span>
+      <span class="right">Snitt</span>
+      <span class="right">Best</span>
+      <span class="right">SG</span>
+      <span></span>
+    </div>
+    <div class="holes-wrap" id="holes-wrap"></div>
+  </section>
+
+  <!-- TIMELINE PANE -->
+  <section class="pane" data-pane="timeline">
+    <div class="scatter">
+      <div class="scatter-head">
+        <span class="ttl">Siste 28 runder · GFGK Old Course</span>
+        <span class="sub">MAI 2024 → MAI 2026</span>
+      </div>
+      <div class="scatter-legend">
+        <span class="item"><span class="dot" style="background:var(--success);"></span> Under par</span>
+        <span class="item"><span class="dot" style="background:var(--muted);"></span> Par</span>
+        <span class="item"><span class="dot" style="background:var(--danger);"></span> Over par</span>
+        <span class="item"><span class="dot" style="background:var(--accent);border:2px solid var(--primary);width:12px;height:12px;"></span> Beste</span>
+        <span class="item" style="margin-left:auto;"><span style="display:inline-block;width:16px;border-top:1.5px dashed var(--primary);"></span> Trend</span>
+      </div>
+      <div class="chart" id="chart"></div>
+    </div>
+  </section>
+
+  <!-- STRATEGY PANE -->
+  <section class="pane" data-pane="strategy">
+    <div class="strat-grid">
+      <div class="strat-card hole-pin">
+        <span class="hole-tag">HULL 17 · ANDERS K.</span>
+        <div class="author"><span class="who">ANDERS K.</span><span class="when">14. APR 2026</span></div>
+        <div class="body">
+          <strong>3-wood fra tee, alltid.</strong> Bunkeren høyre er ute av rekkevidde med wood, men du straffes
+          for driver 4 av 5 runder. Trekk litt venstre — venstre fairway gir bedre vinkel inn til pin.
+        </div>
+      </div>
+      <div class="strat-card self hole-pin">
+        <span class="hole-tag" style="background:rgba(209,248,67,0.30);color:#4A5418;">HULL 6 · EGEN NOTE</span>
+        <div class="author"><span class="who">MARKUS · EGEN NOTE</span><span class="when">2. MAI 2026</span></div>
+        <div class="body">
+          Greenen på 6 er <strong>raskere</strong> enn den ser ut. Spill 30 cm kort på alle puttene over 4 m —
+          ellers stikker den forbi.
+        </div>
+      </div>
+      <div class="strat-card hole-pin">
+        <span class="hole-tag">HELE RUNDEN · ANDERS K.</span>
+        <div class="author"><span class="who">ANDERS K.</span><span class="when">12. MAR 2026</span></div>
+        <div class="body">
+          Vind fra vest favoriserer hull 9–12, motarbeider 14–17. <strong>Sjekk vinden på range</strong> før
+          første tee — den driver kategorivalget hele runden.
+        </div>
+      </div>
+      <div class="strat-card self hole-pin">
+        <span class="hole-tag" style="background:rgba(209,248,67,0.30);color:#4A5418;">HULL 14 · EGEN NOTE</span>
+        <div class="author"><span class="who">MARKUS · EGEN NOTE</span><span class="when">18. APR 2026</span></div>
+        <div class="body">
+          Dogleg-en kan caraves med iron over treet hvis vinden er med. Funket 3 av 4 ganger i 2025-sesongen.
+          Risiko OK når vinden er &gt;5 m/s fra ryggen.
+        </div>
+      </div>
+      <div class="strat-card hole-pin">
+        <span class="hole-tag">HULL 8 · ANDERS K.</span>
+        <div class="author"><span class="who">ANDERS K.</span><span class="when">1. MAR 2026</span></div>
+        <div class="body">
+          Par 5 — <strong>aldri</strong> gå for green på 2. Pin bak vannet, du er på +0,4 SG når du legger opp
+          til 80m vs +0,1 når du forsøker. Ta 3-tallet og spar slag.
+        </div>
+      </div>
+      <div class="strat-card self hole-pin">
+        <span class="hole-tag" style="background:rgba(209,248,67,0.30);color:#4A5418;">HULL 1 · EGEN NOTE</span>
+        <div class="author"><span class="who">MARKUS · EGEN NOTE</span><span class="when">5. APR 2026</span></div>
+        <div class="body">
+          Første tee — gå alltid 2 ekstra speed-stick før første sving. Kroppen er kald og første drive blir
+          som regel kort hvis jeg ikke får i gang rotasjonen først.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHOTOS PANE -->
+  <section class="pane" data-pane="photos">
+    <div class="photo-grid">
+      <div class="photo-card">
+        <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="180" fill="#B4C99D"/>
+          <path d="M0 130 Q80 100 240 120 L240 180 L0 180 Z" fill="#7A9B5E"/>
+          <circle cx="120" cy="90" r="22" fill="#5E8C3F"/>
+          <line x1="120" y1="68" x2="120" y2="40" stroke="#FAFAF7" stroke-width="1.5"/>
+          <polygon points="120,40 130,44 120,48" fill="#D1F843"/>
+        </svg>
+        <div class="caption"><div class="h">HULL 17 · 14. JUNI 2025</div><div class="t">Tee-shot — beste runden noensinne</div></div>
+      </div>
+      <div class="photo-card">
+        <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="180" fill="#9FB890"/>
+          <ellipse cx="180" cy="130" rx="60" ry="18" fill="#7AA4B3"/>
+          <path d="M0 140 Q60 110 130 130" fill="none" stroke="#7A9B5E" stroke-width="14" stroke-linecap="round"/>
+          <circle cx="60" cy="135" r="8" fill="#E8D9A9"/>
+        </svg>
+        <div class="caption"><div class="h">HULL 8 · 22. MAI 2025</div><div class="t">Lay-up til 80m</div></div>
+      </div>
+      <div class="photo-card">
+        <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="180" fill="#6B8C5A"/>
+          <rect width="240" height="80" fill="#7AA4B3" opacity="0.4"/>
+          <path d="M0 90 L240 90 L240 180 L0 180 Z" fill="#5E8C3F"/>
+          <circle cx="140" cy="115" r="18" fill="#9FB880" stroke="#FAFAF7" stroke-width="1"/>
+          <text x="20" y="170" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#FAFAF7" opacity="0.75">GREEN 6 · MORGEN</text>
+        </svg>
+        <div class="caption"><div class="h">HULL 6 · 3. JUNI 2025</div><div class="t">Morgenrunde — birdie</div></div>
+      </div>
+      <div class="photo-card">
+        <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="180" fill="#A4B98C"/>
+          <path d="M40 0 Q60 80 50 180" stroke="#5C4A2E" stroke-width="14" fill="none"/>
+          <path d="M30 0 Q55 60 35 100 Q60 70 50 0" fill="#3D6635" opacity="0.85"/>
+          <circle cx="180" cy="110" r="22" fill="#5E8C3F"/>
+        </svg>
+        <div class="caption"><div class="h">HULL 14 · 11. AUG 2025</div><div class="t">Dogleg over treet</div></div>
+      </div>
+      <div class="photo-card">
+        <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="180" fill="#C9D9B4"/>
+          <rect width="240" height="60" fill="#B0C29C"/>
+          <path d="M0 130 Q120 90 240 130 L240 180 L0 180 Z" fill="#8FAB6F"/>
+          <ellipse cx="120" cy="125" rx="14" ry="5" fill="#E8D9A9"/>
+          <ellipse cx="80" cy="120" rx="10" ry="4" fill="#E8D9A9"/>
+        </svg>
+        <div class="caption"><div class="h">HULL 11 · 7. SEP 2024</div><div class="t">Bunker-eskalering</div></div>
+      </div>
+      <div class="photo-card">
+        <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="180" fill="#E8D9A9"/>
+          <rect width="240" height="60" fill="#F5E8B8"/>
+          <polygon points="0,60 80,40 160,55 240,30 240,80 0,80" fill="#C8B488"/>
+          <text x="20" y="160" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="#0A1F17" opacity="0.6">GFGK · 17. TEE</text>
+        </svg>
+        <div class="caption"><div class="h">HULL 17 · 18. APR 2026</div><div class="t">Tee-bilde · forrige runde</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="page-foot">
+  <div class="left-meta">SIST RUNDE: <strong>18. APR 2026</strong> · 72 SLAG · +1</div>
+  <div class="actions">
+    <button class="btn btn-outline" id="map-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-map-pin"/></svg>
+      Se på kart
+    </button>
+    <button class="btn btn-outline" id="caddy-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user"/></svg>
+      Book caddy/coach
+    </button>
+    <button class="btn btn-outline" id="share-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-share"/></svg>
+      Del
+    </button>
+    <button class="btn-forest-cta" id="log-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+      Logg runde her
+    </button>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-text">—</span>
+</div>
+
+<script>
+  // Toast
+  const toast = document.getElementById('toast');
+  const showToast = (t) => {
+    document.getElementById('toast-text').textContent = t;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2400);
+  };
+
+  // Holes data
+  const HOLES = [
+    { n: 1, par: 4, len: 365, avg: 4.2, best: 3, sg: -0.05 },
+    { n: 2, par: 5, len: 510, avg: 4.9, best: 4, sg: +0.18 },
+    { n: 3, par: 3, len: 172, avg: 3.1, best: 2, sg: -0.02 },
+    { n: 4, par: 4, len: 405, avg: 4.4, best: 3, sg: -0.12 },
+    { n: 5, par: 4, len: 380, avg: 3.9, best: 3, sg: +0.20 },
+    { n: 6, par: 4, len: 298, avg: 3.4, best: 2, sg: +0.36, easy: true },
+    { n: 7, par: 3, len: 158, avg: 3.0, best: 2, sg: +0.04 },
+    { n: 8, par: 5, len: 525, avg: 5.1, best: 4, sg: -0.06 },
+    { n: 9, par: 4, len: 410, avg: 4.1, best: 3, sg: 0 },
+    { n: 10, par: 4, len: 392, avg: 4.3, best: 3, sg: -0.10 },
+    { n: 11, par: 3, len: 188, avg: 3.2, best: 2, sg: -0.08 },
+    { n: 12, par: 5, len: 542, avg: 4.8, best: 4, sg: +0.22 },
+    { n: 13, par: 4, len: 372, avg: 4.0, best: 3, sg: +0.02 },
+    { n: 14, par: 4, len: 425, avg: 4.5, best: 3, sg: -0.18 },
+    { n: 15, par: 3, len: 205, avg: 3.4, best: 3, sg: -0.20 },
+    { n: 16, par: 4, len: 388, avg: 4.1, best: 3, sg: -0.02 },
+    { n: 17, par: 4, len: 442, avg: 4.8, best: 4, sg: -0.42, hard: true },
+    { n: 18, par: 5, len: 535, avg: 5.0, best: 4, sg: +0.06 }
+  ];
+
+  const wrap = document.getElementById('holes-wrap');
+  wrap.innerHTML = HOLES.map(h => {
+    const diff = h.avg - h.par;
+    const fillPct = Math.min(40, Math.abs(diff) * 80);
+    const fillColor = diff >= 0.4 ? 'var(--danger)' : diff >= 0.1 ? 'var(--warning)' : diff <= -0.1 ? 'var(--success)' : 'var(--muted)';
+    const fillStyle = diff >= 0
+      ? `left: 50%; width: ${fillPct}%; background: ${fillColor};`
+      : `right: 50%; width: ${fillPct}%; background: ${fillColor};`;
+    const avgClass = diff > 0.05 ? 'over' : diff < -0.05 ? 'under' : 'even';
+    const sgClass = h.sg > 0.05 ? 'pos' : h.sg < -0.05 ? 'neg' : 'flat';
+    const sgSign = h.sg > 0 ? '+' : '';
+    const tag = h.hard
+      ? '<span class="tag hard"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-flag"/></svg>Vansk.</span>'
+      : h.easy
+      ? '<span class="tag easy"><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg>Lett</span>'
+      : '';
+    return `
+      <div class="hole-row" data-hole="${h.n}">
+        <span class="num">${h.n}</span>
+        <span class="par">${h.par}</span>
+        <span class="len">${h.len} m</span>
+        <span class="diff-bar"><span class="center-mark"></span><span class="fill" style="${fillStyle}"></span></span>
+        <span class="num-val ${avgClass}">${h.avg.toFixed(1)}</span>
+        <span class="num-val">${h.best}</span>
+        <span class="sg ${sgClass}">${sgSign}${h.sg.toFixed(2)}</span>
+        <span style="text-align:right;">${tag}</span>
+      </div>
+    `;
+  }).join('');
+  wrap.querySelectorAll('.hole-row').forEach(r => {
+    r.addEventListener('click', () => {
+      const n = r.dataset.hole;
+      showToast(`Hull ${n} — detalj-popover (kommer)`);
+    });
+  });
+
+  // Build scatter
+  const scores = [78,77,75,76,74,73,75,72,71,73,74,72,67,70,71,72,73,71,70,73,72,71,70,71,73,72,71,70];
+  const yMin = 66, yMax = 80;
+  const chart = document.getElementById('chart');
+  const yax = document.createElement('div');
+  yax.className = 'yaxis';
+  yax.innerHTML = '<span>80</span><span>76</span><span>72</span><span>68</span>';
+  chart.appendChild(yax);
+
+  const plot = document.createElement('div');
+  plot.className = 'plot';
+
+  // gridlines
+  [76, 72, 68].forEach(g => {
+    const line = document.createElement('div');
+    line.className = 'gridline';
+    line.style.top = (((yMax - g) / (yMax - yMin)) * 100) + '%';
+    plot.appendChild(line);
+  });
+
+  // par line
+  const par = document.createElement('div');
+  par.className = 'par-line';
+  par.style.top = (((yMax - 71) / (yMax - yMin)) * 100) + '%';
+  plot.appendChild(par);
+
+  // dots
+  let bestIdx = scores.indexOf(Math.min(...scores));
+  scores.forEach((s, i) => {
+    const dot = document.createElement('span');
+    const diff = s - 71;
+    let cls = diff < 0 ? 'under' : diff === 0 ? 'even' : 'over';
+    if (i === bestIdx) cls = 'best';
+    dot.className = 'dot ' + cls;
+    dot.style.left = ((i / (scores.length - 1)) * 100) + '%';
+    dot.style.top = (((yMax - s) / (yMax - yMin)) * 100) + '%';
+    dot.title = `Runde ${i + 1}: ${s}`;
+    plot.appendChild(dot);
+  });
+
+  // trend line — simple moving avg linear approx
+  const trendSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  trendSvg.setAttribute('viewBox', `0 0 100 100`);
+  trendSvg.setAttribute('preserveAspectRatio', 'none');
+  trendSvg.classList.add('trend-line');
+  trendSvg.style.position = 'absolute';
+  trendSvg.style.left = '0'; trendSvg.style.right = '0';
+  trendSvg.style.top = '0'; trendSvg.style.bottom = '0';
+  trendSvg.style.width = '100%'; trendSvg.style.height = '100%';
+  trendSvg.style.pointerEvents = 'none';
+  // linear regression
+  const xs = scores.map((_, i) => i);
+  const xMean = xs.reduce((a,b)=>a+b,0) / xs.length;
+  const yMean = scores.reduce((a,b)=>a+b,0) / scores.length;
+  let num = 0, den = 0;
+  for (let i = 0; i < scores.length; i++) {
+    num += (xs[i] - xMean) * (scores[i] - yMean);
+    den += (xs[i] - xMean) ** 2;
+  }
+  const m = num / den;
+  const b = yMean - m * xMean;
+  const y0 = b;
+  const yN = m * (scores.length - 1) + b;
+  const p0 = ((yMax - y0) / (yMax - yMin)) * 100;
+  const pN = ((yMax - yN) / (yMax - yMin)) * 100;
+  trendSvg.innerHTML = `<line x1="0" y1="${p0}" x2="100" y2="${pN}" stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6"/>`;
+  plot.appendChild(trendSvg);
+
+  chart.appendChild(plot);
+  const xax = document.createElement('div');
+  xax.className = 'xaxis';
+  xax.innerHTML = '<span>MAI \'24</span><span>NOV \'24</span><span>MAI \'25</span><span>NOV \'25</span><span>MAI \'26</span>';
+  chart.appendChild(xax);
+
+  // Tabs
+  document.querySelectorAll('[data-field="tabs"] .tab-btn').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('[data-field="tabs"] .tab-btn').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      const which = t.dataset.tab;
+      document.querySelectorAll('.pane').forEach(p => p.classList.toggle('active', p.dataset.pane === which));
+    });
+  });
+
+  // Footer actions
+  document.getElementById('map-btn').addEventListener('click', () => showToast('Åpner full kartmodus …'));
+  document.getElementById('caddy-btn').addEventListener('click', () => showToast('Viser ledige caddyer og coach-runder …'));
+  document.getElementById('share-btn').addEventListener('click', () => {
+    if (navigator.clipboard) navigator.clipboard.writeText(window.location.href);
+    showToast('Bane-lenke kopiert');
+  });
+  document.getElementById('log-btn').addEventListener('click', () => {
+    showToast('Åpner logg-runde-flyt for GFGK Old Course …');
+  });
+  document.getElementById('map-mini').addEventListener('click', () => {
+    showToast('Åpner full kartvisning av GFGK Old Course');
+  });
+</script>
+
+</body>
+</html>
