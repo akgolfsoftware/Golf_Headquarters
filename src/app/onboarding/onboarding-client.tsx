@@ -118,9 +118,9 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-[640px] px-6 py-10">
+      <main className="mx-auto max-w-[640px] px-4 sm:px-6 py-6 sm:py-10">
         <div
-          className="space-y-6 rounded-[20px] border border-border bg-card p-8 sm:p-10"
+          className="space-y-6 rounded-[20px] border border-border bg-card p-5 sm:p-8 md:p-10"
           role="dialog"
           aria-modal="true"
         >
@@ -134,7 +134,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                 <span className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground">
                   Onboarding · steg 01
                 </span>
-                <h1 className="font-display text-[36px] font-semibold leading-tight -tracking-[0.02em]">
+                <h1 className="font-display text-3xl sm:text-[36px] font-semibold leading-tight -tracking-[0.02em]">
                   Velkommen til{" "}
                   <em className="font-display italic font-normal text-primary">PlayerHQ</em>
                 </h1>

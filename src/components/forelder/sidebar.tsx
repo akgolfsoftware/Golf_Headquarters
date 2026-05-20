@@ -2,15 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  Home as HomeIcon,
+  Users as UsersIcon,
+  CalendarRange,
+  Receipt,
+  Bell,
+  ShieldCheck,
+} from "lucide-react";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 
 const NAV = [
-  { href: "/forelder", label: "Oversikt" },
-  { href: "/forelder/barn", label: "Mine barn" },
-  { href: "/forelder/ukerapport", label: "Ukerapport" },
-  { href: "/forelder/fakturaer", label: "Fakturaer" },
-  { href: "/forelder/varsler", label: "Varsler" },
-  { href: "/forelder/samtykke", label: "Samtykker" },
+  { href: "/forelder", label: "Oversikt", Icon: HomeIcon },
+  { href: "/forelder/barn", label: "Mine barn", Icon: UsersIcon },
+  { href: "/forelder/ukerapport", label: "Ukerapport", Icon: CalendarRange },
+  { href: "/forelder/fakturaer", label: "Fakturaer", Icon: Receipt },
+  { href: "/forelder/varsler", label: "Varsler", Icon: Bell },
+  { href: "/forelder/samtykke", label: "Samtykker", Icon: ShieldCheck },
 ];
 
 export function ForelderSidebar() {
@@ -54,5 +62,35 @@ export function ForelderSidebar() {
         FORELDER
       </div>
     </aside>
+  );
+}
+
+export function ForelderMobileNav() {
+  const path = usePathname();
+  return (
+    <nav
+      aria-label="Foreldreportal mobil-navigasjon"
+      className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-primary text-primary-foreground lg:hidden pb-[env(safe-area-inset-bottom)]"
+    >
+      {NAV.map((n) => {
+        const aktiv = path === n.href || (n.href !== "/forelder" && path.startsWith(n.href));
+        const Icon = n.Icon;
+        return (
+          <Link
+            key={n.href}
+            href={n.href}
+            aria-current={aktiv ? "page" : undefined}
+            className={`flex flex-1 flex-col items-center justify-center gap-1 py-2 text-[10px] font-medium transition-colors ${
+              aktiv
+                ? "text-primary-foreground"
+                : "text-primary-foreground/60 hover:text-primary-foreground"
+            }`}
+          >
+            <Icon className="h-5 w-5" strokeWidth={1.75} />
+            <span className="leading-none">{n.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
   );
 }

@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 
 export default function CheckEmailPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-secondary/40 p-8">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-10 text-center shadow-sm">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-secondary/40 p-4 sm:p-8">
+      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 sm:p-10 text-center shadow-sm">
         <div className="mb-6 font-display text-xl font-bold tracking-tight">
           AK <em className="font-normal text-primary not-italic md:italic">Golf</em>
         </div>
@@ -27,7 +26,7 @@ export default function CheckEmailPage() {
 
         <Link
           href="/auth/login"
-          className="mt-8 inline-block rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground hover:border-border"
+          className="mt-8 inline-flex h-11 items-center rounded-md border border-input bg-card px-4 text-sm font-medium text-foreground hover:border-border"
         >
           Tilbake til innlogging
         </Link>

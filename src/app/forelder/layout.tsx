@@ -2,7 +2,7 @@
 // Beskyttet for kun PARENT-rollen.
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { ForelderSidebar } from "@/components/forelder/sidebar";
+import { ForelderSidebar, ForelderMobileNav } from "@/components/forelder/sidebar";
 import { UserMenu } from "@/components/shared/user-menu";
 
 export default async function ForelderLayout({
@@ -39,11 +39,12 @@ export default async function ForelderLayout({
         <main
           id="forelder-main"
           tabIndex={-1}
-          className="flex-1 px-4 py-6 focus:outline-none sm:px-8"
+          className="flex-1 px-4 py-6 pb-24 focus:outline-none sm:px-8 lg:pb-6"
         >
           {children}
         </main>
       </div>
+      <ForelderMobileNav />
     </div>
   );
 }

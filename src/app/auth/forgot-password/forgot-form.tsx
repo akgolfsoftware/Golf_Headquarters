@@ -57,7 +57,7 @@ export function ForgotForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full rounded-md border border-input bg-card px-4 py-4 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-4 text-base sm:text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
         />
       </label>
 

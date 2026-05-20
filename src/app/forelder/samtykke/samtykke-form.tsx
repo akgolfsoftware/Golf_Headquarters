@@ -89,7 +89,7 @@ export function SamtykkeForm({ childId, samtykker, eksisterende }: Props) {
           type="button"
           onClick={lagre}
           disabled={pending}
-          className="rounded-md bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          className="inline-flex h-11 items-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
         >
           {pending ? "Lagrer …" : "Lagre samtykker"}
         </button>

@@ -152,7 +152,7 @@ export default async function MineBarn() {
                   />
                 </div>
 
-                <dl className="mt-6 grid grid-cols-3 gap-4 border-t border-border pt-4 text-sm">
+                <dl className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-border pt-4 text-sm">
                   <div>
                     <dt className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                       <CalendarDays
