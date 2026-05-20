@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { notifyMany } from "@/lib/notifications";
 import type {
   PyramidArea,
   SkillArea,
@@ -804,4 +806,193 @@ export async function lagreSomMal(
 
   revalidatePath("/admin/plans/templates");
   return { ok: true, templateId: template.id };
+}
+
+/**
+ * Tildel en eksisterende treningsplan til én eller flere spillere.
+ *
+ * Plan-mønsteret følger `kopierPlan`: hver mottaker får sin egen kopi av planen
+ * (med økter og drills) — det finnes ingen TrainingPlanAssignment-modell i v1.
+ *
+ * - Coach må eie planen, eller være ADMIN.
+ * - Mottakere må ha role=PLAYER.
+ * - startDate forskyver alle økter med differansen mellom ny og original startDate.
+ * - Hver mottaker får en in-app notification.
+ */
+const AssignSchema = z.object({
+  planId: z.string().min(1),
+  playerIds: z.array(z.string().min(1)).min(1, "Velg minst én spiller."),
+  startDate: z
+    .string()
+    .min(1, "Velg startdato.")
+    .refine((s) => !Number.isNaN(new Date(s).getTime()), {
+      message: "Ugyldig startdato.",
+    }),
+  welcomeMessage: z.string().max(2000).optional(),
+  replaceActive: z.boolean().optional(),
+});
+
+export type AssignPlanResult =
+  | {
+      ok: true;
+      assignedCount: number;
+      skippedCount: number;
+      assignments: { userId: string; newPlanId: string }[];
+    }
+  | { ok: false; feil: string };
+
+export async function assignPlanToPlayers(input: {
+  planId: string;
+  playerIds: string[];
+  startDate: string; // ISO yyyy-mm-dd eller full ISO
+  welcomeMessage?: string;
+  replaceActive?: boolean;
+}): Promise<AssignPlanResult> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, feil: "unauthenticated" };
+  if (user.role !== "COACH" && user.role !== "ADMIN") {
+    return { ok: false, feil: "forbidden" };
+  }
+
+  const parsed = AssignSchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      feil: parsed.error.issues[0]?.message ?? "Ugyldig inndata.",
+    };
+  }
+  const data = parsed.data;
+
+  const original = await prisma.trainingPlan.findUnique({
+    where: { id: data.planId },
+    include: { sessions: { include: { drills: true } } },
+  });
+  if (!original) return { ok: false, feil: "Fant ikke planen." };
+
+  if (
+    user.role !== "ADMIN" &&
+    original.createdById &&
+    original.createdById !== user.id
+  ) {
+    return { ok: false, feil: "Du har ikke tilgang til denne planen." };
+  }
+
+  const playerIds = Array.from(new Set(data.playerIds));
+
+  const mottakere = await prisma.user.findMany({
+    where: { id: { in: playerIds }, role: "PLAYER" },
+    select: { id: true, name: true, tier: true },
+  });
+  if (mottakere.length === 0) {
+    return { ok: false, feil: "Ingen gyldige spillere valgt." };
+  }
+
+  const nyStart = new Date(data.startDate);
+  const dagerOffset = Math.round(
+    (nyStart.getTime() - original.startDate.getTime()) / (24 * 60 * 60 * 1000),
+  );
+  const nyEnd = original.endDate
+    ? new Date(
+        original.endDate.getTime() + dagerOffset * 24 * 60 * 60 * 1000,
+      )
+    : null;
+
+  // Hvis replaceActive=true, marker eksisterende aktive planer for disse
+  // spillerne som arkivert. Vi pauser ikke — vi setter isActive=false slik at
+  // den nye planen blir den førende uten å miste historikken.
+  if (data.replaceActive) {
+    await prisma.trainingPlan.updateMany({
+      where: {
+        userId: { in: mottakere.map((m) => m.id) },
+        isActive: true,
+        status: { in: ["ACTIVE", "PENDING_PLAYER"] },
+      },
+      data: { isActive: false, status: "ARCHIVED" },
+    });
+  }
+
+  const assignments: { userId: string; newPlanId: string }[] = [];
+  for (const mottaker of mottakere) {
+    const ny = await prisma.trainingPlan.create({
+      data: {
+        userId: mottaker.id,
+        name: original.name,
+        startDate: nyStart,
+        endDate: nyEnd,
+        isActive: false,
+        status: "DRAFT",
+        createdById: user.id,
+        sessions: {
+          create: original.sessions.map((s) => ({
+            scheduledAt: new Date(
+              s.scheduledAt.getTime() + dagerOffset * 24 * 60 * 60 * 1000,
+            ),
+            durationMin: s.durationMin,
+            title: s.title,
+            rationale: s.rationale,
+            pyramidArea: s.pyramidArea,
+            skillArea: s.skillArea,
+            environment: s.environment,
+            lPhase: s.lPhase,
+            pressureLevel: s.pressureLevel,
+            status: "PLANNED",
+            drills: {
+              create: s.drills.map((d) => ({
+                exerciseId: d.exerciseId,
+                repsSets: d.repsSets,
+                sets: d.sets,
+                reps: d.reps,
+                csTarget: d.csTarget,
+                notes: d.notes,
+                orderIndex: d.orderIndex,
+              })),
+            },
+          })),
+        },
+      },
+      select: { id: true },
+    });
+    assignments.push({ userId: mottaker.id, newPlanId: ny.id });
+  }
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: user.id,
+      action: "plan.assign",
+      target: original.id,
+      metadata: {
+        planName: original.name,
+        assignedTo: assignments,
+        startDate: nyStart.toISOString(),
+        replacedActive: data.replaceActive ?? false,
+      },
+    },
+  });
+
+  const coachName = user.name?.trim() || "Coachen din";
+  const tittel = `Ny treningsplan: ${original.name}`;
+  const kropp = (
+    data.welcomeMessage?.trim() ||
+    `${coachName} har tildelt deg en ny treningsplan: ${original.name}.`
+  ).slice(0, 600);
+
+  await notifyMany(
+    assignments.map((a) => a.userId),
+    {
+      type: "plan",
+      title: tittel,
+      body: kropp,
+      link: "/portal/spiller/plans",
+    },
+  );
+
+  revalidatePath("/admin/plans");
+  revalidatePath(`/admin/plans/${data.planId}`);
+
+  return {
+    ok: true,
+    assignedCount: assignments.length,
+    skippedCount: playerIds.length - assignments.length,
+    assignments,
+  };
 }

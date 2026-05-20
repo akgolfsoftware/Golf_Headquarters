@@ -82,6 +82,46 @@ export default async function AdminPlanDetalj({
     orderBy: { name: "asc" },
   });
 
+  // Utvidet spiller-liste for Tildel-modal: inkluderer tier og aktive planer
+  // for konflikt-detektor. Vi henter alle PLAYER-brukere og deres aktive planer
+  // i én batch så modalen kan vise konflikt-varsel inline per spiller.
+  const spillereMedPlaner = await prisma.user.findMany({
+    where: { role: "PLAYER" },
+    select: {
+      id: true,
+      name: true,
+      hcp: true,
+      homeClub: true,
+      tier: true,
+      trainingPlans: {
+        where: { isActive: true, status: { in: ["ACTIVE", "PENDING_PLAYER"] } },
+        select: { id: true, name: true },
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+  const assignSpillere = spillereMedPlaner.map((s) => ({
+    id: s.id,
+    name: s.name,
+    hcp: s.hcp,
+    homeClub: s.homeClub,
+    tier: s.tier,
+    aktivePlaner: s.trainingPlans,
+  }));
+
+  // Beregn varighet i uker for modal-header og sluttdato-preview
+  const msPerUke = 7 * 24 * 60 * 60 * 1000;
+  const planSluttForVarighet =
+    plan.endDate ??
+    plan.sessions.at(-1)?.scheduledAt ??
+    plan.startDate;
+  const planVarighetUker = Math.max(
+    1,
+    Math.round(
+      (planSluttForVarighet.getTime() - plan.startDate.getTime()) / msPerUke,
+    ),
+  );
+
   // ── Avledet data ────────────────────────────────────────────────
   const totalt = plan.sessions.length;
   const fullført = plan.sessions.filter((s) => s.status === "COMPLETED").length;
@@ -174,6 +214,9 @@ export default async function AdminPlanDetalj({
             originalPlanNavn={plan.name}
             originalUserId={plan.userId}
             spillere={spillere}
+            assignSpillere={assignSpillere}
+            planVarighetUker={planVarighetUker}
+            planTier={plan.user.tier ?? "PRO"}
           />
         }
       />

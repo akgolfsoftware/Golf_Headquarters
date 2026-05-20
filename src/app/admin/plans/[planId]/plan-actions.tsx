@@ -31,7 +31,11 @@ import {
   endPlan,
 } from "./actions";
 import { dupliserPlan } from "../actions";
-import type { PlanStatus } from "@/generated/prisma/client";
+import type { PlanStatus, Tier } from "@/generated/prisma/client";
+import {
+  AssignPlanToPlayerModal,
+  type AssignSpiller,
+} from "./assign-plan-modal";
 
 export type SpillerKandidat = {
   id: string;
@@ -48,6 +52,10 @@ type Props = {
   originalPlanNavn: string;
   originalUserId: string;
   spillere: SpillerKandidat[];
+  /** Utvidet spillerliste for AssignPlanToPlayerModal (inkl. tier og konflikter). */
+  assignSpillere?: AssignSpiller[];
+  planVarighetUker?: number;
+  planTier?: Tier;
 };
 
 export function PlanActions({
@@ -58,11 +66,15 @@ export function PlanActions({
   originalPlanNavn,
   originalUserId,
   spillere,
+  assignSpillere,
+  planVarighetUker = 8,
+  planTier = "PRO",
 }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [malModalOpen, setMalModalOpen] = useState(false);
   const [kopierModalOpen, setKopierModalOpen] = useState(false);
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
 
   function godkjenn() {
     startTransition(async () => {
@@ -268,6 +280,16 @@ export function PlanActions({
 
         <button
           type="button"
+          onClick={() => setAssignModalOpen(true)}
+          disabled={pending}
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+        >
+          <UserPlus className="h-4 w-4" strokeWidth={1.5} />
+          Tildel til spiller
+        </button>
+
+        <button
+          type="button"
           onClick={eksportPdf}
           disabled={pending}
           className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
@@ -316,8 +338,37 @@ export function PlanActions({
           onClose={() => setKopierModalOpen(false)}
         />
       )}
+
+      {assignModalOpen && (
+        <AssignPlanToPlayerModal
+          planId={planId}
+          planNavn={originalPlanNavn}
+          planVarighetUker={planVarighetUker}
+          planTier={planTier}
+          spillere={assignSpillere ?? buildFallbackAssignSpillere(spillere)}
+          onClose={() => setAssignModalOpen(false)}
+        />
+      )}
     </>
   );
+}
+
+/**
+ * Fallback når page-en ikke har hentet utvidet spillerliste (assignSpillere).
+ * Mapper SpillerKandidat → AssignSpiller med PRO-tier default og tom konflikt-
+ * liste, slik at modalen fortsatt fungerer.
+ */
+function buildFallbackAssignSpillere(
+  spillere: SpillerKandidat[],
+): AssignSpiller[] {
+  return spillere.map((s) => ({
+    id: s.id,
+    name: s.name,
+    hcp: s.hcp,
+    homeClub: s.homeClub,
+    tier: "PRO" as const,
+    aktivePlaner: [],
+  }));
 }
 
 function KopierPlanModal({
