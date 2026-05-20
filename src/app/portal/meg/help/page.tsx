@@ -105,7 +105,7 @@ export default async function HelpPage() {
   const totalArtikler = KATEGORIER.reduce((sum, k) => sum + k.artikler, 0);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-12">
+    <div className="mx-auto max-w-4xl space-y-8 pb-20 md:space-y-12 md:pb-0">
       {/* Hero med stort søkefelt */}
       <section className="flex flex-col items-center gap-6 pt-4 text-center">
         <span
@@ -202,7 +202,7 @@ export default async function HelpPage() {
       </section>
 
       {/* Kontakt — mørk card */}
-      <section className="rounded-lg bg-gradient-to-br from-foreground to-card p-8 text-white">
+      <section className="rounded-lg bg-gradient-to-br from-foreground to-card p-4 text-white sm:p-6 md:p-8">
         <h2 className="text-center font-display text-2xl font-normal italic leading-tight tracking-tight text-white">
           <span className="not-italic font-semibold">Trenger du</span> mer hjelp?
         </h2>

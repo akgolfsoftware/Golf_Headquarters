@@ -12,7 +12,7 @@ export default async function SammenlignPage() {
   const user = await requirePortalUser();
 
   return (
-    <div className="space-y-8 pb-16">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-16">
       <PageHeader
         eyebrow="PlayerHQ · Statistikk"
         titleLead="Sammenlign deg"

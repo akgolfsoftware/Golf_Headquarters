@@ -40,8 +40,8 @@ export default async function OnskeligOktPage({
     : "AK";
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-[820px] px-6 py-8">
+    <div className="min-h-screen bg-background pb-20 text-foreground md:pb-0">
+      <div className="mx-auto max-w-[820px] px-4 py-6 sm:px-6 sm:py-8">
         <div className="mb-8">
           <PageHeader
             eyebrow="PlayerHQ · Ønskelig økt"

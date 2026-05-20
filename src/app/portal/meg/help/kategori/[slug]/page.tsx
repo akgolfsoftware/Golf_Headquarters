@@ -318,7 +318,7 @@ export default async function KategoriPage({
   ];
 
   return (
-    <div className="mx-auto max-w-4xl space-y-12">
+    <div className="mx-auto max-w-4xl space-y-8 pb-20 md:space-y-12 md:pb-0">
       <Link
         href="/portal/meg/help"
         className="inline-flex items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"
@@ -390,7 +390,7 @@ export default async function KategoriPage({
           >
             <Link
               href={`/portal/meg/help/artikkel/${a.slug}`}
-              className="flex items-start gap-4 px-5 py-5 transition-colors hover:bg-secondary/40"
+              className="flex items-start gap-3 px-4 py-4 transition-colors hover:bg-secondary/40 sm:gap-4 sm:px-5 sm:py-5"
             >
               <span className="w-8 shrink-0 pt-1 font-mono text-xs font-semibold tabular-nums text-muted-foreground">
                 {(i + 1).toString().padStart(2, "0")}
@@ -425,7 +425,7 @@ export default async function KategoriPage({
       </ul>
 
       {/* Send-spørsmål-CTA */}
-      <section className="rounded-lg border border-border bg-gradient-to-br from-card to-secondary/40 p-8 text-center">
+      <section className="rounded-lg border border-border bg-gradient-to-br from-card to-secondary/40 p-4 text-center sm:p-6 md:p-8">
         <div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-accent/30 text-foreground">
           <Mail size={18} strokeWidth={1.75} />
         </div>

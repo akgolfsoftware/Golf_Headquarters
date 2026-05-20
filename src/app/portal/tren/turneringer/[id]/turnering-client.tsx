@@ -2745,4 +2745,25 @@ const TDC_CSS = `
   opacity: 1; transform: translate(-50%, 0);
 }
 .tdc-toast svg { color: var(--tdc-accent); }
+
+/* ---- mobile (≤640px) ---- */
+@media (max-width: 640px) {
+  .tdc-page { padding: 16px 16px 80px; gap: 20px; }
+  .tdc-breadcrumb { padding: 12px 16px; font-size: 10px; }
+  .tdc-tour-hero-main { padding: 20px; }
+  .tdc-hero-title { font-size: 26px; }
+  .tdc-hero-sub { font-size: 13px; }
+  .tdc-countdown-card { padding: 18px; }
+  .tdc-countdown-big { font-size: 40px; }
+  .tdc-h2 { font-size: 18px; }
+  .tdc-card { padding: 16px; }
+  .tdc-section-h { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .tdc-prep-bar-row { grid-template-columns: 90px 1fr 40px; gap: 8px; }
+  .tdc-hero-actions { flex-direction: column; align-items: stretch; }
+  .tdc-hero-actions .tdc-btn { width: 100%; justify-content: center; }
+  .tdc-btn { min-height: 44px; }
+  .tdc-map-canvas { min-height: 320px; }
+  .tdc-map-rail { max-height: 280px; }
+  .tdc-hole-table-wrap { overflow-x: auto; }
+}
 `;

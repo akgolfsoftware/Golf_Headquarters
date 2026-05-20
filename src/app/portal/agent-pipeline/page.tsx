@@ -28,7 +28,7 @@ export default async function AgentPipelinePage() {
   ]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       <Link
         href="/portal"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"

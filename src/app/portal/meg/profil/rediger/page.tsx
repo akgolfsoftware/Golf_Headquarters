@@ -42,7 +42,7 @@ export default async function ProfilRedigerPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · Meg · Profil"
         titleLead="Rediger"

@@ -12,7 +12,7 @@ export default async function FeedbackPage({
   const sp = await searchParams;
 
   return (
-    <div className="mx-auto w-full max-w-[640px] space-y-12">
+    <div className="mx-auto w-full max-w-[640px] space-y-8 pb-20 md:space-y-12 md:pb-0">
       <PageHeader
         eyebrow="Tilbakemelding · 30 sek"
         titleLead="Hva synes du om"

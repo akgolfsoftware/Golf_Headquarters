@@ -8,10 +8,10 @@ export default async function TwoFaPage() {
   await requirePortalUser();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       <Link
         href="/portal/meg/sikkerhet"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
         Sikkerhet

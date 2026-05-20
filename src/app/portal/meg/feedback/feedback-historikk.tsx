@@ -327,7 +327,7 @@ export function FeedbackHistorikk() {
             className="w-full max-w-lg overflow-hidden rounded-lg border border-border bg-card shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <header className="flex items-start justify-between gap-4 border-b border-border p-6">
+            <header className="flex items-start justify-between gap-4 border-b border-border p-4 md:p-6">
               <div>
                 <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   Tilbakemelding-tråd · {formatDato(apent.dato)}
@@ -349,7 +349,7 @@ export function FeedbackHistorikk() {
               </button>
             </header>
 
-            <div className="space-y-6 p-6">
+            <div className="space-y-6 p-4 md:p-6">
               {/* Din melding */}
               <div className="flex gap-3">
                 <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-secondary font-mono text-[11px] font-semibold text-foreground">
