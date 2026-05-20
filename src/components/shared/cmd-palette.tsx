@@ -154,7 +154,7 @@ export function CmdPalette() {
 
   return (
     <div
-      className="fixed inset-0 z-[90] flex items-start justify-center bg-black/40 px-4 pt-24 backdrop-blur-sm"
+      className="fixed inset-0 z-[90] flex items-stretch justify-center bg-black/40 backdrop-blur-sm sm:items-start sm:px-4 sm:pt-24"
       role="dialog"
       aria-modal="true"
       aria-label="Søk og kommandoer"
@@ -162,7 +162,7 @@ export function CmdPalette() {
         if (e.target === e.currentTarget) setOpen(false);
       }}
     >
-      <div className="w-full max-w-xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+      <div className="flex w-full flex-col overflow-hidden border border-border bg-card shadow-2xl sm:max-h-[80vh] sm:max-w-xl sm:flex-none sm:rounded-2xl">
         <div className="flex items-center gap-3 border-b border-border px-4 py-3">
           <Search
             width={18}
@@ -180,7 +180,7 @@ export function CmdPalette() {
             }}
             onKeyDown={onInputKey}
             placeholder="Søk etter sider, spillere, drills, mål, turneringer…"
-            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+            className="flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none sm:text-sm"
             aria-label="Søk"
           />
           <span className="hidden font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground sm:inline">
@@ -190,13 +190,13 @@ export function CmdPalette() {
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Lukk"
-            className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:hidden"
+            className="grid h-11 w-11 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:hidden"
           >
-            <X width={14} height={14} strokeWidth={1.75} aria-hidden />
+            <X width={18} height={18} strokeWidth={1.75} aria-hidden />
           </button>
         </div>
 
-        <div className="max-h-[60vh] overflow-y-auto px-2 py-2">
+        <div className="flex-1 overflow-y-auto px-2 py-2 sm:max-h-[60vh] sm:flex-none">
           {gruppert.length === 0 && (
             <div className="px-4 py-10 text-center text-sm text-muted-foreground">
               Ingen treff

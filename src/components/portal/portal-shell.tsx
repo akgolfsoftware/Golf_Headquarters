@@ -2,6 +2,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PortalSidebar } from "./sidebar";
 import { BottomNav } from "./bottom-nav";
+import { MobileSidebarDrawer } from "./mobile-sidebar-drawer";
 import { PortalGlobalSearchModal } from "./global-search-modal";
 import { PortalSearchTriggerButton } from "./search-trigger-button";
 import { ProfileMenu } from "@/components/shared/profile-menu";
@@ -43,9 +44,13 @@ export async function PortalShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <header
           role="banner"
-          className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-4 sm:px-8 sm:py-4"
+          className="flex items-center justify-between gap-2 border-b border-border bg-card px-4 py-3 sm:gap-4 sm:px-8 sm:py-4"
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <MobileSidebarDrawer
+              tier={user.tier}
+              varslerUlest={varslerUlest}
+            />
             <div
               aria-label="PlayerHQ"
               className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
@@ -53,10 +58,12 @@ export async function PortalShell({
               PlayerHQ
             </div>
           </div>
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <PortalSearchTriggerButton />
             {(user.role === "ADMIN" || user.role === "COACH") && (
-              <ViewModeToggle current="player" />
+              <div className="hidden md:block">
+                <ViewModeToggle current="player" />
+              </div>
             )}
             <NotificationBell
               notifications={notifications}
@@ -73,7 +80,7 @@ export async function PortalShell({
         <main
           id="portal-main"
           tabIndex={-1}
-          className="flex-1 px-4 py-6 pb-24 focus:outline-none sm:px-8 md:pb-6"
+          className="flex-1 px-4 py-4 pb-24 focus:outline-none sm:px-8 sm:py-6 md:pb-6"
         >
           {children}
         </main>

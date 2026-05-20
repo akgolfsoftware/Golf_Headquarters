@@ -278,8 +278,8 @@ function Hero({ user }: { user: PortalUser }) {
         }}
       />
 
-      <div className="relative z-10 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between sm:gap-8 sm:px-8 sm:py-10">
-        <div className="flex min-w-0 items-start gap-4 sm:gap-6">
+      <div className="relative z-10 flex flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-8 md:flex-row md:items-end md:justify-between md:gap-8 md:px-8 md:py-10">
+        <div className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-start sm:gap-4 md:gap-6">
           <PortalAvatarButton
             name={user.name}
             avatarUrl={user.avatarUrl}
@@ -288,16 +288,16 @@ function Hero({ user }: { user: PortalUser }) {
           />
 
           <div className="min-w-0 flex-1">
-            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+            <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground sm:text-[11px]">
               Hjem · {datoTekst}
             </span>
-            <h1 className="mt-2 font-display text-3xl font-normal italic leading-[1.05] tracking-tight text-foreground md:text-[42px]">
+            <h1 className="mt-2 font-display text-2xl font-normal italic leading-[1.05] tracking-tight text-foreground sm:text-3xl md:text-[42px]">
               {tidsHilsen}, {fornavn}.{" "}
               <span className="not-italic font-semibold text-primary">
                 {user.ambition ? "Vi bygger videre." : "Klar for dagen?"}
               </span>
             </h1>
-            <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+            <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground sm:mt-4">
               <span>{klokke}</span>
               {user.homeClub && (
                 <>
@@ -317,7 +317,7 @@ function Hero({ user }: { user: PortalUser }) {
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           <ProfilRedigerTrigger
             variant="pill"
             label="Rediger profil"
@@ -337,7 +337,7 @@ function Hero({ user }: { user: PortalUser }) {
           />
           <Link
             href="/portal/ny-okt"
-            className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             <Plus className="h-4 w-4" strokeWidth={2} />
             Logg trening
@@ -379,7 +379,7 @@ function KpiStrip({
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
       {/* Snittscore - dark gradient */}
       <article
-        className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-primary/80 p-6 text-white"
+        className="relative flex min-h-32 flex-col gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-primary/80 p-4 text-white sm:min-h-36 sm:p-6"
       >
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-white/70">
           <Flag className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -398,7 +398,7 @@ function KpiStrip({
       </article>
 
       {/* SG total */}
-      <article className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-6">
+      <article className="relative flex min-h-32 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-4 sm:min-h-36 sm:p-6">
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
           <Star className="h-3.5 w-3.5" strokeWidth={1.75} />
           SG total
@@ -425,7 +425,7 @@ function KpiStrip({
       </article>
 
       {/* Streak */}
-      <article className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-6">
+      <article className="relative flex min-h-32 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-4 sm:min-h-36 sm:p-6">
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
           <Zap className="h-3.5 w-3.5" strokeWidth={1.75} />
           Streak
@@ -442,7 +442,7 @@ function KpiStrip({
       </article>
 
       {/* Pyramide-mini */}
-      <article className="relative flex min-h-36 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-6">
+      <article className="relative flex min-h-32 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-4 sm:min-h-36 sm:p-6">
         <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
           <Target className="h-3.5 w-3.5" strokeWidth={1.75} />
           Pyramide
@@ -603,7 +603,7 @@ function DagensFokus({
   const isFree = tier === "GRATIS";
 
   return (
-    <article className="relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-background to-secondary p-6 shadow-sm md:flex-row md:items-end md:justify-between md:gap-8 md:p-8 dark:from-card dark:to-card">
+    <article className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-background to-secondary p-4 shadow-sm sm:gap-6 sm:p-6 md:flex-row md:items-end md:justify-between md:gap-8 md:p-8 dark:from-card dark:to-card">
       {/* Vertikal aksent-stripe */}
       <span
         aria-hidden
@@ -620,7 +620,7 @@ function DagensFokus({
             {klokke} · {session.durationMin} min
           </span>
         </div>
-        <h2 className="mt-4 font-display text-3xl font-normal italic leading-[1.1] tracking-tight text-foreground md:text-[34px]">
+        <h2 className="mt-3 font-display text-2xl font-normal italic leading-[1.1] tracking-tight text-foreground sm:mt-4 sm:text-3xl md:text-[34px]">
           {session.title.split(" — ")[0] ?? session.title}
           {session.title.includes(" — ") && (
             <span className="not-italic font-semibold">
@@ -718,7 +718,7 @@ function PyramideProgresjon({
   const allOver50 = PYR_REKKEFOLGE.every((a) => data[a] >= 50);
 
   return (
-    <article className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 lg:col-span-2">
+    <article className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 sm:p-6 lg:col-span-2">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <Target
@@ -832,7 +832,7 @@ function SgFordeling({
   ];
 
   return (
-    <article className="relative overflow-hidden rounded-2xl border border-border bg-card p-6">
+    <article className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 sm:p-6">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <Star
@@ -910,7 +910,7 @@ function SgRowItem({ k, v }: SgRow) {
 function SistRegistrert({ items }: { items: SistRegistrert[] }) {
   if (items.length === 0) {
     return (
-      <article className="rounded-2xl border border-border bg-card p-6">
+      <article className="rounded-2xl border border-border bg-card p-4 sm:p-6">
         <header className="flex items-center justify-between">
           <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
             Sist registrert
@@ -931,7 +931,7 @@ function SistRegistrert({ items }: { items: SistRegistrert[] }) {
 
   return (
     <article className="overflow-hidden rounded-2xl border border-border bg-card">
-      <header className="flex items-center justify-between border-b border-border px-6 py-4">
+      <header className="flex items-center justify-between border-b border-border px-4 py-4 sm:px-6">
         <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
           Sist registrert{" "}
           <span className="ml-1 font-sans text-sm font-normal italic text-muted-foreground">
@@ -979,7 +979,7 @@ function SistRegistrertRow({ item }: { item: SistRegistrert }) {
   const Ic = iconBg.icon;
 
   return (
-    <li className="grid grid-cols-[80px_36px_1fr_auto] items-center gap-4 border-b border-border/60 px-6 py-3.5 transition-colors last:border-0 hover:bg-secondary/40 sm:gap-4">
+    <li className="grid grid-cols-[60px_36px_1fr_auto] items-center gap-3 border-b border-border/60 px-4 py-3 transition-colors last:border-0 hover:bg-secondary/40 sm:grid-cols-[80px_36px_1fr_auto] sm:gap-4 sm:px-6 sm:py-3.5">
       <span className="font-mono text-[11px] text-muted-foreground">
         {datoLabel}
       </span>
@@ -1033,7 +1033,7 @@ function CoachMelding({
 
   return (
     <article
-      className="relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl bg-foreground px-6 py-6 text-background sm:flex-row sm:items-center sm:gap-6 dark:bg-card"
+      className="relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl bg-foreground px-4 py-5 text-background sm:flex-row sm:items-center sm:gap-6 sm:px-6 sm:py-6 dark:bg-card"
     >
       <span
         aria-hidden

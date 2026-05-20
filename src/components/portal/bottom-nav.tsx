@@ -2,18 +2,49 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, CalendarDays, BarChart2, MessageCircle, User } from "lucide-react";
+import { Home, CalendarDays, Dumbbell, Target, User } from "lucide-react";
 
-const NAV = [
-  { href: "/portal",           label: "Hjem",        icon: Home,          exact: true },
-  { href: "/portal/tren",      label: "Planlegging",  icon: CalendarDays,  exact: false },
-  { href: "/portal/statistikk",label: "Statistikk",   icon: BarChart2,     exact: false },
-  { href: "/portal/coach",     label: "Coach",        icon: MessageCircle, exact: false },
-  { href: "/portal/meg",       label: "Profil",       icon: User,          exact: false },
+type NavItemDef = {
+  href: string;
+  label: string;
+  icon: typeof Home;
+  exact: boolean;
+  excludePrefixes?: string[];
+};
+
+const NAV: ReadonlyArray<NavItemDef> = [
+  { href: "/portal", label: "Hjem", icon: Home, exact: true },
+  {
+    href: "/portal/tren",
+    label: "Tren",
+    icon: Dumbbell,
+    exact: false,
+    excludePrefixes: ["/portal/tren/kalender"],
+  },
+  {
+    href: "/portal/tren/kalender",
+    label: "Kalender",
+    icon: CalendarDays,
+    exact: false,
+  },
+  { href: "/portal/mal", label: "Mål", icon: Target, exact: false },
+  { href: "/portal/meg", label: "Meg", icon: User, exact: false },
 ];
 
+function erAktiv(path: string, item: NavItemDef): boolean {
+  if (item.exact) return path === item.href;
+  const matchSelf = path === item.href || path.startsWith(item.href + "/");
+  if (!matchSelf) return false;
+  if (item.excludePrefixes) {
+    for (const p of item.excludePrefixes) {
+      if (path === p || path.startsWith(p + "/")) return false;
+    }
+  }
+  return true;
+}
+
 export function BottomNav() {
-  const path = usePathname();
+  const path = usePathname() ?? "";
 
   return (
     <nav
@@ -23,9 +54,7 @@ export function BottomNav() {
     >
       <ul className="grid grid-cols-5">
         {NAV.map((item) => {
-          const aktiv = item.exact
-            ? path === item.href
-            : path === item.href || path.startsWith(item.href + "/");
+          const aktiv = erAktiv(path, item);
           const Icon = item.icon;
           return (
             <li key={item.href}>

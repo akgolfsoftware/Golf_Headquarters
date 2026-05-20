@@ -43,13 +43,13 @@ export default async function MegProfil() {
   const isFree = user.tier === "GRATIS";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       {/* Profil-hero */}
-      <header className="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-background to-secondary p-6 md:p-8 dark:from-card dark:to-card">
-        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-8">
-          <div className="flex items-start gap-4 md:gap-6">
+      <header className="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-background to-secondary p-4 sm:p-6 md:p-8 dark:from-card dark:to-card">
+        <div className="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-center md:justify-between md:gap-8">
+          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-start md:gap-6">
             <span className="relative shrink-0">
-              <span className="grid h-20 w-20 place-items-center overflow-hidden rounded-full bg-primary text-2xl font-semibold text-primary-foreground md:h-24 md:w-24 md:text-3xl">
+              <span className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-primary text-xl font-semibold text-primary-foreground sm:h-20 sm:w-20 sm:text-2xl md:h-24 md:w-24 md:text-3xl">
                 {user.avatarUrl ? (
                   <Image
                     src={user.avatarUrl}
@@ -76,7 +76,7 @@ export default async function MegProfil() {
               <span className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground">
                 PlayerHQ · Min profil
               </span>
-              <h1 className="mt-2 font-display text-3xl font-normal italic leading-[1.05] tracking-tight text-foreground md:text-[40px]">
+              <h1 className="mt-2 font-display text-2xl font-normal italic leading-[1.05] tracking-tight text-foreground sm:text-3xl md:text-[40px]">
                 Hei, {fornavn}.
               </h1>
               <p className="mt-2 max-w-md text-sm text-muted-foreground">
@@ -88,7 +88,7 @@ export default async function MegProfil() {
 
           {/* Kontaktinfo-grid + redigerings-knapp */}
           <div className="flex flex-col items-stretch gap-4 md:max-w-xs">
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+            <dl className="grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
               <InfoItem icon={Mail} label="E-post" value={user.email} mono />
               <InfoItem
                 icon={Phone}
@@ -166,7 +166,7 @@ export default async function MegProfil() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-border bg-card p-6">
+      <section className="rounded-lg border border-border bg-card p-4 sm:p-6">
         <h2 className="mb-4 font-display text-sm font-semibold tracking-tight">
           Profilbilde
         </h2>
@@ -246,9 +246,9 @@ function Hurtigvalg({
   return (
     <Link
       href={href}
-      className="group flex items-start gap-4 rounded-md border border-border bg-card p-4 transition-colors hover:border-primary/40 hover:bg-secondary/40"
+      className="group flex min-h-[68px] items-start gap-3 rounded-md border border-border bg-card p-3 transition-colors hover:border-primary/40 hover:bg-secondary/40 sm:gap-4 sm:p-4"
     >
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-secondary text-foreground">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-secondary text-foreground sm:h-9 sm:w-9">
         <Icon className="h-4 w-4" strokeWidth={1.75} />
       </span>
       <div className="min-w-0 flex-1">
