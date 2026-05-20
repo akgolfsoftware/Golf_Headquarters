@@ -223,7 +223,13 @@ export default async function Turneringer({
                 Kalender
               </span>
             </div>
-            <TournamentForm courses={courses} triggerLabel="+ Ny turnering" />
+            <Link
+              href="/admin/tournaments/ny"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            >
+              + Ny turnering
+            </Link>
+            <TournamentForm courses={courses} triggerLabel="Hurtigopprett" />
           </div>
         }
       />
