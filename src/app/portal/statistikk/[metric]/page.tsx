@@ -1,91 +1,334 @@
 /**
- * PlayerHQ · Statistikk · Drill-down per metrikk
+ * PlayerHQ · Statistikk · Drill-down per disipplin
  *
- * Migrert fra public/design/batch3/statistikk-drill-down-side.html.
- * Dynamisk rute som åpner detalj-visning for én KPI (sg-approach, sg-tee, putts, etc.).
+ * Dynamisk rute som åpner detalj-visning for én disipplin. Dekker:
+ *   - 5 pyramide-disipliner: fys, tek, slag, spill, turn
+ *   - 4 SG-disipliner: sg-tee (ott), sg-approach (app), sg-around-green (arg), sg-putting (putt)
+ *   - Legacy-aliaser: putts, sg-ott, sg-app, sg-arg, sg-putt
+ *
+ * Innhold:
+ *   - Hero med disiplinkort + delta + trend
+ *   - 90-dagers trendgraf
+ *   - Antall økter + total tid
+ *   - Topp 5 drills med mest tid brukt
+ *   - SG-trend hvis SG-disipplin
+ *   - Sammenligning vs kategori-snitt
+ *   - "Be coach om mer fokus her"-CTA
  */
 import Link from "next/link";
-import { Sparkles, Plus, MessageSquare } from "lucide-react";
+import { notFound } from "next/navigation";
+import {
+  ArrowRight,
+  ClipboardList,
+  Clock,
+  MessageSquare,
+  Sparkles,
+  Target,
+} from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
-
-const SG_VALUES = [
-  -0.2, -0.15, -0.1, 0.02, 0.08, 0.12, 0.06, 0.14, 0.2, 0.18, 0.1, 0.22, 0.3,
-  0.28, 0.32, 0.25, 0.36, 0.42, 0.38, 0.4, 0.5, 0.46, 0.42, 0.55, 0.48, 0.42,
-  0.42, 0.5, 0.46, 0.42,
-];
+import type { PyramidArea } from "@/generated/prisma/client";
 
 const PERIODS = ["7 d", "30 d", "90 d", "Sesong", "Alle"];
 
+type Kind = "pyramid" | "sg";
+
 type MetricInfo = {
+  slug: string;
+  kind: Kind;
+  /** Pyramide-enum hvis kind=pyramid. */
+  pyramid?: PyramidArea;
+  /** SG-felt hvis kind=sg. */
+  sgField?: "sgOtt" | "sgApp" | "sgArg" | "sgPutt";
   title: string;
   italic: string;
-  trail?: string;
+  /** Norsk label til breadcrumb og sub. */
   unit: string;
-  big: string;
-  delta: string;
-  vsBenchmark: string;
-  bestLabel: string;
+  /** Plot-akse min/maks. */
+  yMin: number;
+  yMax: number;
+  /** Format-funksjon for verdier. */
+  format: (n: number) => string;
+  /** Benchmark-snitt for kategori A1 (proxy). */
+  benchmark: number;
 };
 
 const METRICS: Record<string, MetricInfo> = {
+  // Pyramide
+  fys: {
+    slug: "fys",
+    kind: "pyramid",
+    pyramid: "FYS",
+    title: "Fysisk",
+    italic: "trening",
+    unit: "Treningstimer · siste 30 d",
+    yMin: 0,
+    yMax: 25,
+    format: (n) => `${n.toFixed(1).replace(".", ",")} t`,
+    benchmark: 12,
+  },
+  tek: {
+    slug: "tek",
+    kind: "pyramid",
+    pyramid: "TEK",
+    title: "Teknisk",
+    italic: "kvalitet",
+    unit: "Treningstimer · siste 30 d",
+    yMin: 0,
+    yMax: 40,
+    format: (n) => `${n.toFixed(1).replace(".", ",")} t`,
+    benchmark: 22,
+  },
+  slag: {
+    slug: "slag",
+    kind: "pyramid",
+    pyramid: "SLAG",
+    title: "Slag",
+    italic: "trening",
+    unit: "Treningstimer · siste 30 d",
+    yMin: 0,
+    yMax: 40,
+    format: (n) => `${n.toFixed(1).replace(".", ",")} t`,
+    benchmark: 18,
+  },
+  spill: {
+    slug: "spill",
+    kind: "pyramid",
+    pyramid: "SPILL",
+    title: "Spill",
+    italic: "trening",
+    unit: "Treningstimer · siste 30 d",
+    yMin: 0,
+    yMax: 25,
+    format: (n) => `${n.toFixed(1).replace(".", ",")} t`,
+    benchmark: 14,
+  },
+  turn: {
+    slug: "turn",
+    kind: "pyramid",
+    pyramid: "TURN",
+    title: "Turnering",
+    italic: "spill",
+    unit: "Treningstimer · siste 30 d",
+    yMin: 0,
+    yMax: 25,
+    format: (n) => `${n.toFixed(1).replace(".", ",")} t`,
+    benchmark: 8,
+  },
+  // SG-disipliner
+  "sg-tee": {
+    slug: "sg-tee",
+    kind: "sg",
+    sgField: "sgOtt",
+    title: "SG",
+    italic: "Off-the-tee",
+    unit: "SG/runde · snitt 30 d",
+    yMin: -1,
+    yMax: 2,
+    format: (n) => formatSg(n),
+    benchmark: 0,
+  },
   "sg-approach": {
+    slug: "sg-approach",
+    kind: "sg",
+    sgField: "sgApp",
     title: "SG",
     italic: "Approach",
-    trail: "30 d",
     unit: "SG/runde · snitt 30 d",
-    big: "+0,42",
-    delta: "↑ +0,12 vs forrige 30 d",
-    vsBenchmark: "+0,18 vs topp 10 % U18",
-    bestLabel: "+1,7 · 14. MAI · GFGK Old",
+    yMin: -1,
+    yMax: 2,
+    format: (n) => formatSg(n),
+    benchmark: 0,
   },
-  "sg-tee": {
+  "sg-around-green": {
+    slug: "sg-around-green",
+    kind: "sg",
+    sgField: "sgArg",
     title: "SG",
-    italic: "Tee",
-    trail: "30 d",
+    italic: "Around-green",
     unit: "SG/runde · snitt 30 d",
-    big: "+0,28",
-    delta: "↑ +0,06 vs forrige 30 d",
-    vsBenchmark: "+0,16 vs topp 10 % U18",
-    bestLabel: "+1,1 · 28. APR · Onsøy GK",
+    yMin: -1,
+    yMax: 2,
+    format: (n) => formatSg(n),
+    benchmark: 0,
   },
-  putts: {
-    title: "Putts",
-    italic: "per runde",
-    trail: "30 d",
-    unit: "Antall · snitt 30 d",
-    big: "31,4",
-    delta: "↓ −1,2 vs forrige 30 d",
-    vsBenchmark: "−2,1 vs topp 10 % U18",
-    bestLabel: "27 · 14. MAI · GFGK Old",
+  "sg-putting": {
+    slug: "sg-putting",
+    kind: "sg",
+    sgField: "sgPutt",
+    title: "SG",
+    italic: "Putting",
+    unit: "SG/runde · snitt 30 d",
+    yMin: -1,
+    yMax: 2,
+    format: (n) => formatSg(n),
+    benchmark: 0,
   },
 };
+
+// Legacy-aliaser
+const ALIASES: Record<string, string> = {
+  putts: "sg-putting",
+  "sg-ott": "sg-tee",
+  "sg-app": "sg-approach",
+  "sg-arg": "sg-around-green",
+  "sg-putt": "sg-putting",
+};
+
+function resolveMetric(slug: string): MetricInfo | null {
+  const resolved = ALIASES[slug] ?? slug;
+  return METRICS[resolved] ?? null;
+}
+
+function formatSg(v: number): string {
+  const formatted = v.toFixed(2).replace(".", ",");
+  return v > 0 ? `+${formatted}` : formatted;
+}
 
 export default async function MetricDrillDownPage({
   params,
 }: {
   params: Promise<{ metric: string }>;
 }) {
-  await requirePortalUser();
+  const user = await requirePortalUser();
   const { metric } = await params;
-  const info =
-    METRICS[metric] ?? {
-      title: metric,
-      italic: "detalj",
-      unit: "Snitt 30 d",
-      big: "—",
-      delta: "—",
-      vsBenchmark: "—",
-      bestLabel: "—",
-    };
+  const info = resolveMetric(metric);
+  if (!info) notFound();
+
+  const naa = new Date();
+  const naaMs = naa.getTime();
+  const ninetyDaysAgo = new Date(naaMs - 90 * 24 * 60 * 60 * 1000);
+  const thirtyDaysAgo = new Date(naaMs - 30 * 24 * 60 * 60 * 1000);
+  const sixtyDaysAgo = new Date(naaMs - 60 * 24 * 60 * 60 * 1000);
+
+  // Hent data parallelt — felles oppslag
+  const [drills, sessions, recentRounds] = await Promise.all([
+    info.kind === "pyramid"
+      ? prisma.sessionDrill.findMany({
+          where: {
+            session: {
+              plan: { userId: user.id },
+              scheduledAt: { gte: ninetyDaysAgo },
+              status: "COMPLETED",
+              pyramidArea: info.pyramid!,
+            },
+          },
+          select: {
+            sets: true,
+            reps: true,
+            notes: true,
+            exercise: {
+              select: {
+                name: true,
+                durationMin: true,
+              },
+            },
+            session: {
+              select: { id: true, durationMin: true, scheduledAt: true },
+            },
+          },
+        })
+      : Promise.resolve([]),
+    info.kind === "pyramid"
+      ? prisma.trainingPlanSession.findMany({
+          where: {
+            plan: { userId: user.id },
+            scheduledAt: { gte: ninetyDaysAgo },
+            status: "COMPLETED",
+            pyramidArea: info.pyramid!,
+          },
+          select: {
+            id: true,
+            durationMin: true,
+            scheduledAt: true,
+          },
+          orderBy: { scheduledAt: "asc" },
+        })
+      : Promise.resolve([]),
+    info.kind === "sg"
+      ? prisma.round.findMany({
+          where: {
+            userId: user.id,
+            playedAt: { gte: ninetyDaysAgo },
+          },
+          select: {
+            id: true,
+            playedAt: true,
+            [info.sgField!]: true,
+          },
+          orderBy: { playedAt: "asc" },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  // Trendgraf (90 d, 30 punkter)
+  const trendpunkter = info.kind === "pyramid"
+    ? byggPyramidTrend(sessions, ninetyDaysAgo, naaMs)
+    : byggSgTrend(
+        recentRounds as Array<Record<string, unknown> & { playedAt: Date }>,
+        info.sgField!,
+        ninetyDaysAgo,
+        naaMs,
+      );
+
+  // Hovedtall — siste 30 d snitt
+  const verdi30d = info.kind === "pyramid"
+    ? summer(sessions.filter((s) => s.scheduledAt >= thirtyDaysAgo).map((s) => s.durationMin)) / 60
+    : snittSg(
+        recentRounds as Array<{ playedAt: Date } & Record<string, unknown>>,
+        info.sgField!,
+        thirtyDaysAgo,
+      );
+
+  // Forrige 30d (30-60 d siden)
+  const forrige30d = info.kind === "pyramid"
+    ? summer(
+        sessions
+          .filter((s) => s.scheduledAt >= sixtyDaysAgo && s.scheduledAt < thirtyDaysAgo)
+          .map((s) => s.durationMin),
+      ) / 60
+    : snittSg(
+        recentRounds as Array<{ playedAt: Date } & Record<string, unknown>>,
+        info.sgField!,
+        sixtyDaysAgo,
+        thirtyDaysAgo,
+      );
+
+  const delta = verdi30d - forrige30d;
+  const harData = info.kind === "pyramid"
+    ? sessions.length > 0
+    : (recentRounds as unknown[]).length > 0;
+
+  // Antall økter + total tid (pyramid)
+  const okterTotalt = sessions.length;
+  const totalMin = summer(sessions.map((s) => s.durationMin));
+
+  // Topp 5 drills med mest tid brukt
+  const drillTopp = harData && info.kind === "pyramid"
+    ? aggregerTopDrills(drills)
+    : [];
+
+  // SG best
+  const sgBest = info.kind === "sg" && harData
+    ? (recentRounds as Array<{ playedAt: Date } & Record<string, unknown>>)
+        .filter((r) => typeof r[info.sgField!] === "number")
+        .reduce<{ verdi: number; dato: Date } | null>((best, r) => {
+          const v = r[info.sgField!] as number;
+          if (!best || v > best.verdi) return { verdi: v, dato: r.playedAt };
+          return best;
+        }, null)
+    : null;
+
+  const benchmarkDiff = verdi30d - info.benchmark;
 
   return (
     <div className="space-y-8 pb-16">
       <PageHeader
-        eyebrow={`PlayerHQ · Statistikk · ${metric.toUpperCase()}`}
+        eyebrow={`PlayerHQ · Statistikk · ${info.slug.toUpperCase()}`}
         titleLead={info.title}
         titleItalic={info.italic}
-        titleTrail={info.trail}
+        titleTrail="30 d"
         sub={info.unit}
         actions={
           <div className="flex gap-1 rounded-full border border-border bg-card p-1">
@@ -93,8 +336,9 @@ export default async function MetricDrillDownPage({
               <button
                 key={p}
                 type="button"
+                disabled
                 className={`rounded-full px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
-                  i === 1
+                  i === 2
                     ? "bg-foreground text-accent"
                     : "text-muted-foreground"
                 }`}
@@ -106,310 +350,334 @@ export default async function MetricDrillDownPage({
         }
       />
 
-      {/* Hero stat */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="col-span-1 sm:col-span-1 rounded-2xl border border-primary bg-primary p-6 text-primary-foreground">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] opacity-80">
-            Snitt 30 d
-          </div>
-          <div className="mt-3 font-mono text-5xl font-semibold tabular-nums">
-            {info.big}
-          </div>
-          <div className="mt-3 font-mono text-xs opacity-90">{info.delta}</div>
-        </div>
-        <div className="rounded-2xl border border-border bg-card p-6">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            vs Benchmark
-          </div>
-          <div className="mt-3 font-mono text-3xl font-semibold text-primary tabular-nums">
-            {info.vsBenchmark.split(" ")[0]}
-          </div>
-          <div className="mt-3 font-mono text-[11px] text-muted-foreground">
-            {info.vsBenchmark.split(" ").slice(1).join(" ")}
-          </div>
-        </div>
-        <div className="rounded-2xl border border-border bg-card p-6">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Best 30 d
-          </div>
-          <div className="mt-3 font-mono text-3xl font-semibold tabular-nums">
-            {info.bestLabel.split(" · ")[0]}
-          </div>
-          <div className="mt-3 font-mono text-[11px] text-muted-foreground">
-            {info.bestLabel.split(" · ").slice(1).join(" · ")}
-          </div>
-        </div>
-      </section>
-
-      {/* Chart */}
-      <section className="rounded-2xl border border-border bg-card p-6">
-        <div className="mb-3 flex items-baseline justify-between">
-          <h2 className="font-display text-base font-semibold tracking-tight">
-            {info.title} {info.italic} · 30 dager
-          </h2>
-          <div className="flex gap-4 font-mono text-[10px] text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-sm bg-primary/30" /> SG kumulativt
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-accent" /> Beste runde
-            </span>
-          </div>
-        </div>
-        <SgChart values={SG_VALUES} />
-        <div className="mt-2 flex justify-between font-mono text-[10px] text-muted-foreground">
-          <span>20. apr</span>
-          <span>27. apr</span>
-          <span>4. mai</span>
-          <span>11. mai</span>
-          <span>18. mai</span>
-        </div>
-      </section>
-
-      {/* Sub stats */}
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <SubStat label="GIR%" value="67%" delta="↑ +4 pp" sub="vs forrige 30 d" up />
-        <SubStat
-          label="Pin-avstand snitt"
-          value="9,2"
-          unit="m"
-          delta="↓ −0,8 m"
-          sub="nærmere pin"
-          up
-        />
-        <SubStat
-          label="Bias (long / short)"
-          value="+2,1"
-          unit="m long"
-          delta="Konsekvent for langt — droppa én klubbe?"
-        />
-        <PieCard />
-      </section>
-
-      {/* Avstands-buckets */}
-      <section>
-        <div className="mb-3">
-          <h2 className="font-display text-xl font-semibold tracking-tight">
-            Avstands-buckets
-          </h2>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-            SG per avstands-bånd · 142 slag
-          </p>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-border bg-card">
-          <div className="grid grid-cols-[1.4fr_60px_60px_1fr_80px] gap-4 border-b border-border bg-muted/40 px-6 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            <span>Avstand</span>
-            <span className="text-right">Slag</span>
-            <span className="text-right">GIR%</span>
-            <span>SG fordeling</span>
-            <span className="text-right">SG snitt</span>
-          </div>
-          {[
-            { range: "0—50 m", slag: 28, gir: "82%", w: 28, dir: "right" as const, sg: "+0,18", pos: true },
-            { range: "50—100 m", slag: 31, gir: "74%", w: 22, dir: "right" as const, sg: "+0,14", pos: true },
-            { range: "100—150 m", slag: 42, gir: "71%", w: 12, dir: "right" as const, sg: "+0,08", pos: true },
-            { range: "150—200 m", slag: 29, gir: "52%", w: 14, dir: "left" as const, sg: "−0,09", pos: false },
-            { range: "200+ m", slag: 12, gir: "41%", w: 24, dir: "left" as const, sg: "−0,16", pos: false },
-          ].map((b) => (
-            <div
-              key={b.range}
-              className="grid grid-cols-[1.4fr_60px_60px_1fr_80px] items-center gap-4 border-b border-border/60 px-6 py-3 last:border-0"
-            >
-              <span className="flex items-center gap-2 font-medium">
-                <span
-                  className={`h-2 w-2 rounded-full ${
-                    b.pos ? "bg-primary" : "bg-destructive"
-                  }`}
-                />
-                {b.range}
-              </span>
-              <span className="text-right font-mono text-sm tabular-nums">
-                {b.slag}
-              </span>
-              <span className="text-right font-mono text-sm tabular-nums">
-                {b.gir}
-              </span>
-              <span className="relative h-2 rounded-full bg-muted/60">
-                <span className="absolute left-1/2 top-0 h-2 w-px -translate-x-1/2 bg-border" />
-                <span
-                  className={`absolute top-0 h-2 rounded-full ${
-                    b.pos ? "bg-primary" : "bg-destructive"
-                  }`}
-                  style={
-                    b.dir === "right"
-                      ? { left: "50%", width: `${b.w}%` }
-                      : { right: "50%", width: `${b.w}%` }
-                  }
-                />
-              </span>
-              <span
-                className={`text-right font-mono text-sm font-semibold tabular-nums ${
-                  b.pos ? "text-primary" : "text-destructive"
+      {!harData ? (
+        <EmptyForDiscipline kind={info.kind} title={info.title} />
+      ) : (
+        <>
+          {/* Hero stat */}
+          <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="col-span-1 rounded-2xl border border-primary bg-primary p-6 text-primary-foreground sm:col-span-1">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] opacity-80">
+                Snitt 30 d
+              </div>
+              <div className="mt-3 font-mono text-5xl font-semibold tabular-nums">
+                {info.format(verdi30d)}
+              </div>
+              <div className="mt-3 font-mono text-xs opacity-90">
+                {forrige30d === 0 && info.kind === "sg"
+                  ? "ny baseline"
+                  : `${delta >= 0 ? "↑ +" : "↓ "}${info.format(Math.abs(delta))} vs forrige 30 d`}
+              </div>
+            </div>
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                vs kategori-snitt
+              </div>
+              <div
+                className={`mt-3 font-mono text-3xl font-semibold tabular-nums ${
+                  benchmarkDiff >= 0 ? "text-primary" : "text-destructive"
                 }`}
               >
-                {b.sg}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* AI drill recommendations */}
-      <section className="rounded-2xl border border-primary/30 bg-primary/[0.04] p-6">
-        <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
-          <Sparkles size={11} strokeWidth={1.75} /> AI-anbefalt
-        </span>
-        <div className="mt-3 mb-4">
-          <h2 className="font-display text-lg font-semibold">Hva å trene på</h2>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-            3 drills prioritert mot 150—200 m bucket
-          </p>
-        </div>
-        <div className="space-y-3">
-          {[
-            { n: "01", title: "Pin-attack 100m — distanse-presisjon", meta: "Slag · 25 slag · TrackMan-tagget · 30 min", sg: "+0,12 SG" },
-            { n: "02", title: "Long iron contact — CS70 → CS80", meta: "Tek · 40 baller · Impact-fokus · 35 min", sg: "+0,08 SG" },
-            { n: "03", title: "Lag-distance · klubbe-stack", meta: "Slag · 5 klubber × 8 baller · 40 min", sg: "+0,06 SG" },
-          ].map((d) => (
-            <div
-              key={d.n}
-              className="flex flex-col items-start gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center"
-            >
-              <span className="font-mono text-[10px] font-semibold text-muted-foreground">
-                {d.n}
-              </span>
-              <div className="flex-1">
-                <div className="font-display text-sm font-semibold">
-                  {d.title}
-                </div>
-                <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-                  {d.meta}
-                </div>
+                {benchmarkDiff >= 0 ? "+" : ""}
+                {info.format(Math.abs(benchmarkDiff))}
               </div>
-              <span className="rounded-sm bg-primary/10 px-2 py-1 font-mono text-xs font-semibold text-primary">
-                {d.sg}
-              </span>
-              <button
-                type="button"
-                className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-accent hover:opacity-90"
-              >
-                <Plus size={12} strokeWidth={2.5} /> Legg til
-              </button>
+              <div className="mt-3 font-mono text-[11px] text-muted-foreground">
+                Snitt A1 = {info.format(info.benchmark)}
+              </div>
             </div>
-          ))}
-        </div>
-      </section>
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                {info.kind === "pyramid" ? "Total tid 90 d" : "Beste 90 d"}
+              </div>
+              {info.kind === "pyramid" ? (
+                <>
+                  <div className="mt-3 font-mono text-3xl font-semibold tabular-nums">
+                    {(totalMin / 60).toFixed(1).replace(".", ",")} t
+                  </div>
+                  <div className="mt-3 font-mono text-[11px] text-muted-foreground">
+                    {okterTotalt} {okterTotalt === 1 ? "økt" : "økter"} fullført
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="mt-3 font-mono text-3xl font-semibold tabular-nums">
+                    {sgBest ? info.format(sgBest.verdi) : "—"}
+                  </div>
+                  <div className="mt-3 font-mono text-[11px] text-muted-foreground">
+                    {sgBest
+                      ? sgBest.dato.toLocaleDateString("nb-NO", {
+                          day: "numeric",
+                          month: "short",
+                        })
+                      : "—"}
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
 
-      {/* Coach perspective */}
-      <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 sm:flex-row sm:items-start">
-        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary font-mono text-sm font-bold text-primary-foreground">
-          AK
-        </span>
-        <div className="flex-1">
+          {/* Trend-chart */}
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-3 flex items-baseline justify-between">
+              <h2 className="font-display text-base font-semibold tracking-tight">
+                {info.title} {info.italic} · 90 dager
+              </h2>
+              <div className="flex gap-4 font-mono text-[10px] text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-sm bg-primary/30" />
+                  {info.kind === "pyramid" ? "Treningstimer (ukentlig)" : "SG kumulativt"}
+                </span>
+              </div>
+            </div>
+            <TrendChart
+              values={trendpunkter}
+              yMin={info.yMin}
+              yMax={info.yMax}
+              kind={info.kind}
+            />
+            <div className="mt-2 flex justify-between font-mono text-[10px] text-muted-foreground">
+              <span>90 d</span>
+              <span>60 d</span>
+              <span>30 d</span>
+              <span>i dag</span>
+            </div>
+          </section>
+
+          {/* Topp 5 drills (kun pyramid) */}
+          {info.kind === "pyramid" && (
+            <section>
+              <div className="mb-3">
+                <h2 className="font-display text-xl font-semibold tracking-tight">
+                  Topp 5 drills · {info.title.toLowerCase()}
+                </h2>
+                <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                  Mest tid brukt siste 90 d
+                </p>
+              </div>
+              {drillTopp.length === 0 ? (
+                <div className="rounded-lg border border-dashed border-border bg-card/40 p-6 text-center text-sm text-muted-foreground">
+                  Ingen drills logget for denne disiplinen ennå.
+                </div>
+              ) : (
+                <div className="overflow-hidden rounded-2xl border border-border bg-card">
+                  <div className="grid grid-cols-[2fr_80px_80px_80px] gap-4 border-b border-border bg-muted/40 px-6 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                    <span>Drill</span>
+                    <span className="text-right">Antall</span>
+                    <span className="text-right">Tid</span>
+                    <span className="text-right">Andel</span>
+                  </div>
+                  {drillTopp.map((d) => (
+                    <div
+                      key={d.navn}
+                      className="grid grid-cols-[2fr_80px_80px_80px] items-center gap-4 border-b border-border/60 px-6 py-3 last:border-0"
+                    >
+                      <span className="flex items-center gap-2 font-medium">
+                        <Target
+                          size={12}
+                          strokeWidth={1.75}
+                          className="text-muted-foreground"
+                        />
+                        {d.navn}
+                      </span>
+                      <span className="text-right font-mono text-sm tabular-nums">
+                        {d.antall}
+                      </span>
+                      <span className="text-right font-mono text-sm tabular-nums">
+                        {(d.totalMin / 60).toFixed(1).replace(".", ",")} t
+                      </span>
+                      <span className="text-right font-mono text-sm font-semibold tabular-nums text-primary">
+                        {Math.round(d.andel * 100)}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* SG-detaljer (kun SG) */}
+          {info.kind === "sg" && (
+            <section>
+              <div className="mb-3">
+                <h2 className="font-display text-xl font-semibold tracking-tight">
+                  SG-utvikling per uke
+                </h2>
+                <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                  Snitt {info.italic.toLowerCase()} per uke · siste 90 d
+                </p>
+              </div>
+              <div className="overflow-hidden rounded-2xl border border-border bg-card">
+                <div className="grid grid-cols-[1fr_80px_80px] gap-4 border-b border-border bg-muted/40 px-6 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                  <span>Periode</span>
+                  <span className="text-right">Runder</span>
+                  <span className="text-right">SG snitt</span>
+                </div>
+                {byggSgUkeRader(
+                  recentRounds as Array<{ playedAt: Date } & Record<string, unknown>>,
+                  info.sgField!,
+                  ninetyDaysAgo,
+                  naaMs,
+                ).map((u) => (
+                  <div
+                    key={u.label}
+                    className="grid grid-cols-[1fr_80px_80px] items-center gap-4 border-b border-border/60 px-6 py-3 last:border-0"
+                  >
+                    <span className="font-medium">{u.label}</span>
+                    <span className="text-right font-mono text-sm tabular-nums">
+                      {u.runder}
+                    </span>
+                    <span
+                      className={`text-right font-mono text-sm font-semibold tabular-nums ${
+                        u.sg == null
+                          ? "text-muted-foreground"
+                          : u.sg >= 0
+                            ? "text-primary"
+                            : "text-destructive"
+                      }`}
+                    >
+                      {u.sg == null ? "—" : info.format(u.sg)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Økt-sammendrag (kun pyramid) */}
+          {info.kind === "pyramid" && okterTotalt > 0 && (
+            <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <Tile
+                icon={ClipboardList}
+                label="Antall økter"
+                value={String(okterTotalt)}
+                sub="siste 90 d"
+              />
+              <Tile
+                icon={Clock}
+                label="Total tid"
+                value={`${(totalMin / 60).toFixed(1).replace(".", ",")} t`}
+                sub={`Snitt ${Math.round(totalMin / Math.max(okterTotalt, 1))} min/økt`}
+              />
+              <Tile
+                icon={Sparkles}
+                label="Drill-bredde"
+                value={String(drillTopp.length)}
+                sub="unike drills brukt"
+              />
+            </section>
+          )}
+        </>
+      )}
+
+      {/* Coach-CTA */}
+      <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Coach-perspektiv · Anders K.
+            Be coachen om mer fokus
           </span>
-          <p className="mt-2 text-sm leading-relaxed text-foreground">
-            &ldquo;Du har <strong>+0,42 SG</strong> totalt, men{" "}
-            <strong>−0,09 SG</strong> i 150—200 m. Vi jobber med kontakt på
-            CS70-CS80 før Sørlandsåpent. Klubbe-distansene dine viser at du har
-            1—2 klubber for langt — vi tar det på neste økt.&rdquo;
+          <h3 className="mt-2 font-display text-lg font-semibold">
+            Vil du jobbe mer med {info.italic.toLowerCase()}?
+          </h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Send en melding til coach Anders og be ham legge mer av denne
+            disiplinen inn i neste plan.
           </p>
-          <span className="mt-3 block font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-            12. mai 2026 · etter 30 d review
-          </span>
         </div>
         <Link
-          href="/portal/coach"
+          href={`/portal/coach/melding?type=fokus&omrade=${info.slug}`}
           className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90"
         >
-          <MessageSquare size={12} strokeWidth={1.75} /> Svar Anders
+          <MessageSquare size={12} strokeWidth={1.75} /> Be om mer fokus
         </Link>
       </section>
     </div>
   );
 }
 
-function SubStat({
+/* ─────────── Sub-komponenter ─────────── */
+
+function EmptyForDiscipline({
+  kind,
+  title,
+}: {
+  kind: Kind;
+  title: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-dashed border-border bg-card/40 p-10 text-center">
+      <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        Ingen data ennå
+      </span>
+      <h3 className="mt-3 font-display text-xl font-semibold">
+        {title} · ingen historikk
+      </h3>
+      <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+        {kind === "pyramid"
+          ? "Du har ikke fullført økter i denne disiplinen ennå. Logg en økt for å se trender."
+          : "Du har ikke registrert runder med SG-data ennå. Logg din første runde."}
+      </p>
+      <Link
+        href={
+          kind === "pyramid"
+            ? "/portal/tren"
+            : "/portal/mal/runder"
+        }
+        className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90"
+      >
+        {kind === "pyramid" ? "Til treningsplan" : "Logg runde"}
+        <ArrowRight size={12} strokeWidth={1.75} />
+      </Link>
+    </div>
+  );
+}
+
+function Tile({
+  icon: Icon,
   label,
   value,
-  unit,
-  delta,
   sub,
-  up,
 }: {
+  icon: React.ElementType;
   label: string;
   value: string;
-  unit?: string;
-  delta: string;
-  sub?: string;
-  up?: boolean;
+  sub: string;
 }) {
   return (
     <div className="rounded-lg border border-border bg-card p-4">
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+      <div className="mb-2 flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        <Icon size={11} strokeWidth={1.75} />
         {label}
-      </span>
-      <div className="mt-2 flex items-baseline gap-1 font-mono text-3xl font-semibold tabular-nums">
+      </div>
+      <div className="font-mono text-2xl font-semibold tabular-nums">
         {value}
-        {unit && (
-          <span className="text-sm font-medium text-muted-foreground">
-            {unit}
-          </span>
-        )}
       </div>
-      <div className="mt-2 font-mono text-[11px] text-muted-foreground">
-        {up !== undefined && (
-          <span className={up ? "font-semibold text-primary" : "font-semibold text-destructive"}>
-            {delta}
-          </span>
-        )}{" "}
-        {sub ?? (up === undefined ? delta : "")}
+      <div className="mt-1 font-mono text-[11px] text-muted-foreground">
+        {sub}
       </div>
     </div>
   );
 }
 
-function PieCard() {
-  return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-        Klubb-fordeling
-      </span>
-      <div className="mt-2 flex items-center gap-3">
-        <svg viewBox="0 0 36 36" className="h-20 w-20">
-          <circle cx="18" cy="18" r="14" fill="none" stroke="hsl(var(--background))" strokeWidth="6" />
-          <circle cx="18" cy="18" r="14" fill="none" stroke="#005840" strokeWidth="6" strokeDasharray="28.15 87.96" strokeDashoffset="0" transform="rotate(-90 18 18)" />
-          <circle cx="18" cy="18" r="14" fill="none" stroke="#2C7D52" strokeWidth="6" strokeDasharray="21.11 87.96" strokeDashoffset="-28.15" transform="rotate(-90 18 18)" />
-          <circle cx="18" cy="18" r="14" fill="none" stroke="#88B45A" strokeWidth="6" strokeDasharray="15.83 87.96" strokeDashoffset="-49.26" transform="rotate(-90 18 18)" />
-          <circle cx="18" cy="18" r="14" fill="none" stroke="#D1F843" strokeWidth="6" strokeDasharray="12.31 87.96" strokeDashoffset="-65.09" transform="rotate(-90 18 18)" />
-          <circle cx="18" cy="18" r="14" fill="none" stroke="#1A4D2E" strokeWidth="6" strokeDasharray="10.55 87.96" strokeDashoffset="-77.40" transform="rotate(-90 18 18)" />
-        </svg>
-        <div className="space-y-1 font-mono text-[10px]">
-          {[
-            { c: "#005840", l: "7i", p: "32%" },
-            { c: "#2C7D52", l: "8i", p: "24%" },
-            { c: "#88B45A", l: "9i", p: "18%" },
-            { c: "#D1F843", l: "PW", p: "14%" },
-            { c: "#1A4D2E", l: "Annet", p: "12%" },
-          ].map((r) => (
-            <div key={r.l} className="flex items-center gap-1.5">
-              <span className="block h-2 w-2 rounded-sm" style={{ background: r.c }} />
-              <span className="w-8 text-foreground">{r.l}</span>
-              <span className="text-muted-foreground">{r.p}</span>
-            </div>
-          ))}
-        </div>
+function TrendChart({
+  values,
+  yMin,
+  yMax,
+  kind,
+}: {
+  values: number[];
+  yMin: number;
+  yMax: number;
+  kind: Kind;
+}) {
+  if (values.length === 0) {
+    return (
+      <div className="grid h-48 w-full place-items-center text-sm text-muted-foreground">
+        Ingen datapunkter
       </div>
-    </div>
-  );
-}
-
-function SgChart({ values }: { values: number[] }) {
-  const yMin = -1.0;
-  const yMax = 2.0;
+    );
+  }
   const xy = values.map((v, i) => ({
-    x: (i / (values.length - 1)) * 100,
+    x: (i / Math.max(values.length - 1, 1)) * 100,
     y: ((yMax - v) / (yMax - yMin)) * 100,
   }));
   let path = `M ${xy[0].x} ${xy[0].y}`;
@@ -422,26 +690,46 @@ function SgChart({ values }: { values: number[] }) {
   const areaPath = path + ` L 100 100 L 0 100 Z`;
   const bestIdx = values.indexOf(Math.max(...values));
   const best = xy[bestIdx];
+  const zeroY = ((yMax - 0) / (yMax - yMin)) * 100;
 
   return (
     <div className="relative h-48 w-full">
       <div className="absolute left-0 top-0 flex h-full w-10 flex-col justify-between font-mono text-[10px] text-muted-foreground">
-        <span>+2,0</span>
-        <span>+1,0</span>
-        <span>0,0</span>
-        <span>−1,0</span>
+        <span>{kind === "sg" ? "+2,0" : `${yMax}`}</span>
+        <span>{kind === "sg" ? "+1,0" : `${Math.round(yMax / 2)}`}</span>
+        <span>{kind === "sg" ? "0,0" : "0"}</span>
       </div>
       <div className="absolute inset-y-0 left-10 right-0">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          className="h-full w-full"
+        >
           <defs>
-            <linearGradient id="sg-grad" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="trend-grad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#005840" stopOpacity="0.35" />
               <stop offset="100%" stopColor="#005840" stopOpacity="0.02" />
             </linearGradient>
           </defs>
-          <line x1="0" y1={((yMax - 0) / (yMax - yMin)) * 100} x2="100" y2={((yMax - 0) / (yMax - yMin)) * 100} stroke="hsl(var(--border))" strokeWidth="0.3" strokeDasharray="1 1" />
-          <path d={areaPath} fill="url(#sg-grad)" stroke="none" />
-          <path d={path} fill="none" stroke="#005840" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+          {kind === "sg" && (
+            <line
+              x1="0"
+              y1={zeroY}
+              x2="100"
+              y2={zeroY}
+              stroke="hsl(var(--border))"
+              strokeWidth="0.3"
+              strokeDasharray="1 1"
+            />
+          )}
+          <path d={areaPath} fill="url(#trend-grad)" stroke="none" />
+          <path
+            d={path}
+            fill="none"
+            stroke="#005840"
+            strokeWidth="1.5"
+            vectorEffect="non-scaling-stroke"
+          />
         </svg>
         <span
           aria-hidden="true"
@@ -451,4 +739,147 @@ function SgChart({ values }: { values: number[] }) {
       </div>
     </div>
   );
+}
+
+/* ─────────── Helpers ─────────── */
+
+function summer(arr: (number | null | undefined)[]): number {
+  return arr.reduce<number>((s, v) => s + (typeof v === "number" ? v : 0), 0);
+}
+
+function snittSg(
+  rounds: Array<{ playedAt: Date } & Record<string, unknown>>,
+  field: string,
+  from: Date,
+  to?: Date,
+): number {
+  const filtered = rounds.filter(
+    (r) => r.playedAt >= from && (to ? r.playedAt < to : true),
+  );
+  const values = filtered
+    .map((r) => r[field])
+    .filter((v): v is number => typeof v === "number");
+  if (values.length === 0) return 0;
+  return values.reduce<number>((s, v) => s + v, 0) / values.length;
+}
+
+function byggPyramidTrend(
+  sessions: { scheduledAt: Date; durationMin: number }[],
+  from: Date,
+  toMs: number,
+): number[] {
+  // 12 ukentlige buckets fra siste 90 d
+  const buckets = 12;
+  const startMs = from.getTime();
+  const totalMs = toMs - startMs;
+  const out: number[] = [];
+  for (let i = 0; i < buckets; i++) {
+    const bStart = startMs + (totalMs * i) / buckets;
+    const bEnd = startMs + (totalMs * (i + 1)) / buckets;
+    const inn = sessions.filter(
+      (s) => s.scheduledAt.getTime() >= bStart && s.scheduledAt.getTime() < bEnd,
+    );
+    out.push(summer(inn.map((s) => s.durationMin)) / 60);
+  }
+  return out;
+}
+
+function byggSgTrend(
+  rounds: Array<{ playedAt: Date } & Record<string, unknown>>,
+  field: string,
+  from: Date,
+  toMs: number,
+): number[] {
+  const buckets = 12;
+  const startMs = from.getTime();
+  const totalMs = toMs - startMs;
+  const out: number[] = [];
+  let lastValid = 0;
+  for (let i = 0; i < buckets; i++) {
+    const bStart = startMs + (totalMs * i) / buckets;
+    const bEnd = startMs + (totalMs * (i + 1)) / buckets;
+    const inn = rounds.filter(
+      (r) =>
+        r.playedAt.getTime() >= bStart && r.playedAt.getTime() < bEnd,
+    );
+    const values = inn
+      .map((r) => r[field])
+      .filter((v): v is number => typeof v === "number");
+    if (values.length > 0) {
+      const snitt = values.reduce<number>((s, v) => s + v, 0) / values.length;
+      lastValid = snitt;
+      out.push(snitt);
+    } else {
+      out.push(lastValid);
+    }
+  }
+  return out;
+}
+
+function byggSgUkeRader(
+  rounds: Array<{ playedAt: Date } & Record<string, unknown>>,
+  field: string,
+  from: Date,
+  toMs: number,
+): Array<{ label: string; runder: number; sg: number | null }> {
+  const buckets = 6;
+  const startMs = from.getTime();
+  const totalMs = toMs - startMs;
+  const out: Array<{ label: string; runder: number; sg: number | null }> = [];
+  for (let i = 0; i < buckets; i++) {
+    const bStart = startMs + (totalMs * i) / buckets;
+    const bEnd = startMs + (totalMs * (i + 1)) / buckets;
+    const inn = rounds.filter(
+      (r) =>
+        r.playedAt.getTime() >= bStart && r.playedAt.getTime() < bEnd,
+    );
+    const values = inn
+      .map((r) => r[field])
+      .filter((v): v is number => typeof v === "number");
+    const sg =
+      values.length === 0
+        ? null
+        : values.reduce<number>((s, v) => s + v, 0) / values.length;
+    out.push({
+      label: `${new Date(bStart).toLocaleDateString("nb-NO", {
+        day: "numeric",
+        month: "short",
+      })} → ${new Date(bEnd).toLocaleDateString("nb-NO", {
+        day: "numeric",
+        month: "short",
+      })}`,
+      runder: inn.length,
+      sg,
+    });
+  }
+  return out;
+}
+
+type DrillEntry = {
+  exercise: { name: string; durationMin: number | null };
+  session: { id: string; durationMin: number; scheduledAt: Date };
+};
+
+function aggregerTopDrills(
+  drills: DrillEntry[],
+): Array<{ navn: string; antall: number; totalMin: number; andel: number }> {
+  const groups = new Map<string, { antall: number; totalMin: number }>();
+  for (const d of drills) {
+    const navn = d.exercise.name;
+    const tid =
+      d.exercise.durationMin ??
+      Math.round(d.session.durationMin / Math.max(1, 4));
+    const prev = groups.get(navn) ?? { antall: 0, totalMin: 0 };
+    groups.set(navn, { antall: prev.antall + 1, totalMin: prev.totalMin + tid });
+  }
+  const total = [...groups.values()].reduce((s, g) => s + g.totalMin, 0);
+  return [...groups.entries()]
+    .map(([navn, g]) => ({
+      navn,
+      antall: g.antall,
+      totalMin: g.totalMin,
+      andel: total === 0 ? 0 : g.totalMin / total,
+    }))
+    .sort((a, b) => b.totalMin - a.totalMin)
+    .slice(0, 5);
 }

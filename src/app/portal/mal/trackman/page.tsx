@@ -7,6 +7,7 @@ import { Activity } from "lucide-react";
 import { CsvImportModal } from "./csv-import-modal";
 import { HtmlImportModal } from "./html-import-modal";
 import { DispersionClient } from "./dispersion-client";
+import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 
 // ---------------------------------------------------------------------------
 // Static bag data — will be replaced by per-shot aggregates once rawJson
@@ -128,6 +129,7 @@ export default async function TrackManPage() {
           cta={
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
+                <TrackmanImportModal variant="primary" label="Importer TrackMan" />
                 <CsvImportModal />
                 <HtmlImportModal />
               </div>
@@ -174,6 +176,7 @@ export default async function TrackManPage() {
             </p>
           </div>
           <div className="flex gap-2">
+            <TrackmanImportModal variant="primary" label="Importer TrackMan" />
             <CsvImportModal />
             <HtmlImportModal />
             <button
@@ -586,6 +589,7 @@ export default async function TrackManPage() {
               >
                 Eksporter til Strokes Gained
               </button>
+              <TrackmanImportModal variant="primary" label="Importer TrackMan" />
               <CsvImportModal />
               <HtmlImportModal />
               <Link

@@ -14,6 +14,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { NyRundeModal } from "./ny-runde-modal";
 import { EksporterRunderModal } from "./eksporter-modal";
 import { GolfBoxImportModal } from "@/components/shared/golfbox-import-modal";
+import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 
 function formatSg(v: number | null | undefined): string {
   if (v == null) return "—";
@@ -196,6 +197,7 @@ export default async function RunderPage() {
             <div className="ml-auto inline-flex gap-2">
               <EksporterRunderModal />
               <GolfBoxImportModal variant="secondary" />
+              <TrackmanImportModal variant="secondary" label="Importer TrackMan" />
             </div>
           </div>
 
