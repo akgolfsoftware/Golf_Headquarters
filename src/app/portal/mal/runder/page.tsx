@@ -6,13 +6,14 @@
  * og tabell med tee-pill, score, vs-par-pill, SG og detaljer-link.
  */
 import Link from "next/link";
-import { Flag, Search, ChevronDown, Download } from "lucide-react";
+import { Flag, Search, ChevronDown } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { NyRundeModal } from "./ny-runde-modal";
 import { EksporterRunderModal } from "./eksporter-modal";
+import { GolfBoxImportModal } from "@/components/shared/golfbox-import-modal";
 
 function formatSg(v: number | null | undefined): string {
   if (v == null) return "—";
@@ -124,14 +125,7 @@ export default async function RunderPage() {
               <span className="font-mono text-[11px] text-muted-foreground">
                 eller
               </span>
-              <button
-                type="button"
-                disabled
-                title=""
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground opacity-60"
-              >
-                <Download size={12} strokeWidth={1.75} /> Importer fra GolfBox
-              </button>
+              <GolfBoxImportModal variant="secondary" />
             </div>
           }
         />
@@ -201,14 +195,7 @@ export default async function RunderPage() {
             </Chip>
             <div className="ml-auto inline-flex gap-2">
               <EksporterRunderModal />
-              <button
-                type="button"
-                disabled
-                title=""
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-transparent px-4 py-2 text-xs font-semibold text-foreground opacity-60"
-              >
-                <Download size={12} strokeWidth={1.75} /> Importer fra GolfBox
-              </button>
+              <GolfBoxImportModal variant="secondary" />
             </div>
           </div>
 

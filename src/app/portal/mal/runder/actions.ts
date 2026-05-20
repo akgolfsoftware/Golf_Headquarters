@@ -1,6 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { triggerRoundAgent } from "@/lib/agents/triggers";
@@ -100,6 +102,247 @@ export async function exportRounds(input: ExportRoundsInput) {
     take: 1,
   });
   void input;
+}
+
+// ---------------------------------------------------------------------------
+// GolfBox-import — preview + bekreft
+// ---------------------------------------------------------------------------
+
+/**
+ * Hardkodet dummy-data for stub-implementasjonen. I produksjon vil dette
+ * komme fra GolfBox API etter OAuth-flyt. Inneholder 8 runder; 2 av disse
+ * markeres som duplikater hvis de matcher en eksisterende Round (dato +
+ * score) for innlogget spiller.
+ */
+const DUMMY_GOLFBOX_ROUNDS = [
+  {
+    externalId: "gb-2026-05-12",
+    playedAt: "2026-05-12",
+    courseName: "Larvik GK",
+    score: 68,
+    par: 70,
+    slope: 132,
+    tee: "Gul",
+  },
+  {
+    externalId: "gb-2026-05-04",
+    playedAt: "2026-05-04",
+    courseName: "Bossum Golfklubb",
+    score: 72,
+    par: 72,
+    slope: 128,
+    tee: "Gul",
+  },
+  {
+    externalId: "gb-2026-04-27",
+    playedAt: "2026-04-27",
+    courseName: "Larvik GK",
+    score: 71,
+    par: 70,
+    slope: 132,
+    tee: "Gul",
+  },
+  {
+    externalId: "gb-2026-04-20",
+    playedAt: "2026-04-20",
+    courseName: "Borre Golfklubb",
+    score: 75,
+    par: 71,
+    slope: 124,
+    tee: "Gul",
+  },
+  {
+    externalId: "gb-2026-04-12",
+    playedAt: "2026-04-12",
+    courseName: "Onsøy Golfklubb",
+    score: 70,
+    par: 70,
+    slope: 122,
+    tee: "Gul",
+  },
+  {
+    externalId: "gb-2026-03-30",
+    playedAt: "2026-03-30",
+    courseName: "Bossum Golfklubb",
+    score: 73,
+    par: 72,
+    slope: 128,
+    tee: "Hvit",
+  },
+  {
+    externalId: "gb-2026-03-22",
+    playedAt: "2026-03-22",
+    courseName: "Hauger Golfklubb",
+    score: 76,
+    par: 71,
+    slope: 130,
+    tee: "Gul",
+  },
+  {
+    externalId: "gb-2026-03-15",
+    playedAt: "2026-03-15",
+    courseName: "Larvik GK",
+    score: 74,
+    par: 70,
+    slope: 132,
+    tee: "Gul",
+  },
+];
+
+export type GolfBoxPreviewRound = {
+  externalId: string;
+  playedAt: string; // ISO YYYY-MM-DD
+  courseName: string;
+  score: number;
+  par: number;
+  slope: number;
+  tee: string;
+  duplicate: boolean;
+};
+
+const PreviewInput = z.object({
+  fromDate: z
+    .string()
+    .min(1)
+    .refine((s) => !isNaN(Date.parse(s)), "Ugyldig fra-dato"),
+  toDate: z
+    .string()
+    .min(1)
+    .refine((s) => !isNaN(Date.parse(s)), "Ugyldig til-dato"),
+});
+
+const ImportInput = z.object({
+  fromDate: z.string().min(1),
+  toDate: z.string().min(1),
+  roundIds: z.array(z.string().min(1)).min(1, "Velg minst én runde"),
+});
+
+export type PreviewGolfBoxInput = z.infer<typeof PreviewInput>;
+export type ImportGolfBoxInput = z.infer<typeof ImportInput>;
+
+/**
+ * previewGolfBoxRounds — stub som returnerer hardkoded preview-liste.
+ * Auto-detekterer duplikater ved å sjekke om spilleren allerede har en runde
+ * på samme dato med samme score.
+ */
+export async function previewGolfBoxRounds(
+  input: unknown,
+): Promise<{ rounds: GolfBoxPreviewRound[]; range: { from: string; to: string } }> {
+  const user = await requirePortalUser();
+  const parsed = PreviewInput.safeParse(input);
+  if (!parsed.success) {
+    throw new Error(
+      parsed.error.issues.map((i) => i.message).join(" · ") ||
+        "Ugyldig dato-range",
+    );
+  }
+  const { fromDate, toDate } = parsed.data;
+
+  const from = new Date(fromDate);
+  const to = new Date(toDate);
+
+  // Filtrer dummy-data etter range.
+  const iRange = DUMMY_GOLFBOX_ROUNDS.filter((r) => {
+    const d = new Date(r.playedAt);
+    return d >= from && d <= to;
+  });
+
+  // Hent eksisterende runder for å markere duplikater.
+  const existing = await prisma.round.findMany({
+    where: {
+      userId: user.id,
+      playedAt: { gte: from, lte: to },
+    },
+    select: { playedAt: true, score: true },
+  });
+
+  const existingKeys = new Set(
+    existing.map((r) => `${r.playedAt.toISOString().slice(0, 10)}|${r.score}`),
+  );
+
+  const rounds: GolfBoxPreviewRound[] = iRange.map((r) => ({
+    ...r,
+    duplicate: existingKeys.has(`${r.playedAt}|${r.score}`),
+  }));
+
+  return {
+    rounds,
+    range: { from: fromDate, to: toDate },
+  };
+}
+
+/**
+ * importFromGolfBox — importerer valgte runder fra GolfBox-preview-listen.
+ * Stub: matcher mot DUMMY_GOLFBOX_ROUNDS, oppretter (eller henter)
+ * CourseDefinition på navn, og oppretter Round-rader. Hopper over duplikater.
+ */
+export async function importFromGolfBox(
+  input: unknown,
+): Promise<{ imported: number; skipped: number }> {
+  const user = await requirePortalUser();
+  const parsed = ImportInput.safeParse(input);
+  if (!parsed.success) {
+    throw new Error(
+      parsed.error.issues.map((i) => i.message).join(" · ") || "Ugyldig input",
+    );
+  }
+
+  const valgte = DUMMY_GOLFBOX_ROUNDS.filter((r) =>
+    parsed.data.roundIds.includes(r.externalId),
+  );
+
+  let imported = 0;
+  let skipped = 0;
+
+  for (const r of valgte) {
+    // Sjekk duplikat på dato + score.
+    const playedAt = new Date(r.playedAt);
+    const dup = await prisma.round.findFirst({
+      where: {
+        userId: user.id,
+        playedAt,
+        score: r.score,
+      },
+      select: { id: true },
+    });
+    if (dup) {
+      skipped += 1;
+      continue;
+    }
+
+    // Finn eller opprett bane.
+    let course = await prisma.courseDefinition.findFirst({
+      where: { name: r.courseName },
+      select: { id: true },
+    });
+    if (!course) {
+      course = await prisma.courseDefinition.create({
+        data: {
+          name: r.courseName,
+          par: r.par,
+          slope: r.slope,
+        },
+        select: { id: true },
+      });
+    }
+
+    await prisma.round.create({
+      data: {
+        userId: user.id,
+        courseId: course.id,
+        playedAt,
+        score: r.score,
+        notes: `Importert fra GolfBox (${r.tee} tee, slope ${r.slope})`,
+      },
+    });
+    imported += 1;
+  }
+
+  await triggerRoundAgent(user.id);
+  revalidatePath("/portal/mal");
+  revalidatePath("/portal/mal/runder");
+
+  return { imported, skipped };
 }
 
 export async function deleteRound(roundId: string) {

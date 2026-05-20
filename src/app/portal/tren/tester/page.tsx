@@ -87,6 +87,14 @@ export default async function TesterPage() {
         titleItalic="deg"
         titleTrail={user.name ? `, ${user.name.split(" ")[0]}.` : "."}
         sub={`${gjennomfoert} av ${totalTester} tester gjennomført · ${totalResultater} resultat${totalResultater === 1 ? "" : "er"} logget`}
+        actions={
+          <Link
+            href="/portal/tren/tester/ny"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            <Plus size={12} strokeWidth={1.75} aria-hidden /> Ny test
+          </Link>
+        }
       />
 
       {/* Tabs (Team Norway / Mine) — Mine er Pro-locked og vises som disabled */}
