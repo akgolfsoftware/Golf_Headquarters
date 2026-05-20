@@ -17,10 +17,10 @@ export default async function BanerPage() {
   await requirePortalUser();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       <Link
         href="/portal/mal"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
         Tilbake til Mål
@@ -40,7 +40,7 @@ export default async function BanerPage() {
         sub="Når den er klar kan du logge runder direkte mot riktig bane og se utviklingen din over tid."
       />
 
-      <section className="rounded-lg border border-border bg-card p-6">
+      <section className="rounded-lg border border-border bg-card p-4 md:p-6">
         <div className="mb-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Hva som kommer i V2
         </div>

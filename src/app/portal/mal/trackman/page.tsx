@@ -112,7 +112,7 @@ export default async function TrackManPage() {
 
   if (total === 0) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
         <div>
           <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             TrackMan · sesong {new Date().getFullYear()} · trendvisning
@@ -150,11 +150,11 @@ export default async function TrackManPage() {
     : "—";
 
   return (
-    <div className="min-h-screen bg-card text-foreground">
+    <div className="min-h-screen bg-card pb-20 text-foreground md:pb-0">
       <div className="mx-auto max-w-[1360px] space-y-4 px-2 py-2">
 
         {/* ── Hero ── */}
-        <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
           <div>
             <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
               TrackMan · sesong {new Date().getFullYear()} · trendvisning
@@ -175,7 +175,7 @@ export default async function TrackManPage() {
               </span>
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <TrackmanImportModal variant="primary" label="Importer TrackMan" />
             <CsvImportModal />
             <HtmlImportModal />

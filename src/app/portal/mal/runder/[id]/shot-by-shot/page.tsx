@@ -54,7 +54,7 @@ export default async function RundeShotByShotPage({
   const vsPar = round.score - round.course.par;
 
   return (
-    <div className="space-y-8 pb-16">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-16">
       {/* Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -89,7 +89,7 @@ export default async function RundeShotByShotPage({
             <span>Trening</span>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <IconBtn label="Rediger" Icon={Pencil} />
           <IconBtn label="Eksporter" Icon={Download} />
           <ShareRoundButton
@@ -376,7 +376,7 @@ function IconBtn({
     <button
       type="button"
       aria-label={label}
-      className={`flex h-9 w-9 items-center justify-center rounded-full border border-border ${
+      className={`flex h-11 w-11 items-center justify-center rounded-full border border-border ${
         accent ? "bg-accent text-accent-foreground" : "bg-card text-foreground"
       } hover:bg-muted/40`}
     >

@@ -77,7 +77,7 @@ export default async function RunderPage() {
   })();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · /portal/mal/runder"
         titleLead=""
@@ -182,7 +182,7 @@ export default async function RunderPage() {
                 type="search"
                 aria-label="Søk bane"
                 placeholder="Søk bane..."
-                className="w-full rounded-md border border-border bg-card py-2 pl-10 pr-4 text-sm outline-none focus:border-primary"
+                className="h-11 w-full rounded-md border border-border bg-card py-2 pl-10 pr-4 text-base outline-none focus:border-primary sm:h-auto sm:text-sm"
               />
             </div>
             <Chip>
@@ -194,7 +194,7 @@ export default async function RunderPage() {
             <Chip>
               Tee: Alle <ChevronDown size={11} strokeWidth={1.75} />
             </Chip>
-            <div className="ml-auto inline-flex gap-2">
+            <div className="inline-flex w-full flex-wrap gap-2 sm:ml-auto sm:w-auto">
               <EksporterRunderModal />
               <GolfBoxImportModal variant="secondary" />
               <TrackmanImportModal variant="secondary" label="Importer TrackMan" />
