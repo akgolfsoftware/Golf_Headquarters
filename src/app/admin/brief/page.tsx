@@ -321,7 +321,7 @@ export default async function DagligBrief() {
         {/* 05 — Ukens fokus */}
         <section>
           <SectionNum num="05" title={`Ukens prioritet · uke ${ukeNr}`} />
-          <div className="flex items-center justify-between gap-8 rounded-xl border border-border bg-card p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-8 rounded-xl border border-border bg-card p-4 sm:p-6">
             <div className="flex-1">
               <div className="mb-1.5 font-display text-[18px] font-semibold tracking-tight">
                 Fokus denne uka

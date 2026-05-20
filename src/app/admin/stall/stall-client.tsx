@@ -176,7 +176,7 @@ export function StallClient({ snapshot }: { snapshot: StallSnapshot }) {
       </div>
 
       {/* Tabs */}
-      <div className="inline-flex gap-0.5 rounded-md bg-secondary p-1">
+      <div className="-mx-4 inline-flex gap-0.5 overflow-x-auto rounded-md bg-secondary p-1 sm:mx-0">
         {(
           [
             { key: "aktivitet", label: "Aktivitet", icon: Activity },
@@ -191,7 +191,7 @@ export function StallClient({ snapshot }: { snapshot: StallSnapshot }) {
               key={t.key}
               type="button"
               onClick={() => setTab(t.key)}
-              className={`inline-flex items-center gap-1.5 rounded-sm px-4 py-2 text-sm font-medium transition-colors ${
+              className={`inline-flex h-11 items-center gap-1.5 whitespace-nowrap rounded-sm px-4 text-sm font-medium transition-colors ${
                 erAktiv
                   ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
