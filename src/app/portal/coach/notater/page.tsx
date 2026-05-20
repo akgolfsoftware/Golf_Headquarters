@@ -184,7 +184,7 @@ export default async function NotaterListe({
   const rekkefolge = ["I dag", "I går", "Denne uka", "Denne måneden", "Eldre"];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · Coach · Notater"
         titleLead="Alle dine"
@@ -260,7 +260,7 @@ export default async function NotaterListe({
                       <li key={n.id}>
                         <Link
                           href={`/portal/coach/notater/${n.id}`}
-                          className="flex items-start gap-4 rounded-lg border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+                          className="flex items-start gap-3 rounded-lg border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md sm:gap-4 sm:p-5"
                         >
                           <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-secondary text-foreground">
                             <Ikon size={18} strokeWidth={1.75} />

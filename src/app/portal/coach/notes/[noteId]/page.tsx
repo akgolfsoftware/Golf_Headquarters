@@ -81,10 +81,10 @@ export default async function NoteDetalj({
     : "?";
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-8">
+    <div className="mx-auto w-full max-w-4xl space-y-6 pb-20 md:space-y-8 md:pb-0">
       <Link
         href="/portal/coach/notes"
-        className="inline-flex items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"
+        className="inline-flex h-11 items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"
       >
         <ChevronLeft size={14} strokeWidth={1.5} />
         Tilbake til notater
@@ -107,7 +107,7 @@ export default async function NoteDetalj({
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Hovedinnhold */}
           <section className="lg:col-span-2">
-            <article className="max-w-3xl rounded-lg border border-border bg-card p-8">
+            <article className="max-w-3xl rounded-lg border border-border bg-card p-4 sm:p-6 md:p-8">
               <div className="space-y-4 text-[16px] leading-[1.7] text-foreground">
                 {tittelFragment && (
                   <p className="whitespace-pre-wrap">{tittelFragment}</p>
@@ -150,7 +150,7 @@ export default async function NoteDetalj({
             {sesjon.kind === "DIRECT" && (
               <Link
                 href="/portal/coach/melding"
-                className="block rounded-lg border border-border bg-card p-6 transition-colors hover:bg-secondary/40"
+                className="block rounded-lg border border-border bg-card p-4 transition-colors hover:bg-secondary/40 md:p-6"
               >
                 <div className="flex items-center gap-2">
                   <Quote
@@ -178,7 +178,7 @@ export default async function NoteDetalj({
             )}
 
             {/* Coach-info */}
-            <div className="rounded-lg border border-border bg-card p-6">
+            <div className="rounded-lg border border-border bg-card p-4 md:p-6">
               <div className="flex items-center gap-4">
                 <div className="grid h-10 w-10 place-items-center rounded-full bg-primary font-mono text-[12px] font-semibold text-primary-foreground">
                   {coachInitialer}
@@ -203,7 +203,7 @@ export default async function NoteDetalj({
             </div>
 
             {/* Tags */}
-            <div className="rounded-lg border border-border bg-card p-6">
+            <div className="rounded-lg border border-border bg-card p-4 md:p-6">
               <div className="mb-4 flex items-center gap-2">
                 <Tag
                   size={14}
@@ -227,7 +227,7 @@ export default async function NoteDetalj({
             </div>
 
             {/* Relaterte notater */}
-            <div className="rounded-lg border border-border bg-card p-6">
+            <div className="rounded-lg border border-border bg-card p-4 md:p-6">
               <div className="mb-4 flex items-center gap-2">
                 <MessageCircle
                   size={14}

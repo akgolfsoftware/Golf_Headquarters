@@ -53,10 +53,10 @@ export default async function CoachDetalj({
   const initial = coach.name.charAt(0).toUpperCase();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       <Link
         href="/portal/coach"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex h-11 items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ChevronLeft size={14} strokeWidth={1.5} />
         Tilbake til oversikt
@@ -90,7 +90,7 @@ export default async function CoachDetalj({
 
       {/* Profilkort + stats */}
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
-        <div className="rounded-lg border border-border bg-card p-8">
+        <div className="rounded-lg border border-border bg-card p-4 sm:p-6 md:p-8">
           <Quote size={24} strokeWidth={1.5} className="text-accent-foreground" />
           {coach.ambition ? (
             <p className="mt-4 font-display text-xl italic leading-snug text-foreground">
@@ -101,7 +101,7 @@ export default async function CoachDetalj({
               «Vi jobber med det som gir lavest score når det betyr noe.»
             </p>
           )}
-          <div className="mt-6 flex items-start gap-6">
+          <div className="mt-6 flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
             <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary text-xl font-semibold text-primary-foreground">
               {initial}
             </div>

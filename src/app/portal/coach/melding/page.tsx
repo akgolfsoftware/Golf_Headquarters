@@ -14,7 +14,7 @@ export default async function CoachMeldingPage() {
 
   if (user.tier === "GRATIS") {
     return (
-      <div className="mx-auto max-w-[860px] space-y-6 px-6 py-8">
+      <div className="mx-auto max-w-[860px] space-y-6 px-4 py-6 sm:px-6 sm:py-8">
         <div className="space-y-4">
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             PlayerHQ · Coach
@@ -84,8 +84,8 @@ export default async function CoachMeldingPage() {
     : "CO";
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-[1080px] px-6 py-8">
+    <div className="min-h-screen bg-background pb-20 text-foreground md:pb-0">
+      <div className="mx-auto max-w-[1080px] px-4 py-6 sm:px-6 sm:py-8">
         {/* Tilbake + PageHeader */}
         <div className="mb-8 space-y-4">
           <Link

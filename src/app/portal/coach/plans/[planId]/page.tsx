@@ -186,7 +186,7 @@ export default async function CoachPlanDetalj({
   const coachNavn = coach?.name ?? "Coach";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-0">
       <Link
         href="/portal/coach/plans"
         className="inline-flex items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"
@@ -266,7 +266,7 @@ export default async function CoachPlanDetalj({
 
       <div className="grid grid-cols-12 gap-4">
         {/* Plan-overview med 5-fase-stripe */}
-        <section className="col-span-12 rounded-lg border border-border bg-card p-6 lg:col-span-8">
+        <section className="col-span-12 rounded-lg border border-border bg-card p-4 md:p-6 lg:col-span-8">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -351,7 +351,7 @@ export default async function CoachPlanDetalj({
         </section>
 
         {/* Coach-quote */}
-        <section className="col-span-12 rounded-lg border border-border bg-card p-6 lg:col-span-4">
+        <section className="col-span-12 rounded-lg border border-border bg-card p-4 md:p-6 lg:col-span-4">
           <Quote size={20} strokeWidth={1.5} className="text-accent" />
           <p className="mt-4 font-display text-[18px] italic leading-snug text-foreground">
             {sisteCoachMelding?.content
@@ -377,7 +377,7 @@ export default async function CoachPlanDetalj({
         </section>
 
         {/* Kommende økter denne uka */}
-        <section className="col-span-12 rounded-lg border border-border bg-card p-6">
+        <section className="col-span-12 rounded-lg border border-border bg-card p-4 md:p-6">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -406,7 +406,7 @@ export default async function CoachPlanDetalj({
               {kommende.map((s, i) => (
                 <li
                   key={s.id}
-                  className="grid grid-cols-[120px_1fr_auto_auto] items-center gap-4 px-4 py-4 transition-colors hover:bg-secondary/60"
+                  className="grid grid-cols-[80px_1fr_auto] items-center gap-3 px-3 py-4 transition-colors hover:bg-secondary/60 sm:grid-cols-[120px_1fr_auto_auto] sm:gap-4 sm:px-4"
                 >
                   <span
                     className={`font-mono text-[11px] uppercase tracking-[0.08em] ${
@@ -439,7 +439,7 @@ export default async function CoachPlanDetalj({
         </section>
 
         {/* Plan-mål */}
-        <section className="col-span-12 rounded-lg border border-border bg-card p-6">
+        <section className="col-span-12 rounded-lg border border-border bg-card p-4 md:p-6">
           <div className="mb-4 flex items-center gap-2">
             <Target
               size={16}

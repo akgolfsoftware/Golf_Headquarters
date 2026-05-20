@@ -192,10 +192,10 @@ export default async function NotatDetalj({
   const blokker = notat.body.split("\n\n");
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-8">
+    <div className="mx-auto w-full max-w-4xl space-y-6 pb-20 md:space-y-8 md:pb-0">
       <Link
         href="/portal/coach/notater"
-        className="inline-flex items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"
+        className="inline-flex h-11 items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"
       >
         <ChevronLeft size={14} strokeWidth={1.75} />
         Tilbake til notater
@@ -229,7 +229,7 @@ export default async function NotatDetalj({
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Hovedinnhold */}
         <section className="lg:col-span-2">
-          <article className="rounded-lg border border-border bg-card p-8">
+          <article className="rounded-lg border border-border bg-card p-4 sm:p-6 md:p-8">
             <div className="space-y-4 text-[16px] leading-[1.7] text-foreground">
               {blokker.map((blokk, i) => {
                 // Heading-blokker (starter med **)
@@ -341,7 +341,7 @@ export default async function NotatDetalj({
 
           {/* Relaterte spillere */}
           {notat.spillere.length > 0 && (
-            <div className="rounded-lg border border-border bg-card p-6">
+            <div className="rounded-lg border border-border bg-card p-4 md:p-6">
               <div className="mb-4 flex items-center gap-2">
                 <Users
                   size={14}
@@ -374,7 +374,7 @@ export default async function NotatDetalj({
 
           {/* Relaterte økter */}
           {notat.okter.length > 0 && (
-            <div className="rounded-lg border border-border bg-card p-6">
+            <div className="rounded-lg border border-border bg-card p-4 md:p-6">
               <div className="mb-4 flex items-center gap-2">
                 <Calendar
                   size={14}
@@ -414,7 +414,7 @@ export default async function NotatDetalj({
 
           {/* Quote-card */}
           {notat.type === "coach" && (
-            <div className="rounded-lg border border-border bg-card p-6">
+            <div className="rounded-lg border border-border bg-card p-4 md:p-6">
               <Quote size={20} strokeWidth={1.75} className="text-accent" />
               <p className="mt-4 font-display text-[16px] italic leading-snug text-foreground">
                 «Små justeringer over tid slår store grep én gang.»

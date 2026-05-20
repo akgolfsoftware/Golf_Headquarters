@@ -21,11 +21,11 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
   const { id } = await params;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <nav className="flex items-center gap-4 border-b border-border bg-card px-8 py-[18px]">
+    <div className="min-h-screen bg-background pb-20 text-foreground md:pb-0">
+      <nav className="flex flex-wrap items-center gap-3 border-b border-border bg-card px-4 py-3 sm:gap-4 sm:px-8 sm:py-[18px]">
         <Link
           href="/portal/coach"
-          className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-muted-foreground hover:text-foreground"
+          className="inline-flex h-11 items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Spørsmål
@@ -33,18 +33,18 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
         <span className="font-mono text-[13px] font-bold tracking-[0.02em] text-primary">
           AK GOLF · PlayerHQ
         </span>
-        <span className="ml-auto font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground">
+        <span className="ml-auto hidden font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground sm:inline">
           /portal / coach / spørsmål /{" "}
           <span className="font-semibold text-foreground">{id}</span>
         </span>
       </nav>
 
-      <main className="mx-auto max-w-[760px] space-y-6 px-6 py-10">
+      <main className="mx-auto max-w-[760px] space-y-6 px-4 py-6 sm:px-6 sm:py-10">
         <div className="space-y-3">
           <span className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground">
             Svar fra coach · besvart 18.05.26
           </span>
-          <h1 className="font-display text-[38px] font-semibold leading-[1.05] -tracking-[0.02em]">
+          <h1 className="font-display text-2xl font-semibold leading-[1.05] -tracking-[0.02em] sm:text-3xl md:text-[38px]">
             Spørsmål til{" "}
             <em className="font-display italic font-normal text-primary">coach</em>
           </h1>
@@ -73,7 +73,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
         </article>
 
         {/* Answer card */}
-        <article className="rounded-2xl border border-primary/30 bg-card p-6 shadow-[0_0_0_4px_rgba(0,88,64,0.04)]">
+        <article className="rounded-2xl border border-primary/30 bg-card p-4 shadow-[0_0_0_4px_rgba(0,88,64,0.04)] md:p-6">
           <header className="flex flex-wrap items-center gap-3 border-b border-border pb-4">
             <div className="grid h-11 w-11 place-items-center rounded-full bg-primary text-[12px] font-semibold text-primary-foreground">
               HB

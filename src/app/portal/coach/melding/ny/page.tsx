@@ -36,10 +36,10 @@ export default async function NyMeldingPage() {
 
   return (
     <div className="min-h-screen bg-background pb-32 text-foreground">
-      <nav className="flex items-center gap-4 border-b border-border bg-card px-8 py-[18px]">
+      <nav className="flex flex-wrap items-center gap-3 border-b border-border bg-card px-4 py-3 sm:gap-4 sm:px-8 sm:py-[18px]">
         <Link
           href="/portal/coach/melding"
-          className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-muted-foreground hover:text-foreground"
+          className="inline-flex h-11 items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Meldinger
@@ -47,17 +47,17 @@ export default async function NyMeldingPage() {
         <span className="font-mono text-[13px] font-bold tracking-[0.02em] text-primary">
           AK GOLF · PlayerHQ
         </span>
-        <span className="ml-auto font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground">
+        <span className="ml-auto hidden font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground sm:inline">
           /portal / coach / melding / <span className="font-semibold text-foreground">ny</span>
         </span>
       </nav>
 
-      <main className="mx-auto max-w-[880px] space-y-8 px-6 py-10">
+      <main className="mx-auto max-w-[880px] space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-10">
         <div className="space-y-3">
           <span className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground">
             Ny utgående · utkast
           </span>
-          <h1 className="font-display text-[40px] font-semibold leading-[1.05] -tracking-[0.02em]">
+          <h1 className="font-display text-2xl font-semibold leading-[1.05] -tracking-[0.02em] sm:text-3xl md:text-[40px]">
             Ny <em className="font-display italic font-normal text-primary">melding</em>
           </h1>
           <p className="max-w-[600px] text-[14.5px] text-muted-foreground">

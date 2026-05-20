@@ -60,6 +60,7 @@ export default async function CoachNotes() {
       }));
   });
 
+  // eslint-disable-next-line react-hooks/purity
   const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const nyeIUken = notater.filter(
     (n) => new Date(n.ts).getTime() > sevenDaysAgo,
@@ -96,7 +97,7 @@ export default async function CoachNotes() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       {/* Hero */}
       <header>
         <Link
@@ -184,7 +185,7 @@ export default async function CoachNotes() {
             {notater.map((n, i) => (
               <article
                 key={`${n.sesjonId}-${i}`}
-                className="rounded-lg border border-border bg-card p-6 transition-shadow hover:shadow-md"
+                className="rounded-lg border border-border bg-card p-4 transition-shadow hover:shadow-md md:p-6"
               >
                 <header className="flex items-start gap-4">
                   <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary font-mono text-xs font-semibold text-primary-foreground">
@@ -218,7 +219,7 @@ export default async function CoachNotes() {
 
         {/* Coach-quote (sidebar) */}
         <section className="col-span-12 lg:col-span-4">
-          <div className="sticky top-6 rounded-lg border border-border bg-card p-6">
+          <div className="sticky top-6 rounded-lg border border-border bg-card p-4 md:p-6">
             <Quote size={20} strokeWidth={1.5} className="text-accent" />
             <p className="mt-4 font-display text-[18px] italic leading-snug text-foreground">
               «{truncate(sisteNotat.content, 180)}»

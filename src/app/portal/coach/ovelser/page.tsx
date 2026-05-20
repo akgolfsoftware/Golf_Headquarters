@@ -48,8 +48,8 @@ export default async function CoachOvelserPage({
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:justify-between">
         <PageHeader
           eyebrow="CoachHQ · Bibliotek"
           titleLead="Drills og"
