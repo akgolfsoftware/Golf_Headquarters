@@ -348,9 +348,9 @@ export default async function SpillerePage({
       <ViewTabs active={view} />
 
       {/* Filter-rad — øverst, før grid */}
-      <form className="flex flex-wrap items-center gap-2">
+      <form className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         <input type="hidden" name="view" value={view} />
-        <label className="flex flex-1 min-w-[280px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
+        <label className="flex min-h-11 w-full items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-base text-muted-foreground sm:min-w-[280px] sm:flex-1 sm:text-[13px]">
           <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
@@ -360,9 +360,11 @@ export default async function SpillerePage({
             className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </label>
-        <FilterChip label="Status" />
-        <FilterChip label="Kategori" />
-        <FilterChip label="Sort" />
+        <div className="flex flex-wrap gap-2">
+          <FilterChip label="Status" />
+          <FilterChip label="Kategori" />
+          <FilterChip label="Sort" />
+        </div>
       </form>
 
       {/* Body — bytter på view */}
@@ -433,7 +435,7 @@ function ViewTabs({ active }: { active: View }) {
     { key: "tavle", label: "Tavle", icon: Trophy },
   ];
   return (
-    <div className="inline-flex w-fit gap-0.5 rounded-md bg-secondary p-1">
+    <div className="flex w-full gap-0.5 overflow-x-auto rounded-md bg-secondary p-1 sm:inline-flex sm:w-fit">
       {tabs.map((t) => {
         const Icon = t.icon;
         const erAktiv = active === t.key;
@@ -441,7 +443,7 @@ function ViewTabs({ active }: { active: View }) {
           <Link
             key={t.key}
             href={`/admin/spillere?view=${t.key}`}
-            className={`inline-flex items-center gap-1.5 rounded-sm px-4 py-2 text-sm font-medium transition-colors ${
+            className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-sm px-4 py-2 text-sm font-medium transition-colors sm:flex-initial ${
               erAktiv
                 ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
@@ -483,7 +485,7 @@ function TabellVisning({
                 : "Sist innlogget"}
         </span>
       </div>
-      <table className="hidden w-full text-[13px] sm:table">
+      <table className="hidden w-full text-[13px] md:table">
         <thead className="border-b border-border bg-secondary/30 text-left">
           <tr>
             <Th className="w-10"></Th>
@@ -502,7 +504,7 @@ function TabellVisning({
           ))}
         </tbody>
       </table>
-      <ul className="divide-y divide-border sm:hidden">
+      <ul className="divide-y divide-border md:hidden">
         {players.map((p) => (
           <PlayerMobileCard key={p.id} player={p} />
         ))}
@@ -591,7 +593,7 @@ function PlayerMobileCard({ player }: { player: EnrichedPlayer }) {
     <li>
       <Link
         href={`/admin/spillere/${p.id}`}
-        className="flex min-h-16 items-center gap-4 px-4 py-4 hover:bg-secondary/40"
+        className="flex min-h-[68px] items-center gap-4 px-4 py-4 hover:bg-secondary/40 active:bg-secondary"
       >
         <div
           className="grid h-10 w-10 shrink-0 place-items-center rounded-full font-mono text-[11px] font-semibold text-white"

@@ -203,7 +203,7 @@ export default async function AgencyOSPage() {
   const datolinje = `${DAGER[now.getDay()]} ${now.getDate()}. ${MND[now.getMonth()]}`;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <PageHeader
         eyebrow={`AgencyOS · ${datolinje} · ${timeStr(now)}`}
         titleLead={`God morgen, ${fornavn}.`}
@@ -230,7 +230,7 @@ export default async function AgencyOSPage() {
       />
 
       {/* KPI-strip — operativ status */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
         <KpiCard
           label="Aktive spillere"
           value={String(aktiveSpillere)}
@@ -301,12 +301,12 @@ export default async function AgencyOSPage() {
         />
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-3 lg:items-start">
+      <div className="grid gap-6 lg:grid-cols-3 lg:items-start lg:gap-8">
         {/* Hovedkolonne */}
-        <div className="space-y-8 lg:col-span-2">
+        <div className="space-y-6 lg:col-span-2 lg:space-y-8">
           {/* Til godkjenning */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
+            <div className="flex items-baseline justify-between border-b border-border px-4 py-4 sm:px-6">
               <div>
                 <h2 className="font-display text-lg font-semibold tracking-tight">
                   Til <em>godkjenning</em>
@@ -333,7 +333,7 @@ export default async function AgencyOSPage() {
                   <li key={n.id}>
                     <Link
                       href={n.link ?? "/portal/varsler"}
-                      className="flex items-start gap-4 px-6 py-4 transition-colors hover:bg-secondary/40"
+                      className="flex items-start gap-4 px-4 py-4 transition-colors hover:bg-secondary/40 sm:px-6"
                     >
                       <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent-foreground">
                         <Bell className="h-4 w-4" />
@@ -355,7 +355,7 @@ export default async function AgencyOSPage() {
                 ))}
               </ul>
             )}
-            <div className="border-t border-border px-6 py-4 text-center">
+            <div className="border-t border-border px-4 py-4 text-center sm:px-6">
               <Link
                 href="/portal/varsler"
                 className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
@@ -367,7 +367,7 @@ export default async function AgencyOSPage() {
 
           {/* Dagens flyt */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
+            <div className="flex items-baseline justify-between border-b border-border px-4 py-4 sm:px-6">
               <div>
                 <h2 className="font-display text-lg font-semibold tracking-tight">
                   Dagens <em>flyt</em>
@@ -401,7 +401,7 @@ export default async function AgencyOSPage() {
                     .join("")
                     .toUpperCase();
                   return (
-                    <li key={b.id} className="flex items-center gap-4 px-6 py-4">
+                    <li key={b.id} className="flex items-center gap-4 px-4 py-4 sm:px-6">
                       <div className="w-14 shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
                         {timeStr(b.startAt)}
                       </div>
@@ -429,7 +429,7 @@ export default async function AgencyOSPage() {
 
           {/* Mine spilleres turneringer */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
+            <div className="flex items-baseline justify-between border-b border-border px-4 py-4 sm:px-6">
               <div>
                 <h2 className="font-display text-lg font-semibold tracking-tight">
                   Mine spilleres <em>turneringer</em>
@@ -464,7 +464,7 @@ export default async function AgencyOSPage() {
                   <li key={t.id}>
                     <Link
                       href={`/admin/tournaments/${t.id}`}
-                      className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-secondary/40"
+                      className="flex items-center gap-4 px-4 py-4 transition-colors hover:bg-secondary/40 sm:px-6"
                     >
                       <div className="w-14 shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
                         {t.startDate.toLocaleDateString("nb-NO", {
@@ -508,10 +508,10 @@ export default async function AgencyOSPage() {
         </div>
 
         {/* Sidekolonne — sticky så den følger scroll i hovedkolonnen */}
-        <aside className="space-y-8 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-1">
+        <aside className="space-y-6 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:space-y-8 lg:overflow-y-auto lg:pr-1">
           {/* Stripe-panel */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
+            <div className="flex items-baseline justify-between border-b border-border px-4 py-4 sm:px-6">
               <h3 className="font-display text-sm font-semibold tracking-tight">
                 Stripe · denne <em>måneden</em>
               </h3>
@@ -528,7 +528,7 @@ export default async function AgencyOSPage() {
               <MoneyRow label="Innbetalt" value={`kr ${formatNok(innbetaltOre)}`} tone="good" />
               <MoneyRow label="Utestående" value={`kr ${formatNok(utestaendeOre)}`} tone={utestaendeOre > 0 ? "warn" : ""} />
             </dl>
-            <div className="border-t border-border px-6 py-4">
+            <div className="border-t border-border px-4 py-4 sm:px-6">
               <Link
                 href="/admin/finance"
                 className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
@@ -540,7 +540,7 @@ export default async function AgencyOSPage() {
 
           {/* Caddie-aktivitet */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
+            <div className="flex items-baseline justify-between border-b border-border px-4 py-4 sm:px-6">
               <h3 className="font-display text-sm font-semibold tracking-tight">
                 Caddie · <em>aktivitet</em>
               </h3>
@@ -555,7 +555,7 @@ export default async function AgencyOSPage() {
             ) : (
               <ul className="divide-y divide-border">
                 {sisteAktivitet.map((a) => (
-                  <li key={a.id} className="px-6 py-4">
+                  <li key={a.id} className="px-4 py-4 sm:px-6">
                     <div className="text-sm text-foreground">{a.action}</div>
                     {a.target && (
                       <div className="mt-0.5 truncate text-xs text-muted-foreground">{a.target}</div>
@@ -576,7 +576,7 @@ export default async function AgencyOSPage() {
 
           {/* Connectors */}
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
+            <div className="flex items-baseline justify-between border-b border-border px-4 py-4 sm:px-6">
               <h3 className="font-display text-sm font-semibold tracking-tight">
                 Mine <em>connectors</em>
               </h3>
@@ -594,7 +594,7 @@ export default async function AgencyOSPage() {
                     href={c.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-secondary/40"
+                    className="flex items-center gap-4 px-4 py-4 transition-colors hover:bg-secondary/40 sm:px-6"
                   >
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-secondary font-mono text-[11px] font-semibold">
                       {c.letter}
@@ -636,7 +636,7 @@ export default async function AgencyOSPage() {
       </div>
 
       {/* Caddie-chat-stub */}
-      <div className="sticky bottom-4 z-30 mx-auto max-w-3xl rounded-full border border-border bg-card px-4 py-2 shadow-lg">
+      <div className="sticky bottom-4 z-30 mx-auto max-w-3xl rounded-full border border-border bg-card px-3 py-2 shadow-lg sm:px-4">
         <div className="flex items-center gap-4">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-[11px] font-semibold text-primary-foreground">
             C
@@ -694,7 +694,7 @@ function KpiCard({
 
 function MoneyRow({ label, value, tone }: { label: string; value: string; tone: string }) {
   return (
-    <div className="flex items-baseline justify-between px-6 py-4">
+    <div className="flex items-baseline justify-between px-4 py-4 sm:px-6">
       <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd
         className={`font-mono text-sm font-semibold tabular-nums ${

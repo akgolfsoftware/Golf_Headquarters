@@ -138,8 +138,8 @@ export default async function Approvals() {
       </div>
 
       {/* Filter */}
-      <form className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 min-w-[280px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
+      <form className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <label className="flex min-h-11 w-full items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-base text-muted-foreground sm:min-w-[280px] sm:flex-1 sm:text-[13px]">
           <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
@@ -148,9 +148,11 @@ export default async function Approvals() {
             className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </label>
-        <FilterChip label="Severity" />
-        <FilterChip label="Agent" />
-        <FilterChip label="Sort: Severity" />
+        <div className="flex flex-wrap gap-2">
+          <FilterChip label="Severity" />
+          <FilterChip label="Agent" />
+          <FilterChip label="Sort: Severity" />
+        </div>
       </form>
 
       {/* Inbox */}
@@ -178,23 +180,25 @@ export default async function Approvals() {
             return (
               <div
                 key={a.id}
-                className="grid items-center gap-4 border-b border-border px-4 py-3.5 last:border-b-0 hover:bg-secondary/40 md:grid-cols-[110px_220px_1fr_140px_280px]"
+                className="flex flex-col gap-3 border-b border-border px-4 py-4 last:border-b-0 hover:bg-secondary/40 md:grid md:grid-cols-[110px_220px_1fr_140px_280px] md:items-center md:gap-4 md:py-3.5"
               >
-                <SevPill severity={sev} />
-                <Link
-                  href={`/admin/elever/${a.user.id}`}
-                  className="flex items-center gap-2.5 hover:text-primary"
-                >
-                  <div
-                    className="grid h-8 w-8 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
-                    style={{ background: avatarBg(a.user.name) }}
+                <div className="flex items-center justify-between gap-3 md:contents">
+                  <SevPill severity={sev} />
+                  <Link
+                    href={`/admin/elever/${a.user.id}`}
+                    className="flex items-center gap-2.5 hover:text-primary"
                   >
-                    {initials(a.user.name)}
-                  </div>
-                  <div className="text-[13px] font-medium text-foreground">
-                    {a.user.name}
-                  </div>
-                </Link>
+                    <div
+                      className="grid h-8 w-8 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
+                      style={{ background: avatarBg(a.user.name) }}
+                    >
+                      {initials(a.user.name)}
+                    </div>
+                    <div className="text-[13px] font-medium text-foreground">
+                      {a.user.name}
+                    </div>
+                  </Link>
+                </div>
                 <div className="flex items-start gap-2">
                   <div className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-secondary text-primary">
                     <ActionIcon actionType={a.actionType} />
@@ -220,7 +224,7 @@ export default async function Approvals() {
                     </Link>
                   )}
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-stretch md:justify-end">
                   <ApprovalActions actionId={a.id} />
                 </div>
               </div>

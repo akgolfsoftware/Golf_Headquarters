@@ -289,7 +289,7 @@ export default async function SpillerCoachView({
   return (
     <div className="space-y-6">
       {/* HERO */}
-      <header className="grid grid-cols-1 gap-6 rounded-2xl border border-border bg-card p-6 sm:grid-cols-[112px_1fr_auto] sm:items-center">
+      <header className="grid grid-cols-1 justify-items-center gap-4 rounded-2xl border border-border bg-card p-4 text-center sm:grid-cols-[112px_1fr_auto] sm:items-center sm:justify-items-stretch sm:gap-6 sm:p-6 sm:text-left">
         <PlayerAvatar
           src={player.avatarUrl}
           name={player.name}
@@ -305,7 +305,7 @@ export default async function SpillerCoachView({
               {player.name.split(" ").slice(1).join(" ") || player.name}
             </em>
           </h1>
-          <div className="mt-2 flex flex-wrap items-center gap-2.5 text-[13px] text-muted-foreground">
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-2.5 text-[13px] text-muted-foreground sm:justify-start">
             <span
               className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${CAT_STYLE[category]}`}
             >
@@ -382,14 +382,14 @@ export default async function SpillerCoachView({
       </section>
 
       {/* TABS */}
-      <nav className="flex flex-wrap gap-0.5 rounded-lg border border-border bg-secondary p-1">
+      <nav className="flex gap-0.5 overflow-x-auto rounded-lg border border-border bg-secondary p-1 sm:flex-wrap">
         {TABS.map(({ key, label, icon: Icon }) => {
           const aktiv = tab === key;
           return (
             <Link
               key={key}
               href={`${baseHref}?tab=${key}`}
-              className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-[12px] font-medium transition-colors ${
+              className={`inline-flex min-h-11 flex-1 shrink-0 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-[13px] font-medium transition-colors ${
                 aktiv
                   ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"

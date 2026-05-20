@@ -33,19 +33,22 @@ export async function AdminShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <header
           role="banner"
-          className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-4 sm:px-8 sm:py-4"
+          className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-border bg-card px-3 sm:h-auto sm:gap-4 sm:px-8 sm:py-4"
         >
-          <div className="flex items-center gap-4">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-4">
             <AdminMobileDrawer />
             <div
               aria-label={`CoachHQ, rolle ${user.role}`}
-              className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+              className="truncate font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
             >
-              CoachHQ · {user.role}
+              <span className="hidden sm:inline">CoachHQ · </span>
+              {user.role}
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <ViewModeToggle current="coach" />
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="hidden sm:block">
+              <ViewModeToggle current="coach" />
+            </div>
             <NotificationBell
               notifications={notifications}
               basePath="/portal/varsler"
@@ -56,7 +59,7 @@ export async function AdminShell({
         <main
           id="admin-main"
           tabIndex={-1}
-          className="flex-1 px-4 py-6 focus:outline-none sm:px-8"
+          className="flex-1 px-4 pb-24 pt-4 focus:outline-none sm:px-8 sm:py-6 md:pb-6"
         >
           {children}
         </main>

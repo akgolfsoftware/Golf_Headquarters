@@ -16,7 +16,7 @@ export function AgencyOSTabNav() {
   return (
     <nav
       aria-label="AgencyOS-faner"
-      className="flex flex-wrap items-center gap-1 rounded-md border border-border bg-card p-1"
+      className="flex items-center gap-1 overflow-x-auto rounded-md border border-border bg-card p-1 sm:flex-wrap"
     >
       {TABS.map((t) => {
         const aktiv = path === t.href;
@@ -25,7 +25,7 @@ export function AgencyOSTabNav() {
             key={t.href}
             href={t.href}
             aria-current={aktiv ? "page" : undefined}
-            className={`rounded-sm px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.10em] transition-colors ${
+            className={`shrink-0 rounded-sm px-3 py-2 font-mono text-[11px] uppercase tracking-[0.10em] transition-colors sm:px-4 sm:py-1.5 ${
               aktiv
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-secondary hover:text-foreground"
