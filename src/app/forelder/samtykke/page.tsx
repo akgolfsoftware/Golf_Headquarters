@@ -1,4 +1,4 @@
-import { Shield, CheckCircle2, AlertCircle } from "lucide-react";
+import { Shield, AlertCircle } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
