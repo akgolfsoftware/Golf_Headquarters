@@ -129,6 +129,12 @@ export default async function EmailTemplatesAdmin() {
                     >
                       {t.active ? "Aktiv" : "Inaktiv"}
                     </span>
+                    <a
+                      href={`/admin/email-templates/${t.id}/rediger`}
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Rediger
+                    </a>
                     <TemplateForm
                       initial={{
                         id: t.id,
@@ -138,7 +144,7 @@ export default async function EmailTemplatesAdmin() {
                         body: t.body,
                         active: t.active,
                       }}
-                      triggerLabel="Endre"
+                      triggerLabel="Slug/slett"
                     />
                   </div>
                 </div>
