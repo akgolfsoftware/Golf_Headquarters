@@ -36,6 +36,8 @@ import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 import { computeStreak, aktivStreak } from "@/lib/streak";
+import { ProfilRedigerTrigger } from "@/components/shared/profil-rediger-trigger";
+import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 
 type TabKey =
   | "oversikt"
@@ -528,6 +530,34 @@ export default async function SpillerCoachView({
             icon={PenSquare}
             label="Logg coach-notat"
           />
+          <ProfilRedigerTrigger
+            variant="ghost"
+            label="Rediger spiller-profil"
+            title={`Rediger profil — ${player.name}`}
+            targetUserId={player.id}
+            className="justify-center"
+            initial={{
+              name: player.name,
+              email: player.email,
+              phone: player.phone ?? "",
+              hcp: player.hcp ?? null,
+              playingYears: player.playingYears ?? null,
+              homeClub: player.homeClub ?? "",
+              ambition: player.ambition ?? "",
+              fodselsdato: "",
+              adresse: "",
+              kjonn: "Vil ikke oppgi",
+              dominantHand: "Høyrehendt",
+            }}
+          />
+          <div className="mt-1">
+            <TrackmanImportModal
+              variant="secondary"
+              label="Importer TrackMan-økt"
+              className="w-full"
+              onBehalfOfUserId={player.id}
+            />
+          </div>
           <Link
             href={`/admin/elever/${player.id}`}
             className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-transparent px-3 py-2 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"

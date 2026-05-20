@@ -42,6 +42,7 @@ import { aktivStreak } from "@/lib/streak";
 import { totalMinutter, prosentPerArea } from "@/lib/pyramide";
 import { formatSg } from "@/lib/sg";
 import { PortalAvatarButton } from "@/components/portal/portal-avatar-button";
+import { ProfilRedigerTrigger } from "@/components/shared/profil-rediger-trigger";
 import { PlanActionsCard } from "@/components/portal/plan-actions-card";
 import { QuickActions } from "@/components/portal/quick-actions";
 import { KommendeTurneringerCard } from "@/components/portal/kommende-turneringer-card";
@@ -317,6 +318,23 @@ function Hero({ user }: { user: PortalUser }) {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
+          <ProfilRedigerTrigger
+            variant="pill"
+            label="Rediger profil"
+            initial={{
+              name: user.name,
+              email: user.email,
+              phone: user.phone ?? "",
+              hcp: user.hcp ?? null,
+              playingYears: user.playingYears ?? null,
+              homeClub: user.homeClub ?? "",
+              ambition: user.ambition ?? "",
+              fodselsdato: "",
+              adresse: "",
+              kjonn: "Vil ikke oppgi",
+              dominantHand: "Høyrehendt",
+            }}
+          />
           <Link
             href="/portal/ny-okt"
             className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"

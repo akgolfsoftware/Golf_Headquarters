@@ -5,6 +5,11 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 
 type UpdateProfileInput = {
+  /**
+   * Når satt: coach/admin redigerer en annen bruker. Krever rolle COACH eller
+   * ADMIN. Hvis usatt: brukeren redigerer sin egen profil.
+   */
+  targetUserId?: string;
   name?: string;
   phone?: string | null;
   homeClub?: string | null;
@@ -12,21 +17,48 @@ type UpdateProfileInput = {
 };
 
 export async function updateProfile(input: UpdateProfileInput): Promise<void> {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const me = await getCurrentUser();
+  if (!me) throw new Error("unauthenticated");
+
+  const targetId = input.targetUserId ?? me.id;
+  const editingOther = targetId !== me.id;
+
+  if (editingOther && me.role !== "COACH" && me.role !== "ADMIN") {
+    throw new Error("forbidden");
+  }
+
+  const target = editingOther
+    ? await prisma.user.findUnique({
+        where: { id: targetId },
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+          homeClub: true,
+          ambition: true,
+        },
+      })
+    : me;
+  if (!target) throw new Error("target-not-found");
 
   await prisma.user.update({
-    where: { id: user.id },
+    where: { id: target.id },
     data: {
-      name: input.name?.trim() || user.name,
-      phone: input.phone === "" ? null : input.phone ?? user.phone,
+      name: input.name?.trim() || target.name,
+      phone: input.phone === "" ? null : input.phone ?? target.phone,
       homeClub:
-        input.homeClub === "" ? null : input.homeClub ?? user.homeClub,
+        input.homeClub === "" ? null : input.homeClub ?? target.homeClub,
       ambition:
-        input.ambition === "" ? null : input.ambition ?? user.ambition,
+        input.ambition === "" ? null : input.ambition ?? target.ambition,
     },
   });
 
-  revalidatePath("/portal/meg");
-  revalidatePath("/portal/meg/profil/rediger");
+  if (editingOther) {
+    revalidatePath(`/admin/spillere/${target.id}`);
+    revalidatePath(`/admin/elever/${target.id}`);
+  } else {
+    revalidatePath("/portal/meg");
+    revalidatePath("/portal/meg/profil/rediger");
+    revalidatePath("/portal");
+  }
 }

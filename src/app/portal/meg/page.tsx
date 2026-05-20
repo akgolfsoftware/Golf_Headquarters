@@ -15,6 +15,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { lesPreferences } from "@/lib/preferences";
 import { AvatarUpload } from "@/components/shared/avatar-upload";
+import { ProfilRedigerTrigger } from "@/components/shared/profil-rediger-trigger";
 import { ProfilForm } from "./profil-form";
 
 export default async function MegProfil() {
@@ -85,24 +86,50 @@ export default async function MegProfil() {
             </div>
           </div>
 
-          {/* Kontaktinfo-grid */}
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:max-w-xs">
-            <InfoItem icon={Mail} label="E-post" value={user.email} mono />
-            <InfoItem icon={Phone} label="Telefon" value={user.phone ?? "—"} />
-            <InfoItem
-              icon={Building2}
-              label="Klubb"
-              value={user.homeClub ?? "—"}
+          {/* Kontaktinfo-grid + redigerings-knapp */}
+          <div className="flex flex-col items-stretch gap-4 md:max-w-xs">
+            <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+              <InfoItem icon={Mail} label="E-post" value={user.email} mono />
+              <InfoItem
+                icon={Phone}
+                label="Telefon"
+                value={user.phone ?? "—"}
+              />
+              <InfoItem
+                icon={Building2}
+                label="Klubb"
+                value={user.homeClub ?? "—"}
+              />
+              <InfoItem
+                icon={Trophy}
+                label="HCP"
+                value={
+                  user.hcp != null
+                    ? user.hcp.toFixed(1).replace(".", ",")
+                    : "—"
+                }
+                mono
+              />
+            </dl>
+            <ProfilRedigerTrigger
+              variant="ghost"
+              label="Rediger raskt"
+              className="self-end"
+              initial={{
+                name: user.name,
+                email: user.email,
+                phone: user.phone ?? "",
+                hcp: user.hcp ?? null,
+                playingYears: user.playingYears ?? null,
+                homeClub: user.homeClub ?? "",
+                ambition: user.ambition ?? "",
+                fodselsdato: "",
+                adresse: "",
+                kjonn: "Vil ikke oppgi",
+                dominantHand: "Høyrehendt",
+              }}
             />
-            <InfoItem
-              icon={Trophy}
-              label="HCP"
-              value={
-                user.hcp != null ? user.hcp.toFixed(1).replace(".", ",") : "—"
-              }
-              mono
-            />
-          </dl>
+          </div>
         </div>
       </header>
 

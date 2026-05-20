@@ -2,69 +2,131 @@
 
 /**
  * Profil-rediger-modal — kompakt modal-variant av /portal/meg/profil/rediger.
- * Brukes når modal-formfaktor er ønsket (f.eks. fra hjem-side).
- * Eksporteres for gjenbruk fra andre klient-komponenter.
+ *
+ * 11-felts form (samme felter som full-page-versjonen):
+ *   1. Navn (fornavn + etternavn, splittet ved lagring)
+ *   2. Fødselsdato (display-only inntil schema utvides)
+ *   3. Kjønn (display-only inntil schema utvides)
+ *   4. E-post (kun visning — endres via /portal/meg/sikkerhet)
+ *   5. Telefon
+ *   6. Adresse (display-only inntil schema utvides)
+ *   7. Hjemmeklubb
+ *   8. HCP (LÅST — synkes fra GolfBox)
+ *   9. Playing years (spiller-erfaring)
+ *  10. Dominant hånd (display-only inntil schema utvides)
+ *  11. Ambisjon
+ *
+ * Dirty-tracking på alle felter. Lagre kaller `updateProfile`.
+ * Modalen brukes fra flere trigger-punkter (PlayerHQ Hjem,
+ * /portal/meg/profil, og coach-view i /admin/spillere/[id]).
  */
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, Check, RefreshCw, X } from "lucide-react";
 import { updateProfile } from "@/app/portal/meg/profil/rediger/actions";
 
-type ModalInitial = {
+export type ProfilRedigerInitial = {
   name: string;
   email: string;
   phone: string;
   hcp: number | null;
+  playingYears: number | null;
   homeClub: string;
+  ambition: string;
   fodselsdato: string;
+  adresse: string;
+  kjonn: "Mann" | "Kvinne" | "Annet" | "Vil ikke oppgi";
+  dominantHand: "Høyrehendt" | "Venstrehendt";
 };
+
+const KLUBBER = [
+  "Søgne & Mandal Golfklubb",
+  "Kristiansand Golfklubb",
+  "Mandal Golfklubb",
+  "Bjaavann Golfklubb",
+  "Gamle Fredrikstad GK",
+  "Oslo Golfklubb",
+  "Asker Golfklubb",
+  "Sarpsborg Golfklubb",
+];
 
 export function ProfilRedigerModal({
   initial,
   onClose,
+  title = "Rediger profil",
+  targetUserId,
 }: {
-  initial: ModalInitial;
+  initial: ProfilRedigerInitial;
   onClose: () => void;
+  title?: string;
+  /** Sett når en coach/admin redigerer en annen spiller. */
+  targetUserId?: string;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [name, setName] = useState(initial.name);
+  const [error, setError] = useState<string | null>(null);
+
+  const parts = useMemo(() => initial.name.split(" "), [initial.name]);
+  const [fornavn, setFornavn] = useState(parts[0] ?? "");
+  const [etternavn, setEtternavn] = useState(parts.slice(1).join(" "));
   const [fodselsdato, setFodselsdato] = useState(initial.fodselsdato);
-  const [email, setEmail] = useState(initial.email);
-  const [telefon, setTelefon] = useState(initial.phone);
+  const [kjonn, setKjonn] = useState<ProfilRedigerInitial["kjonn"]>(
+    initial.kjonn,
+  );
+  const [telefon, setTelefon] = useState(
+    initial.phone.replace(/^\+47\s*/, ""),
+  );
+  const [adresse, setAdresse] = useState(initial.adresse);
   const [homeClub, setHomeClub] = useState(initial.homeClub);
+  const [playingYears, setPlayingYears] = useState<string>(
+    initial.playingYears != null ? String(initial.playingYears) : "",
+  );
+  const [dominant, setDominant] = useState<
+    ProfilRedigerInitial["dominantHand"]
+  >(initial.dominantHand);
+  const [ambition, setAmbition] = useState(initial.ambition);
 
   const dirty =
-    name !== initial.name ||
+    fornavn !== (parts[0] ?? "") ||
+    etternavn !== parts.slice(1).join(" ") ||
     fodselsdato !== initial.fodselsdato ||
-    email !== initial.email ||
-    telefon !== initial.phone ||
-    homeClub !== initial.homeClub;
+    kjonn !== initial.kjonn ||
+    telefon !== initial.phone.replace(/^\+47\s*/, "") ||
+    adresse !== initial.adresse ||
+    homeClub !== initial.homeClub ||
+    playingYears !==
+      (initial.playingYears != null ? String(initial.playingYears) : "") ||
+    dominant !== initial.dominantHand ||
+    ambition !== initial.ambition;
 
   function lagre() {
+    setError(null);
     startTransition(async () => {
-      await updateProfile({
-        name,
-        phone: telefon || null,
-        homeClub,
-      });
-      router.refresh();
-      onClose();
+      try {
+        const fullName = [fornavn.trim(), etternavn.trim()]
+          .filter(Boolean)
+          .join(" ");
+        await updateProfile({
+          targetUserId,
+          name: fullName,
+          phone: telefon ? `+47 ${telefon}` : null,
+          homeClub,
+          ambition: ambition || null,
+        });
+        router.refresh();
+        onClose();
+      } catch {
+        setError("Kunne ikke lagre. Prøv igjen.");
+      }
     });
   }
 
-  const initialer = name
-    .split(" ")
-    .map((s) => s[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  const initialer = ((fornavn[0] ?? "") + (etternavn[0] ?? "")).toUpperCase();
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 px-6 py-20 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 px-6 py-12 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="profil-modal-title"
@@ -72,7 +134,7 @@ export function ProfilRedigerModal({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="flex w-full max-w-[560px] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+      <div className="flex w-full max-w-[640px] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
         <header className="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
           <div>
             <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
@@ -82,7 +144,7 @@ export function ProfilRedigerModal({
               id="profil-modal-title"
               className="mt-1 font-display text-[22px] font-semibold leading-tight tracking-tight"
             >
-              Rediger <em className="font-normal italic text-primary">profil</em>
+              {title}
             </h2>
           </div>
           <button
@@ -95,7 +157,7 @@ export function ProfilRedigerModal({
           </button>
         </header>
 
-        <div className="flex max-h-[60vh] flex-col gap-6 overflow-y-auto px-6 py-5">
+        <div className="flex max-h-[70vh] flex-col gap-6 overflow-y-auto px-6 py-5">
           {/* Avatar */}
           <div className="grid grid-cols-[96px_1fr] items-center gap-4">
             <div className="relative h-24 w-24">
@@ -133,13 +195,22 @@ export function ProfilRedigerModal({
 
           {/* Personalia */}
           <Sec title="Personalia">
-            <ModalField label="Fullt navn" required>
-              <input
-                className={modalInputCss}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </ModalField>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <ModalField label="Fornavn" required>
+                <input
+                  className={modalInputCss}
+                  value={fornavn}
+                  onChange={(e) => setFornavn(e.target.value)}
+                />
+              </ModalField>
+              <ModalField label="Etternavn" required>
+                <input
+                  className={modalInputCss}
+                  value={etternavn}
+                  onChange={(e) => setEtternavn(e.target.value)}
+                />
+              </ModalField>
+            </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <ModalField label="Fødselsdato" required>
                 <input
@@ -149,10 +220,84 @@ export function ProfilRedigerModal({
                   placeholder="DD.MM.ÅÅÅÅ"
                 />
               </ModalField>
+              <ModalField label="Kjønn">
+                <select
+                  className={modalInputCss}
+                  value={kjonn}
+                  onChange={(e) =>
+                    setKjonn(
+                      e.target.value as ProfilRedigerInitial["kjonn"],
+                    )
+                  }
+                >
+                  <option>Mann</option>
+                  <option>Kvinne</option>
+                  <option>Annet</option>
+                  <option>Vil ikke oppgi</option>
+                </select>
+              </ModalField>
+            </div>
+          </Sec>
+
+          {/* Kontakt */}
+          <Sec title="Kontakt">
+            <ModalField
+              label="E-post"
+              badge="endres i sikkerhet"
+            >
+              <input
+                type="email"
+                disabled
+                className={`${modalInputCss} cursor-not-allowed bg-muted text-muted-foreground`}
+                value={initial.email}
+              />
+            </ModalField>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <ModalField label="Telefon" required>
+                <div className="relative">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-mono text-[12px] text-muted-foreground">
+                    +47
+                  </span>
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    className={`${modalInputCss} pl-12 font-mono`}
+                    value={telefon}
+                    onChange={(e) => setTelefon(e.target.value)}
+                  />
+                </div>
+              </ModalField>
+              <ModalField label="Adresse">
+                <input
+                  className={modalInputCss}
+                  value={adresse}
+                  onChange={(e) => setAdresse(e.target.value)}
+                  placeholder="Gateadresse, postnr by"
+                />
+              </ModalField>
+            </div>
+          </Sec>
+
+          {/* Golf */}
+          <Sec title="Golf">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1.4fr_0.8fr_0.8fr]">
+              <ModalField label="Hjemmeklubb" required>
+                <select
+                  className={modalInputCss}
+                  value={homeClub}
+                  onChange={(e) => setHomeClub(e.target.value)}
+                >
+                  {KLUBBER.map((k) => (
+                    <option key={k}>{k}</option>
+                  ))}
+                </select>
+              </ModalField>
               <ModalField label="Handicap" badge="låst">
                 <div className="flex items-baseline gap-2 rounded-md border border-border bg-muted px-3 py-2.5">
                   <span className="font-mono text-base font-bold text-foreground">
-                    {initial.hcp != null ? String(initial.hcp).replace(".", ",") : "—"}
+                    {initial.hcp != null
+                      ? String(initial.hcp).replace(".", ",")
+                      : "—"}
                   </span>
                   <span className="ml-auto inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                     <RefreshCw className="h-2.5 w-2.5" strokeWidth={2} />
@@ -160,43 +305,55 @@ export function ProfilRedigerModal({
                   </span>
                 </div>
               </ModalField>
+              <ModalField label="Erfaring">
+                <div className="relative">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    max={80}
+                    className={`${modalInputCss} pr-10 font-mono`}
+                    value={playingYears}
+                    onChange={(e) => setPlayingYears(e.target.value)}
+                    placeholder="0"
+                  />
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                    år
+                  </span>
+                </div>
+              </ModalField>
             </div>
-          </Sec>
 
-          {/* Kontakt */}
-          <Sec title="Kontakt">
-            <ModalField label="E-post" required>
-              <input
-                type="email"
-                className={modalInputCss}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+            <ModalField label="Dominant hånd">
+              <div className="grid grid-cols-2 gap-2 rounded-md border border-border bg-muted p-1">
+                {(["Høyrehendt", "Venstrehendt"] as const).map((h) => (
+                  <button
+                    key={h}
+                    type="button"
+                    onClick={() => setDominant(h)}
+                    className={`rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                      dominant === h
+                        ? "bg-card text-foreground shadow-sm"
+                        : "bg-transparent text-muted-foreground"
+                    }`}
+                  >
+                    {h}
+                  </button>
+                ))}
+              </div>
             </ModalField>
-            <ModalField label="Telefon" required>
-              <input
-                type="tel"
-                className={modalInputCss}
-                value={telefon}
-                onChange={(e) => setTelefon(e.target.value)}
-              />
-            </ModalField>
-          </Sec>
 
-          {/* Klubb */}
-          <Sec title="Klubb-tilknytning">
-            <ModalField label="Hjemmeklubb" required>
-              <select
+            <ModalField label="Ambisjon" hint="Maks 280 tegn">
+              <textarea
                 className={modalInputCss}
-                value={homeClub}
-                onChange={(e) => setHomeClub(e.target.value)}
-              >
-                <option>Søgne &amp; Mandal Golfklubb</option>
-                <option>Gamle Fredrikstad GK</option>
-                <option>Oslo Golfklubb</option>
-                <option>Asker Golfklubb</option>
-                <option>Sarpsborg Golfklubb</option>
-              </select>
+                rows={3}
+                value={ambition}
+                onChange={(e) => setAmbition(e.target.value.slice(0, 280))}
+                placeholder="Hva er du på vei mot?"
+              />
+              <span className="mt-1 block text-right font-mono text-[10px] text-muted-foreground">
+                {ambition.length} / 280
+              </span>
             </ModalField>
           </Sec>
         </div>
@@ -207,6 +364,9 @@ export function ProfilRedigerModal({
               <span className="h-1.5 w-1.5 rounded-full bg-[color:rgb(217_119_6)]" />
               Ulagrede endringer
             </span>
+          )}
+          {error && (
+            <span className="mr-auto text-xs text-destructive">{error}</span>
           )}
           <button
             type="button"
@@ -248,11 +408,13 @@ function ModalField({
   label,
   required = false,
   badge,
+  hint,
   children,
 }: {
   label: string;
   required?: boolean;
   badge?: string;
+  hint?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -267,6 +429,11 @@ function ModalField({
         )}
       </label>
       {children}
+      {hint && (
+        <span className="font-mono text-[10px] text-muted-foreground/70">
+          {hint}
+        </span>
+      )}
     </div>
   );
 }
