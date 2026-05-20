@@ -78,7 +78,7 @@ export default async function UkaPage() {
         sub="Caddie balanserer kapasitet, reise og familie-tid."
         actions={
           <Link
-            href="/admin/calendar"
+            href="/admin/kalender"
             className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
             <Plus className="h-4 w-4" /> Ny booking
@@ -161,7 +161,7 @@ export default async function UkaPage() {
           Vis full måned eller drag-and-drop i full kalender
         </div>
         <Link
-          href="/admin/calendar"
+          href="/admin/kalender"
           className="mt-2 inline-flex h-8 items-center rounded-md border border-border bg-background px-4 text-xs font-medium hover:bg-secondary"
         >
           Åpne kalender →

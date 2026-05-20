@@ -18,13 +18,13 @@ export function HubKpiStrip({
       label: "Aktive spillere",
       value: String(aktiveSpillere),
       sub: "Siste 30 dager",
-      href: "/admin/elever",
+      href: "/admin/spillere",
     },
     {
       label: "Dagens timer",
       value: String(dagensTimer),
       sub: dagensTimer === 1 ? "booking" : "bookinger",
-      href: "/admin/bookings",
+      href: "/admin/bookinger",
     },
     {
       label: "Ubesvart",

@@ -113,8 +113,8 @@ export async function cancelBooking(bookingId: string) {
   }
 
   revalidatePath("/portal/meg/bookinger");
-  revalidatePath("/admin/bookings");
-  revalidatePath("/admin/calendar");
+  revalidatePath("/admin/bookinger");
+  revalidatePath("/admin/kalender");
 }
 
 /**
@@ -230,8 +230,8 @@ export async function rescheduleBooking(input: {
   }
 
   revalidatePath("/portal/meg/bookinger");
-  revalidatePath("/admin/bookings");
-  revalidatePath("/admin/calendar");
+  revalidatePath("/admin/bookinger");
+  revalidatePath("/admin/kalender");
 
   return { ok: true };
 }

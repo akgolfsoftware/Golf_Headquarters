@@ -9,7 +9,7 @@
  *  - Bento: Pyramide-progresjon (span-2 m/ringer) + SG-fordeling
  *  - Sist registrert-liste, Coach-melding-banner og Plan-actions
  *
- * Auth: requirePortalUser() med rolle-redirect (COACH/ADMIN -> /admin, GUEST -> /admin/calendar).
+ * Auth: requirePortalUser() med rolle-redirect (COACH/ADMIN -> /admin, GUEST -> /admin/kalender).
  */
 
 import { Suspense } from "react";
@@ -115,7 +115,7 @@ export default async function PortalHjem() {
   if (user.role === "COACH" || user.role === "ADMIN") {
     if (viewMode !== "player") redirect("/admin");
   }
-  if (user.role === "GUEST") redirect("/admin/calendar");
+  if (user.role === "GUEST") redirect("/admin/kalender");
 
   // Hent abonnement-info for QuickActions-widget
   const subscription = await prisma.subscription.findUnique({

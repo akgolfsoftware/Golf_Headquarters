@@ -129,7 +129,7 @@ export default async function TilgangPage() {
               <code className="font-mono text-xs">audit()</code>-funksjonen
               havner i AuditLog og kan auditeres på{" "}
               <span className="font-semibold text-foreground">
-                /admin/audit
+                /admin/audit-log
               </span>
               .
             </p>

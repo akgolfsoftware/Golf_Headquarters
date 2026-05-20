@@ -124,7 +124,7 @@ export default async function AdminMessages({
           sub="Når spillere eller foreldre sender meldinger, dukker de opp her. Du kan også starte en tråd fra en elev-profil."
           cta={
             <Link
-              href="/admin/elever"
+              href="/admin/spillere"
               className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
               Til spillerlisten

@@ -18,7 +18,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Daglig",
     items: [
       { href: "/admin", label: "Hub" },
-      { href: "/admin/calendar", label: "Kalender" },
+      { href: "/admin/kalender", label: "Kalender" },
       { href: "/admin/foresporsler", label: "Forespørsler" },
     ],
   },
@@ -43,7 +43,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   {
     label: "Evaluering",
     items: [
-      { href: "/admin/analytics", label: "Analytics" },
+      { href: "/admin/analyse", label: "Analytics" },
       { href: "/admin/reports", label: "Rapporter" },
     ],
   },

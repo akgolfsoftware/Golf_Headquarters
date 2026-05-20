@@ -81,7 +81,7 @@ export default async function GrupperPage() {
         sub="Coach-view: alle aktive trenings-grupper på tvers av klubber, skoler og selekterte talent-puljer."
         actions={
           <Link
-            href="/admin/groups"
+            href="/admin/grupper"
             className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -180,7 +180,7 @@ export default async function GrupperPage() {
           sub="Lag din første gruppe for å samle spillere med felles trening — skole-gjenger, klubb-grupper eller selekterte talent-puljer."
           cta={
             <Link
-              href="/admin/groups"
+              href="/admin/grupper"
               className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -287,7 +287,7 @@ export default async function GrupperPage() {
                   {/* Actions */}
                   <div className="mt-auto flex gap-2 pt-1">
                     <Link
-                      href={`/admin/groups/${g.id}`}
+                      href={`/admin/grupper/${g.id}`}
                       className="flex-1 rounded-md bg-primary px-3 py-2 text-center text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
                     >
                       Åpne →

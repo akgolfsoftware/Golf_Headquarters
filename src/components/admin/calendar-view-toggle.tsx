@@ -7,8 +7,8 @@ import Link from "next/link";
 export type CalendarView = "day" | "week" | "month";
 
 const OPTIONS: { view: CalendarView; label: string; href: string }[] = [
-  { view: "day", label: "Dag", href: "/admin/calendar?view=day" },
-  { view: "week", label: "Uke", href: "/admin/calendar?view=week" },
+  { view: "day", label: "Dag", href: "/admin/kalender?view=day" },
+  { view: "week", label: "Uke", href: "/admin/kalender?view=week" },
   { view: "month", label: "Måned", href: "/admin/calendar/maned" },
 ];
 

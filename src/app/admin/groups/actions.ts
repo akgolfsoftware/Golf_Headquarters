@@ -34,7 +34,7 @@ export async function createGroup(input: GroupInput) {
     target: `Group:${ny.id}`,
     metadata: { name: ny.name },
   });
-  revalidatePath("/admin/groups");
+  revalidatePath("/admin/grupper");
   return ny.id;
 }
 
@@ -53,7 +53,7 @@ export async function updateGroup(id: string, input: GroupInput) {
     action: "group.updated",
     target: `Group:${id}`,
   });
-  revalidatePath("/admin/groups");
+  revalidatePath("/admin/grupper");
   revalidatePath(`/admin/groups/${id}`);
 }
 
@@ -65,8 +65,8 @@ export async function deleteGroup(id: string) {
     action: "group.deleted",
     target: `Group:${id}`,
   });
-  revalidatePath("/admin/groups");
-  redirect("/admin/groups");
+  revalidatePath("/admin/grupper");
+  redirect("/admin/grupper");
 }
 
 export async function addMember(groupId: string, userId: string, role: string) {

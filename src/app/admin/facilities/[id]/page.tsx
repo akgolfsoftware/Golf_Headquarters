@@ -810,7 +810,7 @@ function EventBlock({
   if (bookingId) {
     return (
       <Link
-        href={`/admin/bookings`}
+        href={`/admin/bookinger`}
         style={{ top: `${top}px`, height: `${height}px` }}
         className={`${baseClasses} ${toneClasses} transition-opacity hover:opacity-80`}
       >

@@ -84,7 +84,7 @@ export function NySpillerForm() {
 
       <div className="flex items-center justify-end gap-2 border-t border-border pt-6">
         <Link
-          href="/admin/elever"
+          href="/admin/spillere"
           className="inline-flex h-10 items-center gap-2 rounded-full border border-input bg-card px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />

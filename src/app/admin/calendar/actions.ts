@@ -108,8 +108,8 @@ export async function opprettOktPaaTid(
     },
   });
 
-  revalidatePath("/admin/calendar");
-  revalidatePath("/admin/bookings");
+  revalidatePath("/admin/kalender");
+  revalidatePath("/admin/bookinger");
 
   return { ok: true, bookingId: booking.id };
 }
@@ -157,8 +157,8 @@ export async function moveSession(
     },
   });
 
-  revalidatePath("/admin/calendar");
-  revalidatePath("/admin/bookings");
+  revalidatePath("/admin/kalender");
+  revalidatePath("/admin/bookinger");
   return { ok: true };
 }
 
@@ -204,7 +204,7 @@ export async function cancelSession(
     },
   });
 
-  revalidatePath("/admin/calendar");
-  revalidatePath("/admin/bookings");
+  revalidatePath("/admin/kalender");
+  revalidatePath("/admin/bookinger");
   return { ok: true };
 }

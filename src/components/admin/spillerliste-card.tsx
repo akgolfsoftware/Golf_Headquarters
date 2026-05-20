@@ -8,7 +8,7 @@ export function SpillerlisteCard({ players }: { players: AktivPlayer[] }) {
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Sist aktive spillere
         </span>
-        <Link href="/admin/elever" className="text-xs text-primary hover:underline active:text-primary/80 focus-visible:underline focus-visible:outline-none">
+        <Link href="/admin/spillere" className="text-xs text-primary hover:underline active:text-primary/80 focus-visible:underline focus-visible:outline-none">
           Alle →
         </Link>
       </div>

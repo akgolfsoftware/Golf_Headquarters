@@ -148,7 +148,7 @@ export default async function AnleggDetailPage({
         sub={location.address}
         actions={
           <Link
-            href={`/admin/bookings/new?locationId=${location.id}`}
+            href={`/admin/bookings/ny?locationId=${location.id}`}
             className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
           >
             <Building2 size={14} strokeWidth={1.75} />

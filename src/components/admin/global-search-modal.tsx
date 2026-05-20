@@ -112,7 +112,7 @@ const ACTIONS: Action[] = [
     description: "Opprett treningsgruppe med medlemmer",
     keywords: ["gruppe", "team", "group", "ny", "wang"],
     icon: Users,
-    kind: { type: "navigate", href: "/admin/groups" },
+    kind: { type: "navigate", href: "/admin/grupper" },
   },
   {
     id: "log-test",
@@ -177,7 +177,7 @@ const ACTIONS: Action[] = [
     description: "Hopp til kommende time i kalender",
     keywords: ["booking", "neste", "kalender", "time", "økt"],
     icon: Calendar,
-    kind: { type: "navigate", href: "/admin/calendar" },
+    kind: { type: "navigate", href: "/admin/kalender" },
   },
   // --- System ---
   {

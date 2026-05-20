@@ -42,7 +42,7 @@ export default async function NyBookingAdminPage() {
     <div className="space-y-6">
       <div>
         <Link
-          href="/admin/bookings"
+          href="/admin/bookinger"
           className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft size={12} strokeWidth={1.75} />

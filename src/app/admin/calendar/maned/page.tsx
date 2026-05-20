@@ -180,7 +180,7 @@ export default async function KalenderManedPage({
               I dag
             </Link>
             <Link
-              href="/admin/calendar"
+              href="/admin/kalender"
               className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-medium text-primary-foreground hover:opacity-90"
             >
               <Plus className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />

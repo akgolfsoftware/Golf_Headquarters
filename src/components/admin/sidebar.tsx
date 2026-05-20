@@ -12,7 +12,7 @@ const ALL_NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Daglig",
     items: [
       { href: "/admin/agencyos", label: "Hub" },
-      { href: "/admin/calendar", label: "Kalender" },
+      { href: "/admin/kalender", label: "Kalender" },
       { href: "/admin/foresporsler", label: "Forespørsler" },
     ],
   },
@@ -37,7 +37,7 @@ const ALL_NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   {
     label: "Evaluering",
     items: [
-      { href: "/admin/analytics", label: "Analytics" },
+      { href: "/admin/analyse", label: "Analyse" },
       { href: "/admin/lag-snitt", label: "Lag-snitt" },
       { href: "/admin/kapasitet", label: "Kapasitet" },
       { href: "/admin/reports", label: "Rapporter" },

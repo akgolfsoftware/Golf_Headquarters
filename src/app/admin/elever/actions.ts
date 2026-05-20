@@ -120,7 +120,7 @@ export async function leggTilSpiller(
     metadata: { role: "PLAYER", email: epost },
   });
 
-  revalidatePath("/admin/elever");
+  revalidatePath("/admin/spillere");
   return { ok: true, userId: ny.id };
 }
 
@@ -213,6 +213,6 @@ export async function oppdaterSpiller(
   });
 
   revalidatePath(`/admin/elever/${userId}`);
-  revalidatePath("/admin/elever");
+  revalidatePath("/admin/spillere");
   return { ok: true };
 }

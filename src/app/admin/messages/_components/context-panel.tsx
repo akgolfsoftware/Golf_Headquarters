@@ -112,7 +112,7 @@ export function ContextPanel({
             Spiller-profil
           </Shortcut>
           <Shortcut
-            href={`/admin/calendar?player=${spiller.id}`}
+            href={`/admin/kalender?player=${spiller.id}`}
             icon={<Calendar size={14} strokeWidth={1.5} />}
           >
             Book økt

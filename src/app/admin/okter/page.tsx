@@ -172,7 +172,7 @@ export default async function OkterAdmin() {
         sub={`Treningsøkter planlagt mellom ${formatDato(start)} og ${formatDato(end)}.`}
         actions={
           <a
-            href="/admin/calendar"
+            href="/admin/kalender"
             className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground hover:bg-secondary"
           >
             Åpne kalender
@@ -265,7 +265,7 @@ export default async function OkterAdmin() {
           sub={`Det er ingen treningsøkter mellom ${formatDato(start)} og ${formatDato(end)}. Lag en ny treningsplan eller åpne kalenderen.`}
           cta={
             <a
-              href="/admin/calendar"
+              href="/admin/kalender"
               className="inline-flex items-center gap-2 rounded-md border border-primary bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground hover:opacity-90"
             >
               Åpne kalender

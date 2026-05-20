@@ -284,7 +284,7 @@ function BookingPiller({ booking }: { booking: Booking }) {
 
   return (
     <Link
-      href={`/admin/bookings`}
+      href={`/admin/bookinger`}
       className={`rounded px-1.5 py-1 text-left text-[11px] leading-tight transition-opacity hover:opacity-80 ${farge}`}
       title={`${booking.user?.name ?? "Gjest"} · ${booking.serviceType.name}`}
     >

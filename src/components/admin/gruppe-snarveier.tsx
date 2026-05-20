@@ -32,7 +32,7 @@ export async function GruppeSnarveier() {
           Grupper
         </span>
         <Link
-          href="/admin/elever"
+          href="/admin/spillere"
           className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
         >
           Alle →

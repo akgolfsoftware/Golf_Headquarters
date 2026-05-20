@@ -7,7 +7,7 @@ export function SpillereTabs({ aktiv }: { aktiv: Aktiv }) {
   return (
     <div className="inline-flex w-fit gap-0.5 rounded-md bg-secondary p-1">
       <Link
-        href="/admin/elever"
+        href="/admin/spillere"
         className={`inline-flex items-center gap-1.5 rounded-sm px-4 py-2 text-sm font-medium transition-colors ${
           aktiv === "tabell"
             ? "bg-card text-foreground shadow-sm"

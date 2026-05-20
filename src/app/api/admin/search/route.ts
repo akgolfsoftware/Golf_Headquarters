@@ -52,11 +52,11 @@ export type GlobalSearchResponse = {
 const ROUTES: Omit<SearchRoute, "id">[] = [
   { label: "Hub", description: "Dagens oversikt og KPI-er", href: "/admin" },
   { label: "Daglig brief", description: "Morgens første-stop med agent-insights", href: "/admin/brief" },
-  { label: "Spillere", description: "Spillerliste, profiler og status", href: "/admin/elever" },
-  { label: "Grupper", description: "Gruppe-medlemmer og treningsgrupper", href: "/admin/groups" },
+  { label: "Spillere", description: "Spillerliste, profiler og status", href: "/admin/spillere" },
+  { label: "Grupper", description: "Gruppe-medlemmer og treningsgrupper", href: "/admin/grupper" },
   { label: "Plans", description: "Treningsplaner og periodisering", href: "/admin/plans" },
-  { label: "Kalender", description: "Uke-kalender og timebooking", href: "/admin/calendar" },
-  { label: "Bookinger", description: "Alle bookinger og status", href: "/admin/bookings" },
+  { label: "Kalender", description: "Uke-kalender og timebooking", href: "/admin/kalender" },
+  { label: "Bookinger", description: "Alle bookinger og status", href: "/admin/bookinger" },
   { label: "Forespørsler", description: "Økt-forespørsler fra spillere", href: "/admin/foresporsler" },
   { label: "Økonomi", description: "Inntekt, utestående og fakturaer", href: "/admin/finance" },
   { label: "Innstillinger", description: "Personlig og system-innstillinger", href: "/admin/innstillinger" },
@@ -164,7 +164,7 @@ export async function GET(req: Request) {
     playerName: b.user?.name ?? "Gjest",
     startAt: b.startAt.toISOString(),
     serviceName: b.serviceType.name,
-    href: `/admin/bookings/${b.id}`,
+    href: `/admin/bookinger/${b.id}`,
   }));
 
   const response: GlobalSearchResponse = {

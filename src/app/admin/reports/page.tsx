@@ -169,14 +169,14 @@ export default async function Rapporter() {
           </div>
           <div className="flex gap-2">
             <Link
-              href="/admin/audit"
+              href="/admin/audit-log"
               className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <History className="h-4 w-4" />
               Historikk
             </Link>
             <Link
-              href="/admin/calendar"
+              href="/admin/kalender"
               className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Plus className="h-4 w-4" />
@@ -311,7 +311,7 @@ export default async function Rapporter() {
             )}
             <div className="border-t border-border px-6 py-4">
               <Link
-                href="/admin/calendar"
+                href="/admin/kalender"
                 className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
               >
                 <Plus className="h-4 w-4" />
@@ -451,7 +451,7 @@ function ReportCard({ report }: { report: EksportTemplate }) {
           Last ned →
         </a>
         <Link
-          href="/admin/calendar"
+          href="/admin/kalender"
           className="inline-flex items-center gap-1.5 rounded-md px-4 py-1.5 text-[12.5px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           Planlegg →

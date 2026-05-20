@@ -60,7 +60,7 @@ export default async function GruppeDetalj({
   return (
     <div className="space-y-8">
       <Link
-        href="/admin/groups"
+        href="/admin/grupper"
         className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground"
       >
         ← CoachHQ · Grupper

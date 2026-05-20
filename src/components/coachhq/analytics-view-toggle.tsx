@@ -23,8 +23,8 @@ export function AnalyticsViewToggle({ active }: { active: AnalyticsView }) {
         const isActive = opt.view === active;
         const href =
           opt.view === "bento"
-            ? "/admin/analytics"
-            : `/admin/analytics?view=${opt.view}`;
+            ? "/admin/analyse"
+            : `/admin/analyse?view=${opt.view}`;
         return (
           <Link
             key={opt.view}

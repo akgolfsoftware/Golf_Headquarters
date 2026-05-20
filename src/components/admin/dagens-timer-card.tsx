@@ -16,7 +16,7 @@ export function DagensTimerCard({ timer }: { timer: DagensTime[] }) {
           Dagens timer
         </span>
         <Link
-          href="/admin/bookings"
+          href="/admin/bookinger"
           className="text-xs text-primary hover:underline active:text-primary/80 focus-visible:underline focus-visible:outline-none"
         >
           Alle →

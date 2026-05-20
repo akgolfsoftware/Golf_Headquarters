@@ -34,7 +34,7 @@ const ITEMS: Item[] = [
     icon: Key,
   },
   {
-    href: "/admin/audit",
+    href: "/admin/audit-log",
     label: "Revisjonslogg",
     desc: "Audit-trail for kritiske handlinger på kontoen.",
     aux: "Konto",

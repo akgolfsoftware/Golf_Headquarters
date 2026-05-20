@@ -1,12 +1,14 @@
 /**
- * Norsk alias for /admin/bookings.
+ * /admin/bookinger — CoachHQ bookings-oversikt (kanonisk URL).
  *
- * Hovedimplementasjonen ligger i `src/app/admin/bookings/page.tsx` og følger
- * V2-designet fra `wireframe/design-files-v2/final/04-bookinger.html`.
- * Denne ruten finnes så norske URL-er fungerer; ressursen er den samme.
+ * Implementasjonen ligger i `src/app/admin/bookings/page.tsx` av historiske
+ * årsaker (subroutes som `/admin/bookings/ny` refereres fra mange steder i
+ * kodebasen). Vi re-eksporterer den her slik at `/admin/bookinger` er den
+ * kanoniske norske URL-en. `next.config.ts` redirects `/admin/bookings` hit.
  */
-import { redirect } from "next/navigation";
 
-export default function BookingerRedirect() {
-  redirect("/admin/bookings");
-}
+import BookingerImpl from "@/app/admin/bookings/page";
+
+export const dynamic = "force-dynamic";
+
+export default BookingerImpl;

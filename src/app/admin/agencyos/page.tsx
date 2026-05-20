@@ -219,7 +219,7 @@ export default async function AgencyOSPage() {
               Daglig brief
             </Link>
             <Link
-              href="/admin/calendar"
+              href="/admin/kalender"
               className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
               <Calendar className="h-4 w-4" />
@@ -377,7 +377,7 @@ export default async function AgencyOSPage() {
                 </p>
               </div>
               <Link
-                href="/admin/calendar"
+                href="/admin/kalender"
                 className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
               >
                 Full kalender →
@@ -627,8 +627,8 @@ export default async function AgencyOSPage() {
             </h3>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <QuickLink href="/admin/innboks" icon={InboxIcon} label="Innboks" />
-              <QuickLink href="/admin/calendar" icon={Calendar} label="Kalender" />
-              <QuickLink href="/admin/elever" icon={Mail} label="Spillere" />
+              <QuickLink href="/admin/kalender" icon={Calendar} label="Kalender" />
+              <QuickLink href="/admin/spillere" icon={Mail} label="Spillere" />
               <QuickLink href="/admin/agents" icon={Wrench} label="AI-agenter" />
             </div>
           </section>
