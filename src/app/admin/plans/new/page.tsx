@@ -15,11 +15,19 @@ export default async function NyPlanPage() {
       orderBy: { name: "asc" },
     }),
     prisma.planTemplate.findMany({
-      where: { active: true },
-      select: { id: true, name: true, description: true, weeks: true },
+      where: { approved: true },
+      select: { id: true, name: true, description: true, varighetUker: true },
       orderBy: { createdAt: "desc" },
     }),
   ]);
+
+  // Map til MalListeElement-format (backward-compat: weeks-alias for varighetUker)
+  const malerMapped = maler.map((m) => ({
+    id: m.id,
+    name: m.name,
+    description: m.description,
+    weeks: m.varighetUker,
+  }));
 
   return (
     <div className="space-y-6">
@@ -33,7 +41,7 @@ export default async function NyPlanPage() {
 
       <AiPlanPanel spillere={spillere} />
 
-      <PlanWizard spillere={spillere} maler={maler} />
+      <PlanWizard spillere={spillere} maler={malerMapped} />
     </div>
   );
 }

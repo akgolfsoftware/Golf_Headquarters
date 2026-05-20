@@ -95,7 +95,7 @@ export async function saveTemplate(
     return { ok: false, error: "Malen finnes ikke." };
   }
 
-  const eksisterendePayload = readPayload(eksisterende.payload);
+  const eksisterendePayload = readPayload(eksisterende.disciplinFordeling);
   const nyPayload: Record<string, unknown> = {
     ...eksisterendePayload,
     weeks: data.weeks,
@@ -112,16 +112,16 @@ export async function saveTemplate(
   // Hvis vi skal sette denne som standard — fjern flagget fra alle andre.
   if (data.isDefault) {
     const alle = await prisma.planTemplate.findMany({
-      where: { id: { not: id }, active: true },
-      select: { id: true, payload: true },
+      where: { id: { not: id }, approved: true },
+      select: { id: true, disciplinFordeling: true },
     });
     for (const t of alle) {
-      const p = readPayload(t.payload);
+      const p = readPayload(t.disciplinFordeling);
       if (p.isDefault === true) {
         p.isDefault = false;
         await prisma.planTemplate.update({
           where: { id: t.id },
-          data: { payload: p as Prisma.InputJsonValue },
+          data: { disciplinFordeling: p as Prisma.InputJsonValue },
         });
       }
     }
@@ -132,8 +132,8 @@ export async function saveTemplate(
     data: {
       name: data.navn,
       description: data.beskrivelse || null,
-      weeks: data.weeks,
-      payload: nyPayload as Prisma.InputJsonValue,
+      varighetUker: data.weeks,
+      disciplinFordeling: nyPayload as Prisma.InputJsonValue,
     },
   });
 
@@ -144,11 +144,11 @@ export async function saveTemplate(
     metadata: {
       before: {
         name: eksisterende.name,
-        weeks: eksisterende.weeks,
+        weeks: eksisterende.varighetUker,
       },
       after: {
         name: oppdatert.name,
-        weeks: oppdatert.weeks,
+        weeks: oppdatert.varighetUker,
         isDefault: data.isDefault,
       },
     },
@@ -166,7 +166,7 @@ export async function archiveTemplate(id: string): Promise<SaveTemplateResult> {
 
   await prisma.planTemplate.update({
     where: { id },
-    data: { active: false },
+    data: { approved: false },
   });
 
   await audit({
@@ -189,7 +189,7 @@ export async function unarchiveTemplate(
 
   await prisma.planTemplate.update({
     where: { id },
-    data: { active: true },
+    data: { approved: true },
   });
 
   await audit({
@@ -211,24 +211,24 @@ export async function setAsDefault(id: string): Promise<SaveTemplateResult> {
   // Fjern flagget fra alle andre maler.
   const andre = await prisma.planTemplate.findMany({
     where: { id: { not: id } },
-    select: { id: true, payload: true },
+    select: { id: true, disciplinFordeling: true },
   });
   for (const t of andre) {
-    const p = readPayload(t.payload);
+    const p = readPayload(t.disciplinFordeling);
     if (p.isDefault === true) {
       p.isDefault = false;
       await prisma.planTemplate.update({
         where: { id: t.id },
-        data: { payload: p as Prisma.InputJsonValue },
+        data: { disciplinFordeling: p as Prisma.InputJsonValue },
       });
     }
   }
 
-  const p = readPayload(eksisterende.payload);
+  const p = readPayload(eksisterende.disciplinFordeling);
   p.isDefault = true;
   await prisma.planTemplate.update({
     where: { id },
-    data: { payload: p as Prisma.InputJsonValue },
+    data: { disciplinFordeling: p as Prisma.InputJsonValue },
   });
 
   await audit({
@@ -251,11 +251,11 @@ export async function duplicateTemplate(
   if (!eksisterende) return { ok: false, error: "Malen finnes ikke." };
 
   // Vi sjekker payload-form for å unngå at duplikat arver ugyldig payload.
-  const parsed = PlanTemplatePayloadSchema.safeParse(eksisterende.payload);
+  const parsed = PlanTemplatePayloadSchema.safeParse(eksisterende.disciplinFordeling);
   const payloadData = parsed.success
     ? parsed.data
     : {
-        weeks: eksisterende.weeks,
+        weeks: eksisterende.varighetUker,
         allokering: { FYS: 20, TEK: 30, SLAG: 25, SPILL: 20, TURN: 5 },
         ukeSkjema: { okterPerUke: 3, varighetMin: 75 },
         sessions: [],
@@ -271,9 +271,11 @@ export async function duplicateTemplate(
     data: {
       name: `${eksisterende.name} (kopi)`,
       description: eksisterende.description,
-      weeks: eksisterende.weeks,
-      payload: nyPayload as Prisma.InputJsonValue,
-      active: true,
+      varighetUker: eksisterende.varighetUker,
+      kategori: eksisterende.kategori,
+      lPhase: eksisterende.lPhase,
+      disciplinFordeling: nyPayload as Prisma.InputJsonValue,
+      approved: true,
     },
   });
 

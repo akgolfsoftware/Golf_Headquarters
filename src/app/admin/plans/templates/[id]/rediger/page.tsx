@@ -39,18 +39,18 @@ export default async function RedigerMalPage({
   // Vi forsøker å parse payload mot zod-schema. Hvis det feiler, faller vi
   // tilbake på standardverdier slik at editoren kan gjenoppbygge en gyldig
   // payload ved lagring.
-  const parsed = PlanTemplatePayloadSchema.safeParse(mal.payload);
+  const parsed = PlanTemplatePayloadSchema.safeParse(mal.disciplinFordeling);
   const payloadObj =
-    mal.payload && typeof mal.payload === "object" && !Array.isArray(mal.payload)
-      ? (mal.payload as Record<string, unknown>)
+    mal.disciplinFordeling && typeof mal.disciplinFordeling === "object" && !Array.isArray(mal.disciplinFordeling)
+      ? (mal.disciplinFordeling as Record<string, unknown>)
       : {};
 
   const initial: EditorInitialData = {
     id: mal.id,
     navn: mal.name,
     beskrivelse: mal.description ?? "",
-    weeks: mal.weeks,
-    active: mal.active,
+    weeks: mal.varighetUker,
+    active: mal.approved,
     isDefault: payloadObj.isDefault === true,
     notater: typeof payloadObj.notater === "string" ? payloadObj.notater : "",
     allokering: parsed.success ? parsed.data.allokering : { ...STANDARD_ALLOKERING },

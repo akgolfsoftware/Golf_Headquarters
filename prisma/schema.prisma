@@ -94,6 +94,27 @@ enum SessionEnvironment {
   SIMULATOR
 }
 
+// NGF-kategori-skala for nivå-differensiering av drills og plan-templates.
+// A = OWGR Top 150 (elite-profesjonell)
+// B-D = nasjonalt elite-amateur til lavt proff
+// E-G = scratch til HCP 5 (sterk amateur)
+// H-J = HCP 5-15 (god klubbspiller)
+// K-L = HCP 15+ / junior klubb-nivå
+enum NgfKategori {
+  A
+  B
+  C
+  D
+  E
+  F
+  G
+  H
+  I
+  J
+  K
+  L
+}
+
 enum SubscriptionStatus {
   ACTIVE
   PAST_DUE
@@ -323,6 +344,11 @@ model User {
   createdTechPlans     TechnicalPlan[]      @relation("TechPlanCreator")
   techPlanAudits       TechnicalPlanAudit[]
   techPlanSuggestions  PlanSuggestion[]     @relation("SuggestionDecider")
+
+  // Plan-templates (AI-baseline-system)
+  createdPlanTemplates  PlanTemplate[]      @relation("PlanTemplateCoach")
+  approvedPlanTemplates PlanTemplate[]      @relation("PlanTemplateApprover")
+  planEffectiveness     PlanEffectiveness[]
 
   @@map("users")
 }
@@ -568,6 +594,7 @@ model TrainingPlan {
   sessions     TrainingPlanSession[]
   planActions  PlanAction[]
   aiGeneration AiPlanGeneration? @relation(fields: [aiGenerationId], references: [id])
+  effectiveness PlanEffectiveness?
 
   @@index([userId, isActive])
   @@index([status])
@@ -643,6 +670,32 @@ model ExerciseDefinition {
   durationMin     Int?
   createdBy       String?
   parametersJson  Json?
+
+  // Nivå-differensiering (NGF-skala + HCP-range)
+  skillArea       SkillArea?
+  minKategori     NgfKategori?
+  maxKategori     NgfKategori?
+  minHcp          Float?
+  maxHcp          Float?
+
+  // Kontekst — hvor og hvordan drillen kjøres
+  environment     SessionEnvironment[]   @default([])
+  utstyr          String[]               @default([])
+  intensitet      Int?                   // 1-10
+  lPhases         LPhase[]               @default([])
+  morad           Boolean                @default(false)
+
+  // Pedagogikk
+  prerequisites   String[]               @default([])
+  tags            String[]               @default([])
+  coachNotes      String?
+  kilde           String?
+
+  // Progresjon
+  defaultSets     Int?
+  defaultReps     Int?
+  csTargetByKategori Json?               // {A:95,B:90,...} per NGF-kategori
+
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
@@ -650,6 +703,8 @@ model ExerciseDefinition {
   sessionDrills SessionDrill[]
 
   @@index([pyramidArea])
+  @@index([skillArea])
+  @@index([minKategori, maxKategori])
   @@map("exercise_definitions")
 }
 
@@ -669,6 +724,106 @@ model SessionDrill {
 
   @@index([sessionId])
   @@map("session_drills")
+}
+
+// Plan-templates: kodifisert coach-erfaring per (NGF-kategori × lPhase).
+// AI bruker disse som baseline og justerer basert på spillerens SG-data,
+// pyramide-balanse og mål. ~15-20 templates totalt (5 kategorier × 3 faser).
+model PlanTemplate {
+  id                String      @id @default(cuid())
+  name              String      // "A1 Konkurranse-fase Standard"
+  description       String?
+  kategori          NgfKategori
+  lPhase            LPhase
+  varighetUker      Int         @default(4)
+  ukentligOktAntall Int         @default(5)
+
+  // Disciplin-fordeling som JSON: {FYS: 0.15, TEK: 0.25, SLAG: 0.25, SPILL: 0.2, TURN: 0.15}
+  disciplinFordeling Json
+
+  // Mål-aldersgruppe (optional — null = alle aldre)
+  minAlder          Int?
+  maxAlder          Int?
+
+  // Metadata
+  byCoachId         String?
+  approved          Boolean     @default(false)
+  approvedById      String?
+  approvedAt        DateTime?
+  usageCount        Int         @default(0)
+  effectivenessAvg  Float?      // gjennomsnitt fra PlanEffectiveness
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  byCoach           User?       @relation("PlanTemplateCoach", fields: [byCoachId], references: [id], onDelete: SetNull)
+  approvedBy        User?       @relation("PlanTemplateApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  sessions          PlanTemplateSession[]
+  effectiveness     PlanEffectiveness[]
+
+  @@unique([kategori, lPhase, name])
+  @@index([kategori, lPhase])
+  @@map("plan_templates")
+}
+
+model PlanTemplateSession {
+  id            String              @id @default(cuid())
+  templateId    String
+  ukeNr         Int                 // 1-N (N = varighetUker)
+  dagNr         Int                 // 1-7 (mandag=1)
+  title         String
+  varighetMin   Int
+  pyramidArea   PyramidArea
+  skillArea     SkillArea?
+  environment   SessionEnvironment
+  // Anbefalte drill-IDer + sets/reps/csTarget per drill
+  // Format: [{exerciseId, sets, reps, csTarget, notes}]
+  drillsJson    Json
+  focus         String?
+  notes         String?
+
+  template      PlanTemplate        @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([templateId, ukeNr, dagNr])
+  @@index([templateId])
+  @@map("plan_template_sessions")
+}
+
+// Effektivitets-tracking — etter fullført TrainingPlan: pre/post SG-deltas
+// + completion-rate. AI bruker dette til å lære hvilke templates som virker.
+model PlanEffectiveness {
+  id              String        @id @default(cuid())
+  planId          String        @unique
+  templateId      String?       // hvilken template ble brukt som baseline
+  userId          String
+
+  // Pre/post snapshots
+  preSnapshot     Json          // {sgTotal, sgOTT, sgAPP, sgARG, sgPUTT, hcp, kategori}
+  postSnapshot    Json          // samme felter etter plan
+
+  // Beregnet effekt
+  sgTotalDelta    Float?
+  sgOttDelta      Float?
+  sgAppDelta      Float?
+  sgArgDelta      Float?
+  sgPuttDelta     Float?
+  hcpDelta        Float?
+
+  completionRate  Float         // 0-1 — andel økter fullført
+  selfRating      Float?        // 1-5 spillerens egen vurdering
+  coachRating     Float?        // 1-5 coachens vurdering
+
+  notes           String?       // coach-notater om hva som virket / ikke virket
+
+  computedAt      DateTime      @default(now())
+
+  plan            TrainingPlan  @relation(fields: [planId], references: [id], onDelete: Cascade)
+  template        PlanTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([templateId])
+  @@map("plan_effectiveness")
 }
 
 model TrainingPlanSessionLog {
@@ -1616,19 +1771,8 @@ model SessionRecording {
   @@map("session_recordings")
 }
 
-model PlanTemplate {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  weeks       Int
-  // payload: array av { week, day, title, pyramidArea, durationMin, drills:[{exerciseId, repsSets}] }
-  payload     Json
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("plan_templates")
-}
+// PlanTemplate-modellen er nå definert tidligere i schema (etter SessionDrill)
+// med fullstendig nivå-differensiering og effektivitets-tracking.
 
 // Marketing — leads (Fase 3.3)
 

@@ -75,7 +75,7 @@ export default async function PlanTemplates() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const templates = await prisma.planTemplate.findMany({
-    where: { active: true },
+    where: { approved: true },
     orderBy: { createdAt: "desc" },
   });
 
@@ -141,14 +141,14 @@ export default async function PlanTemplates() {
           {/* Grid */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {templates.map((t, i) => {
-              const payload = readPayload(t.payload);
+              const payload = readPayload(t.disciplinFordeling);
               const pyr = payload.pyr ?? DEFAULT_PYR;
               const { lead, rest } = splitTitle(t.name);
               const gradient = GRADIENTS[i % GRADIENTS.length];
               const featured = i === 0;
               const category = payload.category ?? "Mal";
-              const oktCount = payload.oktCount ?? t.weeks * 3;
-              const faseCount = payload.faseCount ?? Math.max(1, Math.round(t.weeks / 3));
+              const oktCount = payload.oktCount ?? t.varighetUker * 3;
+              const faseCount = payload.faseCount ?? Math.max(1, Math.round(t.varighetUker / 3));
               const level = payload.level ?? "Alle";
               const rating = payload.rating ?? "—";
               const usedCount = payload.usedCount ?? 0;
@@ -204,7 +204,7 @@ export default async function PlanTemplates() {
                         )}
                       </div>
                       <div className="mt-2 text-[12px] font-medium leading-snug text-card/80">
-                        {t.weeks} ukers periodisering
+                        {t.varighetUker} ukers periodisering
                       </div>
                     </div>
                     <div
@@ -221,7 +221,7 @@ export default async function PlanTemplates() {
                     <div className="flex flex-wrap gap-4 text-[12px] text-muted-foreground">
                       <span>
                         <b className="mr-2 font-mono font-semibold tabular-nums text-foreground">
-                          {t.weeks} u
+                          {t.varighetUker} u
                         </b>
                         periode
                       </span>

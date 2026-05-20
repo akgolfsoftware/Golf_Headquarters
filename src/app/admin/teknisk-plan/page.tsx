@@ -44,7 +44,7 @@ export default async function TekniskPlanOversikt() {
       orderBy: { name: "asc" },
     }),
     prisma.planTemplate.findMany({
-      where: { active: true },
+      where: { approved: true },
       orderBy: { createdAt: "desc" },
     }),
   ]);
@@ -229,7 +229,7 @@ export default async function TekniskPlanOversikt() {
                       </p>
                     )}
                     <div className="mt-2 font-mono text-[10px] text-muted-foreground">
-                      {m.weeks} uker
+                      {m.varighetUker} uker
                     </div>
                   </div>
                 </div>

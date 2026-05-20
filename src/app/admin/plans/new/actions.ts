@@ -280,13 +280,13 @@ export async function hentMalForhandsutfylling(
   const mal = await prisma.planTemplate.findUnique({
     where: { id: templateId },
   });
-  if (!mal || !mal.active) return null;
+  if (!mal || !mal.approved) return null;
 
-  // Vi lagrer payload som Json i Prisma. Bruk zod for å validere — feil
-  // format skal feile høyt, ikke gi `undefined.allokering` lengre nede.
-  const parseResult = PlanTemplatePayloadSchema.safeParse(mal.payload);
+  // Vi lagrer disciplinFordeling som Json i Prisma. Bruk zod for å validere
+  // — feil format skal feile høyt, ikke gi `undefined.allokering` lengre nede.
+  const parseResult = PlanTemplatePayloadSchema.safeParse(mal.disciplinFordeling);
   if (!parseResult.success) {
-    console.error("[plans] PlanTemplate.payload har ugyldig form", {
+    console.error("[plans] PlanTemplate.disciplinFordeling har ugyldig form", {
       templateId: mal.id,
       feil: parseResult.error.issues,
     });
@@ -297,7 +297,7 @@ export async function hentMalForhandsutfylling(
   return {
     templateId: mal.id,
     navn: mal.name,
-    weeks: mal.weeks,
+    weeks: mal.varighetUker,
     allokering: payload.allokering,
     ukeSkjema: payload.ukeSkjema,
   };

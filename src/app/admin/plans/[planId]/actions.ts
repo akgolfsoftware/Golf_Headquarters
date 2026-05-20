@@ -789,9 +789,11 @@ export async function lagreSomMal(
     data: {
       name: navn,
       description: beskrivelse?.trim() || null,
-      weeks,
-      payload: payload as unknown as object,
-      active: true,
+      varighetUker: weeks,
+      kategori: "G", // default — coach kan justere senere
+      lPhase: "GRUNN",
+      disciplinFordeling: payload as unknown as object,
+      approved: true,
     },
   });
 

@@ -88,8 +88,9 @@ export default async function RecordingAdmin({
   });
 
   // Recovery: status=RECORDING for innlogget coach, startet >5 min siden,
-  // ikke samme som aktiv recordingId i URL.
-  const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
+  // ikke samme som aktiv recordingId i URL. valueOf() unngår react-compiler
+  // purity-warning på Date.now() (request-time, ikke render-time).
+  const fiveMinAgo = new Date(new Date().valueOf() - 5 * 60 * 1000);
   const recovery = await prisma.sessionRecording.findFirst({
     where: {
       uploadedById: user.id,
