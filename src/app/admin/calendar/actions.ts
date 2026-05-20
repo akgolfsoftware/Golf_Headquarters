@@ -113,3 +113,98 @@ export async function opprettOktPaaTid(
 
   return { ok: true, bookingId: booking.id };
 }
+
+/**
+ * Flytt en eksisterende booking til et nytt tidspunkt. Brukes av drag-drop
+ * i kalender-grid. Beholder varighet (endAt = nytt startAt + opprinnelig
+ * varighet).
+ */
+export async function moveSession(
+  bookingId: string,
+  newStartAt: Date | string,
+): Promise<{ ok: true } | { ok: false; feil: string }> {
+  const aktor = await krevCoach();
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: { id: true, startAt: true, endAt: true, status: true },
+  });
+  if (!booking) return { ok: false, feil: "Booking ikke funnet" };
+  if (booking.status === "CANCELLED") {
+    return { ok: false, feil: "Booking er allerede kansellert" };
+  }
+
+  const start =
+    newStartAt instanceof Date ? newStartAt : new Date(newStartAt);
+  if (Number.isNaN(start.getTime())) {
+    return { ok: false, feil: "Ugyldig start-tidspunkt" };
+  }
+  const varighetMs = booking.endAt.getTime() - booking.startAt.getTime();
+  const end = new Date(start.getTime() + varighetMs);
+
+  await prisma.booking.update({
+    where: { id: bookingId },
+    data: { startAt: start, endAt: end },
+  });
+
+  await audit({
+    actorId: aktor.id,
+    action: "booking.moved",
+    target: `Booking:${bookingId}`,
+    metadata: {
+      from: booking.startAt.toISOString(),
+      to: start.toISOString(),
+    },
+  });
+
+  revalidatePath("/admin/calendar");
+  revalidatePath("/admin/bookings");
+  return { ok: true };
+}
+
+/**
+ * Opprett en ny økt fra et ledig slot i kalenderen. Tynt wrapper rundt
+ * opprettOktPaaTid for å gi mer idiomatisk navn fra UI.
+ */
+export async function createSessionFromCalendar(data: OpprettOktInput) {
+  return opprettOktPaaTid(data);
+}
+
+/**
+ * Kanseller en booking (myk-sletting via status=CANCELLED). Beholder
+ * historikk og audit-log.
+ */
+export async function cancelSession(
+  bookingId: string,
+): Promise<{ ok: true } | { ok: false; feil: string }> {
+  const aktor = await krevCoach();
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: { id: true, status: true, userId: true, startAt: true },
+  });
+  if (!booking) return { ok: false, feil: "Booking ikke funnet" };
+  if (booking.status === "CANCELLED") {
+    return { ok: false, feil: "Booking er allerede kansellert" };
+  }
+
+  await prisma.booking.update({
+    where: { id: bookingId },
+    data: { status: "CANCELLED" },
+  });
+
+  await audit({
+    actorId: aktor.id,
+    action: "booking.cancelled",
+    target: `Booking:${bookingId}`,
+    metadata: {
+      via: "calendar.cancel",
+      userId: booking.userId,
+      startAt: booking.startAt.toISOString(),
+    },
+  });
+
+  revalidatePath("/admin/calendar");
+  revalidatePath("/admin/bookings");
+  return { ok: true };
+}

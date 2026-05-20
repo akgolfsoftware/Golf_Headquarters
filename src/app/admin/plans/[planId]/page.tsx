@@ -160,15 +160,16 @@ export default async function AdminPlanDetalj({
       </Link>
 
       <PageHeader
-        eyebrow={`Treningsplaner · ${plan.user.name}${
+        eyebrow={`Plan · Spiller: ${plan.user.name}${
           plan.user.hcp != null ? ` · HCP ${plan.user.hcp}` : ""
-        } · ${plan.isActive ? "Aktiv" : "Inaktiv"}`}
+        } · ${plan.status}`}
         titleItalic={planTittel}
-        sub={`${periodeFra} – ${periodeTil} · ${totalt} økter totalt · ${totTimer} t volum`}
+        sub={`${periodeFra} – ${periodeTil} · ${totalt} økter totalt · ${fullført} av ${totalt} fullført · ${totTimer} t volum`}
         actions={
           <PlanActions
             planId={plan.id}
             isActive={plan.isActive}
+            status={plan.status}
             isAdmin={me.role === "ADMIN"}
             originalPlanNavn={plan.name}
             originalUserId={plan.userId}

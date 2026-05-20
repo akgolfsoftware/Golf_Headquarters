@@ -15,6 +15,9 @@ import {
   UserPlus,
   Search,
   X,
+  Pause,
+  Play,
+  Square,
 } from "lucide-react";
 import {
   godkjennPlan,
@@ -23,8 +26,12 @@ import {
   lagreSomMal,
   kopierPlan,
   sendTilSpiller,
+  pausePlan,
+  resumePlan,
+  endPlan,
 } from "./actions";
 import { dupliserPlan } from "../actions";
+import type { PlanStatus } from "@/generated/prisma/client";
 
 export type SpillerKandidat = {
   id: string;
@@ -37,6 +44,7 @@ type Props = {
   planId: string;
   isActive: boolean;
   isAdmin: boolean;
+  status?: PlanStatus;
   originalPlanNavn: string;
   originalUserId: string;
   spillere: SpillerKandidat[];
@@ -46,6 +54,7 @@ export function PlanActions({
   planId,
   isActive,
   isAdmin,
+  status,
   originalPlanNavn,
   originalUserId,
   spillere,
@@ -89,6 +98,37 @@ export function PlanActions({
     startTransition(async () => {
       const newId = await dupliserPlan(planId);
       if (newId) router.push(`/admin/plans/${newId}`);
+    });
+  }
+
+  function pause() {
+    if (!confirm("Pause planen? Spilleren kan fortsatt se den, men nye økter triggers ikke.")) {
+      return;
+    }
+    startTransition(async () => {
+      await pausePlan(planId);
+      router.refresh();
+    });
+  }
+
+  function resume() {
+    startTransition(async () => {
+      await resumePlan(planId);
+      router.refresh();
+    });
+  }
+
+  function avslutt() {
+    if (
+      !confirm(
+        "Avslutte planen permanent? Dette markerer planen som ferdig og setter sluttdato til i dag.",
+      )
+    ) {
+      return;
+    }
+    startTransition(async () => {
+      await endPlan(planId);
+      router.refresh();
     });
   }
 
@@ -147,6 +187,42 @@ export function PlanActions({
           >
             <Send className="h-4 w-4" strokeWidth={1.5} />
             Send til spiller
+          </button>
+        )}
+
+        {status === "ACTIVE" && (
+          <button
+            type="button"
+            onClick={pause}
+            disabled={pending}
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
+          >
+            <Pause className="h-4 w-4" strokeWidth={1.5} />
+            Pause
+          </button>
+        )}
+
+        {status === "PAUSED" && (
+          <button
+            type="button"
+            onClick={resume}
+            disabled={pending}
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+          >
+            <Play className="h-4 w-4" strokeWidth={1.5} />
+            Gjenoppta
+          </button>
+        )}
+
+        {(status === "ACTIVE" || status === "PAUSED") && (
+          <button
+            type="button"
+            onClick={avslutt}
+            disabled={pending}
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
+          >
+            <Square className="h-4 w-4" strokeWidth={1.5} />
+            Avslutt
           </button>
         )}
 

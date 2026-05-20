@@ -193,6 +193,124 @@ export async function markerSomNyttUtkast(planId: string) {
 }
 
 /**
+ * Pause en aktiv plan. Settes til status=PAUSED, isActive=false.
+ * Spilleren kan fortsatt se planen, men nye økter triggers ikke.
+ */
+export async function pausePlan(planId: string) {
+  const user = await krevCoach();
+  const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
+  if (!plan) throw new Error("not-found");
+
+  await prisma.trainingPlan.update({
+    where: { id: planId },
+    data: { status: "PAUSED", isActive: false },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: user.id,
+      action: "plan.pause",
+      target: planId,
+      metadata: { planName: plan.name, userId: plan.userId },
+    },
+  });
+
+  revalidatePath("/admin/plans");
+  revalidatePath(`/admin/plans/${planId}`);
+}
+
+/**
+ * Gjenoppta en pauset plan. Settes til status=ACTIVE, isActive=true.
+ */
+export async function resumePlan(planId: string) {
+  const user = await krevCoach();
+  const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
+  if (!plan) throw new Error("not-found");
+
+  await prisma.trainingPlan.update({
+    where: { id: planId },
+    data: { status: "ACTIVE", isActive: true },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: user.id,
+      action: "plan.resume",
+      target: planId,
+      metadata: { planName: plan.name, userId: plan.userId },
+    },
+  });
+
+  revalidatePath("/admin/plans");
+  revalidatePath(`/admin/plans/${planId}`);
+}
+
+/**
+ * Avslutt plan permanent. Settes til status=ARCHIVED, isActive=false, endDate=now.
+ * Brukes når perioden er ferdig eller spiller stoppet planen.
+ */
+export async function endPlan(planId: string) {
+  const user = await krevCoach();
+  const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
+  if (!plan) throw new Error("not-found");
+
+  const now = new Date();
+  await prisma.trainingPlan.update({
+    where: { id: planId },
+    data: { status: "ARCHIVED", isActive: false, endDate: now },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: user.id,
+      action: "plan.end",
+      target: planId,
+      metadata: {
+        planName: plan.name,
+        userId: plan.userId,
+        endedAt: now.toISOString(),
+      },
+    },
+  });
+
+  revalidatePath("/admin/plans");
+  revalidatePath(`/admin/plans/${planId}`);
+}
+
+/**
+ * Avbryt en planlagt økt (status=CANCELLED). Beholder data, men spiller
+ * ser at den er kansellert.
+ */
+export async function cancelSession(sessionId: string) {
+  const user = await krevCoach();
+
+  const session = await prisma.trainingPlanSession.findUnique({
+    where: { id: sessionId },
+    select: { id: true, planId: true, title: true, status: true },
+  });
+  if (!session) throw new Error("not-found");
+  if (session.status === "COMPLETED") {
+    throw new Error("cannot-cancel-completed");
+  }
+
+  await prisma.trainingPlanSession.update({
+    where: { id: sessionId },
+    data: { status: "CANCELLED" },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: user.id,
+      action: "plan.session.cancel",
+      target: sessionId,
+      metadata: { planId: session.planId, title: session.title },
+    },
+  });
+
+  revalidatePath(`/admin/plans/${session.planId}`);
+}
+
+/**
  * Arkiver plan — settes inaktiv, beholder data og historikk.
  */
 export async function arkiverPlan(planId: string) {
