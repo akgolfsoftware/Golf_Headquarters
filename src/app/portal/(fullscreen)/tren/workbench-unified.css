@@ -1280,3 +1280,318 @@
 .wb-root .foot-right {
   display: flex; justify-content: flex-end; gap: 8px;
 }
+
+/* ============================================================
+   MOBILE MENU (hamburger / drawer)
+   ============================================================ */
+
+/* Hamburger-knapp i topbar — kun synlig på mobile */
+.wb-root .tb-menu {
+  display: none;
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  align-items: center; justify-content: center;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.wb-root .tb-menu:hover { background: var(--surface); }
+.wb-root .tb-menu svg { width: 22px; height: 22px; }
+
+/* Lukke-knapp i sidebar — kun synlig når sidebar er drawer (mobile) */
+.wb-root .sb-close {
+  display: none;
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  color: #fff;
+  background: rgba(255,255,255,0.08);
+  align-items: center; justify-content: center;
+  z-index: 2;
+}
+.wb-root .sb-close:hover { background: rgba(255,255,255,0.16); }
+.wb-root .sb-close svg { width: 20px; height: 20px; }
+
+/* Sidebar-backdrop — overlay bak drawer på mobile */
+.wb-root .sidebar-backdrop {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(10,31,24,0.45);
+  backdrop-filter: blur(1px);
+  z-index: 49;
+}
+
+/* ============================================================
+   RESPONSIVE — tablet / mobile (<= 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  /* App-skall: én kolonne, sidebar blir off-canvas drawer */
+  .wb-root .app {
+    grid-template-columns: 1fr;
+  }
+
+  /* Sidebar som drawer */
+  .wb-root .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100dvh;
+    width: 84vw; max-width: 320px;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 220ms ease;
+    overflow-y: auto;
+    padding-top: 60px;
+  }
+  .wb-root .app.sidebar-open .sidebar {
+    transform: translateX(0);
+    box-shadow: 24px 0 60px rgba(0,0,0,0.32);
+  }
+  .wb-root .app.sidebar-open .sidebar-backdrop {
+    display: block;
+  }
+  .wb-root .sb-close {
+    display: inline-flex;
+  }
+
+  /* Touch-targets i sidebar */
+  .wb-root .sb-item {
+    padding: 12px 12px;
+    font-size: 15px;
+    min-height: 44px;
+  }
+  .wb-root .sb-item svg { width: 18px; height: 18px; }
+
+  /* TOPBAR — vis hamburger, skjul breadcrumb, krymp søk */
+  .wb-root .topbar {
+    padding: 0 12px;
+    gap: 10px;
+  }
+  .wb-root .tb-menu {
+    display: inline-flex;
+  }
+  .wb-root .tb-crumb {
+    display: none;
+  }
+  .wb-root .tb-search {
+    flex: 0 0 auto;
+    width: 44px; height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+  }
+  .wb-root .tb-search input,
+  .wb-root .tb-search .kbd {
+    display: none;
+  }
+  .wb-root .tb-search svg { width: 18px; height: 18px; }
+  .wb-root .tb-iconbtn {
+    width: 44px; height: 44px;
+  }
+  .wb-root .tb-iconbtn svg { width: 20px; height: 20px; }
+
+  /* PAGE — mindre padding */
+  .wb-root .page {
+    padding: 16px 14px 0;
+  }
+
+  /* HERO — stack tittel + actions vertikalt */
+  .wb-root .hero {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .wb-root .hero h1 {
+    font-size: 26px;
+    line-height: 1.1;
+  }
+  .wb-root .hero-actions {
+    max-width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  .wb-root .hero-actions .btn {
+    flex: 1 1 calc(50% - 4px);
+    justify-content: center;
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  /* GANTT — horisontal scroll */
+  .wb-root .gantt {
+    padding: 14px 14px 12px;
+    margin-bottom: 18px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .wb-root .gantt-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .wb-root .gantt-head .legend {
+    gap: 8px 14px;
+  }
+  .wb-root .gantt-months,
+  .wb-root .gantt-trackwrap,
+  .wb-root .gantt-weeks {
+    min-width: 760px;
+  }
+
+  /* WORKBENCH 3-PANE — stack vertikalt */
+  .wb-root .wb-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* WB-TABS — touch-friendly, horisontal scroll om nødvendig */
+  .wb-root .wb-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 14px;
+    flex-wrap: nowrap;
+  }
+  .wb-root .wb-tab {
+    padding: 12px 14px;
+    flex-shrink: 0;
+    min-height: 44px;
+  }
+
+  /* PANE A — kompakte cards */
+  .wb-root .profile-hero {
+    padding: 16px;
+  }
+  .wb-root .pa-card,
+  .wb-root .coach-card-dark {
+    padding: 14px;
+  }
+
+  /* PANE B — kalender: krymp tidskolonne, lat scroll om nødvendig */
+  .wb-root .pane-b {
+    overflow-x: auto;
+  }
+  .wb-root .cal-grid {
+    grid-template-columns: 32px repeat(7, minmax(70px, 1fr));
+    min-width: 600px;
+  }
+  .wb-root .cal-time {
+    font-size: 8.5px;
+    padding: 4px 4px;
+  }
+  .wb-root .cal-block .title {
+    font-size: 11px;
+  }
+
+  /* GOALS-ROW — én kolonne */
+  .wb-root .goals-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .wb-root .goal-card {
+    padding: 16px;
+  }
+  .wb-root .goal-card h3 {
+    font-size: 16px;
+  }
+
+  .wb-root .add-goal-row {
+    margin-bottom: 24px;
+    justify-content: stretch;
+  }
+  .wb-root .add-goal-row .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  /* INSIGHT-ROW — én kolonne */
+  .wb-root .insight-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .wb-root .ins-card {
+    padding: 16px;
+  }
+
+  /* TRACKMAN — én kolonne med horisontal scroll snap */
+  .wb-root .tm-strip {
+    margin-bottom: 120px;
+  }
+  .wb-root .tm-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .wb-root .tm-card {
+    padding: 12px;
+  }
+
+  /* SECTION HEADS — kompakte */
+  .wb-root .section-head h2 {
+    font-size: 18px;
+  }
+
+  /* STICKY FOOTER — full bredde, stack innhold */
+  .wb-root .sticky-foot {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 10px 14px;
+    padding-left: 14px;
+    margin-left: 0;
+    text-align: left;
+  }
+  .wb-root .foot-left {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .wb-root .foot-left .lbl {
+    width: 100%;
+    font-size: 9.5px;
+  }
+  .wb-root .foot-pyr {
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .wb-root .foot-pyr-bar {
+    width: calc(20% - 5px);
+    min-width: 48px;
+  }
+  .wb-root .foot-mid {
+    font-size: 10px;
+    text-align: left;
+  }
+  .wb-root .foot-right {
+    justify-content: stretch;
+  }
+  .wb-root .foot-right .btn {
+    flex: 1;
+    justify-content: center;
+    min-height: 44px;
+    font-size: 12px;
+  }
+
+  /* BTN minst 44px tall på touch */
+  .wb-root .btn {
+    min-height: 40px;
+  }
+  .wb-root .btn.sm,
+  .wb-root .btn.xs {
+    min-height: 36px;
+  }
+}
+
+/* Ekstra kompakt (<= 480px) */
+@media (max-width: 480px) {
+  .wb-root .hero h1 {
+    font-size: 22px;
+  }
+  .wb-root .tm-cards {
+    grid-template-columns: 1fr;
+  }
+  .wb-root .foot-pyr-bar {
+    width: calc(33.333% - 6px);
+  }
+}

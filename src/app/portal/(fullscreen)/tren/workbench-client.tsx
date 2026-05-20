@@ -139,6 +139,15 @@ function SvgSprite() {
         <symbol id="i-chev-r" viewBox="0 0 24 24">
           <polyline points="9 18 15 12 9 6" />
         </symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </symbol>
+        <symbol id="i-x" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </symbol>
       </defs>
     </svg>
   );
@@ -313,6 +322,10 @@ export function WorkbenchClient() {
   // wb-tab state (Dag / Uke / Måned / Sesong)
   const [wbTab, setWbTab] = useState<"dag" | "uke" | "md" | "sesong">("uke");
 
+  // sidebar drawer state (mobile)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const closeSidebar = useCallback(() => setSidebarOpen(false), []);
+
   const showToast = useCallback(
     (text: string) => {
       toaster.success(text);
@@ -409,9 +422,30 @@ export function WorkbenchClient() {
     >
       <SvgSprite />
 
-      <div className="app">
+      <div className={`app${sidebarOpen ? " sidebar-open" : ""}`}>
+        {/* Sidebar-backdrop (kun mobile, vises når drawer er åpen) */}
+        <div
+          className="sidebar-backdrop"
+          onClick={(e) => {
+            e.stopPropagation();
+            closeSidebar();
+          }}
+          aria-hidden={!sidebarOpen}
+        />
+
         {/* ===== 1. SIDEBAR ===== */}
-        <aside className="sidebar">
+        <aside
+          className="sidebar"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            type="button"
+            className="sb-close"
+            onClick={closeSidebar}
+            aria-label="Lukk meny"
+          >
+            <Icon id="i-x" />
+          </button>
           <div className="sb-brand">
             AK GOLF
             <b>PLAYERHQ</b>
@@ -500,6 +534,17 @@ export function WorkbenchClient() {
         <main>
           {/* TOPBAR */}
           <header className="topbar">
+            <button
+              type="button"
+              className="tb-menu"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSidebarOpen(true);
+              }}
+              aria-label="Åpne meny"
+            >
+              <Icon id="i-menu" />
+            </button>
             <button
               type="button"
               className="tb-search"
