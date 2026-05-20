@@ -141,7 +141,7 @@ export function SummaryClient({ data }: Props) {
       </header>
 
       {/* Stage */}
-      <main className="mx-auto flex max-w-[720px] flex-col gap-9 px-7 pb-48 pt-4">
+      <main className="mx-auto flex max-w-[720px] flex-col gap-6 px-4 pb-32 pt-4 sm:gap-9 sm:px-7 sm:pb-48">
         {/* Hero */}
         <section className="flex flex-col gap-3">
           <Eyebrow>{data.eyebrow}</Eyebrow>
