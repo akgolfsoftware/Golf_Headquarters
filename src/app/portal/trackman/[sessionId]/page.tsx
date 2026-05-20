@@ -158,10 +158,10 @@ export default async function TrackManSessionPage({
   const sgEstimate = (kpis.smash - 1.44) * 8; // enkel proxy
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 pb-20 md:space-y-10 md:pb-0">
       <Link
         href="/portal/mal/trackman"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex h-11 items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
         Tilbake til TrackMan-økter
@@ -182,7 +182,7 @@ export default async function TrackManSessionPage({
 
       {/* Environment-strip */}
       {(session.environment.temp != null || session.environment.wind != null) && (
-        <div className="flex flex-wrap gap-6 rounded-2xl border border-border bg-card px-6 py-4">
+        <div className="flex flex-wrap gap-4 rounded-2xl border border-border bg-card px-4 py-4 sm:gap-6 sm:px-6">
           {session.environment.temp != null && (
             <div className="flex items-center gap-2">
               <Thermometer
@@ -239,7 +239,7 @@ export default async function TrackManSessionPage({
       </section>
 
       {/* SG-beregning */}
-      <section className="rounded-2xl border border-primary/30 bg-primary/5 p-6">
+      <section className="rounded-2xl border border-primary/30 bg-primary/5 p-4 sm:p-6">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
           SG-estimat (proxy via smash-faktor)
         </span>
@@ -263,7 +263,7 @@ export default async function TrackManSessionPage({
         aria-labelledby="shots-heading"
         className="rounded-2xl border border-border bg-card"
       >
-        <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
+        <div className="flex flex-col items-start gap-2 border-b border-border px-4 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:px-6">
           <h2
             id="shots-heading"
             className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"

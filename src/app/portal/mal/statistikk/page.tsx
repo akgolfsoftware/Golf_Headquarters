@@ -50,7 +50,7 @@ export default async function StatistikkPage({
   const sgForrige = aggregateSg(forrige);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · Mål · Statistikk"
         titleLead="Slik utvikler"
@@ -59,7 +59,7 @@ export default async function StatistikkPage({
       />
 
       {/* Periode-velger */}
-      <div className="inline-flex rounded-md border border-border bg-card p-0.5">
+      <div className="inline-flex w-full flex-wrap rounded-md border border-border bg-card p-0.5 sm:w-auto">
         {PERIODER.map((p) => {
           const aktiv = p.key === periode;
           return (
@@ -105,7 +105,7 @@ export default async function StatistikkPage({
           </div>
 
           {/* Score-trend (linje av prikker) */}
-          <section className="rounded-lg border border-border bg-card p-6">
+          <section className="rounded-lg border border-border bg-card p-4 md:p-6">
             <h2 className="font-display text-base font-semibold tracking-tight">
               Runde-historikk
             </h2>

@@ -148,7 +148,7 @@ export default async function LeaderboardPage({
   const minRank = meg?.rank ?? null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-0">
       <Head fornavn={fornavn} minRank={minRank} total={total} tab={tab} />
       {meg && <YourRank meg={meg} fornavn={user.name} hcp={meg.hcp} total={total} />}
       <Filters tab={tab} sgTab={sgTab} />
@@ -189,7 +189,7 @@ function Head({
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Mål · Leaderboard · siste 30 dager
         </div>
-        <h1 className="mt-2 font-display text-4xl italic leading-[1.1] tracking-tight">
+        <h1 className="mt-2 font-display text-2xl italic leading-[1.1] tracking-tight sm:text-3xl md:text-4xl">
           <em className="font-medium italic">
             {minRank != null
               ? `#${minRank} av ${total} i klubben, ${fornavn}.`
@@ -203,7 +203,7 @@ function Head({
           <span>Neste oppdatering søndag 23:59</span>
         </div>
       </div>
-      <div className="flex gap-1 border-b border-border">
+      <div className="-mx-4 flex gap-1 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0">
         {(
           [
             { key: "venner", name: "Venner" },
@@ -245,7 +245,7 @@ function YourRank({
 }) {
   return (
     <div
-      className="relative grid grid-cols-[auto_auto_1fr_auto] items-center gap-6 overflow-hidden rounded-lg px-8 py-6 text-card"
+      className="relative grid grid-cols-[auto_auto_1fr_auto] items-center gap-4 overflow-hidden rounded-lg px-4 py-4 text-card sm:gap-6 sm:px-8 sm:py-6"
       style={{
         background:
           "linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--card)) 100%)",

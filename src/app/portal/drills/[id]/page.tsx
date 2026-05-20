@@ -185,10 +185,10 @@ export default async function DrillDetailPage({
     ];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 pb-20 md:space-y-10 md:pb-0">
       <Link
         href="/portal/tren"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex h-11 items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
         Tilbake til treningsplan
@@ -227,7 +227,7 @@ export default async function DrillDetailPage({
         </div>
 
         {/* Parametere */}
-        <div className="rounded-2xl border border-border bg-card p-6 lg:col-span-2">
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 lg:col-span-2">
           <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Parametere
           </h2>
@@ -253,7 +253,7 @@ export default async function DrillDetailPage({
       {/* Beskrivelse */}
       <section
         aria-labelledby="desc-heading"
-        className="rounded-2xl border border-border bg-card p-8"
+        className="rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8"
       >
         <h2
           id="desc-heading"
@@ -261,7 +261,7 @@ export default async function DrillDetailPage({
         >
           Hva skal jeg trene på?
         </h2>
-        <p className="mt-4 font-display text-2xl italic leading-relaxed text-foreground">
+        <p className="mt-4 font-display text-xl italic leading-relaxed text-foreground sm:text-2xl">
           {data.description}
         </p>
       </section>
@@ -269,7 +269,7 @@ export default async function DrillDetailPage({
       {/* Coach-tips */}
       <section
         aria-labelledby="tips-heading"
-        className="rounded-2xl border border-primary/30 bg-primary/5 p-8"
+        className="rounded-2xl border border-primary/30 bg-primary/5 p-4 sm:p-6 md:p-8"
       >
         <div className="flex items-center gap-2">
           <TargetIcon className="h-4 w-4 text-primary" strokeWidth={1.75} />
@@ -288,7 +288,7 @@ export default async function DrillDetailPage({
       {/* Min historikk */}
       <section
         aria-labelledby="history-heading"
-        className="rounded-2xl border border-border bg-card p-8"
+        className="rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8"
       >
         <div className="flex items-baseline justify-between">
           <h2
