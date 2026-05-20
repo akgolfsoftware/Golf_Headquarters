@@ -79,12 +79,12 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
 export default function FaqSide() {
   return (
     <div>
-      <section className="bg-gradient-to-b from-background to-secondary/40 px-6 py-20 sm:py-28">
+      <section className="bg-gradient-to-b from-background to-secondary/40 px-4 sm:px-6 py-12 sm:py-20 md:py-28">
         <div className="mx-auto max-w-4xl text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             FAQ
           </span>
-          <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             Ofte{" "}
             <em className="font-normal italic text-primary">stilte</em>{" "}
             spørsmål
@@ -95,7 +95,7 @@ export default function FaqSide() {
         </div>
       </section>
 
-      <section className="px-6 py-16">
+      <section className="px-4 sm:px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-3xl space-y-12">
           {FAQ.map((kat) => (
             <div key={kat.kategori}>

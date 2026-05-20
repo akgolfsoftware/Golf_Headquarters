@@ -50,13 +50,13 @@ const SG = [
 
 export default function Treningsfilosofi() {
   return (
-    <div className="px-6 py-16 sm:py-20">
+    <div className="px-4 sm:px-6 py-12 sm:py-20">
       <div className="mx-auto max-w-4xl">
         <header className="text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             Slik trener vi
           </span>
-          <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             <em className="font-normal italic text-primary">Trening</em> som er
             balansert, målbar og din egen.
           </h1>
@@ -181,7 +181,7 @@ export default function Treningsfilosofi() {
           </p>
         </section>
 
-        <section className="mt-20 rounded-2xl border border-primary/20 bg-primary/5 p-8 text-center sm:p-12">
+        <section className="mt-20 rounded-2xl border border-primary/20 bg-primary/5 p-5 text-center sm:p-8 md:p-12">
           <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
             Vil du trene slik?
           </h2>

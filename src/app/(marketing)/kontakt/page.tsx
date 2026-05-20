@@ -53,11 +53,11 @@ export default function KontaktSide() {
     <div className="bg-background text-foreground">
       {/* Hero */}
       <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-16 md:pt-28 md:pb-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-12 pb-12 sm:pt-20 sm:pb-16 md:pt-28 md:pb-20">
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Kontakt
           </span>
-          <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
+          <h1 className="mt-4 max-w-4xl font-display text-4xl sm:text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
             Vi vil gjerne{" "}
             <em className="font-display font-normal italic text-primary">
               høre fra deg.
@@ -71,9 +71,9 @@ export default function KontaktSide() {
       </section>
 
       {/* Skjema + sidebar */}
-      <section className="mx-auto max-w-7xl px-6 py-16 md:py-20">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[3fr_2fr] lg:gap-16">
-          <div className="rounded-2xl border border-border bg-card p-8 md:p-10">
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-8 md:p-10">
             <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
               Send oss en melding
             </h2>
@@ -87,7 +87,7 @@ export default function KontaktSide() {
           </div>
 
           <aside className="space-y-8">
-            <div className="rounded-2xl border border-border bg-card p-8">
+            <div className="rounded-2xl border border-border bg-card p-5 sm:p-8">
               <h3 className="font-display text-xl font-semibold tracking-tight">
                 Foretrekker du å ringe?
               </h3>
@@ -101,7 +101,7 @@ export default function KontaktSide() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-primary p-8 text-primary-foreground">
+            <div className="rounded-2xl bg-primary p-5 sm:p-8 text-primary-foreground">
               <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] opacity-80">
                 Tips
               </span>
@@ -122,12 +122,12 @@ export default function KontaktSide() {
       </section>
 
       {/* 3 kontakt-kort */}
-      <section className="mx-auto max-w-7xl px-6 py-16 md:py-20">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
         <div className="max-w-3xl">
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Kontaktinfo
           </span>
-          <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
             Tre måter å nå oss på
           </h2>
         </div>
@@ -157,12 +157,12 @@ export default function KontaktSide() {
 
       {/* Åpningstider */}
       <section className="border-y border-border bg-card">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-24 md:grid-cols-2">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 sm:px-6 py-12 sm:py-16 md:py-24 md:grid-cols-2">
           <div>
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Åpningstider
             </span>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
               Når kan du{" "}
               <em className="font-display font-normal italic text-primary">
                 komme?
@@ -178,8 +178,8 @@ export default function KontaktSide() {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-border bg-background">
-            <table className="w-full border-collapse text-left text-[14px]">
+          <div className="overflow-x-auto rounded-2xl border border-border bg-background">
+            <table className="w-full min-w-[480px] border-collapse text-left text-[14px]">
               <thead>
                 <tr className="border-b border-border bg-secondary/50">
                   <th className="px-6 py-4 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -221,12 +221,12 @@ export default function KontaktSide() {
       </section>
 
       {/* Kart-stub */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="max-w-3xl">
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Anlegg
           </span>
-          <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
             Finn frem til oss
           </h2>
           <p className="mt-4 max-w-2xl text-[15px] leading-[1.6] text-muted-foreground">
@@ -257,12 +257,12 @@ export default function KontaktSide() {
 
       {/* FAQ */}
       <section className="border-t border-border bg-card">
-        <div className="mx-auto max-w-7xl px-6 py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
           <div className="max-w-3xl">
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               FAQ
             </span>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
               Korte svar på{" "}
               <em className="font-display font-normal italic text-primary">
                 vanlige spørsmål
@@ -332,7 +332,7 @@ function InfoCard({
     return (
       <a
         href={href}
-        className="flex flex-col rounded-2xl border border-border bg-card p-8 transition-colors hover:border-foreground/30"
+        className="flex flex-col rounded-2xl border border-border bg-card p-5 sm:p-8 transition-colors hover:border-foreground/30"
       >
         {Body}
       </a>

@@ -40,12 +40,12 @@ export default async function AnleggListe() {
 
   return (
     <div>
-      <section className="border-b border-border bg-secondary/40 px-6 py-16 sm:py-20">
+      <section className="border-b border-border bg-secondary/40 px-4 sm:px-6 py-12 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
             Anlegg · AK Golf Group
           </div>
-          <h1 className="mt-4 max-w-3xl font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             Hjemmebaner —{" "}
             <em className="font-normal italic text-primary">Bossum og Kløfta</em>
           </h1>
@@ -57,7 +57,7 @@ export default async function AnleggListe() {
         </div>
       </section>
 
-      <section className="px-6 py-16">
+      <section className="px-4 sm:px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-5xl">
           {locations.length === 0 ? (
             <div className="rounded-2xl border border-border bg-card p-12 text-center text-muted-foreground">

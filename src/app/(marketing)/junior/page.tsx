@@ -64,11 +64,11 @@ export default function JuniorSide() {
     <div className="bg-background text-foreground">
       {/* Hero */}
       <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-16 md:pt-28 md:pb-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-12 pb-12 sm:pt-20 sm:pb-16 md:pt-28 md:pb-20">
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Junior
           </span>
-          <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
+          <h1 className="mt-4 max-w-4xl font-display text-4xl sm:text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
             Golf for{" "}
             <em className="font-display font-normal italic text-primary">
               unge talenter
@@ -79,17 +79,17 @@ export default function JuniorSide() {
             tilbyr strukturert juniortrening tilpasset hvert utviklingstrinn —
             fra de aller yngste til elitesatsing med WANG Toppidrett Fredrikstad.
           </p>
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
             <a
               href="#pamelding"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-4 text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               Meld på junior
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </a>
             <Link
               href="/kontakt"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-4 text-[15px] font-semibold text-foreground transition-colors hover:bg-secondary"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border bg-card px-6 text-[15px] font-semibold text-foreground transition-colors hover:bg-secondary"
             >
               Spør oss
             </Link>
@@ -98,12 +98,12 @@ export default function JuniorSide() {
       </section>
 
       {/* Aldersgrupper */}
-      <section className="mx-auto max-w-7xl px-6 py-16 md:py-24">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           <CircleDot className="h-3 w-3 text-primary" strokeWidth={2} />
           Aldersgrupper
         </div>
-        <h2 className="mt-6 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+        <h2 className="mt-6 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
           Fire veier inn i{" "}
           <em className="font-display font-normal italic text-primary">
             programmet
@@ -128,7 +128,7 @@ export default function JuniorSide() {
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Sesongplan
             </span>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
               Hele{" "}
               <em className="font-display font-normal italic text-primary">
                 året
@@ -137,8 +137,8 @@ export default function JuniorSide() {
             </h2>
           </div>
 
-          <div className="mt-10 overflow-hidden rounded-2xl border border-border bg-background">
-            <table className="w-full border-collapse text-left text-[14px]">
+          <div className="mt-10 overflow-x-auto rounded-2xl border border-border bg-background">
+            <table className="w-full min-w-[560px] border-collapse text-left text-[14px]">
               <thead>
                 <tr className="border-b border-border bg-secondary/50">
                   <th className="px-6 py-4 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -165,13 +165,13 @@ export default function JuniorSide() {
       </section>
 
       {/* Påmelding */}
-      <section id="pamelding" className="mx-auto max-w-7xl px-6 py-16 md:py-24">
+      <section id="pamelding" className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div>
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Påmelding
             </span>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
               Klar for å{" "}
               <em className="font-display font-normal italic text-primary">
                 starte?
@@ -189,7 +189,7 @@ export default function JuniorSide() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-8 md:p-10">
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-8 md:p-10">
             <h3 className="font-display text-2xl font-semibold tracking-tight">
               Interessen-skjema
             </h3>

@@ -66,13 +66,13 @@ const PAKKER: Array<{
 
 export default function Coaching() {
   return (
-    <div className="px-6 py-16 sm:py-20">
+    <div className="px-4 sm:px-6 py-12 sm:py-20">
       <div className="mx-auto max-w-5xl">
         <header className="text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             Coaching
           </span>
-          <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             <em className="font-normal italic text-primary">Coaching</em> som
             gir fremgang
           </h1>
@@ -99,7 +99,7 @@ export default function Coaching() {
           {PAKKER.map((p) => (
             <article
               key={p.navn}
-              className={`relative flex flex-col rounded-2xl border p-8 ${
+              className={`relative flex flex-col rounded-2xl border p-5 sm:p-8 ${
                 p.fremhevet
                   ? "border-primary/40 bg-primary/5"
                   : "border-border bg-card"

@@ -73,12 +73,12 @@ export default async function CoacherSide() {
 
   return (
     <div>
-      <section className="bg-gradient-to-b from-background to-secondary/40 px-6 py-20 sm:py-28">
+      <section className="bg-gradient-to-b from-background to-secondary/40 px-4 sm:px-6 py-12 sm:py-20 md:py-28">
         <div className="mx-auto max-w-4xl text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             Coacher
           </span>
-          <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             Møt{" "}
             <em className="font-normal italic text-primary">coachene</em>
           </h1>
@@ -89,13 +89,13 @@ export default async function CoacherSide() {
         </div>
       </section>
 
-      <section className="px-6 py-16">
-        <div className="mx-auto grid max-w-5xl gap-8 sm:grid-cols-2">
+      <section className="px-4 sm:px-6 py-12 sm:py-16">
+        <div className="mx-auto grid max-w-5xl gap-6 sm:gap-8 sm:grid-cols-2">
           {coacher.map((c) => (
             <Link
               key={c.slug}
               href={`/coacher/${c.slug}`}
-              className="group rounded-2xl border border-border bg-card p-8 transition-colors hover:border-primary"
+              className="group rounded-2xl border border-border bg-card p-5 sm:p-8 transition-colors hover:border-primary"
             >
               <div className="flex h-24 w-24 items-center justify-center rounded-full bg-secondary text-2xl font-semibold text-primary">
                 {c.initialer}

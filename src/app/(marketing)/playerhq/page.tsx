@@ -50,7 +50,7 @@ const FUNKSJONER = [
 export default function PlayerHQ() {
   return (
     <div>
-      <section className="bg-gradient-to-b from-background to-secondary/40 px-6 py-16 sm:py-20">
+      <section className="bg-gradient-to-b from-background to-secondary/40 px-4 sm:px-6 py-12 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4 text-center">
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
@@ -66,7 +66,7 @@ export default function PlayerHQ() {
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
               PlayerHQ
             </span>
-            <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+            <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
               <em className="font-normal italic text-primary">Din</em>{" "}
               spillerportal
             </h1>
@@ -79,7 +79,7 @@ export default function PlayerHQ() {
         </div>
       </section>
 
-      <section className="border-y border-border bg-card px-6 py-16">
+      <section className="border-y border-border bg-card px-4 sm:px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
