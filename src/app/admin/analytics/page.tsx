@@ -15,6 +15,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { EmptyState } from "@/components/shared/empty-state";
+import { EksportTrigger } from "@/components/shared/eksport-trigger";
 import { AgentStrip } from "@/components/coachhq/agent-strip";
 import {
   AnalyticsViewToggle,
@@ -355,6 +356,18 @@ export default async function Analytics({
   // Antall aktive spillere for agent-strip (har minst én økt siste 30d)
   const aktiveTrenende = heatmapPlayers.length;
 
+  // Spiller-liste for eksport-modalens multi-select (lett shape, navn + hcp)
+  const spillereForEksportRaw = await prisma.user.findMany({
+    where: { role: "PLAYER" },
+    select: { id: true, name: true, hcp: true },
+    orderBy: { name: "asc" },
+  });
+  const spillereForEksport = spillereForEksportRaw.map((p) => ({
+    id: p.id,
+    name: p.name ?? "(uten navn)",
+    hcp: p.hcp,
+  }));
+
   return (
     <div className="space-y-8">
       {/* HERO */}
@@ -379,13 +392,19 @@ export default async function Analytics({
         </div>
         <div className="flex flex-col items-start gap-2 sm:items-end">
           <AnalyticsViewToggle active={view} />
-          <div className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm">
-            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Periode
-            </span>
-            <span className="font-medium">
-              {view === "trend" ? "Siste 12 uker" : "Siste 30 dager"}
-            </span>
+          <div className="flex items-center gap-2">
+            <div className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm">
+              <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Periode
+              </span>
+              <span className="font-medium">
+                {view === "trend" ? "Siste 12 uker" : "Siste 30 dager"}
+              </span>
+            </div>
+            <EksportTrigger
+              kind="analytics"
+              spillere={spillereForEksport}
+            />
           </div>
         </div>
       </header>

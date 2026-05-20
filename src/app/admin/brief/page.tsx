@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PrintButton } from "@/components/shared/print-button";
+import { EksportTrigger } from "@/components/shared/eksport-trigger";
 import { AgentStrip } from "@/components/coachhq/agent-strip";
 import {
   getBriefData,
@@ -103,6 +104,7 @@ export default async function DagligBrief() {
           </div>
           <div className="flex shrink-0 gap-2">
             <PrintButton />
+            <EksportTrigger kind="brief" />
             <Link
               href="/admin/settings"
               className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground hover:bg-secondary"
@@ -280,12 +282,12 @@ export default async function DagligBrief() {
                   <span className="text-[13px] text-muted-foreground">
                     {data.ventendeGodkjenninger} forslag venter på godkjenning
                   </span>
-                  <a
+                  <Link
                     href="/admin/approvals"
                     className="text-[13px] font-medium text-primary hover:underline"
                   >
                     Åpne approvals-kø →
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
@@ -376,12 +378,12 @@ function Kpi({
       <div className="mt-4 flex items-center gap-2 text-[12px]">
         {foot && <span className="text-muted-foreground">{foot}</span>}
         {footLink && (
-          <a
+          <Link
             href="/admin/approvals"
             className="text-[12px] text-primary hover:underline"
           >
             {footLink}
-          </a>
+          </Link>
         )}
       </div>
     </div>
@@ -447,12 +449,12 @@ function AttnRow({
         <div className="text-[12px] text-muted-foreground">{meta}</div>
       </div>
       {linkText && linkHref && (
-        <a
+        <Link
           href={linkHref}
           className="text-[13px] font-medium text-primary hover:underline"
         >
           {linkText}
-        </a>
+        </Link>
       )}
     </div>
   );

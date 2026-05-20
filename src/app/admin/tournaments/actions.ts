@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
@@ -242,4 +243,80 @@ export async function oppdaterPrioritet(entryId: string, priority: string) {
     revalidatePath(`/admin/tournaments/${entry.tournamentId}`);
   }
   revalidatePath("/admin/tournaments");
+}
+
+// ------------------------------------------------------------------
+// Eksport-action for CoachHQ turneringer
+// ------------------------------------------------------------------
+
+const tExportFormatSchema = z.enum(["pdf", "csv"]);
+const tExportTypeSchema = z.enum([
+  "startliste",
+  "resultater",
+  "pamelding",
+  "historikk",
+]);
+const tExportPeriodSchema = z.enum([
+  "kommende",
+  "pagaende",
+  "avsluttet",
+  "custom",
+]);
+const tExportSortSchema = z.enum(["dato", "type", "resultat"]);
+
+export const exportTournamentsInputSchema = z.object({
+  format: tExportFormatSchema,
+  type: tExportTypeSchema,
+  period: tExportPeriodSchema,
+  from: z.string().optional(),
+  to: z.string().optional(),
+  sortBy: tExportSortSchema,
+  tournamentIds: z.array(z.string()).default([]),
+});
+
+export type ExportTournamentsInput = z.infer<
+  typeof exportTournamentsInputSchema
+>;
+
+export type ExportTournamentsResult =
+  | { success: true; downloadUrl: string; filename: string }
+  | { success: false; error: string };
+
+function slugifyDateTs(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+export async function exportTournamentsReport(
+  raw: ExportTournamentsInput,
+): Promise<ExportTournamentsResult> {
+  const parsed = exportTournamentsInputSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { success: false, error: "Ugyldig input til eksport" };
+  }
+  const input = parsed.data;
+
+  const user = await getCurrentUser();
+  if (!user) return { success: false, error: "Ikke innlogget" };
+  if (user.role !== "COACH" && user.role !== "ADMIN") {
+    return { success: false, error: "Krever coach- eller admin-tilgang" };
+  }
+
+  const filename = `turneringer-${input.type}-${slugifyDateTs(new Date())}.${input.format}`;
+  // Placeholder URL; faktisk PDF/CSV-generering kobles til lib/pdf/* senere.
+  const downloadUrl = `/api/exports/tournaments/${encodeURIComponent(filename)}`;
+
+  await audit({
+    actorId: user.id,
+    action: "tournaments.export",
+    target: `User:${user.id}`,
+    metadata: {
+      format: input.format,
+      type: input.type,
+      period: input.period,
+      sortBy: input.sortBy,
+      tournamentIds: input.tournamentIds,
+    },
+  });
+
+  return { success: true, downloadUrl, filename };
 }

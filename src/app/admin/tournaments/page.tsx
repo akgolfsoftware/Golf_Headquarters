@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { EksportTrigger } from "@/components/shared/eksport-trigger";
 import { TournamentForm } from "./tournament-form";
 import { TournamentEnrollModal } from "@/components/coachhq/tournament-enroll-modal";
 
@@ -230,6 +231,13 @@ export default async function Turneringer({
               + Ny turnering
             </Link>
             <TournamentForm courses={courses} triggerLabel="Hurtigopprett" />
+            <EksportTrigger
+              kind="tournaments"
+              turneringer={allTournaments.map((t) => ({
+                id: t.id,
+                name: t.name,
+              }))}
+            />
           </div>
         }
       />
