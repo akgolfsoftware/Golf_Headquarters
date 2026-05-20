@@ -117,7 +117,7 @@ export default async function SammenligningPage({
   periodeStart.setDate(periodeStart.getDate() - dager);
 
   // HCP og SG siste runde i perioden vs første runde i perioden
-  const [nyeRunder, gamleRunder, brukerHcp] = await Promise.all([
+  const [nyeRunder, gamleRunder] = await Promise.all([
     prisma.round.findMany({
       where: { userId: user.id, playedAt: { gte: periodeStart } },
       orderBy: { playedAt: "desc" },
@@ -129,10 +129,6 @@ export default async function SammenligningPage({
       orderBy: { playedAt: "desc" },
       take: 5,
       select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },
-    }),
-    prisma.user.findUnique({
-      where: { id: user.id },
-      select: { hcp: true },
     }),
   ]);
 
@@ -149,7 +145,7 @@ export default async function SammenligningPage({
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8 md:px-8 md:py-12">
+    <div className="mx-auto max-w-6xl px-4 py-6 pb-20 sm:px-6 sm:py-8 md:px-8 md:py-12 md:pb-12">
       <TalentHero
         eyebrow="PlayerHQ · Talent · Sammenligning"
         italic="Sammenlign"

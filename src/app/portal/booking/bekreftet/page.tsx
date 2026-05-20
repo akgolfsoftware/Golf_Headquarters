@@ -71,18 +71,18 @@ export default async function BekreftetPage({ searchParams }: Props) {
   const kalenderUrl = googleKalenderUrl(booking);
 
   return (
-    <div className="mx-auto max-w-xl space-y-8 py-8">
+    <div className="mx-auto max-w-xl space-y-6 px-4 pb-20 py-6 md:space-y-8 md:px-0 md:pb-0 md:py-8">
       {/* Tilbake-lenke */}
       <Link
         href="/portal/meg/bookinger"
-        className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
+        className="inline-flex h-11 items-center gap-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
       >
         <ChevronLeft className="h-3 w-3" strokeWidth={1.75} />
         Mine bookinger
       </Link>
 
       {/* Hero-seksjon */}
-      <div className="flex flex-col items-center gap-4 rounded-2xl border border-primary/20 bg-primary/5 px-8 py-12 text-center">
+      <div className="flex flex-col items-center gap-4 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-8 text-center sm:px-8 sm:py-12">
         <CheckCircle
           className="h-12 w-12 text-primary"
           strokeWidth={1.5}

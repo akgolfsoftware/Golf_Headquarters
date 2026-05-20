@@ -33,12 +33,12 @@ export default async function TalentLayout({
 
   if (!tracking) {
     return (
-      <div className="mx-auto flex max-w-2xl flex-col items-start gap-6 px-6 py-16 md:px-8 md:py-24">
+      <div className="mx-auto flex max-w-2xl flex-col items-start gap-6 px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-24">
         <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           <Target size={14} strokeWidth={1.5} aria-hidden />
           PlayerHQ · Talent
         </span>
-        <h1 className="font-display text-4xl font-medium leading-tight tracking-tight md:text-5xl">
+        <h1 className="font-display text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl">
           Du er <em className="italic text-primary">ikke i talent-programmet</em>{" "}
           ennå
         </h1>

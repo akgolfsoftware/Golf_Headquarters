@@ -29,7 +29,7 @@ export default async function UtfordringerListe() {
   const tidligere = utfordringer.filter((u) => u.status === "ENDED");
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · Utfordringer"
         titleLead="Mine"

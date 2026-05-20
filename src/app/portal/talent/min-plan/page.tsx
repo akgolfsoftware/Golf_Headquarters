@@ -77,7 +77,7 @@ export default async function MinPlanPage() {
   });
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8 md:px-8 md:py-12">
+    <div className="mx-auto max-w-6xl px-4 py-6 pb-20 sm:px-6 sm:py-8 md:px-8 md:py-12 md:pb-12">
       <TalentHero
         eyebrow="PlayerHQ · Talent · Min plan"
         italic="Min"

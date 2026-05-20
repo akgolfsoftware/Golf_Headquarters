@@ -481,7 +481,7 @@ export function NyTestWizard({ tests, sistePerTest, spillerNavn }: Props) {
           type="button"
           onClick={tilbake}
           disabled={state.steg === 1 || pending}
-          className="inline-flex items-center gap-1.5 rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-40"
+          className="inline-flex h-11 items-center gap-1.5 rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-40"
         >
           <ChevronLeft size={14} strokeWidth={1.75} /> Tilbake
         </button>
@@ -495,7 +495,7 @@ export function NyTestWizard({ tests, sistePerTest, spillerNavn }: Props) {
             type="button"
             onClick={neste}
             disabled={!kanGaTilNeste || pending}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="inline-flex h-11 items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             Neste <ChevronRight size={14} strokeWidth={1.75} />
           </button>
@@ -504,7 +504,7 @@ export function NyTestWizard({ tests, sistePerTest, spillerNavn }: Props) {
             type="button"
             onClick={lagre}
             disabled={pending}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+            className="inline-flex h-11 items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
           >
             <Check size={14} strokeWidth={1.75} />
             {pending ? "Lagrer…" : "Lagre test"}

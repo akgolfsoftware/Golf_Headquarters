@@ -42,11 +42,11 @@ export default async function NyTestPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       <div>
         <Link
           href="/portal/tren/tester"
-          className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground"
+          className="inline-flex h-11 items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft size={12} strokeWidth={1.75} /> Tilbake til tester
         </Link>

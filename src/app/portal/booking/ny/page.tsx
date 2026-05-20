@@ -63,7 +63,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
   const isFree = user.tier === "GRATIS";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · Book ny time"
         titleLead="Bruk"
@@ -255,7 +255,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
 
 function BruktOppView({ resetAt }: { resetAt: Date | null }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · Book ny time"
         titleLead="Du har brukt"
@@ -264,7 +264,7 @@ function BruktOppView({ resetAt }: { resetAt: Date | null }) {
         sub="Saldoen resettes ved neste fakturering. Du kan også booke en drop-in time mot betaling."
       />
 
-      <div className="rounded-2xl border border-border bg-card p-8 text-center">
+      <div className="rounded-2xl border border-border bg-card p-4 text-center sm:p-6 md:p-8">
         <p className="text-sm text-muted-foreground">
           {resetAt
             ? `Neste reset: ${resetAt.toLocaleDateString("nb-NO", {
