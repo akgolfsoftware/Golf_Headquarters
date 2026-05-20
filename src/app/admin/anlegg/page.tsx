@@ -171,7 +171,7 @@ async function Oversikt() {
 
       {/* Filter-chips */}
       <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-4">
-        <label className="flex h-10 min-w-[260px] flex-1 items-center gap-2 rounded-md border border-border bg-background px-4 text-sm text-muted-foreground">
+        <label className="flex h-11 w-full min-w-0 items-center gap-2 rounded-md border border-border bg-background px-4 text-base text-muted-foreground sm:h-10 sm:w-auto sm:min-w-[260px] sm:flex-1 sm:text-sm">
           <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
@@ -191,7 +191,7 @@ async function Oversikt() {
       {/* Kart + kort */}
       <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
         <AnleggMapbox locations={mapLocations} />
-        <div className="flex max-h-[640px] flex-col gap-4 overflow-y-auto pr-1">
+        <div className="flex flex-col gap-4 overflow-visible pr-0 sm:grid sm:grid-cols-2 lg:grid-cols-1 lg:flex lg:max-h-[640px] lg:overflow-y-auto lg:pr-1">
           {locations.length === 0 && (
             <div className="rounded-lg border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
               Ingen lokasjoner registrert ennå.

@@ -51,7 +51,7 @@ export default async function EmailTemplatesAdmin() {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-[260px_1fr] items-start gap-6">
+        <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[260px_1fr]">
           <aside className="overflow-hidden rounded-lg border border-border bg-card">
             <div className="flex items-center justify-between border-b border-border px-4 py-4">
               <h3 className="font-display text-sm font-semibold tracking-tight">

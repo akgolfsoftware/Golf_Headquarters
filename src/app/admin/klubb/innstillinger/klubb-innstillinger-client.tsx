@@ -351,9 +351,9 @@ function KlubbDialog({ mode, klubb, onClose }: DialogProps) {
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="w-full max-w-2xl rounded-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40"
+      className="m-0 h-full max-h-full w-full max-w-full rounded-none border-0 bg-card p-0 shadow-xl backdrop:bg-foreground/40 sm:m-auto sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-2xl sm:border sm:border-border"
     >
-      <form onSubmit={lagre} className="p-6">
+      <form onSubmit={lagre} className="p-4 sm:p-6">
         <header>
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Klubb-innstillinger

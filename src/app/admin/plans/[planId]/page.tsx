@@ -237,21 +237,21 @@ export default async function AdminPlanDetalj({
       <FaseTimeline faser={faser} />
 
       {/* Tab-navigasjon */}
-      <nav className="flex gap-0.5 rounded-lg border border-border bg-secondary p-1">
+      <nav className="flex gap-0.5 overflow-x-auto rounded-lg border border-border bg-secondary p-1">
         {TABS.map(({ key, label, icon: Icon }) => {
           const active = tab === key;
           return (
             <Link
               key={key}
               href={`/admin/plans/${planId}?tab=${key}`}
-              className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-[12px] font-medium transition-colors ${
+              className={`inline-flex min-h-[44px] flex-1 min-w-[80px] items-center justify-center gap-1.5 rounded-md px-3 py-2 text-[13px] sm:text-[12px] font-medium transition-colors ${
                 active
                   ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon size={13} strokeWidth={1.5} />
-              <span className="hidden sm:inline">{label}</span>
+              <Icon size={14} strokeWidth={1.5} />
+              <span>{label}</span>
             </Link>
           );
         })}

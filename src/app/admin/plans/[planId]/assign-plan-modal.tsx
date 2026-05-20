@@ -235,9 +235,9 @@ export function AssignPlanToPlayerModal({
       onClose={onClose}
       aria-modal="true"
       aria-labelledby="assign-plan-title"
-      className="w-full max-w-[720px] rounded-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40 backdrop:backdrop-blur-sm"
+      className="m-0 h-full max-h-full w-full max-w-full rounded-none border-0 bg-card p-0 shadow-xl backdrop:bg-foreground/40 backdrop:backdrop-blur-sm sm:m-auto sm:h-auto sm:max-h-[90vh] sm:max-w-[720px] sm:rounded-2xl sm:border sm:border-border"
     >
-      <form onSubmit={bekreft} className="p-7">
+      <form onSubmit={bekreft} className="p-4 sm:p-7">
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div className="min-w-0">
@@ -325,7 +325,7 @@ export function AssignPlanToPlayerModal({
             </div>
 
             {/* Spiller-liste */}
-            <div className="max-h-[360px] overflow-y-auto rounded-md border border-border bg-background">
+            <div className="max-h-[50vh] sm:max-h-[360px] overflow-y-auto rounded-md border border-border bg-background">
               {filtrerteSpillere.length === 0 ? (
                 <div className="px-4 py-8 text-center text-sm text-muted-foreground">
                   Ingen spillere matcher.

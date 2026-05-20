@@ -611,7 +611,7 @@ function LineChart({
     <div className="w-full overflow-x-auto">
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="h-[200px] w-full min-w-[600px]"
+        className="h-[160px] w-full min-w-[480px] sm:h-[200px] sm:min-w-[600px]"
         role="img"
         aria-label="Daglig aktive spillere siste 30 dager"
       >
@@ -717,7 +717,7 @@ function FeatureBarChart({
           ? Math.round((feat.count / totalPlayers) * 100)
           : 0;
         return (
-          <li key={feat.label} className="grid grid-cols-[160px_1fr_80px] items-center gap-4">
+          <li key={feat.label} className="grid grid-cols-[100px_1fr_60px] items-center gap-3 sm:grid-cols-[160px_1fr_80px] sm:gap-4">
             <span className="font-mono text-xs text-foreground">
               {feat.label}
             </span>

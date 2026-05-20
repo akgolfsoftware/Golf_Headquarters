@@ -164,7 +164,7 @@ export default async function AdminPlansList({
       />
 
       {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
         <KpiAccent
           label="Aktive planer"
           value={String(aktivCount)}
@@ -199,7 +199,7 @@ export default async function AdminPlansList({
 
       {/* Filter */}
       <form className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 min-w-[280px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
+        <label className="flex w-full min-w-0 items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-base text-muted-foreground sm:w-auto sm:flex-1 sm:min-w-[280px] sm:text-[13px]">
           <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
@@ -242,7 +242,7 @@ export default async function AdminPlansList({
           }
         />
       ) : activeView === "kanban" ? (
-        <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-[1.4fr_1fr_0.5fr]">
+        <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_0.5fr]">
           <Column status="aktiv" count={aktivPlans.length} plans={aktivPlans} />
           <Column
             status="pause"

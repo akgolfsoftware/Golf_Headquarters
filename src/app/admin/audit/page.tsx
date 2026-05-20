@@ -251,7 +251,7 @@ export default async function AuditLogPage({
         </form>
 
         {/* Layout */}
-        <div className="grid grid-cols-[1fr_320px] items-start gap-8">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_320px] lg:gap-8">
           {/* Timeline */}
           <div>
             {logs.length === 0 ? (
@@ -271,7 +271,7 @@ export default async function AuditLogPage({
           </div>
 
           {/* Rail */}
-          <aside className="sticky top-6">
+          <aside className="lg:sticky lg:top-6">
             <div className="rounded-lg border border-border bg-card p-6">
               <h3 className="mb-3.5 font-display text-[14px] font-semibold tracking-tight">
                 Filter-oppsummering

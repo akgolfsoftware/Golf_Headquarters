@@ -352,7 +352,7 @@ export default async function Turneringer({
               return (
                 <li key={t.id} className="border-b border-border/60 last:border-0">
                   <div
-                    className="grid grid-cols-1 items-center gap-4 px-6 py-4 text-sm transition-colors hover:bg-muted/30 sm:grid-cols-[44px_110px_1fr_180px_110px_110px_140px]"
+                    className="grid grid-cols-[44px_1fr] items-center gap-3 px-4 py-4 text-sm transition-colors hover:bg-muted/30 sm:grid-cols-[44px_110px_1fr_180px_110px_110px_140px] sm:gap-4 sm:px-6"
                   >
                     <TourBadge tour={tour} />
                     <span className="font-mono text-xs font-medium tabular-nums text-foreground">

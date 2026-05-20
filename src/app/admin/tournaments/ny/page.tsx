@@ -21,7 +21,7 @@ export default async function NyTurneringPage() {
   });
 
   return (
-    <div className="mx-auto flex w-full max-w-[880px] flex-col gap-8 px-6 py-12 md:py-16">
+    <div className="mx-auto flex w-full max-w-[880px] flex-col gap-6 px-4 py-6 sm:gap-8 sm:px-6 sm:py-12 md:py-16">
       <PageHeader
         eyebrow="CoachHQ · /admin/tournaments/ny"
         titleLead="Opprett en"
