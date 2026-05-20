@@ -68,29 +68,29 @@
 
 | Term | Bokmål | Notater |
 |---|---|---|
-| Swing-mekanikk | swing-mekanikk | bindestrek |
-| Swing-sekvens | swing-sekvens | bindestrek |
+| Teknikk | Teknikk | bindestrek |
+| Sekvensk | Sekvens | bindestrek |
 | Kinematisk kjede | kinematisk kjede | "kinetic chain" |
-| Plane | plane | engelsk fagterm |
-| Swing-plane | swing-plane | bindestrek |
-| On-plane | on-plane | |
+| Plan | plan | engelsk fagterm |
+| Swing-direction | Swing-direction | bindestrek |
+| On plane | På plan | |
 | Steep / Shallow | brattere / flatere | |
-| Kontakt | kontakt | "Konsistent kontakt" |
-| Lavpunkt | lavpunkt | "bottom of arc" |
-| Treff-punkt | treff-punkt | bindestrek |
-| Strike location | strike location | engelsk-norsk |
+| Kontakt | Balltreff | "Konsistent kontakt" |
+| Lavpunkt | lowpoint | "bottom of arc" |
+| Treff-punkt | balltreff | bindestrek |
+| Strike location | Impact location | engelsk-norsk |
 | Sekvens | sekvens | hvordan kroppen jobber |
 | Tempo | tempo | |
 | Rytme | rytme | |
 | Balanse | balanse | i swingen |
 | Posisjon | posisjon | "Topp-posisjon" |
-| Topp-posisjon | topp-posisjon | bindestrek |
-| Slutt-posisjon | slutt-posisjon | bindestrek |
-| Setup | setup | engelsk fagterm |
+| Topp-posisjon | P4.0 | bindestrek |
+| Slutt-posisjon | P10.0 | bindestrek |
+| Setup | P1.0 | engelsk fagterm |
 | Grep | grep | hånd på køllen |
-| Stance | stance | engelsk-norsk |
-| Posture | posture | engelsk-norsk |
-| Alignment | alignment | sikt + føtter |
+| Stance | Oppstilling | engelsk-norsk |
+| Posture | positur | engelsk-norsk |
+| Alignment | Sikte | sikt + føtter |
 | Sikt | sikt | "Sikt mot flagg" |
 | Sikting | sikting | |
 | Rotasjon | rotasjon | |
@@ -98,12 +98,12 @@
 | Shoulder rotation | skulderrotasjon | norsk form |
 | Hip-shoulder separation | hofte-skulder-separasjon | bindestreker |
 | X-factor | X-factor | engelsk fagterm |
-| Hånd-banen | hånd-banen | bindestrek |
-| Klubbhastighet | klubbhastighet | ett ord, mph eller m/s |
-| Klubbflate | klubbflate | "face angle" |
+| Hånd-banen | hand path | bindestrek |
+| Klubbhastighet | køllehastighet | ett ord, mph eller m/s |
+| Klubbflate | Klubbbladet | "face angle" |
 | Face angle | face angle | engelsk |
-| Klubbveis | klubbveis | "club path" |
-| Klubb-bane | klubb-bane | "club path" alternativ |
+| Club path | club path | "club path" |
+| Club path | CLub path | "club path" alternativ |
 | Angle of attack | angle of attack | engelsk fagterm |
 | Attack angle | attack angle | kort form |
 | Loft | loft | klubbloft |
@@ -114,8 +114,8 @@
 | Lead arm | lead arm | engelsk |
 | Lag | lag | "Bevare lag" |
 | Release | release | engelsk |
-| Hands ahead | hands ahead | engelsk-norsk |
-| Følge gjennom | følge gjennom | "Follow-through" |
+| Hands ahead | shaft lean | engelsk-norsk |
+|                         |                          | "Follow-through" |
 | Follow-through | follow-through | bindestrek |
 | Impact | impact | engelsk |
 | Takeaway | takeaway | engelsk |
@@ -124,40 +124,40 @@
 
 | Term | Bokmål | Notater |
 |---|---|---|
-| Full swing | full swing | mellomrom |
+| Full swing | Fulle slag | mellomrom |
 | Drive | drive | "tee-shot" |
-| Iron-spill | iron-spill | bindestrek |
-| Jern-spill | jern-spill | norsk form |
-| Approach-spill | approach-spill | bindestrek |
+| Iron-spill | jern slag | bindestrek |
+| Jern-spill | jern slag | norsk form |
+| Approach-spill | innspill | bindestrek |
 | Innspill | innspill | "approach" norsk |
-| Wedge-spill | wedge-spill | bindestrek |
-| Kile-spill | kile-spill | norsk form |
+| Wedge-spill | wedger | bindestrek |
+|  |  | norsk form |
 | Pitch | pitch | engelsk |
-| Pitch-skudd | pitch-skudd | bindestrek |
+|                   |                 |                           |
 | Chip | chip | engelsk |
-| Chip-skudd | chip-skudd | bindestrek |
-| Bump and run | bump and run | engelsk fagterm |
-| Flop shot | flop shot | engelsk |
-| Lob shot | lob shot | engelsk |
-| Punch shot | punch shot | engelsk |
-| Knockdown | knockdown | engelsk |
-| Stinger | stinger | engelsk fagterm |
-| Bunker-spill | bunker-spill | bindestrek |
-| Greenside bunker | greenside bunker | engelsk-norsk |
+|                   |                 |                           |
+|                   |                 |                           |
+| Flop shot | lob | engelsk |
+| Lob shot | lob | engelsk |
+| Punch shot | lavt slag | engelsk |
+| Knockdown | lavt slag | engelsk |
+| Stinger | lavt slag | engelsk fagterm |
+| Bunker-spill | bunker | bindestrek |
+| Greenside bunker | bunker | engelsk-norsk |
 | Fairway-bunker | fairway-bunker | bindestrek |
-| Plugged lie | plugged lie | engelsk |
-| Buried lie | buried lie | engelsk |
+| Plugged lie | plugget lie | engelsk |
+| Buried lie | plugget lie | engelsk |
 | Putting | putting | engelsk |
 | Putt | putt | enkelt slag |
 | Kort-putt | kort-putt | bindestrek, 0–3m |
 | Mid-putt | mid-putt | 3–6m |
 | Lang-putt | lang-putt | 6m+ |
 | Lag-putt | lag-putt | "speed putting" |
-| Distance-kontroll | distance-kontroll | bindestrek |
-| Avstandskontroll | avstandskontroll | ett ord, norsk form |
-| Linje-kontroll | linje-kontroll | bindestrek |
-| Lese green | lese green | "green reading" |
-| Green-lesing | green-lesing | bindestrek |
+| Distance-kontroll | lengde-kontroll | bindestrek |
+| Avstandskontroll | lengdekontroll | ett ord, norsk form |
+| Linje-kontroll | greenlesning | bindestrek |
+| Lese green | Greenlesning | "green reading" |
+| Green-lesing | greenlesning | bindestrek |
 | Break | break | engelsk fagterm |
 | Speed | speed | "puttingspeed" |
 | Tempo (putting) | tempo | i putting-kontekst |
@@ -242,21 +242,301 @@
 
 ## 3. Strokes Gained (SG)
 
+### 3A. SG-kjerneord
+
 | Term | Bokmål | Forkortelse | Notater |
 |---|---|---|---|
 | Strokes Gained | strokes gained | SG | Engelsk fagterm beholdt |
 | SG Total | SG-Total | SG-T | Bindestrek |
+| SG Tee-to-Green | SG-T2G | T2G | "Total uten putting" |
 | SG Off-the-tee | SG-OTT | OTT | Sjelden norsk; bruk OTT |
-| SG Approach | SG-APP | APP | Approach-spillet |
+| SG Approach | SG-APP | APP | Innspill |
 | SG Around-green | SG-ARG | ARG | Kort spill nær green |
 | SG Putting | SG-PUTT | PUTT | Putting |
+| SG per runde | SG/runde | — | Beregnet snitt |
+| SG per slag | SG/slag | — | Beregnet snitt |
+| SG per hull | SG/hull | — | Beregnet snitt |
 | SG-snitt | snitt-SG | — | Bruk "snitt" foran |
 | SG-trend | SG-trend | — | |
-| Benchmark | benchmark | — | Engelsk-norsk akseptert |
-| Kategori-benchmark | kategori-benchmark | — | A1/A2/B1/B2 sammenligning |
-| DataGolf | DataGolf | — | Egen merkenavn, CamelCase |
+| SG-utvikling | SG-utvikling | — | over tid |
+| SG-bevegelse | SG-bevegelse | — | endring siden baseline |
 | SG-svakhet | SG-svakhet | — | Bindestrek |
-| SG-potensial | SG-potensial | — | Norsk skrivemåte (med "potensial" ikke "potential") |
+| SG-styrke | SG-styrke | — | bindestrek |
+| SG-potensial | SG-potensial | — | "potensial" ikke "potential" |
+| SG-gap | SG-gap | — | avstand til benchmark |
+| SG-differanse | SG-differanse | — | mellom to spillere/perioder |
+
+### 3B. SG-benchmark & sammenligning
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Benchmark | benchmark | engelsk-norsk akseptert |
+| Kategori-benchmark | kategori-benchmark | A1/A2/B1/B2 |
+| Spiller-benchmark | spiller-benchmark | mot konkret spiller |
+| Tour-benchmark | tour-benchmark | mot Tour-snitt |
+| Scratch-benchmark | scratch | mot HCP 0 |
+| DataGolf | DataGolf | merkenavn, CamelCase |
+| DataGolf-snitt | DataGolf-snitt | bindestrek |
+| Expected strokes | forventet slag | norsk form |
+| Forventet slag | forventet slag | "expected" |
+| Expected putts | forventet putts | norsk |
+| Strokes gained over benchmark | SG over benchmark | norsk |
+| Persentil | persentil | "75. persentil" |
+| Persentil-rang | persentil-rang | bindestrek |
+| Top 10 % | topp 10 % | mellomrom |
+| Bunn 25 % | bunn 25 % | mellomrom |
+
+### 3C. SG per distanse / situasjon
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Distance bucket | distanse-bucket | bindestrek |
+| Distanse-zone | distanse-zone | bindestrek |
+| 0–3 m putting | 0–3 m putting | tankestrek |
+| 3–6 m putting | 3–6 m putting | |
+| 6–10 m putting | 6–10 m putting | |
+| 10 m+ putting | 10 m+ putting | |
+| 50–100 m innspill | 50–100 m innspill | |
+| 100–125 m innspill | 100–125 m innspill | |
+| 125–150 m innspill | 125–150 m innspill | |
+| 150–175 m innspill | 150–175 m innspill | |
+| 175–200 m innspill | 175–200 m innspill | |
+| 200+ m innspill | 200+ m innspill | |
+| SG fra fairway | SG fairway | |
+| SG fra rough | SG rough | |
+| SG fra sand | SG sand | bunker |
+| SG fra recovery | SG recovery | trøbbel-situasjon |
+| Proximity to hole | nærhet til flagg | norsk form |
+| Avstand fra flagg | avstand fra flagg | "proximity" |
+| Spredning | spredning | "dispersion" |
+| Dispersion | dispersion | engelsk fagterm |
+| Konsistens-score | konsistens-score | bindestrek |
+
+### 3D. Driving-statistikk (SG-OTT data)
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Fairways hit | fairways truffet | norsk |
+| FH % | FH-% | bindestrek + prosent |
+| Treffprosent | treffprosent | ett ord |
+| Driving distance | driving-distanse | bindestrek |
+| Carry distance | carry-distanse | bindestrek |
+| Carry | carry | engelsk akseptert |
+| Total distance | total distanse | uten bindestrek |
+| Roll-out | roll-out | bindestrek |
+| Smash factor | smash | "smash 1,48" |
+| Ball speed | ballhastighet | norsk form |
+| Køllehastighet | køllehastighet | norsk form ("club speed") |
+| Spin rate | spinrate | ett ord |
+| Launch angle | launch-vinkel | bindestrek |
+| Backspin | backspin | engelsk |
+| Sidespin | sidespin | engelsk |
+| Apex | apex | toppunkt |
+| Apex-høyde | apex-høyde | bindestrek |
+| Driver-snitt | driver-snitt | bindestrek |
+| Tee-snitt | tee-snitt | bindestrek |
+| Driving accuracy | driving-treff | norsk form |
+
+### 3E. Approach-statistikk (SG-APP data)
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Greens in regulation | greens i regulering | norsk form |
+| GIR | GIR | forkortelse |
+| GIR % | GIR-% | bindestrek + prosent |
+| Green hits | green-treff | bindestrek |
+| Centre of green | sentrum av green | norsk |
+| Pin-seeking | flagg-jaging | norsk form |
+| Approach quality | approach-kvalitet | bindestrek |
+| Avstand fra flagg | avstand fra flagg | "proximity" |
+| Slag på green | slag på green | etter approach |
+| Missed green left | bom venstre | norsk form |
+| Missed green right | bom høyre | norsk form |
+| Missed green short | bom kort | norsk form |
+| Missed green long | bom langt | norsk form |
+| Approach-snitt | approach-snitt | bindestrek |
+| Innspill-snitt | innspill-snitt | bindestrek |
+
+### 3F. Around-green-statistikk (SG-ARG data)
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Scrambling | scrambling | engelsk fagterm |
+| Scrambling % | scrambling-% | bindestrek + prosent |
+| Up-and-down | up-and-down | engelsk |
+| Up-and-down % | up-and-down-% | |
+| Sand save | sand-save | bindestrek |
+| Sand save % | sand-save-% | |
+| Chip-snitt | chip-snitt | bindestrek |
+| Pitch-snitt | pitch-snitt | bindestrek |
+| Around-green-snitt | around-green-snitt | bindestrek |
+
+### 3G. Putting-statistikk (SG-PUTT data)
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Total putts | totalt antall putts | norsk |
+| Putts per runde | putts per runde | snitt |
+| Putts per GIR | putts per GIR | snitt |
+| 1-putt | 1-putt | bindestrek |
+| 1-putt % | 1-putt-% | |
+| 2-putt | 2-putt | |
+| 2-putt % | 2-putt-% | |
+| 3-putt | 3-putt | |
+| 3-putt % | 3-putt-% | |
+| 3-putt avoidance | 3-putt unngåelse | norsk form |
+| Make rate | innslagsprosent | norsk form |
+| Make rate 1 m | innslagsprosent 1 m | |
+| Make rate 2 m | innslagsprosent 2 m | |
+| Make rate 3 m | innslagsprosent 3 m | |
+| Make rate 5 m | innslagsprosent 5 m | |
+| Make rate 10 m | innslagsprosent 10 m | |
+| 3-fot make rate | 3-fot innslagsprosent | bindestrek |
+| Greenlesning | greenlesning | ett ord |
+| Speed control | tempo-kontroll | norsk form |
+| Lag-putt-snitt | lag-putt-snitt | bindestrek |
+
+## 3X. Statistikk generelt
+
+### 3X-A. Score-statistikk
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Score | score | engelsk-norsk |
+| Snittscore | snittscore | ett ord |
+| Sesong-snitt | sesong-snitt | bindestrek |
+| Karriere-snitt | karriere-snitt | bindestrek |
+| Siste 10 runder | siste 10 runder | snitt-vindu |
+| Siste 30 dager | siste 30 dager | snitt-vindu |
+| Siste sesong | siste sesong | |
+| Beste runde | beste runde | "personlig rekord" |
+| Lavest score | lavest score | aldri "min" (= minimum) |
+| Høyest score | høyest score | aldri "max" |
+| Birdie | birdie | flertall: birdies |
+| Eagle | eagle | flertall: eagles |
+| Albatross | albatross | hole-in-one på par-5 |
+| Hole-in-one | hole-in-one | bindestreker |
+| Par | par | flertall: pars |
+| Bogey | bogey | flertall: bogeys |
+| Double bogey | double bogey | uten bindestrek |
+| Triple bogey | triple bogey | uten bindestrek |
+| Other (4+ over) | other | engelsk-norsk |
+| Birdie % | birdie-% | bindestrek + prosent |
+| Par % | par-% | |
+| Bogey % | bogey-% | |
+| Bogey-or-worse % | bogey-eller-værre-% | bindestrek |
+| Pluss-score | pluss-score | over par |
+| Under-par | under-par | bindestrek |
+| Over-par | over-par | bindestrek |
+| Net score | netto-score | bindestrek |
+| Gross score | brutto-score | bindestrek |
+| Stableford-poeng | stableford-poeng | bindestrek |
+
+### 3X-B. Statistikk-uttrykk
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Snitt | snitt | aldri "gjennomsnitt" (lengre form) |
+| Median | median | |
+| Modus | modus | mest hyppige |
+| Standardavvik | standardavvik | "stdev" |
+| Variasjon | variasjon | spredningsmål |
+| Min | minste | aldri "min" (forkortelse) |
+| Maks | største | aldri "max" |
+| Spenn | spenn | range |
+| Distribusjon | distribusjon | fordeling |
+| Fordeling | fordeling | norsk form |
+| Heatmap | heatmap | engelsk-norsk |
+| Varmekart | varmekart | norsk form |
+| Histogram | histogram | |
+| Boxplot | boksplot | norsk form |
+| Trendlinje | trendlinje | ett ord |
+| Trend opp | trend opp | "↑" |
+| Trend ned | trend ned | "↓" |
+| Stigning | stigning | "slope" |
+| Stagnering | stagnering | flat trend |
+| Outlier | outlier | engelsk-norsk |
+| Avviker | avviker | norsk form for outlier |
+| Korrelasjon | korrelasjon | |
+| Regresjon | regresjon | også "tilbakegang" |
+| Tilbakegang | tilbakegang | norsk form |
+| Forbedring | forbedring | |
+| Stagnering | stagnering | flat utvikling |
+| Variansavstand | variansavstand | ett ord |
+| Konsistens | konsistens | |
+| Konsistens-score | konsistens-score | bindestrek |
+
+### 3X-C. Tidsperioder & sammenligning
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Last 5 | siste 5 | norsk form |
+| Last 10 | siste 10 | |
+| Last 30 days | siste 30 dager | |
+| Last 90 days | siste 90 dager | |
+| YTD | i år / hittil i år | norsk form |
+| Year-over-year | år-over-år | bindestreker |
+| YoY | år-over-år | norsk |
+| Vs. forrige uke | mot forrige uke | norsk |
+| Vs. forrige måned | mot forrige måned | |
+| Vs. forrige sesong | mot forrige sesong | |
+| Δ (delta) | endring | Δ-symbol kan brukes |
+| Δ% | endring i prosent | |
+| % endring | prosent endring | uten bindestrek |
+| Rolling average | rullerende snitt | norsk form |
+| Bevegelig snitt | bevegelig snitt | |
+| Form (snitt × trend) | form | "Pro-form" |
+| Friskhet | friskhet | "freshness" |
+| Skarphet | skarphet | "sharpness" |
+
+### 3X-D. Spesielle metrics
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Bounce-back % | bounce-back-% | rett etter bogey |
+| Round dispersion | runde-spredning | bindestrek |
+| Penalty strokes | straffeslag | norsk form |
+| Lost balls | mistede baller | |
+| Sand saves | sand-saves | bindestrek |
+| 3-foot make rate | 3-fot innslagsprosent | bindestrek |
+| Approach proximity | innspill-nærhet | bindestrek |
+| Driving accuracy | driving-treff | bindestrek |
+| Holed-from-X | hullet fra X | dynamisk distanse |
+| Holed-out | hullet ut | norsk form |
+| Strokes lost | tapte slag | norsk form |
+| Strokes gained | gained-slag | i forhold til benchmark |
+| Round score | runde-score | bindestrek |
+| Front 9 / Out | ut 9 / front 9 | begge OK |
+| Back 9 / In | inn 9 / back 9 | begge OK |
+| 9-hulls snitt | 9-hulls snitt | bindestrek |
+| 18-hulls snitt | 18-hulls snitt | bindestrek |
+
+### 3X-E. Visualiserings-uttrykk
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Linjegraf | linjegraf | ett ord |
+| Søylediagram | søylediagram | ett ord |
+| Stolpediagram | stolpediagram | synonym |
+| Sektor-diagram | sektor-diagram | "pie chart" |
+| Kake-diagram | kake-diagram | synonym, hyppig brukt |
+| Sparkline | sparkline | mini-graf |
+| Ring-progress | ring-progress | bindestrek |
+| Progresjon-bar | progresjon-bar | bindestrek |
+| Heatmap-grid | heatmap-grid | bindestrek |
+| Radar-chart | radar-chart | bindestrek |
+| Edderkopp-chart | edderkopp-chart | synonym |
+| Område-chart | område-chart | "area chart" |
+| Stacked bar | stablet søyle | norsk form |
+| Box plot | boksplot | norsk |
+| Akse | akse | "x-akse / y-akse" |
+| Etikett | etikett | "label" |
+| Legende | legende | "legend" |
+| Tooltip | tooltip | engelsk-norsk |
+| Drill-down | drill-down | bindestrek |
+| Filter | filter | flertall: filtre |
+| Zoom | zoom | engelsk-norsk |
+| Eksport | eksport | "Eksporter til CSV/PDF" |
 
 ## 4. Treningsplanlegging — periodisering
 
@@ -621,17 +901,17 @@
 |---|---|---|
 | Driver | driver | |
 | Iron 7 / Jern 7 | jern 7 | "jern 7" eller "I7" |
-| Wedge / Kile | wedge | engelsk akseptert |
+| Wedge | wedge | engelsk akseptert |
 | Putter | putter | |
 | Hybrid | hybrid | |
-| Fairway / Wood 3 | wood 3 | |
-| Lengde-jern | lengde-jern | bindestrek |
-| Midt-jern | midt-jern | bindestrek |
-| Kort-jern | kort-jern | bindestrek |
-| Approach-wedge | approach-wedge | |
-| Sand-wedge | sand-wedge | |
-| Pitching-wedge | pitching-wedge | |
-| Lob-wedge | lob-wedge | |
+| Woods | wood 3 | |
+| Lang jern | langj ern | bindestrek |
+| Mellomjern | midtjern | bindestrek |
+| Kortern | kort-jern | bindestrek |
+| Wedge | wedge | |
+| Sand-wedge | wedge | |
+| Wedge           | wedge | |
+| Wedge | wedge | |
 
 ## 13. Knapp-tekst & CTAs (standardisert)
 
