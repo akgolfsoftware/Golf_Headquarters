@@ -1,27 +1,24 @@
 /**
- * CoachHQ — Spillere (konsolidert)
+ * CoachHQ — Stallen (konsolidert spilleroversikt).
  *
- * Erstatter de tidligere separat-rutene /admin/elever (tabell) og /admin/board
- * (tavle). Tab-toggle øverst styrer hvilken visning som rendres:
+ * Default view ("kort") er coach Anders sin stall — alle aktive spillere
+ * presentert som rike kort med SG-trend, HCP, kategori og status-prikk.
+ * Klikk på kort → /admin/spillere/[id] (coach detail-view).
  *
- *   ?view=tabell  → spillerliste-tabell (status, HCP, tier, kategori)
+ *   ?view=kort    → grid med rike spillerkort (default, "stallen")
+ *   ?view=tabell  → spillerliste-tabell (kompakt, sortbar)
  *   ?view=tavle   → kanban-tavle (auto-klassifisert etter aktivitet)
- *   ?view=kart    → kort-grid (kompakt oversikt med foto/initialer)
  *
  * Felles filter-bar øverst: søk, kategori, tier, status.
- *
- * NB: Spiller-detalj-rutene under /admin/elever/[id]/... beholdes uendret —
- * de er fortsatt kanonisk inngang til spillerprofiler. Kun listevisningen
- * konsolideres her.
  */
 
 import Link from "next/link";
 import {
   ChevronDown,
   LayoutGrid,
-  Map as MapIcon,
   Search,
   Table2,
+  Trophy,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -32,7 +29,7 @@ import { avatarBg } from "@/lib/avatar-colors";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 
-type View = "tabell" | "tavle" | "kart";
+type View = "kort" | "tabell" | "tavle";
 
 type SearchParams = {
   view?: string;
@@ -52,11 +49,12 @@ type RawPlayer = {
   id: string;
   name: string;
   email: string;
+  avatarUrl: string | null;
   hcp: number | null;
   tier: Tier;
   lastLoginAt: Date | null;
   trainingPlans: { isActive: boolean }[];
-  rounds: { playedAt: Date }[];
+  rounds: { playedAt: Date; sgTotal: number | null; score: number }[];
   testResults: { takenAt: Date }[];
   groupMemberships: { group: { name: string } }[];
 };
@@ -65,6 +63,9 @@ type EnrichedPlayer = RawPlayer & {
   category: Category;
   boardStatus: StatusKey;
   daysSinceLogin: number;
+  /** SG-trend siste 3 målepunkter (eldst → nyest). Brukes til sparkline. */
+  sgTrend: number[];
+  sgAvg: number | null;
 };
 
 function deriveCategory(hcp: number | null): Category {
@@ -175,7 +176,9 @@ export default async function SpillerePage({
   const params = await searchParams;
 
   const view: View =
-    params.view === "tavle" || params.view === "kart" ? params.view : "tabell";
+    params.view === "tabell" || params.view === "tavle"
+      ? params.view
+      : "kort";
 
   // Felles where-klausul
   const where: {
@@ -212,14 +215,15 @@ export default async function SpillerePage({
       id: true,
       name: true,
       email: true,
+      avatarUrl: true,
       hcp: true,
       tier: true,
       lastLoginAt: true,
       trainingPlans: { select: { isActive: true } },
       rounds: {
-        select: { playedAt: true },
+        select: { playedAt: true, sgTotal: true, score: true },
         orderBy: { playedAt: "desc" },
-        take: 1,
+        take: 9,
       },
       testResults: {
         select: { takenAt: true },
@@ -235,16 +239,46 @@ export default async function SpillerePage({
     take: 300,
   });
 
-  const naa = Date.now();
+  const naa = new Date().getTime();
   const playersAll: EnrichedPlayer[] = playersRaw.map((p) => {
     const days = p.lastLoginAt
       ? Math.floor((naa - p.lastLoginAt.getTime()) / 86400000)
       : 999;
+    const raw = p as RawPlayer;
+
+    // 3-punkts SG-trend (eldst → nyest). Vi grupperer siste 9 runder
+    // i 3 grupper à 3 og tar snitt — gir glattere sparkline.
+    const sgValues = raw.rounds
+      .map((r) => r.sgTotal)
+      .filter((v): v is number => v != null);
+
+    let trend: number[] = [];
+    if (sgValues.length >= 3) {
+      const reversed = [...sgValues].reverse(); // eldst først
+      const chunks: number[][] = [[], [], []];
+      reversed.forEach((v, i) => {
+        const idx = Math.floor(i / Math.ceil(reversed.length / 3));
+        if (idx < 3) chunks[idx].push(v);
+      });
+      trend = chunks
+        .filter((c) => c.length > 0)
+        .map((c) => c.reduce((a, b) => a + b, 0) / c.length);
+    } else if (sgValues.length > 0) {
+      trend = [...sgValues].reverse();
+    }
+
+    const sgAvg =
+      sgValues.length > 0
+        ? sgValues.reduce((a, b) => a + b, 0) / sgValues.length
+        : null;
+
     return {
-      ...(p as RawPlayer),
+      ...raw,
       category: deriveCategory(p.hcp),
-      boardStatus: deriveBoardStatus(p as RawPlayer),
+      boardStatus: deriveBoardStatus(raw),
       daysSinceLogin: days,
+      sgTrend: trend,
+      sgAvg,
     };
   });
 
@@ -263,10 +297,26 @@ export default async function SpillerePage({
   // KPI-tall
   const total = playersAll.length;
   const aktive = playersAll.filter((p) => p.daysSinceLogin <= 7).length;
-  const inaktive = playersAll.filter((p) => p.daysSinceLogin > 30).length;
   const proElite = playersAll.filter(
     (p) => p.tier === "PRO" || p.tier === "ELITE",
   ).length;
+  const utenPlan = playersAll.filter(
+    (p) => !p.trainingPlans.some((tp) => tp.isActive),
+  ).length;
+
+  // Snitt-HCP (eks null-verdier)
+  const hcpVerdier = playersAll
+    .map((p) => p.hcp)
+    .filter((v): v is number => v != null);
+  const snittHcp =
+    hcpVerdier.length > 0
+      ? hcpVerdier.reduce((a, b) => a + b, 0) / hcpVerdier.length
+      : null;
+
+  // Antall fullførte økter siste 7 dager (på tvers av alle spillere — ikke
+  // i scope for denne query'en, så vi viser "økter denne uka" som proxy
+  // via aktive-tallet for nå.)
+  const okterDenneUka = aktive;
 
   // Board-grupper
   const grupper: Record<StatusKey, EnrichedPlayer[]> = {
@@ -280,14 +330,14 @@ export default async function SpillerePage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · /admin/spillere"
-        titleLead={String(total)}
-        titleItalic="spillere"
-        sub={`AK Golf · ${proElite} Pro/Elite · ${aktive} aktive denne uka`}
+        eyebrow={`MIN STALL · ${aktive} AKTIVE SPILLERE`}
+        titleLead="Stallen"
+        titleItalic="min"
+        sub={`${total} totalt · ${proElite} Pro · ${utenPlan} mangler aktiv plan`}
         actions={
           <Link
             href="/admin/elever/ny"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             <UserPlus size={14} strokeWidth={1.75} />
             Ny spiller
@@ -297,37 +347,7 @@ export default async function SpillerePage({
 
       <ViewTabs active={view} />
 
-      {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-        <KpiAccent
-          label="Totalt"
-          value={String(total)}
-          sub={total > 0 ? `${aktive} aktive denne uka` : "Ingen spillere"}
-        />
-        <Kpi
-          label="Pro + Elite"
-          value={String(proElite)}
-          unit={`/ ${total}`}
-          sub={
-            total > 0
-              ? `${Math.round((proElite / total) * 100)} % betalende`
-              : "—"
-          }
-        />
-        <Kpi
-          label="I fokus"
-          value={String(grupper.Fokus.length)}
-          sub="aktiv plan + runde siste 7d"
-        />
-        <Kpi
-          label="Inaktive > 30 d"
-          value={String(inaktive)}
-          sub={inaktive > 0 ? "Krever oppfølging" : "Alt under kontroll"}
-          tone={inaktive > 0 ? "warn" : undefined}
-        />
-      </div>
-
-      {/* Filter-rad */}
+      {/* Filter-rad — øverst, før grid */}
       <form className="flex flex-wrap items-center gap-2">
         <input type="hidden" name="view" value={view} />
         <label className="flex flex-1 min-w-[280px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
@@ -340,9 +360,9 @@ export default async function SpillerePage({
             className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </label>
-        <FilterChip label="Kategori" />
-        <FilterChip label="Tier" />
         <FilterChip label="Status" />
+        <FilterChip label="Kategori" />
+        <FilterChip label="Sort" />
       </form>
 
       {/* Body — bytter på view */}
@@ -367,7 +387,38 @@ export default async function SpillerePage({
       ) : view === "tavle" ? (
         <TavleVisning grupper={grupper} />
       ) : (
-        <KartVisning players={players} />
+        <StallenGrid players={players} />
+      )}
+
+      {/* KPI-rad nederst */}
+      {total > 0 && (
+        <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+          <KpiAccent
+            label="Snitt-HCP"
+            value={snittHcp != null ? formatHcp(snittHcp) : "—"}
+            sub={`${hcpVerdier.length} av ${total} har registrert HCP`}
+          />
+          <Kpi
+            label="Aktive økter denne uka"
+            value={String(okterDenneUka)}
+            sub={
+              okterDenneUka > 0
+                ? `${Math.round((okterDenneUka / total) * 100)} % av stallen`
+                : "Ingen aktivitet"
+            }
+          />
+          <Kpi
+            label="I fokus"
+            value={String(grupper.Fokus.length)}
+            sub="Aktiv plan + runde siste 7d"
+          />
+          <Kpi
+            label="Trenger plan"
+            value={String(utenPlan)}
+            sub={utenPlan > 0 ? "Krever oppfølging" : "Alt under kontroll"}
+            tone={utenPlan > 0 ? "warn" : undefined}
+          />
+        </div>
       )}
     </div>
   );
@@ -377,9 +428,9 @@ export default async function SpillerePage({
 
 function ViewTabs({ active }: { active: View }) {
   const tabs: { key: View; label: string; icon: typeof Table2 }[] = [
+    { key: "kort", label: "Kort", icon: LayoutGrid },
     { key: "tabell", label: "Tabell", icon: Table2 },
-    { key: "tavle", label: "Tavle", icon: LayoutGrid },
-    { key: "kart", label: "Kart", icon: MapIcon },
+    { key: "tavle", label: "Tavle", icon: Trophy },
   ];
   return (
     <div className="inline-flex w-fit gap-0.5 rounded-md bg-secondary p-1">
@@ -478,7 +529,7 @@ function PlayerTableRow({ player }: { player: EnrichedPlayer }) {
       </td>
       <td className="px-4 py-4">
         <Link
-          href={`/admin/elever/${p.id}`}
+          href={`/admin/spillere/${p.id}`}
           className="flex items-center gap-2.5 hover:text-primary"
         >
           <div
@@ -539,7 +590,7 @@ function PlayerMobileCard({ player }: { player: EnrichedPlayer }) {
   return (
     <li>
       <Link
-        href={`/admin/elever/${p.id}`}
+        href={`/admin/spillere/${p.id}`}
         className="flex min-h-16 items-center gap-4 px-4 py-4 hover:bg-secondary/40"
       >
         <div
@@ -632,7 +683,7 @@ function TavleVisning({
                     className="overflow-hidden rounded-md border border-border bg-card transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
                   >
                     <Link
-                      href={`/admin/elever/${p.id}`}
+                      href={`/admin/spillere/${p.id}`}
                       className="flex"
                       aria-label={`Åpne profil for ${p.name}`}
                     >
@@ -662,44 +713,170 @@ function TavleVisning({
   );
 }
 
-// ---------- Kart (card-grid) ----------
+// ---------- Stallen-grid (kort som default) ----------
 
-function KartVisning({ players }: { players: EnrichedPlayer[] }) {
+function StallenGrid({ players }: { players: EnrichedPlayer[] }) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {players.map((p) => (
-        <Link
-          key={p.id}
-          href={`/admin/elever/${p.id}`}
-          className="group flex flex-col gap-4 rounded-lg border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
-        >
-          <div className="flex items-center gap-4">
-            <div
-              className="grid h-12 w-12 shrink-0 place-items-center rounded-full font-mono text-sm font-semibold text-white"
-              style={{ background: avatarBg(p.name) }}
-            >
-              {initials(p.name)}
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="truncate font-display text-sm font-semibold text-foreground group-hover:text-primary">
-                {p.name}
-              </div>
-              <div className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-                {p.groupMemberships[0]?.group.name ?? "Ingen gruppe"}
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-2 border-t border-border pt-4">
-            <Stat label="HCP" value={formatHcp(p.hcp)} />
-            <Stat label="Kat" value={p.category} />
-            <Stat label="Tier" value={TIER_LABEL[p.tier]} />
-          </div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-            Sist innlogget: {formatSidenDato(p.lastLoginAt)}
-          </div>
-        </Link>
+        <SpillerKort key={p.id} player={p} />
       ))}
     </div>
+  );
+}
+
+function SpillerKort({ player }: { player: EnrichedPlayer }) {
+  const p = player;
+  const statusInfo =
+    p.daysSinceLogin > 30
+      ? { dot: "bg-destructive", label: "Inaktiv", labelClass: "text-destructive" }
+      : p.daysSinceLogin > 7
+        ? { dot: "bg-accent", label: "Forsinket", labelClass: "text-accent-foreground" }
+        : { dot: "bg-primary", label: "Aktiv", labelClass: "text-primary" };
+
+  const sistAktivLabel =
+    p.lastLoginAt == null
+      ? "Aldri pålogget"
+      : p.daysSinceLogin === 0
+        ? "Aktiv i dag"
+        : p.daysSinceLogin === 1
+          ? "Sist aktiv: i går"
+          : `Sist aktiv: ${p.daysSinceLogin} dager siden`;
+
+  return (
+    <Link
+      href={`/admin/spillere/${p.id}`}
+      className="group relative flex flex-col gap-4 rounded-lg border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+    >
+      {/* Status-prikk øverst høyre */}
+      <span
+        aria-label={statusInfo.label}
+        className={`absolute right-4 top-4 inline-block h-2 w-2 rounded-full ${statusInfo.dot}`}
+      />
+
+      <div className="flex items-center gap-3">
+        <Avatar src={p.avatarUrl} name={p.name} />
+        <div className="min-w-0 flex-1 pr-4">
+          <div className="truncate font-display text-[15px] font-semibold leading-snug text-foreground group-hover:text-primary">
+            {p.name}
+          </div>
+          <div className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+            {p.groupMemberships[0]?.group.name ?? "Ingen gruppe"}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-end justify-between gap-3 border-t border-border pt-3.5">
+        <div>
+          <div className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
+            HCP
+          </div>
+          <div className="mt-0.5 font-mono text-[22px] font-semibold leading-none tabular-nums text-foreground">
+            {formatHcp(p.hcp)}
+          </div>
+        </div>
+
+        <div className="flex flex-col items-end gap-1.5">
+          <span
+            className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${CAT_STYLE[p.category]}`}
+          >
+            {p.category}
+          </span>
+          <span
+            className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.06em] ${TIER_STYLE[p.tier]}`}
+          >
+            {TIER_LABEL[p.tier]}
+          </span>
+        </div>
+
+        <Sparkline values={p.sgTrend} />
+      </div>
+
+      <div className="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.06em]">
+        <span className={`${statusInfo.labelClass}`}>{statusInfo.label}</span>
+        <span className="text-muted-foreground">{sistAktivLabel}</span>
+      </div>
+    </Link>
+  );
+}
+
+function Avatar({ src, name }: { src: string | null; name: string }) {
+  if (src) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt=""
+        className="h-11 w-11 shrink-0 rounded-full object-cover"
+      />
+    );
+  }
+  return (
+    <div
+      className="grid h-11 w-11 shrink-0 place-items-center rounded-full font-mono text-[12px] font-semibold text-white"
+      style={{ background: avatarBg(name) }}
+    >
+      {initials(name)}
+    </div>
+  );
+}
+
+function Sparkline({ values }: { values: number[] }) {
+  if (values.length < 2) {
+    return (
+      <div className="flex h-8 items-center justify-end font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground">
+        Lite SG-data
+      </div>
+    );
+  }
+
+  const w = 56;
+  const h = 28;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  const pts = values
+    .map((v, i) => {
+      const x = (i / (values.length - 1)) * w;
+      const y = h - ((v - min) / range) * h;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(" ");
+
+  const last = values[values.length - 1];
+  const first = values[0];
+  const trendUp = last >= first;
+
+  return (
+    <svg
+      width={w}
+      height={h}
+      viewBox={`0 0 ${w} ${h}`}
+      className="shrink-0"
+      aria-label="SG-trend siste runder"
+    >
+      <polyline
+        fill="none"
+        stroke={trendUp ? "hsl(var(--primary))" : "hsl(var(--destructive))"}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        points={pts}
+      />
+      {values.map((v, i) => {
+        const x = (i / (values.length - 1)) * w;
+        const y = h - ((v - min) / range) * h;
+        return (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r={1.5}
+            fill={trendUp ? "hsl(var(--primary))" : "hsl(var(--destructive))"}
+          />
+        );
+      })}
+    </svg>
   );
 }
 
@@ -792,19 +969,6 @@ function FilterChip({ label }: { label: string }) {
       {label}
       <ChevronDown size={11} strokeWidth={1.75} />
     </span>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <div className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
-        {label}
-      </div>
-      <div className="mt-0.5 font-mono text-sm font-semibold tabular-nums">
-        {value}
-      </div>
-    </div>
   );
 }
 
