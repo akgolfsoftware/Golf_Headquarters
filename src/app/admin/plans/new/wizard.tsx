@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, ChevronLeft, ChevronRight, LayoutTemplate, X } from "lucide-react";
 import { AgentStrip } from "@/components/coachhq/agent-strip";
+import { AiPlanForslagButton } from "@/components/admin/ai-plan-forslag-button";
 import {
   hentMalForhandsutfylling,
   opprettPlan,
@@ -192,8 +193,36 @@ export function PlanWizard({
     });
   }
 
+  const eyebrowSpiller = valgtSpiller
+    ? `PLAN-BYGGER · SPILLER: ${valgtSpiller.name.toUpperCase()}`
+    : "PLAN-BYGGER · INGEN SPILLER VALGT";
+
   return (
     <div className="space-y-6">
+      <header
+        role="banner"
+        className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+      >
+        <div>
+          <span
+            aria-hidden="true"
+            className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+          >
+            {eyebrowSpiller}
+          </span>
+          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
+            Lag{" "}
+            <em className="font-normal text-primary md:italic">ny plan</em>
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Wizard med 6 steg — spiller, periode, faser, allokering, økt-skjema og bekreft.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <AiPlanForslagButton />
+        </div>
+      </header>
+
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-card px-4 py-4">
         <div>
           {valgtMalNavn ? (

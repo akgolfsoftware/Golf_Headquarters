@@ -2,10 +2,8 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
 import { PlanWizard } from "./wizard";
 import { AiPlanPanel } from "./ai-panel";
-import { AiPlanForslagButton } from "@/components/admin/ai-plan-forslag-button";
 
 export default async function NyPlanPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -32,14 +30,6 @@ export default async function NyPlanPage() {
         <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
         Plans
       </Link>
-
-      <PageHeader
-        eyebrow="Treningsplaner · Ny plan"
-        titleLead="Bygg"
-        titleItalic="ny plan"
-        sub="Wizard med 6 steg — spiller, periode, faser, allokering, økt-skjema og bekreft."
-        actions={<AiPlanForslagButton />}
-      />
 
       <AiPlanPanel spillere={spillere} />
 

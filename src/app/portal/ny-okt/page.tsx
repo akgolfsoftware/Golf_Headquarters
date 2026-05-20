@@ -1,10 +1,15 @@
+/**
+ * PlayerHQ · Ny økt — wizard
+ *
+ * Migrert fra public/design/batch3/ny-okt-wizard.html.
+ * 4-stegs wizard: type → drills → tid/sted → bekreft.
+ */
 import Link from "next/link";
 import { Lock } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
-import { AddSessionWizard } from "@/components/admin/add-session-wizard";
+import { NyOktWizard } from "./wizard";
 
 export default async function NyOktPage() {
   const user = await requirePortalUser();
@@ -19,7 +24,6 @@ export default async function NyOktPage() {
           titleTrail="økt"
           sub="Bygg dine egne treningsøkter med valgfrie drills — en av Pro-fordelene."
         />
-
         <EmptyState
           icon={Lock}
           titleItalic="Krever Pro"
@@ -37,21 +41,16 @@ export default async function NyOktPage() {
     );
   }
 
-  const exercises = await prisma.exerciseDefinition.findMany({
-    orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
-  });
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pb-32">
       <PageHeader
         eyebrow="PlayerHQ · Ny økt"
         titleLead="Lag din"
         titleItalic="egen"
         titleTrail="økt"
-        sub="Sett sammen en økt utenfor coach-planen din — på 5 raske steg."
+        sub="Sett sammen en økt utenfor coach-planen din — på 4 raske steg."
       />
-
-      <AddSessionWizard adHoc exercises={exercises} />
+      <NyOktWizard />
     </div>
   );
 }

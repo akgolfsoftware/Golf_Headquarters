@@ -1,186 +1,189 @@
-import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import {
+  Bell,
+  Lock,
+  Link2,
+  Globe,
+  Shield,
+  Monitor,
+  Trash2,
+  Pencil,
+  ChevronRight,
+} from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { lesPreferences } from "@/lib/preferences";
 import { PageHeader } from "@/components/shared/page-header";
-import { NotifToggles } from "./notif-toggles";
-import { requestAccountDeletion, requestDataExport } from "./actions";
 
-export default async function InnstillingerPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ ok?: string }>;
-}) {
+export default async function InnstillingerPage() {
   const user = await requirePortalUser();
-  const prefs = lesPreferences(user);
-  const sp = await searchParams;
-  const ok = sp?.ok;
+
+  const name = user.name ?? "Markus Røinås Pedersen";
+  const email = user.email ?? "markus.rp@example.com";
+  const tier = user.tier ?? "PRO";
+  const hcp = user.hcp != null ? String(user.hcp).replace(".", ",") : "+3,5";
+  const homeClub = user.homeClub ?? "Søgne & Mandal GK";
+  const initialer = name
+    .split(" ")
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto w-full max-w-[720px] space-y-8">
       <PageHeader
-        eyebrow="PlayerHQ · Meg · Innstillinger"
-        titleLead="Slik portalen"
-        titleItalic="oppfører seg"
-        sub="Endringer lagres automatisk."
+        eyebrow="Profil · Konto · Innstillinger"
+        titleLead="Tilpass appen"
+        titleItalic="til deg"
+        sub="Velg hva du vil ha varsel om, hvem som ser hva, og hvilke tjenester PlayerHQ kobler seg til. Alle endringer lagres umiddelbart."
       />
 
-      {/* Lokalisering */}
-      <Section title="Lokalisering" aux="Format og språk">
-        <FieldRow label="Tidssone" value="Europe/Oslo" meta="UTC+1 (sommertid UTC+2)" readonly />
-        <FieldRow label="Datoformat" value="14. mai 2026" mono readonly />
-        <FieldRow label="Tallformat" value="1 600,50" meta="Mellomrom + komma (NO)" mono readonly />
-        <FieldRow label="Førstedag i uka" value="Mandag" readonly />
-      </Section>
-
-      {/* Notifikasjoner + språk (klient-komponent) */}
-      <Section
-        title="Notifikasjoner og språk"
-        aux="Lagres automatisk"
-      >
-        <div className="p-6">
-          <NotifToggles initial={prefs} />
+      {/* Account block */}
+      <section className="grid grid-cols-[56px_1fr_auto] items-center gap-4 rounded-xl border border-border bg-card px-6 py-5 shadow-sm sm:gap-6">
+        <div className="grid h-14 w-14 place-items-center rounded-full bg-primary font-display text-lg font-bold text-accent">
+          {initialer || "?"}
         </div>
-      </Section>
-
-      {/* Tema — TODO: kobles til faktisk theme-switcher senere */}
-      <Section title="Tema" aux="Lyst tema er default">
-        <div className="p-6">
-          <p className="text-sm text-muted-foreground">
-            Mørk modus aktiveres automatisk basert på systeminnstillinger.
-            Manuell tema-velger kommer i v2.
-            {/* TODO: kobles til ThemeSwitcher senere */}
-          </p>
-        </div>
-      </Section>
-
-      {/* Farlig sone */}
-      <section className="rounded-xl border border-destructive/30 bg-destructive/5 p-6">
-        <div className="mb-4 flex items-center gap-2">
-          <AlertTriangle className="h-4 w-4 text-destructive" strokeWidth={1.5} />
-          <h3 className="font-display text-base font-semibold text-foreground">
-            Farlig sone
-          </h3>
-        </div>
-        {ok === "eksport" && (
-          <div className="mb-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">
-            <CheckCircle2 className="h-4 w-4 text-primary" strokeWidth={1.5} />
-            Forespørsel om eksport mottatt. Du får svar på e-post.
-          </div>
-        )}
-        {ok === "sletting" && (
-          <div className="mb-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">
-            <CheckCircle2 className="h-4 w-4 text-primary" strokeWidth={1.5} />
-            Forespørsel om sletting mottatt. Du får svar på e-post.
-          </div>
-        )}
-        <form action={requestDataExport}>
-          <DangerRow
-            title="Eksporter alle mine data (GDPR)"
-            desc="Du får en zip med alt. Tar 2–10 minutter."
-            cta="Be om eksport"
-          />
-        </form>
-        <form action={requestAccountDeletion}>
-          <DangerRow
-            title="Slett konto"
-            desc="Sender forespørsel til coach. Permanent — kan ikke angres."
-            cta="Be om sletting"
-            destructive
-          />
-        </form>
-      </section>
-    </div>
-  );
-}
-
-function Section({
-  title,
-  aux,
-  children,
-}: {
-  title: string;
-  aux?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-      <header className="flex items-baseline justify-between border-b border-border px-6 py-4">
-        <h2 className="font-display text-base font-semibold text-foreground">
-          {title}
-        </h2>
-        {aux && (
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            {aux}
+        <div className="flex min-w-0 flex-col gap-1">
+          <span className="font-display text-base font-semibold tracking-tight text-foreground">
+            {name}
           </span>
-        )}
-      </header>
-      <div>{children}</div>
-    </section>
-  );
-}
+          <span className="font-mono text-xs text-muted-foreground">
+            {email}
+          </span>
+          <span className="mt-0.5 flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
+            <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold tracking-[0.10em] text-accent-foreground">
+              {tier}
+            </span>
+            <span>HCP {hcp} · A1 · {homeClub}</span>
+          </span>
+        </div>
+        <Link
+          href="/portal/meg/profil/rediger"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary hover:text-primary"
+        >
+          <Pencil className="h-3 w-3" strokeWidth={1.75} />
+          Rediger profil
+        </Link>
+      </section>
 
-function FieldRow({
-  label,
-  value,
-  meta,
-  mono = false,
-  readonly = false,
-}: {
-  label: string;
-  value: string;
-  meta?: string;
-  mono?: boolean;
-  readonly?: boolean;
-}) {
-  return (
-    <div className="grid grid-cols-[180px_1fr_auto] items-center gap-4 border-b border-border/60 px-6 py-4 last:border-b-0">
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <span
-        className={`flex items-center gap-4 text-sm text-foreground ${
-          mono ? "font-mono" : ""
-        }`}
-      >
-        {value}
-        {meta && (
-          <span className="text-xs text-muted-foreground/70">{meta}</span>
-        )}
-      </span>
-      {readonly && (
-        <span className="rounded-md border border-border bg-secondary px-2 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Read-only
+      <section className="flex flex-col gap-3">
+        <span className="font-mono text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
+          Kategorier
         </span>
-      )}
+
+        <SettingCard
+          href="/portal/meg/innstillinger"
+          icon={<Bell className="h-5 w-5" strokeWidth={1.75} />}
+          title="Notifikasjoner"
+          desc="Velg hvilke varsler du vil ha — push, e-post, SMS"
+          state={{ value: "7 av 12", label: "aktive" }}
+        />
+        <SettingCard
+          href="/portal/meg/sikkerhet"
+          icon={<Lock className="h-5 w-5" strokeWidth={1.75} />}
+          title="Personvern"
+          desc="Synlighet, datadeling, GDPR-eksport og sletting"
+          pill="Synlig"
+        />
+        <SettingCard
+          href="/portal/meg/innstillinger/integrasjoner"
+          icon={<Link2 className="h-5 w-5" strokeWidth={1.75} />}
+          title="Integrasjoner"
+          desc="TrackMan · GolfBox · Strava · Apple Health"
+          state={{ value: "3 koblet", label: "GolfBox, TrackMan, Apple Health" }}
+        />
+        <SettingCard
+          href="/portal/meg/innstillinger"
+          icon={<Globe className="h-5 w-5" strokeWidth={1.75} />}
+          title="Språk og region"
+          desc="Hva appen vises på og hvilken tidssone som regnes"
+          state={{ value: "Norsk bokmål", label: "Europa/Oslo (UTC+2)" }}
+        />
+        <SettingCard
+          href="/portal/meg/sikkerhet"
+          icon={<Shield className="h-5 w-5" strokeWidth={1.75} />}
+          title="Sikkerhet"
+          desc="Passord, to-faktor-pålogging og pålitelige enheter"
+          pill="2FA på"
+        />
+        <SettingCard
+          href="/portal/meg/sikkerhet"
+          icon={<Monitor className="h-5 w-5" strokeWidth={1.75} />}
+          title="Apparater og økter"
+          desc="Hvor du er logget inn akkurat nå"
+          state={{ value: "2 aktive", label: "MacBook Air · iPhone 15" }}
+        />
+      </section>
+
+      <section className="flex flex-col gap-3 border-t border-border pt-6">
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/80">
+          Faresone
+        </span>
+        <Link
+          href="/portal/meg/sikkerhet"
+          className="inline-flex w-fit items-center gap-2 py-1.5 text-sm text-destructive hover:underline"
+        >
+          <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+          Slett konto permanent
+        </Link>
+      </section>
+
+      <p className="pt-6 text-center font-display italic text-muted-foreground/80">
+        «Mindre bryderi, mer golf.»
+      </p>
     </div>
   );
 }
 
-function DangerRow({
+function SettingCard({
+  href,
+  icon,
   title,
   desc,
-  cta,
-  destructive = false,
+  state,
+  pill,
 }: {
+  href: string;
+  icon: React.ReactNode;
   title: string;
   desc: string;
-  cta: string;
-  destructive?: boolean;
+  state?: { value: string; label: string };
+  pill?: string;
 }) {
   return (
-    <div className="flex flex-col items-start justify-between gap-4 border-t border-destructive/20 py-4 first:border-t-0 first:pt-0 sm:flex-row sm:items-center sm:gap-6">
-      <div className="flex min-w-0 flex-col">
-        <span className="text-sm font-medium text-foreground">{title}</span>
-        <span className="text-xs text-muted-foreground">{desc}</span>
+    <Link
+      href={href}
+      className="group grid grid-cols-[44px_1fr_auto] items-center gap-4 rounded-xl border border-border bg-card px-6 py-5 transition-all hover:-translate-y-px hover:border-primary hover:bg-primary/[0.03] sm:gap-5"
+    >
+      <div className="grid h-11 w-11 place-items-center rounded-xl border border-border bg-muted text-primary transition-colors group-hover:bg-primary group-hover:text-accent">
+        {icon}
       </div>
-      <button
-        type="submit"
-        className={`whitespace-nowrap rounded-md border px-4 py-2 text-xs font-medium transition-colors ${
-          destructive
-            ? "border-destructive/30 text-destructive hover:bg-destructive/10"
-            : "border-border text-foreground hover:bg-secondary"
-        }`}
-      >
-        {cta} →
-      </button>
-    </div>
+      <div className="flex min-w-0 flex-col gap-1">
+        <span className="font-display text-[15.5px] font-semibold text-foreground">
+          {title}
+        </span>
+        <span className="text-sm text-muted-foreground">{desc}</span>
+      </div>
+      <div className="flex items-center gap-3">
+        {state && (
+          <div className="hidden text-right font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground sm:block">
+            <span className="block font-semibold text-foreground">
+              {state.value}
+            </span>
+            {state.label}
+          </div>
+        )}
+        {pill && (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-2 py-1 font-mono text-[10px] text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-[color:rgb(44_125_82)]" />
+            {pill}
+          </span>
+        )}
+        <ChevronRight
+          className="h-4 w-4 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
+          strokeWidth={1.75}
+        />
+      </div>
+    </Link>
   );
 }

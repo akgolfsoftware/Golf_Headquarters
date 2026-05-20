@@ -76,6 +76,32 @@ export async function createRound(input: RoundInput) {
   revalidatePath("/portal/mal/runder");
 }
 
+export type ExportRoundsInput = {
+  format: "csv" | "pdf";
+  periode: "10" | "30d" | "90d" | "2026" | "custom";
+  pdfStyle?: "compact" | "detail" | "stats";
+  cols?: string[];
+  fromDate?: string;
+  toDate?: string;
+};
+
+/**
+ * exportRounds — eksporterer runder til CSV eller PDF (stub).
+ * I produksjon vil denne generere en fil og returnere en download-URL,
+ * eller streame filen via en route handler. For nå logger den valget.
+ */
+export async function exportRounds(input: ExportRoundsInput) {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("unauthenticated");
+  // Stub: kun for å bekrefte at server action er koblet.
+  // Eksport-pipeline implementeres når PDF-renderer er på plass.
+  await prisma.round.findMany({
+    where: { userId: user.id },
+    take: 1,
+  });
+  void input;
+}
+
 export async function deleteRound(roundId: string) {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");

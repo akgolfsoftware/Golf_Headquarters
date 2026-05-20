@@ -148,6 +148,47 @@ function fasetittel(fase: PlanFase, area: PyramidArea): string {
   return `${fNavn} · ${areaNavn[area]}`;
 }
 
+/**
+ * Lagre plan-utkast (status DRAFT) — alias for {@link opprettPlan} med
+ * sendTilSpiller=false. Eksponeres som egen navngitt action slik at coach-UI
+ * og automatiserings-skript kan kalle den uten å vite om det interne flagget.
+ */
+export async function savePlanDraft(
+  input: Omit<OpprettPlanInput, "sendTilSpiller">,
+): Promise<ValideringResultat> {
+  return opprettPlan({ ...input, sendTilSpiller: false });
+}
+
+/**
+ * Publiser plan til spiller (status PENDING_PLAYER + Notification) — alias for
+ * {@link opprettPlan} med sendTilSpiller=true. Lager også en Notification slik
+ * at spilleren får varsel om at planen venter på godkjenning.
+ */
+export async function publishPlan(
+  input: Omit<OpprettPlanInput, "sendTilSpiller">,
+): Promise<ValideringResultat> {
+  const res = await opprettPlan({ ...input, sendTilSpiller: true });
+  if (!res.ok) return res;
+
+  // Send Notification til spilleren slik at planen vises i innboksen deres.
+  try {
+    await prisma.notification.create({
+      data: {
+        userId: input.spillerId,
+        type: "plan",
+        title: "Ny treningsplan venter på godkjenning",
+        body: `Coachen din har sendt deg planen «${input.navn.trim()}». Åpne den for å godkjenne.`,
+        link: `/portal/planer/${res.planId}`,
+      },
+    });
+  } catch (err) {
+    // Notification er ikke kritisk — planen er allerede opprettet.
+    console.error("[plans] Kunne ikke opprette Notification for ny plan", err);
+  }
+
+  return res;
+}
+
 export async function opprettPlan(input: OpprettPlanInput): Promise<ValideringResultat> {
   const user = await getCurrentUser();
   if (!user) return { ok: false, feil: "unauthenticated" };

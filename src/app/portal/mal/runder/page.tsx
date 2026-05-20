@@ -12,6 +12,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { NyRundeModal } from "./ny-runde-modal";
+import { EksporterRunderModal } from "./eksporter-modal";
 
 function formatSg(v: number | null | undefined): string {
   if (v == null) return "—";
@@ -199,6 +200,7 @@ export default async function RunderPage() {
               Tee: Alle <ChevronDown size={11} strokeWidth={1.75} />
             </Chip>
             <div className="ml-auto inline-flex gap-2">
+              <EksporterRunderModal />
               <button
                 type="button"
                 disabled
