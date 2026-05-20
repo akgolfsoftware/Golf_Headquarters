@@ -299,7 +299,7 @@ export default async function SpillerCoachView({
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             CoachHQ · Stallen
           </span>
-          <h1 className="mt-1 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-[36px]">
+          <h1 className="mt-1 font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight md:text-[36px]">
             {player.name.split(" ")[0]}{" "}
             <em className="font-normal italic text-primary">
               {player.name.split(" ").slice(1).join(" ") || player.name}

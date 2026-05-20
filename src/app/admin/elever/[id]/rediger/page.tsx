@@ -45,7 +45,7 @@ export default async function RedigerSpillerPage({
     typeof prefs.alder === "number" ? prefs.alder : null;
 
   return (
-    <div className="flex flex-col gap-8 px-6 py-8 md:px-10 md:py-10">
+    <div className="flex flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 md:px-10 md:py-10">
       <PageHeader
         eyebrow="Spillere · Rediger"
         titleLead="Rediger"
@@ -54,7 +54,7 @@ export default async function RedigerSpillerPage({
         sub={`Oppdater informasjon for ${player.name}.`}
       />
 
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm md:p-8">
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6 md:p-8">
         <RedigerSpillerForm
           userId={player.id}
           initial={{
