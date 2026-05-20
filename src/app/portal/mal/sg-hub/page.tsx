@@ -244,7 +244,7 @@ export default async function SgHubPage() {
     : null;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 pb-20 md:space-y-10 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · /portal/mal/sg-hub"
         titleLead="Min"
@@ -258,7 +258,7 @@ export default async function SgHubPage() {
 
       {/* HERO — SG total + tone-graf */}
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1.5fr_1fr]">
-        <div className="rounded-2xl border border-primary bg-primary p-8 text-primary-foreground">
+        <div className="rounded-2xl border border-primary bg-primary p-4 text-primary-foreground md:p-8">
           <div className="flex items-baseline justify-between">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] opacity-80">
               SG Total · 90 d
@@ -268,7 +268,7 @@ export default async function SgHubPage() {
             </span>
           </div>
           <div className="mt-6 flex items-end gap-3">
-            <span className="font-display text-6xl font-semibold tabular-nums leading-none">
+            <span className="font-display text-5xl font-semibold tabular-nums leading-none md:text-6xl">
               {sg.total == null ? "—" : formatSg(sg.total)}
             </span>
             {sg.total != null && (
@@ -343,7 +343,7 @@ export default async function SgHubPage() {
       </section>
 
       {/* Topp 3 prioriteringer */}
-      <section className="rounded-2xl border border-primary/30 bg-primary/[0.04] p-6">
+      <section className="rounded-2xl border border-primary/30 bg-primary/[0.04] p-4 md:p-6">
         <div className="mb-4 flex items-center gap-2">
           <Sparkles size={14} strokeWidth={1.75} className="text-primary" />
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
@@ -392,7 +392,7 @@ export default async function SgHubPage() {
       </section>
 
       {/* Siste TrackMan-økt */}
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <section className="rounded-2xl border border-border bg-card p-4 md:p-6">
         <div className="mb-3 flex items-center gap-2">
           <Activity size={14} strokeWidth={1.75} className="text-muted-foreground" />
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -433,7 +433,7 @@ export default async function SgHubPage() {
 
       {/* Insights */}
       {insights.length > 0 && (
-        <section className="rounded-2xl border border-border bg-card p-6">
+        <section className="rounded-2xl border border-border bg-card p-4 md:p-6">
           <div className="mb-4 flex items-center gap-2">
             <Lightbulb size={14} strokeWidth={1.75} className="text-muted-foreground" />
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -485,7 +485,7 @@ export default async function SgHubPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
             {clubs.map((club) => (
               <Link
                 key={club}

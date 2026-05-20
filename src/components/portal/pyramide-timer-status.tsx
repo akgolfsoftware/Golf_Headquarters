@@ -70,7 +70,7 @@ export function PyramideTimerStatus({
   const maks = Math.max(1, ...Object.values(aktivMinutter));
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm md:p-8">
+    <section className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-sm md:p-8">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="font-display text-xl font-semibold tracking-tight text-foreground">
           Pyramide-status

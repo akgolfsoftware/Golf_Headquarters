@@ -78,7 +78,7 @@ export default async function TurneringerPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-[1200px] px-6 py-8">
+      <div className="mx-auto max-w-[1200px] px-4 py-6 pb-20 md:px-6 md:py-8 md:pb-8">
         <div className="mb-8">
           <PageHeader
             eyebrow="PlayerHQ · Trening · Turneringsplan"
@@ -133,7 +133,7 @@ export default async function TurneringerPage() {
                 return (
                   <div
                     key={r.id}
-                    className="flex flex-col gap-1 border-b border-border px-6 py-4 last:border-b-0 sm:grid sm:items-center sm:gap-4"
+                    className="flex flex-col gap-1 border-b border-border px-4 py-4 last:border-b-0 sm:grid sm:items-center sm:gap-4 sm:px-6"
                     style={{ gridTemplateColumns: "1fr 160px 80px" }}
                   >
                     <div>

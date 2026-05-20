@@ -323,7 +323,7 @@ export default async function MetricDrillDownPage({
   const benchmarkDiff = verdi30d - info.benchmark;
 
   return (
-    <div className="space-y-8 pb-16">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-16">
       <PageHeader
         eyebrow={`PlayerHQ · Statistikk · ${info.slug.toUpperCase()}`}
         titleLead={info.title}
@@ -331,21 +331,23 @@ export default async function MetricDrillDownPage({
         titleTrail="30 d"
         sub={info.unit}
         actions={
-          <div className="flex gap-1 rounded-full border border-border bg-card p-1">
-            {PERIODS.map((p, i) => (
-              <button
-                key={p}
-                type="button"
-                disabled
-                className={`rounded-full px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
-                  i === 2
-                    ? "bg-foreground text-accent"
-                    : "text-muted-foreground"
-                }`}
-              >
-                {p}
-              </button>
-            ))}
+          <div className="-mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-x-visible md:px-0">
+            <div className="flex gap-1 rounded-full border border-border bg-card p-1">
+              {PERIODS.map((p, i) => (
+                <button
+                  key={p}
+                  type="button"
+                  disabled
+                  className={`whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
+                    i === 2
+                      ? "bg-foreground text-accent"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
           </div>
         }
       />
@@ -355,12 +357,12 @@ export default async function MetricDrillDownPage({
       ) : (
         <>
           {/* Hero stat */}
-          <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="col-span-1 rounded-2xl border border-primary bg-primary p-6 text-primary-foreground sm:col-span-1">
+          <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <div className="col-span-1 rounded-2xl border border-primary bg-primary p-4 text-primary-foreground sm:col-span-2 sm:p-6 md:col-span-1">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] opacity-80">
                 Snitt 30 d
               </div>
-              <div className="mt-3 font-mono text-5xl font-semibold tabular-nums">
+              <div className="mt-3 font-mono text-4xl font-semibold tabular-nums md:text-5xl">
                 {info.format(verdi30d)}
               </div>
               <div className="mt-3 font-mono text-xs opacity-90">
@@ -417,7 +419,7 @@ export default async function MetricDrillDownPage({
           </section>
 
           {/* Trend-chart */}
-          <section className="rounded-2xl border border-border bg-card p-6">
+          <section className="rounded-2xl border border-border bg-card p-4 md:p-6">
             <div className="mb-3 flex items-baseline justify-between">
               <h2 className="font-display text-base font-semibold tracking-tight">
                 {info.title} {info.italic} · 90 dager
@@ -459,8 +461,9 @@ export default async function MetricDrillDownPage({
                   Ingen drills logget for denne disiplinen ennå.
                 </div>
               ) : (
-                <div className="overflow-hidden rounded-2xl border border-border bg-card">
-                  <div className="grid grid-cols-[2fr_80px_80px_80px] gap-4 border-b border-border bg-muted/40 px-6 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                <div className="overflow-x-auto rounded-2xl border border-border bg-card">
+                  <div className="min-w-[480px]">
+                  <div className="grid grid-cols-[2fr_80px_80px_80px] gap-4 border-b border-border bg-muted/40 px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground md:px-6">
                     <span>Drill</span>
                     <span className="text-right">Antall</span>
                     <span className="text-right">Tid</span>
@@ -469,7 +472,7 @@ export default async function MetricDrillDownPage({
                   {drillTopp.map((d) => (
                     <div
                       key={d.navn}
-                      className="grid grid-cols-[2fr_80px_80px_80px] items-center gap-4 border-b border-border/60 px-6 py-3 last:border-0"
+                      className="grid grid-cols-[2fr_80px_80px_80px] items-center gap-4 border-b border-border/60 px-4 py-3 last:border-0 md:px-6"
                     >
                       <span className="flex items-center gap-2 font-medium">
                         <Target
@@ -490,6 +493,7 @@ export default async function MetricDrillDownPage({
                       </span>
                     </div>
                   ))}
+                  </div>
                 </div>
               )}
             </section>
@@ -506,8 +510,9 @@ export default async function MetricDrillDownPage({
                   Snitt {info.italic.toLowerCase()} per uke · siste 90 d
                 </p>
               </div>
-              <div className="overflow-hidden rounded-2xl border border-border bg-card">
-                <div className="grid grid-cols-[1fr_80px_80px] gap-4 border-b border-border bg-muted/40 px-6 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              <div className="overflow-x-auto rounded-2xl border border-border bg-card">
+                <div className="min-w-[420px]">
+                <div className="grid grid-cols-[1fr_80px_80px] gap-4 border-b border-border bg-muted/40 px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground md:px-6">
                   <span>Periode</span>
                   <span className="text-right">Runder</span>
                   <span className="text-right">SG snitt</span>
@@ -520,7 +525,7 @@ export default async function MetricDrillDownPage({
                 ).map((u) => (
                   <div
                     key={u.label}
-                    className="grid grid-cols-[1fr_80px_80px] items-center gap-4 border-b border-border/60 px-6 py-3 last:border-0"
+                    className="grid grid-cols-[1fr_80px_80px] items-center gap-4 border-b border-border/60 px-4 py-3 last:border-0 md:px-6"
                   >
                     <span className="font-medium">{u.label}</span>
                     <span className="text-right font-mono text-sm tabular-nums">
@@ -539,13 +544,14 @@ export default async function MetricDrillDownPage({
                     </span>
                   </div>
                 ))}
+                </div>
               </div>
             </section>
           )}
 
           {/* Økt-sammendrag (kun pyramid) */}
           {info.kind === "pyramid" && okterTotalt > 0 && (
-            <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
               <Tile
                 icon={ClipboardList}
                 label="Antall økter"
@@ -570,7 +576,7 @@ export default async function MetricDrillDownPage({
       )}
 
       {/* Coach-CTA */}
-      <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 sm:flex-row sm:items-center sm:justify-between">
+      <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between md:p-6">
         <div>
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Be coachen om mer fokus
@@ -585,7 +591,7 @@ export default async function MetricDrillDownPage({
         </div>
         <Link
           href={`/portal/coach/melding?type=fokus&omrade=${info.slug}`}
-          className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90"
+          className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90"
         >
           <MessageSquare size={12} strokeWidth={1.75} /> Be om mer fokus
         </Link>

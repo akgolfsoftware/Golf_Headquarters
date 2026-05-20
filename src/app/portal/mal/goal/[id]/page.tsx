@@ -394,7 +394,7 @@ export default async function GoalDetailPage({
       : Math.min(100, (data.streak / 14) * 100);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 pb-20 md:space-y-10 md:pb-0">
       <Link
         href="/portal/mal"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -433,7 +433,7 @@ export default async function GoalDetailPage({
         aria-labelledby="tracker-heading"
         className="grid gap-6 lg:grid-cols-3"
       >
-        <div className="rounded-2xl border border-border bg-card p-8 lg:col-span-2">
+        <div className="rounded-2xl border border-border bg-card p-4 md:p-8 lg:col-span-2">
           <h2
             id="tracker-heading"
             className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
@@ -461,7 +461,7 @@ export default async function GoalDetailPage({
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-2xl border border-border bg-card p-6">
+          <div className="rounded-2xl border border-border bg-card p-4 md:p-6">
             <div className="flex items-center gap-2">
               <AlertTriangle
                 className="h-4 w-4 text-destructive"
@@ -476,7 +476,7 @@ export default async function GoalDetailPage({
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-6">
+          <div className="rounded-2xl border border-border bg-card p-4 md:p-6">
             <div className="flex items-center gap-2">
               <Target
                 className="h-4 w-4 text-primary"
@@ -515,7 +515,7 @@ export default async function GoalDetailPage({
       {/* Milepæl-historikk */}
       <section
         aria-labelledby="milestones-heading"
-        className="rounded-2xl border border-border bg-card p-8"
+        className="rounded-2xl border border-border bg-card p-4 md:p-8"
       >
         <div className="flex items-baseline justify-between">
           <h2
@@ -567,7 +567,7 @@ export default async function GoalDetailPage({
       {/* Tidsserie — runder/økter siste 90d */}
       <section
         aria-labelledby="history-heading"
-        className="rounded-2xl border border-border bg-card p-8"
+        className="rounded-2xl border border-border bg-card p-4 md:p-8"
       >
         <div className="flex items-baseline justify-between">
           <h2
@@ -637,7 +637,7 @@ export default async function GoalDetailPage({
       {data.coachMessages.length > 0 && (
         <section
           aria-labelledby="coach-heading"
-          className="rounded-2xl border border-primary/30 bg-primary/5 p-8"
+          className="rounded-2xl border border-primary/30 bg-primary/5 p-4 md:p-8"
         >
           <div className="flex items-baseline justify-between">
             <h2

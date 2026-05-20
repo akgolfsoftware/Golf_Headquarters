@@ -91,7 +91,7 @@ export default async function MalOversikt() {
   const isFree = user.tier === "GRATIS";
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
       <PageHeader
         eyebrow={`Mål · ${formatDato(new Date())}`}
         titleLead="Mål —"
@@ -102,7 +102,7 @@ export default async function MalOversikt() {
           <>
             <Link
               href="/portal/mal/runder?export=csv"
-              className="inline-flex h-10 items-center gap-2 rounded-md border border-input bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              className="inline-flex h-11 items-center gap-2 rounded-md border border-input bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <Download className="h-4 w-4" strokeWidth={1.75} />
               <span className="hidden sm:inline">Eksporter</span>
@@ -116,7 +116,7 @@ export default async function MalOversikt() {
       <ScoreTrend user={user} rounds={rounds} isFree={isFree} />
 
       {/* 3 mål-cards */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <HcpMaalCard hcp={user.hcp} goal={hcpMaal} />
         <ScoreMaalCard
           rounds={rounds.filter((r) => r.playedAt >= tretti)}
@@ -198,7 +198,7 @@ function ScoreTrend({
 
   return (
     <section
-      className="relative overflow-hidden rounded-2xl p-6 text-white md:p-8"
+      className="relative overflow-hidden rounded-2xl p-4 text-white md:p-8"
       style={{
         background:
           "linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card)) 60%, hsl(var(--foreground)) 100%)",
@@ -220,7 +220,7 @@ function ScoreTrend({
           >
             Snittscore-trend · 12 mnd
           </span>
-          <div className="flex items-baseline gap-4 font-mono text-5xl font-medium leading-none tabular-nums tracking-tight md:text-6xl">
+          <div className="flex items-baseline gap-4 font-mono text-4xl font-medium leading-none tabular-nums tracking-tight md:text-6xl">
             <span>{naa != null ? naa.toFixed(1).replace(".", ",") : "—"}</span>
             {endring != null && Math.abs(endring) >= 0.1 && (
               <span
@@ -244,7 +244,7 @@ function ScoreTrend({
           </p>
         </div>
 
-        <div className="flex flex-wrap items-start gap-6">
+        <div className="flex flex-wrap items-start gap-4 sm:gap-6">
           {beste != null && (
             <Stat label="Beste" value={String(beste)} highlight />
           )}
@@ -450,7 +450,7 @@ function HcpMaalCard({
       : null;
 
   return (
-    <article className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <article className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm md:p-6">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <Target
@@ -544,7 +544,7 @@ function ScoreMaalCard({
   const prosent = Math.min(100, (oppnaadd / total) * 100);
 
   return (
-    <article className="relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <article className="relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm md:p-6">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <Star
@@ -647,7 +647,7 @@ function FerdighetMaalCard({
     verdi != null && maal > 0 ? Math.min(100, (verdi / (maal * 100 + 50)) * 100) : null;
 
   return (
-    <article className="relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <article className="relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm md:p-6">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <Trophy
@@ -781,7 +781,7 @@ function QuickLink({
     return (
       <Link
         href="/portal/meg/abonnement"
-        className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+        className="rounded-2xl border border-border bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md md:p-6"
       >
         {innhold}
       </Link>
@@ -791,7 +791,7 @@ function QuickLink({
   return (
     <Link
       href={href}
-      className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+      className="rounded-2xl border border-border bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md md:p-6"
     >
       {innhold}
     </Link>

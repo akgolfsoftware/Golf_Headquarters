@@ -93,7 +93,7 @@ const REKORD_ICON = {
 
 export function StatistikkClient({ data }: { data: StatistikkData }) {
   return (
-    <div className="space-y-8 md:space-y-10">
+    <div className="space-y-6 pb-20 md:space-y-10 md:pb-0">
       <Hero data={data} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -136,18 +136,18 @@ function Hero({ data }: { data: StatistikkData }) {
       : "—";
 
   return (
-    <header className="rounded-2xl border border-border bg-card p-6 md:p-8">
+    <header className="rounded-2xl border border-border bg-card p-4 md:p-8">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 flex-1">
           <span className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground">
             Min platform · {dato}
           </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-foreground md:text-[40px]">
+          <h1 className="mt-2 font-display text-2xl font-semibold leading-tight tracking-tight text-foreground md:text-[40px]">
             Min{" "}
             <em className="font-normal italic text-primary">statistikk</em>
             <span className="text-muted-foreground">.</span>
           </h1>
-          <p className="mt-3 max-w-2xl text-sm text-muted-foreground md:text-base">
+          <p className="mt-3 max-w-2xl text-base text-muted-foreground">
             {data.spiller.fornavn}, du har snittet{" "}
             <strong className="font-mono tabular-nums text-foreground">
               {data.snittScore.toFixed(1).replace(".", ",")}
@@ -172,7 +172,7 @@ function Hero({ data }: { data: StatistikkData }) {
           <HeroAction icon={GitCompareArrows} label="Sammenlign" />
           <Link
             href="/portal"
-            className="inline-flex h-10 items-center gap-2 rounded-md border border-input bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+            className="inline-flex h-11 items-center gap-2 rounded-md border border-input bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
           >
             <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
             Tilbake til hjem
@@ -193,7 +193,7 @@ function HeroAction({
   return (
     <button
       type="button"
-      className="inline-flex h-10 items-center gap-2 rounded-md border border-input bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+      className="inline-flex h-11 items-center gap-2 rounded-md border border-input bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
     >
       <Icon className="h-4 w-4" strokeWidth={1.75} />
       {label}
@@ -217,7 +217,7 @@ function HcpTrendCard({
     forste != null && siste != null ? siste - forste : null;
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-border bg-card p-6 md:p-8">
+    <article className="overflow-hidden rounded-2xl border border-border bg-card p-4 md:p-8">
       <header className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
@@ -255,7 +255,7 @@ function HcpTrendCard({
       <div className="mt-6">
         <svg
           viewBox="0 0 600 200"
-          className="h-44 w-full md:h-56"
+          className="h-48 w-full md:h-64"
           preserveAspectRatio="none"
           aria-label="HCP-trend siste 12 måneder"
           role="img"
@@ -345,7 +345,7 @@ function PyramideRingerCard({ verdier }: { verdier: PyramidVerdi[] }) {
   const sum = verdier.reduce((s, v) => s + v.prosent, 0);
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-border bg-card p-6 md:p-8">
+    <article className="overflow-hidden rounded-2xl border border-border bg-card p-4 md:p-8">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <Target className="h-3.5 w-3.5 text-foreground" strokeWidth={1.75} />
@@ -364,7 +364,7 @@ function PyramideRingerCard({ verdier }: { verdier: PyramidVerdi[] }) {
         Hvor jevnt du trener på tvers av disipliner.
       </p>
 
-      <div className="mt-6 grid grid-cols-5 gap-2">
+      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-5 sm:gap-2">
         {verdier.map((v) => (
           <PyramideRing key={v.omrade} omrade={v.omrade} prosent={v.prosent} />
         ))}
@@ -435,7 +435,7 @@ function SgTrendCard({ punkter }: { punkter: SgTrendPunkt[] }) {
   const paths = useMemo(() => byggSgPaths(punkter), [punkter]);
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-border bg-card p-6 md:p-8">
+    <article className="overflow-hidden rounded-2xl border border-border bg-card p-4 md:p-8">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
@@ -471,10 +471,10 @@ function SgTrendCard({ punkter }: { punkter: SgTrendPunkt[] }) {
         </div>
       </header>
 
-      <div className="mt-6">
+      <div className="mt-6 -mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-x-visible md:px-0">
         <svg
           viewBox="0 0 600 220"
-          className="h-48 w-full md:h-60"
+          className="h-48 w-full min-w-[480px] md:h-60 md:min-w-0"
           preserveAspectRatio="none"
           aria-label="SG-trend per disipplin"
           role="img"
@@ -555,7 +555,7 @@ function BenchmarkCard({ rader }: { rader: BenchmarkRad[] }) {
   const maxAbs = Math.max(0.5, ...rader.map((r) => Math.abs(r.verdi)));
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-border bg-card p-6 md:p-8">
+    <article className="overflow-hidden rounded-2xl border border-border bg-card p-4 md:p-8">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <GitCompareArrows
@@ -595,7 +595,7 @@ function BenchmarkBar({
   const bredde = (Math.abs(rad.verdi) / maxAbs) * 50; // % av halvparten
 
   return (
-    <li className="grid grid-cols-[140px_1fr_72px] items-center gap-4">
+    <li className="grid grid-cols-[100px_1fr_56px] items-center gap-2 sm:grid-cols-[140px_1fr_72px] sm:gap-4">
       <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground">
         {rad.label}
       </span>
@@ -638,7 +638,7 @@ function StreakCard({ streak }: { streak: boolean[] }) {
   const lengsteStreak = 23; // Fra dummy/spillerprofil.
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 md:p-8">
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-4 md:p-8">
       <header className="flex items-center gap-2">
         <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
           <Zap className="h-3.5 w-3.5 text-foreground" strokeWidth={1.75} />

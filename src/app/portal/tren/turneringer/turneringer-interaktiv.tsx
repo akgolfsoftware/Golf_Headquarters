@@ -447,26 +447,28 @@ export function TurneringerInteraktiv({
   return (
     <>
       {/* Toolbar */}
-      <div className="mb-6 flex flex-wrap items-center gap-4">
-        <div className="inline-flex gap-1 rounded-md border border-border bg-card p-1">
-          {(["MINE", "TILGJENGELIGE", "ALLE"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={`rounded-sm px-3 py-1.5 text-xs font-medium transition-colors ${
-                mode === m
-                  ? "bg-foreground text-background"
-                  : "text-muted-foreground hover:bg-secondary"
-              }`}
-            >
-              {MODE_LABEL[m]}
-            </button>
-          ))}
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+        <div className="-mx-1 overflow-x-auto px-1 sm:mx-0 sm:overflow-visible">
+          <div className="inline-flex gap-1 rounded-md border border-border bg-card p-1">
+            {(["MINE", "TILGJENGELIGE", "ALLE"] as const).map((m) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                className={`whitespace-nowrap rounded-sm px-3 py-2 text-xs font-medium transition-colors ${
+                  mode === m
+                    ? "bg-foreground text-background"
+                    : "text-muted-foreground hover:bg-secondary"
+                }`}
+              >
+                {MODE_LABEL[m]}
+              </button>
+            ))}
+          </div>
         </div>
-        <span className="flex-1" />
+        <span className="hidden flex-1 sm:block" />
         <button
           onClick={() => setModalOpen(true)}
-          className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90"
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90 sm:w-auto"
         >
           <Plus className="h-4 w-4" strokeWidth={2} />
           Legg til turnering
@@ -490,7 +492,7 @@ export function TurneringerInteraktiv({
                 const dato = e.tournament?.startDate ?? e.manualDate;
                 const pri = e.priority as TurnPriority;
                 return (
-                  <div key={e.id} className="flex items-center gap-4 px-6 py-4">
+                  <div key={e.id} className="flex flex-wrap items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6">
                     <Trophy className="h-5 w-5 flex-none text-muted-foreground" strokeWidth={1.5} />
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
@@ -538,7 +540,7 @@ export function TurneringerInteraktiv({
           <div className="overflow-hidden rounded-xl border border-border bg-card">
             <div className="divide-y divide-border">
               {tilgjengelige.map((t) => (
-                <div key={t.id} className="flex items-center gap-4 px-6 py-4">
+                <div key={t.id} className="flex flex-wrap items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6">
                   <Trophy className="h-5 w-5 flex-none text-muted-foreground" strokeWidth={1.5} />
                   <div className="min-w-0 flex-1">
                     <span className="text-sm font-medium text-foreground">{t.name}</span>
@@ -560,7 +562,7 @@ export function TurneringerInteraktiv({
         <div className="overflow-hidden rounded-xl border border-border bg-card">
           <div className="divide-y divide-border">
             {alle.map((row) => (
-              <div key={row.key} className="flex items-center gap-4 px-6 py-4">
+              <div key={row.key} className="flex flex-wrap items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6">
                 <Trophy className="h-5 w-5 flex-none text-muted-foreground" strokeWidth={1.5} />
                 <div className="min-w-0 flex-1">
                   <span className="text-sm font-medium text-foreground">{row.navn}</span>
