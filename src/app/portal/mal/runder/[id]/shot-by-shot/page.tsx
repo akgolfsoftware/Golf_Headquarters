@@ -5,10 +5,11 @@
  * Detaljert visning av en enkelt runde — KPI-strip, hull-tabell, trend-charts og notater.
  */
 import Link from "next/link";
-import { Pencil, Download, Share2, MoreVertical, MapPin, Sun, Wind, BarChart3, ChevronRight } from "lucide-react";
+import { Pencil, Download, MoreVertical, MapPin, Sun, Wind, BarChart3, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { ShareRoundButton } from "./share-button";
 
 const FRONT_PARS = [4, 5, 3, 4, 4, 4, 5, 3, 4];
 const BACK_PARS = [4, 4, 3, 5, 4, 4, 5, 3, 4];
@@ -26,13 +27,31 @@ export default async function RundeShotByShotPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requirePortalUser();
+  const user = await requirePortalUser();
   const { id } = await params;
   const round = await prisma.round.findUnique({
     where: { id },
     include: { course: true },
   });
   if (!round) notFound();
+
+  // Bygg metadata for Del-modal
+  const navnDeler = user.name.trim().split(/\s+/);
+  const initialer =
+    navnDeler.length === 1
+      ? navnDeler[0].slice(0, 2).toUpperCase()
+      : (navnDeler[0][0] + navnDeler[navnDeler.length - 1][0]).toUpperCase();
+  const hcpLabel =
+    user.hcp == null
+      ? "—"
+      : user.hcp <= 0
+        ? `+${Math.abs(user.hcp).toFixed(1).replace(".", ",")}`
+        : user.hcp.toFixed(1).replace(".", ",");
+  const datoLabel = round.playedAt.toLocaleDateString("nb-NO", {
+    day: "numeric",
+    month: "short",
+  });
+  const vsPar = round.score - round.course.par;
 
   return (
     <div className="space-y-8 pb-16">
@@ -73,7 +92,16 @@ export default async function RundeShotByShotPage({
         <div className="flex gap-2">
           <IconBtn label="Rediger" Icon={Pencil} />
           <IconBtn label="Eksporter" Icon={Download} />
-          <IconBtn label="Del" Icon={Share2} accent />
+          <ShareRoundButton
+            roundId={round.id}
+            spillerNavn={user.name}
+            hcpLabel={hcpLabel}
+            initialer={initialer}
+            bane={round.course.name}
+            dato={datoLabel}
+            score={round.score}
+            vsPar={vsPar}
+          />
           <IconBtn label="Mer" Icon={MoreVertical} />
         </div>
       </header>

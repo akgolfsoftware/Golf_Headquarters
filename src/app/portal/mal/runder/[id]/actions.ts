@@ -3,7 +3,73 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { notifyMany } from "@/lib/notifications";
 import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
+
+export type ShareVisibility = "privat" | "coach" | "offentlig";
+export type ShareFormat = "story" | "post" | "pdf" | "link";
+
+export type ShareRoundInput = {
+  format: ShareFormat;
+  visibility: ShareVisibility;
+  message?: string;
+  /** Inkluder score, statistikk, foto, notater (toggles). */
+  inkluder: {
+    score: boolean;
+    statistikk: boolean;
+    foto: boolean;
+    notater: boolean;
+  };
+};
+
+/**
+ * Del en runde med coach / foreldre / offentlig.
+ *
+ * Returnerer en delbar lenke (akgolf.no/r/<slug>) som kan kopieres
+ * til utklippstavla. Sender også Notification til coach hvis
+ * visibility === "coach".
+ */
+export async function shareRound(roundId: string, input: ShareRoundInput) {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("unauthenticated");
+
+  const round = await prisma.round.findUnique({
+    where: { id: roundId },
+    include: { course: true },
+  });
+  if (!round || round.userId !== user.id) throw new Error("forbidden");
+
+  // Generer share-slug — 8 tegn fra round.id
+  const slug = round.id.slice(0, 8);
+  const shareUrl = `https://akgolf.no/r/${slug}`;
+
+  // Hvis coach skal varsles, hent alle coach-er via gruppe-medlemskap.
+  if (input.visibility === "coach") {
+    const memberships = await prisma.groupMember.findMany({
+      where: { userId: user.id },
+      select: { group: { select: { coachId: true } } },
+    });
+    const coachIds = Array.from(
+      new Set(
+        memberships
+          .map((m) => m.group.coachId)
+          .filter((v): v is string => v != null),
+      ),
+    );
+
+    if (coachIds.length > 0) {
+      await notifyMany(coachIds, {
+        type: "melding",
+        title: `${user.name} delte en runde`,
+        body: `${round.course.name} · ${round.score} slag${input.message ? ` — ${input.message}` : ""}`,
+        link: `/admin/spillere/${user.id}`,
+      });
+    }
+  }
+
+  revalidatePath(`/portal/mal/runder/${roundId}`);
+  return { shareUrl, format: input.format, visibility: input.visibility };
+}
 
 export type ShotInput = {
   holeNumber: number;
