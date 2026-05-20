@@ -31,6 +31,215 @@
 
 **ALLTID brukt slik:** `FYS · TEK · SLAG · SPILL · TURN` (i den rekkefølgen, dot-separator).
 
+### 2A. FYS — fysiske underkategorier
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Styrke | styrke | generell |
+| Maks-styrke | maks-styrke | bindestrek |
+| Eksplosiv styrke | eksplosiv styrke | uten bindestrek |
+| Power | power | engelsk-norsk akseptert |
+| Spenstighet | spenstighet | hopp + pliometrisk |
+| Pliometrisk | pliometrisk | trening |
+| Kondisjon | kondisjon | utholdenhet |
+| Utholdenhet | utholdenhet | aerob + anaerob |
+| Intervall | intervall | |
+| Mobilitet | mobilitet | bevegelighet |
+| Hofte-mobilitet | hofte-mobilitet | bindestrek |
+| Skulder-mobilitet | skulder-mobilitet | bindestrek |
+| Rygg-mobilitet | rygg-mobilitet | bindestrek |
+| Stabilitet | stabilitet | core + leddstabilitet |
+| Core-stabilitet | core-stabilitet | bindestrek |
+| Anker | anker | "lower body anchor", forklarende |
+| Koordinasjon | koordinasjon | |
+| Balanse | balanse | |
+| Beinstyrke | beinstyrke | ett ord |
+| Core | core | engelsk-norsk |
+| Overkroppstyrke | overkroppstyrke | ett ord |
+| Rotasjonsstyrke | rotasjonsstyrke | ett ord |
+| Hofterotasjon | hofterotasjon | ett ord |
+| Spinal-mobilitet | spinal-mobilitet | bindestrek |
+| Restitusjon | restitusjon | |
+| Aktiv hvile | aktiv hvile | uten bindestrek |
+| Statisk tøyning | statisk tøyning | |
+| Dynamisk oppvarming | dynamisk oppvarming | |
+
+### 2B. TEK — tekniske underkategorier
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Swing-mekanikk | swing-mekanikk | bindestrek |
+| Swing-sekvens | swing-sekvens | bindestrek |
+| Kinematisk kjede | kinematisk kjede | "kinetic chain" |
+| Plane | plane | engelsk fagterm |
+| Swing-plane | swing-plane | bindestrek |
+| On-plane | on-plane | |
+| Steep / Shallow | brattere / flatere | |
+| Kontakt | kontakt | "Konsistent kontakt" |
+| Lavpunkt | lavpunkt | "bottom of arc" |
+| Treff-punkt | treff-punkt | bindestrek |
+| Strike location | strike location | engelsk-norsk |
+| Sekvens | sekvens | hvordan kroppen jobber |
+| Tempo | tempo | |
+| Rytme | rytme | |
+| Balanse | balanse | i swingen |
+| Posisjon | posisjon | "Topp-posisjon" |
+| Topp-posisjon | topp-posisjon | bindestrek |
+| Slutt-posisjon | slutt-posisjon | bindestrek |
+| Setup | setup | engelsk fagterm |
+| Grep | grep | hånd på køllen |
+| Stance | stance | engelsk-norsk |
+| Posture | posture | engelsk-norsk |
+| Alignment | alignment | sikt + føtter |
+| Sikt | sikt | "Sikt mot flagg" |
+| Sikting | sikting | |
+| Rotasjon | rotasjon | |
+| Hip rotation | hofterotasjon | norsk form |
+| Shoulder rotation | skulderrotasjon | norsk form |
+| Hip-shoulder separation | hofte-skulder-separasjon | bindestreker |
+| X-factor | X-factor | engelsk fagterm |
+| Hånd-banen | hånd-banen | bindestrek |
+| Klubbhastighet | klubbhastighet | ett ord, mph eller m/s |
+| Klubbflate | klubbflate | "face angle" |
+| Face angle | face angle | engelsk |
+| Klubbveis | klubbveis | "club path" |
+| Klubb-bane | klubb-bane | "club path" alternativ |
+| Angle of attack | angle of attack | engelsk fagterm |
+| Attack angle | attack angle | kort form |
+| Loft | loft | klubbloft |
+| Dynamic loft | dynamisk loft | norsk form |
+| Spin-akse | spin-akse | bindestrek |
+| Spin rate | spinrate | ett ord eller med mellomrom |
+| Compression | compression | engelsk fagterm |
+| Lead arm | lead arm | engelsk |
+| Lag | lag | "Bevare lag" |
+| Release | release | engelsk |
+| Hands ahead | hands ahead | engelsk-norsk |
+| Følge gjennom | følge gjennom | "Follow-through" |
+| Follow-through | follow-through | bindestrek |
+| Impact | impact | engelsk |
+| Takeaway | takeaway | engelsk |
+
+### 2C. SLAG — slag-spesifikke kategorier
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Full swing | full swing | mellomrom |
+| Drive | drive | "tee-shot" |
+| Iron-spill | iron-spill | bindestrek |
+| Jern-spill | jern-spill | norsk form |
+| Approach-spill | approach-spill | bindestrek |
+| Innspill | innspill | "approach" norsk |
+| Wedge-spill | wedge-spill | bindestrek |
+| Kile-spill | kile-spill | norsk form |
+| Pitch | pitch | engelsk |
+| Pitch-skudd | pitch-skudd | bindestrek |
+| Chip | chip | engelsk |
+| Chip-skudd | chip-skudd | bindestrek |
+| Bump and run | bump and run | engelsk fagterm |
+| Flop shot | flop shot | engelsk |
+| Lob shot | lob shot | engelsk |
+| Punch shot | punch shot | engelsk |
+| Knockdown | knockdown | engelsk |
+| Stinger | stinger | engelsk fagterm |
+| Bunker-spill | bunker-spill | bindestrek |
+| Greenside bunker | greenside bunker | engelsk-norsk |
+| Fairway-bunker | fairway-bunker | bindestrek |
+| Plugged lie | plugged lie | engelsk |
+| Buried lie | buried lie | engelsk |
+| Putting | putting | engelsk |
+| Putt | putt | enkelt slag |
+| Kort-putt | kort-putt | bindestrek, 0–3m |
+| Mid-putt | mid-putt | 3–6m |
+| Lang-putt | lang-putt | 6m+ |
+| Lag-putt | lag-putt | "speed putting" |
+| Distance-kontroll | distance-kontroll | bindestrek |
+| Avstandskontroll | avstandskontroll | ett ord, norsk form |
+| Linje-kontroll | linje-kontroll | bindestrek |
+| Lese green | lese green | "green reading" |
+| Green-lesing | green-lesing | bindestrek |
+| Break | break | engelsk fagterm |
+| Speed | speed | "puttingspeed" |
+| Tempo (putting) | tempo | i putting-kontekst |
+| Draw | draw | venstre-buet (høyrehendt) |
+| Fade | fade | høyre-buet (høyrehendt) |
+| Hook | hook | over-draw |
+| Slice | slice | over-fade |
+| Straight | rett | "Rett ball" |
+| High ball | høyt slag | norsk form |
+| Low ball | lavt slag | norsk form |
+| Trajectory | trajectory | ballbane-engelsk |
+| Ballbane | ballbane | ett ord, norsk |
+| Lav trajectory | lav trajectory | "low ball flight" |
+| Avstandsmål | avstandsmål | "50–100 m" |
+
+### 2D. SPILL — spillsimuleringskategorier
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Spillsimulering | spillsimulering | ett ord |
+| 9-hulls spill | 9-hulls spill | bindestrek |
+| 18-hulls spill | 18-hulls spill | bindestrek |
+| Course management | course management | engelsk |
+| Banespill | banespill | norsk form |
+| Strategi | strategi | "Strategi-trening" |
+| Smart spill | smart spill | |
+| Risk-reward | risk-reward | engelsk |
+| Risiko-belønning | risiko-belønning | norsk form |
+| Layup | layup | engelsk |
+| Plassering | plassering | "Ball-plassering" |
+| Scrambling | scrambling | engelsk fagterm |
+| Up-and-down | up-and-down | engelsk |
+| Save par | save par | redning |
+| Save bogey | save bogey | redning |
+| Best-ball | best-ball | engelsk |
+| Worst-ball | worst-ball | engelsk |
+| Skins | skins | engelsk fagterm |
+| Stableford | stableford | engelsk fagterm |
+| Match-spill | match-spill | bindestrek |
+| Match play | match play | engelsk |
+| Stroke-spill | stroke-spill | bindestrek |
+| Pressure-shot | press-slag | norsk form |
+| Pres | pres | "under pres" |
+| Press handling | takle pres | norsk form |
+| Spill mot scorekort | spill mot scorekort | |
+| Spill mot motstander | spill mot motstander | match play |
+| Scoring | scoring | "Scoring-drill" |
+| Konkurranse-simulering | konkurranse-simulering | bindestrek |
+
+### 2E. TURN — turnerings-spesifikke kategorier
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Turneringsforberedelse | turneringsforberedelse | ett ord |
+| Mental forberedelse | mental forberedelse | |
+| Visualisering | visualisering | "Se slaget før det skjer" |
+| Pre-shot rutine | pre-shot rutine | bindestrek |
+| Post-shot rutine | post-shot rutine | bindestrek |
+| Tee-off rutine | tee-off rutine | bindestrek |
+| Oppvarming | oppvarming | "Pre-round warmup" |
+| Pre-round | pre-round | engelsk fagterm |
+| Post-round | post-round | engelsk fagterm |
+| Banerecon | banerecon | "course recon" |
+| Bane-vandring | bane-vandring | bindestrek |
+| Yardage-book | yardage-book | bindestrek |
+| Avstandsbok | avstandsbok | norsk form |
+| Vind-spill | vind-spill | bindestrek |
+| Vær-tilpasning | vær-tilpasning | bindestrek |
+| Pace of play | spilletempo | norsk form |
+| Round management | runde-strategi | norsk form |
+| Lead protection | beskytte ledelse | norsk form |
+| Comeback | comeback | engelsk-norsk |
+| Mental ro | mental ro | |
+| Pust-rutine | pust-rutine | bindestrek |
+| Konsentrasjon | konsentrasjon | |
+| Fokus-trigger | fokus-trigger | bindestrek |
+| Reset-rutine | reset-rutine | bindestrek, etter dårlig slag |
+| Selvprat | selvprat | ett ord |
+| Self-talk | self-talk | engelsk-norsk |
+| Mentaltrening | mentaltrening | ett ord |
+| Visualiseringsøvelse | visualiseringsøvelse | ett ord |
+
 ## 3. Strokes Gained (SG)
 
 | Term | Bokmål | Forkortelse | Notater |
@@ -120,17 +329,140 @@
 |---|---|---|
 | Driving range | driving range | mellomrom, anglisisme akseptert |
 | Range | range | kort form |
-| Range matte 4 | range matte 4 | "matte N" |
+| Range matte 1–N | range matte 4 | "matte N" |
+| Range gress-tee | gress-tee | bindestrek |
+| Range target | range target | engelsk-norsk |
 | Putting green | putting green | mellomrom |
+| Practice green | practice green | engelsk-norsk |
+| Chipping green | chipping green | mellomrom |
 | Chipping-område | chipping-område | bindestrek |
+| Pitching-område | pitching-område | bindestrek |
 | Bunker | bunker | |
-| Tee-område | tee-område | |
-| Bane | bane | |
-| Mulligan Indoor | Mulligan Indoor | proprietary navn |
-| TrackMan-studio | TrackMan-studio | CamelCase navn |
+| Greenside bunker | greenside bunker | mellomrom |
+| Fairway-bunker | fairway-bunker | bindestrek |
+| Tee-område | tee-område | bindestrek |
+| Tee 1 | tee 1 | "tee N" |
+| Fairway | fairway | |
+| Rough | rough | engelsk |
+| Semi-rough | semi-rough | bindestrek |
+| Green | green | |
+| Hovedbane | hovedbane | ett ord |
+| Korthullsbane | korthullsbane | "pitch and putt" |
+| Par-3 bane | par-3 bane | bindestrek |
+| 9-hulls bane | 9-hulls bane | bindestrek |
+| 18-hulls bane | 18-hulls bane | bindestrek |
+| Mini-bane | mini-bane | bindestrek |
 | Simulator | simulator | |
+| Mulligan Indoor | Mulligan Indoor | AK Golf-fasilitet |
+| TrackMan-studio | TrackMan-studio | bindestrek |
+| GC Quad | GC Quad | merkenavn |
+| Foresight | Foresight | merkenavn |
 | Innendørs | innendørs | ett ord |
 | Utendørs | utendørs | ett ord |
+| Treningsrom | treningsrom | ett ord, fysisk gym |
+| Gym | gym | |
+| Restitusjonsrom | restitusjonsrom | ett ord |
+| Klubbhus | klubbhus | ett ord |
+| Locker-rom | locker-rom | bindestrek |
+| Pro-shop | pro-shop | bindestrek |
+
+### Trenings-modus & metoder
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Blokk-praksis | blokk-praksis | bindestrek, samme drill gjentas |
+| Random-praksis | random-praksis | bindestrek, drills randomiseres |
+| Variabel praksis | variabel praksis | uten bindestrek |
+| Differensiell praksis | differensiell praksis | |
+| Constraint-based | constraint-based | engelsk fagterm |
+| Game-based | game-based | engelsk |
+| Spillbasert læring | spillbasert læring | norsk form |
+| Mental praksis | mental praksis | uten utstyr |
+| Dry swing | dry swing | engelsk, uten ball |
+| Slow motion | slow motion | engelsk |
+| Treningstempo | treningstempo | ett ord |
+| Game speed | game speed | engelsk, "som i ekte runde" |
+| Mirror practice | speil-praksis | norsk form |
+| Video-analyse | video-analyse | bindestrek |
+| Video-review | video-review | bindestrek |
+| Bilde-analyse | bilde-analyse | bindestrek |
+| Feedback-loop | feedback-loop | bindestrek |
+| Internal cue | indre fokus | norsk form |
+| External cue | ytre fokus | norsk form |
+| Cue-ord | cue-ord | bindestrek, "swing-tanke" |
+| Tanke-spor | tanke-spor | bindestrek |
+| Mental cue | mental cue | engelsk-norsk |
+| Repetisjon | repetisjon | flertall: repetisjoner |
+| Sett | sett | flertall: sett (uendret) |
+| Reps | reps | kort for repetisjoner |
+| 1-og-1 | 1-og-1 | bindestrek, en rep om gangen |
+| Stasjon | stasjon | "Stasjon 1, 2, 3" |
+| Sirkel-trening | sirkel-trening | bindestrek |
+| Superset | superset | engelsk fagterm |
+
+### Belastning-skala
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Belastning | belastning | |
+| Volum | volum | timer × intensitet |
+| Intensitet | intensitet | hardhetsgrad |
+| Lav | lav | grønn-zone |
+| Moderat | moderat | gul-zone |
+| Medium | medium | mellom moderat og høy |
+| Høy | høy | rød-zone |
+| Maks | maks | toppintensitet |
+| RPE | RPE | "Rate of Perceived Exertion", 1–10 |
+| Anstrengelse | anstrengelse | "Hvor hardt?" |
+| Treningsbelastning | treningsbelastning | ett ord, "training load" |
+| Daglig belastning | daglig belastning | |
+| Ukens belastning | ukens belastning | |
+| Belastnings-zone | belastnings-zone | bindestrek |
+| Optimal-zone | optimal-zone | bindestrek |
+| Overload | overload | engelsk, advarsel-zone |
+| Under-trent | under-trent | bindestrek |
+| TSS | TSS | "Training Stress Score" |
+| CTL | CTL | "Chronic Training Load" — fitness |
+| ATL | ATL | "Acute Training Load" — fatigue |
+| TSB | TSB | "Training Stress Balance" — form |
+| Form | form | TSB-resultat |
+| Friskhet | friskhet | "freshness" |
+| Tretthet | tretthet | "fatigue" |
+| Skarphet | skarphet | "sharpness" |
+
+### Tester & måling
+
+| Term | Bokmål | Notater |
+|---|---|---|
+| Test | test | flertall: tester |
+| Test-batteri | test-batteri | bindestrek |
+| Protokoll | protokoll | "Test-protokoll" |
+| Baseline | baseline | engelsk-norsk |
+| Retest | retest | ett ord |
+| Combine | combine | engelsk fagterm |
+| TrackMan-combine | TrackMan-combine | bindestrek |
+| Wedge matrix | wedge matrix | engelsk fagterm |
+| Putting-test | putting-test | bindestrek |
+| Chipping-test | chipping-test | bindestrek |
+| SG-Total test | SG-Total test | mellomrom |
+| Smith machine squat | smith machine squat | engelsk |
+| Knebøy | knebøy | norsk form |
+| Vertikalt hopp | vertikalt hopp | "vertical jump" |
+| Standlengde-hopp | standlengde-hopp | bindestrek |
+| Medisinball-kast | medisinball-kast | bindestrek |
+| 60m sprint | 60m sprint | tall + mellomrom |
+| Y-balance | Y-balance | engelsk fagterm |
+| Overhead squat | overhead squat | engelsk |
+| Single leg balance | en-bens-balanse | norsk form |
+| Score | score | tall fra test |
+| Percentil | percentil | sammenligning |
+| Persentil-rang | persentil-rang | bindestrek |
+| Forbedring | forbedring | |
+| Tilbakegang | tilbakegang | |
+| Vedlikehold | vedlikehold | |
+| Best ever | beste resultat | norsk form |
+| Personlig best | personlig best | uten bindestrek |
+| PR | PR | "Personal Record" |
 
 ### Status på økter
 
