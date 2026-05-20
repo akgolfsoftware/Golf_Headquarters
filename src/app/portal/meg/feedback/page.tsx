@@ -1,6 +1,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PageHeader } from "@/components/shared/page-header";
 import { AppFeedbackForm } from "./app-feedback-form";
+import { FeedbackHistorikk } from "./feedback-historikk";
 
 export default async function FeedbackPage({
   searchParams,
@@ -11,7 +12,7 @@ export default async function FeedbackPage({
   const sp = await searchParams;
 
   return (
-    <div className="mx-auto w-full max-w-[640px] space-y-8">
+    <div className="mx-auto w-full max-w-[640px] space-y-12">
       <PageHeader
         eyebrow="Tilbakemelding · 30 sek"
         titleLead="Hva synes du om"
@@ -27,6 +28,8 @@ export default async function FeedbackPage({
       )}
 
       <AppFeedbackForm />
+
+      <FeedbackHistorikk />
     </div>
   );
 }
