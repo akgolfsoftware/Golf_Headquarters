@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   ArrowRight,
   Briefcase,
@@ -44,11 +43,11 @@ export default function JobbSide() {
     <div className="bg-background text-foreground">
       {/* Hero */}
       <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-16 md:pt-28 md:pb-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-12 pb-12 sm:pt-20 sm:pb-16 md:pt-28 md:pb-20">
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Karriere
           </span>
-          <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
+          <h1 className="mt-4 max-w-4xl font-display text-4xl sm:text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
             Bli en del av{" "}
             <em className="font-display font-normal italic text-primary">
               teamet
@@ -64,7 +63,7 @@ export default function JobbSide() {
 
       {/* Verdier */}
       <section className="border-b border-border bg-card">
-        <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <VerdiKort
               tittel="Data-drevet coaching"
@@ -83,13 +82,13 @@ export default function JobbSide() {
       </section>
 
       {/* Aktive stillinger */}
-      <section className="mx-auto max-w-7xl px-6 py-16 md:py-24">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           <CircleDot className="h-3 w-3 text-primary" strokeWidth={2} />
           Aktive stillinger
         </div>
 
-        <h2 className="mt-6 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+        <h2 className="mt-6 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
           Vi søker{" "}
           <em className="font-display font-normal italic text-primary">
             deg
@@ -105,14 +104,14 @@ export default function JobbSide() {
 
       {/* Spontansøknad */}
       <section className="border-t border-border bg-card">
-        <div className="mx-auto max-w-7xl px-6 py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
           <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_auto] md:items-center">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 <Users className="h-3 w-3" strokeWidth={2} />
                 Spontansøknad
               </div>
-              <h2 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight md:text-4xl">
+              <h2 className="mt-4 font-display text-2xl sm:text-3xl font-semibold leading-[1.1] tracking-tight md:text-4xl">
                 Finner du ikke din drømmestilling?
               </h2>
               <p className="mt-4 max-w-xl text-[15px] leading-[1.6] text-muted-foreground">

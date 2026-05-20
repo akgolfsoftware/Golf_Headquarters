@@ -9,13 +9,13 @@ const SIST_OPPDATERT = "12. mai 2026";
 
 export default function Vilkar() {
   return (
-    <div className="px-6 py-16">
+    <div className="px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-3xl">
         <header>
           <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
             Juridisk · AK Golf Group
           </div>
-          <h1 className="mt-4 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             <em className="font-normal italic text-primary">Bruker</em>vilkår
           </h1>
           <p className="mt-6 max-w-2xl text-base text-muted-foreground">

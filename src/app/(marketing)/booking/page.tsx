@@ -97,13 +97,13 @@ export default async function BookingLanding({
   );
 
   return (
-    <div className="px-6 py-16">
+    <div className="px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-5xl">
         <header className="text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             Booking
           </span>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+          <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl">
             <em className="font-normal italic text-primary">Book</em> en økt
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
@@ -380,7 +380,7 @@ function BookingPaused() {
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             Booking
           </span>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+          <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl">
             Booking er midlertidig{" "}
             <em className="font-normal italic text-primary">pauset</em>
           </h1>

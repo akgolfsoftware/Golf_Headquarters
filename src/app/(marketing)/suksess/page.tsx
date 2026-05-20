@@ -54,12 +54,12 @@ const CASES: Case[] = [
 export default function SuksessSide() {
   return (
     <div>
-      <section className="bg-gradient-to-b from-background to-secondary/40 px-6 py-20 sm:py-28">
+      <section className="bg-gradient-to-b from-background to-secondary/40 px-4 sm:px-6 py-12 sm:py-20 md:py-28">
         <div className="mx-auto max-w-4xl text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             Suksesshistorier
           </span>
-          <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             Spillere som har{" "}
             <em className="font-normal italic text-primary">tatt steget</em>
           </h1>
@@ -70,12 +70,12 @@ export default function SuksessSide() {
         </div>
       </section>
 
-      <section className="px-6 py-16">
+      <section className="px-4 sm:px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-5xl space-y-8">
           {CASES.map((c) => (
             <article
               key={c.navn}
-              className="grid gap-8 rounded-2xl border border-border bg-card p-8 sm:p-12 lg:grid-cols-[1fr_2fr]"
+              className="grid gap-8 rounded-2xl border border-border bg-card p-5 sm:p-8 md:p-12 lg:grid-cols-[1fr_2fr]"
             >
               <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
                 <div className="flex h-24 w-24 items-center justify-center rounded-full bg-secondary text-2xl font-semibold text-primary">

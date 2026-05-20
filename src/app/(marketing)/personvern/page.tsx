@@ -9,13 +9,13 @@ const SIST_OPPDATERT = "12. mai 2026";
 
 export default function Personvern() {
   return (
-    <div className="px-6 py-16">
+    <div className="px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-3xl">
         <header>
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
             Juridisk
           </span>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+          <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl">
             <em className="font-normal italic text-primary">Personvern</em>-erklæring
           </h1>
           <p className="mt-4 font-mono text-xs text-muted-foreground">

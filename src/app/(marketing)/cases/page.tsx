@@ -44,11 +44,11 @@ export default function CasesSide() {
     <div className="bg-background text-foreground">
       {/* Hero */}
       <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-16 md:pt-28 md:pb-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-12 pb-12 sm:pt-20 sm:pb-16 md:pt-28 md:pb-20">
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Suksesshistorier
           </span>
-          <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
+          <h1 className="mt-4 max-w-4xl font-display text-4xl sm:text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
             Ekte resultater fra{" "}
             <em className="font-display font-normal italic text-primary">
               ekte spillere
@@ -62,7 +62,7 @@ export default function CasesSide() {
       </section>
 
       {/* Cases-grid */}
-      <section className="mx-auto max-w-7xl px-6 py-16 md:py-24">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           <CircleDot className="h-3 w-3 text-primary" strokeWidth={2} />
           {CASES.length} historier
@@ -77,8 +77,8 @@ export default function CasesSide() {
 
       {/* CTA */}
       <section className="border-t border-border bg-card">
-        <div className="mx-auto max-w-7xl px-6 py-24">
-          <div className="relative overflow-hidden rounded-2xl bg-primary px-8 py-16 text-primary-foreground md:px-16 md:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
+          <div className="relative overflow-hidden rounded-2xl bg-primary px-5 py-10 sm:px-8 sm:py-16 text-primary-foreground md:px-16 md:py-20">
             <div
               aria-hidden
               className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full"
@@ -88,7 +88,7 @@ export default function CasesSide() {
               <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] opacity-80">
                 Din tur
               </span>
-              <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+              <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
                 Klar for{" "}
                 <em className="font-display font-normal italic">
                   din
