@@ -1,0 +1,20 @@
+-- CreateEnum
+CREATE TYPE "FacilityType" AS ENUM (
+  'STUDIO',
+  'RANGE_1F',
+  'RANGE_2F',
+  'PUTTING_GREEN',
+  'SHORT_GAME',
+  'COURSE_9H',
+  'COURSE_18H',
+  'SPECIFIC_HOLES',
+  'GENERAL'
+);
+
+-- AlterTable
+ALTER TABLE "facilities"
+  ADD COLUMN "type" "FacilityType" NOT NULL DEFAULT 'GENERAL',
+  ADD COLUMN "isIndoor" BOOLEAN NOT NULL DEFAULT false,
+  ADD COLUMN "description" TEXT,
+  ADD COLUMN "mapX" DOUBLE PRECISION,
+  ADD COLUMN "mapY" DOUBLE PRECISION;

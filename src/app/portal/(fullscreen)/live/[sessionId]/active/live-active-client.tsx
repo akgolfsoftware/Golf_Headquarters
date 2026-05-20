@@ -216,7 +216,7 @@ export function LiveActiveClient({ data }: Props) {
         window.setTimeout(() => setPendingError(null), 3000);
         return;
       }
-      router.push("/portal/tren");
+      router.push(`/portal/live/${data.sessionId}/summary`);
     });
   }
 

@@ -1540,6 +1540,18 @@ model Facility {
   name       String
   capacity   Int      @default(1)
   active     Boolean  @default(true)
+  // Type-klassifisering brukt for kart-ikoner, filtrering og statistikk
+  // (se FacilityType-enum). Default GENERAL for bakoverkompatibilitet med
+  // eksisterende seed-data hvor type ikke var spesifisert.
+  type       FacilityType @default(GENERAL)
+  // Innendørs vs utendørs. Brukes for værfilter og ikoner.
+  isIndoor   Boolean  @default(false)
+  // Fritekst-beskrivelse vist i detalj-drawer (utstyr, kapasitet-kommentar).
+  description String?
+  // Koordinater på anleggskartet (0-100 % av kart-bredde/høyde). Null for
+  // fasiliteter som ikke skal vises på kart.
+  mapX       Float?
+  mapY       Float?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -1548,6 +1560,18 @@ model Facility {
 
   @@index([locationId, active])
   @@map("facilities")
+}
+
+enum FacilityType {
+  STUDIO          // Performance Studio (indoor TrackMan)
+  RANGE_1F        // Driving Range 1. etg
+  RANGE_2F        // Driving Range 2. etg
+  PUTTING_GREEN   // Putting Green
+  SHORT_GAME      // Nærspillsområde
+  COURSE_9H       // 9-hullsbanen
+  COURSE_18H      // 18-hullsbanen
+  SPECIFIC_HOLES  // Hull 4/5 etc.
+  GENERAL         // Fallback for eldre/uklassifiserte fasiliteter
 }
 
 model SessionRecording {
@@ -1679,6 +1703,7 @@ model TrainingSessionV2 {
   regelBrudd           Json?
   trengerOppmerksomhet Boolean  @default(false)
   drillLoggInterval    Int      @default(1)
+  completedSummary     Json?
   drills               TrainingDrillV2[]
   drillInstances       SessionDrillInstance[]
   createdAt            DateTime @default(now())

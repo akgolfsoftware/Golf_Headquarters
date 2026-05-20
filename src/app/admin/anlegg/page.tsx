@@ -11,6 +11,7 @@
  * Prisma-data (location + facility + bookings).
  */
 
+import Link from "next/link";
 import { MapPin, Search } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -197,7 +198,12 @@ async function Oversikt() {
             </div>
           )}
           {locations.map((l) => (
-            <div key={l.id} data-loc-id={l.id}>
+            <Link
+              key={l.id}
+              href={`/admin/anlegg/${l.id}`}
+              data-loc-id={l.id}
+              className="block rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               <LocationCard
                 name={l.name}
                 address={l.address}
@@ -206,7 +212,7 @@ async function Oversikt() {
                 facilities={l.facilities.map((f) => f.name)}
                 bookingsMonth={l._count.bookings}
               />
-            </div>
+            </Link>
           ))}
         </div>
       </div>
