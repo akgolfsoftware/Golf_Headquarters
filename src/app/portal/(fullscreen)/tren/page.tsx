@@ -1,10 +1,10 @@
-// Workbench v2 (TSX-portering av /public/design/workbench-v2.html).
+// Workbench Unified (TSX-portering av /public/design/workbench-unified.html).
 // Plassert i `(fullscreen)`-gruppen for å unngå dobbel sidebar/topbar
 // fra `PortalShell` — denne siden har sin egen chrome (sidebar + topbar
 // + sticky footer) som matcher HTML-prototypen.
 //
-// To moduser: STATUS (hvor er jeg?) og PLAN (hva skal jeg gjøre?)
-// Plan-modus har zoom-akse: År → Måned → Uke → Dag → Økt
+// Én vertikal flow med 7 seksjoner: sidebar + hero + årsplan-gantt
+// + 3-pane workbench + mål-tracker + insight + trackman + sticky footer.
 //
 // URL: /portal/tren
 
