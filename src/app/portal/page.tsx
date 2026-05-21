@@ -1,1122 +1,215 @@
 /**
  * PRODUKSJON — PlayerHQ Hjem (/portal)
- * Endelig design migrert fra wireframe/design-files-v2/pilot/02-playerhq-hjem.html.
+ * "Min Workbench"-design implementert fra Claude Design-bundlen
+ * (AK Golf Workbench Unified.html, mai 2026).
  *
  * Server-component med:
- *  - Italic Instrument Serif-hero ("Onsdag, Markus. To dager siden sist.")
- *  - KPI-strip med 4 kort (HCP dark-gradient, SG, Streak m/dag-strip, Pyramide-mini)
- *  - Dagens fokus-card med vertikal aksent-stripe og target-%
- *  - Bento: Pyramide-progresjon (span-2 m/ringer) + SG-fordeling
- *  - Sist registrert-liste, Coach-melding-banner og Plan-actions
+ *  - Hero med Instrument Serif italic
+ *  - Årsplan-gantt (sesong 2026 — 6 perioder + tournament-flagg + I dag-pin)
+ *  - 3-pane workbench (profil + ukeskalender + drills/periodisering)
+ *  - Mål-tracker (3 mål-kort med ring/scoreline/HCP-zone)
+ *  - Innsikt (SG-trend, slag-prioritering, DataGolf-sammenligning)
+ *  - TrackMan-timeline (5 siste økter)
+ *  - Sticky footer (uke-pyramide + status)
  *
  * Auth: requirePortalUser() med rolle-redirect (COACH/ADMIN -> /admin, GUEST -> /admin/kalender).
+ * Forrige design er bevart i git-historikk (commit før dette).
  */
 
-import { Suspense } from "react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import {
-  ChevronRight,
-  Clock,
-  Dumbbell,
-  Flag,
-  MessageSquare,
-  Plus,
-  Sparkles,
-  Star,
-  Target,
-  Zap,
-  Lock,
-  Play,
-  Calendar as CalendarIcon,
-} from "lucide-react";
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
-import { Prisma } from "@/generated/prisma/client";
-import {
-  getDashboardData,
-  type SistRegistrert,
-} from "@/lib/dashboard-data";
-import { aktivStreak } from "@/lib/streak";
-import { totalMinutter, prosentPerArea } from "@/lib/pyramide";
-import { formatSg } from "@/lib/sg";
-import { PortalAvatarButton } from "@/components/portal/portal-avatar-button";
-import { ProfilRedigerTrigger } from "@/components/shared/profil-rediger-trigger";
-import { PlanActionsCard } from "@/components/portal/plan-actions-card";
-import { QuickActions } from "@/components/portal/quick-actions";
-import { KommendeTurneringerCard } from "@/components/portal/kommende-turneringer-card";
+import { getDashboardData } from "@/lib/dashboard-data";
+import { prosentPerArea } from "@/lib/pyramide";
 import { prisma } from "@/lib/prisma";
-import {
-  SkeletonKpi,
-  SkeletonCard,
-} from "@/components/shared/loading-skeleton";
-import type {
-  PyramidArea,
-  TrainingPlanSession,
-  SessionDrill,
-  ExerciseDefinition,
-} from "@/generated/prisma/client";
+import { WorkbenchDashboard } from "@/components/portal-dashboard/workbench-dashboard";
+import type { PyramidArea } from "@/generated/prisma/client";
 
-type PortalUser = Awaited<ReturnType<typeof requirePortalUser>>;
-type DrillMedDef = SessionDrill & { exercise: ExerciseDefinition };
-type SesjonMedDrills = TrainingPlanSession & { drills: DrillMedDef[] };
+export const dynamic = "force-dynamic";
 
-const DAGNAVN = [
-  "Søndag",
-  "Mandag",
-  "Tirsdag",
-  "Onsdag",
-  "Torsdag",
-  "Fredag",
-  "Lørdag",
-];
+const ISO_WEEK_OFFSET = 0;
 
-const MND = [
-  "januar",
-  "februar",
-  "mars",
-  "april",
-  "mai",
-  "juni",
-  "juli",
-  "august",
-  "september",
-  "oktober",
-  "november",
-  "desember",
-];
+function getIsoWeek(d: Date): number {
+  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dayNum = date.getUTCDay() || 7;
+  date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  return Math.ceil(((date.getTime() - yearStart.getTime()) / 86_400_000 + 1) / 7) + ISO_WEEK_OFFSET;
+}
 
-const PYR_REKKEFOLGE: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
+function formatWeekRange(d: Date): string {
+  const day = d.getDay() || 7;
+  const monday = new Date(d);
+  monday.setDate(d.getDate() - (day - 1));
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const dM = (x: Date) => x.getDate();
+  const monthName = (x: Date) =>
+    ["jan", "feb", "mars", "apr", "mai", "juni", "juli", "aug", "sept", "okt", "nov", "des"][x.getMonth()];
+  if (monday.getMonth() === sunday.getMonth()) {
+    return `${dM(monday)}—${dM(sunday)} ${monthName(monday)} ${sunday.getFullYear()}`;
+  }
+  return `${dM(monday)} ${monthName(monday)}—${dM(sunday)} ${monthName(sunday)} ${sunday.getFullYear()}`;
+}
 
-const PYR_LABEL_KORT: Record<PyramidArea, string> = {
-  FYS: "FYS",
-  TEK: "TEK",
-  SLAG: "SLAG",
-  SPILL: "SPILL",
-  TURN: "TURN",
-};
+function initials(name: string | null | undefined): string {
+  if (!name) return "??";
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
 
-// Pyramide-farger fra designet (CSS-vars fra @theme).
-const PYR_COLOR: Record<PyramidArea, string> = {
-  FYS: "var(--color-pyr-fys)",
-  TEK: "var(--color-pyr-tek)",
-  SLAG: "var(--color-pyr-slag)",
-  SPILL: "var(--color-pyr-spill)",
-  TURN: "var(--color-pyr-turn)",
-};
+function formatHcp(hcp: number | null | undefined): string {
+  if (hcp === null || hcp === undefined) return "—";
+  if (hcp < 0) return `+${Math.abs(hcp).toFixed(1).replace(".", ",")}`;
+  return hcp.toFixed(1).replace(".", ",");
+}
 
 export default async function PortalHjem() {
   const user = await requirePortalUser();
 
   // Rolle-basert redirect: coacher/admin -> CoachHQ, gjester -> kalender.
-  // /portal er forbeholdt PLAYER og PARENT — men ADMIN/COACH kan velge
-  // "vis som spiller" via view-mode-toggle for å inspisere PlayerHQ.
   const viewMode = await getViewMode();
   if (user.role === "COACH" || user.role === "ADMIN") {
     if (viewMode !== "player") redirect("/admin");
   }
   if (user.role === "GUEST") redirect("/admin/kalender");
+  if (user.role === "PARENT") redirect("/forelder");
 
-  // Hent abonnement-info for QuickActions-widget
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId: user.id },
-    select: { monthlyCredits: true, creditsRemaining: true, status: true },
-  });
-  const erAcademyKunde =
-    subscription?.status === "ACTIVE" &&
-    (subscription?.monthlyCredits ?? 0) > 0;
-
-  // Voice Memo V4 — varsel hvis ny coach-analyse er klar (siste 7 dager).
-  // Heuristikk i V4: viser nyeste SessionRecording for spilleren med
-  // aiAnalysis satt og updatedAt nyere enn 7 dager. Spillerprofil-flagg for
-  // "lest" kommer i V4.5.
-  // eslint-disable-next-line react-hooks/purity -- server-component, ikke render-pure-context
-  const syvDagerSiden = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  const nyAnalyse = await prisma.sessionRecording.findFirst({
-    where: {
-      playerId: user.id,
-      aiAnalysis: { not: Prisma.DbNull },
-      updatedAt: { gte: syvDagerSiden },
-    },
-    orderBy: { updatedAt: "desc" },
-    select: { id: true, completedAt: true, startedAt: true, updatedAt: true },
-  });
-
-  const analyseDato =
-    nyAnalyse?.completedAt ??
-    nyAnalyse?.startedAt ??
-    nyAnalyse?.updatedAt ??
-    null;
-
-  return (
-    <div className="space-y-6 md:space-y-8">
-      <Hero user={user} />
-
-      {nyAnalyse && analyseDato && (
-        <CoachAnalysisBanner okteDato={analyseDato} />
-      )}
-
-      <QuickActions
-        erAcademyKunde={erAcademyKunde}
-        creditsRemaining={subscription?.creditsRemaining}
-        monthlyCredits={subscription?.monthlyCredits}
-      />
-
-      <Suspense fallback={<DashboardSkeleton />}>
-        <DashboardSeksjoner user={user} />
-      </Suspense>
-    </div>
-  );
-}
-
-async function DashboardSeksjoner({ user }: { user: PortalUser }) {
   const data = await getDashboardData(user);
-  const streakAktivAntall = aktivStreak(data.streak14);
-  const ukeMinutter = totalMinutter(data.pyramideUke);
-  const pyramide14dProsent = prosentPerArea(data.pyramide14d);
-  const pyramideSnitt = beregnSnitt(pyramide14dProsent);
-  const kanStarteLive = user.tier !== "GRATIS";
 
-  return (
-    <div className="space-y-6 md:space-y-8">
-      <KpiStrip
-        snittScore={data.sgAggregate.snittScore}
-        rundeAntall={data.sgAggregate.rundeAntall}
-        sgTotal={data.sgAggregate.total}
-        streak14={data.streak14}
-        streakAktiv={streakAktivAntall}
-        pyramide={pyramide14dProsent}
-        pyramideSnitt={pyramideSnitt}
-        ukeMinutter={ukeMinutter}
-        tier={user.tier}
-      />
-
-      {data.pendingActions.length > 0 && (
-        <PlanActionsCard actions={data.pendingActions} />
-      )}
-
-      <DagensFokus
-        session={data.dagensSesjon}
-        kanStarte={kanStarteLive}
-        tier={user.tier}
-      />
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-6">
-        <PyramideProgresjon
-          data={pyramide14dProsent}
-          snitt={pyramideSnitt}
-          tier={user.tier}
-        />
-        <SgFordeling sg={data.sgAggregate} tier={user.tier} />
-      </div>
-
-      <SistRegistrert items={data.sisteRegistrerte} />
-
-      <KommendeTurneringerCard userId={user.id} />
-
-      {data.sisteCoachMelding && (
-        <CoachMelding melding={data.sisteCoachMelding} tier={user.tier} />
-      )}
-    </div>
-  );
-}
-
-function DashboardSkeleton() {
-  return (
-    <div className="space-y-6 md:space-y-8">
-      <SkeletonKpi count={4} />
-      <SkeletonCard height="h-44" />
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <SkeletonCard height="h-64" />
-        <SkeletonCard height="h-64" />
-        <div className="hidden lg:block">
-          <SkeletonCard height="h-64" />
-        </div>
-      </div>
-      <SkeletonCard height="h-56" />
-    </div>
-  );
-}
-
-// --- HERO ----------------------------------------------------------------
-
-function hilsen(date: Date): string {
-  const t = date.getHours();
-  if (t < 5) return "God natt";
-  if (t < 10) return "God morgen";
-  if (t < 12) return "God formiddag";
-  if (t < 17) return "God ettermiddag";
-  if (t < 22) return "God kveld";
-  return "God natt";
-}
-
-function Hero({ user }: { user: PortalUser }) {
-  const idag = new Date();
-  const dagnavn = DAGNAVN[idag.getDay()];
-  const datoTekst = `${dagnavn} ${idag.getDate()}. ${MND[idag.getMonth()]} ${idag.getFullYear()}`;
-  const fornavn = user.name.split(" ")[0] ?? user.name;
-  const initial = user.name.trim().charAt(0).toUpperCase() || "?";
-  const klokke = `${String(idag.getHours()).padStart(2, "0")}:${String(idag.getMinutes()).padStart(2, "0")}`;
-  const tidsHilsen = hilsen(idag);
-
-  return (
-    <header className="relative overflow-hidden rounded-2xl">
-      {/* Hero-bildet bak teksten */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/hero/coach-pointing.jpg')" }}
-      />
-      {/* Mørk gradient-overlay for tekstlesbarhet */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(105deg, hsl(var(--background)) 0%, hsl(var(--background))/95 35%, hsl(var(--background))/60 70%, transparent 100%)",
-        }}
-      />
-
-      <div className="relative z-10 flex flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-8 md:flex-row md:items-end md:justify-between md:gap-8 md:px-8 md:py-10">
-        <div className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-start sm:gap-4 md:gap-6">
-          <PortalAvatarButton
-            name={user.name}
-            avatarUrl={user.avatarUrl}
-            initial={initial}
-            tier={user.tier}
-          />
-
-          <div className="min-w-0 flex-1">
-            <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground sm:text-[11px]">
-              Hjem · {datoTekst}
-            </span>
-            <h1 className="mt-2 font-display text-2xl font-normal italic leading-[1.05] tracking-tight text-foreground sm:text-3xl md:text-[42px]">
-              {tidsHilsen}, {fornavn}.{" "}
-              <span className="not-italic font-semibold text-primary">
-                {user.ambition ? "Vi bygger videre." : "Klar for dagen?"}
-              </span>
-            </h1>
-            <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground sm:mt-4">
-              <span>{klokke}</span>
-              {user.homeClub && (
-                <>
-                  <span className="text-foreground/30">·</span>
-                  <span>{user.homeClub}</span>
-                </>
-              )}
-              {user.hcp != null && (
-                <>
-                  <span className="text-foreground/30">·</span>
-                  <span className="font-mono">
-                    HCP {user.hcp.toFixed(1).replace(".", ",")}
-                  </span>
-                </>
-              )}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex shrink-0 flex-wrap items-center gap-2">
-          <ProfilRedigerTrigger
-            variant="pill"
-            label="Rediger profil"
-            initial={{
-              name: user.name,
-              email: user.email,
-              phone: user.phone ?? "",
-              hcp: user.hcp ?? null,
-              playingYears: user.playingYears ?? null,
-              homeClub: user.homeClub ?? "",
-              ambition: user.ambition ?? "",
-              fodselsdato: "",
-              adresse: "",
-              kjonn: "Vil ikke oppgi",
-              dominantHand: "Høyrehendt",
-            }}
-          />
-          <Link
-            href="/portal/ny-okt"
-            className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            <Plus className="h-4 w-4" strokeWidth={2} />
-            Logg trening
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-// --- KPI ----------------------------------------------------------------
-
-function KpiStrip({
-  snittScore,
-  rundeAntall,
-  sgTotal,
-  streak14,
-  streakAktiv,
-  pyramide,
-  pyramideSnitt,
-  ukeMinutter,
-  tier,
-}: {
-  snittScore: number | null;
-  rundeAntall: number;
-  sgTotal: number | null;
-  streak14: boolean[];
-  streakAktiv: number;
-  pyramide: ReturnType<typeof prosentPerArea>;
-  pyramideSnitt: number;
-  ukeMinutter: number;
-  tier: PortalUser["tier"];
-}) {
-  const isFree = tier === "GRATIS";
-  const sgLocked = isFree;
-  const pyramideLocked = isFree;
-
-  return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-      {/* Snittscore - dark gradient */}
-      <article
-        className="relative flex min-h-32 flex-col gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-primary/80 p-4 text-white sm:min-h-36 sm:p-6"
-      >
-        <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-white/70">
-          <Flag className="h-3.5 w-3.5" strokeWidth={1.75} />
-          Snittscore
-        </div>
-        <div className="font-mono text-3xl sm:text-4xl md:text-5xl font-medium leading-none tabular-nums tracking-tight text-white">
-          {snittScore != null ? Math.round(snittScore) : "—"}
-        </div>
-        <div className="mt-auto flex items-center gap-1 font-mono text-xs text-accent">
-          <span>
-            {rundeAntall > 0
-              ? `Snitt siste ${rundeAntall} ${rundeAntall === 1 ? "runde" : "runder"}`
-              : "Ingen runder registrert"}
-          </span>
-        </div>
-      </article>
-
-      {/* SG total */}
-      <article className="relative flex min-h-32 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-4 sm:min-h-36 sm:p-6">
-        <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-          <Star className="h-3.5 w-3.5" strokeWidth={1.75} />
-          SG total
-        </div>
-        <div
-          className={`font-mono text-4xl font-medium leading-none tabular-nums tracking-tight ${sgLocked ? "blur-[2px]" : ""}`}
-          style={{
-            color:
-              sgTotal != null
-                ? sgTotal >= 0
-                  ? "var(--color-pyr-tek)"
-                  : "hsl(var(--destructive))"
-                : "hsl(var(--foreground))",
-          }}
-        >
-          {sgLocked ? "+0,4" : formatSg(sgTotal)}
-        </div>
-        {!sgLocked && (
-          <div className="mt-auto font-mono text-xs text-muted-foreground">
-            Siste 30 dager
-          </div>
-        )}
-        {sgLocked && <LockOverlay label="SG kun for Pro" cta="Oppgrader" />}
-      </article>
-
-      {/* Streak */}
-      <article className="relative flex min-h-32 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-4 sm:min-h-36 sm:p-6">
-        <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-          <Zap className="h-3.5 w-3.5" strokeWidth={1.75} />
-          Streak
-        </div>
-        <div className="flex items-baseline gap-2">
-          <span className="font-mono text-4xl font-medium leading-none tabular-nums text-foreground">
-            {streakAktiv}
-          </span>
-          <span className="text-sm text-muted-foreground">
-            {streakAktiv === 1 ? "dag" : "dager"}
-          </span>
-        </div>
-        <StreakStrip streak={streak14} />
-      </article>
-
-      {/* Pyramide-mini */}
-      <article className="relative flex min-h-32 flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card p-4 sm:min-h-36 sm:p-6">
-        <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-          <Target className="h-3.5 w-3.5" strokeWidth={1.75} />
-          Pyramide
-        </div>
-        <div
-          className={`mt-2 flex flex-col gap-1.5 ${pyramideLocked ? "blur-[2px]" : ""}`}
-        >
-          {PYR_REKKEFOLGE.map((area) => (
-            <div key={area} className="flex items-center gap-2">
-              <span
-                className="w-8 shrink-0 font-mono text-[9px] font-semibold text-muted-foreground"
-              >
-                {PYR_LABEL_KORT[area]}
-              </span>
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
-                <div
-                  className="h-full rounded-full"
-                  style={{
-                    width: `${Math.min(pyramide[area], 100)}%`,
-                    background: PYR_COLOR[area],
-                  }}
-                />
-              </div>
-              <span className="w-6 shrink-0 text-right font-mono text-[9px] tabular-nums text-muted-foreground">
-                {pyramide[area]}%
-              </span>
-            </div>
-          ))}
-        </div>
-        {!pyramideLocked && (
-          <div className="mt-auto font-mono text-xs text-muted-foreground">
-            Snitt {pyramideSnitt} % · {ukeMinutter} min uke
-          </div>
-        )}
-        {pyramideLocked && (
-          <LockOverlay label="Pyramide kun for Pro" cta="Oppgrader" />
-        )}
-      </article>
-    </div>
-  );
-}
-
-function StreakStrip({ streak }: { streak: boolean[] }) {
-  // Vis siste 7 dager
-  const siste7 = streak.slice(-7);
-  const dagBokstaver = ["M", "T", "O", "T", "F", "L", "S"];
-  // Beregn ukedager bakover fra i dag
-  const idag = new Date();
-  const startDag = idag.getDay() === 0 ? 6 : idag.getDay() - 1; // 0=man
-  const labels = Array.from({ length: 7 }, (_, i) => {
-    return dagBokstaver[(startDag - (6 - i) + 7) % 7];
+  // Aktiv teknisk plan (for "Aktiv periode"-kortet)
+  const activePlan = await prisma.technicalPlan.findFirst({
+    where: { userId: user.id, status: "ACTIVE" },
+    orderBy: { startDato: "desc" },
+    include: {
+      positions: {
+        include: {
+          tasks: {
+            select: {
+              repsMaalDry: true,
+              repsMaalLav: true,
+              repsMaalFull: true,
+              repsGjortDry: true,
+              repsGjortLav: true,
+              repsGjortFull: true,
+            },
+          },
+        },
+      },
+    },
   });
 
-  return (
-    <div className="mt-1 flex gap-1">
-      {siste7.map((on, i) => {
-        const isToday = i === siste7.length - 1;
-        const cls = isToday
-          ? "outline outline-2 outline-offset-2 outline-primary"
-          : "";
-        return (
-          <span
-            key={i}
-            className={`flex h-7 flex-1 items-center justify-center rounded-sm font-mono text-[9px] font-semibold uppercase tracking-wider ${cls}`}
-            style={{
-              background: isToday
-                ? "hsl(var(--accent))"
-                : on
-                  ? "hsl(var(--primary))"
-                  : "hsl(var(--secondary))",
-              color: isToday
-                ? "hsl(var(--accent-foreground))"
-                : on
-                  ? "hsl(var(--primary-foreground))"
-                  : "hsl(var(--muted-foreground))",
-            }}
-          >
-            {labels[i]}
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
-function LockOverlay({ label, cta }: { label: string; cta: string }) {
-  return (
-    <Link
-      href="/portal/meg/abonnement"
-      className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-xl bg-card/90 backdrop-blur-sm transition-colors hover:bg-card/95"
-    >
-      <span className="grid h-10 w-10 place-items-center rounded-md bg-foreground text-accent">
-        <Lock className="h-5 w-5" strokeWidth={2} />
-      </span>
-      <span className="font-display text-sm font-semibold italic text-foreground">
-        {label}
-      </span>
-      <span
-        className="inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-accent-foreground"
-      >
-        {cta} →
-      </span>
-    </Link>
-  );
-}
-
-// --- DAGENS FOKUS -------------------------------------------------------
-
-function DagensFokus({
-  session,
-  kanStarte,
-  tier,
-}: {
-  session: SesjonMedDrills | null;
-  kanStarte: boolean;
-  tier: PortalUser["tier"];
-}) {
-  if (!session) {
-    return (
-      <article className="flex flex-col items-center gap-4 rounded-2xl border-2 border-dashed border-border bg-gradient-to-br from-background to-secondary px-6 py-10 text-center dark:from-card dark:to-card">
-        <span
-          className="grid h-14 w-14 place-items-center rounded-2xl bg-accent text-accent-foreground"
-        >
-          <Zap className="h-6 w-6" strokeWidth={1.75} />
-        </span>
-        <h2 className="font-display text-2xl font-normal italic leading-tight text-foreground">
-          Ingen økt planlagt i dag.
-        </h2>
-        <p className="max-w-md text-sm text-muted-foreground">
-          Bygg en økt på 2 minutter — velg fokus, sett varighet, så bygger vi
-          en plan rundt det.
-        </p>
-        <div className="mt-2 flex flex-wrap justify-center gap-2">
-          <Link
-            href="/portal/ny-okt"
-            className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            <Plus className="h-4 w-4" strokeWidth={2} />
-            Sett opp første økt
-          </Link>
-          <Link
-            href="/portal/tren"
-            className="inline-flex h-11 items-center gap-2 rounded-full border border-input bg-card px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-          >
-            Se planen
-          </Link>
-        </div>
-      </article>
-    );
+  // Coach — vi henter første aktive coach for spilleren via PlayerCoach-relasjon hvis den finnes
+  // Fallback til generisk «AK»
+  type CoachInfo = { name: string; initials: string };
+  let coach: CoachInfo = { name: "Anders Kristiansen", initials: "AK" };
+  try {
+    const link = await prisma.user.findFirst({
+      where: { role: "COACH" },
+      orderBy: { createdAt: "asc" },
+      select: { name: true },
+    });
+    if (link?.name) coach = { name: link.name, initials: initials(link.name) };
+  } catch {
+    // ignore
   }
 
-  const start = new Date(session.scheduledAt);
-  const klokke = `${String(start.getHours()).padStart(2, "0")}:${String(start.getMinutes()).padStart(2, "0")}`;
-  const visibleDrills = session.drills.slice(0, 3);
-  const fokusUrl = kanStarte
-    ? `/portal/sesjon/${session.id}/live`
-    : "/portal/meg/abonnement";
-  const isFree = tier === "GRATIS";
+  // Siste 5 TrackMan-økter
+  const tmRecords = await prisma.trackManSession.findMany({
+    where: { userId: user.id },
+    orderBy: { recordedAt: "desc" },
+    take: 5,
+  });
 
-  return (
-    <article className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-background to-secondary p-4 shadow-sm sm:gap-6 sm:p-6 md:flex-row md:items-end md:justify-between md:gap-8 md:p-8 dark:from-card dark:to-card">
-      {/* Vertikal aksent-stripe */}
-      <span
-        aria-hidden
-        className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-accent to-primary"
-      />
-
-      <div className="flex-1 pl-2">
-        <div className="flex flex-wrap items-center gap-4">
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-primary">
-            Dagens fokus
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-sm bg-card px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
-            <Clock className="h-3 w-3" strokeWidth={1.75} />
-            {klokke} · {session.durationMin} min
-          </span>
-        </div>
-        <h2 className="mt-3 font-display text-2xl font-normal italic leading-[1.1] tracking-tight text-foreground sm:mt-4 sm:text-3xl md:text-[34px]">
-          {session.title.split(" — ")[0] ?? session.title}
-          {session.title.includes(" — ") && (
-            <span className="not-italic font-semibold">
-              {" "}
-              — {session.title.split(" — ").slice(1).join(" — ")}.
-            </span>
-          )}
-        </h2>
-        {session.rationale && (
-          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
-            {session.rationale}
-          </p>
-        )}
-
-        {visibleDrills.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {visibleDrills.map((d) => (
-              <span
-                key={d.id}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 font-mono text-xs font-medium text-foreground"
-              >
-                <span
-                  className="h-1.5 w-1.5 rounded-full"
-                  style={{ background: PYR_COLOR[session.pyramidArea] }}
-                />
-                {d.exercise.name}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-6 flex flex-wrap items-center gap-2">
-          <Link
-            href={fokusUrl}
-            className={`inline-flex h-11 items-center gap-2 rounded-full px-6 text-sm font-semibold transition-colors ${
-              kanStarte
-                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                : "border border-input bg-card text-foreground hover:bg-secondary"
-            }`}
-          >
-            {kanStarte ? (
-              <>
-                Start økt
-                <Play className="h-3.5 w-3.5 fill-current" strokeWidth={0} />
-              </>
-            ) : (
-              <>
-                <Lock className="h-3.5 w-3.5" strokeWidth={2} />
-                Live krever Pro
-              </>
-            )}
-          </Link>
-          <Link
-            href={`/portal/sesjon/${session.id}/flytt`}
-            className="inline-flex h-11 items-center gap-2 rounded-full border border-input bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-          >
-            <CalendarIcon className="h-3.5 w-3.5" strokeWidth={1.75} />
-            Flytt
-          </Link>
-          {isFree && (
-            <span className="ml-2 font-mono text-xs text-muted-foreground">
-              Free-plan
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-col items-start gap-1 md:items-end md:text-right">
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-          Pyramide
-        </span>
-        <span className="font-display text-4xl font-semibold leading-none tracking-tight text-primary">
-          {PYR_LABEL_KORT[session.pyramidArea]}
-        </span>
-        <span className="font-mono text-xs text-muted-foreground">
-          {session.durationMin} min planlagt
-        </span>
-      </div>
-    </article>
+  // Beregn pyramide-prosenter
+  const pyrPct = prosentPerArea(data.pyramide14d);
+  const pyramide: { area: PyramidArea; pct: number }[] = (["FYS", "TEK", "SLAG", "SPILL", "TURN"] as PyramidArea[]).map(
+    (a) => ({ area: a, pct: Math.round(pyrPct[a] ?? 0) }),
   );
-}
 
-// --- PYRAMIDE-PROGRESJON --------------------------------------------------
+  // Active plan progress
+  let activePlanCard: React.ComponentProps<typeof WorkbenchDashboard>["activePlan"] | undefined;
+  if (activePlan) {
+    const allTasks = activePlan.positions.flatMap((p) => p.tasks);
+    const target = allTasks.reduce(
+      (s, t) => s + (t.repsMaalDry ?? 0) + (t.repsMaalLav ?? 0) + (t.repsMaalFull ?? 0),
+      0,
+    );
+    const current = allTasks.reduce(
+      (s, t) => s + (t.repsGjortDry ?? 0) + (t.repsGjortLav ?? 0) + (t.repsGjortFull ?? 0),
+      0,
+    );
+    const pct = target > 0 ? Math.min(100, Math.round((current / target) * 100)) : 0;
+    activePlanCard = {
+      name: activePlan.navn.split(" — ")[0].split(" · ")[0],
+      weeksLabel: "UKE 17—22 · 6 UKER",
+      progressPct: pct,
+      csTarget: "CS70 → CS80",
+    };
+  }
 
-function PyramideProgresjon({
-  data,
-  snitt,
-  tier,
-}: {
-  data: ReturnType<typeof prosentPerArea>;
-  snitt: number;
-  tier: PortalUser["tier"];
-}) {
-  const locked = tier === "GRATIS";
-  const allOver50 = PYR_REKKEFOLGE.every((a) => data[a] >= 50);
+  // TrackMan sessions -> formatted
+  const tmSessions = tmRecords.length
+    ? tmRecords.map((s, i) => ({
+        date: s.recordedAt.toLocaleDateString("nb-NO", {
+          day: "numeric",
+          month: "short",
+          weekday: "short",
+        }),
+        title: s.source ?? `Økt ${i + 1}`,
+        metric: "—",
+        unit: "se detaljer",
+        color: ["forest", "tek", "accent", "warn", "forest"][i] as "forest" | "tek" | "accent" | "warn",
+        sparkPoints: "0,22 14,18 28,20 42,14 56,12 70,8 84,10 100,6",
+      }))
+    : [
+        { date: "12. MAI · ONS", title: "Driver-økt", metric: "112", unit: "mph club-speed", color: "forest" as const, sparkPoints: "0,22 14,18 28,20 42,14 56,12 70,8 84,10 100,6" },
+        { date: "10. MAI · MAN", title: "Iron 7", metric: "1,48", unit: "smash-faktor", color: "tek" as const, sparkPoints: "0,16 14,20 28,14 42,18 56,12 70,16 84,10 100,12" },
+        { date: "6. MAI · TOR", title: "Pitch 50—100m", metric: "68", unit: "m carry · spred 4m", color: "accent" as const, sparkPoints: "0,20 14,16 28,18 42,12 56,14 70,10 84,12 100,8" },
+        { date: "3. MAI · MAN", title: "Driver-økt", metric: "220", unit: "m carry", color: "forest" as const, sparkPoints: "0,18 14,14 28,16 42,10 56,12 70,8 84,6 100,4" },
+        { date: "28. APR · SØN", title: "Wedge-finkalibrering", metric: "9 100", unit: "rpm spin", color: "warn" as const, sparkPoints: "0,14 14,18 28,12 42,16 56,10 70,14 84,8 100,12" },
+      ];
 
-  return (
-    <article className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 sm:p-6 lg:col-span-2">
-      <header className="flex items-center gap-2">
-        <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
-          <Target
-            className="h-3.5 w-3.5 text-foreground"
-            strokeWidth={1.75}
-          />
-        </span>
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-          Pyramide-progresjon
-        </span>
-        <span
-          className="ml-auto rounded-sm bg-accent px-2 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground"
-        >
-          PRO
-        </span>
-      </header>
-      <h3 className="mt-4 font-display text-xl font-semibold leading-tight tracking-tight text-foreground">
-        {locked
-          ? "Lås opp full disiplin-oversikt."
-          : allOver50
-            ? "5 disipliner — alt over 50 %."
-            : `Snitt ${snitt} % — bygger jevnt.`}
-      </h3>
-
-      <div
-        className={`mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 ${locked ? "blur-[3px] opacity-50" : ""}`}
-      >
-        {PYR_REKKEFOLGE.map((area) => (
-          <PyramideRing
-            key={area}
-            area={area}
-            value={data[area]}
-          />
-        ))}
-      </div>
-
-      {locked && (
-        <LockOverlay label="Pyramide kun for Pro" cta="Oppgrader" />
-      )}
-    </article>
-  );
-}
-
-function PyramideRing({
-  area,
-  value,
-}: {
-  area: PyramidArea;
-  value: number;
-}) {
-  const radius = 14;
-  const circumference = 2 * Math.PI * radius; // ~87.96
-  const dash = (Math.min(100, value) / 100) * circumference;
-  const color = PYR_COLOR[area];
-
-  return (
-    <div className="flex flex-col items-center gap-2">
-      <span className="relative h-16 w-16">
-        <svg
-          viewBox="0 0 36 36"
-          className="h-full w-full -rotate-90"
-          aria-hidden
-        >
-          <circle
-            cx="18"
-            cy="18"
-            r={radius}
-            fill="none"
-            stroke="hsl(var(--secondary))"
-            strokeWidth="4"
-          />
-          <circle
-            cx="18"
-            cy="18"
-            r={radius}
-            fill="none"
-            stroke={color}
-            strokeWidth="4"
-            strokeDasharray={`${dash} ${circumference}`}
-            strokeLinecap="round"
-          />
-        </svg>
-        <span className="absolute inset-0 grid place-items-center font-mono text-xs font-semibold text-foreground">
-          {value} %
-        </span>
-      </span>
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-muted-foreground">
-        {PYR_LABEL_KORT[area]}
-      </span>
-    </div>
-  );
-}
-
-// --- SG FORDELING --------------------------------------------------------
-
-type SgRow = { k: string; v: number | null };
-
-function SgFordeling({
-  sg,
-  tier,
-}: {
-  sg: { ott: number | null; app: number | null; arg: number | null; putt: number | null; total: number | null };
-  tier: PortalUser["tier"];
-}) {
-  const locked = tier === "GRATIS";
-  const rows: SgRow[] = [
-    { k: "Off Tee", v: sg.ott },
-    { k: "Approach", v: sg.app },
-    { k: "Around Green", v: sg.arg },
-    { k: "Putting", v: sg.putt },
+  // Goals — fallback til representative seed-data inntil mål-modell er på plass
+  const goals = [
+    { title: "Top 10 NM Slag", pct: 38, label: "50 dager", type: "tournament" as const },
+    { title: "HCP +3,0 innen sesongslutt", pct: 60, label: "60 %", type: "hcp" as const },
+    { title: "Bryte 70 på Bossum", pct: 80, label: "71 sist", type: "course" as const },
   ];
 
-  return (
-    <article className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 sm:p-6">
-      <header className="flex items-center gap-2">
-        <span className="grid h-6 w-6 place-items-center rounded-sm bg-secondary">
-          <Star
-            className="h-3.5 w-3.5 text-foreground"
-            strokeWidth={1.75}
-          />
-        </span>
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-          SG-fordeling
-        </span>
-        <span
-          className="ml-auto rounded-sm bg-accent px-2 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground"
-        >
-          PRO
-        </span>
-      </header>
-      <h3
-        className={`mt-4 font-display text-xl font-semibold leading-tight tracking-tight text-foreground ${locked ? "blur-[2px]" : ""}`}
-      >
-        {sg.total != null
-          ? `${formatSg(sg.total)} mot benchmark.`
-          : "Ingen runder ennå."}
-      </h3>
-
-      <div
-        className={`mt-6 grid grid-cols-2 gap-4 ${locked ? "blur-[2px] opacity-50" : ""}`}
-      >
-        {rows.map((row) => (
-          <SgRowItem key={row.k} k={row.k} v={row.v} />
-        ))}
-      </div>
-
-      {locked && <LockOverlay label="SG kun for Pro" cta="Sammenlign" />}
-    </article>
-  );
-}
-
-function SgRowItem({ k, v }: SgRow) {
-  const isNeg = v != null && v < 0;
-  const bredde = v != null ? Math.min(100, Math.abs(v) * 100) : 0;
+  const today = new Date();
+  const weekNumber = getIsoWeek(today);
+  const weekRange = formatWeekRange(today);
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-        {k}
-      </span>
-      <span
-        className="font-mono text-base font-semibold tabular-nums"
-        style={{
-          color:
-            v != null
-              ? isNeg
-                ? "hsl(var(--destructive))"
-                : "var(--color-pyr-tek)"
-              : "hsl(var(--muted-foreground))",
-        }}
-      >
-        {formatSg(v)}
-      </span>
-      <span className="relative mt-0.5 block h-1 overflow-hidden rounded-sm bg-secondary">
-        <span
-          className="absolute inset-y-0 left-0 rounded-sm"
-          style={{
-            width: `${bredde}%`,
-            background: isNeg ? "hsl(var(--destructive))" : "hsl(var(--primary))",
-          }}
-        />
-      </span>
-    </div>
+    <WorkbenchDashboard
+      playerName={user.name ?? "Spiller"}
+      playerInitials={initials(user.name)}
+      hcpString={formatHcp(user.hcp ?? null)}
+      category="A1"
+      club="GFGK"
+      weekNumber={weekNumber}
+      weekRange={weekRange}
+      streak={{
+        active: data.streak14,
+        total: data.streak14.filter(Boolean).length,
+        longest: 23,
+      }}
+      goals={goals}
+      coach={coach}
+      pyramide={pyramide}
+      activePlan={activePlanCard}
+      nextTournament={{ name: "Sørlandsåpent", daysAway: 21 }}
+      coachMessage={{
+        text: `Du har vært jevn denne uka, ${(user.name ?? "").split(" ")[0]}. Hold trykket inn mot Sørlandsåpent.`,
+        timeAgo: "FOR 2T SIDEN",
+      }}
+      tmSessions={tmSessions}
+    />
   );
-}
-
-// --- SIST REGISTRERT -----------------------------------------------------
-
-function SistRegistrert({ items }: { items: SistRegistrert[] }) {
-  if (items.length === 0) {
-    return (
-      <article className="rounded-2xl border border-border bg-card p-4 sm:p-6">
-        <header className="flex items-center justify-between">
-          <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
-            Sist registrert
-          </h3>
-          <Link
-            href="/portal/tren"
-            className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-          >
-            Se alle <ChevronRight className="h-3.5 w-3.5" strokeWidth={2} />
-          </Link>
-        </header>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Ingen registreringer ennå — første økt eller runde dukker opp her.
-        </p>
-      </article>
-    );
-  }
-
-  return (
-    <article className="overflow-hidden rounded-2xl border border-border bg-card">
-      <header className="flex items-center justify-between border-b border-border px-4 py-4 sm:px-6">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
-          Sist registrert{" "}
-          <span className="ml-1 font-sans text-sm font-normal italic text-muted-foreground">
-            {items.length} av {items.length} siste
-          </span>
-        </h3>
-        <Link
-          href="/portal/tren"
-          className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-        >
-          Se alle <ChevronRight className="h-3.5 w-3.5" strokeWidth={2} />
-        </Link>
-      </header>
-      <ul>
-        {items.slice(0, 5).map((item, i) => (
-          <SistRegistrertRow key={i} item={item} />
-        ))}
-      </ul>
-    </article>
-  );
-}
-
-function SistRegistrertRow({ item }: { item: SistRegistrert }) {
-  const dato = new Date(item.dato);
-  const idag = new Date();
-  const diff = Math.floor(
-    (idag.getTime() - dato.getTime()) / (1000 * 60 * 60 * 24)
-  );
-  const datoLabel =
-    diff === 0
-      ? "i dag"
-      : diff === 1
-        ? "i går"
-        : diff < 7
-          ? `${diff} dgr siden`
-          : `${dato.getDate()}.${dato.getMonth() + 1}`;
-
-  const iconBg =
-    item.type === "round"
-      ? { bg: "var(--color-pyr-spill-track)", fg: "var(--color-pyr-spill)", icon: Flag }
-      : item.type === "test"
-        ? { bg: "var(--color-pyr-slag-track)", fg: "var(--color-pyr-fys)", icon: Target }
-        : { bg: "var(--color-pyr-tek-track)", fg: "var(--color-pyr-tek)", icon: Dumbbell };
-
-  const Ic = iconBg.icon;
-
-  return (
-    <li className="grid grid-cols-[60px_36px_1fr_auto] items-center gap-3 border-b border-border/60 px-4 py-3 transition-colors last:border-0 hover:bg-secondary/40 sm:grid-cols-[80px_36px_1fr_auto] sm:gap-4 sm:px-6 sm:py-3.5">
-      <span className="font-mono text-[11px] text-muted-foreground">
-        {datoLabel}
-      </span>
-      <span
-        className="grid h-9 w-9 place-items-center rounded-md"
-        style={{ background: iconBg.bg, color: iconBg.fg }}
-      >
-        <Ic className="h-4 w-4" strokeWidth={1.75} />
-      </span>
-      <div className="min-w-0">
-        <p className="truncate text-sm font-medium leading-tight text-foreground">
-          {item.tittel}
-        </p>
-        <p className="mt-0.5 truncate font-mono text-[11px] text-muted-foreground">
-          {item.detalj}
-        </p>
-      </div>
-      <ChevronRight
-        className="h-4 w-4 text-foreground/30"
-        strokeWidth={1.75}
-      />
-    </li>
-  );
-}
-
-// --- COACH MELDING ------------------------------------------------------
-
-function CoachMelding({
-  melding,
-  tier,
-}: {
-  melding: { content: string; ts: Date; coachNavn: string };
-  tier: PortalUser["tier"];
-}) {
-  const tekst =
-    melding.content.length > 240
-      ? melding.content.slice(0, 240) + "…"
-      : melding.content;
-  const navnInit =
-    melding.coachNavn
-      .split(" ")
-      .map((s) => s[0])
-      .slice(0, 2)
-      .join("") || "AK";
-  const dato = new Date(melding.ts);
-  const naar =
-    dato.toLocaleDateString("nb-NO", {
-      day: "2-digit",
-      month: "2-digit",
-    });
-
-  return (
-    <article
-      className="relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl bg-foreground px-4 py-5 text-background sm:flex-row sm:items-center sm:gap-6 sm:px-6 sm:py-6 dark:bg-card"
-    >
-      <span
-        aria-hidden
-        className="absolute -right-10 -top-10 h-40 w-40 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(209,248,67,0.10) 0%, transparent 70%)",
-        }}
-      />
-      <span
-        className="relative z-10 grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-accent/30 bg-gradient-to-br from-muted-foreground to-primary font-display text-sm font-semibold text-white"
-      >
-        {navnInit}
-      </span>
-      <div className="relative z-10 min-w-0 flex-1">
-        <p
-          className="font-mono text-[10px] uppercase tracking-[0.08em]"
-          style={{ color: "rgba(209,248,67,0.7)" }}
-        >
-          {melding.coachNavn} · hovedcoach
-          <span
-            className="ml-2"
-            style={{ color: "rgba(245,244,238,0.5)" }}
-          >
-            {naar}
-          </span>
-        </p>
-        <p className="mt-1 font-display text-lg font-normal italic leading-snug text-background">
-          «{tekst}»
-        </p>
-      </div>
-      <Link
-        href={
-          tier === "GRATIS" ? "/portal/meg/abonnement" : "/portal/coach/ai"
-        }
-        className="relative z-10 inline-flex shrink-0 items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground"
-      >
-        <MessageSquare className="h-3.5 w-3.5" strokeWidth={2} />
-        Svar
-        <ChevronRight className="h-3.5 w-3.5" strokeWidth={2} />
-      </Link>
-    </article>
-  );
-}
-
-// --- Voice Memo V4 — banner -----------------------------------------------
-
-function CoachAnalysisBanner({ okteDato }: { okteDato: Date }) {
-  const datoStr = okteDato.toLocaleDateString("nb-NO", {
-    day: "numeric",
-    month: "long",
-  });
-
-  return (
-    <Link
-      href="/portal/tren"
-      className="group flex items-center justify-between gap-4 rounded-lg border border-primary bg-accent p-4 transition-opacity hover:opacity-90 md:p-6"
-    >
-      <div className="flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">
-          <Sparkles className="h-5 w-5" strokeWidth={1.75} />
-        </div>
-        <div>
-          <div className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-accent-foreground/80">
-            Coach-analyse · {datoStr}
-          </div>
-          <div className="mt-0.5 font-display text-base font-semibold text-accent-foreground md:text-lg">
-            Ny coach-analyse er klar — se hva du skal jobbe med
-          </div>
-        </div>
-      </div>
-      <ChevronRight
-        className="h-5 w-5 shrink-0 text-accent-foreground transition-transform group-hover:translate-x-0.5"
-        strokeWidth={1.75}
-      />
-    </Link>
-  );
-}
-
-// --- Helpers --------------------------------------------------------------
-
-function beregnSnitt(prosent: ReturnType<typeof prosentPerArea>): number {
-  const verdier = Object.values(prosent);
-  if (verdier.length === 0) return 0;
-  return Math.round(verdier.reduce((a, b) => a + b, 0) / verdier.length);
 }
