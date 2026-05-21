@@ -3,6 +3,16 @@
 //   - src/app/api/admin/coach-ai/route.ts (coach som analyserer spiller)
 //
 // Generisk input-type dekker begge bruksmønstrene.
+//
+// I tillegg eksporterer denne fila byggBrukerMeldingMedMal() — som brukes
+// av plan-generatoren til å pakke kontekst + PlanTemplate + coach-instruks
+// inn i én bruker-melding.
+
+import type {
+  PlanTemplateData,
+  SpillerKontekst,
+} from "./context";
+import { kontekstSomBrukerMelding } from "./context";
 
 export type SystemPromptInput = {
   /** Hvem prompten er rettet til. Styrer tone og rolle. */
@@ -127,4 +137,63 @@ Retningslinjer:
 - Når coach spør om analyse: pek på tendenser i SG-tallene
 - Si tydelig hvis du mangler data for å svare presist
 - Aldri foreslå at coachen "snakker med spilleren" uten konkret innhold`;
+}
+
+/**
+ * Bygger den fullstendige bruker-meldingen for AI-plan-generering med
+ * (valgfri) baseline-mal. Inkluderer kontekst, template og coach-instruks.
+ *
+ * Hvis template er null, fallbacker til original kontekstSomBrukerMelding().
+ */
+export function byggBrukerMeldingMedMal(
+  ctx: SpillerKontekst,
+  brukerPrompt: string,
+  template: PlanTemplateData | null,
+  feedback?: string,
+  forrigeForslag?: unknown,
+): string {
+  if (template === null) {
+    return kontekstSomBrukerMelding(ctx, brukerPrompt, feedback, forrigeForslag);
+  }
+
+  const linjer: string[] = [];
+  linjer.push("KONTEKST OM SPILLEREN (JSON):");
+  linjer.push("```json");
+  linjer.push(JSON.stringify(ctx, null, 2));
+  linjer.push("```");
+  linjer.push("");
+  linjer.push(
+    `BASELINE-MAL (PlanTemplate "${template.navn}" — matchet på kategori ${
+      ctx.spiller.ngfKategori ?? "?"
+    } × ${ctx.aktivLPhase ?? "?"}):`,
+  );
+  linjer.push("```json");
+  linjer.push(JSON.stringify(template, null, 2));
+  linjer.push("```");
+  linjer.push("");
+  linjer.push(
+    "Bruk malen som utgangspunkt. JUSTER drills, volum og fokus basert på",
+  );
+  linjer.push(
+    "spillerens individuelle SG-data, aktive mål og forrige PlanEffectiveness.",
+  );
+  linjer.push("IKKE kopier malen 1:1. Tilpass den.");
+  linjer.push("");
+  linjer.push("COACH SIN INSTRUKS:");
+  linjer.push(brukerPrompt);
+  if (forrigeForslag && feedback) {
+    linjer.push("");
+    linjer.push("FORRIGE FORSLAG (revider basert på feedback):");
+    linjer.push("```json");
+    linjer.push(JSON.stringify(forrigeForslag, null, 2));
+    linjer.push("```");
+    linjer.push("");
+    linjer.push("FEEDBACK FRA COACH:");
+    linjer.push(feedback);
+  }
+  linjer.push("");
+  linjer.push(
+    'Lag en treningsplan tilpasset spilleren. Kall verktøyet "lever_planforslag" med en gang.',
+  );
+  return linjer.join("\n");
 }

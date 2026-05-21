@@ -2,11 +2,21 @@
 // Bruker Claude Sonnet 4.5 med tool_use for å tvinge JSON-output som matcher
 // PLAN_FORSLAG_TOOL_SCHEMA. Logger hver generering til AiPlanGeneration
 // med tokens og estimert kost.
+//
+// Henter en PlanTemplate (baseline) basert på spillerens (kategori, lPhase)
+// og lar AI-en bruke den som utgangspunkt. Når en template ble brukt,
+// lagres templateId i AiPlanGeneration så vi senere kan korrelere med
+// PlanEffectiveness.
 
 import { anthropicKlient } from "@/lib/anthropic";
 import { prisma } from "@/lib/prisma";
 import { AI_COACH_SYSTEM_PROMPT } from "./system-prompt";
-import { byggSpillerKontekst, kontekstSomBrukerMelding } from "./context";
+import {
+  byggSpillerKontekst,
+  hentTemplate,
+  type PlanTemplateData,
+} from "./context";
+import { byggBrukerMeldingMedMal } from "./coach-prompt";
 import {
   PLAN_FORSLAG_TOOL_SCHEMA,
   validerPlanForslag,
@@ -37,9 +47,13 @@ export type GenererPlanInput = {
 export type GenererPlanResultat = {
   forslag: PlanForslag;
   generationId: string;
+  /** ID på baseline-mal som ble brukt, eller null hvis ingen ble matchet. */
+  templateId: string | null;
 };
 
-export async function genererPlan(input: GenererPlanInput): Promise<GenererPlanResultat> {
+export async function genererPlan(
+  input: GenererPlanInput,
+): Promise<GenererPlanResultat> {
   const { userId, coachId, brukerPrompt, iterationOf, feedback } = input;
 
   if (!brukerPrompt || brukerPrompt.trim().length < 5) {
@@ -60,14 +74,25 @@ export async function genererPlan(input: GenererPlanInput): Promise<GenererPlanR
     }
   }
 
-  const brukerMelding = kontekstSomBrukerMelding(
+  // 2) Forsøk å matche en PlanTemplate. Fallback til null hvis spilleren
+  //    mangler kategori eller aktiv L-fase.
+  let template: PlanTemplateData | null = null;
+  if (ctx.spiller.ngfKategori && ctx.aktivLPhase) {
+    template = await hentTemplate(
+      ctx.spiller.ngfKategori,
+      ctx.aktivLPhase,
+    );
+  }
+
+  const brukerMelding = byggBrukerMeldingMedMal(
     ctx,
     brukerPrompt,
+    template,
     feedback,
     forrigeForslag,
   );
 
-  // 2) Kall Anthropic med tool_use for tvunget JSON
+  // 3) Kall Anthropic med tool_use for tvunget JSON
   const klient = anthropicKlient();
   const respons = await klient.messages.create({
     model: AI_PLAN_MODEL,
@@ -85,7 +110,7 @@ export async function genererPlan(input: GenererPlanInput): Promise<GenererPlanR
     messages: [{ role: "user", content: brukerMelding }],
   });
 
-  // 3) Plukk ut tool_use-blokken
+  // 4) Plukk ut tool_use-blokken
   const toolBlock = respons.content.find(
     (b): b is Extract<typeof b, { type: "tool_use" }> => b.type === "tool_use",
   );
@@ -103,14 +128,15 @@ export async function genererPlan(input: GenererPlanInput): Promise<GenererPlanR
   const tokensOutput = respons.usage?.output_tokens ?? 0;
   const costUsd = estimerKostUsd(tokensInput, tokensOutput);
 
-  // 4) Logg
+  // 5) Logg generering. templateId persistes i contextJson så vi senere kan
+  //    rekonstruere hvilken baseline-mal som ble brukt.
   const generation = await prisma.aiPlanGeneration.create({
     data: {
       userId,
       coachId,
       prompt: brukerPrompt,
       systemPrompt: AI_COACH_SYSTEM_PROMPT,
-      contextJson: ctx as object,
+      contextJson: { ...ctx, _templateId: template?.templateId ?? null },
       responseJson: forslag as object,
       model: AI_PLAN_MODEL,
       tokensInput,
@@ -121,5 +147,17 @@ export async function genererPlan(input: GenererPlanInput): Promise<GenererPlanR
     select: { id: true },
   });
 
-  return { forslag, generationId: generation.id };
+  // 6) Inkrementer usageCount på malen så vi vet hvor ofte den brukes.
+  if (template) {
+    await prisma.planTemplate.update({
+      where: { id: template.templateId },
+      data: { usageCount: { increment: 1 } },
+    });
+  }
+
+  return {
+    forslag,
+    generationId: generation.id,
+    templateId: template?.templateId ?? null,
+  };
 }
