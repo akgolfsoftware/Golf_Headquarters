@@ -156,6 +156,7 @@ export default async function PortalHjem() {
   // TrackMan sessions -> formatted
   const tmSessions = tmRecords.length
     ? tmRecords.map((s, i) => ({
+        id: s.id,
         date: s.recordedAt.toLocaleDateString("nb-NO", {
           day: "numeric",
           month: "short",

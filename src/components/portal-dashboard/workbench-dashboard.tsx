@@ -55,6 +55,7 @@ export interface WorkbenchDashboardProps {
   nextTournament?: { name: string; daysAway: number };
   coachMessage?: { text: string; timeAgo: string };
   tmSessions: {
+    id?: string; // Prisma TrackManSession-id (kun på live data)
     date: string; // "12. MAI · ONS"
     title: string;
     metric: string;
@@ -177,9 +178,9 @@ export function WorkbenchDashboard(props: WorkbenchDashboardProps) {
                   </div>
                 </div>
                 <div className="actions">
-                  <button type="button" className="phq-btn lime-outline sm">
+                  <Link href="/portal/coach/melding/ny" className="phq-btn lime-outline sm">
                     <MessageSquare size={11} aria-hidden /> Send melding
-                  </button>
+                  </Link>
                   <Link href="/portal/coach" className="phq-btn lime sm">
                     <Plus size={11} aria-hidden /> Be om økt
                   </Link>
@@ -292,7 +293,11 @@ export function WorkbenchDashboard(props: WorkbenchDashboardProps) {
           </div>
           <div className="phq-tm-cards">
             {props.tmSessions.map((s, i) => (
-              <Link key={i} href="/portal/trackman" className="phq-tm-card">
+              <Link
+                key={s.id ?? i}
+                href={s.id ? `/portal/trackman/${s.id}` : "/portal/analyse"}
+                className="phq-tm-card"
+              >
                 <span className="date">{s.date.toUpperCase()}</span>
                 <span className="ttl">{s.title}</span>
                 <svg className="phq-tm-mini-svg" viewBox="0 0 100 32" preserveAspectRatio="none">

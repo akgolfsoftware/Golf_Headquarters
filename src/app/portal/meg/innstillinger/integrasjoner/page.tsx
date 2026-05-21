@@ -97,10 +97,10 @@ export default async function IntegrasjonerPage() {
           </Link>
 
           <div className="meg-rail-label mt">Støtte</div>
-          <Link href="/portal/help">
+          <Link href="/portal/meg/help">
             <HelpCircle size={14} aria-hidden /> Hjelpesenter
           </Link>
-          <Link href="/portal/help/kontakt">
+          <Link href="/portal/meg/help/kontakt">
             <MessageSquare size={14} aria-hidden /> Kontakt support
           </Link>
         </aside>
@@ -356,7 +356,7 @@ export default async function IntegrasjonerPage() {
                 innen 4 timer på hverdager.
               </div>
             </div>
-            <Link href="/portal/help/kontakt" className="lnk">
+            <Link href="/portal/meg/help/kontakt" className="lnk">
               Kontakt support <ArrowRight size={14} aria-hidden />
             </Link>
           </div>
