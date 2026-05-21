@@ -1,5 +1,14 @@
 import Link from "next/link";
-import { ArrowLeft, LayoutTemplate, Plus, Search, Star, Users } from "lucide-react";
+import {
+  ArrowLeft,
+  LayoutTemplate,
+  Plus,
+  Search,
+  Star,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
@@ -71,13 +80,43 @@ function splitTitle(name: string): { lead: string; rest: string } {
   return { lead: parts[0], rest: parts.slice(1).join(" ") };
 }
 
-export default async function PlanTemplates() {
+type SortKey = "nyest" | "effekt" | "brukt";
+
+export default async function PlanTemplates({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string }>;
+}) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const sp = await searchParams;
+  const sort: SortKey =
+    sp.sort === "effekt" || sp.sort === "brukt" ? sp.sort : "nyest";
+
+  // Sortér: effekt = effectivenessAvg DESC NULLS LAST, brukt = usageCount DESC,
+  // nyest = createdAt DESC. Prisma støtter `nulls: "last"` på orderBy.
+  const orderBy =
+    sort === "effekt"
+      ? [
+          { effectivenessAvg: { sort: "desc", nulls: "last" } as const },
+          { createdAt: "desc" as const },
+        ]
+      : sort === "brukt"
+        ? [
+            { usageCount: "desc" as const },
+            { createdAt: "desc" as const },
+          ]
+        : [{ createdAt: "desc" as const }];
 
   const templates = await prisma.planTemplate.findMany({
     where: { approved: true },
-    orderBy: { createdAt: "desc" },
+    orderBy,
   });
+
+  function formatDelta(v: number | null): string {
+    if (v === null) return "—";
+    const sign = v >= 0 ? "+" : "";
+    return `${sign}${v.toFixed(2).replace(".", ",")}`;
+  }
 
   return (
     <div className="space-y-8">
@@ -120,14 +159,17 @@ export default async function PlanTemplates() {
               />
             </div>
             <span className="px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              Kategori
+              Sorter
             </span>
-            <Chip active>
-              Alle{" "}
-              <span className="ml-2 opacity-60 tabular-nums">
-                {templates.length}
-              </span>
-            </Chip>
+            <SortChip href="?sort=nyest" active={sort === "nyest"}>
+              Nyest
+            </SortChip>
+            <SortChip href="?sort=effekt" active={sort === "effekt"}>
+              Best effekt
+            </SortChip>
+            <SortChip href="?sort=brukt" active={sort === "brukt"}>
+              Mest brukt
+            </SortChip>
             <span className="ml-auto" />
             <Link
               href="/admin/plans/templates/ny"
@@ -151,7 +193,24 @@ export default async function PlanTemplates() {
               const faseCount = payload.faseCount ?? Math.max(1, Math.round(t.varighetUker / 3));
               const level = payload.level ?? "Alle";
               const rating = payload.rating ?? "—";
-              const usedCount = payload.usedCount ?? 0;
+              // Bruk ekte tall fra DB (PlanEffectiveness oppdaterer disse).
+              // Faller tilbake til payload-verdier hvis DB ikke har noe ennå.
+              const usedCount = t.usageCount || payload.usedCount || 0;
+              const effekt = t.effectivenessAvg;
+              const effektFarge =
+                effekt === null
+                  ? "text-muted-foreground"
+                  : effekt > 0.05
+                    ? "text-primary"
+                    : effekt < -0.05
+                      ? "text-destructive"
+                      : "text-muted-foreground";
+              const EffektIkon =
+                effekt === null
+                  ? null
+                  : effekt >= 0
+                    ? TrendingUp
+                    : TrendingDown;
 
               return (
                 <article
@@ -275,16 +334,43 @@ export default async function PlanTemplates() {
                     </div>
                   </div>
 
+                  {/* Effektivitet-strip */}
+                  <div className="flex items-center justify-between border-t border-border bg-background/60 px-6 py-2 text-[11px]">
+                    <Link
+                      href={`/admin/plans/templates/${t.id}/effectiveness`}
+                      className="inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      <Users
+                        className="h-3.5 w-3.5"
+                        strokeWidth={1.5}
+                      />
+                      <span className="font-mono tabular-nums">
+                        Brukt{" "}
+                        <b className="font-semibold text-foreground">
+                          {usedCount}
+                        </b>{" "}
+                        ganger
+                      </span>
+                    </Link>
+                    <span
+                      className={`inline-flex items-center gap-1.5 font-mono tabular-nums ${effektFarge}`}
+                      title={
+                        effekt === null
+                          ? "Ingen effekt-data ennå"
+                          : "Snitt SG-Total delta etter fullført plan"
+                      }
+                    >
+                      {EffektIkon && (
+                        <EffektIkon className="h-3.5 w-3.5" strokeWidth={1.5} />
+                      )}
+                      Snitt-effekt{" "}
+                      <b className="font-semibold">{formatDelta(effekt)}</b>
+                    </span>
+                  </div>
+
                   {/* Footer */}
                   <div className="flex items-center justify-between border-t border-border bg-background px-6 py-2">
                     <div className="flex gap-4 text-[11px] font-medium text-muted-foreground">
-                      <span className="inline-flex items-center gap-2">
-                        <Users className="h-4 w-4" strokeWidth={1.5} />
-                        <b className="font-mono font-semibold text-foreground">
-                          {usedCount}
-                        </b>
-                        brukt
-                      </span>
                       <span className="inline-flex items-center gap-2">
                         <Star className="h-4 w-4" strokeWidth={1.5} />
                         <b className="font-mono font-semibold text-foreground">
@@ -325,25 +411,25 @@ export default async function PlanTemplates() {
   );
 }
 
-function Chip({
+function SortChip({
+  href,
   active,
   children,
 }: {
-  active?: boolean;
+  href: string;
+  active: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      disabled={!active}
-      title={active ? undefined : "Filter kommer i v2"}
+    <Link
+      href={href}
       className={`inline-flex items-center rounded-full border px-4 py-2 text-[12px] font-medium transition-colors ${
         active
           ? "border-primary bg-primary text-primary-foreground"
-          : "cursor-not-allowed border-border bg-card text-muted-foreground opacity-60"
+          : "border-border bg-card text-muted-foreground hover:text-foreground"
       }`}
     >
       {children}
-    </button>
+    </Link>
   );
 }

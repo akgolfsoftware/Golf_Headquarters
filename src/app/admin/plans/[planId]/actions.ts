@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
-import { notifyMany } from "@/lib/notifications";
+import { notify, notifyMany } from "@/lib/notifications";
+import { computeEffectiveness } from "@/lib/ai-plan/effectiveness";
 import type {
   PyramidArea,
   SkillArea,
@@ -250,6 +251,9 @@ export async function resumePlan(planId: string) {
 /**
  * Avslutt plan permanent. Settes til status=ARCHIVED, isActive=false, endDate=now.
  * Brukes når perioden er ferdig eller spiller stoppet planen.
+ *
+ * Trigger effectiveness-beregning best-effort etter arkivering — feiler vi her,
+ * skal ikke arkiveringen rulles tilbake.
  */
 export async function endPlan(planId: string) {
   const user = await krevCoach();
@@ -275,8 +279,128 @@ export async function endPlan(planId: string) {
     },
   });
 
+  // Best-effort: regn ut effectiveness umiddelbart. Feiler vi her, fortsetter
+  // brukeren — beregningen kan kjøres på nytt manuelt eller via cron.
+  try {
+    await computeEffectiveness(planId);
+  } catch (err) {
+    console.error("[endPlan] computeEffectiveness failed", err);
+  }
+
   revalidatePath("/admin/plans");
   revalidatePath(`/admin/plans/${planId}`);
+}
+
+/**
+ * Marker en plan som fullført fra coach-siden. Settes til status=ARCHIVED,
+ * isActive=false, endDate=now. Trigger effectiveness-beregning og sender en
+ * "fullført"-notifikasjon til spilleren med link til feiringssiden.
+ */
+export async function markPlanCompleted(
+  planId: string,
+): Promise<{ ok: true } | { ok: false; feil: string }> {
+  const user = await krevCoach();
+  const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
+  if (!plan) return { ok: false, feil: "Fant ikke planen." };
+  if (plan.status === "ARCHIVED") {
+    return { ok: false, feil: "Planen er allerede fullført." };
+  }
+
+  const now = new Date();
+  await prisma.trainingPlan.update({
+    where: { id: planId },
+    data: { status: "ARCHIVED", isActive: false, endDate: now },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: user.id,
+      action: "plan.complete",
+      target: planId,
+      metadata: {
+        planName: plan.name,
+        userId: plan.userId,
+        completedAt: now.toISOString(),
+      },
+    },
+  });
+
+  try {
+    await computeEffectiveness(planId);
+  } catch (err) {
+    console.error("[markPlanCompleted] computeEffectiveness failed", err);
+  }
+
+  await notify({
+    userId: plan.userId,
+    type: "achievement",
+    title: `Du fullførte planen: ${plan.name}`,
+    body: "Se hvordan du har utviklet deg og be om ny plan.",
+    link: `/portal/tren/feiring/${planId}`,
+  });
+
+  revalidatePath("/admin/plans");
+  revalidatePath(`/admin/plans/${planId}`);
+  revalidatePath(`/portal/tren`);
+  return { ok: true };
+}
+
+/**
+ * Coach vurderer en fullført plan — selfRating + coachRating + notater.
+ * Brukes fra spiller-detalj "Effekt"-seksjonen.
+ */
+export async function rateEffectiveness(input: {
+  effectivenessId: string;
+  selfRating?: number | null;
+  coachRating?: number | null;
+  notes?: string | null;
+}): Promise<{ ok: true } | { ok: false; feil: string }> {
+  const user = await krevCoach();
+
+  const eff = await prisma.planEffectiveness.findUnique({
+    where: { id: input.effectivenessId },
+    select: { id: true, userId: true, planId: true },
+  });
+  if (!eff) return { ok: false, feil: "Fant ikke effektivitets-raden." };
+
+  function validerRating(v: number | null | undefined): number | null {
+    if (v === null || v === undefined) return null;
+    if (Number.isNaN(v)) return null;
+    if (v < 1 || v > 5) return null;
+    return Math.round(v * 10) / 10;
+  }
+
+  const selfRating = validerRating(input.selfRating);
+  const coachRating = validerRating(input.coachRating);
+  const notes = input.notes?.trim() ? input.notes.trim().slice(0, 2000) : null;
+
+  await prisma.planEffectiveness.update({
+    where: { id: input.effectivenessId },
+    data: {
+      selfRating,
+      coachRating,
+      notes,
+    },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: user.id,
+      action: "plan.effectiveness.rate",
+      target: input.effectivenessId,
+      metadata: {
+        planId: eff.planId,
+        userId: eff.userId,
+        selfRating,
+        coachRating,
+        notesLength: notes?.length ?? 0,
+      },
+    },
+  });
+
+  revalidatePath(`/admin/spillere/${eff.userId}`);
+  revalidatePath(`/admin/plans/${eff.planId}`);
+  return { ok: true };
 }
 
 /**

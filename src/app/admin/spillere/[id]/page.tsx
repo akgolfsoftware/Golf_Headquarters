@@ -38,6 +38,7 @@ import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 import { computeStreak, aktivStreak } from "@/lib/streak";
 import { ProfilRedigerTrigger } from "@/components/shared/profil-rediger-trigger";
 import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
+import { EffektTab, type EffektRad } from "./effekt-tab";
 
 type TabKey =
   | "oversikt"
@@ -45,6 +46,7 @@ type TabKey =
   | "statistikk"
   | "mal"
   | "notater"
+  | "effekt"
   | "innboks";
 
 const TABS: { key: TabKey; label: string; icon: typeof Target }[] = [
@@ -53,6 +55,7 @@ const TABS: { key: TabKey; label: string; icon: typeof Target }[] = [
   { key: "statistikk", label: "Statistikk", icon: LineChartIcon },
   { key: "mal", label: "Mål", icon: Flag },
   { key: "notater", label: "Notater", icon: NotebookPen },
+  { key: "effekt", label: "Effekt", icon: Activity },
   { key: "innboks", label: "Innboks", icon: Inbox },
 ];
 
@@ -284,6 +287,54 @@ export default async function SpillerCoachView({
 
   const sisteRundeScore = player.rounds[0]?.score;
 
+  // Plan-effektivitet — historikk for denne spilleren
+  const effektivitetRader = await prisma.planEffectiveness.findMany({
+    where: { userId: player.id },
+    orderBy: { computedAt: "desc" },
+    select: {
+      id: true,
+      planId: true,
+      templateId: true,
+      sgTotalDelta: true,
+      sgOttDelta: true,
+      sgAppDelta: true,
+      sgArgDelta: true,
+      sgPuttDelta: true,
+      completionRate: true,
+      selfRating: true,
+      coachRating: true,
+      notes: true,
+      computedAt: true,
+      plan: { select: { name: true, startDate: true, endDate: true } },
+      template: { select: { name: true } },
+    },
+  });
+
+  const NB_KORT = new Intl.DateTimeFormat("nb-NO", {
+    day: "2-digit",
+    month: "short",
+  });
+  const effektRader: EffektRad[] = effektivitetRader.map((r) => ({
+    id: r.id,
+    planId: r.planId,
+    planName: r.plan.name,
+    templateId: r.templateId,
+    templateName: r.template?.name ?? null,
+    periode: `${NB_KORT.format(r.plan.startDate)} – ${
+      r.plan.endDate ? NB_KORT.format(r.plan.endDate) : "pågår"
+    }`,
+    computedAt: r.computedAt.toISOString(),
+    completionRate: r.completionRate,
+    sgTotalDelta: r.sgTotalDelta,
+    sgOttDelta: r.sgOttDelta,
+    sgAppDelta: r.sgAppDelta,
+    sgArgDelta: r.sgArgDelta,
+    sgPuttDelta: r.sgPuttDelta,
+    selfRating: r.selfRating,
+    coachRating: r.coachRating,
+    notes: r.notes,
+  }));
+
   const baseHref = `/admin/spillere/${id}`;
 
   return (
@@ -498,6 +549,8 @@ export default async function SpillerCoachView({
                 }))}
             />
           )}
+
+          {tab === "effekt" && <EffektTab rader={effektRader} />}
 
           {tab === "innboks" && <InnboksTab playerId={player.id} />}
         </div>
