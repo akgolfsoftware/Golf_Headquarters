@@ -1,0 +1,5135 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-05-22",
+  "fokusOmrade": "DRIVER",
+  "totalDrills": 114,
+  "sources": [
+    "ak-second-brain:morad-drill-bibliotek",
+    "ak-second-brain:morad-fault-drill-mapping",
+    "ak-second-brain:morad-knowledge-base-v1",
+    "ak-second-brain:morad-konseptkatalog",
+    "ak-second-brain:morad-posisjonssystem",
+    "ak-second-brain:morad-diagnostiske-regler",
+    "ak-second-brain:treningsperioder-og-faser",
+    "ak-second-brain:ak-golf-treningsfilosofi",
+    "ak-second-brain:ak-golf-testprotokoller",
+    "ak-second-brain:decade-golf",
+    "notion:mac-ogrady-kb",
+    "notion:ak-treningsplan-skill"
+  ],
+  "drills": [
+    {
+      "navn": "draw-fade-shape-control-10b",
+      "beskrivelse": "Velg 10 baller. Slå 5 med bevisst draw (start høyre, dra venstre) og 5 med fade (start venstre, dra høyre). Mål: minst 7 av 10 lander i ønsket sone på fairway. Bruk aim-sticks for visuell startlinje. Logg startlinje og kurv-form etter hvert slag.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "driver-grunnposisjon",
+        "swing-path-bevissthet"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "draw",
+        "fade",
+        "swing-path"
+      ],
+      "coachNotater": "Krever bevissthet om club-face og swing-path. Spillere som ikke kan justere bevisst — gå tilbake til ball-flight-laws. Bra som warm-up før turnering for å bekrefte at kontroll er der."
+    },
+    {
+      "navn": "draw-only-stock-shot-bygg",
+      "beskrivelse": "Slå 20 baller med driver. Alle skal være draw: start 5-10 yards høyre for mål, kurve 5-10 yards venstre. Bruk grep-hint (litt sterkere venstre hand) og inn-til-ut path. Mål: 14/20 innenfor draw-sone. Dette er stock-shot bygging.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "20-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "driver-grunnposisjon"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "H": 45,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "draw",
+        "stock-shot"
+      ],
+      "coachNotater": "Stock-shot må være draw eller fade — ikke begge. Jeg liker draw som default fordi den ruller mer. Hvis spilleren slicer naturlig, ikke tving — bygg en kontrollert fade i stedet."
+    },
+    {
+      "navn": "fade-only-stock-shot-bygg",
+      "beskrivelse": "Slå 20 baller med driver, alle skal være kontrollert fade: start 5-10 yards venstre, kurve tilbake 5-10 yards høyre. Bruk litt åpnere stance, ball litt frem. Mål: 14/20 i fade-sone. Anbefales for spillere som mister hooks under press.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "20-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "driver-grunnposisjon"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "H": 45,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "fade",
+        "stock-shot"
+      ],
+      "coachNotater": "Fade er tryggere stock-shot under press fordi misset er rettere. Tour-spillere som Hogan, Nicklaus brukte fade. Hvis spiller har hook-tendens, sett denne som stock-shot uten å rote med grep."
+    },
+    {
+      "navn": "straight-ball-window-narrow",
+      "beskrivelse": "Plasser to aim-sticks 15 yards foran tee, 5 yards fra hverandre, danner et 'vindu'. Slå 10 baller — alle skal passere gjennom vinduet. Driver kan kurve etterpå, men startlinjen skal være rett. Mål: 7/10 gjennom vinduet.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "2-aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "straight",
+        "startlinje",
+        "accuracy-over-power"
+      ],
+      "coachNotater": "Startlinjen avsløres med vinduet — ball-flight-laws sier startlinje er 85% face. Hvis spilleren misser vinduet konsekvent venstre, face er lukket ved impact. Sjekk grep og press i venstre hand."
+    },
+    {
+      "navn": "into-wind-knock-down-driver",
+      "beskrivelse": "Simuler motvind: tee ball lavere enn vanlig (1/4 av ball over crown), ball litt bak i stance (midten), grip ned 1 tomme. Slå 10 baller. Mål: lavere ball-flight med spin under 2500 RPM (Trackman) og 15+ yards mindre carry. Bygger kontroll i vind.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "tee",
+        "Trackman",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "driver-grunnposisjon"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "scenario",
+        "wind",
+        "into",
+        "knock-down"
+      ],
+      "coachNotater": "Knock-down med driver er sjelden brukt på range, men avgjørende på Bossum og linksbaner. 'Swing easy when it's breezy' — 80% sving, ikke 100%. Lavere spin = mindre vind-effekt."
+    },
+    {
+      "navn": "down-wind-launch-high-driver",
+      "beskrivelse": "Simuler medvind: tee ball høyere enn vanlig (3/4 over crown), ball forrest i stance (N-2), attack angle +5°. Slå 10 baller. Mål: høyere launch (15°+), mindre spin (2200 RPM), maksimerer carry i medvind. Trening for å utnytte forhold.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "tee",
+        "Trackman",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "driver-grunnposisjon"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "scenario",
+        "wind",
+        "down",
+        "max-distance",
+        "attack-angle"
+      ],
+      "coachNotater": "Medvind = utnytt det. Mange spillere svinger hardere i medvind, men det øker spin og ødelegger carry. Lavere spin + høyere launch er svaret. Ball forrest, tee opp, lev av rull."
+    },
+    {
+      "navn": "cross-wind-left-to-right-shape",
+      "beskrivelse": "Simuler cross-wind venstre-til-høyre: spillere må enten holde ball mot vinden (draw mot venstre) eller ri vinden (fade som flyr lengre). Slå 10 baller — 5 av hver type. Mål: forstå avveiing mellom kontroll og distanse.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "shot-shape-control"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "scenario",
+        "wind",
+        "cross",
+        "shot-shape",
+        "decision-making"
+      ],
+      "coachNotater": "Cross-wind er beslutningsspill. På linksbaner som Bossum er det 50% av tee-skuddene. Anbefaler å ri vinden hvis fairway er bred — hold mot hvis OB på vindsiden. Diskuter alltid valg etter slaget."
+    },
+    {
+      "navn": "cross-wind-right-to-left-shape",
+      "beskrivelse": "Simuler cross-wind høyre-til-venstre: spillere må shape mot vinden (fade) eller med vinden (draw som ruller lengre). Slå 10 baller — 5 fade, 5 draw. Diskuter spredning og distanse-forskjell. Loggfør med Trackman hvis tilgjengelig.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "shot-shape-control"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "scenario",
+        "wind",
+        "cross",
+        "shot-shape",
+        "decision-making"
+      ],
+      "coachNotater": "Speilbilde av venstre-til-høyre, men det føles annerledes for høyrehånds-spillere. Fade mot vinden er konservativt — draw med vinden krever mot. Bygg begge."
+    },
+    {
+      "navn": "trang-fairway-aim-small",
+      "beskrivelse": "Plasser to aim-sticks 200 yards ut, 25 yards fra hverandre — simulerer 25 yard bred fairway. Slå 10 baller med driver. Mål: 7/10 i fairway. Ingen kompensasjon — vanlig stock-shot. Bygger tillit til linje under press.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 50,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "scenario",
+        "trouble-tee",
+        "accuracy-over-power"
+      ],
+      "coachNotater": "25 yard fairway = under tour-snitt på trange hull. Spillere som scorer lavt under press er de som ikke prøver å hjelpe ballen. Vanlig sving, snever målsone, aksepter resultatet."
+    },
+    {
+      "navn": "ob-trussel-venstre-tee",
+      "beskrivelse": "Simuler OB-trussel venstre side. Plasser linje 15 yards venstre for målsone — alt venstre = OB. Slå 10 baller. Mål: 0 OB, gjerne 8/10 i fairway. Bruk fade som starter høyre eller 3-wood for kontroll. Diskuter klubbvalg.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "3-wood",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "fade-only-stock-shot-bygg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scenario",
+        "trouble-tee",
+        "ob-trussel",
+        "pressure-tee-shot"
+      ],
+      "coachNotater": "OB venstre er hookerens mareritt. DECADE-tankegang: aksepter klubb ned hvis stock-shot ikke unngår OB. Mange tour-spillere bruker 3-wood her uten å blunke. Døm valget, ikke utfallet."
+    },
+    {
+      "navn": "ob-trussel-hoyre-tee",
+      "beskrivelse": "Simuler OB høyre side. Linje 15 yards høyre = OB. Slå 10 baller. Mål: 0 OB. Bruk draw som starter venstre eller hybrid for sikkerhet. Loggfør klubbvalg og resultat. Bygger kalibrering mellom risiko og belønning.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "hybrid",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "draw-only-stock-shot-bygg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scenario",
+        "trouble-tee",
+        "ob-trussel",
+        "pressure-tee-shot"
+      ],
+      "coachNotater": "OB høyre fanger slicere. Stock-draw fungerer hvis spilleren har den — hvis ikke, klubb ned. Spillere som mister 1 ball/runde til OB taper 2 slag. Det er differansen mellom hcp 5 og hcp 7."
+    },
+    {
+      "navn": "dog-leg-venstre-shape-driver",
+      "beskrivelse": "Simuler dog-leg venstre: målsone er 30 yards venstre for tee-linje, men hjørne kutter 230 yards ut. Velg å enten kutte hjørne (draw over trær) eller spille trygt med fade. Slå 10 baller — 5 av hver. Diskuter forskjell i scoring.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "shot-shape-control"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scenario",
+        "dog-leg",
+        "left",
+        "shot-shape",
+        "decision-making"
+      ],
+      "coachNotater": "Dog-leg venstre belønner draw — men kun hvis spilleren KAN dra. Hvis stock-shot er fade, ikke prøv. Tap av 1 slag på double bogey er verre enn 0.5 slag fra lengre 2.-slag."
+    },
+    {
+      "navn": "dog-leg-hoyre-shape-driver",
+      "beskrivelse": "Simuler dog-leg høyre: målsone 30 yards høyre, hjørne 220 yards ut. Slå 10 baller — 5 med fade som kutter hjørne, 5 med trygg draw til midten av fairway. Mål: forstå når aggresjon lønner seg.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "shot-shape-control"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scenario",
+        "dog-leg",
+        "right",
+        "shot-shape",
+        "decision-making"
+      ],
+      "coachNotater": "Speilbilde av dog-leg venstre. Fade-spillere får gratis distanse her. Hookers må vurdere å klubbe ned. Bossum hull 7 er klassisk eksempel — kutt eller spill trygt med 5-jern."
+    },
+    {
+      "navn": "elevated-tee-attack-angle",
+      "beskrivelse": "Simuler elevated tee (tee 5-10m over fairway). Ball flyr lengre — juster klubbvalg. Slå 10 baller med litt mer fokus på launch og spin. Mål: forstå at elevated tee gir +10-15 yards ekstra. Diskuter klubbvalg.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "Trackman",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "scenario",
+        "elevated-tee",
+        "decision-making"
+      ],
+      "coachNotater": "GFGK har flere elevated tees — hull 12 og 16. +10m elevation = +10 yards carry. Spillere undervurderer dette ofte, klubber for mye og misser fairway lange. Trackman viser sannheten."
+    },
+    {
+      "navn": "elevated-fairway-extra-carry",
+      "beskrivelse": "Simuler elevated fairway (fairway går oppover). Ball mister 5-10 yards carry. Slå 10 baller med fokus på å klubbe opp eller akseptere kortere distanse. Mål: kalibrer distanse-forventning. Trackman viser carry vs total.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "Trackman",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "scenario",
+        "elevated-fairway",
+        "decision-making"
+      ],
+      "coachNotater": "Oppoverbakke = mindre rull, mindre carry. Spillere ser distanse på markør, men ikke høydeforskjell. Lær spillere å lese terreng. Apple maps eller bane-app hjelper."
+    },
+    {
+      "navn": "max-distance-trackman-test",
+      "beskrivelse": "Slå 10 baller med driver, full sving, mål er maks distanse. Logg ball-speed, smash factor, carry, total, attack angle, spin. Identifiser beste 3 baller — hva var likt? Bygger forståelse for hva som gir lange slag for akkurat denne spilleren.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "Trackman",
+        "10-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 8,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "max-distance",
+        "trackman",
+        "test"
+      ],
+      "coachNotater": "Test 9 i IUP. Smash factor over 1.48 = god kontakt. Under 1.40 = sentrer treff først. Ikke jag ball-speed hvis smash factor er lav — vekt kontakt før hastighet."
+    },
+    {
+      "navn": "smash-factor-1-48-mal",
+      "beskrivelse": "Slå 15 baller med driver. Mål: gjennomsnittlig smash factor 1.48 (ball-speed / club-speed). 1.50 = perfekt sentrert. Reduser sving-tempo med 10% hvis smash er under 1.42. Sentrert treff slår alltid hastighet.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "Trackman",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "max-distance",
+        "trackman",
+        "smash-factor",
+        "centered-strike"
+      ],
+      "coachNotater": "Smash factor er den raskeste veien til mer distanse uten å svinge hardere. Bedre å treffe midten av face med 100 mph enn å treffe tå med 105 mph. Foot-spray på driver-face viser sannheten."
+    },
+    {
+      "navn": "ball-speed-progressive-overload",
+      "beskrivelse": "Slå 30 driver-slag over 3 sett (10-10-10). Sett 1: 80% sving (kontroll). Sett 2: 90% (push). Sett 3: 100% (max effort). Logg ball-speed for hvert sett. Mål: 100%-sett skal være 8-12% raskere enn 80%-sett. Bygger speed-progression.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "Trackman",
+        "30-baller"
+      ],
+      "varighetMin": 35,
+      "intensitet": 8,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "smash-factor-1-48-mal"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "max-distance",
+        "trackman",
+        "ball-speed",
+        "progressive-overload"
+      ],
+      "coachNotater": "Speed-trening krever full restitusjon. Hvis ball-speed faller i sett 3 = du er trøtt eller mister kontakt. Maks 2 økter/uke med 100%-effort. Resten av tiden — bygg kontroll."
+    },
+    {
+      "navn": "swing-path-in-to-out-driver",
+      "beskrivelse": "Plasser to baller side om side, 2 tomme fra hverandre — outer ball er ekte, inner ball er guide. Sving og treff ekte ball uten å treffe guide. Tvinger inn-til-ut path. Slå 10 baller. Mål: 7/10 uten å berøre guide.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "2-baller-per-rep",
+        "20-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "swing-path",
+        "in-out",
+        "draw"
+      ],
+      "coachNotater": "Klassisk drill for å fikse over-the-top. Hvis spilleren treffer guide-ballen, path er for utside-inn. Krever god bevissthet — ikke for nybegynnere som kan miste fokus."
+    },
+    {
+      "navn": "swing-path-out-to-in-controlled",
+      "beskrivelse": "Plasser headcover eller alignment-stick på utsiden av ball, 4 tomme bak. Sving og treff ball uten å berøre objektet. Tvinger out-to-in path (kontrollert fade). Slå 10 baller. Mål: 7/10 uten kontakt.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "headcover",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "swing-path",
+        "out-in",
+        "fade"
+      ],
+      "coachNotater": "Brukes når spiller hooker for mye. Tving fade-path bevisst. Ikke for nybegynnere — de slicer allerede out-to-in. Mer for hcp 5-10 spillere som vil bygge fade som backup-shape."
+    },
+    {
+      "navn": "neutral-path-zero-degree",
+      "beskrivelse": "Slå 15 baller med driver. Mål: swing-path mellom -1° og +1° (nøytral) målt på Trackman. Krever bevissthet om både inn-ut og ut-inn. Bygges via gradvis kalibrering. Mål: 10/15 i nøytral sone.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "Trackman",
+        "15-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "swing-path-in-to-out-driver",
+        "swing-path-out-to-in-controlled"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "C": 65,
+        "D": 55,
+        "E": 45,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "swing-path",
+        "neutral",
+        "control"
+      ],
+      "coachNotater": "Avansert kalibrering for elite-spillere. Nøytral path er starten på det å kunne shape begge veier på kommando. Ikke kast bort tid her hvis spilleren ikke kan se path på Trackman."
+    },
+    {
+      "navn": "spine-angle-maintain-impact",
+      "beskrivelse": "Plasser kølle vertikalt langs ryggraden i setup. Hold vinkelen gjennom backswing og nedsving. Video fra siden for å sjekke om spine-angle holdes til impact. Slå 10 baller. Mål: ingen early extension synlig.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "kølle",
+        "video",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spine-angle",
+        "MORAD-DISC1",
+        "early-extension"
+      ],
+      "coachNotater": "MORAD DISC 1: Spine Alignment Setup. Early extension er den vanligste feilen hos amatører. Hofter går mot ball i nedsving = spine reiser seg = thin/topp. Drill bygger bevissthet."
+    },
+    {
+      "navn": "spine-tilt-right-driver-setup",
+      "beskrivelse": "Etabler driver-setup med spine tiltet 8-10° til høyre (for høyrehånds-spiller). Bilde fra forsiden bekrefter. Slå 10 baller med fokus på å holde tilt gjennom impact. Mål: ball-position N-2, attack angle +2° eller mer.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "video",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spine-angle",
+        "setup",
+        "MORAD-DISC1"
+      ],
+      "coachNotater": "Spine tilt = nøkkelen til oppadgående attack angle på driver. Uten tilt = nedadgående attack = mister 20+ yards carry. Setup er 80% av problemet hos juniorer."
+    },
+    {
+      "navn": "club-face-square-impact",
+      "beskrivelse": "Mal vekselvis sprayfärg eller tape på driver-face. Slå 10 baller. Sjekk treff-mønster etter hvert slag — sentrum eller heel/tå/oppe/nede? Mål: 7/10 sentrert. Korriger ball-posisjon eller stance til mønster blir konsistent.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "foot-spray",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 65,
+        "H": 55,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "club-face",
+        "centered-strike",
+        "diagnostikk"
+      ],
+      "coachNotater": "Foot-spray er det billigste og beste teknikk-verktøyet vi har. Junior elite skal bruke dette ukentlig. Tå-treff = stå nærmere ball. Heel-treff = stå lengre fra ball. Enkelt."
+    },
+    {
+      "navn": "club-face-control-aim-test",
+      "beskrivelse": "Sett driver bak ball, lukk øynene. Åpne, sjekk om face peker på mål. Justere uten å se. Test 10 ganger. Bygger taktil bevissthet om face-aim. Mål: 8/10 innenfor 2° fra mål når testet med Trackman/laser.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "Trackman",
+        "aim-laser"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "club-face",
+        "alignment",
+        "feel"
+      ],
+      "coachNotater": "Spillere som ikke kan kjenne face-aim har ingen sjanse til å treffe linjer. Dette er fundament. Bygges på 10 minutter, beholdes for livet."
+    },
+    {
+      "navn": "ball-position-n-minus-2-test",
+      "beskrivelse": "Plasser aim-stick langs målsone-linje. Plasser annen stick vinkelrett der venstre hæl er (for høyrehånds). Ball skal være 2 ballbredder fram av denne (N-2 posisjon). Slå 10 baller. Mål: konsistent ball-posisjon hver gang.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "2-aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 90,
+        "G": 80,
+        "H": 70,
+        "J": 60,
+        "L": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "ball-position",
+        "setup"
+      ],
+      "coachNotater": "N-2 = ball forrest, langs venstre hæl. Standard for driver. For sentrert = nedadgående attack. For langt fram = mister kontroll. Sjekkes hver økt."
+    },
+    {
+      "navn": "tee-height-3-4-crown",
+      "beskrivelse": "Tee opp driver så halve eller 3/4 av ball er over crown av driver-head. Slå 10 baller. Mål: konsistent kontakt høyt på face. Trackman: attack angle +2° eller mer. For lav tee = nedadgående angle = mister distanse.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "tees",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 90,
+        "G": 85,
+        "I": 70,
+        "J": 60,
+        "L": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "tee-height",
+        "setup",
+        "attack-angle"
+      ],
+      "coachNotater": "Mange amatører teer for lavt fordi de lærte det med 7-jern. Driver KREVER høy tee. Halv ball over crown er minimum. Junior under 12: 3/4 over crown."
+    },
+    {
+      "navn": "tee-height-low-knock-down",
+      "beskrivelse": "Tee opp lavt — kun toppen av ball over crown. Slå 10 baller med fokus på lav launch og lav spin. Brukes mot vind eller på trange hull. Mål: launch under 10°, spin under 2400 RPM.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "tees",
+        "Trackman",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "tee-height-3-4-crown"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "tee-height",
+        "knock-down",
+        "wind",
+        "scenario"
+      ],
+      "coachNotater": "Lav tee + ball litt bak = stinger med driver. Hogan-stil. Brukes på trange par 4 eller når vinden er voldsom. Junior elite skal kunne dette i kategori D-A."
+    },
+    {
+      "navn": "morad-momentum-transfer-timing",
+      "beskrivelse": "MORAD DISC 2: Tre kritiske vekt-overføringer. (1) Setup: 60% bakre fot. (2) Top: 80% bakre. (3) Impact: 80-90% fremre. Slå 10 baller med bevisst fokus på timing. Video fra fronten viser om vekt-overføring skjer i riktig sekvens.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "video",
+        "10-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "MORAD-momentum",
+        "MORAD-DISC2",
+        "weight-transfer"
+      ],
+      "coachNotater": "DISC 2 er Mac O'Gradys signatur. Tre vekt-overføringer som SKJER i riktig rekkefølge = power. Spillere som henger igjen bak = ingen kompresjon. Pressure plate viser sannheten."
+    },
+    {
+      "navn": "morad-hip-lead-downswing",
+      "beskrivelse": "MORAD Hip Lead Drill: Stå med fryst overkropp etter top of swing. Initier nedsving kun med venstre hofte (for høyrehånds). Overkropp og armer skal følge naturlig. Slå 5 baller sakte først, så 10 i normal tempo.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "MORAD-momentum",
+        "hip-lead",
+        "downswing"
+      ],
+      "coachNotater": "Klassisk MORAD-drill mot over-the-top. Hofter MÅ starte nedsving — overkropp henger igjen. Spillere som starter med skuldre = caster klubben = mister kraft. Bygges sakte først."
+    },
+    {
+      "navn": "press-tee-shot-1-ball-test",
+      "beskrivelse": "Ett slag, én ball, telt resultat. Sett opp 25-yard fairway-vindu. Slå én driver. Hvis i fairway, +1 poeng. Hvis miss, -1. Spill til +5 eller -5. Bygger press-toleranse — ett slag teller alt.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "draw-only-stock-shot-bygg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "pressure-tee-shot",
+        "scoring-club",
+        "first-tee"
+      ],
+      "coachNotater": "Range-baller med ingen konsekvens lærer ingenting om press. Telte slag med spillpoeng simulerer turneringspress. Brukes 1x/uke i konkurranseperiode."
+    },
+    {
+      "navn": "first-tee-protokoll-3-baller",
+      "beskrivelse": "Etter 15-min warmup, gå til 'første-tee'. Tre baller, men kun ett resultat teller — det første. Det er din 1. tee-shot på turnering. Diskuter forberedelse, pre-shot-rutine, og resultatet. Brukes som mental test.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver"
+      ],
+      "varighetMin": 15,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "pressure-tee-shot",
+        "first-tee",
+        "pre-shot-routine"
+      ],
+      "coachNotater": "Første-tee-nerver er reelle. Trene pre-shot-rutine til den er automatisk. Pust-rutine før hver svingstart. Bygger autopilot under press."
+    },
+    {
+      "navn": "scoring-club-decision-matrix",
+      "beskrivelse": "På hver tee — vurder hull-design og velg scoring-klubb (driver, 3-wood, hybrid, jern). Diskuter valg før slag. Mål: ikke automatisk driver. Velg klubben som gir høyest forventet score. Spill 9 hull, logg klubbvalg.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "3-wood",
+        "hybrid",
+        "jern"
+      ],
+      "varighetMin": 90,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scoring-club",
+        "decision-making",
+        "course-management"
+      ],
+      "coachNotater": "DECADE-tankegang. Driver på 14 hull er gjennomsnitt for tour-spillere. Amatører bør være lavere — kanskje 10 av 14. Hybrid på par 4 under 360 yards er underutnyttet."
+    },
+    {
+      "navn": "3-wood-vs-driver-compare",
+      "beskrivelse": "Slå 5 baller med driver, 5 med 3-wood på samme target. Logg distanse og spredning. Hvis 3-wood har 90% av driver-distanse men halvparten av spredning = bruk 3-wood på trange hull. Bygger objektiv klubb-valg.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "3-wood",
+        "Trackman",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scoring-club",
+        "decision-making",
+        "trackman"
+      ],
+      "coachNotater": "De fleste amatører gjetter at driver er X yards lengre enn 3-wood. Trackman viser sannheten. Hvis differansen er 10 yards, men spredningen dobbel — 3-wood vinner alltid på trange hull."
+    },
+    {
+      "navn": "hybrid-tee-shot-utility",
+      "beskrivelse": "Slå 10 tee-shots med hybrid (3 eller 4). Mål: konsistent karry, god rull, og spredning under 20 yards. Brukes på par 4 under 350 yards eller trange hull. Logg distanse og spredning vs driver.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "hybrid",
+        "tees",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 65,
+        "J": 50,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scoring-club",
+        "hybrid",
+        "trouble-tee"
+      ],
+      "coachNotater": "Hybrid fra tee er undervurdert. Mer kontroll enn 3-wood, mer distanse enn jern. Lavere hcp-spillere bør ha det som verktøy på 220-240 yard par 4."
+    },
+    {
+      "navn": "long-iron-tee-shot-control",
+      "beskrivelse": "Slå 10 tee-shots med langjern (4 eller 5). Tee opp lavt. Mål: 8/10 i 30-yard bredt fairway-vindu. Brukes når driver er for risikabelt. Bygger kontroll-klubb fra tee.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "4-jern",
+        "5-jern",
+        "tees",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scoring-club",
+        "long-iron",
+        "trouble-tee",
+        "accuracy-over-power"
+      ],
+      "coachNotater": "Langjern fra tee er Tiger-stil på trange hull. Gir 70% av driver-distanse med 30% av spredning. Junior elite bør ha dette i verktøykassa fra kategori E."
+    },
+    {
+      "navn": "tee-shot-3-shapes-shuffle",
+      "beskrivelse": "Slå 15 baller — 5 draw, 5 straight, 5 fade — men i randomisert rekkefølge (trekkes som kort eller via app). Bygger på-kommando shot-shape. Mål: 10/15 i ønsket retning. Avansert kontroll-test.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 10,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "15-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "draw-fade-shape-control-10b"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "C": 60,
+        "D": 50,
+        "E": 40,
+        "G": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "draw",
+        "fade",
+        "straight",
+        "random-practice"
+      ],
+      "coachNotater": "Random practice er sterkere enn block practice for transfer til bane. Hvis spilleren kan kun shape én vei = de spiller bare halve banen. Elite må mestre alle tre."
+    },
+    {
+      "navn": "high-launch-low-spin-trackman",
+      "beskrivelse": "Optimal driver-launch: 14-17° launch, 2200-2500 RPM spin. Slå 15 baller med fokus på dette. Juster tee-høyde, ball-posisjon og attack angle til Trackman viser optimal vindu. Mål: 10/15 i vinduet.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 15,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "Trackman",
+        "15-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "tee-height-3-4-crown"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "C": 70,
+        "D": 60,
+        "F": 45,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "max-distance",
+        "trackman",
+        "launch-spin-window"
+      ],
+      "coachNotater": "Optimal launch-vindu er forskjellig per spiller, men 14-17° / 2200-2500 RPM er PGA-tour-snitt. Junior bør ha høyere launch (16-19°) pga lavere ball-speed."
+    },
+    {
+      "navn": "step-back-step-forward-momentum",
+      "beskrivelse": "Setup som vanlig. Før backswing: ta et lite skritt bakover med bakre fot, så tilbake til setup. Bruk dette momentum til å starte sving. Slå 10 baller. Trener pre-swing momentum og hofte-aktivering.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "MORAD-momentum",
+        "tempo",
+        "pre-swing"
+      ],
+      "coachNotater": "Klassisk Gary Player-drill. Statisk setup er fienden — kropp må være i bevegelse før sving starter. Step-back gir naturlig momentum. Brukes hvis spilleren er for stiv ved setup."
+    },
+    {
+      "navn": "left-arm-only-tempo-driver",
+      "beskrivelse": "Slå 5 baller med kun venstre arm (for høyrehånds-spiller). Driver er tung uten høyre — tvinger bedre tempo og lat-aktivering. Mål: 3/5 god kontakt, 100+ yards. Bygger lead-arm-control.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "5-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 75,
+        "C": 65,
+        "D": 55,
+        "F": 40,
+        "G": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "one-arm",
+        "lead-arm",
+        "tempo"
+      ],
+      "coachNotater": "Krevende drill. Venstre arm er kontroll-arm. Hvis spilleren ikke kan slå 100 yards med venstre alene = ingen lat-aktivering. Brukes som diagnostikk og styrke-bygger."
+    },
+    {
+      "navn": "right-arm-only-power-driver",
+      "beskrivelse": "Slå 5 baller med kun høyre arm (for høyrehånds). Tester throw-arm i nedsving. Mål: 3/5 god kontakt. Lærer hvordan høyre side genererer power. Begrenset til erfarne spillere.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 10,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "5-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "left-arm-only-tempo-driver"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 75,
+        "C": 60,
+        "D": 50,
+        "E": 40,
+        "G": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "one-arm",
+        "trail-arm",
+        "power"
+      ],
+      "coachNotater": "Avansert. Høyre arm er power-arm, men misbrukes ofte til å caste klubben. Drill lærer riktig høyre-arm-bevegelse: throw down and through, ikke kast tidlig."
+    },
+    {
+      "navn": "wall-drill-no-early-extension",
+      "beskrivelse": "Stå med rumpen mot en vegg eller styrke-ball. Slå luft-svinger først, så reelle baller. Rumpen skal forbli i kontakt med veggen gjennom impact. Hvis du mister kontakt = early extension. Slå 10 baller.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "driver",
+        "vegg",
+        "styrke-ball",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 65,
+        "J": 50,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "spine-angle",
+        "early-extension",
+        "MORAD-DISC1"
+      ],
+      "coachNotater": "Visuelt enkel, fysisk vanskelig. Spiller MÅ bevare hofte-vinkel. Klassisk fix for spillere som står opp i nedsving. Bygges først i studio, så tas til range."
+    },
+    {
+      "navn": "shaft-lean-impact-driver",
+      "beskrivelse": "Plasser tee 6 tomme foran ball. Slå 10 baller — tee skal bli truffet ETTER ball (riktig sekvens). Forward shaft lean ved impact er nøkkelen til kompresjon. Mål: 8/10 med tee truffet etterpå.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "tees",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "F": 55,
+        "G": 45,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "club-face",
+        "shaft-lean",
+        "impact"
+      ],
+      "coachNotater": "Driver er litt annerledes enn jern — ikke like mye forward shaft lean, men attack angle skal være positiv. Tee-test viser om spilleren caster eller komprimerer."
+    },
+    {
+      "navn": "feet-together-balance-driver",
+      "beskrivelse": "Stå med føttene sammen (1 tomme mellom). Slå 5 baller med driver. Tvinger god balanse og kontroll, eliminerer over-sving. Mål: 4/5 god kontakt. Avansert balanse-test. Hvis spiller faller = problem.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "5-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 75,
+        "C": 65,
+        "D": 55,
+        "F": 40,
+        "G": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "balance",
+        "tempo",
+        "control"
+      ],
+      "coachNotater": "Klassisk Hogan/Snead-drill. Hvis du kan ikke svinge med føttene sammen = du er ubalansert i normal sving også. Brukes som test og fix."
+    },
+    {
+      "navn": "long-pause-top-driver",
+      "beskrivelse": "Sving til top of swing. PAUSE i 2 sekunder. Start nedsving sakte, akselerer naturlig. Slå 10 baller. Lærer å skille backswing fra nedsving — bryter rush-tendensen. Mål: 7/10 god kontakt.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "tempo",
+        "pause",
+        "transition"
+      ],
+      "coachNotater": "Spillere som rusher overgangen mister 90% av sekvenseringen. Pause-drill bryter dette. Mister litt distanse, men kontakt og linje blir mye bedre. Tar tid å bli komfortabel."
+    },
+    {
+      "navn": "draw-bias-aim-stick-gate",
+      "beskrivelse": "Plasser to aim-sticks som 'gate' 3 fot foran ball, men plasser dem på 5° vinkel høyre av målet. Slå 10 baller gjennom gate, ball må starte gjennom, så kurve tilbake til mål. Tvinger draw med kontrollert startlinje.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "2-aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "draw-only-stock-shot-bygg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "draw",
+        "startlinje",
+        "swing-path"
+      ],
+      "coachNotater": "Visuell gate er kraftig — øynene gir kroppen feedback. Hvis spilleren slår over venstre stick = face lukket. Hvis høyre = face åpen. Korriger underveis."
+    },
+    {
+      "navn": "fade-bias-aim-stick-gate",
+      "beskrivelse": "Speilbilde av draw-gate. Aim-sticks 5° venstre av målet, ball starter gjennom gate venstre, kurve tilbake til høyre. Slå 10 baller. Bygger kontrollert fade med definert startlinje. Mål: 7/10 gjennom gate.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "2-aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "fade-only-stock-shot-bygg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "fade",
+        "startlinje",
+        "swing-path"
+      ],
+      "coachNotater": "Fade-gate hjelper spillere som hooker å trene face-kontroll. Hvis ball starter for venstre av gate = face for lukket. Visuell feedback raskere enn forklaring."
+    },
+    {
+      "navn": "punch-driver-trees-out",
+      "beskrivelse": "Simuler at du må slå driver under trær (lav ball-flight). Tee veldig lavt, ball midten, kort backswing (3/4), abbreviated finish. Slå 5 baller. Mål: launch under 8°, lav penetrasjon. Brukes på trange par 4 med lav grein-overhang.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "D",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 10,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "5-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "knock-down-driver"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 70,
+        "C": 60,
+        "D": 45,
+        "F": 30,
+        "G": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "scenario",
+        "trouble-tee",
+        "knock-down",
+        "MORAD-konsept"
+      ],
+      "coachNotater": "Sjelden brukt skill, men avgjørende i skog-områder. Bossum hull 3 krever av og til dette. Lavt under grein, kontrollert distanse. Junior elite skal mestre dette kategori D."
+    },
+    {
+      "navn": "tee-shot-target-sirkel-30y",
+      "beskrivelse": "Plasser 30-yard sirkel på fairway (markert med flagg eller sticks). Slå 10 baller med driver — antall innenfor sirkel teller. Mål: 6/10. Bygger presisjon på lengre avstander.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "flagg",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 50,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "accuracy",
+        "test",
+        "distance-control"
+      ],
+      "coachNotater": "30-yard sirkel er nær tour-snitt for fairway-treff. Junior bør starte med 40-yard sirkel og krympe etter hvert. Bygger forventning til dispersjon."
+    },
+    {
+      "navn": "tee-shot-tight-sirkel-15y",
+      "beskrivelse": "Plasser 15-yard sirkel på fairway. Slå 10 baller med driver. Mål: 5/10 i sirkel. Avansert presisjons-test for elite-spillere. Trang sirkel tvinger fokus på linje, ikke distanse.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "D",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 8,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "flagg",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "tee-shot-target-sirkel-30y"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "B": 65,
+        "C": 55,
+        "D": 40,
+        "E": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "accuracy",
+        "test",
+        "elite",
+        "accuracy-over-power"
+      ],
+      "coachNotater": "Tour-spillere treffer 15-yard sirkel ca 60% av tiden fra 280 yards. Vår elite skal komme til 50%. Hvis spiller tester under 30% = mer block-trening trengs."
+    },
+    {
+      "navn": "tee-shot-pre-shot-routine",
+      "beskrivelse": "Bygg konsistent pre-shot-rutine: (1) Visualiser ball-flight, (2) Velg target, (3) Practice swing bak ball, (4) Sett opp, (5) Sving. Tid det — alle rutiner skal være innenfor 15-20 sek vindu. Slå 10 baller med rutine.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "klokke"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 70,
+        "H": 60,
+        "J": 45,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "pre-shot-routine",
+        "turnering",
+        "mental"
+      ],
+      "coachNotater": "Konsistent rutine er forskjellen mellom amatør og elite. Sjekk via video at rutine ikke endres under press. Hvis rutine blir kortere = stresset. Trene tilbake til normal."
+    },
+    {
+      "navn": "tee-shot-9-shot-shape",
+      "beskrivelse": "Slå 9 baller: 3 høyder (lav/middels/høy) x 3 shapes (draw/straight/fade). Mål: 6/9 i ønsket vindu. Avansert kontroll-test. Krever god teknisk basis. Brukes for å kalibrere skill-level for elite-spillere.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 5,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "Trackman",
+        "9-baller"
+      ],
+      "varighetMin": 35,
+      "intensitet": 8,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "tee-shot-3-shapes-shuffle"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 75,
+        "B": 60,
+        "C": 45,
+        "D": 30,
+        "E": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "control",
+        "elite",
+        "9-shot"
+      ],
+      "coachNotater": "Hogan-test. 9-shot er ultimate test av face/path-kontroll. Tour-spillere treffer ca 7/9. Vår elite skal komme til 5/9. Brukes 1x/måned i konkurranseperiode."
+    },
+    {
+      "navn": "driver-warm-up-progressive",
+      "beskrivelse": "Pre-runde driver-warmup: 3 baller halv sving, 3 baller 3/4 sving, 5 baller full sving, 3 baller stock-shot mot target. Total 14 baller, 8 minutter. Bygger gradvis hastighet og bekrefter stock-shot er på plass.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "14-baller"
+      ],
+      "varighetMin": 10,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 14,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 90,
+        "G": 85,
+        "I": 75,
+        "J": 65,
+        "L": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "warmup",
+        "turnering",
+        "routine"
+      ],
+      "coachNotater": "Standardisert warmup gir trygghet på 1. tee. Spillere som hopper rett til full sving skader rygg og slår dårligere første hull. Brukes hver turneringsmorgen."
+    },
+    {
+      "navn": "two-tee-driver-precision-gate",
+      "beskrivelse": "Plasser to tees i bakken 4 tomme foran ball, 5 tomme fra hverandre. Driver må gå mellom dem etter impact uten å berøre. Slå 10 baller. Tvinger sentrert path og square face. Mål: 7/10 gjennom gate.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "2-tees",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "C": 70,
+        "D": 60,
+        "F": 45,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "swing-path",
+        "club-face",
+        "precision"
+      ],
+      "coachNotater": "Visuell feedback umiddelbart. Hvis driver treffer venstre tee = path utside-inn. Høyre tee = innside-ut for mye. Korrigerer raskt."
+    },
+    {
+      "navn": "high-tee-launch-9-grad",
+      "beskrivelse": "Tee ekstra høyt — hele ball over crown. Slå 10 baller med fokus på +5° eller mer attack angle og 17° launch på Trackman. Brukes for å maksimere carry på medvinds-hull. Mål: 7/10 i optimal launch-vindu.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 10,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "tees",
+        "Trackman",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "tee-height-3-4-crown"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "C": 65,
+        "D": 55,
+        "E": 40,
+        "G": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "tee-height",
+        "attack-angle",
+        "max-distance"
+      ],
+      "coachNotater": "Ekstra høy tee + ball forrest = bombe. Bruyson-stil. Mister litt kontroll, men gevinst i carry er stor. Skal ikke være default — kun verktøy for medvind eller par 5."
+    },
+    {
+      "navn": "negative-attack-angle-fix",
+      "beskrivelse": "Hvis Trackman viser negativ attack angle med driver, bruk denne drillen. Plasser tee 2 tomme høyere enn vanlig. Slå 10 baller med bevisst fokus på 'opp gjennom ballen'. Mål: attack angle 0° eller positiv etter 10 baller.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "tees",
+        "Trackman",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "attack-angle",
+        "trackman",
+        "fix"
+      ],
+      "coachNotater": "Negativ attack med driver = mister 20-30 yards potensiale. Spillere som svinger 'ned' på driver mangler ofte spine tilt høyre. Sjekk setup først."
+    },
+    {
+      "navn": "rotational-power-medball-driver",
+      "beskrivelse": "Roter med 4 kg medisinball som om du svinger driver. Kast ballen mot vegg i rotasjons-bevegelse. 3 sett x 8 reps per side. Bygger rotasjons-power og hofte-aktivering. Brukes som dynamisk warmup eller styrke-økt.",
+      "disciplin": "FYS",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "medisinball-4kg",
+        "vegg"
+      ],
+      "varighetMin": 12,
+      "intensitet": 7,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "power",
+        "rotational",
+        "warmup",
+        "styrke"
+      ],
+      "coachNotater": "Brukes som off-course warmup eller fys-økt. Power overføres til driver via samme bevegelses-mønster. Junior bør bruke 2-3 kg ball."
+    },
+    {
+      "navn": "morad-three-momentum-feel",
+      "beskrivelse": "MORAD DISC 2 fellesdrill. Slå 5 baller med kun føtter-feel: kjenn 80% bakre fot ved top, 80% fremre ved impact. Lukk øynene mellom slag for å fokusere på føtter. Mål: kjenn vekt-overføring tydelig.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "5-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 80,
+        "C": 70,
+        "D": 60,
+        "F": 45,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "MORAD-momentum",
+        "MORAD-DISC2",
+        "feel"
+      ],
+      "coachNotater": "Føtter er fundamentet — hvis vekt sitter feil = hele svingen kompenserer. Lukket-øyne-versjon er kraftig fordi spilleren MÅ kjenne. Tar 5-10 økter å bygge feel."
+    },
+    {
+      "navn": "weight-transfer-step-thru-driver",
+      "beskrivelse": "Start setup. Etter impact, ta et fullt skritt frem med bakre fot (stepping through). Slå 10 baller. Hvis du ikke kan ta skritt = vekten henger igjen bak. Bygger aggressiv vekt-overføring og finish-balanse.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "MORAD-momentum",
+        "weight-transfer",
+        "finish"
+      ],
+      "coachNotater": "Klassisk Gary Player walk-through. Tvinger aggressiv finish. Hvis spiller faller bak = ingen kompresjon. Junior elsker denne — føles som hardball-kast."
+    },
+    {
+      "navn": "driver-grip-pressure-test",
+      "beskrivelse": "Slå 10 baller med varierende grip-press: sett 1 = press 4/10 (lett), sett 2 = press 7/10 (medium), sett 3 = press 9/10 (hard). Logg distanse og smash factor. Mål: forstå at lett-medium press gir best resultat.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "Trackman",
+        "30-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 65,
+        "J": 50,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "grip",
+        "tempo",
+        "feel"
+      ],
+      "coachNotater": "Hard grep = ingen wrist hinge = ingen power. Sam Snead sa 'hold club like a baby bird'. Spillere under press klemmer for hardt automatisk. Bygges på rolige økter."
+    },
+    {
+      "navn": "trail-foot-kick-power",
+      "beskrivelse": "I nedsving: aktiver bakre fot ved å 'kicke' inn mot målet i impact. Føler som om du sparker en ball med hælen. Slå 10 baller. Mål: forsterket vekt-overføring og finish balance. Trackman: ball-speed bør øke 2-4 mph.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "Trackman",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "C": 70,
+        "D": 60,
+        "F": 45,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "power",
+        "trail-foot",
+        "MORAD-momentum"
+      ],
+      "coachNotater": "Tour-spillere kicker bakre fot. Det er signaturen av vekt-overføring. Ikke bevisst — det skjer fordi hofter har snappet. Lærer kroppen riktig sekvens."
+    },
+    {
+      "navn": "lead-hip-snap-impact-fix",
+      "beskrivelse": "I impact: bevisst snap venstre hofte bak (clear hips). Slå 10 baller med fokus på at venstre hofte er 30-40° åpen ved impact. Brukes mot 'stuck'-følelse hvor hofter ikke roterer. Video fra fronten bekrefter.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "video",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "morad-hip-lead-downswing"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "C": 70,
+        "D": 60,
+        "F": 45,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "hip-clear",
+        "MORAD-DISC2",
+        "power"
+      ],
+      "coachNotater": "Spillere som blir 'stuck' (hofter låst, armer henger igjen) hooker eller pusher. Hip snap fjerner blokken. Følelse: 'open the door' med venstre hofte."
+    },
+    {
+      "navn": "p4-position-driver-top",
+      "beskrivelse": "Sving til P4 (top of backswing). Pause. Sjekk: kølle parallell med målsone, venstre arm strakt, høyre albue under. Video fra siden bekrefter. Slå 5 baller med bevisst pause. Bygger top-position bevissthet.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "video",
+        "5-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-posisjonssystem",
+      "tags": [
+        "MORAD-posisjon",
+        "P4",
+        "top-of-swing"
+      ],
+      "coachNotater": "MORAD P4 er kritisk sjekkpunkt. Hvis P4 er feil = nedsving må kompensere. Spillere som 'over-svinger' (kølle peker venstre av mål) caster ofte. Korriger først."
+    },
+    {
+      "navn": "p2-takeaway-driver-square",
+      "beskrivelse": "Sving til P2 (kølle parallell med bakken i backswing). Pause. Sjekk: kølle-shaft parallell med målsone, club-face square (toe up). Video fra siden. Slå 5 baller med pause ved P2. Bygger riktig takeaway.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "video",
+        "5-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 45,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-posisjonssystem",
+      "tags": [
+        "MORAD-posisjon",
+        "P2",
+        "takeaway"
+      ],
+      "coachNotater": "Takeaway setter resten av svingen. Fan toe up = neutral face. Toe lukket = face lukket hele veien = hook. Sjekk i hver økt for nybegynnere."
+    },
+    {
+      "navn": "p7-impact-position-driver",
+      "beskrivelse": "Slå 5 baller med fokus på P7 (impact). Sjekk: hofter 30-40° åpne, skuldre 10° åpne, hender litt foran ball, vekt 80% fremre. Video fra fronten bekrefter. Bygger impact-bevissthet.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 15,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "video",
+        "5-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 80,
+        "C": 70,
+        "D": 60,
+        "F": 45,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-posisjonssystem",
+      "tags": [
+        "MORAD-posisjon",
+        "P7",
+        "impact"
+      ],
+      "coachNotater": "P7 er den eneste posisjonen som teller for ball-flight. Alle andre posisjoner finnes for å gi god P7. Video sammenligner med target P7."
+    },
+    {
+      "navn": "club-face-toe-down-fix-hook",
+      "beskrivelse": "Hvis spiller hooker, sjekk face-vinkel ved impact. Drill: hold driver-face i 'toe down' position på topp (face peker mot himmel). Slå 10 baller med følelse av åpen face. Mål: hook elimineres, baller starter rett.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "C": 70,
+        "D": 60,
+        "F": 45,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "club-face",
+        "hook-fix",
+        "fault-correction"
+      ],
+      "coachNotater": "Hookers har face lukket gjennom hele svingen. 'Toe down' top-feel åpner face — overdrev for å treffe nøytral. Følelse vs reality."
+    },
+    {
+      "navn": "club-face-toe-up-fix-slice",
+      "beskrivelse": "Hvis spiller slicer, face er åpen ved impact. Drill: hold driver med følelse av 'toe up' på topp, lukket face. Slå 10 baller med bevisst lukket face-feel. Mål: slice elimineres, ball kurver til venstre.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 70,
+        "I": 55,
+        "J": 40,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "club-face",
+        "slice-fix",
+        "fault-correction"
+      ],
+      "coachNotater": "85% av amatører slicer. Lukket face på topp er motgift. Overdrev til man treffer nøytral. Driver-fade lærer kontrollert face etterpå."
+    },
+    {
+      "navn": "no-shaft-load-driver-feel",
+      "beskrivelse": "Sving driver veldig sakte (50% tempo). Kjenn shaft-belastning gjennom impact. Hvis shaft 'flexer' tidlig = du caster. Hvis sent = du lagger. Slå 10 baller sakte. Mål: bygge feel for shaft-load timing.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 10,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "C": 60,
+        "D": 50,
+        "E": 40,
+        "G": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "feel",
+        "tempo",
+        "lag",
+        "shaft-load"
+      ],
+      "coachNotater": "Avansert feel-drill. Brukes med spillere som har god teknikk men mangler 'feel' for klubb. Sakte tempo amplifiserer subtile bevegelser."
+    },
+    {
+      "navn": "ankle-load-driver-takeaway",
+      "beskrivelse": "I backswing: kjenn vekt presse ned i ankel (innside av bakre ankel). Hold spenning der gjennom top of swing. Slå 10 baller. Bygger lavere kropps-aktivering og stabilitet i bakre side. Mål: ingen sway.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "ankle-load",
+        "lower-body",
+        "no-sway"
+      ],
+      "coachNotater": "Sway = vekt går utenfor bakre fot = mister sentrum. Innside-ankel-press holder vekt sentrert. Junior med svak underkropp gjør dette ofte."
+    },
+    {
+      "navn": "narrow-stance-balance-driver",
+      "beskrivelse": "Stå med smal stance (fot-bredde mindre enn skuldre). Slå 10 driver-baller. Tvinger bedre balanse og mindre vekt-flytting. Mål: 7/10 god kontakt. Hvis du faller = du har for mye sway eller slide.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 10,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "C": 65,
+        "D": 55,
+        "E": 40,
+        "G": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "balance",
+        "narrow-stance",
+        "no-sway"
+      ],
+      "coachNotater": "Smal stance avslører dårlig balanse umiddelbart. Brukes som test og treningsverktøy. Spillere som mestrer dette har bedre balanse i normal stance."
+    },
+    {
+      "navn": "wide-stance-stability-driver",
+      "beskrivelse": "Stå med bred stance (fot-bredde 4-6 tomme bredere enn skuldre). Slå 10 driver-baller. Bygger lavere senterpunkt og mer stabilitet. Brukes mot vind eller på trange hull hvor presisjon trumfer distanse.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "balance",
+        "wide-stance",
+        "stability",
+        "wind"
+      ],
+      "coachNotater": "Bred stance = mindre hofte-rotasjon men mer balanse. Bruyson-stil. Brukes mot voldsom vind eller på Bossum-vinterdager."
+    },
+    {
+      "navn": "junior-tee-balloon-driver-L",
+      "beskrivelse": "For nybegynnere (kategori K-L): Plasser ballon-mål 80-120 meter ut. Slå 10 driver-baller. Mål: 4/10 forbi ballon-linje. Bruk forenklet setup — ball foran fremste fot, tee-høyde halvveis. Coach gir tommel-opp etter hvert godt slag.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "L",
+      "maxKategori": "J",
+      "minHcp": 24,
+      "maxHcp": 54,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "ballon-marker",
+        "10-baller",
+        "tee"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 85,
+        "G": 70,
+        "J": 50,
+        "K": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "junior",
+        "L-niva",
+        "K-niva",
+        "nybegynner",
+        "max-distance"
+      ],
+      "coachNotater": "Hold det enkelt for juniorer. Ikke snakk om swing-path eller club-face. Bare 'treff ballen, send den langt mot ballongen'. Hyll selv mishit som lander frem."
+    },
+    {
+      "navn": "junior-driver-grunn-treff-K",
+      "beskrivelse": "For kategori K-juniorer: Bare fokus på å treffe ballen med drivern, ikke på distanse eller retning. 15 baller, ikke tell mishit. Mål: solid kontakt på 8/15. Bruk lavere tee-høyde først, hev gradvis. Coach demonstrerer hvert 5. slag.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "L",
+      "maxKategori": "K",
+      "minHcp": 28,
+      "maxHcp": 54,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "15-baller",
+        "tee-progresjon"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 90,
+        "G": 80,
+        "J": 65,
+        "K": 50,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "junior",
+        "K-niva",
+        "L-niva",
+        "centered-strike",
+        "nybegynner"
+      ],
+      "coachNotater": "Solid kontakt før alt annet. Hvis juniorer toppe eller bommer, senk tee og bytt til 3-wood først. Bygg tillit gjennom suksess, ikke gjennom korrigering."
+    },
+    {
+      "navn": "junior-shape-rainbow-driver",
+      "beskrivelse": "Juniorer (J-G): Velg 'regnbue-form' — slå 5 høye baller, 5 lave. Coach kaller form før hvert slag. Mål: 6/10 i riktig høydekategori. Bygger bevissthet om tee-høyde og angrep-vinkel uten teknisk språk.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "J",
+      "maxKategori": "G",
+      "minHcp": 8,
+      "maxHcp": 30,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "tee-varianter"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "driver-grunnposisjon"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 45,
+        "K": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "junior",
+        "J-niva",
+        "G-niva",
+        "trajectory",
+        "attack-angle"
+      ],
+      "coachNotater": "'Regnbue' er bedre språk enn 'høyere lansering' for unge spillere. La dem føle forskjellen mellom å feie ballen og slå ned på den."
+    },
+    {
+      "navn": "high-fade-power-cut-elite",
+      "beskrivelse": "Elite-spillere (A-D): Slå 10 driver-baller som høy power-cut — start litt venstre, kurve 8-12 yards høyre, lander mykt. Trackman: spin 2200-2600, launch 12-15 grader. Mål: 7/10 i fade-mønster med distanse 250+ yard. Tour-stil shot for venstre dog-leg eller wind into.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -5,
+      "maxHcp": 5,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "trackman",
+        "10-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 8,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "fade-only-stock-shot-bygg",
+        "trackman-bevissthet"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 55,
+        "G": 35,
+        "J": 15,
+        "L": 5
+      },
+      "videoUrl": null,
+      "kilde": "notion:mac-ogrady-kb",
+      "tags": [
+        "shot-shape",
+        "fade",
+        "elite",
+        "power-cut",
+        "trackman"
+      ],
+      "coachNotater": "Power-cut er fade med distanse — krever sterk venstre side og kontrollert face-rotasjon. Hogan-stil. Bare gi til spillere som allerede har stock-fade på plass."
+    },
+    {
+      "navn": "low-stinger-driver-tight-fairway",
+      "beskrivelse": "Slå 10 baller med driver som lav stinger — ball mer bakover (mid-stance), hands forover, tee lavere enn vanlig. Mål: launch under 9 grader, høyde under 25 meter. 6/10 holder seg på fairway. Bruker mot kraftig motvind eller smal fairway.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "trackman",
+        "10-baller",
+        "lav-tee"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "into-wind-knock-down-driver"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "scenario",
+        "wind",
+        "into",
+        "knock-down",
+        "stinger",
+        "trajectory"
+      ],
+      "coachNotater": "Lav stinger er mer en mid-iron-feel enn driver. Krever flat finish — ikke fullt rotert. God shot mot Stavanger-vind eller Bossum-vinter."
+    },
+    {
+      "navn": "high-bomb-launch-down-wind",
+      "beskrivelse": "Med medvind: maksimer launch og carry. Tee opp høyt (full ball over crown), ball forrest i stance, fokus på opp-angrep (positiv attack angle 3-5 grader). 10 baller. Trackman-mål: launch 14-16 grader, carry +15 yards over normal. 6/10 i sweet spot.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "trackman",
+        "10-baller",
+        "hoy-tee"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "down-wind-launch-high-driver"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "scenario",
+        "wind",
+        "down",
+        "max-distance",
+        "attack-angle"
+      ],
+      "coachNotater": "Medvind = grin og kjør. Men husk: lavere spin også, så ekstrem ball-position frem kan gi 'helikopter'. Test på trackman før bane."
+    },
+    {
+      "navn": "rain-wet-conditions-driver",
+      "beskrivelse": "Simuler våte forhold: dryss vann på ballen, klubbflate og hender før hvert slag. Slå 10 driver-baller. Fokus på grep-press (litt sterkere) og forenklet swing (90% tempo). Mål: 7/10 på fairway med tap på maks 10 yards distanse.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "vann-bottle",
+        "handkle"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "scenario",
+        "vaer",
+        "regn",
+        "control",
+        "turnering"
+      ],
+      "coachNotater": "Lite-trent ferdighet, men game-changer i NM eller turneringer i September-Oktober. Tør hender raskt, ikke vri grepet."
+    },
+    {
+      "navn": "cold-weather-driver-protocol",
+      "beskrivelse": "Kalde forhold (under 8 grader): slå 12 baller med driver. Bruk 4-5 øvelse-svinger først (mer enn vanlig), bytt til vinter-ball (tre piece, lavere kompresjon). Aksepter 10-15% distanse-tap. Mål: 8/12 sentrert kontakt — fokus på solid treff, ikke distanse.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "12-baller",
+        "vinter-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "scenario",
+        "vaer",
+        "kulde",
+        "winter-golf",
+        "centered-strike"
+      ],
+      "coachNotater": "Norske forhold = halve sesongen er kald. Lær spillere å akseptere distanse-tap. Solid kontakt > lengde i kulde."
+    },
+    {
+      "navn": "altitude-elevation-driver-calculate",
+      "beskrivelse": "På elevated tee (over 30 meter ned): kalkuler ekstra carry (+5% per 10 meter elevation). Slå 5 baller med driver, mål distanse med trackman, juster mål. Også omvendt: elevated fairway (opp) — tap 5% per 10m. Bygger course management-bevissthet.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "BANE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "trackman",
+        "5-baller",
+        "yardage-book"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "elevated-tee-attack-angle"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scenario",
+        "elevated-tee",
+        "course-management",
+        "decade",
+        "calculation"
+      ],
+      "coachNotater": "Decade-tankegang: distanse er ikke statisk — alltid juster for elevation, vind, temp. Lær spillere kalkulering, ikke gjetting."
+    },
+    {
+      "navn": "double-dog-leg-tee-strategy",
+      "beskrivelse": "På par 5 med dobbel dog-leg: Plan ut tee-shot 240-260 yards som setter opp lay-up. Velg ikke max distanse — velg posisjon. 5 forsøk på bane eller simulator. Mål: 4/5 i optimal sone for andre slag.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "BANE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "course-simulator",
+        "yardage-book"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "scoring-club-decision-matrix"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scenario",
+        "dog-leg",
+        "decision-making",
+        "course-management",
+        "par-5"
+      ],
+      "coachNotater": "Lengste tee-shot er ofte ikke beste tee-shot. Lær spillere å tenke 'hvor vil jeg slå fra'. Decade-prinsipp."
+    },
+    {
+      "navn": "left-side-elimination-driver",
+      "beskrivelse": "Når venstre side er OB eller død: bruk fade-bias. Aim mot venstre rough-kant, sikt center-fade. Slå 10 baller. Mål: 0 baller venstre for aim-linje (eliminert), 8/10 på fairway. Stress-test under press.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "aim-sticks"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "fade-only-stock-shot-bygg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scenario",
+        "trouble-tee",
+        "ob-trussel",
+        "fade",
+        "shot-shape"
+      ],
+      "coachNotater": "'Side-elimination' er Decade-stil — du fjerner én side helt og spiller hele bredden av fairway. Funker bare hvis stock-shape er pålitelig."
+    },
+    {
+      "navn": "right-side-elimination-driver",
+      "beskrivelse": "Når høyre side er OB eller død: bruk draw-bias. Aim mot høyre rough-kant, sikt center-draw. Slå 10 baller. Mål: 0 baller høyre for aim-linje, 8/10 på fairway. Speilbilde av venstre-elimination drill.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "aim-sticks"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "draw-only-stock-shot-bygg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scenario",
+        "trouble-tee",
+        "ob-trussel",
+        "draw",
+        "shot-shape"
+      ],
+      "coachNotater": "Speilbilde-versjon av venstre-elimination. Avhenger av en pålitelig draw — hvis ikke har spilleren det, ikke prøv på bane."
+    },
+    {
+      "navn": "morad-disc1-pressure-sequence",
+      "beskrivelse": "MORAD DISC 1: føl trykk sekvensiell fra føtter → hofte → torso → armer. Slå 8 driver-baller med fokus på 'fra bakken opp'. Sett kamera bakfra for å sjekke sekvensering. Mål: konsistent trykk-loading visualisert på video, ikke kun ball-flukt.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "kamera",
+        "8-baller",
+        "force-plate"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "morad-momentum-transfer-timing"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 25,
+        "L": 5
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "MORAD-DISC1",
+        "MORAD-momentum",
+        "pressure",
+        "sequencing",
+        "video"
+      ],
+      "coachNotater": "MORAD DISC 1 handler om ground reaction force og hvordan kraft genereres fra bakken. Krever video for kvalitetsjekk — ikke noe spilleren føler riktig uten."
+    },
+    {
+      "navn": "morad-disc2-rotation-stack",
+      "beskrivelse": "MORAD DISC 2: post-up på lead-side, rotér torso rundt stabil ankel. 10 driver-baller med fokus på lead-fot grunning og rotasjon over (ikke gjennom). Mål: redusere sway, øke rotasjons-hastighet 5-10%. Sjekk med 3D-motion eller speil.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "D",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 8,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "3d-motion-eller-speil"
+      ],
+      "varighetMin": 35,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "morad-disc1-pressure-sequence"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 60,
+        "G": 40,
+        "J": 15,
+        "L": 3
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "MORAD-DISC2",
+        "MORAD-posisjon",
+        "rotation",
+        "post-up",
+        "elite"
+      ],
+      "coachNotater": "DISC 2 er for spillere som har DISC 1 solid. Post-up + rotasjon = klassisk Hogan/Snead lower-body. Ikke begynn med dette uten foundation."
+    },
+    {
+      "navn": "morad-disc5-release-timing",
+      "beskrivelse": "MORAD DISC 5: track hands-release timing. Slå 8 baller, video fra Down-the-line. Mål: håndledd-frigjøring inntreffer 6-8 tommer FØR ball. Spillere som frigjør tidlig (slice) eller sent (hook) får tydelig diagnose.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "8-baller",
+        "kamera-dtl"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 20,
+        "L": 5
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "MORAD-DISC5",
+        "release",
+        "timing",
+        "video",
+        "diagnostikk"
+      ],
+      "coachNotater": "Release-timing er én av Mac sin viktigste konsepter. Vis spilleren video — de fleste tror de frigjør sent, men gjør det tidlig. Visuell sjokk = læring."
+    },
+    {
+      "navn": "hogan-pumping-action-driver",
+      "beskrivelse": "Hogan 'pumping action': i transition, føl en 2-fasen ned-svingen — først hofte-shift (1), så arm-drop (2). Slå 10 driver-baller med to tydelige fase-følelser. Bygger lag og forhindrer over-the-top. Pause kort på toppen for å føle separasjon.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "long-pause-top-driver"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 25,
+        "L": 5
+      },
+      "videoUrl": null,
+      "kilde": "notion:mac-ogrady-kb",
+      "tags": [
+        "transition",
+        "lag",
+        "Hogan",
+        "feel",
+        "MORAD-konsept"
+      ],
+      "coachNotater": "Hogan beskrev pumping action i 'Five Lessons'. Mac O'Grady refererer ofte. Skal føles som 2 separate handlinger, ikke én jevn bevegelse."
+    },
+    {
+      "navn": "snead-square-to-square-driver",
+      "beskrivelse": "Snead-stil: square club-face hele veien gjennom svingen. Slå 10 baller med fokus på ingen face-rotasjon (kun stilt nedover, ikke åpnet/lukket). Mål: rette baller eller minimal kurv. Bygger feel for face-kontroll.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 25,
+        "L": 5
+      },
+      "videoUrl": null,
+      "kilde": "notion:mac-ogrady-kb",
+      "tags": [
+        "club-face",
+        "straight",
+        "Snead",
+        "MORAD-konsept",
+        "feel"
+      ],
+      "coachNotater": "Square-to-square er én av to extreme stiler (mot strong-grip-roterende). Funker for visse spillere — test om følelsen passer før du bruker som rettelse."
+    },
+    {
+      "navn": "9-point-tee-stance-test",
+      "beskrivelse": "Sett 9 tee-stikker i ulike posisjoner: 3 ball-positions × 3 stance-widths. Slå 1 driver fra hver. 9 baller total. Logg hva som gir best kontakt og lengst carry. Bygger selvkunnskap om optimal setup.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "9-tee-stikker",
+        "trackman",
+        "9-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 40,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "setup",
+        "ball-position",
+        "stance",
+        "test",
+        "selvkunnskap"
+      ],
+      "coachNotater": "Spillere har ofte ikke prøvd å variere setup systematisk. Denne testen gir konkret data om hva som funker for dem — ikke generelle råd."
+    },
+    {
+      "navn": "tempo-3-1-driver-metronome",
+      "beskrivelse": "Bruk metronom-app: 3:1 tempo (baksving:nedsving). Slå 10 driver-baller mens du følger klikk. Mål: konsistent tempo på hver sving, ikke variabel under press. Tour-snitt er rundt 3:1 — Snead var nær 3:1.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "metronome-app"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "tempo",
+        "metronome",
+        "consistency",
+        "MORAD-konsept"
+      ],
+      "coachNotater": "Spillere under press skifter ALLTID tempo — vanligvis raskere baksving. Metronom forhindrer dette. Brukes også på warm-up før runde."
+    },
+    {
+      "navn": "swing-speed-progression-3-week",
+      "beskrivelse": "3-ukers protokoll: uke 1 = 80% swing speed, uke 2 = 90%, uke 3 = 100%+. Slå 15 driver-baller per økt med Trackman-måling. Mål: gradvis økning i ball-speed uten tap av dispersion. Brukes til off-season build.",
+      "disciplin": "FYS",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "trackman",
+        "15-baller",
+        "speed-trener"
+      ],
+      "varighetMin": 35,
+      "intensitet": 7,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "ball-speed-progressive-overload"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:treningsperioder-og-faser",
+      "tags": [
+        "max-distance",
+        "ball-speed",
+        "progression",
+        "off-season",
+        "fysisk"
+      ],
+      "coachNotater": "Speed-trening tar tid. 3 uker er minimum for å se reelle gains. Bruk SuperSpeed eller TPI-protokoll. Ikke prøv i sesong."
+    },
+    {
+      "navn": "driver-skala-1-til-10-feel",
+      "beskrivelse": "Slå 10 driver-baller på ulike intensitets-nivåer: 5/10, 6/10, 7/10, 8/10, 9/10, 9.5/10, 10/10 (max). Logg ball-speed på Trackman. Bygger bevissthet om hvilken intensitet gir best balanse mellom distanse og dispersion.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "trackman",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "feel",
+        "trackman",
+        "selvkunnskap"
+      ],
+      "coachNotater": "Sweet spot for de fleste er 85-90% intensitet — ikke 100%. Spillere overrasker seg selv når de ser data: 'jeg slo den lengre på 8/10 enn på 10/10'."
+    },
+    {
+      "navn": "driver-vs-3-wood-gap-test",
+      "beskrivelse": "Slå 10 baller driver og 10 baller 3-wood med samme intensitet. Trackman måler: carry, total, dispersion. Beregn gap (typisk 15-25 yards). Brukes til å vite når 3-wood er smartere valg — narrow fairway eller short par 4.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "3-wood",
+        "trackman",
+        "20-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 40,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scoring-club",
+        "decision-making",
+        "test",
+        "selvkunnskap"
+      ],
+      "coachNotater": "Mange spillere har 3-wood som er nesten like langt som driver men mye mer dispersion. Data svarer på 'kan jeg droppe 3-wood og bytte til hybrid?'."
+    },
+    {
+      "navn": "first-tee-jitters-simulation",
+      "beskrivelse": "Simuler første-tee press: gå ut av studio, kom inn, kun 1 ball, ett slag, ingen sving. Coach kommenterer høyt 'dette er første-tee, alle ser på'. Gjenta 5 ganger med pauser. Mål: 4/5 i fairway. Trener mental kontroll.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "5-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "first-tee-protokoll-3-baller"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "pressure-tee-shot",
+        "first-tee",
+        "mental",
+        "simulation"
+      ],
+      "coachNotater": "Første-tee jitters er reelle — mest hjerterytme-økning gjennom hele runden. Simulering med distraksjon trener nervekontroll."
+    },
+    {
+      "navn": "competition-driver-3-hole-block",
+      "beskrivelse": "Slå tre 'baner' i rekke: drive på hull 1 (par 4), hull 2 (par 4 med dog-leg), hull 3 (par 5). Visualiser bane mellom hvert slag. 1 ball per hull, no mulligans. Mål: 3/3 spillbart. Konkurranse-simulering.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "3-baller",
+        "bane-kart"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "pressure-tee-shot",
+        "turnering",
+        "simulation",
+        "decision-making"
+      ],
+      "coachNotater": "Range-trening med kun '10 driver-baller på rad' simulerer ikke bane. Denne drillen tvinger spilleren til pre-shot routine og resette mellom slag."
+    },
+    {
+      "navn": "playoff-pressure-driver-1-ball",
+      "beskrivelse": "Du står i sudden-death playoff. ÉN ball, ETT slag, må være på fairway, må være langt. Coach legger penger på linje (50 kr). 5 forsøk over 5 ulike økter. Logg suksessrate over tid. Mål: forbedre fra baseline.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "1-ball",
+        "penger-eller-stake"
+      ],
+      "varighetMin": 10,
+      "intensitet": 9,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "first-tee-jitters-simulation"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 1,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 25,
+        "L": 8
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "pressure-tee-shot",
+        "playoff",
+        "high-stakes",
+        "mental"
+      ],
+      "coachNotater": "Tør spilleren satse penger? Hvis ikke — ingen press. Hvis ja — reell adrenalinrush. Skille mellom 'trening' og 'press' krever stake."
+    },
+    {
+      "navn": "decade-fairway-width-aim",
+      "beskrivelse": "På bane: maaler fairway-bredde med skritt. Beregn aim-point i midten, juster for shape. Slå driver, scor 1 hvis innenfor 5 yards av plan, 0 hvis utenfor. 5 hull. Mål: 4/5 innenfor plan. Bygger aim-disiplin.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "yardage-book",
+        "5-baller"
+      ],
+      "varighetMin": 60,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "scoring-club-decision-matrix"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 35,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "scenario",
+        "decade",
+        "aim",
+        "course-management"
+      ],
+      "coachNotater": "Decade-prinsipp: aim er ikke 'midten av fairway' — det er 'optimal aim-punkt gitt shape og dispersion'. Krever data om egen dispersion."
+    },
+    {
+      "navn": "out-of-rythm-recovery-driver",
+      "beskrivelse": "Etter en feil-shot (slice, hook, top): slå med driver igjen umiddelbart uten 'fikse' tanker. 6 baller — alle skal være 'forrige slag glemt'. Bygger mental reset. Mål: ikke samme miss to ganger i rekke.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "6-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "mental",
+        "recovery",
+        "reset",
+        "turnering"
+      ],
+      "coachNotater": "Mange spillere prøver å 'fikse' under runden — det forverrer. Lær spillere å 'glemme og resette' i stedet for å overanalysere."
+    },
+    {
+      "navn": "trail-arm-extended-driver-stop",
+      "beskrivelse": "Slå 10 driver-baller, stopp svingen 3-fot etter impact med fullt extended trail-arm (høyre for høyrehendte). Sjekk: arm strakt, klubbhode peker mot mål, balanse på lead-side. Bygger extension og preventer flip.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "extension",
+        "trail-arm",
+        "impact",
+        "fault-correction"
+      ],
+      "coachNotater": "Spillere som 'flipper' håndleddet ved impact mister både distanse og kontroll. Stopp-drill viser om extension er reell eller bare illusjon."
+    },
+    {
+      "navn": "early-extension-stick-wall-driver",
+      "beskrivelse": "Plasser en aim-stick vertikalt 1 fot bak rumpa. Slå 10 driver-baller — rumpa skal IKKE komme bort fra sticken før etter impact. Sjekker tidlig extension (hofte mot ball). Mål: 8/10 uten kontakt med stick før impact.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "aim-stick"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "wall-drill-no-early-extension"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-fault-drill-mapping",
+      "tags": [
+        "early-extension",
+        "fault-correction",
+        "hip",
+        "posture"
+      ],
+      "coachNotater": "Klassisk amatør-feil. Stick gir taktil feedback — spilleren føler det selv. Bedre enn å bli fortalt 'du retter deg opp'."
+    },
+    {
+      "navn": "casting-fix-cup-wrist-driver",
+      "beskrivelse": "Rettelse for 'casting' (tidlig wrist-release): start downswing med 'cup' i lead-håndledd (bøyd bakover) til hofte-høyde. Slå 8 baller med fokus. Bygger lag og forhindrer scoop/cast.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 25,
+        "L": 5
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-fault-drill-mapping",
+      "tags": [
+        "lag",
+        "casting",
+        "fault-correction",
+        "wrist",
+        "MORAD-DISC5"
+      ],
+      "coachNotater": "Cup-følelse er kontraintuitivt for de fleste — de tror de skal 'frigjøre tidlig'. Vis video bak — de blir overbevist når de ser hva profesjonelle gjør."
+    },
+    {
+      "navn": "reverse-pivot-fix-step-back",
+      "beskrivelse": "Rettelse for reverse pivot: stå med ball-position normal, tre med lead-fot tilbake 6 tommer FØR baksving, så ta full sving. Forhindrer vekt-overgang feil retning. 8 baller med modifisert setup.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "G",
+      "minHcp": 8,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 45,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-fault-drill-mapping",
+      "tags": [
+        "fault-correction",
+        "reverse-pivot",
+        "weight-transfer",
+        "junior"
+      ],
+      "coachNotater": "Reverse pivot er vanlig hos juniorer og høy-hcp. Step-back forhindrer fysisk. Etter 2-3 økter bygger feel for korrekt vekt-overgang."
+    },
+    {
+      "navn": "slow-motion-driver-full-swing",
+      "beskrivelse": "Slå 8 driver-baller i 50% hastighet med full sving-lengde. Fokus på posisjoner: P1-P9. Ball skal flytte 80-120 yards. Bygger sving-bevissthet og position-feel. Brukes som rehabilitering eller feel-reset.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 85,
+        "G": 75,
+        "J": 55,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "feel",
+        "slow-motion",
+        "MORAD-posisjon",
+        "rehab"
+      ],
+      "coachNotater": "Slow-motion er undervurdert. Spilleren føler hva som faktisk skjer. Brukes når noe er 'rotete' i svingen — reset til feel."
+    },
+    {
+      "navn": "draw-target-aim-stick-corridor",
+      "beskrivelse": "Plasser to aim-sticks 30 yards ut, danner en korridor 10 yards bred som peker venstre. Slå 10 baller. Alle skal starte gjennom korridor (høyre-startlinje) og kurve tilbake mot fairway. Mål: 7/10 i korridor.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "draw-only-stock-shot-bygg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "draw",
+        "startlinje",
+        "aim"
+      ],
+      "coachNotater": "Korridor-drill skiller startlinje fra kurv. Spillere som hooker hardt har startlinje for langt venstre — denne tvinger riktig start."
+    },
+    {
+      "navn": "fade-target-aim-stick-corridor",
+      "beskrivelse": "Speilbilde av draw-korridor: to aim-sticks 30 yards ut, korridor peker venstre 10 yards bred. Slå 10 baller — startlinje gjennom korridor (venstre), kurve tilbake høyre. 7/10 i korridor og kurv tilbake.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "fade-only-stock-shot-bygg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 30,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "fade",
+        "startlinje",
+        "aim"
+      ],
+      "coachNotater": "Fade-korridor speilvender draw. Spillere som blokker høyre eller pull-fade — feiljustering av aim — fanges i denne drillen."
+    },
+    {
+      "navn": "double-cross-fix-drill-driver",
+      "beskrivelse": "'Double cross' er når spilleren sikter venstre for fade men hooker. 10 baller med tydelig aim-stick venstre for mål, planlagt fade. Mål: 0 baller venstre for aim-linje. Trener tillit til startlinje.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "aim-sticks",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "fade-only-stock-shot-bygg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 25,
+        "L": 5
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-fault-drill-mapping",
+      "tags": [
+        "shot-shape",
+        "fade",
+        "fault-correction",
+        "double-cross",
+        "elite"
+      ],
+      "coachNotater": "Double cross er en av de verste missene under press — gir OB eller helt død. Krever tillit til shape og setup. Trener mental + teknisk samtidig."
+    },
+    {
+      "navn": "trackman-dispersion-mapping-driver",
+      "beskrivelse": "Slå 25 driver-baller på Trackman uten å sikte spesifikt — bare 'midt på'. Logg dispersion ellipse. Beregn: hvilken bredde fairway trenger jeg? Bygger ærlig selvkunnskap om miss-mønster.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "trackman",
+        "25-baller"
+      ],
+      "varighetMin": 40,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 25,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 35,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "trackman",
+        "dispersion",
+        "selvkunnskap",
+        "decade",
+        "test"
+      ],
+      "coachNotater": "De fleste spillere undervurderer sitt dispersion-mønster. 25-ball test gir reell data. Bruk til å sette aim-strategi etterpå."
+    },
+    {
+      "navn": "morning-warmup-tee-protocol",
+      "beskrivelse": "Pre-runde protokoll: 5 lobs med wedge, 5 mid-iron halv-swing, 5 driver halv-swing, 5 driver 80%, 3 driver full speed. 23 baller på 20 minutter. Mål: følelse låst inn, ikke teknikk-fiksing.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "wedge",
+        "iron",
+        "23-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 23,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 45,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "warmup",
+        "pre-round",
+        "protokoll",
+        "turnering"
+      ],
+      "coachNotater": "Warm-up er IKKE trening — det er aktivering. Spillere som 'fikser' på warm-up gjør det ofte verre. Lær protokoll og hold deg til den."
+    },
+    {
+      "navn": "yips-recovery-driver-progressive",
+      "beskrivelse": "For spillere med driver-angst (tee-yips): start helt enkelt — 3-wood på range, så hybrid, så driver med halv-swing, til slutt full driver. Bygger tilbake tillit gradvis. 20 baller total over 4 nivåer.",
+      "disciplin": "TURN",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "3-wood",
+        "hybrid",
+        "20-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "mental",
+        "yips",
+        "rehab",
+        "tillit",
+        "progressive"
+      ],
+      "coachNotater": "Driver-yips er real — selv tour-spillere får det. Gradvis re-build, ikke kast spilleren i fyret. Krever 2-4 økter minimum."
+    },
+    {
+      "navn": "head-still-driver-coin-drill",
+      "beskrivelse": "Plasser en mynt eller liten markør på tee-matten under hodet ditt. Slå 10 driver-baller — myntmarkør skal være synlig hele svingen (ikke flytte hode horisontalt). Mål: 8/10 uten hode-sway.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 24,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "mynt-markor"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "head-stability",
+        "no-sway",
+        "setup",
+        "junior"
+      ],
+      "coachNotater": "Klassisk 'head still'-drill. Funker mest for nybegynnere og juniorer. Elite-spillere kan ha små shift — ikke overdriv prinsippet."
+    },
+    {
+      "navn": "alignment-rod-feet-driver",
+      "beskrivelse": "Legg en aim-stick på bakken parallelt med mål-linje langs tærne. Slå 10 driver-baller. Sjekk: føtter parallel med stick, ikke åpne/lukkede. Bygger basic alignment-disiplin. For alle nivåer.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "aim-stick"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 90,
+        "G": 80,
+        "J": 60,
+        "K": 40,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "alignment",
+        "setup",
+        "basic",
+        "junior",
+        "L-niva"
+      ],
+      "coachNotater": "Alignment er det ENKLESTE å fikse men det mest oversette. Aim-stick på bakken bør være på range hele tiden. Selv tour-spillere bruker det."
+    },
+    {
+      "navn": "centered-low-point-driver-tee",
+      "beskrivelse": "Plasser to tees i bakken 4 tomme før og 4 tomme etter ball. Slå 10 driver-baller. Mål: driver-bunn berører IKKE noen tee (driver er sweeping, ikke graver). Bygger sweep-tendens og positiv attack angle.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "ekstra-tees"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 35,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "attack-angle",
+        "centered-strike",
+        "sweep",
+        "low-point"
+      ],
+      "coachNotater": "Driver er ENESTE klubb med positiv attack angle. Spillere som 'graver' med driver mister 10-15 yards og legger til spin. Tee-grenser visualiserer dette."
+    },
+    {
+      "navn": "club-path-launch-monitor-target",
+      "beskrivelse": "Trackman-mål: hold club path innenfor +2 til +4 grader (inn-til-ut for draw). Slå 15 driver-baller, monitorer hver. Mål: 11/15 innenfor target-range. Bygger bevissthet om path som matter mest for shape.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "trackman",
+        "15-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "swing-path-in-to-out-driver"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 25,
+        "L": 5
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "swing-path",
+        "trackman",
+        "draw",
+        "elite",
+        "data"
+      ],
+      "coachNotater": "Path er det viktigste tallet på Trackman for shape. Spillere som vil bygge stock-draw må holde path +2 til +5 konsistent. Data-drevet trening."
+    },
+    {
+      "navn": "spin-axis-control-driver-shape",
+      "beskrivelse": "Trackman-mål: spin axis innenfor specific range — negative for draw, positive for fade. Slå 12 baller, halv draw (spin axis -3 til -8), halv fade (+3 til +8). 8/12 innenfor target. Avansert shape-trening.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "D",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 5,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "trackman",
+        "12-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "club-path-launch-monitor-target"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 60,
+        "G": 35,
+        "J": 10,
+        "L": 2
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "shot-shape",
+        "spin-axis",
+        "trackman",
+        "elite",
+        "draw",
+        "fade"
+      ],
+      "coachNotater": "Spin axis er underbrukt metric. Hvis spilleren kan controlere spin axis bevisst, har de mester-nivå face-control. Kun for elite-spillere."
+    }
+  ]
+}

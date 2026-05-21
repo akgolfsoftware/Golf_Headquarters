@@ -1,0 +1,5821 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-05-22",
+  "fokusOmrade": "PUTTING",
+  "totalDrills": 131,
+  "sources": [
+    "ak-second-brain:morad-drill-bibliotek",
+    "ak-second-brain:putting-1-300ft-metodikk",
+    "ak-second-brain:2026-05-18-morad-kb-drills",
+    "ak-second-brain:ak-golf-treningsfilosofi",
+    "notion:phil-kenyon-kb",
+    "notion:brad-faxon-feel-putting",
+    "notion:aimpoint-express"
+  ],
+  "drills": [
+    {
+      "navn": "ring-rundt-hull-1m-360-8baller",
+      "beskrivelse": "Plasser 8 baller jevnt fordelt i sirkel 1m fra hullet (45° mellomrom). Putt alle inn på rad uten å bomme. Ved bom, start på nytt. Fullfør 3 runder for å regne det som bestått økt.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "8-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 85,
+        "G": 70,
+        "J": 50,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "presisjon",
+        "rutine",
+        "closer"
+      ],
+      "coachNotater": "Klassisk closer. Hvis spilleren bommer 2+ på rad, reduser til 6 baller for å bygge tillit. Logg lengste streak for progresjonsmåling."
+    },
+    {
+      "navn": "ring-rundt-hull-2m-360-8baller",
+      "beskrivelse": "Som 1m-versjonen, men nå 2m fra hullet. 8 baller i sirkel rundt hullet. Putt alle inn på rad. Ved bom — start på nytt. Krever god lesing av break fra ulike vinkler.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "ring-rundt-hull-1m-360-8baller"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 65,
+        "G": 50,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "read",
+        "presisjon"
+      ],
+      "coachNotater": "Bra steg opp fra 1m-ringen. Tving spilleren til å lese hver putt individuelt. Når Markus jobber denne, be ham starte med oppoverbakke-puttene først."
+    },
+    {
+      "navn": "putting-clock-3-foot-12baller",
+      "beskrivelse": "Plasser 12 baller som tallene på en klokke 3 fot (90cm) fra hullet. Start kl. 12 og gå rundt. Putt alle inn etter hverandre — ved bom, start på nytt fra kl. 12. Tren en automatisk pre-shot-rutine.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "12-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 95,
+        "G": 85,
+        "J": 70,
+        "L": 50
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "pre-shot-routine",
+        "presisjon"
+      ],
+      "coachNotater": "Phil Kenyon-stil. Drillen avdekker hvor i ringen spilleren er svak — typisk venstrebreak eller rett oppover. Be spilleren notere hvor han bommet."
+    },
+    {
+      "navn": "kenyon-tre-tee-gate-1m",
+      "beskrivelse": "Stikk to tees i bakken 1cm bredere enn putter-hodet, 30cm foran ballen. Plasser ballen 1m fra hullet. Putt gjennom gaten uten å treffe tees. 10 putter — alle skal gå gjennom porten OG inn i hullet.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "2-tees",
+        "ball"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 90,
+        "G": 80,
+        "J": 65,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "stroke-mekanikk",
+        "start-line"
+      ],
+      "coachNotater": "Renser opp start-linje. Hvis spilleren konsekvent treffer venstre tee, åpner han ansiktet på treff. Bra som warm-up før hver putting-økt."
+    },
+    {
+      "navn": "putter-gate-snever-50cm",
+      "beskrivelse": "Som tre-tee gate, men kun 50cm foran ballen og kun 0.5cm bredere enn putterhodet. Putt 1m. 20 putter — minst 18 gjennom porten. Snevrer start-line-toleransen drastisk.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "2-tees"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kenyon-tre-tee-gate-1m"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 45,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "stroke-mekanikk",
+        "start-line",
+        "elite"
+      ],
+      "coachNotater": "Elite-versjon. Bare bruk denne med spillere som mestrer normal gate. Krever god face-control — perfekt sjekkpunkt før turnering."
+    },
+    {
+      "navn": "tiger-100-paa-rad-1m",
+      "beskrivelse": "Tiger Woods' klassiker. 100 putter fra 1m på rad uten å bomme. Ved bom — start på 0. Holder spilleren konsentrasjonen 100 putter? Logg lengste streak per økt. Fortsett til 100 er nådd.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "ball"
+      ],
+      "varighetMin": 45,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "ring-rundt-hull-1m-360-8baller"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 100,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 75,
+        "G": 55,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "under-stress",
+        "MTQ",
+        "rutine"
+      ],
+      "coachNotater": "Tester fokus-utholdenhet like mye som teknikk. Hvis Markus knekker på putt 60+, kan vi bygge mental-protokoll for å resette pre-shot. Bra closer-test mot turnering."
+    },
+    {
+      "navn": "must-make-pressure-90cm",
+      "beskrivelse": "10 putter fra 90cm. Hver bom = 5 push-ups. Notér antall innehull. Mål: 9/10 eller bedre. Lager naturlig konsekvens og MTQ-press uten konkurrent. Repeter ukentlig.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 12,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 95,
+        "G": 90,
+        "J": 75,
+        "L": 55
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "under-stress",
+        "MTQ",
+        "presisjon"
+      ],
+      "coachNotater": "Press uten konkurrent. Push-ups som konsekvens fungerer bra for juniorer — gjør drillen morsom OG bygger respekt for korte putter."
+    },
+    {
+      "navn": "putting-clock-pluss-minus-3foot",
+      "beskrivelse": "12 baller i klokke 3 fot fra hullet. Putt rundt klokken og noter antall i hull av 12. Plusscore: holer 11-12. Pass: 9-10. Fail: under 9. Mål: tre på rad med 11+ før du går videre til 5 fot.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "12-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "putting-clock-3-foot-12baller"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 88,
+        "G": 75,
+        "J": 55,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "presisjon",
+        "MTQ"
+      ],
+      "coachNotater": "Bra trapp-drill. Gir konkret målbar progresjon — spillere elsker å se score-utvikling fra økt til økt. Logg i PlayerHQ."
+    },
+    {
+      "navn": "blindfold-1m-feel",
+      "beskrivelse": "Sett deg opp til en 1m putt. Les den. Ta din rutine. Lukk øynene helt og putt. 10 putter — bare føl strøk og balanse. Forventning: 7-8/10. Bygger kinestetisk feel uten visuell sjekk.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 40,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "feel",
+        "stroke-mekanikk"
+      ],
+      "coachNotater": "Faxon-style. Lærer spilleren å stole på kroppen og ikke kikke på hullet. Hvis spilleren stiver, åpne med to vanlige putter først for å løsne."
+    },
+    {
+      "navn": "kort-putt-uphill-rett-1m",
+      "beskrivelse": "Finn en 1m putt som går rett oppover (ingen break). Putt 20 baller. Mål: 18+/20. Tren tempo og pace — uphill rett er den enkleste putten, og må være automatisk for alle nivåer.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 95,
+        "G": 90,
+        "J": 80,
+        "L": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "distance-control",
+        "stroke-mekanikk"
+      ],
+      "coachNotater": "Baseline-drill. Hvis Markus ikke holer 18+ her, må vi tilbake til grunnleggende face-control. Aldri hopp over denne."
+    },
+    {
+      "navn": "kort-putt-downhill-rett-1m",
+      "beskrivelse": "Speilbilde av uphill-versjonen. Finn 1m rett nedoverbakke-putt. 20 putter. Mål: 16+/20. Krever lett touch og mot til å la ballen rulle. Snakk om akselerasjon: korte putter skal akselereres, ikke dyttes.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-putt-uphill-rett-1m"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 85,
+        "G": 75,
+        "J": 55,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "distance-control",
+        "fast"
+      ],
+      "coachNotater": "Mange juniorer dytter denne og lar den løpe forbi. Få spilleren til å se for seg ballen dø rett i hullet — ikke 30cm forbi."
+    },
+    {
+      "navn": "kort-putt-venstre-break-1m",
+      "beskrivelse": "Finn 1m putt med tydelig venstre break (high side mot venstre). Putt 15 baller fra samme spot. Tren å spille break — sikt utenfor hullet og la ballen falle inn. Mål: 12+/15.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 70,
+        "J": 50,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "read",
+        "presisjon"
+      ],
+      "coachNotater": "Bygger trygghet på break-putter under turnering. Be spilleren si HØYT hvor han sikter — det fester intensjonen."
+    },
+    {
+      "navn": "kort-putt-hoyre-break-1m",
+      "beskrivelse": "Speilbilde — 1m med tydelig høyre break. 15 putter. Mål: 12+/15. Mange spillere har en svak side — finn ut hvilken side spilleren er svakest på og dobbel-dose den.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 70,
+        "J": 50,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "read",
+        "presisjon"
+      ],
+      "coachNotater": "Sjekk om spilleren undervurderer break konsekvent — typisk feil hos juniorer er at de sikter for nær hullet på korte breakere."
+    },
+    {
+      "navn": "speedgate-overspill-30cm",
+      "beskrivelse": "Plasser to tees 30cm bak hullet (en på hver side, 50cm fra hverandre) som en fartsport. Putt fra 1.5m. Ballen MÅ inn i hullet ELLER stoppe innen tee-porten. 15 putter. Tren pace-toleranse: ikke for hardt, ikke for kort.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "2-tees",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 45,
+        "L": 28
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "distance-control",
+        "stroke-mekanikk"
+      ],
+      "coachNotater": "Lær spilleren ideell ball-fart over hull: rett over kanten + 30-45cm. For hardt = mister sidekapping og break-toleranse."
+    },
+    {
+      "navn": "drawback-1m-knockout",
+      "beskrivelse": "Putt fra 1m. Hvis bom — flytt ballen 30cm bakover (sklilengde) for neste forsøk. Hvis hol — bli stående. Fortsett til ball er tilbake til 1m i 5 strake hol, ELLER til du har bommet ut til 3m. Spill knockout mot deg selv.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "ball"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "under-stress",
+        "MTQ"
+      ],
+      "coachNotater": "Genial pressure-drill. Konsekvenser stiger med hver bom. Lærer spilleren å reagere på pressure stadier opp i økten, ikke kollapse."
+    },
+    {
+      "navn": "putting-clock-6-foot-12baller",
+      "beskrivelse": "12 baller i klokke 6 fot (1.8m) fra hullet. Gå rundt klokken. Putt hver inn i hullet. Notér antall innehull av 12. Mål: 6+ for spillere med hcp 18+, 8+ for spillere med hcp 0-18, 10+ for elite.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "12-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "putting-clock-3-foot-12baller"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "read",
+        "presisjon"
+      ],
+      "coachNotater": "Make-percentage stuper raskt fra 3 til 6 fot. Bruk statistikken til å sette realistiske forventninger med spilleren — selv tour-pros holer kun 50% her."
+    },
+    {
+      "navn": "make-percentage-3m-20baller",
+      "beskrivelse": "20 putter fra 3m flat. Notér antall innehull. Tour-pro snitt: 11/20 (55%). Sett baseline-tall for spilleren. Repeter ukentlig — mål å forbedre baseline over 4 ukers periode.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 60,
+        "D": 50,
+        "G": 35,
+        "J": 25,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "presisjon",
+        "distance-control"
+      ],
+      "coachNotater": "Måleenhet, ikke kun teknikk-drill. Logg score i PlayerHQ. Hvis Markus ligger under 8/20, har vi konkret jobb å gjøre på 3m-rangen før turnering."
+    },
+    {
+      "navn": "make-percentage-4m-20baller",
+      "beskrivelse": "20 putter fra 4m flat. Notér holer. Tour-snitt: 8/20 (40%). 4m er en kritisk distanse — skiller gode fra eliteputtere. Jobb 2 sett, med 5 min pause mellom.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "make-percentage-3m-20baller"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 45,
+        "D": 35,
+        "G": 25,
+        "J": 18,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "presisjon",
+        "elite"
+      ],
+      "coachNotater": "Elite-fokus. Sjekk pace først: bommer spilleren kort eller langt? 4m-bom er ofte pace-svak, ikke linje-svak."
+    },
+    {
+      "navn": "lp-3-tees-rundt-hull-3m",
+      "beskrivelse": "Plasser 3 tees i en trekant 3m fra hullet (samme distanse, ulik vinkel og break-retning). Spill 1 ball fra hver tee inn i hullet. Bom = tilbake til start. Mål: 5 strake runder uten bom.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "3-tees",
+        "ball"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 55,
+        "D": 40,
+        "G": 28,
+        "J": 18,
+        "L": 8
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "read",
+        "MTQ"
+      ],
+      "coachNotater": "Tvinger varierte vinkler og breaks. Du ser raskt hvilken type putt spilleren er svak på — typisk er sterkt høyrebreak en svakhet for høyrehånds-puttere."
+    },
+    {
+      "navn": "putting-stripe-5m-rett",
+      "beskrivelse": "Tegn en stripe (med kritt eller bruk linjer på treningsmatte) som peker rett mot hullet 5m unna. Plasser ball på stripa. Putt 15 baller. Mål: 10+ innehull. Tren start-linje, ikke break.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "krittlinje"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "stroke-mekanikk",
+        "start-line"
+      ],
+      "coachNotater": "Visuell støtte. Bra for spillere som har dårlig alignment-feel. Når Markus mestrer denne, fjern stripa og se om følelsen sitter."
+    },
+    {
+      "navn": "stroke-tempo-metronom-76bpm",
+      "beskrivelse": "Bruk metronom på 76 bpm (eller app som PuttMetric). Backstroke på 1, forward på 2. Putt 20 baller fra 3m. Lærer konsistent tempo — Tour-snitt er 2:1 ratio mellom forward og back, tempo rundt 76 bpm.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller",
+        "metronom-app"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 30,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "stroke-mekanikk",
+        "rytme"
+      ],
+      "coachNotater": "Tempo-fix. Bra for spillere som decelererer på forward-stroke. Phil Kenyon-data: 76 bpm er Tour-snitt — fungerer for de fleste."
+    },
+    {
+      "navn": "drawback-3m-til-1m",
+      "beskrivelse": "Start på 3m. Hol = bli stående. Bom = flytt ballen 50cm bakover. Fortsett til du har holet 5 baller fra 3m ELLER endt opp på 5m. Spill knockout mot deg selv. Mål: nå 5 strake.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "ball"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 55,
+        "G": 40,
+        "J": 25,
+        "L": 12
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "under-stress",
+        "MTQ"
+      ],
+      "coachNotater": "Press-drill med naturlig konsekvens. Spilleren MÅ holde nervene rolige når oppgaven blir vanskeligere. Bra closer for turneringsuker."
+    },
+    {
+      "navn": "putting-3m-9-posisjoner",
+      "beskrivelse": "Plasser hull i sentrum av puttinggreen. Plasser 9 baller i 9 ulike posisjoner 3m fra hullet (ulike breaks, ulike helninger). Putt en runde gjennom alle 9. Notér score. Repeter — sikt på 5+ innehull av 9.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "9-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "make-percentage-3m-20baller"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 55,
+        "G": 38,
+        "J": 22,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "read",
+        "presisjon"
+      ],
+      "coachNotater": "Bredspektret 3m-tester. Du får map over hvilke break-typer spilleren er svak på. Bygg påfølgende økter rundt svakeste vinkler."
+    },
+    {
+      "navn": "konkurranse-best-of-10-3m",
+      "beskrivelse": "To spillere (eller mot deg selv): hver tar 10 putter fra 3m. Den som holer flest vinner. Ved likt — sudden death fra 4m. Skap ekte konkurranse-press i trening.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "make-percentage-3m-20baller"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 60,
+        "D": 50,
+        "G": 35,
+        "J": 22,
+        "L": 12
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "under-stress",
+        "MTQ"
+      ],
+      "coachNotater": "Bruk denne i gruppe-økter. Juniorer trives med konkurranse — det er ofte enklere å replikere turneringspress sosialt enn solo."
+    },
+    {
+      "navn": "left-eye-only-2m",
+      "beskrivelse": "Lukk høyre øye. Sett opp og putt 2m putt. 10 baller. Sjekker om spilleren er feiljustert — mange høyrehånds-puttere sikter for høyre fordi de bruker dominant øye. Putt 10 med begge øyne åpne etter.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 40,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "stroke-mekanikk",
+        "alignment"
+      ],
+      "coachNotater": "Diagnostisk drill. Hvis spilleren holer dårligere med dominant øye lukket, vet vi at alignment-perspektiv må trenes. Bra som sjekk hver 4. økt."
+    },
+    {
+      "navn": "high-low-3m-break",
+      "beskrivelse": "Finn 3m putt med tydelig break. Putt 5 baller på HIGH-siden (sikt over apex), så 5 baller på LOW-siden (under hullet). Sammenlign: hvilken side gir flest hol? Lærer å forstå break vs. fart.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "read",
+        "feel"
+      ],
+      "coachNotater": "Lærer at break alltid skal spilles på high-side med god fart. Bra som conceptual training etter mye teknisk drill."
+    },
+    {
+      "navn": "stroke-laser-3m-validering",
+      "beskrivelse": "Bruk putting-laser eller alignment-stang. Sett opp 3m putt, plasser laser/stang langs sikte-linje. Putt 15 baller. Sjekk start-line på hver — minimum 12/15 skal starte på linje, uansett om de holer.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "alignment-stang"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 50,
+        "L": 32
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "stroke-mekanikk",
+        "start-line"
+      ],
+      "coachNotater": "Isolerer face-control fra read. Hvis start-linje er bra, men spilleren bommer — det er pace eller read som svikter, ikke teknikk."
+    },
+    {
+      "navn": "speedgate-medium-3m",
+      "beskrivelse": "To tees 30cm bak hullet, 60cm fra hverandre. Putt fra 3m. Ballen MÅ enten gå i hullet eller stoppe innen tee-porten. 15 putter. Tren ideell pace på medium-distanse putter.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "2-tees",
+        "15-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "speedgate-overspill-30cm"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "distance-control",
+        "stroke-mekanikk"
+      ],
+      "coachNotater": "Pace-toleranse for 3m. Skal spilleren bli en god putter må hver putt enten gå i eller dø max 30-45cm forbi. Drilling av denne over flere uker fungerer."
+    },
+    {
+      "navn": "4m-pluss-1m-comeback",
+      "beskrivelse": "Putt fra 4m. Hvis bom — uansett hvor ballen ender, putt comeback-en. Logg: holer du førsteputten? Eller får du 2-puttet (lengste comeback du klarer å hole = 1.5m)? 10 førsteputter.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "distance-control",
+        "MTQ"
+      ],
+      "coachNotater": "Simulerer reell turnering-situasjon. Ofte er 4m-putten ikke det viktigste — det er comebacken. Lær spilleren å lese begge før første putt."
+    },
+    {
+      "navn": "kenyon-zone-2-til-4m-stigende",
+      "beskrivelse": "Putt 1 ball fra 2m, deretter 1 fra 2.5m, 3m, 3.5m, 4m. Hvis du bommer noen — start på 2m igjen. Mål: spille 5 strake innehull, distanse for distanse, opp til 4m.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "ball"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 50,
+        "G": 35,
+        "J": 22,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "under-stress",
+        "MTQ",
+        "distance-control"
+      ],
+      "coachNotater": "Phil Kenyon Zone-drill. Bygger gradvis press og bygger feel for distanse-progresjon samtidig. Bra mental-drill 2-3 dager før turnering."
+    },
+    {
+      "navn": "lag-putt-10m-3-foot-circle",
+      "beskrivelse": "Putt 15 baller fra 10m. Mål: stoppe innenfor en sirkel med 90cm radius rundt hullet (3-foot tap-in-rekkevidde). Notér antall innen sirkel. Mål: 11+/15. Fokus: pace, ikke linje.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "snor-eller-tees"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 50,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control"
+      ],
+      "coachNotater": "Mest effektive 3-putt-prevention-drill som finnes. Hvis spilleren stopper innen 90cm fra hullet, 3-putter han nesten aldri. Logg score ukentlig."
+    },
+    {
+      "navn": "lag-putt-15m-3-foot-circle",
+      "beskrivelse": "Som 10m-versjonen, men 15m. 15 baller. Mål: 9+/15 innen 90cm-sirkel. Lærer spilleren å føle pace på lengre lag-putter — der følelsen virkelig blir testet.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lag-putt-10m-3-foot-circle"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "feel"
+      ],
+      "coachNotater": "Lengre distanse, samme prinsipp. Spillere som mestrer 10m+ lag-putter har stor fordel i turnering — to-putter blir normen, ikke unntaket."
+    },
+    {
+      "navn": "lag-putt-20m-3-foot-circle",
+      "beskrivelse": "Lange greens, 20m putt. 10 baller. Mål: 6+/10 innen 90cm. Krever virkelig god feel for stor distanse. Bruk på lange greens eller fra-fringe-puttsituasjoner.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lag-putt-15m-3-foot-circle"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 55,
+        "G": 38,
+        "J": 22,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "feel",
+        "elite"
+      ],
+      "coachNotater": "Spillere som scorer 5+ her vinner mange skuddslag på langgreens. Mange Tour-pros bruker 20-30 min på lag-putt-trening hver dag."
+    },
+    {
+      "navn": "ladder-progressive-3-5-7-10m",
+      "beskrivelse": "Putt 3 baller fra 3m, 3 fra 5m, 3 fra 7m, 3 fra 10m — totalt 12 putter. Mål: alle 12 stopper innen 90cm fra hullet ELLER går inn. Hvis bom, hopp tilbake en distanse. Ladder-progression.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "12-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 38,
+        "L": 22
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "feel"
+      ],
+      "coachNotater": "Lær spilleren å kalibrere stroke-lengde mot distanse. Visse spillere lager 'stop på 5m' og kommer aldri kortere — denne tvinger gradering."
+    },
+    {
+      "navn": "morad-1-til-50ft-progression",
+      "beskrivelse": "Mac O'Grady 1-300 ft-progression, light-versjon. Putt 5 baller fra 1ft, 5 fra 5ft, 5 fra 10ft, 5 fra 20ft, 5 fra 30ft, 5 fra 50ft. Notér feel og resultat. Bygg cerebellums database for distanse.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "30-baller"
+      ],
+      "varighetMin": 45,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 30,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:putting-1-300ft-metodikk",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "feel",
+        "morad"
+      ],
+      "coachNotater": "Bygger feel-database over tid. Få Markus til å logge subjektiv følelse (1-10) per distanse — ikke bare resultat. Dette er en sesjon å gjenta ukentlig i hele juniorlivet."
+    },
+    {
+      "navn": "morad-1-til-100ft-progression",
+      "beskrivelse": "Utvidet MORAD-protokoll. Putt 5 baller hver fra: 1ft, 3ft, 6ft, 10ft, 15ft, 20ft, 30ft, 50ft, 75ft, 100ft. Total 50 baller. Mål: 80% av puttene fra 30ft+ skal stoppe innen 1m. Notér touch per distanse.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "50-baller"
+      ],
+      "varighetMin": 60,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "morad-1-til-50ft-progression"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 50,
+      "csTargetByKategori": {
+        "A": 60,
+        "D": 50,
+        "G": 35,
+        "J": 20,
+        "L": 8
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:putting-1-300ft-metodikk",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "morad",
+        "elite"
+      ],
+      "coachNotater": "Mac O'Grady full-protokoll for elite. Tar tid, men de spillerne som gjør dette 100 ganger blir verdensklasse-lag-puttere. Krever 100m putting-green."
+    },
+    {
+      "navn": "lengste-putt-staende-utfordring",
+      "beskrivelse": "Finn lengste mulige putt på greenen (vanligvis 25-40m). Putt 10 baller. Mål: alle skal nå hullet (ikke kort), og minst 5/10 stopper innen 1.5m. Krever full sving-tempo i putting.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 60,
+        "D": 50,
+        "G": 35,
+        "J": 22,
+        "L": 12
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "feel"
+      ],
+      "coachNotater": "Få spilleren ut av komfortsonen. Ekstreme distanser bygger feel for hele spekteret. Mange juniorer er redde for lange putter — tren det vekk."
+    },
+    {
+      "navn": "lag-putt-uphill-15m",
+      "beskrivelse": "Finn 15m putt rett oppoverbakke. 10 baller. Krever betydelig lengre stroke enn flat. Mål: 7+ innen 90cm. Lærer å lese helling og kalibrere stroke-volum.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lag-putt-15m-3-foot-circle"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "helning"
+      ],
+      "coachNotater": "Juniorer underspiller oppover-putter. Lær dem å tenke 'fra siste 1/3 mot hullet' — det er der pace beslutningen tas."
+    },
+    {
+      "navn": "lag-putt-downhill-15m",
+      "beskrivelse": "15m putt rett nedoverbakke. 10 baller. Krever forsiktig touch — overskudd straffes med 3-4m comeback. Mål: 6+ innen 90cm. Den vanskeligste putten i golf.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lag-putt-uphill-15m"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 55,
+        "G": 38,
+        "J": 22,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "helning",
+        "elite",
+        "fast"
+      ],
+      "coachNotater": "Diabolisk. Pace-touch er konge. Be spilleren tenke 'jeg putter til 1m foran hullet' — det matcher faktisk pace bedre enn å sikte til hullet."
+    },
+    {
+      "navn": "lag-putt-tverr-helling-10m",
+      "beskrivelse": "10m putt med sterk side-helling (5-10% break). 10 baller. Krever koordinering av speed OG line. Mål: 6+ innen 90cm. Avansert lag-putting der spilleren må kommittere til en spesifikk linje.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lag-putt-10m-3-foot-circle"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "read"
+      ],
+      "coachNotater": "Spilleren må forplikte seg til linje OG pace samtidig. Hvis han endrer line midt i stroke — han putter sleep. Bra MTQ-trener."
+    },
+    {
+      "navn": "to-balls-touch-test-8m",
+      "beskrivelse": "Putt to baller etter hverandre fra 8m mot samme hull. Mål: andre ball stopper innen 30cm fra første ball. Tester replikering av samme stroke under skiftende fokus. 10 par-putter.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "feel",
+        "distance-control"
+      ],
+      "coachNotater": "Faxon-drill. Lærer kroppen å gjenta samme stroke uten å justere mot resultatet. Bra mot 'overthinking' — andre putten kommer fra muskelminne, ikke fra hjerne."
+    },
+    {
+      "navn": "leapfrog-pace-drill",
+      "beskrivelse": "Putt 1 ball fra 5m mot hullet. Putt deretter ball nr. 2 — den må stoppe MELLOM hullet og ball 1, ikke nærmere ball 1 enn hullet. Fortsett til du har 10 baller stoppet i en stigende lengde. Tester fin pace-gradering.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 50,
+        "D": 38,
+        "G": 25,
+        "J": 15,
+        "L": 8
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "feel"
+      ],
+      "coachNotater": "Krever fin gradering. Mange spillere har på/av-touch — denne avdekker det. Bra utfordring for spillere som tror de er gode lag-puttere."
+    },
+    {
+      "navn": "fra-fringe-15m-putt",
+      "beskrivelse": "Plasser ball på fringe 15m fra hull. Putt 10 baller. Fringe-grass har mer motstand — krever 10-15% mer pace. Mål: alle baller når hullet, 5+ innen 1.5m. Tren oppgangs-overgang.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lag-putt-15m-3-foot-circle"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 55,
+        "G": 38,
+        "J": 22,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "feel"
+      ],
+      "coachNotater": "Realistisk turnerings-scenario. Mange spillere er usikre fra fringe — vet ikke om de skal chippe eller putte. Tren puttvarianten flere ganger så det blir default."
+    },
+    {
+      "navn": "single-stroke-3-distances",
+      "beskrivelse": "Putt 1 ball til 5m-merke (markeres med tee). Putt 1 ball til 10m-merke. Putt 1 ball til 15m-merke. Alle 3 SAMME ball-tre-distanser. Mål: hver ball innen 50cm av merket. Tester at du kan justere lengde uten å miste linje.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "3-baller",
+        "3-tees"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 30,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "feel"
+      ],
+      "coachNotater": "Quick-fire-test av distance-kalibrering. Kjør 3 sett. Hvis spilleren bommer på samme distanse hver gang har vi konkret distanse å trene mer på."
+    },
+    {
+      "navn": "blind-distance-feel-12m",
+      "beskrivelse": "Sett opp 12m putt. Les den med åpne øyne. Sett deg over ballen. Lukk øynene og putt. 10 baller. Bygger ren kinestetisk feel — fungerer som diagnostisk: hvis blind score er bedre enn vanlig, overthinker spilleren.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "blindfold-1m-feel"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 60,
+        "D": 50,
+        "G": 35,
+        "J": 22,
+        "L": 10
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "feel",
+        "distance-control"
+      ],
+      "coachNotater": "Faxon-classic. Hvis Markus scorer bedre med øynene lukket må vi jobbe mental-pre-shot. Det er forløsende for spillere som låser seg."
+    },
+    {
+      "navn": "aimpoint-1-prosent-1m",
+      "beskrivelse": "AimPoint Express: les helning med føttene (1-5% skala). Bruk 1 finger for 1% helling 1m fra hullet. Sikt finger-bredde utenfor hullet i break-retning. Putt 10 baller. Lær konkret aim-system.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 22
+      },
+      "videoUrl": null,
+      "kilde": "notion:aimpoint-express",
+      "tags": [
+        "read",
+        "aimpoint",
+        "short-range"
+      ],
+      "coachNotater": "AimPoint Express er underpriset. Når Markus mestrer 1-5% finger-system, blir read-systemet hans objektivt — mindre 'magefølelse', mer system."
+    },
+    {
+      "navn": "aimpoint-3-prosent-3m",
+      "beskrivelse": "AimPoint på 3m. Føl helling med føttene. 3% = 3 fingre bredde. Sikt 3 finger-bredder utenfor hullet på high-side. 15 baller på hellingsputt. Mål: 10+ innehull eller stopper innenfor 50cm.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "aimpoint-1-prosent-1m"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:aimpoint-express",
+      "tags": [
+        "read",
+        "aimpoint",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Sett spilleren i posisjon der han MÅ føle helningen. Bra øvelse å gjenta før hver runde for å kalibrere føttene."
+    },
+    {
+      "navn": "plumb-bob-green-read",
+      "beskrivelse": "Klassisk lese-teknikk. Stå bak ballen, hold putter loddrett i hånda foran ansiktet. Sjekk hvor lodd-linja faller relativt til hullet. Bestem break-retning. Putt deretter. 10 putter, 5m, med plumb-bob før hver.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "read",
+        "medium-range",
+        "2-5m",
+        "rutine"
+      ],
+      "coachNotater": "Gammelt triks, men fungerer. Gir ekstra datapunkt i lesing. Spillere som har plumb-bob i pre-shot virker også mer komitterte."
+    },
+    {
+      "navn": "ball-marker-line-3m",
+      "beskrivelse": "Tegn linje på ballen som peker mot startsiktet. Putt 3m putt. Sjekk om linje på ballen ruller i kontrollert mønster eller wobbler. Hvis wobble: face er åpent/lukket på treff. 15 putter med fokus på roll-pattern.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "ball-marker-penn"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "read",
+        "start-line",
+        "stroke-mekanikk",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Visuell feedback på roll. Hvis linja wobbler i de første 30cm, har spilleren topp-treff (skin) eller åpen face. Diagnostisk verdi er enorm."
+    },
+    {
+      "navn": "spot-putting-2-foot-target",
+      "beskrivelse": "Velg et 'spot' (vannflekk, gress-spike, mark) 60cm foran ballen, på sikte-linje. Glem hullet — putt over spot-en. 15 putter fra 3m. Lærer å rull ball over et lite forsvar-mål, lite-target-fokus.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "read",
+        "start-line",
+        "stroke-mekanikk",
+        "rutine"
+      ],
+      "coachNotater": "Phil Kenyon-prinsipp: små mål gir presisjon. Hjernen aimer bedre mot et lite spot enn et stort hull. Tren dette systematisk."
+    },
+    {
+      "navn": "tre-baller-read-discussion",
+      "beskrivelse": "Med trener/spillende kollega: studér samme 4m putt. Hver leser uavhengig. Sammenlign read (linje + pace). Putt en ball hver med sin read. Diskuter resultatet. Bygger felles vokabular for green-reading.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "3-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 30,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "read",
+        "feel",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Coaching-økt-format. Kjør på Lørdagsgolf med Markus. Lær begge se samme bilde — det blir grunnlag for caddiing-snakk senere."
+    },
+    {
+      "navn": "speed-controls-line-eksperiment",
+      "beskrivelse": "Velg break-putt (5m). Slå 3 baller på samme linje, men med ulik pace: 'die-speed' (knapt forbi hullet), 'normal' (15cm forbi), 'firm' (1m forbi). Observer hvor mye break som tas av hver. Mac O'Grady-prinsipp.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "9-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 85,
+        "G": 75,
+        "J": 60,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:putting-1-300ft-metodikk",
+      "tags": [
+        "read",
+        "feel",
+        "morad",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Lærings-eksperiment, ikke score-drill. Mac O'Grady: ballfart kontrollerer linje. Når spilleren ser dette LIVE blir prinsippet sittende."
+    },
+    {
+      "navn": "low-side-no-no-drill",
+      "beskrivelse": "Velg sterkt break-putt 4m. Putt 10 baller med kommitering — ALDRI tillat ballen å bomme på low-side (under hullet). Hvis low-side-bom, registrér feil. Mål: 0 low-side-bommer. Bygger respekt for break.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 22
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "read",
+        "feel",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Kult mental-konsept. Bom på low-side = ballen tar IKKE break — alltid en fault. High-side-bom = ballen tar break, men kanskje for mye. Tilgivelig."
+    },
+    {
+      "navn": "uphill-vs-downhill-read",
+      "beskrivelse": "Velg en green med både oppover og nedover-segmenter. Putt samme 4m to ganger: en uphill, en downhill. Putt 5 ganger hver. Observer ulikt break-behov: uphill = mindre break, downhill = mer break. 10 putter totalt.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 80,
+        "G": 70,
+        "J": 55,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "read",
+        "feel",
+        "helning"
+      ],
+      "coachNotater": "Konseptuell trening, ikke score. Spillerne MÅ skjønne at break ikke er statisk — den varierer med pace, helling, gress-retning. Bra fast theory-økt."
+    },
+    {
+      "navn": "footfeel-helning-skala-1-5",
+      "beskrivelse": "Trener ren AimPoint-feel. Stå i naturlig posisjon på 5 ulike steder med ulik helling. Estimér helling (1-5%) før spilleren får sjekke med vater eller AimPoint-app. Logg avvik. Trener føttene som sensorisk verktøy.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "vater-eller-app"
+      ],
+      "varighetMin": 15,
+      "intensitet": 1,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "notion:aimpoint-express",
+      "tags": [
+        "read",
+        "aimpoint",
+        "feel"
+      ],
+      "coachNotater": "Lærings-drill, ingen putting. Gjør 5 min av hver økt på dette i 4 uker — spilleren får helningsfeel som vurdert objektivt med +/- 0.5%."
+    },
+    {
+      "navn": "green-grain-mot-fra-shine",
+      "beskrivelse": "På greener med markert grain (bermuda, kikuyu). Putt 4m i fire retninger: medstrøm, motstrøm, side-grain venstre, side-grain høyre. Observer pace-forskjell. 4 baller per retning = 16 putter.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "16-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 2,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 16,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "read",
+        "feel",
+        "elite"
+      ],
+      "coachNotater": "Mer relevant ute (varmere klima) enn i Norge. Bra forberedelse før utlandsturer / La Manga med juniorer."
+    },
+    {
+      "navn": "ball-position-pre-shot-sjekk",
+      "beskrivelse": "Pre-shot rutine sjekk. Set opp 3m putt. Sjekk på 4 punkter: 1) ball plassering (eye-over-ball), 2) skuldre parallelt med target line, 3) hender lett foran ball, 4) føtter parallelle. Putt 15 baller — fokus på rutinen, ikke resultat.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 90,
+        "G": 80,
+        "J": 65,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "pre-shot-routine",
+        "stroke-mekanikk",
+        "rutine",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Tilbake-til-grunnleggende. Mange juniorer mister rutinen når de hopper rett til putt. Spill denne 4 ganger per måned som vedlikehold."
+    },
+    {
+      "navn": "fixed-pre-shot-30-sek",
+      "beskrivelse": "Bygg fast 30-sekunders pre-shot. Sekvens: 1) Les bak ball (10s), 2) Sett opp (5s), 3) En øvingssving (3s), 4) Sjekk linje (3s), 5) Putt (9s). 15 putter fra 3m med stoppeklokke. Repeter til tempoet er automatisk.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "stoppeklokke"
+      ],
+      "varighetMin": 25,
+      "intensitet": 2,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "ball-position-pre-shot-sjekk"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 22
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "pre-shot-routine",
+        "rutine",
+        "under-stress",
+        "MTQ"
+      ],
+      "coachNotater": "Pre-shot er turneringsforberedelse #1. Spillere som mister rutinen kollapser pace når presset kommer. Stoppeklokken er nøkkel — den lager strukturen."
+    },
+    {
+      "navn": "ovingsving-uten-ball",
+      "beskrivelse": "Pure øvingsving-drill. Sett opp 4m putt, ingen ball. Ta 3 øvingsvinger som matcher ønsket pace. Føl pace-feel. Plasser ball, putt — uten ekstra øvingssving. 12 putter. Lærer pre-shot-feel-overføring.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "12-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "pre-shot-routine",
+        "feel",
+        "distance-control"
+      ],
+      "coachNotater": "Mange spillere har 'falske' øvingsvinger som ikke matcher real-stroke. Denne drillen avslører det. Be spilleren si pace HØYT etter øvingssving."
+    },
+    {
+      "navn": "look-til-target-ikke-ball",
+      "beskrivelse": "Putt 3m, men se KUN på hullet (ikke ballen) under stroke. 15 baller. Tester at hjernen kalibrerer kraft basert på distansevisuell, ikke ball-fokus. Counter-intuitivt, men bygger feel.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "feel",
+        "pre-shot-routine",
+        "stroke-mekanikk"
+      ],
+      "coachNotater": "Faxon's signature-drill. Bygger en automatisk pace-overføring. Spillere som låser blikket på ballen lager ofte motoriske blokkering."
+    },
+    {
+      "navn": "y-position-spine-tilt-putt",
+      "beskrivelse": "Etabler korrekt setup: eyes-over-ball, lett spine-tilt forover, armer slappe og hengende. Bruk speil eller video. Putt 15 baller fra 2m. Hver putt: sjekk én av setup-punktene. Bygger struktur i posisjonsfølelse.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "speil-eller-video"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 90,
+        "G": 80,
+        "J": 65,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "pre-shot-routine",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Grunnleggende. Hvis spilleren har dårlig setup-rutine, kollapser alt annet over tid. Sjekk denne hver 3. økt med juniorer."
+    },
+    {
+      "navn": "shoulder-rocker-no-wrist",
+      "beskrivelse": "Stroke fra skulder, ikke håndledd. Sett putter på balsetreff. Putt 3m. Kjenne at skuldre roterer (pendel-bevegelse), wrist holdt rolig. 20 baller fra 3m. Mål: jevn pace fra rolig wrist.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "rytme"
+      ],
+      "coachNotater": "Wristy puttere mister jevn pace. Få Markus til å holde et tynt håndkle inn under armene — det stiller skuldre mer aktive, hender mer rolige."
+    },
+    {
+      "navn": "pendel-rytme-1-2-1-2",
+      "beskrivelse": "Si HØYT 'tilbake-frem' med pendel-rytme mens du putter 3m, 15 baller. Backstroke og forward stroke skal være lik tempo. Hørbar rytme gir kroppen feedback på timing. Bra mot decel.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 35,
+        "L": 22
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "rytme",
+        "tempo"
+      ],
+      "coachNotater": "Verbal-feedback-drill. Juniorer som dytter putt blir bedre med denne — hørbar rytme syntaktiserer pace."
+    },
+    {
+      "navn": "mid-stroke-stopp-test",
+      "beskrivelse": "Pause stroke ved kontakt-punkt. Sett putter på ballen. Start backstroke. Stopp 30cm tilbake. Putt fremover. 15 baller fra 2m. Lærer akselerasjon gjennom ball — ikke decel-bom på korte putter.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 38,
+        "L": 22
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "tempo",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Bra mot 'yips' og decel. Forces aktivt forward-press. Bruk på Markus etter han har bommet flere korte i en runde."
+    },
+    {
+      "navn": "left-hand-low-stroke",
+      "beskrivelse": "Putt 15 baller fra 3m med venstre hånd lav (cross-handed grip). Mange spillere oppdager at face roterer mindre på treff. Bra som diagnose for spillere med tendens til å roetere face gjennom impact.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 30,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "feel",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Alternativ grip. Hvis spilleren puttet bedre med LHL, vurder permanent bytte. Mange Tour-pros (Spieth, Mickelson) bruker det."
+    },
+    {
+      "navn": "claw-grip-trial",
+      "beskrivelse": "Prøv claw-grip (høyre hånd som klo, fingre under shaft). Putt 20 fra 2-4m. Tester eliminating av høyre hånd-dominans. Bra for spillere med yips eller for mye håndledd. Sammenlign med konvensjonell grip.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 30,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "feel"
+      ],
+      "coachNotater": "Eksperiment-grip. Bra som backup hvis konvensjonell faller. Justin Rose, Phil Mickelson bruker claw — det er fullverdig system."
+    },
+    {
+      "navn": "anti-yips-look-at-hole-3m",
+      "beskrivelse": "Yips-protokoll: putt mens du ser på hullet (ikke ballen). 15 baller fra 3m. Bryter overt-tenking. Bra for spillere som har utviklet 'flinch' på korte putter. Brad Faxon-anbefaling.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "stroke-mekanikk",
+        "feel",
+        "under-stress"
+      ],
+      "coachNotater": "Anti-yips. Bryter bevisst kontroll. Bra som tilbakefall til feel-modus. Hvis Markus får dårlig fase, bruk dette."
+    },
+    {
+      "navn": "1-hand-right-only-putts",
+      "beskrivelse": "Putt med kun høyre hånd (for høyrehånds-puttere) på 1m. 15 baller. Lærer det riktige hånd-driv-impulsen og bygger stabilitet. Hvis spilleren mister kontroll, har venstre hånd kompensert.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "feel",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Diagnostisk. Hvis spilleren bommer mye nå, høyre hånd er ikke trent. Bygg det parallelt med vanlig stroke."
+    },
+    {
+      "navn": "1-hand-left-only-putts",
+      "beskrivelse": "Speilbilde. Putt 1m kun med venstre hånd (lead hand). 15 baller. Lærer face-control fra lead-arm. Mer stabil hånd for face-vinkel på treff.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 55,
+        "G": 40,
+        "J": 25,
+        "L": 12
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "feel",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Lead-hand-kontroll. Mye vanskeligere enn høyre-arm. Spillere som mestrer denne har ren face-control."
+    },
+    {
+      "navn": "alignment-stang-ekstern-vinkel",
+      "beskrivelse": "Plasser alignment-stang 30cm bak ballen på sikte-linje. Sett opp og putt 3m. 15 baller. Stangen gir konstant feedback: er føttene/skuldrene parallelle? Hvis stang er ikke synlig på øvingssving, har spilleren rotert kroppen.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "alignment-stang"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 45,
+        "L": 28
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "start-line",
+        "alignment"
+      ],
+      "coachNotater": "Standard tool. Bruk i grunnopplæring. Lærer 'parallel railroad track'-konsept enkelt og visuelt."
+    },
+    {
+      "navn": "lpga-blok-mellom-knaer",
+      "beskrivelse": "Plasser softball eller foam-blokk mellom knærne. Putt 15 baller fra 3m. Lærer rolig nedre-kropp, ingen sving av hofter. Avdekker spillere som bruker hoftene som drivkraft i putting (bad).",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "softball-eller-foam"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 45,
+        "L": 28
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "tempo"
+      ],
+      "coachNotater": "Stabilitets-drill. Hvis blokken faller, har spilleren mistet stabilitet — sjekkpunkt for hele kroppen."
+    },
+    {
+      "navn": "shaft-akse-vertikal-stroke",
+      "beskrivelse": "Bruk shaft-stick eller alignment-stang stukket i bakken vertikalt, 5cm utenfor putter-tå ved adressering. Putt 15 baller fra 3m uten å treffe shaft. Lærer rett-tilbake-rett-fram stroke uten loop.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "shaft-eller-stang"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 22
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "start-line"
+      ],
+      "coachNotater": "For face-rotators. Tvinger stroke til å bli mer rett. Kun for spillere som har bekreftet face-rotation som problem (video-bevis)."
+    },
+    {
+      "navn": "scarf-around-neck-stille-hode",
+      "beskrivelse": "Heng håndkle eller scarf rundt halsen. Stroke 15 putter fra 2m. Hvis scarf'en svinger, har spilleren beveget hodet. Hodet skal være stille gjennom stroke. Konkret feedback for head-mover-spillere.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "håndkle"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 45,
+        "L": 28
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "feel"
+      ],
+      "coachNotater": "Stillehode-trener. Mange juniorer kikker for tidlig. Scarf-en gir umiddelbar visuell + følbar feedback."
+    },
+    {
+      "navn": "video-side-on-stroke-sjekk",
+      "beskrivelse": "Sett opp video fra siden (ned-line-vinkel og face-on-vinkel). Putt 5 baller fra 3m. Spill av: kontroller backstroke-lengde, forward-lengde, face-rotation, head-movement. Diagnostikk-økt — ingen scoring.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "5-baller",
+        "kamera-stativ"
+      ],
+      "varighetMin": 25,
+      "intensitet": 1,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 100,
+        "G": 100,
+        "J": 100,
+        "L": 100
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "diagnostikk"
+      ],
+      "coachNotater": "Diagnostisk, ikke score. Last opp til PlayerHQ. Sammenlign med video tatt 4 uker tidligere — visuell progresjon. Vi gjør dette med Markus månedlig."
+    },
+    {
+      "navn": "soft-tempo-2-3-1-ratio",
+      "beskrivelse": "Bygg 2:1 ratio mellom forward og backstroke (tour-standard). Bruk app eller telle: 2 telleenheter back, 1 forward. Putt 20 baller fra 3m. Tren konsekvent decel-fri tempo gjennom ball.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller",
+        "app-eller-metronom"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "stroke-tempo-metronom-76bpm"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "tempo",
+        "rytme"
+      ],
+      "coachNotater": "Mer presis tempo-drill. 2:1 er Tour-statistikk. Hvis ratio er 1:1, spilleren decelererer. Kan måle med Quintic eller Pelz Putting Tutor."
+    },
+    {
+      "navn": "mtq-31-poeng-stress-spill",
+      "beskrivelse": "Putt 4 baller fra hver av: 1m, 2m, 3m, 5m, 7m, 10m. 3 poeng per innehull. Maks-score: 72. Mål: kvalifiserings-score 31+ for å regne det som bestått. Repeter ukentlig før turnering. Logg score over tid.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "24-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 24,
+      "csTargetByKategori": {
+        "A": 50,
+        "D": 40,
+        "G": 28,
+        "J": 18,
+        "L": 8
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "presisjon",
+        "distance-control"
+      ],
+      "coachNotater": "Komplett putting-test. Logg score i PlayerHQ. Hvis Markus får 35+ vet vi turneringsform er bra. Under 25? Vi har jobb å gjøre."
+    },
+    {
+      "navn": "p-drill-power-pressure",
+      "beskrivelse": "Putt fra 5 nivåer: 1m, 1.5m, 2m, 3m, 4m. 3 baller fra hver, må holes på rad. Bom = restart fra 1m. Pyramide-press: jo lengre du kommer, jo høyere pressure. Mål: nå 4m-trinnet.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 55,
+        "D": 40,
+        "G": 25,
+        "J": 12,
+        "L": 5
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "presisjon"
+      ],
+      "coachNotater": "Tester nerver. Spillere som når 4m-trinnet er klare for turnering. Hjelper også å se hvor presset stopper progresjonen — typisk på 2-3m for nervøse spillere."
+    },
+    {
+      "navn": "scotty-1-2-3-game",
+      "beskrivelse": "1 ball fra 1m, 2 fra 2m, 3 fra 3m. Hver må holes for å avansere. Bom = restart fra 1m-runde. Mål: fullfør hele settet (6 putter holet) på første forsøk. Krever økende vanskelighetsgrad-tilpasning.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "6-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 60,
+        "D": 45,
+        "G": 28,
+        "J": 15,
+        "L": 6
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "presisjon"
+      ],
+      "coachNotater": "Scotty Cameron-style. Den siste 3m-putten blir veldig stressende — perfekt simulering av 'siste hull leder 1 slag'-følelse."
+    },
+    {
+      "navn": "5-fra-5-fra-5m",
+      "beskrivelse": "5 putter fra 5m, alle må holes. Bom = restart. 30 minutter eller til mål nås. Mental trening like mye som teknisk — krever fokus over tid. Mål: 1 fullfølelse i økten.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "5-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 50,
+        "D": 35,
+        "G": 18,
+        "J": 8,
+        "L": 3
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "elite"
+      ],
+      "coachNotater": "Brutal MTQ-test. Kun for elite. Lærer hodet å holde under langvarig press. Hvis spilleren bryter — bruk det til å snakke om mental motstand."
+    },
+    {
+      "navn": "tournament-simulation-18-putts",
+      "beskrivelse": "Simulér 18 hull. Plasser ball fra 18 ulike distanser/break: 6 enklere (1-2m), 6 medium (3-5m), 6 lange (7-15m). Putt hver i tur. Logg gross putting-score (tap-in fra hvert bom). Mål: 30 putter på 18 'hull'.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "18-baller"
+      ],
+      "varighetMin": 60,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 18,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 12
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "distance-control",
+        "presisjon"
+      ],
+      "coachNotater": "Best simulering av runde. Bruk dette siste økt før turnering. Logg score i PlayerHQ — det blir baseline mot reell runde-statistikk."
+    },
+    {
+      "navn": "mental-reset-mellom-putter",
+      "beskrivelse": "Mellom hver putt: 3 dype pust, gå 5 skritt vekk fra ballen, kom tilbake med ny intensjon. Putt 15 baller fra 3m med full reset-rutine mellom hver. Lærer å resette etter bom. Bra anti-tilt-trening.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 2,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 45,
+        "L": 28
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "rutine",
+        "feel"
+      ],
+      "coachNotater": "Mental-protokoll. Bruker rutinen som anker når press kommer. Markus skulle ha denne i pre-shot under hver turneringsrunde."
+    },
+    {
+      "navn": "out-of-comfort-tee-line",
+      "beskrivelse": "Plasser tees i en linje 90cm bak hullet — over-hullets fartsport. Putt 5m. Hver putt: hol eller stoppe innen tee-linje. Bom = penalty (5 push-ups). 15 putter med konsekvens. Bygger pace-toleranse.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "tees",
+        "15-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "distance-control"
+      ],
+      "coachNotater": "Konsekvens-drill. Push-ups som penalty funker bedre enn 'start på nytt' fordi det legger ekte ubehag. Bygger varighet."
+    },
+    {
+      "navn": "vandring-pre-shot-storm",
+      "beskrivelse": "Simulér storm-forhold: gå rask runde rundt greenen, mass blod-pumping og puls til 130+. Sett deg over en 1.5m putt og putt umiddelbart. 10 baller med 30sek puls-økning mellom hver. Lærer pre-shot med høy puls.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "feel",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Reell turneringspuls. De fleste juniorer trener i lave puls — derfor kollapser de under turnering. Tren under realistiske forhold."
+    },
+    {
+      "navn": "kommiter-til-line-pre-shot",
+      "beskrivelse": "Skriv den valgte sikte-linja på et papir før hver putt. 'Sikter på venstre kant'. Putt 15 baller fra 4m break-putt. Mål: 100% kommitment — ingen siste-sekunders endringer på sikte. Bygger mental disiplin.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "papir-penn"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "pre-shot-routine",
+        "read"
+      ],
+      "coachNotater": "Krevende men effektivt. Lærer beslutnings-disiplin. Spillere som lærer dette får bedre score under turnering."
+    },
+    {
+      "navn": "fokus-tunnel-3m",
+      "beskrivelse": "Pre-shot: studér break, ta beslutning, fokuser på 1 spot 60cm foran ballen. Etter fokus, ikke se på hullet under stroke. Putt 15 baller fra 3m med dette tunnel-fokuset. Bra mot distraction.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "pre-shot-routine"
+      ],
+      "coachNotater": "Fokus-tunnel. Bra for spillere som lar seg distrahere av medspillere, vær, publikum. Trener på range, overfør til turnering."
+    },
+    {
+      "navn": "wet-green-pace-protokoll",
+      "beskrivelse": "På våt green: putt 5 baller fra 5m, 5 fra 10m, 5 fra 15m. Observer at våt green stopper opp i pace. Sammenligning: hvor mye HARDERE må du putte? Logg pace-justering. Bra forberedelse til regnvær-runder.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wet",
+        "distance-control",
+        "feel"
+      ],
+      "coachNotater": "Norge har mye regnvær. Få Markus til å trene under faktiske våte forhold når mulig. Logger kalibrering: '10% hardere på våt'."
+    },
+    {
+      "navn": "fast-green-die-speed-5m",
+      "beskrivelse": "På fast green (stimp 11+): putt 5m med 'die-speed' — ballen skal akkurat tippe over kanten med lite fart. 15 putter. Tester ren feel på fast green. Mål: alle skal stoppe innen 30cm forbi (eller hol).",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 50,
+        "G": 30,
+        "J": 15,
+        "L": 6
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "fast",
+        "distance-control",
+        "feel",
+        "elite",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Elite-pace-trening. På turneringsgreener må du dø ballen i hullet — full-rør straffes hardt med 3-4m comeback."
+    },
+    {
+      "navn": "stimp-justering-kalibrering",
+      "beskrivelse": "Putt 5 baller fra 5m på 3 ulike greener med ulik stimp (rask, medium, sakte). Logg backstroke-lengde nødvendig per green. Bygger kalibrerings-feel som lar deg justere på første runde.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "stimpmeter"
+      ],
+      "varighetMin": 30,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 45,
+        "J": 25,
+        "L": 12
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "fast",
+        "distance-control",
+        "feel",
+        "elite"
+      ],
+      "coachNotater": "Lærer kalibrering. Når spilleren kommer på ny bane, kan han bruke 10 putter på øvingsgreen til å kalibrere. Verdifullt før hver turnering."
+    },
+    {
+      "navn": "morgendug-saktere-protokoll",
+      "beskrivelse": "Putt på greenen tidlig morgen med dug. Putt 10 fra 5m. Observér: pace er saktere på dug, men ballen ruller renere. Forklar dette til spilleren. Bygg feel for første runde-pace-tilpasning.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 2,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wet",
+        "distance-control",
+        "feel"
+      ],
+      "coachNotater": "Norge-spesifikt. Bygger respekt for morgenduggen — viktig på tidlige starttider i nasjonale turneringer."
+    },
+    {
+      "navn": "kald-green-novemberprotokoll",
+      "beskrivelse": "På kalde greens (under 8°C): putt 10 baller fra 5m. Pace tregere enn varm. Lær spilleren å akklimatisere første økt på senhøsten. Ofte avgjørende på vintermøter eller tidlig sesong.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wet",
+        "distance-control",
+        "feel"
+      ],
+      "coachNotater": "Norsk klima-spesifikt. Vinterspillere må fortsatt trene pace. Norge har short sesong — bruk hver dag."
+    },
+    {
+      "navn": "wind-fokus-pre-shot",
+      "beskrivelse": "På vindfulle dager: spread feet litt bredere, lavere postur. Putt 10 fra 5m. Lær spilleren å justere setup mot vind. Sterk vind kan flytte ballen 5-10cm på lange putter — kommiter til linja.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 2,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wet",
+        "feel",
+        "pre-shot-routine"
+      ],
+      "coachNotater": "Bra på Bossum (vindutsatt). Mange juniorer føler at vind ikke påvirker putting — feil. Vis dem med eksempler."
+    },
+    {
+      "navn": "tre-baller-three-distance-mix",
+      "beskrivelse": "Putt 3 baller per runde fra ulike distanser kort etter hverandre: 2m, så 8m, så 4m. Repeter 5 runder = 15 putter. Lærer å skifte feel raskt mellom distanser. Realistisk for runden.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 5,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "distance-control",
+        "feel",
+        "MTQ"
+      ],
+      "coachNotater": "Realistisk. Bryter med 'static drilling' — du må kalibrere feel hver gang. Tour-pros gjør dette dagsperionge."
+    },
+    {
+      "navn": "feel-touch-30-50cm-progressive",
+      "beskrivelse": "Putt 1 ball til 30cm. Putt neste til 50cm. Putt neste til 70cm. Mål: hver ball stopper 20cm lengre enn forrige. 15 baller med stigende pace. Lærer fin pace-gradering.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 60,
+        "D": 50,
+        "G": 35,
+        "J": 22,
+        "L": 12
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "distance-control",
+        "feel",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Ekstrem fin-tuning. Lærer at små stroke-justeringer gir store distanse-forskjeller. Krever konsentrasjon og repetisjon."
+    },
+    {
+      "navn": "kontrast-3m-vs-12m-rush",
+      "beskrivelse": "Putt 1 ball fra 3m, deretter umiddelbart 1 fra 12m, deretter 3m igjen, deretter 12m. 10 putter alt-i-alt. Lærer rask feel-skifting uten å miste touch. Realistisk for spillet.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "distance-control",
+        "feel",
+        "MTQ"
+      ],
+      "coachNotater": "Bygger evnen til feel-switch. Spilleren skal ikke 'overtenke' — bare føle. Bra mot statisk treningsmønster."
+    },
+    {
+      "navn": "putt-uten-tenking-rapid-fire",
+      "beskrivelse": "Pace-mode: putt 20 baller fra 3m så raskt som mulig. Maks 5 sek pre-shot per putt. Putt på instinkt, ikke analyse. Sammenlign med vanlig-fart-runde. Avdekker om overtenking skader resultat.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller",
+        "stoppeklokke"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 55,
+        "G": 40,
+        "J": 25,
+        "L": 12
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "feel",
+        "stroke-mekanikk",
+        "MTQ"
+      ],
+      "coachNotater": "Faxon-stil. Tester om spilleren er over-mekanisk. Hvis han putter bedre RASKT, må vi løse opp pre-shot. Diagnostisk."
+    },
+    {
+      "navn": "warm-up-3-circle-1-2-3m",
+      "beskrivelse": "Klassisk warm-up. 3 baller fra 1m, 3 fra 2m, 3 fra 3m. Mål: 9/9 holes. Bra 5-minutters warm-up før hver runde eller økt. Bygger trygghet før første hull-putt.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "9-baller"
+      ],
+      "varighetMin": 8,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 85,
+        "G": 75,
+        "J": 60,
+        "L": 40
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "pre-shot-routine",
+        "rutine",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Daily warm-up. Lær Markus å bruke denne før HVER runde. Bygger trygghet og kalibrerer pace til dagens green-fart."
+    },
+    {
+      "navn": "warm-up-lag-5-10-15m",
+      "beskrivelse": "Lag-putt warm-up. 2 baller hver fra 5m, 10m, 15m. Mål: alle stopper innen 1m fra hullet. Krever ikke holing — bare pace-kalibrering før runde. 6 putter totalt.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "6-baller"
+      ],
+      "varighetMin": 5,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 45,
+        "L": 28
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "rutine"
+      ],
+      "coachNotater": "Pre-runde-rutine. Lar spilleren kalibrere distance-feel mot dagens green-tilstand. Aldri stå opp på første tee uten denne."
+    },
+    {
+      "navn": "matte-hjemme-trening-2m",
+      "beskrivelse": "Putting-matte hjemme. Putt 50 baller fra matte-distanse (typisk 2-2.5m). Mål: 45+/50 hol. Bra som daglig vedlikehold mellom range-økter. 10 minutter, ingen oppvarmingseffekt nødvendig.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "ball",
+        "putting-matte"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 50,
+      "csTargetByKategori": {
+        "A": 95,
+        "D": 90,
+        "G": 80,
+        "J": 65,
+        "L": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "rutine"
+      ],
+      "coachNotater": "Daglig hjemme-rutine. Mange juniorer puttes ikke ofte nok — denne fikser det. Bygger underbevisst feel."
+    },
+    {
+      "navn": "matte-coin-target-test",
+      "beskrivelse": "Plasser en mynt 2m foran putter på matten. Putt 30 baller — ballen MÅ treffe mynten. Mål: 22+/30 treff. Bygger ren start-line presisjon hjemme uten green.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "30-baller",
+        "mynt",
+        "matte"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 30,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 38,
+        "L": 22
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "start-line",
+        "stroke-mekanikk"
+      ],
+      "coachNotater": "Hjemme-drill med presisjon. Bra erstatning for greenstid om vinteren. Markus kunne hatt 50/50 etter 2 år."
+    },
+    {
+      "navn": "putter-fitting-roll-out-test",
+      "beskrivelse": "Test putter-balanse: balansér putter på finger 3cm fra shaft. Hodet skal peke opp (face-balanced) eller mot siden (toe-hang). Putt 10 baller fra 3m. Sjekk konsistens. Hjelper deg matche putter til stroke-type.",
+      "disciplin": "EQ",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 1,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 100,
+        "G": 100,
+        "J": 100,
+        "L": 100
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "equipment",
+        "stroke-mekanikk"
+      ],
+      "coachNotater": "Diagnostisk equipment-sjekk. Hvis spilleren har face-rotation stroke + face-balanced putter = mismatch. Fitting kan løse mye."
+    },
+    {
+      "navn": "video-quintic-putting-analyse",
+      "beskrivelse": "Bruk høyhastighets-kamera eller Quintic Putting (om tilgjengelig). Putt 10 baller fra 3m, registrér data: face-vinkel ved impact, path, attack angle, ball roll. Sjekk konsistens. Logg data per måned.",
+      "disciplin": "EQ",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 5,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller",
+        "kamera-eller-quintic"
+      ],
+      "varighetMin": 30,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 100,
+        "G": 100,
+        "J": 100,
+        "L": 100
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "equipment",
+        "diagnostikk",
+        "stroke-mekanikk",
+        "elite"
+      ],
+      "coachNotater": "Datadrevet diagnose. Bruk Quintic på AK-studio for elite-spillere. Sammenlign data over tid — mål: mindre standard-avvik."
+    },
+    {
+      "navn": "smash-putt-aggressive-pace-2m",
+      "beskrivelse": "Motsetning til die-speed. Putt 2m med firm pace — ballen skal hoppe 1m forbi hullet hvis bom. 15 baller. Lærer 'no-break-just-firm' approach. Bra mot timide juniorer.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 70,
+        "J": 55,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "stroke-mekanikk"
+      ],
+      "coachNotater": "For timide puttere som dytter ballen. Lær dem å banke korte putter — under 1.5m skal de aldri lese break, bare smash."
+    },
+    {
+      "navn": "linje-knockout-3-baller",
+      "beskrivelse": "Trekk en kritt-linje (eller bruk putt-linjer) fra start til hull, 3m. Putt 3 baller. Mål: alle 3 må STARTE PÅ LINJE (uavhengig av hol/miss). Reset hvis en bommer start-line. 5 sett, 15 baller total.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "kritt"
+      ],
+      "varighetMin": 25,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 5,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 80,
+        "G": 65,
+        "J": 45,
+        "L": 28
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "start-line"
+      ],
+      "coachNotater": "Renser face-control. Krever fokus over flere putter. Visuell linje gjør instant feedback. Bygges inn i ukentlig putting-rotasjon."
+    },
+    {
+      "navn": "putt-tracker-snur-side-3m",
+      "beskrivelse": "Sett ball på en linje med en tracker (linje på ball med pil). Putt 15 baller fra 3m. Sjekk om pilen forblir konsistent i roll-mønster, eller wobbler. Indikerer renhet på face-treff.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "ball-merket-med-linje"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "diagnostikk",
+        "start-line"
+      ],
+      "coachNotater": "Visuell feedback. Ren roll = ren impact. Hvis pilen wobbler, sjekk impact-attack-vinkel."
+    },
+    {
+      "navn": "1-puttene-prep-90cm-comeback",
+      "beskrivelse": "Sett ball 90cm fra hullet. Putt 25 baller — sett alle inn. Mål: 24+/25. Bygger 'can't-miss-this' følelse for kortest comeback-distanse. Krever fokus.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "25-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 25,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 95,
+        "G": 90,
+        "J": 80,
+        "L": 60
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "presisjon",
+        "MTQ"
+      ],
+      "coachNotater": "Repetitive grunnsteg. Bygger automatisk trygghet på 'tap-in'-distanse. Anbefal som daglig vedlikehold."
+    },
+    {
+      "navn": "linje-putting-til-hodelys",
+      "beskrivelse": "Tegn lang linje med kritt eller bruk putting-linje-tape, 3m. Plasser hullet i enden. Putt 15 baller. Ballen MÅ rulle på linja hele veien til hullet — selv om linja er rett (ingen break). Tester rein stroke.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "kritt-eller-tape"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "start-line",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Krever bombesikker face-control. Spillere som mestrer dette har en av Tour-pro nivå start-line. Tar tid å mestre."
+    },
+    {
+      "navn": "5-stages-mac-ogrady-bevisst",
+      "beskrivelse": "Mac O'Grady-protokoll. Putt med 5 bevisste stadier per putt: Read, Look, See, Feel, Stroke. 1.5 sekunder per stage. Putt 10 fra 4m. Bygger neurologisk timing — hjerne-til-kropp-protokollen.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:putting-1-300ft-metodikk",
+      "tags": [
+        "morad",
+        "pre-shot-routine",
+        "feel",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Pure MORAD. Bygger struktur i pre-shot. Få Markus til å si stadiene HØYT — det forsterker neurologisk integrasjon."
+    },
+    {
+      "navn": "tre-balls-best-result-3m",
+      "beskrivelse": "Putt 3 baller fra 3m. Velg den BESTE (tøffeste, peneste, eller mest centerline). Logg hvilken. Repeter 5 sett = 15 putter. Lærer å lese resultat objektivt, ikke kun hol/bom.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 5,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 85,
+        "G": 75,
+        "J": 60,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "feel",
+        "diagnostikk"
+      ],
+      "coachNotater": "Lærer kvalitativ vurdering. Spilleren må kunne beskrive HVORFOR en putt var bedre. Bygger metakognisjon."
+    },
+    {
+      "navn": "rebound-test-firm-putt-5m",
+      "beskrivelse": "Putt 5m putt med firm pace direkte mot bakveggen av hullet. 15 baller. Sjekk rebound-mønster — gode putter har rein rebound; off-center treff har sidewards-rebound. Lærer feedback.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "presisjon",
+        "stroke-mekanikk"
+      ],
+      "coachNotater": "Diagnostisk via rebound. Hvis ballen kommer rett tilbake, godt centerline-treff. Hvis sidewards, sjekk impact-mekanikk."
+    },
+    {
+      "navn": "wedge-rolling-uphill-rytme",
+      "beskrivelse": "På fringe-til-green 5m: putt med rytme av en wedge-svinging (lengre, langsommere stroke). 10 baller uphill. Tester at tempo overføres fra full sving til putting. Bra koblings-drill.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "feel",
+        "tempo",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Lærer tempo-overføring. Spillere som har god full-sving-rytme men dårlig putting-rytme mangler ofte denne broen."
+    },
+    {
+      "navn": "junior-fun-target-game-soccer",
+      "beskrivelse": "Junior-friendly. Sett 3 cones på greenen som mål. Spilleren får poeng: 1 poeng innen 1m fra cone, 3 poeng treff cone. 15 putter fra 8m. Gjør lag-putting morsom for juniorer.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "H",
+      "minHcp": 10,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "cones"
+      ],
+      "varighetMin": 20,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 100,
+        "G": 90,
+        "J": 65,
+        "L": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "feel",
+        "junior"
+      ],
+      "coachNotater": "For junior-grupper i Junior Academy. Lærer pace-feel uten å presse 'hol-eller-bom'. Bra start for nybegynnere."
+    },
+    {
+      "navn": "junior-clock-3-foot-poeng",
+      "beskrivelse": "Junior-variant av 3-foot clock. 12 baller rundt klokke. 1 poeng per hol. Mål: 6+/12 for nye spillere, 8+/12 for kategori G-J. Logg poeng for å vise progresjon over uker.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "G",
+      "minHcp": 10,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "12-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 100,
+        "G": 85,
+        "J": 65,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "short-range",
+        "1-2m",
+        "junior",
+        "presisjon"
+      ],
+      "coachNotater": "Junior progresjons-test. Bruk i Junior Academy. Logg ukentlig i PlayerHQ for foreldre å se."
+    },
+    {
+      "navn": "team-relay-putting-stafett",
+      "beskrivelse": "Lag av 4 juniorer. Hver putter 1 ball fra 3m. Lag som først holer 5 vinner. Skap gruppedynamikk og pressure. Bra for å bygge sosial trening.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "G",
+      "minHcp": 5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "baller",
+        "4-spillere"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 100,
+        "G": 80,
+        "J": 55,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "junior"
+      ],
+      "coachNotater": "Gruppe-event. Junior-akademi-favoritt. Bygger sunn konkurranse-følelse uten å skremme nye spillere."
+    },
+    {
+      "navn": "blink-test-hol-eyes-closed",
+      "beskrivelse": "Putt 5m. Sett opp normalt. Akkurat før stroke — lukk øynene i 1 sekund, så åpne og putt. 10 putter. Lærer at hjernen 'husker' bildet av puttingen. Bra mot overtenking.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "feel",
+        "pre-shot-routine",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Brad Faxon-tradisjon. Lærer mental commitment til lest linje før øynene lukker. Bra mot tilt under run."
+    },
+    {
+      "navn": "putt-bak-baker-blind-2m",
+      "beskrivelse": "Sett deg over 2m putt. Lukk øynene, ta din vanlige stroke. Forsøk å beholde linje og pace med øynene lukket. 15 putter. Bygger ren kroppslig feel og bekjemper visuell over-analyse.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "feel",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Faxon-classic. Lærer ekstern resultatløs fokus. Hvis Markus skores bedre med øynene lukket, må vi løse opp ovsernen tenkning."
+    },
+    {
+      "navn": "stillere-strokes-tellebar-rotering",
+      "beskrivelse": "Tell putter-hodets faktiske avstand: 'tilbake-3-tommer-frem-3-tommer' for 1m putt. Bygger målbar stroke. Putt 15 baller fra 1m med tellingen. Eliminerer 'feilfølelse'.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 22
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "feel",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Stroke-kalibrering. Lærer presis stroke-distanse til 1m, 2m, 3m. Bra mot variabel pace."
+    },
+    {
+      "navn": "alternating-hand-warm-up",
+      "beskrivelse": "Warm-up: putt 5 baller med høyre hånd kun, så 5 med venstre kun, så 5 med begge. 15 putter fra 2m. Aktiverer begge hender før vanlig stroke. Bra anti-yips opvarmning.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "stroke-mekanikk",
+        "feel",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Daglig warm-up alternativ. Aktiverer begge hender. Anti-dominans-drill. Bra mot mekanisk stroke-trening."
+    },
+    {
+      "navn": "100-putts-progressive-stoppeklokke",
+      "beskrivelse": "Putt 100 baller fra 3m. Stoppeklokke kjører. Mål: 100 putter under 25 minutter, minst 65 holes. Tester volume + presisjon under tidspress. Bra som månedlig benchmark.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "100-baller",
+        "stoppeklokke"
+      ],
+      "varighetMin": 30,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 100,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "MTQ",
+        "presisjon"
+      ],
+      "coachNotater": "Volume-test. Lærer å holde fokus under volume + tid. Sjelden økt, men bygger kapasitet."
+    },
+    {
+      "navn": "match-play-1-1-target-15-poeng",
+      "beskrivelse": "Match-play: spiller mot motspiller. Hvert hull = 1 putt fra valgt distanse. Vinneren av hull velger neste distanse. Først til 15 poeng vinner. Bygger valg-press OG putting-press.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "2-spillere",
+        "baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 60,
+        "D": 50,
+        "G": 35,
+        "J": 22,
+        "L": 12
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "feel"
+      ],
+      "coachNotater": "Strategisk match-play element. Lærer å velge favorit-distanse mens motspiller leter etter svakheter. Pre-turnering."
+    },
+    {
+      "navn": "horseshoe-3-hole-circuit",
+      "beskrivelse": "Velg 3 hull på øvingsgreenen som ligger i hesteskoform. Putt fra 5m til hull 1, deretter fra der ballen lander til hull 2, deretter til hull 3. Logg total putter for circuit. Realistisk runde-simulering.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "ball"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 1,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 70,
+        "G": 55,
+        "J": 35,
+        "L": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "feel",
+        "MTQ"
+      ],
+      "coachNotater": "Pre-runde-test. 3 hull simulert — lærer raske switch mellom putter. Bra for å fortelle spilleren hvor han står før første hull."
+    },
+    {
+      "navn": "elite-7m-make-test",
+      "beskrivelse": "Putt 30 baller fra 7m flat. Tour-snitt: 5/30 (16%). Mål: 4+ for hcp 0-5, 6+ for elite, 8+ for verdensklasse. Måle absolut make-percentage på 7m-distansen, som er kritisk for å score under par.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "30-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 30,
+      "csTargetByKategori": {
+        "A": 22,
+        "D": 15,
+        "G": 10,
+        "J": 5,
+        "L": 2
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "presisjon",
+        "elite"
+      ],
+      "coachNotater": "Elite-baseline. 7m er den 'magic'-distansen — gjør den til 25%+ og du blir Tour-pro nivå. Logg månedlig."
+    },
+    {
+      "navn": "linje-tape-perfekt-roll-2m",
+      "beskrivelse": "Bruk Pelz Putting Tutor eller hjemmelagd alignment-port. Putt 2m, ball MÅ rulle over 2 markører på vei mot hullet. 20 putter — minst 17 må klare det. Tester ren impact og roll.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "20-baller",
+        "putting-tutor-eller-tape"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 22
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "start-line",
+        "short-range",
+        "1-2m"
+      ],
+      "coachNotater": "Pelz-baserte feedback. Avslører små face-feil instant. Bra for studiebruk i AK-studio."
+    },
+    {
+      "navn": "left-side-bias-test",
+      "beskrivelse": "Diagnostikk: putt 10 baller fra 3m rett putt. Notér: gikk de venstre eller høyre forbi? Hvis konsekvent én side, har spilleren bias. Hvis venstre: åpent face. Hvis høyre: lukket. Sjekk hver 2 uke.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 100,
+        "G": 100,
+        "J": 100,
+        "L": 100
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "diagnostikk",
+        "stroke-mekanikk",
+        "start-line"
+      ],
+      "coachNotater": "Ren diagnose. 10 baller forteller mer enn 100. Bygg coaching-protokoll på funn fra denne."
+    },
+    {
+      "navn": "shoulder-and-arms-triangle",
+      "beskrivelse": "Sett opp i putting-stance. Hold trekanten skuldre-armer-putter konstant. Putt 3m, 15 baller. Etter hver: sjekk om trekanten ble brutt (typisk wrist-flex). Bygger struktur i pure pendel-stroke.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 40,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "stroke-mekanikk",
+        "tempo"
+      ],
+      "coachNotater": "Klassisk trekant-prinsipp. Bra grunnstein for nye juniorer. Hold den enkel — 'skuldrene gynger, armene blir med'."
+    },
+    {
+      "navn": "stille-fysisk-2-min-meditasjon",
+      "beskrivelse": "Før putting-økt: 2 minutter rolig pust ved putting-greenen. Føtter i bakken, kjenn helningen. Pust dypt, slipp tankene. Putt 10 fra 3m direkte etter. Lærer aktiv mental forberedelse.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 12,
+      "intensitet": 1,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 45,
+        "L": 28
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "feel",
+        "pre-shot-routine",
+        "MTQ"
+      ],
+      "coachNotater": "Mindfulness før putting. Bra for spillere som kommer 'opprørt' til økten. Lærer å nullstille før putt."
+    },
+    {
+      "navn": "konkurranse-skins-game-putting",
+      "beskrivelse": "Skins-game format: 2-4 spillere. Hver runde: én spesifikk putt-distanse + break. Vinneren av hullet får 1 skin. Bygger sosial trening og press. 9 'hull' total. Bytt distanse hver gang.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "baller",
+        "2-4-spillere"
+      ],
+      "varighetMin": 30,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "under-stress",
+        "MTQ",
+        "feel"
+      ],
+      "coachNotater": "Grupperist format. Bygger sunn rivalisering. Bra som siste økt før Klubbmesterskap."
+    },
+    {
+      "navn": "fast-trail-marks-distance-control",
+      "beskrivelse": "Plasser 4 tees i en linje fra ballen: 5m, 10m, 15m, 20m. Putt baller mot ulike tees, tilfeldig rekkefølge. 12 putter. Mål: stoppe nær valgt tee (±1m). Pace-kalibrering med klare visuelle mål.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "12-baller",
+        "4-tees"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 32,
+        "L": 18
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "distance-control",
+        "feel"
+      ],
+      "coachNotater": "Spesifikt mål, ikke generisk hol. Lærer pace-tuning på spesifikke distanser uten 'sikt mot hull'-feilen."
+    },
+    {
+      "navn": "imaginary-hole-pace-test",
+      "beskrivelse": "Plasser tee 5m fra deg. Putt baller — ballen MÅ stoppe AKKURAT på tee'n. 15 putter. Lærer pure pace-target uten line-confusion fra hull. Mål: 8+ baller innen 50cm fra tee.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE",
+        "STUDIO",
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "15-baller",
+        "tee"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "distance-control",
+        "feel",
+        "medium-range",
+        "2-5m"
+      ],
+      "coachNotater": "Pure pace, ingen hol-distraksjon. Bra for spillere som er fiksert på 'å hole' i stedet for å lære pure pace."
+    },
+    {
+      "navn": "junior-leng-line-up-3-meter",
+      "beskrivelse": "Plasser 10 baller på linje 3m fra hullet. Spilleren skal putte alle inn etter hverandre. Hver bom = en push-up. Mål: 8+/10. Junior-friendly grunn-drill med moderat konsekvens.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "G",
+      "minHcp": 5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 100,
+        "D": 100,
+        "G": 85,
+        "J": 60,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "junior",
+        "under-stress"
+      ],
+      "coachNotater": "For Junior Academy. Push-ups som konsekvens er morsom motivator. Bygger pressure-tolerance for nye spillere."
+    },
+    {
+      "navn": "9-baller-3-distances-progression",
+      "beskrivelse": "3 baller fra 1.5m, 3 fra 3m, 3 fra 5m — 9 totalt. Mål: 8/9 holes. Bygg base-test som dekker små, medium og lange putter. Bra som ukentlig benchmark.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "putter",
+        "9-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 60,
+        "G": 45,
+        "J": 28,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:phil-kenyon-kb",
+      "tags": [
+        "medium-range",
+        "2-5m",
+        "presisjon",
+        "MTQ"
+      ],
+      "coachNotater": "Quick benchmark. Hver økt: kjør denne først for å se dagsform. Bra mot konkrete tall i PlayerHQ."
+    },
+    {
+      "navn": "long-iron-tempo-overforing",
+      "beskrivelse": "Putt 10m. Tempo skal matche en lang jern-svinging (longer, sweeping). 10 baller fra 10m. Lærer broforbindelse mellom putting-tempo og fullswing-tempo. Krever kontroll uten fart-tap.",
+      "disciplin": "SLAG",
+      "skillArea": "PUTTING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 65,
+        "G": 50,
+        "J": 30,
+        "L": 15
+      },
+      "videoUrl": null,
+      "kilde": "notion:brad-faxon-feel-putting",
+      "tags": [
+        "lag-putt",
+        "5m+",
+        "tempo",
+        "feel"
+      ],
+      "coachNotater": "Konseptuell broforbindelse. Lærer at puttingen ikke står isolert fra resten av spillet. Like rytme = like resultater."
+    }
+  ]
+}

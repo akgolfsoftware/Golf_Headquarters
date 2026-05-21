@@ -1,0 +1,5271 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-05-22",
+  "fokusOmrade": "APPROACH",
+  "totalDrills": 125,
+  "sources": [
+    "ak-second-brain:morad-drill-bibliotek",
+    "ak-second-brain:morad-fault-drill-mapping",
+    "ak-second-brain:morad-knowledge-base-v1",
+    "ak-second-brain:morad-konseptkatalog",
+    "ak-second-brain:morad-common-faults",
+    "ak-second-brain:ak-golf-treningsfilosofi",
+    "ak-second-brain:ak-golf-testprotokoller",
+    "ak-second-brain:ak-golf-taksonomi",
+    "ak-second-brain:treningsperioder-og-faser",
+    "ak-second-brain:decade-golf",
+    "ak-second-brain:8-sekundersregelen",
+    "ak-second-brain:klokke-system-wedge-9-10-11",
+    "ak-second-brain:short-game-wet-conditions",
+    "ak-second-brain:morad-kb-drills-2026-05-18",
+    "notion:ak-coaching-iron-play",
+    "notion:mac-ogrady-disc-4-6-7"
+  ],
+  "drills": [
+    {
+      "navn": "kort-jern-yardage-stige-pw",
+      "beskrivelse": "Slå PW på 5 distanser: 80, 90, 100, 110, 120m. 3 baller på hver distanse. Bruk TrackMan eller målbar landing. Mål: 4 av 5 i target-sone +/- 4m. Loggfør carry-snitt per distanse.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman",
+        "15-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 88,
+        "D": 78,
+        "G": 65,
+        "J": 50,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "distance-control",
+        "yardage-ladder"
+      ],
+      "coachNotater": "PW er ankerklubben for tilnærming. Når spilleren har full kontroll på 80-120m PW kan vi bygge oppover. Hvis stor spredning sjekk grep-trykk og tempo."
+    },
+    {
+      "navn": "kort-jern-9-jern-vinduer",
+      "beskrivelse": "Plasser to flagg på 110 og 130m. Slå 5 baller med 9-jern til 110m, deretter 5 til 130m (full sving + grep ned). Skift annenhver. Mål: 7 av 10 innenfor 5m radius.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 20,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "9-jern",
+        "to-flagg"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-yardage-stige-pw"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 72,
+        "G": 58,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "distance-control",
+        "two-distance"
+      ],
+      "coachNotater": "Tvinger spilleren til å skifte intensjon raskt. Mange spillere har én svingenergi — denne drillen avslører om de faktisk kan endre carry med tempo og grep-ned."
+    },
+    {
+      "navn": "kort-jern-8-jern-kompresjon",
+      "beskrivelse": "Slå 8-jern fra ren matte/tight lie med fokus på ball-først kontakt. Plasser tee 5cm bak ballen — den skal IKKE treffes. 10 baller. Mål: 8 av 10 med ball-først kontakt og divot foran ball.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "8-jern",
+        "tee",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "D": 75,
+        "G": 60,
+        "I": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-knowledge-base-v1 DISC 4",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "kompresjon",
+        "ball-first"
+      ],
+      "coachNotater": "Lower-point feedback. Hvis tee treffes peker det på cast eller scoop. Koble til morad-lag-retention-drill og right-arm-clubshaft-110 hvis problemet vedvarer."
+    },
+    {
+      "navn": "kort-jern-trajectory-3-vinduer",
+      "beskrivelse": "Med 9-jern: slå 3 baller lav, 3 baller normal, 3 baller høy til samme flagg på 120m. Lav = ball bakover i stance, hands forward. Høy = ball fremover, lengre finish. Loggfør carry og spinn.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "9-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 82,
+        "D": 68,
+        "G": 50,
+        "H": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "trajectory",
+        "high-ball",
+        "low-ball"
+      ],
+      "coachNotater": "Tre-vindus-tenking er DECADE-fundament. Spilleren skal kunne velge bevisst — ikke bare slå normal. Lav ball mot vind, høy ball til løs green."
+    },
+    {
+      "navn": "knockdown-pw-vind",
+      "beskrivelse": "Slå PW med knockdown-teknikk: ball midt i stance, hands forward, 3/4 finish. Mål 90m. 10 baller. Mål: gjennomsnitt-carry maks 90m (vs full PW på 105m) og høyde under 15m.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 72,
+        "G": 55,
+        "I": 38
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-kb-drills-2026-05-18 knock-down-shot",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "knockdown",
+        "into-wind",
+        "trajectory"
+      ],
+      "coachNotater": "Seve Knock-Down-prinsipp. Når elite-spillere mister kontroll i vind handler det nesten alltid om at de ikke kan slå knockdown trygt. Drill ukentlig i pre-turneringsfase."
+    },
+    {
+      "navn": "kort-jern-stinger-9-jern",
+      "beskrivelse": "Slå 9-jern med ekstrem lav trajectory til 100m mål. Ball bakover, grep ned 2cm, fasthold på finish. 10 baller. Mål: maks 8m apex-høyde og 7 av 10 innen 10m fra flagg.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "9-jern",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "knockdown-pw-vind"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 65,
+        "G": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "low-ball",
+        "trajectory",
+        "into-wind"
+      ],
+      "coachNotater": "For spillere på elite-nivå som spiller linksgolf eller turneringer i vind. Krever god kompresjon — ikke prøv dette før kort-jern-8-jern-kompresjon er løst."
+    },
+    {
+      "navn": "kort-jern-hoyball-pw",
+      "beskrivelse": "Slå PW med maksimal høyde til 95m. Ball fremover i stance, full finish høyt over skulder, åpen klubbflate +2°. Mål: apex over 25m og myk landing. 10 baller, 6 av 10 innen 8m.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 65,
+        "G": 48,
+        "H": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "high-ball",
+        "trajectory"
+      ],
+      "coachNotater": "For å holde green på løs sommer-pin eller når man må carry bunker. Sjekk at spin øker (>9000 rpm) og at carry ikke kollapser."
+    },
+    {
+      "navn": "kort-jern-pw-draw",
+      "beskrivelse": "Slå PW med kontrollert draw til 100m. Aim 5m høyre for flagg, lukket klubbflate -2°, swing-bane fra inni-ut. 10 baller. Mål: 7 av 10 med 3-6m høyre-til-venstre kurve.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman",
+        "aim-stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 62,
+        "G": 45,
+        "H": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "shot-shape",
+        "draw"
+      ],
+      "coachNotater": "Selv kortjern skal kunne formes. Pin på venstre side av green = draw. Sjekk TrackMan club-path mot face — diff bør være 2-4° lukket face vs path."
+    },
+    {
+      "navn": "kort-jern-pw-fade",
+      "beskrivelse": "Slå PW med kontrollert fade til 100m. Aim 5m venstre for flagg, åpen klubbflate +2°, swing-bane fra ut-til-inn. 10 baller. Mål: 7 av 10 med 3-6m venstre-til-høyre kurve og myk landing.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman",
+        "aim-stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 65,
+        "G": 48,
+        "H": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "shot-shape",
+        "fade"
+      ],
+      "coachNotater": "Fade lander mykere — perfekt mot fast green. Mange høyrehendte sliter med fade-fasthold; sjekk at grep ikke vrir om i nedsving."
+    },
+    {
+      "navn": "kort-jern-9-jern-mot-vind",
+      "beskrivelse": "Simuler 15 km/t motvind: slå 9-jern til 110m flagg, men spill det som 130m. Bruk klubb opp + knockdown-teknikk. 10 baller. Mål: 6 av 10 innen 8m, og maks 18m apex.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "9-jern",
+        "vind-mate",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "knockdown-pw-vind"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 62,
+        "G": 45,
+        "I": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "into-wind",
+        "knockdown"
+      ],
+      "coachNotater": "DECADE-prinsipp: When in doubt, club up and swing easy. Klubb opp gir lavere spin og bedre vindpenetrasjon. Aldri swing harder mot vind."
+    },
+    {
+      "navn": "kort-jern-9-jern-medvind",
+      "beskrivelse": "Simuler 15 km/t medvind: slå 9-jern til 130m flagg, men spill det som 115m carry. Klubb ned, normal sving. Mål: 7 av 10 lander før flagg og ruller opp.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "9-jern",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 68,
+        "G": 52,
+        "I": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "downwind",
+        "trajectory"
+      ],
+      "coachNotater": "Medvind reduserer spin dramatisk — ball går lengre og lander hardere. Klubb ned eller spill ekstra høyt for myk landing."
+    },
+    {
+      "navn": "kort-jern-crosswind-aim",
+      "beskrivelse": "Simuler 10 km/t sidevind fra venstre: slå PW til 100m flagg, aim 5m mot vinden. 10 baller. Mål: 7 av 10 lander innen 8m fra flagg. Loggfør hvor mye vinden faktisk flyttet ballen.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman",
+        "vind-flag"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 62,
+        "G": 45,
+        "H": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "crosswind"
+      ],
+      "coachNotater": "Sidevind er det mest undervurderte. Lær spilleren å aim mot vinden, ikke kompensere med shot shape — det er en oppskrift på dobbeltfeil."
+    },
+    {
+      "navn": "kort-jern-fra-half-rough",
+      "beskrivelse": "Slå PW fra 4-5cm halv-ruff til 100m flagg. Sjekk lie først — kan klubben skli? Ball litt bakover, fast grep, 3/4 finish. 8 baller. Mål: 5 av 8 innen 10m og forventet flier identifisert.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 60,
+        "G": 42,
+        "I": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "from-rough",
+        "flier"
+      ],
+      "coachNotater": "Ruff = mindre spin = flier. Forvent at ballen flyr lengre. Klubb ned eller plan for at den ruller. Sjekk om gress kommer mellom klubbflate og ball."
+    },
+    {
+      "navn": "kort-jern-fra-bare-lie",
+      "beskrivelse": "Slå 9-jern fra bare lie (hard, tørr grunn, lite gress) til 115m. Ball bakover, hands forward, sweepende sving uten dyp divot. 8 baller. Mål: 6 av 8 med ren kontakt uten thin.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "9-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 76,
+        "D": 60,
+        "G": 42,
+        "H": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "from-bare-lie"
+      ],
+      "coachNotater": "Vanlig på fairway med slitt gress eller skotsk links. Hvis spilleren thinner ofte fra bare lie er det fordi de prøver å løfte ballen — fokus på descending blow."
+    },
+    {
+      "navn": "kort-jern-uphill-lie",
+      "beskrivelse": "Slå PW fra uphill lie (5-10° helning oppover) til 95m flagg. Skuldre parallelle med bakken, ball litt fremover, klubb opp én. 8 baller. Mål: 6 av 8 innen 12m, og høyere apex enn flat lie.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 62,
+        "G": 45,
+        "I": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "uphill-lie"
+      ],
+      "coachNotater": "Uphill = ekstra loft = kortere carry. Klubb opp én. Hvis spilleren sliter med å overføre vekt, drill 5-3-2 vektfordeling først."
+    },
+    {
+      "navn": "kort-jern-downhill-lie",
+      "beskrivelse": "Slå PW fra downhill lie (5-10° helning nedover) til 105m flagg. Skuldre parallelle med bakken, ball bakover, klubb ned én. 8 baller. Mål: 6 av 8 innen 12m, lavere apex.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 76,
+        "D": 60,
+        "G": 42,
+        "I": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "downhill-lie"
+      ],
+      "coachNotater": "Downhill = mindre effektiv loft = lengre carry og mer rull. Klubb ned. Største feilen: skuldre flatt — ballen blir thinnet."
+    },
+    {
+      "navn": "kort-jern-sidehill-ball-over-foot",
+      "beskrivelse": "Slå 9-jern fra sidehill-lie der ballen er over føttene (5-8° helning). Klubb ned 2cm, mer oppreist holdning, forvent draw. 8 baller mot 110m flagg, aim 8m høyre.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "9-jern"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "G": 40,
+        "I": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "sidehill"
+      ],
+      "coachNotater": "Ball over føttene = flatere sving = mer hook-tendens. Aim alltid mot motsatt side av forventet kurve. Vanlig på kupert norsk parkland."
+    },
+    {
+      "navn": "kort-jern-sidehill-ball-under-foot",
+      "beskrivelse": "Slå 9-jern med ballen under føttene (5-8° helning). Bredere stance, mer bøy i knær, forvent fade. 8 baller mot 110m flagg, aim 8m venstre.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "9-jern"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 74,
+        "D": 56,
+        "G": 38,
+        "I": 23
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "sidehill"
+      ],
+      "coachNotater": "Ball under føttene er vanskeligere — krever fast holdning gjennom hele svingen. Spillere reiser seg ofte opp og topper ballen. Drill statikk først."
+    },
+    {
+      "navn": "kort-jern-attack-angle-test",
+      "beskrivelse": "Bruk TrackMan: slå 10 baller med 8-jern. Mål: gjennomsnitt-attack-angle mellom -4° og -6°. Hvis flatere enn -3°: ball litt bakover, hands forward. Hvis brattere enn -7°: roligere hofte-utløsning.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "8-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 70,
+        "G": 52,
+        "I": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "ball-flight-law",
+        "attack-angle",
+        "kompresjon"
+      ],
+      "coachNotater": "AoA er den mest underrapporterte feedback-parameteren. Spillere som har -2° eller flatere på 8-jern mister 8-10m carry og spin. Test månedlig."
+    },
+    {
+      "navn": "mellom-jern-yardage-stige-7",
+      "beskrivelse": "Slå 7-jern på 5 distanser: 130, 140, 150, 160, 170m. 3 baller på hver distanse. Bruk TrackMan eller målbar landing. Mål: 4 av 5 i target-sone +/- 5m.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 24,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman",
+        "15-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 75,
+        "G": 60,
+        "J": 45,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "distance-control",
+        "yardage-ladder"
+      ],
+      "coachNotater": "Bygger trygghet på spillerens carry-distanser. Hvis store gap mellom de 5 nivåene, sjekk om spilleren overskytter (for hardt grep) eller drar for kort tilbake. Bør gjentas månedlig."
+    },
+    {
+      "navn": "mellom-jern-6-jern-presisjon",
+      "beskrivelse": "Slå 6-jern til 150m flagg. 15 baller. Mål: 9 av 15 innen 8m radius (gjennomsnitt PGA-spiller landing-bias). Loggfør strokes gained mot snittavstand.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "6-jern",
+        "15-baller",
+        "maleband"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-yardage-stige-7"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 82,
+        "D": 68,
+        "G": 50,
+        "I": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "distance-control",
+        "presisjon"
+      ],
+      "coachNotater": "150m er statistisk den vanligste tilnærmingsdistansen på par-4. Hvis spilleren ikke har 6-jern eller 7-jern på 150m bør dette være første fokus i tilnærmingsspill."
+    },
+    {
+      "navn": "mellom-jern-5-jern-mid-range",
+      "beskrivelse": "Slå 5-jern til 170m flagg. 12 baller. Mål: 7 av 12 innen 10m radius og 9 av 12 på green. Sjekk dispersion-mønster (horisontalt vs vertikalt).",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "5-jern",
+        "12-baller",
+        "maleband"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 62,
+        "G": 45,
+        "H": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "presisjon"
+      ],
+      "coachNotater": "5-jern er bro mellom kort-jern (high-percentage) og lang-jern (low-percentage). Hvis dispersion er bred, vurder om hybrid er bedre valg."
+    },
+    {
+      "navn": "mellom-jern-7-jern-trajectory",
+      "beskrivelse": "Slå 7-jern med 3 trajectory-vinduer til 150m flagg: lav (apex < 18m), normal (apex 22-25m), høy (apex > 28m). 4 baller per vindu. Mål: alle 4 i sitt vindu og innen 12m.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 65,
+        "G": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "trajectory",
+        "high-ball",
+        "low-ball"
+      ],
+      "coachNotater": "Trajectory-kontroll med mellomjern er det som skiller scratch fra Tour. Hvis spilleren bare har én trajectory er det øvelse 1 i hele tilnærmingsprogrammet."
+    },
+    {
+      "navn": "mellom-jern-knockdown-6-jern",
+      "beskrivelse": "Slå 6-jern med knockdown: ball midt-bak, hands forward, 3/4 finish. Mål: 130m carry (vs 150m full) og apex under 18m. 10 baller, 7 innen 10m fra 130m-flagg.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "6-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "knockdown-pw-vind"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 62,
+        "G": 45,
+        "H": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-kb-drills-2026-05-18 knock-down-shot",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "knockdown",
+        "into-wind"
+      ],
+      "coachNotater": "Når det blåser hardt på par-3 mellom 130-160m er knockdown med klubb opp den eneste pålitelige strategien. Drill jevnlig, ikke bare i pre-turnering."
+    },
+    {
+      "navn": "mellom-jern-7-jern-stinger",
+      "beskrivelse": "Slå 7-jern med ekstrem lav penetrerende ball til 145m. Ball bakover, grep ned 3cm, kort finish. 10 baller. Mål: apex maks 12m og 6 av 10 innen 12m fra flagg.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-stinger-9-jern"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "F": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "low-ball",
+        "trajectory",
+        "into-wind"
+      ],
+      "coachNotater": "Tiger Woods sin signatur. Krever god kompresjon og fast venstre side. Hvis ballen fortsatt klatrer høyt sjekker du grep-trykk og kontakt-posisjon."
+    },
+    {
+      "navn": "mellom-jern-7-jern-draw",
+      "beskrivelse": "Slå 7-jern med kontrollert draw til 150m. Aim 8m høyre, lukket klubbflate -3°, swing inni-ut. 10 baller. Mål: 7 av 10 med 4-8m kurve.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman",
+        "aim-stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-pw-draw"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 62,
+        "G": 45,
+        "H": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "shot-shape",
+        "draw"
+      ],
+      "coachNotater": "Draw med mellomjern ruller mer enn med kortjern. Plan for ekstra 5-8m rull og lavere apex."
+    },
+    {
+      "navn": "mellom-jern-7-jern-fade",
+      "beskrivelse": "Slå 7-jern med kontrollert fade til 150m. Aim 8m venstre, åpen klubbflate +3°, swing ut-til-inn. 10 baller. Mål: 7 av 10 med 4-8m kurve og myk landing.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman",
+        "aim-stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-pw-fade"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 65,
+        "G": 48,
+        "H": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "shot-shape",
+        "fade"
+      ],
+      "coachNotater": "Fade-jern er trygger inn til vanskelige pin-posisjoner. Mister 5-10m carry vs draw — klubb opp."
+    },
+    {
+      "navn": "mellom-jern-6-jern-fra-rough",
+      "beskrivelse": "Slå 6-jern fra middels rough (6-8cm) til 140m. Plan for flier eller heavy. Sterk grep, ball bakover, fast nedsving. 8 baller. Mål: 5 av 8 på green og forutsigbar dispersion.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "6-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-fra-half-rough"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "G": 38,
+        "H": 22
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "from-rough",
+        "flier"
+      ],
+      "coachNotater": "Fra middels rough kan flier gi +10-15m. Hvis spilleren ikke kan lese lien er beste strategi å sikte for kort eller bruke kortere klubb."
+    },
+    {
+      "navn": "mellom-jern-5-jern-crosswind",
+      "beskrivelse": "Slå 5-jern til 170m med 15 km/t sidevind. Aim mot vinden, normal sving. 10 baller. Mål: 6 av 10 på green og dispersion langs siktepile, ikke kompensert.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "5-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-crosswind-aim"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "G": 38
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "crosswind"
+      ],
+      "coachNotater": "Sidevind har større effekt på lengre klubber pga lengre flytid. Et 15 km/t sidevind på 170m kan flytte ballen 12-15m."
+    },
+    {
+      "navn": "mellom-jern-7-jern-uphill",
+      "beskrivelse": "Slå 7-jern fra 5-10° uphill lie til 140m. Skuldre parallelle med bakken, klubb opp én. 8 baller. Mål: 5 av 8 på green og høyere apex enn flat.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "7-jern"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-uphill-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "G": 42,
+        "H": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "uphill-lie"
+      ],
+      "coachNotater": "Uphill mister mer carry på mellomjern enn på kort. Klubb opp én med trygg margin. Sjekk balanse på finish — fall ikke bakover."
+    },
+    {
+      "navn": "mellom-jern-7-jern-downhill",
+      "beskrivelse": "Slå 7-jern fra 5-10° downhill lie til 160m. Skuldre med bakken, ball bakover, klubb ned én. 8 baller. Mål: 5 av 8 på green, lavere apex.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "7-jern"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-downhill-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 73,
+        "D": 56,
+        "G": 38,
+        "H": 22
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "downhill-lie"
+      ],
+      "coachNotater": "Downhill med mellomjern er en av de vanskeligste lies. Spillere topper ofte fordi de prøver å løfte. Trust descending blow."
+    },
+    {
+      "navn": "mellom-jern-5-jern-bare-lie",
+      "beskrivelse": "Slå 5-jern fra bare-lie til 165m. Ball bakover, hands forward, sweepende kontakt. 8 baller. Mål: 5 av 8 på green og ingen blade-skudd.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "5-jern"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-fra-bare-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 52,
+        "F": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "from-bare-lie"
+      ],
+      "coachNotater": "Lengre jern fra bare lie krever stor disiplin på lavpunkt. Vurder hybrid i stedet — den glir bedre over bar grunn."
+    },
+    {
+      "navn": "mellom-jern-three-club-test",
+      "beskrivelse": "Til samme 150m flagg: slå 5 baller med 8-jern (full), 5 med 7-jern (3/4) og 5 med 6-jern (knockdown). Sammenlign dispersion og carry. Mål: minst én klubb leverer 4 av 5 innen 10m.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "8-jern",
+        "7-jern",
+        "6-jern",
+        "trackman"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-knockdown-6-jern"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 62,
+        "G": 42
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "distance-control",
+        "club-selection"
+      ],
+      "coachNotater": "Lærer spilleren at samme distanse kan slås på 3 forskjellige måter. Velg klubb som matcher vind, lie og pin-plassering — ikke alltid full sving."
+    },
+    {
+      "navn": "mellom-jern-attack-angle-7",
+      "beskrivelse": "TrackMan-test med 7-jern. Mål: gjennomsnitt-AoA mellom -3° og -5°, low point 4-8cm foran ball. 10 baller. Hvis flatere: gå til ball-position drill. Hvis brattere: hofte-tempo drill.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 82,
+        "D": 68,
+        "G": 50,
+        "H": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "ball-flight-law",
+        "attack-angle"
+      ],
+      "coachNotater": "Tester konsistens av lavpunkt. Mellomjern krever litt slakere AoA enn kortjern — for bratt = for kort, for flatt = thin/skinning."
+    },
+    {
+      "navn": "mellom-jern-spin-test-6jern",
+      "beskrivelse": "Slå 10 baller med 6-jern på TrackMan. Mål: spin-rate 5500-6500 rpm. Hvis under 5000: ball/klubb-flate problem eller for høyt smash. Hvis over 7000: for bratt AoA.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "6-jern",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 65,
+        "F": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "ball-flight-law",
+        "spin"
+      ],
+      "coachNotater": "For lav spin = ball ruller for mye og er vanskelig å holde green. For høy spin = ball stiger for mye og taper carry i vind. Optimum 5500-6500 for 6-jern."
+    },
+    {
+      "navn": "lang-jern-4-jern-yardage",
+      "beskrivelse": "Slå 4-jern til 185m flagg. 12 baller. Mål: 5 av 12 innen 12m og 8 av 12 på green. Loggfør carry-snitt og dispersion. Sammenlign mot hybrid i samme distanse.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "4-jern",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "G": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "distance-control",
+        "yardage-ladder"
+      ],
+      "coachNotater": "Få spillere under D-kategori bør i det hele tatt ha 4-jern i bagen. Hvis dispersion er bredere enn 15m: bytt til hybrid. Test minst kvartalsvis."
+    },
+    {
+      "navn": "lang-jern-3-jern-tour-test",
+      "beskrivelse": "Slå 3-jern til 200m flagg. 12 baller. Mål: 4 av 12 innen 15m og 7 av 12 på green. Bare D-kategori og oppover bør prøve dette.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "D",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 4,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "3-jern",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lang-jern-4-jern-yardage"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 50,
+        "F": 30,
+        "G": 22,
+        "H": 15
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "distance-control"
+      ],
+      "coachNotater": "3-jern er nesten utdødd utenfor Tour. Sjekk om spilleren faktisk er bedre med 3-jern enn 5-wood eller hybrid før dere bygger ferdigheten."
+    },
+    {
+      "navn": "lang-jern-4-jern-spin-test",
+      "beskrivelse": "TrackMan-test: 4-jern, 10 baller. Mål: spin-rate 4500-5200 rpm, smash factor > 1.32, AoA -2° til -4°. Hvis spin under 4000: vurder hybrid. Hvis smash under 1.30: kontakt-problem.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "4-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "F": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "ball-flight-law",
+        "spin",
+        "smash"
+      ],
+      "coachNotater": "Lang-jern data avgjør om klubben skal være i bagen i det hele tatt. AK Golf-prinsipp: hvis ikke spilleren leverer disse tallene konsistent, bytt til hybrid."
+    },
+    {
+      "navn": "lang-jern-4-jern-launch-window",
+      "beskrivelse": "TrackMan: 4-jern, 10 baller. Mål: launch-vinkel 13-16° og apex 22-28m. For lav launch = ball ruller for mye. For høy = vind blåser ballen ut.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "4-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lang-jern-4-jern-spin-test"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "E": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "ball-flight-law",
+        "launch-angle"
+      ],
+      "coachNotater": "Launch-vindu er kritisk for lang-jern på green. Hvis ball lander flatt taper du 30-50% stopping power. Riktig kombinasjon launch+spin er det elite-merket."
+    },
+    {
+      "navn": "lang-jern-4-jern-rough-rescue",
+      "beskrivelse": "Slå 4-jern fra middels rough til 180m. Hvis lien er dårlig: bytt til hybrid eller wedge ut. 8 baller fra varierende lies. Mål: 5 av 8 lykkes (på green eller bedre lie).",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "4-jern",
+        "hybrid"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-6-jern-fra-rough"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 68,
+        "D": 50,
+        "E": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "from-rough",
+        "decision-making"
+      ],
+      "coachNotater": "Beste lang-jern-skudd er ofte hybrid-skuddet. Avgjørelse å bytte klubb er like viktig som å slå godt. DECADE-prinsipp: avoid the big number."
+    },
+    {
+      "navn": "lang-jern-4-jern-uphill",
+      "beskrivelse": "Slå 4-jern fra 5-10° uphill lie til 175m. Skuldre med bakken, klubb opp én til 3-jern eller hybrid. 8 baller. Mål: 4 av 8 på green og ingen pulled-skudd.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "4-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-7-jern-uphill"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 48,
+        "E": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "uphill-lie"
+      ],
+      "coachNotater": "Uphill med lang-jern mister ofte 15-20m carry. Klubb opp to ganger eller bruk hybrid. Pulled-skudd er klassisk feil her — sjekk venstre-arm-flexion."
+    },
+    {
+      "navn": "lang-jern-mid-trajectory-control",
+      "beskrivelse": "Slå 4-jern med to forskjellige trajectories til 180m: lav-penetrerende og normal. 6 baller per. Mål: lav apex 17-20m, normal apex 24-28m. Begge på green minst 3 av 6.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "4-jern",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-7-jern-trajectory"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 52,
+        "E": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "trajectory",
+        "low-ball"
+      ],
+      "coachNotater": "Få spillere klarer å variere lang-jern trajectory. Det er Tour-nivå. Lav skal brukes i vind eller fast green, normal når man trenger holding power."
+    },
+    {
+      "navn": "lang-jern-into-wind-club-up",
+      "beskrivelse": "Simuler 20 km/t motvind. Slå 4-jern fra 180m mål med knockdown. 10 baller. Mål: 4 av 10 holder green og ingen ballooned skudd. Klubb opp til 3-jern hvis 4-jern ikke kommer fram.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "4-jern",
+        "3-jern"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-knockdown-6-jern"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 68,
+        "D": 48,
+        "E": 26
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "into-wind",
+        "knockdown"
+      ],
+      "coachNotater": "Ballooning er den verste feilen i vind. Hvis ballen klatrer er det fordi spilleren legger til ekstra spin med hard sving. Easy og long er regelen."
+    },
+    {
+      "navn": "lang-jern-distance-gap-test",
+      "beskrivelse": "Test gap mellom hybrid, 5-jern og 4-jern. Slå 8 baller med hver. Mål: minst 10m carry-forskjell mellom hver klubb. Hvis mindre — én klubb ut av bag.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "hybrid",
+        "5-jern",
+        "4-jern",
+        "trackman"
+      ],
+      "varighetMin": 30,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 24,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 70,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "distance-control",
+        "gap-test"
+      ],
+      "coachNotater": "Bag-distribution er undervurdert. De fleste amatører har 2-3 klubber som overlapper. Drillen avslører dette og styrer fitting-beslutninger."
+    },
+    {
+      "navn": "lang-jern-bare-lie-strategi",
+      "beskrivelse": "Fra hard, bar grunn 175m: velg hybrid vs 5-jern vs 4-jern. 5 baller per klubb. Mål: identifiser klubb med best smash og lavest spread. Plan strategi for bane med tørr fairway.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "hybrid",
+        "5-jern",
+        "4-jern"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 52,
+        "E": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "from-bare-lie",
+        "decision-making"
+      ],
+      "coachNotater": "På norske linksbaner i juli er bare-lie standarden. Hvis 4-jern ikke leverer fra bare lie er det hybrid eller fairway wood som tar over."
+    },
+    {
+      "navn": "lang-jern-3-jern-stinger-tour",
+      "beskrivelse": "Slå 3-jern stinger til 200m. Ball bakover 5cm, grep ned 4cm, kort finish. 10 baller. Mål: apex maks 15m, carry 190-200m, 4 av 10 på green.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "D",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 4,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "3-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-7-jern-stinger"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 68,
+        "D": 38,
+        "F": 22,
+        "G": 15,
+        "H": 8
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "low-ball",
+        "into-wind",
+        "trajectory"
+      ],
+      "coachNotater": "Tiger-skuddet. Bare elite-spillere bør jobbe med dette. Hvis spilleren ikke har konsistens på 4-jern stinger er det for tidlig."
+    },
+    {
+      "navn": "lang-jern-elite-clutch-test",
+      "beskrivelse": "Press-test for elite: 4-jern til 180m flagg, du må score 4 av 10 innen 15m for å passere. Hvis fail: -100m straffe. Bygger evne til å levere lang-jern under press.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "D",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 4,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "4-jern"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lang-jern-4-jern-yardage"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 30,
+        "F": 18,
+        "G": 10,
+        "H": 5
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "pressure",
+        "presisjon"
+      ],
+      "coachNotater": "Lang-jern er primært en pressure-skill. Spilleren skal lære å gå mot prosessen — én ball om gangen, sjekk vind, commit til klubb."
+    },
+    {
+      "navn": "lang-jern-fade-vs-draw-test",
+      "beskrivelse": "Slå 4-jern: 5 baller draw, 5 baller fade til 180m. Mål: identifiser hvilken shape spilleren har bedre dispersion på. Resultat styrer turneringsstrategi.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "4-jern",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-7-jern-draw",
+        "mellom-jern-7-jern-fade"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 52,
+        "E": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "shot-shape",
+        "draw",
+        "fade"
+      ],
+      "coachNotater": "Spilleren har én preferred shape med lang-jern. Det er nesten umulig å være like god på begge. Identifiser og strukturer turneringen rundt det."
+    },
+    {
+      "navn": "lang-jern-divot-konsistens",
+      "beskrivelse": "Slå 10 baller 4-jern på tørr matte eller fairway. Sjekk divot-startpunkt. Mål: alle 10 divots starter 0-3cm foran ball-posisjon. Tegn linje i bakken og sammenlign.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "4-jern",
+        "kritt"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 62,
+        "F": 38
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-knowledge-base-v1 DISC 4",
+      "tags": [
+        "lang-jern",
+        "3-4",
+        "ball-first",
+        "lavpunkt"
+      ],
+      "coachNotater": "Lavpunkt-konsistens er hele tilnærmingsspillet. Hvis divot starter bak ball er det fett-skudd venter. Test før hver større turnering."
+    },
+    {
+      "navn": "hybrid-yardage-stige",
+      "beskrivelse": "Slå hybrid på 3 distanser: 170, 185, 200m. 5 baller per distanse. Bruk full sving, 3/4 og knockdown. Mål: 3 av 5 i target +/- 8m på hver distanse.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 22,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "hybrid",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 68,
+        "G": 52,
+        "J": 38
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "hybrid",
+        "distance-control",
+        "yardage-ladder"
+      ],
+      "coachNotater": "Hybrid er erstatningen for lang-jern for de fleste. Trygg klubb fra fairway, rough og lett ruff. Mål er bred spilling, ikke flag-hunting."
+    },
+    {
+      "navn": "hybrid-180m-presisjon",
+      "beskrivelse": "Slå hybrid til 180m flagg. 12 baller. Mål: 7 av 12 på green og 4 av 12 innen 12m. Loggfør miss-mønster — hybrid har ofte en bias (push-fade eller pull-draw).",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "hybrid"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "hybrid-yardage-stige"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 60,
+        "G": 42,
+        "H": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "hybrid",
+        "presisjon",
+        "distance-control"
+      ],
+      "coachNotater": "Hybrid skal være spillerens trygge 180-190m klubb. Hvis miss-mønster er konsistent, lær spilleren å aim mot midten med plan for miss-side."
+    },
+    {
+      "navn": "hybrid-fra-rough-rescue",
+      "beskrivelse": "Slå hybrid fra middels rough (6-10cm) til 180m. Ball bakover, fast grep, sterk underhand-følelse. 10 baller. Mål: 6 av 10 lykkes (på green eller advance til fairway).",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "hybrid"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 60,
+        "G": 42,
+        "I": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "hybrid",
+        "from-rough",
+        "decision-making"
+      ],
+      "coachNotater": "Hybrid er kongen fra rough på langt hold. Sole-design glir gjennom gress mye bedre enn jern. Lær spillere at hybrid alltid er trygt valg fra rough."
+    },
+    {
+      "navn": "hybrid-fra-fairway-bunker",
+      "beskrivelse": "Slå hybrid fra fairway-bunker til 180m. Stå med føtter litt utenfor sand, ball litt bakover, klubb svever 2cm over sand. 8 baller. Mål: 5 av 8 ut av bunker og minst 3 på green.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "hybrid"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 68,
+        "D": 50,
+        "G": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "hybrid",
+        "fairway-bunker",
+        "decision-making"
+      ],
+      "coachNotater": "Lippen må klareres med stor margin. Hvis lippen er over 1m, klubb ned til wedge. Hybrid fra fairway-bunker krever flat lie og ren sand."
+    },
+    {
+      "navn": "hybrid-uphill-lie",
+      "beskrivelse": "Slå hybrid fra 5-10° uphill lie til 170m. Skuldre med bakken, klubb opp én. 8 baller. Mål: 5 av 8 på green og forventet høyere apex.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "hybrid"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "G": 38,
+        "H": 22
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "hybrid",
+        "uphill-lie",
+        "club-selection"
+      ],
+      "coachNotater": "Hybrid takler uphill bedre enn lang-jern fordi vekten er lavere bak klubbflaten. Klubb opp én eller spill til midt-green."
+    },
+    {
+      "navn": "hybrid-knockdown-vind",
+      "beskrivelse": "Slå hybrid med knockdown-teknikk til 170m i simulert motvind. Ball midt-bak, hands forward, 3/4 finish. 10 baller. Mål: apex maks 20m og 6 av 10 på green.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "hybrid",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "knockdown-pw-vind"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "G": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-kb-drills-2026-05-18",
+      "tags": [
+        "hybrid",
+        "knockdown",
+        "into-wind"
+      ],
+      "coachNotater": "Hybrid balloon ofte i vind. Knockdown med klubb opp er beste løsning. Drillen er kritisk for spillere som spiller mye linksgolf."
+    },
+    {
+      "navn": "hybrid-draw-control",
+      "beskrivelse": "Slå hybrid med kontrollert draw til 180m. Aim 10m høyre, lukket grep, swing inni-ut. 10 baller. Mål: 6 av 10 med 5-10m kurve.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "hybrid",
+        "aim-stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-7-jern-draw"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 52,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "hybrid",
+        "shot-shape",
+        "draw"
+      ],
+      "coachNotater": "Hybrid drawer naturlig for de fleste pga vekten bak. Lett klubb å skape kontrollert draw med. Test og loggfør baseline kurve."
+    },
+    {
+      "navn": "fairway-wood-3w-yardage",
+      "beskrivelse": "Slå 3-wood på 3 distanser fra dekk: 200, 215, 230m. 5 baller per. Bruk full sving, 3/4 og knockdown. Mål: 3 av 5 i target +/- 10m og minst 2 av 5 på green på 215m.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "3-wood",
+        "trackman"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "G": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "fairway-wood",
+        "distance-control",
+        "yardage-ladder"
+      ],
+      "coachNotater": "3-wood fra fairway er en av de vanskeligste skuddene. Krever sweepende kontakt. Test om spilleren er bedre med 5-wood eller hybrid på samme distanse."
+    },
+    {
+      "navn": "fairway-wood-5w-presisjon",
+      "beskrivelse": "Slå 5-wood til 200m green. 12 baller. Mål: 6 av 12 på green, 3 av 12 innen 15m. Sammenlign mot 3-wood på samme distanse.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "5-wood"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "G": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "fairway-wood",
+        "presisjon",
+        "distance-control"
+      ],
+      "coachNotater": "5-wood er lettere å treffe enn 3-wood og passer for de fleste. Hvis spilleren er bedre med 5w bør 3w fjernes fra bagen."
+    },
+    {
+      "navn": "fairway-wood-fra-tett-rough",
+      "beskrivelse": "Slå 5-wood fra tett rough (8-12cm) til 200m. Bare hvis lie tillater det — ellers ut med wedge. 8 baller. Mål: 4 av 8 lykkes og resten advancer.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "5-wood"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 48,
+        "F": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "fairway-wood",
+        "from-rough",
+        "decision-making"
+      ],
+      "coachNotater": "Beste lesson av denne drillen er ofte å lære når man IKKE skal slå 5-wood. Hvis lie er dårlig: wedge ut, satse på par-redning."
+    },
+    {
+      "navn": "fairway-wood-7w-utility",
+      "beskrivelse": "Slå 7-wood som utility-klubb til 190m. 10 baller. Mål: 6 av 10 på green og myk landing (apex > 30m). Vurderes som erstatning for 3-jern/4-jern hos amatører.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-wood"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 62,
+        "G": 45,
+        "I": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "fairway-wood",
+        "presisjon",
+        "high-ball"
+      ],
+      "coachNotater": "7-wood er undervurdert. Høy launch, mer stopping power enn hybrid. Test for hver spiller — kan være game-changer for 60+ og damer."
+    },
+    {
+      "navn": "fairway-wood-low-runner",
+      "beskrivelse": "Slå 3-wood som low-runner til 210m. Ball bakover, grep ned 3cm, kort finish. Mål: apex maks 18m, total distanse 220-230m med rull. 10 baller på link-style fairway.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "3-wood",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 45,
+        "E": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "fairway-wood",
+        "low-ball",
+        "into-wind",
+        "trajectory"
+      ],
+      "coachNotater": "Skotsk klassiker. Brukes når man må holde ball under vind på par-5 second eller lang par-4 inn til green. Sjeldent for parkland-spillere."
+    },
+    {
+      "navn": "fairway-wood-fade-pin",
+      "beskrivelse": "Slå 5-wood med fade til 200m pin på høyre side av green. Aim midt på green, åpen klubbflate +3°. 10 baller. Mål: 5 av 10 innen 15m fra pin, ingen pulled.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "5-wood",
+        "aim-stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 68,
+        "D": 50,
+        "F": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "fairway-wood",
+        "shot-shape",
+        "fade"
+      ],
+      "coachNotater": "Fade med fairway wood er sikrere enn draw fordi det går lavere og lander mykere. Bra mot tucked pin."
+    },
+    {
+      "navn": "fairway-wood-draw-attack",
+      "beskrivelse": "Slå 3-wood med kontrollert draw til 215m pin på venstre. Aim midt-høyre, lukket klubbflate -3°. 10 baller. Mål: 5 av 10 innen 15m, og forventet ekstra rull.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "3-wood",
+        "aim-stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 45,
+        "E": 22
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "fairway-wood",
+        "shot-shape",
+        "draw"
+      ],
+      "coachNotater": "Draw med 3-wood gir lengst total carry-distance. Brukes til å nå par-5 i 2 eller når man trenger ekstra meter. Risikabelt mot innsidegrener."
+    },
+    {
+      "navn": "yardage-ladder-master-full-bag",
+      "beskrivelse": "Bygg full carry-tabell: PW, 9, 8, 7, 6, 5, 4, hybrid, 5w, 3w. 10 baller per klubb. Snitt og deviasjon noteres på TrackMan. Mål: gap 8-12m mellom klubber.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 22,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "trackman"
+      ],
+      "varighetMin": 90,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 100,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 75,
+        "G": 58,
+        "J": 38
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "yardage-ladder",
+        "full-bag"
+      ],
+      "coachNotater": "Den absolutt viktigste testen i tilnærmingsspill. Gjør i februar/mars hvert år. Resultatet styrer hele yardage-bok-strategien for sesongen."
+    },
+    {
+      "navn": "carry-distance-90-percent-test",
+      "beskrivelse": "Slå hver iron med 90% effort i stedet for 100%. 10 baller per klubb (PW-5j). Mål: identifiser hvilke klubber leverer bedre dispersion på 90%. Mange tour-pro spiller 80-85%.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw-til-5jern",
+        "trackman"
+      ],
+      "varighetMin": 45,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "yardage-ladder-master-full-bag"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 60,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 60,
+        "G": 38
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "distance-control",
+        "tempo",
+        "yardage-ladder"
+      ],
+      "coachNotater": "Lærdom: 90% gir ofte bedre carry-konsistens og samme distanse på TrackMan. Spiller smart, ikke hardt. Brukes til normal-distanse på 8 av 10 skudd."
+    },
+    {
+      "navn": "yardage-window-test",
+      "beskrivelse": "For hver klubb (PW-4j): noter 5 best og 5 worst carry-distanser. Beregn vindu (forskjell). Mål: vindu under 7m for kortjern, under 10m for mellom, under 12m for lang-jern.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw-til-4jern",
+        "trackman"
+      ],
+      "varighetMin": 60,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "yardage-ladder-master-full-bag"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 80,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 60,
+        "F": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "yardage-ladder",
+        "dispersion"
+      ],
+      "coachNotater": "DECADE-prinsipp: spilleren skal kjenne sine dispersion-vinduer. Hvis 7-jern varierer 15m er det dypest mulig data — plan aldri som om man treffer eksakt."
+    },
+    {
+      "navn": "distance-control-9-spots",
+      "beskrivelse": "Sett 9 mål i grid: 100-110-120 / 130-140-150 / 160-170-180m. Spiller velger klubb og slår 2 baller per mål. Mål: 14 av 18 lander innen 10m fra ønsket mål.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "9-mal"
+      ],
+      "varighetMin": 40,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "yardage-ladder-master-full-bag"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 18,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 60,
+        "G": 42,
+        "H": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "yardage-ladder",
+        "club-selection"
+      ],
+      "coachNotater": "Tester både klubbvalg og utførelse. Spilleren må eie hele 80-180m banen. Loggfør hvilke distanser som er svake — gap-skudd er ofte problemet."
+    },
+    {
+      "navn": "gap-wedge-50-til-90m",
+      "beskrivelse": "Slå GW (gap wedge) på 4 distanser: 50, 65, 80, 90m. 4 baller per. Mål: 12 av 16 innen 5m. Bruk klokke-system (8-10-11-12) for ulik sving-størrelse.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 22,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 16,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 72,
+        "G": 55,
+        "J": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:klokke-system-wedge-9-10-11",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "gap-wedge",
+        "distance-control"
+      ],
+      "coachNotater": "Selv om GW er teknisk en wedge brukes den ofte i tilnærmingsrollen 80-100m. Klokke-system gir 4 forutsigbare carry-distanser med samme klubb."
+    },
+    {
+      "navn": "decade-shot-cone-mapping",
+      "beskrivelse": "For hver klubb: slå 20 baller og marker landing-mønster. Beregn shot-cone (95% confidence). Loggfør i yardage-bok. Brukes til strategi: bare sikt mot pin hvis cone hele er på green.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "full-bag",
+        "trackman",
+        "logbok"
+      ],
+      "varighetMin": 120,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "yardage-window-test"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 200,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 70,
+        "E": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "decade",
+        "shot-cone",
+        "strategy"
+      ],
+      "coachNotater": "Dette er ryggraden i DECADE-strategien. Spilleren tar bedre beslutninger på banen når de vet sin egen shot-cone. Krever én lang økt per år."
+    },
+    {
+      "navn": "yardage-stige-baklengs",
+      "beskrivelse": "Start med lengste tilnærmingsklubb (4-jern eller hybrid 200m). Slå 3 baller. Reduser 15m og bytt klubb. Fortsett til PW. Mål: hver klubb innen +/- 7m fra target.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw-til-4jern",
+        "trackman"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 21,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "G": 42,
+        "I": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "yardage-ladder",
+        "tempo"
+      ],
+      "coachNotater": "Hindrer spilleren i å falle inn i en sving. Tvinger klubb-til-klubb-rekalibrering. Bra pre-runde drill 20 min før første tee."
+    },
+    {
+      "navn": "wedge-100m-90-percent",
+      "beskrivelse": "Slå PW til 100m flagg med 90% effort. 10 baller. Mål: 7 av 10 innen 6m, alle 10 innen 10m. Tempo skal være langsommere enn full sving — føl '90%'.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-yardage-stige-pw"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "D": 78,
+        "G": 60,
+        "H": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "distance-control",
+        "tempo"
+      ],
+      "coachNotater": "Spillerens 'scoring distance'. Hvis ikke 7 av 10 innen 6m er det første prioritet i hele forbedringsprogrammet. PW-100m skal være automatic."
+    },
+    {
+      "navn": "distance-control-press-3-baller",
+      "beskrivelse": "På range: 3 baller per klubb (PW-4j), du må score 2 av 3 innen 10m for å passere klubben. Hvis fail: gjenta. Ingen pause. Bygger evne til å levere første-gangs-success.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw-til-4jern"
+      ],
+      "varighetMin": 30,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "distance-control-9-spots"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 24,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 52,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "pressure",
+        "yardage-ladder"
+      ],
+      "coachNotater": "Anti-warmup. På bane har du bare én ball. Drillen lærer spilleren å committe første gangen, ikke 'finne det' med 5 baller."
+    },
+    {
+      "navn": "distance-control-blind-target",
+      "beskrivelse": "Coach gir distanse muntlig (f.eks. 'spill 137m') uten visuelt mål. Spiller velger klubb og sving. 10 distanser. Mål: 7 av 10 lander innen 8m av oppgitt mål.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "full-bag",
+        "trackman"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 55,
+        "G": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "club-selection",
+        "yardage-ladder"
+      ],
+      "coachNotater": "Reflekterer ekte bane-situasjon der du har en yardage-bok-tall, ikke et synlig mål. Loggfør hvilke distanser som er gap-distanser og krever skill-skudd."
+    },
+    {
+      "navn": "tre-trajectory-vindu-7-jern",
+      "beskrivelse": "På samme 150m flagg: slå lav, normal og høy med 7-jern. 5 baller per. Coach noterer apex på TrackMan. Mål: lav under 18m, normal 22-26m, høy over 28m — alle innen 12m fra flagg.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "G": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "trajectory",
+        "high-ball",
+        "low-ball"
+      ],
+      "coachNotater": "Spilleren skal eie tre vinduer på hver klubb i bag. Når de kan velge bevisst er det Tour-nivå tilnærmingsspill."
+    },
+    {
+      "navn": "knockdown-pall-PW-2",
+      "beskrivelse": "Slå PW knockdown to forskjellige carry-distanser: 75m og 90m. 5 baller per. Mål: 4 av 5 innen 5m, og to klare carry-vinduer. Tempo-forskjell er 70% vs 85%.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "knockdown-pw-vind"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 65,
+        "G": 45,
+        "H": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-kb-drills-2026-05-18",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "knockdown",
+        "trajectory"
+      ],
+      "coachNotater": "Knockdown er ikke én distanse — det er en familie. Spilleren skal kunne treffe minst 2 knockdown-distanser per kortjern."
+    },
+    {
+      "navn": "high-soft-pin-attack",
+      "beskrivelse": "Pin er over bunker, kun 5m grønn bak. Slå 9-jern med ekstrem høy trajectory til 110m flagg. 10 baller. Mål: 6 av 10 stopper innen 4m fra landing, ingen ruller over green.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "9-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-hoyball-pw"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 52,
+        "G": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "high-ball",
+        "trajectory"
+      ],
+      "coachNotater": "Tucked pin med kort grønn er en typisk turnering-situasjon. Hvis spilleren ikke har høy trajectory er beste valg å sikte midt-green og ta to-putt."
+    },
+    {
+      "navn": "low-running-approach-bump",
+      "beskrivelse": "Fra 80m: slå PW med ekstrem lav trajectory som ruller mot pin. Apex maks 8m, total carry 50m, rull 30m. 10 baller på fast fairway. Mål: 6 av 10 lander før green og ruller på.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 50,
+        "G": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "low-ball",
+        "trajectory",
+        "bump-and-run"
+      ],
+      "coachNotater": "Linksgolf-skill. Beste valg når green-front er åpen og pin er bak. Sparer 5-8% strokes gained over hodet på spillere som bare har høy trajectory."
+    },
+    {
+      "navn": "knockdown-50-til-100m",
+      "beskrivelse": "Bruk PW: slå knockdown på 50, 65, 80, 100m. 4 baller per. Forskjell er sving-størrelse (8, 9, 10, 11). Mål: 12 av 16 innen 6m.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 16,
+      "csTargetByKategori": {
+        "A": 82,
+        "D": 68,
+        "G": 50,
+        "I": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:klokke-system-wedge-9-10-11",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "knockdown",
+        "distance-control"
+      ],
+      "coachNotater": "Klokke-system med knockdown gir 4 forutsigbare distanser per klubb. Spilleren har dermed dobbelt så mange 'distance options' uten å bytte klubb."
+    },
+    {
+      "navn": "trajectory-trace-7-jern",
+      "beskrivelse": "TrackMan-fokus: slå 7-jern 10 ganger og sjekk trajectory-trace. Mål: alle 10 starter samme launch (+/- 1°) og topper på samme apex (+/- 2m). Konsistens > variasjon i denne drillen.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 62,
+        "G": 38
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "trajectory",
+        "ball-flight-law"
+      ],
+      "coachNotater": "Trajectory-konsistens er underrapportert. Spillere har ofte +/- 5m apex på samme klubb. Det er en feel-sak — drill med eyes-closed kan hjelpe."
+    },
+    {
+      "navn": "trajectory-window-mot-vind",
+      "beskrivelse": "Med 6-jern: slå 5 baller normal trajectory (apex 25m) og 5 baller penetrerende (apex 15m) til 150m i lett motvind. Mål: penetrerende-skudd holder distanse, normal mister 10m.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "6-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-knockdown-6-jern"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "F": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "trajectory",
+        "into-wind"
+      ],
+      "coachNotater": "Penetrerende ballflukt er ofte forskjellen på å holde green og rulle av i vind. Spilleren skal eie minst én penetrerende trajectory per klubb."
+    },
+    {
+      "navn": "ball-position-trajectory-test",
+      "beskrivelse": "Med PW: slå 3 baller med ball bakerst, 3 normal, 3 fremst. Loggfør apex og carry. Mål: skille tre tydelige vinduer (lav-normal-høy) bare ved å flytte ball.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 82,
+        "D": 68,
+        "G": 50,
+        "I": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "trajectory",
+        "ball-flight-law"
+      ],
+      "coachNotater": "Lærer spilleren hva ball-posisjon faktisk gjør. Mange tror det ikke har effekt før de ser data. 3cm flytting endrer apex med 4-6m."
+    },
+    {
+      "navn": "loft-shaft-lean-impact",
+      "beskrivelse": "TrackMan: med 8-jern, slå 5 baller med shaft-lean forward (hands ahead +5°) og 5 baller med shaft-lean neutral. Mål: shaft-lean gir lavere launch (-3°), høyere spin (+800 rpm).",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "8-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 62,
+        "G": 38
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-knowledge-base-v1",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "ball-flight-law",
+        "shaft-lean"
+      ],
+      "coachNotater": "Shaft-lean ved impact er hva som skiller god ball-striking fra dårlig. Forward lean = kompresjon = penetrasjon. Test og forklar data konkret."
+    },
+    {
+      "navn": "shot-shape-toggle-8-jern",
+      "beskrivelse": "Alternér draw og fade med 8-jern: 5 draw, 5 fade, 5 draw, 5 fade. Til 130m flagg. Mål: alle 20 baller på green, klart synlig kurve hver gang.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "8-jern",
+        "trackman",
+        "aim-stick"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-pw-draw",
+        "kort-jern-pw-fade"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "G": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "shot-shape",
+        "draw",
+        "fade"
+      ],
+      "coachNotater": "Toggle-skill er avansert. Skiller utviklingsspillere fra utviklede. Hvis spilleren bare kan slå én shape om gangen er det neste fokus."
+    },
+    {
+      "navn": "draw-pin-attack-mellom",
+      "beskrivelse": "Pin på venstre side av green, 150m. Slå 7-jern med draw til pinnen. 10 baller. Mål: 5 av 10 innen 12m fra pin, ingen pulls som er kort av green.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-7-jern-draw"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "G": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "shot-shape",
+        "draw"
+      ],
+      "coachNotater": "Aim alltid mot midt av green, ikke pinnen. Hvis draw oversvinger har du fortsatt green. Hvis straight skudd har du midt-green."
+    },
+    {
+      "navn": "fade-pin-attack-mellom",
+      "beskrivelse": "Pin på høyre side, 150m. Slå 7-jern med fade. 10 baller. Mål: 5 av 10 innen 12m fra pin, ingen blocks som er høyre av green.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-7-jern-fade"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "G": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "shot-shape",
+        "fade"
+      ],
+      "coachNotater": "Aim midt-green. Hvis fade ikke kommer = midt-green. Hvis fade overgår = nær pin. Asymmetrisk dispersion gir lavere risiko."
+    },
+    {
+      "navn": "natural-shape-9-jern-baseline",
+      "beskrivelse": "Slå 10 baller med 9-jern til 110m flagg uten å prøve å forme. Loggfør natural shape (draw, fade, straight). Bygger baseline for hva spilleren naturlig leverer.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "9-jern",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 72,
+        "G": 55,
+        "I": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "shot-shape",
+        "baseline"
+      ],
+      "coachNotater": "Bygg strategi rundt naturlig shape. Ikke prøv å fjerne et naturlig draw — bygg å bruke det. Drillen avslører biases du kan utnytte."
+    },
+    {
+      "navn": "straight-shot-7-jern-test",
+      "beskrivelse": "Slå 10 baller 7-jern til 150m med målet om null kurve (start-line = sluttline). Mål: 7 av 10 under 3m sidekurve. Veldig vanskelig — straight shot er den tøffeste shape.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 65,
+        "D": 45,
+        "E": 22
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "shot-shape",
+        "straight"
+      ],
+      "coachNotater": "Straight er teknisk vanskeligere enn draw eller fade. Det krever zero face-path mismatch ved impact. Bra check på sving-sekvens."
+    },
+    {
+      "navn": "shape-by-pin-decision",
+      "beskrivelse": "Coach annonserer pin-posisjon (venstre, midt, høyre, foran, bak). Spiller velger klubb og shape. 12 ulike pin-posisjoner. Mål: rett shape valgt 10 av 12 ganger.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "full-bag"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "shot-shape-toggle-8-jern"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 62,
+        "F": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "shot-shape",
+        "decision-making"
+      ],
+      "coachNotater": "Decision-skill, ikke utførelse. Riktig shape valgt = halvparten av jobben. Spilleren skal kunne tenke i shapes, ikke bare lengder."
+    },
+    {
+      "navn": "pulled-shot-fix-mellom-jern",
+      "beskrivelse": "Tegn aim-line med stick. Slå 10 baller 7-jern og sjekk start-line. Hvis pulled (venstre av stick): følg morad-hip-lead-drill. Mål: 8 av 10 starter innen 2m av aim.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "aim-stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 72,
+        "G": 55,
+        "I": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-common-faults over_the_top",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "ball-flight-law",
+        "pull-fix"
+      ],
+      "coachNotater": "Pulled-skudd kommer fra over-the-top eller åpen klubbflate. Sjekk grep først, så swingbane. Pulls er ofte verre enn slices fordi miss er kort."
+    },
+    {
+      "navn": "wind-club-up-protocol",
+      "beskrivelse": "Simulert 25 km/t motvind: 130m mål. Slå 5 baller med normal klubb (8-jern), 5 med klubb opp (7-jern knockdown). Mål: klubb-opp leverer 4 av 5 på green, normal leverer 1-2.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "8-jern",
+        "7-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 60,
+        "G": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "into-wind",
+        "club-selection"
+      ],
+      "coachNotater": "DECADE-prinsipp: When in doubt, club up and swing easy. Demonstrert med data lærer spilleren regelen mye raskere enn ved teori."
+    },
+    {
+      "navn": "downwind-spin-management",
+      "beskrivelse": "Simulert 20 km/t medvind: 150m mål. Slå 8 baller 8-jern med medvind. Loggfør hvor mye lenger ballen flyr og hvor hardt den lander. Mål: forventning kalibrert innen 6m.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "8-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "downwind"
+      ],
+      "coachNotater": "Medvind reduserer spin og dermed stopping power. Plan for ekstra 10-15m rull. Klubb ned eller spill ekstra høyt."
+    },
+    {
+      "navn": "crosswind-aim-aim-aim",
+      "beskrivelse": "Simulert 15 km/t sidevind fra venstre: 140m mål. Slå 10 baller 7-jern. Mål: aim 7-10m mot vind, ikke kompenser med shape. 6 av 10 lander innen 8m av target.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "aim-stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-crosswind-aim"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "G": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "crosswind"
+      ],
+      "coachNotater": "Største amatør-feilen i sidevind er å prøve å hold-it. Aim mot vind og spill commit. Wind takes the ball, ikke spillets shape."
+    },
+    {
+      "navn": "wind-against-low-stinger",
+      "beskrivelse": "I 25 km/t motvind: slå 5-jern stinger til 170m. 10 baller. Mål: apex maks 12m og 5 av 10 på green. Sammenlign mot normal sving — den vil ballooning.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "5-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-7-jern-stinger"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 50,
+        "E": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "low-ball",
+        "into-wind",
+        "trajectory"
+      ],
+      "coachNotater": "Linksgolf-essentials. Stinger er ofte eneste måten å levere på under 170m i sterk motvind. Krever ekte kompresjon."
+    },
+    {
+      "navn": "downwind-attack-pin",
+      "beskrivelse": "20 km/t medvind, pin foran på green. Slå 7-jern 145m med høy ball som lander mykt. 10 baller. Mål: 5 av 10 innen 6m fra pin og ingen ruller over green.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-hoyball-pw"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 50,
+        "F": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "high-ball",
+        "downwind"
+      ],
+      "coachNotater": "Medvind + tucked front pin = aggressivt spill kun for elite. Risiko: ball lander kort og ruller bare halvveis. Sikt 5m forbi pin."
+    },
+    {
+      "navn": "wind-helping-fade-vs-draw",
+      "beskrivelse": "Medvind: slå 6-jern 160m med 5 fade og 5 draw. Mål: fade lander mykere (6 av 5 holder green), draw ruller mer. Lærer spilleren shape-strategi for medvind.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "6-jern",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 50,
+        "F": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "shot-shape",
+        "downwind"
+      ],
+      "coachNotater": "Medvind elsker fade — det fortsatt holder green. Medvind hater draw — det ruller utforbi. Husk regelen til turneringer."
+    },
+    {
+      "navn": "wind-2-klubber-test",
+      "beskrivelse": "Coach gir vindstyrke i km/t. Spiller velger klubb. 8 ulike vind/distanse-scenarier. Mål: rett klubb valgt 6 av 8 ganger. Bygger intern vindkalkulator.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "full-bag"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 60,
+        "G": 42,
+        "H": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:club-selection-vind-2-klubber",
+      "tags": [
+        "distance-control",
+        "into-wind",
+        "downwind",
+        "club-selection"
+      ],
+      "coachNotater": "Vind-kalkulator: 15 km/t = 1 klubb, 25 km/t = 2 klubber. Spilleren skal kunne dette uten å tenke når de kommer på tee."
+    },
+    {
+      "navn": "fra-tett-rough-pw",
+      "beskrivelse": "Slå PW fra 10-15cm tett rough til 90m. Sterk grep, ball bakover, brutal nedsving. 8 baller. Mål: 6 av 8 ut av rough og 4 på green. Plan for flier eller fett.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-fra-half-rough"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 52,
+        "G": 35,
+        "H": 20
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "from-rough"
+      ],
+      "coachNotater": "Tett rough er ofte advance-only situasjon. Klubb opp og spill til midt-green hvis carry tillater. Aldri prøv å form ball fra tett rough."
+    },
+    {
+      "navn": "fra-tørr-fairway-hardpan",
+      "beskrivelse": "Slå 8-jern fra hardpan (svært tørr og hard grunn, lite gress) til 130m. Ball bakover, hands forward, fast holdning gjennom impact. 8 baller. Mål: 6 av 8 ren kontakt.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "8-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-fra-bare-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "from-bare-lie"
+      ],
+      "coachNotater": "Norsk juli/august = hardpan-tilstander. Spillere som ikke kan slå fra hardpan har dyrebar feil i bag-management."
+    },
+    {
+      "navn": "fra-vått-gress-konsistens",
+      "beskrivelse": "Slå 9-jern fra vått, tjukt gress til 120m. Sterk grep (anti-slip), normal sving, forvent litt redusert spin. 8 baller. Mål: 5 av 8 på green.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "I",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "9-jern",
+        "handske"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "G": 42,
+        "I": 22
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "from-wet",
+        "wet-conditions"
+      ],
+      "coachNotater": "Vått gress = vann mellom flate og ball = mindre spin = lengre carry og rull. Klubb ned eller plan for ekstra rull. Bytt handske oftere."
+    },
+    {
+      "navn": "uphill-2-klubber-opp",
+      "beskrivelse": "Fra steil uphill (15-20°) til 130m. Coach instruerer: klubb opp 2. Spiller velger 6-jern, slår 8 baller. Mål: 5 av 8 på green og forventning kalibrert.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "6-jern",
+        "8-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-uphill-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 52,
+        "G": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "uphill-lie",
+        "club-selection"
+      ],
+      "coachNotater": "Steil uphill mister 15-25m carry. To-klubb-regelen redder spillere. Kombiner med plan-for-pulled-skudd."
+    },
+    {
+      "navn": "downhill-2-klubber-ned",
+      "beskrivelse": "Fra steil downhill (15-20°) til 150m. Klubb ned 2 (PW i stedet for 8-jern). 8 baller. Mål: 5 av 8 på green og lavere apex.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "8-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kort-jern-downhill-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 68,
+        "D": 50,
+        "G": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "downhill-lie",
+        "club-selection"
+      ],
+      "coachNotater": "Downhill stuns har ofte tendens til å gå venstre fordi spiller faller framover. Bredere stance og 60-40 vekt foran."
+    },
+    {
+      "navn": "wet-fairway-spin-loss",
+      "beskrivelse": "Etter regn: slå 8-jern 130m fra våt fairway. 10 baller. Mål: identifisere spin-tap (forventet -15-20%) og plan for ekstra rull (4-6m). Loggfør sammenligning mot tørt.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "8-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "F": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "from-wet",
+        "wet-conditions"
+      ],
+      "coachNotater": "Mange tror våte forhold gir mer kontroll. Faktisk: mindre spin = mindre stopping power. Sikt 5m kortere enn vanlig."
+    },
+    {
+      "navn": "morad-disc-4-iron-compression",
+      "beskrivelse": "MORAD DISC 4: bygg kompresjon med 8-jern. Føl right-arm extension gjennom ball. 15 baller med fokus på P7-posisjon: høyre arm 45° til baseline. TrackMan smash > 1.32.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "8-jern",
+        "trackman",
+        "kamera"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "morad-right-arm-45-deg-p7"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "F": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-knowledge-base-v1 DISC 4 Iron Compression",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "ball-flight-law",
+        "kompresjon",
+        "morad"
+      ],
+      "coachNotater": "MORAD-fundament. Hvis spilleren ikke har konsistent kompresjon vil ingen annen tilnærmings-skill funke. Bygg dette først."
+    },
+    {
+      "navn": "morad-disc-6-elbow-flexion-irons",
+      "beskrivelse": "MORAD DISC 6: korrekt venstre-albue-flexion gjennom impact. 15 baller med 7-jern. Sjekk i video: venstre albue holder vinkel til P8. Kobl til left-elbow-stall fault.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "kamera"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "morad-left-elbow-adduction"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 50,
+        "E": 22
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-knowledge-base-v1 DISC 6",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "morad",
+        "elbow-position"
+      ],
+      "coachNotater": "Albue-stall = kort venstre side = casted klubb. Drillen bygger albue som holder gjennom impact. Krever video for å verifisere."
+    },
+    {
+      "navn": "morad-disc-7-pivot-iron",
+      "beskrivelse": "MORAD DISC 7: korrekt pivot-rotasjon for ball-striking. Slå 7-jern 12 baller fokusert på hofterotasjon (90° til target ved P7). Sjekk shaft-on-hips visual fra D5.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "kamera"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "morad-shaft-on-hips-visual"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 52,
+        "E": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-knowledge-base-v1 DISC 7",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "morad",
+        "pivot",
+        "hip-rotation"
+      ],
+      "coachNotater": "Pivot bestemmer alt. Uten skikkelig hofterotasjon kan ikke armene levere. DISC 7 er nest etter DISC 4 i prioritering for ball-striking."
+    },
+    {
+      "navn": "morad-position-2-impact",
+      "beskrivelse": "Slå 10 baller 7-jern. Coach sjekker impact-posisjon: vekt 80% foran, hands 5cm foran ball, klubbflate kvadratisk. Mål: 7 av 10 har korrekt P7 i video.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "kamera"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 55,
+        "F": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-knowledge-base-v1",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "morad",
+        "impact-position"
+      ],
+      "coachNotater": "P2-impact er Mac O'Grady-konsept. Vekt 80% foran ved impact er det som skiller pros fra amatører. Test med trykksensor om mulig."
+    },
+    {
+      "navn": "lag-retention-iron-7",
+      "beskrivelse": "Bruk lag-retention-drill med 7-jern. Hold wrist-vinkel til P6 og slipp gjennom impact. 10 baller. Mål: AoA 4-6° negativ, smash > 1.30, ingen casted skudd.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman",
+        "kamera"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "morad-lag-retention-drill"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "F": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-fault-drill-mapping casting",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "morad",
+        "lag",
+        "casting"
+      ],
+      "coachNotater": "Lag-retention er hovedmedisin mot casting. Tester smash factor måler om lag faktisk overføres til ball-hastighet."
+    },
+    {
+      "navn": "smash-factor-test-pw",
+      "beskrivelse": "TrackMan-test: PW, 10 baller. Mål: gjennomsnitt smash factor > 1.27, beste 5 > 1.30. Hvis under 1.25 — kompresjon eller kontakt-problem. Sjekk lavpunkt og face-contact.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 70,
+        "G": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "ball-flight-law",
+        "smash",
+        "kompresjon"
+      ],
+      "coachNotater": "Smash er det enkelt-tallet som forteller mest om kontakt-kvalitet. Drill månedlig — gir umiddelbar feedback på om dynamiske basics er på plass."
+    },
+    {
+      "navn": "spin-axis-test-jern",
+      "beskrivelse": "TrackMan: 7-jern 10 baller. Mål: spin-axis under 6° (helst under 4°). Stort spin-axis = mye sidekurve. Brukes til å diagnostisere hvor face-path mismatch oppstår.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 60,
+        "F": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "ball-flight-law",
+        "spin-axis"
+      ],
+      "coachNotater": "Spin-axis er rotasjon av ball rundt sin egen akse. Forteller umiddelbart om face er åpen eller lukket relativt til path."
+    },
+    {
+      "navn": "face-path-control-jern",
+      "beskrivelse": "Med 7-jern: slå 5 baller med face-square-to-path (rett ball) og 5 med face-3-open-to-path (fade). Mål: TrackMan viser hva spilleren faktisk produserer og verifiserer ball-flight law.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 55,
+        "F": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-knowledge-base-v1",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "ball-flight-law",
+        "face-path"
+      ],
+      "coachNotater": "85% av start-line kommer fra face. 15% kommer fra path. Hvis spilleren misforstår dette har de feil mental model av ballflukt."
+    },
+    {
+      "navn": "low-point-test-divot",
+      "beskrivelse": "Tegn linje i bakken bak ball. Slå 10 baller med 8-jern. Mål: alle divots starter foran linjen (foran ball). Hvis bak: cast eller scoop — gå til lag-retention.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "8-jern",
+        "kritt"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 70,
+        "G": 55,
+        "H": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-knowledge-base-v1 DISC 4",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "ball-flight-law",
+        "low-point",
+        "kompresjon"
+      ],
+      "coachNotater": "Den enkleste feedback-mekanismen som finnes. Krever bare en linje i bakken. Spillere lærer raskt hvor lavpunktet egentlig er."
+    },
+    {
+      "navn": "approach-decision-tree-15-skudd",
+      "beskrivelse": "På bane: 15 forskjellige tilnærmingsskudd 100-180m. Spilleren skal vurdere distanse, vind, lie, pin, og velge klubb+shape. Coach scorer beslutning + utførelse. Mål: 11 av 15 rette beslutninger.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "yardage-bok"
+      ],
+      "varighetMin": 60,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 55,
+        "F": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "decision-making",
+        "decade"
+      ],
+      "coachNotater": "DECADE-pilot. På bane lever spilleren av beslutninger, ikke teknikk. Drill at hver beslutning følges av commit + execution. Loggfør hva som var feil."
+    },
+    {
+      "navn": "8-sekundersregel-tilnaerming",
+      "beskrivelse": "8-sekundersregelen anvendt på tilnærmingsskudd: bestemme klubb og shape innen 8 sekunder etter ankomst til ball. 10 skudd på range med klokke. Mål: 8 av 10 commit til klubb innen 8 sek.",
+      "disciplin": "TURN",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "klokke"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 70,
+        "G": 50,
+        "H": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:8-sekundersregelen",
+      "tags": [
+        "distance-control",
+        "decision-making",
+        "tempo"
+      ],
+      "coachNotater": "AK Golf-prinsipp: lang beslutningsprosess = doubt = svikt. 8 sekunder er nok hvis du kan din egen bag. Hvis ikke: tilbake til yardage-ladder."
+    },
+    {
+      "navn": "miss-pattern-bias-test",
+      "beskrivelse": "Slå 20 baller 7-jern til 150m. Tegn dispersion-mønster. Identifiser bias (venstre, høyre, lang, kort). Mål: spilleren skal bli bevisst sin natural miss og bygge strategi rundt det.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 85,
+        "D": 68,
+        "G": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "miss-pattern",
+        "decade"
+      ],
+      "coachNotater": "Den viktigste data-driven testen. Spilleren skal vite at sin natural miss er f.eks. 8m høyre. Da plan aim 8m venstre og bruk miss som default."
+    },
+    {
+      "navn": "front-pin-attack-strategi",
+      "beskrivelse": "Pin foran på green (5m fra front). Slå 6 baller med 8-jern: 3 med høy ball (myk landing), 3 med spin (back-up). 140m carry. Mål: 5 av 6 innen 8m og 4 av 6 stopper raskt.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "8-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "F": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "kort-jern",
+        "8-PW",
+        "high-ball",
+        "trajectory"
+      ],
+      "coachNotater": "Front pin med vann eller bunker foran = aggressivt. Vurder om risk/reward er der. Ofte beste valg = sikt midt-green og ta to-putt."
+    },
+    {
+      "navn": "back-pin-attack-strategi",
+      "beskrivelse": "Pin bak på green (5m fra bak). Slå 6 baller med 7-jern: spille runner som lander før green og ruller, eller carry hele. 150m total distanse. Mål: 4 av 6 innen 10m fra pin.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "6-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 52,
+        "F": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "low-ball",
+        "trajectory"
+      ],
+      "coachNotater": "Back pin = klubb opp og spill mid-green. Carry direkte til back-pin har høyt straffepotensial (over green = dead). Spill smart."
+    },
+    {
+      "navn": "tucked-left-pin-aggression",
+      "beskrivelse": "Pin venstre side, vann venstre. Slå 7-jern 150m: aim midt-green, draw til pin. Risk/reward-vurdering. 8 baller. Mål: 5 av 8 holder green, max 1 i vann.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "draw-pin-attack-mellom"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 68,
+        "D": 50,
+        "E": 22
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "shot-shape",
+        "draw",
+        "decision-making"
+      ],
+      "coachNotater": "Vann venstre = aim minst 5m høyre for venstre kant. Hvis draw oversvinger = trygg landing midt-green. Hvis straight = god posisjon."
+    },
+    {
+      "navn": "tucked-right-pin-aggression",
+      "beskrivelse": "Pin høyre side, OB høyre. Slå 7-jern 150m: aim midt-green, fade. Risk/reward. 8 baller. Mål: 5 av 8 holder green, max 1 OB.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "fade-pin-attack-mellom"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 68,
+        "D": 50,
+        "E": 22
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "shot-shape",
+        "fade",
+        "decision-making"
+      ],
+      "coachNotater": "Fade mot tucked right pin: aim midt-green og la fade jobb. Spillere sliter med å committe — drill commitment så mye som teknikk."
+    },
+    {
+      "navn": "punch-out-from-trees",
+      "beskrivelse": "Fra under trær: slå 6-jern med ekstrem lav trajectory 150m fram. Ball bakerst, knockdown, kort finish. 10 baller. Mål: alle 10 under 3m apex, 6 av 10 lander på fairway.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "6-jern"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-7-jern-stinger"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 55,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "low-ball",
+        "punch-out",
+        "from-trees"
+      ],
+      "coachNotater": "Punch-out er recovery, ikke tilnærming. Men teknikken er beslektet. Spilleren skal kunne dette uten å nøle — det redder par-skudd."
+    },
+    {
+      "navn": "approach-fra-fairway-bunker-jern",
+      "beskrivelse": "Fra fairway-bunker med flat lie og lav lippe: slå 7-jern til 150m green. Plant føtter i sand, klubb svever 2cm over, jevn sving. 8 baller. Mål: 5 av 8 ut og 3 av 8 på green.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "7-jern"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 70,
+        "D": 52,
+        "G": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-konseptkatalog",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "fairway-bunker"
+      ],
+      "coachNotater": "Fairway-bunker krever klubb opp pga sand-friksjon. Mister 10-15m carry. Vurder bunker-wedge ut hvis ikke spilleren er trygg."
+    },
+    {
+      "navn": "kombo-3-distanser-pressure",
+      "beskrivelse": "Press-drill: 3 skudd til 3 forskjellige flagg (110m, 145m, 175m). Du må score 2 av 3 innen 10m for å passere. Repeter til 3-strake passes. Bygger tilnærming under press.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 9,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag"
+      ],
+      "varighetMin": 30,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "distance-control-9-spots"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 72,
+        "D": 50,
+        "F": 25
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "pressure",
+        "club-selection"
+      ],
+      "coachNotater": "Tre forskjellige distanser tvinger raskt klubbskifte. Reflekterer hva som skjer i runde. Pass på at spiller ikke faller i én svingtempo."
+    },
+    {
+      "navn": "5-skudd-scoring-test",
+      "beskrivelse": "5 skudd fra 5 forskjellige distanser (100, 125, 150, 175, 200m). Score: 1 poeng på green, 2 innen 10m, 3 innen 5m. Mål: 10 poeng totalt.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 78,
+        "D": 60,
+        "G": 32
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "scoring-test",
+        "yardage-ladder"
+      ],
+      "coachNotater": "Standard AK Golf testprotokoll for tilnærming. Spilleren kjenner igjen formatet og kan måle progresjon over tid. Test kvartalsvis."
+    },
+    {
+      "navn": "approach-recovery-after-miss",
+      "beskrivelse": "Etter dårlig drive: bumper på 100m fra green, men bak tre. Spille recovery-skudd til green. 10 ulike scenarios. Mål: 7 av 10 på green eller advance til chip-distanse.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 75,
+        "D": 58,
+        "G": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "decision-making",
+        "recovery"
+      ],
+      "coachNotater": "Tilnærming etter trøbbel er en egen skill. Spilleren må ikke prøve helter-skudd. DECADE: minimer dårlig miss, neste skudd er den viktigste."
+    },
+    {
+      "navn": "approach-shot-cone-decision",
+      "beskrivelse": "Spilleren kjenner sin shot-cone. På 8 ulike skudd: skal cone hele være på green før de sikter pin. Hvis ikke = midt-green. Coach scorer rett beslutning.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "yardage-bok"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "decade-shot-cone-mapping"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 80,
+        "D": 60,
+        "E": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "decade",
+        "decision-making",
+        "shot-cone"
+      ],
+      "coachNotater": "Shot-cone beslutning er Decade-rygraden. Når spilleren faktisk ser sin shot-cone og treffer den 95% av tiden bytter de aim-strategi."
+    },
+    {
+      "navn": "approach-best-3-of-5",
+      "beskrivelse": "Slå 5 baller med 7-jern til 150m. Bare beste 3 teller. Mål: snitt-distanse innen 6m og 2 innen 4m. Bygger 'flow-state' frigjøring fra worst-ball-skudd.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 15,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 82,
+        "D": 65,
+        "G": 48,
+        "H": 28
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "mellom-jern",
+        "5-7",
+        "distance-control",
+        "confidence"
+      ],
+      "coachNotater": "Confidence-builder for spillere som er for selvkritiske. Lær dem å fokusere på sine beste skudd som data, ikke worst-ball."
+    }
+  ]
+}

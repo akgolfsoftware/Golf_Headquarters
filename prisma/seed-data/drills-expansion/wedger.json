@@ -1,0 +1,6648 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-05-21",
+  "fokusOmrade": "WEDGER",
+  "totalDrills": 155,
+  "sources": [
+    "ak-second-brain:morad-drill-bibliotek",
+    "ak-second-brain:morad-kb-drills-2026-05-18",
+    "ak-second-brain:short-game-wet-conditions",
+    "ak-second-brain:ak-golf-treningsfilosofi",
+    "ak-second-brain:ak-golf-testprotokoller",
+    "ak-second-brain:presisjonsstrategi-prosent-buffer",
+    "ak-second-brain:decade-golf",
+    "ak-second-brain:8-sekundersregelen",
+    "ak-second-brain:morad-diagnostiske-regler",
+    "notion:ak-golf-mac-ogrady-knowledge-base"
+  ],
+  "drills": [
+    {
+      "navn": "wedge-stige-30-50-70-90",
+      "beskrivelse": "Sett opp fire mål på 30, 50, 70 og 90 meter. Slå 5 baller på hver lengde med samme PW. Bytt klubb (GW, SW) på neste runde. Mål: 75% innen 8m av flagget for hver lengde, ingen kontaminering mellom lengder.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "wedge",
+        "trackman",
+        "20-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 87,
+        "C": 83,
+        "D": 78,
+        "G": 65,
+        "J": 50,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "partial-swing",
+        "stige",
+        "30-yard",
+        "50-yard"
+      ],
+      "coachNotater": "Bygg føling før AI/TrackMan trekkes inn. Fire lengder gir spilleren intuitiv kalibrering. Hvis 30m svever, sjekk om grepet er for stivt — partial wedges krever myke håndledd."
+    },
+    {
+      "navn": "klokke-9-10-11-pw",
+      "beskrivelse": "Bruk klokke-system: 9-stilling (venstre arm til 9), 10-stilling (til 10), 11-stilling (til 11) med PW. Logg snittlengde for hver stilling over 10 baller. Repeter til snittet er stabilt innen ±3m for elite, ±5m for klubb-spiller.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 30,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 68,
+        "J": 52,
+        "L": 38
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "partial-swing",
+        "klokke",
+        "75%"
+      ],
+      "coachNotater": "Klokke-systemet er fundamentet for alt partial wedge-spill. Anders' regel: en spiller skal kjenne tre lengder per wedge før han spiller turnering. Resten er interpolasjon."
+    },
+    {
+      "navn": "klokke-9-10-11-gw",
+      "beskrivelse": "Samme klokke-system (9, 10, 11) men med GW. Logg snittlengder. Mål: forskjellen mellom GW-11 og PW-9 skal være under 8m for å unngå hull i avstandsbøkken.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 30,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65,
+        "J": 50,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "partial-swing",
+        "klokke"
+      ],
+      "coachNotater": "Avstandsbøkken (yardage book) bygges her. Spilleren skal vite eksakt hvor langt han slår hver wedge i hver stilling. Skriv det ned."
+    },
+    {
+      "navn": "klokke-9-10-11-sw",
+      "beskrivelse": "Klokke-stillinger (9, 10, 11) med SW. SW er ofte spilt med mer bounce og høyere trajectory — mål: kontroll under 70m. Logg lengder og høyde via TrackMan.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "sw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 30,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65,
+        "J": 50,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "partial-swing",
+        "klokke",
+        "trajectory-control"
+      ],
+      "coachNotater": "SW har vanligvis kortere klokke-rekkevidde, men høyere trajectory. Spilleren skal kjenne forskjellen på SW-11 vs GW-10 — ofte samme lengde, ulik høyde."
+    },
+    {
+      "navn": "klokke-9-10-11-lw",
+      "beskrivelse": "Klokke (9, 10, 11) med LW (60°). Korte distanser med høy trajectory. Forventet rekkevidde: 30-65m. Mål: kontroll innen 5m fra flagget på hver klokke-stilling.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "lw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 30,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "partial-swing",
+        "klokke",
+        "trajectory-control",
+        "high"
+      ],
+      "coachNotater": "LW skal ikke brukes av kategori K-L før de har god kontroll på SW. Risiko for skanking eller fett-treff er for høy."
+    },
+    {
+      "navn": "trackman-feedback-50m-pw",
+      "beskrivelse": "Slå 10 baller à 50m med PW. Vis kun carry-distance på TrackMan etter hver ball. Mål: snitt innen 49-51m, standardavvik under 2m for elite, under 4m for klubb-spiller.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 90,
+        "C": 85,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "50-yard",
+        "feedback",
+        "trackman"
+      ],
+      "coachNotater": "Standardavvik er måleverktøyet, ikke snittet. To spillere med samme snitt kan ha helt ulik consistency. Logg SD i Notion-baseline."
+    },
+    {
+      "navn": "trackman-feedback-75m-gw",
+      "beskrivelse": "10 baller à 75m med GW. Snitt 74-76m, SD under 2.5m for elite. TrackMan viser carry etter hver ball. Stopp og diagnostiser hvis tre baller på rad er over ±3m fra mål.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 94,
+        "B": 90,
+        "C": 85,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "75-yard",
+        "feedback",
+        "trackman"
+      ],
+      "coachNotater": "75m er en av de vanskeligste distansene fordi den ligger mellom full GW og full PW for de fleste. Test om spilleren bruker GW-full eller PW-partial — den med best SD vinner."
+    },
+    {
+      "navn": "trackman-feedback-100m",
+      "beskrivelse": "Slå 10 baller til 100m. Velg klubb selv. TrackMan logger carry, spin, height. Snitt innen ±2m, SD under 3m for elite. Hvis spilleren bytter klubb mellom baller, må han fortsatt holde lengde — det er valg-trening.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 91,
+        "C": 86,
+        "D": 81,
+        "G": 71,
+        "J": 56
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "100-yard",
+        "feedback",
+        "trackman"
+      ],
+      "coachNotater": "100m er DECADE-grensen — fra her og inn skal spilleren ha klar prosent for å treffe greenen. Mål: 90% greens hit fra 100m for elite."
+    },
+    {
+      "navn": "avstandskart-tre-wedger",
+      "beskrivelse": "Bygg fullstendig avstandskart: PW, GW, SW i klokke-stillinger 9, 10, 11 og full. Total 12 lengder. Logg snitt og SD i Notion. Oppdater hver 6. uke.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "trackman",
+        "notion"
+      ],
+      "varighetMin": 60,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 60,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75,
+        "J": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "wedge-fitting",
+        "kartlegging",
+        "baseline"
+      ],
+      "coachNotater": "Dette er fundamentet for hele wedge-spillet. En spiller uten dokumentert avstandskart spiller på gjetning. Tar 60 min — gjør det i ro, ikke etter en treningsøkt."
+    },
+    {
+      "navn": "interpolasjon-mellomavstand-pw-gw",
+      "beskrivelse": "Spilleren får mål mellom standard klokke-lengder (f.eks. 67m mellom PW-10 og GW-11). Mål: 5 av 10 baller innen 4m fra flagget ved interpolasjon. Krever at avstandskartet allerede er bygget.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:presisjonsstrategi-prosent-buffer",
+      "tags": [
+        "distance-control",
+        "partial-swing",
+        "interpolasjon"
+      ],
+      "coachNotater": "Interpolasjon krever at klokke-baselen er solid. Hvis spilleren ikke kan holde standard-lengder, er det ingen vits å trene mellom-avstander."
+    },
+    {
+      "navn": "knockdown-stige-50-75-100",
+      "beskrivelse": "Knockdown-versjon av wedge-stige: lavere trajectory, hands ahead, mindre release. Tre distanser: 50, 75, 100m. Mål: alle baller under 12m apex-høyde. Brukes i vind eller mot tucked pins.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "trajectory-control",
+        "low",
+        "into-wind",
+        "knockdown"
+      ],
+      "coachNotater": "Knockdown er ikke bare for vind — det gir ofte bedre spin-kontroll. Hands ahead, ball litt bak senter, choke down 2cm."
+    },
+    {
+      "navn": "punch-wedge-low-flight",
+      "beskrivelse": "Punch-wedge: choke down 3cm, ball midt i stance, hands well ahead, finish lavt (under hofte). Mål: apex under 8m, carry 60-80m med PW. Brukes i sterk vind.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "trajectory-control",
+        "low",
+        "into-wind",
+        "punch"
+      ],
+      "coachNotater": "Punch er teknisk vanskeligere enn knockdown. Spilleren må holde rotasjon gjennom impact — ingen håndledds-flick. Vurder om kategori-J trenger denne."
+    },
+    {
+      "navn": "tre-prosent-test-100m",
+      "beskrivelse": "Slå 10 baller fra 100m mot smal target (3m bred). Mål: 70% av baller innen target for elite, 50% for klubb. Spinkontroll og spin loft skal være konsistent (±300 rpm).",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:presisjonsstrategi-prosent-buffer",
+      "tags": [
+        "distance-control",
+        "100-yard",
+        "presisjon",
+        "trackman"
+      ],
+      "coachNotater": "Smal target trener øye-hånd-koordinasjon. 3m bredde er PGA Tour proximity-snitt fra 100m. Kategori D bør være innen 5m."
+    },
+    {
+      "navn": "dollar-bill-distance-pw",
+      "beskrivelse": "Legg en dollarseddel (eller papirstrimmel) som mål. Slå PW fra 50m og prøv treffe sedelen. Etter 10 baller, flytt til 75m, så 100m. Logg treff-rate.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "papirstrimmel"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 82,
+        "C": 78,
+        "D": 74,
+        "G": 62,
+        "J": 48,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "presisjon",
+        "morsom"
+      ],
+      "coachNotater": "Morsom drill for å bygge motivasjon hos junior. Treff er bonus — det handler om å se ball flyge mot smalt mål. Bruk fargerikt mål for synlighet."
+    },
+    {
+      "navn": "kart-mot-blind-test",
+      "beskrivelse": "Skjul TrackMan-skjermen. Spiller velger klubb og slår mot 80m-mål. Etter 10 baller, vis statistikk. Mål: snittet ditt skal være innen ±2m av oppgitt distanse, SD under 3m.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 68
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "feedback",
+        "blind-test"
+      ],
+      "coachNotater": "Blind-test avslører om spilleren forstår sin egen kropp eller bare gambler. Anders bruker denne på alle nye AK Academy-spillere som baseline."
+    },
+    {
+      "navn": "vind-justering-25m-pw",
+      "beskrivelse": "Slå PW fra 75m med ulike vindforhold: medvind 10 km/t, motvind 10 km/t, side 10 km/t. Spilleren må justere klubb eller swing-lengde for å treffe 75m carry. Logg justeringer.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "vindmåler",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "distance-control",
+        "into-wind",
+        "downwind",
+        "vind"
+      ],
+      "coachNotater": "Anders' tommelfingerregel: 1 mph vind = 1% justering på wedges. 10 km/t motvind = ta 1 mer klubb, ikke svinge hardere."
+    },
+    {
+      "navn": "downwind-spinkontroll-wedge",
+      "beskrivelse": "Slå wedges i medvind. Problem: ball flyr lengre, men spinen reduseres — backspin holder ikke. Mål: redusér klubb 1 grad eller spill lavere trajectory for å holde spin. Logg roll-out etter landing.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "distance-control",
+        "downwind",
+        "spin-control"
+      ],
+      "coachNotater": "Medvind er farligere enn motvind fordi spinen forsvinner. En PW fra 100m i medvind blir ofte en GW-knockdown for å holde greenen."
+    },
+    {
+      "navn": "70-prosent-swing-pw",
+      "beskrivelse": "Slå PW med bevisst 70% swing-styrke (bruk Stack & Tilt tempo-følelse). Mål: konsistent 75-80m carry, lavere trajectory enn full swing. Bygg dette som go-to wedge under press.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 68
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "75%",
+        "distance-control"
+      ],
+      "coachNotater": "70% swing er Tigers go-to under press. Spillere har bedre kontroll og bedre spin enn full swing. Trenes på range, brukes på siste 6 hull i turnering."
+    },
+    {
+      "navn": "femti-prosent-swing-sw",
+      "beskrivelse": "Slå SW med 50% swing. Backswing til 9-stilling, follow-through til 3-stilling (symmetri). Mål: 25-35m carry, høy spin, soft landing. Brukes inn mot tucked pins.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "sw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "50%",
+        "tucked-pin"
+      ],
+      "coachNotater": "50% sving krever symmetri. Bak-til-fram skal være likt. Hvis spilleren akselererer eller bremser, mister han spinkonsistens."
+    },
+    {
+      "navn": "tretti-prosent-swing-lw",
+      "beskrivelse": "LW med 30% swing — kun håndledd og litt skulderrotasjon. Mål: 15-25m carry, masse spin. Hovedfokus: tempo og kontakt, ikke distanse.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "lw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "30%",
+        "tucked-pin"
+      ],
+      "coachNotater": "Korteste partial krever mykest hender. Bumpe-versjonen — som å kaste en ball med underarms-bevegelse. Ikke for kategori J og under."
+    },
+    {
+      "navn": "distanse-press-three-up",
+      "beskrivelse": "Spill mot deg selv: 3 baller på 75m. Får +1 poeng per ball innen 5m, -1 per ball over 10m. Mål: +3 over 5 sett. Press-trening for distansekontroll.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 5,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:8-sekundersregelen",
+      "tags": [
+        "distance-control",
+        "press",
+        "spill"
+      ],
+      "coachNotater": "Press-trening simulerer turnering. Spillere som har god SD på range, men dårlig i runde, trenger denne. Logg poeng over tid."
+    },
+    {
+      "navn": "worst-shot-wedge-100m",
+      "beskrivelse": "Slå to baller mot 100m-mål, men teller kun verste ball. Spill 10 hull mentalt. Mål: snitt-proximity under 8m for elite. Bygger consistency, ikke topp-spike.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 75,
+        "G": 62
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "consistency",
+        "worst-shot"
+      ],
+      "coachNotater": "DECADE-prinsipp: turnering avgjøres av worst shots, ikke best. Worst-ball-drill flytter fokus til consistency over topp-spike."
+    },
+    {
+      "navn": "ladder-back-tre-distanser",
+      "beskrivelse": "Ladder back: start på 30m, så 50m, så 70m, så 90m. To baller per distanse. Krav: hver ball innen 8m fra flagget. Hvis bom — start på nytt fra 30m. Ferdig når alle 8 baller treffer.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 30,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "G": 58
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:8-sekundersregelen",
+      "tags": [
+        "distance-control",
+        "stige",
+        "press"
+      ],
+      "coachNotater": "Ladder med konsekvens bygger mental robusthet. De siste to ballene (70m, 90m) er ofte vanskeligst fordi spilleren føler press."
+    },
+    {
+      "navn": "dispersion-circle-75m",
+      "beskrivelse": "Slå 20 baller mot 75m-mål. Mål en dispersjon-sirkel rundt snitt-landingspunkt. Mål: sirkel-radius under 6m for elite. Brukes som baseline før periodisering.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:presisjonsstrategi-prosent-buffer",
+      "tags": [
+        "distance-control",
+        "75-yard",
+        "baseline",
+        "dispersion"
+      ],
+      "coachNotater": "Dispersion-test er Anders' #1 baseline-test for wedger. Spillere blir overrasket over hvor stor sirkelen er. Snitt-test viser snitt, dispersjon viser sannhet."
+    },
+    {
+      "navn": "variabel-distanse-roulette",
+      "beskrivelse": "Coach roper tilfeldig distanse (mellom 30-100m) etter hver ball. Spiller har 8 sekunder til å velge klubb og slå. Bygger raskt valg, ikke perfeksjon. 15 baller per sett.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "lw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:8-sekundersregelen",
+      "tags": [
+        "distance-control",
+        "valg",
+        "press",
+        "random"
+      ],
+      "coachNotater": "Random-distanse simulerer banespill. På range slår mange spillere samme klubb 50 ganger — det øker ikke ball-flight-IQ. Roulette gjør."
+    },
+    {
+      "navn": "trajectory-low-med-high-pw",
+      "beskrivelse": "Slå tre baller med PW: en lav (apex under 10m), en medium (apex 15m), en høy (apex 20m+). Samme klubb, ulik trajectory via ball-posisjon og finish-høyde. Logg apex på TrackMan.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "low",
+        "med",
+        "high",
+        "apex"
+      ],
+      "coachNotater": "Mac O'Grady kalte dette W-1 til W-9 trajectory. Spilleren skal kunne kalibrere apex på kommando. Brukes mot ulike pin-plasseringer og vind."
+    },
+    {
+      "navn": "apex-treff-7m-pw",
+      "beskrivelse": "Mål: alle baller med PW skal ha apex 7m (low knockdown). Bruk TrackMan til feedback. 10 baller. Apex over 9m = bom. Krever ball litt bak senter, hands ahead.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "low",
+        "apex",
+        "knockdown"
+      ],
+      "coachNotater": "7m apex er kritisk i sterk vind. Spillere som ikke kan styre apex har ingen plan i vinden — de gambler."
+    },
+    {
+      "navn": "apex-treff-20m-sw",
+      "beskrivelse": "Mål: SW med apex 20m+ (max høyde-trajectory). Brukes for tucked pins eller landing på hard green. Krever ball litt fram i stance, full release, høy finish.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "sw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "high",
+        "apex",
+        "tucked-pin"
+      ],
+      "coachNotater": "Høy apex er forutsetning for soft landing. Spillere uten apex-kontroll får ball som spinner over greener på hard sommer-bane."
+    },
+    {
+      "navn": "hands-ahead-low-flight",
+      "beskrivelse": "Lav trajectory via hands-ahead-posisjon. Sjekkpunkt: ved impact skal hender være 5cm foran ball-posisjonen. Bruk speil eller video. 10 baller med PW, mål apex under 10m.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "speil",
+        "kamera"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55,
+        "L": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "low",
+        "hands-ahead",
+        "tek"
+      ],
+      "coachNotater": "Mange spillere svinger med hands-back ved impact uten å vite det. Speil eller video avslører umiddelbart. Fundamentet for trajectory-kontroll."
+    },
+    {
+      "navn": "open-face-high-flight",
+      "beskrivelse": "Høy trajectory via åpen clubface. Ved adress: åpne SW eller LW 10-15°. Ball litt fram, sving normalt. Mål: apex 25m+, lav carry, soft landing.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "trajectory-control",
+        "high",
+        "open-face"
+      ],
+      "coachNotater": "Åpen face øker effektiv loft. Mac O'Grady-protokoll: 10° åpen = 5° mer loft. Brukes også i fairway-bunker over hindring."
+    },
+    {
+      "navn": "ball-posisjon-trajectory-test",
+      "beskrivelse": "Tre baller per posisjon: bak senter, midt, fram senter. Samme PW. Logg apex og carry. Vis spilleren hvordan ball-posisjon endrer ball-flight 3-5m i apex.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 72,
+        "J": 58,
+        "L": 42
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "ball-posisjon",
+        "low",
+        "med",
+        "high"
+      ],
+      "coachNotater": "Spillere overser ofte ball-posisjon som trajectory-verktøy. Denne drillen åpner øynene — 5cm flytting kan endre 5m apex."
+    },
+    {
+      "navn": "finish-hoyde-trajectory",
+      "beskrivelse": "Tre versjoner av samme PW-swing: finish til hofte (low), til skulder (med), helt over (high). Mål: kontrollere trajectory via finish-bevegelse alene. Logg apex.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 68
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "finish",
+        "low",
+        "med",
+        "high"
+      ],
+      "coachNotater": "Finish er det enkleste verktøyet for trajectory. Spilleren tenker på hvor armene ender, ikke på 12 andre ting. Bra for stress-håndtering."
+    },
+    {
+      "navn": "knee-height-finish-low",
+      "beskrivelse": "Lav trajectory via knee-height finish. Hender stopper ved kneet, ingen full release. Brukes når spilleren MÅ holde ball lav (under tre-grener, sterk vind).",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "trajectory-control",
+        "low",
+        "finish",
+        "into-wind"
+      ],
+      "coachNotater": "Knee-height finish er ekstrem lav trajectory. Krever sterk grep og kontroll. Spillere som mister kontroll ender med chunky shots."
+    },
+    {
+      "navn": "trajectory-mot-flagg-15m",
+      "beskrivelse": "Slå ball med PW slik at apex er over en 15m-merket pinne. Hvis apex er lavere, ball passerer pinnen. Pinnen står 30m fram. Trener visuell trajectory-kontroll.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "pinne"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "visuell",
+        "high"
+      ],
+      "coachNotater": "Visuell trajectory-trening er mer effektiv enn tall. Spilleren ser ball flyge over fysisk pinne, og kalibrerer kroppen til riktig høyde."
+    },
+    {
+      "navn": "trajectory-low-under-rope",
+      "beskrivelse": "Spenn et tau 2m over bakken, 8m foran spilleren. Slå PW under tauet, mot mål 50m bak. Mål: alle baller under tauet, ingen utenfor (over). Trener lav trajectory med åpne hender.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "tau"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "low",
+        "punch",
+        "tau"
+      ],
+      "coachNotater": "Tau gir umiddelbar feedback. Spilleren ser om ball er for høy. Brukes ofte etter en runde der spilleren har vært i trouble (trær, vind)."
+    },
+    {
+      "navn": "hoy-trajectory-over-rope",
+      "beskrivelse": "Tau 4m over bakken, 5m foran spilleren. Slå LW eller SW slik at ball passerer OVER tauet. Mål: høy apex, soft landing. Brukes for opp-til-pin over hindringer.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "tau"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "high",
+        "tau",
+        "tucked-pin"
+      ],
+      "coachNotater": "Lik som lav-under-tau, men motsatt: tvinger spilleren til full release og høy finish. Bygger selvtillit for kort flop til tucked pins."
+    },
+    {
+      "navn": "rull-vs-bite-pw",
+      "beskrivelse": "Slå to baller mot 75m-mål. Første: full PW-swing, mål: ball rull frem 3m+ etter landing. Andre: 70%-swing med mer spin, mål: ball biter (under 1m roll). Logg roll-out via TrackMan.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "spin-control",
+        "rull"
+      ],
+      "coachNotater": "Forskjellen på rull-vs-bite avgjør om ball ender ved flagget eller off-green. Spilleren skal velge bevisst, ikke håpe."
+    },
+    {
+      "navn": "hank-haney-pw-3-trajectories",
+      "beskrivelse": "Hank Haney-drill: tre trajectories med samme klubb (PW). Logg apex-forskjell og carry-forskjell. Forventning: 5m apex-forskjell mellom low og high, 5-8m carry-forskjell.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 68
+      },
+      "videoUrl": null,
+      "kilde": "notion:ak-golf-mac-ogrady-knowledge-base",
+      "tags": [
+        "trajectory-control",
+        "hank-haney",
+        "low",
+        "med",
+        "high"
+      ],
+      "coachNotater": "Hank Haney brukte denne med Tiger. Tiger skulle kunne styre trajectory på kommando, ikke på følelse. Mål: kommando på alle tre."
+    },
+    {
+      "navn": "flop-shot-lw-2m-carry",
+      "beskrivelse": "Klassisk flop med LW: åpen face 30°, ball fram, slick swing under ball. Mål: 2m carry, 10m apex, ball stopper innen 30cm. Brukes når green er kort, hindring nær.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "lw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "high",
+        "flop",
+        "tucked-pin"
+      ],
+      "coachNotater": "Flop er high-risk, high-reward. Hvis spilleren ikke kan kontrollere apex, skal han bumpe-and-run i stedet. Ikke for kategori H og under."
+    },
+    {
+      "navn": "trajectory-ladder-5-distances",
+      "beskrivelse": "Ladder: 30m, 50m, 70m, 90m, 110m. Hver distanse skal slås med apex 12-15m. Mål: konsistent apex på tvers av distanser. Krever klubb-bytte (LW til PW).",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "lw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "stige",
+        "apex",
+        "konsistens"
+      ],
+      "coachNotater": "Konsistent apex på tvers av distanser er PGA Tour-nivå. Krever god klubb-fitting og god teknikk. Hvis apex spriker, sjekk loft-gapping først."
+    },
+    {
+      "navn": "low-bullet-pw-into-wind",
+      "beskrivelse": "Lav bullet-shot inn i 15 km/t vind. PW, choke down 3cm, ball litt bak, hands ahead, finish lavt. Mål: carry 70-80m, apex under 8m. Logg roll-out — skal være 3m+.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "trajectory-control",
+        "low",
+        "into-wind",
+        "punch"
+      ],
+      "coachNotater": "Bullet-shot er Anders' favoritt i vind. Lavere flight = mindre vind-påvirkning + mer rull. Spilleren må akseptere mindre spin."
+    },
+    {
+      "navn": "ball-fram-soft-pitch",
+      "beskrivelse": "Pitch med ball langt fram i stance (på innsiden av venstre hæl). Mål: høy launch, soft landing. Brukes når greenen er hard og spilleren trenger å lande softly. SW eller LW.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "high",
+        "soft-landing",
+        "pitch"
+      ],
+      "coachNotater": "Ball fram = mer effektiv loft. Brukes når flagget er bak en hard del av greenen. Risiko: tynne treff hvis spilleren ikke holder lavt punkt foran ball."
+    },
+    {
+      "navn": "trajectory-windows-3-niva",
+      "beskrivelse": "Tre 'vinduer' definert av høyde-merker: lav (0-10m), medium (10-18m), høy (18m+). Spilleren skal slå PW gjennom hver vindu, 5 baller per vindu. Logg suksessrate.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "merker"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "vindu",
+        "low",
+        "med",
+        "high"
+      ],
+      "coachNotater": "Visuelle vinduer fungerer bedre enn tall for de fleste spillere. Anders' AK Academy bruker dette med plast-pinner som markerer høyde-vinduer."
+    },
+    {
+      "navn": "driving-wedge-bullet",
+      "beskrivelse": "Driving wedge: knockdown PW slått som en stinger, men kortere. Choke down maks, ball langt bak, finish ved hofte. Mål: 80-90m carry, apex 6m, 4-5m roll-out.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 62
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "low",
+        "stinger",
+        "into-wind"
+      ],
+      "coachNotater": "Driving wedge brukes på links-baner i Storbritannia. Anders bruker den på vindfulle dager i Fredrikstad. Spillere må trene den — den kommer ikke naturlig."
+    },
+    {
+      "navn": "trajectory-feedback-foam-wall",
+      "beskrivelse": "Skum-vegg 3m foran spilleren, 1.5m høy. Slå PW slik at ball går OVER veggen, men ikke for høyt. Mål: ball topper veggen med ca 30cm klaring. Indikerer ideell launch angle.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "skum-vegg"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 65,
+        "J": 50,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "launch-angle",
+        "fysisk-mal"
+      ],
+      "coachNotater": "Skum-vegg fungerer både innendørs og utendørs. Gir umiddelbar visuell feedback. Brukes mest med juniorer for å bygge launch-følelse."
+    },
+    {
+      "navn": "apex-progresjon-12-16-20m",
+      "beskrivelse": "Slå PW med kontrollert apex-progresjon: 5 baller apex 12m, 5 baller apex 16m, 5 baller apex 20m. Krever klubb-fitting og teknikk-justeringer. Logg suksessrate per apex-nivå.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "apex",
+        "progresjon"
+      ],
+      "coachNotater": "Apex-progresjon viser spilleren han har kontroll i et bånd, ikke et punkt. Resultatet: bedre selvtillit under press."
+    },
+    {
+      "navn": "trajectory-mot-tucked-pin",
+      "beskrivelse": "Bane-trening: spilleren spiller wedge inn mot tucked pin (3m fra greenkant). Mål: spille riktig trajectory for å lande på sikker del og rulle ned til flagget, eller lande nært flagget med høy bite.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 30,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "trajectory-control",
+        "tucked-pin",
+        "bane-spill"
+      ],
+      "coachNotater": "DECADE-prinsipp: ikke spill direkte mot tucked pin med mindre ball-flight tillater det. Spilleren skal vurdere trajectory FØR han velger linje."
+    },
+    {
+      "navn": "trajectory-wet-conditions-pw",
+      "beskrivelse": "Slå PW på våt range eller etter regn. Wet conditions = mindre spin, ball flyr lengre. Mål: tilpasse club selection. Logg differanse på TrackMan: våt vs tørr.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "trajectory-control",
+        "wet-conditions",
+        "spin-control"
+      ],
+      "coachNotater": "Anders' wet-conditions-protokoll: 5-7% lengre carry, 30% mindre spin. Spilleren må kompensere ved å ta 1 mer klubb eller spille knockdown."
+    },
+    {
+      "navn": "high-spin-soft-landing-sw",
+      "beskrivelse": "SW med høy launch og soft landing. Ball fram, åpen face 10°, full release. Mål: ball lander og stopper innen 1m. Brukes når spilleren trenger å lande på en plate.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "sw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "high",
+        "spin-control",
+        "soft-landing"
+      ],
+      "coachNotater": "Soft landing krever både trajectory og spin. Spillere kan ikke fake det — de må trene det. Sjekk via TrackMan at landing-angle er over 50°."
+    },
+    {
+      "navn": "spin-rate-test-pw-50m",
+      "beskrivelse": "Slå 10 baller à 50m med PW. Logg spin rate per ball. Mål: snitt 8500-9500 rpm, SD under 800 rpm for elite. Lavere spin = inkonsistent ball-treff eller fett-treff.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "spin-control",
+        "trackman",
+        "baseline",
+        "50-yard"
+      ],
+      "coachNotater": "Spin rate er en av Anders' baseline-målinger. Avslører om kontakt er solid. Lav spin med høy launch = fett-treff. Diagnostisk."
+    },
+    {
+      "navn": "spin-konsistens-100m-gw",
+      "beskrivelse": "10 baller à 100m med GW. Mål: spin SD under 600 rpm for elite. Konsistens i spin betyr konsistens i kontakt. Diagnostisk verktøy.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO",
+        "RANGE"
+      ],
+      "utstyr": [
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "spin-control",
+        "trackman",
+        "100-yard",
+        "konsistens"
+      ],
+      "coachNotater": "Hvis spin sprer 1500 rpm, sprer carry 3-5m. Diagnostisk: før du jakter teknikk, sjekk om problemet er kontakt eller hånd-bevegelse."
+    },
+    {
+      "navn": "ball-merking-strike-pattern",
+      "beskrivelse": "Smør sprit-merke (foot spray) på clubface. Slå 10 wedges, sjekk pattern. Mål: alle merker innen 1cm fra senter for elite. Diagnostisk for kontakt-kvalitet.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "foot-spray"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75,
+        "J": 60,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spin-control",
+        "strike-pattern",
+        "diagnostisk"
+      ],
+      "coachNotater": "Strike-pattern er enklere enn TrackMan og avslører umiddelbart om kontakt er sentrert. Brukes ukentlig hos AK Academy."
+    },
+    {
+      "navn": "center-strike-feedback-tee",
+      "beskrivelse": "Plasser to tees på begge sider av ball (5cm fra hver), ca clubhead-bredde. Slå PW mellom tees uten å treffe dem. 10 baller. Bygger center-face-kontakt.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "tees"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75,
+        "J": 60,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spin-control",
+        "center-strike",
+        "tek"
+      ],
+      "coachNotater": "Visuelle gates fungerer bedre enn instruksjon. Spilleren får umiddelbar feedback hvis han treffer tee. Brukes som warmup på range."
+    },
+    {
+      "navn": "clean-strike-no-divot",
+      "beskrivelse": "Slå PW fra teppe-mat eller fast underlag uten å lage divot. Mål: ball-først-kontakt, ingen ground-kontakt. Trener compress-følelse. 10 baller.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "teppe-mat"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 65,
+        "J": 50,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spin-control",
+        "compression",
+        "clean-strike"
+      ],
+      "coachNotater": "Mat-trening uten divot bygger forward-shaft-lean uten å skade håndleddet. Krever konsentrasjon. Hvis spilleren tar mat, går han for langt ned."
+    },
+    {
+      "navn": "spin-loft-15-grader-pw",
+      "beskrivelse": "Mål: spin loft 15° ved impact (TrackMan). Krever moderat forward-shaft-lean, ikke ekstrem. Bygger optimal spin/launch-ratio for PW. 10 baller, justér til spin loft stabiliseres.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spin-control",
+        "spin-loft",
+        "trackman"
+      ],
+      "coachNotater": "Spin loft er nøkkelen for spin-konsistens. Tour-pros er på 12-15° med wedges. For mye = balls flyger høyt og rull, for lite = bladdy treff."
+    },
+    {
+      "navn": "attack-angle-minus-5",
+      "beskrivelse": "Slå PW med kontrollert attack angle -5° (TrackMan). Krever moderat ball-bak-stance, hands ahead. Mål: konsistent angle innen ±1°. 10 baller.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spin-control",
+        "attack-angle",
+        "trackman"
+      ],
+      "coachNotater": "Attack angle påvirker spin direkte. -5° er optimal for fleste wedges. -8° eller verre gir for mye spin og inkonsistens."
+    },
+    {
+      "navn": "groove-cleaning-protokoll",
+      "beskrivelse": "Før hver wedge-økt: rens groovene grundig med stiv børste og vann. Mål: spin på rene grooves vs skitne grooves — forventet differanse 500-1000 rpm. Lær spilleren å holde wedges rene.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "BANE",
+        "HJEM"
+      ],
+      "utstyr": [
+        "wedge",
+        "børste",
+        "vann"
+      ],
+      "varighetMin": 5,
+      "intensitet": 2,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 1,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 93,
+        "C": 90,
+        "D": 87,
+        "G": 80,
+        "J": 70,
+        "L": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "spin-control",
+        "utstyr",
+        "groove",
+        "vedlikehold"
+      ],
+      "coachNotater": "Skitne grooves = død spin. Anders' regel: rens wedger etter hver runde. Tour-pros bytter wedges hver 6. mnd — klubb-spillere skal minst rense."
+    },
+    {
+      "navn": "ny-vs-gammel-wedge-spin-test",
+      "beskrivelse": "Sammenlign spin på spillerens nåværende wedge vs ny wedge (samme modell, samme loft). TrackMan, 10 baller hver. Forventet differanse: 800-1500 rpm hvis gammel wedge er over 1 år.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "wedge-2-stk",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "spin-control",
+        "wedge-fitting",
+        "utstyr",
+        "vokey-grind"
+      ],
+      "coachNotater": "Mange spillere innser ikke at wedgen deres er død. Test mot ny — hvis spin er 1000 rpm lavere, er det tid for å bytte. AK Golf Pro Shop selger Vokey."
+    },
+    {
+      "navn": "rough-vs-fairway-spin",
+      "beskrivelse": "Slå PW fra fairway, så fra lett rough (graset 3cm). Logg spin og carry. Mål: forstå flyer-effekten. Rough = lavere spin, lengre carry. Brukes for å lære spilleren å justere klubb.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "spin-control",
+        "from-rough",
+        "flyer"
+      ],
+      "coachNotater": "Flyer-lies kan gi 5-10m ekstra carry og 50% mindre spin. Spilleren MÅ lære å spotte dem. Lett gras bak ball = flyer-risiko."
+    },
+    {
+      "navn": "flyer-lie-test-gw",
+      "beskrivelse": "Slå GW fra svært myk og fuktig rough. Forventet flyer-effekt: 8-15m lengre, 40% mindre spin. Mål: spilleren skal innse hvor uforutsigbar lie kan være, og velge konservativt.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "spin-control",
+        "from-rough",
+        "flyer",
+        "wet"
+      ],
+      "coachNotater": "Wet flyer er værst. Spillere som ikke har erfart det, blir overrasket midt i runden. Trening i regn anbefales 2x per sesong."
+    },
+    {
+      "navn": "wet-condition-wedge-protokoll",
+      "beskrivelse": "Slå 10 wedges i regn eller på våt range. Følg MORAD wet-protokoll: høyere trajectory, åpen face, hand position 65° ved impact. Mål: kontroll selv i våte forhold.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "spin-control",
+        "wet-conditions",
+        "high",
+        "open-face"
+      ],
+      "coachNotater": "Mac O'Grady's wet-protokoll er gull. De fleste spillere mister 5+ slag i regn fordi de spiller normal trajectory. Trenes spesifikt."
+    },
+    {
+      "navn": "zip-spin-mot-bakover-rull",
+      "beskrivelse": "Slå PW slik at ball lander og ruller TILBAKE mot spilleren. Krever stor spin (10000+ rpm), riktig launch og hard green. Mål: 2m+ bakover-rull. Avansert.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 70
+      },
+      "videoUrl": null,
+      "kilde": "notion:ak-golf-mac-ogrady-knowledge-base",
+      "tags": [
+        "spin-control",
+        "zip-back",
+        "elite"
+      ],
+      "coachNotater": "Zip-back er Tour Pro-trick. Krever ren ball, ren wedge, hard green. På klubb-baner er det ofte umulig. Ikke for kategori D og under."
+    },
+    {
+      "navn": "spin-rate-15k-utfordring",
+      "beskrivelse": "Mål: nå 15000 rpm spin på en PW-shot. Krever perfekt kontakt, riktig spin loft og rene grooves. Bonus-utfordring for elite. 20 baller, logg max-spin.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spin-control",
+        "max-spin",
+        "elite",
+        "trackman"
+      ],
+      "coachNotater": "15k spin er ikke produktivt, men diagnostisk: spilleren lærer hva som skal til. Brukes som spillerikt-mål for elite, ikke som mål i runde."
+    },
+    {
+      "navn": "low-spin-knockdown-pw",
+      "beskrivelse": "Bevisst LAV spin på PW. Knockdown, hands ahead, lavere launch. Mål: spin under 6000 rpm, mer rull. Brukes på hard, vindfull bane.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 62
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spin-control",
+        "low-spin",
+        "knockdown",
+        "hard-green"
+      ],
+      "coachNotater": "Lav spin er like viktig som høy. Tour-pros spiller ofte lav spin i Storbritannia-vind. Klubb-spillere kan ikke fake det — må trenes."
+    },
+    {
+      "navn": "spin-axis-tilt-test",
+      "beskrivelse": "Slå PW og logg spin axis tilt på TrackMan. Mål: under ±3° for nøytral ball-flight. Hvis spin axis er skjev, indikerer det path-vs-face-mismatch — diagnostisk for impact.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-diagnostiske-regler",
+      "tags": [
+        "spin-control",
+        "spin-axis",
+        "diagnostisk"
+      ],
+      "coachNotater": "Spin axis avslører om spilleren har face-path-misalignment. -5° tilt = ball curving venstre. Diagnostisk verktøy, ikke trenings-mål."
+    },
+    {
+      "navn": "hank-haney-spin-stair",
+      "beskrivelse": "Hank Haney spin-stair: 8000, 9000, 10000, 11000 rpm med PW. Krever justering av spin loft via shaft-lean. Logg suksessrate per spin-mål.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 16,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 70
+      },
+      "videoUrl": null,
+      "kilde": "notion:ak-golf-mac-ogrady-knowledge-base",
+      "tags": [
+        "spin-control",
+        "hank-haney",
+        "spin-stair"
+      ],
+      "coachNotater": "Spin-stair er elite-trening. Spilleren skal kontrollere spin på kommando, ikke håpe. Hank Haney brukte med Mark O'Meara."
+    },
+    {
+      "navn": "clean-vs-skitten-ball-spin",
+      "beskrivelse": "Sammenlign spin med ren ball vs skitten ball. Foot spray-mark ball, rull i sand, slå. Logg differanse. Mål: spilleren skal se behov for å rense ball før hvert wedge-skudd.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "sand",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75,
+        "J": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "spin-control",
+        "utstyr",
+        "ball-vedlikehold"
+      ],
+      "coachNotater": "Skitten ball mister 10-20% spin. Anders' regel: rens ball på hvert greenkant. Det er ikke pinglete — det er produktivt."
+    },
+    {
+      "navn": "spin-bevegelse-handledd",
+      "beskrivelse": "Sjekk håndledds-vinkel ved impact via slow-motion-video. Mål: lett radial-deviation (cupping mot mål), ikke full release. Bygger forward-shaft-lean uten å miste spin.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "kamera"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spin-control",
+        "handledd",
+        "tek",
+        "release"
+      ],
+      "coachNotater": "Håndledds-bevegelse ved impact er finmotorisk. Spilleren ser ofte ikke det selv. Video er nødvendig. Korrigér via grep-justering først."
+    },
+    {
+      "navn": "backspin-game-3-baller",
+      "beskrivelse": "Spill mot deg selv: 3 baller, mål er max bakover-rull. Total bakover-distanse. Bygger fokus på spin-kontroll. 5 sett.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 5,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "spin-control",
+        "spill",
+        "morsom",
+        "zip-back"
+      ],
+      "coachNotater": "Spill-format gjør spin-trening morsom. Spilleren prøver hardere når det er konkurranse. Brukes som siste 10 min av wedge-økt."
+    },
+    {
+      "navn": "nine-to-three-pw",
+      "beskrivelse": "9-til-3 swing med PW: backswing til 9-stilling (parallell med bakke, klubb-skaft venstre arm), follow-through til 3-stilling. Mål: symmetrisk svingbue, kontrollert distanse. 10 baller.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55,
+        "L": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "50%",
+        "9-3",
+        "symmetri"
+      ],
+      "coachNotater": "9-til-3 er det viktigste partial-swing-mønsteret. Bygger tempo, kontakt og lengde-kontroll. Brukes på alle nivåer."
+    },
+    {
+      "navn": "ti-til-to-gw",
+      "beskrivelse": "10-til-2 swing med GW: backswing til 10-stilling (litt over horisontal), follow-through til 2-stilling. Lengre swing enn 9-til-3, mer carry. 10 baller, logg carry.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "gw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "75%",
+        "klokke"
+      ],
+      "coachNotater": "10-til-2 fyller hullet mellom 9-til-3 og full swing. Tre partial-lengder per wedge = 9 spillbare avstander før klubb-bytte."
+    },
+    {
+      "navn": "elleve-til-en-sw",
+      "beskrivelse": "11-til-1 swing med SW: nær-full backswing, kontrollert finish. Den lengste partial. Mål: 50-70m carry med kontroll. 10 baller.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "sw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "klokke",
+        "75%"
+      ],
+      "coachNotater": "11-til-1 er nær full swing, men bevisst kontrollert finish. Bedre presisjon enn full SW. Brukes mot tucked pins fra 60m."
+    },
+    {
+      "navn": "symmetri-test-9-3-video",
+      "beskrivelse": "Film 9-til-3 swing fra siden. Mål: backswing-vinkel = follow-through-vinkel innen ±5°. Asymmetri indikerer tempo-problem (akselererer eller bremser).",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "kamera"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75,
+        "J": 60,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "symmetri",
+        "video",
+        "tek"
+      ],
+      "coachNotater": "Symmetri er den enkleste indikatoren på tempo. Spillere ser umiddelbart hva som er feil. Diagnostisk + korrigerende."
+    },
+    {
+      "navn": "metronom-tempo-3-1",
+      "beskrivelse": "Bruk metronom på 60 BPM. Backswing = 3 takter, downswing = 1 takt. Bygger 3:1 tempo-ratio. Slå 10 wedges. Brukes som warmup eller etter tempo-tap.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "metronom"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55,
+        "L": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "tempo",
+        "metronom"
+      ],
+      "coachNotater": "3:1 tempo er Tour-snitt for wedger. Spillere som er for raske eller for langsomme på downswing mister consistency. Metronom er objektivt."
+    },
+    {
+      "navn": "partial-vs-full-test",
+      "beskrivelse": "Sammenlign 10 PW partial (klokke-10) med 10 PW full. Logg snitt-distanse og SD for begge. Forventning: partial gir bedre SD (tightere konsistens) selv om litt kortere.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "partial-swing",
+        "test",
+        "konsistens"
+      ],
+      "coachNotater": "Partial er ofte mer konsistent enn full. Anders' regel: hvis partial SD er tightere enn full, spill partial under press."
+    },
+    {
+      "navn": "hands-still-koffert-partial",
+      "beskrivelse": "Hold en imaginær 'koffert' under venstre arm (kan bruke håndkle). Slå partial PW uten å miste koffert. Bygger sammenkoblet swing, ikke arm-only.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "håndkle"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 68,
+        "J": 55,
+        "L": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "koffert",
+        "tek"
+      ],
+      "coachNotater": "Koffert-drill bygger venstre-arm-tilkobling. Vanlig feil: armer flyr bort fra kroppen i partial swing. Drillen fikser det automatisk."
+    },
+    {
+      "navn": "knees-quiet-partial-sw",
+      "beskrivelse": "Slå partial SW med fokus på 'quiet knees' — minimal bevegelse. Bygger stabil base, bedre kontakt. 10 baller, logg om SD blir bedre enn baseline.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "sw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "quiet-knees",
+        "stabilitet"
+      ],
+      "coachNotater": "Korte slag = mindre kropps-bevegelse. Quiet knees indikerer bevisst stabilitet. Spillere med mye knee-action mister kontakt på partial."
+    },
+    {
+      "navn": "stack-and-tilt-partial",
+      "beskrivelse": "Stack & Tilt-prinsipp på partial: vekt 55% venstre ved adress, ingen vekt-overføring tilbake. Slå 10 PW-shots. Bygger consistent low point. Brukes på tette lies.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "stack-and-tilt",
+        "low-point"
+      ],
+      "coachNotater": "Stack & Tilt egner seg ekstra godt på partial fordi vekt-overføring kompliserer korte slag. Mindre 'å gjøre' = mer kontroll."
+    },
+    {
+      "navn": "partial-pause-toppen",
+      "beskrivelse": "Slå partial PW med 1 sekunds pause på toppen. Bygger separasjon mellom backswing og downswing, fjerner over-the-top-mønster. 10 baller.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 68,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "pause",
+        "tempo"
+      ],
+      "coachNotater": "Pause-drillen bryter rush-fra-toppen. Mange juniorer rushen og ender med dårlig sekvens. Pausen tvinger riktig timing."
+    },
+    {
+      "navn": "partial-eyes-closed-pw",
+      "beskrivelse": "Slå 5 baller med PW partial med øynene lukket. Krever god kropps-følelse. Bygger kinestetisk awareness — spilleren føler swing uten å se den.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 10,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "eyes-closed",
+        "kinestetisk"
+      ],
+      "coachNotater": "Eyes-closed øker propriosepsjon. Spilleren oppdager mikro-bevegelser han ikke merket før. Ikke for kategori J og under (kontakt-risiko)."
+    },
+    {
+      "navn": "partial-no-target-feel",
+      "beskrivelse": "Slå 10 partial PW uten mål — bare føl swing og bygg tempo. Ingen TrackMan, ingen feedback. Bygger 'føl-trening' før målrettet trening. Brukes 5 min hver økt.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 10,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 85,
+        "C": 82,
+        "D": 78,
+        "G": 70,
+        "J": 58,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "feel",
+        "warmup"
+      ],
+      "coachNotater": "Føl-trening er motgift mot for mye teknikk-fokus. Spillere som alltid jakter perfeksjon mister natural feel. 5 min daglig."
+    },
+    {
+      "navn": "partial-presisjon-cone",
+      "beskrivelse": "Plasser kjegle 50m fra spilleren. Slå partial PW mot kjeglen. Mål: 8 av 10 baller innen 4m fra kjegle. Konkret visuelt mål.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "kjegle"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "presisjon",
+        "visuelt-mal"
+      ],
+      "coachNotater": "Kjegle som mål er mer konkret enn 'flagget der borte'. Spilleren ser hva han sikter på. Brukes spesielt med juniorer."
+    },
+    {
+      "navn": "partial-progresjon-9-10-11",
+      "beskrivelse": "Tre runder med PW: runde 1 = 9-stilling, runde 2 = 10-stilling, runde 3 = 11-stilling. 5 baller per runde. Mål: gradvis lengre carry uten å miste kontroll.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55,
+        "L": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "progresjon",
+        "klokke"
+      ],
+      "coachNotater": "Progresjon-format bygger sense of control. Spilleren ser at lengre backswing = lengre carry. Bygger forutsigbarhet."
+    },
+    {
+      "navn": "partial-warmup-protokoll",
+      "beskrivelse": "5-minutters wedge-warmup: 5 baller 9-stilling, 5 baller 10-stilling, 5 baller 11-stilling med PW. Bygger føl før hver økt eller runde. Standard AK Academy.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 5,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 85,
+        "G": 75,
+        "J": 62,
+        "L": 48
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "warmup",
+        "protokoll"
+      ],
+      "coachNotater": "Wedge-warmup er kortere enn full-swing-warmup, men viktig. Bygger ball-flight-følelse før full-swing-jobb. Standard hos AK Academy."
+    },
+    {
+      "navn": "kontroll-30-yard-sw",
+      "beskrivelse": "Spesifikt 30m-mål med SW. 10 baller, alle innen 4m fra flagget. Krever LW eller SW partial. Brukes for tucked pins og opp-til-pin fra fairway-bunker.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "30-yard",
+        "tucked-pin"
+      ],
+      "coachNotater": "30m er kritisk for scoring. Tour-snitt proximity: 2.5m. Klubb-spillere snitt: 8m. Trenes spesifikt."
+    },
+    {
+      "navn": "kontroll-50-yard-pw-sw",
+      "beskrivelse": "50m-mål. Slå 5 baller med PW partial, 5 baller med SW partial. Sammenlign SD og proximity. Velg den klubben som gir best resultat for spilleren.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "sw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "50-yard",
+        "klubb-valg"
+      ],
+      "coachNotater": "50m kan spilles med to klubber. Test for å finne hva som passer hver spiller. Konsistens slår ekstra-distanse."
+    },
+    {
+      "navn": "kontroll-60-yard-gw",
+      "beskrivelse": "60m-mål med GW. 10 baller, alle innen 5m. Krever GW klokke-10 eller PW klokke-9. Brukes mot middel-pins.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "gw",
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "60-yard"
+      ],
+      "coachNotater": "60m er en av de mest oversette distansene. Det er kort nok til at full swing er for langt, langt nok til at chip ikke når. Trenes spesifikt."
+    },
+    {
+      "navn": "kontroll-75-yard-pw",
+      "beskrivelse": "75m-mål med PW. 10 baller, alle innen 6m. Standard PW partial eller 70%-swing. Måles via TrackMan.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "75-yard"
+      ],
+      "coachNotater": "75m er vanlig approach-distance på par-5 andre-skudd. Spilleren skal ha denne i søvne. Hvis ikke, jobb med den ukentlig."
+    },
+    {
+      "navn": "kontroll-85-yard-gap",
+      "beskrivelse": "85m gap-test: er det PW eller GW? Slå 5 baller med hver, sammenlign carry og SD. Lær spilleren å velge basert på data.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "85-yard",
+        "klubb-valg"
+      ],
+      "coachNotater": "85m er ofte 'tweener' — mellom full GW og partial PW. Avhenger av spiller. Anders' regel: velg klubben med best SD, ikke best snitt."
+    },
+    {
+      "navn": "kontroll-90-yard-pw",
+      "beskrivelse": "90m med PW. 10 baller, mål: alle innen 7m. Full PW eller PW knockdown — spilleren velger basert på vind.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "90-yard"
+      ],
+      "coachNotater": "90m er innenfor PW-rekkevidde for de fleste. Hvis spilleren må svinge 100% for 90m, har han feil PW-loft."
+    },
+    {
+      "navn": "kontroll-100-yard-pw",
+      "beskrivelse": "100m med PW. 10 baller, alle innen 8m. Full PW for fleste menn, GW for kortere spillere. TrackMan-styrt.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "100-yard"
+      ],
+      "coachNotater": "100m er DECADE-grensen. Innenfor 100m skal spilleren ha klar plan og høyt forventet GIR. 100m proximity er en av Anders' nøkkelmetrikker."
+    },
+    {
+      "navn": "kontroll-110-yard",
+      "beskrivelse": "110m. PW eller 9-jern for kortere spillere. 10 baller, mål: alle innen 9m. TrackMan-styrt.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "9-jern",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "110-yard"
+      ],
+      "coachNotater": "110m er topp av wedge-rekkevidden for de fleste. Sjekk om spilleren bør oppgradere PW-loft (fra 46° til 48°)."
+    },
+    {
+      "navn": "inn-mellom-skudd-67m",
+      "beskrivelse": "67m — typisk inn-mellom. Spilleren må velge: GW knockdown eller PW partial. Slå 5 av hver, logg. Velg den beste for press.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "gw",
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:presisjonsstrategi-prosent-buffer",
+      "tags": [
+        "distance-control",
+        "in-between",
+        "klubb-valg"
+      ],
+      "coachNotater": "Inn-mellom-distanser er der amatører taper slag. Anders' regel: aldri tving full swing for å treffe inn-mellom. Velg partial eller knockdown."
+    },
+    {
+      "navn": "inn-mellom-skudd-83m",
+      "beskrivelse": "83m — typisk inn-mellom mellom GW og PW. Test begge løsninger: GW partial vs PW full. Velg basert på data, ikke følelse.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "gw",
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:presisjonsstrategi-prosent-buffer",
+      "tags": [
+        "distance-control",
+        "in-between",
+        "klubb-valg"
+      ],
+      "coachNotater": "83m gjentas: aldri full swing for inn-mellom. Du mister presisjon, ikke vinner distanse."
+    },
+    {
+      "navn": "alle-distanser-30-100-pyramide",
+      "beskrivelse": "Pyramide: slå 1 ball à 30, 40, 50, 60, 70, 80, 90, 100m. Bytt klubb etter behov. Mål: alle baller innen 8m. Total: 8 baller, hver i en ny distanse.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "lw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "pyramide",
+        "klubb-valg"
+      ],
+      "coachNotater": "Pyramide tester hele wedge-spektrumet. Avslører hvor i avstandsbøkken det er hull. Brukes hver 6. uke som baseline."
+    },
+    {
+      "navn": "klubb-bytte-test-50m",
+      "beskrivelse": "Slå 50m med tre klubber: PW (full), GW (3/4), SW (full). Sammenlign trajectory og spin. Lær spilleren at samme distanse kan slås på tre måter.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "50-yard",
+        "klubb-valg",
+        "trajectory-control"
+      ],
+      "coachNotater": "Tre veier til 50m: lav (PW knockdown), medium (GW partial), høy (SW full). Spilleren skal vite alle tre for ulike situasjoner."
+    },
+    {
+      "navn": "kort-pitch-25m-progresjon",
+      "beskrivelse": "Korte pitches: 5 baller à 15m, 5 à 20m, 5 à 25m. SW eller LW, 9-stilling partial. Bygger føling for nær-greens-distanser.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "distance-control",
+        "30-yard",
+        "kort-pitch",
+        "partial-swing"
+      ],
+      "coachNotater": "Korte pitches er ofte oversett i wedge-trening. Spilleren fokuserer på 100m, mens scoring skjer fra 30m og inn."
+    },
+    {
+      "navn": "avstands-presisjon-test-A",
+      "beskrivelse": "Elite-test: spilleren slår 1 ball til hver distanse (30, 50, 70, 90m). Krav: alle 4 ball innen 4m fra flagg. Hvis bom — start på nytt. Maks 3 forsøk.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 8,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 4,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 70,
+        "C": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "test",
+        "elite",
+        "press"
+      ],
+      "coachNotater": "Elite-test brukes for å diagnostisere turnering-klare wedger. Hvis spilleren ikke kan denne på range, kan han det heller ikke i turnering."
+    },
+    {
+      "navn": "kald-baseline-wedges",
+      "beskrivelse": "Cold baseline: ingen warmup, spilleren slår 5 baller à 50, 75, 100m. Logg SD og proximity. Sammenlign med 'varm' baseline (etter warmup) — forventet 30% verre.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 62
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "baseline",
+        "cold"
+      ],
+      "coachNotater": "Kald baseline er ærlig. Det er det spilleren faktisk har når turnering starter. Trenes for å redusere gap mellom kald og varm."
+    },
+    {
+      "navn": "wedge-fra-lett-rough-50m",
+      "beskrivelse": "50m fra lett rough (graset 2-3 cm). Slå PW, mål: konsistent kontakt. Forventet: 2-3m ekstra carry pga flyer. Spilleren skal kompensere.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "distance-control",
+        "from-rough",
+        "flyer",
+        "50-yard"
+      ],
+      "coachNotater": "Lett rough er fleste klubb-rough på norske baner. Spilleren skal kunne spille fra det automatisk. Trenes 2x per måned i sesong."
+    },
+    {
+      "navn": "wedge-fra-tykk-rough-30m",
+      "beskrivelse": "30m fra tykk rough. SW eller LW, åpen face. Mål: få ball ut av rough, lande på green. Carry-distanse er sekundær — kontakt er primær.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "from-rough",
+        "tykk-rough",
+        "30-yard"
+      ],
+      "coachNotater": "Tykk rough = ikke håpe på flagget. Spill ut, lande sikkert, putt for par. DECADE-prinsipp: aksepter bogey-risiko, unngå double."
+    },
+    {
+      "navn": "wedge-fra-tynn-lie-tett-gras",
+      "beskrivelse": "Tett, tynn lie (fairway-kanten, hard sommer). Krever clean ball-treff, ingen mat-å-stoppe-ball-på. Mål: ball-først, lav divot. 10 baller.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "from-rough",
+        "tynn-lie",
+        "tek"
+      ],
+      "coachNotater": "Tynn lie er skummel for amatører. De prøver å 'hjelpe' ball opp og topper. Trener forward-shaft-lean og clean strike."
+    },
+    {
+      "navn": "wedge-fra-divot",
+      "beskrivelse": "Slå PW fra divot (bevisst plassert ball i divot). Krever: ball litt bak senter, hands ahead, steiler attack angle. Ikke prøv å 'pic' — slå ned.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "G": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "from-rough",
+        "divot",
+        "trouble"
+      ],
+      "coachNotater": "Divot er hver runde-realitet. Spillere som ikke har trent det, panikker. Drillen bygger automatisk respons."
+    },
+    {
+      "navn": "wedge-fra-side-lie-ball-over",
+      "beskrivelse": "Ball over føttene (uphill sidelie). Slå GW, justér adress (mer flatfooted), forventet ball-flight: trekker venstre. Sikt høyre 5m, 10 baller.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "gw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "from-rough",
+        "sidelie",
+        "ball-over"
+      ],
+      "coachNotater": "Side-lies trenes for sjelden. Hvis spilleren ikke har gjort det 50 ganger, vet han ikke hva som skjer i runde."
+    },
+    {
+      "navn": "wedge-fra-side-lie-ball-under",
+      "beskrivelse": "Ball under føttene (downhill sidelie). Bøy mer i kneene, balanse. Ball flyr høyre. Sikt venstre, 10 baller, mål: konsistent kontakt.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "from-rough",
+        "sidelie",
+        "ball-under"
+      ],
+      "coachNotater": "Ball under er teknisk vanskeligere. Spilleren må holde balanse gjennom hele svingen. Kategori J spillere mister ofte balanse her."
+    },
+    {
+      "navn": "wedge-fra-uphill-lie",
+      "beskrivelse": "Uphill lie (ball høyere enn føtter, mot bakke). Justér: vekt mer på bakre fot, ball litt fram, svinge med skråningen. Ball flyr høyere, kortere. 10 baller PW.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "from-rough",
+        "uphill-lie",
+        "trajectory-control"
+      ],
+      "coachNotater": "Uphill = pluss en klubb pga høyere apex og kortere carry. Spilleren må huske det automatisk."
+    },
+    {
+      "navn": "wedge-fra-downhill-lie",
+      "beskrivelse": "Downhill lie. Vekt mer fram, ball bak, ikke prøv å scoop. Resultat: lavere flight, lengre carry. Krever bevisst klubb-mindre.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "G": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "from-rough",
+        "downhill-lie",
+        "trajectory-control"
+      ],
+      "coachNotater": "Downhill er en av de vanskeligste lie-ne. Spillere topper ofte. Drillen bygger respekt for downhill-skudd."
+    },
+    {
+      "navn": "fairway-bunker-wedge-50m",
+      "beskrivelse": "50m fra fairway bunker. PW eller GW, ball midt i stance, ren ball-først-treff (ingen sand før ball). 10 baller, mål: 7 av 10 på green.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "from-rough",
+        "fairway-bunker",
+        "50-yard"
+      ],
+      "coachNotater": "Fairway bunker er trouble shot. Choke down 2cm, mindre body movement, kvalitet over distanse. Trenes spesifikt."
+    },
+    {
+      "navn": "wedge-fra-vatt-gras-protokoll",
+      "beskrivelse": "Wet rough. Spilleren slår 10 wedges fra fuktig gras. Følg MORAD wet-protokoll: høy trajectory, åpen face, hands forward 65°+. Mål: kontroll selv i våte forhold.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "from-rough",
+        "wet-conditions",
+        "high",
+        "open-face"
+      ],
+      "coachNotater": "Wet rough = double flyer-risk + slipper. Mac O'Grady-protokoll redder mange par. Trenes spesifikt 2x per sesong i regn."
+    },
+    {
+      "navn": "inn-i-vind-pw-75m",
+      "beskrivelse": "75m PW inn i moderate vind (10 km/t). Anders' regel: ta én klubb mer eller spille knockdown. Logg: standard swing carry vs knockdown carry.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "distance-control",
+        "into-wind",
+        "75-yard"
+      ],
+      "coachNotater": "Inn i vind = klubb mer + smartere trajectory. Aldri bare svinge hardere — det øker spin og gjør vind-effekten verre."
+    },
+    {
+      "navn": "med-vind-club-down",
+      "beskrivelse": "Medvind 10 km/t. Test om spilleren skal ta klubb-mindre eller spille lavere trajectory for å holde greenen. 10 baller hver løsning.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "distance-control",
+        "downwind",
+        "trajectory-control"
+      ],
+      "coachNotater": "Medvind er ofte vanskeligere enn motvind fordi spin reduseres. Spilleren overshoot ofte. Trenes spesifikt."
+    },
+    {
+      "navn": "kryss-vind-aim-justering",
+      "beskrivelse": "Side-vind 10-15 km/t. Slå 10 PW mot 75m-mål med vind fra venstre. Forventet: ball drifter høyre. Sikt 5-8m venstre. Logg landingspunkt.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 62
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "distance-control",
+        "crosswind",
+        "aim"
+      ],
+      "coachNotater": "Cross-wind er undervurdert. På åpne baner som Bossum kan det være 10-15m drift på en wedge. Aim-justering må trenes."
+    },
+    {
+      "navn": "vind-mot-flagg-bak-platade",
+      "beskrivelse": "Vind inn, flagg bak platå. Spilleren må lande på platå (sikker del), ikke gå for flagget. Spill SW knockdown, lavere apex, mer rull. Bygger smart vind-strategi.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "pw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 62
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "into-wind",
+        "tucked-pin",
+        "trajectory-control"
+      ],
+      "coachNotater": "Vind-strategi handler om landing-zone, ikke flagg-jakt. DECADE-prinsipp: lande sikkert, rulle nær. Klar plan før hver wedge."
+    },
+    {
+      "navn": "vind-anders-regel-1mph-1prosent",
+      "beskrivelse": "Test Anders' tommelfingerregel: 1 mph vind = 1% justering. Slå 5 baller i 5 mph motvind, 5 i 10 mph. Mål carry-forskjell. Bygger kalibrering.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman",
+        "vindmåler"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "distance-control",
+        "into-wind",
+        "kalibrering"
+      ],
+      "coachNotater": "Regelen er enkel: 1 mph = 1%. 10 mph motvind = -10% carry = ta 1 klubb mer. Anders' kalibrering — hold den i hodet."
+    },
+    {
+      "navn": "vind-test-via-graskast",
+      "beskrivelse": "Lær spilleren å vurdere vind via graskast: ta opp gras, kast i lufta, se retning og hastighet. Praktisk i runde. Trenes i 3 ulike vindforhold.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "gras"
+      ],
+      "varighetMin": 5,
+      "intensitet": 2,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 1,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75,
+        "J": 60,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "distance-control",
+        "vind",
+        "praktisk"
+      ],
+      "coachNotater": "Graskast er det enkleste vind-vurderingsverktøyet. Spillere som ikke gjør det, gjetter. Lær det i kategori L og oppover."
+    },
+    {
+      "navn": "ull-paa-flaggstang-test",
+      "beskrivelse": "Følg med på flagget under wedge-skudd. Hvis flagget rører seg ulikt på ulike steder på green, har du indikator på vind-mønster. Trenes i bane-spill.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [],
+      "varighetMin": 5,
+      "intensitet": 2,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 1,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "distance-control",
+        "vind",
+        "observasjon"
+      ],
+      "coachNotater": "Flaggets bevegelse forteller hva vinden gjør PÅ green-nivå — viktigere enn hva den gjør på tee. Trenes som mental disiplin."
+    },
+    {
+      "navn": "vindprotokoll-pre-shot-routine",
+      "beskrivelse": "Bygg vind-tjekken inn i pre-shot routine: 1) gras-kast, 2) flagg-observasjon, 3) klubb-justering, 4) trajectory-valg. 5 wedges, hver med full vind-vurdering.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "distance-control",
+        "vind",
+        "pre-shot",
+        "routine"
+      ],
+      "coachNotater": "Pre-shot routine er der vind-strategi blir vane. Spillere som hopper over vind-tjekken under press, taper slag. Trenes til automatikk."
+    },
+    {
+      "navn": "tucked-pin-3m-fra-kant",
+      "beskrivelse": "Bygg fasiliteten med flagg 3m fra greenkant. Slå 10 SW partial fra 50m, mål: konsekvent på sikker del + rull mot flagg, eller spill direkte. Bygger trajectory-valg.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "tucked-pin",
+        "trajectory-control",
+        "high"
+      ],
+      "coachNotater": "Tucked pin = pin nær greenkant. Default: spill mot midt-green, ikke pin. Bare elite-spillere skal gå for pin når proximity-data støtter det."
+    },
+    {
+      "navn": "front-pin-spin-stop",
+      "beskrivelse": "Front pin (3m fra forkant green). Slå wedge med høy spin, mål: ball stopper innen 2m. Krever full spin, soft landing. Brukes i AK Academy elite-grupper.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 70
+      },
+      "videoUrl": null,
+      "kilde": "notion:ak-golf-mac-ogrady-knowledge-base",
+      "tags": [
+        "tucked-pin",
+        "spin-control",
+        "high"
+      ],
+      "coachNotater": "Front pin = lav margin for over. Krever spin, ikke roll. Hvis spilleren ikke har spinen, spill midt-green og ta to-putt."
+    },
+    {
+      "navn": "back-pin-rull-strategi",
+      "beskrivelse": "Back pin (3m fra bakkant). Lavere apex, mer rull. PW knockdown eller GW partial. Mål: ball lander på sikker del, ruller mot pin.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 62
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "tucked-pin",
+        "trajectory-control",
+        "low",
+        "rull"
+      ],
+      "coachNotater": "Back pin spilles med lavere flight = mer kontroll. Spillere som spiller alt høyt over-spinner og blir korte. Trener strategisk variasjon."
+    },
+    {
+      "navn": "left-pin-fade-strategi",
+      "beskrivelse": "Pin venstre side av green, gard på venstre. Spille fade (kontrollert venstre-til-høyre) for å komme inn fra høyre. Sikt midt, ball drifter mot pin.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 70
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "tucked-pin",
+        "fade",
+        "elite"
+      ],
+      "coachNotater": "Spille mot pin med shape — krever god face-path-kontroll. Elite-only. For kategori J-D: spill mot midt-green, ikke prøv shape."
+    },
+    {
+      "navn": "right-pin-draw-strategi",
+      "beskrivelse": "Pin høyre side, gard høyre. Spille draw (kontrollert høyre-til-venstre). Sikt midt-green, ball trekker mot pin. Krever klar shape-kontroll.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 70
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "tucked-pin",
+        "draw",
+        "elite"
+      ],
+      "coachNotater": "Draw inn mot pin er Tour-skill. Trenes for elite. Spillere som ikke kan styre shape skal aldri prøve dette under press."
+    },
+    {
+      "navn": "tucked-pin-decade-prosent",
+      "beskrivelse": "Anders' prosent-buffer-strategi: identifiser hvor mye dispersjon spilleren har, og sikt så pin er innenfor 2 standardavvik fra mål. Konkret: 5m dispersjon = sikt 10m fra pin minimum.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 30,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:presisjonsstrategi-prosent-buffer",
+      "tags": [
+        "tucked-pin",
+        "decade",
+        "strategi",
+        "dispersion"
+      ],
+      "coachNotater": "Anders' presisjonsstrategi: spill alltid med 2-SD-buffer. Hvis spilleren snitt-bom er 5m, sikt minimum 10m fra trøbbel. Ingen jakt på pin uten data."
+    },
+    {
+      "navn": "safe-zone-vs-pin-zone",
+      "beskrivelse": "Definer safe zone (midt-green eller sikker del) og pin zone (5m radius rundt pin). Spilleren skal kunne velge bevisst mellom dem basert på lie, vind, dispersjon.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "tucked-pin",
+        "strategi",
+        "safe-zone"
+      ],
+      "coachNotater": "Safe zone vs pin zone er DECADE-kjernen. Klubb-spillere har for liten safe zone. Anders' regel: minst halve green-arealet skal være safe."
+    },
+    {
+      "navn": "tucked-pin-walk-off",
+      "beskrivelse": "Walk-off-test: spilleren spiller mot tucked pin, så går han greenen og vurderer dispersjon visuelt. Lærer å se hvor BALLER faktisk lander vs hvor han sikter.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "tucked-pin",
+        "walk-off",
+        "observasjon"
+      ],
+      "coachNotater": "Walk-off bygger virkelighets-perspektiv. Spilleren ser at hans 'tighte' dispersjon faktisk er 5-7m bred. Korrigerer over-konfidens."
+    },
+    {
+      "navn": "pin-placement-vurdering",
+      "beskrivelse": "Lær spilleren å vurdere pin-placement i 4 kategorier: easy (midt, åpen), medium (slope mot pin), hard (3m fra kant), sucker (omringet trøbbel). Spille deretter.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [],
+      "varighetMin": 10,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 18,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75,
+        "J": 60
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "tucked-pin",
+        "vurdering",
+        "decade"
+      ],
+      "coachNotater": "Pin-vurdering er en mental disiplin. Spillere som ikke kategoriserer pin, jakter alle pins likt. Resultat: doble på sucker-pins."
+    },
+    {
+      "navn": "avstand-til-rett-pin-test",
+      "beskrivelse": "Spilleren får distanse til pin, men også distanse til front-edge og back-edge. Mål: alltid lande ball mellom front og back, ikke nødvendigvis direkt på pin.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "yardage-bok"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "tucked-pin",
+        "yardage",
+        "strategi"
+      ],
+      "coachNotater": "Yardage til front og back er hver Tour-pros minimum. Spillere som bare vet 'flagg' gambler. Lær å lese yardage-bok."
+    },
+    {
+      "navn": "loft-gapping-test-4-wedges",
+      "beskrivelse": "Test loft-gapping mellom PW, GW, SW, LW. Slå 10 baller per klubb, logg snitt-carry. Mål: jevne gap (10-15m mellom hver). Hvis gap er ujevnt, vurder ny wedge-loft.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "lw",
+        "trackman"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 40,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "wedge-fitting",
+        "loft-gapping",
+        "vokey-grind"
+      ],
+      "coachNotater": "Loft-gapping er fundament for wedge-spill. Hvis spilleren har PW=46, GW=52, SW=56, LW=60, er gappet 6-4-4 — ujevnt. Justér."
+    },
+    {
+      "navn": "vokey-grind-test-fra-bunker",
+      "beskrivelse": "Test ulike Vokey-grinds (S, M, K, F, L) fra bunker. Logg consistency og lift. Velg den som spilleren best klarer å treffe konsistent.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw-3-grind",
+        "trackman"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wedge-fitting",
+        "vokey-grind",
+        "utstyr"
+      ],
+      "coachNotater": "Vokey-grind er individuelt. Tour-pros har grinds tilpasset deres swing. Klubb-spillere bør ha S- eller F-grind (mest forgivende)."
+    },
+    {
+      "navn": "bounce-test-paa-ulike-lies",
+      "beskrivelse": "Sammenlign høy-bounce (12°+) vs lav-bounce (8°) SW på ulike lies: tett fairway, lett rough, fluffy lie. Logg kontakt og spin. Velg riktig bounce.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw-2-bounce",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wedge-fitting",
+        "bounce-test",
+        "utstyr"
+      ],
+      "coachNotater": "Høy bounce = fluffy lie + soft sand. Lav bounce = tett lie + hard sand. Spilleren skal vite hva han har og hva det passer til."
+    },
+    {
+      "navn": "shaft-fitting-wedge-test",
+      "beskrivelse": "Test ulike shaft-fleks i wedge: regular, stiff, x-stiff. Logg consistency. Spillere med høy swing-speed kan ha stivere wedge-shaft enn iron-shafts.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "wedge-3-shafts",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 30,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 85,
+        "C": 75
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wedge-fitting",
+        "shaft-fitting",
+        "utstyr"
+      ],
+      "coachNotater": "Shaft-fitting på wedger er ofte oversett. Tour-pros har ofte custom wedge-shafts. For klubb-spillere: standard er ofte OK, men test gjør deg sikker."
+    },
+    {
+      "navn": "groove-wear-test",
+      "beskrivelse": "Test wedge med slitte grooves vs nye grooves. TrackMan: spin-differanse. Forventning: 1500-3000 rpm tap med slitte grooves. Lær spilleren å bytte wedger.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "wedge-2-stk",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wedge-fitting",
+        "groove",
+        "utstyr"
+      ],
+      "coachNotater": "Wedger har levetid på 1-2 år for spillere som trener mye. Etter 100 økter er grooves døde. Bytte er ikke luksus, det er vedlikehold."
+    },
+    {
+      "navn": "wedge-lie-angle-test",
+      "beskrivelse": "Test wedge lie angle på lie-board. For flat = ball drifter høyre, for upright = drifter venstre. Justér på fitting hvis dispersjon er konsekvent én vei.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "wedge",
+        "lie-board"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wedge-fitting",
+        "lie-angle",
+        "utstyr"
+      ],
+      "coachNotater": "Lie angle påvirker direction. Wedger som er 2° for flat for spilleren gir ball høyre. Sjekkes på fitting, ikke etter feel."
+    },
+    {
+      "navn": "spinner-vs-tour-ball-test",
+      "beskrivelse": "Test spinner-ball (Pro V1x, TP5x) vs lavere-spin-ball (Distance) med wedge. Logg spin og distanse-forskjell. Spillere må velge ball som matcher spillet.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "ball-2-typer",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wedge-fitting",
+        "ball-test",
+        "spin-control"
+      ],
+      "coachNotater": "Ball-valg påvirker wedge-spin sterkt. Pro V1x gir 1000-2000 rpm mer enn Distance-ball. Mange klubb-spillere mister spin pga billig ball."
+    },
+    {
+      "navn": "custom-wedge-setup-4-stk",
+      "beskrivelse": "Bygg custom wedge-setup for spilleren: 4 wedges med jevne loft-gaps. Eks: PW=46, GW=50, SW=54, LW=58 (4° gaps). Test loft-gapping etter fitting.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "wedge-4-stk",
+        "trackman"
+      ],
+      "varighetMin": 60,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 40,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 90,
+        "C": 75
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wedge-fitting",
+        "loft-gapping",
+        "elite"
+      ],
+      "coachNotater": "Tour-pros har 4 wedges med 4° gaps. Klubb-spillere har ofte 3 wedges med 6° gaps — for store hull. Custom setup løser det."
+    },
+    {
+      "navn": "wedge-vekt-test",
+      "beskrivelse": "Sammenlign wedge-vekter: standard (290g) vs heavy (310g). Tyngre = mer kontroll, mindre distanse. Test på partial swings. Velg basert på feel og consistency.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "wedge-2-vekter",
+        "trackman"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 30,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 85,
+        "C": 75
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wedge-fitting",
+        "vekt",
+        "elite"
+      ],
+      "coachNotater": "Vekt-fitting er Tour-detail. Tour-pros har ofte tyngre wedges enn standard. Klubb-spillere: test, men ikke nødvendig for fleste."
+    },
+    {
+      "navn": "wedge-justering-ny-vs-gammel",
+      "beskrivelse": "Sammenlign spillerens nåværende wedge-setup (loft, lie, vekt) med fresh-fitted setup. Logg differanser i carry, spin, dispersjon. Beslutningsgrunnlag for bytte.",
+      "disciplin": "EQ",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "wedge-fitter",
+        "trackman"
+      ],
+      "varighetMin": 60,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 40,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "tags": [
+        "wedge-fitting",
+        "utstyr",
+        "evaluering"
+      ],
+      "coachNotater": "Sammenligning er overbevisende. Spillere ser tall på hva de mister med gamle wedger. Brukes hver 2. år som standard."
+    },
+    {
+      "navn": "up-down-wedges-50-100m",
+      "beskrivelse": "Up-and-down-spill: 5 baller fra 50, 75, 100m. Etter hvert wedge-skudd, putt ut. Poeng: 2 for up-and-down, 1 for 2-putt, 0 for 3-putt. Mål: 8 poeng / 15 maks.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "putter"
+      ],
+      "varighetMin": 45,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 65,
+        "J": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "scoring",
+        "up-and-down",
+        "spill"
+      ],
+      "coachNotater": "Up-and-down-rate er en av Anders' nøkkel-metrikker. Tour-pros: 60%+. Klubb-spillere: 25-40%. Trenes spesifikt."
+    },
+    {
+      "navn": "press-wedge-9-baller",
+      "beskrivelse": "9 baller mot 75m-mål. Etter hver ball, må spilleren si proximity-mål før vet svar. Hvis avvik over 3m fra prediksjon — minus 1 poeng. Bygger self-awareness.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 62
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:8-sekundersregelen",
+      "tags": [
+        "distance-control",
+        "self-awareness",
+        "spill"
+      ],
+      "coachNotater": "Self-awareness er sub-skala for skill. Spillere som ikke vet hvor ball lander, har ingen plan for å forbedre."
+    },
+    {
+      "navn": "ball-2-skudd-utfordring",
+      "beskrivelse": "Spill 2 baller fra 80m. Hvis begge er innen 5m fra flagget — vinn. Hvis én ball er over 5m — tap. 5 forsøk. Bygger consistency under press.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 5,
+      "defaultReps": 2,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "G": 58
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "press",
+        "consistency"
+      ],
+      "coachNotater": "Press fra én-ball avgjørelse er virkelighetsnært. Mange spillere har god SD i 10-ball-test, men 1-skudds-press er hva som teller på 18. hull."
+    },
+    {
+      "navn": "wedge-skala-1-10",
+      "beskrivelse": "Etter hver wedge-skudd, scorer spilleren resultat 1-10. 10 = innen 1m, 1 = off-green. Logg snitt over 30 baller. Bygger ærlig vurdering.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 30,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 30,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "self-vurdering",
+        "scoring"
+      ],
+      "coachNotater": "Skala-rating gir spilleren språk for hva som er bra/dårlig. 8+ konsistens = klar for turnering. Under 6 snitt = mer trening nødvendig."
+    },
+    {
+      "navn": "worst-best-shot-diff",
+      "beskrivelse": "Slå 10 wedges fra 75m. Logg beste og verste skudd. Mål: forskjell mellom dem under 5m for elite, 10m for klubb. Mindre diff = bedre worst-case-floor.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "trackman"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:decade-golf",
+      "tags": [
+        "distance-control",
+        "consistency",
+        "worst-case"
+      ],
+      "coachNotater": "DECADE-prinsipp: konsistens > brilliance. Worst-case-floor avgjør turneringsresultater, ikke beste skudd. Anders' nøkkelmetrikk."
+    },
+    {
+      "navn": "pre-shot-routine-wedge",
+      "beskrivelse": "Bygg full pre-shot routine for wedger: 1) yardage-tjekk, 2) vind-vurdering, 3) klubb-valg, 4) target-visualisering, 5) practice-swing, 6) skudd. 10 baller med full routine, max 60 sek per ball.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 36,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75,
+        "J": 60,
+        "L": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:8-sekundersregelen",
+      "tags": [
+        "distance-control",
+        "pre-shot",
+        "routine"
+      ],
+      "coachNotater": "Pre-shot routine er forskjellen på trening og turnering. Spillere som hopper over routine under press, taper slag. Trenes til vane."
+    },
+    {
+      "navn": "visualisering-ball-flight",
+      "beskrivelse": "Før hver wedge: visualiser hele ball-flight (apex, landing, rull, stopp) i 3 sekunder. Slå skudd. Sammenlign med faktisk resultat. Bygger målbevissthet.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 18,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 70,
+        "J": 55
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:8-sekundersregelen",
+      "tags": [
+        "distance-control",
+        "visualisering",
+        "mental"
+      ],
+      "coachNotater": "Visualisering før skudd øker prediksjons-nøyaktighet. Brain modellerer ball-flight, kropp utfører. Trenes daglig."
+    },
+    {
+      "navn": "turnering-simulasjon-9-hull-wedges",
+      "beskrivelse": "Simuler 9-hulls turnering der spilleren BARE bruker wedger fra 30-100m. Logg score, up-and-down-rate, proximity-snitt. Brukes som turneringsforberedelse.",
+      "disciplin": "TURN",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "lw",
+        "putter"
+      ],
+      "varighetMin": 90,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 85,
+        "C": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "turnering",
+        "simulasjon"
+      ],
+      "coachNotater": "9-hulls wedge-simulasjon er Anders' favoritt turneringsforberedelse. Bygger spill-tempo, mental utholdenhet, og ekte data."
+    },
+    {
+      "navn": "pre-turn-baseline-wedge",
+      "beskrivelse": "Før hver turnering: 10 wedges à 75m, logg snitt og SD. Sammenlign med standard. Hvis svakere enn standard, juster forventning og strategi for runden.",
+      "disciplin": "TURN",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw",
+        "trackman"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "turnering",
+        "pre-turn"
+      ],
+      "coachNotater": "Pre-turn baseline gir kalibrering. Hvis spilleren snitter dårlig på range, må han spille mer konservativt i runden. Datadrevet beslutning."
+    },
+    {
+      "navn": "post-runde-wedge-analyse",
+      "beskrivelse": "Etter hver runde: logg alle wedge-skudd (klubb, distanse, resultat, lie, vind). Bygger personlig wedge-database. Etter 5 runder, identifiser mønstre.",
+      "disciplin": "TURN",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE",
+        "HJEM"
+      ],
+      "utstyr": [
+        "notion",
+        "yardage-bok"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 18,
+      "csTargetByKategori": {
+        "A": 95,
+        "B": 92,
+        "C": 88,
+        "D": 84,
+        "G": 75
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:ak-golf-testprotokoller",
+      "tags": [
+        "distance-control",
+        "post-runde",
+        "logging"
+      ],
+      "coachNotater": "Wedge-database er gold. Etter 20 runder ser spilleren mønstre han aldri ville sett ellers. Logg i Notion eller TrackMan Pro."
+    },
+    {
+      "navn": "morad-wet-conditions-65grad",
+      "beskrivelse": "MORAD wet-protokoll: ved impact skal hand position være 65°+ foran ball (mot 45° normalt). Slå 10 wedges fra fuktig gras. Bygger anti-flyer-svingmønster.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw"
+      ],
+      "varighetMin": 20,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 80,
+        "D": 76,
+        "G": 62
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "wedge-fitting",
+        "morad",
+        "wet-conditions",
+        "tek"
+      ],
+      "coachNotater": "65°-protokoll er Mac O'Grady's wet-condition-hemmelighet. Hand way ahead, pick ball ren. Trenes 2x per sesong, brukes i regn."
+    },
+    {
+      "navn": "morad-pump-drill-wedge",
+      "beskrivelse": "MORAD Pump Drill applisert på wedge: backswing til P5, ned til P5.5, opp igjen, ned til impact. Bygger sekvens og rytme på wedger.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "morad",
+        "pump-drill",
+        "tek"
+      ],
+      "coachNotater": "Pump-drill bygger downswing-sekvens. Wedger har samme sekvens som full swing, bare kortere. Brukes ved over-the-top-mønster."
+    },
+    {
+      "navn": "morad-right-arm-clubshaft-110-wedge",
+      "beskrivelse": "MORAD high-arm-position på wedge: høyre arm-clubshaft-vinkel 110° ved P5. Sjekkpunkt via video. Bygger sekvens og lag på partial swing.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "kamera"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 85,
+        "C": 75
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "morad",
+        "tek",
+        "elite"
+      ],
+      "coachNotater": "MORAD-posisjoner gjelder også for wedger. Spillere som har god full swing men dårlig wedge, har ofte mistet 110°-posisjonen."
+    },
+    {
+      "navn": "morad-elbow-flexion-wedge",
+      "beskrivelse": "MORAD venstre albue-fleksjon på wedge: oppretthold lett albue-fleksjon gjennom hele swing. Bygger lag og spin. 10 wedges med fokus.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 86,
+        "C": 82,
+        "D": 78,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "morad",
+        "elbow-flexion"
+      ],
+      "coachNotater": "Venstre albue-fleksjon bygger lag også på wedger. Spillere med stiv venstre albue mister spin og distanse."
+    },
+    {
+      "navn": "morad-flat-left-wrist-impact",
+      "beskrivelse": "MORAD flat left wrist ved impact på wedge. Sjekk via video — venstre håndledd skal være flatt eller lett bowed, ikke cupped. 10 wedges.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 12,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "kamera"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 92,
+        "B": 88,
+        "C": 84,
+        "D": 80,
+        "G": 65
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "morad",
+        "tek",
+        "impact"
+      ],
+      "coachNotater": "Flat left wrist ved impact er fundament for konsistent spin. Cupped wrist = scoop = ujevn ball-treff. Trenes via Hogan-tee-drill."
+    },
+    {
+      "navn": "morad-stinger-wedge-conversion",
+      "beskrivelse": "MORAD stinger-prinsipper på wedge: lav release, ball bak senter, finish ved hofte. Brukes for ekstrem lav trajectory i sterk vind.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "trajectory-control",
+        "morad",
+        "stinger",
+        "low",
+        "into-wind"
+      ],
+      "coachNotater": "Wedge-stinger er Tour-trick. Tiger brukte i Storbritannia-vind. Krever sterk grep og kontroll. Ikke for kategori D og under."
+    },
+    {
+      "navn": "morad-three-momentum-wedge",
+      "beskrivelse": "MORAD three momentum-prinsipp på wedge: 1) clubhead, 2) hender, 3) kropp — alle akselererer sammen. 10 wedges med fokus på sekvens.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw"
+      ],
+      "varighetMin": 15,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 85,
+        "C": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "morad",
+        "sekvens"
+      ],
+      "coachNotater": "Three momentum gjelder også på wedge. Spillere som ruser klubben med hender alene mister sekvens og kontakt."
+    },
+    {
+      "navn": "morad-position-walk-p5-p7-wedge",
+      "beskrivelse": "MORAD position-walk for wedge: gå sakte gjennom P5 (mid-backswing) → P6 (down halfway) → P7 (impact). Sjekkpunkter via video. Bygger awareness.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "C",
+      "maxKategori": "A",
+      "minHcp": -3,
+      "maxHcp": 6,
+      "environment": [
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "kamera"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 84,
+        "C": 72
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "partial-swing",
+        "morad",
+        "position-walk",
+        "elite"
+      ],
+      "coachNotater": "Position-walk er MORAD-signaturen. Spilleren forstår posisjoner intellektuelt før fysisk. Trenes med video, sjelden uten."
+    }
+  ]
+}
