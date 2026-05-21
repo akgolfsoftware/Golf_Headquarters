@@ -20,6 +20,7 @@ import {
   Loader2,
   SlidersHorizontal,
 } from "lucide-react";
+import { AthleticButton } from "@/components/athletic/button";
 
 function Filter() {
   const [active, setActive] = useState<"alle" | "best" | "verst">("alle");
@@ -97,15 +98,15 @@ function Actions({
       aria-label="Økt-handlinger"
       className="flex flex-wrap items-center gap-3 border-t border-border pt-8"
     >
-      <button
+      <AthleticButton
         type="button"
+        variant="primary"
         onClick={eksporterCsv}
         disabled={pending}
-        className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         <Download className="h-4 w-4" strokeWidth={1.75} />
         Eksporter CSV
-      </button>
+      </AthleticButton>
 
       <button
         type="button"

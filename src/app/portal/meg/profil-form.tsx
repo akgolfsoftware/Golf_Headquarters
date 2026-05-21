@@ -13,6 +13,7 @@ import {
 import type { Tier } from "@/generated/prisma/client";
 import type { UserPreferences } from "@/lib/preferences";
 import { oppdaterProfil, oppdaterPreferences } from "./actions";
+import { AthleticButton } from "@/components/athletic/button";
 
 type ProfilInitial = {
   name: string;
@@ -287,13 +288,9 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
           )}
 
           <div className="flex items-center gap-4">
-            <button
-              type="submit"
-              disabled={pending}
-              className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
-            >
+            <AthleticButton type="submit" variant="primary" disabled={pending}>
               {pending ? "Lagrer…" : "Lagre profil"}
-            </button>
+            </AthleticButton>
             {lagret && (
               <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
                 <Check className="h-3 w-3" strokeWidth={1.5} />
@@ -533,8 +530,8 @@ function ToggleRow({
       <button
         type="button"
         onClick={() => onChange(!on)}
-        aria-pressed={on}
         role="switch"
+        aria-checked={on}
         className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
           on ? "bg-primary" : "bg-secondary"
         }`}

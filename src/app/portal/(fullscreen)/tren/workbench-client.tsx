@@ -1627,11 +1627,11 @@ export function WorkbenchClient() {
 
                   <div className="sg-legend">
                     <span>
-                      <i style={{ background: "#005840" }} />
+                      <i className="bg-primary" />
                       Off-the-tee
                     </span>
                     <span>
-                      <i style={{ background: "#A32D2D" }} />
+                      <i className="bg-destructive" />
                       Approach
                     </span>
                     <span>

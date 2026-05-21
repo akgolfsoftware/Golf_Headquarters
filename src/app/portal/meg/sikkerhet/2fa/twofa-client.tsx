@@ -13,6 +13,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { useToast } from "@/components/shared/toast-provider";
+import { AthleticButton } from "@/components/athletic/button";
 
 type Steg = 1 | 2 | 3;
 type Metode = "authenticator" | "sms";
@@ -128,14 +129,10 @@ export function TwoFaClient() {
           </fieldset>
 
           <div className="mt-6 flex justify-end">
-            <button
-              type="button"
-              onClick={tilSteg2}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-            >
+            <AthleticButton type="button" variant="primary" onClick={tilSteg2}>
               Fortsett
               <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
-            </button>
+            </AthleticButton>
           </div>
         </Kort>
       )}
@@ -203,15 +200,15 @@ export function TwoFaClient() {
             >
               Tilbake
             </button>
-            <button
+            <AthleticButton
               type="button"
+              variant="primary"
               onClick={bekreftKode}
               disabled={pending || kode.length !== 6}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {pending ? "Bekrefter …" : "Bekreft"}
               <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
-            </button>
+            </AthleticButton>
           </div>
         </Kort>
       )}
@@ -287,15 +284,15 @@ export function TwoFaClient() {
           )}
 
           <div className="mt-6 flex justify-end">
-            <button
+            <AthleticButton
               type="button"
+              variant="primary"
               onClick={fullfor}
               disabled={!lagret}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               <ShieldCheck className="h-4 w-4" strokeWidth={1.75} />
               Fullfør og aktiver
-            </button>
+            </AthleticButton>
           </div>
         </Kort>
       )}

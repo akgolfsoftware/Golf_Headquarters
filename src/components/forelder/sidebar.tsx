@@ -10,7 +10,7 @@ import {
   Bell,
   ShieldCheck,
 } from "lucide-react";
-import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
+import { SidebarBrand } from "@/components/shared/sidebar-brand";
 
 const NAV = [
   { href: "/forelder", label: "Oversikt", Icon: HomeIcon },
@@ -28,13 +28,8 @@ export function ForelderSidebar() {
       aria-label="Foreldreportal sidemeny"
       className="flex w-56 shrink-0 flex-col bg-primary text-primary-foreground"
     >
-      <div className="px-6 py-8">
-        <Link href="/forelder" aria-label="AK Golf — Foreldreportal" className="inline-flex flex-col gap-2">
-          <AkGolfLogo variant="white" width={48} />
-          <span className="font-display text-base font-bold leading-none tracking-tight">
-            <em className="font-normal text-accent md:italic">forelder</em>
-          </span>
-        </Link>
+      <div className="flex justify-center px-4 py-6">
+        <SidebarBrand variant="parent" role="FORELDER" />
       </div>
       <nav aria-label="Hovednavigasjon" className="flex-1 space-y-1 px-4">
         {NAV.map((n) => {

@@ -50,7 +50,7 @@ const disciplineStyles: Record<
   { bg: string; color: string; label: string }
 > = {
   SLAG: { bg: "bg-[#2C7D52]/15", color: "text-[#1f5e3d]", label: "SLAG" },
-  TEK: { bg: "bg-[#005840]/15", color: "text-[#005840]", label: "TEK" },
+  TEK: { bg: "bg-primary/15", color: "text-primary", label: "TEK" },
   FYS: { bg: "bg-[#1A4D2E]/15", color: "text-[#1A4D2E]", label: "FYS" },
 };
 
@@ -300,7 +300,7 @@ export function LiveActiveClient({ data }: Props) {
         <button
           type="button"
           onClick={handleAddDrill}
-          className="m-4 mb-6 w-[calc(100%-32px)] py-3 border border-dashed border-[#005840]/40 text-[#005840] rounded-xl font-semibold text-[13px] flex items-center justify-center gap-1.5"
+          className="m-4 mb-6 w-[calc(100%-32px)] py-3 border border-dashed border-primary/40 text-primary rounded-xl font-semibold text-[13px] flex items-center justify-center gap-1.5"
         >
           <Plus className="w-[14px] h-[14px]" strokeWidth={2} />
           Legg til drill
@@ -330,7 +330,7 @@ function StatCard({
       className={cn(
         "rounded-xl border p-2.5 flex flex-col gap-1",
         live
-          ? "bg-[#005840] border-[#005840] text-white"
+          ? "bg-primary border-primary text-white"
           : "bg-card border-border",
       )}
     >
@@ -427,7 +427,7 @@ function DrillCard({
           className={cn(
             "w-[34px] h-[34px] rounded-full flex items-center justify-center border flex-shrink-0",
             isActive
-              ? "bg-[#005840] text-accent border-[#005840]"
+              ? "bg-primary text-accent border-primary"
               : "bg-background text-muted-foreground border-border",
           )}
         >
@@ -524,7 +524,7 @@ function ActiveBody({
             Rest timer · løper
           </div>
           <div className="font-mono text-[30px] font-semibold tracking-[-0.02em] leading-none flex items-baseline gap-2">
-            <span className="w-1.5 h-1.5 bg-accent rounded-full self-center animate-pulse shadow-[0_0_8px_#D1F843]" />
+            <span className="w-1.5 h-1.5 bg-accent rounded-full self-center animate-pulse shadow-[0_0_8px_var(--color-accent)]" />
             02:14
             <span className="text-sm text-white/50 ml-1">/ 03:00</span>
           </div>
@@ -569,7 +569,7 @@ function ActiveBody({
       <button
         type="button"
         onClick={onAddSet}
-        className="w-[calc(100%-28px)] mx-3.5 mb-4 py-2.5 bg-transparent border border-dashed border-[#005840]/40 text-[#005840] rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5"
+        className="w-[calc(100%-28px)] mx-3.5 mb-4 py-2.5 bg-transparent border border-dashed border-primary/40 text-primary rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5"
       >
         <Plus className="w-[13px] h-[13px]" strokeWidth={2} />
         Legg til sett
@@ -592,7 +592,7 @@ function ActiveBody({
         ))}
         <button
           type="button"
-          className="h-12 rounded-xl bg-[#005840] text-accent font-mono text-sm font-bold tracking-[-0.02em] flex items-center justify-center relative shadow-[0_1px_0_rgba(0,0,0,0.05)]"
+          className="h-12 rounded-xl bg-primary text-accent font-mono text-sm font-bold tracking-[-0.02em] flex items-center justify-center relative shadow-[0_1px_0_rgba(0,0,0,0.05)]"
         >
           1+1
           <ArrowUpRight
@@ -659,7 +659,7 @@ function SetRow({
       <span
         className={cn(
           "font-mono text-sm font-semibold text-center",
-          isActive ? "text-[#005840]" : "text-foreground",
+          isActive ? "text-primary" : "text-foreground",
         )}
       >
         {index}
@@ -678,7 +678,7 @@ function SetRow({
         className={cn(
           "w-[70px] h-9 mx-auto block border border-border rounded-lg bg-background font-mono text-base font-semibold text-center text-foreground tracking-[-0.02em] outline-none placeholder:text-border",
           set.done && "bg-card",
-          isActive && "border-[#005840] border-2 bg-card",
+          isActive && "border-primary border-2 bg-card",
         )}
       />
       <button
@@ -789,11 +789,11 @@ function NoteRow({
       className={cn(
         "grid grid-cols-[32px_1fr] gap-2.5 px-3 py-2.5 rounded-xl items-center cursor-text",
         dashed
-          ? "border border-dashed border-[#005840]/40 bg-accent/5"
+          ? "border border-dashed border-primary/40 bg-accent/5"
           : "bg-background border border-border",
       )}
     >
-      <div className="w-8 h-8 rounded-lg bg-card border border-border flex items-center justify-center text-[#005840]">
+      <div className="w-8 h-8 rounded-lg bg-card border border-border flex items-center justify-center text-primary">
         {icon}
       </div>
       <div>

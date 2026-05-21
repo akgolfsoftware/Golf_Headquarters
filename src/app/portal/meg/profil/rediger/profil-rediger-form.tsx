@@ -10,6 +10,7 @@ import {
   Save,
 } from "lucide-react";
 import { updateProfile } from "./actions";
+import { AthleticButton } from "@/components/athletic/button";
 
 type Initial = {
   name: string;
@@ -322,15 +323,15 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
             >
               Avbryt
             </button>
-            <button
+            <AthleticButton
               type="button"
+              variant="primary"
               disabled={!dirty || pending}
               onClick={lagre}
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               <Save className="h-3.5 w-3.5" strokeWidth={2} />
               {pending ? "Lagrer …" : "Lagre endringer"}
-            </button>
+            </AthleticButton>
           </div>
         </div>
       </div>

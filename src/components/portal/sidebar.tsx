@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Plus, ChevronDown } from "lucide-react";
 import type { Tier } from "@/generated/prisma/client";
-import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
+import { SidebarBrand } from "@/components/shared/sidebar-brand";
 import { FEATURES } from "@/lib/features";
 
 // ---------------------------------------------------------------------------
@@ -109,17 +109,11 @@ export function PortalSidebar({
       className="flex w-52 shrink-0 flex-col bg-[var(--color-player-sidebar)] text-white lg:w-64"
     >
       {/* Logo */}
-      <div className="px-6 py-8">
-        <Link
-          href="/portal"
-          aria-label="AK Golf — PlayerHQ"
-          className="inline-flex flex-col gap-2"
-        >
-          <AkGolfLogo variant="white" width={48} />
-          <span className="font-display text-base font-bold leading-none tracking-tight">
-            <em className="font-normal text-accent md:italic">player</em>
-          </span>
-        </Link>
+      <div className="flex justify-center px-4 py-6">
+        <SidebarBrand
+          variant="player"
+          role={tier === "PRO" ? "PRO" : "SPILLER"}
+        />
       </div>
 
       {/* Ny økt — rask handling */}

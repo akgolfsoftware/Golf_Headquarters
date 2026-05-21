@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { ArrowLeft, ArrowRight, Check, Plus } from "lucide-react";
 import { logSymptom } from "./actions";
+import { AthleticButton } from "@/components/athletic/button";
 
 type Side = "Venstre" | "Høyre" | "Midt / begge";
 type View = "front" | "back";
@@ -512,15 +513,16 @@ export function SymptomWizard() {
           {varighet.toLowerCase()} · {occurence.toLowerCase()}
         </span>
         <div className="ml-auto">
-          <button
+          <AthleticButton
             type="button"
+            variant="lime"
             onClick={next}
             disabled={pending}
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-foreground shadow-lg shadow-accent/20 hover:opacity-90 disabled:opacity-60"
+            className="shadow-lg shadow-accent/20"
           >
             {step < 3 ? "Neste" : pending ? "Lagrer…" : "Lagre symptom"}
             <ArrowRight size={14} strokeWidth={2.2} />
-          </button>
+          </AthleticButton>
         </div>
       </footer>
     </>

@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
+import { SidebarBrand } from "@/components/shared/sidebar-brand";
 
 type NavItem = { href: string; label: string };
 
@@ -104,23 +104,15 @@ export function AdminMobileDrawer() {
             role="dialog"
             aria-label="CoachHQ-meny"
           >
-            <div className="flex items-center justify-between px-6 py-6">
-              <Link
-                href="/admin"
-                onClick={() => setOpen(false)}
-                aria-label="AK Golf — CoachHQ"
-                className="inline-flex flex-col gap-2"
-              >
-                <AkGolfLogo variant="white" width={48} />
-                <span className="font-display text-base font-bold leading-none tracking-tight">
-                  <em className="font-normal text-accent md:italic">coach</em>
-                </span>
-              </Link>
+            <div className="relative flex justify-center px-4 py-6">
+              <div onClick={() => setOpen(false)}>
+                <SidebarBrand variant="coach" role="HEAD COACH" />
+              </div>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Lukk meny"
-                className="grid h-11 w-11 place-items-center rounded-md text-white/70 hover:bg-white/10 hover:text-white active:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-md text-white/70 hover:bg-white/10 hover:text-white active:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
               >
                 <X width={20} height={20} aria-hidden />
               </button>
