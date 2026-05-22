@@ -113,6 +113,14 @@ export default function Hjem() {
             />
           </div>
 
+          {/* Stats-strip — sosial proof */}
+          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
+            <Stat value="38" label="Aktive spillere" />
+            <Stat value="12" label="År erfaring" />
+            <Stat value="4" label="Treningsanlegg" />
+            <Stat value="2 200+" label="Timer coaching i 2025" />
+          </div>
+
         </div>
       </section>
 
@@ -428,5 +436,18 @@ function Partner({ label, logoSrc }: { label: string; logoSrc?: string }) {
       <Users className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
       {label}
     </span>
+  );
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="text-center sm:text-left">
+      <div className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl tabular-nums">
+        {value}
+      </div>
+      <div className="font-mono mt-1 text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        {label}
+      </div>
+    </div>
   );
 }
