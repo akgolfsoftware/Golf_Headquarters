@@ -28,43 +28,72 @@ type NavItem = {
 // Navigation
 // ---------------------------------------------------------------------------
 
+// PlayerHQ 5-seksjons IA (validerings-runde 2026-05-22)
+// Plan-IA: Oversikt · Planlegge · Gjennomføre · Analysere · Coach
 const MAIN_ITEMS: NavItem[] = [
-  { href: "/portal", label: "Hjem" },
+  { href: "/portal", label: "Oversikt" },
   {
-    href: "/portal/innsikt",
-    label: "Innsikt",
-    matchPrefixes: ["/portal/innsikt"],
-  },
-  {
-    href: "/portal/tren/kalender",
-    label: "Planlegging",
-    matchPrefixes: ["/portal/tren", "/portal/ny-okt"],
+    href: "/portal/planlegge",
+    label: "Planlegge",
+    matchPrefixes: [
+      "/portal/planlegge",
+      "/portal/tren",
+      "/portal/mal",
+    ],
     children: [
-      { href: "/portal/tren/kalender", label: "Kalender" },
-      { href: "/portal/tren/aarsplan", label: "Årsplan" },
-      { href: "/portal/tren", label: "Treningsplanlegger" },
-      { href: "/portal/tren/turneringer", label: "Turneringsplanlegger" },
+      { href: "/portal/planlegge?tab=arsplan", label: "Årsplan" },
+      { href: "/portal/planlegge?tab=treningsplan", label: "Treningsplan" },
+      { href: "/portal/planlegge?tab=mal", label: "Mål" },
+      { href: "/portal/planlegge?tab=turneringer", label: "Turneringer" },
+      { href: "/portal/planlegge?tab=drills", label: "Drills" },
     ],
   },
   {
-    href: "/portal/statistikk",
-    label: "Statistikk",
-    matchPrefixes: ["/portal/statistikk", "/portal/mal"],
+    href: "/portal/gjennomfore",
+    label: "Gjennomføre",
+    matchPrefixes: [
+      "/portal/gjennomfore",
+      "/portal/kalender",
+      "/portal/booking",
+      "/portal/ny-okt",
+      "/portal/onskeligokt",
+    ],
+    children: [
+      { href: "/portal/gjennomfore?tab=idag", label: "I dag" },
+      { href: "/portal/gjennomfore?tab=kalender", label: "Kalender" },
+      { href: "/portal/gjennomfore?tab=live", label: "Live-økt" },
+      { href: "/portal/gjennomfore?tab=booking", label: "Booking" },
+    ],
+  },
+  {
+    href: "/portal/analysere",
+    label: "Analysere",
+    matchPrefixes: [
+      "/portal/analysere",
+      "/portal/innsikt",
+      "/portal/statistikk",
+      "/portal/trackman",
+      "/portal/talent",
+    ],
+    children: [
+      { href: "/portal/analysere?tab=statistikk", label: "Statistikk" },
+      { href: "/portal/analysere?tab=sg", label: "Strokes gained" },
+      { href: "/portal/analysere?tab=runder", label: "Runder" },
+      { href: "/portal/analysere?tab=trackman", label: "TrackMan" },
+      { href: "/portal/analysere?tab=tester", label: "Tester" },
+      { href: "/portal/analysere?tab=innsikt", label: "Innsikt" },
+    ],
   },
   {
     href: "/portal/coach",
     label: "Coach",
-    matchPrefixes: [
-      "/portal/coach",
-      "/portal/onskeligokt",
-      "/portal/booking",
+    matchPrefixes: ["/portal/coach"],
+    children: [
+      { href: "/portal/coach?tab=coach", label: "Min coach" },
+      { href: "/portal/coach?tab=meldinger", label: "Meldinger" },
+      { href: "/portal/coach?tab=foresporsler", label: "Forespørsler" },
+      { href: "/portal/coach?tab=ny-melding", label: "Ny melding" },
     ],
-  },
-  {
-    href: "/portal/meg",
-    label: "Profil",
-    matchPrefixes: ["/portal/meg", "/portal/varsler"],
-    badge: true,
   },
 ];
 
@@ -149,9 +178,9 @@ export function PortalSidebar({
                 <Link
                   href={item.href}
                   aria-current={aktiv && !hasChildren ? "page" : undefined}
-                  className={`flex items-center justify-between rounded-md px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
+                  className={`relative flex items-center justify-between rounded-md px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
                     aktiv
-                      ? "bg-white/10 font-semibold text-white"
+                      ? "bg-[var(--color-accent-fill)] font-semibold text-white before:absolute before:left-0 before:top-1/2 before:h-6 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
                       : "text-white/70 hover:bg-white/5 hover:text-white"
                   }`}
                 >
