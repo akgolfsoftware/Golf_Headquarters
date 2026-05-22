@@ -37,6 +37,10 @@ export function BekreftForm({
       setError("Gyldig e-post er påkrevd.");
       return;
     }
+    if (!phone.trim() || phone.trim().length < 5) {
+      setError("Telefonnummer er påkrevd.");
+      return;
+    }
     setError(null);
     startTransition(async () => {
       const result = await createBookingCheckout({
@@ -77,12 +81,14 @@ export function BekreftForm({
           className={input}
         />
       </Felt>
-      <Felt label="Telefon (valgfri)">
+      <Felt label="Telefon">
         <input
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="+47 …"
+          required
+          minLength={5}
           className={input}
         />
       </Felt>

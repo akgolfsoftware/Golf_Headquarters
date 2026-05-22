@@ -24,6 +24,10 @@ export async function createBookingCheckout(
   input: BookingFormInput,
 ): Promise<BookingResult> {
   try {
+    if (!input.phone.trim() || input.phone.trim().length < 5) {
+      return { ok: false, error: "Telefonnummer er påkrevd." };
+    }
+
     const service = await prisma.serviceType.findUnique({
       where: { slug: input.slug },
     });
