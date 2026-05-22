@@ -88,9 +88,37 @@ function beregnScore(
         carries.reduce((s, c) => s + (c - mean) ** 2, 0) / carries.length;
       return Math.sqrt(variance);
     }
+    case "value_single": {
+      // Første inputfelt (vekt, tid etc.) fra første shot
+      const allVals = Object.values(values).flatMap((v) =>
+        Object.values(v).filter((n) => !isNaN(n) && n > 0),
+      );
+      return allVals.length > 0 ? allVals[0] : null;
+    }
+    case "value_max": {
+      // Beste (høyeste) verdi fra primærfeltet over alle shots
+      const allVals = Object.values(values).flatMap((v) =>
+        Object.values(v).filter((n) => !isNaN(n) && n > 0),
+      );
+      return allVals.length > 0 ? Math.max(...allVals) : null;
+    }
+    case "time_seconds": {
+      // Lavere er bedre — hent tid i sekunder fra første shot
+      const allVals = Object.values(values).flatMap((v) =>
+        Object.values(v).filter((n) => !isNaN(n) && n > 0),
+      );
+      return allVals.length > 0 ? allVals[0] : null;
+    }
     default:
       return null;
   }
+}
+
+/** Formater sekunder som mm:ss for visning */
+function formatTid(sek: number): string {
+  const m = Math.floor(sek / 60);
+  const s = Math.round(sek % 60);
+  return `${m}:${String(s).padStart(2, "0")}`;
 }
 
 export function Scorekort({
@@ -138,9 +166,13 @@ export function Scorekort({
     });
   }
 
-  const isLowerBetter = ["pei_average", "pei_total", "distance_average", "spread_stddev"].includes(
-    protocol.scoring,
-  );
+  const isLowerBetter = [
+    "pei_average",
+    "pei_total",
+    "distance_average",
+    "spread_stddev",
+    "time_seconds",
+  ].includes(protocol.scoring);
 
   const categories = [
     ...new Set(protocol.shots.map((s) => s.category).filter(Boolean)),
@@ -172,7 +204,9 @@ export function Scorekort({
             <div className="mt-1 flex items-baseline gap-2">
               <span className="font-display text-3xl font-semibold tabular-nums text-foreground">
                 {liveScore !== null
-                  ? liveScore.toFixed(1).replace(".", ",")
+                  ? protocol.scoring === "time_seconds"
+                    ? formatTid(liveScore)
+                    : liveScore.toFixed(1).replace(".", ",")
                   : "---"}
               </span>
               <span className="font-mono text-xs text-muted-foreground">
@@ -180,7 +214,11 @@ export function Scorekort({
                   ? "poeng"
                   : protocol.scoring === "carry_average"
                     ? "m carry"
-                    : "m"}
+                    : protocol.scoring === "value_single" || protocol.scoring === "value_max"
+                      ? (protocol.inputFields[0]?.unit ?? "")
+                      : protocol.scoring === "time_seconds"
+                        ? "mm:ss"
+                        : "m"}
               </span>
             </div>
           </div>

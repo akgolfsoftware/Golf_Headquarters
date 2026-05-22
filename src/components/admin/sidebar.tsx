@@ -7,68 +7,72 @@ import { FEATURES } from "@/lib/features";
 
 type NavItem = { href: string; label: string };
 
+// CoachHQ 7-seksjons IA (master-plan 2026-05-22)
+// Oversikt / Stall / Planlegge / Gjennomføre / Analysere / Kommunikasjon / Organisasjon
 const ALL_NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   {
-    label: "Daglig",
-    items: [
-      { href: "/admin/agencyos", label: "Hub" },
-      { href: "/admin/kalender", label: "Kalender" },
-      { href: "/admin/foresporsler", label: "Forespørsler" },
-    ],
+    label: "Oversikt",
+    items: [{ href: "/admin/agencyos", label: "Hub" }],
   },
   {
-    label: "Produktivitet",
+    label: "Stall",
     items: [
-      { href: "/admin/innboks", label: "Innboks" },
-      { href: "/admin/notion-prosjekter", label: "Notion-prosjekter" },
-      { href: "/admin/notion-oppgaver", label: "Notion-oppgaver" },
+      { href: "/admin/spillere", label: "Alle spillere" },
+      { href: "/admin/stall", label: "Stall-snitt" },
+      { href: "/admin/talent", label: "Talent-radar" },
+      { href: "/admin/talent/sammenligning", label: "Sammenligning" },
+      { href: "/admin/talent/wagr-import", label: "WAGR" },
     ],
   },
   {
     label: "Planlegge",
     items: [
-      { href: "/admin/spillere", label: "Spillere" },
       { href: "/admin/plans", label: "Treningsplaner" },
       { href: "/admin/plan-templates", label: "Plan-maler" },
-      { href: "/admin/drills", label: "Drill-bibliotek" },
-      { href: "/admin/anlegg", label: "Anlegg" },
-      { href: "/admin/services", label: "Tjenester" },
+      { href: "/admin/grupper", label: "Grupper" },
       { href: "/admin/tournaments", label: "Turneringer" },
+      { href: "/admin/drills", label: "Drill-bibliotek" },
     ],
   },
   {
-    label: "Evaluering",
+    label: "Gjennomføre",
     items: [
-      { href: "/admin/analyse", label: "Analyse" },
+      { href: "/admin/kalender", label: "Kalender" },
+      { href: "/admin/bookinger", label: "Bookinger" },
+      { href: "/admin/anlegg", label: "Anlegg" },
+      { href: "/admin/availability", label: "Tilgjengelighet" },
+      { href: "/admin/services", label: "Tjenester" },
+    ],
+  },
+  {
+    label: "Analysere",
+    items: [
+      { href: "/admin/analyse", label: "Stall-analyse" },
       { href: "/admin/lag-snitt", label: "Lag-snitt" },
-      { href: "/admin/kapasitet", label: "Kapasitet" },
+      { href: "/admin/foresporsler", label: "Forespørsler" },
+      { href: "/admin/godkjenninger", label: "Godkjenninger" },
       { href: "/admin/reports", label: "Rapporter" },
+      { href: "/admin/kapasitet", label: "Kapasitet" },
     ],
   },
   {
-    label: "Talent",
+    label: "Kommunikasjon",
     items: [
-      { href: "/admin/talent", label: "Talent" },
-      { href: "/admin/talent/wagr-benchmark", label: "WAGR-benchmark" },
-      { href: "/admin/talent/wagr-import", label: "WAGR-import" },
-    ],
-  },
-  {
-    label: "Økonomi",
-    items: [{ href: "/admin/finance", label: "Økonomi" }],
-  },
-  {
-    label: "Verktøy",
-    items: [
-      { href: "/admin/agents", label: "AI-agenter" },
-      { href: "/admin/videoer", label: "Videoer" },
-      { href: "/admin/recording", label: "Sesjonsopptak" },
+      { href: "/admin/innboks", label: "Innboks" },
       { href: "/admin/email-templates", label: "E-postmaler" },
+      { href: "/admin/notion-prosjekter", label: "Notion-prosjekter" },
+      { href: "/admin/notion-oppgaver", label: "Notion-oppgaver" },
+    ],
+  },
+  {
+    label: "Organisasjon",
+    items: [
       { href: "/admin/team", label: "Team" },
+      { href: "/admin/finance", label: "Økonomi" },
+      { href: "/admin/agents", label: "AI-agenter" },
       { href: "/admin/integrasjoner", label: "Integrasjoner" },
+      { href: "/admin/audit-log", label: "Audit-log" },
       { href: "/admin/settings", label: "Innstillinger" },
-      { href: "/admin/settings/tilgang", label: "Tilgang & roller" },
-      { href: "/admin/tilstander", label: "Tilstander" },
     ],
   },
 ];
@@ -83,7 +87,7 @@ export function AdminSidebar() {
   return (
     <aside
       aria-label="CoachHQ sidemeny"
-      className="flex w-52 shrink-0 flex-col bg-[var(--color-coach-sidebar)] text-white lg:w-64"
+      className="flex w-52 shrink-0 flex-col bg-[#0F2A22] text-white lg:w-64"
     >
       <div className="flex justify-center px-4 py-6">
         <SidebarBrand variant="coach" role="HEAD COACH" />
@@ -108,9 +112,9 @@ export function AdminSidebar() {
                     key={n.href}
                     href={n.href}
                     aria-current={aktiv ? "page" : undefined}
-                    className={`block rounded-md px-4 py-1.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-coach-sidebar)] ${
+                    className={`relative block rounded-md px-4 py-1.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-coach-sidebar)] ${
                       aktiv
-                        ? "bg-white/10 font-semibold text-white"
+                        ? "bg-[var(--color-accent-fill)] font-semibold text-white before:absolute before:left-0 before:top-1/2 before:h-5 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
                         : "text-white/70 hover:bg-white/5 hover:text-white"
                     }`}
                   >
