@@ -1,362 +1,383 @@
 /**
  * PlayerHQ · Drill-detalj
  *
- * Detalj-side for én drill — beskrivelse, video, parametere og statistikk.
- * Inkluderer:
- * - Hero med discipline-pill og kobling til coach
- * - Video-thumbnail (placeholder SVG hvis ingen video)
- * - Parametere-grid (reps, series, rest, område, fase, belastning, type)
- * - Italic beskrivelse (Instrument Serif look via font-display + italic)
- * - Coach-tips/notater
- * - Min historikk (siste 5 ganger)
- * - Actions: Start økt · Legg til kalender
+ * Server component som henter én ExerciseDefinition med:
+ * - Mestringslogg (siste 10 økt-registreringer for innlogget spiller)
+ * - Ratings (siste 5 drill-ratings for innlogget spiller)
+ * - Progresjonsserie (parentDrill + progressjonsDrills)
  *
- * Param-segment `[id]`. URL: `/portal/drills/<id>`.
+ * Inkluderer:
+ * - Hero med skillArea-badge, progresjonsnivaa-sirkler og MORAD-badge
+ * - Coach-notater (lysegul boks hvis finnes)
+ * - Progresjonsserie-sti med piler
+ * - Mestringslogg + registrerings-skjema + rating-widget (via MestringsLoggClient)
+ * - Actions: Start økt · Del
  */
 
 import Link from "next/link";
 import {
   ArrowLeft,
+  ArrowRight,
   PlayCircle,
   Zap,
-  Layers,
-  Activity,
-  Target as TargetIcon,
-  Hash,
-  Timer,
-  Gauge,
-  MapPin,
-  Repeat,
+  CheckCircle2,
+  ChevronRight,
+  TrendingUp,
 } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { kategoriFraHcp } from "@/lib/ai-plan/context";
 import { PageHeader } from "@/components/shared/page-header";
 import { DrillDetailClient } from "./drill-client";
+import { MestringsLoggClient } from "./mestrings-logg-client";
+import type { PyramidArea, SkillArea } from "@/generated/prisma/client";
 
-type Discipline = "SLAG" | "TEK" | "TURN" | "SPILL" | "FYS";
+/* ─── Hjelpere ─── */
 
-type DummyDrill = {
-  id: string;
-  title: string;
-  discipline: Discipline;
-  disciplineLabel: string;
-  assignedBy: string;
-  videoUrl: string | null;
-  description: string;
-  coachTips: string;
-  parameters: {
-    reps: string;
-    series: string;
-    rest: string;
-    area: string;
-    phase: string;
-    load: string;
-    practiceType: string;
-  };
-  history: Array<{
-    date: string;
-    duration: number; // min
-    completion: number; // 0–100
-    notes: string;
-  }>;
-};
-
-const DUMMY_DRILL: DummyDrill = {
-  id: "dummy-pitch",
-  title: "Pitch 50—100m, lav trajectory",
-  discipline: "SLAG",
-  disciplineLabel: "Slag",
-  assignedBy: "Anders Kristiansen · AK Golf Academy",
-  videoUrl: null,
-  description:
-    "Trener landingssone-kontroll på de korte iron-skuddene. Fokus er lav trajectory som ruller forutsigbart inn på greenen. Du holder ballen lavt ved å spille den bakover i stancen, ha hendene foran på treff, og holde skuldrene rolige gjennom finishen.",
-  coachTips:
-    "Ikke jag distansen — la kølla gjøre jobben. Hvis du går over ±3m landingssone i siste serie, ta 30 sek pause ekstra og fokuser på tempo. Bedre 8 av 10 enn 10 av 10 med dårlig kontroll.",
-  parameters: {
-    reps: "50 totalt",
-    series: "5 serier á 10",
-    rest: "90 sek mellom serier",
-    area: "Range matte 4",
-    phase: "CS70",
-    load: "Medium",
-    practiceType: "Blokk",
-  },
-  history: [
-    {
-      date: "2026-05-14",
-      duration: 45,
-      completion: 92,
-      notes: "Best så langt — 46/50 innenfor ±3m",
-    },
-    {
-      date: "2026-05-08",
-      duration: 50,
-      completion: 84,
-      notes: "Spinn for høy på serie 3",
-    },
-    {
-      date: "2026-05-02",
-      duration: 40,
-      completion: 78,
-      notes: "Vind tok flere skudd",
-    },
-    {
-      date: "2026-04-26",
-      duration: 45,
-      completion: 72,
-      notes: "Første gang — bygger feel",
-    },
-    {
-      date: "2026-04-18",
-      duration: 30,
-      completion: 64,
-      notes: "Intro · coach demonstrerte teknikk",
-    },
-  ],
-};
-
-const DISCIPLINE_STYLE: Record<Discipline, string> = {
+const PYR_PILL: Record<PyramidArea, string> = {
+  FYS: "bg-secondary text-secondary-foreground border-border",
+  TEK: "bg-accent/30 text-accent-foreground border-accent/40",
   SLAG: "bg-primary/10 text-primary border-primary/30",
-  TEK: "bg-accent/30 text-accent-foreground border-accent/50",
-  TURN: "bg-secondary text-secondary-foreground border-border",
   SPILL: "bg-primary/10 text-primary border-primary/30",
-  FYS: "bg-muted text-muted-foreground border-border",
+  TURN: "bg-secondary text-secondary-foreground border-border",
 };
+
+const SKILL_LABEL: Record<SkillArea, string> = {
+  TEE_TOTAL: "Tee",
+  TILNAERMING: "Tilnærming",
+  AROUND_GREEN: "Around Green",
+  PUTTING: "Putting",
+  SPILL: "Spill",
+};
+
+function ProgresjonsNivaaIndikator({ nivaa }: { nivaa: number | null }) {
+  if (nivaa === null) return null;
+  return (
+    <div className="flex items-center gap-1" aria-label={`Progresjonsnivå ${nivaa} av 5`}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span
+          key={i}
+          className={`inline-block h-2 w-2 rounded-full ${
+            i < nivaa ? "bg-primary" : "bg-border"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ─── Side-komponent ─── */
 
 export default async function DrillDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ allow: ["PLAYER", "PARENT"] });
   const { id } = await params;
+  const spillerKategori = kategoriFraHcp(user.hcp);
 
-  // Forsøk å hente fra Prisma (ExerciseDefinition), fall tilbake til dummy.
-  let data: DummyDrill = DUMMY_DRILL;
+  const drill = await prisma.exerciseDefinition.findUnique({
+    where: { id },
+    include: {
+      mestringsLogg: {
+        where: { userId: user.id },
+        orderBy: { dato: "desc" },
+        take: 10,
+      },
+      ratings: {
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      },
+      parentDrill: {
+        select: { id: true, name: true },
+      },
+      progressjonsDrills: {
+        select: { id: true, name: true, progresjonsnivaa: true },
+        orderBy: { progresjonsnivaa: "asc" },
+        take: 3,
+      },
+    },
+  });
 
-  try {
-    const exercise = await prisma.exerciseDefinition.findUnique({
-      where: { id },
-    });
-    if (exercise) {
-      const pyramidToDiscipline: Record<string, Discipline> = {
-        SLAG: "SLAG",
-        SPILL: "SPILL",
-        TEK: "TEK",
-        FYS: "FYS",
-        TURN: "TURN",
-      };
-      data = {
-        ...DUMMY_DRILL,
-        id: exercise.id,
-        title: exercise.name,
-        discipline:
-          pyramidToDiscipline[exercise.pyramidArea] ?? "SLAG",
-        disciplineLabel:
-          exercise.pyramidArea.charAt(0) +
-          exercise.pyramidArea.slice(1).toLowerCase(),
-        videoUrl: exercise.videoUrl ?? null,
-        description: exercise.description ?? DUMMY_DRILL.description,
-        parameters: {
-          ...DUMMY_DRILL.parameters,
-          reps: exercise.defaultRepsSets ?? DUMMY_DRILL.parameters.reps,
-          phase: exercise.lPhase ?? DUMMY_DRILL.parameters.phase,
-        },
-      };
-    }
-  } catch {
-    // DB nede eller ingen tilgang — bruk dummy.
+  // Fallback til 404-lignende visning om drill ikke finnes.
+  if (!drill) {
+    return (
+      <div className="space-y-6 pb-20">
+        <Link
+          href="/portal/drills"
+          className="inline-flex h-11 items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
+          Tilbake til drill-bibliotek
+        </Link>
+        <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
+          <p className="font-display text-xl italic text-muted-foreground">
+            Denne drillen finnes ikke eller er ikke tilgjengelig.
+          </p>
+          <Link
+            href="/portal/drills"
+            className="mt-6 inline-flex h-11 items-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          >
+            Se alle drills
+          </Link>
+        </div>
+      </div>
+    );
   }
 
-  // user er garantert non-null pga requirePortalUser, men vi referer ikke
-  // direkte for å unngå ubrukt-variabel-warning fra tooling.
-  void user;
+  // Beregn csTarget for spillerens kategori.
+  let csForMeg: number | null = null;
+  if (
+    spillerKategori !== null &&
+    drill.csTargetByKategori &&
+    typeof drill.csTargetByKategori === "object" &&
+    !Array.isArray(drill.csTargetByKategori)
+  ) {
+    const map = drill.csTargetByKategori as Record<string, unknown>;
+    const v = map[spillerKategori];
+    if (typeof v === "number") csForMeg = v;
+  }
+  if (csForMeg === null && drill.csMin !== null && drill.csMax !== null) {
+    csForMeg = Math.round((drill.csMin + drill.csMax) / 2);
+  } else if (csForMeg === null && drill.csMax !== null) {
+    csForMeg = drill.csMax;
+  } else if (csForMeg === null && drill.csMin !== null) {
+    csForMeg = drill.csMin;
+  }
 
-  const paramRows: Array<{ icon: typeof Hash; label: string; value: string }> =
-    [
-      { icon: Hash, label: "Reps", value: data.parameters.reps },
-      { icon: Layers, label: "Series", value: data.parameters.series },
-      { icon: Timer, label: "Rest", value: data.parameters.rest },
-      { icon: MapPin, label: "Område", value: data.parameters.area },
-      { icon: Activity, label: "Fase", value: data.parameters.phase },
-      { icon: Gauge, label: "Belastning", value: data.parameters.load },
-      { icon: Repeat, label: "Praksistype", value: data.parameters.practiceType },
-    ];
+  // Sjekk om spiller har mestret drillen.
+  const harMestret = drill.mestringsLogg.some((l) => l.mestret);
 
   return (
     <div className="space-y-6 pb-20 md:space-y-10 md:pb-0">
       <Link
-        href="/portal/tren"
+        href="/portal/drills"
         className="inline-flex h-11 items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
-        Tilbake til treningsplan
+        Tilbake til drill-bibliotek
       </Link>
 
       <PageHeader
-        eyebrow="DRILL · TILDELT AV COACH"
+        eyebrow="DRILL · MESTRINGSLOGG"
         titleLead="Drill:"
-        titleItalic={data.title}
-        sub={data.assignedBy}
+        titleItalic={drill.name}
+        sub={
+          drill.durationMin !== null
+            ? `${drill.durationMin} min · ${drill.pyramidArea}`
+            : drill.pyramidArea
+        }
         actions={
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${DISCIPLINE_STYLE[data.discipline]}`}
-          >
-            <Zap className="h-3 w-3" strokeWidth={1.75} />
-            {data.disciplineLabel}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            {/* SkillArea-badge */}
+            {drill.skillArea && (
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${PYR_PILL[drill.pyramidArea]}`}
+              >
+                <Zap className="h-3 w-3" strokeWidth={1.75} />
+                {SKILL_LABEL[drill.skillArea]}
+              </span>
+            )}
+
+            {/* MORAD-badge */}
+            {drill.morad && (
+              <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
+                MORAD
+              </span>
+            )}
+
+            {/* Mestret-badge */}
+            {harMestret && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
+                <CheckCircle2 className="h-3 w-3" strokeWidth={1.75} />
+                Mestret
+              </span>
+            )}
+
+            {/* Progresjonsnivaa */}
+            {drill.progresjonsnivaa !== null && (
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  Nivå
+                </span>
+                <ProgresjonsNivaaIndikator nivaa={drill.progresjonsnivaa} />
+              </div>
+            )}
+          </div>
         }
       />
 
-      {/* Video + parametere */}
+      {/* Video + beskrivelse */}
       <section className="grid gap-6 lg:grid-cols-5">
-        {/* Video-thumbnail */}
+        {/* Video-placeholder */}
         <div className="lg:col-span-3">
-          <div className="group relative aspect-video overflow-hidden rounded-2xl border border-border bg-card">
-            {data.videoUrl ? (
+          <div className="relative aspect-video overflow-hidden rounded-2xl border border-border bg-card">
+            {drill.videoUrl ? (
               <video
-                src={data.videoUrl}
+                src={drill.videoUrl}
                 controls
                 className="h-full w-full object-cover"
               />
             ) : (
-              <VideoPlaceholder title={data.title} />
+              <VideoPlaceholder title={drill.name} />
             )}
           </div>
         </div>
 
-        {/* Parametere */}
-        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 lg:col-span-2">
-          <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Parametere
-          </h2>
-          <dl className="mt-6 divide-y divide-border">
-            {paramRows.map(({ icon: Icon, label, value }) => (
-              <div
-                key={label}
-                className="flex items-center justify-between gap-4 py-3"
-              >
-                <dt className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Icon className="h-4 w-4" strokeWidth={1.75} />
-                  {label}
-                </dt>
-                <dd className="font-mono text-sm tabular-nums text-foreground">
-                  {value}
-                </dd>
+        {/* Drill-info */}
+        <div className="flex flex-col gap-4 lg:col-span-2">
+          {/* Beskrivelse */}
+          {drill.description && (
+            <div className="flex-1 rounded-2xl border border-border bg-card p-4 sm:p-6">
+              <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Hva skal jeg trene på?
+              </h2>
+              <p className="mt-3 font-display text-base italic leading-relaxed text-foreground">
+                {drill.description}
+              </p>
+            </div>
+          )}
+
+          {/* CS-info */}
+          {csForMeg !== null && (
+            <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  CS-target for deg
+                </h2>
               </div>
-            ))}
-          </dl>
+              <p className="mt-2 font-mono text-4xl font-bold tabular-nums text-foreground">
+                {csForMeg}
+              </p>
+              {drill.csMin !== null && drill.csMax !== null && (
+                <p className="mt-1 font-mono text-[10px] text-muted-foreground">
+                  Spenn: {drill.csMin}–{drill.csMax}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Beskrivelse */}
-      <section
-        aria-labelledby="desc-heading"
-        className="rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8"
-      >
-        <h2
-          id="desc-heading"
-          className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+      {/* Coach-notater */}
+      {drill.coachNotes && (
+        <section
+          aria-labelledby="coach-notes-heading"
+          className="rounded-2xl border border-accent/40 bg-accent/10 p-4 sm:p-6 md:p-8"
         >
-          Hva skal jeg trene på?
-        </h2>
-        <p className="mt-4 font-display text-xl italic leading-relaxed text-foreground sm:text-2xl">
-          {data.description}
-        </p>
-      </section>
+          <div className="flex items-center gap-2">
+            <Zap className="h-4 w-4 text-accent-foreground" strokeWidth={1.75} />
+            <h2
+              id="coach-notes-heading"
+              className="font-mono text-[10px] uppercase tracking-[0.10em] text-accent-foreground"
+            >
+              Coach-notater
+            </h2>
+          </div>
+          <p className="mt-4 text-base leading-relaxed text-foreground">
+            {drill.coachNotes}
+          </p>
+        </section>
+      )}
 
-      {/* Coach-tips */}
-      <section
-        aria-labelledby="tips-heading"
-        className="rounded-2xl border border-primary/30 bg-primary/5 p-4 sm:p-6 md:p-8"
-      >
-        <div className="flex items-center gap-2">
-          <TargetIcon className="h-4 w-4 text-primary" strokeWidth={1.75} />
+      {/* Progresjonsserie */}
+      {(drill.parentDrill !== null || drill.progressjonsDrills.length > 0) && (
+        <section
+          aria-labelledby="progresjon-heading"
+          className="rounded-2xl border border-border bg-card p-4 sm:p-6"
+        >
           <h2
-            id="tips-heading"
-            className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary"
-          >
-            Tips fra coach
-          </h2>
-        </div>
-        <p className="mt-4 text-base leading-relaxed text-foreground">
-          {data.coachTips}
-        </p>
-      </section>
-
-      {/* Min historikk */}
-      <section
-        aria-labelledby="history-heading"
-        className="rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8"
-      >
-        <div className="flex items-baseline justify-between">
-          <h2
-            id="history-heading"
+            id="progresjon-heading"
             className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
           >
-            Min historikk · siste 5 ganger
+            Progresjonsserie
           </h2>
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Snitt completion: 78%
-          </span>
-        </div>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            {/* Forrige steg */}
+            {drill.parentDrill !== null && (
+              <>
+                <Link
+                  href={`/portal/drills/${drill.parentDrill.id}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-4 py-2 text-sm text-secondary-foreground hover:bg-muted"
+                >
+                  {drill.parentDrill.name}
+                </Link>
+                <ChevronRight
+                  className="h-4 w-4 shrink-0 text-muted-foreground"
+                  strokeWidth={1.75}
+                />
+              </>
+            )}
 
-        <ul className="mt-6 divide-y divide-border">
-          {data.history.map((row) => (
-            <li
-              key={row.date}
-              className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
-            >
-              <div className="flex-1">
-                <p className="text-sm font-medium text-foreground">
-                  {new Date(row.date).toLocaleDateString("nb-NO", {
-                    weekday: "long",
-                    day: "2-digit",
-                    month: "short",
-                  })}
-                </p>
-                <p className="mt-0.5 text-sm text-muted-foreground">
-                  {row.notes}
-                </p>
-              </div>
-              <div className="flex items-center gap-6">
-                <div className="text-right">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                    Varighet
-                  </span>
-                  <p className="font-display text-lg font-semibold tabular-nums">
-                    {row.duration} min
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                    Completion
-                  </span>
-                  <p
-                    className={`font-display text-lg font-semibold tabular-nums ${row.completion >= 85 ? "text-primary" : "text-foreground"}`}
-                  >
-                    {row.completion}%
-                  </p>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
+            {/* Denne drillen */}
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
+              {drill.name}
+              {harMestret && (
+                <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+              )}
+            </span>
+
+            {/* Neste steg(er) */}
+            {drill.progressjonsDrills.map((neste) => (
+              <span key={neste.id} className="inline-flex items-center gap-2">
+                <ArrowRight
+                  className="h-4 w-4 shrink-0 text-muted-foreground"
+                  strokeWidth={1.75}
+                />
+                <Link
+                  href={`/portal/drills/${neste.id}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-4 py-2 text-sm text-secondary-foreground hover:bg-muted"
+                >
+                  {neste.name}
+                  {neste.progresjonsnivaa !== null && (
+                    <span className="font-mono text-[10px] text-muted-foreground">
+                      N{neste.progresjonsnivaa}
+                    </span>
+                  )}
+                </Link>
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Mestringslogg + registrering + rating */}
+      <MestringsLoggClient
+        drillId={drill.id}
+        drillNavn={drill.name}
+        mestringsLogg={drill.mestringsLogg.map((l) => ({
+          id: l.id,
+          dato: l.dato,
+          csScore: l.csScore,
+          coachVurdering: l.coachVurdering,
+          kommentar: l.kommentar,
+          mestret: l.mestret,
+        }))}
+        ratings={drill.ratings.map((r) => ({
+          id: r.id,
+          rating: r.rating,
+          type: r.type,
+          kommentar: r.kommentar,
+          createdAt: r.createdAt,
+        }))}
+        csForMeg={csForMeg}
+      />
 
       {/* Actions */}
-      <DrillDetailClient drillId={data.id} drillTitle={data.title} />
+      <DrillDetailClient drillId={drill.id} drillTitle={drill.name} />
     </div>
   );
 }
 
-/* --- Sub-komponenter --- */
+/* ─── Sub-komponenter ─── */
 
 function VideoPlaceholder({ title }: { title: string }) {
   return (
     <div className="relative flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 via-card to-accent/20">
-      {/* Dekorativ "frame" */}
       <svg
         viewBox="0 0 320 180"
         className="absolute inset-0 h-full w-full opacity-20"
@@ -385,7 +406,6 @@ function VideoPlaceholder({ title }: { title: string }) {
           />
         ))}
       </svg>
-
       <div className="relative z-10 flex flex-col items-center gap-3 text-center">
         <button
           type="button"
@@ -398,7 +418,6 @@ function VideoPlaceholder({ title }: { title: string }) {
           Video kommer · coach laster opp
         </span>
       </div>
-
       <div className="absolute bottom-4 left-4">
         <span className="rounded-full bg-card/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-foreground backdrop-blur">
           Demo · {title}

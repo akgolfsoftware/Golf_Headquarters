@@ -17,7 +17,7 @@ import { Serwist } from "serwist";
 // tsconfig (vi har 'dom' for app-koden). Bruk minimal type-skisse i stedet.
 type SwScope = {
   __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
-  addEventListener(type: string, handler: (event: any) => void): void;
+  addEventListener(type: string, handler: (event: Event) => void): void;
   registration: { showNotification(title: string, options: object): Promise<void> };
   clients: {
     matchAll(opts: object): Promise<Array<{ url: string; focus(): Promise<void> }>>;
@@ -37,18 +37,29 @@ const serwist = new Serwist({
 
 serwist.addEventListeners();
 
+// Minimale typer for SW-spesifikke event-egenskaper (webworker-lib er ikke aktivert)
+type PushEv = Event & {
+  data: { json(): unknown } | null;
+  waitUntil(p: Promise<unknown>): void;
+};
+type NotificationEv = Event & {
+  notification: { close(): void; data: unknown };
+  waitUntil(p: Promise<unknown>): void;
+};
+
 // Push-event handler — viser system-varsling når server sender push.
 self.addEventListener("push", (event) => {
-  if (!event.data) return;
+  const pushEvent = event as PushEv;
+  if (!pushEvent.data) return;
   try {
-    const data = event.data.json() as {
+    const data = pushEvent.data.json() as {
       title?: string;
       body?: string;
       url?: string;
       icon?: string;
     };
     const title = data.title ?? "AK Golf";
-    event.waitUntil(
+    pushEvent.waitUntil(
       self.registration.showNotification(title, {
         body: data.body ?? "",
         icon: data.icon ?? "/icon-192.png",
@@ -62,8 +73,9 @@ self.addEventListener("push", (event) => {
 });
 
 self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
+  const notifEvent = event as NotificationEv;
+  notifEvent.notification.close();
   const url =
-    (event.notification.data as { url?: string } | undefined)?.url ?? "/portal";
-  event.waitUntil(self.clients.openWindow(url));
+    (notifEvent.notification.data as { url?: string } | undefined)?.url ?? "/portal";
+  notifEvent.waitUntil(self.clients.openWindow(url));
 });

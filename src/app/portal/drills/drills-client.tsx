@@ -5,11 +5,13 @@
  *
  * - Filter-bar (anbefalt-toggle, disiplin-pills, skillArea-pills, MORAD, coach-anbefalt, søk)
  * - Visning-toggle (Grid/Liste)
+ * - Mestret-badge (grønn checkmark for mestrede drills)
+ * - Rate-knapp på drill-cards (hover-synlig, kun for drills som er trent)
  * - Sticky footer for samlet "Be om i neste plan"-forespørsel for valgte drills
  *
- * Bruker server-action `requestDrillInPlan` direkte.
+ * Bruker server-action `requestDrillInPlan` og `rateDrill` direkte.
  */
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useTransition, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
   CheckCircle2,
@@ -19,6 +21,7 @@ import {
   Search,
   Send,
   Sparkles,
+  Star,
   X,
 } from "lucide-react";
 import type {
@@ -28,6 +31,7 @@ import type {
   NgfKategori,
 } from "@/generated/prisma/client";
 import { requestDrillInPlan } from "./actions";
+import { rateDrill } from "./[id]/actions";
 
 type DrillRow = {
   id: string;
@@ -49,6 +53,20 @@ type DrillRow = {
   ganger: number;
   csForMeg: number | null;
 };
+
+type RatingType = {
+  id: string;
+  label: string;
+  rating: number;
+};
+
+const RATING_TYPER: RatingType[] = [
+  { id: "aha", label: "Aha!", rating: 5 },
+  { id: "utfordrende", label: "Utfordrende", rating: 4 },
+  { id: "passe", label: "Passe", rating: 3 },
+  { id: "kjedelig", label: "Kjedelig", rating: 2 },
+  { id: "for_vanskelig", label: "For vanskelig", rating: 1 },
+];
 
 const KATEGORI_RANK: Record<NgfKategori, number> = {
   A: 0,
@@ -103,12 +121,18 @@ export function DrillsLibraryClient({
   spillerKategori,
   tier,
   spillerFasiliteter,
+  mestretIds,
 }: {
   drills: DrillRow[];
   spillerKategori: NgfKategori | null;
   tier: "GRATIS" | "PRO" | "ELITE";
   spillerFasiliteter: DrillFasilitet[];
+  mestretIds?: string[];
 }) {
+  const mestretSet = useMemo(
+    () => new Set(mestretIds ?? []),
+    [mestretIds],
+  );
   const harFasilitetProfil = spillerFasiliteter.length > 0;
   const [anbefaltForMeg, setAnbefaltForMeg] = useState(true);
   const [kunMineAnlegg, setKunMineAnlegg] = useState(harFasilitetProfil);
@@ -403,6 +427,7 @@ export function DrillsLibraryClient({
               valgt={valgteDrills.has(d.id)}
               onToggleValgt={() => toggleValgt(d.id)}
               erGratis={erGratis}
+              mestret={mestretSet.has(d.id)}
             />
           ))}
         </div>
@@ -412,6 +437,7 @@ export function DrillsLibraryClient({
           valgte={valgteDrills}
           onToggle={toggleValgt}
           erGratis={erGratis}
+          mestretSet={mestretSet}
         />
       )}
 
@@ -560,20 +586,94 @@ function FilterRad({
   );
 }
 
+function RateKnapp({ drillId }: { drillId: string }) {
+  const [aapen, setAapen] = useState(false);
+  const [pending, startTransition] = useTransition();
+  const [rated, setRated] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Lukk popover ved klikk utenfor.
+  useEffect(() => {
+    if (!aapen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setAapen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [aapen]);
+
+  if (rated) {
+    return (
+      <span className="inline-flex h-8 items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-3 text-[11px] text-primary">
+        <Star className="h-3 w-3 fill-primary" strokeWidth={1.75} />
+        Ratet
+      </span>
+    );
+  }
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setAapen((v) => !v)}
+        aria-label="Rate drill"
+        aria-expanded={aapen}
+        className="inline-flex h-8 items-center gap-1 rounded-full border border-input bg-background px-3 text-[11px] text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
+      >
+        <Star className="h-3 w-3" strokeWidth={1.75} />
+        Rate
+      </button>
+
+      {aapen && (
+        <div className="absolute bottom-10 right-0 z-20 min-w-[180px] rounded-xl border border-border bg-card p-2 shadow-lg">
+          <p className="mb-1.5 px-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Hva synes du?
+          </p>
+          <div className="flex flex-col gap-1">
+            {RATING_TYPER.map((rt) => (
+              <button
+                key={rt.id}
+                type="button"
+                disabled={pending}
+                onClick={() => {
+                  startTransition(async () => {
+                    const res = await rateDrill(drillId, rt.rating, rt.id, null);
+                    if (res.ok) {
+                      setRated(true);
+                      setAapen(false);
+                    }
+                  });
+                }}
+                className="rounded-lg px-3 py-2 text-left text-sm text-foreground hover:bg-secondary disabled:opacity-60"
+              >
+                {rt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function DrillCard({
   drill,
   valgt,
   onToggleValgt,
   erGratis,
+  mestret,
 }: {
   drill: DrillRow;
   valgt: boolean;
   onToggleValgt: () => void;
   erGratis: boolean;
+  mestret: boolean;
 }) {
   return (
     <article
-      className={`relative flex h-full flex-col rounded-2xl border bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-md ${
+      className={`group relative flex h-full flex-col rounded-2xl border bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-md ${
         valgt ? "border-primary ring-2 ring-primary/30" : "border-border"
       }`}
     >
@@ -591,6 +691,15 @@ function DrillCard({
         >
           {drill.name}
         </Link>
+
+        {/* Mestret-badge */}
+        {mestret && (
+          <CheckCircle2
+            className="h-5 w-5 shrink-0 text-primary"
+            strokeWidth={1.75}
+            aria-label="Drill mestret"
+          />
+        )}
       </div>
 
       <div className="mt-2 flex flex-wrap gap-1.5">
@@ -660,6 +769,8 @@ function DrillCard({
         >
           Vis detaljer
         </Link>
+        {/* Rate-knapp — kun for drills som er trent */}
+        {drill.ganger > 0 && <RateKnapp drillId={drill.id} />}
       </div>
     </article>
   );
@@ -670,11 +781,13 @@ function DrillsListe({
   valgte,
   onToggle,
   erGratis,
+  mestretSet,
 }: {
   drills: DrillRow[];
   valgte: Set<string>;
   onToggle: (id: string) => void;
   erGratis: boolean;
+  mestretSet?: Set<string>;
 }) {
   return (
     <div className="overflow-x-auto rounded-2xl border border-border bg-card">
@@ -705,17 +818,26 @@ function DrillsListe({
             return (
               <tr key={d.id} className={valgt ? "bg-primary/5" : ""}>
                 <td className="px-4 py-3">
-                  <Link
-                    href={`/portal/drills/${d.id}`}
-                    className="font-medium text-foreground hover:text-primary"
-                  >
-                    {d.name}
-                  </Link>
-                  {d.coachAnbefalt && (
-                    <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em] text-accent-foreground">
-                      Anbefalt
-                    </span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/portal/drills/${d.id}`}
+                      className="font-medium text-foreground hover:text-primary"
+                    >
+                      {d.name}
+                    </Link>
+                    {d.coachAnbefalt && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em] text-accent-foreground">
+                        Anbefalt
+                      </span>
+                    )}
+                    {mestretSet?.has(d.id) && (
+                      <CheckCircle2
+                        className="h-4 w-4 shrink-0 text-primary"
+                        strokeWidth={1.75}
+                        aria-label="Drill mestret"
+                      />
+                    )}
+                  </div>
                 </td>
                 <td className="px-4 py-3">
                   <span
