@@ -12,7 +12,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AthleticAvatar, AthleticEyebrow } from "@/components/athletic";
 
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
   day: "2-digit",
@@ -40,13 +40,12 @@ export default async function ForelderHjem() {
   if (barn.length === 0) {
     return (
       <div className="space-y-6">
-        <PageHeader
-          eyebrow="Foreldreportal"
-          titleLead="Velkommen,"
-          titleItalic={user.name.split(" ")[0] ?? user.name}
+        <ForelderHero
+          name={user.name}
+          avatarUrl={user.avatarUrl ?? null}
           sub="Du er ikke koblet til noen barn ennå."
         />
-        <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
+        <div className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
           Be spilleren sende en ny invitasjon, eller kontakt support.
         </div>
       </div>
@@ -110,11 +109,10 @@ export default async function ForelderHjem() {
   });
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        eyebrow="Foreldreportal · Oversikt"
-        titleLead="Hei"
-        titleItalic={user.name.split(" ")[0] ?? user.name}
+    <div className="space-y-6">
+      <ForelderHero
+        name={user.name}
+        avatarUrl={user.avatarUrl ?? null}
         sub={`Du følger ${barn.length === 1 ? "ett barn" : `${barn.length} barn`} i AK Golf.`}
       />
 
@@ -334,5 +332,59 @@ export default async function ForelderHjem() {
         </div>
       </section>
     </div>
+  );
+}
+
+function ForelderHero({
+  name,
+  avatarUrl,
+  sub,
+}: {
+  name: string;
+  avatarUrl: string | null;
+  sub: string;
+}) {
+  const initials =
+    name
+      .split(" ")
+      .map((w) => w[0])
+      .filter(Boolean)
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "??";
+  const firstName = name.split(" ")[0] ?? name;
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 10 ? "God morgen" : hour < 17 ? "God dag" : hour < 22 ? "God kveld" : "God natt";
+
+  return (
+    <section>
+      <AthleticEyebrow>FORELDREPORTAL · OVERSIKT</AthleticEyebrow>
+      <div className="mt-3 flex items-center gap-4">
+        <AthleticAvatar
+          src={avatarUrl ?? undefined}
+          initials={initials}
+          size="xl"
+          borderColor="white"
+          className="shadow-[0_8px_24px_rgba(0,88,64,0.18)]"
+        />
+        <div className="min-w-0 flex-1">
+          <h1 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+            {greeting},{" "}
+            <em
+              className="font-normal not-italic"
+              style={{
+                fontFamily: "'Instrument Serif', serif",
+                fontStyle: "italic",
+                color: "#005840",
+              }}
+            >
+              {firstName}
+            </em>
+          </h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">{sub}</p>
+        </div>
+      </div>
+    </section>
   );
 }

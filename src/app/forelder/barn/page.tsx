@@ -11,7 +11,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { ForelderHero } from "@/components/forelder/forelder-hero";
 
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
   day: "2-digit",
@@ -25,7 +25,7 @@ export default async function MineBarn() {
   if (barn.length === 0) {
     return (
       <div className="space-y-8">
-        <PageHeader
+        <ForelderHero
           eyebrow="Foreldreportal · Barn"
           titleLead="Mine"
           titleItalic="barn"
@@ -108,7 +108,7 @@ export default async function MineBarn() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
+      <ForelderHero
         eyebrow="Foreldreportal · Barn"
         titleLead="Mine"
         titleItalic="barn"
