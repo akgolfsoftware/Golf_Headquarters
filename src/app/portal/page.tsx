@@ -119,13 +119,6 @@ export default async function PortalHjem() {
     // ignore
   }
 
-  // Siste 5 TrackMan-økter
-  const tmRecords = await prisma.trackManSession.findMany({
-    where: { userId: user.id },
-    orderBy: { recordedAt: "desc" },
-    take: 5,
-  });
-
   // Beregn pyramide-prosenter
   const pyrPct = prosentPerArea(data.pyramide14d);
   const pyramide: { area: PyramidArea; pct: number }[] = (["FYS", "TEK", "SLAG", "SPILL", "TURN"] as PyramidArea[]).map(
@@ -153,30 +146,8 @@ export default async function PortalHjem() {
     };
   }
 
-  // TrackMan sessions -> formatted
-  const tmSessions = tmRecords.length
-    ? tmRecords.map((s, i) => ({
-        id: s.id,
-        date: s.recordedAt.toLocaleDateString("nb-NO", {
-          day: "numeric",
-          month: "short",
-          weekday: "short",
-        }),
-        title: s.source ?? `Økt ${i + 1}`,
-        metric: "—",
-        unit: "se detaljer",
-        color: ["forest", "tek", "accent", "warn", "forest"][i] as "forest" | "tek" | "accent" | "warn",
-        sparkPoints: "0,22 14,18 28,20 42,14 56,12 70,8 84,10 100,6",
-      }))
-    : [
-        { date: "12. MAI · ONS", title: "Driver-økt", metric: "112", unit: "mph club-speed", color: "forest" as const, sparkPoints: "0,22 14,18 28,20 42,14 56,12 70,8 84,10 100,6" },
-        { date: "10. MAI · MAN", title: "Iron 7", metric: "1,48", unit: "smash-faktor", color: "tek" as const, sparkPoints: "0,16 14,20 28,14 42,18 56,12 70,16 84,10 100,12" },
-        { date: "6. MAI · TOR", title: "Pitch 50—100m", metric: "68", unit: "m carry · spred 4m", color: "accent" as const, sparkPoints: "0,20 14,16 28,18 42,12 56,14 70,10 84,12 100,8" },
-        { date: "3. MAI · MAN", title: "Driver-økt", metric: "220", unit: "m carry", color: "forest" as const, sparkPoints: "0,18 14,14 28,16 42,10 56,12 70,8 84,6 100,4" },
-        { date: "28. APR · SØN", title: "Wedge-finkalibrering", metric: "9 100", unit: "rpm spin", color: "warn" as const, sparkPoints: "0,14 14,18 28,12 42,16 56,10 70,14 84,8 100,12" },
-      ];
-
   // Goals — fallback til representative seed-data inntil mål-modell er på plass
+  // (telling brukes til Pane C mål-quick-card; ikke lengre vises som strip)
   const goals = [
     { title: "Top 10 NM Slag", pct: 38, label: "50 dager", type: "tournament" as const },
     { title: "HCP +3,0 innen sesongslutt", pct: 60, label: "60 %", type: "hcp" as const },
@@ -210,7 +181,6 @@ export default async function PortalHjem() {
         text: `Du har vært jevn denne uka, ${(user.name ?? "").split(" ")[0]}. Hold trykket inn mot Sørlandsåpent.`,
         timeAgo: "FOR 2T SIDEN",
       }}
-      tmSessions={tmSessions}
     />
   );
 }

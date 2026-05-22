@@ -15,7 +15,6 @@
 import Link from "next/link";
 import {
   Plus,
-  MessageSquare,
   Sparkles,
   Check,
   Star,
@@ -23,9 +22,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Target,
-  TrendingDown,
   ArrowRight,
-  Download,
+  TrendingUp,
+  BarChart3,
 } from "lucide-react";
 import "./dashboard.css";
 
@@ -54,15 +53,6 @@ export interface WorkbenchDashboardProps {
   };
   nextTournament?: { name: string; daysAway: number };
   coachMessage?: { text: string; timeAgo: string };
-  tmSessions: {
-    id?: string; // Prisma TrackManSession-id (kun på live data)
-    date: string; // "12. MAI · ONS"
-    title: string;
-    metric: string;
-    unit: string;
-    color: "forest" | "tek" | "accent" | "warn";
-    sparkPoints: string;
-  }[];
 }
 
 const PYR_LIST: WorkbenchDashboardProps["pyramide"][number]["area"][] = [
@@ -101,14 +91,14 @@ export function WorkbenchDashboard(props: WorkbenchDashboardProps) {
             <Link href="/portal/ny-okt" className="phq-btn lime">
               <Plus size={13} aria-hidden /> Ny økt
             </Link>
-            <Link href="/portal/coach" className="phq-btn forest">
-              <MessageSquare size={13} aria-hidden /> Be om økt fra coach
+            <Link href="/portal/mal" className="phq-btn outline">
+              <Target size={13} aria-hidden /> Nytt mål
+            </Link>
+            <Link href="/portal/statistikk" className="phq-btn outline">
+              <BarChart3 size={13} aria-hidden /> Legg inn SG-statistikk
             </Link>
             <button type="button" className="phq-btn outline">
               <Sparkles size={13} aria-hidden /> AI-foreslå uke
-            </button>
-            <button type="button" className="phq-btn outline">
-              <Check size={13} aria-hidden /> Logg gjennomført økt
             </button>
           </div>
         </section>
@@ -169,23 +159,6 @@ export function WorkbenchDashboard(props: WorkbenchDashboardProps) {
                 </div>
               </div>
 
-              <div className="phq-coach-card-dark">
-                <div className="row">
-                  <span className="av">{props.coach.initials}</span>
-                  <div>
-                    <div className="nm">{props.coach.name}</div>
-                    <div className="role">HEAD COACH</div>
-                  </div>
-                </div>
-                <div className="actions">
-                  <Link href="/portal/coach/melding/ny" className="phq-btn lime-outline sm">
-                    <MessageSquare size={11} aria-hidden /> Send melding
-                  </Link>
-                  <Link href="/portal/coach" className="phq-btn lime sm">
-                    <Plus size={11} aria-hidden /> Be om økt
-                  </Link>
-                </div>
-              </div>
             </div>
 
             {/* PANE B — Calendar */}
@@ -247,79 +220,12 @@ export function WorkbenchDashboard(props: WorkbenchDashboardProps) {
                 ))}
               </div>
 
-              {props.activePlan ? (
-                <PeriodCard
-                  plan={props.activePlan}
-                  pyramide={props.pyramide}
-                  countdown={props.nextTournament}
-                  coachMessage={props.coachMessage}
-                  coachInitials={props.coach.initials}
-                />
-              ) : null}
+              <MalQuickCard goalsActive={props.goals.length} nextTournament={props.nextTournament} />
             </div>
           </div>
         </section>
 
-        {/* ============ 4. GOALS TRACKER ROW ============ */}
-        <section>
-          <div className="phq-section-head">
-            <h2>Mine <em>mål</em> i sikte</h2>
-            <span className="phq-eyebrow">3 AKTIVE MÅL</span>
-          </div>
-          <GoalsRow goals={props.goals} />
-          <div className="phq-add-goal-row">
-            <button type="button" className="phq-btn outline sm">
-              <Plus size={13} style={{ color: "var(--phq-brand)" }} aria-hidden /> Nytt mål
-            </button>
-          </div>
-        </section>
-
-        {/* ============ 5. INSIGHT STRIP ============ */}
-        <section>
-          <div className="phq-section-head">
-            <h2>Hva jeg må <em>jobbe med</em></h2>
-            <span className="phq-eyebrow">SISTE 90 DAGER · DATAGOLF SAMMENLIGNING</span>
-          </div>
-          <InsightStrip />
-        </section>
-
-        {/* ============ 6. TRACKMAN STRIP ============ */}
-        <section className="phq-tm-strip">
-          <div className="phq-section-head">
-            <h2>Min <em>TrackMan</em> · siste økter</h2>
-            <button type="button" className="phq-btn outline sm">
-              <Download size={13} style={{ color: "var(--phq-brand)" }} aria-hidden /> Importer ny økt
-            </button>
-          </div>
-          <div className="phq-tm-cards">
-            {props.tmSessions.map((s, i) => (
-              <Link
-                key={s.id ?? i}
-                href={s.id ? `/portal/trackman/${s.id}` : "/portal/analyse"}
-                className="phq-tm-card"
-              >
-                <span className="date">{s.date.toUpperCase()}</span>
-                <span className="ttl">{s.title}</span>
-                <svg className="phq-tm-mini-svg" viewBox="0 0 100 32" preserveAspectRatio="none">
-                  <polyline
-                    points={s.sparkPoints}
-                    fill="none"
-                    stroke={sparkColor(s.color)}
-                    strokeWidth="1.75"
-                  />
-                </svg>
-                <span className="metric">
-                  {s.metric} <span className="unit">{s.unit}</span>
-                </span>
-                <span className="open">
-                  Åpne <ArrowRight size={11} aria-hidden />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* ============ 7. STICKY FOOTER ============ */}
+        {/* ============ 4. STICKY FOOTER ============ */}
         <footer className="phq-sticky-foot">
           <div className="phq-foot-left">
             <span className="lbl">Min pyramide denne uka</span>
@@ -339,9 +245,9 @@ export function WorkbenchDashboard(props: WorkbenchDashboardProps) {
             <b>4</b> PLANLAGT<span className="pip" /><b>1</b> FULLFØRT<span className="pip" /><b>195</b> MIN<span className="pip" /><b>67%</b> PYRAMIDE
           </div>
           <div className="phq-foot-right">
-            <button type="button" className="phq-btn outline">
-              <Sparkles size={13} style={{ color: "var(--phq-brand)" }} aria-hidden /> Be om økt-forslag
-            </button>
+            <Link href="/portal/mal" className="phq-btn outline">
+              <Target size={13} style={{ color: "var(--phq-brand)" }} aria-hidden /> Se mine mål
+            </Link>
             <Link href="/portal/ny-okt" className="phq-btn lime">
               <Plus size={13} aria-hidden /> Logg ny økt
             </Link>
@@ -567,246 +473,142 @@ function CalRow({ time, rowIdx }: { time: string; rowIdx: number }) {
   );
 }
 
-function PeriodCard({
-  plan,
-  pyramide,
-  countdown,
-  coachMessage,
-  coachInitials,
+function MalQuickCard({
+  goalsActive,
+  nextTournament,
 }: {
-  plan: WorkbenchDashboardProps["activePlan"];
-  pyramide: WorkbenchDashboardProps["pyramide"];
-  countdown?: { name: string; daysAway: number };
-  coachMessage?: { text: string; timeAgo: string };
-  coachInitials: string;
+  goalsActive: number;
+  nextTournament?: { name: string; daysAway: number };
 }) {
-  if (!plan) return null;
-  const circumference = 2 * Math.PI * 40;
-  const progDash = (plan.progressPct / 100) * circumference;
-
   return (
-    <div className="phq-period-card">
-      <h4>AKTIV PERIODE</h4>
-      <div className="pname">{plan.name}</div>
-      <div className="pmeta">{plan.weeksLabel}{plan.csTarget ? ` · ${plan.csTarget}` : ""}</div>
-
-      <div className="phq-pyr-mini">
-        {["TURN", "SPILL", "SLAG", "TEK", "FYS"].map((area) => {
-          const p = pyramide.find((x) => x.area === area)?.pct ?? 0;
-          return (
-            <div key={area} className={`phq-pyr-mini-row ${area.toLowerCase()}`}>
-              <span className="nm">{area}</span>
-              <div className="bar"><div style={{ width: `${p}%` }} /></div>
-              <span className="pct">{p}%</span>
-            </div>
-          );
-        })}
+    <div
+      style={{
+        background: "var(--phq-card)",
+        border: "1px solid var(--phq-line)",
+        borderRadius: "var(--phq-r-card)",
+        padding: 18,
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h4
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 10.5,
+            fontWeight: 700,
+            color: "var(--phq-muted)",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+          }}
+        >
+          Mine mål
+        </h4>
+        <Link
+          href="/portal/mal"
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 10.5,
+            fontWeight: 700,
+            color: "var(--phq-brand)",
+            letterSpacing: "0.06em",
+            textDecoration: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          Se alle <ArrowRight size={11} aria-hidden />
+        </Link>
       </div>
 
-      <div className="phq-ring-block">
-        <svg className="phq-ring-svg" viewBox="0 0 100 100">
-          <circle className="ring-track" cx="50" cy="50" r="40" />
-          <circle
-            className="ring-prog"
-            cx="50"
-            cy="50"
-            r="40"
-            strokeDasharray={`${progDash} ${circumference}`}
-          />
-          <text x="50" y="50">{plan.progressPct}%</text>
-        </svg>
-        <div className="info">
-          <div className="k">FREMDRIFT</div>
-          <div className="lbl">{plan.csTarget ? `mot ${plan.csTarget.split("→")[1]?.trim() ?? "mål"}` : "mot mål"}</div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
+        <div
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            background: "rgba(0, 88, 64, 0.10)",
+            color: "var(--phq-brand)",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Target size={20} aria-hidden />
         </div>
-      </div>
-
-      {countdown ? (
-        <div className="phq-countdown">
-          <span className="nm">{countdown.name}</span>
-          <span className="days">{countdown.daysAway} DAGER</span>
-        </div>
-      ) : null}
-
-      {coachMessage ? (
-        <div className="phq-coach-msg">
-          <div className="top">
-            <span className="av">{coachInitials}</span>
-            <span className="meta">ANDERS K. · {coachMessage.timeAgo}</span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              fontFamily: "'Inter Tight', sans-serif",
+              fontSize: 15,
+              fontWeight: 600,
+              color: "var(--phq-ink)",
+            }}
+          >
+            {goalsActive > 0 ? `${goalsActive} aktive mål` : "Ingen mål satt enda"}
           </div>
-          <p className="quote">&ldquo;{coachMessage.text}&rdquo;</p>
+          <div
+            style={{
+              fontSize: 11.5,
+              color: "var(--phq-muted)",
+              marginTop: 2,
+            }}
+          >
+            {goalsActive > 0
+              ? "Følg fremdrift på /portal/mal"
+              : "Sett resultatmål og prosessmål for sesongen"}
+          </div>
+        </div>
+      </div>
+
+      <Link
+        href="/portal/mal"
+        className="phq-btn lime"
+        style={{ justifyContent: "center", width: "100%" }}
+      >
+        <Plus size={13} aria-hidden /> {goalsActive > 0 ? "Nytt mål" : "Sett ditt første mål"}
+      </Link>
+
+      {nextTournament ? (
+        <div
+          style={{
+            paddingTop: 12,
+            borderTop: "1px solid var(--phq-line-soft)",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <TrendingUp size={13} aria-hidden style={{ color: "var(--phq-brand)" }} />
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 11,
+              color: "var(--phq-muted)",
+              letterSpacing: "0.04em",
+            }}
+          >
+            <strong style={{ color: "var(--phq-ink)" }}>{nextTournament.name}</strong>
+            {" · "}
+            <strong style={{ color: "var(--phq-brand)" }}>{nextTournament.daysAway} dager</strong>
+          </span>
         </div>
       ) : null}
     </div>
   );
-}
-
-function GoalsRow({ goals }: { goals: WorkbenchDashboardProps["goals"] }) {
-  const circumference = 2 * Math.PI * 42;
-  return (
-    <div className="phq-goals-row">
-      {/* Goal 1 — ring (typically tournament) */}
-      {goals[0] ? (
-        <div className="phq-goal-card">
-          <div className="gtype">{goals[0].type === "tournament" ? "RESULTATMÅL" : "PROSESSMÅL"}</div>
-          <h3>{goals[0].title}</h3>
-          <div className="ring-row">
-            <svg className="phq-ring-big" viewBox="0 0 100 100">
-              <circle className="ring-track" cx="50" cy="50" r="42" />
-              <circle
-                className="ring-prog"
-                cx="50"
-                cy="50"
-                r="42"
-                strokeDasharray={`${(goals[0].pct / 100) * circumference} ${circumference}`}
-              />
-              <text x="50" y="50">{goals[0].pct}%</text>
-            </svg>
-            <div>
-              <span className="days">{goals[0].label.toUpperCase()}</span>
-              <p className="quote" style={{ marginTop: 8 }}>
-                &ldquo;Forbedre approach +0,4 SG for 50 % sannsynlighet.&rdquo;
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      {/* Goal 2 — scoreline */}
-      <div className="phq-goal-card">
-        <div className="gtype">PROSESSMÅL</div>
-        <h3>Snitt under 72 på Srixon</h3>
-        <svg className="phq-scoreline-svg" viewBox="0 0 320 80" preserveAspectRatio="none">
-          <line x1="0" y1="36" x2="320" y2="36" stroke="#E5E3DD" strokeDasharray="3 3" strokeWidth="1" />
-          <polyline
-            points="10,52 38,30 65,46 92,18 119,38 146,28 173,14 200,22 227,38 254,16 281,10 308,24"
-            fill="none"
-            stroke="#005840"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle cx="308" cy="24" r="3.5" fill="#D1F843" stroke="#005840" strokeWidth="1.5" />
-          <text x="0" y="78" fontFamily="JetBrains Mono" fontSize="8" fill="#9C9990">68</text>
-          <text x="304" y="78" fontFamily="JetBrains Mono" fontSize="8" fill="#9C9990">79</text>
-          <text x="0" y="36" dy="-2" fontFamily="JetBrains Mono" fontSize="8" fill="#9C9990" textAnchor="start">72</text>
-        </svg>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <span className="chip"><TrendingDown size={11} aria-hidden />71,4</span>
-          <span className="phq-mono" style={{ fontSize: 10.5, color: "var(--phq-muted)" }}>5/7 SISTE UNDER 72</span>
-        </div>
-      </div>
-
-      {/* Goal 3 — HCP zone */}
-      <div className="phq-goal-card">
-        <div className="gtype">RESULTATMÅL</div>
-        <h3>HCP under +2,0 innen sesongslutt</h3>
-        <div className="phq-progress-zone">
-          <div className="fill" style={{ width: "60%" }} />
-        </div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <span className="days">82 DAGER IGJEN</span>
-          <span className="phq-mono" style={{ fontSize: 10.5, color: "var(--phq-muted)" }}>+3,5 → +2,0</span>
-        </div>
-        <p className="quote">&ldquo;1,5 forbedring i HCP — på sporet til halvveis 60 %.&rdquo;</p>
-      </div>
-    </div>
-  );
-}
-
-function InsightStrip() {
-  return (
-    <div className="phq-insight-row">
-      {/* SG Trend chart */}
-      <div className="phq-ins-card">
-        <h3>SG-trend siste 90 dager</h3>
-        <div className="sub">STROKES GAINED · PER DISIPPLIN</div>
-        <svg className="phq-sg-svg" viewBox="0 0 400 200" preserveAspectRatio="none">
-          <line x1="32" y1="20" x2="400" y2="20" stroke="#EFEDE6" />
-          <line x1="32" y1="60" x2="400" y2="60" stroke="#EFEDE6" />
-          <line x1="32" y1="100" x2="400" y2="100" stroke="#D8D5CB" />
-          <line x1="32" y1="140" x2="400" y2="140" stroke="#EFEDE6" />
-          <line x1="32" y1="180" x2="400" y2="180" stroke="#EFEDE6" />
-          <text x="0" y="22" fontFamily="JetBrains Mono" fontSize="8" fill="#9C9990">+1,5</text>
-          <text x="0" y="62" fontFamily="JetBrains Mono" fontSize="8" fill="#9C9990">+0,75</text>
-          <text x="0" y="104" fontFamily="JetBrains Mono" fontSize="8" fill="#5E5C57">0</text>
-          <text x="0" y="144" fontFamily="JetBrains Mono" fontSize="8" fill="#9C9990">-0,75</text>
-          <text x="0" y="184" fontFamily="JetBrains Mono" fontSize="8" fill="#9C9990">-1,5</text>
-          <text x="64" y="195" fontFamily="JetBrains Mono" fontSize="8" fill="#9C9990">MAR</text>
-          <text x="156" y="195" fontFamily="JetBrains Mono" fontSize="8" fill="#9C9990">APR</text>
-          <text x="248" y="195" fontFamily="JetBrains Mono" fontSize="8" fill="#9C9990">MAI</text>
-          <polyline points="40,98 80,92 120,90 160,85 200,82 240,80 280,78 320,76 360,76 400,74" fill="none" stroke="#005840" strokeWidth="2" />
-          <polyline points="40,90 80,96 120,104 160,112 200,122 240,128 280,134 320,138 360,142 400,146" fill="none" stroke="#A32D2D" strokeWidth="2" />
-          <polyline points="40,108 80,104 120,100 160,98 200,94 240,90 280,88 320,84 360,82 400,80" fill="none" stroke="#1A7D56" strokeWidth="2" />
-          <polyline points="40,118 80,114 120,108 160,100 200,92 240,84 280,76 320,68 360,62 400,56" fill="none" stroke="#BFE933" strokeWidth="3" />
-          <circle cx="400" cy="56" r="3.5" fill="#D1F843" stroke="#005840" strokeWidth="1.5" />
-        </svg>
-        <div className="phq-sg-legend">
-          <span><i style={{ background: "#005840" }} />Off-the-tee</span>
-          <span><i style={{ background: "#A32D2D" }} />Approach</span>
-          <span><i style={{ background: "#1A7D56" }} />Around-green</span>
-          <span><i style={{ background: "#BFE933" }} />Putting</span>
-        </div>
-      </div>
-
-      {/* Slag-prioritering */}
-      <div className="phq-ins-card">
-        <h3>Slag-prioritering</h3>
-        <div className="sub">SØRLANDSÅPENT · OM 21 DAGER</div>
-        <div className="phq-prio-list">
-          {[
-            { n: "01", nm: "Approach 100—150m", val: "+0,42 SG potensial", reason: "Bossum har 6 hull i dette området" },
-            { n: "02", nm: "Putting 3—6m", val: "+0,38 SG potensial", reason: "SG har sunket 0,4 siste 30 dager" },
-            { n: "03", nm: "Driver-presisjon", val: "+0,22 SG potensial", reason: "Smale fairways på Bossum" },
-          ].map((p) => (
-            <div key={p.n} className="phq-prio-row">
-              <span className="num">{p.n}</span>
-              <div>
-                <div className="nm">{p.nm}</div>
-                <span className="sgval">{p.val}</span>
-                <div className="reason">{p.reason}</div>
-              </div>
-              <button type="button" className="phq-btn outline xs">Opprett drill</button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* DataGolf comparison */}
-      <div className="phq-ins-card">
-        <h3>Du vs DataGolf</h3>
-        <div className="sub">KATEGORI A1 · GJ.SNITT FOR HCP +3 TIL +4</div>
-        {[
-          { nm: "OFF-THE-TEE", delta: "-0,12", cls: "mid" as const, dir: "right" as const, width: 8 },
-          { nm: "APPROACH", delta: "-0,42", cls: "down" as const, dir: "right" as const, width: 28 },
-          { nm: "AROUND-GREEN", delta: "+0,15", cls: "up" as const, dir: "left" as const, width: 10 },
-          { nm: "PUTTING", delta: "-0,28", cls: "mid" as const, dir: "right" as const, width: 18 },
-          { nm: "STRATEGY", delta: "+0,08", cls: "up" as const, dir: "left" as const, width: 6 },
-        ].map((d) => (
-          <div key={d.nm} className="phq-dg-row">
-            <div className="top">
-              <span className="nm">{d.nm}</span>
-              <span className={`delta ${d.cls}`}>{d.delta}</span>
-            </div>
-            <div className="phq-dg-bar">
-              <span className="zero" />
-              <span
-                className={`fill ${d.cls}`}
-                style={d.dir === "right" ? { right: "50%", width: `${d.width}%` } : { left: "50%", width: `${d.width}%` }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function sparkColor(c: "forest" | "tek" | "accent" | "warn"): string {
-  switch (c) {
-    case "forest": return "#005840";
-    case "tek": return "#1A7D56";
-    case "accent": return "#BFE933";
-    case "warn": return "#B8852A";
-  }
 }
