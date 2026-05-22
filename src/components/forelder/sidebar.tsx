@@ -26,7 +26,7 @@ export function ForelderSidebar() {
   return (
     <aside
       aria-label="Foreldreportal sidemeny"
-      className="flex w-56 shrink-0 flex-col bg-primary text-primary-foreground"
+      className="flex w-56 shrink-0 flex-col bg-[var(--color-player-sidebar)] text-white"
     >
       <div className="flex justify-center px-4 py-6">
         <SidebarBrand variant="parent" role="FORELDER" />
@@ -39,10 +39,10 @@ export function ForelderSidebar() {
               key={n.href}
               href={n.href}
               aria-current={aktiv ? "page" : undefined}
-              className={`block rounded-md px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-primary ${
+              className={`relative flex items-center gap-2 rounded-md px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
                 aktiv
-                  ? "bg-primary-foreground/10 font-semibold text-primary-foreground"
-                  : "text-primary-foreground/70 hover:bg-primary-foreground/5 hover:text-primary-foreground"
+                  ? "bg-[var(--color-accent-fill)] font-semibold text-white before:absolute before:left-0 before:top-1/2 before:h-5 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
+                  : "text-white/70 hover:bg-white/5 hover:text-white"
               }`}
             >
               {n.label}
@@ -65,7 +65,7 @@ export function ForelderMobileNav() {
   return (
     <nav
       aria-label="Foreldreportal mobil-navigasjon"
-      className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-primary text-primary-foreground lg:hidden pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-x-0 bottom-0 z-40 flex border-t border-white/10 bg-[var(--color-player-sidebar)] text-white lg:hidden pb-[env(safe-area-inset-bottom)]"
     >
       {NAV.map((n) => {
         const aktiv = path === n.href || (n.href !== "/forelder" && path.startsWith(n.href));
