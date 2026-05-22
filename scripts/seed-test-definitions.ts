@@ -130,10 +130,101 @@ const DISTANCE_INPUT: InputField[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// 20 Team Norway test definitions
+// 25 Team Norway + NGF Physical test definitions
 // ---------------------------------------------------------------------------
 
 const TESTS: TestSeed[] = [
+  // ===== FYS (5) =====
+  {
+    name: "Trapbar Deadlift",
+    description:
+      "Maksimal styrke i hoftedominant trekkbevegelse med trapbar (hex bar). Etter standard oppvarming (50%×10, 70%×5, 85%×3) gjøres progressive enkeltforsøk til 1 repetisjon maksimum (1RM). Tester total-kroppsstyrke (hofte, kne, rygg) som grunnlag for slagkraft og rotasjonskraft.",
+    pyramidArea: "FYS",
+    scoringRule:
+      "Registrer høyeste løftede vekt (kg) som 1RM. Høyere vekt = bedre. Kroppsvekt registreres for relativ styrke-ratio.",
+    protocol: {
+      totalShots: 1,
+      shots: [{ nr: 1, label: "1RM forsøk", category: "Styrke" }],
+      inputFields: [
+        { key: "vekt", label: "1RM", unit: "kg" },
+        { key: "kroppsvekt", label: "Kroppsvekt", unit: "kg" },
+      ],
+      scoring: "value_single",
+      scoringDescription: "1RM i kg. Høyere er bedre.",
+    },
+  },
+  {
+    name: "Benkpress",
+    description:
+      "Maksimal overkroppsstyrke (pectoralis, triceps, deltoid anterior) med flat benkpress. Standard 1RM-protokoll: oppvarming, progressive sett til maks løft. Full ROM, kontrollert nedsenking, ingen ryggbue. Tester push-kraft relevant for gjennomslaget.",
+    pyramidArea: "FYS",
+    scoringRule:
+      "Registrer høyeste løftede vekt (kg) som 1RM. Høyere vekt = bedre.",
+    protocol: {
+      totalShots: 1,
+      shots: [{ nr: 1, label: "1RM forsøk", category: "Styrke" }],
+      inputFields: [
+        { key: "vekt", label: "1RM", unit: "kg" },
+        { key: "kroppsvekt", label: "Kroppsvekt", unit: "kg" },
+      ],
+      scoring: "value_single",
+      scoringDescription: "1RM i kg. Høyere er bedre.",
+    },
+  },
+  {
+    name: "Standing Long Jump",
+    description:
+      "Bilateral eksplosivitetstest. Fra stående start med tærne mot linje: armsvingstart og hopp fremover med begge ben. Måler horisontal hoppdistanse fra startlinje til nærmeste hæl ved landing. Tre forsøk — beste teller. Sterk korrelasjon med køllehodehastighet.",
+    pyramidArea: "FYS",
+    scoringRule:
+      "Beste av tre forsøk målt i cm. Høyere verdi = bedre eksplosiv power.",
+    protocol: {
+      totalShots: 3,
+      shots: [
+        { nr: 1, label: "Forsøk 1", category: "Hopp" },
+        { nr: 2, label: "Forsøk 2", category: "Hopp" },
+        { nr: 3, label: "Forsøk 3", category: "Hopp" },
+      ],
+      inputFields: [{ key: "lengde", label: "Hoppelengde", unit: "cm" }],
+      scoring: "value_max",
+      scoringDescription: "Beste av tre forsøk (cm). Høyere er bedre.",
+    },
+  },
+  {
+    name: "Ball Throw",
+    description:
+      "Rotasjonspower-test med medisinball (3 kg for G/J 19, 2 kg for G/J 15). Stå 90° mot vegg, rotér og kast ballen i veggen med maksimal kraft. Mål rebound-distanse i meter. Tre forsøk — beste teller. Direkte prediktor for køllehodehastighet.",
+    pyramidArea: "FYS",
+    scoringRule:
+      "Beste av tre kast i meter. Høyere verdi = bedre rotasjonspower.",
+    protocol: {
+      totalShots: 3,
+      shots: [
+        { nr: 1, label: "Kast 1", category: "Rotasjon" },
+        { nr: 2, label: "Kast 2", category: "Rotasjon" },
+        { nr: 3, label: "Kast 3", category: "Rotasjon" },
+      ],
+      inputFields: [{ key: "distanse", label: "Kastdistanse", unit: "m" }],
+      scoring: "value_max",
+      scoringDescription: "Beste av tre kast (m). Høyere er bedre.",
+    },
+  },
+  {
+    name: "3000m Utholdenhet",
+    description:
+      "Standard 3000m løpetest på friidrettsbane (7,5 runder à 400m). Tidtaking fra startsignal til mål. Tester aerob kapasitet som støttefunksjon for golf: mental klarhet og teknisk presisjon i siste del av runden (hull 14–18). Spillere bør ikke løpe mer enn 10 min oppvarming på forhånd.",
+    pyramidArea: "FYS",
+    scoringRule:
+      "Tid i sekunder. Lavere tid = bedre utholdenhet. Vises som mm:ss i UI.",
+    protocol: {
+      totalShots: 1,
+      shots: [{ nr: 1, label: "3000m løp", category: "Utholdenhet" }],
+      inputFields: [{ key: "tid", label: "Tid", unit: "sek" }],
+      scoring: "time_seconds",
+      scoringDescription: "Tid i sekunder (vises som mm:ss). Lavere er bedre.",
+    },
+  },
+
   // ===== SLAG (6) =====
   {
     name: "8-ball Variation",
