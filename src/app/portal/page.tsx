@@ -1,19 +1,14 @@
 /**
- * PRODUKSJON — PlayerHQ Hjem (/portal)
- * "Min Workbench"-design implementert fra Claude Design-bundlen
- * (AK Golf Workbench Unified.html, mai 2026).
+ * PRODUKSJON — PlayerHQ Oversikt (/portal)
+ * Slank versjon 2026-05-22 (validerings-runde).
  *
- * Server-component med:
- *  - Hero med Instrument Serif italic
- *  - Årsplan-gantt (sesong 2026 — 6 perioder + tournament-flagg + I dag-pin)
- *  - 3-pane workbench (profil + ukeskalender + drills/periodisering)
- *  - Mål-tracker (3 mål-kort med ring/scoreline/HCP-zone)
- *  - Innsikt (SG-trend, slag-prioritering, DataGolf-sammenligning)
- *  - TrackMan-timeline (5 siste økter)
- *  - Sticky footer (uke-pyramide + status)
+ * Plan-IA:
+ *   Hero + 4 KPI + Dagens fokus + Fortsett der du sluttet
+ *   + 3 quick-actions (Be om økt / Logg runde / AI-foreslå uke)
+ *   + Varsler-strip + Pyramide-footer
  *
- * Auth: requirePortalUser() med rolle-redirect (COACH/ADMIN -> /admin, GUEST -> /admin/kalender).
- * Forrige design er bevart i git-historikk (commit før dette).
+ * Server-component med Live Prisma + demo-fallback (Q7).
+ * Auth: requirePortalUser() med rolle-redirect.
  */
 
 import { redirect } from "next/navigation";
@@ -22,7 +17,7 @@ import { getViewMode } from "@/lib/view-mode";
 import { getDashboardData } from "@/lib/dashboard-data";
 import { prosentPerArea } from "@/lib/pyramide";
 import { prisma } from "@/lib/prisma";
-import { WorkbenchDashboard } from "@/components/portal-dashboard/workbench-dashboard";
+import { OversiktSlim } from "@/components/portal-oversikt/oversikt-slim";
 import type { PyramidArea } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -69,10 +64,10 @@ function formatHcp(hcp: number | null | undefined): string {
   return hcp.toFixed(1).replace(".", ",");
 }
 
-export default async function PortalHjem() {
+export default async function PortalOversikt() {
   const user = await requirePortalUser();
 
-  // Rolle-basert redirect: coacher/admin -> CoachHQ, gjester -> kalender.
+  // Rolle-basert redirect
   const viewMode = await getViewMode();
   if (user.role === "COACH" || user.role === "ADMIN") {
     if (viewMode !== "player") redirect("/admin");
@@ -82,84 +77,127 @@ export default async function PortalHjem() {
 
   const data = await getDashboardData(user);
 
-  // Aktiv teknisk plan (for "Aktiv periode"-kortet)
-  const activePlan = await prisma.technicalPlan.findFirst({
-    where: { userId: user.id, status: "ACTIVE" },
-    orderBy: { startDato: "desc" },
-    include: {
-      positions: {
-        include: {
-          tasks: {
-            select: {
-              repsMaalDry: true,
-              repsMaalLav: true,
-              repsMaalFull: true,
-              repsGjortDry: true,
-              repsGjortLav: true,
-              repsGjortFull: true,
-            },
-          },
-        },
-      },
-    },
-  });
+  // Pyramide-prosenter (siste 14 d)
+  const pyrPct = prosentPerArea(data.pyramide14d);
+  const pyramide: { area: PyramidArea; pct: number }[] = (
+    ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as PyramidArea[]
+  ).map((a) => ({ area: a, pct: Math.round(pyrPct[a] ?? 0) }));
 
-  // Coach — vi henter første aktive coach for spilleren via PlayerCoach-relasjon hvis den finnes
-  // Fallback til generisk «AK»
-  type CoachInfo = { name: string; initials: string };
-  let coach: CoachInfo = { name: "Anders Kristiansen", initials: "AK" };
+  // Streak
+  const streakDays = data.streak14.filter(Boolean).length;
+
+  // Neste mål — hent øverste aktive Goal eller demo-fallback
+  let nextGoal = { title: "HCP +3,0 innen sesongslutt", pct: 60 };
   try {
-    const link = await prisma.user.findFirst({
-      where: { role: "COACH" },
-      orderBy: { createdAt: "asc" },
-      select: { name: true },
+    const goal = await prisma.goal.findFirst({
+      where: { userId: user.id, status: "ACTIVE" },
+      orderBy: { createdAt: "desc" },
     });
-    if (link?.name) coach = { name: link.name, initials: initials(link.name) };
+    if (goal) {
+      // Beregn enkel progress fra targetDate (tidsbasert)
+      const pct = (() => {
+        if (!goal.targetDate) return 50;
+        const total = goal.targetDate.getTime() - goal.createdAt.getTime();
+        const elapsed = Date.now() - goal.createdAt.getTime();
+        if (total <= 0) return 0;
+        return Math.min(100, Math.max(0, Math.round((elapsed / total) * 100)));
+      })();
+      nextGoal = { title: goal.title, pct };
+    }
   } catch {
-    // ignore
+    // demo-fallback
   }
 
-  // Beregn pyramide-prosenter
-  const pyrPct = prosentPerArea(data.pyramide14d);
-  const pyramide: { area: PyramidArea; pct: number }[] = (["FYS", "TEK", "SLAG", "SPILL", "TURN"] as PyramidArea[]).map(
-    (a) => ({ area: a, pct: Math.round(pyrPct[a] ?? 0) }),
-  );
+  // Ukens fokus (demo for nå — kan kobles til AI-anbefaling senere)
+  const weekFocus = "Putt < 2,5m";
 
-  // Active plan progress
-  let activePlanCard: React.ComponentProps<typeof WorkbenchDashboard>["activePlan"] | undefined;
-  if (activePlan) {
-    const allTasks = activePlan.positions.flatMap((p) => p.tasks);
-    const target = allTasks.reduce(
-      (s, t) => s + (t.repsMaalDry ?? 0) + (t.repsMaalLav ?? 0) + (t.repsMaalFull ?? 0),
-      0,
-    );
-    const current = allTasks.reduce(
-      (s, t) => s + (t.repsGjortDry ?? 0) + (t.repsGjortLav ?? 0) + (t.repsGjortFull ?? 0),
-      0,
-    );
-    const pct = target > 0 ? Math.min(100, Math.round((current / target) * 100)) : 0;
-    activePlanCard = {
-      name: activePlan.navn.split(" — ")[0].split(" · ")[0],
-      weeksLabel: "UKE 17—22 · 6 UKER",
-      progressPct: pct,
-      csTarget: "CS70 → CS80",
+  // Dagens fokus — siste planlagte TrainingSessionV2 i dag
+  let todaysFocus: {
+    title: string;
+    description: string;
+    ctaHref: string;
+  } | null = null;
+  try {
+    const now = new Date();
+    const startOfDay = new Date(now);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999);
+    const todaySession = await prisma.trainingSessionV2.findFirst({
+      where: {
+        studentId: user.id,
+        startTime: { gte: startOfDay, lte: endOfDay },
+      },
+      orderBy: { startTime: "asc" },
+    });
+    if (todaySession) {
+      const durMin = Math.round(
+        (todaySession.endTime.getTime() - todaySession.startTime.getTime()) / 60000,
+      );
+      todaysFocus = {
+        title: todaySession.title,
+        description: `${durMin} min · ${todaySession.practiceType}`,
+        ctaHref: `/portal/tren/${todaySession.id}`,
+      };
+    }
+  } catch {
+    // demo-fallback
+  }
+  if (!todaysFocus) {
+    todaysFocus = {
+      title: "Putt-progresjon CS70 → CS80",
+      description: "45 min · slag-tab · auto-generert fra teknisk plan",
+      ctaHref: "/portal/gjennomfore?tab=idag",
     };
   }
 
-  // Goals — fallback til representative seed-data inntil mål-modell er på plass
-  // (telling brukes til Pane C mål-quick-card; ikke lengre vises som strip)
-  const goals = [
-    { title: "Top 10 NM Slag", pct: 38, label: "50 dager", type: "tournament" as const },
-    { title: "HCP +3,0 innen sesongslutt", pct: 60, label: "60 %", type: "hcp" as const },
-    { title: "Bryte 70 på Bossum", pct: 80, label: "71 sist", type: "course" as const },
-  ];
+  // Fortsett der du sluttet — siste IN_PROGRESS session
+  let resumeSession: { label: string; href: string } | null = null;
+  try {
+    const last = await prisma.trainingSessionV2.findFirst({
+      where: { studentId: user.id, status: "IN_PROGRESS" },
+      orderBy: { startTime: "desc" },
+    });
+    if (last) {
+      resumeSession = {
+        label: `${last.title} — ikke fullført`,
+        href: `/portal/tren/${last.id}`,
+      };
+    }
+  } catch {
+    // ingen fallback
+  }
+
+  // Varsler
+  let unreadNotifications = 0;
+  let recentNotifications: Array<{ id: string; title: string; timeAgo: string }> = [];
+  try {
+    const notif = await prisma.notification.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+    });
+    unreadNotifications = notif.filter((n) => !n.readAt).length;
+    recentNotifications = notif.slice(0, 3).map((n) => ({
+      id: n.id,
+      title: n.title,
+      timeAgo: timeAgoLabel(n.createdAt),
+    }));
+  } catch {
+    // demo
+    recentNotifications = [
+      { id: "demo-1", title: "Anders kommenterte teknisk plan", timeAgo: "2T SIDEN" },
+      { id: "demo-2", title: "Ny drill-anbefaling: 2-fot putt", timeAgo: "I GÅR" },
+      { id: "demo-3", title: "Sørlandsåpent påmeldingsfrist 25. mai", timeAgo: "2D SIDEN" },
+    ];
+  }
 
   const today = new Date();
   const weekNumber = getIsoWeek(today);
   const weekRange = formatWeekRange(today);
 
   return (
-    <WorkbenchDashboard
+    <OversiktSlim
       playerName={user.name ?? "Spiller"}
       playerInitials={initials(user.name)}
       hcpString={formatHcp(user.hcp ?? null)}
@@ -167,20 +205,23 @@ export default async function PortalHjem() {
       club="GFGK"
       weekNumber={weekNumber}
       weekRange={weekRange}
-      streak={{
-        active: data.streak14,
-        total: data.streak14.filter(Boolean).length,
-        longest: 23,
-      }}
-      goals={goals}
-      coach={coach}
+      streakDays={streakDays}
+      longestStreak={23}
+      nextGoal={nextGoal}
+      weekFocus={weekFocus}
+      todaysFocus={todaysFocus}
       pyramide={pyramide}
-      activePlan={activePlanCard}
-      nextTournament={{ name: "Sørlandsåpent", daysAway: 21 }}
-      coachMessage={{
-        text: `Du har vært jevn denne uka, ${(user.name ?? "").split(" ")[0]}. Hold trykket inn mot Sørlandsåpent.`,
-        timeAgo: "FOR 2T SIDEN",
-      }}
+      unreadNotifications={unreadNotifications}
+      recentNotifications={recentNotifications}
+      resumeSession={resumeSession}
     />
   );
+}
+
+function timeAgoLabel(date: Date): string {
+  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (seconds < 3600) return `${Math.max(1, Math.floor(seconds / 60))}M SIDEN`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}T SIDEN`;
+  if (seconds < 604800) return `${Math.floor(seconds / 86400)}D SIDEN`;
+  return date.toLocaleDateString("nb-NO");
 }

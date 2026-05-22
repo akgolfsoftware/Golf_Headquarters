@@ -156,6 +156,9 @@
   --color-accent-bg: rgba(209, 248, 67, 0.12);
   --color-accent-fill: rgba(209, 248, 67, 0.25);
   --color-accent-soft: #ECFCC0;
+  --color-accent-deep: #BFE933;
+  --color-tab-active-bg: rgba(209, 248, 67, 0.35);
+  --color-tab-active-text: #3B4310;
 
   --color-surface: #FAFAF7;
   --color-surface-alt: #F5F2EA;
