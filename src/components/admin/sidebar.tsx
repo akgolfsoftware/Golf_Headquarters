@@ -87,7 +87,7 @@ export function AdminSidebar() {
   return (
     <aside
       aria-label="CoachHQ sidemeny"
-      className="flex w-52 shrink-0 flex-col bg-[#0F2A22] text-white lg:w-64"
+      className="flex w-52 shrink-0 flex-col bg-[var(--color-coach-sidebar)] text-white lg:w-64"
     >
       <div className="flex justify-center px-4 py-6">
         <SidebarBrand variant="coach" role="HEAD COACH" />
