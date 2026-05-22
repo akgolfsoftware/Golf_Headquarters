@@ -16,6 +16,7 @@ import {
   recordInvoice,
   recordChargeRefund,
 } from "@/lib/payments/record";
+import { recordWebhookFailure } from "@/lib/webhook-retry";
 
 export const runtime = "nodejs";
 // Gi webhook nok hode-rom mot cold starts + DB-writes.
@@ -280,7 +281,15 @@ export async function POST(req: Request) {
     }
   } catch (err) {
     console.error("[stripe-webhook] handler-feil", err);
-    return NextResponse.json({ error: "handler-failed" }, { status: 500 });
+    // Lagre i retry-kø og returner 200 til Stripe så de ikke retry-er evig.
+    // Vi reprosesserer manuelt eller via cron.
+    await recordWebhookFailure({
+      source: "stripe",
+      eventId: event.id,
+      payload: event as unknown,
+      error: err,
+    });
+    return NextResponse.json({ received: true, queued: true });
   }
 
   return NextResponse.json({ received: true });

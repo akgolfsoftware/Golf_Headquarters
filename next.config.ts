@@ -60,6 +60,28 @@ const nextConfig: NextConfig = {
       { source: "/portal/ny-okt", destination: "/portal/gjennomfore/ny-okt", permanent: true },
     ];
   },
+
+  // Security headers (P15 — kritisk for launch per datasikkerhets-audit)
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 // PWA service worker via Serwist. Genererer /sw.js fra src/app/sw.ts.
