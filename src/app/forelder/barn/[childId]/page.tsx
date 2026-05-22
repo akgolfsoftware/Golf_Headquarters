@@ -15,7 +15,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { assertBarnTilhorerForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { ForelderHero } from "@/components/forelder/forelder-hero";
 import type { PaymentStatus } from "@/generated/prisma/client";
 
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
@@ -152,7 +152,7 @@ export default async function BarnProfil({
         Mine barn
       </Link>
 
-      <PageHeader
+      <ForelderHero
         eyebrow="Foreldreportal · Profil"
         titleLead={fornavn}
         titleItalic={etternavn || "profil"}

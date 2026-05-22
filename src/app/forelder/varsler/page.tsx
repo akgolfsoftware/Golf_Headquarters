@@ -6,7 +6,7 @@ import { Bell, Mail, MessageSquare, Calendar, CheckCircle2 } from "lucide-react"
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { ForelderHero } from "@/components/forelder/forelder-hero";
 
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
   day: "2-digit",
@@ -44,7 +44,7 @@ export default async function Varsler() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
+      <ForelderHero
         eyebrow="Foreldreportal · Varsler"
         titleLead="Velg hva du vil"
         titleItalic="varsles om"

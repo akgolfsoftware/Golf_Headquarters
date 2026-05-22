@@ -4,7 +4,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { ForelderHero } from "@/components/forelder/forelder-hero";
 import type { PaymentStatus } from "@/generated/prisma/client";
 
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
@@ -46,7 +46,7 @@ export default async function Fakturaer() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
+      <ForelderHero
         eyebrow="Foreldreportal · Økonomi"
         titleLead="Fakturaer"
         titleItalic="og betalinger"

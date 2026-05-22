@@ -1,7 +1,7 @@
 import { Shield, AlertCircle } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { ForelderHero } from "@/components/forelder/forelder-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { SamtykkeForm } from "./samtykke-form";
 
@@ -52,7 +52,7 @@ export default async function SamtykkePage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
+      <ForelderHero
         eyebrow="Foreldreportal · Samtykker"
         titleLead="GDPR-samtykker"
         titleItalic="per barn"
