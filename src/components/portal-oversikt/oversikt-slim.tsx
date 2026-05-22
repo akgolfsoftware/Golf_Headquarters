@@ -61,6 +61,15 @@ const pyrLabels: Record<PyramidArea, string> = {
 // Pyramide-rekkefølge (TOP -> BOTTOM): Turnering = apex, Fysisk = foundation
 const PYR_ORDER: PyramidArea[] = ["TURN", "SPILL", "SLAG", "TEK", "FYS"];
 
+// Bredde per nivå (smal apex -> bred foundation)
+const PYR_WIDTH: Record<PyramidArea, string> = {
+  TURN: "30%",
+  SPILL: "48%",
+  SLAG: "66%",
+  TEK: "84%",
+  FYS: "100%",
+};
+
 const pyrColors: Record<PyramidArea, string> = {
   FYS: "var(--color-pyr-fys)",
   TEK: "var(--color-pyr-tek)",
@@ -278,20 +287,22 @@ export function OversiktSlim({
       </section>
 
       {/* ============= PYRAMIDE-FOOTER ============= */}
-      <section>
+      <section className="flex flex-col items-center">
         <AthleticEyebrow>PYRAMIDE · SISTE 14 DAGER</AthleticEyebrow>
-        <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-5 md:gap-3">
+        <div className="mt-4 flex w-full max-w-md flex-col items-center gap-1.5">
           {PYR_ORDER.map((area) => {
             const row = pyramide.find((p) => p.area === area) ?? { area, pct: 0 };
+            const color = pyrColors[row.area];
             return (
               <div
                 key={row.area}
-                className="rounded-xl border border-border bg-card p-3"
+                className="relative rounded-xl border bg-card px-3 py-2.5 shadow-[0_1px_3px_rgba(10,31,24,0.05)] transition"
+                style={{ width: PYR_WIDTH[row.area], borderColor: `${color}40` }}
               >
-                <div className="flex items-baseline justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <span
                     className="font-mono text-[10px] font-bold uppercase tracking-[0.10em]"
-                    style={{ color: pyrColors[row.area] }}
+                    style={{ color }}
                   >
                     {pyrLabels[row.area]}
                   </span>
@@ -299,12 +310,12 @@ export function OversiktSlim({
                     {row.pct}%
                   </span>
                 </div>
-                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
                       width: `${Math.min(100, row.pct)}%`,
-                      background: pyrColors[row.area],
+                      background: color,
                     }}
                   />
                 </div>
