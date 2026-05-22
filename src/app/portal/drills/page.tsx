@@ -13,7 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { kategoriFraHcp } from "@/lib/ai-plan/context";
 import { PageHeader } from "@/components/shared/page-header";
 import { AgentStrip } from "@/components/coachhq/agent-strip";
-import type { NgfKategori } from "@/generated/prisma/client";
+import type { DrillFasilitet, NgfKategori } from "@/generated/prisma/client";
 import { DrillsLibraryClient } from "./drills-client";
 
 const KATEGORI_RANK: Record<NgfKategori, number> = {
@@ -51,6 +51,13 @@ export default async function DrillsLibraryPage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "PARENT"] });
 
   const spillerKategori = kategoriFraHcp(user.hcp);
+
+  // Hent tilgjengelige fasiliteter for spilleren
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { tilgjengeligeFasiliteter: true },
+  });
+  const spillerFasiliteter: DrillFasilitet[] = dbUser?.tilgjengeligeFasiliteter ?? [];
 
   // Hent alle drills + brukerens historikk i parallell.
   const [drills, mineSessionDrills, mineDrillInstances, coachAnbefaltIds] =
@@ -143,6 +150,7 @@ export default async function DrillsLibraryPage() {
       csMax: d.csMax,
       defaultRepsSets: d.defaultRepsSets,
       environment: d.environment,
+      fasilitetKrav: d.fasilitetKrav as DrillFasilitet[],
       minKategori: d.minKategori,
       maxKategori: d.maxKategori,
       videoUrl: d.videoUrl,
@@ -185,6 +193,7 @@ export default async function DrillsLibraryPage() {
         drills={drillRows}
         spillerKategori={spillerKategori}
         tier={tier}
+        spillerFasiliteter={spillerFasiliteter}
       />
     </div>
   );

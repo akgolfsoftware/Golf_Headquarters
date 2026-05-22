@@ -6,6 +6,7 @@
 
 import { prisma } from "@/lib/prisma";
 import type {
+  DrillFasilitet,
   LPhase,
   NgfKategori,
   PyramidArea,
@@ -78,6 +79,8 @@ export type SpillerKontekst = {
     hjemmeklubb: string | null;
     /** NGF-kategori utledet fra WAGR-snapshot eller HCP. */
     ngfKategori: NgfKategori | null;
+    /** Fasiliteter og utstyr spilleren har registrert. Brukes for drill-matching. */
+    tilgjengeligeFasiliteter: DrillFasilitet[];
   };
   wagr: {
     rank: number;
@@ -207,12 +210,15 @@ const ALLE_KATEGORIER: NgfKategori[] = [
   "L",
 ];
 
-// Hent drills som matcher spillerens kategori.
+// Hent drills som matcher spillerens kategori og fasilitetsprofil.
 //
 // Prisma støtter ikke lte/gte på enum-felter — vi materialiserer i stedet
 // listen over kategorier som er ≤ og ≥ spillerens kategori og bruker `in`.
+// Fasilitetsfilter: drills der alle krav er delmengde av spillerens profil.
+// Drills uten krav (tom liste) er alltid inkludert.
 async function hentTilgjengeligeDrills(
   kategori: NgfKategori | null,
+  fasilitetProfil: DrillFasilitet[] = [],
 ): Promise<DrillKatalogEntry[]> {
   const whereClause =
     kategori === null
@@ -253,15 +259,28 @@ async function hentTilgjengeligeDrills(
       coachNotes: true,
       morad: true,
       environment: true,
+      fasilitetKrav: true,
       lPhases: true,
       minKategori: true,
       maxKategori: true,
     },
     orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
-    take: 200,
+    take: 400, // henter mer siden vi filtrerer
   });
 
-  return drills.map((d) => ({
+  // Fasilitetsfilter: kun drills der alle krav er dekt av spillerens profil.
+  // Tom profil = ingen fasilitetfiltrering (vis alt).
+  const fasilitetSet = new Set<string>(fasilitetProfil);
+  const filtrerte =
+    fasilitetProfil.length === 0
+      ? drills
+      : drills.filter((d) => {
+          const krav = d.fasilitetKrav as string[];
+          if (krav.length === 0) return true; // ingen krav → alltid vis
+          return krav.every((k) => fasilitetSet.has(k));
+        });
+
+  return filtrerte.slice(0, 200).map((d) => ({
     id: d.id,
     navn: d.name,
     disciplin: d.pyramidArea,
@@ -390,6 +409,7 @@ export async function byggSpillerKontekst(
       playingYears: true,
       ambition: true,
       homeClub: true,
+      tilgjengeligeFasiliteter: true,
     },
   });
   if (!user) throw new Error(`Bruker ${userId} finnes ikke.`);
@@ -447,7 +467,7 @@ export async function byggSpillerKontekst(
         },
       },
     }),
-    hentTilgjengeligeDrills(ngfKategori),
+    hentTilgjengeligeDrills(ngfKategori, user.tilgjengeligeFasiliteter as DrillFasilitet[]),
     hentForrigeEffektivitet(userId),
   ]);
 
@@ -469,6 +489,7 @@ export async function byggSpillerKontekst(
       ambisjon: user.ambition,
       hjemmeklubb: user.homeClub,
       ngfKategori,
+    tilgjengeligeFasiliteter: user.tilgjengeligeFasiliteter as DrillFasilitet[],
     },
     wagr: wagr
       ? { rank: wagr.rank, ngfKategori: wagr.ngfCategory, ptsAvg: wagr.ptsAvg }

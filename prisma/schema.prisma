@@ -94,6 +94,21 @@ enum SessionEnvironment {
   SIMULATOR
 }
 
+// Utstyr/anlegg-krav per drill — brukes for facility-matching mot spillerprofil.
+// Tomme fasilitetKrav = drill kan gjøres overalt (ingen spesialkrav).
+enum DrillFasilitet {
+  RADAR              // Launch monitor: TrackMan, FlightScope, Garmin R10, Mevo+
+  MAT_NET            // Innendørs matte + nett
+  BUNKER             // Tilgang til sandbunker
+  KAMERA             // iPhone + stativ for video-feedback
+  PUTTING_GREEN_KORT // Putting green opptil 10m (kortspill)
+  PUTTING_GREEN_LANG // Putting green 15m+ (lag-putt, 10m+ slag)
+  SHORT_GAME_AREA    // Nærspillsareal: gress, fra rough, chip/pitch
+  DRIVING_RANGE      // Utendørs driving range
+  BANE               // Tilgang til golfrunde (9 eller 18 hull)
+  SIMULATOR          // Innendørs simulator-bay
+}
+
 // NGF-kategori-skala for nivå-differensiering av drills og plan-templates.
 // A = OWGR Top 150 (elite-profesjonell)
 // B-D = nasjonalt elite-amateur til lavt proff
@@ -239,6 +254,10 @@ model User {
   // Bruker-preferanser (notifikasjoner, språk, etc.) som flexibel JSON.
   // Strukturen håndheves i kode (src/lib/preferences.ts) ikke i DB.
   preferences  Json?
+
+  // Tilgjengelige fasiliteter og utstyr (settes under onboarding/innstillinger).
+  // Brukes for å filtrere drills slik at spilleren kun ser øvelser de kan gjøre.
+  tilgjengeligeFasiliteter DrillFasilitet[] @default([])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -684,6 +703,10 @@ model ExerciseDefinition {
   intensitet      Int?                   // 1-10
   lPhases         LPhase[]               @default([])
   morad           Boolean                @default(false)
+
+  // Fasilitets-krav: strukturerte utstyr/anlegg-krav for facility-matching.
+  // Tom liste = drill har ingen spesialkrav (kan gjøres av alle).
+  fasilitetKrav   DrillFasilitet[]       @default([])
 
   // Pedagogikk
   prerequisites   String[]               @default([])

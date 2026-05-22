@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, Edit3, Bell, Lock, Link2, Globe, Shield, Monitor, Trash2, ChevronRight } from "lucide-react";
+import { ChevronLeft, Edit3, Bell, Lock, Link2, Globe, Shield, Monitor, Trash2, ChevronRight, MapPin } from "lucide-react";
 import { ProfilRedigerModal, type ProfilRedigerModalProps } from "./profil-rediger-modal";
 import "./meg.css";
 
@@ -19,6 +19,7 @@ export interface InnstillingerShellProps {
   tier: "GRATIS" | "PRO" | "ELITE";
   notifCount: { active: number; total: number };
   integrationsCount: { connected: number; names: string };
+  fasilitetCount: number;
 }
 
 export function InnstillingerShell({
@@ -26,6 +27,7 @@ export function InnstillingerShell({
   tier,
   notifCount,
   integrationsCount,
+  fasilitetCount,
 }: InnstillingerShellProps) {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -80,7 +82,7 @@ export function InnstillingerShell({
       ),
     },
     {
-      href: "/portal/meg/innstillinger/sikkerhet",
+      href: "/portal/meg/sikkerhet",
       icon: <Shield size={20} aria-hidden />,
       title: "Sikkerhet",
       desc: "Passord, to-faktor-pålogging og pålitelige enheter",
@@ -89,6 +91,24 @@ export function InnstillingerShell({
           <span className="dot" />2FA på
         </span>
       ),
+    },
+    {
+      href: "/portal/meg/innstillinger/anlegg",
+      icon: <MapPin size={20} aria-hidden />,
+      title: "Mitt treningsanlegg",
+      desc: "Radar, bunker, putting-green, simulator — filtrer drills på hva du faktisk har",
+      state:
+        fasilitetCount > 0 ? (
+          <>
+            <span className="v">{fasilitetCount} valgt</span>
+            Drills filtreres
+          </>
+        ) : (
+          <span className="meg-meta-pill">
+            <span className="dot" style={{ background: "var(--color-muted-foreground)" }} />
+            Ikke satt opp
+          </span>
+        ),
     },
     {
       href: "/portal/meg/innstillinger/okter",

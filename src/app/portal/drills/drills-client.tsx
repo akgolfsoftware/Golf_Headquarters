@@ -22,6 +22,7 @@ import {
   X,
 } from "lucide-react";
 import type {
+  DrillFasilitet,
   PyramidArea,
   SkillArea,
   NgfKategori,
@@ -40,6 +41,7 @@ type DrillRow = {
   csMax: number | null;
   defaultRepsSets: string | null;
   environment: string[];
+  fasilitetKrav: DrillFasilitet[];
   minKategori: NgfKategori | null;
   maxKategori: NgfKategori | null;
   videoUrl: string | null;
@@ -100,12 +102,16 @@ export function DrillsLibraryClient({
   drills,
   spillerKategori,
   tier,
+  spillerFasiliteter,
 }: {
   drills: DrillRow[];
   spillerKategori: NgfKategori | null;
   tier: "GRATIS" | "PRO" | "ELITE";
+  spillerFasiliteter: DrillFasilitet[];
 }) {
+  const harFasilitetProfil = spillerFasiliteter.length > 0;
   const [anbefaltForMeg, setAnbefaltForMeg] = useState(true);
+  const [kunMineAnlegg, setKunMineAnlegg] = useState(harFasilitetProfil);
   const [valgteDisipliner, setValgteDisipliner] = useState<Set<PyramidArea>>(
     new Set(),
   );
@@ -125,6 +131,9 @@ export function DrillsLibraryClient({
     spillerKategori !== null ? KATEGORI_RANK[spillerKategori] : null;
 
   const filtrerte = useMemo(() => {
+    // Bygg fasilitetSet inni memo slik at den ikke skaper ny referanse på hvert render.
+    const fasilitetSet = new Set(spillerFasiliteter);
+
     return drills.filter((d) => {
       if (anbefaltForMeg && spillerRank !== null) {
         const minR =
@@ -132,6 +141,14 @@ export function DrillsLibraryClient({
         const maxR =
           d.maxKategori !== null ? KATEGORI_RANK[d.maxKategori] : 11;
         if (spillerRank < minR || spillerRank > maxR) return false;
+      }
+      // Fasilitet-filter: drill-krav må være delmengde av spillerens profil.
+      // Drills uten krav (tom liste) er alltid med.
+      if (kunMineAnlegg && harFasilitetProfil && d.fasilitetKrav.length > 0) {
+        const kanGjennomfores = d.fasilitetKrav.every((k) =>
+          fasilitetSet.has(k),
+        );
+        if (!kanGjennomfores) return false;
       }
       if (valgteDisipliner.size > 0 && !valgteDisipliner.has(d.pyramidArea))
         return false;
@@ -156,6 +173,9 @@ export function DrillsLibraryClient({
     drills,
     anbefaltForMeg,
     spillerRank,
+    kunMineAnlegg,
+    harFasilitetProfil,
+    spillerFasiliteter,
     valgteDisipliner,
     valgteSkillAreas,
     kunMorad,
@@ -201,6 +221,7 @@ export function DrillsLibraryClient({
 
   function resetFiltre() {
     setAnbefaltForMeg(true);
+    setKunMineAnlegg(harFasilitetProfil);
     setValgteDisipliner(new Set());
     setValgteSkillAreas(new Set());
     setKunMorad(false);
@@ -210,6 +231,7 @@ export function DrillsLibraryClient({
 
   const harAktiveFiltre =
     !anbefaltForMeg ||
+    (harFasilitetProfil && !kunMineAnlegg) ||
     valgteDisipliner.size > 0 ||
     valgteSkillAreas.size > 0 ||
     kunMorad ||
@@ -250,6 +272,14 @@ export function DrillsLibraryClient({
               label="Anbefalt for meg"
               disabled={erGratis}
             />
+            {harFasilitetProfil && (
+              <ToggleChip
+                active={kunMineAnlegg}
+                onClick={() => setKunMineAnlegg((v) => !v)}
+                label="Mine anlegg"
+                highlight
+              />
+            )}
             <ToggleChip
               active={kunMorad}
               onClick={() => setKunMorad((v) => !v)}
@@ -465,11 +495,13 @@ function ToggleChip({
   onClick,
   label,
   disabled,
+  highlight,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   disabled?: boolean;
+  highlight?: boolean;
 }) {
   return (
     <button
@@ -478,9 +510,11 @@ function ToggleChip({
       disabled={disabled}
       aria-pressed={active}
       className={`inline-flex h-9 items-center rounded-full border px-4 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-input bg-background text-foreground hover:border-border hover:bg-secondary"
+        active && highlight
+          ? "border-accent bg-accent text-accent-foreground"
+          : active
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-input bg-background text-foreground hover:border-border hover:bg-secondary"
       }`}
     >
       {label}

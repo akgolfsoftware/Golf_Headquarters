@@ -4,6 +4,51 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { audit } from "@/lib/audit";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { prisma } from "@/lib/prisma";
+import type { DrillFasilitet } from "@/generated/prisma/client";
+
+const GYLDIGE_FASILITETER: DrillFasilitet[] = [
+  "RADAR",
+  "MAT_NET",
+  "BUNKER",
+  "KAMERA",
+  "PUTTING_GREEN_KORT",
+  "PUTTING_GREEN_LANG",
+  "SHORT_GAME_AREA",
+  "DRIVING_RANGE",
+  "BANE",
+  "SIMULATOR",
+];
+
+/**
+ * Lagrer spillerens tilgjengelige fasiliteter og utstyr.
+ * Brukes fra /portal/meg/innstillinger/anlegg.
+ */
+export async function lagreFasilitetProfil(
+  fasiliteter: DrillFasilitet[],
+): Promise<{ ok: boolean; error?: string }> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: "unauthenticated" };
+
+  // Valider at alle verdier er gyldige enum-verdier
+  const validerte = fasiliteter.filter((f) =>
+    (GYLDIGE_FASILITETER as string[]).includes(f),
+  );
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { tilgjengeligeFasiliteter: validerte },
+  });
+
+  await audit({
+    actorId: user.id,
+    action: "user.fasilitet_profil_oppdatert",
+    target: user.id,
+    metadata: { fasiliteter: validerte },
+  });
+
+  return { ok: true };
+}
 
 const SUPPORT_EPOST = "support@akgolf.no";
 
