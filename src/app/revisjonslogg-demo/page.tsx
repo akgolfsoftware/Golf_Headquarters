@@ -18,6 +18,32 @@ import {
 
 type EvtType = "create" | "update" | "delete" | "auth" | "agent" | "auth-fail";
 
+const EVT_PILL_STYLES: Record<EvtType, string> = {
+  create: "bg-accent/20 text-[var(--color-pyr-fys,#005840)]",
+  update: "bg-primary/10 text-primary",
+  delete: "bg-destructive/10 text-destructive",
+  auth: "bg-[#FFF0D6] text-[#B8852A]",
+  agent: "bg-muted text-muted-foreground",
+  "auth-fail": "bg-destructive/10 text-destructive",
+};
+const EVT_ICON_STYLES: Record<EvtType, string> = {
+  create: "border-accent bg-accent/20 text-[var(--color-pyr-fys,#005840)]",
+  update: "border-primary bg-primary/10 text-primary",
+  delete: "border-destructive bg-destructive/10 text-destructive",
+  auth: "border-[#B8852A] bg-[#FFF0D6] text-[#B8852A]",
+  agent: "border-muted-foreground bg-muted text-muted-foreground",
+  "auth-fail": "border-destructive bg-destructive/10 text-destructive",
+};
+
+function EvtIcon({ type }: { type: EvtType }) {
+  if (type === "create") return <Plus className="h-3.5 w-3.5" />;
+  if (type === "update") return <Pencil className="h-3.5 w-3.5" />;
+  if (type === "delete") return <Trash2 className="h-3.5 w-3.5" />;
+  if (type === "auth") return <ShieldCheck className="h-3.5 w-3.5" />;
+  if (type === "auth-fail") return <ShieldOff className="h-3.5 w-3.5" />;
+  return <Bot className="h-3.5 w-3.5" />;
+}
+
 type Evt = {
   id: string;
   time: string;
@@ -433,31 +459,6 @@ function Timeline({ events }: { events: Evt[] }) {
 }
 
 function EvtCard({ evt }: { evt: Evt }) {
-  const pillStyles: Record<EvtType, string> = {
-    create: "bg-accent/20 text-[var(--color-pyr-fys,#005840)]",
-    update: "bg-primary/10 text-primary",
-    delete: "bg-destructive/10 text-destructive",
-    auth: "bg-[#FFF0D6] text-[#B8852A]",
-    agent: "bg-muted text-muted-foreground",
-    "auth-fail": "bg-destructive/10 text-destructive",
-  };
-  const iconStyles: Record<EvtType, string> = {
-    create: "border-accent bg-accent/20 text-[var(--color-pyr-fys,#005840)]",
-    update: "border-primary bg-primary/10 text-primary",
-    delete: "border-destructive bg-destructive/10 text-destructive",
-    auth: "border-[#B8852A] bg-[#FFF0D6] text-[#B8852A]",
-    agent: "border-muted-foreground bg-muted text-muted-foreground",
-    "auth-fail": "border-destructive bg-destructive/10 text-destructive",
-  };
-  const Icon = ({ type }: { type: EvtType }) => {
-    if (type === "create") return <Plus className="h-3.5 w-3.5" />;
-    if (type === "update") return <Pencil className="h-3.5 w-3.5" />;
-    if (type === "delete") return <Trash2 className="h-3.5 w-3.5" />;
-    if (type === "auth") return <ShieldCheck className="h-3.5 w-3.5" />;
-    if (type === "auth-fail") return <ShieldOff className="h-3.5 w-3.5" />;
-    return <Bot className="h-3.5 w-3.5" />;
-  };
-
   const pillLabel =
     evt.type === "auth-fail"
       ? "Auth · mislyktet"
@@ -466,9 +467,9 @@ function EvtCard({ evt }: { evt: Evt }) {
   return (
     <div className="relative mb-3.5">
       <div
-        className={`absolute -left-8 top-3.5 z-[1] grid h-6 w-6 place-items-center rounded-full border-2 ${iconStyles[evt.type]}`}
+        className={`absolute -left-8 top-3.5 z-[1] grid h-6 w-6 place-items-center rounded-full border-2 ${EVT_ICON_STYLES[evt.type]}`}
       >
-        <Icon type={evt.type} />
+        <EvtIcon type={evt.type} />
       </div>
       <div
         className={`rounded-lg border bg-card px-4 py-3.5 transition-shadow hover:shadow-sm ${
@@ -480,7 +481,7 @@ function EvtCard({ evt }: { evt: Evt }) {
             {evt.time}
           </span>
           <span
-            className={`rounded-sm px-1.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.06em] ${pillStyles[evt.type]}`}
+            className={`rounded-sm px-1.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.06em] ${EVT_PILL_STYLES[evt.type]}`}
           >
             {pillLabel}
           </span>

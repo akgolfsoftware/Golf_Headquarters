@@ -23,13 +23,14 @@ export function AdminCancelAction({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
+  // eslint-disable-next-line react-hooks/purity
+  const tidTilStartMs = new Date(startAt).getTime() - Date.now();
 
   if (status === "CANCELLED" || status === "COMPLETED") {
     return <span className="text-muted-foreground">—</span>;
   }
 
-  const tidTilStart = new Date(startAt).getTime() - Date.now();
-  const before24t = tidTilStart > 24 * 60 * 60 * 1000;
+  const before24t = tidTilStartMs > 24 * 60 * 60 * 1000;
 
   function bekreft() {
     startTransition(async () => {

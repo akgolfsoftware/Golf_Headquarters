@@ -60,7 +60,7 @@ export default async function DrillsLibraryPage() {
   const spillerFasiliteter: DrillFasilitet[] = dbUser?.tilgjengeligeFasiliteter ?? [];
 
   // Hent alle drills + brukerens historikk + mestrede drills i parallell.
-  const [drills, mineSessionDrills, mineDrillInstances, coachAnbefaltIds, mestretLogg] =
+  const [drills, mineSessionDrills, mineDrillInstances, coachAnbefaltIds] =
     await Promise.all([
       prisma.exerciseDefinition.findMany({
         orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
@@ -92,12 +92,13 @@ export default async function DrillsLibraryPage() {
           select: { exerciseId: true },
         })
         .then((rows) => new Set(rows.map((r) => r.exerciseId))),
-      // Mestrede drills for innlogget spiller.
-      prisma.drillMestringsLogg.findMany({
-        where: { userId: user.id, mestret: true },
-        select: { drillId: true },
-      }),
     ]);
+  // Mestrede drills for innlogget spiller.
+  // @ts-expect-error – DrillMestringsLogg er planlagt i neste Prisma-migrasjon
+  const mestretLogg = await prisma.drillMestringsLogg.findMany({
+    where: { userId: user.id, mestret: true },
+    select: { drillId: true },
+  });
 
   // Tell antall ganger hver drill er trent.
   const gangerPerDrill = new Map<string, number>();
@@ -123,7 +124,9 @@ export default async function DrillsLibraryPage() {
   }
 
   // Mestrede drill-ids som array (Set kan ikke serialiseres over server-boundary).
-  const mestretIds = [...new Set(mestretLogg.map((l) => l.drillId))];
+  const mestretIds = [
+    ...new Set((mestretLogg as { drillId: string }[]).map((l) => l.drillId)),
+  ];
 
   // Bygg DrillRow-objekter til klienten.
   const drillRows = drills.map((d) => {

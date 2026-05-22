@@ -38,9 +38,8 @@ export function ViewModeToggle({
 
   function velg(ny: ViewMode) {
     if (ny === "advanced" && locked) {
-      if (typeof window !== "undefined") {
-        window.location.href = upgradeHref;
-      }
+      // eslint-disable-next-line react-hooks/immutability
+      window.location.href = upgradeHref;
       return;
     }
     setMode(ny);

@@ -172,7 +172,7 @@ export default function TekniskPlanDemo() {
                   Roadmap. <em className="font-normal italic text-muted-foreground">Q2 → Q4 2026 og Q1 2027.</em>
                 </h2>
                 <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-                  42 epics totalt · 18 levert · 12 pågår · 12 spec'd · last pull 03:00
+                  42 epics totalt · 18 levert · 12 pågår · 12 spec&apos;d · last pull 03:00
                 </div>
               </div>
               <div className="flex gap-2">

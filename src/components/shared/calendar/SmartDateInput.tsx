@@ -39,6 +39,7 @@ export function SmartDateInput({
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (tekst.trim().length === 0) {
       setStatus({ kind: "idle" });
@@ -89,6 +90,7 @@ export function SmartDateInput({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tekst, spilllerId]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return (
     <div className={cn("flex w-full flex-col gap-1", className)}>

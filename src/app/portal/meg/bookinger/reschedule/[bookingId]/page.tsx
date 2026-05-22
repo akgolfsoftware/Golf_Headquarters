@@ -39,6 +39,7 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
   if (booking.userId !== user.id && !erStaff) notFound();
 
   // 24t-regel for spillere
+  // eslint-disable-next-line react-hooks/purity
   const tidTilStart = booking.startAt.getTime() - Date.now();
   if (!erStaff && tidTilStart <= 24 * 60 * 60 * 1000) {
     redirect("/portal/meg/bookinger?error=24t");

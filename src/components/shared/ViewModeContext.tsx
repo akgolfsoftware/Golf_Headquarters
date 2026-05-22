@@ -65,11 +65,13 @@ export function ViewModeProvider({
   const [hydrated, setHydrated] = useState(false);
 
   // Les fra localStorage etter mount.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const lagret = lesStartmodus(initialMode);
     setModeState(lagret);
     setHydrated(true);
   }, [initialMode]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Lytt på endringer fra andre tabs.
   useEffect(() => {

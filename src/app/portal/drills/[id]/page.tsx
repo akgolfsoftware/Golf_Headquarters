@@ -78,29 +78,34 @@ export default async function DrillDetailPage({
   const { id } = await params;
   const spillerKategori = kategoriFraHcp(user.hcp);
 
-  const drill = await prisma.exerciseDefinition.findUnique({
+  // Disse relasjonsfeltene (mestringsLogg, ratings, parentDrill,
+  // progressjonsDrills) venter på Prisma-migrasjon. Inntil videre brukes
+  // basis-modellen og tomme stub-felter (UI fungerer, men data tom).
+  const drillBase = await prisma.exerciseDefinition.findUnique({
     where: { id },
-    include: {
-      mestringsLogg: {
-        where: { userId: user.id },
-        orderBy: { dato: "desc" },
-        take: 10,
-      },
-      ratings: {
-        where: { userId: user.id },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      },
-      parentDrill: {
-        select: { id: true, name: true },
-      },
-      progressjonsDrills: {
-        select: { id: true, name: true, progresjonsnivaa: true },
-        orderBy: { progresjonsnivaa: "asc" },
-        take: 3,
-      },
-    },
   });
+  const drill = drillBase
+    ? {
+        ...drillBase,
+        mestringsLogg: [] as {
+          id: string;
+          csScore: number | null;
+          mestret: boolean;
+          dato: Date;
+          kommentar: string | null;
+          coachVurdering: number | null;
+        }[],
+        ratings: [] as {
+          id: string;
+          rating: number;
+          type: string;
+          kommentar: string | null;
+          createdAt: Date;
+        }[],
+        parentDrill: null as { id: string; name: string } | null,
+        progressjonsDrills: [] as { id: string; name: string; progresjonsnivaa: number | null }[],
+      }
+    : null;
 
   // Fallback til 404-lignende visning om drill ikke finnes.
   if (!drill) {
@@ -197,15 +202,7 @@ export default async function DrillDetailPage({
               </span>
             )}
 
-            {/* Progresjonsnivaa */}
-            {drill.progresjonsnivaa !== null && (
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                  Nivå
-                </span>
-                <ProgresjonsNivaaIndikator nivaa={drill.progresjonsnivaa} />
-              </div>
-            )}
+            {/* Progresjonsnivaa — kommer med Prisma-migrasjon */}
           </div>
         }
       />

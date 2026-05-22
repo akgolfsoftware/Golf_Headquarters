@@ -35,10 +35,23 @@ const STATS: Stat[] = [
   { label: "Beste streak", sub: "reps på rad · ny PR", value: "14" },
 ];
 
+function computeSegments(
+  wedges: Wedge[],
+  circumference: number,
+): (Wedge & { length: number; dashOffset: number })[] {
+  let offset = 0;
+  return wedges.map((w) => {
+    const length = (w.pct / 100) * circumference;
+    const dashOffset = offset;
+    offset -= length;
+    return { ...w, length, dashOffset };
+  });
+}
+
 export default function LiveSummaryMobileDemo() {
   const radius = 80;
   const circumference = 2 * Math.PI * radius;
-  let offset = 0;
+  const segments = computeSegments(WEDGES, circumference);
 
   return (
     <div className="min-h-screen w-full bg-[#050D0A] flex justify-center">
@@ -97,25 +110,20 @@ export default function LiveSummaryMobileDemo() {
                   stroke="rgba(255,255,255,0.04)"
                   strokeWidth="22"
                 />
-                {WEDGES.map((w) => {
-                  const length = (w.pct / 100) * circumference;
-                  const current = offset;
-                  offset -= length;
-                  return (
-                    <circle
-                      key={w.key}
-                      cx="100"
-                      cy="100"
-                      r={radius}
-                      fill="none"
-                      stroke={w.color}
-                      strokeWidth="22"
-                      strokeDasharray={`${length} ${circumference}`}
-                      strokeDashoffset={current}
-                      transform="rotate(-90 100 100)"
-                    />
-                  );
-                })}
+                {segments.map((w) => (
+                  <circle
+                    key={w.key}
+                    cx="100"
+                    cy="100"
+                    r={radius}
+                    fill="none"
+                    stroke={w.color}
+                    strokeWidth="22"
+                    strokeDasharray={`${w.length} ${circumference}`}
+                    strokeDashoffset={w.dashOffset}
+                    transform="rotate(-90 100 100)"
+                  />
+                ))}
               </svg>
               <div className="flex flex-1 flex-col gap-2">
                 {WEDGES.map((w) => (

@@ -6,6 +6,7 @@
  * CV/sertifiseringer, statistikk, testimonials, kalender-snippet og CTA.
  */
 
+import Link from "next/link";
 import {
   ArrowRight,
   Award,
@@ -408,10 +409,10 @@ function TopNav() {
   return (
     <nav className="border-b border-border bg-background">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-8">
-        <a href="/" className="flex items-center gap-2 text-[14px] font-medium">
+        <Link href="/" className="flex items-center gap-2 text-[14px] font-medium">
           <span className="h-2 w-2 rounded-full bg-primary" />
           <span>AK Golf</span>
-        </a>
+        </Link>
         <div className="hidden items-center gap-8 text-[13px] md:flex">
           <a href="/akgolf-tjenester-demo" className="hover:text-primary">
             Tjenester

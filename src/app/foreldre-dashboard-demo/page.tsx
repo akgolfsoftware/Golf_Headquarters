@@ -127,7 +127,7 @@ export default function ForeldreDashboardDemo() {
           <section className="col-span-8 rounded-lg border border-border bg-card p-6">
             <div className="mb-4 flex items-baseline justify-between">
               <h3 className="font-display text-[16px] font-semibold tracking-tight">
-                Markus' pyramide{" "}
+                Markus&apos; pyramide{" "}
                 <em className="font-normal italic text-muted-foreground text-[13px]">· uke 19</em>
               </h3>
               <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">

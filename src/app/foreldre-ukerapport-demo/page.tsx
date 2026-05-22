@@ -20,7 +20,7 @@ export default function ForeldreUkerapportDemo() {
               <em className="font-normal italic text-muted-foreground">· uke 19 · 5.–11. mai 2026</em>
             </h1>
             <p className="mt-2 max-w-[640px] text-[13px] leading-[1.55] text-muted-foreground">
-              Signert av Anders Kristiansen søndag 11.05 kl 21:14. Genereres automatisk fra Markus'
+              Signert av Anders Kristiansen søndag 11.05 kl 21:14. Genereres automatisk fra Markus&apos;
               coaching-board, og redigeres av coach før utsendelse.
             </p>
           </div>

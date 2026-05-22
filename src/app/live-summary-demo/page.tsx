@@ -33,10 +33,25 @@ const WEDGES: Wedge[] = [
   { key: "turn", label: "TURN", pct: 0, color: "#2A4636" },
 ];
 
+function computeWedgeSegments(
+  wedges: (typeof WEDGES)[number][],
+  circumference: number,
+) {
+  let offset = 0;
+  return wedges
+    .filter((w) => w.pct > 0)
+    .map((w) => {
+      const length = (w.pct / 100) * circumference;
+      const current = offset;
+      offset -= length;
+      return { ...w, length, dashOffset: current };
+    });
+}
+
 export default function LiveSummaryDemo() {
   const radius = 80;
   const circumference = 2 * Math.PI * radius; // ~502.65
-  let offset = 0;
+  const wedgeSegments = computeWedgeSegments(WEDGES, circumference);
 
   return (
     <div className="relative grid h-screen w-screen grid-rows-[56px_1fr_104px] overflow-hidden bg-[#0A1F18] text-white">
@@ -109,25 +124,20 @@ export default function LiveSummaryDemo() {
                   stroke="rgba(255,255,255,0.04)"
                   strokeWidth="22"
                 />
-                {WEDGES.filter((w) => w.pct > 0).map((w) => {
-                  const length = (w.pct / 100) * circumference;
-                  const current = offset;
-                  offset -= length;
-                  return (
-                    <circle
-                      key={w.key}
-                      cx="100"
-                      cy="100"
-                      r={radius}
-                      fill="none"
-                      stroke={w.color}
-                      strokeWidth="22"
-                      strokeDasharray={`${length} ${circumference}`}
-                      strokeDashoffset={current}
-                      transform="rotate(-90 100 100)"
-                    />
-                  );
-                })}
+                {wedgeSegments.map((w) => (
+                  <circle
+                    key={w.key}
+                    cx="100"
+                    cy="100"
+                    r={radius}
+                    fill="none"
+                    stroke={w.color}
+                    strokeWidth="22"
+                    strokeDasharray={`${w.length} ${circumference}`}
+                    strokeDashoffset={w.dashOffset}
+                    transform="rotate(-90 100 100)"
+                  />
+                ))}
               </svg>
             </div>
 

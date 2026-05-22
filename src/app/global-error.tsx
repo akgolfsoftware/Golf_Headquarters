@@ -3,6 +3,7 @@
 // Next.js krever global-error.tsx i app/ for å fange feil i root-layout.
 // Også brukes som Sentry-hook for client-side errors.
 
+import Link from "next/link";
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
@@ -59,7 +60,7 @@ export default function GlobalError({
               Vi har blitt varslet og ser på det. Last inn siden på nytt eller
               gå tilbake til forsiden.
             </p>
-            <a
+            <Link
               href="/"
               style={{
                 display: "inline-block",
@@ -74,7 +75,7 @@ export default function GlobalError({
               }}
             >
               Tilbake til forsiden
-            </a>
+            </Link>
           </div>
         </main>
       </body>

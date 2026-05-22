@@ -31,6 +31,7 @@ export default async function FacilitiesAdmin({
 
   // Beregn uke-vindu (mandag-start)
   const referansedag = params.uke ? new Date(params.uke) : new Date();
+  // eslint-disable-next-line react-hooks/purity
   if (isNaN(referansedag.getTime())) referansedag.setTime(Date.now());
   const ukeStart = startOfWeek(referansedag);
   const ukeSlutt = new Date(ukeStart);

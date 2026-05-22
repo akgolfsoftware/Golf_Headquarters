@@ -125,6 +125,7 @@ function BookingRad({
   booking: BookingRowData;
   kommende?: boolean;
 }) {
+  // eslint-disable-next-line react-hooks/purity
   const tidTilStart = booking.startAt.getTime() - Date.now();
   const kanRefunderes = tidTilStart > 24 * 60 * 60 * 1000;
   const kanAvbestille = booking.status !== "CANCELLED" && tidTilStart > 0;

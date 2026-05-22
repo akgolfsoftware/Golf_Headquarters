@@ -374,13 +374,19 @@ function TemplateCard({ template }: { template: Template }) {
   );
 }
 
-function MiniDonut({ slices }: { slices: DonutSlice[] }) {
-  let offset = 0;
-  const segments = slices.map((s) => {
-    const seg = { ...s, offset };
-    offset -= s.value;
+function computeDonutSegments(
+  slices: DonutSlice[],
+): (DonutSlice & { offset: number })[] {
+  let acc = 0;
+  return slices.map((s) => {
+    const seg = { ...s, offset: acc };
+    acc -= s.value;
     return seg;
   });
+}
+
+function MiniDonut({ slices }: { slices: DonutSlice[] }) {
+  const segments = computeDonutSegments(slices);
   return (
     <div className="relative h-12 w-12 flex-shrink-0">
       <svg viewBox="0 0 42 42" className="h-full w-full" style={{ transform: "rotate(-90deg)" }}>

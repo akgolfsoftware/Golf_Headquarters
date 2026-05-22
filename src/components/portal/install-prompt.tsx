@@ -49,6 +49,7 @@ export function InstallPrompt() {
   const [bip, setBip] = useState<BIPEvent | null>(null);
   const [iosMode, setIosMode] = useState(false);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (erInstallert()) return;
     if (!erMobil()) return;
@@ -79,6 +80,7 @@ export function InstallPrompt() {
 
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   function lukk() {
     setVis(false);

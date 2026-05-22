@@ -48,7 +48,7 @@ export default function ForeldreSamtykkeDemo() {
             <AlertTriangle className="h-4 w-4" strokeWidth={1.5} />
           </span>
           <div className="flex-1 text-[12px] leading-[1.5] text-[#6F500B]">
-            <b className="font-semibold text-[#3a2a05]">Markus' medsamtykke venter.</b> For at video- og
+            <b className="font-semibold text-[#3a2a05]">Markus&apos; medsamtykke venter.</b> For at video- og
             helse-scopes skal være fullt gyldige (over 13 år), trenger vi at Markus signerer. Lenken er
             sendt — påminnelse går ut 12.05 09:00. Scopes er midlertidig aktive basert på forelder-signatur.
           </div>

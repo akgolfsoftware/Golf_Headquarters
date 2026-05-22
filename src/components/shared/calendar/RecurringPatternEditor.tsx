@@ -82,10 +82,12 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
   const [rrule, setRrule] = useState("");
   const [lagrer, setLagrer] = useState(false);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const r = byggRrule({ frekvens, intervall, ukedager, startDato, sluttDato });
     setRrule(r);
   }, [frekvens, intervall, ukedager, startDato, sluttDato]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   if (!apen) return null;
 
