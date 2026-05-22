@@ -34,6 +34,13 @@
       "runtimeArgs": ["-c", "cd /Users/anderskristiansen/Developer/akgolf-booking && PORT=3100 npm run dev"],
       "port": 3100,
       "autoPort": false
+    },
+    {
+      "name": "website-dev",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd /Users/anderskristiansen/Developer/akgolf-website && PORT=3200 npm run dev"],
+      "port": 3200,
+      "autoPort": false
     }
   ]
 }
