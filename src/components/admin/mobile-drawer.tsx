@@ -13,17 +13,14 @@ import { SidebarBrand } from "@/components/shared/sidebar-brand";
 
 type NavItem = { href: string; label: string };
 
-// CoachHQ 7-seksjons IA (master-plan) — speiler AdminSidebar
-const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
-  {
-    label: "Oversikt",
-    items: [{ href: "/admin/agencyos", label: "Hub" }],
-  },
+// CoachHQ 7-seksjons IA — speiler AdminSidebar med container-URL per gruppe
+const NAV_GROUPS: { label: string; href: string; items: NavItem[] }[] = [
+  { label: "Oversikt", href: "/admin/agencyos", items: [] },
   {
     label: "Stall",
+    href: "/admin/stall",
     items: [
       { href: "/admin/spillere", label: "Alle spillere" },
-      { href: "/admin/stall", label: "Stall-snitt" },
       { href: "/admin/talent", label: "Talent-radar" },
       { href: "/admin/talent/sammenligning", label: "Sammenligning" },
       { href: "/admin/talent/wagr-import", label: "WAGR" },
@@ -31,6 +28,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   },
   {
     label: "Planlegge",
+    href: "/admin/planlegge",
     items: [
       { href: "/admin/plans", label: "Treningsplaner" },
       { href: "/admin/plan-templates", label: "Plan-maler" },
@@ -41,6 +39,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   },
   {
     label: "Gjennomføre",
+    href: "/admin/gjennomfore",
     items: [
       { href: "/admin/kalender", label: "Kalender" },
       { href: "/admin/bookinger", label: "Bookinger" },
@@ -51,17 +50,18 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   },
   {
     label: "Analysere",
+    href: "/admin/analysere",
     items: [
       { href: "/admin/analyse", label: "Stall-analyse" },
       { href: "/admin/lag-snitt", label: "Lag-snitt" },
       { href: "/admin/foresporsler", label: "Forespørsler" },
       { href: "/admin/godkjenninger", label: "Godkjenninger" },
       { href: "/admin/reports", label: "Rapporter" },
-      { href: "/admin/kapasitet", label: "Kapasitet" },
     ],
   },
   {
     label: "Kommunikasjon",
+    href: "/admin/kommunikasjon",
     items: [
       { href: "/admin/innboks", label: "Innboks" },
       { href: "/admin/email-templates", label: "E-postmaler" },
@@ -71,6 +71,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   },
   {
     label: "Organisasjon",
+    href: "/admin/organisasjon",
     items: [
       { href: "/admin/team", label: "Team" },
       { href: "/admin/finance", label: "Økonomi" },
@@ -137,12 +138,24 @@ export function AdminMobileDrawer() {
               aria-label="Hovednavigasjon"
               className="flex-1 space-y-6 overflow-y-auto px-4 pb-6"
             >
-              {NAV_GROUPS.map((group) => (
+              {NAV_GROUPS.map((group) => {
+                const groupActive =
+                  path === group.href || path.startsWith(group.href + "/");
+                return (
                 <div key={group.label}>
-                  <div className="px-4 pb-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-white/40">
+                  <Link
+                    href={group.href}
+                    onClick={() => setOpen(false)}
+                    aria-current={groupActive ? "page" : undefined}
+                    className={`relative mb-1 flex items-center justify-between rounded-md px-4 py-2.5 text-base font-semibold transition-colors ${
+                      groupActive
+                        ? "bg-[var(--color-accent-fill)] text-white before:absolute before:left-0 before:top-1/2 before:h-6 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
+                        : "text-white hover:bg-white/5"
+                    }`}
+                  >
                     {group.label}
-                  </div>
-                  <div className="space-y-0.5">
+                  </Link>
+                  <div className="ml-3 space-y-0.5 border-l border-white/10 pl-1">
                     {group.items.map((n) => {
                       const aktiv =
                         path === n.href ||
@@ -165,7 +178,8 @@ export function AdminMobileDrawer() {
                     })}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </nav>
           </aside>
         </div>
