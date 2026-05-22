@@ -1,23 +1,10 @@
 "use client";
 
 // Next.js krever global-error.tsx i app/ for å fange feil i root-layout.
-// Også brukes som Sentry-hook for client-side errors.
 
 import Link from "next/link";
-import * as Sentry from "@sentry/nextjs";
-import { useEffect } from "react";
 
-export default function GlobalError({
-  error,
-}: {
-  error: Error & { digest?: string };
-}) {
-  useEffect(() => {
-    if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-      Sentry.captureException(error);
-    }
-  }, [error]);
-
+export default function GlobalError() {
   return (
     <html lang="nb">
       <body>
