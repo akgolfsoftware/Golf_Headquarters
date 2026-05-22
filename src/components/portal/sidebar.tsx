@@ -31,6 +31,11 @@ type NavItem = {
 const MAIN_ITEMS: NavItem[] = [
   { href: "/portal", label: "Hjem" },
   {
+    href: "/portal/innsikt",
+    label: "Innsikt",
+    matchPrefixes: ["/portal/innsikt"],
+  },
+  {
     href: "/portal/tren/kalender",
     label: "Planlegging",
     matchPrefixes: ["/portal/tren", "/portal/ny-okt"],
