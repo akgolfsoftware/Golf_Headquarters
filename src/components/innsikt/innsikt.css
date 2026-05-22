@@ -532,6 +532,398 @@
 .in-stub-back:hover { border-color: var(--in-brand); color: var(--in-brand); }
 .in-stub-back svg { width: 13px; height: 13px; }
 
+/* === Seksjon-lenke (sekunder-CTA uten bakgrunn) === */
+.in-sec-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--in-brand);
+  text-decoration: none;
+}
+
+.in-sec-link:hover { text-decoration: underline; }
+.in-sec-link svg { width: 11px; height: 11px; }
+
+/* === Statistikk-tab === */
+.in-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 800px) {
+  .in-stat-grid { grid-template-columns: 1fr; }
+}
+
+.in-stat-card {
+  background: var(--in-card);
+  border: 1px solid var(--in-border);
+  border-radius: var(--in-r-card);
+  padding: 16px;
+}
+
+/* SG-trend SVG */
+.in-sg-svg-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.in-sg-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.in-sg-svg-empty {
+  font-size: 12px;
+  color: var(--in-muted);
+  padding: 16px 0;
+}
+
+.in-sg-legend {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.in-sg-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--in-muted);
+}
+
+.in-sg-legend-item i {
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* Slag-prioritering */
+.in-prio-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.in-prio-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.in-prio-row .rang {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--in-border);
+  letter-spacing: -0.02em;
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.in-prio-row .body {
+  flex: 1;
+  min-width: 0;
+}
+
+.in-prio-row .omraade {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--in-fg);
+  letter-spacing: -0.005em;
+}
+
+.in-prio-row .beskrivelse {
+  font-size: 11px;
+  color: var(--in-muted);
+  margin-top: 1px;
+}
+
+.in-prio-row .delta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--in-danger);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* Du vs DataGolf */
+.in-dg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.in-dg-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.in-dg-row .lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--in-muted);
+  width: 36px;
+  flex-shrink: 0;
+}
+
+.in-dg-row .bars {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.in-dg-bar {
+  height: 5px;
+  border-radius: 999px;
+  transition: width 300ms ease;
+}
+
+.in-dg-bar.player { background: var(--in-brand); }
+.in-dg-bar.dg { background: var(--in-border); }
+
+.in-dg-row .diff {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.in-dg-row .diff.pos { color: var(--in-success); }
+.in-dg-row .diff.neg { color: var(--in-danger); }
+
+/* === TrackMan-tab === */
+.in-tm-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .in-tm-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .in-tm-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.in-tm-card {
+  background: var(--in-card);
+  border: 1px solid var(--in-border);
+  border-radius: var(--in-r-card);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 140ms;
+}
+
+.in-tm-card:hover { border-color: #D7D5CD; }
+
+.in-tm-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.in-tm-card-head .dato {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.in-tm-card-head .dato .dag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  color: var(--in-muted);
+}
+
+.in-tm-card-head .dato .datotxt {
+  font-size: 11px;
+  color: var(--in-fg);
+  font-weight: 600;
+}
+
+.in-tm-mini-svg {
+  flex-shrink: 0;
+}
+
+.in-tm-tittel {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--in-fg);
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+}
+
+.in-tm-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.in-tm-metrics .metric {
+  display: flex;
+  gap: 4px;
+  align-items: baseline;
+}
+
+.in-tm-metrics .val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--in-fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.in-tm-metrics .enhet {
+  font-size: 10px;
+  color: var(--in-muted);
+}
+
+.in-tm-aapne {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--in-brand);
+  text-decoration: none;
+  margin-top: 2px;
+}
+
+.in-tm-aapne:hover { text-decoration: underline; }
+.in-tm-aapne svg { width: 10px; height: 10px; }
+
+/* === Resultater-tab === */
+.in-result-table {
+  background: var(--in-card);
+  border: 1px solid var(--in-border);
+  border-radius: var(--in-r-card);
+  overflow: hidden;
+}
+
+.in-result-header {
+  display: grid;
+  grid-template-columns: 110px 1fr 72px 80px 56px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--in-border);
+  background: var(--in-bg);
+}
+
+.in-result-header span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--in-muted);
+}
+
+.in-result-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 72px 80px 56px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--in-border-soft);
+  align-items: center;
+  transition: background 120ms;
+}
+
+.in-result-row:last-child { border-bottom: 0; }
+.in-result-row:hover { background: var(--in-bg); }
+
+.in-result-row .dato {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--in-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.in-result-row .bane {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--in-fg);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 8px;
+}
+
+.in-result-row .score {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.in-result-row .score.pos { color: var(--in-success); }
+.in-result-row .score.neg { color: var(--in-danger); }
+
+.in-result-row .sg {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.in-result-row .sg .pos { color: var(--in-success); }
+.in-result-row .sg .neg { color: var(--in-danger); }
+.in-result-row .sg .ingen { color: var(--in-muted); }
+
+.in-result-row .detalj {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--in-brand);
+  text-decoration: none;
+}
+
+.in-result-row .detalj:hover { text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .in-result-header, .in-result-row {
+    grid-template-columns: 90px 1fr 56px 56px 0;
+  }
+  .in-result-header span:last-child,
+  .in-result-row .detalj { display: none; }
+}
+
 /* === Responsiv === */
 @media (max-width: 640px) {
   .in-page-wrap { padding: 32px 16px 48px; }

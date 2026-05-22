@@ -1,22 +1,26 @@
 /**
  * Innsikt — /portal/innsikt
  *
- * Fase 1: Mål-tab fullt utbygget. Statistikk/TrackMan/Resultater er stubs.
+ * Alle tabs utbygget: Mål, Statistikk, TrackMan, Resultater.
  *
  * Server-komponent med:
  * - requirePortalUser() for auth
  * - ?tab= fra searchParams (Next 16: searchParams er Promise)
- * - Prisma-data for aktive og arkiverte mål
- * - Fallback til demo-data hvis 0 mål i DB
+ * - Prisma-data per aktiv tab
+ * - Fallback til demo-data hvis tom DB
  */
 
-import Link from "next/link";
-import { BarChart2, Crosshair, Trophy, ArrowLeft, Clock } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { InnsiktShell } from "@/components/innsikt/innsikt-shell";
 import { MalTab } from "@/components/innsikt/mal-tab";
 import type { MalTabGoal } from "@/components/innsikt/mal-tab";
+import { StatistikkTab } from "@/components/innsikt/statistikk-tab";
+import type { StatistikkTabRunde } from "@/components/innsikt/statistikk-tab";
+import { TrackManTab } from "@/components/innsikt/trackman-tab";
+import type { TrackManTabSession } from "@/components/innsikt/trackman-tab";
+import { ResultaterTab } from "@/components/innsikt/resultater-tab";
+import type { ResultaterRunde, ResultaterTurnering } from "@/components/innsikt/resultater-tab";
 
 // ---------------------------------------------------------------------------
 // Typer
@@ -34,44 +38,6 @@ function dagerTilFrist(dato: Date | null): number | null {
   return Math.max(
     0,
     Math.round((dato.getTime() - naa.getTime()) / (1000 * 60 * 60 * 24)),
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Stub-visning for kommende tabs
-// ---------------------------------------------------------------------------
-
-type StubTabProps = {
-  icon: React.ElementType;
-  tittel: string;
-  beskrivelse: string;
-  fase: string;
-  dato: string;
-};
-
-function StubTab({
-  icon: Icon,
-  tittel,
-  beskrivelse,
-  fase,
-  dato,
-}: StubTabProps) {
-  return (
-    <div className="in-stub">
-      <div className="in-stub-icon">
-        <Icon />
-      </div>
-      <h2 className="in-stub-title">{tittel}</h2>
-      <p className="in-stub-sub">{beskrivelse}</p>
-      <div className="in-stub-badge">
-        <Clock />
-        Tilgjengelig {dato} — {fase}
-      </div>
-      <Link href="/portal/innsikt?tab=mal" className="in-stub-back">
-        <ArrowLeft />
-        Tilbake til Mål
-      </Link>
-    </div>
   );
 }
 
@@ -168,35 +134,90 @@ export default async function InnsiktPage({
       />
     );
   } else if (tab === "statistikk") {
-    malTabInnhold = (
-      <StubTab
-        icon={BarChart2}
-        tittel="Statistikk"
-        beskrivelse="Dypdykk i HCP-trend, snitt-score per bane, strokes gained og mye mer. Bygges ut i Fase 2."
-        fase="Fase 2"
-        dato="juni 2026"
-      />
-    );
+    // Hent siste 20 runder for SG-trend
+    const sgRunder = await prisma.round.findMany({
+      where: { userId: user.id },
+      orderBy: { playedAt: "desc" },
+      take: 20,
+      select: {
+        id: true,
+        playedAt: true,
+        sgOtt: true,
+        sgApp: true,
+        sgArg: true,
+        sgPutt: true,
+        sgTotal: true,
+      },
+    });
+
+    const statistikkRunder: StatistikkTabRunde[] = sgRunder.map((r) => ({
+      id: r.id,
+      playedAt: r.playedAt.toISOString(),
+      sgOtt: r.sgOtt,
+      sgApp: r.sgApp,
+      sgArg: r.sgArg,
+      sgPutt: r.sgPutt,
+      sgTotal: r.sgTotal,
+    }));
+
+    malTabInnhold = <StatistikkTab runder={statistikkRunder.length > 0 ? statistikkRunder : undefined} />;
+
   } else if (tab === "trackman") {
-    malTabInnhold = (
-      <StubTab
-        icon={Crosshair}
-        tittel="TrackMan"
-        beskrivelse="Historikk over alle TrackMan-økter — carry, launch angle, spin og utvikling over tid. Kommer i Fase 3."
-        fase="Fase 3"
-        dato="august 2026"
-      />
-    );
+    const tmSessions = await prisma.trackManSession.findMany({
+      where: { userId: user.id },
+      orderBy: { recordedAt: "desc" },
+      take: 5,
+    });
+
+    const sessions: TrackManTabSession[] = tmSessions.map((s) => ({
+      id: s.id,
+      recordedAt: s.recordedAt.toISOString(),
+      shotCount: s.shotCount,
+      environment: s.environment?.toString() ?? null,
+    }));
+
+    malTabInnhold = <TrackManTab sessions={sessions.length > 0 ? sessions : undefined} />;
+
   } else if (tab === "resultater") {
+    const [dbRunder, dbTurneringer] = await Promise.all([
+      prisma.round.findMany({
+        where: { userId: user.id },
+        orderBy: { playedAt: "desc" },
+        take: 5,
+        include: { course: { select: { name: true, par: true } } },
+      }),
+      prisma.tournamentResult.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        include: { tournament: { select: { name: true, startDate: true } } },
+      }),
+    ]);
+
+    const resultaterRunder: ResultaterRunde[] = dbRunder.map((r) => ({
+      id: r.id,
+      playedAt: r.playedAt.toISOString(),
+      courseName: r.course.name,
+      score: r.score,
+      par: r.course.par,
+      sgTotal: r.sgTotal,
+    }));
+
+    const resultaterTurneringer: ResultaterTurnering[] = dbTurneringer.map((t) => ({
+      id: t.id,
+      tournamentName: t.tournament.name,
+      startDate: t.tournament.startDate.toISOString(),
+      position: t.position,
+      score: t.score,
+    }));
+
     malTabInnhold = (
-      <StubTab
-        icon={Trophy}
-        tittel="Resultater"
-        beskrivelse="Turneringsresultater, beste runder, personlige rekorder og bane-PBer samlet på ett sted. Kommer i Fase 3."
-        fase="Fase 3"
-        dato="august 2026"
+      <ResultaterTab
+        runder={resultaterRunder.length > 0 ? resultaterRunder : undefined}
+        turneringer={resultaterTurneringer.length > 0 ? resultaterTurneringer : undefined}
       />
     );
+
   } else {
     malTabInnhold = null;
   }

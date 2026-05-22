@@ -1,9 +1,8 @@
 /**
  * /admin/talent — Talent-oversikt (M13 K2)
  *
- * Viser alle spillere i TalentTracking med KPI-strip, nivå-fordeling,
- * snitt-radar-score og filtrerbar tabell. Designet er hentet fra
- * src/app/talent-demo/page.tsx og bruker AK-tokens (cream/forest/lime).
+ * Design: 06 Talent-modul.html · Skjerm 4 (Coach 2D-kart)
+ * KPI-strip + 2D SVG talent-kart + nivå-fordeling + spillertabell
  *
  * Roller: ADMIN, COACH.
  */
@@ -15,10 +14,16 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import "@/components/talent/talent.css";
 
 const NIVAA_REKKEFOLGE = ["U10", "U12", "U14", "U16", "U18", "Senior"] as const;
 
 type Search = { niva?: string; region?: string };
+
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  return parts.length === 1 ? parts[0].slice(0, 2).toUpperCase() : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
 
 function radarSum(t: {
   fysisk: number | null;
@@ -165,6 +170,73 @@ export default async function TalentOversikt({
           sub="tracking-rad"
         />
       </section>
+
+      {/* 2D Talent-kart */}
+      {alle.length > 0 && (() => {
+        const hcpVals = alle.map((s) => s.user.hcp ?? 10);
+        const hcpMin2 = Math.min(...hcpVals, -5);
+        const hcpMax2 = Math.max(...hcpVals, 30);
+        const hcpSpan2 = Math.max(hcpMax2 - hcpMin2, 1);
+        const MAP_W = 900;
+        const MAP_H = 420;
+        const PAD = 40;
+        const mapX2 = (hcp: number) => PAD + ((hcp - hcpMin2) / hcpSpan2) * (MAP_W - 2 * PAD);
+        const mapY2 = (score: number) => (MAP_H - PAD) - (score / 10) * (MAP_H - 2 * PAD);
+        const yTicks2 = [2, 4, 6, 8, 10];
+
+        return (
+          <section className="overflow-hidden rounded-xl border border-border bg-card p-5">
+            <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 className="font-display text-base font-semibold">
+                  Stall-<em className="font-serif italic font-normal text-primary">talent</em> — 2D-kart
+                </h3>
+                <p className="font-mono text-[10px] text-muted-foreground">
+                  X-akse: HCP · Y-akse: Talent-score · Boble = spiller
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Link href="/admin/talent/kohort" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:border-primary hover:text-primary">
+                  Kohort
+                </Link>
+                <Link href="/admin/talent/radar" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90">
+                  Radar
+                </Link>
+              </div>
+            </div>
+
+            <div className="mt-4 w-full overflow-x-auto">
+              <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} className="h-auto w-full min-w-[560px]" aria-label="2D talent-kart">
+                <rect x="0" y="0" width={MAP_W} height={MAP_H} fill="hsl(var(--background))" rx="8" />
+                {yTicks2.map((t) => (
+                  <g key={t}>
+                    <line x1={PAD} y1={mapY2(t)} x2={MAP_W - PAD} y2={mapY2(t)} stroke="#E5E3DD" strokeWidth="1" />
+                    <text x={PAD - 6} y={mapY2(t) + 4} textAnchor="end" fontFamily="monospace" fontSize="10" fill="#5E5C57">{t}</text>
+                  </g>
+                ))}
+                <text x={MAP_W / 2} y={MAP_H - 4} textAnchor="middle" fontFamily="monospace" fontSize="11" fontWeight="700" fill="#0A1F17">HCP</text>
+                <text x={14} y={MAP_H / 2} textAnchor="middle" fontFamily="monospace" fontSize="11" fontWeight="700" fill="#0A1F17" transform={`rotate(-90 14 ${MAP_H / 2})`}>TALENT</text>
+                {alle.map((s) => {
+                  const hcp = s.user.hcp ?? 10;
+                  const score = radarSnitt(s) ?? 0;
+                  const x = mapX2(hcp);
+                  const y = mapY2(score);
+                  const fill = "#D1F843";
+                  const stroke = "#005840";
+                  return (
+                    <g key={s.id} aria-label={`${s.user.name} HCP ${hcp}`}>
+                      <circle cx={x} cy={y} r="16" fill={fill} stroke={stroke} strokeWidth="2" />
+                      <text x={x} y={y + 4} textAnchor="middle" fontFamily="var(--font-inter-tight,sans-serif)" fontSize="9" fontWeight="700" fill="#0A1F17">
+                        {initials(s.user.name)}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* Nivå-fordeling */}
       <section>

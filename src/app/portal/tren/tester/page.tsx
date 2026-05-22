@@ -1,26 +1,37 @@
 /**
- * PlayerHQ · Trening · Tester
+ * PlayerHQ · Tren · Tester — spiller-oversikt
  *
- * Migrert til endelig design (wireframe/design-files-v2/final/12-tester.html).
- * Tabs (Team Norway / Mine), KPI-strip med gjennomført + snitt + beste kategori, filter-row
- * og tabell med kategori-pill, rangering-pill, "Ta test"-knapp.
+ * Design: 05 Tester-modul.html · Skjerm 3 (Spiller-oversikt)
+ * KPI-strip + filterpills + disciplin-seksjoner med test-cards
  */
 import Link from "next/link";
-import { Target, Plus } from "lucide-react";
+import { Target, Plus, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
-import { PageHeader } from "@/components/shared/page-header";
-import { EmptyState } from "@/components/shared/empty-state";
-import { TesterListe } from "@/components/portal/tester-liste";
+import "@/components/tester/tester.css";
 
 const PYR_LABEL: Record<PyramidArea, string> = {
   FYS: "Fysisk",
   TEK: "Teknisk",
-  SLAG: "Slag",
-  SPILL: "Spill",
-  TURN: "Turnering",
+  SLAG: "Slagteknikk",
+  SPILL: "Spillforståelse",
+  TURN: "Turneringsmodus",
 };
+
+const PYR_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
+
+const BADGE_CLASS: Record<PyramidArea, string> = {
+  FYS:   "te-badge te-badge-fys",
+  TEK:   "te-badge te-badge-tek",
+  SLAG:  "te-badge te-badge-slag",
+  SPILL: "te-badge te-badge-spill",
+  TURN:  "te-badge te-badge-turn",
+};
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
+}
 
 export default async function TesterPage() {
   const user = await requirePortalUser();
@@ -29,191 +40,220 @@ export default async function TesterPage() {
     prisma.testDefinition.findMany({ orderBy: { name: "asc" } }),
     prisma.testResult.findMany({
       where: { userId: user.id },
-      orderBy: { takenAt: "desc" },
-      include: { test: { select: { id: true, name: true } } },
+      orderBy: { takenAt: "asc" },
     }),
   ]);
 
-  // Aggreger siste resultat og antall forsøk per test.
-  const statsPerTest = new Map<
-    string,
-    { score: number; takenAt: Date; antall: number; beste: number }
-  >();
+  // Aggreger per test: siste, beste, antall, trend (siste - nest siste)
+  type TestStats = {
+    score: number;
+    takenAt: Date;
+    antall: number;
+    beste: number;
+    trend: number | null; // positiv = bedre
+  };
+  const statsPerTest = new Map<string, TestStats>();
   for (const r of mineResultater) {
     const eks = statsPerTest.get(r.testId);
     if (!eks) {
-      statsPerTest.set(r.testId, {
-        score: r.score,
-        takenAt: r.takenAt,
-        antall: 1,
-        beste: r.score,
-      });
+      statsPerTest.set(r.testId, { score: r.score, takenAt: r.takenAt, antall: 1, beste: r.score, trend: null });
     } else {
+      const prev = eks.score;
       eks.antall += 1;
+      eks.score = r.score;
+      eks.takenAt = r.takenAt;
       eks.beste = Math.max(eks.beste, r.score);
+      eks.trend = r.score - prev;
     }
   }
 
-  const totalResultater = mineResultater.length;
   const gjennomfoert = statsPerTest.size;
   const totalTester = tests.length;
+  const totalResultater = mineResultater.length;
 
-  // Finn beste kategori (mest gjennomførte med høyest snitt).
-  const kategoriStats = new Map<PyramidArea, { antall: number; sumScore: number }>();
+  // Beste kategori
+  const kategoriStats = new Map<PyramidArea, { snittSum: number; antall: number }>();
   for (const t of tests) {
-    const stats = statsPerTest.get(t.id);
-    if (stats) {
-      const cur = kategoriStats.get(t.pyramidArea) ?? { antall: 0, sumScore: 0 };
-      cur.antall += stats.antall;
-      cur.sumScore += stats.beste;
+    const s = statsPerTest.get(t.id);
+    if (s) {
+      const cur = kategoriStats.get(t.pyramidArea) ?? { snittSum: 0, antall: 0 };
+      cur.snittSum += s.score;
+      cur.antall += 1;
       kategoriStats.set(t.pyramidArea, cur);
     }
   }
-  let besteKategori: PyramidArea | null = null;
-  let besteSnitt = 0;
-  for (const [omr, s] of kategoriStats) {
-    const snitt = s.antall === 0 ? 0 : s.sumScore / s.antall;
-    if (snitt > besteSnitt) {
-      besteSnitt = snitt;
-      besteKategori = omr;
-    }
+  let besteKat: PyramidArea | null = null;
+  let besteSnitt = -1;
+  for (const [k, v] of kategoriStats) {
+    const sn = v.antall ? v.snittSum / v.antall : 0;
+    if (sn > besteSnitt) { besteSnitt = sn; besteKat = k; }
+  }
+
+  // Grupper tester per disiplin
+  const testPerDisiplin = new Map<PyramidArea, typeof tests>();
+  for (const t of tests) {
+    if (!testPerDisiplin.has(t.pyramidArea)) testPerDisiplin.set(t.pyramidArea, []);
+    testPerDisiplin.get(t.pyramidArea)!.push(t);
   }
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        eyebrow="PlayerHQ · /portal/tren/tester"
-        titleLead="Mål"
-        titleItalic="deg"
-        titleTrail={user.name ? `, ${user.name.split(" ")[0]}.` : "."}
-        sub={`${gjennomfoert} av ${totalTester} tester gjennomført · ${totalResultater} resultat${totalResultater === 1 ? "" : "er"} logget`}
-        actions={
-          <Link
-            href="/portal/tren/tester/ny"
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            <Plus size={12} strokeWidth={1.75} aria-hidden /> Ny test
-          </Link>
-        }
-      />
-
-      {/* Tabs (Team Norway / Mine) — Mine er Pro-locked og vises som disabled */}
-      <div className="inline-flex w-fit gap-0.5 rounded-md bg-secondary p-1">
-        <span className="rounded-sm bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm">
-          Team Norway{" "}
-          <span className="font-mono text-xs text-primary">{totalTester}</span>
-        </span>
-        <span className="cursor-not-allowed rounded-sm px-4 py-2 text-sm font-medium text-muted-foreground opacity-65">
-          Mine tester{" "}
-          <span className="font-mono text-xs">Pro</span>
-        </span>
+      {/* Eyebrow + heading */}
+      <div>
+        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+          PlayerHQ · Trening · Tester
+        </div>
+        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
+          Tester <em className="font-serif italic font-normal text-primary">og</em> benchmarks
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {gjennomfoert} av {totalTester} tester gjennomført · {totalResultater} resultat{totalResultater === 1 ? "" : "er"} logget
+        </p>
       </div>
 
       {/* KPI-strip */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <KpiCard
-          label="Gjennomført"
-          value={`${gjennomfoert}`}
-          unit={`/ ${totalTester}`}
-          sub={`${totalResultater} forsøk totalt`}
-        />
-        <KpiCard
-          label="Snitt-resultat"
-          value={
-            statsPerTest.size === 0
+      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+        <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent/70">
+            Gjennomført
+          </div>
+          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-accent">
+            {gjennomfoert}
+          </div>
+          <div className="font-mono text-[11px] text-white/65">av {totalTester} tilgjengelig</div>
+        </div>
+        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+            Totale forsøk
+          </div>
+          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
+            {totalResultater}
+          </div>
+          <div className="font-mono text-[11px] text-muted-foreground">på alle tester</div>
+        </div>
+        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+            Beste kategori
+          </div>
+          <div className="font-mono text-[24px] font-semibold leading-none tabular-nums text-foreground">
+            {besteKat ?? "—"}
+          </div>
+          <div className="font-mono text-[11px] text-primary">
+            {besteKat ? PYR_LABEL[besteKat] : "Ikke nok data"}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+            Snitt-score
+          </div>
+          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
+            {statsPerTest.size === 0
               ? "—"
-              : (
-                  Array.from(statsPerTest.values()).reduce(
-                    (s, v) => s + v.beste,
-                    0,
-                  ) / statsPerTest.size
-                )
-                  .toFixed(1)
-                  .replace(".", ",")
-          }
-          sub="basert på beste forsøk"
-        />
-        <KpiCard
-          label="Beste kategori"
-          value={besteKategori ? PYR_LABEL[besteKategori] : "—"}
-          unit={
-            besteKategori ? besteSnitt.toFixed(1).replace(".", ",") : undefined
-          }
-          sub={
-            besteKategori
-              ? `${kategoriStats.get(besteKategori)?.antall ?? 0} tester`
-              : "Ikke nok data"
-          }
-          small
-        />
+              : (Array.from(statsPerTest.values()).reduce((s, v) => s + v.score, 0) / statsPerTest.size)
+                  .toFixed(1).replace(".", ",")}
+          </div>
+          <div className="font-mono text-[11px] text-muted-foreground">siste resultat per test</div>
+        </div>
       </div>
 
-      {tests.length === 0 ? (
-        <EmptyState
-          icon={Target}
-          titleItalic="Ingen tester"
-          titleTrail="er klare ennå"
-          sub="Tester legges inn av coachen din. Sjekk innom igjen senere."
-          cta={
-            <Link
-              href="/portal/coach/melding?type=ny-test"
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
-            >
-              <Plus size={12} strokeWidth={1.75} /> Be coach legge til
-            </Link>
-          }
-        />
+      {/* Disiplin-seksjoner */}
+      {totalTester === 0 ? (
+        <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed border-border bg-card p-16 text-center">
+          <Target size={32} strokeWidth={1.5} className="text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">
+            Ingen tester er lagt til ennå. Coachen din legger til tester fra testkatalogen.
+          </p>
+          <Link
+            href="/portal/coach/melding?type=ny-test"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+          >
+            <Plus size={12} strokeWidth={1.75} /> Be coach legge til
+          </Link>
+        </div>
       ) : (
-        <TesterListe
-          tests={tests.map((t) => ({
-            id: t.id,
-            name: t.name,
-            pyramidArea: t.pyramidArea,
-            protocol: t.protocol,
-          }))}
-          stats={Object.fromEntries(
-            Array.from(statsPerTest.entries()).map(([id, s]) => [
-              id,
-              { takenAt: s.takenAt.toISOString(), beste: s.beste, antall: s.antall },
-            ]),
-          )}
-        />
-      )}
-    </div>
-  );
-}
+        PYR_ORDER.filter((d) => testPerDisiplin.has(d)).map((disiplin) => {
+          const gruppe = testPerDisiplin.get(disiplin)!;
+          const gjort = gruppe.filter((t) => statsPerTest.has(t.id)).length;
+          return (
+            <section key={disiplin} className="rounded-lg border border-border bg-card p-5">
+              {/* Section header */}
+              <div className="mb-4 flex flex-wrap items-center gap-3">
+                <span className={`${BADGE_CLASS[disiplin]} px-3 py-1 text-[11px]`}>
+                  {disiplin}
+                </span>
+                <div>
+                  <div className="font-display text-base font-semibold">{PYR_LABEL[disiplin]}</div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                    {gruppe.length} tester · {gjort} gjennomført
+                  </div>
+                </div>
+              </div>
 
-function KpiCard({
-  label,
-  value,
-  unit,
-  sub,
-  small = false,
-}: {
-  label: string;
-  value: string;
-  unit?: string;
-  sub: string;
-  small?: boolean;
-}) {
-  return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-        {label}
-      </div>
-      <div
-        className={`mt-2 flex items-baseline gap-1 font-display font-semibold leading-tight text-foreground ${
-          small ? "text-xl" : "text-3xl"
-        }`}
-      >
-        <span>{value}</span>
-        {unit && (
-          <span className="font-mono text-xs font-normal text-muted-foreground">
-            {unit}
-          </span>
-        )}
-      </div>
-      <div className="mt-2 font-mono text-[11px] text-primary">{sub}</div>
+              {/* Test-card grid */}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {gruppe.map((t) => {
+                  const stats = statsPerTest.get(t.id);
+                  const trend = stats?.trend ?? null;
+                  return (
+                    <Link
+                      key={t.id}
+                      href={`/portal/tren/tester/${t.id}`}
+                      className="te-card block no-underline"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className={BADGE_CLASS[disiplin]}>{disiplin}</span>
+                        <span className={`ml-auto rounded-full px-2.5 py-0.5 font-mono text-[9.5px] font-semibold ${stats ? "bg-accent/30 text-accent-foreground" : "border border-border bg-background text-muted-foreground"}`}>
+                          {stats ? "Gjort" : "Ikke tatt"}
+                        </span>
+                      </div>
+                      <div className="font-display text-[15px] font-semibold leading-tight">
+                        {t.name}
+                      </div>
+                      {t.description && (
+                        <div className="font-mono text-[10.5px] leading-snug text-muted-foreground line-clamp-2">
+                          {t.description}
+                        </div>
+                      )}
+                      {stats ? (
+                        <>
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-mono text-[22px] font-semibold tabular-nums leading-none text-foreground">
+                              {stats.score.toFixed(1).replace(".", ",")}
+                            </span>
+                            {trend !== null && (
+                              <span className={`flex items-center gap-0.5 font-mono text-[10px] font-semibold ${trend > 0 ? "text-primary" : trend < 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                                {trend > 0
+                                  ? <TrendingUp size={12} strokeWidth={1.75} />
+                                  : trend < 0
+                                    ? <TrendingDown size={12} strokeWidth={1.75} />
+                                    : <Minus size={12} strokeWidth={1.75} />}
+                                {trend > 0 ? "+" : ""}{trend.toFixed(1).replace(".", ",")}
+                              </span>
+                            )}
+                          </div>
+                          <div className="font-mono text-[10px] text-muted-foreground">
+                            Sist: <strong className="text-foreground">{formatDate(stats.takenAt)}</strong>
+                            &nbsp;·&nbsp;{stats.antall} forsøk
+                          </div>
+                        </>
+                      ) : (
+                        <div className="rounded-md border border-dashed border-border bg-background px-3 py-2 font-mono text-[10.5px] text-muted-foreground">
+                          Ikke gjennomført ennå
+                        </div>
+                      )}
+                      <div className="border-t border-border/50 pt-2">
+                        <span className="font-mono text-[10px] font-semibold text-primary">
+                          {stats ? "Se historikk →" : "Start test →"}
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })
+      )}
     </div>
   );
 }

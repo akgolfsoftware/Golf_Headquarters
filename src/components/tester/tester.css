@@ -1,0 +1,80 @@
+/**
+ * Tester-modul — scoped utility-klasser (.te-*)
+ * Brukes for test-cards og visualiseringer på tester-sidene.
+ */
+
+/* Disiplin-badges */
+.te-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-family: var(--font-jetbrains-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+.te-badge-fys  { background: rgba(58,110,171,0.15); color: #3A6EAB; }
+.te-badge-tek  { background: rgba(168,50,125,0.13); color: #A8327D; }
+.te-badge-slag { background: rgba(0,88,64,0.12);    color: #005840; }
+.te-badge-spill{ background: rgba(209,248,67,0.45); color: #0A1F17; }
+.te-badge-turn { background: rgba(194,73,20,0.13);  color: #C24914; }
+
+/* Test-card */
+.te-card {
+  background: var(--background, #FAFAF7);
+  border: 1px solid var(--border, #E5E3DD);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow 0.15s ease;
+}
+.te-card:hover { box-shadow: 0 2px 8px rgba(10,31,23,0.06); }
+
+/* Benchmark-bar (stall / mål / internasjonal) */
+.te-avg-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--border, #E5E3DD);
+}
+.te-avg-bar-stall { background: hsl(var(--accent));   }
+.te-avg-bar-a1    { background: hsl(var(--primary));  }
+.te-avg-bar-int   { background: #003A2A;              }
+
+/* Progress-ring container */
+.te-ring-wrap {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+.te-ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.te-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-jetbrains-mono, monospace);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Box-plot row */
+.te-boxplot-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.te-boxplot-row:last-child { border-bottom: 0; }

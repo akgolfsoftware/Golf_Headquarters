@@ -245,6 +245,17 @@ type FlatItem = {
   action?: Action;
 };
 
+// Tabs vises kun når det finnes resultater (ikke ved tom spørring).
+type SearchTab = "alle" | "planer" | "bookinger" | "mal" | "ruter";
+
+const SEARCH_TABS: { id: SearchTab; label: string }[] = [
+  { id: "alle", label: "Alle" },
+  { id: "planer", label: "Planer" },
+  { id: "bookinger", label: "Bookinger" },
+  { id: "mal", label: "Mål" },
+  { id: "ruter", label: "Naviger" },
+];
+
 /**
  * Filtrer ACTIONS lokalt på label + description + keywords.
  * Tom query gir 8 første (etter role-filter).
@@ -290,6 +301,7 @@ export function PortalGlobalSearchModal({
   const [results, setResults] = useState<ApiResponse>(EMPTY);
   const [loading, setLoading] = useState(false);
   const [highlight, setHighlight] = useState(0);
+  const [aktifTab, setAktifTab] = useState<SearchTab>("alle");
 
   const inputRef = useRef<HTMLInputElement>(null);
   const lastActiveRef = useRef<HTMLElement | null>(null);
@@ -301,7 +313,7 @@ export function PortalGlobalSearchModal({
     [query, canSwitchToCoach]
   );
 
-  const flatItems = useMemo<FlatItem[]>(() => {
+  const alleItems = useMemo<FlatItem[]>(() => {
     const items: FlatItem[] = [];
     for (const a of matchedActions) {
       items.push({
@@ -351,6 +363,26 @@ export function PortalGlobalSearchModal({
     return items;
   }, [results, matchedActions]);
 
+  const flatItems = useMemo<FlatItem[]>(() => {
+    if (aktifTab === "alle") return alleItems;
+    const katMap: Record<Exclude<SearchTab, "alle">, FlatItem["category"][]> = {
+      planer: ["actions", "plans"],
+      bookinger: ["bookings"],
+      mal: ["goals"],
+      ruter: ["routes"],
+    };
+    const tillatte = katMap[aktifTab];
+    return alleItems.filter((i) => tillatte.includes(i.category));
+  }, [alleItems, aktifTab]);
+
+  const tabAntall = useMemo(() => ({
+    alle: alleItems.length,
+    planer: alleItems.filter((i) => (["actions", "plans"] as FlatItem["category"][]).includes(i.category)).length,
+    bookinger: alleItems.filter((i) => i.category === "bookings").length,
+    mal: alleItems.filter((i) => i.category === "goals").length,
+    ruter: alleItems.filter((i) => i.category === "routes").length,
+  }), [alleItems]);
+
   const totalCount = flatItems.length;
 
   const openModal = useCallback(() => {
@@ -363,6 +395,7 @@ export function PortalGlobalSearchModal({
     setQuery("");
     setResults(EMPTY);
     setHighlight(0);
+    setAktifTab("alle");
     abortRef.current?.abort();
     abortRef.current = null;
     requestAnimationFrame(() => lastActiveRef.current?.focus());
@@ -583,6 +616,33 @@ export function PortalGlobalSearchModal({
         <div id="portal-search-title" className="sr-only">
           Globalt søk i PlayerHQ
         </div>
+
+        {/* Tab-bar — kun synlig når det finnes resultater */}
+        {alleItems.length > 0 && (
+          <div className="flex gap-1 overflow-x-auto border-b border-border px-4 pb-2 pt-2 scrollbar-none">
+            {SEARCH_TABS.map((tab) => {
+              const antall = tabAntall[tab.id];
+              if (tab.id !== "alle" && antall === 0) return null;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => { setAktifTab(tab.id); setHighlight(0); }}
+                  className={`inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-semibold leading-none transition-colors ${
+                    aktifTab === tab.id
+                      ? "bg-accent text-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  {tab.label}
+                  <span className={`font-mono text-[9.5px] font-semibold ${aktifTab === tab.id ? "text-foreground/65" : "text-muted-foreground/70"}`}>
+                    {antall}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         <div className="max-h-[60vh] overflow-y-auto py-2">
           {totalCount === 0 && loading ? (

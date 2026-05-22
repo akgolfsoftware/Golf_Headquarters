@@ -1,13 +1,13 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { OnboardingShell } from "@/components/onboarding/onboarding-shell";
-import { OnboardingWizard } from "./onboarding-wizard";
+import { ForelderWizard } from "./forelder-wizard";
 
-export default async function OnboardingPage() {
+export default async function ForelderOnboardingPage() {
   await requirePortalUser();
 
   return (
     <OnboardingShell>
-      <OnboardingWizard />
+      <ForelderWizard />
     </OnboardingShell>
   );
 }

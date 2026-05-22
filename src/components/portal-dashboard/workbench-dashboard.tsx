@@ -17,8 +17,6 @@ import {
   Plus,
   Sparkles,
   Check,
-  Star,
-  Flag,
   ChevronLeft,
   ChevronRight,
   Target,
@@ -27,6 +25,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import "./dashboard.css";
+import { GanttStripInteraktiv } from "./gantt-strip-interaktiv";
 
 export interface WorkbenchDashboardProps {
   playerName: string;
@@ -104,7 +103,7 @@ export function WorkbenchDashboard(props: WorkbenchDashboardProps) {
         </section>
 
         {/* ============ 2. ÅRSPLAN GANTT ============ */}
-        <GanttStrip todayLeftPct={todayLeftPct} weekNumber={props.weekNumber} />
+        <GanttStripInteraktiv todayLeftPct={todayLeftPct} weekNumber={props.weekNumber} />
 
         {/* ============ 3. WORKBENCH 3-PANE ============ */}
         <section>
@@ -261,75 +260,6 @@ export function WorkbenchDashboard(props: WorkbenchDashboardProps) {
 // ============================================================
 // Sub-components
 // ============================================================
-
-function GanttStrip({ todayLeftPct, weekNumber }: { todayLeftPct: number; weekNumber: number }) {
-  return (
-    <section className="phq-gantt">
-      <div className="phq-gantt-head">
-        <h3>Sesong 2026 · min årsplan</h3>
-        <div className="phq-gantt-legend">
-          <span><i style={{ background: "var(--phq-brand)" }} />Aktiv periode</span>
-          <span><i style={{ background: "var(--phq-accent)" }} />Hovedmål-turnering</span>
-          <span><i style={{ background: "var(--phq-danger)" }} />Konkurranse</span>
-          <span><i style={{ background: "var(--phq-danger)" }} />I dag</span>
-        </div>
-      </div>
-
-      <div className="phq-gantt-months">
-        {["JAN","FEB","MAR","APR","MAI","JUN","JUL","AUG","SEP","OKT","NOV","DES"].map((m) => (
-          <span key={m}>{m}</span>
-        ))}
-      </div>
-
-      <div style={{ position: "relative" }}>
-        <div className="phq-gantt-track">
-          <div className="phq-gantt-block b1" style={{ left: "0%", width: "25%" }}>GRUNNTRENING</div>
-          <div className="phq-gantt-block b2" style={{ left: "16.66%", width: "12.5%" }}>OPPBYGGING</div>
-          <div className="phq-gantt-block b3" style={{ left: "25%", width: "16.66%" }}>SPESIALISERING · AKTIV</div>
-          <div className="phq-gantt-block b4" style={{ left: "41.66%", width: "20.83%" }}>KONKURRANSE</div>
-          <div className="phq-gantt-block b5" style={{ left: "66.66%", width: "16.66%" }}>OVERGANG</div>
-          <div className="phq-gantt-block b6" style={{ left: "83.33%", width: "16.66%" }}>HVILE</div>
-          <div className="phq-gantt-today" style={{ left: `${todayLeftPct}%` }} />
-        </div>
-
-        <div className="phq-gantt-flags">
-          <div className="phq-gantt-flag star" style={{ left: "calc(41.66% + (9/30)*8.33%)" }}>
-            <Star size={14} aria-hidden />
-            <span className="lbl">10. JUN · SØRLANDSÅPENT</span>
-          </div>
-          <div className="phq-gantt-flag" style={{ left: "calc(41.66% + (23/30)*8.33%)" }}>
-            <Flag size={14} aria-hidden />
-            <span className="lbl">24. JUN · BOSSUM</span>
-          </div>
-          <div className="phq-gantt-flag star" style={{ left: "calc(50% + (7/31)*8.33%)" }}>
-            <Star size={14} aria-hidden />
-            <span className="lbl">8. JUL · NM SLAG</span>
-          </div>
-          <div className="phq-gantt-flag" style={{ left: "calc(50% + (21/31)*8.33%)" }}>
-            <Flag size={14} aria-hidden />
-            <span className="lbl">22. JUL · TRONDHEIM</span>
-          </div>
-          <div className="phq-gantt-flag" style={{ left: "calc(58.33% + (4/31)*8.33%)" }}>
-            <Flag size={14} aria-hidden />
-            <span className="lbl">5. AUG · GFGK MESTERSKAP</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="phq-gantt-weeks">
-        <div className="phq-week-strip">
-          {[-3, -2, -1, 0, 1].map((diff) => {
-            const w = weekNumber + diff;
-            const active = diff === 0;
-            return (
-              <span key={diff} className={`phq-week-cell ${active ? "active" : ""}`}>U{w}</span>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function CalendarPane({ weekRange, weekNumber }: { weekRange: string; weekNumber: number }) {
   const days = [
