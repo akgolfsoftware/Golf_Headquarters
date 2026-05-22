@@ -200,8 +200,8 @@ export default async function PortalOversikt() {
     <OversiktSlim
       playerName={user.name ?? "Spiller"}
       playerInitials={initials(user.name)}
+      playerAvatarUrl={user.avatarUrl ?? null}
       hcpString={formatHcp(user.hcp ?? null)}
-      category="A1"
       club="GFGK"
       weekNumber={weekNumber}
       weekRange={weekRange}

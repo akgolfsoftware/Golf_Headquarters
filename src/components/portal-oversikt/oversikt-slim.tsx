@@ -34,8 +34,8 @@ import type { PyramidArea } from "@/generated/prisma/client";
 export type OversiktSlimProps = {
   playerName: string;
   playerInitials: string;
+  playerAvatarUrl: string | null;
   hcpString: string;
-  category: string;
   club: string;
   weekNumber: number;
   weekRange: string;
@@ -77,8 +77,8 @@ function greetingForHour(hour: number): string {
 export function OversiktSlim({
   playerName,
   playerInitials,
+  playerAvatarUrl,
   hcpString,
-  category,
   club,
   weekNumber,
   weekRange,
@@ -99,60 +99,33 @@ export function OversiktSlim({
   return (
     <div className="space-y-6 px-4 py-6 md:px-8 md:py-8 lg:px-12">
       {/* ============= HERO ============= */}
-      <section className="grid items-end gap-6 md:grid-cols-[1fr_auto]">
-        <div>
-          <AthleticEyebrow>PLAYERHQ · OVERSIKT</AthleticEyebrow>
-          <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-            {greeting},{" "}
-            <em
-              className="font-normal not-italic"
-              style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "#005840" }}
-            >
-              {firstName}
-            </em>
-          </h1>
-          <p className="font-mono mt-2 text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            UKE {weekNumber} · {weekRange.toUpperCase()} · {club.toUpperCase()}
-          </p>
-        </div>
-
-        {/* Profil-hero-kortet */}
-        <div
-          className="relative overflow-hidden rounded-2xl px-5 py-4 text-white"
-          style={{ background: "linear-gradient(165deg, #006C50 0%, #003A2A 100%)" }}
-        >
-          <div
-            className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(209,248,67,0.18), transparent 70%)",
-            }}
+      <section>
+        <AthleticEyebrow>PLAYERHQ · OVERSIKT</AthleticEyebrow>
+        <div className="mt-3 flex items-center gap-4">
+          <AthleticAvatar
+            src={playerAvatarUrl ?? undefined}
+            initials={playerInitials}
+            size="xl"
+            borderColor="white"
+            className="shadow-[0_8px_24px_rgba(0,88,64,0.18)]"
           />
-          <div className="relative flex items-center gap-3">
-            <AthleticAvatar
-              initials={playerInitials}
-              size="md"
-              borderColor="card"
-              className="!bg-accent !text-primary !border-white/30"
-            />
-            <div className="min-w-0">
-              <div className="font-display text-base font-semibold leading-tight text-white">
-                {playerName}
-              </div>
-              <div className="font-mono mt-0.5 text-[10px] font-semibold tracking-[0.06em] text-[#D1F843]">
-                HCP {hcpString} · {category}
-              </div>
-            </div>
-          </div>
-          <div
-            className="font-mono mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.05em]"
-            style={{ background: "#D1F843", color: "#003A2A" }}
-          >
-            <span
-              className="inline-block h-1.5 w-1.5 rounded-full"
-              style={{ background: "#003A2A" }}
-            />
-            AKTIV {streakDays} DAGER
+          <div className="min-w-0 flex-1">
+            <h1 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+              {greeting},{" "}
+              <em
+                className="font-normal not-italic"
+                style={{
+                  fontFamily: "'Instrument Serif', serif",
+                  fontStyle: "italic",
+                  color: "#005840",
+                }}
+              >
+                {firstName}
+              </em>
+            </h1>
+            <p className="font-mono mt-1.5 text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              UKE {weekNumber} · {weekRange.toUpperCase()} · {club.toUpperCase()} · HCP {hcpString}
+            </p>
           </div>
         </div>
       </section>
