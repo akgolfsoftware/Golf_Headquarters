@@ -2776,3 +2776,26 @@ model PlanSuggestion {
   @@index([type, status])
   @@map("plan_suggestions")
 }
+
+// ---------- Webhook retry queue ----------
+//
+// Når en webhook-handler (Stripe, Google Calendar) feiler internt, lagrer vi
+// raw payload + feilmelding her i stedet for å returnere 500 til avsender.
+// Da slipper Stripe å spam-retry, og vi kan reprosessere manuelt eller via
+// cron-job senere. Status går PENDING → RETRYING → RESOLVED | DEAD.
+
+model WebhookFailure {
+  id            String    @id @default(cuid())
+  webhookSource String // "stripe" | "google-cal" | annet
+  eventId       String    @unique
+  payload       Json
+  errorMessage  String
+  attemptCount  Int       @default(1)
+  status        String    @default("PENDING") // PENDING | RETRYING | RESOLVED | DEAD
+  lastAttemptAt DateTime  @default(now())
+  resolvedAt    DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([status, lastAttemptAt])
+  @@map("webhook_failures")
+}
