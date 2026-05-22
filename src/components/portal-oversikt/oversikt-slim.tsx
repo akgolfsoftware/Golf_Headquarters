@@ -52,11 +52,14 @@ export type OversiktSlimProps = {
 
 const pyrLabels: Record<PyramidArea, string> = {
   FYS: "Fysisk",
-  TEK: "Teknisk",
-  SLAG: "Slag",
+  TEK: "Teknikk",
+  SLAG: "Golfslag",
   SPILL: "Spill",
   TURN: "Turnering",
 };
+
+// Pyramide-rekkefølge (TOP -> BOTTOM): Turnering = apex, Fysisk = foundation
+const PYR_ORDER: PyramidArea[] = ["TURN", "SPILL", "SLAG", "TEK", "FYS"];
 
 const pyrColors: Record<PyramidArea, string> = {
   FYS: "var(--color-pyr-fys)",
@@ -277,34 +280,37 @@ export function OversiktSlim({
       {/* ============= PYRAMIDE-FOOTER ============= */}
       <section>
         <AthleticEyebrow>PYRAMIDE · SISTE 14 DAGER</AthleticEyebrow>
-        <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-5 md:gap-3">
-          {pyramide.map((row) => (
-            <div
-              key={row.area}
-              className="rounded-xl border border-border bg-card p-3"
-            >
-              <div className="flex items-baseline justify-between">
-                <span
-                  className="font-mono text-[10px] font-bold uppercase tracking-[0.10em]"
-                  style={{ color: pyrColors[row.area] }}
-                >
-                  {pyrLabels[row.area]}
-                </span>
-                <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
-                  {row.pct}%
-                </span>
+        <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-5 md:gap-3">
+          {PYR_ORDER.map((area) => {
+            const row = pyramide.find((p) => p.area === area) ?? { area, pct: 0 };
+            return (
+              <div
+                key={row.area}
+                className="rounded-xl border border-border bg-card p-3"
+              >
+                <div className="flex items-baseline justify-between">
+                  <span
+                    className="font-mono text-[10px] font-bold uppercase tracking-[0.10em]"
+                    style={{ color: pyrColors[row.area] }}
+                  >
+                    {pyrLabels[row.area]}
+                  </span>
+                  <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+                    {row.pct}%
+                  </span>
+                </div>
+                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{
+                      width: `${Math.min(100, row.pct)}%`,
+                      background: pyrColors[row.area],
+                    }}
+                  />
+                </div>
               </div>
-              <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full transition-all"
-                  style={{
-                    width: `${Math.min(100, row.pct)}%`,
-                    background: pyrColors[row.area],
-                  }}
-                />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
