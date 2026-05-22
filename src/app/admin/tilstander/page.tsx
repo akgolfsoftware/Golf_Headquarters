@@ -1,6 +1,6 @@
 import { AlertTriangle, Calendar, Check, Clock, Download, X } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 
 export const dynamic = "force-dynamic";
 

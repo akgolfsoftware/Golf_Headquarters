@@ -1,5 +1,5 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { KontaktSupportForm } from "./kontakt-support-form";
 
 export default async function KontaktSupportPage({

@@ -18,7 +18,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";

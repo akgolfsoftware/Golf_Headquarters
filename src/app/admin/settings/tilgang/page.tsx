@@ -3,7 +3,7 @@
 
 import { CheckCircle2, Minus, Shield, Info } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { Capability, can } from "@/lib/auth/cbac";
 import type { UserRole } from "@/generated/prisma/client";
 

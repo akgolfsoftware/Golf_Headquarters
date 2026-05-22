@@ -7,7 +7,7 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { NySpillerForm } from "./form";
 
 export default async function NySpillerPage() {

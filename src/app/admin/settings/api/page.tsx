@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, MoreHorizontal } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { CreateApiKeyModal } from "./create-key-modal";
 import { RevokeButton } from "./revoke-button";
 import { CopyPrefixButton } from "./copy-prefix-button";

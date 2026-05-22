@@ -1,7 +1,7 @@
 import { AlertTriangle, Plus, Activity, TrendingUp } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { HelseForm } from "./helse-form";
 
 export default async function HelsePage() {

@@ -11,7 +11,7 @@ import { ArrowLeft, GitCompare, Trophy, Users } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 
 type SearchParams = { vs?: string };

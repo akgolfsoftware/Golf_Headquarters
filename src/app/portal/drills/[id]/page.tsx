@@ -28,7 +28,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { kategoriFraHcp } from "@/lib/ai-plan/context";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { DrillDetailClient } from "./drill-client";
 import { MestringsLoggClient } from "./mestrings-logg-client";
 import type { PyramidArea, SkillArea } from "@/generated/prisma/client";

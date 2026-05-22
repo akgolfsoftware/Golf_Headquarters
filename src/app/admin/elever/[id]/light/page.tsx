@@ -11,7 +11,7 @@ import { ArrowRight, Calendar, Flag, TrendingUp } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 
 function formatHcp(v: number | null | undefined): string {
   if (v == null) return "—";

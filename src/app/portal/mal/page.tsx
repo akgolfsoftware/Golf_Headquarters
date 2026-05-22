@@ -32,7 +32,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { aggregateByArea } from "@/lib/pyramide";
 import { PyramideTimerStatus } from "@/components/portal/pyramide-timer-status";
 import type { Goal } from "@/generated/prisma/client";

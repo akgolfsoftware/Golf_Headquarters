@@ -14,7 +14,7 @@ import Link from "next/link";
 import { Trophy } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { TabStrip } from "@/components/admin/tab-strip";
 import { EmptyState } from "@/components/shared/empty-state";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";

@@ -3,7 +3,7 @@
 // `useChat` fra `@ai-sdk/react` for å gjøre overgangen sømløs.
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { CaddiePageShell } from "./caddie-page-shell";
 
 export const dynamic = "force-dynamic";

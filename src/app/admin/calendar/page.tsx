@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { CoachFilter } from "@/components/admin/coach-filter";
 import { EmptyState } from "@/components/shared/empty-state";
 import { GruppeSnarveier } from "@/components/admin/gruppe-snarveier";

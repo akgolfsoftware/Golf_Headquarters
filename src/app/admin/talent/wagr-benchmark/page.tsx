@@ -13,7 +13,7 @@ import Link from "next/link";
 import { ExternalLink, TrendingUp, TrendingDown, Trophy, Flag } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 
 // NGF-kategori → label fra Øyvinds tabell

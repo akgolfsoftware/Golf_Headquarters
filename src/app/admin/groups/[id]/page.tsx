@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Users, Calendar } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { GroupForm } from "../group-form";
 import { MemberForm, RemoveMemberButton } from "./member-form";

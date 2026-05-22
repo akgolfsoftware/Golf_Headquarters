@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Check, Monitor, ShieldCheck } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { Setup2FA } from "./setup-2fa";
 
 export default async function SikkerhetPage() {

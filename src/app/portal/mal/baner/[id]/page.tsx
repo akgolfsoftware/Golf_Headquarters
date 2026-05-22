@@ -9,7 +9,7 @@ import { MapPin, Plus, Share2, User, Flag, BarChart3, NotebookPen, Camera } from
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { BaneDetailTabs } from "./tabs";
 
 type Hole = {
