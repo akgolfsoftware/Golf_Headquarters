@@ -30,6 +30,7 @@ type AnleggData = {
   beskrivelse: string;
   highlights: Highlight[];
   gallery: { src: string; alt: string };
+  logo: { src: string; alt: string; width: number; height: number };
   kontakt?: { telefon?: string; epost?: string };
 };
 
@@ -62,8 +63,14 @@ const ANLEGG_DATA: Record<string, AnleggData> = {
       },
     ],
     gallery: {
-      src: "/images/anlegg/miklagard-hero2.jpg",
-      alt: "Utsikt fra fairway på Miklagard Golf",
+      src: "/images/anlegg/miklagard-2.jpg",
+      alt: "Solnedgang over bunkere og fairway på Miklagard Golf",
+    },
+    logo: {
+      src: "/images/logos/miklagard-logo.png",
+      alt: "Miklagard Golf logo",
+      width: 200,
+      height: 97,
     },
     kontakt: {
       telefon: "+47 63 94 31 00",
@@ -99,8 +106,14 @@ const ANLEGG_DATA: Record<string, AnleggData> = {
       },
     ],
     gallery: {
-      src: "/images/anlegg/gfgk-hero.jpg",
-      alt: "Banebilder fra Gamle Fredrikstad GK",
+      src: "/images/anlegg/gfgk-2.jpg",
+      alt: "Kongsten fort og golfbane — Gamle Fredrikstad GK",
+    },
+    logo: {
+      src: "/images/logos/gfgk-logo.png",
+      alt: "Gamle Fredrikstad GK logo",
+      width: 80,
+      height: 65,
     },
     kontakt: {
       telefon: "+47 406 97 598",
@@ -248,7 +261,16 @@ export default async function AnleggDetalj({
       {/* ── CTA-banner ── */}
       <section className="px-6 pb-24">
         <div className="mx-auto max-w-5xl rounded-2xl bg-primary px-12 py-16 text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent">
+          <div className="flex items-center justify-center gap-4">
+            <Image
+              src={data.logo.src}
+              alt={data.logo.alt}
+              width={data.logo.width}
+              height={data.logo.height}
+              className="opacity-80"
+            />
+          </div>
+          <span className="mt-6 block font-mono text-[11px] uppercase tracking-[0.18em] text-accent">
             AK Golf Academy
           </span>
           <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-primary-foreground">

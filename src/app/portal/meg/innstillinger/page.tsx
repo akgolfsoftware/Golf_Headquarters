@@ -85,6 +85,7 @@ export default async function InnstillingerPage() {
         connected: connected.length,
         names: connected.slice(0, 2).join(", ") + (connected.length > 2 ? ` +${connected.length - 2}` : ""),
       }}
+      fasilitetCount={user.tilgjengeligeFasiliteter.length}
     />
   );
 }
