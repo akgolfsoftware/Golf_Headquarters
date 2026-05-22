@@ -1,19 +1,23 @@
 import Link from "next/link";
-import { AlertTriangle, XCircle, Pause, Heart } from "lucide-react";
+import { AlertTriangle, XCircle, Pause } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AvbestillButtons } from "./avbestill-buttons";
 
 const KONSEKVENSER = [
-  { tittel: "AI-coach ubegrenset", detalj: "låses etter 1 måned", etterpaa: "låst" },
-  { tittel: "Coaching-credits", detalj: "fra 4 / mnd til 0", etterpaa: "0" },
-  { tittel: "Videoanalyse fra coach", detalj: "opplastinger låses", etterpaa: "låst" },
-  { tittel: "Komplett historikk", detalj: "kuttes til siste 30 dager", etterpaa: "30 dgr" },
-  { tittel: "Familiekonto", detalj: "far/mor mister tilgang", etterpaa: "utløper" },
+  { tittel: "AI-coach ubegrenset", detalj: "låses etter 1 måned", etterpaa: "→ låst" },
+  { tittel: "Coaching-credits", detalj: "fra 4 / mnd til 0", etterpaa: "→ 0" },
+  { tittel: "Videoanalyse fra coach", detalj: "opplastinger låses", etterpaa: "→ låst" },
+  { tittel: "Komplett historikk", detalj: "kuttes til siste 30 dager", etterpaa: "→ 30 dgr" },
+  { tittel: "Familiekonto", detalj: "far/mor mister tilgang", etterpaa: "→ utløper" },
 ];
 
-function formatDato(d: Date) {
-  return d.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+function ukedag(d: Date) {
+  return d.toLocaleDateString("nb-NO", { weekday: "long" });
+}
+
+function datoDag(d: Date) {
+  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" });
 }
 
 export default async function AvbestillPage() {
@@ -30,71 +34,118 @@ export default async function AvbestillPage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-[600px] space-y-6">
+    <div className="mx-auto w-full max-w-[480px] space-y-6">
       {/* Hero */}
-      <div className="space-y-4 text-center">
-        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full border-2 border-destructive/30 bg-destructive/[0.06] text-destructive">
-          <AlertTriangle className="h-7 w-7" strokeWidth={1.5} />
+      <div className="flex flex-col items-center gap-4 pt-2 text-center">
+        {/* Danger ring */}
+        <div
+          className="relative grid h-16 w-16 place-items-center rounded-full text-destructive"
+          style={{
+            border: "2px solid rgba(163,45,45,0.30)",
+            background: "rgba(163,45,45,0.06)",
+          }}
+        >
+          <AlertTriangle className="h-8 w-8" strokeWidth={1.75} />
+          {/* radial glow behind ring */}
+          <span
+            className="pointer-events-none absolute inset-0 -z-10 rounded-full"
+            style={{
+              margin: "-10px",
+              background: "radial-gradient(circle, rgba(163,45,45,0.10), transparent 65%)",
+            }}
+          />
         </div>
-        <div>
-          <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-            Siste bekreftelse · Steg 2 av 2
-          </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-            Avbestille <em className="font-normal italic text-primary">Pro</em>?
-          </h1>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Du mister disse fordelene når perioden løper ut. <strong className="text-foreground">Du betales ikke noe mer</strong> — men tilgangen forsvinner gradvis.
-          </p>
-        </div>
+        <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+          Siste bekreftelse · Steg 2 av 2
+        </span>
+        <h1 className="font-display text-[26px] font-semibold leading-[1.15] tracking-[-0.015em] text-foreground">
+          Avbestille{" "}
+          <em
+            className="font-serif not-italic italic font-normal"
+            style={{ color: "var(--destructive)" }}
+          >
+            Pro
+          </em>
+          ?
+        </h1>
+        <p className="max-w-[380px] text-[14px] leading-[1.55] text-muted-foreground">
+          Du mister disse fordelene når perioden løper ut.{" "}
+          <strong className="font-semibold text-foreground">Du betales ikke noe mer</strong>{" "}
+          — men tilgangen forsvinner gradvis.
+        </p>
       </div>
 
       {/* Date block */}
-      <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-5 shadow-sm">
+      <div
+        className="grid items-center gap-3 rounded-[14px] border border-border p-4"
+        style={{
+          gridTemplateColumns: "1fr auto",
+          background: "var(--background)",
+        }}
+      >
         <div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             Pro aktiv til
           </span>
-          <div className="mt-1 font-display text-base font-semibold capitalize text-foreground">
-            {formatDato(proAktivTil)}
+          <div className="mt-1 font-display text-base font-semibold text-foreground">
+            <em className="font-serif not-italic italic font-normal text-primary capitalize">
+              {ukedag(proAktivTil)}
+            </em>{" "}
+            {datoDag(proAktivTil)}
           </div>
         </div>
-        <div className="text-right">
-          <div className="font-mono text-sm font-bold text-foreground">kl 23:59</div>
-          <div className="mt-0.5 font-mono text-[10.5px] text-muted-foreground">
+        <div className="text-right font-mono">
+          <div className="text-[13px] font-semibold text-foreground tabular-nums">kl 23:59</div>
+          <div className="mt-1 text-[10px] font-medium text-muted-foreground">
             {dagerIgjen} dager igjen
           </div>
         </div>
       </div>
 
       {/* Consequences */}
-      <section className="space-y-2 rounded-xl border border-destructive/20 bg-destructive/[0.03] p-5">
-        <h3 className="mb-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-destructive">
+      <section className="flex flex-col gap-0.5">
+        <span className="mb-2 border-b border-border/50 pb-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
           Dette mister du
-        </h3>
+        </span>
         {KONSEKVENSER.map((k) => (
           <div
             key={k.tittel}
-            className="grid grid-cols-[20px_1fr_auto] items-center gap-3 border-b border-destructive/10 py-2 last:border-b-0"
+            className="grid items-center gap-3 py-2"
+            style={{ gridTemplateColumns: "20px 1fr auto" }}
           >
             <XCircle className="h-4 w-4 text-destructive" strokeWidth={1.75} />
-            <div className="text-sm text-foreground">
-              <span className="font-medium">{k.tittel}</span>{" "}
-              <em className="text-muted-foreground">{k.detalj}</em>
+            <div className="text-[13.5px] font-medium leading-tight text-foreground">
+              {k.tittel}
+              <em className="not-italic block font-mono text-[11.5px] text-muted-foreground mt-0.5">
+                {k.detalj}
+              </em>
             </div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-              → {k.etterpaa}
+            <span
+              className="whitespace-nowrap rounded-full px-2 py-0.5 font-mono text-[10.5px] font-bold uppercase tracking-[0.04em] text-destructive"
+              style={{ background: "rgba(163,45,45,0.08)" }}
+            >
+              {k.etterpaa}
             </span>
           </div>
         ))}
       </section>
 
       {/* Pause banner */}
-      <div className="grid grid-cols-[36px_1fr_auto] items-center gap-3 rounded-xl border border-primary/30 bg-primary/[0.04] p-4">
-        <span className="grid h-9 w-9 place-items-center rounded-md bg-primary/15 text-primary">
+      <div
+        className="grid items-center gap-3 rounded-xl border p-3.5"
+        style={{
+          gridTemplateColumns: "36px 1fr auto",
+          borderColor: "rgba(209,248,67,0.55)",
+          background: "linear-gradient(140deg, rgba(209,248,67,0.20), rgba(209,248,67,0.08))",
+        }}
+      >
+        <span
+          className="grid h-9 w-9 place-items-center rounded-full"
+          style={{ background: "var(--accent)", color: "var(--foreground)" }}
+        >
           <Pause className="h-4 w-4" strokeWidth={1.75} />
         </span>
-        <div className="text-sm text-foreground">
+        <div className="text-[13px] leading-[1.4] text-foreground">
           <strong className="block font-display font-semibold">
             Vil du heller pause i 1 måned?
           </strong>
@@ -102,7 +153,7 @@ export default async function AvbestillPage() {
         </div>
         <button
           type="button"
-          className="rounded-full px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10"
+          className="whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold text-primary hover:bg-primary/[0.06]"
         >
           Pause →
         </button>
@@ -110,14 +161,14 @@ export default async function AvbestillPage() {
 
       <AvbestillButtons />
 
-      <p className="text-center font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/80">
+      <p className="text-center font-mono text-[10px] tracking-[0.08em] text-muted-foreground/60">
+        Trykk <kbd className="rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[9.5px] font-semibold text-muted-foreground">Esc</kbd>{" "}
+        eller{" "}
         <Link href="/portal/meg/abonnement" className="hover:text-foreground">
-          ← Tilbake til abonnement
-        </Link>
+          tilbake til abonnement
+        </Link>{" "}
+        for å lukke uten å endre noe
       </p>
-
-      {/* Suppress unused import warning */}
-      <Heart className="hidden" />
     </div>
   );
 }

@@ -9,7 +9,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Activity,
-  ArrowRight,
   Check,
   CheckCircle2,
   Lightbulb,
@@ -83,12 +82,6 @@ export function SummaryClient({ data }: Props) {
     // standard handling.
     startTransition(() => {
       router.push("/portal/coach");
-    });
-  }
-
-  function handleLogNew() {
-    startTransition(() => {
-      router.push("/portal/ny-okt");
     });
   }
 
@@ -399,7 +392,7 @@ export function SummaryClient({ data }: Props) {
           </div>
         </Section>
 
-        {/* Actions */}
+        {/* Actions — speiler design: Send til coach (primær) + Lukk og fortsett (ghost) */}
         <section className="mt-2 grid grid-cols-[1fr_auto] gap-3 max-[640px]:grid-cols-1">
           <button
             type="button"
@@ -413,29 +406,17 @@ export function SummaryClient({ data }: Props) {
             }}
           >
             <Send className="h-4 w-4" strokeWidth={1.75} />
-            Del med coach
-          </button>
-          <button
-            type="button"
-            onClick={handleLogNew}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl border bg-transparent px-5 py-4 font-display text-[14px] font-semibold"
-            style={{
-              borderColor: "var(--ak-border-strong)",
-              color: "var(--ak-cream-70)",
-            }}
-          >
-            Logg ny økt
-            <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
+            Send til coach
           </button>
           <Link
             href="/portal/tren"
-            className="col-span-2 inline-flex items-center justify-center rounded-2xl border bg-transparent px-5 py-4 font-display text-[14px] font-semibold max-[640px]:col-span-1"
+            className="inline-flex items-center justify-center rounded-2xl border bg-transparent px-5 py-4 font-display text-[14px] font-semibold"
             style={{
               borderColor: "var(--ak-border-strong)",
               color: "var(--ak-cream-70)",
             }}
           >
-            Tilbake til Workbench
+            Lukk og fortsett
           </Link>
         </section>
       </main>
