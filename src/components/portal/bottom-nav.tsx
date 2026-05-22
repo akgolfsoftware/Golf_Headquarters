@@ -2,45 +2,33 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, CalendarDays, Dumbbell, Target, User } from "lucide-react";
+import {
+  Home,
+  CalendarRange,
+  Play,
+  BarChart3,
+  MessageSquare,
+} from "lucide-react";
 
 type NavItemDef = {
   href: string;
   label: string;
   icon: typeof Home;
   exact: boolean;
-  excludePrefixes?: string[];
 };
 
+// PlayerHQ 5-seksjons IA — master-plan Q5 (mobile bottom-nav)
 const NAV: ReadonlyArray<NavItemDef> = [
-  { href: "/portal", label: "Hjem", icon: Home, exact: true },
-  {
-    href: "/portal/tren",
-    label: "Tren",
-    icon: Dumbbell,
-    exact: false,
-    excludePrefixes: ["/portal/tren/kalender"],
-  },
-  {
-    href: "/portal/tren/kalender",
-    label: "Kalender",
-    icon: CalendarDays,
-    exact: false,
-  },
-  { href: "/portal/mal", label: "Mål", icon: Target, exact: false },
-  { href: "/portal/meg", label: "Meg", icon: User, exact: false },
+  { href: "/portal", label: "Oversikt", icon: Home, exact: true },
+  { href: "/portal/planlegge", label: "Planlegg", icon: CalendarRange, exact: false },
+  { href: "/portal/gjennomfore", label: "Gjør", icon: Play, exact: false },
+  { href: "/portal/analysere", label: "Analyser", icon: BarChart3, exact: false },
+  { href: "/portal/coach", label: "Coach", icon: MessageSquare, exact: false },
 ];
 
 function erAktiv(path: string, item: NavItemDef): boolean {
   if (item.exact) return path === item.href;
-  const matchSelf = path === item.href || path.startsWith(item.href + "/");
-  if (!matchSelf) return false;
-  if (item.excludePrefixes) {
-    for (const p of item.excludePrefixes) {
-      if (path === p || path.startsWith(p + "/")) return false;
-    }
-  }
-  return true;
+  return path === item.href || path.startsWith(item.href + "/");
 }
 
 export function BottomNav() {
