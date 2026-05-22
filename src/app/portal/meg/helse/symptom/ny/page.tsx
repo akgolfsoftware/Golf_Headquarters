@@ -5,7 +5,7 @@
  * 3-stegs wizard: kroppskart → intensitet/varighet → triggere/notat.
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { SymptomWizard } from "./wizard";
 
 export default async function NyttSymptomPage() {

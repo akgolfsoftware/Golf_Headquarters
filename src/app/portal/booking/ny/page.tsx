@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CalendarDays, Check, Clock, Lock } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { getAvailableSlots } from "@/lib/booking/availability";
 import { DatoVelger } from "./_components/dato-velger";
 import { SlotGrid } from "./_components/slot-grid";

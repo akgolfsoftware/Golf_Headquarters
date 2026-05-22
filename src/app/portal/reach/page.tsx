@@ -18,7 +18,7 @@ import {
   Flag,
   ShieldCheck,
 } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { ReachPrivacyClient } from "./reach-privacy-client";
 

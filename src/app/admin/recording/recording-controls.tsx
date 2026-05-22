@@ -146,7 +146,7 @@ export function RecordingControls({
       stopStream();
       releaseWakeLock();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   function stopStream() {

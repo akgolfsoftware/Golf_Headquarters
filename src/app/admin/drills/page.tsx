@@ -13,7 +13,7 @@ import Link from "next/link";
 import { Dumbbell, Star } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import type {
   PyramidArea,

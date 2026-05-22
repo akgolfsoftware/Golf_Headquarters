@@ -8,7 +8,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { EmptyState } from "@/components/shared/empty-state";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 
 export const dynamic = "force-dynamic";
 

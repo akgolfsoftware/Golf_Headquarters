@@ -1,7 +1,7 @@
 import { Check, AlertTriangle, ExternalLink, Receipt } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { ProKampanjeBanner } from "@/components/shared/pro-kampanje-banner";
 import { PRO_KAMPANJE_INFO } from "@/lib/feature-flags";
 import { UpgradeButton, ManageButton, CancelButton } from "./upgrade-button";

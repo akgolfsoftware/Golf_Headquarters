@@ -4,7 +4,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { ExerciseCard } from "@/components/portal/exercise-card";
 import { ExerciseCardActions } from "@/components/portal/exercise-card-actions";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PyramidArea, type Prisma } from "@/generated/prisma/client";
 

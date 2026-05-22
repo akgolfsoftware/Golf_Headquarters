@@ -23,7 +23,7 @@ import {
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 
 export const dynamic = "force-dynamic";
 

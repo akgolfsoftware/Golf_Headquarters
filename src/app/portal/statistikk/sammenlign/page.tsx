@@ -5,7 +5,7 @@
  * Lar spilleren sammenligne seg med HCP-gruppe, aldersgruppe, topp 10 % U18 eller en spesifikk spiller.
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { SammenlignClient } from "./sammenlign-client";
 
 export default async function SammenlignPage() {

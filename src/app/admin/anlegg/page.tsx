@@ -16,7 +16,7 @@ import { MapPin, Search } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { TabStrip } from "@/components/admin/tab-strip";
 import { AnleggMapbox } from "@/components/admin/anlegg-mapbox";
 import LocationsPage from "@/app/admin/locations/page";

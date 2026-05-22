@@ -10,7 +10,7 @@ import Link from "next/link";
 import { CalendarPlus, CalendarDays } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 
 export const dynamic = "force-dynamic";
 

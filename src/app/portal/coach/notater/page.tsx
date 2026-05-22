@@ -15,7 +15,7 @@ import {
   Plus,
   ArrowUpRight,
 } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
 type NotatType = "coach" | "egen" | "qa";

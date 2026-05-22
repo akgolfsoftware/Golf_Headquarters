@@ -14,7 +14,7 @@ import { Download, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { StallClient, type StallPlayer, type StallSnapshot } from "./stall-client";
 
 type Tier = "GRATIS" | "PRO" | "ELITE";

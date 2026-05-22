@@ -5,7 +5,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { NewTemplateForm } from "@/components/admin/plan-templates/new-template-form";
 
 export const dynamic = "force-dynamic";

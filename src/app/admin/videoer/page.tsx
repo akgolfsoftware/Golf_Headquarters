@@ -1,7 +1,7 @@
 import { Video } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { VideoUploadForm } from "./video-upload-form";
 import { VideoCard } from "./video-card";

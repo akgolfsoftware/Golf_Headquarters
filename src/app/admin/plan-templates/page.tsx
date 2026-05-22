@@ -9,7 +9,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { AgentStrip } from "@/components/coachhq/agent-strip";
 import {
   LibraryView,

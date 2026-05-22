@@ -10,7 +10,7 @@
  */
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { ViewModeProvider } from "@/components/shared/ViewModeContext";
 import { ViewModeToggle } from "@/components/shared/ViewModeToggle";
 import { PortalAnalyseSidebar } from "@/components/analyse/PortalAnalyseSidebar";

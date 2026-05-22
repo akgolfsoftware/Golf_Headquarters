@@ -28,7 +28,7 @@ import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
 import { extractClubs } from "@/lib/sg-hub/extract-shots";
 import type { InsightCategory } from "@/generated/prisma/client";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 
 const CLUB_ORDER = [
   "Driver",

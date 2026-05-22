@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ChevronRight, FileText, Key, Shield, User } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 
 type Item = {
   href: string;

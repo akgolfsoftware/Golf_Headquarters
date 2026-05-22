@@ -15,7 +15,7 @@ import {
   prosentPerArea,
   totalMinutter,
 } from "@/lib/pyramide";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PlanActions } from "./plan-actions";
 import { DraggableSessions, type DraggableSession } from "./draggable-sessions";

@@ -15,7 +15,7 @@ import {
   type Prisma,
 } from "@/generated/prisma/client";
 import { EmptyState } from "@/components/shared/empty-state";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 
 type Search = { area?: string; phase?: string };
 

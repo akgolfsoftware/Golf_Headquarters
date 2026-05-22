@@ -10,7 +10,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { ImportForm } from "./import-form";
 
 export default async function WagrImportPage() {

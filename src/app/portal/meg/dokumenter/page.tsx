@@ -2,7 +2,7 @@ import { FileText, FileSignature, Receipt, BookOpen, FileQuestion, Search } from
 import type { LucideIcon } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 
 const KIND_LABEL: Record<string, string> = {
