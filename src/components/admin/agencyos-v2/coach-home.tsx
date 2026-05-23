@@ -1,0 +1,510 @@
+/**
+ * CoachHQ Hjem — pixel-perfekt operations cockpit (Variant A)
+ * Spec: sesjon-1-hjem-og-spiller.md, skjerm 2.
+ *
+ * Tokens: forest #005840, accent lime #D1F843, surface #FAFAF7.
+ * Server Component (kun Links).
+ */
+
+import Link from "next/link";
+import {
+  AlertOctagon,
+  ArrowRight,
+  CalendarClock,
+  Flame,
+  HeartPulse,
+  Plus,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
+
+export type CoachHomeProps = {
+  coachName: string;
+  isoDateLabel: string; // "MANDAG 23. MAI · UKE 21"
+  // KPI
+  todaysSessionCount: number;
+  enrolledThisWeek: number;
+  burningTaskCount: number;
+  stallHealthPct: number;
+  // Timeline
+  timeline: {
+    id: string;
+    startTime: Date;
+    endTime: Date;
+    playerName: string;
+    serviceName: string;
+    locationName: string;
+  }[];
+  // Brennende oppgaver
+  burningTasks: {
+    id: string;
+    title: string;
+    deadline: string;
+    href: string;
+  }[];
+  // Stall-overview
+  stallOverview: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+    status: "aktiv" | "skadet" | "permisjon";
+  }[];
+  // Workspace quick
+  workspaceTasks: { id: string; title: string; href: string }[];
+  // Aktivitet-strøm
+  recentMessages: { id: string; from: string; preview: string; timeAgo: string }[];
+  recentApprovals: { id: string; title: string; timeAgo: string }[];
+};
+
+const STATUS_COLOR: Record<CoachHomeProps["stallOverview"][number]["status"], string> = {
+  aktiv: "#2C7D52",
+  skadet: "#A32D2D",
+  permisjon: "#B8852A",
+};
+
+function timeStr(d: Date): string {
+  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
+}
+
+const TIMELINE_START_HOUR = 8;
+const TIMELINE_END_HOUR = 20;
+const HOUR_HEIGHT = 56; // px per hour
+
+export function CoachHome(props: CoachHomeProps) {
+  const fornavn = props.coachName.split(" ")[0];
+
+  return (
+    <div className="space-y-6">
+      {/* HERO */}
+      <header>
+        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+          {props.isoDateLabel}
+        </div>
+        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-[#0A1F17] sm:text-4xl">
+          God morgen,{" "}
+          <em
+            className="font-normal not-italic"
+            style={{
+              fontFamily: "'Instrument Serif', serif",
+              fontStyle: "italic",
+              color: "#005840",
+            }}
+          >
+            {fornavn}
+          </em>
+        </h1>
+        <p className="mt-2 max-w-2xl text-base text-[#5E5C57]">
+          Du har <span className="font-semibold text-[#0A1F17]">{props.todaysSessionCount} økter</span> i dag og{" "}
+          <span className="font-semibold text-[#A32D2D]">{props.burningTaskCount} ting som brenner</span>.
+        </p>
+      </header>
+
+      {/* KPI-strip */}
+      <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        {/* Featured: Aktive økter */}
+        <div
+          className="rounded-2xl p-5 text-white"
+          style={{
+            background: "linear-gradient(135deg, #005840 0%, #003A2A 100%)",
+          }}
+        >
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-white/70">
+            Aktive økter i dag
+          </div>
+          <div className="mt-2 font-mono text-[38px] font-semibold leading-none tabular-nums text-[#D1F843]">
+            {props.todaysSessionCount}
+          </div>
+          <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#D1F843]/80">
+            sortert kronologisk
+          </div>
+        </div>
+
+        <Kpi
+          icon={Users}
+          eyebrow="Påmeldte denne uka"
+          value={String(props.enrolledThisWeek)}
+          sub="spillere"
+        />
+        <Kpi
+          icon={Flame}
+          eyebrow="Brennende oppgaver"
+          value={String(props.burningTaskCount)}
+          sub={props.burningTaskCount === 0 ? "alt klart" : "krever handling"}
+          tone={props.burningTaskCount > 0 ? "danger" : "good"}
+        />
+        <Kpi
+          icon={HeartPulse}
+          eyebrow="Stall-helse"
+          value={`${props.stallHealthPct}%`}
+          sub="aktive siste 30d"
+        />
+      </section>
+
+      {/* I dag-tidslinje + Brennende oppgaver */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
+        {/* Tidslinje */}
+        <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+          <div className="mb-5 flex items-baseline justify-between">
+            <div>
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+                I dag
+              </div>
+              <h2 className="mt-1 font-display text-lg font-semibold text-[#0A1F17]">
+                <em
+                  className="font-normal not-italic"
+                  style={{
+                    fontFamily: "'Instrument Serif', serif",
+                    fontStyle: "italic",
+                    color: "#005840",
+                  }}
+                >
+                  Tidslinje
+                </em>{" "}
+                · 08:00 — 20:00
+              </h2>
+            </div>
+            <Link
+              href="/admin/kalender"
+              className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+            >
+              Full kalender →
+            </Link>
+          </div>
+
+          <div className="relative">
+            {/* Hour-rows */}
+            <div>
+              {Array.from(
+                { length: TIMELINE_END_HOUR - TIMELINE_START_HOUR },
+                (_, i) => TIMELINE_START_HOUR + i,
+              ).map((h) => (
+                <div
+                  key={h}
+                  className="relative flex items-start gap-3 border-t border-[#E5E3DD] first:border-t-0"
+                  style={{ height: HOUR_HEIGHT }}
+                >
+                  <div className="w-12 shrink-0 pt-1 font-mono text-[10px] tabular-nums text-[#9C9990]">
+                    {String(h).padStart(2, "0")}:00
+                  </div>
+                  <div className="flex-1" />
+                </div>
+              ))}
+            </div>
+
+            {/* Event-cards absolutt-plassert */}
+            <div className="pointer-events-none absolute left-12 right-0 top-0">
+              {props.timeline.map((ev) => {
+                const startH =
+                  ev.startTime.getHours() + ev.startTime.getMinutes() / 60;
+                const endH =
+                  ev.endTime.getHours() + ev.endTime.getMinutes() / 60;
+                if (endH < TIMELINE_START_HOUR || startH > TIMELINE_END_HOUR)
+                  return null;
+                const top = (startH - TIMELINE_START_HOUR) * HOUR_HEIGHT;
+                const height = Math.max(
+                  32,
+                  (endH - startH) * HOUR_HEIGHT - 4,
+                );
+                return (
+                  <Link
+                    key={ev.id}
+                    href={`/admin/kalender#${ev.id}`}
+                    className="pointer-events-auto absolute left-3 right-2 overflow-hidden rounded-xl border border-[#005840]/20 bg-[#005840]/8 px-3 py-2 transition-colors hover:bg-[#005840]/15"
+                    style={{ top, height }}
+                  >
+                    <div className="font-mono text-[10px] font-semibold tabular-nums text-[#005840]">
+                      {timeStr(ev.startTime)} – {timeStr(ev.endTime)}
+                    </div>
+                    <div className="mt-0.5 truncate text-sm font-semibold text-[#0A1F17]">
+                      {ev.playerName} · {ev.serviceName}
+                    </div>
+                    <div className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                      {ev.locationName}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Quick-add */}
+          <div className="mt-4 border-t border-dashed border-[#E5E3DD] pt-4">
+            <Link
+              href="/admin/kalender?action=ny-okt"
+              className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57] hover:text-[#005840]"
+            >
+              <Plus size={12} strokeWidth={2} />
+              Quick-add økt
+            </Link>
+          </div>
+        </section>
+
+        {/* Brennende oppgaver */}
+        <section
+          className="relative overflow-hidden rounded-2xl border border-[#E5E3DD] bg-card p-5"
+        >
+          <div
+            aria-hidden="true"
+            className="absolute left-0 top-0 h-full w-1.5"
+            style={{ background: "#A32D2D" }}
+          />
+          <div className="pl-3">
+            <div className="flex items-center gap-2">
+              <AlertOctagon
+                size={16}
+                strokeWidth={1.75}
+                className="text-[#A32D2D]"
+              />
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#A32D2D]">
+                Brennende
+              </div>
+            </div>
+            <h2 className="mt-1 font-display text-lg font-semibold leading-snug text-[#0A1F17]">
+              Krever handling
+            </h2>
+            {props.burningTasks.length === 0 ? (
+              <p className="mt-4 text-sm text-[#5E5C57]">
+                Ingen brennende oppgaver. Pust ut.
+              </p>
+            ) : (
+              <ul className="mt-4 space-y-3">
+                {props.burningTasks.map((t) => (
+                  <li
+                    key={t.id}
+                    className="rounded-xl border border-[#A32D2D]/15 bg-[#A32D2D]/5 p-3"
+                  >
+                    <Link
+                      href={t.href}
+                      className="group block"
+                    >
+                      <div className="text-sm font-semibold text-[#0A1F17] group-hover:text-[#A32D2D]">
+                        {t.title}
+                      </div>
+                      <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.08em] text-[#A32D2D]">
+                        {t.deadline}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+      </div>
+
+      {/* Stall-overview-strip */}
+      <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+        <div className="mb-4 flex items-baseline justify-between">
+          <div>
+            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              Stallen
+            </div>
+            <h2 className="mt-1 font-display text-lg font-semibold text-[#0A1F17]">
+              Mine spillere
+            </h2>
+          </div>
+          <Link
+            href="/admin/spillere"
+            className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+          >
+            Hele stallen →
+          </Link>
+        </div>
+        {props.stallOverview.length === 0 ? (
+          <p className="text-sm text-[#5E5C57]">
+            Ingen aktive spillere ennå.
+          </p>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {props.stallOverview.slice(0, 6).map((p) => (
+              <Link
+                key={p.id}
+                href={`/admin/spillere/${p.id}`}
+                className="group flex flex-col items-center gap-2 rounded-xl border border-[#E5E3DD] bg-[#FAFAF7] p-4 transition-colors hover:border-[#005840]"
+              >
+                <div className="relative">
+                  {p.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={p.avatarUrl}
+                      alt=""
+                      className="h-12 w-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div
+                      className="grid h-12 w-12 place-items-center rounded-full font-mono text-xs font-semibold text-white"
+                      style={{ background: avatarBg(p.name) }}
+                    >
+                      {initialsFromName(p.name)}
+                    </div>
+                  )}
+                  <span
+                    className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full ring-2 ring-card"
+                    style={{ background: STATUS_COLOR[p.status] }}
+                  />
+                </div>
+                <div className="min-w-0 text-center">
+                  <div className="truncate text-xs font-semibold text-[#0A1F17] group-hover:text-[#005840]">
+                    {p.name.split(" ")[0]}
+                  </div>
+                  <div className="font-mono text-[9px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                    {p.status}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Workspace-quick-strip */}
+      <section
+        className="relative overflow-hidden rounded-2xl border border-[#E5E3DD] bg-card p-5"
+      >
+        <div
+          aria-hidden="true"
+          className="absolute left-0 top-0 h-full w-1.5"
+          style={{ background: "#D1F843" }}
+        />
+        <div className="pl-3">
+          <div className="flex items-baseline justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles size={14} strokeWidth={1.75} className="text-[#005840]" />
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#005840]">
+                Workspace
+              </div>
+            </div>
+            <Link
+              href="/admin/workspace/tildelt-meg"
+              className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+            >
+              Åpne workspace
+              <ArrowRight size={12} strokeWidth={2} />
+            </Link>
+          </div>
+          {props.workspaceTasks.length === 0 ? (
+            <p className="mt-3 text-sm text-[#5E5C57]">
+              Ingen oppgaver tildelt akkurat nå.
+            </p>
+          ) : (
+            <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+              {props.workspaceTasks.slice(0, 3).map((t) => (
+                <li key={t.id}>
+                  <Link
+                    href={t.href}
+                    className="block rounded-xl border border-[#D1F843]/40 bg-[#D1F843]/8 p-3 text-sm text-[#0A1F17] transition-colors hover:bg-[#D1F843]/20"
+                  >
+                    {t.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
+
+      {/* Aktivitet-strøm 2-kol */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+            Siste meldinger
+          </div>
+          {props.recentMessages.length === 0 ? (
+            <p className="text-sm text-[#5E5C57]">Innboksen er rolig.</p>
+          ) : (
+            <ul className="space-y-3">
+              {props.recentMessages.slice(0, 4).map((m) => (
+                <li
+                  key={m.id}
+                  className="border-b border-[#E5E3DD] pb-3 last:border-b-0 last:pb-0"
+                >
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="truncate text-sm font-semibold text-[#0A1F17]">
+                      {m.from}
+                    </span>
+                    <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                      {m.timeAgo}
+                    </span>
+                  </div>
+                  <p className="mt-1 line-clamp-2 text-sm text-[#5E5C57]">
+                    {m.preview}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+          <div className="mb-3 flex items-center gap-2">
+            <CalendarClock
+              size={14}
+              strokeWidth={1.75}
+              className="text-[#5E5C57]"
+            />
+            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              Siste godkjenninger
+            </div>
+          </div>
+          {props.recentApprovals.length === 0 ? (
+            <p className="text-sm text-[#5E5C57]">Alt godkjent.</p>
+          ) : (
+            <ul className="space-y-3">
+              {props.recentApprovals.slice(0, 4).map((a) => (
+                <li
+                  key={a.id}
+                  className="flex items-start justify-between gap-3 border-b border-[#E5E3DD] pb-3 last:border-b-0 last:pb-0"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm text-[#0A1F17]">
+                      {a.title}
+                    </p>
+                  </div>
+                  <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                    {a.timeAgo}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function Kpi({
+  icon: Icon,
+  eyebrow,
+  value,
+  sub,
+  tone,
+}: {
+  icon: typeof Users;
+  eyebrow: string;
+  value: string;
+  sub: string;
+  tone?: "good" | "danger";
+}) {
+  const valueColor =
+    tone === "danger" ? "text-[#A32D2D]" : "text-[#0A1F17]";
+  return (
+    <div className="rounded-2xl border border-[#E5E3DD] bg-card p-5">
+      <div className="flex items-start justify-between gap-2">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+          {eyebrow}
+        </span>
+        <Icon size={14} strokeWidth={1.75} className="text-[#5E5C57]" />
+      </div>
+      <div
+        className={`mt-2 font-mono text-[28px] font-semibold leading-none tabular-nums ${valueColor}`}
+      >
+        {value}
+      </div>
+      <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+        {sub}
+      </div>
+    </div>
+  );
+}
