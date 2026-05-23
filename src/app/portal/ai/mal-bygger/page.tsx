@@ -1,13 +1,13 @@
 /**
- * /portal/ai/mal-bygger — Trigger-side for AI mål-bygger-modalen.
+ * /portal/ai/mal-bygger — pixel-perfekt port av Claude Design-modalen.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { MalByggerLauncher } from "./mal-bygger-launcher";
+import { AiMalByggerScreen } from "@/components/planlegge-v2/ai-mal-bygger-screen";
 
 export const dynamic = "force-dynamic";
 
 export default async function MalByggerPage() {
   await requirePortalUser();
-  return <MalByggerLauncher />;
+  return <AiMalByggerScreen />;
 }

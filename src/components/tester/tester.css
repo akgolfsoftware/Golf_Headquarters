@@ -504,3 +504,121 @@
 }
 .tester-shell .te-matrix .cell.tot.warn { background: rgba(184,133,42,0.15); color: var(--warn); }
 .tester-shell .te-matrix .cell.tot.danger { background: rgba(163,45,45,0.10); color: var(--danger); }
+
+/* ============================================================
+   T2 · Test-detalj additions (rings + proto + history + box-plot)
+   ============================================================ */
+.tester-shell .te-ring-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+.tester-shell .te-ring-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px;
+  display: flex; gap: 18px; align-items: center;
+}
+.tester-shell .te-ring-card.lime { background: rgba(209,248,67,0.18); border-color: rgba(191,233,51,0.55); }
+.tester-shell .te-ring-card.forest {
+  background: linear-gradient(160deg, var(--forest) 0%, var(--forest-dark) 100%);
+  color: #fff; border-color: var(--forest);
+}
+.tester-shell .te-ring-card.forest .lbl { color: rgba(209,248,67,0.65); }
+.tester-shell .te-ring-card.forest .val { color: var(--lime); }
+.tester-shell .te-ring-card.forest .sub { color: rgba(255,255,255,0.65); }
+.tester-shell .te-ring-svg { width: 96px; height: 96px; flex-shrink: 0; }
+.tester-shell .te-ring-card .lbl {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+.tester-shell .te-ring-card .val {
+  font-family: var(--font-mono); font-size: 28px; font-weight: 700;
+  line-height: 1; letter-spacing: -0.02em; margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.tester-shell .te-ring-card .sub {
+  font-family: var(--font-mono); font-size: 10.5px; color: var(--muted);
+  letter-spacing: 0.04em; margin-top: 8px;
+}
+
+/* Protokoll-steps */
+.tester-shell .te-proto-steps { display: flex; flex-direction: column; gap: 18px; margin-top: 18px; }
+.tester-shell .te-pstep { display: grid; grid-template-columns: 40px 1fr; gap: 16px; }
+.tester-shell .te-pstep .pn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--forest); color: var(--lime);
+  font-family: var(--font-mono); font-weight: 700; font-size: 13px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.tester-shell .te-pstep .pttl {
+  font-family: var(--font-display); font-size: 15px; font-weight: 600;
+  letter-spacing: -0.01em; line-height: 1.25;
+}
+.tester-shell .te-pstep .pdesc {
+  font-size: 13px; color: var(--ink); line-height: 1.5; margin-top: 4px;
+}
+.tester-shell .te-pstep .pmeta {
+  display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+}
+.tester-shell .te-chip {
+  font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
+  background: #fff; border: 1px solid var(--border);
+  padding: 3px 9px; border-radius: 999px;
+  color: var(--muted); letter-spacing: 0.04em;
+}
+.tester-shell .te-bench {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: rgba(209,248,67,0.12); border-left: 3px solid var(--lime-deep);
+  border-radius: 8px; padding: 12px 14px;
+  font-family: var(--font-body); font-size: 12.5px;
+  color: var(--ink); line-height: 1.5;
+}
+.tester-shell .te-bench svg { color: var(--forest); flex-shrink: 0; margin-top: 2px; }
+
+/* Historikk-table */
+.tester-shell .te-hist-svg { width: 100%; height: 240px; }
+.tester-shell .te-h-table { display: flex; flex-direction: column; }
+.tester-shell .te-h-row {
+  display: grid; grid-template-columns: 110px 1fr 80px 80px;
+  padding: 10px 0; border-bottom: 1px solid var(--line);
+  align-items: baseline; gap: 12px;
+  font-family: var(--font-mono); font-size: 12px;
+}
+.tester-shell .te-h-row:first-child {
+  color: var(--muted); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  padding: 6px 0 10px;
+}
+.tester-shell .te-h-row:last-child { border-bottom: 0; }
+.tester-shell .te-h-row.pr { background: rgba(209,248,67,0.12); padding-left: 8px; padding-right: 8px; border-radius: 8px; }
+.tester-shell .te-h-row .v { font-weight: 700; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.tester-shell .te-h-row .delta { text-align: right; font-weight: 600; }
+.tester-shell .te-h-row .delta.up { color: var(--success); }
+.tester-shell .te-h-row .delta.dn { color: var(--danger); }
+
+/* Box-plot */
+.tester-shell .te-box-svg { width: 100%; height: 130px; margin-top: 14px; }
+.tester-shell .te-percentile-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  margin-top: 18px; gap: 10px;
+}
+.tester-shell .te-ptile {
+  text-align: center;
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px;
+}
+.tester-shell .te-ptile.you { background: var(--lime); border-color: var(--lime); }
+.tester-shell .te-ptile .pl {
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+.tester-shell .te-ptile.you .pl { color: var(--forest); }
+.tester-shell .te-ptile .pv {
+  font-family: var(--font-mono); font-size: 18px; font-weight: 700;
+  line-height: 1; margin-top: 6px; font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.tester-shell .te-ptile .pn-sub {
+  font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+  margin-top: 4px;
+}
+@media (max-width: 1024px) {
+  .tester-shell .te-ring-row { grid-template-columns: 1fr; }
+  .tester-shell .te-percentile-row { grid-template-columns: repeat(2, 1fr); }
+}

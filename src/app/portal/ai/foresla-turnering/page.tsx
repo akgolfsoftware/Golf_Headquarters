@@ -1,13 +1,13 @@
 /**
- * /portal/ai/foresla-turnering — Trigger-side for AI foreslå turnering-modalen.
+ * /portal/ai/foresla-turnering — pixel-perfekt port av Claude Design-modalen.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { TurneringModalLauncher } from "./turnering-modal-launcher";
+import { AiForeslaTurneringScreen } from "@/components/planlegge-v2/ai-foresla-turnering-screen";
 
 export const dynamic = "force-dynamic";
 
 export default async function ForeslaTurneringPage() {
   await requirePortalUser();
-  return <TurneringModalLauncher />;
+  return <AiForeslaTurneringScreen />;
 }
