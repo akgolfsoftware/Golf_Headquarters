@@ -515,6 +515,7 @@ function Kpi({
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function FilterChip({ label }: { label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground">

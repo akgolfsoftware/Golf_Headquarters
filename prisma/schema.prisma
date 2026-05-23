@@ -1702,6 +1702,26 @@ model AuditLog {
   @@map("audit_logs")
 }
 
+// L1 Observability — runtime error-tracking (system errors, ikke user actions)
+// Brukes via lib/error-tracking.ts -> logError()
+model ErrorLog {
+  id          String   @id @default(cuid())
+  context     String   // "stripe.webhook" | "gcal.sync" | "auth.signup" | etc.
+  message     String   @db.Text
+  stack       String?  @db.Text
+  userId      String?  // null = system error, ellers FK til User
+  meta        Json?    // tilleggsdata (bookingId, sessionId, etc.)
+  severity    String   @default("error") // "fatal" | "error" | "warn" | "info"
+  resolved    Boolean  @default(false)
+  resolvedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([context, createdAt])
+  @@index([severity, resolved, createdAt])
+  @@index([userId, createdAt])
+  @@map("error_logs")
+}
+
 model CoachAvailability {
   id        String   @id @default(cuid())
   coachId   String
