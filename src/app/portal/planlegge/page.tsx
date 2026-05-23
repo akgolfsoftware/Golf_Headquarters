@@ -16,6 +16,7 @@ import { PlanleggeShell } from "@/components/portal-planlegge/planlegge-shell";
 import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
 import { ArsplanScreen } from "@/components/planlegge-v2/arsplan-screen";
 import { TreningsplanScreen } from "@/components/planlegge-v2/treningsplan-screen";
+import { MalTab as MalTabNew } from "@/components/portal-planlegge/mal/mal-tab";
 
 export const dynamic = "force-dynamic";
 
@@ -80,7 +81,7 @@ export default async function PlanleggePage({ searchParams }: Props) {
         turneringer: tournamentsCount,
       }}
     >
-      {tab === "mal" ? <MalTab userId={user.id} /> : null}
+      {tab === "mal" ? <MalTabNew userId={user.id} /> : null}
       {tab === "turneringer" ? <TurneringerTab userId={user.id} /> : null}
       {tab === "drills" ? <DrillsTab /> : null}
     </PlanleggeShell>
