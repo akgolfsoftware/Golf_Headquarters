@@ -263,6 +263,11 @@ model User {
   // Tilgjengelige fasiliteter og utstyr (settes under onboarding/innstillinger).
   // Brukes for å filtrere drills slik at spilleren kun ser øvelser de kan gjøre.
   tilgjengeligeFasiliteter DrillFasilitet[] @default([])
+
+  // GDPR soft-delete (P20). Bruker markeres som deletedAt = now() ved kontosletting.
+  // Cron /api/cron/cleanup-deleted-accounts sletter permanent etter 30 dager.
+  deletedAt   DateTime?
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
