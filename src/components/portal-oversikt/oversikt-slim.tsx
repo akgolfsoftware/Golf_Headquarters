@@ -20,6 +20,7 @@ import {
   Sparkles,
   Bell,
   ArrowRight,
+  Camera,
 } from "lucide-react";
 
 import {
@@ -114,13 +115,25 @@ export function OversiktSlim({
       <section>
         <AthleticEyebrow>PLAYERHQ · OVERSIKT</AthleticEyebrow>
         <div className="mt-3 flex items-center gap-4">
-          <AthleticAvatar
-            src={playerAvatarUrl ?? undefined}
-            initials={playerInitials}
-            size="xl"
-            borderColor="white"
-            className="shadow-[0_8px_24px_rgba(0,88,64,0.18)]"
-          />
+          <Link
+            href="/portal/meg"
+            aria-label="Endre profilbilde"
+            className="group relative inline-block"
+          >
+            <AthleticAvatar
+              src={playerAvatarUrl ?? undefined}
+              initials={playerInitials}
+              size="xl"
+              borderColor="white"
+              className="shadow-[0_8px_24px_rgba(0,88,64,0.18)] transition group-hover:shadow-[0_8px_32px_rgba(0,88,64,0.28)]"
+            />
+            <span
+              aria-hidden
+              className="absolute inset-0 flex items-center justify-center rounded-full bg-primary/0 text-white opacity-0 transition group-hover:bg-primary/60 group-hover:opacity-100"
+            >
+              <Camera className="h-6 w-6" strokeWidth={1.75} />
+            </span>
+          </Link>
           <div className="min-w-0 flex-1">
             <h1 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
               {greeting},{" "}
