@@ -66,9 +66,9 @@ export default async function GjennomforePage({ searchParams }: Props) {
   return (
     <GjennomforeShell counts={{ idag: todayCount, live: liveCount }}>
       {tab === "idag" ? <IdagTab userId={user.id} /> : null}
-      {tab === "kalender" ? <KalenderTab /> : null}
+      {tab === "kalender" ? <KalenderTab userId={user.id} /> : null}
       {tab === "live" ? <LiveTab userId={user.id} /> : null}
-      {tab === "booking" ? <BookingTab /> : null}
+      {tab === "booking" ? <BookingTab userId={user.id} /> : null}
     </GjennomforeShell>
   );
 }
@@ -149,26 +149,113 @@ async function IdagTab({ userId }: { userId: string }) {
   );
 }
 
-function KalenderTab() {
-  return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <AthleticEyebrow>KALENDER</AthleticEyebrow>
-          <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">
-            <Calendar className="mr-1 inline h-5 w-5 text-primary" />
-            Uke, måned og dag-visning
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Drag-drop økter, se booking, koble TrackMan-data.
-          </p>
+async function KalenderTab({ userId }: { userId: string }) {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const slutt = new Date(start.getTime() + 14 * 24 * 60 * 60 * 1000);
+
+  const okter = await prisma.trainingSessionV2
+    .findMany({
+      where: {
+        studentId: userId,
+        startTime: { gte: start, lte: slutt },
+      },
+      orderBy: { startTime: "asc" },
+      take: 30,
+    })
+    .catch(() => []);
+
+  if (okter.length === 0) {
+    return (
+      <div className="rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
+        <Calendar className="mx-auto h-8 w-8 text-muted-foreground" />
+        <h3 className="font-display mt-3 text-lg font-semibold">
+          Ingen planlagte økter neste 14 dager
+        </h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Be coachen din legge inn økter, eller bestill en time.
+        </p>
+        <div className="mt-4">
+          <Link href="/portal/gjennomfore?tab=booking">
+            <AthleticButton variant="lime" size="sm">
+              Book økt
+              <ArrowRight className="h-3.5 w-3.5" />
+            </AthleticButton>
+          </Link>
         </div>
-        <Link href="/portal/tren/kalender">
-          <AthleticButton variant="lime" size="md">
-            Åpne kalender
-            <ArrowRight className="h-4 w-4" />
-          </AthleticButton>
+      </div>
+    );
+  }
+
+  // Grupper etter dag
+  const perDag = new Map<string, typeof okter>();
+  for (const o of okter) {
+    const key = o.startTime.toISOString().slice(0, 10);
+    const list = perDag.get(key) ?? [];
+    list.push(o);
+    perDag.set(key, list);
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <AthleticEyebrow>
+          NESTE 14 DAGER · {okter.length} ØKTER
+        </AthleticEyebrow>
+        <Link
+          href="/portal/tren/kalender"
+          className="inline-flex items-center gap-1 text-[12px] font-semibold text-primary hover:gap-2"
+        >
+          Full kalender
+          <ArrowRight className="h-3.5 w-3.5" />
         </Link>
+      </div>
+      <div className="space-y-3">
+        {Array.from(perDag.entries()).map(([dag, dagOkter]) => (
+          <div
+            key={dag}
+            className="rounded-2xl border border-border bg-card p-4"
+          >
+            <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              {new Date(dag).toLocaleDateString("nb-NO", {
+                weekday: "long",
+                day: "numeric",
+                month: "short",
+              })}
+            </div>
+            <ul className="space-y-2">
+              {dagOkter.map((s) => {
+                const durMin = Math.round(
+                  (s.endTime.getTime() - s.startTime.getTime()) / 60000,
+                );
+                const timeStr = s.startTime.toLocaleTimeString("nb-NO", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
+                return (
+                  <li
+                    key={s.id}
+                    className="flex items-center justify-between gap-3"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="font-mono text-[10px] tabular-nums text-muted-foreground">
+                        {timeStr} · {durMin} min · {s.practiceType}
+                      </div>
+                      <div className="text-sm font-semibold text-foreground">
+                        {s.title}
+                      </div>
+                    </div>
+                    <Link href={`/portal/tren/${s.id}`}>
+                      <AthleticButton variant="ghost-light" size="sm">
+                        Åpne
+                      </AthleticButton>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -210,27 +297,104 @@ async function LiveTab({ userId }: { userId: string }) {
   );
 }
 
-function BookingTab() {
+async function BookingTab({ userId }: { userId: string }) {
+  const aktive = await prisma.booking
+    .findMany({
+      where: {
+        userId,
+        status: { in: ["PENDING", "CONFIRMED"] },
+        startAt: { gte: new Date() },
+      },
+      orderBy: { startAt: "asc" },
+      include: {
+        serviceType: { select: { name: true, durationMin: true } },
+        location: { select: { name: true } },
+      },
+      take: 10,
+    })
+    .catch(() => []);
+
   return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <AthleticEyebrow>BOOKING</AthleticEyebrow>
-          <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">
-            <MapPin className="mr-1 inline h-5 w-5 text-primary" />
-            Book økt med coach
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Velg coach, anlegg og tidspunkt. Betaling via Stripe.
-          </p>
+    <div className="space-y-6">
+      <section>
+        <div className="mb-3 flex items-center justify-between">
+          <AthleticEyebrow>
+            DINE BOOKINGER · {aktive.length} AKTIVE
+          </AthleticEyebrow>
+          <Link href="/booking">
+            <AthleticButton variant="lime" size="sm">
+              Book ny økt
+              <ArrowRight className="h-3.5 w-3.5" />
+            </AthleticButton>
+          </Link>
         </div>
-        <Link href="/booking">
-          <AthleticButton variant="lime" size="md">
-            Start booking
-            <ArrowRight className="h-4 w-4" />
-          </AthleticButton>
-        </Link>
-      </div>
+
+        {aktive.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
+            <MapPin className="mx-auto h-8 w-8 text-muted-foreground" />
+            <h3 className="font-display mt-3 text-lg font-semibold">
+              Ingen aktive bookinger
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Book en coaching-time, drop-in eller TrackMan-økt.
+            </p>
+            <div className="mt-4">
+              <Link href="/booking">
+                <AthleticButton variant="lime" size="sm">
+                  Start booking
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </AthleticButton>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <ul className="space-y-2">
+            {aktive.map((b) => {
+              const dato = b.startAt.toLocaleDateString("nb-NO", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+              });
+              const tid = b.startAt.toLocaleTimeString("nb-NO", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              return (
+                <li
+                  key={b.id}
+                  className="flex items-center justify-between rounded-xl border border-border bg-card p-4"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                      {dato} · {tid} · {b.serviceType.durationMin} MIN
+                    </div>
+                    <div className="font-display mt-1 text-sm font-semibold">
+                      {b.serviceType.name}
+                    </div>
+                    <div className="text-[12px] text-muted-foreground">
+                      {b.location.name} · Status:{" "}
+                      <span
+                        className={
+                          b.status === "CONFIRMED"
+                            ? "font-semibold text-primary"
+                            : "text-muted-foreground"
+                        }
+                      >
+                        {b.status === "CONFIRMED" ? "Bekreftet" : "Venter på betaling"}
+                      </span>
+                    </div>
+                  </div>
+                  <Link href={`/portal/meg/bookinger`}>
+                    <AthleticButton variant="ghost-light" size="sm">
+                      Detaljer
+                    </AthleticButton>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
