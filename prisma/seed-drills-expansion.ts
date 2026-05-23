@@ -34,6 +34,7 @@ type RawDrill = {
   maxHcp: number;
   environment: string[];
   utstyr: string[];
+  fasilitetKrav?: string[]; // Valgfritt — settes av enrichment-script hvis utelatt
   varighetMin: number;
   intensitet: number;
   lPhase: string[];
@@ -119,6 +120,10 @@ async function main() {
           defaultReps: d.defaultReps,
           durationMin: d.varighetMin,
           csTargetByKategori: d.csTargetByKategori,
+          // fasilitetKrav er valgfritt i JSON — settes av enrichment-script hvis utelatt
+          ...(d.fasilitetKrav !== undefined && d.fasilitetKrav.length > 0
+            ? { fasilitetKrav: d.fasilitetKrav as ("RADAR" | "MAT_NET" | "BUNKER" | "KAMERA" | "PUTTING_GREEN_KORT" | "PUTTING_GREEN_LANG" | "SHORT_GAME_AREA" | "DRIVING_RANGE" | "BANE" | "SIMULATOR" | "VEKTSTANG" | "TRAPBAR" | "LOPEBANE" | "MED_BALL")[] }
+            : {}),
         };
 
         if (existing) {

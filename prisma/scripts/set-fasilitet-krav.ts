@@ -92,18 +92,27 @@ function bestemFasilitetKrav(drill: DrillRow): DrillFasilitet[] {
   }
 
   // ── Radar / launch monitor ──
+  // VIKTIG: sjekk "uten-radar" og "uten radar" FØR vi legger til RADAR.
+  // Tags som "uten-radar" betyr eksplisitt at drillen IKKE trenger radar.
+  const erUtenRadar =
+    tagsLower.some((t) => t === "uten-radar" || t === "uten radar") ||
+    allText.includes("uten radar") ||
+    allText.includes("uten-radar");
+
   if (
-    utstyrTags.some(
+    !erUtenRadar &&
+    (utstyrTags.some(
       (u) =>
-        u.includes("trackman") ||
-        u.includes("radar") ||
-        u.includes("launch monitor") ||
-        u.includes("flightscope") ||
-        u.includes("garmin r10") ||
-        u.includes("mevo"),
+        (u === "trackman" ||
+          u === "radar" ||
+          u === "launch monitor" ||
+          u === "flightscope" ||
+          u === "garmin r10" ||
+          u === "mevo+") &&
+        !u.startsWith("uten"),
     ) ||
-    allText.includes("launch monitor") ||
-    allText.includes("trackman")
+      allText.includes("launch monitor") ||
+      (/\btrackman\b/i.test(allText) && !erUtenRadar))
   ) {
     krav.add("RADAR");
   }
