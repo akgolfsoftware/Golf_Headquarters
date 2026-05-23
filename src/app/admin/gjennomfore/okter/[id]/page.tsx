@@ -47,32 +47,37 @@ export default async function OktDetaljPage({
   // Hent økt via Booking-modellen (closest match til "økt" coach-context).
   const booking = await prisma.booking.findUnique({
     where: { id },
-    select: {
-      id: true,
-      startTime: true,
-      endTime: true,
-      status: true,
+    include: {
       user: { select: { id: true, name: true, hcp: true } },
-      facility: { select: { id: true, navn: true } },
     },
   });
 
-  if (!booking) notFound();
+  if (!booking || !booking.user) notFound();
+
+  // Slå opp fasilitet separat (relasjon ikke definert som connect i Prisma-typen)
+  const facility = booking.facilityId
+    ? await prisma.facility
+        .findUnique({
+          where: { id: booking.facilityId },
+          select: { id: true, name: true },
+        })
+        .catch(() => null)
+    : null;
 
   const durationMin = Math.round(
-    (booking.endTime.getTime() - booking.startTime.getTime()) / 60000,
+    (booking.endAt.getTime() - booking.startAt.getTime()) / 60000,
   );
-  const status = deriveStatus(booking.startTime, durationMin);
-  const dateLabel = booking.startTime.toLocaleDateString("nb-NO", {
+  const status = deriveStatus(booking.startAt, durationMin);
+  const dateLabel = booking.startAt.toLocaleDateString("nb-NO", {
     weekday: "long",
     day: "numeric",
     month: "long",
   });
-  const startTime = booking.startTime.toLocaleTimeString("nb-NO", {
+  const startTime = booking.startAt.toLocaleTimeString("nb-NO", {
     hour: "2-digit",
     minute: "2-digit",
   });
-  const endTime = booking.endTime.toLocaleTimeString("nb-NO", {
+  const endTime = booking.endAt.toLocaleTimeString("nb-NO", {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -82,7 +87,7 @@ export default async function OktDetaljPage({
     .split(" ")
     .filter(Boolean)
     .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase() ?? "")
+    .map((w: string) => w[0]?.toUpperCase() ?? "")
     .join("");
 
   return (
@@ -92,7 +97,7 @@ export default async function OktDetaljPage({
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <AthleticEyebrow>
-              {dateLabel.toUpperCase()} · {startTime}–{endTime} · {booking.facility?.navn ?? "Studio"}
+              {dateLabel.toUpperCase()} · {startTime}–{endTime} · {facility?.name ?? "Studio"}
             </AthleticEyebrow>
             <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
               {spiller.name.split(" ")[0]} {spiller.name.split(" ").slice(-1)[0][0]}.P. ·{" "}
