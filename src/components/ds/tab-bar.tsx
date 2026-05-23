@@ -40,7 +40,7 @@ export function TabBar({
       role="tablist"
       aria-label="Seksjons-tabs"
       className={cn(
-        "flex flex-wrap items-center gap-2 border-b border-border bg-card px-1 py-2",
+        "flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-card px-3 py-2.5",
         className,
       )}
     >

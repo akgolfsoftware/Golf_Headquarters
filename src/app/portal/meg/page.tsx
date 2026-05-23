@@ -142,7 +142,7 @@ export default async function MegProfil() {
           <Hurtigvalg
             href="/portal/meg/utstyrsbag"
             icon={Briefcase}
-            tittel="Utstyrsbag"
+            tittel="Mitt utstyr"
             beskrivelse="Køller og settings"
           />
           <Hurtigvalg
@@ -174,6 +174,8 @@ export default async function MegProfil() {
           playingYears: user.playingYears,
           ambition: user.ambition,
           homeClub: user.homeClub,
+          school: user.school,
+          prevSeasonAvgScore: user.prevSeasonAvgScore,
           email: user.email,
           tier: user.tier,
           avatarUrl: user.avatarUrl,

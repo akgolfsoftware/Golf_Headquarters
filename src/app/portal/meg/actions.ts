@@ -12,6 +12,8 @@ export async function oppdaterProfil(input: {
   playingYears?: number | null;
   ambition?: string | null;
   homeClub?: string | null;
+  school?: string | null;
+  prevSeasonAvgScore?: number | null;
 }) {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
@@ -25,6 +27,8 @@ export async function oppdaterProfil(input: {
       playingYears: input.playingYears ?? user.playingYears,
       ambition: input.ambition === "" ? null : input.ambition ?? user.ambition,
       homeClub: input.homeClub === "" ? null : input.homeClub ?? user.homeClub,
+      school: input.school === "" ? null : input.school ?? user.school,
+      prevSeasonAvgScore: input.prevSeasonAvgScore ?? user.prevSeasonAvgScore,
     },
   });
 

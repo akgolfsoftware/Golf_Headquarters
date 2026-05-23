@@ -222,3 +222,65 @@ export async function slettCoachDirektiv(
 
   return { ok: true };
 }
+
+// ─── lagreSpillerFasiliteter ─────────────────────────────────────────────────
+
+const GYLDIGE_FASILITETER = [
+  "RADAR",
+  "MAT_NET",
+  "BUNKER",
+  "KAMERA",
+  "PUTTING_GREEN_KORT",
+  "PUTTING_GREEN_LANG",
+  "SHORT_GAME_AREA",
+  "DRIVING_RANGE",
+  "BANE",
+  "SIMULATOR",
+  "VEKTSTANG",
+  "TRAPBAR",
+  "LOPEBANE",
+  "MED_BALL",
+] as const;
+
+const FasilitetListeSchema = z.array(z.enum(GYLDIGE_FASILITETER));
+
+/**
+ * Oppdaterer `User.tilgjengeligeFasiliteter` for én spiller.
+ * Kun COACH og ADMIN har tilgang.
+ */
+export async function lagreSpillerFasiliteter(
+  spillerId: string,
+  fasiliteter: unknown,
+): Promise<ActionResult> {
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+
+  const parsed = FasilitetListeSchema.safeParse(fasiliteter);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: `Ugyldige fasiliteter: ${parsed.error.issues.map((i) => i.message).join(", ")}`,
+    };
+  }
+
+  const spiller = await prisma.user.findUnique({
+    where: { id: spillerId },
+    select: { id: true, name: true },
+  });
+  if (!spiller) return { ok: false, error: "Spiller ikke funnet" };
+
+  await prisma.user.update({
+    where: { id: spillerId },
+    data: { tilgjengeligeFasiliteter: parsed.data },
+  });
+
+  await audit({
+    actorId: coach.id,
+    action: "SPILLER_FASILITETER_OPPDATERT",
+    target: spillerId,
+    metadata: { fasiliteter: parsed.data, antall: parsed.data.length },
+  });
+
+  revalidatePath(`/admin/spillere/${spillerId}`);
+
+  return { ok: true };
+}

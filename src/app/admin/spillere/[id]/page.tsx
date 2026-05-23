@@ -39,6 +39,7 @@ import { computeStreak, aktivStreak } from "@/lib/streak";
 import { ProfilRedigerTrigger } from "@/components/shared/profil-rediger-trigger";
 import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 import { EffektTab, type EffektRad } from "./effekt-tab";
+import { SpillerFasilitetPanel } from "@/components/coachhq/spiller-fasilitet-panel";
 
 type TabKey =
   | "oversikt"
@@ -619,6 +620,12 @@ export default async function SpillerCoachView({
           </Link>
         </aside>
       </div>
+
+      {/* Fasilitetsprofil — full bredde under tabs */}
+      <SpillerFasilitetPanel
+        spillerId={player.id}
+        initial={(player.tilgjengeligeFasiliteter ?? []) as string[]}
+      />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plus, ChevronDown } from "lucide-react";
+import { Plus, ChevronDown, UserCircle } from "lucide-react";
 import type { Tier } from "@/generated/prisma/client";
 import { SidebarBrand } from "@/components/shared/sidebar-brand";
 import { FEATURES } from "@/lib/features";
@@ -228,6 +228,21 @@ export function PortalSidebar({
           })}
         </div>
       </nav>
+
+      {/* Profil-lenke */}
+      <div className="px-4 pb-2">
+        <Link
+          href="/portal/profil"
+          className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm transition-colors ${
+            path === "/portal/profil"
+              ? "bg-[var(--color-accent-fill)] font-semibold text-white"
+              : "text-white/50 hover:bg-white/5 hover:text-white"
+          }`}
+        >
+          <UserCircle className="h-4 w-4" strokeWidth={1.75} />
+          Min profil
+        </Link>
+      </div>
 
       {/* Tier-badge */}
       <div

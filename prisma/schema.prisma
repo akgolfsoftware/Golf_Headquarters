@@ -270,10 +270,14 @@ model User {
   tier        Tier      @default(GRATIS)
   lastLoginAt DateTime?
   // Spiller-profil (Fase 1.4)
-  hcp          Float?
-  playingYears Int?
-  ambition     String?
-  homeClub     String?
+  hcp                 Float?
+  playingYears        Int?
+  ambition            String?
+  homeClub            String?
+  // VGS (videregående skole) — brukes for å koble spillere til toppidrettslinjer.
+  school              String?
+  // Snittscore forrige sesong — brukes som baseline for fremgang.
+  prevSeasonAvgScore  Int?
   // Bruker-preferanser (notifikasjoner, språk, etc.) som flexibel JSON.
   // Strukturen håndheves i kode (src/lib/preferences.ts) ikke i DB.
   preferences  Json?

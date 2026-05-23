@@ -22,6 +22,8 @@ type ProfilInitial = {
   playingYears: number | null;
   ambition: string | null;
   homeClub: string | null;
+  school: string | null;
+  prevSeasonAvgScore: number | null;
   email: string;
   tier: Tier;
   avatarUrl: string | null;
@@ -54,6 +56,10 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
     initial.playingYears != null ? String(initial.playingYears) : "",
   );
   const [ambition, setAmbition] = useState(initial.ambition ?? "");
+  const [school, setSchool] = useState(initial.school ?? "");
+  const [prevSeasonAvgScore, setPrevSeasonAvgScore] = useState(
+    initial.prevSeasonAvgScore != null ? String(initial.prevSeasonAvgScore) : "",
+  );
 
   // Personvern state (local, persisted via oppdaterPreferences)
   const [notifEpost, setNotifEpost] = useState(prefs.notif.epost);
@@ -79,6 +85,8 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
           playingYears: playingYears ? Number(playingYears) : null,
           ambition: ambition || null,
           homeClub: homeClub || null,
+          school: school || null,
+          prevSeasonAvgScore: prevSeasonAvgScore ? Number(prevSeasonAvgScore) : null,
         });
         setLagret(true);
         router.refresh();
@@ -203,6 +211,30 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
                 min="0"
                 value={playingYears}
                 onChange={(e) => setPlayingYears(e.target.value)}
+                className={`${inputCss} font-mono`}
+              />
+            </FieldRow>
+
+            <FieldRow label="VGS" hint="Videregående skole / toppidrettslinje">
+              <input
+                type="text"
+                value={school}
+                onChange={(e) => setSchool(e.target.value)}
+                placeholder="f.eks. WANG Toppidrett Fredrikstad"
+                className={inputCss}
+              />
+            </FieldRow>
+
+            <FieldRow
+              label="Snittscore forrige sesong"
+              hint="Brukes som baseline for fremgang"
+            >
+              <input
+                type="number"
+                step="1"
+                min="0"
+                value={prevSeasonAvgScore}
+                onChange={(e) => setPrevSeasonAvgScore(e.target.value)}
                 className={`${inputCss} font-mono`}
               />
             </FieldRow>
