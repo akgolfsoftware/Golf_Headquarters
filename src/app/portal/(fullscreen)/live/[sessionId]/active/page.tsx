@@ -1,50 +1,17 @@
-// Live Session Logger — fullscreen mobil-først.
-// Implementasjon av prototypen i public/design/live-session-logger/index.html (iPhone 1).
-// Dummy-data foreløpig — kobles mot Prisma i senere iterasjon.
+/**
+ * PlayerHQ · Live-økt active (sesjon 2 · pixel-perfect)
+ *
+ * Spec: BATCH PR7 · Skjerm 7.2
+ * - Lys tema (matcher PlayerHQ)
+ * - Aktiv drill: tittel + 3 rep-tellere (Dry / Lav / Full)
+ * - Touchtargets: +5 / +10 / +25 (96px høyde, store lime knapper)
+ * - Drill-progresjon side-by-side (status ✓/●/○)
+ * - Notat-pill + Video-pill + Spørsmål-pill bunn
+ * - "Ferdig med drill"-CTA
+ */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { LiveActiveClient } from "./live-active-client";
-
-type Discipline = "SLAG" | "TEK" | "FYS";
-
-export type LiveDrillSet = {
-  id: string;
-  forrigeReps: number;
-  forrigeFase: string;
-  reps: number | null;
-  done: boolean;
-};
-
-export type LiveDrill = {
-  id: string;
-  index: number;
-  total: number;
-  name: string;
-  discipline: Discipline;
-  ghostPills: string[];
-  fase: string;
-  omrade: string;
-  belastning: string;
-  malProsent: number;
-  format: string;
-  totalSets: number;
-  completedSets: number;
-  sets: LiveDrillSet[];
-  expanded: boolean;
-};
-
-export type LiveSessionData = {
-  sessionId: string;
-  spillerNavn: string;
-  ukedag: string;
-  fase: string;
-  varighetMin: number;
-  varighetTekst: string;
-  totalReps: number;
-  totalDrills: number;
-  completedDrills: number;
-  drills: LiveDrill[];
-};
+import { LiveActiveV2Client, type LiveDrillV2 } from "./live-active-v2-client";
 
 export default async function LiveActivePage({
   params,
@@ -56,77 +23,60 @@ export default async function LiveActivePage({
   });
   const { sessionId } = await params;
 
-  // Eksempel-data som speiler prototype-HTML. Erstattes med Prisma-uttrekk senere.
-  const data: LiveSessionData = {
-    sessionId,
-    spillerNavn: "Markus R.P.",
-    ukedag: "Onsdag",
-    fase: "CS70",
-    varighetMin: 90,
-    varighetTekst: "12:34",
-    totalReps: 247,
-    totalDrills: 6,
-    completedDrills: 1,
-    drills: [
-      {
-        id: "d1",
-        index: 1,
-        total: 6,
-        name: "Pitch 50—100m, lav trajectory",
-        discipline: "SLAG",
-        ghostPills: ["CS70", "RANGE M4"],
-        fase: "CS70",
-        omrade: "Range M4",
-        belastning: "Medium",
-        malProsent: 70,
-        format: "Blokk",
-        totalSets: 5,
-        completedSets: 1,
-        expanded: true,
-        sets: [
-          { id: "s1", forrigeReps: 10, forrigeFase: "CS72", reps: 10, done: true },
-          { id: "s2", forrigeReps: 10, forrigeFase: "CS70", reps: null, done: false },
-          { id: "s3", forrigeReps: 10, forrigeFase: "CS70", reps: null, done: false },
-          { id: "s4", forrigeReps: 10, forrigeFase: "CS70", reps: null, done: false },
-          { id: "s5", forrigeReps: 10, forrigeFase: "CS70", reps: null, done: false },
-        ],
-      },
-      {
-        id: "d2",
-        index: 2,
-        total: 6,
-        name: "Iron-progresjon CS70 → CS80",
-        discipline: "TEK",
-        ghostPills: ["90 MIN", "240 REPS"],
-        fase: "CS70",
-        omrade: "Range M4",
-        belastning: "Medium",
-        malProsent: 70,
-        format: "Blokk",
-        totalSets: 4,
-        completedSets: 0,
-        expanded: false,
-        sets: [],
-      },
-      {
-        id: "d3",
-        index: 3,
-        total: 6,
-        name: "Putting 0—3m blokk",
-        discipline: "SLAG",
-        ghostPills: ["30 MIN", "100 REPS"],
-        fase: "CS70",
-        omrade: "Green",
-        belastning: "Lav",
-        malProsent: 80,
-        format: "Blokk",
-        totalSets: 3,
-        completedSets: 0,
-        expanded: false,
-        sets: [],
-      },
-    ],
-  };
+  // Stub-data inntil reell SessionDrillInstance-uttrekk er på plass.
+  // Speiler PositionTask-modellen: hver drill har repsMaal for Dry / Lav / Full.
+  const drills: LiveDrillV2[] = [
+    {
+      id: "d1",
+      index: 1,
+      name: "Pitch 50–80m · lav trajectory",
+      pyramidArea: "TEK",
+      lPhase: "L3",
+      status: "active",
+      target: { dry: 20, lav: 30, full: 30 },
+      counts: { dry: 12, lav: 8, full: 0 },
+    },
+    {
+      id: "d2",
+      index: 2,
+      name: "Iron progresjon CS70 → CS80",
+      pyramidArea: "TEK",
+      lPhase: "L4",
+      status: "queued",
+      target: { dry: 10, lav: 25, full: 25 },
+      counts: { dry: 0, lav: 0, full: 0 },
+    },
+    {
+      id: "d3",
+      index: 3,
+      name: "Putting 0–3m blokk",
+      pyramidArea: "SLAG",
+      lPhase: "L2",
+      status: "queued",
+      target: { dry: 0, lav: 50, full: 0 },
+      counts: { dry: 0, lav: 0, full: 0 },
+    },
+    {
+      id: "d4",
+      index: 4,
+      name: "Wedge fullslag 80m",
+      pyramidArea: "SLAG",
+      lPhase: "L3",
+      status: "queued",
+      target: { dry: 5, lav: 15, full: 15 },
+      counts: { dry: 0, lav: 0, full: 0 },
+    },
+    {
+      id: "d5",
+      index: 5,
+      name: "Spillsim · Tee til green",
+      pyramidArea: "SPILL",
+      lPhase: "L5",
+      status: "queued",
+      target: { dry: 0, lav: 0, full: 18 },
+      counts: { dry: 0, lav: 0, full: 0 },
+    },
+  ];
 
-  return <LiveActiveClient data={data} />;
+  return <LiveActiveV2Client sessionId={sessionId} drills={drills} />;
 }

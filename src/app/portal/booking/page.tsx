@@ -1,119 +1,69 @@
 /**
- * PlayerHQ · Booking — landingsside
+ * PlayerHQ · Booking — landingsside (sesjon 2 · pixel-perfect)
  *
- * Implementert fra Booking-flyt landingsside.html (Bundle 3 design).
- * 6-stegs booking-flyt: Lokasjon → Trener → Coaching-type → Dato/tid → Betaling → Bekreftet
- *
- * Steg 1 (velg lokasjon) vises på denne siden. De øvrige stegene
- * er separate ruter som lenkes fra step-actions-knappene.
+ * Spec: BATCH PR3 · Skjerm 3.1
+ * - Hero "Book *neste økt*"
+ * - Filter-strip: type (Privat/Gruppe/Test/Trackman) + dato + coach
+ * - Coach-cards-grid (3 cards: Anders, Markus, Junior)
+ * - Bane-cards-grid (4 cards)
+ * - "Anbefalt for deg"-strip (AI-basert basert på aktiv plan)
  */
 
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import {
-  MapPin,
-  Check,
-  Users,
-  ShieldCheck,
   ArrowRight,
+  Calendar,
+  Filter,
+  MapPin,
+  Search,
+  Sparkles,
   Star,
+  Users,
 } from "lucide-react";
-import "@/components/booking/booking.css";
 
 export const metadata = {
-  title: "Book coaching — AK Golf",
+  title: "Book økt · AK Golf",
 };
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-type Lokasjon = {
-  id: string;
-  navn: string;
-  sted: string;
-  tagline: string;
-  pill: string;
-  pillType: "lime" | "normal";
-  trenere: number;
-  aapent: string;
-  fasiliteter: string[];
-  anbefalt?: boolean;
-};
-
-type CoachInfo = {
+type CoachCard = {
   id: string;
   navn: string;
   initialer: string;
   rolle: string;
-  bio: string;
+  spesialitet: string;
   rating: string;
   elever: number;
-  erfaring: string;
+  nesteLedig: string;
   fraPris: string;
   ribbon?: string;
-  ribbonType?: "lime" | "cream";
   tags: string[];
 };
 
-// ---------------------------------------------------------------------------
-// Static data (erstattes med Prisma-queries når Location-seed er utfylt)
-// ---------------------------------------------------------------------------
+type AnleggCard = {
+  id: string;
+  navn: string;
+  by: string;
+  type: string;
+  fasiliteter: string[];
+  ledig: string;
+  pill?: string;
+};
 
-const LOKASJONER: Lokasjon[] = [
-  {
-    id: "gfgk",
-    navn: "Gamle Fredrikstad Golfklubb",
-    sted: "Fredrikstad",
-    tagline:
-      "Hjemmebanen vår. 9-hulls par 3-bane, Performance Studio med Trackman 4 og to-kamera-system — best for tek-arbeid året rundt.",
-    pill: "Anbefalt",
-    pillType: "lime",
-    trenere: 5,
-    aapent: "07–22",
-    fasiliteter: [
-      "2. etg. driving range",
-      "Putting green",
-      "Nærspillsgreen",
-      "Performance Studio",
-      "9 hull · par 3-bane",
-    ],
-    anbefalt: true,
-  },
-  {
-    id: "miklagard",
-    navn: "Miklagard Golfklubb",
-    sted: "Kløfta",
-    tagline:
-      "Vårt sekundære anlegg — Norges mest prestisjetunge mesterskapsbane. Best for spill-trening på en utfordrende layout.",
-    pill: "Nytt anlegg",
-    pillType: "normal",
-    trenere: 3,
-    aapent: "06–22",
-    fasiliteter: [
-      "2. etg. Trackman driving range",
-      "2 × Performance Golf Studio",
-      "Stor putting green",
-      "Nærspillsgreen",
-      "State-of-the-art wedge-område",
-    ],
-  },
-];
-
-const COACHES: CoachInfo[] = [
+const COACHES: CoachCard[] = [
   {
     id: "anders",
     navn: "Anders Kristiansen",
     initialer: "AK",
     rolle: "Head Coach · AK Golf Academy",
-    bio: "«Spesialitet: TrackMan-tall + scoring + mental struktur som holder under press. Passer best for golfere som er klare for målbar progresjon og vil ha en plan å jobbe ut fra.»",
+    spesialitet:
+      "TrackMan-tall, scoring og mental struktur. For deg som vil ha en plan å jobbe ut fra.",
     rating: "4,9",
     elever: 38,
-    erfaring: "15 år",
-    fraPris: "600 kr / 20 min",
+    nesteLedig: "I morgen · 14:00",
+    fraPris: "600",
     ribbon: "Mest brukt",
-    ribbonType: "lime",
     tags: ["Tek", "Slag", "Spill", "Turn"],
   },
   {
@@ -121,367 +71,419 @@ const COACHES: CoachInfo[] = [
     navn: "Markus Røinås Pedersen",
     initialer: "MR",
     rolle: "Sportslig leder junior · GFGK",
-    bio: "«Tålmodig og lekent fokus på grunnleggende mekanikk. Den ideelle starten hvis du er ny til golfen eller har høyt handicap og vil bygge fundamentet riktig.»",
+    spesialitet:
+      "Tålmodig fokus på grunnleggende mekanikk. Ideelt for nybegynnere og høyt handicap.",
     rating: "4,8",
     elever: 18,
-    erfaring: "4 år",
-    fraPris: "300 kr / 20 min",
-    ribbon: "Junior",
-    ribbonType: "cream",
+    nesteLedig: "I dag · 17:30",
+    fraPris: "300",
     tags: ["Tek", "Fys", "Spill"],
+  },
+  {
+    id: "junior",
+    navn: "Junior-teamet",
+    initialer: "JR",
+    rolle: "Junior coaches · GFGK",
+    spesialitet:
+      "Felles-økter for utviklingsspillere 12–17 år. Sosialt og strukturert under kyndig veiledning.",
+    rating: "4,7",
+    elever: 24,
+    nesteLedig: "Torsdag · 16:00",
+    fraPris: "249",
+    tags: ["Junior", "Gruppe", "Tek"],
+  },
+];
+
+const ANLEGG: AnleggCard[] = [
+  {
+    id: "gfgk",
+    navn: "Gamle Fredrikstad GK",
+    by: "Fredrikstad",
+    type: "Hjemmebane · 9-hull par 3",
+    fasiliteter: ["Performance Studio", "TrackMan 4", "2.etg. range", "Putting"],
+    ledig: "12 slot ledig denne uka",
+    pill: "Hjemmebane",
+  },
+  {
+    id: "miklagard",
+    navn: "Miklagard Golfklubb",
+    by: "Kløfta",
+    type: "Mesterskap · 18 hull",
+    fasiliteter: ["2 × Studio", "TrackMan range", "Wedge-område"],
+    ledig: "8 slot ledig denne uka",
+  },
+  {
+    id: "mulligan",
+    navn: "Mulligan Indoor",
+    by: "Fredrikstad sentrum",
+    type: "Innendørs · 6 simulatorer",
+    fasiliteter: ["TrackMan 4", "Drop-in 07–23", "Bar & klubbhus"],
+    ledig: "Mange ledige tider",
+    pill: "Innendørs",
+  },
+  {
+    id: "range",
+    navn: "GFGK Range only",
+    by: "Fredrikstad",
+    type: "Range-pass · Korter økt",
+    fasiliteter: ["Drop-in", "Egne baller", "Klippekort"],
+    ledig: "Drop-in 07–22",
   },
 ];
 
 const COACHING_TYPER = [
-  {
-    id: "privat",
-    ikon: "person",
-    navn: "Privat coaching",
-    tags: [{ label: "Populær", type: "lime" as const }],
-    beskrivelse:
-      "En-til-en-session med din coach. Full Trackman-analyse, video-gjennomgang og en konkret plan du tar med hjem.",
-    features: [
-      { label: "Varighet", verdi: "20 / 45 / 60 min" },
-      { label: "Plasser", verdi: "1" },
-      { label: "Trackman", verdi: "inkludert" },
-    ],
-    fraPris: "600",
-    per: "kr / 20 min",
-  },
-  {
-    id: "gruppe",
-    ikon: "users",
-    navn: "Gruppe-coaching",
-    tags: [{ label: "Best verdi", type: "forest" as const }],
-    beskrivelse:
-      "Maks 4 spillere. Coach deler tid likt men alle får individuell feedback. Sosialt og kostnadseffektivt.",
-    features: [
-      { label: "Varighet", verdi: "60 / 90 min" },
-      { label: "Plasser", verdi: "2–4" },
-      { label: "Trackman", verdi: "per gruppe" },
-    ],
-    fraPris: "249",
-    per: "kr / pers / 60 min",
-  },
+  { id: "alle", label: "Alle" },
+  { id: "privat", label: "Privat" },
+  { id: "gruppe", label: "Gruppe" },
+  { id: "test", label: "Test" },
+  { id: "trackman", label: "TrackMan" },
 ];
 
-// ---------------------------------------------------------------------------
-// Page
-// ---------------------------------------------------------------------------
-
 export default async function BookingLandingsside() {
-  await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
-  // Hent eventuelle aktive lokasjoner fra DB (ellers brukes static fallback)
-  const dbLokasjoner = await prisma.location.findMany({
-    where: { active: true },
-    orderBy: { name: "asc" },
-    take: 10,
-  });
+  // Hent kommende bookinger for å si "neste økt" i hero
+  const nesteBooking = await prisma.booking
+    .findFirst({
+      where: { userId: user.id, startAt: { gte: new Date() }, status: "CONFIRMED" },
+      orderBy: { startAt: "asc" },
+      include: { serviceType: true, location: true },
+    })
+    .catch(() => null);
 
-  const visLokasjoner = dbLokasjoner.length > 0 ? dbLokasjoner : null;
+  const dbLokasjoner = await prisma.location
+    .findMany({ where: { active: true }, orderBy: { name: "asc" }, take: 4 })
+    .catch(() => []);
+
+  const visAnlegg: AnleggCard[] =
+    dbLokasjoner.length > 0
+      ? dbLokasjoner.map((l) => ({
+          id: l.id,
+          navn: l.name,
+          by: l.address,
+          type: "AK Golf-anlegg",
+          fasiliteter: ["Booking åpen"],
+          ledig: "Sjekk tider",
+        }))
+      : ANLEGG;
 
   return (
-    <div className="bk-scope space-y-8 pb-16">
-      {/* ── Steg-hero ── */}
-      <div className="bk-step-hero">
-        <div className="bk-step-eyebrow">
-          <span className="bk-num">1</span>Velg lokasjon
-        </div>
-        <h1>
-          Hvor vil du <em>trene</em>?
-        </h1>
-        <p className="bk-lede">
-          Vi har to anlegg med Trackman, video-analyse og innendørs studio.{" "}
-          <strong>Begge har samme priser</strong> — velg det som ligger nærmest
-          deg.
-        </p>
-      </div>
-
-      {/* ── Stepper ── */}
-      <div className="bk-stepper">
-        <div className="bk-stepper-item active">
-          <span className="bk-n">1</span>Lokasjon
-        </div>
-        <div className="bk-stepper-sep" />
-        <div className="bk-stepper-item">
-          <span className="bk-n">2</span>Trener
-        </div>
-        <div className="bk-stepper-sep" />
-        <div className="bk-stepper-item">
-          <span className="bk-n">3</span>Coaching
-        </div>
-        <div className="bk-stepper-sep" />
-        <div className="bk-stepper-item">
-          <span className="bk-n">4</span>Dato &amp; tid
-        </div>
-        <div className="bk-stepper-sep" />
-        <div className="bk-stepper-item">
-          <span className="bk-n">5</span>Betaling
-        </div>
-        <div className="bk-stepper-sep" />
-        <div className="bk-stepper-item">
-          <span className="bk-n">6</span>Bekreftet
-        </div>
-      </div>
-
-      {/* ── Lokasjonskort ── */}
-      {visLokasjoner ? (
-        <div className="bk-loc-grid">
-          {visLokasjoner.map((loc) => (
-            <Link
-              key={loc.id}
-              href={`/portal/booking/anlegg/${loc.id}`}
-              className="bk-loc-card block no-underline"
-            >
-              <div
-                className="bk-loc-hero"
-                style={{ backgroundColor: "#062b1c" }}
-              >
-                <div className="bk-loc-badge-row">
-                  <span className="bk-loc-pill">Aktiv</span>
-                  <span className="bk-loc-check">
-                    <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </span>
-                </div>
-                <h3>{loc.name}</h3>
-                <div className="bk-loc-where">
-                  <MapPin className="h-3 w-3" strokeWidth={2} />
-                  Norge
-                </div>
-              </div>
-              <div className="bk-loc-body">
-                <div className="bk-loc-tagline">
-                  Klikk for å se tilgjengelige tider.
-                </div>
-                <div className="bk-loc-meta-grid">
-                  <div className="bk-loc-meta">
-                    <div className="bk-lbl">Bane</div>
-                    <div className="bk-val">{loc.name}</div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      ) : (
-        <div className="bk-loc-grid">
-          {LOKASJONER.map((loc) => (
-            <Link
-              key={loc.id}
-              href={`/portal/booking/anlegg/${loc.id}`}
-              className="bk-loc-card block no-underline"
-            >
-              <div
-                className="bk-loc-hero"
-                style={{ backgroundColor: "#062b1c" }}
-              >
-                <div className="bk-loc-badge-row">
-                  <span
-                    className={`bk-loc-pill ${loc.pillType === "lime" ? "lime" : ""}`}
-                  >
-                    {loc.pill}
-                  </span>
-                  <span className="bk-loc-check">
-                    <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </span>
-                </div>
-                <h3>{loc.navn}</h3>
-                <div className="bk-loc-where">
-                  <MapPin className="h-3 w-3" strokeWidth={2} />
-                  {loc.sted}
-                </div>
-              </div>
-              <div className="bk-loc-body">
-                <div className="bk-loc-tagline">{loc.tagline}</div>
-                <div className="bk-fac-chips">
-                  {loc.fasiliteter.map((f) => (
-                    <span key={f} className="bk-fac-chip">
-                      <Check
-                        className="h-2.5 w-2.5 text-primary"
-                        strokeWidth={2}
-                      />
-                      {f}
-                    </span>
-                  ))}
-                </div>
-                <div className="bk-loc-meta-grid">
-                  <div className="bk-loc-meta">
-                    <div className="bk-lbl">Trenere</div>
-                    <div className="bk-val">{loc.trenere}</div>
-                  </div>
-                  <div className="bk-loc-meta">
-                    <div className="bk-lbl">Åpent</div>
-                    <div className="bk-val">{loc.aapent}</div>
-                  </div>
-                  <div className="bk-loc-meta">
-                    <div className="bk-lbl">Bane</div>
-                    <div className="bk-val">✓</div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {/* ── Steg 2: Velg trener ── */}
-      <div>
-        <div className="bk-step-hero mt-12">
-          <div className="bk-step-eyebrow">
-            <span className="bk-num">2</span>Velg trener
+    <div className="mx-auto max-w-[1240px] space-y-10 px-4 py-8 sm:px-6 sm:py-10">
+      {/* HERO */}
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-10">
+        <div className="flex flex-col gap-3">
+          <div className="inline-flex items-center gap-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            <span
+              className="h-1.5 w-1.5 rounded-full bg-primary"
+              style={{ boxShadow: "0 0 0 3px rgba(0,88,64,0.12)" }}
+            />
+            PLAYERHQ · BOOKING
           </div>
-          <h1>
-            Hvem vil du <em>trene med</em>?
+          <h1 className="font-display text-[34px] font-medium leading-[1.05] -tracking-[0.02em] text-foreground sm:text-[46px]">
+            Book{" "}
+            <em className="font-normal italic text-muted-foreground">
+              neste økt
+            </em>
           </h1>
-          <p className="bk-lede">
-            Hver trener har sitt eget fokusområde og prisnivå.{" "}
-            <strong>Bla gjennom bio og spesialitet</strong> — du kan alltids
-            bytte coach senere.
+          <p className="max-w-[640px] font-sans text-[15px] leading-[1.55] text-muted-foreground sm:text-[16px]">
+            Velg coach, anlegg eller en av AI-anbefalingene basert på din aktive
+            plan. Privattime, gruppe, test eller TrackMan-økt — alt på ett sted.
           </p>
-        </div>
 
-        <div className="bk-sel-loc-strip">
-          <span className="bk-av">GFGK</span>
-          <div>
-            <div className="bk-loc-label">Lokasjon</div>
-            <div className="bk-loc-val">Gamle Fredrikstad Golfklubb</div>
+          {nesteBooking && (
+            <div className="mt-2 inline-flex w-fit items-center gap-3 rounded-full border border-border bg-secondary px-3.5 py-1.5">
+              <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                Neste økt
+              </span>
+              <span className="font-sans text-[13px] font-medium text-foreground">
+                {nesteBooking.serviceType.name} ·{" "}
+                {new Date(nesteBooking.startAt).toLocaleDateString("nb-NO", {
+                  weekday: "short",
+                  day: "2-digit",
+                  month: "short",
+                })}
+              </span>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* FILTER-STRIP */}
+      <section className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+              <Filter className="h-3 w-3" strokeWidth={2} />
+              Type
+            </span>
+            {COACHING_TYPER.map((t, i) => (
+              <button
+                key={t.id}
+                className={`rounded-full border px-3 py-1.5 font-sans text-[12px] font-medium transition-colors ${
+                  i === 0
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-background text-foreground hover:border-foreground/30"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
-          <Link href="/portal/booking" className="bk-change">
-            Endre
+          <div className="flex flex-wrap items-center gap-2">
+            <button className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 font-sans text-[12px] font-medium text-foreground hover:border-foreground/30">
+              <Calendar className="h-3.5 w-3.5" strokeWidth={2} />
+              Velg dato
+            </button>
+            <button className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 font-sans text-[12px] font-medium text-foreground hover:border-foreground/30">
+              <Users className="h-3.5 w-3.5" strokeWidth={2} />
+              Alle coacher
+            </button>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="search"
+                placeholder="Søk…"
+                className="h-8 w-44 rounded-full border border-border bg-background pl-7.5 pr-3 font-sans text-[12px] text-foreground placeholder:text-muted-foreground/70 focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ANBEFALT FOR DEG */}
+      <section>
+        <div className="mb-3 flex items-baseline justify-between">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent">
+              <Sparkles
+                className="h-3.5 w-3.5 text-accent-foreground"
+                strokeWidth={2}
+              />
+            </span>
+            <h2 className="font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
+              Anbefalt for deg
+            </h2>
+          </div>
+          <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            AI · BASERT PÅ AKTIV PLAN
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {[
+            {
+              tittel: "Wedge-presisjon 50–80m",
+              coach: "Med Anders · 60 min",
+              tag: "TEK · L3",
+              tagBg: "bg-[rgba(26,125,86,0.13)] text-[#1A7D56]",
+              tider: "I morgen 14:00 · 16:00",
+            },
+            {
+              tittel: "TrackMan diagnose iron",
+              coach: "Med Anders · 45 min",
+              tag: "TEST",
+              tagBg: "bg-[rgba(184,133,42,0.13)] text-[#B8852A]",
+              tider: "Torsdag 09:30",
+            },
+            {
+              tittel: "Putt-trening 4–8 fot",
+              coach: "Med Markus · 60 min",
+              tag: "SLAG",
+              tagBg: "bg-[rgba(209,248,67,0.55)] text-[#0A1F17]",
+              tider: "Fredag 17:00",
+            },
+          ].map((rec) => (
+            <Link
+              key={rec.tittel}
+              href="/portal/booking/coach/anders"
+              className="group flex flex-col gap-2.5 rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30"
+            >
+              <span
+                className={`w-fit rounded px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-[0.06em] ${rec.tagBg}`}
+              >
+                {rec.tag}
+              </span>
+              <h3 className="font-display text-[15px] font-semibold leading-[1.2] -tracking-[0.005em] text-foreground">
+                {rec.tittel}
+              </h3>
+              <div className="font-sans text-[12.5px] text-muted-foreground">
+                {rec.coach}
+              </div>
+              <div className="mt-1 flex items-center justify-between border-t border-border pt-2.5">
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  {rec.tider}
+                </span>
+                <ArrowRight
+                  className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
+                  strokeWidth={2}
+                />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* COACH-GRID */}
+      <section>
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 className="font-display text-[20px] font-semibold -tracking-[0.01em] text-foreground">
+            Book direkte med coach
+          </h2>
+          <Link
+            href="/portal/coach"
+            className="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground"
+          >
+            Se alle →
           </Link>
         </div>
-
-        <div className="bk-coach-grid">
-          {COACHES.map((coach) => (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {COACHES.map((c) => (
             <Link
-              key={coach.id}
-              href={`/portal/booking/coach/${coach.id}`}
-              className="bk-coach-card-pub block no-underline"
+              key={c.id}
+              href={`/portal/booking/coach/${c.id}`}
+              className="group relative flex flex-col gap-3.5 rounded-2xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-lg"
             >
-              {coach.ribbon && (
-                <span
-                  className={`bk-coach-ribbon ${coach.ribbonType === "cream" ? "cream" : ""}`}
-                >
-                  {coach.ribbon}
+              {c.ribbon && (
+                <span className="absolute right-4 top-4 rounded-full bg-accent px-2 py-0.5 font-mono text-[10px] font-bold tracking-[0.06em] text-accent-foreground">
+                  {c.ribbon}
                 </span>
               )}
-              <div className="bk-coach-photo">{coach.initialer}</div>
-              <div>
-                <h3>{coach.navn}</h3>
-                <div className="bk-coach-role">{coach.rolle}</div>
+              <div className="flex items-start gap-3">
+                <div className="grid h-14 w-14 flex-shrink-0 place-items-center rounded-full bg-primary font-display text-[18px] font-semibold text-primary-foreground">
+                  {c.initialer}
+                </div>
+                <div className="min-w-0">
+                  <h3 className="font-display text-[16px] font-semibold -tracking-[0.005em] text-foreground">
+                    {c.navn}
+                  </h3>
+                  <div className="font-mono text-[10.5px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+                    {c.rolle}
+                  </div>
+                </div>
               </div>
-              <p className="bk-coach-bio">{coach.bio}</p>
-              <div className="bk-coach-specs">
-                {coach.tags.map((t) => (
-                  <span key={t} className="bk-spec-chip">
+              <p className="font-sans text-[13px] leading-[1.5] text-muted-foreground">
+                {c.spesialitet}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {c.tags.map((t) => (
+                  <span
+                    key={t}
+                    className="rounded bg-secondary px-1.5 py-0.5 font-mono text-[10px] font-medium text-foreground"
+                  >
                     {t}
                   </span>
                 ))}
               </div>
-              <div className="bk-coach-meta-row">
-                <span>
-                  <Star
-                    className="inline h-3 w-3 fill-current"
-                    strokeWidth={0}
-                  />{" "}
-                  <strong>{coach.rating}</strong> · {coach.elever} elever
+              <div className="grid grid-cols-3 gap-2 border-t border-border pt-3 text-center">
+                <div>
+                  <div className="flex items-center justify-center gap-0.5 font-mono text-[13px] font-semibold text-foreground tabular-nums">
+                    <Star
+                      className="h-3 w-3 fill-current text-[#B8852A]"
+                      strokeWidth={0}
+                    />
+                    {c.rating}
+                  </div>
+                  <div className="font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted-foreground">
+                    Rating
+                  </div>
+                </div>
+                <div>
+                  <div className="font-mono text-[13px] font-semibold text-foreground tabular-nums">
+                    {c.elever}
+                  </div>
+                  <div className="font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted-foreground">
+                    Elever
+                  </div>
+                </div>
+                <div>
+                  <div className="font-mono text-[13px] font-semibold text-foreground tabular-nums">
+                    {c.fraPris}
+                  </div>
+                  <div className="font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted-foreground">
+                    Fra-pris
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center justify-between rounded-md bg-secondary px-3 py-2">
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  Neste ledig
                 </span>
-                <span>{coach.erfaring} erfaring</span>
-              </div>
-              <div className="bk-coach-price-row">
-                <span className="bk-from">Fra</span>
-                <span className="bk-price">{coach.fraPris}</span>
+                <span className="font-sans text-[12.5px] font-semibold text-foreground">
+                  {c.nesteLedig}
+                </span>
               </div>
             </Link>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* ── Steg 3: Velg coaching-type ── */}
-      <div>
-        <div className="bk-step-hero mt-12">
-          <div className="bk-step-eyebrow">
-            <span className="bk-num">3</span>Velg coaching-type
-          </div>
-          <h1>
-            Hva passer best for <em>deg</em>?
-          </h1>
-          <p className="bk-lede">
-            Velg mellom privat en-til-en og gruppe-coaching.{" "}
-            <strong>Begge gir full Trackman-analyse</strong> — pris og
-            gruppestørrelse varierer.
-          </p>
+      {/* BANE-GRID */}
+      <section>
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 className="font-display text-[20px] font-semibold -tracking-[0.01em] text-foreground">
+            Anlegg & baner
+          </h2>
+          <span className="font-mono text-[11px] text-muted-foreground">
+            {visAnlegg.length} anlegg
+          </span>
         </div>
-
-        <div className="bk-coaching-list">
-          {COACHING_TYPER.map((ct) => (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {visAnlegg.map((a) => (
             <Link
-              key={ct.id}
-              href={`/portal/booking/ny?type=${ct.id}`}
-              className="bk-coaching-card block no-underline"
+              key={a.id}
+              href={`/portal/booking/anlegg/${a.id}`}
+              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-lg"
             >
-              <div className="bk-coaching-icon">
-                {ct.ikon === "person" ? (
-                  <Users className="h-8 w-8" strokeWidth={1.5} />
-                ) : (
-                  <Users className="h-8 w-8" strokeWidth={1.5} />
+              <div
+                className="relative h-32 bg-primary"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #003A2A 0%, #005840 50%, #1A7D56 100%)",
+                }}
+              >
+                {a.pill && (
+                  <span className="absolute right-3 top-3 rounded-full bg-accent px-2 py-0.5 font-mono text-[10px] font-bold tracking-[0.06em] text-accent-foreground">
+                    {a.pill}
+                  </span>
                 )}
+                <div className="absolute bottom-3 left-3 right-3">
+                  <h3 className="font-display text-[16px] font-semibold -tracking-[0.005em] text-white">
+                    {a.navn}
+                  </h3>
+                  <div className="mt-0.5 flex items-center gap-1 font-mono text-[10.5px] text-white/75">
+                    <MapPin className="h-3 w-3" strokeWidth={2} />
+                    {a.by}
+                  </div>
+                </div>
               </div>
-              <div className="bk-coaching-body">
-                <div className="flex flex-wrap items-baseline gap-3">
-                  <h3>{ct.navn}</h3>
-                  {ct.tags.map((tag) => (
-                    <span
-                      key={tag.label}
-                      className={`bk-pill-tag ${tag.type}`}
+              <div className="flex flex-1 flex-col gap-2.5 p-4">
+                <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                  {a.type}
+                </div>
+                <ul className="space-y-1">
+                  {a.fasiliteter.slice(0, 3).map((f) => (
+                    <li
+                      key={f}
+                      className="flex items-center gap-1.5 font-sans text-[12px] text-foreground"
                     >
-                      {tag.label}
-                    </span>
+                      <span className="h-1 w-1 rounded-full bg-primary" />
+                      {f}
+                    </li>
                   ))}
+                </ul>
+                <div className="mt-auto flex items-center justify-between border-t border-border pt-2.5">
+                  <span className="font-mono text-[10.5px] text-muted-foreground">
+                    {a.ledig}
+                  </span>
+                  <ArrowRight
+                    className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
+                    strokeWidth={2}
+                  />
                 </div>
-                <p className="bk-desc">{ct.beskrivelse}</p>
-                <div className="bk-features">
-                  {ct.features.map((f) => (
-                    <span key={f.label} className="bk-feature">
-                      <Check
-                        className="h-3 w-3 text-primary"
-                        strokeWidth={2}
-                      />
-                      {f.label}: <strong>{f.verdi}</strong>
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="bk-coaching-right">
-                <div className="bk-from">Fra</div>
-                <div className="bk-price">{ct.fraPris}</div>
-                <div className="bk-per">{ct.per}</div>
               </div>
             </Link>
           ))}
         </div>
-      </div>
-
-      {/* ── Steg-actions (hopp til booking-wizard) ── */}
-      <div className="bk-step-actions">
-        <span className="bk-meta">
-          Velg coaching-type ovenfor for å gå til kalender og tid
-        </span>
-        <Link href="/portal/booking/ny" className="bk-btn-lime">
-          Book direkte
-          <ArrowRight className="h-4 w-4" strokeWidth={2} />
-        </Link>
-      </div>
-
-      {/* ── Trust-strip ── */}
-      <div className="bk-trust-strip">
-        <ShieldCheck className="h-4 w-4 shrink-0 text-primary" strokeWidth={1.75} />
-        <span>
-          <strong>Trygg booking.</strong> Bekreftet på e-post og i appen.
-          Avbestilling gratis inntil 24t før økt.
-        </span>
-      </div>
+      </section>
     </div>
   );
 }

@@ -1,11 +1,21 @@
+/**
+ * PlayerHQ · Live-økt brief (sesjon 2 · pixel-perfect)
+ *
+ * Spec: BATCH PR7 · Skjerm 7.1
+ * - Hero med coach-quote (Mac O'Grady-stil italic)
+ * - Drill-liste read-only
+ * - KPI-strip: total tid + reps + pyramide-fokus
+ * - "Start"-CTA stor + lime
+ */
+
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import {
   ArrowLeft,
-  ArrowRight,
   Calendar,
+  CheckCircle2,
   Clock,
-  MapPin,
+  Flame,
   Play,
   Target,
 } from "lucide-react";
@@ -21,19 +31,35 @@ const PYR_LABEL: Record<PyramidArea, string> = {
   TURN: "Turnering",
 };
 
-const PYR_PILL: Record<PyramidArea, string> = {
-  FYS: "bg-[rgba(0,88,64,0.13)] text-[var(--color-pyr-fys)]",
-  TEK: "bg-[rgba(26,125,86,0.13)] text-[var(--color-pyr-tek)]",
-  SLAG: "bg-[rgba(184,133,42,0.13)] text-[var(--color-pyr-spill)]",
-  SPILL: "bg-[rgba(184,133,42,0.13)] text-[var(--color-pyr-spill)]",
-  TURN: "bg-[rgba(94,92,87,0.13)] text-[var(--color-pyr-turn)]",
-};
+const PYR_TONE: Record<PyramidArea, { bg: string; text: string; tile: string }> =
+  {
+    FYS: {
+      bg: "bg-[rgba(0,88,64,0.13)]",
+      text: "text-[#005840]",
+      tile: "bg-[#005840]",
+    },
+    TEK: {
+      bg: "bg-[rgba(26,125,86,0.13)]",
+      text: "text-[#1A7D56]",
+      tile: "bg-[#1A7D56]",
+    },
+    SLAG: {
+      bg: "bg-[rgba(209,248,67,0.45)]",
+      text: "text-[#0A1F17]",
+      tile: "bg-[#D1F843]",
+    },
+    SPILL: {
+      bg: "bg-[rgba(184,133,42,0.13)]",
+      text: "text-[#B8852A]",
+      tile: "bg-[#B8852A]",
+    },
+    TURN: {
+      bg: "bg-[rgba(94,92,87,0.13)]",
+      text: "text-[#5E5C57]",
+      tile: "bg-[#5E5C57]",
+    },
+  };
 
-/**
- * Live-økt · brief — pre-økt-side som viser plan-kontekst, foreslåtte øvelser
- * og mål før spilleren starter selve økten.
- * Designet etter wireframe/design-package/project/07-live-okt-brief.html
- */
 export default async function LiveBriefPage({
   params,
 }: {
@@ -58,9 +84,7 @@ export default async function LiveBriefPage({
 
   const erEier = session.plan.userId === user.id;
   const erCoach = user.role === "COACH" || user.role === "ADMIN";
-  if (!erEier && !erCoach) {
-    redirect("/portal/tren");
-  }
+  if (!erEier && !erCoach) redirect("/portal/tren");
 
   const scheduled = new Date(session.scheduledAt);
   const datoStr = scheduled.toLocaleDateString("nb-NO", {
@@ -74,231 +98,200 @@ export default async function LiveBriefPage({
   });
 
   const totalReps = session.drills.reduce((sum, d) => {
-    // repsSets f.eks. "3x10" eller "20" → enkel parse
     const m = d.repsSets.match(/(\d+)\s*[x×*]\s*(\d+)/i);
     if (m) return sum + Number(m[1]) * Number(m[2]);
     const n = parseInt(d.repsSets, 10);
     return sum + (isNaN(n) ? 0 : n);
   }, 0);
 
-  // Pyramide-fordeling — tell drills per område for sprekken under hero.
   const pyrCount = new Map<PyramidArea, number>();
   for (const d of session.drills) {
     const a = d.exercise.pyramidArea;
     pyrCount.set(a, (pyrCount.get(a) ?? 0) + 1);
   }
+  const dominant: PyramidArea =
+    Array.from(pyrCount.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] ??
+    session.pyramidArea;
 
   const kanStarte =
     user.tier !== "GRATIS" && erEier && session.status !== "COMPLETED";
 
   return (
-    <div className="mx-auto max-w-[1100px] space-y-6 px-4 py-6 sm:px-6 sm:py-8">
-      <Link
-        href={`/portal/tren/${session.id}`}
-        className="inline-flex h-11 items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" />
-        Tilbake til økt-detalj
-      </Link>
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-[920px] space-y-6 px-4 py-6 sm:px-6 sm:py-8">
+        <Link
+          href={`/portal/tren/${session.id}`}
+          className="inline-flex h-11 items-center gap-1.5 font-mono text-[12px] text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          Tilbake til økt-detalj
+        </Link>
 
-      {/* Hero — brief */}
-      <section className="grid grid-cols-1 gap-6 rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8 md:gap-8 lg:grid-cols-[1fr_380px]">
-        <div className="flex flex-col gap-3.5">
-          <div className="inline-flex items-center gap-2 font-sans text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        {/* HERO med coach-quote */}
+        <section
+          className="relative overflow-hidden rounded-2xl border border-border p-6 sm:p-9"
+          style={{
+            background:
+              "linear-gradient(135deg, #FAFAF7 0%, #FFFFFF 60%, rgba(209,248,67,0.16) 100%)",
+          }}
+        >
+          <div className="inline-flex items-center gap-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
             <span
               className="h-1.5 w-1.5 rounded-full bg-primary"
               style={{ boxShadow: "0 0 0 3px rgba(0,88,64,0.12)" }}
             />
-            {session.plan.name} · {session.pyramidArea}
+            LIVE-ØKT · BRIEF · {datoStr.toUpperCase()}
           </div>
-          <h1 className="font-display text-[28px] font-medium leading-[1.1] -tracking-[0.02em] text-foreground sm:text-[36px]">
+          <h1 className="mt-3 font-display text-[28px] font-medium leading-[1.05] -tracking-[0.02em] text-foreground sm:text-[40px]">
             {PYR_LABEL[session.pyramidArea]}-økt{" "}
-            <em className="font-normal italic text-muted-foreground">
+            <em
+              className="font-normal italic text-muted-foreground"
+              style={{ fontFamily: "var(--font-instrument-serif, var(--font-inter-tight))" }}
+            >
               {session.title}
             </em>
           </h1>
-          {session.rationale && (
-            <p className="max-w-[540px] font-display text-[16px] italic leading-[1.4] text-muted-foreground">
-              {session.rationale}
+
+          <blockquote className="mt-5 border-l-2 border-accent pl-4 sm:pl-5">
+            <p
+              className="font-display text-[16px] italic leading-[1.5] text-foreground sm:text-[18px]"
+              style={{ fontFamily: "var(--font-instrument-serif, serif)" }}
+            >
+              {session.rationale ??
+                `«Det handler ikke om å treffe perfekt — det handler om å treffe samme avvik bevisst, igjen og igjen. Da bygger du data du kan stole på.»`}
             </p>
-          )}
-          <div className="mt-1.5 flex flex-wrap items-center gap-5">
-            <MetaItem
-              icon={<Calendar className="h-3.5 w-3.5" strokeWidth={1.75} />}
-              label="Dato"
-              value={datoStr}
-            />
-            <MetaItem
-              icon={<Clock className="h-3.5 w-3.5" strokeWidth={1.75} />}
-              label="Tid"
-              value={tidStr}
-            />
-            <MetaItem
-              icon={<Target className="h-3.5 w-3.5" strokeWidth={1.75} />}
-              label="Varighet"
-              value={`${session.durationMin} min`}
-            />
-            <MetaItem
-              icon={<MapPin className="h-3.5 w-3.5" strokeWidth={1.75} />}
-              label="Reps planlagt"
-              value={totalReps > 0 ? String(totalReps) : "—"}
-            />
-          </div>
-        </div>
+            <footer className="mt-2 font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground">
+              — Mac O&apos;Grady-prinsipp · {session.plan.name}
+            </footer>
+          </blockquote>
 
-        {/* Høyre — CTA */}
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2.5 rounded-2xl bg-primary p-5 text-primary-foreground">
-            <div className="font-sans text-[11px] font-semibold uppercase tracking-[0.10em] opacity-65">
-              I dag · {scheduled.toLocaleDateString("nb-NO", { weekday: "long" })}
-            </div>
-            <div className="font-mono text-[28px] font-semibold -tracking-[0.01em] tabular-nums">
-              {tidStr}
-            </div>
-            <div className="font-sans text-[13px] leading-[1.4] opacity-85">
-              {session.plan.name}
-            </div>
-          </div>
-
-          {kanStarte ? (
-            <Link
-              href={`/portal/live/${session.id}`}
-              className="inline-flex items-center justify-center gap-2.5 rounded-md bg-accent px-6 py-4 font-display text-[16px] font-semibold -tracking-[0.01em] text-accent-foreground transition-opacity hover:opacity-90"
-            >
-              <Play className="h-4 w-4" strokeWidth={2.5} />
-              Start økt
-            </Link>
-          ) : (
-            <span className="inline-flex items-center justify-center rounded-md border border-dashed border-border px-6 py-4 text-[14px] text-muted-foreground">
-              {session.status === "COMPLETED"
-                ? "Økten er fullført"
-                : "Live krever Pro"}
-            </span>
-          )}
-
-          <div className="flex gap-2">
-            <Link
-              href={`/portal/live/${session.id}/tapper`}
-              className="flex-1 rounded-md border border-border bg-secondary px-4 py-2.5 text-center font-sans text-[13px] font-medium text-foreground transition-colors hover:bg-muted"
-            >
-              Tapper-modus
-            </Link>
-            <Link
-              href={`/portal/tren/${session.id}`}
-              className="flex-1 rounded-md border border-border bg-secondary px-4 py-2.5 text-center font-sans text-[13px] font-medium text-foreground transition-colors hover:bg-muted"
-            >
-              Detaljvisning
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Pyramide-fordeling */}
-      {pyrCount.size > 0 && (
-        <section>
-          <div className="mb-2 flex items-baseline justify-between">
-            <div className="font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-              Fordeling i pyramide
-            </div>
-            <div className="font-mono text-[11px] text-muted-foreground">
-              {session.drills.length}{" "}
-              {session.drills.length === 1 ? "øvelse" : "øvelser"}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-            {Array.from(pyrCount.entries()).map(([area, count]) => (
-              <div
-                key={area}
-                className={`flex items-center justify-between rounded-md px-3 py-2 font-mono text-[11px] ${PYR_PILL[area]}`}
-              >
-                <span className="font-bold">{area}</span>
-                <span className="tabular-nums">{count}</span>
-              </div>
-            ))}
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <MetaItem icon={<Calendar className="h-3.5 w-3.5" />} label="Dato" value={datoStr} />
+            <MetaItem icon={<Clock className="h-3.5 w-3.5" />} label="Start" value={tidStr} />
+            <MetaItem icon={<Target className="h-3.5 w-3.5" />} label="Varighet" value={`${session.durationMin} min`} />
           </div>
         </section>
-      )}
 
-      {/* Drills — brief-liste */}
-      <section>
-        <div className="mb-3 flex items-baseline justify-between">
-          <h2 className="font-display text-[16px] font-semibold -tracking-[0.01em] text-foreground">
-            Foreslåtte øvelser
-          </h2>
-          <div className="font-mono text-[12px] text-muted-foreground">
-            {session.drills.length}{" "}
-            {session.drills.length === 1 ? "øvelse" : "øvelser"} · {totalReps}{" "}
-            reps
-          </div>
-        </div>
+        {/* KPI-STRIP */}
+        <section className="grid grid-cols-3 gap-2.5 sm:gap-3">
+          <Kpi
+            label="TOTAL TID"
+            value={String(session.durationMin)}
+            unit="min"
+            featured
+            icon={<Clock className="h-3.5 w-3.5" strokeWidth={1.75} />}
+          />
+          <Kpi
+            label="TOTAL REPS"
+            value={totalReps > 0 ? String(totalReps) : "—"}
+            unit="reps"
+            icon={<Flame className="h-3.5 w-3.5" strokeWidth={1.75} />}
+          />
+          <Kpi
+            label="PYRAMIDE-FOKUS"
+            value={dominant}
+            unit={PYR_LABEL[dominant].toLowerCase()}
+            tone={PYR_TONE[dominant]}
+            icon={<Target className="h-3.5 w-3.5" strokeWidth={1.75} />}
+          />
+        </section>
 
-        {session.drills.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border bg-card/40 px-8 py-12 text-center">
-            <p className="text-sm text-muted-foreground">
-              Ingen øvelser lagt til ennå.
-            </p>
+        {/* DRILL-LISTE READ-ONLY */}
+        <section>
+          <div className="mb-3 flex items-baseline justify-between">
+            <h2 className="font-display text-[16px] font-semibold -tracking-[0.01em] text-foreground">
+              Drill-plan
+            </h2>
+            <span className="font-mono text-[11px] text-muted-foreground">
+              {session.drills.length}{" "}
+              {session.drills.length === 1 ? "drill" : "drills"}
+            </span>
           </div>
-        ) : (
-          <div className="flex flex-col gap-2">
-            {session.drills.map((d, i) => (
-              <div
-                key={d.id}
-                className="grid grid-cols-[28px_1fr_auto] items-center gap-3 rounded-xl border border-border bg-card px-3 py-3 sm:grid-cols-[28px_1fr_auto_auto] sm:gap-3.5 sm:px-4 sm:py-3.5"
-              >
-                <div className="grid h-7 w-7 place-items-center rounded-md bg-secondary font-mono text-[12px] font-bold text-muted-foreground">
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <div className="min-w-0">
-                  <div className="truncate font-display text-[14px] font-medium -tracking-[0.005em] text-foreground">
-                    {d.exercise.name}
-                  </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                    <span
-                      className={`rounded px-1.5 py-0.5 font-mono text-[10.5px] font-medium tracking-[0.04em] ${PYR_PILL[d.exercise.pyramidArea]}`}
+
+          {session.drills.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border bg-card/40 px-8 py-12 text-center">
+              <p className="text-sm text-muted-foreground">Ingen drills lagt til.</p>
+            </div>
+          ) : (
+            <ol className="flex flex-col gap-2">
+              {session.drills.map((d, i) => {
+                const tone = PYR_TONE[d.exercise.pyramidArea];
+                return (
+                  <li
+                    key={d.id}
+                    className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 sm:p-4"
+                  >
+                    <div
+                      className={`grid h-8 w-8 flex-shrink-0 place-items-center rounded-md font-mono text-[11px] font-bold text-white ${tone.tile}`}
                     >
-                      {d.exercise.pyramidArea}
-                    </span>
-                    {d.exercise.lPhase && (
-                      <span className="rounded bg-secondary px-1.5 py-0.5 font-mono text-[10.5px] text-muted-foreground">
-                        {d.exercise.lPhase}
-                      </span>
+                      {String(i + 1).padStart(2, "0")}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate font-display text-[14px] font-semibold -tracking-[0.005em] text-foreground sm:text-[15px]">
+                        {d.exercise.name}
+                      </div>
+                      <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                        <span
+                          className={`rounded px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-[0.06em] ${tone.bg} ${tone.text}`}
+                        >
+                          {d.exercise.pyramidArea}
+                        </span>
+                        {d.exercise.lPhase && (
+                          <span className="rounded bg-secondary px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                            {d.exercise.lPhase}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-mono text-[14px] font-semibold text-foreground tabular-nums">
+                        {d.repsSets}
+                      </div>
+                      <div className="font-mono text-[9.5px] uppercase tracking-[0.06em] text-muted-foreground">
+                        reps
+                      </div>
+                    </div>
+                    {d.csTarget && (
+                      <div className="hidden text-right sm:block">
+                        <div className="font-mono text-[14px] font-semibold text-foreground tabular-nums">
+                          {d.csTarget}
+                        </div>
+                        <div className="font-mono text-[9.5px] uppercase tracking-[0.06em] text-muted-foreground">
+                          CS
+                        </div>
+                      </div>
                     )}
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-mono text-[13px] font-semibold text-foreground tabular-nums">
-                    {d.repsSets}
-                  </div>
-                  <div className="font-mono text-[10px] text-muted-foreground">
-                    reps
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-mono text-[13px] font-semibold text-foreground tabular-nums">
-                    {d.csTarget ?? "—"}
-                  </div>
-                  <div className="font-mono text-[10px] text-muted-foreground">
-                    CS-mål
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
+        </section>
 
-      {/* Bottom CTA */}
-      {kanStarte && (
-        <div className="flex justify-end border-t border-border pt-6">
-          <Link
-            href={`/portal/live/${session.id}`}
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-3 font-sans text-[14px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            Gå til live
-            <ArrowRight className="h-4 w-4" strokeWidth={2} />
-          </Link>
-        </div>
-      )}
+        {/* STORT START-CTA */}
+        <section className="sticky bottom-4 pt-4">
+          {kanStarte ? (
+            <Link
+              href={`/portal/live/${session.id}/active`}
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-accent px-6 py-5 font-display text-[20px] font-semibold -tracking-[0.01em] text-accent-foreground shadow-lg shadow-accent/30 transition-transform hover:scale-[1.01]"
+            >
+              <Play className="h-5 w-5 fill-current" strokeWidth={2.5} />
+              Start økt nå
+            </Link>
+          ) : (
+            <div className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card px-6 py-5 font-sans text-[14px] text-muted-foreground">
+              {session.status === "COMPLETED" ? (
+                <>
+                  <CheckCircle2 className="h-4 w-4 text-[#2C7D52]" strokeWidth={2} />
+                  Økten er fullført
+                </>
+              ) : (
+                "Live krever PRO"
+              )}
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
@@ -313,11 +306,69 @@ function MetaItem({
   value: string;
 }) {
   return (
-    <div className="inline-flex items-center gap-1.5 font-mono text-[12px] text-muted-foreground">
+    <div className="inline-flex items-center gap-1.5 font-mono text-[11.5px] text-muted-foreground">
       <span className="text-muted-foreground/70">{icon}</span>
       <span>
         {label}: <b className="font-semibold text-foreground">{value}</b>
       </span>
+    </div>
+  );
+}
+
+function Kpi({
+  label,
+  value,
+  unit,
+  featured,
+  tone,
+  icon,
+}: {
+  label: string;
+  value: string;
+  unit: string;
+  featured?: boolean;
+  tone?: { bg: string; text: string; tile: string };
+  icon: React.ReactNode;
+}) {
+  if (featured) {
+    return (
+      <div
+        className="relative overflow-hidden rounded-xl p-4 text-primary-foreground"
+        style={{
+          background: "linear-gradient(135deg, #003A2A 0%, #005840 100%)",
+        }}
+      >
+        <div className="flex items-center gap-1 font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] opacity-70">
+          <span className="opacity-60">{icon}</span>
+          {label}
+        </div>
+        <div className="mt-2 flex items-baseline gap-1.5">
+          <span className="font-display text-[30px] font-semibold -tracking-[0.02em] text-accent tabular-nums">
+            {value}
+          </span>
+          <span className="font-mono text-[11px] opacity-70">{unit}</span>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div
+      className={`rounded-xl border border-border p-4 ${tone ? tone.bg : "bg-card"}`}
+    >
+      <div className="flex items-center gap-1 font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+        <span className="text-muted-foreground/70">{icon}</span>
+        {label}
+      </div>
+      <div className="mt-2 flex items-baseline gap-1.5">
+        <span
+          className={`font-display text-[26px] font-semibold -tracking-[0.02em] tabular-nums ${tone ? tone.text : "text-foreground"}`}
+        >
+          {value}
+        </span>
+        <span className="font-mono text-[11px] text-muted-foreground">
+          {unit}
+        </span>
+      </div>
     </div>
   );
 }

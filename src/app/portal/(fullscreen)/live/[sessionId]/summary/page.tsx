@@ -1,51 +1,15 @@
-// Live-økt summary — fullscreen.
-// Speiler public/design/batch4/live-okt-summary.html.
-// Tekst-data hardkodes som eksempel inntil reell data hentes fra Prisma.
+/**
+ * PlayerHQ · Live-økt summary (sesjon 2 · pixel-perfect)
+ *
+ * Spec: BATCH PR7 · Skjerm 7.3
+ * - Totaler: tid + reps per kategori + hit-rate
+ * - Per drill accordion: faktisk vs mål + TM-data + notater + video-thumbnails
+ * - Selvevaluering 1-5 stjerner
+ * - "Send til Anders"-CTA + "Lagre uten å sende"
+ */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { SummaryClient } from "./summary-client";
-
-export type SummaryGoal = {
-  id: string;
-  title: string;
-  status: "success" | "partial";
-  // Verdi 0–100 for fremdriftsbar. Bruk "bekreftet" for kvalitative mål.
-  progressPct: number;
-  meta: string; // f.eks. "8 / 10" eller "Bekreftet"
-  verdictTitle: string;
-  verdictSub: string;
-};
-
-export type SummaryHighlight = {
-  kind: "best" | "tend" | "pr";
-  label: string;
-  mainEm: string; // tall/verdi
-  mainText: string; // tekst etter tall
-  note: string;
-  noteItalic?: boolean;
-};
-
-export type SummaryData = {
-  sessionId: string;
-  eyebrow: string;
-  heroTitle: string;
-  heroEm: string;
-  subline: string;
-  metaLeft: string;
-  metaRight: string;
-  // KPI-strip
-  kpiMain: { value: string; valueSub?: string; unit: string };
-  kpiVarighet: { value: string; valueSub?: string; unit: string };
-  kpiReps: { value: string; valueSub?: string; unit: string };
-  // Mål
-  goals: SummaryGoal[];
-  // Highlights
-  highlights: SummaryHighlight[];
-  // AI-oppsummering
-  aiSummary: string;
-  // Coach
-  coachName: string;
-};
+import { SummaryV2Client, type SummaryV2Data } from "./summary-v2-client";
 
 export default async function SummaryPage({
   params,
@@ -55,87 +19,68 @@ export default async function SummaryPage({
   await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const { sessionId } = await params;
 
-  // Eksempel-data speiler HTML-prototypen. Erstattes med Prisma-uttrekk
-  // (via freezeSessionSummary) når økten er fullført i produksjon.
-  const data: SummaryData = {
+  // Stub-data inntil reell freezeSessionSummary er på plass
+  const data: SummaryV2Data = {
     sessionId,
-    eyebrow: "ØKT FULLFØRT · 22. MAI 2026 · 14:00–15:00",
-    heroTitle: "Slik gikk det",
-    heroEm: "Slik gikk det",
-    subline: "Wedge-presisjon 50–80m. Tre mål, 60 minutter, 78 shots.",
-    metaLeft: "MED HANS BRENNUM",
-    metaRight: "GFGK PERFORMANCE STUDIO",
-    coachName: "Hans Brennum",
-    kpiMain: {
-      value: "2,5",
-      valueSub: "/ 3",
-      unit: "2 BEKREFTET · 1 DELVIS",
-    },
-    kpiVarighet: {
-      value: "60",
-      valueSub: "min",
-      unit: "SOM PLANLAGT",
-    },
-    kpiReps: {
-      value: "78",
-      unit: "SNITT 92 PR ØKT",
-    },
-    goals: [
+    title: "Wedge-presisjon 50–80m",
+    coachName: "Anders Kristiansen",
+    durationMin: 62,
+    plannedMin: 60,
+    totalReps: { dry: 32, lav: 56, full: 48 },
+    plannedReps: { dry: 30, lav: 60, full: 50 },
+    hitRate: 0.71,
+    pyrTotals: [
+      { area: "TEK", reps: 88, pct: 65 },
+      { area: "SLAG", reps: 30, pct: 22 },
+      { area: "SPILL", reps: 18, pct: 13 },
+    ],
+    drills: [
       {
-        id: "g1",
-        title: "Treff GIR 7/10 fra 60m",
-        status: "success",
-        progressPct: 80,
-        meta: "8 / 10",
-        verdictTitle: "Overoppfylt",
-        verdictSub: "+1 fra mål",
+        id: "d1",
+        index: 1,
+        name: "Pitch 50–80m · lav trajectory",
+        pyramidArea: "TEK",
+        actual: { dry: 12, lav: 18, full: 12 },
+        target: { dry: 10, lav: 20, full: 10 },
+        tm: { smashFactor: "1.41", ballSpeed: "118 mph", launchAngle: "26.4°" },
+        notes: "God kontakt på 70-yard. Litt for mye spin på 60m.",
+        videoCount: 2,
       },
       {
-        id: "g2",
-        title: "Konsistens i tempo",
-        status: "partial",
-        progressPct: 60,
-        meta: "6 / 10",
-        verdictTitle: "Delvis",
-        verdictSub: "nær mål",
+        id: "d2",
+        index: 2,
+        name: "Iron CS70 → CS80",
+        pyramidArea: "TEK",
+        actual: { dry: 10, lav: 18, full: 14 },
+        target: { dry: 10, lav: 20, full: 15 },
+        tm: { smashFactor: "1.43", ballSpeed: "142 mph", launchAngle: "18.8°" },
+        notes: "",
+        videoCount: 1,
       },
       {
-        id: "g3",
-        title: "Identifisere mønster i misser",
-        status: "success",
-        progressPct: 100,
-        meta: "Bekreftet",
-        verdictTitle: "Mønster funnet",
-        verdictSub: "venstre · 12%",
+        id: "d3",
+        index: 3,
+        name: "Putting 0–3m",
+        pyramidArea: "SLAG",
+        actual: { dry: 0, lav: 30, full: 0 },
+        target: { dry: 0, lav: 30, full: 0 },
+        tm: null,
+        notes: "26 / 30 trykk. Bedre tempo etter pause.",
+        videoCount: 0,
+      },
+      {
+        id: "d4",
+        index: 4,
+        name: "Spillsim · Tee til green",
+        pyramidArea: "SPILL",
+        actual: { dry: 0, lav: 0, full: 18 },
+        target: { dry: 0, lav: 0, full: 18 },
+        tm: null,
+        notes: "",
+        videoCount: 1,
       },
     ],
-    highlights: [
-      {
-        kind: "best",
-        label: "BESTE SHOT",
-        mainEm: "4m",
-        mainText: "fra pin",
-        note: "62 m med PW · landing 4,2m kort, rull til pin · ball #43",
-      },
-      {
-        kind: "tend",
-        label: "VERSTE TENDENS",
-        mainEm: "12%",
-        mainText: "mot venstre",
-        note: "9 av 78 misser samme vei · sjekk grep og setup neste økt",
-      },
-      {
-        kind: "pr",
-        label: "PR-MULIGHET",
-        mainEm: "9 GIR",
-        mainText: "= PR",
-        note: "Hadde du 9 GIR i dag, ville det vært ny PR for 60m-distansen.",
-        noteItalic: true,
-      },
-    ],
-    aiSummary:
-      "Du jobbet med approach 100–150m. SG-potensial +0,4 hvis du holder venstre-misset under 8%.",
   };
 
-  return <SummaryClient data={data} />;
+  return <SummaryV2Client data={data} />;
 }
