@@ -51,6 +51,7 @@ const SKILL_LABEL: Record<SkillArea, string> = {
   SPILL: "Spill",
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function ProgresjonsNivaaIndikator({ nivaa }: { nivaa: number | null }) {
   if (nivaa === null) return null;
   return (

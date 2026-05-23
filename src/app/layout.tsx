@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
 import { SwRegister } from "@/components/sw-register";
 import "./globals.css";
@@ -97,6 +99,8 @@ export default function RootLayout({
         {children}
         <InstallPrompt />
         <SwRegister />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
