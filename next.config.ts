@@ -58,6 +58,37 @@ const nextConfig: NextConfig = {
       { source: "/portal/booking", destination: "/portal/gjennomfore?tab=booking", permanent: true },
       { source: "/portal/booking/:path*", destination: "/portal/gjennomfore?tab=booking", permanent: true },
       { source: "/portal/ny-okt", destination: "/portal/gjennomfore/ny-okt", permanent: true },
+
+      // ============================================================
+      // Nye IA-URL-er → eksisterende ruter (2026-05-23)
+      // Holder master-plan-IA fungerende uten å duplisere kode
+      // ============================================================
+
+      // PlayerHQ Analysere
+      { source: "/portal/analysere/runder/:id", destination: "/portal/mal/runder/:id", permanent: false },
+      { source: "/portal/analysere/runder/:id/del", destination: "/portal/statistikk/runder/:id/del", permanent: false },
+      { source: "/portal/analysere/runder/ny", destination: "/portal/mal/runder/ny", permanent: false },
+      { source: "/portal/analysere/tester/:id", destination: "/portal/tren/tester/:id", permanent: false },
+      { source: "/portal/analysere/sammenlign", destination: "/portal/statistikk/sammenlign", permanent: false },
+      { source: "/portal/analysere/metric/:metric", destination: "/portal/statistikk/:metric", permanent: false },
+
+      // PlayerHQ Gjennomføre — booking-flyt
+      { source: "/portal/gjennomfore/booking/coach/:id", destination: "/portal/booking/coach/:id", permanent: false },
+      { source: "/portal/gjennomfore/booking/anlegg/:id", destination: "/portal/booking/anlegg/:id", permanent: false },
+      { source: "/portal/gjennomfore/booking/:id", destination: "/portal/booking/:id", permanent: false },
+      { source: "/portal/gjennomfore/onskeligokt/bekreftet", destination: "/portal/onskeligokt/bekreftet", permanent: false },
+      { source: "/portal/gjennomfore/ny-okt", destination: "/portal/ny-okt", permanent: false },
+
+      // PlayerHQ Planlegge
+      { source: "/portal/planlegge/turnering/:id", destination: "/portal/tren/turneringer/:id", permanent: false },
+
+      // CoachHQ sub-routes
+      { source: "/admin/spillere/:id/rediger", destination: "/admin/elever/:id/rediger", permanent: false },
+      { source: "/admin/planlegge/grupper/:id", destination: "/admin/grupper/:id", permanent: false },
+      { source: "/admin/gjennomfore/bookinger/ny", destination: "/admin/bookings/ny", permanent: false },
+      { source: "/admin/gjennomfore/anlegg/:id", destination: "/admin/anlegg/:id", permanent: false },
+      { source: "/admin/stall/caddie/:spillerId", destination: "/admin/agencyos/caddie/aktivitet", permanent: false },
+      { source: "/admin/analysere/godkjenninger/:id", destination: "/admin/godkjenninger", permanent: false },
     ];
   },
 
