@@ -27,29 +27,30 @@ type NavItem = {
 // Oversikt · Stall · Planlegge · Gjennomføre · Analysere · Kommunikasjon · Organisasjon
 // ---------------------------------------------------------------------------
 
+// CoachHQ 6-seksjons IA (konsolidert 2026-05-23 — Forslag A)
+// Oversikt · Stall · Planlegge · Gjennomføre · Innsikt · Admin
 const MAIN_ITEMS: NavItem[] = [
-  { href: "/admin/agencyos", label: "Oversikt", matchPrefixes: ["/admin/agencyos", "/admin"] },
   {
-    href: "/admin/workspace",
-    label: "Workspace",
-    matchPrefixes: ["/admin/workspace"],
+    href: "/admin/agencyos",
+    label: "Oversikt",
+    matchPrefixes: ["/admin/agencyos", "/admin", "/admin/workspace"],
     children: [
+      { href: "/admin/agencyos", label: "Dashboard" },
       { href: "/admin/workspace", label: "Min uke" },
       { href: "/admin/workspace/oppgaver", label: "Oppgaver" },
-      { href: "/admin/workspace/prosjekter", label: "Prosjekter" },
       { href: "/admin/workspace/tildelt-meg", label: "Tildelt meg" },
-      { href: "/admin/workspace/notion", label: "Notion-tilkobling" },
     ],
   },
   {
     href: "/admin/stall",
     label: "Stall",
-    matchPrefixes: ["/admin/stall", "/admin/spillere", "/admin/talent"],
+    matchPrefixes: ["/admin/stall", "/admin/spillere", "/admin/talent", "/admin/grupper"],
     children: [
       { href: "/admin/spillere", label: "Alle spillere" },
+      { href: "/admin/grupper", label: "Grupper" },
       { href: "/admin/talent", label: "Talent-radar" },
       { href: "/admin/talent/sammenligning", label: "Sammenligning" },
-      { href: "/admin/talent/wagr-import", label: "WAGR" },
+      { href: "/admin/talent/wagr-import", label: "WAGR-import" },
     ],
   },
   {
@@ -59,16 +60,14 @@ const MAIN_ITEMS: NavItem[] = [
       "/admin/planlegge",
       "/admin/plans",
       "/admin/plan-templates",
-      "/admin/grupper",
       "/admin/tournaments",
       "/admin/drills",
     ],
     children: [
       { href: "/admin/plans", label: "Treningsplaner" },
       { href: "/admin/plan-templates", label: "Plan-maler" },
-      { href: "/admin/grupper", label: "Grupper" },
-      { href: "/admin/tournaments", label: "Turneringer" },
       { href: "/admin/drills", label: "Drill-bibliotek" },
+      { href: "/admin/tournaments", label: "Turneringer" },
     ],
   },
   {
@@ -92,11 +91,12 @@ const MAIN_ITEMS: NavItem[] = [
   },
   {
     href: "/admin/analysere",
-    label: "Analysere",
+    label: "Innsikt",
     matchPrefixes: [
       "/admin/analysere",
       "/admin/analyse",
       "/admin/lag-snitt",
+      "/admin/tester",
       "/admin/foresporsler",
       "/admin/godkjenninger",
       "/admin/reports",
@@ -104,40 +104,36 @@ const MAIN_ITEMS: NavItem[] = [
     children: [
       { href: "/admin/analyse", label: "Stall-analyse" },
       { href: "/admin/lag-snitt", label: "Lag-snitt" },
+      { href: "/admin/tester", label: "Tester" },
       { href: "/admin/foresporsler", label: "Forespørsler" },
       { href: "/admin/godkjenninger", label: "Godkjenninger" },
       { href: "/admin/reports", label: "Rapporter" },
     ],
   },
   {
-    href: "/admin/kommunikasjon",
-    label: "Kommunikasjon",
+    href: "/admin/organisasjon",
+    label: "Admin",
     matchPrefixes: [
+      "/admin/organisasjon",
       "/admin/kommunikasjon",
       "/admin/innboks",
       "/admin/email-templates",
-    ],
-    children: [
-      { href: "/admin/innboks", label: "Innboks" },
-      { href: "/admin/email-templates", label: "E-postmaler" },
-    ],
-  },
-  {
-    href: "/admin/organisasjon",
-    label: "Organisasjon",
-    matchPrefixes: [
-      "/admin/organisasjon",
+      "/admin/agents",
+      "/admin/notion-prosjekter",
+      "/admin/notion-oppgaver",
       "/admin/team",
       "/admin/finance",
-      "/admin/agents",
       "/admin/integrasjoner",
       "/admin/audit-log",
       "/admin/settings",
     ],
     children: [
+      { href: "/admin/innboks", label: "Innboks" },
+      { href: "/admin/email-templates", label: "E-postmaler" },
+      { href: "/admin/agents", label: "AI-agenter" },
+      { href: "/admin/notion-prosjekter", label: "Notion-prosjekter" },
       { href: "/admin/team", label: "Team" },
       { href: "/admin/finance", label: "Økonomi" },
-      { href: "/admin/agents", label: "AI-agenter" },
       { href: "/admin/integrasjoner", label: "Integrasjoner" },
       { href: "/admin/audit-log", label: "Audit-log" },
       { href: "/admin/settings", label: "Innstillinger" },
