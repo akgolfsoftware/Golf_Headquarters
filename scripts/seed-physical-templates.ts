@@ -68,8 +68,13 @@ type PlanTemplate = {
 
 // ---------- Hjelpere ----------
 
-/** Parse "3×8" eller "20 min Z2" til { sets, reps } der mulig. */
+/** Parse "3×8" eller "20 min Z2" eller "3×30m" til { sets, reps } der mulig. */
 function parseRepsSets(repsSets: string): { sets?: number; reps?: number } {
+  // Distance format (e.g. "3×30m") — sets only, ingen reps
+  const distMatch = repsSets.match(/^(\d+)\s*[×x]\s*(\d+)m/);
+  if (distMatch) {
+    return { sets: Number(distMatch[1]) };
+  }
   const match = repsSets.match(/^(\d+)\s*[×x]\s*(\d+)/);
   if (match) {
     return { sets: Number(match[1]), reps: Number(match[2]) };
@@ -79,9 +84,7 @@ function parseRepsSets(repsSets: string): { sets?: number; reps?: number } {
 
 // ---------- Sett/reps-matrise per (øvelse, fase, aldersgruppe) ----------
 
-type PhaseKeyMatrix = "GRUNN" | "SPESIAL" | "TURNERING" | "SESONG";
-
-const SETS_REPS: Record<string, Record<PhaseKeyMatrix, Record<AgeGroup, string>>> = {
+const SETS_REPS: Record<string, Record<PhaseKey, Record<AgeGroup, string>>> = {
   "trapbar-deadlift": {
     GRUNN: { U15: "3×8", U19: "4×6", ELITE: "4×5" },
     SPESIAL: { U15: "4×4", U19: "4×4", ELITE: "5×3" },
@@ -206,7 +209,7 @@ const SETS_REPS: Record<string, Record<PhaseKeyMatrix, Record<AgeGroup, string>>
   },
 };
 
-function ds(exerciseId: string, phase: PhaseKeyMatrix, age: AgeGroup): DrillSpec {
+function ds(exerciseId: string, phase: PhaseKey, age: AgeGroup): DrillSpec {
   const repsSets = SETS_REPS[exerciseId]?.[phase]?.[age];
   if (!repsSets) {
     throw new Error(`Mangler sets/reps for ${exerciseId} / ${phase} / ${age}`);
@@ -601,6 +604,32 @@ function buildAllTemplates(): PlanTemplate[] {
   return out;
 }
 
+// ---------- Pre-flight sjekk ----------
+
+/**
+ * Verifiser at alle ExerciseDefinition-er som planene refererer til
+ * finnes i databasen. Gir tydelig feilmelding hvis seed-physical-exercises.ts
+ * ikke er kjørt først.
+ */
+async function preflight(): Promise<void> {
+  const requiredIds = Object.keys(SETS_REPS);
+  const found = await prisma.exerciseDefinition.findMany({
+    where: { id: { in: requiredIds } },
+    select: { id: true },
+  });
+  const foundSet = new Set(found.map((e) => e.id));
+  const missing = requiredIds.filter((id) => !foundSet.has(id));
+  if (missing.length > 0) {
+    console.error(
+      "Manglende ExerciseDefinition-er (kjør seed-physical-exercises.ts først):",
+    );
+    for (const id of missing) {
+      console.error(`  - ${id}`);
+    }
+    process.exit(1);
+  }
+}
+
 // ---------- Placeholder-bruker ----------
 
 /**
@@ -626,6 +655,7 @@ async function ensureTemplateUser(): Promise<void> {
 // ---------- Main ----------
 
 async function main() {
+  await preflight();
   await ensureTemplateUser();
 
   const templates = buildAllTemplates();
