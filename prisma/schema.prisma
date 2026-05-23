@@ -95,6 +95,24 @@ enum SessionEnvironment {
   GYM
 }
 
+// P14: spiller-status for permisjon, skade, retur til spill
+enum UserStatus {
+  AKTIV          // Normal aktivitet
+  PERMISJON      // Pause (reise, jobb, etc.) — Subscription pauses
+  SKADET         // Skade — Subscription pauses, return-to-play-protokoll aktiveres
+  INAKTIV        // Lengre pause (> 6 mnd), historie beholdes
+}
+
+// P14: type permisjon/pause
+enum LeaveReason {
+  SKADE
+  SYKDOM
+  REISE
+  JOBB
+  STUDIER
+  ANNET
+}
+
 // Utstyr/anlegg-krav per drill — brukes for facility-matching mot spillerprofil.
 // Tomme fasilitetKrav = drill kan gjøres overalt (ingen spesialkrav).
 enum DrillFasilitet {
@@ -274,6 +292,10 @@ model User {
   requiresGuardianConsent  Boolean   @default(false)
   guardianConsentGivenAt   DateTime?
   guardianConsentByUserId  String?
+
+  // P14: spiller-status (permisjon, skade, return-to-play)
+  userStatus               UserStatus @default(AKTIV)
+  leaves                   Leave[]
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -458,6 +480,31 @@ model HealthEntry {
   @@unique([userId, date])
   @@index([userId, date])
   @@map("health_entries")
+}
+
+// P14: Permisjon/skade (Leave) per spiller.
+// Når en Leave er aktiv (endAt null eller > now), Subscription pauses.
+// Coach varsles ved opprettelse og return-to-play-modal aktiveres.
+model Leave {
+  id          String      @id @default(cuid())
+  userId      String
+  reason      LeaveReason
+  startAt     DateTime
+  endAt       DateTime?   // null = pågående (åpen-ende permisjon)
+  description String?     @db.Text
+  // Hvis SKADE: rehab-protokoll og return-to-play-status
+  isInjury    Boolean     @default(false)
+  rehabPlan   Json?       // strukturert rehab-plan
+  returnedAt  DateTime?
+  notifiedCoach Boolean   @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startAt])
+  @@index([userId, endAt])
+  @@map("leaves")
 }
 
 // Foreldre-invitasjons-relasjon (V2 Spor 3).
