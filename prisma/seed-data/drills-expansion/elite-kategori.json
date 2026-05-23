@@ -3,7 +3,13 @@
   "generatedAt": "2026-05-23T00:00:00Z",
   "fokusOmrade": "ELITE_A_D",
   "totalDrills": 85,
-  "sources": ["morad-disc-1-7", "mac-ogrady-kb", "ak-second-brain:elite-metodikk"],
+  "sources": [
+    "morad-disc-1-7",
+    "mac-ogrady-kb",
+    "ak-second-brain:elite-metodikk",
+    "aimpoint-express-method",
+    "decade-golf-methodology"
+  ],
   "drills": [
     {
       "navn": "gate-putt-1m-elite-presisjon",
@@ -14,20 +20,46 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE", "STUDIO"],
-      "utstyr": ["putter", "tees", "10-baller"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "putter",
+        "tees",
+        "10-baller"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 20,
       "intensitet": 8,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": true,
-      "prerequisites": ["putting-grunnposisjon", "face-angle-bevissthet"],
+      "prerequisites": [
+        "putting-grunnposisjon",
+        "face-angle-bevissthet"
+      ],
       "defaultSets": 4,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-3",
-      "tags": ["1m", "gate-drill", "presisjon", "face-kontroll", "elite"],
+      "tags": [
+        "1m",
+        "gate-drill",
+        "presisjon",
+        "face-kontroll",
+        "elite"
+      ],
       "coachNotater": "Gate-bredden er bevisst smal — putterhode skal ikke skrape tees. Lyden av tees betyr off-center kontakt eller rotering av face. Vær streng på suksesskriteriet: 10 av 10 gjennom porten, ikke 9 av 10. Elitespillere skal eie 1-meteren — det er basis for alt annet på greenen. Progresjonen er å gjøre porten enda smalere, ned mot 1mm bredde."
     },
     {
@@ -39,20 +71,45 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "6-baller", "kamera-stativ"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT", "KAMERA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "6-baller",
+        "kamera-stativ"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT",
+        "KAMERA"
+      ],
       "varighetMin": 20,
       "intensitet": 7,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["pre-shot-rutine-putting"],
+      "prerequisites": [
+        "pre-shot-rutine-putting"
+      ],
       "defaultSets": 3,
       "defaultReps": 6,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["2m", "rutine", "hode-stille", "mentalt", "elite"],
+      "tags": [
+        "2m",
+        "rutine",
+        "hode-stille",
+        "mentalt",
+        "elite"
+      ],
       "coachNotater": "Denne øvelsen kombinerer to utfordringer: den tekniske (hode stille) og den mentale (rutine under press). Bruk kamera bak spilleren for å gi umiddelbar tilbakemelding. Mange elitespillere vet de beveger hodet, men ser det ikke uten video. Progresjonen er å legge til lyden av en publikummer eller coachen som kommenterer rett etter prøveswing — stimulerer turnerings-press."
     },
     {
@@ -64,20 +121,41 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "6-baller"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "6-baller"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 20,
       "intensitet": 8,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": true,
-      "prerequisites": ["gate-putt-1m-elite-presisjon"],
+      "prerequisites": [
+        "gate-putt-1m-elite-presisjon"
+      ],
       "defaultSets": 4,
       "defaultReps": 6,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-3",
-      "tags": ["kant-kontroll", "face-presisjon", "1-2m", "elite"],
+      "tags": [
+        "kant-kontroll",
+        "face-presisjon",
+        "1-2m",
+        "elite"
+      ],
       "coachNotater": "Kant-kontroll er det ytterste tegn på face-bevissthet. Kan spilleren konsekvent velge høyre eller venstre kant, eier de putterhodet. Start med å bevisst spørre spilleren FØR hvert slag: 'Hvilken kant?' Det mentale valget forut for slag forplikter spilleren og avslører om de er tilstede i rutinen."
     },
     {
@@ -89,20 +167,41 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "10-baller", "plastkopp"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller",
+        "plastkopp"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 20,
       "intensitet": 6,
-      "lPhase": ["GRUNN", "SPESIAL"],
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
       "morad": false,
       "prerequisites": [],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["5m", "distansekontroll", "pendel", "midtdistanse"],
+      "tags": [
+        "5m",
+        "distansekontroll",
+        "pendel",
+        "midtdistanse"
+      ],
       "coachNotater": "Ingen baller bakover er ikke-forhandlingsbart for elitespillere. Drillet avslører om spilleren har konsistent pendellengde eller om de kompenserer med akselerasjon/deselerasjon. Se på baksvingen: er den konsistent fra slag til slag? En varierende baksvingslengde er rotårsaken til inkonsistent distanse. Progresjonen er å gjøre sonen smalere — 30cm i stedet for 50cm forbi."
     },
     {
@@ -114,20 +213,45 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "9-baller", "markeringskopper"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "9-baller",
+        "markeringskopper"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 25,
       "intensitet": 7,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["pendeltest-5m-distansekontroll"],
+      "prerequisites": [
+        "pendeltest-5m-distansekontroll"
+      ],
       "defaultSets": 4,
       "defaultReps": 9,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["3m", "5m", "7m", "stige", "distanseserie", "midtdistanse"],
+      "tags": [
+        "3m",
+        "5m",
+        "7m",
+        "stige",
+        "distanseserie",
+        "midtdistanse"
+      ],
       "coachNotater": "Stigeformatet avslører sprang i distansekontroll. Mange spillere er gode på én distanse men inkonsistente på en annen — stigedrillet fanger dette. Vær spesielt oppmerksom på overgangen 5m til 7m: der mister de fleste trykket i pendelen. Progresjonen er å legge til knekk (slake breaker) på alle tre distanser."
     },
     {
@@ -139,20 +263,44 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "10-baller", "tee"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller",
+        "tee"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 20,
       "intensitet": 7,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": true,
-      "prerequisites": ["aimpoint-lesing-basis"],
+      "prerequisites": [
+        "aimpoint-lesing-basis"
+      ],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-4",
-      "tags": ["5m", "breaker", "lese-grønn", "startlinje", "middels"],
+      "tags": [
+        "5m",
+        "breaker",
+        "lese-grønn",
+        "startlinje",
+        "middels"
+      ],
       "coachNotater": "Startlinjen er sannheten — hvis 8 av 10 starter på tee-linjen men bare 3 av 10 går i hull, er lese-linjen feil. Hvis bare 5 av 10 starter på tee-linjen, er det face-kontroll som svikter. Disse to feilkildene krever ulike løsninger, og dette drillet diagnostiserer dem tydelig. Bruk aimpoint-tall for å hjelpe spilleren forstå breaken."
     },
     {
@@ -164,20 +312,44 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "5-baller", "mynter"],
-      "fasilitetKrav": ["PUTTING_GREEN_LANG"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "5-baller",
+        "mynter"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_LANG"
+      ],
       "varighetMin": 35,
       "intensitet": 7,
-      "lPhase": ["GRUNN", "SPESIAL"],
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["aimpoint-express-kurs"],
+      "prerequisites": [
+        "aimpoint-express-kurs"
+      ],
       "defaultSets": 1,
       "defaultReps": 20,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["8m", "aimpoint", "lese-grønn", "kalibrering", "breaker"],
+      "tags": [
+        "8m",
+        "aimpoint",
+        "lese-grønn",
+        "kalibrering",
+        "breaker"
+      ],
       "coachNotater": "Kalibrering er nøkkelordet her — spilleren skal bygge en mental database over sin egen aimpoint-nøyaktighet. Logg avviket mellom predikert og faktisk breaking-punkt over tid. De fleste elite-spillere leser LITT for lite. Progresjonen er å gjøre det uten mynt og stole fullstendig på den interne lesingen."
     },
     {
@@ -189,20 +361,42 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "5-baller", "sirkelmarkør"],
-      "fasilitetKrav": ["PUTTING_GREEN_LANG"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "5-baller",
+        "sirkelmarkør"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_LANG"
+      ],
       "varighetMin": 30,
       "intensitet": 6,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": false,
       "prerequisites": [],
       "defaultSets": 1,
       "defaultReps": 15,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["10m", "lag-putt", "riktig-side", "plassering", "taktisk"],
+      "tags": [
+        "10m",
+        "lag-putt",
+        "riktig-side",
+        "plassering",
+        "taktisk"
+      ],
       "coachNotater": "Elitespillere 3-putter ikke fordi de mangler teknikk — de 3-putter fordi de legger seg på feil side og deretter mislykkes med en vanskelig nedoverbakke 1.2m-putt. Denne øvelsen er mer taktisk enn teknisk. Still spilleren spørsmålet: 'Hva er din exit-plan?' FØR de slår. Bevissthet om exit-punktet endrer svingbilder umiddelbart."
     },
     {
@@ -214,20 +408,43 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "4-baller"],
-      "fasilitetKrav": ["PUTTING_GREEN_LANG"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "4-baller"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_LANG"
+      ],
       "varighetMin": 35,
       "intensitet": 7,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["lag-putt-10m-stopp-riktig-side"],
+      "prerequisites": [
+        "lag-putt-10m-stopp-riktig-side"
+      ],
       "defaultSets": 1,
       "defaultReps": 16,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["12m", "vind", "slope", "lag-putt", "elite"],
+      "tags": [
+        "12m",
+        "vind",
+        "slope",
+        "lag-putt",
+        "elite"
+      ],
       "coachNotater": "Vind på lange putter er undervurdert. En 3m/s vind kan forskyve breaking 5-10cm på 12m-putter. Spilleren skal bevisst kompensere. Kjør drillet i faktiske vindforhold utendørs. Kombiner med slope-situasjoner for å øke kompleksiteten. Dette er eksklusivt for A- og B-kategorispillere med turneringserfaring."
     },
     {
@@ -239,20 +456,42 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "6-baller"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "6-baller"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 25,
       "intensitet": 9,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["stopp-hodet-putt-2m-rutine"],
+      "prerequisites": [
+        "stopp-hodet-putt-2m-rutine"
+      ],
       "defaultSets": null,
       "defaultReps": 6,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["3m", "press", "countdown", "mental", "turnering"],
+      "tags": [
+        "3m",
+        "press",
+        "countdown",
+        "mental",
+        "turnering"
+      ],
       "coachNotater": "Dette er mentalt krevende — bevisst. Rutinen brytes når spilleren vet de har 5 av 6 og bare trenger én til. Akkurat det scenariet er 18. hull i en turnering. Poenget er ikke å gjøre det enkelt, men å lære seg å leve med presset. Coach bør si antall høyt mellom hvert slag. Progresjonen er 8 av 8 uten bom — ingen restart-begrensning."
     },
     {
@@ -264,20 +503,44 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "5-baller", "øyenmaske-valgfri"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "5-baller",
+        "øyenmaske-valgfri"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 20,
       "intensitet": 7,
-      "lPhase": ["GRUNN", "SPESIAL"],
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
       "morad": true,
-      "prerequisites": ["pendeltest-5m-distansekontroll"],
+      "prerequisites": [
+        "pendeltest-5m-distansekontroll"
+      ],
       "defaultSets": 3,
       "defaultReps": 5,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-5",
-      "tags": ["6m", "blindfold", "feel", "distanse", "internalisert"],
+      "tags": [
+        "6m",
+        "blindfold",
+        "feel",
+        "distanse",
+        "internalisert"
+      ],
       "coachNotater": "MORAD-prinsipp: synet overstyrer kroppen. Uten visuelt input kobler spilleren tilbake til propriosepsjon og muskelminne — det vi ønsker å styrke. Mange oppdager at de faktisk treffer bedre uten å se. Bruk dette regelmessig i forberedelsesperioden. Diskuter med spilleren etter hvert sett hva de kjente. Internaliserte observasjoner er mer verdifulle enn externe instruksjoner."
     },
     {
@@ -289,20 +552,41 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "10-baller"],
-      "fasilitetKrav": ["PUTTING_GREEN_LANG"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_LANG"
+      ],
       "varighetMin": 30,
       "intensitet": 7,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": false,
       "prerequisites": [],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["variasjon", "DECADE", "poengsum", "1-8m", "makker"],
+      "tags": [
+        "variasjon",
+        "DECADE",
+        "poengsum",
+        "1-8m",
+        "makker"
+      ],
       "coachNotater": "DECADE-basert poengstruktur reflekterer reell spillverdi bedre enn bare 'hull eller ikke hull'. En god lag-putt fra 8m er mer verdt enn en spennende 1m som nesten går inn. Bruk dette som evalueringsverktøy for å tracke fremgang. Poengsum over 20 på A-nivå er forventet. Progresjonen er å øke maks-distansen til 12m."
     },
     {
@@ -314,20 +598,42 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE", "HJEM"],
-      "utstyr": ["putter", "10-baller", "metronom-app"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE",
+        "HJEM"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller",
+        "metronom-app"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 20,
       "intensitet": 6,
-      "lPhase": ["GRUNN"],
+      "lPhase": [
+        "GRUNN"
+      ],
       "morad": true,
       "prerequisites": [],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-2",
-      "tags": ["rytme", "tempo", "metronom", "6m", "teknisk"],
+      "tags": [
+        "rytme",
+        "tempo",
+        "metronom",
+        "6m",
+        "teknisk"
+      ],
       "coachNotater": "72 BPM er utgangspunkt — juster til spillerens naturlige rytme ved å observere hva de slår flest inn med. MORAD legger stor vekt på konsistent svingtempo som grunnlag for repetisjon. Metronomen er et verktøy for å eksternalisere rytmen slik at spilleren kan internalisere den over tid. Etter 4-6 uker bør metronomen fases ut."
     },
     {
@@ -339,20 +645,42 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "10-baller"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "10-baller"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 20,
       "intensitet": 7,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["stopp-hodet-putt-2m-rutine"],
+      "prerequisites": [
+        "stopp-hodet-putt-2m-rutine"
+      ],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["downhill", "slope", "3m", "kontroll", "fart"],
+      "tags": [
+        "downhill",
+        "slope",
+        "3m",
+        "kontroll",
+        "fart"
+      ],
       "coachNotater": "Bratte nedoverbakke-putter er der elite-spillere mister flest slag — ikke på de brede greenfeilene, men på 3-putt fra 3m nedover. Nøkkelen er å redusere pendellengden drastisk og stole på gravity. Mange spillere kompenserer med deselerasjon — det er verre. Likedan er det viktig å akseptere at 'god' på denne putten er å stoppe innenfor 60cm, ikke nødvendigvis i hull."
     },
     {
@@ -364,20 +692,43 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "3-baller"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "3-baller"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 20,
       "intensitet": 8,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["stigeputt-3-5-7m-distanseserie"],
+      "prerequisites": [
+        "stigeputt-3-5-7m-distanseserie"
+      ],
       "defaultSets": 4,
       "defaultReps": 3,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["loop", "1m", "3m", "6m", "variasjon", "sekvens"],
+      "tags": [
+        "loop",
+        "1m",
+        "3m",
+        "6m",
+        "variasjon",
+        "sekvens"
+      ],
       "coachNotater": "Loop-formatet tvinger spilleren til å resette mentalt mellom distanser — akkurat som på banen. Ingen av puttene er like i distanse eller vinkel. Det er nøyaktig slik virkeligheten er. Kjør dette som avslutning på putting-trening for å simulere siste hull i en turnering. Observer om spilleren opprettholder rutinen eller haster mot siste putt."
     },
     {
@@ -389,20 +740,44 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "8-baller", "tee"],
-      "fasilitetKrav": ["PUTTING_GREEN_LANG"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "8-baller",
+        "tee"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_LANG"
+      ],
       "varighetMin": 25,
       "intensitet": 7,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["trehjul-putt-middels-breaker-5m"],
+      "prerequisites": [
+        "trehjul-putt-middels-breaker-5m"
+      ],
       "defaultSets": 2,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["8m", "uphill", "breaker", "konsistens", "startlinje"],
+      "tags": [
+        "8m",
+        "uphill",
+        "breaker",
+        "konsistens",
+        "startlinje"
+      ],
       "coachNotater": "Oppbakkeputter med breaker er de mest fordelaktige puttene på banen — man kan gå frisk på og det er den enkleste linjen å spille. Likevel mislykkes mange fordi de ikke er tydelig nok på startlinjen. Bruk tee som start-guide. Legg vekt på at ballen starter på linjen — det er spillerens ansvar, ikke gravity."
     },
     {
@@ -414,20 +789,43 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "4-baller"],
-      "fasilitetKrav": ["PUTTING_GREEN_LANG"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "4-baller"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_LANG"
+      ],
       "varighetMin": 35,
       "intensitet": 6,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": true,
-      "prerequisites": ["lag-putt-10m-stopp-riktig-side", "vind-og-slope-lag-12m"],
+      "prerequisites": [
+        "lag-putt-10m-stopp-riktig-side",
+        "vind-og-slope-lag-12m"
+      ],
       "defaultSets": 1,
       "defaultReps": 12,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-6",
-      "tags": ["15m", "lag-putt", "automatikk", "tomt-hode", "elite"],
+      "tags": [
+        "15m",
+        "lag-putt",
+        "automatikk",
+        "tomt-hode",
+        "elite"
+      ],
       "coachNotater": "MORAD-prinsipp: ved lang putt skal spilleren 'nullstille' hodet og la kroppen gjøre jobben basert på feel og øvelse. Over-tenking på 15m er direkte skadelig. Coachen bør aktivt instruere spilleren til å 'tenk bare på landing-sone 60cm forbi hull' og ingenting annet. Logger 0 treputts er det absolutte målet for A-kategori turneringsspillere."
     },
     {
@@ -439,20 +837,42 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["putter", "loft-jern", "6-baller"],
-      "fasilitetKrav": ["PUTTING_GREEN_KORT", "SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "putter",
+        "loft-jern",
+        "6-baller"
+      ],
+      "fasilitetKrav": [
+        "PUTTING_GREEN_KORT",
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 25,
       "intensitet": 6,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
       "prerequisites": [],
       "defaultSets": 3,
       "defaultReps": 6,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["fringe", "chip-eller-putt", "beslutning", "situasjon", "taktisk"],
+      "tags": [
+        "fringe",
+        "chip-eller-putt",
+        "beslutning",
+        "situasjon",
+        "taktisk"
+      ],
       "coachNotater": "Fringe-situasjonen er en av de mest undervurderte score-drainerne. Elitespillere må ha klare kriterier for valget — ikke gjette. Regelen er enkel: kan du rulle ballen jevnt? Putt. Hvis ikke: chip. Øv på å artikulere valget høyt FØR slag: 'Jeg putter fordi...' Dette gjør beslutningen bevisst og repeterbar."
     },
     {
@@ -464,20 +884,42 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["56-graders-kile", "10-baller", "tees"],
-      "fasilitetKrav": ["SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "56-graders-kile",
+        "10-baller",
+        "tees"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 25,
       "intensitet": 7,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": false,
       "prerequisites": [],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["chip", "kile", "landing-sone", "50m", "elite"],
+      "tags": [
+        "chip",
+        "kile",
+        "landing-sone",
+        "50m",
+        "elite"
+      ],
       "coachNotater": "Landing-sone er nøkkelen — chip-spillet handler om å kontrollere det første kontaktpunktet på grønnen, ikke bare retning. Mange tenker kun på retning og ignorerer landing-presisjonen. Bruk to tees for å visualisere sonen tydelig. Juster kile-valg (52, 56, 60 grader) basert på grastype mellom ball og grønn."
     },
     {
@@ -489,20 +931,40 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["8-jern", "8-baller"],
-      "fasilitetKrav": ["SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "8-jern",
+        "8-baller"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 25,
       "intensitet": 6,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": true,
       "prerequisites": [],
       "defaultSets": 3,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-4",
-      "tags": ["bump-and-run", "8-jern", "lav-bane", "løp", "elite"],
+      "tags": [
+        "bump-and-run",
+        "8-jern",
+        "lav-bane",
+        "løp",
+        "elite"
+      ],
       "coachNotater": "MORAD-metodikken fremhever bump-and-run som den sikreste short-game-teknikken på europeisk gras — lavere risiko enn lob, mer forutsigbar landing. Spilleren MÅ øve med 8-jern, ikke alltid den naturlige reflex-wedge. Spør: 'Hva er det laveste du kan slå denne ballen?' — det setter inn riktig tankegang."
     },
     {
@@ -514,20 +976,43 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE", "RANGE"],
-      "utstyr": ["54-graders-kile", "15-baller"],
-      "fasilitetKrav": ["SHORT_GAME_AREA", "KAMERA"],
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "54-graders-kile",
+        "15-baller"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA",
+        "KAMERA"
+      ],
       "varighetMin": 30,
       "intensitet": 7,
-      "lPhase": ["GRUNN", "SPESIAL"],
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
       "morad": true,
       "prerequisites": [],
       "defaultSets": 3,
       "defaultReps": 15,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-5",
-      "tags": ["pitch", "klokke-system", "54-grader", "20m", "distansekontroll"],
+      "tags": [
+        "pitch",
+        "klokke-system",
+        "54-grader",
+        "20m",
+        "distansekontroll"
+      ],
       "coachNotater": "Klokke-systemet er kjernen i MORAD wedge-metodikken — svingsvinger mappes til bane-distanser. A-kategori spillere bør ha alle klokke-posisjoner automatiserte for 3 ulike kiler (50, 54, 58 grader). Start med å beherske én kil fullstendig før du bytter. Kamera bak (face-on) avslører om armer og kropp roterer synkront."
     },
     {
@@ -539,20 +1024,44 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["BANE"],
-      "utstyr": ["60-graders-kile", "8-baller", "hekk-eller-bag", "tees"],
-      "fasilitetKrav": ["SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "60-graders-kile",
+        "8-baller",
+        "hekk-eller-bag",
+        "tees"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 25,
       "intensitet": 8,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["pitch-klokke-7-8-9-elite-kontroll"],
+      "prerequisites": [
+        "pitch-klokke-7-8-9-elite-kontroll"
+      ],
       "defaultSets": 3,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["lob", "hindring", "60-grader", "høy-bane", "elite"],
+      "tags": [
+        "lob",
+        "hindring",
+        "60-grader",
+        "høy-bane",
+        "elite"
+      ],
       "coachNotater": "Lob-shot er det høyest-risiko, høyest-gevinst-slaget i kort spill. Elitespillere skal ha det i arsenalet, men også vite nøyaktig NÅR de bruker det. Nesten aldri under press i turneringer om det finnes alternativ. Øv det tekniske grundig, men lær spilleren situasjonsbevissthet: 'Er lob-shot riktig valg her?' Bump-and-run er alltid sikraste alternativ."
     },
     {
@@ -564,20 +1073,40 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["50-graders-kile", "8-baller"],
-      "fasilitetKrav": ["SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "50-graders-kile",
+        "8-baller"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 20,
       "intensitet": 7,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": true,
       "prerequisites": [],
       "defaultSets": 3,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-4",
-      "tags": ["tight-lie", "hardpakket", "chip", "ball-kontakt", "teknisk"],
+      "tags": [
+        "tight-lie",
+        "hardpakket",
+        "chip",
+        "ball-kontakt",
+        "teknisk"
+      ],
       "coachNotater": "Tight lie er der spillere med altfor mye 'bounce'-tendens får problemer. MORAD anbefaler forward press og ball midten-bakover i stance for å redusere effektiv bounce. Prøv med lav-bounce-wedge (4-6 grader) på hardpakket grunn. Suksess-kriteriet er ingen fett-slag — det er det absolutte minimum. Inntil spilleren eliminer fett-slag fra tight lie, er dette ukentlig øvelse."
     },
     {
@@ -589,20 +1118,42 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["56-graders-kile", "10-baller"],
-      "fasilitetKrav": ["BUNKER", "SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "56-graders-kile",
+        "10-baller"
+      ],
+      "fasilitetKrav": [
+        "BUNKER",
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 20,
       "intensitet": 7,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": true,
       "prerequisites": [],
       "defaultSets": 2,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-5",
-      "tags": ["bunker", "splash", "flat-sand", "3m", "åpen-face"],
+      "tags": [
+        "bunker",
+        "splash",
+        "flat-sand",
+        "3m",
+        "åpen-face"
+      ],
       "coachNotater": "Flat bunker er grunnlaget — spilleren MÅ beherske dette perfekt før de takler vanskelige bunkerligninger. MORAD's inngangspunkt-fokus (5cm bak ball) er kritisk. Merk inngangspunktet i sanden med en linje foran neste treningssesjon for å gi visuell feedback. Konsistent follow-through er like viktig som inngangspunkt — stopp aldri i sanden."
     },
     {
@@ -614,20 +1165,43 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["52-graders-kile", "8-baller"],
-      "fasilitetKrav": ["BUNKER", "SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "52-graders-kile",
+        "8-baller"
+      ],
+      "fasilitetKrav": [
+        "BUNKER",
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 25,
       "intensitet": 7,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["bunker-splash-flat-sand-3m-elite"],
+      "prerequisites": [
+        "bunker-splash-flat-sand-3m-elite"
+      ],
       "defaultSets": 3,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["bunker", "langt-slag", "30m", "clean-contact", "fairway-bunker"],
+      "tags": [
+        "bunker",
+        "langt-slag",
+        "30m",
+        "clean-contact",
+        "fairway-bunker"
+      ],
       "coachNotater": "Langt bunker-slag fra fairway-bunker er et område mange negliserer. Regelen er: ta 1 ekstra loft (52 i stedet for 60), slå ballen ren, og godta 5-10m kortere carry enn fra fairway. Spilleren MÅ prioritere å komme UT av bunkeren over lengde. Øv rå ball-kontakt fra tett sand uten å splashe."
     },
     {
@@ -639,20 +1213,43 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["56-60-grader-kile", "8-baller"],
-      "fasilitetKrav": ["BUNKER", "SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "56-60-grader-kile",
+        "8-baller"
+      ],
+      "fasilitetKrav": [
+        "BUNKER",
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 20,
       "intensitet": 8,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["bunker-splash-flat-sand-3m-elite"],
+      "prerequisites": [
+        "bunker-splash-flat-sand-3m-elite"
+      ],
       "defaultSets": 2,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["buried-lie", "bury", "bunker", "lukket-face", "ekstra-teknikk"],
+      "tags": [
+        "buried-lie",
+        "bury",
+        "bunker",
+        "lukket-face",
+        "ekstra-teknikk"
+      ],
       "coachNotater": "Begravd bunker-ball er den vanskeligste short-game-situasjonen. Bruk alltid closed face — åpen face gir for mye bounce og ballen forblir i sanden. Fokus er utelukkende på å komme UT, ikke på plassering. Accept at dette er slag-redning, ikke scoring-mulighet. Drillet trener beslutnings-ro under stress."
     },
     {
@@ -664,20 +1261,45 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["56-graders-kile", "putter", "6-baller"],
-      "fasilitetKrav": ["BUNKER", "SHORT_GAME_AREA", "PUTTING_GREEN_KORT"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "56-graders-kile",
+        "putter",
+        "6-baller"
+      ],
+      "fasilitetKrav": [
+        "BUNKER",
+        "SHORT_GAME_AREA",
+        "PUTTING_GREEN_KORT"
+      ],
       "varighetMin": 30,
       "intensitet": 8,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["bunker-splash-flat-sand-3m-elite"],
+      "prerequisites": [
+        "bunker-splash-flat-sand-3m-elite"
+      ],
       "defaultSets": 3,
       "defaultReps": 6,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["bunker-save", "sekvens", "sand-save-prosent", "kombinert", "turnering"],
+      "tags": [
+        "bunker-save",
+        "sekvens",
+        "sand-save-prosent",
+        "kombinert",
+        "turnering"
+      ],
       "coachNotater": "Dette drillet måler faktisk sand-save prosent — den ultimate beregningen for kort bunker-spill. A-kategori spillere bør ligge 50-60% sand-save. Gjennomfør dette som ukentlig benchmark og logg over tid. Det er lett å trene bunkerslag isolert — det er vanskeligere å trene den komplette redning inkludert påfølgende putt under press."
     },
     {
@@ -689,20 +1311,44 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["pw", "52-56-60-grader-kiler", "8-baller"],
-      "fasilitetKrav": ["SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "52-56-60-grader-kiler",
+        "8-baller"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 40,
       "intensitet": 6,
-      "lPhase": ["GRUNN", "SPESIAL"],
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["elite-chip-stopp-sone-kile-50m"],
+      "prerequisites": [
+        "elite-chip-stopp-sone-kile-50m"
+      ],
       "defaultSets": 4,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["kile-valg", "4-kiler", "chip-variasjon", "beslutning", "data"],
+      "tags": [
+        "kile-valg",
+        "4-kiler",
+        "chip-variasjon",
+        "beslutning",
+        "data"
+      ],
       "coachNotater": "Dette er et analyse-drill like mye som et teknisk drill. Spilleren samler data om hva som skjer med ulike kiler fra samme posisjon. Over tid bygger de en intern database over sine egne slag-resultater per kile. Å velge riktig klubb er minst like viktig som å slå bra teknisk. Elitespillere har bevisste grunner for kile-valget — ikke magefølelse."
     },
     {
@@ -714,20 +1360,42 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["BANE"],
-      "utstyr": ["56-graders-kile", "8-baller"],
-      "fasilitetKrav": ["SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "56-graders-kile",
+        "8-baller"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 25,
       "intensitet": 7,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["pitch-klokke-7-8-9-elite-kontroll"],
+      "prerequisites": [
+        "pitch-klokke-7-8-9-elite-kontroll"
+      ],
       "defaultSets": 3,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["pitch", "vind", "punch", "21m", "kompensasjon"],
+      "tags": [
+        "pitch",
+        "vind",
+        "punch",
+        "21m",
+        "kompensasjon"
+      ],
       "coachNotater": "Vind-kompensasjon i kort spill er noe de fleste spillere er dårlig trent på fordi de alltid øver i rolig vær. Punch-pitch reduserer spinnet og holder ballen lavere — nøkkelen er å holde hender fremover gjennom kontakt. Øv dette spesifikt på blåsige dager. Ikke tren dette på en vindstille simulator-økt og forvent samme resultat ute."
     },
     {
@@ -739,20 +1407,42 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["52-graders-kile", "6-baller"],
-      "fasilitetKrav": ["SHORT_GAME_AREA"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "52-graders-kile",
+        "6-baller"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
       "varighetMin": 20,
       "intensitet": 7,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["elite-chip-stopp-sone-kile-50m"],
+      "prerequisites": [
+        "elite-chip-stopp-sone-kile-50m"
+      ],
       "defaultSets": 3,
       "defaultReps": 6,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["fringe", "kanter", "chip", "landing", "presisjon"],
+      "tags": [
+        "fringe",
+        "kanter",
+        "chip",
+        "landing",
+        "presisjon"
+      ],
       "coachNotater": "Kanter (rough til grønn) er en av de vanskeligste situasjonene i kort spill fordi liggeforhold endrer seg plutselig. Ball i rough nær kanten krever litt ekstra loft for å 'hente' ballen ut. Øv fra varierende grastyper — friske rough, tørr rough, tett gras. Landing på grønnen (ikke i kanten) er absolutt krav. Dette er en ferdighet som separerer gode kort-spill-spillere fra elite."
     },
     {
@@ -764,20 +1454,43 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE", "STUDIO"],
-      "utstyr": ["pw", "10-baller", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "pw",
+        "10-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 30,
       "intensitet": 7,
-      "lPhase": ["GRUNN"],
+      "lPhase": [
+        "GRUNN"
+      ],
       "morad": false,
       "prerequisites": [],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["PW", "100m", "radar", "kalibrering", "carry"],
+      "tags": [
+        "PW",
+        "100m",
+        "radar",
+        "kalibrering",
+        "carry"
+      ],
       "coachNotater": "Kalibrering-sessionene er investering i fremtidig konsistens. Spilleren som vet nøyaktig hva full PW gir i carry under ulike forhold, tar bedre beslutninger på banen. Logg dataene og bygg en personlig 'yardage card'. A-kategori mål: ±2m toleranse. Ikke aksepter 'omtrent 100m' — data gir sannheten."
     },
     {
@@ -789,20 +1502,45 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE", "STUDIO"],
-      "utstyr": ["9-jern", "12-baller", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "9-jern",
+        "12-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 30,
       "intensitet": 8,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": true,
-      "prerequisites": ["tilnaerming-pw-100m-radar-kalibrering"],
+      "prerequisites": [
+        "tilnaerming-pw-100m-radar-kalibrering"
+      ],
       "defaultSets": 3,
       "defaultReps": 12,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-2",
-      "tags": ["9-jern", "100m", "draw-fade", "form-kontroll", "kort-jern"],
+      "tags": [
+        "9-jern",
+        "100m",
+        "draw-fade",
+        "form-kontroll",
+        "kort-jern"
+      ],
       "coachNotater": "MORAD: beherskelse av ball-form er en grunnleggende ferdighet for elite-spillere. De skal ikke bare slå rett — de skal velge form basert på pin-plassering og hindringer. Øv draw og fade med minimal teknisk endring (face-angle og path, ikke grip). Vær tydelig: dette er kontrollert form, ikke korreksjon for feil. Bruk radar-data til å bekrefte faktisk face-til-path-forhold."
     },
     {
@@ -814,20 +1552,44 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE"],
-      "utstyr": ["7-jern", "10-baller", "aim-sticks"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "10-baller",
+        "aim-sticks"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 25,
       "intensitet": 7,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["tilnaerming-pw-100m-radar-kalibrering"],
+      "prerequisites": [
+        "tilnaerming-pw-100m-radar-kalibrering"
+      ],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["7-jern", "150m", "smalt-mål", "aim-sticks", "mellom-jern"],
+      "tags": [
+        "7-jern",
+        "150m",
+        "smalt-mål",
+        "aim-sticks",
+        "mellom-jern"
+      ],
       "coachNotater": "Smalt target-drill tvinger spilleren til å fokusere. Mange spillere på range slår mot store åpne felt uten tydelig mål — det trener ingenting konkret. Aim-sticks som portal gir umiddelbar 'ja/nei' tilbakemelding. Start med 3m bredde, smal ned til 2m og til slutt 1.5m. A-kategorispillere bør ha 80%+ treff på 2m bredde ved 150m."
     },
     {
@@ -839,20 +1601,44 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE"],
-      "utstyr": ["6-jern", "8-baller", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "6-jern",
+        "8-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 30,
       "intensitet": 7,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": true,
-      "prerequisites": ["mellom-jern-7-150m-smalt-target"],
+      "prerequisites": [
+        "mellom-jern-7-150m-smalt-target"
+      ],
       "defaultSets": 4,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-1",
-      "tags": ["6-jern", "160m", "punch", "vind", "lav-bane"],
+      "tags": [
+        "6-jern",
+        "160m",
+        "punch",
+        "vind",
+        "lav-bane"
+      ],
       "coachNotater": "Punch-shot med 6-jern er en av de mest nyttige knock-down-teknikkene for norsk golf. Vinden er en faktor i de fleste turneringer her. MORAD-metodikken: ball 5cm bakover i stance, hands-forward, 3/4 sving, stopp follow-through i livet. Øv til punch-shot er et automatisk valg ved vind fremfor å prøve å slå gjennom den."
     },
     {
@@ -864,20 +1650,45 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE"],
-      "utstyr": ["4-jern-eller-hybrid", "10-baller", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "4-jern-eller-hybrid",
+        "10-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 25,
       "intensitet": 8,
-      "lPhase": ["GRUNN", "SPESIAL"],
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["mellom-jern-6-160m-kne-hoyde-vind"],
+      "prerequisites": [
+        "mellom-jern-6-160m-kne-hoyde-vind"
+      ],
       "defaultSets": 2,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["4-jern", "200m", "langt-jern", "carry-kontroll", "elite"],
+      "tags": [
+        "4-jern",
+        "200m",
+        "langt-jern",
+        "carry-kontroll",
+        "elite"
+      ],
       "coachNotater": "Langt jern fra fairway er en testklubben — den avslører om tempo-kontrollen holder under lengre sving. Mange elitespillere bytter til hybrid uten å ha jobbet ordentlig med teknikken. Prøv begge og logg data over 4-6 uker. La data bestemme klubbvalget, ikke tradisjonen. A-kategori mål: ±5m side-avvik fra 200m er absolutt krav."
     },
     {
@@ -889,20 +1700,45 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["RANGE", "SIMULATOR"],
-      "utstyr": ["5-6-7-8-jern", "5-baller"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR", "SIMULATOR"],
+      "environment": [
+        "RANGE",
+        "SIMULATOR"
+      ],
+      "utstyr": [
+        "5-6-7-8-jern",
+        "5-baller"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR",
+        "SIMULATOR"
+      ],
       "varighetMin": 40,
       "intensitet": 8,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["langt-jern-4-200m-elite-kontroll"],
+      "prerequisites": [
+        "langt-jern-4-200m-elite-kontroll"
+      ],
       "defaultSets": 1,
       "defaultReps": 20,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["par-3", "simulering", "jern-valg", "GIR", "135-185m"],
+      "tags": [
+        "par-3",
+        "simulering",
+        "jern-valg",
+        "GIR",
+        "135-185m"
+      ],
       "coachNotater": "Par 3-simulering fra range er mer mening-sfullt enn blokkert øvelse med én klubb. Spilleren trener hele beslutningsprosessen: les situasjon, velg klubb, slå mot mål. GIR-statistikk er den viktigste approach-metrikken. A-kategori mål: 80%+ GIR. Logg dette som ukentlig benchmark og sammenlign med faktisk bane-statistikk."
     },
     {
@@ -914,20 +1750,45 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE", "BANE", "SIMULATOR"],
-      "utstyr": ["jern", "9-baller"],
-      "fasilitetKrav": ["DRIVING_RANGE", "SIMULATOR"],
+      "environment": [
+        "RANGE",
+        "BANE",
+        "SIMULATOR"
+      ],
+      "utstyr": [
+        "jern",
+        "9-baller"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "SIMULATOR"
+      ],
       "varighetMin": 35,
       "intensitet": 9,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["approach-150-185m-par-3-simulering"],
+      "prerequisites": [
+        "approach-150-185m-par-3-simulering"
+      ],
       "defaultSets": 2,
       "defaultReps": 9,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["press", "turnering", "siste-hull", "mental", "approach"],
+      "tags": [
+        "press",
+        "turnering",
+        "siste-hull",
+        "mental",
+        "approach"
+      ],
       "coachNotater": "Press-simulering er det nærmeste vi kommer turneringssituasjon på range. Spilleren som sier 'jeg er ett slag foran' høyt, aktiverer den samme nervøse responsen som på banen. Merk endringer i tempo og rutine under press. Mange spiller med forkortede rutiner under press — dette drillet avslører det. Jobb med rutine-stabilitet under denne øvelsen."
     },
     {
@@ -939,20 +1800,44 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE"],
-      "utstyr": ["4-jern", "8-baller", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "4-jern",
+        "8-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 25,
       "intensitet": 7,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["mellom-jern-6-160m-kne-hoyde-vind"],
+      "prerequisites": [
+        "mellom-jern-6-160m-kne-hoyde-vind"
+      ],
       "defaultSets": 3,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["lang-jern", "190m", "vind", "motvind", "kalibrering"],
+      "tags": [
+        "lang-jern",
+        "190m",
+        "vind",
+        "motvind",
+        "kalibrering"
+      ],
       "coachNotater": "Vind-kalibrering for lange jern er en av de mest undervurderte ferdighetene. Spillere vet at vinden påvirker, men underestimerer effekten konsekvent. Motvind på 4-5m/s kan ta 15-20m fra carry med lang jern. Bygg en personlig 'vind-tabell' i løpet av sesongen: -5m ved 2m/s, -10m ved 4m/s, -15m ved 6m/s som startpunkt."
     },
     {
@@ -964,20 +1849,46 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE"],
-      "utstyr": ["driver", "10-baller", "aim-sticks", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "aim-sticks",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 30,
       "intensitet": 8,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": true,
-      "prerequisites": ["driver-grunnposisjon", "draw-fade-shape-control-10b"],
+      "prerequisites": [
+        "driver-grunnposisjon",
+        "draw-fade-shape-control-10b"
+      ],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-2",
-      "tags": ["driver", "draw", "kommando", "9m-vindu", "form-kontroll"],
+      "tags": [
+        "driver",
+        "draw",
+        "kommando",
+        "9m-vindu",
+        "form-kontroll"
+      ],
       "coachNotater": "MORAD: draw krever in-to-out path med lukket face relativt til path. Bruk TrackMan for å bekrefte face-to-path-forholdet: -2 til -4 grader face relativt til path for lett draw. Mange spillere ender opp med hook (for mye lukket face) i stedet for draw. Vindu-portene tvinger frem bevisst start-linje-tenking — det er grunnlaget for form-kontroll."
     },
     {
@@ -989,20 +1900,45 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE"],
-      "utstyr": ["driver", "10-baller", "aim-sticks", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "aim-sticks",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 30,
       "intensitet": 8,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": true,
-      "prerequisites": ["draw-kommando-driver-9m-vindu"],
+      "prerequisites": [
+        "draw-kommando-driver-9m-vindu"
+      ],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-2",
-      "tags": ["driver", "fade", "kommando", "out-to-in", "form-kontroll"],
+      "tags": [
+        "driver",
+        "fade",
+        "kommando",
+        "out-to-in",
+        "form-kontroll"
+      ],
       "coachNotater": "Fade-kommando er motpolen til draw-kommandoen og skal trenes like systematisk. MORAD-elever skal ha begge formene i full kontroll. Fade krever out-to-in path med åpen face relativt til path. Unngå å lage for mye åpen face — det gir slice, ikke fade. En god fade er bare 5-10m kurv til høyre, ikke 20m. Radar-data er sannheten her."
     },
     {
@@ -1014,20 +1950,44 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE"],
-      "utstyr": ["driver", "8-baller", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "8-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 25,
       "intensitet": 8,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["fade-kommando-driver-fairway-venstre"],
+      "prerequisites": [
+        "fade-kommando-driver-fairway-venstre"
+      ],
       "defaultSets": 3,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["stinger", "driver", "lav-bane", "vind", "180m"],
+      "tags": [
+        "stinger",
+        "driver",
+        "lav-bane",
+        "vind",
+        "180m"
+      ],
       "coachNotater": "Stinger er et av de mest kraftfulle verktøyene i norsk vindgolf. Spillere som kan slå stinger-driver konsistent har en stor fordel på blåsige dager. Nøkkelen er lav tee, ball bakover og begrenset sving. Mange elitespillere har stinger med 3-jern — øv også driver-stinger eksplisitt. Mål: ballen under trær om nødvendig (under 10m toppunkt)."
     },
     {
@@ -1039,20 +1999,44 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["RANGE"],
-      "utstyr": ["3-jern", "8-baller", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "3-jern",
+        "8-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 25,
       "intensitet": 7,
-      "lPhase": ["SPESIAL"],
+      "lPhase": [
+        "SPESIAL"
+      ],
       "morad": false,
-      "prerequisites": ["mellom-jern-6-160m-kne-hoyde-vind"],
+      "prerequisites": [
+        "mellom-jern-6-160m-kne-hoyde-vind"
+      ],
       "defaultSets": 3,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["stinger", "3-jern", "knock-down", "lav", "160m"],
+      "tags": [
+        "stinger",
+        "3-jern",
+        "knock-down",
+        "lav",
+        "160m"
+      ],
       "coachNotater": "3-jern stinger er et klassisk MORAD-slag — brukes hyppig i europeisk golf. Spilleren lærer å stole på nedkortede svinger med full kontroll. Start med 3/4 sving, logg carry, og juster. Hvis spilleren ikke har konsistent 3-jern i arsenalet, substituer med 5-jern eller hybrid for å lære prinsippen."
     },
     {
@@ -1064,20 +2048,44 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE", "BANE"],
-      "utstyr": ["driver", "8-baller"],
-      "fasilitetKrav": ["DRIVING_RANGE"],
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "8-baller"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE"
+      ],
       "varighetMin": 25,
       "intensitet": 9,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["fade-kommando-driver-fairway-venstre", "stinger-draw-180m-lav-bane-driver"],
+      "prerequisites": [
+        "fade-kommando-driver-fairway-venstre",
+        "stinger-draw-180m-lav-bane-driver"
+      ],
       "defaultSets": 3,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["wind-shot", "motvind", "fade", "driver", "situasjon"],
+      "tags": [
+        "wind-shot",
+        "motvind",
+        "fade",
+        "driver",
+        "situasjon"
+      ],
       "coachNotater": "Kombinasjonen form-kontroll + vindkompensasjon er det høyeste nivået av tee-spill. Spilleren må håndtere to variabler simultant. Øv dette på virkelige blåsige dager — simulator gir ikke den samme feedback-opplevelsen. Debriefing etter drillet: 'Hva var din plan?' og 'Utførte du planen?' er de to viktigste spørsmålene."
     },
     {
@@ -1089,20 +2097,45 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE", "BANE"],
-      "utstyr": ["driver", "8-baller", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "8-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 25,
       "intensitet": 8,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["draw-kommando-driver-9m-vindu"],
+      "prerequisites": [
+        "draw-kommando-driver-9m-vindu"
+      ],
       "defaultSets": 3,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["wind-shot", "medvind", "draw", "lengde", "maksimere"],
+      "tags": [
+        "wind-shot",
+        "medvind",
+        "draw",
+        "lengde",
+        "maksimere"
+      ],
       "coachNotater": "Elitespillere vet å utnytte vinden, ikke bare overleve den. Medvind med draw er en kraftig kombinasjon — men spilleren MÅ holde kontroll. Mange elitespillere over-swinger i medvind og mister fairway. Regelen: ta ut ekstra 15m, men bytt aldri fairway mot 5-10m ekstra. Fairway er uansett viktigere enn maksimal distanse."
     },
     {
@@ -1114,20 +2147,46 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["RANGE"],
-      "utstyr": ["driver", "10-baller", "trackman"],
-      "fasilitetKrav": ["DRIVING_RANGE", "RADAR"],
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
       "varighetMin": 30,
       "intensitet": 9,
-      "lPhase": ["SPESIAL", "TURNERING"],
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
       "morad": true,
-      "prerequisites": ["draw-kommando-driver-9m-vindu", "fade-kommando-driver-fairway-venstre"],
+      "prerequisites": [
+        "draw-kommando-driver-9m-vindu",
+        "fade-kommando-driver-fairway-venstre"
+      ],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-3",
-      "tags": ["draw-fade-veksling", "driver", "form-kontroll", "alternerende", "elite"],
+      "tags": [
+        "draw-fade-veksling",
+        "driver",
+        "form-kontroll",
+        "alternerende",
+        "elite"
+      ],
       "coachNotater": "Veksling mellom draw og fade fra slag til slag er den ultimate testen på form-kontroll. MORAD kaller dette 'on demand shape' — spilleren trenger ikke spesialtilstand for å aktivere den, den er alltid tilgjengelig. Bekreft begge former med radar. Spillere som kan gjøre dette konsistent er klare for A-turneringsnivå tee-spill."
     },
     {
@@ -1139,20 +2198,43 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["RANGE"],
-      "utstyr": ["driver", "10-baller", "aim-sticks"],
-      "fasilitetKrav": ["DRIVING_RANGE"],
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "aim-sticks"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE"
+      ],
       "varighetMin": 25,
       "intensitet": 8,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["draw-fade-veksling-driver-10b-kontroll"],
+      "prerequisites": [
+        "draw-fade-veksling-driver-10b-kontroll"
+      ],
       "defaultSets": 3,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["driver", "smal-fairway", "grenser", "press", "turnering"],
+      "tags": [
+        "driver",
+        "smal-fairway",
+        "grenser",
+        "press",
+        "turnering"
+      ],
       "coachNotater": "En 10m bred fairway simulerer reelle krevende tee-hullsituasjoner. Mange spillere er ikke vant til å slå driver mot trange mål — de er vant til åpne rangefelter. Installer presset fra dag 1. Logg retning av miss (høyre vs venstre) for å identifisere systematisk feil. Er feilen konsistente, er det et teknikk-problem. Er den tilfeldig, er det et mental/rutine-problem."
     },
     {
@@ -1164,20 +2246,39 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["full-bag"],
-      "fasilitetKrav": ["BANE"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
       "varighetMin": 60,
       "intensitet": 6,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
       "prerequisites": [],
       "defaultSets": 3,
       "defaultReps": 1,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["par-5", "strategi", "kurs-management", "aggressiv", "konservativ"],
+      "tags": [
+        "par-5",
+        "strategi",
+        "kurs-management",
+        "aggressiv",
+        "konservativ"
+      ],
       "coachNotater": "Par 5-strategi er der de fleste elitespillere kan hente eller tape flest slag over en runde. Systematisk analyse over tid avdekker hvilken plan faktisk fungerer for den individuelle spilleren. Noen spillere er bedre med lay-up selv om de teknisk sett kan nå grønnen i 2. Data fra dette drillet bør integreres i spillerens 'par 5-protokoll' for turneringer."
     },
     {
@@ -1189,20 +2290,42 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["full-bag", "scorekort"],
-      "fasilitetKrav": ["BANE"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "scorekort"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
       "varighetMin": 90,
       "intensitet": 8,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["kurs-management-par-5-strategi-elite"],
+      "prerequisites": [
+        "kurs-management-par-5-strategi-elite"
+      ],
       "defaultSets": 1,
       "defaultReps": 15,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["birdie", "scoring", "par-4", "par-5", "press"],
+      "tags": [
+        "birdie",
+        "scoring",
+        "par-4",
+        "par-5",
+        "press"
+      ],
       "coachNotater": "Birdie-press er annerledes enn normal øving — spilleren aksepterer høyere risiko for å hente slag. Trening på dette gjør spilleren komfortabel med aggressiv golf. A-kategori mål: 40% birdie-rate på par-4 og par-5 kombinert (2 av 5 er minimumskravet). Logg over sesongen og identifiser hvilke hulltyper spilleren scorer best på."
     },
     {
@@ -1214,20 +2337,40 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["full-bag", "scorekort"],
-      "fasilitetKrav": ["BANE"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "scorekort"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
       "varighetMin": 60,
       "intensitet": 7,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
       "prerequisites": [],
       "defaultSets": 1,
       "defaultReps": 5,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["bogey-avoidance", "defensiv", "strategi", "vanskelig-hull", "scoring"],
+      "tags": [
+        "bogey-avoidance",
+        "defensiv",
+        "strategi",
+        "vanskelig-hull",
+        "scoring"
+      ],
       "coachNotater": "Å unngå bogey er LIKE viktig som å gjøre birdie for det totale resultatet. Spillere fokuserer for mye på birdie-jakt og for lite på par-sikring. 'Bogey-prevention plan' er et konkret coaching-verktøy: spilleren identifiserer de 3 vanligste bogey-kildene på hullet og lager en plan for å unngå dem. Bruk scorekortet til å spore mønstre over sesongen."
     },
     {
@@ -1239,20 +2382,42 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["RANGE", "BANE"],
-      "utstyr": ["jern", "10-baller", "stoppeklokke"],
-      "fasilitetKrav": ["DRIVING_RANGE"],
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "jern",
+        "10-baller",
+        "stoppeklokke"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE"
+      ],
       "varighetMin": 30,
       "intensitet": 5,
-      "lPhase": ["GRUNN"],
+      "lPhase": [
+        "GRUNN"
+      ],
       "morad": true,
       "prerequisites": [],
       "defaultSets": 2,
       "defaultReps": 10,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "morad-disc-7",
-      "tags": ["pre-shot", "rutine", "mental", "standardisering", "timing"],
+      "tags": [
+        "pre-shot",
+        "rutine",
+        "mental",
+        "standardisering",
+        "timing"
+      ],
       "coachNotater": "MORAD-metodikken er tydelig: en stabil pre-shot rutine er spillerens anker under press. Rutinen MÅ øves like grundig som teknikk. Bruk stoppeklokke for å bygge tidsbevisstet — for langsom rutine fører til over-tenking. 25 sekunder er absolutt maximum for A-kategori-spillere under turneringer (PGA Tour-regel). Logg avvik fra rutinen — ethvert brudd er et potensielt faresignal."
     },
     {
@@ -1264,20 +2429,42 @@
       "maxKategori": "D",
       "minHcp": -10,
       "maxHcp": 5,
-      "environment": ["BANE"],
-      "utstyr": ["full-bag", "scorekort"],
-      "fasilitetKrav": ["BANE"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "scorekort"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
       "varighetMin": 75,
       "intensitet": 8,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["mental-rutine-pre-shot-standardisering"],
+      "prerequisites": [
+        "mental-rutine-pre-shot-standardisering"
+      ],
       "defaultSets": 1,
       "defaultReps": 5,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["mental-reset", "bogey-recovery", "stemningsleie", "press", "turnering"],
+      "tags": [
+        "mental-reset",
+        "bogey-recovery",
+        "stemningsleie",
+        "press",
+        "turnering"
+      ],
       "coachNotater": "Den viktigste mentale ferdigheten i golf er å komme tilbake etter negative slag. Elite-spillere mister ikke 3-4 slag etter én bogey — de recoverer innen neste hull. Spillere som ikke kan resette spiller 'dobbelt-bogey-golf' — bogey + bogey, ikke bogey + par. Debriefing av dette drillet er like viktig som selve utførelsen. Hva fungerte i reset-protokollen? Hva ikke?"
     },
     {
@@ -1289,20 +2476,43 @@
       "maxKategori": "B",
       "minHcp": -10,
       "maxHcp": 2,
-      "environment": ["BANE"],
-      "utstyr": ["full-bag", "stoppeklokke"],
-      "fasilitetKrav": ["BANE"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "stoppeklokke"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
       "varighetMin": 90,
       "intensitet": 9,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["mental-reset-etter-bogey-5-hull", "approach-under-press-siste-3-hull"],
+      "prerequisites": [
+        "mental-reset-etter-bogey-5-hull",
+        "approach-under-press-siste-3-hull"
+      ],
       "defaultSets": 3,
       "defaultReps": 2,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["press", "2-hull", "sekvens", "tidsbegrensning", "elite-mental"],
+      "tags": [
+        "press",
+        "2-hull",
+        "sekvens",
+        "tidsbegrensning",
+        "elite-mental"
+      ],
       "coachNotater": "Dette er vår mest krevende mentale treningsøkt. Kombiner tids-press, verbal forstyrrelse og vanskelige hull. Coach-kommentarene er bevisste destabilisatorer — akkurat som gallery, partner-scoring og leaderboard gjør i turneringer. Spilleren skal lære at forstyrrelsene ikke endrer hva kroppen kan gjøre. Debriefing handler om: 'Hva fikk deg ut av rutinen og hva fikk deg tilbake?'"
     },
     {
@@ -1314,21 +2524,1588 @@
       "maxKategori": "C",
       "minHcp": -10,
       "maxHcp": 3,
-      "environment": ["BANE"],
-      "utstyr": ["full-bag", "scorekort"],
-      "fasilitetKrav": ["BANE"],
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "scorekort"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
       "varighetMin": 120,
       "intensitet": 6,
-      "lPhase": ["TURNERING"],
+      "lPhase": [
+        "TURNERING"
+      ],
       "morad": false,
-      "prerequisites": ["kurs-management-par-5-strategi-elite"],
+      "prerequisites": [
+        "kurs-management-par-5-strategi-elite"
+      ],
       "defaultSets": 1,
       "defaultReps": 8,
-      "csTargetByKategori": {"A": 98, "B": 95, "C": 90, "D": 85},
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
       "videoUrl": null,
       "kilde": "ak-second-brain:elite-metodikk",
-      "tags": ["hazard", "plan", "kurs-management", "aggressiv", "abort-plan"],
+      "tags": [
+        "hazard",
+        "plan",
+        "kurs-management",
+        "aggressiv",
+        "abort-plan"
+      ],
       "coachNotater": "Skriftlig hazard-plan er et kraftfullt verktøy — det tvinger frem bevisst strategisk tenking i stedet for impulsvalg. Spillere som har skrevet plan er mer rolige under utførelsen fordi de allerede har tatt beslutningen. Over tid bygger dette en mental 'bane-kart' som er særlig verdifull i turneringer spilleren har spilt tidligere. A-kategori mål: ha plan for HVERT hull i turneringen dagen før."
+    },
+    {
+      "navn": "tilnaerming-8-jern-135m-hjemmeposisjon",
+      "beskrivelse": "Slå 10 slag med 8-jern fra 135m mot greensenter. Bruk TrackMan. Mål: carry 132-138m, side-avvik maks ±4m. Logger carry, side-avvik og spin. Etter hvert slag: analyser data og juster hvis nødvendig. Gjennomfør 3 sett. Suksess: 8 av 10 innenfor toleranse. Kalibrerer 8-jern som mellom-distanse-referanse og del av en personlig yardage-oversikt.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "A",
+      "maxKategori": "B",
+      "minHcp": -10,
+      "maxHcp": 2,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "8-jern",
+        "10-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "tilnaerming-pw-100m-radar-kalibrering"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "8-jern",
+        "135m",
+        "kalibrering",
+        "yardage",
+        "mellom-jern"
+      ],
+      "coachNotater": "Del av en komplett yardage-kalibrerings-sesjon: PW, 9, 8, 7, 6, 5-jern og hybrider. Spillere som kjenner sine eksakte bane-avvik per klubb tar bedre beslutninger. 8-jern er typisk en 'hjemme-klub' for de fleste spillere — de slår den tryggest og bør kjenne den best. Bygg en bok med 5-ballssnitt per klubb under ulike forhold."
+    },
+    {
+      "navn": "tilnaerming-5-jern-180m-fairway-bunker",
+      "beskrivelse": "Simuler fairway-bunker-situasjon: bruk matte med sand-tekstur (eller faktisk fairway-bunker). Slå 8 slag med 5-jern mot 180m. Mål: ren ball-kontakt (ikke fett), carry 175-182m. Logger carry og kontaktkvalitet (fett/tynn/ren). Gjennomfør 3 sett. Suksess: 7 av 8 ren kontakt. Trener den mentale og tekniske utfordringen ved langt jern fra sand.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "A",
+      "maxKategori": "B",
+      "minHcp": -10,
+      "maxHcp": 2,
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "utstyr": [
+        "5-jern",
+        "8-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "BUNKER",
+        "RADAR"
+      ],
+      "varighetMin": 25,
+      "intensitet": 8,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "langt-jern-4-200m-elite-kontroll"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "5-jern",
+        "180m",
+        "fairway-bunker",
+        "ren-kontakt",
+        "sand"
+      ],
+      "coachNotater": "Fairway-bunker med langt jern er en krevende situasjon som krever redusert sving-tempo og fokus på ren ball-kontakt. Spillere som hyper-fokuserer på lengde i fairway-bunker lager fett-slag og mister mer distanse enn de vinner. Regelen: ta 1-2 klub mer og slå komfortabelt 80% sving. Suksess er å komme ut med brukbar distanse, ikke maksimal distanse."
+    },
+    {
+      "navn": "approach-variasjon-5-jern-til-pw",
+      "beskrivelse": "Lag 10-station approach-drill: pw=100m, 9=110m, 8=120m, 7=135m, 6=150m, 5=165m. Slå 2 baller per klubb (12 slag totalt), plukk tilfeldige distanser fra en lapp uten å se på forhånd. Mål: 10 av 12 innenfor ±6m av mål-distansen. Logger carry per slag og avvik. Gjennomfør 2 runder med ulik rekkefølge. Trener adaptiv distansekontroll.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "A",
+      "maxKategori": "C",
+      "minHcp": -10,
+      "maxHcp": 3,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "komplett-jern-sett",
+        "12-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
+      "varighetMin": 35,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "tilnaerming-pw-100m-radar-kalibrering",
+        "langt-jern-4-200m-elite-kontroll"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "variasjon",
+        "alle-jern",
+        "adaptiv",
+        "distansekontroll",
+        "tilnaerming"
+      ],
+      "coachNotater": "Tilfeldig-rekkefølge drill simulerer reell bane-spill langt bedre enn blokkert øvelse med én klubb. Spilleren aktiverer kalibrerings-databasen for ulike jern og tvinges til å resette mentalt mellom slag — akkurat som på banen. Logg avvik per klubb for å identifisere svak-klubber. Progresjonen er å gjøre distansene skjulte (coach velger, spilleren slår)."
+    },
+    {
+      "navn": "tilnaerming-9-jern-pin-high-presisjon",
+      "beskrivelse": "Finn en 110-115m approach på bane. Slå 8 slag med 9-jern mot pin. Mål: ballen stopper innenfor 5m sone rundt pin-posisjon (pin-high = 0m langt/kort avvik er bonus). Logger side-avvik og lang/kort avvik separat. Gjennomfør 3 sett. Suksess: 6 av 8 innenfor 5m, og minst 4 av 8 'pin-high' (sidevist riktig). Trener den viktigste dimensjonen: avstand til pin.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "A",
+      "maxKategori": "B",
+      "minHcp": -10,
+      "maxHcp": 2,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "9-jern",
+        "8-baller"
+      ],
+      "fasilitetKrav": [
+        "BANE",
+        "DRIVING_RANGE"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "tilnaerming-pw-100m-radar-kalibrering"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "9-jern",
+        "pin-high",
+        "presisjon",
+        "110m",
+        "avstand"
+      ],
+      "coachNotater": "Pin-high er den viktigste enkeltmetrikken i approach-spill. En ball som er pin-high gir alltid en side-putt — langt eller kort gir opp- eller nedoverbakke-putter. Elitespillere som er konsekvente pin-high-spillere scorer bedre enn spillere med tettere total-spredning men inkonsistent lang/kort-avvik. Skill dette ut separat i tracking-data."
+    },
+    {
+      "navn": "tilnaerming-6-jern-elevated-green-155m",
+      "beskrivelse": "Simuler approach mot opphøyet grønn (3-5m høyere enn tee): slå 8 slag med 6-jern mot 155m target. Kompenser 5-8m ekstra distanse for høydeforskjellen. Mål: alle baller lander på grønnen, 5 av 8 innenfor 6m fra pin. Logger carry og sammenligner mot forventet kompensert distanse. Gjennomfør 3 sett. Trener situasjonsavhengig distanse-justering.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "A",
+      "maxKategori": "B",
+      "minHcp": -10,
+      "maxHcp": 2,
+      "environment": [
+        "BANE",
+        "SIMULATOR"
+      ],
+      "utstyr": [
+        "6-jern",
+        "8-baller"
+      ],
+      "fasilitetKrav": [
+        "BANE",
+        "SIMULATOR"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "mellom-jern-7-150m-smalt-target"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "elevated-green",
+        "6-jern",
+        "155m",
+        "høydeforskjell",
+        "kompensasjon"
+      ],
+      "coachNotater": "Opphøyede greener er en av de vanskeligste situasjonene å justere for — spillere undervurderer konsekvent distansen som trengs. Regel: +1m carry per meter grønn-høyde over tee. Simuler dette med simulator med terrain-modeller, eller tren på baner med faktisk terrengvariasjon. Elitespillere skal ha automatisk justeringsprotokoll for høydeforskjeller."
+    },
+    {
+      "navn": "tilnaerming-7-jern-sidevinkel-shot-shape",
+      "beskrivelse": "Velg 4 approach-situasjoner på bane: pin foran-venstre, foran-høyre, bak-venstre, bak-høyre. Bruk 7-jern. Slå 3 baller per situasjon med ballform rettet mot pinen fra riktig vinkelse (fade inn fra venstre til høyre pin, draw inn fra høyre til venstre pin). Logger form og side-avvik. Mål: 10 av 12 med riktig form i riktig retning. Trener situasjonsbasert form-kontroll i approach.",
+      "disciplin": "SPILL",
+      "skillArea": "TILNAERMING",
+      "minKategori": "A",
+      "maxKategori": "B",
+      "minHcp": -10,
+      "maxHcp": 2,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "12-baller"
+      ],
+      "fasilitetKrav": [
+        "BANE",
+        "DRIVING_RANGE"
+      ],
+      "varighetMin": 35,
+      "intensitet": 8,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "kort-jern-9-100m-rett-eller-form"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "morad-disc-6",
+      "tags": [
+        "7-jern",
+        "shot-shape",
+        "pin-posisjon",
+        "situasjon",
+        "draw-fade"
+      ],
+      "coachNotater": "MORAD-prinsipp: form-valg skal alltid være situasjonsbestemt, ikke tilfeldig. Draw mot høyre pin, fade mot venstre pin — ballen angriper pinen fra riktig vinkel og stopper nær hull. Dette krever at spilleren er komfortabel med begge former under approach-press. Øv dette systematisk 4 ganger per uke i forberedelsesfasen."
+    },
+    {
+      "navn": "driver-sving-tempo-3-1-ratio",
+      "beskrivelse": "Bruk metronom-app satt til 60 BPM. Baksvingen tar 3 tellinger, nedsvingen tar 1 telling. Slå 10 driver-slag med nøyaktig 3-1 tempo-ratio. Logger carry og side-avvik. Mål: slag slått med riktig tempo-ratio er innenfor ±8m side-avvik. Gjennomfør 3 sett. Fokus er ikke distansen, men konsistens i tempo. Trener internalisert sving-rytme for driver.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "A",
+      "maxKategori": "C",
+      "minHcp": -10,
+      "maxHcp": 3,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "metronom-app"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "morad-disc-1",
+      "tags": [
+        "driver",
+        "tempo",
+        "3-1-ratio",
+        "metronom",
+        "rytme"
+      ],
+      "coachNotater": "MORAD: 3-1 tempo-ratio er grunnlaget for konsistent driver-sving. Mange elitespillere jager fart i nedsvingen og ødelegger ratio. Metronomen synliggjør avviket umiddelbart. Etter 2-3 uker med metronom skal spilleren kjenne ratio internt uten ekstern hjelp. Test: kjør drillet uten metronom og ta opp med kamera — sammenlign med referanseopptak med metronom."
+    },
+    {
+      "navn": "driver-impact-low-point-forward",
+      "beskrivelse": "Sett en tee 5cm foran ballen (på banen-siden). Slå 8 driver-slag uten å treffe den fremre tee. Fokus: low-point er 5cm foran ball, stigende kontakt på driver (positive angle of attack). Logger om fremre tee treffes (nei = riktig), og TrackMan angle of attack. Mål: alle 8 slag med positiv angle of attack (+2 grader eller mer). Gjennomfør 3 sett.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "A",
+      "maxKategori": "C",
+      "minHcp": -10,
+      "maxHcp": 3,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "8-baller",
+        "tees",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "driver-grunnposisjon"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "morad-disc-1",
+      "tags": [
+        "driver",
+        "low-point",
+        "forward",
+        "angle-of-attack",
+        "impact"
+      ],
+      "coachNotater": "MORAD: positiv angle of attack med driver (stigende kontakt) reduserer bakspinn og øker carry. Tee-metoden er en klassisk måte å lære dette på. Spilleren som konsekvent treffer fremre tee har for tidlig low-point — kroppen er for langt bak, vektoverføringen svikter. Bruk TrackMan for å bekrefte angle of attack-forbedringen. Mål: +2 til +4 grader for optimal driver-launch."
+    },
+    {
+      "navn": "driver-smash-faktor-optimering",
+      "beskrivelse": "Bruk TrackMan. Slå 10 driver-slag med fokus på maksimal smash factor (ball speed / club speed). Mål: smash factor 1.48 eller høyere for alle slag. Logger ball speed, club speed og smash factor per slag. Identifiser off-center treff (lavere smash factor) og korriger face-impact posisjon. Gjennomfør 3 sett. Trener center-strike-konsistens som grunnlag for maksimal overføring.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "A",
+      "maxKategori": "B",
+      "minHcp": -10,
+      "maxHcp": 2,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "driver-impact-low-point-forward"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "driver",
+        "smash-factor",
+        "center-strike",
+        "ball-speed",
+        "trackman"
+      ],
+      "coachNotater": "Smash factor er den mest direkte målingen av impact-kvalitet. 1.48 er Tour-standard — mange elitespillere er 1.44-1.46. Å gå fra 1.44 til 1.48 gir 10+ meters ekstra carry uten å endre svingfart. Fokuser drillet på centerface-kontakt, ikke svinghastighet. Bruk tape på face for visuell feedback av impact-posisjon mellom slag."
+    },
+    {
+      "navn": "driver-tee-height-eksperiment",
+      "beskrivelse": "Slå 3 sett med driver med 3 ulike tee-høyder: lav (ball halvt over crown), standard (ball litt over crown), høy (ball fullt over crown). 5 slag per tee-høyde, totalt 15 slag. Logger carry, smash factor og side-avvik per tee-høyde. Mål: identifiser optimalt tee-høyde for spillerens sving. Gjennomfør 2 runder. Bruk DataResult for å finne personlig optimal tee-høyde.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "15-baller",
+        "tees-av-ulik-lengde",
+        "trackman"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "RADAR"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "driver",
+        "tee-høyde",
+        "eksperiment",
+        "optimering",
+        "data"
+      ],
+      "coachNotater": "Tee-høyde er et undervurdert optimaliseringsparameter. Mange spillere bruker samme tee-høyde alltid uten å vite om det er optimalt for akkurat deres sving og driver-loft. Kjør dette systematisk 2-3 ganger for å bekrefte resultatene. Data bør konkludere med en klar personlig standard-tee-høyde. Oppdater spillerens 'utstyrs-protokoll' med funnet."
+    },
+    {
+      "navn": "driver-power-lag-release-timing",
+      "beskrivelse": "Sett kamera bak (down-the-line) med 240fps opptakshastighet. Slå 8 driver-slag med fokus på å holde lag (vinkel mellom underarm og club shaft) til 45 graders nedsvingsposisjon. Analyser video: ser du tidlig release? Logger tidspunkt for lag-release relativt til impact per slag. Mål: lag holdes til P8-posisjon for 6 av 8 slag. Gjennomfør 3 sett.",
+      "disciplin": "TEK",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "A",
+      "maxKategori": "B",
+      "minHcp": -10,
+      "maxHcp": 2,
+      "environment": [
+        "RANGE",
+        "STUDIO"
+      ],
+      "utstyr": [
+        "driver",
+        "8-baller",
+        "kamera-240fps"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "KAMERA"
+      ],
+      "varighetMin": 30,
+      "intensitet": 8,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "driver-impact-low-point-forward"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "morad-disc-3",
+      "tags": [
+        "driver",
+        "lag",
+        "release-timing",
+        "P8",
+        "video"
+      ],
+      "coachNotater": "MORAD: lag-maintenance er fundamentalt for kraft-generering. Tidlig release (casting) mister effektivt klafftempo og sminker resultatene. 240fps video er nødvendig for å se dette tydelig — vanlig video er for sakte. P8-posisjon er 45 grader fra ball i nedsvingen. Spillere som slipper etter P8 har betydelig kraftpotensial igjen. Vis video-sammenligning med og uten lag til spilleren."
+    },
+    {
+      "navn": "driver-fairway-hit-rate-10-hull",
+      "beskrivelse": "Spill 10 par 4 eller par 5 hull (enkelt eller på simulatoren) og logg kun fairway-treff med driver. Mål: 7 av 10 i fairway (70% FIR). Etter hvert hull: noter hvilken side misset var på og sannsynlig årsak (for mye form, over-sving, tempo). Gjennomfør 2 runder. Logger FIR-prosent og side-bias. A-kategori mål: 70%+ FIR over 18 hull.",
+      "disciplin": "SPILL",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE",
+        "SIMULATOR"
+      ],
+      "utstyr": [
+        "driver",
+        "scorekort"
+      ],
+      "fasilitetKrav": [
+        "BANE",
+        "SIMULATOR"
+      ],
+      "varighetMin": 90,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "FIR",
+        "fairway-treff",
+        "statistikk",
+        "driver",
+        "10-hull"
+      ],
+      "coachNotater": "Fairway-in-regulation er den viktigste tee-statistikken. Spillere som treffer 70%+ fairway scorer gjennomsnittlig 3-4 slag bedre enn spillere på 50% FIR. Logg dette konsekvent og bygg en sesong-databse. Ulik side-bias over tid (alltid til høyre) er et teknikk-signal — tilfeldig miss er et rutine/mental-signal. Skill disse to fra hverandre."
+    },
+    {
+      "navn": "driving-range-press-5-balls-5-fairways",
+      "beskrivelse": "Velg 5 imaginære fairways på range med 10-12m bredde. Slå 1 ball per fairway (5 totalt, ingen oppvarmingsslag). Spilleren forestiller seg et reelt hull og velger form. Mål: 4 av 5 i fairway. Gjennomfør 5 runder (25 slag totalt). Suksess: 18 av 25 i fairway (72%). Simulerer reell bane-situasjon der hvert slag teller — ingen repetisjoner som på range.",
+      "disciplin": "SPILL",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "5-baller"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE"
+      ],
+      "varighetMin": 30,
+      "intensitet": 9,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "driver-fairway-hit-rate-10-hull"
+      ],
+      "defaultSets": 5,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "driver",
+        "press",
+        "1-ball",
+        "fairway-simulering",
+        "range"
+      ],
+      "coachNotater": "1-ball-per-situasjon er den mest effektive press-treningsformen på range. Spilleren kan ikke 'prøve en gang til' — hvert slag teller. Dette er fundamentalt annerledes fra blokkert øvelse og aktiverer en annen kognitiv tilstand. Observer om spilleren tar lengre tid på pre-shot rutinen under press. Det er et godt tegn — de engasjerer seg i prosessen."
+    },
+    {
+      "navn": "spill-3-hull-par-simulering-scorecard",
+      "beskrivelse": "Spilleren velger 3 hull som de skal spille i turneringsformat: logg hvert slag med klubb, posisjon og utfall. Bruk scorecard-app eller papirscorekort. Etter 3 hull: analyser hvilke slag som kostet mest og hva som var 'Decisive Moments' (slag som avgjorde scoring-utfall). Gjennomfør 3 ganger i løpet av en uke. Trener turneringsbevissthet og selvanalyse.",
+      "disciplin": "SPILL",
+      "skillArea": "SPILL",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "scorekort"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 75,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "scorecard",
+        "analyse",
+        "3-hull",
+        "decisive-moments",
+        "turnering"
+      ],
+      "coachNotater": "Scorecard-analyse etter spill er noe mange spillere aldri gjør — de ser på totalen, ikke på mønstrene. Decisive Moments er de 2-3 slagene per runde som faktisk avgjorde scoring-utfallet. Å identifisere disse konsekvent over mange runder bygger sterk selvforståelse. Coaching-spørsmål: 'Hva ville du gjort annerledes på det avgjørende slag?'"
+    },
+    {
+      "navn": "spill-par-chase-9-hull-elite",
+      "beskrivelse": "Spill 9 hull med eksplisitt mål: gjøre par eller bedre på hvert hull. For hvert hull over par: analyser beslutningen som førte til over-par (ikke slaget — beslutningen). For hvert par og birdie: analyser hva som fungerte og hva du vil gjenta. Logger slag-for-slag og konklusjoner. Mål: 7 av 9 hull par eller bedre. Gjennomfør ukentlig gjennom hele turneringssesongen.",
+      "disciplin": "SPILL",
+      "skillArea": "SPILL",
+      "minKategori": "A",
+      "maxKategori": "C",
+      "minHcp": -10,
+      "maxHcp": 3,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "scorekort"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 150,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "spill-3-hull-par-simulering-scorecard"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "par-chase",
+        "9-hull",
+        "analyse",
+        "beslutning",
+        "sesongen"
+      ],
+      "coachNotater": "Par-Chase er mer en analytisk øvelse enn en teknisk øvelse. Spilleren trener å flytte fokus fra 'hva slo jeg' til 'hva bestemte jeg'. Elite-golf er 50% beslutninger og 50% utførelse. Mange spillere trener bare utførelse. Debriefing med coach etter hvert sett gir den dypeste læringen. Bruk notater fra spilleren som grunnlag for neste coaching-sesjon."
+    },
+    {
+      "navn": "spill-1-against-par-solo-turneringsformat",
+      "beskrivelse": "Spill 18 hull i turneringsformat solo: hold scoring og logg alle statistikker (FIR, GIR, putts per hull, sand-saves). Etter runden: analyser hvilken stat som korrelerte best med scoring-utfall den dagen. Mål for A-kategori: under par runde. Logg runde-data i spillers tracking-system. Gjennomfør månedlig gjennom sesongen for trending-analyse.",
+      "disciplin": "SPILL",
+      "skillArea": "SPILL",
+      "minKategori": "A",
+      "maxKategori": "B",
+      "minHcp": -10,
+      "maxHcp": 2,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "scorekort-statistikk"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 240,
+      "intensitet": 8,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "spill-par-chase-9-hull-elite",
+        "mental-rutine-pre-shot-standardisering"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 18,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "18-hull",
+        "solo",
+        "statistikk",
+        "under-par",
+        "turneringsformat"
+      ],
+      "coachNotater": "Månedlig solo-runde med full statistikk er den viktigste enkelt-treningssession for elitespillere. Det er tett opp mot ekte turnerings-format og gir coach og spiller de beste dataene for å prioritere neste periodes trening. Spilleren skal ikke fokusere på teknikkfeil under runden — kun på rutine, beslutning og utførelse. Teknikkfeil analyseres i ettertid med data."
+    },
+    {
+      "navn": "spill-caddie-talk-club-selection-drill",
+      "beskrivelse": "Spilleren samarbeider med en partner (caddie) for 9 hull. Regelen: spilleren SKAL verbalt forklare klubbvalget for hvert slag til caddien (distanse, vind, lie, pin-posisjon, risiko). Caddien noterer beslutninger og utfall. Etter runden: analyser 3 beslutninger som var riktige og 3 som var feil. Mål: spilleren skal artikulere klar beslutningsprotokoll for hvert slag.",
+      "disciplin": "SPILL",
+      "skillArea": "SPILL",
+      "minKategori": "A",
+      "maxKategori": "C",
+      "minHcp": -10,
+      "maxHcp": 3,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "notisblokk"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 150,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kurs-management-par-5-strategi-elite"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "caddie",
+        "verbal-beslutning",
+        "klubbvalg",
+        "analyse",
+        "kurs-management"
+      ],
+      "coachNotater": "Verbal beslutningsprotokoll er en kraftig øvelse fordi å sette ord på noe avslører om tanken er klar. Spillere som ikke kan forklare valget sitt, har ikke tatt et bevisst valg. Etter 4-6 slike runder, internaliseres beslutningsprotokollen og spilleren gjør det automatisk. Coach bør se på 'feil beslutning'-listen for å justere undervisningen."
+    },
+    {
+      "navn": "spill-scoring-zone-10-14-under-par-maaling",
+      "beskrivelse": "Spilleren spiller 18 hull og logger kun slag innenfor 100m fra hull (scoring zone). Teller: totalt antall scoring-zone-slag, antall one-putt, antall upp-and-down, antall sand-save. Mål: scoring-zone-profitt over par (antall en-putt minus antall treputts). A-kategori mål: +4 scoring-zone-profitt per runde (4 flere enputts enn treputts). Gjennomfør månedlig som benchmark.",
+      "disciplin": "SPILL",
+      "skillArea": "SPILL",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "full-bag",
+        "scorekort"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 240,
+      "intensitet": 6,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "spill-1-against-par-solo-turneringsformat"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 18,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "scoring-zone",
+        "100m",
+        "benchmark",
+        "upp-and-down",
+        "statistikk"
+      ],
+      "coachNotater": "Scoring Zone Analysis er den mest actionable av alle golf-statistikker — den viser nøyaktig hva spilleren vinner og taper slag innenfor 100m. A-kategori spillere som er minus i scoring zone (mer treputts enn enputts) har alltid et putting eller kort-spill-problem, uansett hvor bra jern-spillet er. Bruk dette som kvartalsmåling og juster treningsprioritering deretter."
+    },
+    {
+      "navn": "simulatorsesjon-wind-settings-60min",
+      "beskrivelse": "Bruk simulator med vind-innstillinger. Spill 9 hull med progressive vind-styrker: hull 1-3 (0 m/s), hull 4-6 (4m/s motvind), hull 7-9 (6m/s sidevindu). Logger GIR, FIR og scoring per vind-nivå. Mål: totalt under +2 over 9 hull med maksimal vind. Gjennomfør månedlig. Trener adaptiv bane-strategi under varierende vind-forhold.",
+      "disciplin": "SPILL",
+      "skillArea": "SPILL",
+      "minKategori": "A",
+      "maxKategori": "C",
+      "minHcp": -10,
+      "maxHcp": 3,
+      "environment": [
+        "SIMULATOR"
+      ],
+      "utstyr": [
+        "full-bag"
+      ],
+      "fasilitetKrav": [
+        "SIMULATOR"
+      ],
+      "varighetMin": 90,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "simulator",
+        "vind",
+        "9-hull",
+        "adaptiv",
+        "GIR"
+      ],
+      "coachNotater": "Simulator med vind-settings er en unik mulighet til å trene vind-tilpasning systematisk — noe som er svært vanskelig å gjøre konsekvent utendørs. Øk vind-styrken gradvis over sesongen. Logger-data fra simulator kan direkte sammenlignes med utendørs runde-data for å se om vind-treningen transfererer til banen."
+    },
+    {
+      "navn": "spill-distansekontroll-fra-rough-8-jern",
+      "beskrivelse": "Finn rough-liggeforhold på bane (minimum 4cm gras). Slå 8 slag med 8-jern mot 130m mål. Rough-kompensasjon: forventet carry 110-120m (redusert fra fairway-carry). Logger carry per slag og sammenligner med fairway-carry. Mål: 6 av 8 slag i 110-125m target-sone. Gjennomfør 3 sett. Trener realistisk distanse-forventning fra rough.",
+      "disciplin": "TEK",
+      "skillArea": "TILNAERMING",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "8-jern",
+        "8-baller"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 25,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "tilnaerming-pw-100m-radar-kalibrering"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "rough",
+        "8-jern",
+        "distanse-tap",
+        "kompensasjon",
+        "lie"
+      ],
+      "coachNotater": "Rough reduserer carry og spin konsekvent, men de fleste spillere undervurderer effekten. Bygg en personlig 'rough-tabell': 4cm rough = -15m carry på kortere jern, -20m på lengre jern. Varier grastype (vått vs tørt, langt vs kortklippet rough) og bygg en komplett situasjons-database. Dette gir trygghet på banen — spilleren vet hva de har."
+    },
+    {
+      "navn": "pitch-variasjon-20-30-40m-3-kiler",
+      "beskrivelse": "Bruk 3 kiler (56, 52, 48 grader). Slå 3 baller på 20m, 3 på 30m, 3 på 40m — én ball per kil per distanse (9 slag totalt). Logger carry per kil per distanse. Identifiser overlappende distanser mellom kiler. Gjennomfør 3 runder. Mål: bygg en komplett pitch-distansematrise for alle 3 kiler (9 datapoints). Bruk data til å velge riktig kil for enhver pitch-distanse.",
+      "disciplin": "TEK",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "A",
+      "maxKategori": "C",
+      "minHcp": -10,
+      "maxHcp": 3,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "48-52-56-grader-kile",
+        "9-baller"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA",
+        "DRIVING_RANGE"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-klokke-7-8-9-elite-kontroll"
+      ],
+      "defaultSets": 3,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "pitch",
+        "3-kiler",
+        "distansematrise",
+        "20-40m",
+        "data"
+      ],
+      "coachNotater": "Å bygge en pitch-distansematrise er en av de mest konkrete forbedringene en spiller kan gjøre. Vet spilleren nøyaktig hvilken kil som gir 27m med klokke 8-sving? Hvis ikke, tar de gjettinger på banen. Matrise-byggingen tar én intensiv sesjon — verdien varer hele sesongen. Oppdater matrisen etter utstyrsbytte."
+    },
+    {
+      "navn": "chip-over-fringe-rolling-landing",
+      "beskrivelse": "Sett 6 baller 12m fra hull med 8m å kjøre på grønnen. Bruk PW med pendel-swing (liten chip). Ball skal lande 1-2m på grønnen og deretter løpe til hullet. Mål: 5 av 6 lander innenfor landing-sone (markert med tees), 4 av 6 stopper innenfor 1m fra hull. Gjennomfør 3 sett fra ulike vinkler. Fokus: konsistent landing-punkt, ikke maksimal nøyaktighet.",
+      "disciplin": "TEK",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "6-baller",
+        "tees"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "chip",
+        "rolling",
+        "landing",
+        "fringe",
+        "pw"
+      ],
+      "coachNotater": "Landing-punkt er sannheten i chip-spillet — alt annet er sekundært. En ball som lander i riktig sone med feil nøyaktighet er OK. En ball som lander feil er alltid feil, uansett kontaktkvalitet. Visualisering av landing-sonen FØR slag er nøkkelen. Coach bør spørre: 'Hvor lander den?' og vente på et spesifikt svar — ikke 'på grønnen'."
+    },
+    {
+      "navn": "sand-shot-rake-mark-inngangspunkt",
+      "beskrivelse": "Bunker-sesjon: bruk en rake til å tegne en linje 5cm bak ball i sanden. Slå 10 splash-shots og observer om rakespor starter akkurat på den markerte linjen eller avviker. Logger avvik (foran = thin, bak = for dyp). Mål: 8 av 10 slag med rake-spor som starter på eller innenfor 1cm fra den markerte linjen. Gjennomfør 3 sett. Trener inngangspunkt-kontroll.",
+      "disciplin": "TEK",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "56-graders-kile",
+        "10-baller",
+        "rake"
+      ],
+      "fasilitetKrav": [
+        "BUNKER",
+        "SHORT_GAME_AREA"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "morad-disc-5",
+      "tags": [
+        "bunker",
+        "inngangspunkt",
+        "rake",
+        "sand-kontroll",
+        "presisjon"
+      ],
+      "coachNotater": "MORAD: inngangspunkt-kontroll er det eneste som betyr noe i bunker-slag. Rake-linjen gir objektiv tilbakemelding — spilleren kan ikke bortforklare et dårlig slag. Øv dette som warm-up for alle bunker-sesjoner. Spillere som eier inngangspunktet i bunkeren er aldri nervøse for bunker-slag. Det er fundamentet for sand-save-suksess."
+    },
+    {
+      "navn": "velge-chip-eller-pitch-beslutning-8m",
+      "beskrivelse": "Sett 6 baller 8m fra hull med varierende fremdriftslengde på grønnen (2m, 4m, 6m til hull). For hver posisjon: spilleren bestemmer chip (lav bane, løp) eller pitch (høy bane, stopp) basert på situasjonen. Slår de valgt metode. Logg valg, utfall og om valget var riktig i ettertid. Mål: 5 av 6 valg er 'riktig' basert på situasjons-analyse. Gjennomfør 4 sett.",
+      "disciplin": "SPILL",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "A",
+      "maxKategori": "C",
+      "minHcp": -10,
+      "maxHcp": 3,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge-sett",
+        "6-baller"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-variasjon-4-kiler-elite-valg"
+      ],
+      "defaultSets": 4,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk",
+      "tags": [
+        "chip",
+        "pitch",
+        "beslutning",
+        "8m",
+        "situasjon"
+      ],
+      "coachNotater": "Beslutnings-øvelse er like viktig som teknisk øvelse i kort spill. Spillere som alltid patcher den samme løsningen på alle situasjoner, mister slag. Riktig valg avhenger av: grastype mellom ball og grønn, pin-posisjon på grønnen, og spillerens eget komfort-nivå. Debriefing av 'feil valg' er ekstremt verdifull — hva tilsa at det andre valget var bedre?"
+    },
+    {
+      "navn": "chip-fra-bunkerrand-til-tett-flagg",
+      "beskrivelse": "Avspark fra bunkerrand (tørr sand, ingen lip) til pin plassert 5–8 meter inne på grønnen. Legg 8 baller rundt kanten av bunkeren på ulike vinkler: 45°, 90° og 135° til flagget. For hvert slag: bestem om du pitcher over kanten, chips lavt under, eller bruker puttgrep fra fringe. Loggfør hvilken teknikk som ga best resultat mot 'én putt'-avstand. Suksess: 5 av 8 baller innenfor 1,5 meter fra hull. Fokus er situasjonsvurdering – elite-spillere vet at riktig valg er viktigere enn perfekt teknikk.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "loft-wedge 58°",
+        "putter",
+        "8 baller"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA",
+        "BUNKER"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 97,
+        "B": 94,
+        "C": 89,
+        "D": 84,
+        "E": 79
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk:kortspill-situasjoner",
+      "tags": [
+        "bunkerrand",
+        "situasjonsvalg",
+        "kort-spill",
+        "elite-kortspill"
+      ],
+      "coachNotater": "Mange gode spillere velger automatisk kilen – utfordre dem til å vurdere alle tre teknikker på hver ball. Loggfør beslutningsprosessen.",
+      "treningstype": "VARIABEL"
+    },
+    {
+      "navn": "scoring-audit-kortspill-9-hull",
+      "beskrivelse": "9-hulls scoringsgranskning med eksplisitt kortspill-fokus. Spill ut 9 hull normalt, men noter for hvert hull: antall kortspill-slag, teknikk brukt (chip/pitch/puttfringe), landingszone, og avstand til hull etter kortspill-slaget. Etter runden: kalkuler 'scrambling %' (andel ganger du berget par fra utenfor grønnen), gjennomsnittsavstand etter kortspill-slag, og identifiser én svakhet fra analysedataene. Suksess: scrambling over 70% for kategori A-B. Målet er data-drevet kortspillforbedring over tid.",
+      "disciplin": "SPILL",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge-sett",
+        "putter",
+        "scorelogg"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 120,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": null,
+      "defaultReps": null,
+      "csTargetByKategori": {
+        "A": 96,
+        "B": 93,
+        "C": 88,
+        "D": 83,
+        "E": 78
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk:scoringanalyse",
+      "tags": [
+        "scrambling",
+        "scoring-audit",
+        "9-hull",
+        "data-analyse"
+      ],
+      "coachNotater": "Bruk standard scrambling-definisjon: miss GIR men gjort i par eller bedre. Gjennomfør 3 runder for trend-analyse. Diskuter funnene i neste coaching-sesjon.",
+      "treningstype": "SPILL_TEST"
+    },
+    {
+      "navn": "jern-fra-fairway-bunker-165m",
+      "beskrivelse": "Simuler tilnærming fra fairway-bunker på 165 meter til flagget. Bruk 5 jern og fokuser på ren ball-first kontakt – det mest kritiske aspektet fra sand. Plasser 5 baller midt i en flatt sandbu (eller bruk range-matte som simulering). Øv på å stå litt smalere, plassere tyngdepunktet fremover, og slå klart over sandkanten. Suksesskriterium: 4 av 5 baller i lufta uten sandfeil, landing på grønnen eller innenfor 10 meter. Loggfør carry vs. roll for å kjenne nøyaktig distanse fra bunker.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE",
+        "RANGE"
+      ],
+      "utstyr": [
+        "5-jern",
+        "6-jern",
+        "7 baller"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE",
+        "BUNKER"
+      ],
+      "varighetMin": 25,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 97,
+        "B": 94,
+        "C": 89,
+        "D": 84,
+        "E": 79
+      },
+      "videoUrl": null,
+      "kilde": "morad-disc-4:fairway-bunker-technique",
+      "tags": [
+        "fairway-bunker",
+        "jern",
+        "distanse-kontroll",
+        "elite-tilnaerming"
+      ],
+      "coachNotater": "Vanligste feil: ta for mye sand. Marker 'clean contact' som primært suksesskriterium – distansen er sekundær. Bruk litt kortere kø for sikkerhetsmargin.",
+      "treningstype": "BLOKK"
+    },
+    {
+      "navn": "tilnaerming-fra-rough-mellomjern-140m",
+      "beskrivelse": "Angrep grønn fra typisk rough-situasjon med 7-jern fra 140 meter. Simuler tre roughtyper: lett rough (finner ballen lett), medium rough (halvparten av ballen synlig), tykk rough (ballen nesten skjult). For hver type: velg riktig kø-justeringsstrategi (lengre kø for lettere rough, kortere og åpnere stance for tykkere). 5 slag fra hvert scenarie. Suksess: 60% av baller på grønnen eller innenfor 20m. Dokumenter typisk flukt-tap fra rough og juster mentale distanseestimater deretter. Essensielt for turneringsscorer.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "8-jern",
+        "15 baller"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 30,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 97,
+        "B": 94,
+        "C": 88,
+        "D": 83,
+        "E": 78
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk:rough-strategi",
+      "tags": [
+        "rough",
+        "mellomjern",
+        "situasjonsspill",
+        "elite-tilnaerming"
+      ],
+      "coachNotater": "Lær spilleren å akseptere 1-2 ekstra puts som kostnad fra tykk rough – ikke ta for stor risiko. Dokumenter gjennomsnitts distanse-tap per roughtype.",
+      "treningstype": "VARIABEL"
+    },
+    {
+      "navn": "tilnaerming-over-vann-risikostyring",
+      "beskrivelse": "Trent beslutningstakning og utføring på par 3 eller par 4 med vannareal mellom tee/fairway og grønn. Velg to scenarietyper: (A) vann foran hele grønnen – krav om carry, og (B) vann på én side av grønnen – kan velge safe zone. For hvert scenarie: beslutt kø, shape og landsone basert på carry-distanse og vindforhold. Utfør 5 slag fra hvert scenarie. Suksess: ingen vandrop, 70% ball på riktig side av vann. Trener mental commit til vanskelege slag under press.",
+      "disciplin": "SLAG",
+      "skillArea": "TILNAERMING",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "mellomjern",
+        "lang jern",
+        "10 baller"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 35,
+      "intensitet": 8,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 96,
+        "B": 93,
+        "C": 88,
+        "D": 83,
+        "E": 78
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:elite-metodikk:risikostyring",
+      "tags": [
+        "vann",
+        "risikostyring",
+        "beslutning",
+        "mental-spill",
+        "elite-tilnaerming"
+      ],
+      "coachNotater": "Presset fra vann avslører mental styrke. Ikke korriger teknikk i denne drillen – fokuser på pre-shot rutine og commit. Loggfør vandrop-rate.",
+      "treningstype": "KONKURRANSE"
+    },
+    {
+      "navn": "driver-punch-low-ball-motvind",
+      "beskrivelse": "Tren lav punch-driver for sterk motvind (15m/s og mer). Tee ballen lavt, ball bak midtpunkt i stance, hendene fremover. Fokus på kompakt sving til 3/4-lengde med akselerert nedslag og minimert follow-through. Mål: ballhøyde under 25 meter topp-flukt, carry på 85–90% av normal max-driver. Utfør 10 slag: 5 uten vindtanke (teknikk-isolasjon) og 5 mot en imaginær 15m/s motvind-scenarie med full commit. Loggfør kontrollnivå: kommer ballen under ønsket taklinje? Kritisk slag for turneringer på eksponerte baner.",
+      "disciplin": "SLAG",
+      "skillArea": "TEE_TOTAL",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "RANGE"
+      ],
+      "utstyr": [
+        "driver",
+        "tee",
+        "10 baller"
+      ],
+      "fasilitetKrav": [
+        "DRIVING_RANGE"
+      ],
+      "varighetMin": 20,
+      "intensitet": 6,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 97,
+        "B": 94,
+        "C": 89,
+        "D": 84,
+        "E": 79
+      },
+      "videoUrl": null,
+      "kilde": "morad-disc-2:wind-management-driver",
+      "tags": [
+        "motvind",
+        "punch-driver",
+        "lav-ball",
+        "vindspill",
+        "elite-driver"
+      ],
+      "coachNotater": "Mange elitespillere mangler dette skuddet og mister kontroll i vind. Øv separat fra normal driver-sesjon. Kombiner med 3-wood og hybrid for en komplett vindpakke.",
+      "treningstype": "BLOKK"
+    },
+    {
+      "navn": "bogey-avoidance-9-hull-fokus",
+      "beskrivelse": "9-hulls fokusert spill der eneste mål er å unngå bogey eller verre. Velg tryggeste rute på hvert hull – ikke det aggressive angrepet, men det statistisk sikreste. Før runden: tegn et 'bogey-kart' der du markerer farene på hvert hull og velger en strategi som maksimerer muligheten for par. Noter hver beslutning. Etter runden: evaluer om strategien var korrekt og om mentalt press endret kurs. Suksess: maks 1 bogey på 9 hull. Trener elitementality: vet når du skal forsvare istedenfor å angripe.",
+      "disciplin": "SPILL",
+      "skillArea": "SPILL",
+      "minKategori": "A",
+      "maxKategori": "D",
+      "minHcp": -10,
+      "maxHcp": 5,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "scorelogg",
+        "banekartet"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 110,
+      "intensitet": 7,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": null,
+      "defaultReps": null,
+      "csTargetByKategori": {
+        "A": 97,
+        "B": 94,
+        "C": 89,
+        "D": 84,
+        "E": 79
+      },
+      "videoUrl": null,
+      "kilde": "decade-golf-methodology:strategy-scoring",
+      "tags": [
+        "bogey-unngaaelse",
+        "defensivt-spill",
+        "strategi",
+        "elite-mental"
+      ],
+      "coachNotater": "Effektiv for spillere som 'jakter' birdier og ender med dobbel-bogeys. Gjennomfør 3 ganger og sammenlign score. De fleste opplever at forsvarsspill gir lavere scorer.",
+      "treningstype": "KONKURRANSE"
+    },
+    {
+      "navn": "birdie-attempt-vs-par-safety-beslutning",
+      "beskrivelse": "9-hulls treningsrunde der du eksplisitt tar 'birdie-attempt vs. par-safety'-avgjørelsen på hvert hull basert på lie, distanse, flaggposisjon og mental tilstand. Opprett et enkelt beslutningsskjema: grønn = angrip, gul = spill safe til birdieputt-posisjon, rød = bare unngå bogey. For hvert hull: skriv fargen FØR du slår, og evaluer etterpå om du fulgte den. Suksess: beslutning og utføring samsvarer 8 av 9 hull. Dette er Decade Golf-metodikkens kjerneprinsipp: turneringsspill handler mer om beslutningskvalitet enn svingteknikk.",
+      "disciplin": "SPILL",
+      "skillArea": "SPILL",
+      "minKategori": "A",
+      "maxKategori": "C",
+      "minHcp": -10,
+      "maxHcp": 3,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "scorelogg",
+        "fargekodeskjema"
+      ],
+      "fasilitetKrav": [
+        "BANE"
+      ],
+      "varighetMin": 120,
+      "intensitet": 7,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bogey-avoidance-9-hull-fokus"
+      ],
+      "defaultSets": null,
+      "defaultReps": null,
+      "csTargetByKategori": {
+        "A": 98,
+        "B": 95,
+        "C": 90,
+        "D": 85,
+        "E": 80
+      },
+      "videoUrl": null,
+      "kilde": "decade-golf-methodology:decision-framework",
+      "tags": [
+        "birdie-attempt",
+        "par-safety",
+        "beslutning",
+        "decade-golf",
+        "elite-mental"
+      ],
+      "coachNotater": "Svært avslørende drill. Mange A-kategori-spillere spiller gul/grønt alt for konsekvent. Noen bør lære seg å spille mer rødt på farlige hull sent i turneringen.",
+      "treningstype": "SPILL_TEST"
     }
   ]
 }
