@@ -30,6 +30,18 @@ type NavItem = {
 const MAIN_ITEMS: NavItem[] = [
   { href: "/admin/agencyos", label: "Oversikt", matchPrefixes: ["/admin/agencyos", "/admin"] },
   {
+    href: "/admin/workspace",
+    label: "Workspace",
+    matchPrefixes: ["/admin/workspace"],
+    children: [
+      { href: "/admin/workspace", label: "Min uke" },
+      { href: "/admin/workspace/oppgaver", label: "Oppgaver" },
+      { href: "/admin/workspace/prosjekter", label: "Prosjekter" },
+      { href: "/admin/workspace/tildelt-meg", label: "Tildelt meg" },
+      { href: "/admin/workspace/notion", label: "Notion-tilkobling" },
+    ],
+  },
+  {
     href: "/admin/stall",
     label: "Stall",
     matchPrefixes: ["/admin/stall", "/admin/spillere", "/admin/talent"],
@@ -104,14 +116,10 @@ const MAIN_ITEMS: NavItem[] = [
       "/admin/kommunikasjon",
       "/admin/innboks",
       "/admin/email-templates",
-      "/admin/notion-prosjekter",
-      "/admin/notion-oppgaver",
     ],
     children: [
       { href: "/admin/innboks", label: "Innboks" },
       { href: "/admin/email-templates", label: "E-postmaler" },
-      { href: "/admin/notion-prosjekter", label: "Notion-prosjekter" },
-      { href: "/admin/notion-oppgaver", label: "Notion-oppgaver" },
     ],
   },
   {
