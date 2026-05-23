@@ -1,0 +1,61 @@
+-- L2: Enable RLS on all 55 tables (security advisor lint 0013_rls_disabled_in_public)
+-- Service-role-key (used by Prisma server-actions) bypasses RLS automatically.
+-- Anon/authenticated keys get DENY by default until policies are added.
+-- Applied via Supabase MCP 2026-05-23.
+
+ALTER TABLE public.google_calendar_connections ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.wagr_snapshots ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.session_videos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.parent_invitations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ai_plan_generations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.drill_challenges ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.challenge_participants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.equipment_bags ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.group_schedules ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.health_entries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.talent_tracking ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.talent_ressurser ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.season_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tournament_entries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.period_blocks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.shots ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.locked_anchors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.recurring_patterns ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.conditional_rules ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.drill_maler ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.training_drills_v2 ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.drill_logs_v2 ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.period_volume_recipes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.period_recipe_okter ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.okt_maler ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.okt_mal_driller ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.caddie_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.clubs_practiced ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.sg_baselines ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.training_sessions_v2 ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.sg_insights ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.best_session_references ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.shot_annotations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.club_metric_trends ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.google_calendar_subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.session_drill_instances ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.session_sets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.session_drill_notes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.plan_adjustments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tournament_preparations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.technical_plan_positions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.position_tasks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.position_task_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.technical_plan_club_targets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.technical_plan_audits ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.technical_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.trackman_shots ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.plan_suggestions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.position_task_tm_goals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.plan_template_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.plan_effectiveness ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coach_drill_direktiver ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.drill_mestrings_logg ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.drill_ratings ENABLE ROW LEVEL SECURITY;
