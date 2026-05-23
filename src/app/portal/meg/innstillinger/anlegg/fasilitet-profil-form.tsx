@@ -7,7 +7,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CheckSquare2, Square, CheckCircle2, Loader2, MapPin, Wifi, Wind, Target } from "lucide-react";
+import { CheckSquare2, Square, CheckCircle2, Loader2, MapPin, Wifi, Wind, Target, Dumbbell } from "lucide-react";
 import type { DrillFasilitet } from "@/generated/prisma/client";
 import { lagreFasilitetProfil } from "../actions";
 
@@ -103,6 +103,36 @@ const GRUPPER: Gruppe[] = [
         tittel: "Sandbunker",
         beskrivelse:
           "Tilgang til greenside- eller fairway-bunker for bunker-spesifikke øvelser.",
+      },
+    ],
+  },
+  {
+    label: "Styrke og kondisjon",
+    icon: <Dumbbell className="h-4 w-4" />,
+    items: [
+      {
+        kode: "VEKTSTANG",
+        tittel: "Vektstang / rack",
+        beskrivelse:
+          "Olympisk vektstang med rack. Brukes til styrkeøvelser som squat, deadlift og press.",
+      },
+      {
+        kode: "TRAPBAR",
+        tittel: "Trapbar / hex bar",
+        beskrivelse:
+          "Trapbar (hex bar) for sikkert løft med nøytral gripestilling. Egner seg godt til hip-hinge-øvelser.",
+      },
+      {
+        kode: "LOPEBANE",
+        tittel: "Løpebane / tredemølle",
+        beskrivelse:
+          "Utendørs løpebane eller innendørs tredemølle. Brukes til kondisjonsdrill og oppvarmingsøkter.",
+      },
+      {
+        kode: "MED_BALL",
+        tittel: "Medisinball",
+        beskrivelse:
+          "Medisinball for eksplosive kast og rotasjonsøvelser. Direkte overføring til golf-spesifikk kraft.",
       },
     ],
   },

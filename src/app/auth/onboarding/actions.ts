@@ -5,6 +5,9 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
+import { isMinor } from "@/lib/auth/minor";
+import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { logError } from "@/lib/error-tracking";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Typer
@@ -249,4 +252,148 @@ export async function completeForelderOnboarding(): Promise<void> {
 
   revalidatePath("/portal");
   redirect("/portal");
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// P17 GDPR art. 8 — Mindreårig + foreldresamtykke
+// Sett fødselsdato + auto-send ParentInvitation hvis spiller < 16 år
+// ──────────────────────────────────────────────────────────────────────────────
+
+const INVITATION_TTL_DAYS = 30;
+
+export async function setDateOfBirthAndCheckMinor(input: {
+  dateOfBirth: string; // ISO date "YYYY-MM-DD"
+  guardianEmail?: string; // Påkrevd hvis < 16 år
+  guardianRelation?: "GUARDIAN" | "MOTHER" | "FATHER";
+}): Promise<{
+  ok: boolean;
+  error?: string;
+  isMinor: boolean;
+  invitationSent?: boolean;
+}> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: "unauthenticated", isMinor: false };
+
+  try {
+    const dob = new Date(input.dateOfBirth);
+    if (isNaN(dob.getTime())) {
+      return { ok: false, error: "Ugyldig fødselsdato.", isMinor: false };
+    }
+
+    const minor = isMinor(dob);
+
+    // Hvis mindreårig: krever guardian-email
+    if (minor && !input.guardianEmail) {
+      return {
+        ok: false,
+        error:
+          "Brukere under 16 år trenger foreldresamtykke. Vennligst oppgi e-post til foresatt.",
+        isMinor: true,
+      };
+    }
+
+    // Oppdater bruker med dateOfBirth + requiresGuardianConsent
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        dateOfBirth: dob,
+        requiresGuardianConsent: minor,
+      },
+    });
+
+    let invitationSent = false;
+
+    // Hvis mindreårig: opprett ParentInvitation + send e-post
+    if (minor && input.guardianEmail) {
+      const expiresAt = new Date(
+        Date.now() + INVITATION_TTL_DAYS * 24 * 60 * 60 * 1000,
+      );
+
+      const invitation = await prisma.parentInvitation.create({
+        data: {
+          playerId: user.id,
+          email: input.guardianEmail.trim().toLowerCase(),
+          relation: input.guardianRelation ?? "GUARDIAN",
+          expiresAt,
+        },
+      });
+
+      // Send e-post til forelder
+      try {
+        const klient = resendKlient();
+        const appUrl =
+          process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf-hq.vercel.app";
+        const consentUrl = `${appUrl}/auth/guardian-consent/${invitation.token}`;
+
+        await klient.emails.send({
+          from: FRA_EPOST,
+          to: input.guardianEmail,
+          subject: `${user.name} ber om foreldresamtykke — AK Golf`,
+          html: `<p>Hei,</p>
+            <p><strong>${user.name}</strong> ønsker å bruke AK Golf-plattformen, men er under 16 år og trenger foreldresamtykke iht. GDPR art. 8.</p>
+            <p>Klikk lenken under for å se hva samtykket innebærer og bekrefte (tar 2 minutter):</p>
+            <p><a href="${consentUrl}" style="display:inline-block;padding:12px 24px;background:#005840;color:#D1F843;border-radius:24px;text-decoration:none;font-weight:600;">Bekreft samtykke</a></p>
+            <p style="color:#5E5C57;font-size:13px;">Lenken er gyldig i 30 dager.</p>
+            <p>Mvh,<br/>AK Golf Group</p>`,
+        });
+
+        invitationSent = true;
+      } catch (err) {
+        await logError({
+          context: "onboarding.minor.invitation-email",
+          error: err,
+          userId: user.id,
+          meta: { invitationId: invitation.id, guardianEmail: input.guardianEmail },
+        });
+      }
+    }
+
+    revalidatePath("/portal");
+
+    return { ok: true, isMinor: minor, invitationSent };
+  } catch (error) {
+    await logError({
+      context: "onboarding.set-date-of-birth",
+      error,
+      userId: user.id,
+    });
+    return { ok: false, error: "Noe gikk galt. Prøv igjen.", isMinor: false };
+  }
+}
+
+/**
+ * Send ny invitation til forelder (eks. hvis utløpt eller feil e-post).
+ * Brukes fra PortalShell-banner.
+ */
+export async function resendGuardianInvitation(input: {
+  guardianEmail: string;
+}): Promise<{ ok: boolean; error?: string }> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: "unauthenticated" };
+  if (!user.requiresGuardianConsent) {
+    return { ok: false, error: "Bruker trenger ikke foreldresamtykke." };
+  }
+
+  try {
+    // Marker eksisterende invitations som utløpt
+    await prisma.parentInvitation.updateMany({
+      where: {
+        playerId: user.id,
+        acceptedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+      data: { expiresAt: new Date() },
+    });
+
+    // Opprett ny + send e-post
+    const result = await setDateOfBirthAndCheckMinor({
+      dateOfBirth: user.dateOfBirth?.toISOString().split("T")[0] ?? "",
+      guardianEmail: input.guardianEmail,
+    });
+
+    return { ok: result.ok, error: result.error };
+  } catch (error) {
+    await logError({ context: "onboarding.resend-invitation", error, userId: user.id });
+    return { ok: false, error: "Kunne ikke sende invitasjon på nytt." };
+  }
 }
