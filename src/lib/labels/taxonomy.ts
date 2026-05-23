@@ -31,6 +31,7 @@ export const ENVIRONMENT_LABEL: Record<SessionEnvironment, string> = {
   STUDIO: "Studio",
   HJEM: "Hjem",
   SIMULATOR: "Simulator",
+  GYM: "Gym",
 };
 
 export const LPHASE_LABEL: Record<LPhase, string> = {

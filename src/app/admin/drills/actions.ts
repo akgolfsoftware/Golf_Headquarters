@@ -61,6 +61,7 @@ const SessionEnvironmentEnum = z.enum([
   SessionEnvironment.STUDIO,
   SessionEnvironment.HJEM,
   SessionEnvironment.SIMULATOR,
+  SessionEnvironment.GYM,
 ]);
 
 // csTargetByKategori: {A: 95, B: 90, ...} — alle kategorier optional

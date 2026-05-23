@@ -98,6 +98,7 @@ export const ENV_LABEL: Record<SessionEnvironment, string> = {
   STUDIO: "Studio",
   HJEM: "Hjem",
   SIMULATOR: "Simulator",
+  GYM: "Gym",
 };
 
 export const DAG_LABEL = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];

@@ -79,6 +79,7 @@ const ENVS: SessionEnvironment[] = [
   "STUDIO",
   "HJEM",
   "SIMULATOR",
+  "GYM",
 ];
 
 function parseCsTarget(raw: unknown): Partial<Record<NgfKategori, number>> {

@@ -104,6 +104,7 @@ const ENV_ALLE: SessionEnvironment[] = [
   "STUDIO",
   "HJEM",
   "SIMULATOR",
+  "GYM",
 ];
 
 type ModalState =

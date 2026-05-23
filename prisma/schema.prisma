@@ -92,6 +92,7 @@ enum SessionEnvironment {
   STUDIO
   HJEM
   SIMULATOR
+  GYM
 }
 
 // Utstyr/anlegg-krav per drill — brukes for facility-matching mot spillerprofil.
@@ -107,6 +108,10 @@ enum DrillFasilitet {
   DRIVING_RANGE      // Utendørs driving range
   BANE               // Tilgang til golfrunde (9 eller 18 hull)
   SIMULATOR          // Innendørs simulator-bay
+  VEKTSTANG      // Benkpress, squat rack
+  TRAPBAR        // Hex bar / trapbar
+  LOPEBANE       // Friidrettsbane eller tredemølle
+  MED_BALL       // Medisinball (2-4 kg)
 }
 
 // NGF-kategori-skala for nivå-differensiering av drills og plan-templates.

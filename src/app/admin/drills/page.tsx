@@ -73,6 +73,7 @@ const ENV_LABEL: Record<SessionEnvironment, string> = {
   STUDIO: "Studio",
   HJEM: "Hjem",
   SIMULATOR: "Sim",
+  GYM: "Gym",
 };
 
 type Sp = {

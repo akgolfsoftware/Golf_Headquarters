@@ -51,6 +51,7 @@ const EnvironmentEnum = z.enum([
   "STUDIO",
   "HJEM",
   "SIMULATOR",
+  "GYM",
 ]);
 
 const DisciplinFordelingSchema = z.object({
