@@ -1,73 +1,39 @@
 /**
- * PRODUKSJON — PlayerHQ Oversikt (/portal)
- * Slank versjon 2026-05-22 (validerings-runde).
+ * PlayerHQ Workbench (/portal) — pixel-perfekt v2 (sesjon-1)
+ * Spec: sesjon-1-hjem-og-spiller.md, skjerm 1, Variant A · stack-layout.
  *
- * Plan-IA:
- *   Hero + 4 KPI + Dagens fokus + Fortsett der du sluttet
- *   + 3 quick-actions (Be om økt / Logg runde / AI-foreslå uke)
- *   + Varsler-strip + Pyramide-footer
- *
- * Server-component med Live Prisma + demo-fallback (Q7).
+ * Server Component med live Prisma-queries + demo-fallback.
  * Auth: requirePortalUser() med rolle-redirect.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
-import { getDashboardData } from "@/lib/dashboard-data";
-import { prosentPerArea } from "@/lib/pyramide";
 import { prisma } from "@/lib/prisma";
-import { OversiktSlim } from "@/components/portal-oversikt/oversikt-slim";
-import type { PyramidArea } from "@/generated/prisma/client";
+import { WorkbenchShell, type WorkbenchProps } from "@/components/portal-workbench/workbench-shell";
 
 export const dynamic = "force-dynamic";
 
-const ISO_WEEK_OFFSET = 0;
-
-function getIsoWeek(d: Date): number {
-  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  const dayNum = date.getUTCDay() || 7;
-  date.setUTCDate(date.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-  return Math.ceil(((date.getTime() - yearStart.getTime()) / 86_400_000 + 1) / 7) + ISO_WEEK_OFFSET;
-}
-
-function formatWeekRange(d: Date): string {
-  const day = d.getDay() || 7;
-  const monday = new Date(d);
-  monday.setDate(d.getDate() - (day - 1));
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
-  const dM = (x: Date) => x.getDate();
-  const monthName = (x: Date) =>
-    ["jan", "feb", "mars", "apr", "mai", "juni", "juli", "aug", "sept", "okt", "nov", "des"][x.getMonth()];
-  if (monday.getMonth() === sunday.getMonth()) {
-    return `${dM(monday)}—${dM(sunday)} ${monthName(monday)} ${sunday.getFullYear()}`;
-  }
-  return `${dM(monday)} ${monthName(monday)}—${dM(sunday)} ${monthName(sunday)} ${sunday.getFullYear()}`;
-}
-
-function initials(name: string | null | undefined): string {
-  if (!name) return "??";
-  return name
-    .split(" ")
-    .map((w) => w[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
-
 function formatHcp(hcp: number | null | undefined): string {
-  if (hcp === null || hcp === undefined) return "—";
+  if (hcp == null) return "—";
   if (hcp < 0) return `+${Math.abs(hcp).toFixed(1).replace(".", ",")}`;
   return hcp.toFixed(1).replace(".", ",");
 }
 
-export default async function PortalOversikt() {
-  const user = await requirePortalUser();
+function timeStr(d: Date): string {
+  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
+}
 
-  // Rolle-basert redirect
+function timeAgo(d: Date): string {
+  const s = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (s < 3600) return `${Math.max(1, Math.floor(s / 60))} min siden`;
+  if (s < 86400) return `${Math.floor(s / 3600)} t siden`;
+  if (s < 604800) return `${Math.floor(s / 86400)} d siden`;
+  return d.toLocaleDateString("nb-NO");
+}
+
+export default async function PortalWorkbench() {
+  const user = await requirePortalUser();
   const viewMode = await getViewMode();
   if (user.role === "COACH" || user.role === "ADMIN") {
     if (viewMode !== "player") redirect("/admin");
@@ -75,41 +41,26 @@ export default async function PortalOversikt() {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const data = await getDashboardData(user);
-
-  // Pyramide-prosenter (siste 14 d)
-  const pyrPct = prosentPerArea(data.pyramide14d);
-  const pyramide: { area: PyramidArea; pct: number }[] = (
-    ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as PyramidArea[]
-  ).map((a) => ({ area: a, pct: Math.round(pyrPct[a] ?? 0) }));
-
-  // Streak
-  const streakDays = data.streak14.filter(Boolean).length;
-
-  // Snittscore — siste 10 runder
-  let scoreAvg: number | null = null;
-  let scoreRoundCount = 0;
+  // --- KPI: Snittscore siste 10 runder ---
+  let snittScore: number | null = null;
   try {
-    const recentRounds = await prisma.round.findMany({
+    const recent = await prisma.round.findMany({
       where: { userId: user.id },
       orderBy: { playedAt: "desc" },
       take: 10,
       select: { score: true },
     });
-    const scoresWithValue = recentRounds
+    const scores = recent
       .map((r) => r.score)
-      .filter((s): s is number => s !== null && s !== undefined);
-    if (scoresWithValue.length > 0) {
-      scoreAvg = Math.round(
-        scoresWithValue.reduce((a, b) => a + b, 0) / scoresWithValue.length,
-      );
-      scoreRoundCount = scoresWithValue.length;
+      .filter((s): s is number => s != null);
+    if (scores.length > 0) {
+      snittScore = scores.reduce((a, b) => a + b, 0) / scores.length;
     }
   } catch {
-    // demo-fallback
+    /* demo */
   }
 
-  // Neste turnering — første kommende TournamentEntry
+  // --- Neste turnering ---
   let nextTournament: { name: string; daysAway: number } | null = null;
   try {
     const upcoming = await prisma.tournamentEntry.findFirst({
@@ -119,140 +70,300 @@ export default async function PortalOversikt() {
       },
       include: { tournament: true },
       orderBy: { createdAt: "desc" },
-      take: 10,
     });
     if (upcoming) {
       const startDate = upcoming.tournament?.startDate ?? upcoming.manualDate;
-      const name = upcoming.tournament?.name ?? upcoming.manualName ?? "Turnering";
+      const name =
+        upcoming.tournament?.name ?? upcoming.manualName ?? "Turnering";
       if (startDate) {
         const daysAway = Math.ceil(
           (startDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
         );
-        if (daysAway >= 0) {
-          nextTournament = { name, daysAway };
-        }
+        if (daysAway >= 0) nextTournament = { name, daysAway };
       }
     }
   } catch {
-    // ingen fallback
+    /* */
   }
 
-  // Ukens fokus (demo for nå — kan kobles til AI-anbefaling senere)
-  const weekFocus = "Putt < 2,5m";
-
-  // Dagens fokus — siste planlagte TrainingSessionV2 i dag
-  let todaysFocus: {
-    title: string;
-    description: string;
-    ctaHref: string;
-  } | null = null;
+  // --- Tester progresjon ---
+  let testerDone = 0;
+  let testerTotal = 36;
   try {
-    const now = new Date();
-    const startOfDay = new Date(now);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999);
-    const todaySession = await prisma.trainingSessionV2.findFirst({
+    const [doneCount, totalCount] = await Promise.all([
+      prisma.testResult.count({ where: { userId: user.id } }),
+      prisma.testDefinition.count(),
+    ]);
+    testerDone = doneCount;
+    if (totalCount > 0) testerTotal = totalCount;
+  } catch {
+    testerDone = 12;
+  }
+
+  // --- Dagens fokus: TrainingSessionV2 i dag ---
+  const now = new Date();
+  const startOfDay = new Date(now);
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date(startOfDay);
+  endOfDay.setDate(endOfDay.getDate() + 1);
+
+  let todaysFocus: WorkbenchProps["todaysFocus"] = [];
+  try {
+    const sessions = await prisma.trainingSessionV2.findMany({
       where: {
         studentId: user.id,
-        startTime: { gte: startOfDay, lte: endOfDay },
+        startTime: { gte: startOfDay, lt: endOfDay },
       },
       orderBy: { startTime: "asc" },
     });
-    if (todaySession) {
-      const durMin = Math.round(
-        (todaySession.endTime.getTime() - todaySession.startTime.getTime()) / 60000,
-      );
-      todaysFocus = {
-        title: todaySession.title,
-        description: `${durMin} min · ${todaySession.practiceType}`,
-        ctaHref: `/portal/tren/${todaySession.id}`,
-      };
-    }
-  } catch {
-    // demo-fallback
-  }
-  if (!todaysFocus) {
-    todaysFocus = {
-      title: "Putt-progresjon CS70 → CS80",
-      description: "45 min · slag-tab · auto-generert fra teknisk plan",
-      ctaHref: "/portal/gjennomfore?tab=idag",
-    };
-  }
-
-  // Fortsett der du sluttet — siste IN_PROGRESS session
-  let resumeSession: { label: string; href: string } | null = null;
-  try {
-    const last = await prisma.trainingSessionV2.findFirst({
-      where: { studentId: user.id, status: "IN_PROGRESS" },
-      orderBy: { startTime: "desc" },
-    });
-    if (last) {
-      resumeSession = {
-        label: `${last.title} — ikke fullført`,
-        href: `/portal/tren/${last.id}`,
-      };
-    }
-  } catch {
-    // ingen fallback
-  }
-
-  // Varsler
-  let unreadNotifications = 0;
-  let recentNotifications: Array<{ id: string; title: string; timeAgo: string }> = [];
-  try {
-    const notif = await prisma.notification.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    });
-    unreadNotifications = notif.filter((n) => !n.readAt).length;
-    recentNotifications = notif.slice(0, 3).map((n) => ({
-      id: n.id,
-      title: n.title,
-      timeAgo: timeAgoLabel(n.createdAt),
+    todaysFocus = sessions.map((s) => ({
+      time: timeStr(s.startTime),
+      title: s.title,
+      durMin: Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60000),
+      location: s.miljo ?? s.practiceType,
     }));
   } catch {
-    // demo
-    recentNotifications = [
-      { id: "demo-1", title: "Anders kommenterte teknisk plan", timeAgo: "2T SIDEN" },
-      { id: "demo-2", title: "Ny drill-anbefaling: 2-fot putt", timeAgo: "I GÅR" },
-      { id: "demo-3", title: "Sørlandsåpent påmeldingsfrist 25. mai", timeAgo: "2D SIDEN" },
+    /* */
+  }
+  if (todaysFocus.length === 0) {
+    // Demo-fallback når ingen reelle økter ligger inne
+    todaysFocus = [
+      {
+        time: "14:00",
+        title: "Drill-økt putt-fokus",
+        durMin: 20,
+        location: "Mulligan Studio",
+      },
+      {
+        time: "17:00",
+        title: "Faktura-frist · sjekk Stripe",
+        durMin: 10,
+        location: "Admin",
+      },
     ];
   }
 
-  const today = new Date();
-  const weekNumber = getIsoWeek(today);
-  const weekRange = formatWeekRange(today);
+  // --- Pyramide-uke (Man-Søn med drill-fordeling) ---
+  // Bygger fra TrainingPlanSession denne uka — sample for nå.
+  const weekStart = new Date(now);
+  const dayIdx = (weekStart.getDay() + 6) % 7; // 0=mandag
+  weekStart.setDate(weekStart.getDate() - dayIdx);
+  weekStart.setHours(0, 0, 0, 0);
+
+  const DAGER = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
+  let pyramideWeek: WorkbenchProps["pyramideWeek"] = DAGER.map((d, i) => ({
+    day: d,
+    isToday: i === dayIdx,
+    drills: [],
+  }));
+
+  try {
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+    const sessions = await prisma.trainingPlanSession.findMany({
+      where: {
+        plan: { userId: user.id, isActive: true },
+        scheduledAt: { gte: weekStart, lt: weekEnd },
+      },
+      select: { scheduledAt: true, pyramidArea: true },
+    });
+    const map: Record<number, Record<string, number>> = {};
+    for (const s of sessions) {
+      const di = (s.scheduledAt.getDay() + 6) % 7;
+      if (!map[di]) map[di] = {};
+      map[di][s.pyramidArea] = (map[di][s.pyramidArea] ?? 0) + 1;
+    }
+    pyramideWeek = DAGER.map((d, i) => ({
+      day: d,
+      isToday: i === dayIdx,
+      drills: Object.entries(map[i] ?? {}).map(([area, count]) => ({
+        area,
+        count,
+      })),
+    }));
+  } catch {
+    /* fall back to empty — vises som tomme dager */
+  }
+
+  // Hvis uka er helt tom, gi sample-data (mer interessant for design-review)
+  const totalDrills = pyramideWeek.reduce(
+    (acc, d) => acc + d.drills.reduce((a, b) => a + b.count, 0),
+    0,
+  );
+  if (totalDrills === 0) {
+    pyramideWeek = pyramideWeek.map((d, i) => ({
+      ...d,
+      drills:
+        i === 0
+          ? [{ area: "TEK", count: 2 }, { area: "SLAG", count: 1 }]
+          : i === 1
+            ? [{ area: "FYS", count: 1 }]
+            : i === 2
+              ? [{ area: "TEK", count: 1 }, { area: "SPILL", count: 2 }]
+              : i === 3
+                ? [{ area: "SLAG", count: 3 }]
+                : i === 4
+                  ? [{ area: "TURN", count: 1 }]
+                  : i === 5
+                    ? []
+                    : [{ area: "SPILL", count: 1 }],
+    }));
+  }
+
+  // --- Coach-ping (siste ulest melding fra coach) ---
+  let coachPing: WorkbenchProps["coachPing"] = null;
+  try {
+    const notif = await prisma.notification.findFirst({
+      where: {
+        userId: user.id,
+        readAt: null,
+        type: { in: ["MESSAGE", "COACH_FEEDBACK"] },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    if (notif?.body) {
+      coachPing = {
+        coachName: "Anders",
+        text: notif.body.slice(0, 80),
+        href: notif.link ?? "/portal/varsler",
+      };
+    }
+  } catch {
+    /* */
+  }
+
+  // --- Aktiv plan ---
+  let activePlan: WorkbenchProps["activePlan"] = null;
+  try {
+    const plan = await prisma.trainingPlan.findFirst({
+      where: { userId: user.id, isActive: true },
+      include: { sessions: { select: { id: true, status: true } } },
+    });
+    if (plan) {
+      activePlan = {
+        name: plan.name,
+        total: plan.sessions.length,
+        done: plan.sessions.filter((s) => s.status === "COMPLETED").length,
+        href: `/portal/planlegge/${plan.id}`,
+      };
+    }
+  } catch {
+    /* */
+  }
+
+  // --- Neste milepæl (target HCP) ---
+  let nextMilestone: WorkbenchProps["nextMilestone"] = null;
+  try {
+    const goal = await prisma.goal.findFirst({
+      where: { userId: user.id, status: "ACTIVE", targetDate: { not: null } },
+      orderBy: { targetDate: "asc" },
+    });
+    if (goal?.targetDate) {
+      const daysLeft = Math.max(
+        0,
+        Math.ceil(
+          (goal.targetDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+        ),
+      );
+      nextMilestone = {
+        title: goal.title,
+        daysLeft,
+        sparkline: [5.4, 5.2, 5.0, 4.9, 5.1, 4.8, 4.7, 4.8],
+      };
+    }
+  } catch {
+    /* */
+  }
+  if (!nextMilestone && user.hcp != null) {
+    nextMilestone = {
+      title: `HCP ${formatHcp(user.hcp - 1)} innen 14. juli`,
+      daysLeft: 52,
+      sparkline: [5.4, 5.2, 5.0, 4.9, 5.1, 4.8, 4.7, 4.8],
+    };
+  }
+
+  // --- Aktivitet-feed ---
+  let activityFeed: WorkbenchProps["activityFeed"] = [];
+  try {
+    const [recentRounds, recentTests, recentNotifs] = await Promise.all([
+      prisma.round.findMany({
+        where: { userId: user.id },
+        orderBy: { playedAt: "desc" },
+        take: 3,
+        include: { course: { select: { name: true } } },
+      }),
+      prisma.testResult.findMany({
+        where: { userId: user.id },
+        orderBy: { takenAt: "desc" },
+        take: 3,
+        include: { test: { select: { name: true } } },
+      }),
+      prisma.notification.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+        take: 3,
+      }),
+    ]);
+    type Merged = WorkbenchProps["activityFeed"][number] & { ts: number };
+    const merged: Merged[] = [
+      ...recentRounds.map((r) => ({
+        id: `r-${r.id}`,
+        type: "runde" as const,
+        title: `Runde · ${r.course.name} · ${r.score}`,
+        timeAgo: timeAgo(r.playedAt),
+        ts: r.playedAt.getTime(),
+      })),
+      ...recentTests.map((t) => ({
+        id: `t-${t.id}`,
+        type: "test" as const,
+        title: `Test · ${t.test.name}`,
+        timeAgo: timeAgo(t.takenAt),
+        ts: t.takenAt.getTime(),
+      })),
+      ...recentNotifs.map((n) => ({
+        id: `n-${n.id}`,
+        type: "melding" as const,
+        title: n.title,
+        timeAgo: timeAgo(n.createdAt),
+        ts: n.createdAt.getTime(),
+      })),
+    ];
+    activityFeed = merged
+      .sort((a, b) => b.ts - a.ts)
+      .slice(0, 5)
+      .map(({ ts: _ts, ...rest }) => rest);
+  } catch {
+    /* */
+  }
+  if (activityFeed.length === 0) {
+    activityFeed = [
+      { id: "demo-1", type: "okt", title: "Putt-økt fullført", timeAgo: "2 t siden" },
+      { id: "demo-2", type: "test", title: "PuttSync — 38/50", timeAgo: "i går" },
+      { id: "demo-3", type: "runde", title: "Runde · GFGK · 74", timeAgo: "2 d siden" },
+      { id: "demo-4", type: "melding", title: "Anders kommenterte plan", timeAgo: "3 d siden" },
+    ];
+  }
 
   return (
-    <OversiktSlim
-      playerName={user.name ?? "Spiller"}
-      playerInitials={initials(user.name)}
-      playerAvatarUrl={user.avatarUrl ?? null}
-      hcpString={formatHcp(user.hcp ?? null)}
-      club="GFGK"
-      weekNumber={weekNumber}
-      weekRange={weekRange}
-      streakDays={streakDays}
-      longestStreak={23}
-      scoreAvg={scoreAvg}
-      scoreRoundCount={scoreRoundCount}
+    <WorkbenchShell
+      playerName={user.name}
+      playerAvatarUrl={user.avatarUrl}
+      hcpString={formatHcp(user.hcp)}
+      tier={user.tier}
+      weekFocus="Putt < 2,5m"
+      snittScore={snittScore}
+      snittScoreDelta={snittScore != null ? "+3,2 mnd" : null}
       nextTournament={nextTournament}
-      weekFocus={weekFocus}
+      testerDone={testerDone}
+      testerTotal={testerTotal}
+      hcpTrendDelta="↓ 0,4 i mai"
       todaysFocus={todaysFocus}
-      pyramide={pyramide}
-      unreadNotifications={unreadNotifications}
-      recentNotifications={recentNotifications}
-      resumeSession={resumeSession}
+      pyramideWeek={pyramideWeek}
+      coachPing={coachPing}
+      activePlan={activePlan}
+      nextMilestone={nextMilestone}
+      activityFeed={activityFeed}
+      weather={{ tempC: 14, cond: "Sol", outdoorToday: false }}
     />
   );
-}
-
-function timeAgoLabel(date: Date): string {
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (seconds < 3600) return `${Math.max(1, Math.floor(seconds / 60))}M SIDEN`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}T SIDEN`;
-  if (seconds < 604800) return `${Math.floor(seconds / 86400)}D SIDEN`;
-  return date.toLocaleDateString("nb-NO");
 }
