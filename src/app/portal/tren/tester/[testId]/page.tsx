@@ -63,7 +63,18 @@ export default async function TestDetaljSpillerPage({
     orderBy: { takenAt: "asc" },
   });
 
-  const protocol = test.protocol as Protocol | null;
+  const rawProtocol = test.protocol as unknown as
+    | (Protocol & { steps?: unknown; equipment?: string[]; expectedDurationMin?: number; pgaBenchmark?: string })
+    | null;
+  // Ny NGF-protokoll har 'steps', gammel har 'shots'. Bruk Scorekort kun for gammel.
+  const protocol: Protocol | null =
+    rawProtocol && Array.isArray((rawProtocol as { shots?: unknown[] }).shots)
+      ? (rawProtocol as Protocol)
+      : null;
+  const newProtocol =
+    rawProtocol && Array.isArray((rawProtocol as { steps?: unknown[] }).steps)
+      ? rawProtocol
+      : null;
 
   // Beregn nøkkeltall
   const scores = resultater.map((r) => r.score);
@@ -146,10 +157,10 @@ export default async function TestDetaljSpillerPage({
           )}
         </div>
         <Link
-          href="/portal/tren/tester/ny"
+          href={`/portal/test/${test.id}/live`}
           className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
-          Ta test
+          Start test
         </Link>
       </div>
 
@@ -284,24 +295,103 @@ export default async function TestDetaljSpillerPage({
         </section>
       )}
 
-      {/* Scorekort */}
-      <section>
-        <div className="mb-4 flex items-center gap-2">
-          <Table2 size={16} strokeWidth={1.5} className="text-muted-foreground" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Scorekort — Ta testen
-          </span>
-        </div>
-        {protocol ? (
-          <Scorekort testId={test.id} protocol={protocol} />
-        ) : (
-          <div className="rounded-lg border border-dashed border-border bg-card/40 p-8 text-center">
-            <p className="text-sm text-muted-foreground">
-              Denne testen har ikke et digitalt scorekort ennå. Kontakt coach for å registrere resultat manuelt.
-            </p>
+      {/* Ny NGF-protokoll: vis info + live-test-CTA */}
+      {newProtocol && (
+        <section className="rounded-lg border border-border bg-card p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Table2 size={16} strokeWidth={1.5} className="text-muted-foreground" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Protokoll
+              </span>
+            </div>
+            {newProtocol.expectedDurationMin != null && (
+              <span className="font-mono text-[11px] text-muted-foreground">
+                ~{newProtocol.expectedDurationMin} min
+              </span>
+            )}
           </div>
-        )}
-      </section>
+
+          <ol className="mt-4 space-y-3">
+            {(newProtocol.steps as Array<{ id: string; label: string; instruction: string; shots: number; target?: string }>).map((s, i) => (
+              <li key={s.id} className="flex gap-4">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-xs font-semibold text-primary">
+                  {i + 1}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <h4 className="font-display text-sm font-semibold text-foreground">{s.label}</h4>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                      {s.shots} slag
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{s.instruction}</p>
+                  {s.target && (
+                    <span className="mt-1.5 inline-block rounded-full bg-secondary px-2.5 py-0.5 font-mono text-[10px] font-semibold text-foreground">
+                      Mål: {s.target}
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          {Array.isArray(newProtocol.equipment) && newProtocol.equipment.length > 0 && (
+            <div className="mt-5 border-t border-border pt-4">
+              <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                Utstyr
+              </div>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {newProtocol.equipment.map((e: string) => (
+                  <span
+                    key={e}
+                    className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-foreground"
+                  >
+                    {e}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {newProtocol.pgaBenchmark && (
+            <div className="mt-4 rounded-lg bg-accent/10 px-4 py-3">
+              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-accent-foreground">
+                PGA Benchmark
+              </span>
+              <p className="mt-1 text-sm text-foreground">{newProtocol.pgaBenchmark}</p>
+            </div>
+          )}
+
+          <Link
+            href={`/portal/test/${test.id}/live`}
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto"
+          >
+            Start test →
+          </Link>
+        </section>
+      )}
+
+      {/* Gammel Scorekort (legacy) */}
+      {!newProtocol && (
+        <section>
+          <div className="mb-4 flex items-center gap-2">
+            <Table2 size={16} strokeWidth={1.5} className="text-muted-foreground" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Scorekort — Ta testen
+            </span>
+          </div>
+          {protocol ? (
+            <Scorekort testId={test.id} protocol={protocol} />
+          ) : (
+            <div className="rounded-lg border border-dashed border-border bg-card/40 p-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                Denne testen har ikke et digitalt scorekort ennå. Kontakt coach for å registrere resultat manuelt.
+              </p>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Historikk-line-graf */}
       <section className="rounded-lg border border-border bg-card p-6">
