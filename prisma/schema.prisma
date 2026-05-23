@@ -312,6 +312,7 @@ model User {
   trainingPlans     TrainingPlan[]
   rounds            Round[]
   testResults       TestResult[]
+  testSessions      TestSession[]
   trackManSessions  TrackManSession[]
   subscription      Subscription?
 
@@ -1056,7 +1057,8 @@ model TestDefinition {
   protocol    Json?
   createdAt   DateTime    @default(now())
 
-  results TestResult[]
+  results  TestResult[]
+  sessions TestSession[]
 
   @@map("test_definitions")
 }
@@ -1076,6 +1078,37 @@ model TestResult {
 
   @@index([userId, takenAt])
   @@map("test_results")
+}
+
+/// In-progress test-økt (live scoring). Opprettes ved `start`, oppdateres per slag,
+/// committes til TestResult ved `complete`. Slettes ved `abort`.
+enum TestSessionStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABORTED
+}
+
+model TestSession {
+  id          String            @id @default(cuid())
+  userId      String
+  testId      String
+  status      TestSessionStatus @default(IN_PROGRESS)
+  // Hvilket steg spilleren er på (0-indexed mot protokoll.steps[])
+  currentStepIndex Int          @default(0)
+  // Akkumulert data per steg: { [stepId]: ShotData[] }
+  scoringData Json              @default("{}")
+  startedAt   DateTime          @default(now())
+  completedAt DateTime?
+  abortedAt   DateTime?
+  // Når committed: peker på resulterende TestResult
+  testResultId String?
+
+  user User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  test TestDefinition @relation(fields: [testId], references: [id])
+
+  @@index([userId, status])
+  @@index([testId, status])
+  @@map("test_sessions")
 }
 
 model TrackManSession {
