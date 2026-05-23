@@ -265,3 +265,123 @@ curl -H "Authorization: Bearer $CRON_SECRET" https://akgolf.no/api/cron/plan-wat
 ---
 
 *Slutt på sjekkliste. Etter launch: monitorer Sentry + Plausible første uke. Daglig sjekk av cron-jobs og Stripe-event-køen.*
+
+---
+
+# 🚀 GO/NO-GO PÅ LANSERINGSDAGEN (L3 fra master-plan)
+
+**Lansering: ikke flipp BOOKING_ACTIVE før alle ✓ nedenfor.** 37 punkter på 6 områder.
+
+## 1. TEKNISK (11 punkter)
+
+```
+[ ] Vercel Observability mottar test-error (trigger via /api/test-error) + ErrorLog-tabell får entry
+[ ] Stripe webhook test-event mottatt + booking oppdatert til CONFIRMED
+[ ] Stripe refund testet ende-til-ende (test-bruker → refund i Stripe-dashboard → CANCELLED + e-post)
+[ ] Resend e-post mottatt på akgolfgroup@gmail.com (booking-confirmation.tsx)
+[ ] Google Cal-event opprettet ved test-booking + slettet ved refund
+[ ] Auth-middleware blokkerer uautentisert tilgang til /portal og /admin (verifiser 307→/auth/login)
+[ ] RLS-policies aktive på alle 55+ tabeller (verifisert via Supabase Advisor 2026-05-23 ✅)
+[ ] Cron-jobs har kjørt minst én gang (check-stuck-bookings, plan-watcher, booking-reminders)
+[ ] Sitemap.xml inneholder alle 25 marketing-ruter + ingen broken links
+[ ] 404-side rendres på ikke-eksisterende rute (test: /portal/foobar)
+[ ] Cookie-banner vises på første besøk + lagrer samtykke
+```
+
+## 2. BRUKERFLYT (7 punkter — manuell ende-til-ende)
+
+```
+[ ] Ny bruker: /auth/registrer → onboarding → /portal lander under 3 min
+[ ] Eksisterende bruker: /auth/login → /portal viser dashboard med data
+[ ] Public booking: /booking → velg tjeneste → Stripe test-betaling → mottar e-post
+[ ] Portal booking: innlogget medlem booker via credits → ser bekreftelse
+[ ] Coach login: /admin viser stall + dagens økter
+[ ] Forelder login: /forelder viser barnets fremgang
+[ ] Logout → kan ikke åpne /portal eller /admin (redirect til login)
+```
+
+## 3. PERFORMANCE (2 punkter)
+
+```
+[ ] Lighthouse > 90 på 5 nøkkelsider: /, /priser, /booking, /portal, /admin
+    (Performance + Accessibility + Best Practices + SEO)
+[ ] Mobile (iPhone 15 viewport 375px): bottom-nav synlig, ingen horisontal scroll, touch-targets > 44px
+```
+
+## 4. SIKKERHET (10 punkter)
+
+```
+[ ] securityheaders.com test gir A+ rating (CSP/HSTS/X-Frame/Permissions-Policy)
+[ ] Test-bruker PLAYER prøver /admin/* → redirectes til /portal
+[ ] Test-bruker COACH prøver /forelder → redirectes til /admin
+[ ] Test-bruker PARENT prøver /portal → redirectes til /forelder
+[ ] Service-role-key fraværende fra client-bundle (Vercel build analyze)
+[ ] Filopplasting blokkerer .exe/.sh/.php + 50 MB+ filer
+[ ] Rate-limit returnerer 429 ved > 10 req/min på /api/lead
+[ ] Slack-alert mottatt ved test-error (SLACK_ALERTS_WEBHOOK satt)
+[ ] Leaked password protection PÅ i Supabase Auth-settings
+[ ] CRON_SECRET satt i Vercel env (cron-endpoints krever Authorization)
+```
+
+## 5. JURIDISK + GDPR (4 punkter)
+
+```
+[ ] /vilkar, /personvern, /cookies oppdatert + lenket fra footer
+[ ] Cookie-banner krever eksplisitt samtykke før analytics lastes
+[ ] (Etterslep E6) deleteUserAccount() implementert + testet
+[ ] (Etterslep E6) Data-export-knapp returnerer ZIP med all bruker-data
+```
+
+## 6. ROLLBACK (3 punkter)
+
+```
+[ ] Rollback-prosedyre dokumentert i docs/rollback.md + testet én gang på staging
+[ ] Database snapshot tatt < 1 t før launch (Supabase auto-backup)
+[ ] Forrige Vercel-deployment markert som "stabil" (kan rolles tilbake via dashboard)
+```
+
+---
+
+## Launch-rekkefølge på dagen
+
+```
+08:00 — Kjør go/no-go-sjekklisten (1 t, helst med 2 personer for QA)
+        Hvis NOE feiler → utsett launch, fiks, kjør checklist igjen
+
+09:00 — Flipp BOOKING_ACTIVE=true i Vercel env (Production + Preview)
+        Vercel auto-deploy ~1-2 min
+
+09:05 — Verifiser live booking via test-bruker (book + betal + motta e-post)
+
+09:15 — Anders annonserer på Instagram + e-post + LinkedIn
+
+09:15-17:00 — MONITOR
+              - Slack-alerts kanal
+              - Vercel Observability (5xx-rate)
+              - /admin/organisasjon?tab=audit (ErrorLog)
+              - Stripe-dashboard (failed payments)
+
+17:00 — Dagens metrics:
+        - Antall nye registreringer
+        - Antall bookinger
+        - Antall e-poster sendt
+        - Error-rate
+        - Slack-alerts mottatt
+```
+
+## Hvis NOE går galt på lanseringsdagen
+
+**KRITISK feil (alle bookinger faller):**
+1. Flipp `BOOKING_ACTIVE=false` i Vercel env → midlertidig stoppe nye bookinger
+2. Sjekk Stripe-dashboard for webhook-feil
+3. Kjør cron manuelt: `curl -H "Authorization: Bearer $CRON_SECRET" https://akgolf-hq.vercel.app/api/cron/check-stuck-bookings`
+4. Følg `docs/rollback.md` for full rollback
+
+**Mindre feil (én side gir 500):**
+1. Sjekk Vercel Logs (`vercel logs --follow`)
+2. Sjekk ErrorLog-tabell via Supabase SQL Editor
+3. Hotfix → push til main → Vercel auto-deploy
+
+**Database-feil:**
+1. Sjekk Supabase Status: https://status.supabase.com
+2. Hvis migrate-deploy feilet: `vercel logs` → finn feil → patch schema
