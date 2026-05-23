@@ -24,31 +24,33 @@ export function PlanleggeHeroTabs({
 
   return (
     <>
-      <section className="hero">
-        <div>
-          <div className="eyebrow">PlayerHQ · Planlegge</div>
-          <h1>
-            Plan din <em>utvikling</em>
-          </h1>
-          <div className="sub">
-            <strong style={{ color: "var(--ink)", fontWeight: 700 }}>Sesong 2026</strong>
-            <span className="dot" />
-            Du er i <strong style={{ color: "var(--forest)", fontWeight: 700 }}>Spesialisering · uke 3 av 6</strong>
-            <span className="dot" />
-            Neste turnering om <strong style={{ color: "var(--ink)", fontWeight: 700 }}>16 dager</strong>
+      {activeTab === "arsplan" && (
+        <section className="hero">
+          <div>
+            <div className="eyebrow">PlayerHQ · Planlegge</div>
+            <h1>
+              Plan din <em>utvikling</em>
+            </h1>
+            <div className="sub">
+              <strong style={{ color: "var(--ink)", fontWeight: 700 }}>Sesong 2026</strong>
+              <span className="dot" />
+              Du er i <strong style={{ color: "var(--forest)", fontWeight: 700 }}>Spesialisering · uke 3 av 6</strong>
+              <span className="dot" />
+              Neste turnering om <strong style={{ color: "var(--ink)", fontWeight: 700 }}>16 dager</strong>
+            </div>
           </div>
-        </div>
-        <div className="actions">
-          <button className="btn btn-outline btn-sm">
-            <svg fill="none" stroke="currentColor"><use href="#i-settings" /></svg>
-            Periodisering
-          </button>
-          <button className="btn btn-lime">
-            <svg fill="none" stroke="currentColor"><use href="#i-sparkles" /></svg>
-            AI mål-bygger
-          </button>
-        </div>
-      </section>
+          <div className="actions">
+            <button className="btn btn-outline btn-sm">
+              <svg fill="none" stroke="currentColor"><use href="#i-settings" /></svg>
+              Periodisering
+            </button>
+            <button className="btn btn-lime">
+              <svg fill="none" stroke="currentColor"><use href="#i-sparkles" /></svg>
+              AI mål-bygger
+            </button>
+          </div>
+        </section>
+      )}
 
       <nav className="plan-tabs">
         {tabs.map((t) => (

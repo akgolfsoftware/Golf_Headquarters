@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 import { PlanleggeShell } from "@/components/portal-planlegge/planlegge-shell";
 import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
 import { ArsplanScreen } from "@/components/planlegge-v2/arsplan-screen";
+import { TreningsplanScreen } from "@/components/planlegge-v2/treningsplan-screen";
 
 export const dynamic = "force-dynamic";
 
@@ -55,23 +56,22 @@ export default async function PlanleggePage({ searchParams }: Props) {
 
   // Ny pixel-perfekt design (Claude Design-handoff 2026-05-23) for arsplan-tab.
   // Andre tabs bruker fortsatt gammel shell inntil de blir portet.
-  if (tab === "arsplan") {
-    const initials = user.name
-      ?.split(" ")
-      .map((s) => s[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join("")
-      .toUpperCase() ?? "??";
-    return (
-      <ArsplanScreen
-        playerName={user.name ?? "Spiller"}
-        playerInitials={initials}
-        hcp={user.hcp ?? null}
-        seasonYear={new Date().getFullYear()}
-      />
-    );
-  }
+  const initials = user.name
+    ?.split(" ")
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase() ?? "??";
+  const screenProps = {
+    playerName: user.name ?? "Spiller",
+    playerInitials: initials,
+    hcp: user.hcp ?? null,
+    seasonYear: new Date().getFullYear(),
+  };
+
+  if (tab === "arsplan") return <ArsplanScreen {...screenProps} />;
+  if (tab === "treningsplan") return <TreningsplanScreen {...screenProps} />;
 
   return (
     <PlanleggeShell
@@ -80,7 +80,6 @@ export default async function PlanleggePage({ searchParams }: Props) {
         turneringer: tournamentsCount,
       }}
     >
-      {tab === "treningsplan" ? <TreningsplanTab userId={user.id} /> : null}
       {tab === "mal" ? <MalTab userId={user.id} /> : null}
       {tab === "turneringer" ? <TurneringerTab userId={user.id} /> : null}
       {tab === "drills" ? <DrillsTab /> : null}
