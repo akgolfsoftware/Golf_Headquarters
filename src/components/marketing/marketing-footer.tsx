@@ -12,6 +12,7 @@ const ACADEMY = [
   { href: "/treningsfilosofi", label: "Slik trener vi" },
   { href: "/booking", label: "Book tid" },
   { href: "/playerhq", label: "PlayerHQ" },
+  { href: "/turneringer", label: "Turneringer" },
   { href: "/junior", label: "Junior" },
   { href: "/priser", label: "Priser" },
 ];

@@ -14,6 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { BookingShortcuts } from "@/components/marketing/booking-shortcuts";
+import { NorskeDenneUkaTeaser } from "@/components/turneringer/norske-denne-uka-teaser";
 
 export const metadata: Metadata = {
   title: "AK Golf Academy | Personlig coaching, bygd på data",
@@ -124,6 +125,9 @@ export default function Hjem() {
 
         </div>
       </section>
+
+      {/* Nordmenn denne uka — fra /turneringer */}
+      <NorskeDenneUkaTeaser />
 
       {/* Booking-snarveier — direkte til kalenderen for valgte tjenester */}
       <BookingShortcuts />

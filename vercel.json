@@ -36,6 +36,22 @@
     {
       "path": "/api/cron/cleanup-deleted-accounts",
       "schedule": "30 3 * * *"
+    },
+    {
+      "path": "/api/cron/turneringer-schedule",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/turneringer-players",
+      "schedule": "0 5 * * 1"
+    },
+    {
+      "path": "/api/cron/turneringer-live",
+      "schedule": "0 */2 * * 4-7"
+    },
+    {
+      "path": "/api/cron/turneringer-ngf",
+      "schedule": "30 4 * * *"
     }
   ]
 }

@@ -9,6 +9,12 @@ import { runRefreshCalendarWatches } from "@/lib/agents/refresh-calendar-watches
 import { runSgInsights } from "@/lib/sg-hub/insight-engine";
 import { syncDataGolf } from "@/lib/sg-hub/datagolf-sync";
 import { runClubTrends } from "@/lib/sg-hub/club-trend-aggregator";
+import {
+  syncDataGolfSchedules,
+  syncNorwegianPlayers,
+  syncLiveLeaderboards,
+  syncNgfSchedule,
+} from "@/lib/turneringer/sync";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -21,6 +27,11 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "sg-insights": runSgInsights,
   "datagolf-sync": syncDataGolf,
   "club-trends": runClubTrends,
+  // /turneringer-syncs
+  "turneringer-schedule": syncDataGolfSchedules,
+  "turneringer-players": syncNorwegianPlayers,
+  "turneringer-live": syncLiveLeaderboards,
+  "turneringer-ngf": syncNgfSchedule,
 };
 
 export async function GET(

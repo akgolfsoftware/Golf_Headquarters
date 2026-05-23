@@ -1598,22 +1598,116 @@ model GoogleCalendarSubscription {
 model Tournament {
   id        String   @id @default(cuid())
   name      String
+  // Slug for /turneringer/[slug]-URL. Nullable for legacy-rader uten slug.
+  slug      String?  @unique
   startDate DateTime
   endDate   DateTime?
   courseId  String?
   // STROKE | MATCH | STABLEFORD | OTHER
   format    String   @default("STROKE")
   notes     String?
+
+  // /turneringer-felter (synkronisert fra ekstern kilde — DataGolf/NGF/GJGT)
+  // Origin: DATAGOLF | NGF | GJGT | VAGR | NCAA | MANUAL
+  sourceOrigin String?
+  // ID fra kilden (event_id fra DataGolf, golfbox-id fra NGF). Brukes for idempotent sync.
+  sourceId     String?
+  // Tour: pga | dp | lpga | let | korn-ferry | challenge | amateur-no | junior-no | college
+  tour         String?
+  // Kursens land (ISO 2-bokstaver)
+  country      String?
+  location     String?
+  latitude     Float?
+  longitude    Float?
+  // UPCOMING | IN_PROGRESS | COMPLETED | CANCELLED
+  status       String?
+  winnerName   String?
+  officialUrl  String?
+  lastSyncAt   DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  course       CourseDefinition?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
-  results      TournamentResult[]
-  entries      TournamentEntry[]
-  preparations TournamentPreparation[]
+  course           CourseDefinition?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  results          TournamentResult[]
+  entries          TournamentEntry[]
+  preparations     TournamentPreparation[]
+  publicEntries    PublicPlayerEntry[]
+  leaderboardSnap  LeaderboardSnapshot?
 
   @@index([startDate])
+  @@index([sourceOrigin, sourceId])
+  @@index([tour, status, startDate])
   @@map("tournaments")
+}
+
+// Norske + internasjonale spillere vi følger på /turneringer.
+// Separat fra User (User = kunder/coacher i PlayerHQ).
+model PublicPlayer {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  // ISO 2-bokstavers landkode
+  country       String   @default("NO")
+  birthYear     Int?
+  // Hva spilleren primært spiller: pro-pga | pro-dp | pro-lpga | amateur | junior | college
+  tier          String
+  // DataGolf player-ID (når vi kobler til pro-leaderboards)
+  dataGolfId    Int?     @unique
+  // NGF/Golfbox-ID (når vi kobler til amatør-leaderboards)
+  ngfId         String?
+  // Kort beskrivelse for spillerprofil-side
+  bio           String?
+  photoUrl      String?
+  instagramHandle String?
+  // Skjul fra public listings (men behold data)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  entries PublicPlayerEntry[]
+
+  @@index([country, tier, isActive])
+  @@map("public_players")
+}
+
+// Spillerens deltakelse i en turnering — registrert/spiller/ferdig.
+model PublicPlayerEntry {
+  id           String   @id @default(cuid())
+  playerId     String
+  tournamentId String
+  // REGISTERED | TEED_OFF | CUT | WITHDREW | FINISHED
+  status       String   @default("REGISTERED")
+  position     Int?
+  scoreToPar   Int?
+  totalScore   Int?
+  // JSON blob med per-runde data
+  rounds       Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  player     PublicPlayer @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  tournament Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, tournamentId])
+  @@index([tournamentId, position])
+  @@map("public_player_entries")
+}
+
+// Cache av siste leaderboard-respons fra DataGolf — JSON-blob så vi kan
+// reprosessere uten å hammre API-en. Én rad per turnering.
+model LeaderboardSnapshot {
+  id           String   @id @default(cuid())
+  tournamentId String   @unique
+  // Origin: DATAGOLF | NGF | etc.
+  source       String
+  // Hele JSON-responsen fra API/scraper
+  payload      Json
+  fetchedAt    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@map("leaderboard_snapshots")
 }
 
 model TournamentResult {
