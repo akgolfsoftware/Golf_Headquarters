@@ -130,6 +130,17 @@ export function PlanleggeSprite() {
         <symbol id="i-check" viewBox="0 0 24 24">
           <polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </symbol>
+        <symbol id="i-trend-up" viewBox="0 0 24 24">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points="17 6 23 6 23 12" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+        </symbol>
+        <symbol id="i-trend-dn" viewBox="0 0 24 24">
+          <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points="17 18 23 18 23 12" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+        </symbol>
+        <symbol id="i-activity" viewBox="0 0 24 24">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+        </symbol>
         <symbol id="i-edit" viewBox="0 0 24 24">
           <path d="M12 20h9" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
           <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" />

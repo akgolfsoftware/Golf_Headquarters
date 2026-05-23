@@ -20,6 +20,13 @@ import { getViewMode } from "@/lib/view-mode";
 import { prisma } from "@/lib/prisma";
 import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
 import { TabBar, type TabItem } from "@/components/ds/tab-bar";
+import { AnalyserOverview } from "@/components/portal-analysere/analysere-overview";
+import { SgInline } from "@/components/portal-analysere/inline/sg-inline";
+import { StatistikkInline } from "@/components/portal-analysere/inline/statistikk-inline";
+import { RunderInline } from "@/components/portal-analysere/inline/runder-inline";
+import { TrackManInline } from "@/components/portal-analysere/inline/trackman-inline";
+import { TesterInline } from "@/components/portal-analysere/inline/tester-inline";
+import { InnsiktInline } from "@/components/portal-analysere/inline/innsikt-inline";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +56,12 @@ export default async function AnalyserePage({ searchParams }: Props) {
   if (user.role === "PARENT") redirect("/forelder");
 
   const params = await searchParams;
+
+  // Ingen tab valgt → vis oversiktsskjerm
+  if (!params.tab) {
+    return <AnalyserOverview userId={user.id} />;
+  }
+
   const tab = VALID_TABS.includes(params.tab as (typeof VALID_TABS)[number])
     ? (params.tab as (typeof VALID_TABS)[number])
     : "statistikk";
@@ -98,12 +111,12 @@ export default async function AnalyserePage({ searchParams }: Props) {
       <TabBar tabs={tabsWithCounts} defaultTab="statistikk" />
 
       <div className="min-h-[400px]">
-        {tab === "statistikk" ? <SummaryCard {...STATISTIKK_CARD} /> : null}
-        {tab === "sg" ? <SummaryCard {...SG_CARD} /> : null}
-        {tab === "runder" ? <SummaryCard {...RUNDER_CARD} count={roundCount} /> : null}
-        {tab === "trackman" ? <SummaryCard {...TRACKMAN_CARD} count={tmCount} /> : null}
-        {tab === "tester" ? <SummaryCard {...TESTER_CARD} count={testCount} /> : null}
-        {tab === "innsikt" ? <SummaryCard {...INNSIKT_CARD} count={insightCount} /> : null}
+        {tab === "statistikk" ? <StatistikkInline userId={user.id} /> : null}
+        {tab === "sg" ? <SgInline userId={user.id} /> : null}
+        {tab === "runder" ? <RunderInline userId={user.id} /> : null}
+        {tab === "trackman" ? <TrackManInline userId={user.id} /> : null}
+        {tab === "tester" ? <TesterInline userId={user.id} /> : null}
+        {tab === "innsikt" ? <InnsiktInline userId={user.id} /> : null}
       </div>
     </div>
   );

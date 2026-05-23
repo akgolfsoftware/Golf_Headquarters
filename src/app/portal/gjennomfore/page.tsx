@@ -11,6 +11,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
 import { prisma } from "@/lib/prisma";
 import { GjennomforeShell } from "@/components/portal-gjennomfore/gjennomfore-shell";
+import { GjennomforeOverview } from "@/components/portal-gjennomfore/gjennomfore-overview";
 import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
 
 export const dynamic = "force-dynamic";
@@ -32,6 +33,12 @@ export default async function GjennomforePage({ searchParams }: Props) {
   if (user.role === "PARENT") redirect("/forelder");
 
   const params = await searchParams;
+
+  // Ingen tab valgt → vis oversiktsskjerm
+  if (!params.tab) {
+    return <GjennomforeOverview userId={user.id} />;
+  }
+
   const tab = VALID_TABS.includes(params.tab as (typeof VALID_TABS)[number])
     ? (params.tab as (typeof VALID_TABS)[number])
     : "idag";

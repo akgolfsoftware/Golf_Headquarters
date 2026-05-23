@@ -622,3 +622,189 @@
   .tester-shell .te-ring-row { grid-template-columns: 1fr; }
   .tester-shell .te-percentile-row { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ============================================================
+   T5 · Tildel-test-modal additions
+   ============================================================ */
+.tester-modal-backdrop {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(10,31,23,0.45);
+  backdrop-filter: blur(2px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.tester-modal {
+  background: var(--card); border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(10,31,23,0.30);
+  width: 600px; max-width: 100%;
+  max-height: calc(100vh - 48px); overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.tester-modal-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px; padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.tester-modal-head .eye {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.tester-modal-head h2 {
+  font-family: var(--font-display); font-size: 20px; font-weight: 600;
+  margin-top: 6px; letter-spacing: -0.01em;
+}
+.tester-modal-head h2 strong { font-weight: 700; }
+.tester-modal-close {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--card);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--muted); cursor: pointer; flex-shrink: 0;
+}
+.tester-modal-body {
+  padding: 20px 24px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.tester-modal-foot {
+  display: flex; gap: 8px; justify-content: flex-end;
+  padding: 14px 24px; border-top: 1px solid var(--border);
+  background: var(--card);
+}
+.tester-shell .te-ply-chip {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.tester-shell .te-ply-chip .av {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(140deg, var(--forest), var(--forest-dark));
+  color: var(--lime);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+}
+.tester-shell .te-ply-chip .nm {
+  font-family: var(--font-display); font-size: 14px; font-weight: 600;
+}
+.tester-shell .te-ply-chip .sub {
+  font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+  margin-top: 3px; letter-spacing: 0.04em;
+}
+.tester-shell .te-field-lbl {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  color: var(--ink); letter-spacing: 0.10em; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.tester-shell .te-field-lbl .req { color: var(--danger); }
+.tester-shell .te-search-input {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.tester-shell .te-search-input input {
+  flex: 1; border: 0; background: transparent; outline: none;
+  font-family: var(--font-body); font-size: 13.5px; color: var(--ink);
+}
+.tester-shell .te-pyr-filters {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
+}
+.tester-shell .te-pyr-filter {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 11px; border-radius: 999px;
+  background: var(--cream); border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+  color: var(--muted); cursor: pointer;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.tester-shell .te-pyr-filter.active { background: var(--forest); color: var(--lime); border-color: var(--forest); }
+.tester-shell .te-pyr-filter .ct {
+  font-size: 9px; padding: 0 5px;
+  background: var(--border); color: var(--muted);
+  border-radius: 999px; font-weight: 700;
+}
+.tester-shell .te-pyr-filter.active .ct { background: rgba(255,255,255,0.15); color: var(--lime); }
+.tester-shell .te-test-results {
+  border: 1px solid var(--border); border-radius: 12px;
+  background: #fff;
+  max-height: 220px; overflow-y: auto;
+  margin-top: 10px;
+}
+.tester-shell .te-test-row {
+  display: grid; grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  gap: 12px;
+  cursor: pointer;
+}
+.tester-shell .te-test-row:last-child { border-bottom: 0; }
+.tester-shell .te-test-row.selected { background: rgba(209,248,67,0.16); }
+.tester-shell .te-test-row .ttl {
+  font-family: var(--font-display); font-size: 14px; font-weight: 600;
+}
+.tester-shell .te-test-row .sub {
+  font-family: var(--font-mono); font-size: 10.5px;
+  color: var(--muted); margin-top: 2px; letter-spacing: 0.04em;
+}
+.tester-shell .te-test-row .check {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: transparent;
+}
+.tester-shell .te-test-row.selected .check {
+  background: var(--forest); border-color: var(--forest); color: var(--lime);
+}
+.tester-shell .te-date-pick {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px;
+  margin-top: 8px;
+}
+.tester-shell .te-date-pick .dh {
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+  color: var(--muted); letter-spacing: 0.10em;
+  text-transform: uppercase; text-align: center;
+  padding-bottom: 4px;
+}
+.tester-shell .te-date-pick .dc {
+  aspect-ratio: 1; min-height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 11.5px; font-weight: 600;
+  color: var(--ink); background: #fff;
+  border: 1px solid transparent; border-radius: 8px;
+  cursor: pointer; position: relative;
+}
+.tester-shell .te-date-pick .dc.dim { color: var(--subtle); background: transparent; }
+.tester-shell .te-date-pick .dc.today { border-color: var(--forest); }
+.tester-shell .te-date-pick .dc.has { background: rgba(0,88,64,0.08); }
+.tester-shell .te-date-pick .dc.has::after {
+  content: ''; position: absolute; bottom: 3px;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--forest);
+}
+.tester-shell .te-date-pick .dc.sel {
+  background: var(--lime); color: var(--forest); font-weight: 700;
+  border-color: var(--lime);
+}
+.tester-shell .te-suggested {
+  margin-top: 10px;
+  background: rgba(209,248,67,0.16);
+  border: 1px solid rgba(191,233,51,0.45);
+  border-left: 3px solid var(--lime);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12.5px; line-height: 1.5;
+}
+.tester-shell .te-textarea {
+  width: 100%;
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px 14px;
+  font-family: var(--font-body); font-size: 13.5px;
+  color: var(--ink); resize: vertical; min-height: 80px;
+  outline: none;
+}

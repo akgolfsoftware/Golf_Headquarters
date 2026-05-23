@@ -13,11 +13,13 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
 import { prisma } from "@/lib/prisma";
 import { PlanleggeShell } from "@/components/portal-planlegge/planlegge-shell";
+import { PlanleggeOverview } from "@/components/portal-planlegge/planlegge-overview";
 import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
 import { ArsplanScreen } from "@/components/planlegge-v2/arsplan-screen";
 import { TreningsplanScreen } from "@/components/planlegge-v2/treningsplan-screen";
 import { TurneringerScreen } from "@/components/planlegge-v2/turneringer-screen";
 import { MalTab as MalTabNew } from "@/components/portal-planlegge/mal/mal-tab";
+import { DrillsInline } from "@/components/portal-planlegge/inline/drills-inline";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +41,12 @@ export default async function PlanleggePage({ searchParams }: Props) {
   if (user.role === "PARENT") redirect("/forelder");
 
   const params = await searchParams;
+
+  // Ingen tab valgt → vis oversiktsskjerm med kort til alle 5 sub-tabs
+  if (!params.tab) {
+    return <PlanleggeOverview userId={user.id} />;
+  }
+
   const tab = VALID_TABS.includes(params.tab as (typeof VALID_TABS)[number])
     ? (params.tab as (typeof VALID_TABS)[number])
     : "arsplan";
@@ -84,7 +92,7 @@ export default async function PlanleggePage({ searchParams }: Props) {
       }}
     >
       {tab === "mal" ? <MalTabNew userId={user.id} /> : null}
-      {tab === "drills" ? <DrillsTab /> : null}
+      {tab === "drills" ? <DrillsInline userId={user.id} /> : null}
     </PlanleggeShell>
   );
 }
