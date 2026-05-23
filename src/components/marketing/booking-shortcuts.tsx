@@ -32,6 +32,7 @@ type ServiceMedNesteLedig = {
 
 async function hentNesteLedig(
   serviceId: string,
+  coachUserId: string | null,
 ): Promise<{ dato: Date; coachNavn: string } | null> {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
@@ -39,8 +40,13 @@ async function hentNesteLedig(
     const dag = new Date(start);
     dag.setDate(start.getDate() + i);
     const slots = await getAvailableSlots(serviceId, dag);
-    if (slots.length > 0) {
-      return { dato: slots[0].start, coachNavn: slots[0].coachName };
+    // Hvis tjenesten tilhører en spesifikk coach — filtrer på den. Tjenesten
+    // "Flex — Markus" skal ikke vise Anders' ledige tider.
+    const relevante = coachUserId
+      ? slots.filter((s) => s.coachId === coachUserId)
+      : slots;
+    if (relevante.length > 0) {
+      return { dato: relevante[0].start, coachNavn: relevante[0].coachName };
     }
   }
   return null;
@@ -50,12 +56,12 @@ async function hentData(): Promise<ServiceMedNesteLedig[]> {
   const slugs = SHORTCUTS.map((s) => s.slug);
   const services = await prisma.serviceType.findMany({
     where: { slug: { in: slugs }, active: true },
-    include: { coach: { select: { name: true } } },
+    include: { coach: { select: { id: true, name: true } } },
   });
 
-  // Hent neste ledige parallelt
+  // Hent neste ledige parallelt — filtrert på tjenestens eier-coach
   const nesteLedigeListe = await Promise.all(
-    services.map((s) => hentNesteLedig(s.id)),
+    services.map((s) => hentNesteLedig(s.id, s.coach?.id ?? null)),
   );
   const nesteLedigeMap = new Map(
     services.map((s, i) => [s.slug, nesteLedigeListe[i]]),

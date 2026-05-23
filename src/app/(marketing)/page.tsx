@@ -13,6 +13,7 @@ import {
   Target,
   Users,
 } from "lucide-react";
+import { BookingShortcuts } from "@/components/marketing/booking-shortcuts";
 
 export const metadata: Metadata = {
   title: "AK Golf Academy | Personlig coaching, bygd på data",
@@ -47,7 +48,7 @@ const TJENESTER = [
     description:
       "Ikke klar for abonnement? Book en enkelttime når det passer deg. Full tilgang til Trackman og analyse.",
     price: "300 kr / 20 min",
-    href: "/booking",
+    href: "/booking/markus-flex-20",
   },
 ];
 
@@ -123,6 +124,9 @@ export default function Hjem() {
 
         </div>
       </section>
+
+      {/* Booking-snarveier — direkte til kalenderen for valgte tjenester */}
+      <BookingShortcuts />
 
       {/* Tjenester */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24">

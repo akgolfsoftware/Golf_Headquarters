@@ -2,23 +2,38 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Plus, ChevronDown, UserCircle } from "lucide-react";
 import { SidebarBrand } from "@/components/shared/sidebar-brand";
 import { FEATURES } from "@/lib/features";
 
-type NavItem = { href: string; label: string };
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
-// CoachHQ 7-seksjons IA (master-plan 2026-05-22)
-// Oversikt / Stall / Planlegge / Gjennomføre / Analysere / Kommunikasjon / Organisasjon
-const ALL_NAV_GROUPS: { label: string; href: string; items: NavItem[] }[] = [
+type NavChild = {
+  href: string;
+  label: string;
+};
+
+type NavItem = {
+  href: string;
+  label: string;
+  matchPrefixes?: string[];
+  children?: NavChild[];
+};
+
+// ---------------------------------------------------------------------------
+// Navigation — CoachHQ 7-seksjons IA (master-plan 2026-05-22)
+// Oversikt · Stall · Planlegge · Gjennomføre · Analysere · Kommunikasjon · Organisasjon
+// ---------------------------------------------------------------------------
+
+const MAIN_ITEMS: NavItem[] = [
+  { href: "/admin/agencyos", label: "Oversikt", matchPrefixes: ["/admin/agencyos", "/admin"] },
   {
-    label: "Oversikt",
-    href: "/admin/agencyos",
-    items: [],
-  },
-  {
-    label: "Stall",
     href: "/admin/stall",
-    items: [
+    label: "Stall",
+    matchPrefixes: ["/admin/stall", "/admin/spillere", "/admin/talent"],
+    children: [
       { href: "/admin/spillere", label: "Alle spillere" },
       { href: "/admin/talent", label: "Talent-radar" },
       { href: "/admin/talent/sammenligning", label: "Sammenligning" },
@@ -26,9 +41,17 @@ const ALL_NAV_GROUPS: { label: string; href: string; items: NavItem[] }[] = [
     ],
   },
   {
-    label: "Planlegge",
     href: "/admin/planlegge",
-    items: [
+    label: "Planlegge",
+    matchPrefixes: [
+      "/admin/planlegge",
+      "/admin/plans",
+      "/admin/plan-templates",
+      "/admin/grupper",
+      "/admin/tournaments",
+      "/admin/drills",
+    ],
+    children: [
       { href: "/admin/plans", label: "Treningsplaner" },
       { href: "/admin/plan-templates", label: "Plan-maler" },
       { href: "/admin/grupper", label: "Grupper" },
@@ -37,9 +60,17 @@ const ALL_NAV_GROUPS: { label: string; href: string; items: NavItem[] }[] = [
     ],
   },
   {
-    label: "Gjennomføre",
     href: "/admin/gjennomfore",
-    items: [
+    label: "Gjennomføre",
+    matchPrefixes: [
+      "/admin/gjennomfore",
+      "/admin/kalender",
+      "/admin/bookinger",
+      "/admin/anlegg",
+      "/admin/availability",
+      "/admin/services",
+    ],
+    children: [
       { href: "/admin/kalender", label: "Kalender" },
       { href: "/admin/bookinger", label: "Bookinger" },
       { href: "/admin/anlegg", label: "Anlegg" },
@@ -48,9 +79,17 @@ const ALL_NAV_GROUPS: { label: string; href: string; items: NavItem[] }[] = [
     ],
   },
   {
-    label: "Analysere",
     href: "/admin/analysere",
-    items: [
+    label: "Analysere",
+    matchPrefixes: [
+      "/admin/analysere",
+      "/admin/analyse",
+      "/admin/lag-snitt",
+      "/admin/foresporsler",
+      "/admin/godkjenninger",
+      "/admin/reports",
+    ],
+    children: [
       { href: "/admin/analyse", label: "Stall-analyse" },
       { href: "/admin/lag-snitt", label: "Lag-snitt" },
       { href: "/admin/foresporsler", label: "Forespørsler" },
@@ -59,9 +98,16 @@ const ALL_NAV_GROUPS: { label: string; href: string; items: NavItem[] }[] = [
     ],
   },
   {
-    label: "Kommunikasjon",
     href: "/admin/kommunikasjon",
-    items: [
+    label: "Kommunikasjon",
+    matchPrefixes: [
+      "/admin/kommunikasjon",
+      "/admin/innboks",
+      "/admin/email-templates",
+      "/admin/notion-prosjekter",
+      "/admin/notion-oppgaver",
+    ],
+    children: [
       { href: "/admin/innboks", label: "Innboks" },
       { href: "/admin/email-templates", label: "E-postmaler" },
       { href: "/admin/notion-prosjekter", label: "Notion-prosjekter" },
@@ -69,9 +115,18 @@ const ALL_NAV_GROUPS: { label: string; href: string; items: NavItem[] }[] = [
     ],
   },
   {
-    label: "Organisasjon",
     href: "/admin/organisasjon",
-    items: [
+    label: "Organisasjon",
+    matchPrefixes: [
+      "/admin/organisasjon",
+      "/admin/team",
+      "/admin/finance",
+      "/admin/agents",
+      "/admin/integrasjoner",
+      "/admin/audit-log",
+      "/admin/settings",
+    ],
+    children: [
       { href: "/admin/team", label: "Team" },
       { href: "/admin/finance", label: "Økonomi" },
       { href: "/admin/agents", label: "AI-agenter" },
@@ -82,72 +137,132 @@ const ALL_NAV_GROUPS: { label: string; href: string; items: NavItem[] }[] = [
   },
 ];
 
-// Talent-gruppen er bak FEATURES.TALENT-flagget — skjules når flagget er av.
-const NAV_GROUPS = ALL_NAV_GROUPS.filter(
-  (g) => g.label !== "Talent" || FEATURES.TALENT,
-);
+// ---------------------------------------------------------------------------
+// Active-link helpers
+// ---------------------------------------------------------------------------
+
+function isActive(path: string, item: NavItem): boolean {
+  if (item.href === "/admin/agencyos") {
+    return path === "/admin" || path === "/admin/agencyos";
+  }
+  const prefixes = item.matchPrefixes ?? [item.href];
+  return prefixes.some((p) => path === p || path.startsWith(p + "/"));
+}
+
+function isChildActive(path: string, child: NavChild): boolean {
+  return path === child.href || path.startsWith(child.href + "/");
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 
 export function AdminSidebar() {
   const path = usePathname();
+
+  const items = FEATURES.TALENT ? MAIN_ITEMS : MAIN_ITEMS;
+
   return (
     <aside
       aria-label="CoachHQ sidemeny"
       className="flex w-52 shrink-0 flex-col bg-[var(--color-coach-sidebar)] text-white lg:w-64"
     >
+      {/* Logo */}
       <div className="flex justify-center px-4 py-6">
         <SidebarBrand variant="coach" role="HEAD COACH" />
       </div>
+
+      {/* Ny økt — rask handling */}
+      <div className="px-4 pb-4">
+        <Link
+          href="/admin/plans/ny"
+          className="flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          <Plus className="h-4 w-4" strokeWidth={2} />
+          Ny plan
+        </Link>
+      </div>
+
+      {/* Nav */}
       <nav
         aria-label="Hovednavigasjon"
-        className="flex-1 space-y-6 overflow-y-auto px-4 pb-4"
+        className="flex-1 overflow-y-auto px-4 pb-4"
       >
-        {NAV_GROUPS.map((group) => {
-          const groupActive =
-            path === group.href || path.startsWith(group.href + "/");
-          return (
-          <div key={group.label}>
-            <Link
-              href={group.href}
-              aria-current={groupActive ? "page" : undefined}
-              className={`relative mb-0.5 flex items-center justify-between rounded-md px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-coach-sidebar)] ${
-                groupActive
-                  ? "bg-[var(--color-accent-fill)] text-white before:absolute before:left-0 before:top-1/2 before:h-6 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
-                  : "text-white hover:bg-white/5"
-              }`}
-            >
-              <span>{group.label}</span>
-            </Link>
-            <div className="ml-3 space-y-0.5 border-l border-white/10 pl-1">
-              {group.items.map((n) => {
-                const aktiv =
-                  path === n.href ||
-                  (n.href !== "/admin" && path.startsWith(n.href + "/")) ||
-                  (n.href !== "/admin" && path === n.href);
-                return (
-                  <Link
-                    key={n.href}
-                    href={n.href}
-                    aria-current={aktiv ? "page" : undefined}
-                    className={`relative block rounded-md px-4 py-1.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-coach-sidebar)] ${
-                      aktiv
-                        ? "bg-[var(--color-accent-fill)] font-semibold text-white before:absolute before:left-0 before:top-1/2 before:h-5 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
-                        : "text-white/70 hover:bg-white/5 hover:text-white"
-                    }`}
-                  >
-                    {n.label}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        );
-        })}
+        <div className="space-y-0.5">
+          {items.map((item) => {
+            const aktiv = isActive(path, item);
+            const hasChildren = item.children && item.children.length > 0;
+            const expanded = hasChildren && aktiv;
+
+            return (
+              <div key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={aktiv && !hasChildren ? "page" : undefined}
+                  className={`relative flex items-center justify-between rounded-md px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-coach-sidebar)] ${
+                    aktiv
+                      ? "bg-[var(--color-accent-fill)] font-semibold text-white before:absolute before:left-0 before:top-1/2 before:h-6 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
+                      : "text-white/70 hover:bg-white/5 hover:text-white"
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {hasChildren && (
+                    <ChevronDown
+                      className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""} ${aktiv ? "text-white/60" : "text-white/40"}`}
+                      strokeWidth={2}
+                    />
+                  )}
+                </Link>
+
+                {/* Sub-items — kun synlig når seksjon er aktiv (matcher PlayerHQ) */}
+                {expanded && item.children && (
+                  <div className="mt-0.5 space-y-0.5 pl-4">
+                    {item.children.map((child) => {
+                      const childAktiv = isChildActive(path, child);
+                      return (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          aria-current={childAktiv ? "page" : undefined}
+                          className={`block rounded-md px-4 py-2 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-coach-sidebar)] ${
+                            childAktiv
+                              ? "font-medium text-white"
+                              : "text-white/50 hover:text-white/80"
+                          }`}
+                        >
+                          {child.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </nav>
+
+      {/* Profil-lenke */}
+      <div className="px-4 pb-2">
+        <Link
+          href="/admin/settings"
+          className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm transition-colors ${
+            path === "/admin/settings"
+              ? "bg-[var(--color-accent-fill)] font-semibold text-white"
+              : "text-white/50 hover:bg-white/5 hover:text-white"
+          }`}
+        >
+          <UserCircle className="h-4 w-4" strokeWidth={1.75} />
+          Min profil
+        </Link>
+      </div>
+
+      {/* Rolle-badge */}
       <div
-        aria-hidden="true"
+        aria-label="CoachHQ"
         className="m-4 rounded-md bg-accent/10 px-4 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-accent"
       >
-        CoachHQ
+        COACHHQ
       </div>
     </aside>
   );
