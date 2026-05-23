@@ -130,6 +130,24 @@ export function PlanleggeSprite() {
         <symbol id="i-check" viewBox="0 0 24 24">
           <polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </symbol>
+        <symbol id="i-check-circle" viewBox="0 0 24 24">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" />
+          <polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        </symbol>
+        <symbol id="i-list" viewBox="0 0 24 24">
+          <line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+          <line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+          <line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+          <line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+          <line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+          <line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+        </symbol>
+        <symbol id="i-lightbulb" viewBox="0 0 24 24">
+          <path d="M9 18h6M10 22h4M12 2a6 6 0 0 0-3.5 10.8c.6.6 1 1.4 1 2.2v1h5v-1c0-.8.4-1.6 1-2.2A6 6 0 0 0 12 2z" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" />
+        </symbol>
+        <symbol id="i-zap" viewBox="0 0 24 24">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor" />
+        </symbol>
         <symbol id="i-trend-up" viewBox="0 0 24 24">
           <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
           <polyline points="17 6 23 6 23 12" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />

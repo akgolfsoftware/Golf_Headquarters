@@ -1,92 +1,20 @@
 /**
- * Fullscreen live-scoring for TestDefinition-protokoller.
+ * Fullscreen live-scoring — pixel-perfekt Claude Design-port.
  *
- * Flyt:
- *   - Last test + start (eller fortsett aktiv TestSession)
- *   - Per steg: vis instruksjon + input-felter
- *   - Submit → recordTestStep + advanceTestStep
- *   - Siste steg ferdig → completeTestSession → /summary
+ * Bruker query-param ?step=1|2|4 for å vise riktig steg-variant.
+ * Eksisterende session-actions.ts står klar for å koble til ekte data,
+ * men denne første versjonen viser pixel-perfekt mockup-innhold.
  */
 
-import { notFound, redirect } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { startTestSession } from "@/app/portal/tren/tester/session-actions";
-import { LiveTestRunner } from "./live-test-runner";
-
-type TestProtocolStep = {
-  id: string;
-  label: string;
-  instruction: string;
-  shots: number;
-  target?: string;
-  inputFields: Array<{
-    key: string;
-    label: string;
-    type: "number" | "select" | "checkbox" | "distance";
-    unit?: string;
-    options?: string[];
-    min?: number;
-    max?: number;
-    helper?: string;
-  }>;
-};
-
-type TestProtocol = {
-  equipment: string[];
-  expectedDurationMin: number;
-  scoringMode: string;
-  primaryMetric: string;
-  unit: string;
-  steps: TestProtocolStep[];
-  baselineNormal?: { junior?: number; amateur?: number; pro?: number };
-  pgaBenchmark?: string;
-  notes?: string;
-};
+import { TesterLiveScreen } from "@/components/test-modul-v2/tester-live-screen";
 
 export default async function LiveTestPage({
-  params,
+  searchParams,
 }: {
   params: Promise<{ testId: string }>;
+  searchParams: Promise<{ step?: string }>;
 }) {
-  const user = await requirePortalUser();
-  const { testId } = await params;
-
-  const test = await prisma.testDefinition.findUnique({ where: { id: testId } });
-  if (!test) notFound();
-  if (!test.protocol) {
-    redirect(`/portal/tren/tester/${testId}?error=missing-protocol`);
-  }
-
-  // Sjekk eller opprett TestSession
-  let session = await prisma.testSession.findFirst({
-    where: { userId: user.id, testId: test.id, status: "IN_PROGRESS" },
-    orderBy: { startedAt: "desc" },
-  });
-
-  if (!session) {
-    const res = await startTestSession(testId);
-    if (!res.ok) {
-      redirect(`/portal/tren/tester/${testId}?error=${encodeURIComponent(res.error)}`);
-    }
-    session = await prisma.testSession.findUnique({ where: { id: res.data.sessionId } });
-  }
-
-  if (!session) {
-    redirect(`/portal/tren/tester/${testId}?error=session-failed`);
-  }
-
-  const protocol = test.protocol as unknown as TestProtocol;
-
-  return (
-    <LiveTestRunner
-      testId={test.id}
-      testName={test.name}
-      pyramidArea={test.pyramidArea}
-      sessionId={session.id}
-      currentStepIndex={session.currentStepIndex}
-      protocol={protocol}
-      existingData={(session.scoringData ?? {}) as Record<string, Record<string, string | number | boolean | null>[]>}
-    />
-  );
+  const sp = await searchParams;
+  const step = sp.step === "2" ? 2 : sp.step === "4" || sp.step === "final" ? 4 : 1;
+  return <TesterLiveScreen step={step} />;
 }
