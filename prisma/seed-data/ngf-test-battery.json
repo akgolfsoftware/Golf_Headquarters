@@ -1,0 +1,216 @@
+[
+  {
+    "id": "driver_basic",
+    "name": "Driver Basic",
+    "category": "Utslag",
+    "description": "5 slag med driver. Måler carry-avstand og spredning.",
+    "metrics": [
+      "carry_m",
+      "total_m",
+      "side_m",
+      "pei"
+    ],
+    "scoring": "PEI = avstand til hull / avstand til mål. Lavere er bedre.",
+    "pga_benchmark": "PEI < 0.06 (Top 40 avg)"
+  },
+  {
+    "id": "inspill_basic",
+    "name": "Inspill Basic",
+    "category": "Innspill",
+    "description": "10 slag fra ulike avstander (100-200m). Måler PEI og presisjon.",
+    "metrics": [
+      "carry_m",
+      "side_m",
+      "till_hull_m",
+      "pei"
+    ],
+    "scoring": "PEI = avstand til hull / avstand til mål",
+    "pga_benchmark": "PEI 100-150m: 0.055, 150-200m: 0.059"
+  },
+  {
+    "id": "wedge_variation",
+    "name": "Wedge Variation",
+    "category": "Wedge",
+    "description": "Varierende wedge-slag fra 30-70m. Tester tilpasningsevne.",
+    "metrics": [
+      "carry_m",
+      "till_hull_m",
+      "pei"
+    ],
+    "scoring": "PEI-basert med variasjonsfaktor",
+    "pga_benchmark": "PEI 20-60m: 0.109 (avg), 0.099 (Top 40)"
+  },
+  {
+    "id": "eight_ball_variation",
+    "name": "8-Ball Variation",
+    "category": "Nærspill",
+    "description": "24 slag: Chip (10/30m), Wedge (20/40m), Lobb (15/25m), Bunker (10/20m). Varierende rekkefølge.",
+    "metrics": [
+      "pei",
+      "pga_putts",
+      "poeng"
+    ],
+    "scoring": "Poeng 0-4 per slag. Maks 96 poeng.",
+    "pga_benchmark": "PEI 0-20m: 0.136 (avg), 0.125 (Top 40)"
+  },
+  {
+    "id": "putt_1_3m",
+    "name": "Putt 1-3m",
+    "category": "Putting",
+    "description": "Putting fra 1-3 meter. Måler sinkprosent.",
+    "metrics": [
+      "sink_pct",
+      "avstand_etter"
+    ],
+    "scoring": "Antall sunket / totalt",
+    "pga_benchmark": "3-5 fot: ~65% sink (PGA avg)"
+  },
+  {
+    "id": "driver_gate",
+    "name": "Driver Gate",
+    "category": "Utslag",
+    "description": "6 slag gjennom 2m gate. Måler presisjon under press.",
+    "metrics": [
+      "ok_count",
+      "total_6"
+    ],
+    "scoring": "Antall gjennom gate / 6",
+    "pga_benchmark": "Spredning < 5% av avstand"
+  },
+  {
+    "id": "putt_gate",
+    "name": "Putt Gate",
+    "category": "Putting",
+    "description": "10 putter gjennom 40cm gate. Måler retningskontroll.",
+    "metrics": [
+      "ok_count",
+      "total_10",
+      "v_h"
+    ],
+    "scoring": "Antall gjennom gate / 10",
+    "pga_benchmark": "Start line accuracy > 90%"
+  },
+  {
+    "id": "naerspill_gate",
+    "name": "Nærspill Gate",
+    "category": "Nærspill",
+    "description": "9 slag: Lav/Middels/Høy × 2m/3m/4m carry zone.",
+    "metrics": [
+      "launch",
+      "carry_zone",
+      "poeng"
+    ],
+    "scoring": "Poeng per treff i riktig zone",
+    "pga_benchmark": "Scrambling > 60%"
+  },
+  {
+    "id": "visa_express",
+    "name": "VISA Express",
+    "category": "Nærspill",
+    "description": "9 slag med hastighetsvariasjoner (2m/3m/4m speed zones).",
+    "metrics": [
+      "speed_zone",
+      "poeng"
+    ],
+    "scoring": "Poeng per treff i riktig speed zone",
+    "pga_benchmark": "Speed control within 5%"
+  },
+  {
+    "id": "putt_speed",
+    "name": "Putt Speed Control",
+    "category": "Putting",
+    "description": "Fartskontroll: 1×5 (3m) og 3×3 (3m/5m/7m).",
+    "metrics": [
+      "avstand",
+      "distanse",
+      "lang_kort"
+    ],
+    "scoring": "Avstand fra hull etter putt",
+    "pga_benchmark": "Leave < 0.5m fra hull"
+  },
+  {
+    "id": "wedge_gate",
+    "name": "Wedge Gate",
+    "category": "Wedge",
+    "description": "9 slag: Lav/Medium/Høy × 40m/50m/60m carry zone.",
+    "metrics": [
+      "launch_deg",
+      "carry_zone",
+      "poeng"
+    ],
+    "scoring": "Poeng per treff i riktig zone og launch angle",
+    "pga_benchmark": "Launch control within 2 degrees"
+  },
+  {
+    "id": "trapbar_deadlift",
+    "name": "Trapbarmarkløft",
+    "category": "Styrke",
+    "unit": "kg",
+    "weight": 1,
+    "description": "Maksimal styrke i underkropp og rygg. Korrelerer med rotasjonskraft.",
+    "correlation_to_golf": "Direkte kobling til rotasjonskraft og stabilitet i svingen. Høyere markløft = mer kraft tilgjengelig for CHS."
+  },
+  {
+    "id": "bench_press",
+    "name": "Benkpress",
+    "category": "Styrke",
+    "unit": "kg",
+    "weight": 1,
+    "description": "Overkroppsstyrke. Viktig for stabilitet og kraftoverføring.",
+    "correlation_to_golf": "Stabiliserer overkroppen i svingen. Bidrar til konsistent treffpunkt."
+  },
+  {
+    "id": "standing_long_jump",
+    "name": "Stille lengde",
+    "category": "Eksplosivitet",
+    "unit": "cm",
+    "weight": 0.5,
+    "description": "Eksplosiv kraft i underkropp. Måler power output.",
+    "correlation_to_golf": "Eksplosivitet i bakkekontakt under nedsvingen. Korrelerer med CHS."
+  },
+  {
+    "id": "ball_throw_kneeling",
+    "name": "Ballkast knestående",
+    "category": "Eksplosivitet",
+    "unit": "cm",
+    "weight": 0.166,
+    "description": "Rotasjonskraft i overkropp fra knestående posisjon.",
+    "correlation_to_golf": "Direkte mål på rotasjonskraft som brukes i golfsving. Isolerer overkropp-rotasjon."
+  },
+  {
+    "id": "chs",
+    "name": "Clubhead Speed (CHS)",
+    "category": "Golfspesifikk",
+    "unit": "mph",
+    "weight": 1,
+    "description": "Klubbhodehastighet med driver innendørs (Trackman).",
+    "correlation_to_golf": "Mest direkte mål på slagkraft. 1 mph CHS ≈ 2.5 yards carry. PGA avg: 114 mph."
+  },
+  {
+    "id": "pei_bane",
+    "name": "PEI Test Bane",
+    "description": "18-hulls PEI-test på bane. Måler innspillpresisjon under reelle forhold.",
+    "metrics": [
+      "hull",
+      "slag_type",
+      "lengde",
+      "till_hull",
+      "pei"
+    ]
+  },
+  {
+    "id": "inspill_120",
+    "name": "Inspill 120m",
+    "description": "5 slag fra 120m. Benchmark: PGA avg PEI ≈ 0.055"
+  },
+  {
+    "id": "inspill_160",
+    "name": "Inspill 160m",
+    "description": "5 slag fra 160m. Benchmark: PGA avg PEI ≈ 0.059"
+  },
+  {
+    "id": "inspill_variation",
+    "name": "Inspill Variation",
+    "description": "Varierende avstander (100-130m). Tester tilpasningsevne."
+  }
+]
