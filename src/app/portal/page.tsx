@@ -86,26 +86,55 @@ export default async function PortalOversikt() {
   // Streak
   const streakDays = data.streak14.filter(Boolean).length;
 
-  // Neste mål — hent øverste aktive Goal eller demo-fallback
-  let nextGoal = { title: "HCP +3,0 innen sesongslutt", pct: 60 };
+  // Snittscore — siste 10 runder
+  let scoreAvg: number | null = null;
+  let scoreRoundCount = 0;
   try {
-    const goal = await prisma.goal.findFirst({
-      where: { userId: user.id, status: "ACTIVE" },
-      orderBy: { createdAt: "desc" },
+    const recentRounds = await prisma.round.findMany({
+      where: { userId: user.id },
+      orderBy: { playedAt: "desc" },
+      take: 10,
+      select: { score: true },
     });
-    if (goal) {
-      // Beregn enkel progress fra targetDate (tidsbasert)
-      const pct = (() => {
-        if (!goal.targetDate) return 50;
-        const total = goal.targetDate.getTime() - goal.createdAt.getTime();
-        const elapsed = Date.now() - goal.createdAt.getTime();
-        if (total <= 0) return 0;
-        return Math.min(100, Math.max(0, Math.round((elapsed / total) * 100)));
-      })();
-      nextGoal = { title: goal.title, pct };
+    const scoresWithValue = recentRounds
+      .map((r) => r.score)
+      .filter((s): s is number => s !== null && s !== undefined);
+    if (scoresWithValue.length > 0) {
+      scoreAvg = Math.round(
+        scoresWithValue.reduce((a, b) => a + b, 0) / scoresWithValue.length,
+      );
+      scoreRoundCount = scoresWithValue.length;
     }
   } catch {
     // demo-fallback
+  }
+
+  // Neste turnering — første kommende TournamentEntry
+  let nextTournament: { name: string; daysAway: number } | null = null;
+  try {
+    const upcoming = await prisma.tournamentEntry.findFirst({
+      where: {
+        userId: user.id,
+        entryStatus: { in: ["PLANNED", "CONFIRMED"] },
+      },
+      include: { tournament: true },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    });
+    if (upcoming) {
+      const startDate = upcoming.tournament?.startDate ?? upcoming.manualDate;
+      const name = upcoming.tournament?.name ?? upcoming.manualName ?? "Turnering";
+      if (startDate) {
+        const daysAway = Math.ceil(
+          (startDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+        );
+        if (daysAway >= 0) {
+          nextTournament = { name, daysAway };
+        }
+      }
+    }
+  } catch {
+    // ingen fallback
   }
 
   // Ukens fokus (demo for nå — kan kobles til AI-anbefaling senere)
@@ -207,7 +236,9 @@ export default async function PortalOversikt() {
       weekRange={weekRange}
       streakDays={streakDays}
       longestStreak={23}
-      nextGoal={nextGoal}
+      scoreAvg={scoreAvg}
+      scoreRoundCount={scoreRoundCount}
+      nextTournament={nextTournament}
       weekFocus={weekFocus}
       todaysFocus={todaysFocus}
       pyramide={pyramide}

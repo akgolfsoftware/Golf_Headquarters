@@ -166,13 +166,6 @@ export default async function MegProfil() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-border bg-card p-4 sm:p-6">
-        <h2 className="mb-4 font-display text-sm font-semibold tracking-tight">
-          Profilbilde
-        </h2>
-        <AvatarUpload name={user.name} avatarUrl={user.avatarUrl} />
-      </section>
-
       <ProfilForm
         initial={{
           name: user.name,

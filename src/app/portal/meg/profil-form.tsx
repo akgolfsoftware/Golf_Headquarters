@@ -122,62 +122,8 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
     .toUpperCase();
 
   return (
-    <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[280px_1fr]">
-      {/* LEFT — ID-kort */}
-      <aside className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm lg:sticky lg:top-8">
-        <div className="relative">
-          <div className="grid h-24 w-24 place-items-center overflow-hidden rounded-full bg-primary text-primary-foreground">
-            {initial.avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={initial.avatarUrl}
-                alt={name}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <span className="font-display text-[36px] font-semibold leading-none">
-                {initialer || "?"}
-              </span>
-            )}
-          </div>
-          <button
-            type="button"
-            aria-label="Endre profilbilde"
-            className="absolute -bottom-0.5 -right-0.5 grid h-8 w-8 place-items-center rounded-full border-[3px] border-card bg-primary text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            <Pencil className="h-3.5 w-3.5" strokeWidth={1.5} />
-          </button>
-        </div>
-
-        <h2 className="text-center font-display text-[22px] font-medium italic leading-tight tracking-tight text-foreground">
-          {name || "Uten navn"}
-        </h2>
-
-        <div className="flex items-center gap-2">
-          <span className="rounded-md bg-primary px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-foreground">
-            {initial.tier === "PRO" ? "PRO" : "GRATIS"}
-          </span>
-        </div>
-
-        <div className="mt-2 w-full space-y-1.5 border-t border-border pt-4">
-          <IdStat
-            label="HCP"
-            value={initial.hcp != null ? String(initial.hcp) : "—"}
-            mono
-          />
-          <IdStat label="Klubb" value={initial.homeClub ?? "—"} />
-          <IdStat
-            label="Spilleår"
-            value={
-              initial.playingYears != null ? String(initial.playingYears) : "—"
-            }
-            mono
-          />
-        </div>
-      </aside>
-
-      {/* RIGHT — seksjoner */}
-      <div className="flex min-w-0 flex-col gap-8">
+    <div className="flex min-w-0 flex-col gap-8">
+      <div>
         <form onSubmit={lagre} className="flex flex-col gap-8">
           {/* Personalia */}
           <Section title="Personalia" aux="Hvem du er">

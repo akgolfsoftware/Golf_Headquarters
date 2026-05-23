@@ -42,7 +42,9 @@ export type OversiktSlimProps = {
   weekRange: string;
   streakDays: number;
   longestStreak: number;
-  nextGoal: { title: string; pct: number };
+  scoreAvg: number | null;
+  scoreRoundCount: number;
+  nextTournament: { name: string; daysAway: number } | null;
   weekFocus: string;
   todaysFocus: { title: string; description: string; ctaHref: string } | null;
   pyramide: { area: PyramidArea; pct: number }[];
@@ -97,7 +99,9 @@ export function OversiktSlim({
   weekRange,
   streakDays,
   longestStreak,
-  nextGoal,
+  scoreAvg,
+  scoreRoundCount,
+  nextTournament,
   weekFocus,
   todaysFocus,
   pyramide,
@@ -157,13 +161,26 @@ export function OversiktSlim({
 
       {/* ============= KPI-RAD ============= */}
       <section className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-        <KpiCard label="HCP" value={hcpString} trend={{ value: "−0,3 30d", tone: "positive" }} />
-        <KpiCard label="STREAK" value={streakDays} unit={`/${longestStreak}d`} />
         <KpiCard
-          label="NESTE MÅL"
-          value={`${nextGoal.pct}%`}
-          trend={{ value: nextGoal.title, tone: "neutral" }}
+          label="SNITTSCORE"
+          value={scoreAvg !== null ? scoreAvg : "—"}
+          trend={
+            scoreRoundCount > 0
+              ? { value: `siste ${scoreRoundCount}r`, tone: "neutral" }
+              : { value: "ingen runder", tone: "neutral" }
+          }
         />
+        <KpiCard label="STREAK" value={streakDays} unit={`/${longestStreak}d`} />
+        {nextTournament ? (
+          <KpiCard
+            label="NESTE TURNERING"
+            value={`${nextTournament.daysAway}d`}
+            trend={{ value: nextTournament.name, tone: "positive" }}
+            size="sm"
+          />
+        ) : (
+          <KpiCard label="HCP" value={hcpString} trend={{ value: "−0,3 30d", tone: "positive" }} />
+        )}
         <KpiCard label="UKENS FOKUS" value={weekFocus} size="sm" />
       </section>
 
