@@ -217,9 +217,9 @@ function toggle<T>(arr: T[], item: T, max: number): T[] {
 // Wizard
 // ──────────────────────────────────────────────────────────────────────────────
 
-export function OnboardingWizard() {
+export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) {
   const router = useRouter();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(initialStep);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
