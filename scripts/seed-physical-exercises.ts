@@ -6,12 +6,18 @@
  */
 
 import { PrismaClient } from "../src/generated/prisma/client";
+import type { Prisma } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { config as loadEnv } from "dotenv";
 
 loadEnv({ path: ".env.local" });
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  console.error("DATABASE_URL er ikke satt i .env.local");
+  process.exit(1);
+}
+const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 type ExerciseSeed = {
@@ -19,7 +25,7 @@ type ExerciseSeed = {
   name: string;
   description: string;
   defaultRepsSets: string;
-  parametersJson: object;
+  parametersJson: Prisma.InputJsonValue;
 };
 
 const EXERCISES: ExerciseSeed[] = [
@@ -238,7 +244,7 @@ async function main() {
         description: ex.description,
         defaultRepsSets: ex.defaultRepsSets,
         pyramidArea: "FYS",
-        parametersJson: ex.parametersJson as object,
+        parametersJson: ex.parametersJson,
       },
       create: {
         id: ex.id,
@@ -246,7 +252,7 @@ async function main() {
         description: ex.description,
         defaultRepsSets: ex.defaultRepsSets,
         pyramidArea: "FYS",
-        parametersJson: ex.parametersJson as object,
+        parametersJson: ex.parametersJson,
       },
     });
     console.log(`  + ${ex.name}`);
