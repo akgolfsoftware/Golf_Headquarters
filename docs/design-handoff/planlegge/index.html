@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Batch A · Planlegge + AI · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; font-family: 'Inter', system-ui, sans-serif; }
+  iframe.dc-iframe {
+    width: 100%; height: 100%; border: 0; display: block; background: #FAFAF7;
+    pointer-events: auto;
+  }
+  .open-link {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(10,31,23,0.82); color: #D1F843;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase;
+    padding: 5px 10px; border-radius: 999px;
+    text-decoration: none;
+    z-index: 5;
+    opacity: 0; transition: opacity 120ms ease;
+  }
+  [data-dc-slot]:hover .open-link { opacity: 1; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="../design-canvas.jsx"></script>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+function App() {
+  return (
+    <DesignCanvas
+      title="AK Golf HQ · Batch A — Planlegge + AI-modaler"
+      subtitle="6 skjermer · /portal/planlegge med 3 tabs + 3 AI-modaler"
+    >
+      <DCSection
+        id="planlegge"
+        title="PlayerHQ · /portal/planlegge"
+        subtitle="3 av 5 tabs · Årsplan · Treningsplan · Turneringer"
+      >
+        <DCArtboard id="a1" label="01 · Årsplan" width={1380} height={1500}>
+          <a className="open-link" href="planlegge-arsplan.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="planlegge-arsplan.html" title="Årsplan" />
+        </DCArtboard>
+        <DCArtboard id="a2" label="02 · Treningsplan" width={1380} height={1700}>
+          <a className="open-link" href="planlegge-treningsplan.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="planlegge-treningsplan.html" title="Treningsplan" />
+        </DCArtboard>
+        <DCArtboard id="a3" label="03 · Turneringer" width={1380} height={1700}>
+          <a className="open-link" href="planlegge-turneringer.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="planlegge-turneringer.html" title="Turneringer" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="ai"
+        title="AI-modaler"
+        subtitle="3 modaler · drill-anbefaling · turnerings-anbefaling · mål-bygger wizard"
+      >
+        <DCArtboard id="m1" label="04 · AI foreslå drill" width={760} height={1100}>
+          <a className="open-link" href="ai-foresla-drill.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="ai-foresla-drill.html" title="AI drill" />
+        </DCArtboard>
+        <DCArtboard id="m2" label="05 · AI foreslå turnering" width={820} height={1280}>
+          <a className="open-link" href="ai-foresla-turnering.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="ai-foresla-turnering.html" title="AI turnering" />
+        </DCArtboard>
+        <DCArtboard id="m3" label="06 · AI mål-bygger (3-stegs wizard)" width={840} height={1280}>
+          <a className="open-link" href="ai-mal-bygger.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="ai-mal-bygger.html" title="AI mål-bygger" />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

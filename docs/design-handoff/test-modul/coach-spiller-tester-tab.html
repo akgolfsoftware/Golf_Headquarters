@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Markus R. Pedersen · Tester — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_tester.css">
+<style>
+  .nav-label.coach { color: rgba(209,248,67,0.45); }
+
+  /* player header */
+  .p-header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 24px 28px;
+    display: flex; align-items: center; gap: 22px;
+  }
+  .p-header .avatar.xl {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(140deg, var(--forest), var(--forest-dark));
+    color: var(--lime);
+    font-family: var(--font-display); font-size: 26px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .p-header h1 {
+    font-family: var(--font-display); font-size: 26px; font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .p-header .meta {
+    font-family: var(--font-mono); font-size: 11.5px; color: var(--muted);
+    letter-spacing: 0.04em; margin-top: 6px;
+    display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .p-header .meta strong { color: var(--ink); font-weight: 700; }
+  .p-header .meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--subtle); }
+  .p-header .actions { margin-left: auto; display: flex; gap: 8px; }
+
+  /* tab bar */
+  .tabs {
+    display: flex; gap: 0; align-items: stretch;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab {
+    background: transparent; border: 0;
+    padding: 14px 18px;
+    font-family: var(--font-display); font-size: 13.5px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -1px;
+    display: inline-flex; align-items: center; gap: 8px;
+    white-space: nowrap;
+  }
+  .tab .ct {
+    font-family: var(--font-mono); font-size: 9px;
+    background: var(--cream); border: 1px solid var(--border);
+    padding: 1px 7px; border-radius: 999px; font-weight: 700;
+    color: var(--muted);
+  }
+  .tab.active { color: var(--ink); border-bottom-color: var(--lime); }
+  .tab.active .ct { background: var(--lime); border-color: var(--lime); color: var(--forest); }
+
+  /* radar grid layout */
+  .radar-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; }
+  .radar-card { padding: 24px; }
+  .radar-svg { width: 100%; max-width: 460px; aspect-ratio: 1; display: block; margin: 0 auto; }
+  .radar-legend {
+    display: flex; gap: 16px; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+    letter-spacing: 0.04em; margin-top: 8px;
+  }
+  .radar-legend .sw {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .radar-legend .sw .box {
+    width: 14px; height: 4px; border-radius: 999px;
+  }
+
+  /* per-test mini grid */
+  .mt-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .mt {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .mt .top { display: flex; align-items: center; gap: 6px; }
+  .mt .nm {
+    font-family: var(--font-display); font-size: 12.5px; font-weight: 600;
+    line-height: 1.2; margin-top: 6px;
+  }
+  .mt .val {
+    font-family: var(--font-mono); font-size: 18px; font-weight: 700;
+    line-height: 1; letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .mt .row {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 6px;
+  }
+  .mt .delta {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 999px;
+  }
+  .mt .delta.up   { color: var(--success); background: rgba(44,125,82,0.10); }
+  .mt .delta.dn   { color: var(--danger);  background: rgba(163,45,45,0.10); }
+  .mt .delta.flat { color: var(--muted);   background: var(--tint); }
+  .mt .age {
+    font-family: var(--font-mono); font-size: 9.5px; color: var(--muted);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .mt .spark { height: 26px; margin-top: 2px; }
+  .mt.overdue {
+    border-color: rgba(163,45,45,0.35);
+    background: rgba(163,45,45,0.04);
+  }
+  .mt.overdue .age { color: var(--danger); font-weight: 700; }
+  .mt.empty {
+    border-style: dashed; background: transparent;
+    color: var(--subtle);
+  }
+  .mt.empty .val { color: var(--subtle); font-size: 14px; font-weight: 600; }
+
+  /* coach actions */
+  .coach-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .ca-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex; gap: 14px; align-items: flex-start;
+    cursor: pointer; transition: border-color 120ms ease, transform 120ms ease;
+  }
+  .ca-card:hover { border-color: var(--lime-deep); transform: translateY(-1px); }
+  .ca-card .ic {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--lime); color: var(--forest);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .ca-card .ic svg { width: 18px; height: 18px; }
+  .ca-card.alt .ic { background: var(--forest); color: var(--lime); }
+  .ca-card .ttl {
+    font-family: var(--font-display); font-size: 14.5px; font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .ca-card .desc {
+    font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+    line-height: 1.45; margin-top: 6px; letter-spacing: 0.02em;
+  }
+  .ca-card .arr {
+    margin-left: auto; color: var(--muted);
+  }
+</style>
+</head>
+<body data-screen-label="07 CoachHQ · Spiller · Tester">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M9 22V12h6v10" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="18" y1="20" x2="18" y2="4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="6" y1="20" x2="6" y2="16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="2" fill="currentColor"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 22V4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M4 4h11l-2 4 2 4H4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 5 19 12 12 19" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-cal-plus" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="12" y1="11" x2="12" y2="17" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="9" y1="14" x2="15" y2="14" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" fill="none" stroke="currentColor" stroke-width="1.75"/><polyline points="7 10 12 15 17 10" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-trend-up" viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 7 21 7 21 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 9.7 9.7 0 0 1-3.4-.6L3 21l1.6-5.6A9.7 9.7 0 0 1 4 12a8.38 8.38 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></symbol>
+</defs>
+</svg>
+
+<div class="shell has-side">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark"><div class="logo">A</div><div><div class="nm">AK Golf</div></div></div>
+      <div class="meta">CoachHQ</div>
+    </div>
+    <button class="side-cta"><svg><use href="#i-plus"/></svg>Tildel test</button>
+    <div class="nav-group">
+      <div class="nav-label coach">Daglig</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-cal"/></svg>Kalender</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label coach">Operasjon</div>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor"><use href="#i-users"/></svg>Stall<span class="ct">38</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label coach">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-bar"/></svg>Analyse</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-target"/></svg>Talent</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-flag"/></svg>Tester<span class="ct">7</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <a class="back" href="#" style="font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;font-weight:600;display:inline-flex;align-items:center;gap:6px;">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-arrow-left"/></svg>
+        Stall
+      </a>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.04em;">
+        CoachHQ &nbsp;/&nbsp; Stall &nbsp;/&nbsp; <span style="color:var(--ink);font-weight:700;">Markus R. Pedersen</span>
+      </div>
+      <div class="player">
+        <div class="avatar">AK</div>
+        <div>
+          <div class="nm">Anders K.</div>
+          <div class="sub">Head Coach</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page" style="max-width:1480px;">
+
+      <!-- PLAYER HEADER -->
+      <section class="p-header">
+        <div class="avatar xl">MP</div>
+        <div>
+          <h1>Markus Røinaas Pedersen</h1>
+          <div class="meta">
+            <span class="pill pill-pro">A1</span>
+            <span>HCP <strong>4.8</strong></span>
+            <span class="dot"></span>
+            <span>Født 2007 · 18 år</span>
+            <span class="dot"></span>
+            <span><strong>WANG Toppidrett</strong> · VG2</span>
+            <span class="dot"></span>
+            <span>Coach <strong>Anders K.</strong></span>
+            <span class="dot"></span>
+            <span style="color:var(--success);">Aktiv · sist innlogget 2 t siden</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm">
+            <svg fill="none" stroke="currentColor"><use href="#i-msg"/></svg>
+            Send melding
+          </button>
+          <button class="btn btn-outline btn-sm">
+            <svg fill="none" stroke="currentColor"><use href="#i-dots"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- TAB BAR -->
+      <nav class="tabs">
+        <button class="tab">Profil</button>
+        <button class="tab">Plan <span class="ct">3</span></button>
+        <button class="tab">Økter <span class="ct">42</span></button>
+        <button class="tab">Runder <span class="ct">28</span></button>
+        <button class="tab">Mål <span class="ct">5</span></button>
+        <button class="tab active">Tester <span class="ct">12/36</span></button>
+        <button class="tab">Helse</button>
+        <button class="tab">WAGR</button>
+        <button class="tab">Foreldre</button>
+        <button class="tab">Innstillinger</button>
+      </nav>
+
+      <!-- KPI ROW -->
+      <section class="kpi-row">
+        <div class="kpi featured">
+          <div class="lbl">Tester gjennomført</div>
+          <div class="val">12<span class="sm">/36</span></div>
+          <div class="sub">33% av batteriet · 87 målinger</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Snitt vs A1-stall</div>
+          <div class="val" style="color:var(--success);">+7,2</div>
+          <div class="sub" style="color:var(--success);">prosentpoeng over snitt</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Sterkeste kategori</div>
+          <div class="val" style="font-size:22px;">TEK · Teknisk</div>
+          <div class="sub"><span class="dot" style="background:var(--pyr-tek);"></span>+12% mot A1-snitt</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Svakeste kategori</div>
+          <div class="val" style="font-size:22px;color:var(--warn);">TURN · Turn.mod.</div>
+          <div class="sub" style="color:var(--warn);"><span class="dot" style="background:var(--pyr-turn);"></span>0 av 4 tester tatt</div>
+        </div>
+      </section>
+
+      <!-- RADAR + LATEST SUMMARY -->
+      <section class="radar-grid">
+
+        <div class="card radar-card">
+          <div class="card-h" style="margin-bottom:6px;">
+            <div>
+              <div class="eyebrow">RADAR · 5 DISIPLINER</div>
+              <h2 style="margin-top:4px;">Markus vs A1-snitt</h2>
+            </div>
+            <div class="right" style="display:inline-flex;gap:8px;align-items:center;">
+              <span class="pill pill-pro" style="background:var(--lime);color:var(--forest);">MARKUS</span>
+              <span class="pill" style="background:var(--cream);border:1px solid var(--border);color:var(--muted);">A1-SNITT</span>
+            </div>
+          </div>
+
+          <svg class="radar-svg" viewBox="0 0 400 400">
+            <!-- Polygon background rings (5 levels) -->
+            <g fill="none" stroke="#E5E3DD" stroke-width="1">
+              <!-- 5-pointed polygon helper: angle steps 72°, vertical orientation -->
+              <polygon points="200,40 352.4,150.7 294.2,328.5 105.8,328.5 47.6,150.7"/>
+              <polygon points="200,72 322.0,160.6 275.4,302.8 124.6,302.8 78.0,160.6"/>
+              <polygon points="200,104 291.7,170.4 256.6,277.1 143.4,277.1 108.3,170.4"/>
+              <polygon points="200,136 261.3,180.3 237.8,251.4 162.2,251.4 138.7,180.3"/>
+              <polygon points="200,168 231.0,190.1 219.0,225.7 181.0,225.7 169.0,190.1"/>
+            </g>
+            <!-- Axis lines -->
+            <g stroke="#E5E3DD" stroke-width="1">
+              <line x1="200" y1="200" x2="200" y2="40"/>
+              <line x1="200" y1="200" x2="352.4" y2="150.7"/>
+              <line x1="200" y1="200" x2="294.2" y2="328.5"/>
+              <line x1="200" y1="200" x2="105.8" y2="328.5"/>
+              <line x1="200" y1="200" x2="47.6" y2="150.7"/>
+            </g>
+
+            <!-- A1-snitt (grå) — middels-fyll -->
+            <polygon points="200,104 270,170 256.6,277.1 152,265 116,165"
+                     fill="rgba(94,92,87,0.18)" stroke="#5E5C57" stroke-width="2" stroke-linejoin="round"/>
+
+            <!-- Markus (lime + forest stroke) -->
+            <polygon points="200,72 322,160 256.6,277.1 124.6,302.8 100,158"
+                     fill="rgba(209,248,67,0.45)" stroke="#005840" stroke-width="2.5" stroke-linejoin="round"/>
+
+            <!-- Vertex markers (Markus) -->
+            <circle cx="200" cy="72"  r="5" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+            <circle cx="322" cy="160" r="5" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+            <circle cx="256.6" cy="277.1" r="5" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+            <circle cx="124.6" cy="302.8" r="5" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+            <circle cx="100" cy="158" r="5" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+
+            <!-- Axis labels -->
+            <g font-family="JetBrains Mono" font-size="11" font-weight="700" letter-spacing="0.10em" fill="#0A1F17">
+              <text x="200" y="30"  text-anchor="middle">FYS</text>
+              <text x="370" y="148" text-anchor="middle">TEK</text>
+              <text x="306" y="350" text-anchor="middle">SLAG</text>
+              <text x="94"  y="350" text-anchor="middle">SPILL</text>
+              <text x="30"  y="148" text-anchor="middle">TURN</text>
+            </g>
+            <!-- Score next to vertices -->
+            <g font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#005840">
+              <text x="218" y="68"  text-anchor="start">72</text>
+              <text x="336" y="155" text-anchor="start">85</text>
+              <text x="272" y="278" text-anchor="start">68</text>
+              <text x="112" y="318" text-anchor="end">75</text>
+              <text x="92"  y="154" text-anchor="end">42</text>
+            </g>
+          </svg>
+
+          <div class="radar-legend">
+            <span class="sw"><span class="box" style="background:#005840;"></span>Markus (siste 30 d)</span>
+            <span class="sw"><span class="box" style="background:#5E5C57;"></span>A1-snitt (n=12)</span>
+            <span class="sw" style="margin-left:auto;color:var(--ink);">Skala 0–100</span>
+          </div>
+        </div>
+
+        <!-- ANBEFALINGER + COACH-HANDLINGER -->
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <div class="card" style="padding:20px 22px;background:linear-gradient(160deg,#FCFEEC 0%,var(--card) 50%);border-color:rgba(191,233,51,0.45);">
+            <div class="eyebrow"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;"><use href="#i-trend-up"/></svg> AI-FORSLAG · NESTE TEST</div>
+            <h3 style="font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-top:10px;">
+              Tildel <em class="italic-accent">MTQ stress-skåre</em>
+            </h3>
+            <p style="font-size:13px;color:var(--ink);line-height:1.5;margin-top:8px;">
+              Markus mangler hele TURN-disiplinen og er <strong>0,008 unna PR</strong> på Driver Basic — riktig tid å baseline mental tøffhet før neste turnering (Sørlandsåpent 8. juni).
+            </p>
+            <div style="display:flex;gap:6px;margin-top:14px;flex-wrap:wrap;">
+              <button class="btn btn-primary btn-sm">Tildel MTQ</button>
+              <button class="btn btn-outline btn-sm">Andre forslag (3)</button>
+            </div>
+          </div>
+
+          <div class="coach-actions">
+            <div class="ca-card">
+              <div class="ic"><svg fill="none" stroke="currentColor"><use href="#i-plus"/></svg></div>
+              <div>
+                <div class="ttl">Tildel test</div>
+                <div class="desc">Velg fra batteriet og planlegg dato.</div>
+              </div>
+              <div class="arr"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-arrow-right"/></svg></div>
+            </div>
+            <div class="ca-card alt">
+              <div class="ic"><svg fill="none" stroke="currentColor"><use href="#i-cal-plus"/></svg></div>
+              <div>
+                <div class="ttl">Test-runde</div>
+                <div class="desc">Alle 5 disipliner · termin-uke.</div>
+              </div>
+              <div class="arr"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-arrow-right"/></svg></div>
+            </div>
+            <div class="ca-card">
+              <div class="ic"><svg fill="none" stroke="currentColor"><use href="#i-download"/></svg></div>
+              <div>
+                <div class="ttl">Foreldrerapport</div>
+                <div class="desc">PDF · siste 90 dager + benchmarks.</div>
+              </div>
+              <div class="arr"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-arrow-right"/></svg></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PER-TEST MINI DASHBOARD -->
+      <section class="card" style="padding:22px 24px;">
+        <div class="card-h">
+          <div>
+            <div class="eyebrow">SISTE RESULTAT · PER TEST · ALLE 5 DISIPLINER</div>
+            <h2 style="margin-top:4px;">36-test batteriet</h2>
+          </div>
+          <div class="right">
+            <button class="btn btn-outline btn-xs">Vis kun overdue (1)</button>
+          </div>
+        </div>
+
+        <!-- FYS -->
+        <div style="display:flex;align-items:center;gap:10px;margin:14px 0 10px;">
+          <span class="pyr pyr-fys pyr-lg">FYS</span>
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:600;">Fysisk</span>
+          <span style="font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.06em;">3 av 8 gjennomført</span>
+        </div>
+        <div class="mt-grid">
+          <div class="mt">
+            <div class="top"><span class="pyr pyr-fys">FYS</span></div>
+            <div class="nm">Trapbar Deadlift 1RM</div>
+            <div class="row"><span class="val">142 kg</span><span class="delta up">+8</span></div>
+            <svg class="spark" viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="0,22 20,18 40,15 60,12 80,9 100,5" fill="none" stroke="#005840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="age">Sist 18 dager siden · 4 forsøk</span>
+          </div>
+          <div class="mt">
+            <div class="top"><span class="pyr pyr-fys">FYS</span></div>
+            <div class="nm">CMJ · countermovement jump</div>
+            <div class="row"><span class="val">52 cm</span><span class="delta up">+3</span></div>
+            <svg class="spark" viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="0,20 20,17 40,18 60,14 80,12 100,8" fill="none" stroke="#005840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="age">Sist 21 dager siden · 6 forsøk</span>
+          </div>
+          <div class="mt empty">
+            <div class="top"><span class="pyr pyr-fys">FYS</span></div>
+            <div class="nm">VO₂max · Cooper 12 min</div>
+            <div class="val">— ikke tatt</div>
+            <span class="age">Tildel test for å starte</span>
+          </div>
+        </div>
+
+        <!-- TEK -->
+        <div style="display:flex;align-items:center;gap:10px;margin:24px 0 10px;">
+          <span class="pyr pyr-tek pyr-lg">TEK</span>
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:600;">Teknisk</span>
+          <span style="font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.06em;">3 av 6 gjennomført · sterkeste disiplin</span>
+        </div>
+        <div class="mt-grid">
+          <div class="mt">
+            <div class="top"><span class="pyr pyr-tek">TEK</span></div>
+            <div class="nm">Clubhead Speed · driver</div>
+            <div class="row"><span class="val">112 mph</span><span class="delta up">+2,1</span></div>
+            <svg class="spark" viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="0,22 20,18 40,16 60,14 80,10 100,7" fill="none" stroke="#005840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="age">Sist 9 dager siden · 12 forsøk</span>
+          </div>
+          <div class="mt">
+            <div class="top"><span class="pyr pyr-tek">TEK</span></div>
+            <div class="nm">7-jern Smash Factor</div>
+            <div class="row"><span class="val">1,38</span><span class="delta flat">±0,00</span></div>
+            <svg class="spark" viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="0,14 20,12 40,14 60,13 80,12 100,12" fill="none" stroke="#005840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="age">Sist 9 dager siden · 7 forsøk</span>
+          </div>
+          <div class="mt empty">
+            <div class="top"><span class="pyr pyr-tek">TEK</span></div>
+            <div class="nm">Wedge-konsistens 50m</div>
+            <div class="val">— ikke tatt</div>
+            <span class="age">Tildel test for å starte</span>
+          </div>
+        </div>
+
+        <!-- SLAG -->
+        <div style="display:flex;align-items:center;gap:10px;margin:24px 0 10px;">
+          <span class="pyr pyr-slag pyr-lg">SLAG</span>
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:600;">Slagteknikk</span>
+          <span style="font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.06em;">3 av 9 gjennomført</span>
+        </div>
+        <div class="mt-grid">
+          <div class="mt" style="border-color:var(--lime-deep);background:linear-gradient(180deg,#FCFEEC 0%,var(--cream) 60%);">
+            <div class="top"><span class="pyr pyr-slag">SLAG</span><span class="pill pill-pr" style="margin-left:auto;">PR i dag</span></div>
+            <div class="nm">Driver Basic · PEI</div>
+            <div class="row"><span class="val">0,054</span><span class="delta up">-0,008</span></div>
+            <svg class="spark" viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="0,18 20,15 40,16 60,12 80,10 100,5" fill="none" stroke="#005840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="age">I dag · 10 forsøk · 96. percentil</span>
+          </div>
+          <div class="mt">
+            <div class="top"><span class="pyr pyr-slag">SLAG</span><span class="pill pill-warn" style="margin-left:auto;">Pågående</span></div>
+            <div class="nm">Putt 1–3 m</div>
+            <div class="row"><span class="val">73%</span><span class="delta up">+4</span></div>
+            <svg class="spark" viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="0,20 20,18 40,15 60,16 80,13 100,9" fill="none" stroke="#005840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="age">Pågående · 47/90 putt registrert</span>
+          </div>
+          <div class="mt">
+            <div class="top"><span class="pyr pyr-slag">SLAG</span></div>
+            <div class="nm">Chip landingsone 15m</div>
+            <div class="row"><span class="val">62%</span><span class="delta dn">-3</span></div>
+            <svg class="spark" viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="0,8 20,11 40,9 60,12 80,15 100,18" fill="none" stroke="#A32D2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="age">Sist 13 dager siden · 4 forsøk</span>
+          </div>
+        </div>
+
+        <!-- SPILL + TURN -->
+        <div style="display:flex;align-items:center;gap:10px;margin:24px 0 10px;">
+          <span class="pyr pyr-spill pyr-lg">SPILL</span>
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:600;">Spillforståelse</span>
+          <span style="font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.06em;">1 av 5 gjennomført</span>
+        </div>
+        <div class="mt-grid">
+          <div class="mt">
+            <div class="top"><span class="pyr pyr-spill">SPILL</span></div>
+            <div class="nm">D-Plane forståelse · quiz</div>
+            <div class="row"><span class="val">82%</span><span class="delta up">+7</span></div>
+            <svg class="spark" viewBox="0 0 100 26" preserveAspectRatio="none"><polyline points="0,20 50,16 100,10" fill="none" stroke="#005840" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="age">Sist 17 dager siden · 2 forsøk</span>
+          </div>
+          <div class="mt empty">
+            <div class="top"><span class="pyr pyr-spill">SPILL</span></div>
+            <div class="nm">Course management quiz</div>
+            <div class="val">— ikke tatt</div>
+            <span class="age">Anbefalt før Sørlandsåpent</span>
+          </div>
+          <div class="mt empty">
+            <div class="top"><span class="pyr pyr-spill">SPILL</span></div>
+            <div class="nm">TrackMan-data tolkning</div>
+            <div class="val">— ikke tatt</div>
+            <span class="age">Tildel test for å starte</span>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin:24px 0 10px;">
+          <span class="pyr pyr-turn pyr-lg">TURN</span>
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:600;">Turneringsmodus</span>
+          <span style="font-family:var(--font-mono);font-size:10.5px;color:var(--warn);letter-spacing:0.06em;font-weight:700;">0 av 4 gjennomført · svakeste disiplin</span>
+        </div>
+        <div class="mt-grid">
+          <div class="mt empty">
+            <div class="top"><span class="pyr pyr-turn">TURN</span></div>
+            <div class="nm">MTQ stress-skåre</div>
+            <div class="val">— ikke tatt</div>
+            <span class="age">⚡ AI-anbefalt neste test</span>
+          </div>
+          <div class="mt empty">
+            <div class="top"><span class="pyr pyr-turn">TURN</span></div>
+            <div class="nm">Pre-shot rutine</div>
+            <div class="val">— ikke tatt</div>
+            <span class="age">Tildel test for å starte</span>
+          </div>
+          <div class="mt empty">
+            <div class="top"><span class="pyr pyr-turn">TURN</span></div>
+            <div class="nm">Stroop-fokustest</div>
+            <div class="val">— ikke tatt</div>
+            <span class="age">Tildel test for å starte</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

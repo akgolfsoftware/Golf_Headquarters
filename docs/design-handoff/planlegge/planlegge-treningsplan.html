@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Planlegge · Treningsplan — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_planlegge.css">
+<style>
+  .tech-plan {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 24px 28px;
+  }
+  .tech-h { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .tech-h .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    background: rgba(0,88,64,0.10); color: var(--forest);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .tech-h h2 {
+    font-family: var(--font-display); font-size: 24px; font-weight: 600;
+    letter-spacing: -0.02em; margin-top: 12px; line-height: 1.15;
+    width: 100%;
+  }
+  .tech-h h2 em {
+    font-family: var(--font-serif); font-style: italic; font-weight: 400;
+    color: var(--forest);
+  }
+  .tech-kpi {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    margin-top: 22px;
+  }
+  .tk {
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px;
+  }
+  .tk .l {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .tk .v {
+    font-family: var(--font-mono); font-size: 24px; font-weight: 700;
+    line-height: 1; letter-spacing: -0.02em; margin-top: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .tk .v.delta-up { color: var(--success); }
+  .tk .v .u { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .tk .s {
+    font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+    letter-spacing: 0.04em; margin-top: 6px;
+  }
+  .tk.status-aktiv .v { color: var(--forest); font-size: 18px; }
+  .tk.status-aktiv .v::before {
+    content: ''; display: inline-block;
+    width: 8px; height: 8px; background: var(--lime-deep);
+    border-radius: 50%; margin-right: 6px;
+    box-shadow: 0 0 0 4px rgba(191,233,51,0.30);
+    vertical-align: middle;
+  }
+
+  .tech-sub {
+    margin-top: 22px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+
+  /* mini progress segments for tech plan progress */
+  .ringseg {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 6px;
+  }
+  .ringseg .seg {
+    height: 4px; flex: 1; border-radius: 999px;
+    background: var(--border);
+  }
+  .ringseg .seg.done { background: var(--forest); }
+  .ringseg .seg.cur  { background: var(--lime); }
+
+  /* drill block tweaks for compactness */
+  .week-grid { min-height: 480px; }
+
+  /* dt times list */
+  .wg-cell.time { min-height: 80px; }
+
+  /* footer info row */
+  .now-note {
+    margin-top: 10px; padding: 10px 14px;
+    background: rgba(209,248,67,0.16);
+    border-left: 3px solid var(--lime);
+    border-radius: 10px;
+    display: inline-flex; gap: 10px; align-items: center;
+    font-size: 12.5px; line-height: 1.5;
+  }
+  .now-note svg { width: 14px; height: 14px; color: var(--forest); flex-shrink: 0; }
+</style>
+</head>
+<body data-screen-label="02 Planlegge · Treningsplan">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M9 22V12h6v10" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20" fill="currentColor"/></symbol>
+  <symbol id="i-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="18" y1="20" x2="18" y2="4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="6" y1="20" x2="6" y2="16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-user-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M6 21a6 6 0 0 1 12 0" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 22V4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M4 4h11l-2 4 2 4H4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 5 19 12 12 19" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chevron-l" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chevron-r" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="18" cy="5" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6 4v16M3 7v10M18 4v16M21 7v10M6 12h12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="2" fill="currentColor"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M7 4h10v6a5 5 0 0 1-10 0z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><path d="M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18 9.5l-4.2 1.8L12 16l-1.8-4.7L6 9.5l4.2-1.8L12 3zM19 14l.9 2.4L22 17l-2.1.6L19 20l-.9-2.4L16 17l2.1-.6L19 14zM5 14l.6 1.6L7 16l-1.4.4L5 18l-.6-1.6L3 16l1.4-.4L5 14z" fill="currentColor"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9 12 2" fill="currentColor"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-tm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/></symbol>
+</defs>
+</svg>
+
+<div class="shell has-side">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark"><div class="logo">A</div><div><div class="nm">AK Golf</div></div></div>
+      <div class="meta">PlayerHQ</div>
+    </div>
+    <button class="side-cta"><svg><use href="#i-plus"/></svg>Ny økt</button>
+    <div class="nav-group">
+      <div class="nav-label">Trening</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-home"/></svg>Oversikt</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor"><use href="#i-route"/></svg>Planlegge<span class="ct">5</span></button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-play"/></svg>Gjennomføre</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-flag"/></svg>Tester<span class="ct">12/36</span></button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-bar"/></svg>Analysere</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Støtte</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-users"/></svg>Coach<span class="ct">3</span></button>
+    </div>
+    <div class="side-foot">
+      <svg fill="none" stroke="currentColor"><use href="#i-user-circle"/></svg>
+      Min profil
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <a class="back" href="#"><svg fill="none" stroke="currentColor"><use href="#i-arrow-left"/></svg>PlayerHQ</a>
+      <div class="player">
+        <div class="avatar">MP</div>
+        <div>
+          <div class="nm">Markus R. Pedersen</div>
+          <div class="sub">A1 · HCP 4.8 · Sesong 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page" style="max-width:1380px;">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div>
+          <div class="eyebrow">PlayerHQ · Planlegge · Treningsplan</div>
+          <h1>Treningsplan <em>uke 21</em></h1>
+          <div class="sub">
+            <strong style="color:var(--ink);font-weight:700;">Spesialisering</strong>
+            <span class="dot"></span>
+            <strong style="color:var(--ink);font-weight:700;">12</strong> økter planlagt denne uka
+            <span class="dot"></span>
+            CS-progresjon <strong style="color:var(--success);font-weight:700;">+2,1 mph</strong>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm">
+            <svg fill="none" stroke="currentColor"><use href="#i-cal"/></svg>
+            Be coach om plan
+          </button>
+          <button class="btn btn-lime">
+            <svg fill="none" stroke="currentColor"><use href="#i-sparkles"/></svg>
+            AI-generer uke
+          </button>
+        </div>
+      </section>
+
+      <!-- PLAN-TABS -->
+      <nav class="plan-tabs">
+        <button class="plan-tab">
+          <svg fill="none" stroke="currentColor"><use href="#i-cal"/></svg>
+          Årsplan
+        </button>
+        <button class="plan-tab active">
+          <svg fill="none" stroke="currentColor"><use href="#i-dumbbell"/></svg>
+          Treningsplan
+          <span class="ct">12</span>
+        </button>
+        <button class="plan-tab">
+          <svg fill="none" stroke="currentColor"><use href="#i-target"/></svg>
+          Mål
+          <span class="ct">3</span>
+        </button>
+        <button class="plan-tab">
+          <svg fill="none" stroke="currentColor"><use href="#i-trophy"/></svg>
+          Turneringer
+          <span class="ct">7</span>
+        </button>
+        <button class="plan-tab">
+          <svg fill="none" stroke="currentColor"><use href="#i-route"/></svg>
+          Drills
+          <span class="ct">48</span>
+        </button>
+      </nav>
+
+      <!-- ============== 2A. TECHNICAL PLAN CARD ============== -->
+      <section class="tech-plan">
+        <div class="tech-h">
+          <span class="tag">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><use href="#i-target"/></svg>
+            Aktiv teknisk plan
+          </span>
+          <span style="font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.06em;margin-left:auto;">
+            Sist oppdatert 21. mai · av coach Anders
+          </span>
+          <h2>Vinter <em>2026</em> · grunntrening &amp; spesialisering</h2>
+        </div>
+
+        <div class="tech-kpi">
+          <div class="tk status-aktiv">
+            <div class="l">Status</div>
+            <div class="v">Aktiv</div>
+            <div class="s">17. nov 2025 → 14. jun 2026</div>
+          </div>
+          <div class="tk">
+            <div class="l">Periode</div>
+            <div class="v" style="font-size:16px;">Uke 21 / 30</div>
+            <div class="s">70% gjennomført · 9 uker igjen</div>
+            <div class="ringseg">
+              <span class="seg done"></span><span class="seg done"></span><span class="seg done"></span><span class="seg done"></span><span class="seg done"></span><span class="seg done"></span><span class="seg done"></span><span class="seg cur"></span><span class="seg"></span><span class="seg"></span>
+            </div>
+          </div>
+          <div class="tk">
+            <div class="l">CS-progresjon</div>
+            <div class="v delta-up">+2,1<span class="u"> mph</span></div>
+            <div class="s">109,9 → 112,0 driver</div>
+          </div>
+          <div class="tk">
+            <div class="l">TM hit-rate</div>
+            <div class="v">68<span class="u">%</span></div>
+            <div class="s">spread inn snittet 6,2m → 5,1m</div>
+          </div>
+        </div>
+
+        <div class="tech-sub">
+          <div class="sub-tabs">
+            <button class="sub-tab active">Oversikt</button>
+            <button class="sub-tab">Posisjoner</button>
+            <button class="sub-tab">Drills</button>
+            <button class="sub-tab">Hit-rate</button>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-left:auto;">Åpne hele planen →</button>
+        </div>
+
+        <div class="now-note">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-info"/></svg>
+          <div><strong>Coach Anders sin kommentar (denne uka):</strong> "Hold fokus på P3-P4 i swingsekvensen. Vi øker bag-volum til 6×/uke før Sørlandsåpent. Putt-økter 3×/uke fortsatt."</div>
+        </div>
+      </section>
+
+      <!-- ============== 2B. UKEPLAN (7-day grid) ============== -->
+      <section class="card week-card">
+        <div class="week-h">
+          <button class="nav-arrow" aria-label="Forrige uke">
+            <svg width="14" height="14" fill="none" stroke="currentColor"><use href="#i-chevron-l"/></svg>
+          </button>
+          <h2>Uke 21</h2>
+          <span class="wk-range">18. → 24. mai 2026</span>
+          <button class="nav-arrow" aria-label="Neste uke">
+            <svg width="14" height="14" fill="none" stroke="currentColor"><use href="#i-chevron-r"/></svg>
+          </button>
+
+          <div class="view-switch">
+            <button>Dag</button>
+            <button class="active">Uke</button>
+            <button>Måned</button>
+          </div>
+        </div>
+
+        <div class="week-grid">
+          <!-- header row -->
+          <div class="wg-cell head"></div>
+          <div class="wg-cell head"><div class="dn">Man</div><div class="dt">18</div></div>
+          <div class="wg-cell head"><div class="dn">Tir</div><div class="dt">19</div></div>
+          <div class="wg-cell head"><div class="dn">Ons</div><div class="dt">20</div></div>
+          <div class="wg-cell head"><div class="dn">Tor</div><div class="dt">21</div></div>
+          <div class="wg-cell head today"><div class="dn">Fre</div><div class="dt">22</div></div>
+          <div class="wg-cell head"><div class="dn">Lør</div><div class="dt">23</div></div>
+          <div class="wg-cell head"><div class="dn">Søn</div><div class="dt">24</div></div>
+
+          <!-- 06:00 row -->
+          <div class="wg-cell time">06:00</div>
+          <div class="wg-cell">
+            <div class="drill-block fys">
+              <div class="dt">FYS · 60 min</div>
+              Trapbar + plyo
+              <span class="small">Mulligan Gym</span>
+            </div>
+          </div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell">
+            <div class="drill-block fys">
+              <div class="dt">FYS · 45 min</div>
+              CMJ + spenst
+              <span class="small">Mulligan Gym</span>
+            </div>
+          </div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell today-col">
+            <div class="drill-block fys">
+              <div class="dt">FYS · 60 min</div>
+              Tung styrke
+              <span class="small">Mulligan Gym</span>
+            </div>
+          </div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell"></div>
+
+          <!-- 10:00 row -->
+          <div class="wg-cell time">10:00</div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell">
+            <div class="drill-block tek">
+              <div class="dt">TEK · 90 min</div>
+              P3-P4 sekvens
+              <span class="small">GFGK Range · m/ coach</span>
+            </div>
+          </div>
+          <div class="wg-cell">
+            <div class="drill-block slag">
+              <div class="dt">SLAG · 60 min</div>
+              Driver volum
+              <span class="small">GFGK Range · TrackMan</span>
+            </div>
+          </div>
+          <div class="wg-cell">
+            <div class="drill-block tek">
+              <div class="dt">TEK · 75 min</div>
+              Iron sequencing
+              <span class="small">GFGK Range</span>
+            </div>
+          </div>
+          <div class="wg-cell today-col"></div>
+          <div class="wg-cell">
+            <div class="drill-block slag">
+              <div class="dt">SLAG · 120 min</div>
+              Bane-runde 9 hull
+              <span class="small">GFGK Bane</span>
+            </div>
+          </div>
+          <div class="wg-cell"></div>
+
+          <!-- 14:00 row -->
+          <div class="wg-cell time">14:00</div>
+          <div class="wg-cell">
+            <div class="drill-block slag">
+              <div class="dt">SLAG · 45 min</div>
+              Putt 1-3m
+              <span class="small">Mulligan Indoor</span>
+            </div>
+          </div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell">
+            <div class="drill-block spill">
+              <div class="dt">SPILL · 60 min</div>
+              Pre-shot rutine
+              <span class="small">m/ mentaltrener</span>
+            </div>
+          </div>
+          <div class="wg-cell today-col">
+            <div class="drill-block slag">
+              <div class="dt">SLAG · 60 min</div>
+              Chip landingsone
+              <span class="small">GFGK SP</span>
+            </div>
+          </div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell">
+            <div class="drill-block turn">
+              <div class="dt">TURN · 30 min</div>
+              MTQ-quiz
+              <span class="small">Hjemme</span>
+            </div>
+          </div>
+
+          <!-- 17:00 row -->
+          <div class="wg-cell time">17:00</div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell">
+            <div class="drill-block slag">
+              <div class="dt">SLAG · 60 min</div>
+              Wedges 50-100m
+              <span class="small">GFGK Range</span>
+            </div>
+          </div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell today-col">
+            <div class="drill-block slag">
+              <div class="dt">SLAG · 45 min</div>
+              Putt langdist.
+              <span class="small">GFGK SP</span>
+            </div>
+          </div>
+          <div class="wg-cell"></div>
+          <div class="wg-cell"></div>
+        </div>
+
+        <!-- legend -->
+        <div class="gantt-legend" style="margin-top:14px;">
+          <span class="sw"><span class="box" style="background:var(--pyr-fys);"></span>FYS</span>
+          <span class="sw"><span class="box" style="background:var(--pyr-tek);"></span>TEK</span>
+          <span class="sw"><span class="box" style="background:var(--lime);"></span>SLAG</span>
+          <span class="sw"><span class="box" style="background:var(--pyr-spill);"></span>SPILL</span>
+          <span class="sw"><span class="box" style="background:var(--pyr-turn);"></span>TURN</span>
+          <span class="sw" style="margin-left:auto;">12 økter planlagt · 14 t 45 min · dra blokker for å flytte</span>
+        </div>
+      </section>
+
+      <!-- ============== 2C. DRILL LIBRARY STRIP ============== -->
+      <section class="card t-strip-card">
+        <div class="card-h" style="margin-bottom:14px;">
+          <div>
+            <div class="eyebrow">DRILL-BIBLIOTEK · 48 DRILLS</div>
+            <h2 style="margin-top:4px;">Legg til denne uka</h2>
+          </div>
+          <div class="right">
+            <div class="sub-tabs">
+              <button class="sub-tab">Favoritter <span style="margin-left:4px;font-weight:600;font-size:9px;background:var(--lime);color:var(--forest);padding:0 5px;border-radius:999px;">8</span></button>
+              <button class="sub-tab active">Anbefalt</button>
+              <button class="sub-tab">Coach foreslår</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="t-strip h-scroll">
+          <div class="drill-card">
+            <div class="cover" style="background:linear-gradient(135deg, rgba(0,88,64,0.12), rgba(209,248,67,0.18));">
+              <span class="pyr pyr-slag" style="position:absolute;top:8px;left:8px;">SLAG</span>
+              <button class="fav on" aria-label="Favoritt">
+                <svg fill="currentColor"><use href="#i-star"/></svg>
+              </button>
+              <span>Driver — gate</span>
+            </div>
+            <div class="nm">Driver gate-drill</div>
+            <div class="meta">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-clock"/></svg> 25 min
+              <span class="sep">·</span>
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-tm"/></svg>
+              <span class="sep">·</span>
+              <span class="dots"><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d"></span></span>
+            </div>
+            <div class="meta">GFGK Range · Mulligan</div>
+            <button class="add"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-plus"/></svg>Legg til uka</button>
+          </div>
+
+          <div class="drill-card">
+            <div class="cover" style="background:linear-gradient(135deg, rgba(0,88,64,0.18), rgba(0,88,64,0.05));">
+              <span class="pyr pyr-fys" style="position:absolute;top:8px;left:8px;">FYS</span>
+              <button class="fav" aria-label="Favoritt">
+                <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-star"/></svg>
+              </button>
+              <span>Trapbar 3×5</span>
+            </div>
+            <div class="nm">Trapbar deadlift 3×5</div>
+            <div class="meta">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-clock"/></svg> 35 min
+              <span class="sep">·</span>
+              <span class="dots"><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d"></span><span class="d"></span></span>
+            </div>
+            <div class="meta">Mulligan Gym</div>
+            <button class="add"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-plus"/></svg>Legg til uka</button>
+          </div>
+
+          <div class="drill-card">
+            <div class="cover" style="background:linear-gradient(135deg, rgba(26,125,86,0.15), rgba(26,125,86,0.05));">
+              <span class="pyr pyr-tek" style="position:absolute;top:8px;left:8px;">TEK</span>
+              <button class="fav on" aria-label="Favoritt">
+                <svg fill="currentColor"><use href="#i-star"/></svg>
+              </button>
+              <span>P3-P4 sekvens</span>
+            </div>
+            <div class="nm">P3 → P4 posisjons-drill</div>
+            <div class="meta">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-clock"/></svg> 45 min
+              <span class="sep">·</span>
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-tm"/></svg>
+              <span class="sep">·</span>
+              <span class="dots"><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d on"></span></span>
+            </div>
+            <div class="meta">GFGK Range · m/ coach</div>
+            <button class="add"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-plus"/></svg>Legg til uka</button>
+          </div>
+
+          <div class="drill-card">
+            <div class="cover" style="background:linear-gradient(135deg, rgba(209,248,67,0.25), rgba(209,248,67,0.05));">
+              <span class="pyr pyr-slag" style="position:absolute;top:8px;left:8px;">SLAG</span>
+              <button class="fav" aria-label="Favoritt">
+                <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-star"/></svg>
+              </button>
+              <span>Putt 1-3m · 30 putt</span>
+            </div>
+            <div class="nm">Putt 1-3m · ladder</div>
+            <div class="meta">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-clock"/></svg> 20 min
+              <span class="sep">·</span>
+              <span class="dots"><span class="d on"></span><span class="d on"></span><span class="d"></span><span class="d"></span><span class="d"></span></span>
+            </div>
+            <div class="meta">GFGK SP · Mulligan Indoor</div>
+            <button class="add"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-plus"/></svg>Legg til uka</button>
+          </div>
+
+          <div class="drill-card">
+            <div class="cover" style="background:linear-gradient(135deg, rgba(184,133,42,0.20), rgba(184,133,42,0.05));">
+              <span class="pyr pyr-spill" style="position:absolute;top:8px;left:8px;">SPILL</span>
+              <button class="fav" aria-label="Favoritt">
+                <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-star"/></svg>
+              </button>
+              <span>Course mgmt</span>
+            </div>
+            <div class="nm">Course mgmt — 9 hull</div>
+            <div class="meta">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-clock"/></svg> 120 min
+              <span class="sep">·</span>
+              <span class="dots"><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d"></span></span>
+            </div>
+            <div class="meta">GFGK Bane</div>
+            <button class="add"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-plus"/></svg>Legg til uka</button>
+          </div>
+
+          <div class="drill-card">
+            <div class="cover" style="background:linear-gradient(135deg, rgba(94,92,87,0.18), rgba(94,92,87,0.05));">
+              <span class="pyr pyr-turn" style="position:absolute;top:8px;left:8px;">TURN</span>
+              <button class="fav" aria-label="Favoritt">
+                <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-star"/></svg>
+              </button>
+              <span>Pre-shot 7 sek</span>
+            </div>
+            <div class="nm">Pre-shot rutine 7-sek</div>
+            <div class="meta">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-clock"/></svg> 30 min
+              <span class="sep">·</span>
+              <span class="dots"><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d"></span><span class="d"></span></span>
+            </div>
+            <div class="meta">m/ mentaltrener</div>
+            <button class="add"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-plus"/></svg>Legg til uka</button>
+          </div>
+        </div>
+
+        <div class="now-note">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-sparkles"/></svg>
+          <div>Trenger flere drills? <strong>AI foreslår basert på SG-svakhet</strong> i siste 90 dager.</div>
+          <a href="ai-foresla-drill.html" class="btn btn-lime btn-sm" style="margin-left:auto;">
+            AI foreslå drill
+            <svg fill="none" stroke="currentColor" stroke-width="2"><use href="#i-arrow-right"/></svg>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>
