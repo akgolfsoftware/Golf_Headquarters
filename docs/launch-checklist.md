@@ -318,7 +318,7 @@ curl -H "Authorization: Bearer $CRON_SECRET" https://akgolf.no/api/cron/plan-wat
 [ ] Service-role-key fraværende fra client-bundle (Vercel build analyze)
 [ ] Filopplasting blokkerer .exe/.sh/.php + 50 MB+ filer
 [ ] Rate-limit returnerer 429 ved > 10 req/min på /api/lead
-[ ] Slack-alert mottatt ved test-error (SLACK_ALERTS_WEBHOOK satt)
+[ ] Alert-e-post mottatt på akgolfgroup@gmail.com (test-error → Resend → Gmail push på iPhone)
 [ ] Leaked password protection PÅ i Supabase Auth-settings
 [ ] CRON_SECRET satt i Vercel env (cron-endpoints krever Authorization)
 ```
