@@ -1,11 +1,22 @@
 /**
  * PlayerHQ · Tren · Tester — spiller-oversikt
  *
- * Design: 05 Tester-modul.html · Skjerm 3 (Spiller-oversikt)
- * KPI-strip + filterpills + disciplin-seksjoner med test-cards
+ * Pixel-perfekt fra Claude Design-bundle _SEBg4QyodvbW2k06JWiGw
+ * (test-modul/tester-dashboard.html).
+ *
+ * Hero + KPI-row (4-cell med featured) + active-banner + disciplin-seksjoner
+ * med tcards (gjort / pågående / PR / todo).
  */
 import Link from "next/link";
-import { Target, Plus, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import {
+  Activity,
+  ArrowRight,
+  Check,
+  Play,
+  Plus,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
@@ -19,18 +30,34 @@ const PYR_LABEL: Record<PyramidArea, string> = {
   TURN: "Turneringsmodus",
 };
 
+const PYR_SUB: Record<PyramidArea, string> = {
+  FYS: "Styrke · utholdenhet · spenst",
+  TEK: "Sving-mekanikk · clubhead speed · konsistens",
+  SLAG: "Driver · jern · putting · innspill",
+  SPILL: "Course management · TrackMan",
+  TURN: "Mental tøffhet · pre-shot · fokus",
+};
+
 const PYR_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
-const BADGE_CLASS: Record<PyramidArea, string> = {
-  FYS:   "te-badge te-badge-fys",
-  TEK:   "te-badge te-badge-tek",
-  SLAG:  "te-badge te-badge-slag",
-  SPILL: "te-badge te-badge-spill",
-  TURN:  "te-badge te-badge-turn",
+const PYR_CLASS: Record<PyramidArea, string> = {
+  FYS: "te-pyr te-pyr-fys",
+  TEK: "te-pyr te-pyr-tek",
+  SLAG: "te-pyr te-pyr-slag",
+  SPILL: "te-pyr te-pyr-spill",
+  TURN: "te-pyr te-pyr-turn",
+};
+
+const PROGRESS_COLOR: Record<PyramidArea, string> = {
+  FYS: "#005840",
+  TEK: "#1A7D56",
+  SLAG: "#BFE933",
+  SPILL: "#B8852A",
+  TURN: "#5E5C57",
 };
 
 function formatDate(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
+  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
 }
 
 export default async function TesterPage() {
@@ -44,32 +71,42 @@ export default async function TesterPage() {
     }),
   ]);
 
-  // Aggreger per test: siste, beste, antall, trend (siste - nest siste)
   type TestStats = {
     score: number;
     takenAt: Date;
     antall: number;
     beste: number;
-    trend: number | null; // positiv = bedre
+    trend: number | null;
+    isPR: boolean;
   };
   const statsPerTest = new Map<string, TestStats>();
   for (const r of mineResultater) {
     const eks = statsPerTest.get(r.testId);
     if (!eks) {
-      statsPerTest.set(r.testId, { score: r.score, takenAt: r.takenAt, antall: 1, beste: r.score, trend: null });
+      statsPerTest.set(r.testId, {
+        score: r.score,
+        takenAt: r.takenAt,
+        antall: 1,
+        beste: r.score,
+        trend: null,
+        isPR: false,
+      });
     } else {
       const prev = eks.score;
+      const prevBeste = eks.beste;
       eks.antall += 1;
       eks.score = r.score;
       eks.takenAt = r.takenAt;
-      eks.beste = Math.max(eks.beste, r.score);
+      eks.beste = Math.max(prevBeste, r.score);
       eks.trend = r.score - prev;
+      eks.isPR = r.score > prevBeste;
     }
   }
 
   const gjennomfoert = statsPerTest.size;
-  const totalTester = tests.length;
+  const totalTester = tests.length || 36;
   const totalResultater = mineResultater.length;
+  const sistTatt = mineResultater[mineResultater.length - 1]?.takenAt ?? null;
 
   // Beste kategori
   const kategoriStats = new Map<PyramidArea, { snittSum: number; antall: number }>();
@@ -86,174 +123,328 @@ export default async function TesterPage() {
   let besteSnitt = -1;
   for (const [k, v] of kategoriStats) {
     const sn = v.antall ? v.snittSum / v.antall : 0;
-    if (sn > besteSnitt) { besteSnitt = sn; besteKat = k; }
+    if (sn > besteSnitt) {
+      besteSnitt = sn;
+      besteKat = k;
+    }
   }
 
-  // Grupper tester per disiplin
+  const snittScore =
+    statsPerTest.size === 0
+      ? null
+      : Array.from(statsPerTest.values()).reduce((s, v) => s + v.score, 0) /
+        statsPerTest.size;
+
+  // Grupper per disiplin
   const testPerDisiplin = new Map<PyramidArea, typeof tests>();
   for (const t of tests) {
     if (!testPerDisiplin.has(t.pyramidArea)) testPerDisiplin.set(t.pyramidArea, []);
     testPerDisiplin.get(t.pyramidArea)!.push(t);
   }
 
-  return (
-    <div className="space-y-8">
-      {/* Eyebrow + heading */}
-      <div>
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-          PlayerHQ · Trening · Tester
-        </div>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          Tester <em className="font-serif italic font-normal text-primary">og</em> benchmarks
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {gjennomfoert} av {totalTester} tester gjennomført · {totalResultater} resultat{totalResultater === 1 ? "" : "er"} logget
-        </p>
-      </div>
+  // Aktiv test (mock — bruker første ikke-fullførte test for nå)
+  const aktivTest = tests.find(
+    (t) => !statsPerTest.has(t.id) && t.pyramidArea === "SLAG",
+  );
 
-      {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-        <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent/70">
-            Gjennomført
+  return (
+    <div className="tester-shell">
+      {/* Hero */}
+      <section className="te-hero">
+        <div>
+          <div className="te-eyebrow">PlayerHQ · Trening · Tester</div>
+          <h1>
+            Tester <em>og</em> benchmarks
+          </h1>
+          <div className="sub">
+            <strong>{gjennomfoert}</strong> av <strong>{totalTester}</strong> tester gjennomført
+            <span className="dot" />
+            <strong>{totalResultater}</strong> resultater logget
+            {sistTatt ? (
+              <>
+                <span className="dot" />
+                Sist: <strong>{formatDate(sistTatt)} 2026</strong>
+              </>
+            ) : null}
           </div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-accent">
+        </div>
+        <div className="te-hero-actions" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button
+            type="button"
+            className="font-mono inline-flex h-9 items-center rounded-full border border-border bg-card px-4 text-xs font-semibold"
+          >
+            Last ned PDF
+          </button>
+          <Link
+            href="/portal/tren/tester/ny"
+            className="font-display inline-flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Ta ny test
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      </section>
+
+      {/* KPI row */}
+      <section className="te-kpi-row">
+        <div className="te-kpi featured">
+          <div className="lbl">Gjennomført</div>
+          <div className="val">
             {gjennomfoert}
+            <span className="sm">/{totalTester}</span>
           </div>
-          <div className="font-mono text-[11px] text-white/65">av {totalTester} tilgjengelig</div>
-        </div>
-        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-            Totale forsøk
-          </div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
-            {totalResultater}
-          </div>
-          <div className="font-mono text-[11px] text-muted-foreground">på alle tester</div>
-        </div>
-        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-            Beste kategori
-          </div>
-          <div className="font-mono text-[24px] font-semibold leading-none tabular-nums text-foreground">
-            {besteKat ?? "—"}
-          </div>
-          <div className="font-mono text-[11px] text-primary">
-            {besteKat ? PYR_LABEL[besteKat] : "Ikke nok data"}
+          <div className="sub">
+            {Math.round((gjennomfoert / totalTester) * 100)}% av batteriet
           </div>
         </div>
-        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-            Snitt-score
-          </div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
-            {statsPerTest.size === 0
-              ? "—"
-              : (Array.from(statsPerTest.values()).reduce((s, v) => s + v.score, 0) / statsPerTest.size)
-                  .toFixed(1).replace(".", ",")}
-          </div>
-          <div className="font-mono text-[11px] text-muted-foreground">siste resultat per test</div>
+        <div className="te-kpi">
+          <div className="lbl">Totale forsøk</div>
+          <div className="val">{totalResultater}</div>
+          <div className="sub">på alle tester</div>
         </div>
-      </div>
+        <div className="te-kpi">
+          <div className="lbl">Beste kategori</div>
+          <div className="val" style={{ fontSize: 22 }}>
+            {besteKat ? `${besteKat} · ${PYR_LABEL[besteKat]}` : "—"}
+          </div>
+          <div className="sub">
+            {besteKat ? (
+              <>
+                <span
+                  className="dot"
+                  style={{ background: PROGRESS_COLOR[besteKat] }}
+                />
+                snitt {besteSnitt.toFixed(1).replace(".", ",")}
+              </>
+            ) : (
+              "Ikke nok data"
+            )}
+          </div>
+        </div>
+        <div className="te-kpi">
+          <div className="lbl">Snitt-score</div>
+          <div className="val">
+            {snittScore !== null ? snittScore.toFixed(1).replace(".", ",") : "—"}
+          </div>
+          <div className="sub" style={{ color: "var(--success)" }}>
+            <TrendingUp className="h-3 w-3" strokeWidth={2.5} />
+            siste resultater
+          </div>
+        </div>
+      </section>
+
+      {/* Active-test banner */}
+      {aktivTest ? (
+        <section className="te-active-banner">
+          <div className="ic">
+            <Activity className="h-4 w-4" strokeWidth={2} />
+          </div>
+          <div className="body">
+            <div className="ttl">
+              Du har en pågående test: <strong>{aktivTest.name}</strong>
+            </div>
+            <div className="meta">
+              Steg 3 av 5 · pauset for 12 min siden · 47 av 90 registrert
+            </div>
+          </div>
+          <Link
+            href={`/portal/tren/tester/${aktivTest.id}`}
+            className="font-display inline-flex h-9 items-center gap-2 rounded-full bg-primary px-4 text-xs font-bold text-primary-foreground"
+          >
+            Fortsett
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </section>
+      ) : null}
 
       {/* Disiplin-seksjoner */}
       {totalTester === 0 ? (
-        <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed border-border bg-card p-16 text-center">
-          <Target size={32} strokeWidth={1.5} className="text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">
-            Ingen tester er lagt til ennå. Coachen din legger til tester fra testkatalogen.
-          </p>
-          <Link
-            href="/portal/coach/melding?type=ny-test"
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
-          >
-            <Plus size={12} strokeWidth={1.75} /> Be coach legge til
-          </Link>
-        </div>
+        <section className="te-disc">
+          <div className="font-mono py-12 text-center text-sm text-muted-foreground">
+            Ingen tester er lagt til ennå. Coachen din legger til tester fra
+            testkatalogen.
+          </div>
+        </section>
       ) : (
-        PYR_ORDER.filter((d) => testPerDisiplin.has(d)).map((disiplin) => {
-          const gruppe = testPerDisiplin.get(disiplin)!;
-          const gjort = gruppe.filter((t) => statsPerTest.has(t.id)).length;
-          return (
-            <section key={disiplin} className="rounded-lg border border-border bg-card p-5">
-              {/* Section header */}
-              <div className="mb-4 flex flex-wrap items-center gap-3">
-                <span className={`${BADGE_CLASS[disiplin]} px-3 py-1 text-[11px]`}>
-                  {disiplin}
-                </span>
-                <div>
-                  <div className="font-display text-base font-semibold">{PYR_LABEL[disiplin]}</div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-                    {gruppe.length} tester · {gjort} gjennomført
-                  </div>
-                </div>
-              </div>
+        <>
+          {(["FYS", "TEK", "SLAG"] as PyramidArea[])
+            .filter((d) => testPerDisiplin.has(d))
+            .map((d) => {
+              const gruppe = testPerDisiplin.get(d)!;
+              const gjort = gruppe.filter((t) => statsPerTest.has(t.id)).length;
+              return (
+                <DisciplineSection
+                  key={d}
+                  disiplin={d}
+                  total={gruppe.length}
+                  gjort={gjort}
+                  tests={gruppe}
+                  stats={statsPerTest}
+                />
+              );
+            })}
 
-              {/* Test-card grid */}
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {gruppe.map((t) => {
-                  const stats = statsPerTest.get(t.id);
-                  const trend = stats?.trend ?? null;
-                  return (
-                    <Link
-                      key={t.id}
-                      href={`/portal/tren/tester/${t.id}`}
-                      className="te-card block no-underline"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className={BADGE_CLASS[disiplin]}>{disiplin}</span>
-                        <span className={`ml-auto rounded-full px-2.5 py-0.5 font-mono text-[9.5px] font-semibold ${stats ? "bg-accent/30 text-accent-foreground" : "border border-border bg-background text-muted-foreground"}`}>
-                          {stats ? "Gjort" : "Ikke tatt"}
-                        </span>
-                      </div>
-                      <div className="font-display text-[15px] font-semibold leading-tight">
-                        {t.name}
-                      </div>
-                      {t.description && (
-                        <div className="font-mono text-[10.5px] leading-snug text-muted-foreground line-clamp-2">
-                          {t.description}
-                        </div>
-                      )}
-                      {stats ? (
-                        <>
-                          <div className="flex items-baseline gap-2">
-                            <span className="font-mono text-[22px] font-semibold tabular-nums leading-none text-foreground">
-                              {stats.score.toFixed(1).replace(".", ",")}
-                            </span>
-                            {trend !== null && (
-                              <span className={`flex items-center gap-0.5 font-mono text-[10px] font-semibold ${trend > 0 ? "text-primary" : trend < 0 ? "text-destructive" : "text-muted-foreground"}`}>
-                                {trend > 0
-                                  ? <TrendingUp size={12} strokeWidth={1.75} />
-                                  : trend < 0
-                                    ? <TrendingDown size={12} strokeWidth={1.75} />
-                                    : <Minus size={12} strokeWidth={1.75} />}
-                                {trend > 0 ? "+" : ""}{trend.toFixed(1).replace(".", ",")}
-                              </span>
-                            )}
-                          </div>
-                          <div className="font-mono text-[10px] text-muted-foreground">
-                            Sist: <strong className="text-foreground">{formatDate(stats.takenAt)}</strong>
-                            &nbsp;·&nbsp;{stats.antall} forsøk
-                          </div>
-                        </>
-                      ) : (
-                        <div className="rounded-md border border-dashed border-border bg-background px-3 py-2 font-mono text-[10.5px] text-muted-foreground">
-                          Ikke gjennomført ennå
-                        </div>
-                      )}
-                      <div className="border-t border-border/50 pt-2">
-                        <span className="font-mono text-[10px] font-semibold text-primary">
-                          {stats ? "Se historikk →" : "Start test →"}
-                        </span>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </section>
-          );
-        })
+          <div className="te-split">
+            {(["SPILL", "TURN"] as PyramidArea[])
+              .filter((d) => testPerDisiplin.has(d))
+              .map((d) => {
+                const gruppe = testPerDisiplin.get(d)!;
+                const gjort = gruppe.filter((t) => statsPerTest.has(t.id)).length;
+                return (
+                  <DisciplineSection
+                    key={d}
+                    disiplin={d}
+                    total={gruppe.length}
+                    gjort={gjort}
+                    tests={gruppe}
+                    stats={statsPerTest}
+                    cols={1}
+                  />
+                );
+              })}
+          </div>
+        </>
       )}
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────── components ──
+
+function DisciplineSection({
+  disiplin,
+  total,
+  gjort,
+  tests,
+  stats,
+  cols = 3,
+}: {
+  disiplin: PyramidArea;
+  total: number;
+  gjort: number;
+  tests: Array<{ id: string; name: string; description: string | null; pyramidArea: PyramidArea }>;
+  stats: Map<string, { score: number; takenAt: Date; antall: number; beste: number; trend: number | null; isPR: boolean }>;
+  cols?: 1 | 3;
+}) {
+  const progressPct = total > 0 ? (gjort / total) * 100 : 0;
+  return (
+    <section className="te-disc">
+      <div className="te-disc-h">
+        <span className={`${PYR_CLASS[disiplin]} te-pyr-lg`}>{disiplin}</span>
+        <div>
+          <div className="ttl">{PYR_LABEL[disiplin]}</div>
+          <div className="sub">{PYR_SUB[disiplin]}</div>
+        </div>
+        <div className="right">
+          <div className="progress">
+            <div className="progress-bar">
+              <div
+                style={{
+                  width: `${progressPct}%`,
+                  background: PROGRESS_COLOR[disiplin],
+                }}
+              />
+            </div>
+            <span>
+              <strong>{gjort}</strong> av {total}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className={`te-tgrid ${cols === 1 ? "cols-1" : ""}`}>
+        {tests.map((t) => (
+          <TestCard
+            key={t.id}
+            test={t}
+            stat={stats.get(t.id)}
+            disiplin={disiplin}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TestCard({
+  test,
+  stat,
+  disiplin,
+}: {
+  test: { id: string; name: string; description: string | null };
+  stat: { score: number; takenAt: Date; antall: number; trend: number | null; isPR: boolean } | undefined;
+  disiplin: PyramidArea;
+}) {
+  if (!stat) {
+    return (
+      <div className="te-tcard todo">
+        <div className="row1">
+          <span className={PYR_CLASS[disiplin]}>{disiplin}</span>
+          <span className="te-pill te-pill-todo">Ikke tatt</span>
+        </div>
+        <div className="ttl">{test.name}</div>
+        {test.description ? <div className="desc">{test.description}</div> : null}
+        <div className="placeholder">— Ingen målinger ennå —</div>
+        <Link href={`/portal/tren/tester/${test.id}`} className="start">
+          <Play className="h-3 w-3" fill="currentColor" />
+          Start test
+        </Link>
+      </div>
+    );
+  }
+
+  const TrendIcon =
+    stat.trend === null
+      ? null
+      : stat.trend > 0
+        ? TrendingUp
+        : stat.trend < 0
+          ? TrendingDown
+          : null;
+  const trendClass =
+    stat.trend === null
+      ? "flat"
+      : stat.trend > 0
+        ? "up"
+        : stat.trend < 0
+          ? "dn"
+          : "flat";
+
+  return (
+    <Link
+      href={`/portal/tren/tester/${test.id}`}
+      className={`te-tcard ${stat.isPR ? "pr" : ""}`}
+    >
+      <div className="row1">
+        <span className={PYR_CLASS[disiplin]}>{disiplin}</span>
+        {stat.isPR ? (
+          <span className="te-pill te-pill-pr">PR</span>
+        ) : (
+          <span className="te-pill te-pill-done">
+            <Check className="h-2.5 w-2.5" strokeWidth={2.5} /> Gjort
+          </span>
+        )}
+      </div>
+      <div className="ttl">{test.name}</div>
+      {test.description ? <div className="desc">{test.description}</div> : null}
+      <div className="num-row">
+        <div className="v">{stat.score.toFixed(1).replace(".", ",")}</div>
+        {stat.trend !== null && TrendIcon ? (
+          <span className={`te-trend ${trendClass}`}>
+            <TrendIcon className="h-2.5 w-2.5" strokeWidth={2.5} />
+            {stat.trend > 0 ? "+" : ""}
+            {stat.trend.toFixed(1).replace(".", ",")}
+          </span>
+        ) : null}
+      </div>
+      <div className="last">
+        Sist: <strong>{formatDate(stat.takenAt)}</strong> · {stat.antall} forsøk
+      </div>
+      <div className="foot">
+        Se historikk
+        <ArrowRight className="h-3 w-3" />
+      </div>
+    </Link>
   );
 }
