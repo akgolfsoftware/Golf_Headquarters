@@ -58,3 +58,4 @@ agentdb.rvf*
 /public/swe-worker-*.js
 .worktrees/
 .superpowers/
+.claude/worktrees/
