@@ -334,3 +334,173 @@
   .tester-shell .te-kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tester-shell .te-hero { flex-direction: column; align-items: flex-start; }
 }
+
+/* ============================================================
+   T6 · CoachHQ stall-tester additions
+   ============================================================ */
+
+/* Card + card-h reused */
+.tester-shell .te-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 14px;
+}
+.tester-shell .te-card-h {
+  display: flex; align-items: baseline;
+  justify-content: space-between;
+  gap: 12px; margin-bottom: 14px;
+}
+.tester-shell .te-card-h h2 {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 4px;
+}
+.tester-shell .te-card-h .right {
+  font-family: var(--font-mono);
+  font-size: 10.5px; color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+/* Missing-test rows */
+.tester-shell .te-miss-row {
+  display: grid; grid-template-columns: 1fr auto auto auto;
+  align-items: center; gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.tester-shell .te-miss-row:last-child { border-bottom: 0; }
+.tester-shell .te-miss-row .left { display: flex; align-items: center; gap: 12px; }
+.tester-shell .te-miss-row .av {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(140deg, var(--tint), var(--border));
+  color: var(--forest);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 11px; font-weight: 700;
+}
+.tester-shell .te-miss-row .nm {
+  font-family: var(--font-display); font-size: 13.5px; font-weight: 600;
+}
+.tester-shell .te-miss-row .meta {
+  font-family: var(--font-mono); font-size: 10.5px;
+  color: var(--muted); letter-spacing: 0.04em; margin-top: 2px;
+}
+.tester-shell .te-miss-row .test-lbl {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--ink); font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+}
+.tester-shell .te-miss-row .since {
+  font-family: var(--font-mono); font-size: 11.5px;
+  font-weight: 700; letter-spacing: 0.04em;
+  min-width: 80px; text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.tester-shell .te-miss-row .since.overdue { color: var(--danger); }
+.tester-shell .te-miss-row .since.warn { color: var(--warn); }
+.tester-shell .te-miss-row .since .sub {
+  display: block; font-size: 9px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase; margin-top: 2px;
+  color: var(--muted);
+}
+
+/* Inline mini-buttons */
+.tester-shell .te-btn-sm {
+  display: inline-flex; align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px; border: 0;
+  font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+}
+.tester-shell .te-btn-xs {
+  display: inline-flex; align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px; border: 0;
+  font-family: var(--font-body); font-size: 11px; font-weight: 600;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+}
+.tester-shell .te-btn-primary { background: var(--forest); color: #fff; }
+.tester-shell .te-btn-outline { background: #fff; color: var(--ink); border: 1px solid var(--border); }
+
+/* Legend */
+.tester-shell .te-legend {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono); font-size: 10.5px;
+  color: var(--muted); letter-spacing: 0.04em;
+}
+.tester-shell .te-legend .sw {
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.tester-shell .te-legend .sw .box {
+  width: 14px; height: 14px; border-radius: 3px;
+}
+
+/* Coverage matrix */
+.tester-shell .te-matrix {
+  display: grid;
+  grid-template-columns: 220px repeat(8, minmax(0, 1fr)) 80px;
+  gap: 2px;
+  background: var(--line);
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tester-shell .te-matrix .cell {
+  background: #fff; padding: 10px 12px;
+  min-height: 48px;
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.tester-shell .te-matrix .cell.h {
+  background: var(--cream);
+  font-size: 9.5px; font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.10em; text-transform: uppercase;
+  justify-content: center; text-align: center;
+  min-height: 40px;
+}
+.tester-shell .te-matrix .cell.h.player { justify-content: flex-start; }
+.tester-shell .te-matrix .cell.h.tot { background: var(--forest); color: var(--lime); }
+.tester-shell .te-matrix .cell.player { background: #fff; justify-content: flex-start; }
+.tester-shell .te-matrix .cell.player .av {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(140deg, var(--tint), var(--border));
+  color: var(--forest);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 10px; font-weight: 700;
+  flex-shrink: 0;
+}
+.tester-shell .te-matrix .cell.player .nm {
+  font-family: var(--font-display); font-size: 12.5px;
+  font-weight: 600; line-height: 1.2;
+}
+.tester-shell .te-matrix .cell.player .tag {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--muted); letter-spacing: 0.08em;
+  text-transform: uppercase; margin-top: 2px;
+}
+.tester-shell .te-matrix .cell.score {
+  justify-content: center; flex-direction: column;
+  gap: 2px; line-height: 1;
+}
+.tester-shell .te-matrix .cell.score .v { font-weight: 700; color: var(--ink); font-size: 12px; }
+.tester-shell .te-matrix .cell.score .age { font-size: 9px; color: var(--muted); letter-spacing: 0.04em; }
+.tester-shell .te-matrix .cell.score.ok { background: rgba(44,125,82,0.06); }
+.tester-shell .te-matrix .cell.score.overdue { background: rgba(163,45,45,0.07); }
+.tester-shell .te-matrix .cell.score.overdue .age { color: var(--danger); font-weight: 700; }
+.tester-shell .te-matrix .cell.score.soon { background: rgba(184,133,42,0.07); }
+.tester-shell .te-matrix .cell.score.soon .age { color: var(--warn); font-weight: 700; }
+.tester-shell .te-matrix .cell.score.empty {
+  background: repeating-linear-gradient(45deg, #fff, #fff 8px, var(--line) 8px, var(--line) 9px);
+  color: var(--subtle);
+}
+.tester-shell .te-matrix .cell.tot {
+  justify-content: center; background: rgba(209,248,67,0.18);
+  font-weight: 700; color: var(--forest); font-size: 13px;
+}
+.tester-shell .te-matrix .cell.tot.warn { background: rgba(184,133,42,0.15); color: var(--warn); }
+.tester-shell .te-matrix .cell.tot.danger { background: rgba(163,45,45,0.10); color: var(--danger); }

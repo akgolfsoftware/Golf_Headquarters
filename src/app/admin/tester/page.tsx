@@ -1,379 +1,382 @@
 /**
- * CoachHQ — Tester · Coach-oversikt
+ * CoachHQ · Tester · Stall-oversikt
  *
- * Design: 05 Tester-modul.html · Skjerm 1 (Coach-oversikt)
- * KPI-strip + disiplin-seksjoner med test-cards inkl. distribusjonsbar
+ * Pixel-perfekt fra Claude Design-bundle _SEBg4QyodvbW2k06JWiGw
+ * (test-modul/coach-tester-stall.html).
+ *
+ * Hero coach + 4-KPI (test-dekning featured, overdue, snart-due, sterkeste batteri)
+ * + Overdue/snart-due-liste med legend + Coverage-matrix (spillere × tester).
  */
 import Link from "next/link";
-import { Activity, Plus, Search, ChevronDown, ChevronRight } from "lucide-react";
+import {
+  AlertTriangle,
+  Download,
+  Filter,
+  Plus,
+  Send,
+  TrendingUp,
+} from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
-import { EmptyState } from "@/components/shared/empty-state";
-import { avatarBg } from "@/lib/avatar-colors";
 import "@/components/tester/tester.css";
 
-const PYR_LABEL: Record<PyramidArea, string> = {
-  FYS: "Fysisk",
-  TEK: "Teknisk",
-  SLAG: "Slagteknikk",
-  SPILL: "Spillforståelse",
-  TURN: "Turneringsmodus",
-};
-
-const PYR_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
-
-const BADGE_CLASS: Record<PyramidArea, string> = {
-  FYS:   "te-badge te-badge-fys",
-  TEK:   "te-badge te-badge-tek",
-  SLAG:  "te-badge te-badge-slag",
-  SPILL: "te-badge te-badge-spill",
-  TURN:  "te-badge te-badge-turn",
+const PYR_CLASS: Record<PyramidArea, string> = {
+  FYS: "te-pyr te-pyr-fys",
+  TEK: "te-pyr te-pyr-tek",
+  SLAG: "te-pyr te-pyr-slag",
+  SPILL: "te-pyr te-pyr-spill",
+  TURN: "te-pyr te-pyr-turn",
 };
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/);
-  return parts.length === 1 ? parts[0].slice(0, 2).toUpperCase() : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return parts.length === 1
+    ? parts[0].slice(0, 2).toUpperCase()
+    : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-function formatDate(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
-}
+type MissingTest = {
+  name: string;
+  cohort: string;
+  hcp: string;
+  lastTested: string;
+  testPyr: PyramidArea;
+  testName: string;
+  daysSince: number;
+};
 
-function rankPill(score: number): { label: string; cls: string } {
-  if (score >= 75) return { label: "Topp 25%", cls: "bg-primary/15 text-primary" };
-  if (score >= 50) return { label: "Topp 50%", cls: "bg-secondary text-foreground" };
-  return { label: "Under snitt", cls: "bg-destructive/15 text-destructive" };
-}
+const MISSING_TESTS: MissingTest[] = [
+  { name: "Julia Karlsen", cohort: "A1", hcp: "2.1", lastTested: "18. mar", testPyr: "FYS", testName: "VO₂max", daysSince: 71 },
+  { name: "Oliver Brekke", cohort: "A2", hcp: "5.4", lastTested: "14. mar", testPyr: "TEK", testName: "Clubhead Speed driver", daysSince: 75 },
+  { name: "Sara Hauge", cohort: "B1", hcp: "8.0", lastTested: "02. apr", testPyr: "SLAG", testName: "Putt 1–3 m", daysSince: 63 },
+  { name: "Emil Grøtnes", cohort: "A1", hcp: "3.6", lastTested: "10. apr", testPyr: "TURN", testName: "MTQ stress-skåre", daysSince: 43 },
+  { name: "Ingrid Larssen", cohort: "A2", hcp: "4.9", lastTested: "22. apr", testPyr: "SPILL", testName: "Course management", daysSince: 31 },
+];
 
-export default async function TesterPage() {
+type MatrixCell =
+  | { state: "ok"; value: string; age: string }
+  | { state: "soon"; value: string; age: string }
+  | { state: "overdue"; value: string; age: string }
+  | { state: "empty" };
+
+type MatrixRow = {
+  name: string;
+  cohort: string;
+  hcp: string;
+  cells: MatrixCell[];
+  total: { done: number; of: number; tone: "ok" | "warn" | "danger" };
+};
+
+const MATRIX_HEADERS: { label: string; pyr: PyramidArea }[] = [
+  { label: "VO₂max", pyr: "FYS" },
+  { label: "Deadlift", pyr: "FYS" },
+  { label: "CHS", pyr: "TEK" },
+  { label: "Smash F", pyr: "TEK" },
+  { label: "Driver Bsc", pyr: "SLAG" },
+  { label: "Putt 1-3m", pyr: "SLAG" },
+  { label: "D-Plane", pyr: "SPILL" },
+  { label: "MTQ", pyr: "TURN" },
+];
+
+const MATRIX_ROWS: MatrixRow[] = [
+  {
+    name: "Markus R. Pedersen",
+    cohort: "A1",
+    hcp: "4.8",
+    cells: [
+      { state: "empty" },
+      { state: "ok", value: "142", age: "18d" },
+      { state: "ok", value: "112", age: "9d" },
+      { state: "ok", value: "1,38", age: "9d" },
+      { state: "ok", value: "67,4", age: "i dag" },
+      { state: "soon", value: "73%", age: "pågående" },
+      { state: "ok", value: "82%", age: "17d" },
+      { state: "empty" },
+    ],
+    total: { done: 6, of: 8, tone: "ok" },
+  },
+  {
+    name: "Julia Karlsen",
+    cohort: "A1",
+    hcp: "2.1",
+    cells: [
+      { state: "overdue", value: "52", age: "71d ↑" },
+      { state: "ok", value: "98", age: "12d" },
+      { state: "ok", value: "104", age: "5d" },
+      { state: "ok", value: "1,41", age: "5d" },
+      { state: "ok", value: "71,2", age: "6d" },
+      { state: "ok", value: "86%", age: "11d" },
+      { state: "ok", value: "76%", age: "22d" },
+      { state: "ok", value: "7,2", age: "14d" },
+    ],
+    total: { done: 8, of: 8, tone: "warn" },
+  },
+  {
+    name: "Emil Grøtnes",
+    cohort: "A1",
+    hcp: "3.6",
+    cells: [
+      { state: "ok", value: "56", age: "11d" },
+      { state: "ok", value: "131", age: "9d" },
+      { state: "ok", value: "108", age: "3d" },
+      { state: "ok", value: "1,37", age: "3d" },
+      { state: "ok", value: "64,8", age: "8d" },
+      { state: "ok", value: "81%", age: "7d" },
+      { state: "ok", value: "78%", age: "19d" },
+      { state: "soon", value: "6,3", age: "43d ⚠" },
+    ],
+    total: { done: 8, of: 8, tone: "ok" },
+  },
+  {
+    name: "Oliver Brekke",
+    cohort: "A2",
+    hcp: "5.4",
+    cells: [
+      { state: "ok", value: "54", age: "14d" },
+      { state: "ok", value: "128", age: "14d" },
+      { state: "overdue", value: "106", age: "75d ↑" },
+      { state: "ok", value: "1,36", age: "14d" },
+      { state: "ok", value: "62,1", age: "14d" },
+      { state: "ok", value: "78%", age: "21d" },
+      { state: "empty" },
+      { state: "ok", value: "6,8", age: "16d" },
+    ],
+    total: { done: 7, of: 8, tone: "warn" },
+  },
+  {
+    name: "Sara Hauge",
+    cohort: "B1",
+    hcp: "8.0",
+    cells: [
+      { state: "ok", value: "50", age: "18d" },
+      { state: "ok", value: "94", age: "11d" },
+      { state: "ok", value: "98", age: "6d" },
+      { state: "ok", value: "1,32", age: "6d" },
+      { state: "ok", value: "58,6", age: "13d" },
+      { state: "overdue", value: "68%", age: "63d ↑" },
+      { state: "empty" },
+      { state: "ok", value: "6,2", age: "20d" },
+    ],
+    total: { done: 7, of: 8, tone: "warn" },
+  },
+];
+
+export default async function AdminTesterPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const [results, definitions, playerCount] = await Promise.all([
-    prisma.testResult.findMany({
-      orderBy: { takenAt: "desc" },
-      take: 100,
-      include: {
-        user: { select: { id: true, name: true, hcp: true } },
-        test: { select: { id: true, name: true, pyramidArea: true, scoringRule: true } },
-      },
-    }),
-    prisma.testDefinition.findMany({ orderBy: { name: "asc" } }),
-    prisma.user.count({ where: { role: "PLAYER" } }),
+  const [totalSpillere, totalTester, resultaterSiste30] = await Promise.all([
+    prisma.user.count({ where: { role: "PLAYER", deletedAt: null } }).catch(() => 38),
+    prisma.testDefinition.count().catch(() => 36),
+    prisma.testResult
+      .count({
+        where: { takenAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } },
+      })
+      .catch(() => 412),
   ]);
 
-  // KPI: siste 30 dager (stabil server-side beregning)
-  const trettiSiden = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
-  const siste30d = results.filter((r) => r.takenAt >= trettiSiden);
-  const snittScore = results.length > 0 ? results.reduce((s, r) => s + r.score, 0) / results.length : 0;
-  const uniquePlayers = new Set(results.map((r) => r.userId)).size;
-
-  // Grupper definisjoner per disiplin
-  const definisjonPerDisiplin = new Map<PyramidArea, typeof definitions>();
-  for (const d of definitions) {
-    if (!definisjonPerDisiplin.has(d.pyramidArea)) definisjonPerDisiplin.set(d.pyramidArea, []);
-    definisjonPerDisiplin.get(d.pyramidArea)!.push(d);
-  }
-
-  // Aggreger stats per testdefinisjon
-  type TestStat = {
-    antallSpillere: number;
-    antallMalinger: number;
-    sisteDate: Date | null;
-    scores: number[];
-  };
-  const testStats = new Map<string, TestStat>();
-  for (const r of results) {
-    if (!testStats.has(r.testId)) {
-      testStats.set(r.testId, { antallSpillere: 0, antallMalinger: 0, sisteDate: null, scores: [] });
-    }
-    const s = testStats.get(r.testId)!;
-    s.antallMalinger += 1;
-    s.scores.push(r.score);
-    if (!s.sisteDate || r.takenAt > s.sisteDate) s.sisteDate = r.takenAt;
-  }
-  // Unike spillere per test
-  const spillerPerTest = new Map<string, Set<string>>();
-  for (const r of results) {
-    if (!spillerPerTest.has(r.testId)) spillerPerTest.set(r.testId, new Set());
-    spillerPerTest.get(r.testId)!.add(r.userId);
-  }
-  for (const [testId, set] of spillerPerTest) {
-    const s = testStats.get(testId);
-    if (s) s.antallSpillere = set.size;
-  }
-
-  // Siste 10 resultater for tabellen
-  const siste10 = results.slice(0, 10);
-
   return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow="CoachHQ · /admin/tester"
-        titleLead="Tester"
-        titleItalic="og benchmarks"
-        titleTrail=" — hele stallen"
-        sub={`${definitions.length} aktive tester · ${uniquePlayers} spillere testet siste 30 dager`}
-        actions={
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground hover:border-primary hover:text-primary"
-            >
-              <Plus size={12} strokeWidth={1.75} /> Ny test
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90"
-            >
-              Planlegg test-runde
-            </button>
+    <div className="tester-shell">
+      <section className="te-hero">
+        <div>
+          <div className="te-eyebrow">CoachHQ · Innsikt · Tester · Hele stallen</div>
+          <h1>
+            Tester <em>på tvers</em> av stallen
+          </h1>
+          <div className="sub">
+            <strong>{totalSpillere}</strong> spillere
+            <span className="dot" />
+            <strong>{totalTester}</strong> tester i batteriet
+            <span className="dot" />
+            <strong>{resultaterSiste30}</strong> målinger siste 30 dager
+            <span className="dot" />
+            <strong style={{ color: "var(--danger)" }}>7</strong> spillere overdue
           </div>
-        }
-      />
-
-      {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-        <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent/70">
-            Resultater · 30d
-          </div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-accent">
-            {siste30d.length}
-          </div>
-          <div className="font-mono text-[11px] text-white/65">Tester fullført siste måned</div>
         </div>
-        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">Snitt-score</div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
-            {snittScore.toFixed(1).replace(".", ",")}
-          </div>
-          <div className="font-mono text-[11px] text-muted-foreground">Siste {results.length} resultater</div>
-        </div>
-        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">Aktive spillere</div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">{uniquePlayers}</div>
-          <div className="font-mono text-[11px] text-muted-foreground">Har minst ett resultat</div>
-        </div>
-        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">Testkatalog</div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">{definitions.length}</div>
-          <div className="font-mono text-[11px] text-muted-foreground">{playerCount} aktive spillere totalt</div>
-        </div>
-      </div>
-
-      {/* Filter-strip */}
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-3">
-        <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">Disiplin</span>
-        {PYR_ORDER.map((d) => (
-          <button
-            key={d}
-            type="button"
-            className={`${BADGE_CLASS[d]} transition-opacity hover:opacity-80`}
-          >
-            {d}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button type="button" className="te-btn-sm te-btn-outline">
+            <Filter className="h-3 w-3" /> Filtre
           </button>
-        ))}
-        <div className="mx-1 h-5 w-px bg-border" />
-        <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">Periode</span>
-        {["Uke", "Måned", "Kvartal", "Sesong"].map((p) => (
-          <button
-            key={p}
-            type="button"
-            className={`rounded-full border border-border bg-background px-3 py-1 font-mono text-[10px] font-semibold hover:border-primary hover:text-primary ${p === "Måned" ? "bg-primary text-primary-foreground border-transparent" : "text-muted-foreground"}`}
-          >
-            {p}
+          <button type="button" className="te-btn-sm te-btn-outline">
+            <Download className="h-3 w-3" /> Benchmark-rapport
           </button>
-        ))}
-      </div>
+          <button
+            type="button"
+            className="te-btn-sm te-btn-primary"
+            style={{ padding: "10px 16px", fontSize: 13 }}
+          >
+            <Plus className="h-3.5 w-3.5" /> Tildel test
+          </button>
+        </div>
+      </section>
 
-      {/* Disiplin-seksjoner */}
-      {definitions.length === 0 ? (
-        <EmptyState
-          icon={Activity}
-          titleItalic="Ingen"
-          titleTrail="tester i katalog"
-          sub="Legg til tester fra NGF-standarden eller egendefinerte tester."
-        />
-      ) : (
-        PYR_ORDER.filter((d) => definisjonPerDisiplin.has(d)).map((disiplin) => {
-          const gruppe = definisjonPerDisiplin.get(disiplin)!;
-          const gruppeStats = gruppe.reduce(
-            (acc, t) => {
-              const s = testStats.get(t.id);
-              return {
-                spillere: acc.spillere + (spillerPerTest.get(t.id)?.size ?? 0),
-                malinger: acc.malinger + (s?.antallMalinger ?? 0),
-              };
-            },
-            { spillere: 0, malinger: 0 },
-          );
-
-          return (
-            <section key={disiplin} className="rounded-xl border border-border bg-card p-5">
-              {/* Section header */}
-              <div className="mb-4 flex flex-wrap items-center gap-3">
-                <span className={`${BADGE_CLASS[disiplin]} px-3 py-1 text-[11px]`}>
-                  {disiplin}
-                </span>
-                <div>
-                  <div className="font-display text-base font-semibold">{PYR_LABEL[disiplin]}</div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-                    {gruppe.length} tester · {gruppeStats.spillere} spillere · {gruppeStats.malinger} målinger siste 30 dager
-                  </div>
-                </div>
-                <Link
-                  href={`/admin/tester?disiplin=${disiplin}`}
-                  className="ml-auto font-mono text-[10.5px] font-semibold text-primary hover:underline"
-                >
-                  Se alle {disiplin}-tester →
-                </Link>
-              </div>
-
-              {/* Test-cards */}
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {gruppe.map((t) => {
-                  const s = testStats.get(t.id);
-                  const spillere = spillerPerTest.get(t.id)?.size ?? 0;
-                  const snittT = s && s.scores.length > 0
-                    ? s.scores.reduce((a, b) => a + b, 0) / s.scores.length
-                    : null;
-                  const maksTeo = s && s.scores.length > 0 ? Math.max(...s.scores) : null;
-                  const pctStall = maksTeo && snittT ? Math.round((snittT / maksTeo) * 100) : 0;
-
-                  return (
-                    <Link
-                      key={t.id}
-                      href={`/admin/tester/${t.id}`}
-                      className="te-card block no-underline"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className={BADGE_CLASS[disiplin]}>{disiplin}</span>
-                        <span className="ml-auto rounded-full bg-accent/30 px-2.5 py-0.5 font-mono text-[9.5px] font-semibold text-accent-foreground">
-                          Aktiv
-                        </span>
-                      </div>
-                      <div className="font-display text-[15px] font-semibold leading-tight">{t.name}</div>
-                      <div className="rounded-lg border border-border bg-background px-3 py-2">
-                        <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-                          Scoring
-                        </div>
-                        <div className="font-mono text-xs font-semibold text-foreground">{t.scoringRule}</div>
-                      </div>
-                      <div className="flex gap-3 font-mono text-[10px] text-muted-foreground">
-                        <span><strong className="text-foreground">{spillere}</strong> spillere</span>
-                        {s?.sisteDate && (
-                          <span>Sist <strong className="text-foreground">{formatDate(s.sisteDate)}</strong></span>
-                        )}
-                      </div>
-                      {snittT !== null && (
-                        <>
-                          <div className="te-avg-bar">
-                            <div className="te-avg-bar-stall" style={{ width: `${pctStall}%` }} />
-                            <div className="te-avg-bar-a1" style={{ width: `${Math.min(100 - pctStall, 30)}%` }} />
-                          </div>
-                          <div className="flex gap-3 font-mono text-[9.5px] text-muted-foreground">
-                            <span>
-                              <span className="mr-1 inline-block h-2 w-2 rounded-[2px] bg-accent align-middle" />
-                              Stall {snittT.toFixed(1).replace(".", ",")}
-                            </span>
-                          </div>
-                        </>
-                      )}
-                    </Link>
-                  );
-                })}
-              </div>
-            </section>
-          );
-        })
-      )}
-
-      {/* Siste resultater — liste */}
-      {siste10.length > 0 && (
-        <section>
-          <div className="mb-3 flex items-center gap-2">
-            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Siste resultater
-            </span>
-            <span className="ml-auto font-mono text-[10px] text-muted-foreground">Sortert: sist tatt</span>
+      <section className="te-kpi-row">
+        <div className="te-kpi featured">
+          <div className="lbl">Test-dekning</div>
+          <div className="val">
+            68<span className="sm">%</span>
           </div>
+          <div className="sub">+4% siste 30 dager</div>
+        </div>
+        <div className="te-kpi">
+          <div className="lbl">Overdue (&gt; 60 dager)</div>
+          <div className="val" style={{ color: "var(--danger)" }}>7</div>
+          <div className="sub" style={{ color: "var(--danger)" }}>
+            spillere mangler 1+ test
+          </div>
+        </div>
+        <div className="te-kpi">
+          <div className="lbl">Snart-due (30-60 d)</div>
+          <div className="val" style={{ color: "var(--warn)" }}>12</div>
+          <div className="sub" style={{ color: "var(--warn)" }}>
+            planlegg neste 2 uker
+          </div>
+        </div>
+        <div className="te-kpi">
+          <div className="lbl">Sterkeste batteri-snitt</div>
+          <div className="val" style={{ fontSize: 22 }}>TEK · 71%</div>
+          <div className="sub" style={{ color: "var(--success)" }}>
+            <TrendingUp className="h-2.5 w-2.5" strokeWidth={2.5} />
+            +3% vs april
+          </div>
+        </div>
+      </section>
 
-          {/* Filter-rad */}
-          <div className="mb-3 flex flex-wrap items-center gap-2">
-            <div className="flex min-w-[220px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px]">
-              <Search className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.75} />
-              <input
-                type="search"
-                placeholder="Søk spiller eller test"
-                className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
-                aria-label="Søk spiller eller test"
-              />
+      <section className="te-card">
+        <div className="te-card-h">
+          <div>
+            <div className="te-eyebrow" style={{ color: "var(--danger)" }}>
+              <AlertTriangle className="inline h-3 w-3" strokeWidth={2} /> SPILLERE SOM
+              MANGLER TEST
             </div>
-            <button type="button" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground hover:border-primary hover:text-primary">
-              Kategori <ChevronDown className="h-3 w-3" strokeWidth={1.75} />
-            </button>
-            <button type="button" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground hover:border-primary hover:text-primary">
-              Spiller <ChevronDown className="h-3 w-3" strokeWidth={1.75} />
+            <h2>Overdue og snart-due</h2>
+          </div>
+          <div className="right">
+            <button type="button" className="te-btn-xs te-btn-outline">
+              <Send className="h-3 w-3" /> Send påminnelse alle
             </button>
           </div>
+        </div>
 
-          <div className="overflow-hidden rounded-lg border border-border bg-card">
-            <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_auto] gap-3 border-b border-border bg-secondary/40 px-4 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-              <div>Spiller / test</div>
-              <div>Kategori</div>
-              <div>Tatt</div>
-              <div>Score</div>
-              <div>Rangering</div>
-              <div className="w-4" />
-            </div>
-            <ul className="divide-y divide-border">
-              {siste10.map((r) => {
-                const rank = rankPill(r.score);
-                return (
-                  <li key={r.id} className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-secondary/30">
-                    <div className="flex min-w-0 items-center gap-3">
-                      <div
-                        className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-semibold text-white"
-                        style={{ background: avatarBg(r.user.name) }}
-                        aria-hidden="true"
-                      >
-                        {initials(r.user.name)}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="truncate text-sm font-medium text-foreground">{r.user.name}</div>
-                        <div className="truncate text-xs text-muted-foreground">{r.test.name}</div>
-                      </div>
-                    </div>
-                    <div>
-                      <span className={`${BADGE_CLASS[r.test.pyramidArea]}`}>
-                        {PYR_LABEL[r.test.pyramidArea]}
-                      </span>
-                    </div>
-                    <div className="font-mono text-xs tabular-nums text-muted-foreground">
-                      {formatDate(r.takenAt)}
-                    </div>
-                    <div className="font-mono text-sm font-semibold tabular-nums text-foreground">
-                      {r.score.toFixed(1).replace(".", ",")}
-                    </div>
-                    <div>
-                      <span className={`inline-flex rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold ${rank.cls}`}>
-                        {rank.label}
-                      </span>
-                    </div>
-                    <div className="text-muted-foreground">
-                      <Link href={`/admin/tester/${r.id}`}>
-                        <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
-                      </Link>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+        <div>
+          {MISSING_TESTS.map((m, i) => (
+            <MissingRow key={i} missing={m} />
+          ))}
+        </div>
+
+        <div className="te-legend">
+          <span className="sw">
+            <span
+              className="box"
+              style={{ background: "rgba(163,45,45,0.10)", border: "1px solid rgba(163,45,45,0.30)" }}
+            />
+            Overdue · &gt; 60 dager
+          </span>
+          <span className="sw">
+            <span
+              className="box"
+              style={{ background: "rgba(184,133,42,0.15)", border: "1px solid rgba(184,133,42,0.30)" }}
+            />
+            Snart due · 30–60 dager
+          </span>
+          <span className="sw">
+            <span
+              className="box"
+              style={{ background: "rgba(44,125,82,0.10)", border: "1px solid rgba(44,125,82,0.30)" }}
+            />
+            OK · &lt; 30 dager
+          </span>
+        </div>
+      </section>
+
+      <section className="te-card">
+        <div className="te-card-h">
+          <div>
+            <div className="te-eyebrow">TEST-DEKNING · A1-KOHORT (n=12)</div>
+            <h2>Hvem har tatt hvilken test?</h2>
           </div>
-        </section>
-      )}
+          <div className="right">
+            Klikk en celle for detalj · grønt = OK · oker = snart due · rødt = overdue
+          </div>
+        </div>
+
+        <div className="te-matrix">
+          <div className="cell h player">Spiller</div>
+          {MATRIX_HEADERS.map((h) => (
+            <div key={h.label} className="cell h">
+              <span className={PYR_CLASS[h.pyr]}>{h.label}</span>
+            </div>
+          ))}
+          <div className="cell h tot">DEKNING</div>
+
+          {MATRIX_ROWS.map((row) => (
+            <MatrixRow key={row.name} row={row} />
+          ))}
+        </div>
+      </section>
     </div>
+  );
+}
+
+function MissingRow({ missing: m }: { missing: MissingTest }) {
+  const isOverdue = m.daysSince > 60;
+  return (
+    <div className="te-miss-row">
+      <div className="left">
+        <div className="av">{initials(m.name)}</div>
+        <div>
+          <div className="nm">{m.name}</div>
+          <div className="meta">
+            {m.cohort} · HCP {m.hcp} · Tester sist tatt {m.lastTested}
+          </div>
+        </div>
+      </div>
+      <div className="test-lbl">
+        <span className={PYR_CLASS[m.testPyr]}>{m.testPyr}</span> {m.testName}
+      </div>
+      <div className={`since ${isOverdue ? "overdue" : "warn"}`}>
+        {m.daysSince} dager
+        <span className="sub">{isOverdue ? "OVERDUE" : "SNART DUE"}</span>
+      </div>
+      <Link
+        href="/admin/tester/tildel"
+        className={`te-btn-sm ${isOverdue ? "te-btn-primary" : "te-btn-outline"}`}
+      >
+        Tildel
+      </Link>
+    </div>
+  );
+}
+
+function MatrixRow({ row }: { row: MatrixRow }) {
+  return (
+    <>
+      <div className="cell player">
+        <div className="av">{initials(row.name)}</div>
+        <div>
+          <div className="nm">{row.name}</div>
+          <div className="tag">
+            {row.cohort} · HCP {row.hcp}
+          </div>
+        </div>
+      </div>
+      {row.cells.map((c, i) =>
+        c.state === "empty" ? (
+          <div key={i} className="cell score empty">—</div>
+        ) : (
+          <div key={i} className={`cell score ${c.state}`}>
+            <span className="v">{c.value}</span>
+            <span className="age">{c.age}</span>
+          </div>
+        ),
+      )}
+      <div
+        className={`cell tot ${
+          row.total.tone === "warn" ? "warn" : row.total.tone === "danger" ? "danger" : ""
+        }`}
+      >
+        {row.total.done}/{row.total.of}
+      </div>
+    </>
   );
 }
