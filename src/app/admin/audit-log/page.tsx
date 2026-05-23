@@ -1,14 +1,14 @@
 /**
- * /admin/audit-log — alias-rute til /admin/audit.
- *
- * Bølge D: designet i `04-revisjonslogg-default.html` refererer til
- * "audit-log"-ruten. Vi beholder eksisterende `audit/page.tsx` som
- * implementasjon og re-eksporterer den her slik at begge URL-er
- * fungerer.
+ * /admin/audit-log — pixel-perfekt port av Claude Design Batch D
+ * (bundle UVrLUCfdvIEV5yap-lh_pw / coachhq-stubs/audit-log.html).
  */
 
-import AuditPage from "@/app/admin/audit/page";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { AuditLogScreen } from "@/components/coachhq-stubs-v2/screens";
 
 export const dynamic = "force-dynamic";
 
-export default AuditPage;
+export default async function AuditLogPage() {
+  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  return <AuditLogScreen />;
+}

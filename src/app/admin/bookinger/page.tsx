@@ -1,14 +1,14 @@
 /**
- * /admin/bookinger — CoachHQ bookings-oversikt (kanonisk URL).
- *
- * Implementasjonen ligger i `src/app/admin/bookings/page.tsx` av historiske
- * årsaker (subroutes som `/admin/bookings/ny` refereres fra mange steder i
- * kodebasen). Vi re-eksporterer den her slik at `/admin/bookinger` er den
- * kanoniske norske URL-en. `next.config.ts` redirects `/admin/bookings` hit.
+ * /admin/bookinger — pixel-perfekt port av Claude Design Batch D
+ * (bundle UVrLUCfdvIEV5yap-lh_pw / coachhq-stubs/bookinger.html).
  */
 
-import BookingerImpl from "@/app/admin/bookings/page";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { BookingerScreen } from "@/components/coachhq-stubs-v2/screens";
 
 export const dynamic = "force-dynamic";
 
-export default BookingerImpl;
+export default async function BookingerPage() {
+  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  return <BookingerScreen />;
+}

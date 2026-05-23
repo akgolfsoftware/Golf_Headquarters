@@ -1,12 +1,14 @@
 /**
- * Norsk alias for /admin/approvals.
- *
- * Hovedimplementasjonen ligger i `src/app/admin/approvals/page.tsx` og følger
- * V2-designet fra `wireframe/design-files-v2/final/03-godkjenninger.html`.
- * Denne ruten finnes så norske URL-er fungerer; ressursen er den samme.
+ * /admin/godkjenninger — pixel-perfekt port av Claude Design Batch D
+ * (bundle UVrLUCfdvIEV5yap-lh_pw / coachhq-stubs/godkjenninger.html).
  */
-import { redirect } from "next/navigation";
 
-export default function GodkjenningerRedirect() {
-  redirect("/admin/approvals");
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { GodkjenningerScreen } from "@/components/coachhq-stubs-v2/screens";
+
+export const dynamic = "force-dynamic";
+
+export default async function GodkjenningerPage() {
+  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  return <GodkjenningerScreen />;
 }
