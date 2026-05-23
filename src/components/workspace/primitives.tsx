@@ -356,7 +356,7 @@ export function StatusPill({
 // ────────────────────────────────────────────────────────────── TASK ROW ──
 
 export type WorkspaceTask = {
-  id: string;
+  id: string | number;
   title: string;
   done: boolean;
   brenner?: boolean;
@@ -390,13 +390,7 @@ export function TaskRow({
           : "border-border bg-card hover:bg-muted/30"
       } ${dense ? "px-2.5 py-1.5" : "px-3 py-2.5"} ${task.done ? "opacity-55" : ""}`}
     >
-      <TaskCheck
-        done={task.done}
-        onClick={(e) => {
-          (e as unknown as { stopPropagation: () => void }).stopPropagation();
-          onToggleDone?.();
-        }}
-      />
+      <TaskCheck done={task.done} onClick={onToggleDone} />
       <div
         className={`overflow-hidden text-ellipsis whitespace-nowrap text-[13px] font-medium ${
           task.done ? "line-through" : ""
