@@ -112,6 +112,21 @@ export function PlanleggeSprite() {
           <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
           <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
         </symbol>
+        <symbol id="i-map" viewBox="0 0 24 24">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="8" y1="2" x2="8" y2="18" stroke="currentColor" strokeWidth="1.75" />
+          <line x1="16" y1="6" x2="16" y2="22" stroke="currentColor" strokeWidth="1.75" />
+        </symbol>
+        <symbol id="i-chevron-l" viewBox="0 0 24 24">
+          <polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+        </symbol>
+        <symbol id="i-chevron-r" viewBox="0 0 24 24">
+          <polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+        </symbol>
+        <symbol id="i-tm" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="1.75" />
+          <path d="M12 2v20M2 12h20" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" />
+        </symbol>
         <symbol id="i-check" viewBox="0 0 24 24">
           <polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </symbol>
