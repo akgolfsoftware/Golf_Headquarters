@@ -68,6 +68,7 @@ export const ENVIRONMENT_REKKEFOLGE: SessionEnvironment[] = [
   "STUDIO",
   "HJEM",
   "SIMULATOR",
+  "GYM",
 ];
 
 export const LPHASE_REKKEFOLGE: LPhase[] = [
