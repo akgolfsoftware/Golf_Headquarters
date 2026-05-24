@@ -429,6 +429,10 @@ model User {
   techPlanAudits      TechnicalPlanAudit[]
   techPlanSuggestions PlanSuggestion[]     @relation("SuggestionDecider")
 
+  // Fysisk plan (per plan Del 31)
+  fysiskeOktRelasjoner FysiskPlan[] @relation("FysiskPlanUser")
+  lagdeFysPlaner       FysiskPlan[] @relation("FysiskPlanCreator")
+
   // Plan-templates (AI-baseline-system)
   createdPlanTemplates  PlanTemplate[]      @relation("PlanTemplateCoach")
   approvedPlanTemplates PlanTemplate[]      @relation("PlanTemplateApprover")
@@ -437,6 +441,9 @@ model User {
   // Notion-sync (v1.1) — per-user OAuth-tilkobling til Notion
   notionConnection NotionConnection?
 
+  // Performance: hot path — filtrere aktive spillere/coacher
+  // (PlayerHQ-lister, CoachHQ-portefølje, talent-tracking).
+  @@index([role, deletedAt])
   @@map("users")
 }
 
@@ -671,6 +678,9 @@ model Booking {
   @@index([stripeCheckoutSessionId])
   @@index([subscriptionId])
   @@index([facilityId])
+  // Performance: hot path — kalender-queries filtrerer på status + tidsvindu
+  // (booking.akgolf.no kalender, kapasitet-graf, admin/bookinger).
+  @@index([startAt, status])
   @@map("bookings")
 }
 
@@ -824,8 +834,9 @@ model ExerciseDefinition {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  createdByUser User?          @relation("ExerciseCreator", fields: [createdBy], references: [id], onDelete: SetNull)
-  sessionDrills SessionDrill[]
+  createdByUser  User?          @relation("ExerciseCreator", fields: [createdBy], references: [id], onDelete: SetNull)
+  sessionDrills  SessionDrill[]
+  fysOvelseRader FysOvelseRad[]
 
   @@index([pyramidArea])
   @@index([skillArea])
@@ -2606,6 +2617,16 @@ enum TechPlanStatus {
   ARCHIVED
 }
 
+enum Ukedag {
+  MAN
+  TIR
+  ONS
+  TOR
+  FRE
+  LOR
+  SON
+}
+
 enum PositionTaskStatus {
   PENDING // ikke startet
   ACTIVE // aktiv, logger reps
@@ -3179,4 +3200,92 @@ model ProsjektCache {
 
   @@index([connectionId])
   @@map("prosjekt_cache")
+}
+
+// ============================================================================
+// FysiskPlan — Fysisk treningsplan (styrke/kondisjon)
+// Hierarki: FysiskPlan → FysUke → FysOkt → FysOvelseRad
+// Per plan Del 31 (FYS-plan modul, 2026-05-24)
+// ============================================================================
+
+model FysiskPlan {
+  id            String         @id @default(cuid())
+  userId        String
+  opprettetAvId String
+  navn          String
+  status        TechPlanStatus @default(DRAFT)
+  startDato     DateTime
+  sluttDato     DateTime?
+  notater       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user        User     @relation("FysiskPlanUser", fields: [userId], references: [id], onDelete: Cascade)
+  opprettetAv User     @relation("FysiskPlanCreator", fields: [opprettetAvId], references: [id])
+  uker        FysUke[]
+
+  @@index([userId, status])
+  @@map("fysiske_planer")
+}
+
+model FysUke {
+  id        String @id @default(cuid())
+  planId    String
+  ukeNr     Int
+  label     String
+  sortOrder Int
+
+  plan  FysiskPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  okter FysOkt[]
+
+  @@unique([planId, ukeNr])
+  @@index([planId, sortOrder])
+  @@map("fys_uker")
+}
+
+model FysOkt {
+  id               String   @id @default(cuid())
+  ukeId            String
+  navn             String
+  dag              Ukedag?
+  sortOrder        Int
+  estimertMinutter Int?
+
+  uke   FysUke         @relation(fields: [ukeId], references: [id], onDelete: Cascade)
+  rader FysOvelseRad[]
+
+  @@index([ukeId, sortOrder])
+  @@map("fys_okter")
+}
+
+model FysOvelseRad {
+  id         String  @id @default(cuid())
+  oktId      String
+  exerciseId String?
+  navn       String
+  sortOrder  Int
+
+  sett          Int     @default(3)
+  repsMin       Int?
+  repsMax       Int?
+  hvile         Int?
+  belastningPst Int?
+  rir           Int?
+  muskelgruppe  String?
+
+  loggSett         Int?
+  loggRepsPerSett  String?
+  loggBelastningKg Float?
+  loggRir          Int?
+  notat            String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  okt      FysOkt              @relation(fields: [oktId], references: [id], onDelete: Cascade)
+  exercise ExerciseDefinition? @relation(fields: [exerciseId], references: [id], onDelete: SetNull)
+
+  @@index([oktId, sortOrder])
+  @@map("fys_ovelserader")
 }
