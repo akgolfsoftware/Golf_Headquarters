@@ -877,6 +877,7 @@ function NyDrillSkjema({
           value={navn}
           onChange={(e) => setNavn(e.target.value)}
           placeholder="Drill-navn (f.eks. Wedge-stiger 50/75/100m)"
+          aria-label="Drill-navn"
           className={inputCss}
           autoFocus
         />
@@ -885,6 +886,7 @@ function NyDrillSkjema({
           value={beskrivelse}
           onChange={(e) => setBeskrivelse(e.target.value)}
           placeholder="Kort beskrivelse (valgfritt)"
+          aria-label="Drill-beskrivelse"
           className={inputCss}
         />
         <div className="flex gap-2">

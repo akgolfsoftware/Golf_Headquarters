@@ -190,15 +190,18 @@ export function EditOktModal({
                   className="w-[80px] rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus:ring-2 focus:ring-ring/30"
                   value={plan.startTime}
                   onChange={(e) => update({ startTime: e.target.value })}
+                  aria-label="Starttidspunkt"
                 />
-                <span className="text-muted-foreground">–</span>
+                <span className="text-muted-foreground" aria-hidden>–</span>
                 <input
                   className="w-[80px] rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus:ring-2 focus:ring-ring/30"
                   value={plan.endTime}
                   onChange={(e) => update({ endTime: e.target.value })}
+                  aria-label="Sluttidspunkt"
                 />
                 <input
                   readOnly={!plan.durationOverride}
+                  aria-label="Total varighet i minutter"
                   className={`flex-1 rounded-md border border-border px-3 py-2 font-mono text-[12.5px] outline-none ${
                     plan.durationOverride
                       ? "bg-card"
@@ -268,7 +271,10 @@ export function EditOktModal({
                   key={d.id}
                   className="grid grid-cols-[24px_1fr_auto] items-center gap-3 rounded-md border border-border bg-card p-3"
                 >
-                  <div className="grid h-6 w-6 place-items-center rounded-sm text-muted-foreground">
+                  <div
+                    className="grid h-6 w-6 place-items-center rounded-sm text-muted-foreground"
+                    aria-hidden
+                  >
                     <GripVertical className="h-3.5 w-3.5" />
                   </div>
                   <div className="grid gap-2 sm:grid-cols-[1fr_auto_auto_auto]">
@@ -279,6 +285,7 @@ export function EditOktModal({
                         updateDrill(d.id, { title: e.target.value })
                       }
                       placeholder={`Drill ${i + 1}`}
+                      aria-label={`Tittel for drill ${i + 1}`}
                     />
                     <Stepper
                       value={d.durationMin}
@@ -293,6 +300,7 @@ export function EditOktModal({
                       onChange={(e) =>
                         updateDrill(d.id, { reps: e.target.value })
                       }
+                      aria-label={`Reps for drill ${i + 1}`}
                     />
                     <Toggle
                       on={d.pressureOn}
