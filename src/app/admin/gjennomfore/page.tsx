@@ -1,161 +1,167 @@
 /**
- * /admin/gjennomfore — CoachHQ Gjennomføre hovedseksjon.
- * Tabs: Kalender / Bookinger / Anlegg / Tilgjengelighet / Live
+ * /admin/gjennomfore — CoachHQ Gjennomføre hub
+ * Design: docs/design-handoff/2026-05-24-hubs/project/manglende-hubs/hubs-coach.jsx (CoachGjennomfore)
  */
 
-import Link from "next/link";
-import { ArrowRight, Calendar, ClipboardCheck, MapPin, Clock, Activity } from "lucide-react";
-
+import {
+  Activity,
+  Calendar,
+  CalendarCheck,
+  Clock,
+  CreditCard,
+  Gauge,
+  MapPin,
+  Plus,
+  Radio,
+} from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
-import { TabBar, type TabItem } from "@/components/ds/tab-bar";
+import {
+  HubFrame,
+  HubHeader,
+  HubStatSep,
+  HubCard,
+  HubPill,
+  HubKpiBar,
+  WeekStrip,
+  CalMini,
+} from "@/components/hubs";
 
 export const dynamic = "force-dynamic";
 
-const VALID_TABS = ["kalender", "bookinger", "anlegg", "tilgjengelighet", "live"] as const;
-
-const TABS: TabItem[] = [
-  { id: "kalender", label: "Kalender" },
-  { id: "bookinger", label: "Bookinger" },
-  { id: "anlegg", label: "Anlegg" },
-  { id: "tilgjengelighet", label: "Tilgjengelighet" },
-  { id: "live", label: "Live" },
-];
-
-type Props = { searchParams: Promise<{ tab?: string }> };
-
-export default async function GjennomforePage({ searchParams }: Props) {
+export default async function GjennomforePage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-  const params = await searchParams;
-  const tab = VALID_TABS.includes(params.tab as (typeof VALID_TABS)[number])
-    ? (params.tab as (typeof VALID_TABS)[number])
-    : "kalender";
-
-  const [bookingCount, anleggCount, liveCount] = await Promise.all([
-    prisma.booking
-      .count({ where: { status: "CONFIRMED", startAt: { gte: new Date() } } })
-      .catch(() => 0),
-    prisma.location.count().catch(() => 0),
-    prisma.trainingSessionV2
-      .count({ where: { status: "IN_PROGRESS" } })
-      .catch(() => 0),
-  ]);
-
-  const tabsWithCounts: TabItem[] = TABS.map((t) => {
-    if (t.id === "bookinger") return { ...t, count: bookingCount };
-    if (t.id === "anlegg") return { ...t, count: anleggCount };
-    if (t.id === "live") return { ...t, count: liveCount };
-    return t;
-  });
 
   return (
-    <div className="space-y-5 px-4 py-6 md:px-8 md:py-8 lg:px-12">
-      <section className="flex items-center gap-3">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-accent">
-          <Calendar className="h-6 w-6" strokeWidth={1.75} />
-        </span>
-        <div>
-          <AthleticEyebrow>COACHHQ · GJENNOMFØRE</AthleticEyebrow>
-          <h1 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-            Daglig{" "}
-            <em
-              className="font-normal not-italic"
-              style={{
-                fontFamily: "'Instrument Serif', serif",
-                fontStyle: "italic",
-                color: "#005840",
-              }}
-            >
-              drift
-            </em>
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Kalender, bookinger, anlegg, tilgjengelighet og live-økter.
-          </p>
-        </div>
+    <HubFrame>
+      <HubHeader
+        eyebrow="COACHHQ · COACH"
+        title="Daglig"
+        titleItalic="drift"
+        sub="Kalender, bookinger, anlegg, tilgjengelighet og live-økter."
+        actions={
+          <>
+            <button className="hub-btn btn-outline" type="button">
+              <Calendar size={13} strokeWidth={1.75} aria-hidden /> I dag
+            </button>
+            <button className="hub-btn btn-forest" type="button">
+              <Plus size={13} strokeWidth={2} aria-hidden /> Ny booking
+            </button>
+          </>
+        }
+        stats={
+          <>
+            <span>
+              <strong>5</strong> økter i dag
+            </span>
+            <HubStatSep />
+            <span>
+              <strong>23</strong> denne uka
+            </span>
+            <HubStatSep />
+            <span className="ok-dot">
+              <span />
+              <strong>Stripe aktiv</strong>
+            </span>
+            <HubStatSep />
+            <span>
+              <strong>3</strong> anlegg
+            </span>
+          </>
+        }
+      />
+
+      <section className="hub-grid">
+        <HubCard
+          href="/admin/kalender/uke"
+          icon={Calendar}
+          eyebrow="01 · DAGENS DRIFT"
+          title="Coach-kalender"
+          data="5 økter i dag"
+          sub="23 denne uka · 4 venter input"
+          visual={<CalMini marked={[0, 2]} nowPct={38} />}
+          cta="Åpne →"
+        />
+        <HubCard
+          href="/admin/bookinger"
+          icon={CalendarCheck}
+          eyebrow="02 · INNKOMMENDE"
+          title="Bookinger"
+          data="4 kommende"
+          sub="1 venter på bekreft · 12 historikk"
+          statusPill={
+            <HubPill kind="warn" dot="d-warn">
+              1 PENDING
+            </HubPill>
+          }
+          cta="Behandle →"
+        />
+        <HubCard
+          href="/admin/anlegg"
+          icon={MapPin}
+          eyebrow="03 · LOKASJONER"
+          title="Anlegg"
+          data="3 anlegg"
+          sub="GFGK · Bjaavann · Hellerudsletta"
+          cta="Administrer →"
+        />
+        <HubCard
+          href="/admin/availability"
+          icon={Clock}
+          eyebrow="04 · ÅPNE TIMER"
+          title="Tilgjengelighet"
+          data="12 t denne uka"
+          sub="ti 09–14 · on 13–18 · to 10–15"
+          visual={<WeekStrip onDays={[0, 1, 2, 3, 4]} meDay={1} />}
+          cta="Sett →"
+        />
+        <HubCard
+          href="/admin/kapasitet"
+          icon={Gauge}
+          eyebrow="05 · BELASTNING"
+          title="Kapasitet"
+          data="2% brukt denne uka"
+          sub="Mål: 75% · 23/40 t booket"
+          visual={<HubKpiBar pct={2} tone="ok" />}
+          cta="Se trend →"
+        />
+        <HubCard
+          href="/admin/services"
+          icon={CreditCard}
+          eyebrow="06 · ØKONOMI"
+          title="Tjenester"
+          data="5 prislister"
+          sub="Stripe aktiv · 12 abonnenter"
+          statusPill={
+            <HubPill kind="ok" dot="d-pulse">
+              STRIPE OK
+            </HubPill>
+          }
+          cta="Åpne →"
+        />
+        <HubCard
+          href="/admin/trackman"
+          icon={Radio}
+          eyebrow="07 · UTSTYR"
+          title="TrackMan"
+          data="1 aktiv sesjon"
+          sub="Markus R.P. · GFGK Bay 3"
+          statusPill={
+            <HubPill kind="accent" dot="d-pulse">
+              LIVE
+            </HubPill>
+          }
+          cta="Se live →"
+        />
+        <HubCard
+          icon={Activity}
+          eyebrow="08 · ØYEBLIKK"
+          title="Live-økter"
+          data="Ingen aktiv nå"
+          sub="Sist live: 23. mai · 16:00"
+          tone="empty"
+          cta="Start ny økt →"
+        />
       </section>
-
-      <TabBar tabs={tabsWithCounts} defaultTab="kalender" />
-
-      <div className="min-h-[400px]">
-        {tab === "kalender" ? (
-          <SummaryCard
-            eyebrow="UKE-/MÅNED-VISNING"
-            title="Coach-kalender"
-            description="Drag-drop økter, kapasitet, Google Cal-sync."
-            href="/admin/kalender"
-            icon={Calendar}
-          />
-        ) : null}
-        {tab === "bookinger" ? (
-          <SummaryCard
-            eyebrow={`${bookingCount} KOMMENDE BOOKINGER`}
-            title="Booking-administrasjon"
-            description="Bekrefte/avvise, refund, reschedule."
-            href="/admin/bookinger"
-            icon={ClipboardCheck}
-          />
-        ) : null}
-        {tab === "anlegg" ? (
-          <SummaryCard
-            eyebrow={`${anleggCount} ANLEGG`}
-            title="Lokasjoner og fasiliteter"
-            description="GFGK, Mulligan Indoor — åpningstider, drill-bibliotek."
-            href="/admin/anlegg"
-            icon={MapPin}
-          />
-        ) : null}
-        {tab === "tilgjengelighet" ? (
-          <SummaryCard
-            eyebrow="COACH-TILGJENGELIGHET"
-            title="Tilgjengelighets-vindu"
-            description="Sett tider hvor spillere kan booke deg."
-            href="/admin/availability"
-            icon={Clock}
-          />
-        ) : null}
-        {tab === "live" ? (
-          <SummaryCard
-            eyebrow={`${liveCount} AKTIVE ØKTER`}
-            title="Live-økt monitor"
-            description="Se spillere som logger økter akkurat nå."
-            href="/admin/kalender"
-            icon={Activity}
-          />
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-type CardSpec = {
-  eyebrow: string;
-  title: string;
-  description: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
-};
-
-function SummaryCard({ eyebrow, title, description, href, icon: Icon }: CardSpec) {
-  return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <AthleticEyebrow>{eyebrow}</AthleticEyebrow>
-          <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">
-            <Icon className="mr-1 inline h-5 w-5 text-primary" strokeWidth={1.75} />
-            {title}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-        </div>
-        <Link href={href}>
-          <AthleticButton variant="lime" size="md">
-            Åpne
-            <ArrowRight className="h-4 w-4" />
-          </AthleticButton>
-        </Link>
-      </div>
-    </div>
+    </HubFrame>
   );
 }

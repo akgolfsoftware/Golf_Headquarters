@@ -1,182 +1,178 @@
 /**
- * /admin/analysere — CoachHQ Analysere hovedseksjon.
- * Tabs: Stall / Tester / Innboks / Godkjenninger / Forespørsler / Rapporter
+ * /admin/analysere — CoachHQ Innsikt hub
+ * Design: hubs-coach.jsx (CoachInnsikt)
  */
 
-import Link from "next/link";
 import {
-  ArrowRight,
   BarChart3,
-  TestTube,
-  Inbox,
-  CheckCircle2,
-  Mail,
-  FileText,
+  CheckCheck,
+  ClipboardCheck,
+  Download,
+  FileBarChart,
+  Flag,
+  HeartPulse,
+  MessageSquare,
+  Plus,
+  Wallet,
 } from "lucide-react";
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
-import { TabBar, type TabItem } from "@/components/ds/tab-bar";
+import {
+  HubFrame,
+  HubHeader,
+  HubStatSep,
+  HubCard,
+  HubPill,
+  PyramidMini,
+  HubSparkline,
+} from "@/components/hubs";
 
 export const dynamic = "force-dynamic";
 
-const VALID_TABS = [
-  "stall",
-  "tester",
-  "innboks",
-  "godkjenninger",
-  "foresporsler",
-  "rapporter",
-] as const;
-
-const TABS: TabItem[] = [
-  { id: "stall", label: "Stall" },
-  { id: "tester", label: "Tester" },
-  { id: "innboks", label: "Innboks" },
-  { id: "godkjenninger", label: "Godkjenninger" },
-  { id: "foresporsler", label: "Forespørsler" },
-  { id: "rapporter", label: "Rapporter" },
-];
-
-type Props = { searchParams: Promise<{ tab?: string }> };
-
-export default async function AnalyserePage({ searchParams }: Props) {
+export default async function AnalyserePage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-  const params = await searchParams;
-  const tab = VALID_TABS.includes(params.tab as (typeof VALID_TABS)[number])
-    ? (params.tab as (typeof VALID_TABS)[number])
-    : "stall";
-
-  const [godkjenningerCount, foresporslerCount, testerCount] = await Promise.all([
-    prisma.planAdjustment.count({ where: { status: "PENDING" } }).catch(() => 0),
-    prisma.sessionRequest.count({ where: { status: "PENDING" } }).catch(() => 0),
-    prisma.testResult.count().catch(() => 0),
-  ]);
-
-  const tabsWithCounts: TabItem[] = TABS.map((t) => {
-    if (t.id === "godkjenninger") return { ...t, count: godkjenningerCount };
-    if (t.id === "foresporsler") return { ...t, count: foresporslerCount };
-    if (t.id === "tester") return { ...t, count: testerCount };
-    return t;
-  });
 
   return (
-    <div className="space-y-5 px-4 py-6 md:px-8 md:py-8 lg:px-12">
-      <section className="flex items-center gap-3">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-accent">
-          <BarChart3 className="h-6 w-6" strokeWidth={1.75} />
-        </span>
-        <div>
-          <AthleticEyebrow>COACHHQ · ANALYSERE</AthleticEyebrow>
-          <h1 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-            Innsikt over{" "}
-            <em
-              className="font-normal not-italic"
-              style={{
-                fontFamily: "'Instrument Serif', serif",
-                fontStyle: "italic",
-                color: "#005840",
-              }}
-            >
-              stallen
-            </em>
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Stall-statistikk, tester, innboks, godkjenninger og rapporter.
-          </p>
-        </div>
+    <HubFrame>
+      <HubHeader
+        eyebrow="COACHHQ · COACH"
+        title="Innsikt over"
+        titleItalic="stallen"
+        sub="Stall-statistikk, tester, godkjenninger og rapporter."
+        actions={
+          <>
+            <button className="hub-btn btn-outline" type="button">
+              <Download size={13} strokeWidth={1.75} aria-hidden /> Eksporter
+            </button>
+            <button className="hub-btn btn-forest" type="button">
+              <Plus size={13} strokeWidth={2} aria-hidden /> Generer rapport
+            </button>
+          </>
+        }
+        stats={
+          <>
+            <span>
+              <strong>38</strong> spillere
+            </span>
+            <HubStatSep />
+            <span className="warn-dot">
+              <span />
+              <strong>7 overdue</strong> tester
+            </span>
+            <HubStatSep />
+            <span className="warn-dot">
+              <span />
+              <strong>8</strong> godkjenninger venter
+            </span>
+            <HubStatSep />
+            <span>
+              <strong>+12%</strong> mot forrige mnd
+            </span>
+          </>
+        }
+      />
+
+      <section className="hub-grid">
+        <HubCard
+          href="/admin/lag-snitt"
+          icon={BarChart3}
+          eyebrow="01 · OVERSIKT"
+          title="Lag-snitt"
+          data="Pyramide-snitt · Q2 2026"
+          sub="Tek 32% · Slag 28% · Fys 18% · Spill 14% · Turn 8%"
+          visual={<PyramidMini />}
+          cta="Se trender →"
+        />
+        <HubCard
+          href="/admin/tester"
+          icon={ClipboardCheck}
+          eyebrow="02 · MÅLINGER"
+          title="Tester"
+          data="7 overdue · 12 snart"
+          sub="CMJ · Squat · 5-iron · Wedge"
+          statusPill={
+            <HubPill kind="danger" dot="d-danger">
+              7 OVERDUE
+            </HubPill>
+          }
+          cta="Behandle →"
+        />
+        <HubCard
+          href="/admin/godkjenninger"
+          icon={CheckCheck}
+          eyebrow="03 · INNBOKS"
+          title="Godkjenninger"
+          data="8 venter"
+          sub="3 plan-revisjon · 4 runder · 1 utstyr"
+          statusPill={
+            <HubPill kind="warn" dot="d-warn">
+              8 VENTER
+            </HubPill>
+          }
+          cta="Gå gjennom →"
+        />
+        <HubCard
+          href="/admin/foresporsler"
+          icon={MessageSquare}
+          eyebrow="04 · DIALOG"
+          title="Forespørsler"
+          data="0 ubehandlete"
+          sub="Sist: 24. mai · 11:48 — alt besvart"
+          statusPill={
+            <HubPill kind="ok" dot="d-ok">
+              INBOX 0
+            </HubPill>
+          }
+          tone="muted"
+          cta="Se historikk →"
+        />
+        <HubCard
+          href="/admin/reports"
+          icon={FileBarChart}
+          eyebrow="05 · EKSPORT"
+          title="Rapporter"
+          data="Siste generert: 23. mai"
+          sub="Mnd-rapport mai · 38 spillere"
+          cta="Generer ny →"
+        />
+        <HubCard
+          href="/admin/runder"
+          icon={Flag}
+          eyebrow="06 · KONKURRANSE"
+          title="Runder"
+          data="47 logget"
+          sub="12 denne mnd · snitt SG +0,8"
+          visual={<HubSparkline variant="up" />}
+          cta="Se runder →"
+        />
+        <HubCard
+          href="/admin/finance"
+          icon={Wallet}
+          eyebrow="07 · ØKONOMI"
+          title="Finance"
+          data="kr 36 753"
+          sub="+12% mot forrige · 23 fakturaer"
+          statusPill={
+            <HubPill kind="ok" dot="d-ok">
+              +12%
+            </HubPill>
+          }
+          cta="Detaljer →"
+        />
+        <HubCard
+          href="/admin/tilstander"
+          icon={HeartPulse}
+          eyebrow="08 · HELSE"
+          title="Tilstander"
+          data="2 registrerte skader"
+          sub="Sondre H. — handledd · Iben L. — kne"
+          statusPill={
+            <HubPill kind="warn" dot="d-warn">
+              2 SKADER
+            </HubPill>
+          }
+          cta="Se logger →"
+        />
       </section>
-
-      <TabBar tabs={tabsWithCounts} defaultTab="stall" />
-
-      <div className="min-h-[400px]">
-        {tab === "stall" ? (
-          <SummaryCard
-            eyebrow="STALL-AGGREGAT"
-            title="Stall-analyse"
-            description="HCP-trend, SG-aggregat, lag-snitt, kohort-sammenligning."
-            href="/admin/analyse"
-            icon={BarChart3}
-          />
-        ) : null}
-        {tab === "tester" ? (
-          <SummaryCard
-            eyebrow={`${testerCount} TEST-RESULTATER`}
-            title="Test-resultater per kohort"
-            description="CMJ, broad jump, putting-test — sammenlign over tid."
-            href="/admin/tester"
-            icon={TestTube}
-          />
-        ) : null}
-        {tab === "innboks" ? (
-          <SummaryCard
-            eyebrow="INNBOKS"
-            title="Coach-innboks"
-            description="Meldinger og plan-justeringer som venter på behandling."
-            href="/admin/innboks"
-            icon={Inbox}
-          />
-        ) : null}
-        {tab === "godkjenninger" ? (
-          <SummaryCard
-            eyebrow={`${godkjenningerCount} VENTER`}
-            title="Godkjenninger"
-            description="Plan-justeringer og spillerønsker som trenger ditt OK."
-            href="/admin/godkjenninger"
-            icon={CheckCircle2}
-          />
-        ) : null}
-        {tab === "foresporsler" ? (
-          <SummaryCard
-            eyebrow={`${foresporslerCount} FORESPØRSLER`}
-            title="Spiller-forespørsler"
-            description="Ønsker om økt, drill-tilpasninger, ekstra coaching."
-            href="/admin/foresporsler"
-            icon={Mail}
-          />
-        ) : null}
-        {tab === "rapporter" ? (
-          <SummaryCard
-            eyebrow="RAPPORTER"
-            title="Per-spiller og stall-rapporter"
-            description="Auto-genererte PDF/CSV-rapporter for foreldre og styre."
-            href="/admin/reports"
-            icon={FileText}
-          />
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-type CardSpec = {
-  eyebrow: string;
-  title: string;
-  description: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
-};
-
-function SummaryCard({ eyebrow, title, description, href, icon: Icon }: CardSpec) {
-  return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <AthleticEyebrow>{eyebrow}</AthleticEyebrow>
-          <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">
-            <Icon className="mr-1 inline h-5 w-5 text-primary" strokeWidth={1.75} />
-            {title}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-        </div>
-        <Link href={href}>
-          <AthleticButton variant="lime" size="md">
-            Åpne
-            <ArrowRight className="h-4 w-4" />
-          </AthleticButton>
-        </Link>
-      </div>
-    </div>
+    </HubFrame>
   );
 }

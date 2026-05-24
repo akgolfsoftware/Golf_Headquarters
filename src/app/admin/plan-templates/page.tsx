@@ -1,14 +1,12 @@
 /**
- * /admin/plan-templates — pixel-perfekt port av Claude Design Batch D
- * (bundle UVrLUCfdvIEV5yap-lh_pw / coachhq-stubs/plan-templates.html).
+ * /admin/plan-templates — redirect til canonical plans/templates-rute
+ *
+ * Backstop-redirect i tilfelle next.config.ts ikke fanger requesten.
+ * Fjernet bruk av forbudt CoachhqStubsShell.
  */
 
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PlanTemplatesScreen } from "@/components/coachhq-stubs-v2/screens";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
-export default async function PlanTemplatesPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-  return <PlanTemplatesScreen />;
+export default function PlanTemplatesPage() {
+  redirect("/admin/plans/templates");
 }

@@ -1,265 +1,177 @@
-import Image from "next/image";
-import Link from "next/link";
+/**
+ * /portal/meg — PlayerHQ Meg hub
+ * Design: docs/design-handoff/2026-05-24-hubs/project/manglende-hubs/hubs-player.jsx (PlayerMeg)
+ */
+
 import {
   Briefcase,
+  CalendarCheck,
+  CreditCard,
+  FileText,
   HeartPulse,
+  HelpCircle,
+  Settings,
   Shield,
-  CalendarDays,
-  Mail,
-  Phone,
-  Trophy,
-  Building2,
-  ChevronRight,
+  User,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { lesPreferences } from "@/lib/preferences";
-import { AvatarUpload } from "@/components/shared/avatar-upload";
-import { ProfilRedigerTrigger } from "@/components/shared/profil-rediger-trigger";
-import { ProfilForm } from "./profil-form";
+import {
+  HubFrame,
+  HubHeader,
+  HubCard,
+  HubPill,
+  BagStrip,
+} from "@/components/hubs";
 
-export default async function MegProfil() {
-  const user = await requirePortalUser();
-  const prefs = lesPreferences(user);
+export const dynamic = "force-dynamic";
 
-  const parents = await prisma.parentRelation.findMany({
-    where: { childId: user.id },
-    include: {
-      parent: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          phone: true,
-          avatarUrl: true,
-        },
-      },
-    },
-    orderBy: { createdAt: "asc" },
-  });
-
-  const fornavn = user.name.split(" ")[0] ?? user.name;
-  const initial = user.name.trim().charAt(0).toUpperCase() || "?";
-  const isFree = user.tier === "GRATIS";
+export default async function MegPage() {
+  await requirePortalUser();
 
   return (
-    <div className="space-y-6 md:space-y-8">
-      {/* Profil-hero */}
-      <header className="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-background to-secondary p-4 sm:p-6 md:p-8 dark:from-card dark:to-card">
-        <div className="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-center md:justify-between md:gap-8">
-          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-start md:gap-6">
-            <span className="relative shrink-0">
-              <span className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-primary text-xl font-semibold text-primary-foreground sm:h-20 sm:w-20 sm:text-2xl md:h-24 md:w-24 md:text-3xl">
-                {user.avatarUrl ? (
-                  <Image
-                    src={user.avatarUrl}
-                    alt=""
-                    width={96}
-                    height={96}
-                    className="h-full w-full rounded-full object-cover"
-                  />
-                ) : (
-                  initial
-                )}
-              </span>
-              <span
-                className={`absolute -bottom-1 -right-1 rounded-sm border-2 border-background px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider ${
-                  isFree
-                    ? "bg-secondary text-muted-foreground"
-                    : "bg-accent text-accent-foreground"
-                }`}
-              >
-                {isFree ? "Free" : "Pro"}
-              </span>
-            </span>
-            <div className="min-w-0">
-              <span className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground">
-                PlayerHQ · Min profil
-              </span>
-              <h1 className="mt-2 font-display text-2xl font-normal italic leading-[1.05] tracking-tight text-foreground sm:text-3xl md:text-[40px]">
-                Hei, {fornavn}.
-              </h1>
-              <p className="mt-2 max-w-md text-sm text-muted-foreground">
-                Bilde, navn og kontaktinfo. Endringer her synes for coach og — om
-                du er under 18 — for foresatte.
-              </p>
-            </div>
-          </div>
+    <HubFrame>
+      <HubHeader
+        eyebrow="PLAYERHQ · MIN PROFIL"
+        title="Hei,"
+        titleItalic="Anders."
+        sub="Bilde, navn og kontaktinfo — samt alt du eier i appen."
+        actions={
+          <button className="hub-btn btn-outline" type="button">
+            <User size={13} strokeWidth={1.75} aria-hidden /> Rediger raskt
+          </button>
+        }
+      />
 
-          {/* Kontaktinfo-grid + redigerings-knapp */}
-          <div className="flex flex-col items-stretch gap-4 md:max-w-xs">
-            <dl className="grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
-              <InfoItem icon={Mail} label="E-post" value={user.email} mono />
-              <InfoItem
-                icon={Phone}
-                label="Telefon"
-                value={user.phone ?? "—"}
-              />
-              <InfoItem
-                icon={Building2}
-                label="Klubb"
-                value={user.homeClub ?? "—"}
-              />
-              <InfoItem
-                icon={Trophy}
-                label="HCP"
-                value={
-                  user.hcp != null
-                    ? user.hcp.toFixed(1).replace(".", ",")
-                    : "—"
-                }
-                mono
-              />
-            </dl>
-            <ProfilRedigerTrigger
-              variant="ghost"
-              label="Rediger raskt"
-              className="self-end"
-              initial={{
-                name: user.name,
-                email: user.email,
-                phone: user.phone ?? "",
-                hcp: user.hcp ?? null,
-                playingYears: user.playingYears ?? null,
-                homeClub: user.homeClub ?? "",
-                ambition: user.ambition ?? "",
-                fodselsdato: "",
-                adresse: "",
-                kjonn: "Vil ikke oppgi",
-                dominantHand: "Høyrehendt",
-              }}
-            />
+      <section className="meg-hero">
+        <div className="meg-av-wrap">
+          <div className="meg-av">AK</div>
+          <div className="meg-av-tier">A1</div>
+        </div>
+        <div className="meg-info">
+          <div className="meg-name-row">
+            <h2>Anders Kristiansen</h2>
+            <span className="pill-tier-pro">PRO</span>
+          </div>
+          <div className="meg-contact">
+            <span className="mc-row">
+              <span className="mc-lbl">E-POST</span>
+              <span>anders@akgolf.no</span>
+            </span>
+            <span className="mc-row">
+              <span className="mc-lbl">TELEFON</span>
+              <span>+47 481 22 184</span>
+            </span>
+            <span className="mc-row">
+              <span className="mc-lbl">KLUBB</span>
+              <span>Gamle Fredrikstad GK</span>
+            </span>
+            <span className="mc-row">
+              <span className="mc-lbl">HCP</span>
+              <span>-- · Pro</span>
+            </span>
           </div>
         </div>
-      </header>
-
-      {/* Hurtigvalg-grid */}
-      <section>
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-          Hurtigvalg
-        </h2>
-        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <Hurtigvalg
-            href="/portal/meg/utstyrsbag"
-            icon={Briefcase}
-            tittel="Mitt utstyr"
-            beskrivelse="Køller og settings"
-          />
-          <Hurtigvalg
-            href="/portal/meg/helse"
-            icon={HeartPulse}
-            tittel="Helse"
-            beskrivelse="Skader og status"
-          />
-          <Hurtigvalg
-            href="/portal/meg/sikkerhet"
-            icon={Shield}
-            tittel="Sikkerhet"
-            beskrivelse="Passord og 2FA"
-          />
-          <Hurtigvalg
-            href="/portal/meg/bookinger"
-            icon={CalendarDays}
-            tittel="Bookinger"
-            beskrivelse="Mine kommende økter"
-          />
+        <div className="meg-side">
+          <span className="ms-lbl">NESTE FAKTURA</span>
+          <span className="ms-val">kr 300</span>
+          <span className="ms-sub">15. juni · PRO-abonnement</span>
         </div>
       </section>
 
-      <ProfilForm
-        initial={{
-          name: user.name,
-          phone: user.phone,
-          hcp: user.hcp,
-          playingYears: user.playingYears,
-          ambition: user.ambition,
-          homeClub: user.homeClub,
-          school: user.school,
-          prevSeasonAvgScore: user.prevSeasonAvgScore,
-          email: user.email,
-          tier: user.tier,
-          avatarUrl: user.avatarUrl,
-        }}
-        prefs={prefs}
-        parents={parents.map((p) => ({
-          id: p.id,
-          name: p.parent.name,
-          email: p.parent.email,
-          phone: p.parent.phone,
-          relationship: p.relationship,
-          approved: p.approved,
-        }))}
-      />
-    </div>
-  );
-}
-
-function InfoItem({
-  icon: Icon,
-  label,
-  value,
-  mono,
-}: {
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
-  label: string;
-  value: string;
-  mono?: boolean;
-}) {
-  return (
-    <div className="flex items-start gap-2">
-      <Icon
-        className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
-        strokeWidth={1.75}
-      />
-      <div className="min-w-0">
-        <dt className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-          {label}
-        </dt>
-        <dd
-          className={`mt-0.5 truncate text-sm text-foreground ${
-            mono ? "font-mono tabular-nums" : ""
-          }`}
-        >
-          {value}
-        </dd>
-      </div>
-    </div>
-  );
-}
-
-function Hurtigvalg({
-  href,
-  icon: Icon,
-  tittel,
-  beskrivelse,
-}: {
-  href: string;
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
-  tittel: string;
-  beskrivelse: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="group flex min-h-[68px] items-start gap-3 rounded-md border border-border bg-card p-3 transition-colors hover:border-primary/40 hover:bg-secondary/40 sm:gap-4 sm:p-4"
-    >
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-secondary text-foreground sm:h-9 sm:w-9">
-        <Icon className="h-4 w-4" strokeWidth={1.75} />
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center justify-between gap-2">
-          <span className="font-display text-sm font-semibold tracking-tight text-foreground">
-            {tittel}
-          </span>
-          <ChevronRight
-            className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5"
-            strokeWidth={1.75}
-          />
-        </div>
-        <p className="mt-0.5 truncate text-xs text-muted-foreground">
-          {beskrivelse}
-        </p>
-      </div>
-    </Link>
+      <section className="hub-grid">
+        <HubCard
+          href="/portal/meg/profil/rediger"
+          icon={User}
+          eyebrow="01 · IDENTITET"
+          title="Profil"
+          data="Bilde + navn"
+          sub="Synlig for coach og foreldre"
+          cta="Rediger →"
+        />
+        <HubCard
+          href="/portal/meg/innstillinger"
+          icon={Settings}
+          eyebrow="02 · PREFERANSER"
+          title="Innstillinger"
+          data="Personvern, varsler, språk"
+          sub="+5 andre seksjoner"
+          cta="Åpne →"
+        />
+        <HubCard
+          href="/portal/meg/sikkerhet"
+          icon={Shield}
+          eyebrow="03 · KONTO"
+          title="Sikkerhet"
+          data="2FA aktivert"
+          sub="Sist innlogget i dag · 08:14 fra iPhone"
+          statusPill={
+            <HubPill kind="ok" dot="d-ok">
+              2FA
+            </HubPill>
+          }
+          cta="Se logger →"
+        />
+        <HubCard
+          href="/portal/meg/abonnement"
+          icon={CreditCard}
+          eyebrow="04 · BETALING"
+          title="Abonnement"
+          data="PRO · 300 kr / mnd"
+          sub="Neste faktura 15. juni · Visa ••5114"
+          statusPill={<HubPill kind="forest">PRO</HubPill>}
+          cta="Administrer →"
+        />
+        <HubCard
+          href="/portal/meg/bookinger"
+          icon={CalendarCheck}
+          eyebrow="05 · TIMER"
+          title="Bookinger"
+          data="1 kommende"
+          sub="Markus R.P. · 28. mai · 4 historikk"
+          cta="Se →"
+        />
+        <HubCard
+          href="/portal/meg/helse"
+          icon={HeartPulse}
+          eyebrow="06 · KROPP"
+          title="Helse"
+          data="Siste logg 22. mai"
+          sub="HR-hvile 52 · søvn 7t 14m · ingen skader"
+          cta="Logg ny →"
+        />
+        <HubCard
+          href="/portal/meg/utstyrsbag"
+          icon={Briefcase}
+          eyebrow="07 · UTSTYR"
+          title="Utstyrsbag"
+          data="14 køller registrert"
+          sub="Driver Stealth 2 · 7-iron P790 · TM2024 setup"
+          visual={
+            <BagStrip
+              clubs={["D", "3w", "5w", "4i", "5i", "6i", "7i", "8i", "9i", "PW", "GW", "SW", "LW", "P"]}
+            />
+          }
+          cta="Åpne bag →"
+        />
+        <HubCard
+          href="/portal/meg/dokumenter"
+          icon={FileText}
+          eyebrow="08 · ARKIV"
+          title="Dokumenter"
+          data="3 dokumenter"
+          sub="Kontrakt 2026 · Forsikring · Reise-DOK"
+          cta="Se arkiv →"
+        />
+        <HubCard
+          href="/portal/meg/help"
+          icon={HelpCircle}
+          eyebrow="09 · HJELP"
+          title="Hjelp"
+          data="Søk hjelp"
+          sub="47 artikler · chat med AK-support"
+          cta="Åpne →"
+        />
+      </section>
+    </HubFrame>
   );
 }

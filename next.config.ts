@@ -31,6 +31,19 @@ const nextConfig: NextConfig = {
       { source: "/admin/analytics", destination: "/admin/analyse", permanent: true },
       { source: "/admin/audit", destination: "/admin/audit-log", permanent: true },
 
+      // Tilleggsredirects per plan Del 2 (canonical-ruter)
+      { source: "/admin/locations", destination: "/admin/anlegg", permanent: true },
+      { source: "/admin/facilities", destination: "/admin/anlegg", permanent: true },
+      { source: "/admin/facilities/:id", destination: "/admin/anlegg/:id", permanent: true },
+      { source: "/admin/approvals", destination: "/admin/godkjenninger", permanent: true },
+      { source: "/admin/approvals/:id", destination: "/admin/godkjenninger?id=:id", permanent: true },
+      { source: "/admin/plan-templates", destination: "/admin/plans/templates", permanent: true },
+      { source: "/admin/plan-templates/:path*", destination: "/admin/plans/templates/:path*", permanent: true },
+      { source: "/admin/notion-prosjekter", destination: "/admin/workspace/prosjekter", permanent: true },
+      { source: "/admin/notion-oppgaver", destination: "/admin/workspace/oppgaver", permanent: true },
+      { source: "/admin/messages", destination: "/admin/innboks", permanent: true },
+      { source: "/admin/meg", destination: "/admin/profile", permanent: true },
+
       // PlayerHQ IA-restrukturering 2026-05-22 (master-plan)
       // Gamle ruter -> nye hovedseksjoner under /portal
       { source: "/portal/innsikt", destination: "/portal/analysere", permanent: true },
@@ -51,8 +64,9 @@ const nextConfig: NextConfig = {
       { source: "/portal/tren/kalender", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
       { source: "/portal/tren/kalender/:path*", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
       { source: "/portal/tren", destination: "/portal/planlegge?tab=treningsplan", permanent: true },
-      { source: "/portal/talent", destination: "/portal/analysere?tab=talent", permanent: true },
-      { source: "/portal/talent/:path*", destination: "/portal/analysere?tab=talent", permanent: true },
+      // /portal/talent er nå egen hub (Del 32 — Manglende hubs hand-off 2026-05-24)
+      // Underruter beholdes for talent-detalj-flow
+      { source: "/portal/talent/:path*", destination: "/portal/talent/:path*", permanent: false },
       { source: "/portal/trackman", destination: "/portal/analysere?tab=trackman", permanent: true },
       { source: "/portal/trackman/:path*", destination: "/portal/analysere?tab=trackman", permanent: true },
       { source: "/portal/booking", destination: "/portal/gjennomfore?tab=booking", permanent: true },

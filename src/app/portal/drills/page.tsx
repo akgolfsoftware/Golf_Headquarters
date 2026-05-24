@@ -1,221 +1,242 @@
 /**
- * PlayerHQ · Drill-bibliotek
+ * /portal/drills — PlayerHQ Drill-bibliotek
+ * Design: plan Del 6 (visuell spec)
  *
- * Server-component som henter alle ExerciseDefinition + spillerens kategori
- * + brukerens egen drill-historikk (SessionDrill + SessionDrillInstance).
- * Sender data ned i `DrillsLibraryClient` for filtrering og interaksjon.
+ * NB: Bruker mock-data foreløpig. Prisma `Drill`-modellen må utvides med:
+ *   skillArea, pyramidArea, duration, intensity, ngfCategoryMin/Max,
+ *   csMal (per nivå), repsConfig, environment, facilityRequirements,
+ *   description, coachNotes (per coach), tags, isCoachRecommended, timesTrained
  *
- * Persona: Markus Røinås Pedersen (A1-kategori, NGF E-G default).
+ * Når data-modellen er klar, erstatt MOCK_DRILLS og getDrillDetail med
+ * Prisma-queries.
  */
 
+import { Filter, Search } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { kategoriFraHcp } from "@/lib/ai-plan/context";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
-import { AgentStrip } from "@/components/coachhq/agent-strip";
-import type { DrillFasilitet, NgfKategori } from "@/generated/prisma/client";
-import { DrillsLibraryClient } from "./drills-client";
+import { DrillGrid, type DrillCardData, type DrillDetailData } from "@/components/drills";
+import "@/components/drills/drill.css";
 
-const KATEGORI_RANK: Record<NgfKategori, number> = {
-  A: 0,
-  B: 1,
-  C: 2,
-  D: 3,
-  E: 4,
-  F: 5,
-  G: 6,
-  H: 7,
-  I: 8,
-  J: 9,
-  K: 10,
-  L: 11,
+export const dynamic = "force-dynamic";
+
+const MOCK_DRILLS: DrillCardData[] = [
+  {
+    id: "gate-drill-50",
+    skillArea: "PUTTING",
+    title: "Gate-drill 50cm",
+    duration: 15,
+    intensity: 7,
+    ngfCategoryRange: "D–G",
+    timesTrained: 3,
+    isCoachRecommended: true,
+  },
+  {
+    id: "avstand-50m",
+    skillArea: "NÆRSPILL",
+    title: "Avstandskontroll 50m",
+    duration: 20,
+    intensity: 6,
+    ngfCategoryRange: "C–F",
+    timesTrained: 8,
+  },
+  {
+    id: "iron-tempo",
+    skillArea: "JERNSLAG",
+    title: "Tempo-jernslag 7-iron",
+    duration: 25,
+    intensity: 5,
+    ngfCategoryRange: "D–G",
+    timesTrained: 12,
+    isCoachRecommended: true,
+  },
+  {
+    id: "driver-launch",
+    skillArea: "DRIVER",
+    title: "Launch-vinkel driver",
+    duration: 30,
+    intensity: 8,
+    ngfCategoryRange: "B–E",
+    timesTrained: 5,
+  },
+  {
+    id: "wedge-spinn",
+    skillArea: "NÆRSPILL",
+    title: "Wedge-spinn fra rough",
+    duration: 18,
+    intensity: 7,
+    ngfCategoryRange: "C–F",
+    timesTrained: 2,
+  },
+  {
+    id: "putt-rutine",
+    skillArea: "PUTTING",
+    title: "Putt-rutine 4–8 fot",
+    duration: 12,
+    intensity: 4,
+    ngfCategoryRange: "D–H",
+    timesTrained: 18,
+  },
+];
+
+const MOCK_DETAILS: Record<string, DrillDetailData> = {
+  "gate-drill-50": {
+    id: "gate-drill-50",
+    title: "Gate-drill 50cm",
+    skillArea: "PUTTING",
+    pyramidArea: "TEK",
+    duration: 15,
+    intensity: 7,
+    setsReps: "3×10",
+    environment: "Driving range",
+    csMal: 78,
+    csMalNivaa: "D",
+    treningsfaser: ["Grunnfase", "Spesialfase"],
+    fasilitetskrav: [
+      { name: "Driving range" },
+      { name: "Radar" },
+      { name: "Kamera" },
+    ],
+    description:
+      "Plasser to tees 50 cm fra hverandre, 1,5 m fra hullet. Putt 10 baller gjennom porten med jevn tempo. Fokus på sentrert kontakt og lik retning på balle ut og inn.",
+    coachNotes:
+      "Husk Anders — venstre øye over ballen, ikke hodet. Sjekk skuldre 90° til siktelinje før hver putt.",
+    tags: ["slag-kontroll", "avstand", "blokktrening"],
+  },
+  "avstand-50m": {
+    id: "avstand-50m",
+    title: "Avstandskontroll 50m",
+    skillArea: "NÆRSPILL",
+    pyramidArea: "SLAG",
+    duration: 20,
+    intensity: 6,
+    setsReps: "4×5",
+    environment: "Practice green",
+    csMal: 72,
+    csMalNivaa: "D",
+    treningsfaser: ["Spesialfase"],
+    fasilitetskrav: [{ name: "Practice green" }, { name: "Markering 50m" }],
+    description:
+      "5 slag fra 50m, 40m, 30m, 20m og 10m. Mål: alle baller innenfor 3m fra hullet. Variér klubbvalg (50° til 60°) og rull-mot-fly-balanse.",
+    tags: ["distanse", "kontroll", "wedge"],
+  },
+  "iron-tempo": {
+    id: "iron-tempo",
+    title: "Tempo-jernslag 7-iron",
+    skillArea: "JERNSLAG",
+    pyramidArea: "TEK",
+    duration: 25,
+    intensity: 5,
+    setsReps: "3×15",
+    environment: "Driving range",
+    csMal: 85,
+    csMalNivaa: "C",
+    treningsfaser: ["Grunnfase", "Spesialfase"],
+    fasilitetskrav: [{ name: "Driving range" }, { name: "Radar" }],
+    description:
+      "15 svinger med 7-iron, fokus på tempo 3:1 (oppsving:nedsving). Bruk metronom på 75 BPM. Sjekk smash-faktor 1.40+.",
+    coachNotes:
+      "Anders — du tenderer å aksellerere for tidlig på vei ned. Pause i topp 0,2 sek før transition.",
+    tags: ["tempo", "rytme", "swing-mekanikk"],
+  },
+  "driver-launch": {
+    id: "driver-launch",
+    title: "Launch-vinkel driver",
+    skillArea: "DRIVER",
+    pyramidArea: "SLAG",
+    duration: 30,
+    intensity: 8,
+    setsReps: "5×10",
+    environment: "Driving range",
+    csMal: 102,
+    csMalNivaa: "B",
+    treningsfaser: ["Spesialfase", "Konkurransefase"],
+    fasilitetskrav: [
+      { name: "Driving range" },
+      { name: "Radar" },
+      { name: "Kamera" },
+    ],
+    description:
+      "Mål launch-vinkel 13-15°, spin 2200-2600 rpm. 10 svinger per tee-høyde (lav/middels/høy). Notér beste 3 i sett.",
+    tags: ["distanse", "launch", "spin"],
+  },
+  "wedge-spinn": {
+    id: "wedge-spinn",
+    title: "Wedge-spinn fra rough",
+    skillArea: "NÆRSPILL",
+    pyramidArea: "SLAG",
+    duration: 18,
+    intensity: 7,
+    setsReps: "3×8",
+    environment: "Practice green med rough",
+    csMal: 80,
+    csMalNivaa: "C",
+    treningsfaser: ["Spesialfase"],
+    fasilitetskrav: [{ name: "Practice green" }, { name: "Radar" }],
+    description:
+      "Fra 30m i lett rough — generer spinn 5000+ rpm. Test ulik grip-trykk (light/medium/firm) og sjekk hvilken som gir mest kontroll.",
+    tags: ["spinn", "rough", "wedge"],
+  },
+  "putt-rutine": {
+    id: "putt-rutine",
+    title: "Putt-rutine 4–8 fot",
+    skillArea: "PUTTING",
+    pyramidArea: "TEK",
+    duration: 12,
+    intensity: 4,
+    setsReps: "5×4",
+    environment: "Practice green",
+    csMal: 70,
+    csMalNivaa: "D",
+    treningsfaser: ["Grunnfase"],
+    fasilitetskrav: [{ name: "Practice green" }],
+    description:
+      "20 putts på 4-8 fot rundt hullet i klokken-mønster. Mål: 75% gjennomgang. Notér miss-mønster (push/pull).",
+    coachNotes:
+      "Konsentrer deg om første putt — den setter rytmen for sesjonen.",
+    tags: ["pre-shot-rutine", "kortputt", "konsistens"],
+  },
 };
 
-function antallRelevante(
-  drills: Array<{
-    minKategori: NgfKategori | null;
-    maxKategori: NgfKategori | null;
-  }>,
-  spillerKategori: NgfKategori | null,
-): number {
-  if (spillerKategori === null) return drills.length;
-  const rank = KATEGORI_RANK[spillerKategori];
-  return drills.filter((d) => {
-    const minR = d.minKategori !== null ? KATEGORI_RANK[d.minKategori] : 0;
-    const maxR = d.maxKategori !== null ? KATEGORI_RANK[d.maxKategori] : 11;
-    return rank >= minR && rank <= maxR;
-  }).length;
-}
+export default async function DrillBibliotekPage() {
+  await requirePortalUser();
 
-export default async function DrillsLibraryPage() {
-  const user = await requirePortalUser({ allow: ["PLAYER", "PARENT"] });
-
-  const spillerKategori = kategoriFraHcp(user.hcp);
-
-  // Hent tilgjengelige fasiliteter for spilleren
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { tilgjengeligeFasiliteter: true },
-  });
-  const spillerFasiliteter: DrillFasilitet[] = dbUser?.tilgjengeligeFasiliteter ?? [];
-
-  // Hent alle drills + brukerens historikk + mestrede drills i parallell.
-  const [drills, mineSessionDrills, mineDrillInstances, coachAnbefaltIds] =
-    await Promise.all([
-      prisma.exerciseDefinition.findMany({
-        orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
-      }),
-      prisma.sessionDrill.findMany({
-        where: { session: { plan: { userId: user.id } } },
-        select: { exerciseId: true, csTarget: true },
-      }),
-      prisma.sessionDrillInstance.findMany({
-        where: {
-          session: { studentId: user.id },
-          drillId: { not: null },
-        },
-        select: { drillId: true },
-      }),
-      // Drills som er foreslått eller approved i pending session-requests
-      // (vi bruker dette for å markere "coach-anbefalt" — Anders har lagt dem inn
-      // i en aktiv plan eller foreslått dem).
-      prisma.sessionDrill
-        .findMany({
-          where: {
-            session: {
-              plan: {
-                userId: user.id,
-                status: { in: ["ACTIVE", "PENDING_PLAYER", "ACCEPTED"] },
-              },
-            },
-          },
-          select: { exerciseId: true },
-        })
-        .then((rows) => new Set(rows.map((r) => r.exerciseId))),
-    ]);
-  // Mestrede drills for innlogget spiller.
-  // @ts-expect-error – DrillMestringsLogg er planlagt i neste Prisma-migrasjon
-  const mestretLogg = await prisma.drillMestringsLogg.findMany({
-    where: { userId: user.id, mestret: true },
-    select: { drillId: true },
-  });
-
-  // Tell antall ganger hver drill er trent.
-  const gangerPerDrill = new Map<string, number>();
-  const csPerDrill = new Map<string, number[]>();
-  for (const sd of mineSessionDrills) {
-    gangerPerDrill.set(
-      sd.exerciseId,
-      (gangerPerDrill.get(sd.exerciseId) ?? 0) + 1,
-    );
-    if (sd.csTarget !== null) {
-      const arr = csPerDrill.get(sd.exerciseId) ?? [];
-      arr.push(sd.csTarget);
-      csPerDrill.set(sd.exerciseId, arr);
-    }
-  }
-  for (const di of mineDrillInstances) {
-    if (di.drillId) {
-      gangerPerDrill.set(
-        di.drillId,
-        (gangerPerDrill.get(di.drillId) ?? 0) + 1,
-      );
-    }
-  }
-
-  // Mestrede drill-ids som array (Set kan ikke serialiseres over server-boundary).
-  const mestretIds = [
-    ...new Set((mestretLogg as { drillId: string }[]).map((l) => l.drillId)),
-  ];
-
-  // Bygg DrillRow-objekter til klienten.
-  const drillRows = drills.map((d) => {
-    let csForMeg: number | null = null;
-    if (
-      spillerKategori !== null &&
-      d.csTargetByKategori &&
-      typeof d.csTargetByKategori === "object" &&
-      !Array.isArray(d.csTargetByKategori)
-    ) {
-      const map = d.csTargetByKategori as Record<string, unknown>;
-      const v = map[spillerKategori];
-      if (typeof v === "number") csForMeg = v;
-    }
-    if (csForMeg === null && d.csMin !== null && d.csMax !== null) {
-      csForMeg = Math.round((d.csMin + d.csMax) / 2);
-    } else if (csForMeg === null && d.csMax !== null) {
-      csForMeg = d.csMax;
-    } else if (csForMeg === null && d.csMin !== null) {
-      csForMeg = d.csMin;
-    }
-
-    return {
-      id: d.id,
-      name: d.name,
-      description: d.description,
-      pyramidArea: d.pyramidArea,
-      skillArea: d.skillArea,
-      morad: d.morad,
-      durationMin: d.durationMin,
-      csMin: d.csMin,
-      csMax: d.csMax,
-      defaultRepsSets: d.defaultRepsSets,
-      environment: d.environment,
-      fasilitetKrav: d.fasilitetKrav as DrillFasilitet[],
-      minKategori: d.minKategori,
-      maxKategori: d.maxKategori,
-      videoUrl: d.videoUrl,
-      coachAnbefalt: coachAnbefaltIds.has(d.id),
-      ganger: gangerPerDrill.get(d.id) ?? 0,
-      csForMeg,
-      utstyr: d.utstyr,
-      intensitet: d.intensitet,
-      lPhases: d.lPhases,
-      tags: d.tags,
-      coachNotes: d.coachNotes,
-      defaultSets: d.defaultSets,
-      defaultReps: d.defaultReps,
-      treningstype: d.treningstype,
-      prerequisites: d.prerequisites,
-    };
-  });
-
-  const totalDrills = drills.length;
-  const relevanteForMeg = antallRelevante(drills, spillerKategori);
-  const coachAnbefaltCount = coachAnbefaltIds.size;
-
-  const eyebrow = `DRILLS · ${relevanteForMeg} RELEVANTE FOR DEG · ${coachAnbefaltCount} FORESLÅTT AV ANDERS`;
-
-  // Velg en anbefaling-tekst basert på pyramide-fordeling.
-  const puttingDrills = drillRows.filter(
-    (d) => d.skillArea === "PUTTING",
-  ).length;
-  const agentTekst =
-    puttingDrills > 0
-      ? `Putting <2,5m bør prioriteres denne uka — vi har ${puttingDrills} putting-drills som passer for deg.`
-      : `Du har ${relevanteForMeg} drills tilpasset ditt nivå (${spillerKategori ?? "ukjent"}). Velg en å be om i neste plan.`;
-
-  // Tier-cast: respekter ELITE i typen sjøl om vi ikke bruker den lenger.
-  const tier = user.tier as "GRATIS" | "PRO" | "ELITE";
+  const drills = MOCK_DRILLS;
+  const loadDetail = (id: string) => MOCK_DETAILS[id] ?? null;
 
   return (
-    <div className="space-y-6 md:space-y-8">
-      <PageHeader
-        eyebrow={eyebrow}
-        titleLead="Mitt"
-        titleItalic="drill-bibliotek"
-        sub={`${totalDrills} drills totalt · ${relevanteForMeg} matcher ditt nivå`}
-      />
+    <div className="drill-scope">
+      <div className="drill-page">
+        <header className="drill-head">
+          <div>
+            <div className="eyebrow">PLAYERHQ · TREN</div>
+            <h1>
+              Drill <em>-bibliotek</em>
+            </h1>
+            <p className="drill-sub">
+              Søk og utforsk drills tilpasset ditt nivå. Klikk en drill for å se
+              detaljer og be om å få den i neste plan.
+            </p>
+          </div>
+          <div className="drill-head-actions">
+            <button type="button" className="drill-filter-pill">
+              <Search size={12} strokeWidth={1.75} aria-hidden /> Søk
+            </button>
+            <button type="button" className="drill-filter-pill">
+              <Filter size={12} strokeWidth={1.75} aria-hidden /> Filter
+            </button>
+          </div>
+        </header>
 
-      <AgentStrip label="Anders sier">{agentTekst}</AgentStrip>
+        <div className="drill-filter-row">
+          <span className="drill-filter-pill active">Alle</span>
+          <span className="drill-filter-pill">Putting</span>
+          <span className="drill-filter-pill">Nærspill</span>
+          <span className="drill-filter-pill">Jernslag</span>
+          <span className="drill-filter-pill">Driver</span>
+          <span className="drill-filter-pill">Coach anbefalt</span>
+        </div>
 
-      <DrillsLibraryClient
-        drills={drillRows}
-        spillerKategori={spillerKategori}
-        tier={tier}
-        spillerFasiliteter={spillerFasiliteter}
-        mestretIds={mestretIds}
-      />
+        <DrillGrid drills={drills} loadDetail={loadDetail} />
+      </div>
     </div>
   );
 }
