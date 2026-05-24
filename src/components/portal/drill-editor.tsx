@@ -485,12 +485,14 @@ export function DrillEditor({
 const inputCss = "w-full rounded-md border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary";
 
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
+  // Gruppen wrappes som <fieldset> + <legend> for å gi semantisk korrekt
+  // tilknytning til knappe-grupper. Visuelt resetter vi default styling.
   return (
-    <div>
-      <label className="mb-2 block font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+    <fieldset className="block border-0 p-0 m-0">
+      <legend className="mb-2 block font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {label}
-      </label>
+      </legend>
       {children}
-    </div>
+    </fieldset>
   );
 }

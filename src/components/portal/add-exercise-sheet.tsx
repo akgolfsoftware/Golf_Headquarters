@@ -303,9 +303,12 @@ function Field({
   suffix?: string;
   children: React.ReactNode;
 }) {
+  // Innpakker children i en gruppe slik at label er korrekt assosiert via
+  // implicit binding (input nestet inni <label>) — alle inputs i denne
+  // fila bruker dette mønsteret.
   return (
-    <div className="flex flex-col gap-1.5">
-      <label className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+    <label className="flex flex-col gap-1.5">
+      <span className="flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
         {label}
         {suffix && (
           <span className="font-body text-[10px] font-medium normal-case tracking-normal text-muted-foreground/70">
@@ -317,9 +320,9 @@ function Field({
             — valgfri
           </span>
         )}
-      </label>
+      </span>
       {children}
-    </div>
+    </label>
   );
 }
 

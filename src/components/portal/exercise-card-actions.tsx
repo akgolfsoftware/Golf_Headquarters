@@ -21,18 +21,20 @@ export function ExerciseCardActions({ id }: { id: string }) {
     <div className="flex gap-1">
       <Link
         href={`/portal/coach/ovelser/${id}/rediger`}
+        aria-label="Rediger øvelse"
         className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
         onClick={(ev) => ev.stopPropagation()}
       >
-        <Pencil className="h-3.5 w-3.5" strokeWidth={1.5} />
+        <Pencil className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
       </Link>
       <button
         type="button"
         disabled={isPending}
+        aria-label="Slett øvelse"
         className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
         onClick={handleSlett}
       >
-        <Trash2 className="h-3.5 w-3.5" strokeWidth={1.5} />
+        <Trash2 className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
       </button>
     </div>
   );
