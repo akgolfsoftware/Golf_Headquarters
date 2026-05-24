@@ -23,10 +23,12 @@ import LocationsPage from "@/app/admin/locations/page";
 import FacilitiesPage from "@/app/admin/facilities/page";
 import AvailabilityPage from "@/app/admin/availability/page";
 import { LocationForm } from "@/app/admin/locations/location-form";
+import { AnleggGrid, type AnleggKort } from "@/components/admin-anlegg-v2/anlegg-grid";
 
-type TabKey = "oversikt" | "lokasjoner" | "fasiliteter" | "tilgjengelighet";
+type TabKey = "oversikt" | "grid" | "lokasjoner" | "fasiliteter" | "tilgjengelighet";
 
 const TABS = [
+  { key: "grid", label: "Grid" },
   { key: "oversikt", label: "Oversikt" },
   { key: "lokasjoner", label: "Lokasjoner" },
   { key: "fasiliteter", label: "Fasiliteter" },
@@ -75,9 +77,11 @@ export default async function AnleggPage({
   const tab: TabKey =
     rawTab === "lokasjoner" ||
     rawTab === "fasiliteter" ||
-    rawTab === "tilgjengelighet"
+    rawTab === "tilgjengelighet" ||
+    rawTab === "grid" ||
+    rawTab === "oversikt"
       ? rawTab
-      : "oversikt";
+      : "grid";
 
   return (
     <div className="space-y-6">
@@ -90,6 +94,7 @@ export default async function AnleggPage({
       />
       <TabStrip basePath="/admin/anlegg" tabs={TABS} active={tab} />
       <div>
+        {tab === "grid" && <GridView />}
         {tab === "oversikt" && <Oversikt />}
         {tab === "lokasjoner" && <LocationsPage />}
         {tab === "fasiliteter" && <FacilitiesPage />}
@@ -101,6 +106,52 @@ export default async function AnleggPage({
       </div>
     </div>
   );
+}
+
+async function GridView() {
+  const naa = new Date();
+  const idagStart = new Date(naa);
+  idagStart.setHours(0, 0, 0, 0);
+  const idagSlutt = new Date(idagStart);
+  idagSlutt.setDate(idagSlutt.getDate() + 1);
+
+  const locations = await prisma.location.findMany({
+    include: {
+      facilities: { orderBy: { name: "asc" } },
+      _count: {
+        select: {
+          bookings: {
+            where: {
+              startAt: { gte: idagStart, lt: idagSlutt },
+              status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
+            },
+          },
+        },
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+
+  const DEMO: AnleggKort[] = [
+    { id: "demo-gfgk", navn: "GFGK Bossum", type: "hybrid", adresse: "Fredrikstad", fasiliteter: ["Range", "9-hulls", "Putting green", "Bunker"], utnyttelsePct: 72, aktiv: true },
+    { id: "demo-mulligan", navn: "Mulligan Indoor", type: "indoor", adresse: "Fredrikstad sentrum", fasiliteter: ["TrackMan 4", "Sim-rom 1", "Sim-rom 2", "Lounge"], utnyttelsePct: 88, aktiv: true },
+    { id: "demo-miklagard", navn: "Miklagard GK", type: "bane", adresse: "Kløfta", fasiliteter: ["18-hulls", "Range", "Akademi"], utnyttelsePct: 45, aktiv: true },
+  ];
+
+  const anlegg: AnleggKort[] = locations.length > 0
+    ? locations.map((l): AnleggKort => ({
+        id: l.id,
+        navn: l.name,
+        type: deriveType(l.name),
+        adresse: l.address,
+        fasiliteter: l.facilities.map((f) => f.name),
+        // Pseudo-utnyttelse basert på bookings i dag (max 100)
+        utnyttelsePct: Math.min(100, l._count.bookings * 12),
+        aktiv: l.active,
+      }))
+    : DEMO;
+
+  return <AnleggGrid anlegg={anlegg} />;
 }
 
 async function Oversikt() {
