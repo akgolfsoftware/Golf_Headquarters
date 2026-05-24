@@ -1,88 +1,65 @@
 /**
- * PlayerHQ · Trening · Bibliotek
+ * PlayerHQ · Trening · Øvelsesbibliotek
  *
- * Endelig design — inspirert av treningsdetalj-demo (playerhq-C/10).
- * Hero med italic display, filter-strip og pyramide-fordelt grid.
+ * Design: PlayerHQ Øvelsesbibliotek.html (Claude Design, 2026-05-24)
+ * - Faner: Alle / FYS / Mine / Coach
+ * - Mine: spillerens egne øvelser (source=PLAYER) med lime-grønne kort og Min-badge
+ * - Coach: coachens delte øvelser (source=COACH) med grønntonede kort
+ * - Alle + FYS: system-øvelser (source=SYSTEM) med eksisterende filtrering
  */
+
 import Link from "next/link";
-import { ChevronRight, Dumbbell, LayoutGrid, TrendingUp } from "lucide-react";
+import { ChevronRight, Dumbbell, Search, User } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { ExerciseCard } from "@/components/portal/exercise-card";
-import {
-  PyramidArea,
-  LPhase,
-  type Prisma,
-} from "@/generated/prisma/client";
-import { EmptyState } from "@/components/shared/empty-state";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
+import type { ExerciseDefinition } from "@/generated/prisma/client";
+import { LeggTilKnapp } from "./_components/legg-til-knapp";
 
-type Search = { area?: string; phase?: string };
+type Tab = "alle" | "fys" | "mine" | "coach";
+type SearchParams = { tab?: string; q?: string };
 
-const PYR_OMRADER: { value: PyramidArea | "ALLE"; label: string }[] = [
-  { value: "ALLE", label: "Alle" },
-  { value: "FYS", label: "Fysisk" },
-  { value: "TEK", label: "Teknisk" },
-  { value: "SLAG", label: "Slag" },
-  { value: "SPILL", label: "Spill" },
-  { value: "TURN", label: "Turnering" },
-];
-
-const L_FASER: { value: LPhase | "ALLE"; label: string }[] = [
-  { value: "ALLE",      label: "Alle" },
-  { value: "GRUNN",     label: "Grunnperiode" },
-  { value: "SPESIAL",   label: "Spesialiseringsperiode" },
-  { value: "TURNERING", label: "Turneringsperiode" },
+const TABS: { value: Tab; label: string }[] = [
+  { value: "alle", label: "Alle" },
+  { value: "fys", label: "FYS" },
+  { value: "mine", label: "Mine" },
+  { value: "coach", label: "Coach" },
 ];
 
 export default async function OvelserPage({
   searchParams,
 }: {
-  searchParams: Promise<Search>;
+  searchParams: Promise<SearchParams>;
 }) {
   const user = await requirePortalUser();
   const params = await searchParams;
+  const tab: Tab =
+    params.tab === "fys" || params.tab === "mine" || params.tab === "coach"
+      ? params.tab
+      : "alle";
 
-  const valgtArea =
-    params.area && PYR_OMRADER.some((o) => o.value === params.area)
-      ? (params.area as PyramidArea | "ALLE")
-      : "ALLE";
-  const valgtPhase =
-    params.phase && L_FASER.some((p) => p.value === params.phase)
-      ? (params.phase as LPhase | "ALLE")
-      : "ALLE";
+  // Finn coachens ID via siste CoachingSession
+  const sisteSesjon = await prisma.coachingSession.findFirst({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    select: { coachId: true },
+  });
+  const coachId = sisteSesjon?.coachId ?? null;
 
-  const where: Prisma.ExerciseDefinitionWhereInput = {};
-  if (valgtArea !== "ALLE") where.pyramidArea = valgtArea;
-  if (valgtPhase !== "ALLE") where.lPhase = valgtPhase;
-
-  const [exercises, totalAlle, perArea] = await Promise.all([
-    prisma.exerciseDefinition.findMany({
-      where,
-      orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
-    }),
-    prisma.exerciseDefinition.count(),
-    prisma.exerciseDefinition.groupBy({
-      by: ["pyramidArea"],
-      _count: { _all: true },
-    }),
+  // Hent øvelser basert på aktiv fane
+  const [exercises, mineCount, coachCount] = await Promise.all([
+    fetchExercises(tab, user.id, coachId),
+    prisma.exerciseDefinition.count({ where: { source: "PLAYER", createdBy: user.id } }),
+    coachId
+      ? prisma.exerciseDefinition.count({
+          where: { source: "COACH", visibility: "COACH_PLAYERS", createdBy: coachId },
+        })
+      : Promise.resolve(0),
   ]);
 
-  function bygglenke(area: string, phase: string): string {
-    const sp = new URLSearchParams();
-    if (area !== "ALLE") sp.set("area", area);
-    if (phase !== "ALLE") sp.set("phase", phase);
-    const qs = sp.toString();
-    return `/portal/tren/ovelser${qs ? "?" + qs : ""}`;
-  }
-
-  const harAktiveFiltre = valgtArea !== "ALLE" || valgtPhase !== "ALLE";
-  const fornavn = user.name?.split(" ")[0] ?? null;
-
   return (
-    <div className="space-y-8">
-      {/* Hero */}
-      <div>
+    <div className="space-y-0">
+      {/* Header */}
+      <div className="mb-5">
         <Link
           href="/portal/tren"
           className="mb-4 inline-flex items-center gap-1 font-mono text-[12px] font-medium text-muted-foreground hover:text-foreground"
@@ -91,188 +68,262 @@ export default async function OvelserPage({
           Trening
         </Link>
 
-        <div className="flex flex-wrap items-start gap-6">
-          <div className="relative shrink-0">
-            <div className="grid h-16 w-16 place-items-center rounded-full bg-primary font-mono text-primary-foreground ring-4 ring-accent">
-              <Dumbbell size={26} strokeWidth={1.5} />
-            </div>
-          </div>
-          <div className="min-w-0 flex-1">
-            <PageHeader
-              eyebrow="PlayerHQ · Trening · Bibliotek"
-              titleLead="Drills og"
-              titleItalic="øvelser"
-              sub={`${exercises.length} øvelse${exercises.length === 1 ? "" : "r"} sortert etter pyramide-område og L-fase${fornavn ? `, ${fornavn}.` : "."}`}
-            />
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <StatPill label="Totalt" value={String(totalAlle)} />
-              <StatPill
-                label="Treff"
-                value={String(exercises.length)}
-                tone={harAktiveFiltre ? "accent" : "muted"}
-              />
-              {perArea.slice(0, 3).map((p) => (
-                <StatPill
-                  key={p.pyramidArea}
-                  label={p.pyramidArea}
-                  value={String(p._count._all)}
-                />
-              ))}
-            </div>
-          </div>
+        <div className="mx-3 rounded-[18px] bg-primary px-5 py-4">
+          <p className="font-mono text-[9.5px] font-semibold uppercase tracking-[0.16em] text-primary-foreground/65">
+            PlayerHQ · Trening
+          </p>
+          <h1 className="font-display mt-0.5 text-[20px] font-bold tracking-tight text-accent">
+            Øvelsesbibliotek
+          </h1>
         </div>
       </div>
 
-      {/* Insight-banner */}
-      {harAktiveFiltre && (
-        <div className="flex items-center gap-4 rounded-md border border-accent/50 bg-accent/15 px-6 py-4">
-          <TrendingUp size={18} strokeWidth={1.5} className="text-foreground" />
-          <p className="text-[14px] text-foreground">
-            Filtrerer på{" "}
-            <b>
-              {valgtArea !== "ALLE" ? labelOf(PYR_OMRADER, valgtArea) : "alle områder"}
-            </b>{" "}
-            ·{" "}
-            <b>
-              {valgtPhase !== "ALLE" ? labelOf(L_FASER, valgtPhase) : "alle L-faser"}
-            </b>
-            . Viser {exercises.length} av {totalAlle} øvelser.
-          </p>
-        </div>
-      )}
-
-      {/* Filter-strip */}
-      <section className="rounded-lg border border-border bg-card p-6">
-        <div className="mb-4 flex items-center gap-2">
-          <LayoutGrid
-            size={16}
-            strokeWidth={1.5}
-            className="text-muted-foreground"
-          />
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Filtrer
-          </span>
-        </div>
-        <div className="space-y-4">
-          <FilterRad
-            label="Område"
-            options={PYR_OMRADER}
-            valgt={valgtArea}
-            bygglenke={(v) => bygglenke(v, valgtPhase)}
-          />
-          <FilterRad
-            label="L-fase"
-            options={L_FASER}
-            valgt={valgtPhase}
-            bygglenke={(v) => bygglenke(valgtArea, v)}
-          />
-        </div>
-      </section>
-
-      {/* Resultat-grid */}
-      {exercises.length === 0 ? (
-        <EmptyState
-          icon={Dumbbell}
-          titleItalic="Ingen øvelser"
-          titleTrail={harAktiveFiltre ? "matcher filtrene" : "i biblioteket ennå"}
-          sub={
-            harAktiveFiltre
-              ? "Prøv å endre eller fjerne filtrene for å se flere øvelser."
-              : "Coachen din legger til øvelser etter hvert. Sjekk innom igjen senere."
-          }
-          cta={
-            harAktiveFiltre ? (
-              <Link
-                href="/portal/tren/ovelser"
-                className="inline-flex items-center rounded-full bg-primary px-6 py-2.5 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
-              >
-                Nullstill filtre
-              </Link>
-            ) : undefined
-          }
+      {/* Søkefelt */}
+      <div className="relative mx-3 mb-4">
+        <Search
+          size={14}
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
         />
-      ) : (
-        <div>
+        <div className="w-full rounded-xl bg-secondary/70 py-2.5 pl-9 pr-4 text-[13px] text-muted-foreground">
+          Søk i øvelser...
+        </div>
+      </div>
+
+      {/* Tab-bar */}
+      <div className="flex border-b border-border">
+        {TABS.map((t) => {
+          const aktiv = t.value === tab;
+          const href = `/portal/tren/ovelser${t.value === "alle" ? "" : `?tab=${t.value}`}`;
+          const count =
+            t.value === "mine" ? mineCount : t.value === "coach" ? coachCount : null;
+          return (
+            <Link
+              key={t.value}
+              href={href}
+              className={`flex-1 py-3 text-center text-[12px] font-medium transition-colors ${
+                aktiv
+                  ? "border-b-2 border-primary font-bold text-primary"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t.label}
+              {count !== null && count > 0 && (
+                <span
+                  className={`ml-1 rounded-full px-1.5 py-0.5 font-mono text-[9px] ${
+                    aktiv ? "bg-primary text-accent" : "bg-secondary text-muted-foreground"
+                  }`}
+                >
+                  {count}
+                </span>
+              )}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Innhold */}
+      <div className="px-4 py-4">
+        {tab === "mine" && (
           <div className="mb-4 flex items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              {exercises.length} øvelse{exercises.length === 1 ? "" : "r"}
+              Mine øvelser ({exercises.length})
+            </span>
+            <LeggTilKnapp />
+          </div>
+        )}
+
+        {tab === "coach" && (
+          <div className="mb-4">
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Fra din coach ({exercises.length})
             </span>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        )}
+
+        {tab === "alle" && (
+          <div className="mb-4">
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Alle øvelser ({exercises.length})
+            </span>
+          </div>
+        )}
+
+        {tab === "fys" && (
+          <div className="mb-4">
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              Fysiske øvelser ({exercises.length})
+            </span>
+          </div>
+        )}
+
+        {exercises.length === 0 ? (
+          <TomListe tab={tab} />
+        ) : (
+          <div className="space-y-2.5">
             {exercises.map((e) => (
-              <ExerciseCard key={e.id} exercise={e} />
+              <OvelseKort key={e.id} exercise={e} tab={tab} />
             ))}
           </div>
+        )}
+      </div>
+
+      <style>{`
+        .font-display {
+          font-family: var(--font-inter-tight, 'Inter Tight', system-ui, sans-serif);
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Data-henting
+// ---------------------------------------------------------------------------
+
+async function fetchExercises(
+  tab: Tab,
+  userId: string,
+  coachId: string | null,
+): Promise<ExerciseDefinition[]> {
+  if (tab === "mine") {
+    return prisma.exerciseDefinition.findMany({
+      where: { source: "PLAYER", createdBy: userId },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+  if (tab === "coach") {
+    if (!coachId) return [];
+    return prisma.exerciseDefinition.findMany({
+      where: { source: "COACH", visibility: "COACH_PLAYERS", createdBy: coachId },
+      orderBy: { name: "asc" },
+    });
+  }
+  if (tab === "fys") {
+    return prisma.exerciseDefinition.findMany({
+      where: { source: "SYSTEM", pyramidArea: "FYS" },
+      orderBy: { name: "asc" },
+    });
+  }
+  // "alle" — system-øvelser (SYSTEM)
+  return prisma.exerciseDefinition.findMany({
+    where: { source: "SYSTEM" },
+    orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Subkomponenter
+// ---------------------------------------------------------------------------
+
+function OvelseKort({
+  exercise,
+  tab,
+}: {
+  exercise: ExerciseDefinition;
+  tab: Tab;
+}) {
+  const erMin = tab === "mine";
+  const erCoach = tab === "coach";
+
+  return (
+    <div
+      className={`rounded-2xl border p-4 ${
+        erMin
+          ? "border-accent/60 bg-accent/10"
+          : erCoach
+            ? "border-primary/20 bg-primary/5"
+            : "border-border bg-card"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[14px] font-semibold text-foreground">
+            {exercise.name}
+          </p>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            {erMin && (
+              <span className="rounded-full bg-accent px-2 py-0.5 font-mono text-[10px] font-bold text-accent-foreground">
+                Min
+              </span>
+            )}
+            {erCoach && (
+              <span className="rounded-full bg-primary/15 px-2 py-0.5 font-mono text-[10px] font-bold text-primary">
+                Coach
+              </span>
+            )}
+            {!erMin && !erCoach && (
+              <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                {exercise.pyramidArea}
+              </span>
+            )}
+            {exercise.defaultRepsSets && (
+              <span className="font-mono text-[11px] text-muted-foreground">
+                {exercise.defaultRepsSets}
+              </span>
+            )}
+            {exercise.muscleGroups.length > 0 && (
+              <span className="font-mono text-[11px] text-muted-foreground">
+                {exercise.muscleGroups.slice(0, 2).join(", ")}
+                {exercise.muscleGroups.length > 2 &&
+                  ` +${exercise.muscleGroups.length - 2}`}
+              </span>
+            )}
+            {exercise.utstyr.length > 0 && (
+              <span className="font-mono text-[11px] text-muted-foreground">
+                {exercise.utstyr.slice(0, 2).join(" · ")}
+              </span>
+            )}
+          </div>
         </div>
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary">
+          <Dumbbell size={15} strokeWidth={1.5} className="text-muted-foreground" />
+        </div>
+      </div>
+      {exercise.description && (
+        <p className="mt-2 line-clamp-2 text-[12px] text-muted-foreground">
+          {exercise.description}
+        </p>
       )}
     </div>
   );
 }
 
-function labelOf(
-  options: { value: string; label: string }[],
-  v: string,
-): string {
-  return options.find((o) => o.value === v)?.label ?? v;
-}
-
-function StatPill({
-  label,
-  value,
-  tone = "muted",
-}: {
-  label: string;
-  value: string;
-  tone?: "muted" | "accent";
-}) {
-  const styles: Record<NonNullable<typeof tone>, string> = {
-    muted: "bg-secondary text-foreground border-border",
-    accent: "bg-accent/30 text-foreground border-accent/40",
+function TomListe({ tab }: { tab: Tab }) {
+  const meldinger: Record<Tab, { tittel: string; sub: string; visLeggTil: boolean }> = {
+    mine: {
+      tittel: "Ingen egne øvelser ennå",
+      sub: "Trykk «Legg til» for å opprette din første egendefinerte øvelse.",
+      visLeggTil: true,
+    },
+    coach: {
+      tittel: "Ingen coachøvelser delt",
+      sub: "Coachen din har ikke delt egne øvelser med deg ennå.",
+      visLeggTil: false,
+    },
+    alle: {
+      tittel: "Tom øvelsesbank",
+      sub: "Ingen øvelser er lagt til i systemet ennå.",
+      visLeggTil: false,
+    },
+    fys: {
+      tittel: "Ingen FYS-øvelser",
+      sub: "Ingen fysiske øvelser funnet i biblioteket.",
+      visLeggTil: false,
+    },
   };
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1 text-[12px] ${styles[tone]}`}
-    >
-      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-        {label}
-      </span>
-      <span className="font-mono font-semibold tabular-nums">{value}</span>
-    </span>
-  );
-}
 
-function FilterRad({
-  label,
-  options,
-  valgt,
-  bygglenke,
-}: {
-  label: string;
-  options: { value: string; label: string }[];
-  valgt: string;
-  bygglenke: (verdi: string) => string;
-}) {
+  const { tittel, sub, visLeggTil } = meldinger[tab];
+
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}:
-      </span>
-      {options.map((o) => {
-        const aktiv = o.value === valgt;
-        return (
-          <Link
-            key={o.value}
-            href={bygglenke(o.value)}
-            className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
-              aktiv
-                ? "bg-primary text-primary-foreground"
-                : "border border-input bg-card text-foreground hover:border-border hover:bg-secondary"
-            }`}
-          >
-            {o.label}
-          </Link>
-        );
-      })}
+    <div className="flex flex-col items-center gap-4 py-12 text-center">
+      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary">
+        <User size={22} strokeWidth={1.5} className="text-muted-foreground" />
+      </div>
+      <div>
+        <p className="font-semibold text-foreground">{tittel}</p>
+        <p className="mt-1 max-w-[220px] text-[13px] text-muted-foreground">{sub}</p>
+      </div>
+      {visLeggTil && <LeggTilKnapp />}
     </div>
   );
 }

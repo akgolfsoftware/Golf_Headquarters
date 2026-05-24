@@ -95,6 +95,19 @@ enum SessionEnvironment {
   GYM
 }
 
+// Kilde for en ExerciseDefinition — styrer hvem som eier og kan redigere
+enum ExerciseSource {
+  SYSTEM  // Seedet av AK Golf — ikke redigerbart av brukere
+  COACH   // Opprettet av coach — synlig for coachens spillere
+  PLAYER  // Opprettet av spiller — synlig for spiller + tildelt coach
+}
+
+// Synlighet for COACH/PLAYER-øvelser
+enum ExerciseVisibility {
+  PRIVATE        // Kun skaperen + tildelt coach
+  COACH_PLAYERS  // Alle coachens spillere (kun for COACH-source)
+}
+
 // P14: spiller-status for permisjon, skade, retur til spill
 enum UserStatus {
   AKTIV // Normal aktivitet
@@ -802,6 +815,12 @@ model ExerciseDefinition {
   defaultReps        Int?
   csTargetByKategori Json? // {A:95,B:90,...} per NGF-kategori
 
+  // Egendefinerte øvelser (COACH/PLAYER-source)
+  source       ExerciseSource      @default(SYSTEM)
+  visibility   ExerciseVisibility  @default(PRIVATE)
+  imageUrl     String?             // Supabase Storage URL for bilde/screenshot
+  muscleGroups String[]            @default([]) // ["glutes","hamstrings",...]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -811,6 +830,7 @@ model ExerciseDefinition {
   @@index([pyramidArea])
   @@index([skillArea])
   @@index([minKategori, maxKategori])
+  @@index([source, createdBy])
   @@map("exercise_definitions")
 }
 
