@@ -114,11 +114,12 @@ export function AddExerciseSheet({
             </h2>
           </div>
           <button
+            type="button"
             onClick={onClose}
             aria-label="Lukk"
             className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-accent hover:bg-white/20 transition-colors"
           >
-            <X size={16} />
+            <X size={16} aria-hidden />
           </button>
         </div>
 
@@ -181,8 +182,8 @@ export function AddExerciseSheet({
                   onClick={() => toggleMuskel(m)}
                 />
               ))}
-              <button className="chip-add">
-                <Plus size={12} />
+              <button type="button" className="chip-add">
+                <Plus size={12} aria-hidden />
                 Legg til
               </button>
             </div>
@@ -199,8 +200,8 @@ export function AddExerciseSheet({
                   onClick={() => toggleFasilitet(f)}
                 />
               ))}
-              <button className="chip-add">
-                <Plus size={12} />
+              <button type="button" className="chip-add">
+                <Plus size={12} aria-hidden />
                 Legg til
               </button>
             </div>
@@ -208,9 +209,9 @@ export function AddExerciseSheet({
 
           {/* Bilde upload */}
           <Field label="Bilde / screenshot" optional>
-            <button className="w-full rounded-2xl border-2 border-dashed border-border bg-secondary/30 py-6 flex flex-col items-center gap-2.5 hover:border-primary/40 hover:bg-primary/5 transition-colors">
+            <button type="button" className="w-full rounded-2xl border-2 border-dashed border-border bg-secondary/30 py-6 flex flex-col items-center gap-2.5 hover:border-primary/40 hover:bg-primary/5 transition-colors">
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-accent">
-                <Camera size={20} />
+                <Camera size={20} aria-hidden />
               </div>
               <div className="text-center">
                 <p className="text-[13.5px] font-semibold text-foreground">
@@ -244,11 +245,12 @@ export function AddExerciseSheet({
         {/* Footer */}
         <div className="shrink-0 border-t border-border bg-card px-5 py-4 flex flex-col items-center gap-2.5">
           <button
+            type="button"
             onClick={handleLagre}
             disabled={!navn.trim() || isPending}
             className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-[15px] font-semibold text-accent shadow-lg shadow-primary/20 transition-opacity disabled:opacity-50"
           >
-            <Check size={15} />
+            <Check size={15} aria-hidden />
             {lagret ? "Lagret!" : isPending ? "Lagrer …" : "Lagre øvelse"}
           </button>
           <p className="font-mono text-[10.5px] text-muted-foreground tracking-wide">
@@ -337,14 +339,16 @@ function ChipToggle({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
+      aria-pressed={selected}
       className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-medium transition-all ${
         selected
           ? "bg-accent text-foreground border-2 border-accent/70 font-semibold"
           : "bg-secondary text-foreground border-2 border-transparent hover:border-border"
       }`}
     >
-      {selected && <Check size={11} strokeWidth={2.5} />}
+      {selected && <Check size={11} strokeWidth={2.5} aria-hidden />}
       {label}
     </button>
   );
