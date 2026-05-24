@@ -16,19 +16,30 @@ import { ExternalLink, Lock, Plus, RefreshCw, Sparkles } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
 import { SourceBadge, WorkspaceTabs, VisibilityPill } from "@/components/workspace/primitives";
+import { getNotionConnectionForUser } from "@/lib/notion/client";
 
 export const dynamic = "force-dynamic";
 
 export default async function WorkspaceNotionPage({
   searchParams,
 }: {
-  searchParams: Promise<{ state?: string }>;
+  searchParams: Promise<{ state?: string; error?: string }>;
 }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const sp = await searchParams;
-  const state = sp.state === "connected" ? "connected" : "empty";
 
   const isAdmin = user.role === "ADMIN";
+  const connection = isAdmin ? await getNotionConnectionForUser(user.id) : null;
+
+  // I prod: state følger faktisk DB-state. Dev-toggle (?state=) overstyrer
+  // bare når NODE_ENV !== production.
+  const realState: "empty" | "connected" = connection ? "connected" : "empty";
+  const state =
+    process.env.NODE_ENV !== "production" && sp.state
+      ? sp.state === "connected"
+        ? "connected"
+        : "empty"
+      : realState;
 
   return (
     <div className="space-y-6">
@@ -81,8 +92,23 @@ export default async function WorkspaceNotionPage({
         </div>
       ) : null}
 
+      {sp.error ? (
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/[0.06] p-4 text-sm text-destructive">
+          Feil ved tilkobling: <code>{sp.error}</code>
+        </div>
+      ) : null}
+
       <div className="pb-12">
-        {state === "empty" ? <EmptyState /> : <ConnectedState />}
+        {state === "empty" ? (
+          <EmptyState canConnect={isAdmin} />
+        ) : (
+          <ConnectedState
+            workspaceName={connection?.workspaceName ?? "Notion workspace"}
+            connectedSince={connection?.createdAt ?? null}
+            lastSyncAt={connection?.lastSyncAt ?? null}
+            databases={connection?.databases ?? []}
+          />
+        )}
       </div>
     </div>
   );
@@ -109,7 +135,7 @@ function NotionLogo({ size = 48 }: { size?: number }) {
   );
 }
 
-function EmptyState() {
+function EmptyState({ canConnect }: { canConnect: boolean }) {
   return (
     <div className="mx-auto max-w-3xl space-y-7">
       {/* Hero-card */}
@@ -175,9 +201,18 @@ function EmptyState() {
             Du blir sendt til Notions autorisering. Tar 30 sek.
           </div>
         </div>
-        <AthleticButton variant="lime" size="lg">
-          <ExternalLink className="h-4 w-4" /> Koble til Notion
-        </AthleticButton>
+        {canConnect ? (
+          <a
+            href="/api/notion/oauth/start"
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 font-display text-sm font-semibold text-primary hover:opacity-90"
+          >
+            <ExternalLink className="h-4 w-4" /> Koble til Notion
+          </a>
+        ) : (
+          <span className="font-mono text-[11px] uppercase tracking-[0.06em] text-white/60">
+            Kun ADMIN
+          </span>
+        )}
       </div>
 
       {/* Sikkerhets-card */}
@@ -194,7 +229,34 @@ function EmptyState() {
 
 // ────────────────────────────────────────────────────── CONNECTED STATE ──
 
-function ConnectedState() {
+type DbLink = {
+  id: string;
+  navn: string;
+  type: string;
+  syncMode: string;
+  pagesCount: number;
+  lastSyncAt: Date | null;
+};
+
+function ConnectedState({
+  workspaceName,
+  connectedSince,
+  lastSyncAt,
+  databases,
+}: {
+  workspaceName: string;
+  connectedSince: Date | null;
+  lastSyncAt: Date | null;
+  databases: DbLink[];
+}) {
+  const totalPages = databases.reduce((sum, d) => sum + d.pagesCount, 0);
+  const sinceText = connectedSince
+    ? `SIDEN ${connectedSince.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" }).toUpperCase()}`
+    : "—";
+  const lastSyncText = lastSyncAt
+    ? `Sist synket ${minutesAgo(lastSyncAt)} · ${totalPages} sider`
+    : `Ikke synket ennå · ${totalPages} sider`;
+
   return (
     <div className="space-y-6">
       {/* Status-card */}
@@ -207,23 +269,32 @@ function ConnectedState() {
               TILKOBLET
             </span>
             <span className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
-              SIDEN 14. JAN 2026
+              {sinceText}
             </span>
           </div>
           <div className="font-display text-[17px] font-semibold">
-            Anders Kvam · workspace
+            {workspaceName}
           </div>
           <div className="font-mono mt-1 text-[11px] uppercase tracking-[0.04em] text-muted-foreground">
-            Sist synket for 4 min siden · 461 sider
+            {lastSyncText}
           </div>
         </div>
         <div className="flex gap-2">
-          <AthleticButton variant="ghost-light" size="sm">
-            <RefreshCw className="h-3.5 w-3.5" /> Synk nå
-          </AthleticButton>
-          <AthleticButton variant="ghost-light" size="sm" className="text-destructive">
-            Koble fra
-          </AthleticButton>
+          <form action="/api/notion/sync" method="post">
+            <AthleticButton variant="ghost-light" size="sm" type="submit">
+              <RefreshCw className="h-3.5 w-3.5" /> Synk nå
+            </AthleticButton>
+          </form>
+          <form action="/api/notion/oauth/disconnect" method="post">
+            <AthleticButton
+              variant="ghost-light"
+              size="sm"
+              className="text-destructive"
+              type="submit"
+            >
+              Koble fra
+            </AthleticButton>
+          </form>
         </div>
       </div>
 
@@ -231,54 +302,57 @@ function ConnectedState() {
       <section>
         <header className="mb-3 flex items-baseline justify-between">
           <div className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-            SYNKEDE DATABASER · 4
+            SYNKEDE DATABASER · {databases.length}
           </div>
-          <AthleticButton variant="ghost-light" size="sm">
-            <Plus className="h-3.5 w-3.5" /> Legg til database
+          <AthleticButton variant="ghost-light" size="sm" disabled>
+            <Plus className="h-3.5 w-3.5" /> Legg til database (v1.2)
           </AthleticButton>
         </header>
         <div className="overflow-hidden rounded-2xl border border-border bg-card">
-          {[
-            { name: "Tasks · 2026", sider: 312, type: "OPPGAVER", sync: "AUTO" as const },
-            { name: "Projects · Master", sider: 18, type: "PROSJEKTER", sync: "AUTO" as const },
-            { name: "Mulligan · drift", sider: 84, type: "OPPGAVER", sync: "MANUELL" as const },
-            { name: "Privat · todos", sider: 47, type: "OPPGAVER", sync: "AUTO" as const },
-          ].map((db, i, arr) => (
-            <div
-              key={db.name}
-              className={`grid grid-cols-[32px_1fr_100px_100px_100px] items-center gap-3.5 px-5 py-3.5 ${
-                i < arr.length - 1 ? "border-b border-border" : ""
-              }`}
-            >
-              <div className="font-display flex h-7 w-7 items-center justify-center rounded-md bg-foreground text-[11px] font-bold text-card">
-                N
-              </div>
-              <div>
-                <div className="font-display text-sm font-semibold">{db.name}</div>
-                <div className="font-mono mt-0.5 text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground">
-                  {db.sider} sider · {db.type}
-                </div>
-              </div>
-              <span
-                className={`font-mono rounded-full px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.08em] ${
-                  db.sync === "AUTO"
-                    ? "bg-primary/10 text-primary"
-                    : "bg-amber-100 text-amber-900"
+          {databases.length === 0 ? (
+            <div className="p-6 text-center text-[12.5px] text-muted-foreground">
+              Ingen databaser koblet til ennå. Property-mapping og database-tilkobling
+              kommer i v1.2 — i v1.1 må linkene legges inn manuelt via Prisma Studio.
+            </div>
+          ) : (
+            databases.map((db, i, arr) => (
+              <div
+                key={db.id}
+                className={`grid grid-cols-[32px_1fr_100px_100px_100px] items-center gap-3.5 px-5 py-3.5 ${
+                  i < arr.length - 1 ? "border-b border-border" : ""
                 }`}
               >
-                {db.sync}
-              </span>
-              <div className="font-mono text-right text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground">
-                sist 4 min
+                <div className="font-display flex h-7 w-7 items-center justify-center rounded-md bg-foreground text-[11px] font-bold text-card">
+                  N
+                </div>
+                <div>
+                  <div className="font-display text-sm font-semibold">{db.navn}</div>
+                  <div className="font-mono mt-0.5 text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground">
+                    {db.pagesCount} sider · {db.type}
+                  </div>
+                </div>
+                <span
+                  className={`font-mono rounded-full px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.08em] ${
+                    db.syncMode === "AUTO"
+                      ? "bg-primary/10 text-primary"
+                      : "bg-amber-100 text-amber-900"
+                  }`}
+                >
+                  {db.syncMode}
+                </span>
+                <div className="font-mono text-right text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground">
+                  {db.lastSyncAt ? minutesAgo(db.lastSyncAt) : "aldri"}
+                </div>
+                <button
+                  type="button"
+                  className="font-mono justify-self-end rounded-full border border-border bg-card px-3 py-1 text-[10px] font-bold uppercase tracking-[0.06em] opacity-40"
+                  disabled
+                >
+                  v1.2
+                </button>
               </div>
-              <button
-                type="button"
-                className="font-mono justify-self-end rounded-full border border-border bg-card px-3 py-1 text-[10px] font-bold uppercase tracking-[0.06em]"
-              >
-                Konfigurer
-              </button>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
 
@@ -419,4 +493,17 @@ function ConnectedState() {
       </div>
     </div>
   );
+}
+
+
+// ---------- helpers ----------
+
+function minutesAgo(date: Date): string {
+  const mins = Math.round((Date.now() - date.getTime()) / 60000);
+  if (mins < 1) return "nå";
+  if (mins < 60) return `${mins} min siden`;
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return `${hrs}t siden`;
+  const days = Math.round(hrs / 24);
+  return `${days}d siden`;
 }

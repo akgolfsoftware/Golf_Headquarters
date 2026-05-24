@@ -18,18 +18,20 @@ import {
   WorkspaceTabs,
   TaskRow,
 } from "@/components/workspace/primitives";
-import { SAMPLE_TASKS, type SampleTask } from "@/components/workspace/sample-data";
+import { type SampleTask } from "@/components/workspace/sample-data";
+import { getTasksForUser } from "@/lib/notion/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function WorkspaceMinUkePage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  // Aggregér data (i prod: hent fra OppgaveCache filtrert på user)
-  const today = SAMPLE_TASKS.filter((t) => t.today);
-  const brenner = SAMPLE_TASKS.filter((t) => t.prio === "BRENNER" && !t.done);
-  const week = SAMPLE_TASKS.filter((t) => !t.today && !t.done).slice(0, 5);
-  const later = SAMPLE_TASKS.slice(10);
+  // Henter tasks fra OppgaveCache hvis Notion er koblet til, ellers SAMPLE_TASKS.
+  const tasks = await getTasksForUser(user.id);
+  const today = tasks.filter((t) => t.today);
+  const brenner = tasks.filter((t) => t.prio === "BRENNER" && !t.done);
+  const week = tasks.filter((t) => !t.today && !t.done).slice(0, 5);
+  const later = tasks.slice(10);
 
   const todayDone = today.filter((t) => t.done).length;
 

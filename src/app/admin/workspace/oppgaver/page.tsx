@@ -27,10 +27,10 @@ import {
   type StatusKind,
 } from "@/components/workspace/primitives";
 import {
-  SAMPLE_TASKS,
   SAMPLE_PEOPLE,
   type SampleTask,
 } from "@/components/workspace/sample-data";
+import { getTasksForUser } from "@/lib/notion/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -41,17 +41,19 @@ export default async function WorkspaceOppgaverPage({
 }: {
   searchParams: Promise<{ view?: string }>;
 }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const sp = await searchParams;
   const view: View = ["liste", "kanban", "kalender"].includes(sp.view as View)
     ? (sp.view as View)
     : "liste";
 
+  const tasks = await getTasksForUser(user.id);
+
   const counts = {
-    todo: SAMPLE_TASKS.filter((t) => t.status === "TODO" && !t.done).length,
-    doing: SAMPLE_TASKS.filter((t) => t.status === "DOING").length,
-    done: SAMPLE_TASKS.filter((t) => t.done).length,
-    blokkert: SAMPLE_TASKS.filter((t) => t.status === "BLOKKERT").length,
+    todo: tasks.filter((t) => t.status === "TODO" && !t.done).length,
+    doing: tasks.filter((t) => t.status === "DOING").length,
+    done: tasks.filter((t) => t.done).length,
+    blokkert: tasks.filter((t) => t.status === "BLOKKERT").length,
   };
 
   return (
@@ -91,9 +93,9 @@ export default async function WorkspaceOppgaverPage({
       <FilterBar counts={counts} />
 
       <div className="pb-12">
-        {view === "liste" ? <ListView /> : null}
-        {view === "kanban" ? <KanbanView /> : null}
-        {view === "kalender" ? <CalView /> : null}
+        {view === "liste" ? <ListView tasks={tasks} /> : null}
+        {view === "kanban" ? <KanbanView tasks={tasks} /> : null}
+        {view === "kalender" ? <CalView tasks={tasks} /> : null}
       </div>
     </div>
   );
@@ -207,12 +209,12 @@ function FilterPill({
 
 // ────────────────────────────────────────────────────────────── LIST VIEW ──
 
-function ListView() {
+function ListView({ tasks }: { tasks: SampleTask[] }) {
   const grouped: Record<StatusKind, SampleTask[]> = {
-    DOING: SAMPLE_TASKS.filter((t) => t.status === "DOING"),
-    TODO: SAMPLE_TASKS.filter((t) => t.status === "TODO" && !t.done),
-    BLOKKERT: SAMPLE_TASKS.filter((t) => t.status === "BLOKKERT"),
-    DONE: SAMPLE_TASKS.filter((t) => t.done),
+    DOING: tasks.filter((t) => t.status === "DOING"),
+    TODO: tasks.filter((t) => t.status === "TODO" && !t.done),
+    BLOKKERT: tasks.filter((t) => t.status === "BLOKKERT"),
+    DONE: tasks.filter((t) => t.done),
   };
 
   return (
@@ -291,23 +293,31 @@ function ListView() {
 
 // ──────────────────────────────────────────────────────────── KANBAN VIEW ──
 
-function KanbanView() {
+function KanbanView({ tasks }: { tasks: SampleTask[] }) {
   return (
     <div className="px-1">
       <div className="grid grid-cols-1 gap-3.5 md:grid-cols-3">
-        <KanbanCol status="TODO" />
-        <KanbanCol status="DOING" accent />
-        <KanbanCol status="DONE" />
+        <KanbanCol status="TODO" tasks={tasks} />
+        <KanbanCol status="DOING" tasks={tasks} accent />
+        <KanbanCol status="DONE" tasks={tasks} />
       </div>
     </div>
   );
 }
 
-function KanbanCol({ status, accent = false }: { status: StatusKind; accent?: boolean }) {
+function KanbanCol({
+  status,
+  tasks: allTasks,
+  accent = false,
+}: {
+  status: StatusKind;
+  tasks: SampleTask[];
+  accent?: boolean;
+}) {
   const tasks =
     status === "DONE"
-      ? SAMPLE_TASKS.filter((t) => t.done)
-      : SAMPLE_TASKS.filter((t) => t.status === status && !t.done);
+      ? allTasks.filter((t) => t.done)
+      : allTasks.filter((t) => t.status === status && !t.done);
 
   return (
     <div className="flex min-h-[540px] flex-col gap-2.5 rounded-2xl bg-muted/30 p-3">
@@ -383,7 +393,7 @@ function KanbanCard({ task: t }: { task: SampleTask }) {
 
 // ────────────────────────────────────────────────────────── CALENDAR VIEW ──
 
-function CalView() {
+function CalView({ tasks }: { tasks: SampleTask[] }) {
   const days = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
   const dates = ["26", "27", "28", "29", "30", "31", "01"];
 
@@ -415,7 +425,7 @@ function CalView() {
 
         <div className="grid min-h-[400px] grid-cols-7">
           {days.map((d, i) => {
-            const dayTasks = SAMPLE_TASKS.filter((_, idx) => idx % 7 === i).slice(
+            const dayTasks = tasks.filter((_, idx) => idx % 7 === i).slice(
               0,
               2 + (i % 2),
             );
