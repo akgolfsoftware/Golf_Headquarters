@@ -24,7 +24,8 @@ import {
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { AthleticBadge } from "@/components/athletic/badge";
 import { lagreNotater, loggMilepael } from "./actions";
 
 type RadarKey = "fysisk" | "teknikk" | "taktikk" | "mental" | "motivasjon";
@@ -99,22 +100,32 @@ export default async function TalentProfil({
   const inkludertFra = formatDato(t.inkludertFra.toISOString());
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        eyebrow={`Talent · ${t.niva}`}
-        titleItalic={t.user.name?.split(" ")[0] ?? "Talent"}
-        titleTrail={t.user.name?.split(" ").slice(1).join(" ") ?? ""}
-        sub={`I talent-program siden ${inkludertFra}`}
-        actions={
-          <Link
-            href="/admin/talent"
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+    <DetailShell
+      breadcrumb={[
+        { label: "Talent", href: "/admin/talent" },
+        { label: t.user.name ?? "Spiller" },
+      ]}
+      backHref="/admin/talent"
+      title={
+        <>
+          <em
+            className="not-italic"
+            style={{
+              fontFamily: "'Instrument Serif', serif",
+              fontStyle: "italic",
+              color: "#005840",
+            }}
           >
-            <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-            Tilbake
-          </Link>
-        }
-      />
+            {t.user.name?.split(" ")[0] ?? "Talent"}
+          </em>
+          {t.user.name?.split(" ").slice(1).join(" ") && (
+            <> {t.user.name.split(" ").slice(1).join(" ")}</>
+          )}
+        </>
+      }
+      subtitle={`I talent-program siden ${inkludertFra}`}
+      statusPill={<AthleticBadge variant="primary">{t.niva.toUpperCase()}</AthleticBadge>}
+    >
 
       {/* Hero-card */}
       <section className="rounded-lg border border-border bg-card p-8">
@@ -341,7 +352,7 @@ export default async function TalentProfil({
           />
         </Link>
       </section>
-    </div>
+    </DetailShell>
   );
 }
 
