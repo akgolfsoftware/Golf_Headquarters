@@ -1,6 +1,6 @@
 /**
  * PILOT — PlayerHQ Ny-økt-wizard (6 steg)
- * Dynamic route: /ny-okt-demo/[1..6]
+ * Dynamic route: /demos/ny-okt/[1..6] (under (internal) → ADMIN-only)
  * Bygd direkte fra wireframe/design-files-v2/playerhq-C/{01-06}-ny-okt-steg-*.html
  *
  * Mock-data for Markus R. Pedersen som lager en egen TEK-økt på Mulligan Studio 2.
@@ -148,7 +148,7 @@ function FooterBar({ current }: { current: StegId }) {
       <div className="flex gap-2.5">
         {prev ? (
           <Link
-            href={`/ny-okt-demo/${prev}`}
+            href={`/demos/ny-okt/${prev}`}
             className="inline-flex items-center rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
           >
             ← Tilbake
@@ -163,7 +163,7 @@ function FooterBar({ current }: { current: StegId }) {
         <span className="text-[12px] text-muted-foreground">Steg {idx} / 6</span>
         {next ? (
           <Link
-            href={`/ny-okt-demo/${next}`}
+            href={`/demos/ny-okt/${next}`}
             className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90"
           >
             {nextLabels[idx]}
@@ -981,4 +981,3 @@ function SectionHead({
     </div>
   );
 }
-

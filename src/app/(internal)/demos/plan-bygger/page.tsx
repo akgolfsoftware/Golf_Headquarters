@@ -1,7 +1,7 @@
 /**
  * PILOT — CoachHQ Plan-bygger · Steg 4 (Pyramide-allokasjon)
  * Bygd direkte fra wireframe/design-files-v2/coachhq-A/02-plan-bygger.html
- * URL: /plan-bygger-demo
+ * URL: /demos/plan-bygger (under (internal) → ADMIN-only)
  *
  * Mock-data for Markus Roinås Pedersen. Bytt til Prisma-henting senere.
  */

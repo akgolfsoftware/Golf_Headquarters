@@ -1,6 +1,6 @@
 /**
  * PILOT — NewPlan modal-flyt (4 steg)
- * Dynamic route: /newplan-demo/[1..4]
+ * Dynamic route: /demos/newplan/[1..4] (under (internal) → ADMIN-only)
  * Bygd direkte fra wireframe/design-files-v2/modaler-A/{01..04}-newplan-steg*.html
  *
  * Mock-data for Markus Roinås Pedersen mot Sørlandsåpent (mai-juni 2026).
@@ -174,7 +174,7 @@ function ModalFooter({ current }: { current: StegId }) {
       <div className="flex items-center gap-2">
         {prev ? (
           <Link
-            href={`/newplan-demo/${prev}`}
+            href={`/demos/newplan/${prev}`}
             className="inline-flex items-center rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
           >
             ← Tilbake
@@ -189,7 +189,7 @@ function ModalFooter({ current }: { current: StegId }) {
         )}
         {next ? (
           <Link
-            href={`/newplan-demo/${next}`}
+            href={`/demos/newplan/${next}`}
             className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             {nextLabels[idx]}
@@ -354,7 +354,7 @@ function Steg2() {
           </div>
         </div>
         <Link
-          href="/newplan-demo/1"
+          href="/demos/newplan/1"
           className="rounded-md px-2.5 py-1 text-[12px] text-muted-foreground transition-colors hover:bg-card hover:text-foreground"
         >
           Endre ←

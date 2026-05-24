@@ -1,7 +1,7 @@
 /**
  * PILOT — PlayerHQ TrackMan Import (3-stegs modal)
  * Bygd direkte fra wireframe/design-files-v2/modaler-D/d03–d05-trackman-import-*.html
- * URL: /trackman-import-demo/1 | /2 | /3
+ * URL: /demos/trackman-import/1 | /2 | /3 (under (internal) → ADMIN-only)
  *
  * Dynamic route med [steg]. Steg validert til "1" | "2" | "3", ellers notFound().
  */
@@ -391,7 +391,7 @@ function Footer({ current }: { current: Steg }) {
       <div className="flex gap-2">
         {prev && (
           <Link
-            href={`/trackman-import-demo/${prev}`}
+            href={`/demos/trackman-import/${prev}`}
             className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
           >
             <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
@@ -400,7 +400,7 @@ function Footer({ current }: { current: Steg }) {
         )}
         {next ? (
           <Link
-            href={`/trackman-import-demo/${next}`}
+            href={`/demos/trackman-import/${next}`}
             className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             {primaryLabel}

@@ -1,6 +1,6 @@
 /**
  * PILOT — CoachHQ Plan-bygger · Wizard (6 steg)
- * Dynamic route: /plan-bygger-demo/[1..6]
+ * Dynamic route: /demos/plan-bygger/[1..6] (under (internal) → ADMIN-only)
  * Bygd direkte fra wireframe/design-files-v2/coachhq-A/02-plan-bygger-steg-{1,2,3,5,6}.html + 02-plan-bygger.html
  *
  * Mock-data for Markus Roinås Pedersen mot Sørlandsåpent 2026. Bytt til Prisma-henting senere.
@@ -230,7 +230,7 @@ function FooterBar({ current }: { current: StegId }) {
       <div className="flex gap-2.5">
         {prev ? (
           <Link
-            href={`/plan-bygger-demo/${prev}`}
+            href={`/demos/plan-bygger/${prev}`}
             className="inline-flex items-center rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
           >
             {prevLabels[idx]}
@@ -245,7 +245,7 @@ function FooterBar({ current }: { current: StegId }) {
         )}
         {next ? (
           <Link
-            href={`/plan-bygger-demo/${next}`}
+            href={`/demos/plan-bygger/${next}`}
             className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             {nextLabels[idx]}
@@ -1245,7 +1245,7 @@ function Step6() {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <SumBlock title="Plan-detaljer" editHref="/plan-bygger-demo/2">
+        <SumBlock title="Plan-detaljer" editHref="/demos/plan-bygger/2">
           <SumRow label="Navn" value="Sørlandsåpent-prep" />
           <SumRow label="Spiller" value="Markus R. Pedersen" />
           <SumRow label="Coach" value="Anders K." />
@@ -1255,7 +1255,7 @@ function Step6() {
           <SumRow label="Peak" value="2.–4. juni" last />
         </SumBlock>
 
-        <SumBlock title="Faser og volum" editHref="/plan-bygger-demo/3">
+        <SumBlock title="Faser og volum" editHref="/demos/plan-bygger/3">
           <SumRow label="● Base" labelColor="#2E8EFF" value="14 d · 6 økter" />
           <SumRow label="● Forberedelse" labelColor="#FF962E" value="7 d · 3 økter" />
           <SumRow label="● Spesifikk" labelColor="#D96B2A" value="21 d · 10 økter" />
@@ -1264,7 +1264,7 @@ function Step6() {
           <SumRow label="Totalt" value="24 økter · 1 800 min" last />
         </SumBlock>
 
-        <SumBlock title="Pyramide-allokering" editHref="/plan-bygger-demo/4">
+        <SumBlock title="Pyramide-allokering" editHref="/demos/plan-bygger/4">
           <SumRow label="Foundations" value="32 %" />
           <SumRow label="Skills" value="38 %" />
           <SumRow label="Strategy" value="18 %" />

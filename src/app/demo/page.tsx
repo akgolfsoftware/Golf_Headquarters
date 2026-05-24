@@ -23,11 +23,11 @@ const GROUPS: Group[] = [
     description: "Spillerprofil, plan-bygger, plan-management og approvals",
     pilots: [
       { url: "/360-demo", title: "360-profil (Markus)" },
-      { url: "/plan-bygger-demo", title: "Plan-bygger (6-steg wizard)" },
+      { url: "/demos/plan-bygger", title: "Plan-bygger (6-steg wizard)" },
       { url: "/plan-detalj-demo", title: "Plan-detalj" },
       { url: "/plan-edit-demo", title: "Plan-edit" },
       { url: "/plan-templates-demo", title: "Plan-templates" },
-      { url: "/newplan-demo", title: "Ny plan (modal-wizard)" },
+      { url: "/demos/newplan/1", title: "Ny plan (modal-wizard)" },
       { url: "/editplan-demo", title: "Rediger plan (modal)" },
       { url: "/plan-approval-demo", title: "Plan-godkjenning" },
       { url: "/plan-share-demo", title: "Plan-deling" },
@@ -127,7 +127,7 @@ const GROUPS: Group[] = [
     title: "PlayerHQ — Wizards & Kalender",
     description: "Ny økt, ønsket økt, tren-kalender",
     pilots: [
-      { url: "/ny-okt-demo", title: "Ny økt (6-steg wizard)" },
+      { url: "/demos/ny-okt/1", title: "Ny økt (6-steg wizard)" },
       { url: "/onskeligokt-demo", title: "Ønskelig økt" },
       { url: "/tren-kalender-demo", title: "Tren-kalender" },
       { url: "/treningsdetalj-demo", title: "Trenings-detalj" },
@@ -242,7 +242,7 @@ const GROUPS: Group[] = [
     pilots: [
       { url: "/round-detail-demo", title: "Round detail" },
       { url: "/round-insight-demo", title: "Round insight" },
-      { url: "/trackman-import-demo", title: "Trackman import (steg)" },
+      { url: "/demos/trackman-import/1", title: "Trackman import (steg)" },
       { url: "/comparison-demo", title: "Sammenligning" },
       { url: "/bulk-approve-demo", title: "Bulk approve" },
     ],
