@@ -17,6 +17,90 @@ import {
   recordChargeRefund,
 } from "@/lib/payments/record";
 import { recordWebhookFailure } from "@/lib/webhook-retry";
+import { notify } from "@/lib/notifications";
+import { resendKlient, FRA_EPOST } from "@/lib/email";
+
+/**
+ * B4 — Varsle coach om ny bekreftet booking.
+ * Sender in-app-notification til coachen tilknyttet tjenesten,
+ * samt en kortfattet e-post til coaches e-postadresse.
+ *
+ * Best-effort: feiler stille slik at webhook-responsen ikke blokkeres.
+ */
+async function notifyCoachOnBooking(bookingId: string): Promise<void> {
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: {
+      serviceType: {
+        select: { name: true, coachUserId: true },
+      },
+      user: { select: { name: true } },
+      location: { select: { name: true } },
+    },
+  });
+  if (!booking) return;
+
+  const coachUserId = booking.serviceType.coachUserId;
+  const spillerNavn = booking.user?.name ?? booking.guestName ?? "Gjest";
+
+  const dato = booking.startAt.toLocaleString("nb-NO", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Europe/Oslo",
+  });
+  const tidStr = `${spillerNavn} · ${booking.serviceType.name} · ${dato}`;
+
+  // Hvem skal varsles:
+  // 1. Coachen knyttet til tjenesten (hvis finnes)
+  // 2. Alle ADMIN-brukere (backup — Anders er admin)
+  const mottakere = new Set<string>();
+  if (coachUserId) {
+    mottakere.add(coachUserId);
+  }
+  // Hent alle ADMIN-brukere
+  const admins = await prisma.user.findMany({
+    where: { role: "ADMIN" },
+    select: { id: true, email: true },
+  });
+  for (const a of admins) {
+    mottakere.add(a.id);
+  }
+
+  // In-app-varsling til alle mottakere
+  for (const userId of mottakere) {
+    await notify({
+      userId,
+      type: "booking",
+      title: "Ny booking bekreftet",
+      body: tidStr,
+      link: "/admin/bookings",
+    });
+  }
+
+  // E-post til coach/admin (Anders sitt alias) — best-effort
+  const adminEmails = admins.map((a) => a.email).filter(Boolean) as string[];
+  if (adminEmails.length > 0) {
+    try {
+      const resend = resendKlient();
+      await resend.emails.send({
+        from: FRA_EPOST,
+        to: adminEmails,
+        subject: `Ny booking: ${spillerNavn} — ${booking.serviceType.name}`,
+        html: `<p style="font-family:system-ui,sans-serif;max-width:520px;margin:24px auto;color:#0A1F17;line-height:1.6;">
+<strong>Ny booking bekreftet via AK Golf</strong><br/><br/>
+Spiller: <strong>${spillerNavn}</strong><br/>
+Tjeneste: ${booking.serviceType.name}<br/>
+Tid: ${dato}<br/>
+Sted: ${booking.location.name}<br/>
+<br/>
+<a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no"}/admin/bookings" style="color:#005840;">Se alle bookinger →</a>
+</p>`,
+      });
+    } catch (err) {
+      console.error("[stripe-webhook] coach-email failed", err);
+    }
+  }
+}
 
 export const runtime = "nodejs";
 // Gi webhook nok hode-rom mot cold starts + DB-writes.
@@ -173,6 +257,7 @@ export async function POST(req: Request) {
         //   - subscription-sync (Stripe API-kall)
         //   - sendBookingConfirmation (Resend, 1-3 sek)
         //   - pushBookingToCalendar (Google API, 2-5 sek per kalender)
+        //   - notifyCoach (in-app + e-post til coach, B4)
         after(async () => {
           try {
             await recordCheckoutSession(session);
@@ -209,6 +294,12 @@ export async function POST(req: Request) {
               await pushBookingToCalendar(bookingId);
             } catch (err) {
               console.error("[stripe-webhook] calendar-push failed", err);
+            }
+            // B4 — Varsle coach (in-app + e-post) om ny bekreftet booking.
+            try {
+              await notifyCoachOnBooking(bookingId);
+            } catch (err) {
+              console.error("[stripe-webhook] coach-notify failed", err);
             }
           }
         });

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { PendingRefresh } from "./pending-refresh";
 
 export const metadata: Metadata = {
   title: "Bekreftet — AK Golf",
@@ -67,9 +68,12 @@ export default async function Kvittering({ params }: Props) {
                 Behandler bestillingen…
               </h1>
               <p className="mt-4 text-base text-muted-foreground">
-                Betalingen ser ut til å gå gjennom. Last inn siden på nytt om
-                noen sekunder.
+                Betalingen ser ut til å gå gjennom. Siden oppdaterer seg
+                automatisk.
               </p>
+              <div className="mt-4">
+                <PendingRefresh />
+              </div>
             </>
           )}
         </div>
