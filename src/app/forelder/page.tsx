@@ -371,14 +371,7 @@ function ForelderHero({
         <div className="min-w-0 flex-1">
           <h1 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
             {greeting},{" "}
-            <em
-              className="font-normal not-italic"
-              style={{
-                fontFamily: "'Instrument Serif', serif",
-                fontStyle: "italic",
-                color: "#005840",
-              }}
-            >
+            <em className="font-display italic font-normal text-primary">
               {firstName}
             </em>
           </h1>

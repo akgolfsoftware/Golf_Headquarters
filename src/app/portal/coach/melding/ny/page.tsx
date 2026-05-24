@@ -44,9 +44,6 @@ export default async function NyMeldingPage() {
           <ArrowLeft className="h-3.5 w-3.5" />
           Meldinger
         </Link>
-        <span className="font-mono text-[13px] font-bold tracking-[0.02em] text-primary">
-          AK GOLF · PlayerHQ
-        </span>
         <span className="ml-auto hidden font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground sm:inline">
           /portal / coach / melding / <span className="font-semibold text-foreground">ny</span>
         </span>

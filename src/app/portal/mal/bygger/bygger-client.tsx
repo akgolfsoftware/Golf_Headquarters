@@ -191,9 +191,6 @@ export function MalByggerWizard({ kontekst }: { kontekst: ByggerKontekst }) {
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
           Tilbake
         </Link>
-        <span className="font-mono text-[13px] font-bold tracking-[0.02em] text-primary">
-          AK GOLF · PLAYERHQ
-        </span>
         <div className="ml-auto flex items-center gap-2">
           <span className="grid h-6 w-6 place-items-center rounded-full bg-accent text-foreground">
             <Sparkles className="h-3.5 w-3.5" strokeWidth={1.75} />

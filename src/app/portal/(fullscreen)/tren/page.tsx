@@ -8,19 +8,12 @@
 //
 // URL: /portal/tren
 
-import { Instrument_Serif } from "next/font/google";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { WorkbenchClient } from "./workbench-client";
 
-// Instrument Serif lastes lokalt på denne ruta. Brukes for italic-accents
-// på hero og insight-sitater. Eksponeres via CSS-variabel.
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  weight: "400",
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  display: "swap",
-});
+// Italic-accents på hero og insight-sitater bruker Inter Tight italic
+// (font-display + italic), ikke en egen serif-font. Designsystem v2 tillater
+// kun Inter, Inter Tight og JetBrains Mono.
 
 export const metadata = {
   title: "Min workbench",
@@ -28,9 +21,5 @@ export const metadata = {
 
 export default async function WorkbenchPage() {
   await requirePortalUser();
-  return (
-    <div className={instrumentSerif.variable}>
-      <WorkbenchClient />
-    </div>
-  );
+  return <WorkbenchClient />;
 }

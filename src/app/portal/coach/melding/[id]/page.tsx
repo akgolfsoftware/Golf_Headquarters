@@ -82,9 +82,6 @@ export default async function MeldingstradPage({ params }: RouteProps) {
           <ArrowLeft className="h-3.5 w-3.5" />
           Meldinger
         </Link>
-        <span className="font-mono text-[13px] font-bold tracking-[0.02em] text-primary">
-          AK GOLF · PlayerHQ
-        </span>
         <span className="ml-auto hidden font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground sm:inline">
           /portal / coach / melding /{" "}
           <span className="font-semibold text-foreground">{id.slice(0, 9)}</span>
@@ -97,12 +94,12 @@ export default async function MeldingstradPage({ params }: RouteProps) {
           <div className="grid h-14 w-14 place-items-center rounded-full bg-primary text-[14px] font-semibold text-primary-foreground">
             {coachInitials}
           </div>
-          <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2 border-card bg-[#22C55E]" />
+          <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2 border-card bg-success" />
         </div>
         <div className="min-w-0">
           <div className="text-[15px] font-semibold">{session.coach.name}</div>
           <div className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
-            <span className="text-[#22C55E]">●</span> Pålogget · hovedcoach · GFGK
+            <span className="text-success">●</span> Pålogget · hovedcoach · GFGK
           </div>
         </div>
         <div className="flex items-center gap-1">

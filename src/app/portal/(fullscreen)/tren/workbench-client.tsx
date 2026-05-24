@@ -17,6 +17,7 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/shared/toast-provider";
+import { SidebarBrand } from "@/components/shared/sidebar-brand";
 import "./workbench-v2.css";
 import "./workbench-unified.css";
 import {
@@ -447,9 +448,7 @@ export function WorkbenchClient() {
             <Icon id="i-x" />
           </button>
           <div className="sb-brand">
-            AK GOLF
-            <b>PLAYERHQ</b>
-            · PRO
+            <SidebarBrand variant="player" role="PRO" />
           </div>
 
           <div className="sb-profile">

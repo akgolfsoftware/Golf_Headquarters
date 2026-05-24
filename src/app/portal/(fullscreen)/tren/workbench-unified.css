@@ -40,7 +40,8 @@
   --font-display: 'Inter Tight', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --font-serif: var(--font-instrument-serif, 'Instrument Serif'), serif;
+  /* Bruker Inter Tight italic (font-display) i stedet for serif — designsystem v2 tillater kun 3 fonter. */
+  --font-serif: var(--font-inter-tight), system-ui, -apple-system, sans-serif;
 
   --sidebar-w: 220px;
   --topbar-h: 56px;

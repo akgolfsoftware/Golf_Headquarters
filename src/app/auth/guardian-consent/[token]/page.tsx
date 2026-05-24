@@ -61,14 +61,7 @@ export default async function GuardianConsentPage({ params }: Props) {
         </p>
         <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
           Bekreft{" "}
-          <em
-            className="font-normal not-italic"
-            style={{
-              fontFamily: "'Instrument Serif', serif",
-              fontStyle: "italic",
-              color: "#005840",
-            }}
-          >
+          <em className="font-display italic font-normal text-primary">
             samtykke
           </em>
         </h1>

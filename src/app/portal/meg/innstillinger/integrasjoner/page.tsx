@@ -65,7 +65,6 @@ export default async function IntegrasjonerPage() {
         <Link href="/portal/meg/innstillinger" className="back-link">
           <ArrowRight size={14} aria-hidden style={{ transform: "rotate(180deg)" }} /> Tilbake
         </Link>
-        <span className="name">AK GOLF · PLAYERHQ</span>
         <span className="crumbs">
           PORTAL / MEG / INNSTILLINGER / <span className="current">INTEGRASJONER</span>
         </span>
