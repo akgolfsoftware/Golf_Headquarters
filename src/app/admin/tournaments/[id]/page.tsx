@@ -4,6 +4,9 @@ import { ListChecks, Users } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { EmptyState } from "@/components/shared/empty-state";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { KPICard } from "@/components/ui";
+import { AthleticBadge } from "@/components/athletic";
 import { TournamentForm } from "../tournament-form";
 import { ResultForm } from "./result-form";
 import {
@@ -69,44 +72,44 @@ export default async function TurneringDetalj({
   const titleTrail = titleParts.slice(1).join(" ");
 
   return (
-    <div className="space-y-8">
-      {/* Tournament-hero på mørk bakgrunn, matcher klubb-lagoppstilling-demo */}
-      <section className="overflow-hidden rounded-2xl border border-border bg-[#0A1F17] p-4 sm:p-6 md:p-8 text-[#F5F4EE]">
-        <Link
-          href="/admin/tournaments"
-          className="font-mono text-[10px] uppercase tracking-[0.10em] text-accent hover:opacity-80"
-        >
-          ← CoachHQ · Turneringer
-        </Link>
-        <div className="mt-4 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
-              {tournament.format}
-              {tournament.course && ` · ${tournament.course.name}`}
-            </div>
-            <h1 className="mt-2 font-display text-2xl sm:text-3xl font-semibold italic leading-tight tracking-tight">
-              <em className="font-normal italic text-accent">{titleLead}</em>
-              {titleTrail && ` ${titleTrail}`}
-            </h1>
-            <div className="mt-4 flex flex-wrap items-center gap-3 sm:gap-6 font-mono text-[11px] tracking-[0.04em] text-[rgba(245,244,238,0.6)]">
-              <span>
-                Når: <b className="font-medium text-white">{periodStr}</b>
-              </span>
-              {tournament.course && (
-                <span>
-                  Bane: <b className="font-medium text-white">{tournament.course.name}</b>
-                </span>
-              )}
-              <span>
-                Påmeldte:{" "}
-                <b className="font-medium text-white">{entries.length}</b>
-              </span>
-              <span>
-                Resultater:{" "}
-                <b className="font-medium text-white">{tournament.results.length}</b>
-              </span>
-            </div>
-          </div>
+    <DetailShell
+      breadcrumb={[
+        { label: "Turneringer", href: "/admin/tournaments" },
+        { label: tournament.name },
+      ]}
+      backHref="/admin/tournaments"
+      title={
+        <>
+          <em className="text-primary italic">{titleLead}</em>
+          {titleTrail && ` ${titleTrail}`}
+        </>
+      }
+      subtitle={`${periodStr}${tournament.course ? ` · ${tournament.course.name}` : ""} · ${tournament.format}`}
+      statusPill={
+        <AthleticBadge variant="neutral">{tournament.format}</AthleticBadge>
+      }
+      actions={
+        <>
+          <TournamentEnrollModal
+            tournamentId={tournament.id}
+            tournamentName={tournament.name}
+            tournamentDate={periodStr}
+            players={players.map((p) => ({
+              id: p.id,
+              name: p.name ?? "(uten navn)",
+              hcp: p.hcp,
+              tier: p.tier,
+            }))}
+            existing={entries.map((e) => ({
+              entryId: e.id,
+              userId: e.userId,
+              name: e.user.name ?? "(uten navn)",
+              hcp: e.user.hcp,
+              tier: e.user.tier,
+              priority: e.priority,
+            }))}
+            triggerLabel={entries.length === 0 ? "+ Meld på" : "+ Legg til"}
+          />
           <TournamentForm
             initial={{
               id: tournament.id,
@@ -120,9 +123,35 @@ export default async function TurneringDetalj({
             courses={courses.map((c) => ({ id: c.id, name: c.name }))}
             triggerLabel="Endre"
           />
+        </>
+      }
+      kpiRow={
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <KPICard
+            eyebrow="Påmeldte"
+            value={String(entries.length)}
+            variant="hero"
+            footnote="spillere"
+          />
+          <KPICard
+            eyebrow="Resultater"
+            value={String(tournament.results.length)}
+            variant="default"
+            footnote="registrert"
+          />
+          <KPICard
+            eyebrow="Format"
+            value={tournament.format}
+            variant="default"
+          />
+          <KPICard
+            eyebrow="Dato"
+            value={periodStr}
+            variant="default"
+          />
         </div>
-      </section>
-
+      }
+    >
       {tournament.notes && (() => {
         // Forsøk å parse som tour-metadata JSON
         try {
@@ -173,26 +202,6 @@ export default async function TurneringDetalj({
               ({entries.length})
             </span>
           </h2>
-          <TournamentEnrollModal
-            tournamentId={tournament.id}
-            tournamentName={tournament.name}
-            tournamentDate={periodStr}
-            players={players.map((p) => ({
-              id: p.id,
-              name: p.name ?? "(uten navn)",
-              hcp: p.hcp,
-              tier: p.tier,
-            }))}
-            existing={entries.map((e) => ({
-              entryId: e.id,
-              userId: e.userId,
-              name: e.user.name ?? "(uten navn)",
-              hcp: e.user.hcp,
-              tier: e.user.tier,
-              priority: e.priority,
-            }))}
-            triggerLabel={entries.length === 0 ? "+ Meld på spillere" : "+ Legg til flere"}
-          />
         </div>
 
         {entries.length === 0 ? (
@@ -319,6 +328,6 @@ export default async function TurneringDetalj({
           </ul>
         )}
       </section>
-    </div>
+    </DetailShell>
   );
 }

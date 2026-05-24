@@ -6,19 +6,27 @@ import {
   Home as HomeIcon,
   Users as UsersIcon,
   CalendarRange,
+  CalendarCheck,
   Receipt,
+  CreditCard,
+  MessageSquare,
   Bell,
   ShieldCheck,
+  Settings,
 } from "lucide-react";
 import { SidebarBrand } from "@/components/shared/sidebar-brand";
 
 const NAV = [
   { href: "/forelder", label: "Oversikt", Icon: HomeIcon },
   { href: "/forelder/barn", label: "Mine barn", Icon: UsersIcon },
+  { href: "/forelder/bookinger", label: "Bookinger", Icon: CalendarCheck },
+  { href: "/forelder/okonomi", label: "Okonomi", Icon: CreditCard },
+  { href: "/forelder/coach", label: "Coach", Icon: MessageSquare },
   { href: "/forelder/ukerapport", label: "Ukerapport", Icon: CalendarRange },
   { href: "/forelder/fakturaer", label: "Fakturaer", Icon: Receipt },
   { href: "/forelder/varsler", label: "Varsler", Icon: Bell },
   { href: "/forelder/samtykke", label: "Samtykker", Icon: ShieldCheck },
+  { href: "/forelder/innstillinger", label: "Innstillinger", Icon: Settings },
 ];
 
 export function ForelderSidebar() {

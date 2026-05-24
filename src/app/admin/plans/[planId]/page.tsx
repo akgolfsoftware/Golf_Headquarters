@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import {
   BookOpen,
   CalendarClock,
-  ChevronLeft,
   ClipboardList,
   FileText,
   TrendingUp,
@@ -15,8 +14,10 @@ import {
   prosentPerArea,
   totalMinutter,
 } from "@/lib/pyramide";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { KPICard } from "@/components/ui";
+import { AthleticBadge } from "@/components/athletic";
 import { PlanActions } from "./plan-actions";
 import { DraggableSessions, type DraggableSession } from "./draggable-sessions";
 import { RejectedBanner } from "./rejected-banner";
@@ -189,38 +190,93 @@ export default async function AdminPlanDetalj({
 
   const planTittel = plan.name.trim() || "Treningsplan";
 
+  const statusVariant =
+    plan.status === "ACTIVE"
+      ? "ok"
+      : plan.status === "REJECTED"
+        ? "urgent"
+        : plan.status === "PENDING_PLAYER"
+          ? "warn"
+          : "neutral";
+
   return (
-    <div className="space-y-6">
-      <Link
-        href="/admin/plans"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
-        Alle planer
-      </Link>
-
-      <PageHeader
-        eyebrow={`Plan · Spiller: ${plan.user.name}${
-          plan.user.hcp != null ? ` · HCP ${plan.user.hcp}` : ""
-        } · ${plan.status}`}
-        titleItalic={planTittel}
-        sub={`${periodeFra} – ${periodeTil} · ${totalt} økter totalt · ${fullført} av ${totalt} fullført · ${totTimer} t volum`}
-        actions={
-          <PlanActions
-            planId={plan.id}
-            isActive={plan.isActive}
-            status={plan.status}
-            isAdmin={me.role === "ADMIN"}
-            originalPlanNavn={plan.name}
-            originalUserId={plan.userId}
-            spillere={spillere}
-            assignSpillere={assignSpillere}
-            planVarighetUker={planVarighetUker}
-            planTier={plan.user.tier ?? "PRO"}
+    <DetailShell
+      breadcrumb={[
+        { label: "Planer", href: "/admin/plans" },
+        { label: planTittel },
+      ]}
+      backHref="/admin/plans"
+      title={<><em className="text-primary italic">{planTittel}</em></>}
+      subtitle={`${plan.user.name}${plan.user.hcp != null ? ` · HCP ${plan.user.hcp}` : ""} · ${periodeFra} – ${periodeTil} · ${totalt} økter`}
+      statusPill={
+        <AthleticBadge variant={statusVariant}>
+          {plan.status}
+        </AthleticBadge>
+      }
+      actions={
+        <PlanActions
+          planId={plan.id}
+          isActive={plan.isActive}
+          status={plan.status}
+          isAdmin={me.role === "ADMIN"}
+          originalPlanNavn={plan.name}
+          originalUserId={plan.userId}
+          spillere={spillere}
+          assignSpillere={assignSpillere}
+          planVarighetUker={planVarighetUker}
+          planTier={plan.user.tier ?? "PRO"}
+        />
+      }
+      kpiRow={
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <KPICard
+            eyebrow="Total tid"
+            value={`${totTimer} t`}
+            variant="hero"
+            footnote={`${totMinutter} min planlagt`}
           />
-        }
-      />
-
+          <KPICard
+            eyebrow="Økter"
+            value={`${totalt}`}
+            variant="default"
+            footnote={`${aktiv} aktive · ${fullført} fullført`}
+          />
+          <KPICard
+            eyebrow="Gjennomføring"
+            value={`${gjennomforing} %`}
+            variant="default"
+            footnote={`${fullført} av ${totalt} fullført`}
+          />
+          <KPICard
+            eyebrow="SG-utvikling"
+            value="—"
+            variant="default"
+            footnote="Krever round-data"
+          />
+        </div>
+      }
+      tabs={
+        <nav className="flex gap-0.5 overflow-x-auto rounded-lg border border-border bg-secondary p-1">
+          {TABS.map(({ key, label, icon: Icon }) => {
+            const active = tab === key;
+            return (
+              <Link
+                key={key}
+                href={`/admin/plans/${planId}?tab=${key}`}
+                className={`inline-flex min-h-[44px] flex-1 min-w-[80px] items-center justify-center gap-1.5 rounded-md px-3 py-2 text-[13px] sm:text-[12px] font-medium transition-colors ${
+                  active
+                    ? "bg-card text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Icon size={14} strokeWidth={1.5} />
+                <span>{label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      }
+    >
       {plan.status === "REJECTED" && plan.playerComment && (
         <RejectedBanner
           planId={plan.id}
@@ -235,27 +291,6 @@ export default async function AdminPlanDetalj({
       </AgentStrip>
 
       <FaseTimeline faser={faser} />
-
-      {/* Tab-navigasjon */}
-      <nav className="flex gap-0.5 overflow-x-auto rounded-lg border border-border bg-secondary p-1">
-        {TABS.map(({ key, label, icon: Icon }) => {
-          const active = tab === key;
-          return (
-            <Link
-              key={key}
-              href={`/admin/plans/${planId}?tab=${key}`}
-              className={`inline-flex min-h-[44px] flex-1 min-w-[80px] items-center justify-center gap-1.5 rounded-md px-3 py-2 text-[13px] sm:text-[12px] font-medium transition-colors ${
-                active
-                  ? "bg-card text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Icon size={14} strokeWidth={1.5} />
-              <span>{label}</span>
-            </Link>
-          );
-        })}
-      </nav>
 
       {/* Tab: OVERSIKT */}
       {tab === "oversikt" && (
@@ -644,6 +679,6 @@ export default async function AdminPlanDetalj({
           </div>
         </section>
       )}
-    </div>
+    </DetailShell>
   );
 }

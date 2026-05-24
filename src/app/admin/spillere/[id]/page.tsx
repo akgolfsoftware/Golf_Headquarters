@@ -4,7 +4,8 @@
  * Pixel-perfekt v2 (sesjon-1) — Variant A · tab-basert.
  * Spec: sesjon-1-hjem-og-spiller.md, skjerm 3.
  *
- * Hero (avatar + navn italic + pills + action-knapper) → 5 tabs → 4-KPI → tab-innhold.
+ * Refaktorert til DetailShell-mønster. Avatar-hero beholdes som children
+ * i title-prop siden spillerens avatar er en identitets-komponent.
  */
 
 import Link from "next/link";
@@ -16,6 +17,10 @@ import {
   MoreHorizontal,
   PenSquare,
 } from "lucide-react";
+
+import { DetailShell } from "@/components/shared/detail-shell";
+import { KPICard } from "@/components/ui";
+import { AthleticBadge, AthleticButton } from "@/components/athletic";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -216,187 +221,183 @@ export default async function SpillerCoachView({
   const wagrRank: number | null = null;
 
   return (
-    <div className="space-y-6">
-      {/* HERO */}
-      <header className="rounded-2xl border border-[#E5E3DD] bg-card p-6 sm:p-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-5">
-            {player.avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={player.avatarUrl}
-                alt=""
-                className="h-24 w-24 shrink-0 rounded-full object-cover sm:h-28 sm:w-28"
-              />
-            ) : (
-              <div
-                className="grid h-24 w-24 shrink-0 place-items-center rounded-full font-display text-3xl font-semibold text-white sm:h-28 sm:w-28"
-                style={{ background: avatarBg(player.name) }}
-              >
-                {initialsFromName(player.name)}
-              </div>
-            )}
-            <div className="min-w-0">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
-                COACHHQ · STALLEN
-              </div>
-              <h1 className="mt-1 font-display text-3xl font-semibold leading-tight tracking-tight text-[#0A1F17] sm:text-4xl">
-                {fornavn}{" "}
-                {etternavn && (
-                  <em
-                    className="font-normal not-italic"
-                    style={{
-                      fontFamily: "'Instrument Serif', serif",
-                      fontStyle: "italic",
-                      color: "#005840",
-                    }}
-                  >
-                    {etternavn}
-                  </em>
-                )}
-              </h1>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span
-                  className={`inline-flex items-center rounded-full px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] ${CAT_STYLE[category]}`}
-                >
-                  {category}
-                </span>
-                <span className="inline-flex items-center rounded-full bg-[#F1EEE5] px-3 py-1 font-mono text-[11px] font-semibold tabular-nums text-[#0A1F17]">
-                  HCP {formatHcp(player.hcp)}
-                </span>
-                {wagrRank != null && (
-                  <span className="inline-flex items-center rounded-full bg-[#F1EEE5] px-3 py-1 font-mono text-[11px] font-semibold tabular-nums text-[#0A1F17]">
-                    WAGR {wagrRank}
-                  </span>
-                )}
-                {ageYears != null && (
-                  <span className="inline-flex items-center rounded-full bg-[#F1EEE5] px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[#5E5C57]">
-                    {ageYears} år
-                  </span>
-                )}
-                <span
-                  className={`inline-flex items-center rounded-full px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] ${tierStyle(player.tier)}`}
-                >
-                  {tierLabel(player.tier)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Action-knapper */}
-          <div className="flex flex-wrap items-center gap-2">
-            <Link
-              href={`/admin/innboks?tab=meldinger&to=${player.id}`}
-              className="inline-flex items-center gap-2 rounded-full border border-[#E5E3DD] bg-card px-4 py-2 text-sm font-medium text-[#0A1F17] transition-colors hover:bg-[#F1EEE5]"
+    <DetailShell
+      breadcrumb={[
+        { label: "Stallen", href: "/admin/stall" },
+        { label: player.name },
+      ]}
+      backHref="/admin/stall"
+      title={
+        <span className="flex items-center gap-5">
+          {player.avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={player.avatarUrl}
+              alt=""
+              className="h-14 w-14 shrink-0 rounded-full object-cover"
+            />
+          ) : (
+            <span
+              className="grid h-14 w-14 shrink-0 place-items-center rounded-full font-display text-xl font-semibold text-white"
+              style={{ background: avatarBg(player.name) }}
             >
-              <MessageSquare size={14} strokeWidth={1.75} />
-              Send melding
-            </Link>
+              {initialsFromName(player.name)}
+            </span>
+          )}
+          <span>
+            {fornavn}{" "}
+            {etternavn && (
+              <em className="text-primary italic">{etternavn}</em>
+            )}
+          </span>
+        </span>
+      }
+      subtitle={`${player.homeClub ?? "Ingen klubb"} · HCP ${formatHcp(player.hcp)}${ageYears != null ? ` · ${ageYears} år` : ""}`}
+      statusPill={
+        <span className="flex items-center gap-2">
+          <AthleticBadge
+            variant={
+              category === "A1" || category === "A2" ? "primary" : "neutral"
+            }
+          >
+            {category}
+          </AthleticBadge>
+          <AthleticBadge variant={player.tier === "PRO" ? "primary" : "neutral"}>
+            {tierLabel(player.tier)}
+          </AthleticBadge>
+        </span>
+      }
+      actions={
+        <>
+          <Link
+            href={`/admin/innboks?tab=meldinger&to=${player.id}`}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+          >
+            <MessageSquare size={14} strokeWidth={1.75} />
+            Send melding
+          </Link>
+          <Link
+            href={`/admin/kalender?action=ny-okt&spiller=${player.id}`}
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90"
+          >
+            <CalendarPlus size={14} strokeWidth={1.75} />
+            Ny økt
+          </Link>
+          <button
+            type="button"
+            className="grid h-9 w-9 place-items-center rounded-full border border-border bg-card text-muted-foreground hover:bg-secondary"
+            aria-label="Flere handlinger"
+          >
+            <MoreHorizontal size={16} strokeWidth={1.75} />
+          </button>
+        </>
+      }
+      kpiRow={
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <KPICard
+            eyebrow="HCP-trend"
+            value={formatHcp(player.hcp)}
+            variant="hero"
+            footnote="↓ 0,4 i mai"
+          />
+          <KPICard
+            eyebrow="SG-total"
+            value={sg.total != null ? formatSg(sg.total) : "—"}
+            variant="default"
+            footnote={`${sg.rundeAntall} runder snitt`}
+          />
+          <KPICard
+            eyebrow="Tester"
+            value={`${player.testResults.length}/${totalTester}`}
+            variant="default"
+            footnote={`${Math.round((player.testResults.length / Math.max(1, totalTester)) * 100)} % fullført`}
+          />
+          <KPICard
+            eyebrow="Neste økt"
+            value={
+              nextSession
+                ? nextSession.startTime.toLocaleTimeString("nb-NO", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "—"
+            }
+            variant="default"
+            footnote={
+              nextSession
+                ? `${NB_DATE.format(nextSession.startTime)} · ${nextSession.title.split(" ")[0]}`
+                : "ingen planlagt"
+            }
+          />
+        </div>
+      }
+      tabs={
+        <nav
+          role="tablist"
+          aria-label="Spiller-tabs"
+          className="flex items-center gap-1 overflow-x-auto rounded-full border border-border bg-card p-1.5"
+        >
+          {([
+            ["profil", "Profil", null],
+            ["plan", "Plan", null],
+            ["tester", "Tester", `${player.testResults.length}/${totalTester}`],
+            ["analyse", "Analyse", null],
+            ["notater", "Notater", null],
+          ] as [TabKey, string, string | null][]).map(([key, label, count]) => {
+            const aktiv = tab === key;
+            return (
+              <Link
+                key={key}
+                href={`${baseHref}?tab=${key}`}
+                role="tab"
+                aria-selected={aktiv}
+                className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  aktiv
+                    ? "bg-accent text-primary shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <span>{label}</span>
+                {count && (
+                  <span
+                    className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] font-semibold tabular-nums ${
+                      aktiv
+                        ? "bg-primary text-accent"
+                        : "bg-secondary text-muted-foreground"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+      }
+      stickyActions={
+        <>
+          <div className="flex items-center gap-2">
             <Link
               href={`/admin/spillere/${player.id}/tildel-test`}
-              className="inline-flex items-center gap-2 rounded-full border border-[#E5E3DD] bg-card px-4 py-2 text-sm font-medium text-[#0A1F17] transition-colors hover:bg-[#F1EEE5]"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <ClipboardCheck size={14} strokeWidth={1.75} />
               Tildel test
             </Link>
-            <Link
-              href={`/admin/kalender?action=ny-okt&spiller=${player.id}`}
-              className="inline-flex items-center gap-2 rounded-full bg-[#005840] px-4 py-2 text-sm font-semibold text-[#D1F843] transition-colors hover:opacity-90"
-            >
-              <CalendarPlus size={14} strokeWidth={1.75} />
-              Ny økt
-            </Link>
-            <button
-              type="button"
-              className="grid h-9 w-9 place-items-center rounded-full border border-[#E5E3DD] bg-card text-[#5E5C57] hover:bg-[#F1EEE5]"
-              aria-label="Flere handlinger"
-            >
-              <MoreHorizontal size={16} strokeWidth={1.75} />
-            </button>
           </div>
-        </div>
-      </header>
-
-      {/* 5 TABS (lime accent active) */}
-      <nav
-        role="tablist"
-        aria-label="Spiller-tabs"
-        className="flex items-center gap-1 overflow-x-auto rounded-full border border-[#E5E3DD] bg-card p-1.5"
-      >
-        {([
-          ["profil", "Profil", null],
-          ["plan", "Plan", null],
-          ["tester", "Tester", `${player.testResults.length}/${totalTester}`],
-          ["analyse", "Analyse", null],
-          ["notater", "Notater", null],
-        ] as [TabKey, string, string | null][]).map(([key, label, count]) => {
-          const aktiv = tab === key;
-          return (
+          <div className="flex items-center gap-2">
             <Link
-              key={key}
-              href={`${baseHref}?tab=${key}`}
-              role="tab"
-              aria-selected={aktiv}
-              className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                aktiv
-                  ? "bg-[#D1F843] text-[#005840] shadow-sm"
-                  : "text-[#5E5C57] hover:text-[#0A1F17]"
-              }`}
+              href={`/admin/spillere/${player.id}/rediger`}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
             >
-              <span>{label}</span>
-              {count && (
-                <span
-                  className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] font-semibold tabular-nums ${
-                    aktiv
-                      ? "bg-[#005840] text-[#D1F843]"
-                      : "bg-[#F1EEE5] text-[#5E5C57]"
-                  }`}
-                >
-                  {count}
-                </span>
-              )}
+              <PenSquare size={14} strokeWidth={1.75} />
+              Rediger
             </Link>
-          );
-        })}
-      </nav>
-
-      {/* 4-KPI-STRIP */}
-      <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <KpiTile
-          eyebrow="HCP-trend"
-          value={formatHcp(player.hcp)}
-          sub="↓ 0,4 i mai"
-          accent
-        />
-        <KpiTile
-          eyebrow="SG-total"
-          value={sg.total != null ? formatSg(sg.total) : "—"}
-          sub={`${sg.rundeAntall} runder snitt`}
-        />
-        <KpiTile
-          eyebrow="Tester"
-          value={`${player.testResults.length}/${totalTester}`}
-          sub={`${Math.round((player.testResults.length / Math.max(1, totalTester)) * 100)} % fullført`}
-        />
-        <KpiTile
-          eyebrow="Neste økt"
-          value={
-            nextSession
-              ? nextSession.startTime.toLocaleTimeString("nb-NO", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : "—"
-          }
-          sub={
-            nextSession
-              ? `${NB_DATE.format(nextSession.startTime)} · ${nextSession.title.split(" ")[0]}`
-              : "ingen planlagt"
-          }
-        />
-      </section>
-
-      {/* TAB-INNHOLD */}
+          </div>
+        </>
+      }
+    >
+      {/* Tab-innhold */}
       {tab === "profil" && (
         <ProfilTab
           player={player}
@@ -443,32 +444,7 @@ export default async function SpillerCoachView({
           }))}
         />
       )}
-
-      {/* Bunn-CTA-bar */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <CtaBtn
-          href={`/admin/innboks?tab=meldinger&to=${player.id}`}
-          icon={MessageSquare}
-          label="Send melding"
-          primary
-        />
-        <CtaBtn
-          href={`/admin/spillere/${player.id}/tildel-test`}
-          icon={ClipboardCheck}
-          label="Tildel test"
-        />
-        <CtaBtn
-          href={`/admin/kalender?action=ny-okt&spiller=${player.id}`}
-          icon={CalendarPlus}
-          label="Ny økt"
-        />
-        <CtaBtn
-          href={`/admin/spillere/${player.id}/rediger`}
-          icon={PenSquare}
-          label="Rediger"
-        />
-      </div>
-    </div>
+    </DetailShell>
   );
 }
 
@@ -864,36 +840,6 @@ function NotaterTab({
 
 // ---------- Hjelpekomponenter ----------
 
-function KpiTile({
-  eyebrow,
-  value,
-  sub,
-  accent,
-}: {
-  eyebrow: string;
-  value: string;
-  sub: string;
-  accent?: boolean;
-}) {
-  return (
-    <div className="rounded-2xl border border-[#E5E3DD] bg-card p-5">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
-        {eyebrow}
-      </div>
-      <div
-        className={`mt-2 font-mono text-[28px] font-semibold leading-none tabular-nums ${
-          accent ? "text-[#005840]" : "text-[#0A1F17]"
-        }`}
-      >
-        {value}
-      </div>
-      <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
-        {sub}
-      </div>
-    </div>
-  );
-}
-
 function Fact({
   label,
   value,
@@ -942,28 +888,3 @@ function TimelineEvent({
   );
 }
 
-function CtaBtn({
-  href,
-  icon: Icon,
-  label,
-  primary,
-}: {
-  href: string;
-  icon: typeof MessageSquare;
-  label: string;
-  primary?: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-2xl border px-4 py-4 text-sm font-semibold transition-colors ${
-        primary
-          ? "border-[#005840] bg-[#005840] text-[#D1F843] hover:opacity-90"
-          : "border-[#E5E3DD] bg-card text-[#0A1F17] hover:bg-[#F1EEE5]"
-      }`}
-    >
-      <Icon size={16} strokeWidth={1.75} />
-      <span>{label}</span>
-    </Link>
-  );
-}

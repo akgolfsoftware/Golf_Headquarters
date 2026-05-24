@@ -7,10 +7,12 @@
  * Migrert fra public/design/batch4/test-detalj-cmj.html.
  */
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Activity, Download, FileText, Send } from "lucide-react";
+import { Activity, Download, FileText, Send } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { KPICard } from "@/components/ui";
+import { AthleticBadge, AthleticButton } from "@/components/athletic";
 import { TestDetailClient, type TestPoint } from "./test-detail-client";
 
 const PYR_LABEL: Record<string, string> = {
@@ -95,187 +97,111 @@ export default async function TestDetaljPage({
   const kategoriLabel =
     PYR_LABEL[result.test.pyramidArea] ?? result.test.pyramidArea;
 
-  return (
-    <div className="space-y-8 pb-16">
-      {/* Tilbake-link */}
-      <div>
-        <Link
-          href="/admin/tester"
-          className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft size={14} strokeWidth={1.75} />
-          Tilbake til tester
-        </Link>
-      </div>
+  const testNamnFront =
+    result.test.name.split(" ").slice(0, -1).join(" ") || result.test.name;
+  const testNamnBak =
+    result.test.name.split(" ").length > 1
+      ? result.test.name.split(" ").slice(-1)[0]
+      : "";
 
-      {/* Hero */}
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
-            <Activity size={12} strokeWidth={1.75} />
-            {kategoriLabel}
-          </span>
-          <h1 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-tight">
-            <em className="font-normal italic text-primary">
-              {result.test.name.split(" ").slice(0, -1).join(" ") ||
-                result.test.name}
-            </em>
-            {result.test.name.split(" ").length > 1 && (
-              <> {result.test.name.split(" ").slice(-1)[0]}</>
-            )}
-          </h1>
-          <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-            {result.test.description ??
-              "Test-resultat for spiller — coach kan logge ny måling, eksportere som PDF eller dele med spiller."}
-          </p>
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-            <Link
-              href={`/admin/spillere/${result.user.id}`}
-              className="font-semibold text-foreground hover:text-primary"
-            >
-              {result.user.name}
-            </Link>
-            <span className="text-muted-foreground">·</span>
-            <span className="text-muted-foreground">
-              HCP{" "}
-              <strong className="text-foreground">
-                {result.user.hcp != null
-                  ? result.user.hcp.toFixed(1).replace(".", ",")
-                  : "—"}
-              </strong>
-            </span>
-            <span className="text-muted-foreground">·</span>
-            <span className="text-muted-foreground">
-              {formatDate(result.takenAt)}
-            </span>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <button
+  return (
+    <DetailShell
+      breadcrumb={[
+        { label: "Tester", href: "/admin/tester" },
+        { label: result.test.name },
+      ]}
+      backHref="/admin/tester"
+      title={
+        <>
+          <em className="text-primary italic">{testNamnFront}</em>
+          {testNamnBak && ` ${testNamnBak}`}
+        </>
+      }
+      subtitle={`${result.user.name}${result.user.hcp != null ? ` · HCP ${result.user.hcp.toFixed(1).replace(".", ",")}` : ""} · ${formatDate(result.takenAt)}`}
+      statusPill={
+        <AthleticBadge variant="neutral">
+          <Activity size={10} strokeWidth={1.75} className="mr-1" />
+          {kategoriLabel}
+        </AthleticBadge>
+      }
+      actions={
+        <>
+          <AthleticButton
+            variant="ghost-light"
+            size="sm"
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
           >
             <Send size={14} strokeWidth={1.75} />
             Del med spiller
-          </button>
-          <button
+          </AthleticButton>
+          <AthleticButton
+            variant="ghost-light"
+            size="sm"
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
           >
             <FileText size={14} strokeWidth={1.75} />
             Eksporter PDF
-          </button>
-          <Link
-            href={`/admin/spillere/${result.user.id}`}
-            className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+          </AthleticButton>
+          <AthleticButton
+            variant="lime"
+            size="sm"
+            type="button"
           >
             <Download size={14} strokeWidth={1.75} />
             Logg ny test
-          </Link>
+          </AthleticButton>
+        </>
+      }
+      kpiRow={
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <KPICard
+            eyebrow="Siste verdi"
+            value={formatScore(sisteVerdi)}
+            variant="hero"
+            footnote={`${formatDate(result.takenAt)}${erPr ? " · PR" : ""}`}
+          />
+          <KPICard
+            eyebrow="Snitt historikk"
+            value={formatScore(snitt)}
+            variant="default"
+            delta={
+              deltaForrige != null
+                ? {
+                    value: `${deltaForrige >= 0 ? "+" : ""}${formatScore(deltaForrige)}`,
+                    direction: deltaForrige > 0 ? "up" : deltaForrige < 0 ? "down" : "neutral",
+                  }
+                : undefined
+            }
+            footnote={
+              deltaForrige != null ? "vs forrige måling" : "Ingen tidligere måling"
+            }
+          />
+          <KPICard
+            eyebrow="Personlig rekord"
+            value={formatScore(pr)}
+            variant="default"
+            footnote={
+              history.length > 0
+                ? formatDate(history[scores.indexOf(pr)]?.takenAt ?? result.takenAt)
+                : "—"
+            }
+          />
+          <KPICard
+            eyebrow="Benchmark elite"
+            value={formatScore(benchmark.elite)}
+            variant="default"
+            footnote={`Snitt: ${formatScore(benchmark.snitt)}`}
+          />
         </div>
-      </header>
-
-      {/* KPI */}
-      <section className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-        <KpiHilite
-          label="Siste verdi"
-          value={formatScore(sisteVerdi)}
-          sub={`${formatDate(result.takenAt)}${erPr ? " · PR" : ""}`}
-        />
-        <Kpi
-          label="Snitt historikk"
-          value={formatScore(snitt)}
-          sub={
-            deltaForrige != null
-              ? `${deltaForrige >= 0 ? "+" : ""}${formatScore(deltaForrige)} mot forrige`
-              : "Ingen tidligere måling"
-          }
-          delta={deltaForrige}
-        />
-        <Kpi
-          label="Personlig rekord"
-          value={formatScore(pr)}
-          sub={
-            history.length > 0
-              ? formatDate(history[scores.indexOf(pr)]?.takenAt ?? result.takenAt)
-              : "—"
-          }
-        />
-        <Kpi
-          label="Benchmark"
-          value={formatScore(benchmark.elite)}
-          sub={`Kategori-elite · snitt ${formatScore(benchmark.snitt)}`}
-        />
-      </section>
-
+      }
+    >
       <TestDetailClient
         points={points}
         currentIso={result.takenAt.toISOString()}
         benchmark={benchmark}
         coachNotes={result.notes ?? null}
       />
-    </div>
+    </DetailShell>
   );
 }
 
-// --------- KPI ---------
-
-function KpiHilite({
-  label,
-  value,
-  sub,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5 rounded-lg bg-gradient-to-br from-primary/5 to-card p-4 ring-1 ring-primary/20">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-primary">
-        {label}
-      </div>
-      <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
-        {value}
-      </div>
-      {sub && (
-        <div className="font-mono text-[11px] text-muted-foreground">{sub}</div>
-      )}
-    </div>
-  );
-}
-
-function Kpi({
-  label,
-  value,
-  sub,
-  delta,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-  delta?: number | null;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-        {label}
-      </div>
-      <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
-        {value}
-      </div>
-      {sub && (
-        <div
-          className={`font-mono text-[11px] ${
-            delta != null && delta > 0
-              ? "text-primary"
-              : delta != null && delta < 0
-                ? "text-destructive"
-                : "text-muted-foreground"
-          }`}
-        >
-          {sub}
-        </div>
-      )}
-    </div>
-  );
-}
