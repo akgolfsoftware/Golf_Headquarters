@@ -122,7 +122,7 @@ export function AdminMobileDrawer() {
             aria-label="CoachHQ-meny"
           >
             <div className="relative flex justify-center px-4 py-6">
-              <div onClick={() => setOpen(false)}>
+              <div>
                 <SidebarBrand variant="coach" role="HEAD COACH" />
               </div>
               <button

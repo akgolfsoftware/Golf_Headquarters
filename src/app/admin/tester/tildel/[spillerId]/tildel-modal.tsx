@@ -85,7 +85,7 @@ export function TildelModal({
 
   return (
     <div className="tester-shell">
-      <div className="tester-modal-backdrop" onClick={handleClose}>
+      <div className="tester-modal-backdrop" onClick={handleClose} aria-hidden>
         <div
           className="tester-modal"
           role="dialog"

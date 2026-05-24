@@ -133,28 +133,30 @@ export function CoachhqStubsShell({ activeLabel, crumbs, children }: Props) {
               ))}
             </div>
             <div className="tb-right">
-              <button className="tb-icon-btn">
+              <button className="tb-icon-btn" type="button" aria-label="Søk">
                 <svg
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.75"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  aria-hidden
                 >
                   <use href="#ic-search" />
                 </svg>
               </button>
-              <button className="tb-icon-btn">
+              <button className="tb-icon-btn" type="button" aria-label="Varsler">
                 <svg
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.75"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  aria-hidden
                 >
                   <use href="#ic-bell" />
                 </svg>
-                <span className="dot-notif" />
+                <span className="dot-notif" aria-hidden />
               </button>
             </div>
           </header>
