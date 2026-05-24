@@ -107,10 +107,14 @@ export function VideoUploadModal({ open, onClose, shotId }: Props) {
 
         {/* URL-alternativ */}
         <div className="mt-4">
-          <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <label
+            htmlFor="video-upload-url"
+            className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+          >
             Eller lim inn video-URL
           </label>
           <input
+            id="video-upload-url"
             type="url"
             value={videoUrl}
             onChange={(e) => setVideoUrl(e.target.value)}

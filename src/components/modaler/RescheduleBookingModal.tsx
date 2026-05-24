@@ -55,10 +55,14 @@ export function RescheduleBookingModal({ open, onClose, currentDate }: Props) {
 
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <label
+              htmlFor="reschedule-ny-dato"
+              className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+            >
               Ny dato
             </label>
             <input
+              id="reschedule-ny-dato"
               type="date"
               value={nyDato}
               min={new Date().toISOString().split("T")[0]}

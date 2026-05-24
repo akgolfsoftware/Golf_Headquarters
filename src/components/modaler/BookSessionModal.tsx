@@ -120,10 +120,14 @@ export function BookSessionModal({ open, onClose }: Props) {
               </div>
             )}
             <div>
-              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              <label
+                htmlFor="book-session-dato"
+                className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+              >
                 Velg dato
               </label>
               <input
+                id="book-session-dato"
                 type="date"
                 value={dato}
                 min={new Date().toISOString().split("T")[0]}

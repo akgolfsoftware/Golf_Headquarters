@@ -100,10 +100,14 @@ export function AgentFeedbackModal({ open, onClose, agentAction }: Props) {
         </div>
 
         <div className="mb-6">
-          <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <label
+            htmlFor="agent-feedback-kommentar"
+            className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+          >
             Legg til kommentar (valgfritt)
           </label>
           <textarea
+            id="agent-feedback-kommentar"
             value={kommentar}
             onChange={(e) => setKommentar(e.target.value)}
             rows={3}
