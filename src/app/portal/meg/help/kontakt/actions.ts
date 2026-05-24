@@ -1,8 +1,17 @@
 "use server";
 
+import { z } from "zod";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { audit } from "@/lib/audit";
+import { nonEmpty } from "@/lib/validation/schemas";
+
+const SupportTicketSchema = z.object({
+  kategori: z.string().min(1, "Kategori er påkrevd"),
+  emne: nonEmpty(200),
+  beskrivelse: nonEmpty(2000),
+  tillatInnsyn: z.boolean(),
+});
 
 type Input = {
   kategori: string;
@@ -12,6 +21,7 @@ type Input = {
 };
 
 export async function submitSupportTicket(input: Input): Promise<void> {
+  SupportTicketSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 

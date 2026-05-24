@@ -1,8 +1,18 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { nonEmpty, phone, optStr } from "@/lib/validation/schemas";
+
+const UpdateProfileSchema = z.object({
+  targetUserId: z.string().min(1).optional(),
+  name: nonEmpty(200).optional(),
+  phone: phone.nullable().optional(),
+  homeClub: optStr(200),
+  ambition: optStr(1000),
+});
 
 type UpdateProfileInput = {
   /**
@@ -17,6 +27,7 @@ type UpdateProfileInput = {
 };
 
 export async function updateProfile(input: UpdateProfileInput): Promise<void> {
+  UpdateProfileSchema.parse(input);
   const me = await getCurrentUser();
   if (!me) throw new Error("unauthenticated");
 

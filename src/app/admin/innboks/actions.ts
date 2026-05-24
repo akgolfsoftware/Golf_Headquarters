@@ -1,8 +1,25 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+
+const InboxItemKindSchema = z.enum(["approval", "message", "follow_up"], {
+  error: "Ugyldig innboks-type",
+});
+
+const MarkInboxItemDoneSchema = z.object({
+  kind: InboxItemKindSchema,
+  itemId: z.string().min(1, "Item-ID er påkrevd"),
+});
+
+const MarkInboxItemsReadSchema = z.object({
+  items: z.array(z.object({
+    kind: InboxItemKindSchema,
+    id: z.string().min(1, "ID er påkrevd"),
+  })).min(1, "Ingen items valgt").max(200, "For mange items (maks 200)"),
+});
 
 export type InboxItemKind = "approval" | "message" | "follow_up";
 
@@ -32,9 +49,12 @@ export async function markInboxItemDone(
   kind: InboxItemKind,
   itemId: string,
 ): Promise<InboxActionResult> {
+  const zodResult = MarkInboxItemDoneSchema.safeParse({ kind, itemId });
+  if (!zodResult.success) {
+    return { ok: false, feil: zodResult.error.issues[0]?.message ?? "Ugyldig input" };
+  }
   const auth = await assertCoach();
   if (!auth.ok) return auth;
-  if (!itemId) return { ok: false, feil: "Mangler item-id." };
 
   try {
     if (kind === "approval") {
@@ -97,14 +117,12 @@ export async function markInboxItemDone(
 export async function markInboxItemsRead(
   items: { kind: InboxItemKind; id: string }[],
 ): Promise<InboxActionResult> {
+  const zodResult = MarkInboxItemsReadSchema.safeParse({ items });
+  if (!zodResult.success) {
+    return { ok: false, feil: zodResult.error.issues[0]?.message ?? "Ugyldig input" };
+  }
   const auth = await assertCoach();
   if (!auth.ok) return auth;
-  if (!Array.isArray(items) || items.length === 0) {
-    return { ok: false, feil: "Ingen items valgt." };
-  }
-  if (items.length > 200) {
-    return { ok: false, feil: "For mange items (maks 200)." };
-  }
 
   let count = 0;
   for (const { kind, id } of items) {

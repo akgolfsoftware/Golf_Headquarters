@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
@@ -8,6 +9,25 @@ import { prisma } from "@/lib/prisma";
 import { isMinor } from "@/lib/auth/minor";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { logError } from "@/lib/error-tracking";
+import { phone, email, optStr } from "@/lib/validation/schemas";
+
+const SaveOnboardingProfileSchema = z.object({
+  phone: phone.nullable().optional(),
+  hcp: z.number().nullable().optional(),
+  playingYears: z.number().int().nullable().optional(),
+  ambition: optStr(1000),
+  homeClub: optStr(200),
+});
+
+const SetDateOfBirthSchema = z.object({
+  dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Ugyldig datoformat — bruk ÅÅÅÅ-MM-DD"),
+  guardianEmail: email.optional(),
+  guardianRelation: z.enum(["GUARDIAN", "MOTHER", "FATHER"]).optional(),
+});
+
+const ResendInvitationSchema = z.object({
+  guardianEmail: email,
+});
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Typer
@@ -58,6 +78,7 @@ export async function saveOnboardingProfile(input: {
   ambition?: string | null;
   homeClub?: string | null;
 }) {
+  SaveOnboardingProfileSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
@@ -274,6 +295,11 @@ export async function setDateOfBirthAndCheckMinor(input: {
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "unauthenticated", isMinor: false };
 
+  const zodResult = SetDateOfBirthSchema.safeParse(input);
+  if (!zodResult.success) {
+    return { ok: false, error: zodResult.error.issues[0]?.message ?? "Ugyldig input", isMinor: false };
+  }
+
   try {
     const dob = new Date(input.dateOfBirth);
     if (isNaN(dob.getTime())) {
@@ -368,6 +394,10 @@ export async function setDateOfBirthAndCheckMinor(input: {
 export async function resendGuardianInvitation(input: {
   guardianEmail: string;
 }): Promise<{ ok: boolean; error?: string }> {
+  const zodResult = ResendInvitationSchema.safeParse(input);
+  if (!zodResult.success) {
+    return { ok: false, error: zodResult.error.issues[0]?.message ?? "Ugyldig e-post" };
+  }
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "unauthenticated" };
   if (!user.requiresGuardianConsent) {

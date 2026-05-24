@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
@@ -8,8 +9,20 @@ import { audit } from "@/lib/audit";
 import { pushBookingToCalendar, removeFromCalendar } from "@/lib/google-calendar";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { notify } from "@/lib/notifications";
+import { isoDate } from "@/lib/validation/schemas";
+
+const CancelBookingSchema = z.object({
+  bookingId: z.string().min(1, "Booking-ID er påkrevd"),
+});
+
+const RescheduleBookingSchema = z.object({
+  bookingId: z.string().min(1, "Booking-ID er påkrevd"),
+  newStartIso: isoDate,
+  newCoachId: z.string().min(1, "Coach er påkrevd"),
+});
 
 export async function cancelBooking(bookingId: string) {
+  CancelBookingSchema.parse({ bookingId });
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
@@ -131,6 +144,7 @@ export async function rescheduleBooking(input: {
   newStartIso: string;
   newCoachId: string;
 }): Promise<{ ok: true }> {
+  RescheduleBookingSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 

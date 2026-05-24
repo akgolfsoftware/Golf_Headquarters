@@ -1,9 +1,17 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { triggerTestAgent } from "@/lib/agents/triggers";
+
+const RegistrerResultatSchema = z.object({
+  testId: z.string().min(1, "Test-ID er påkrevd"),
+  score: z.number({ error: "Score må være et tall" }),
+  notes: z.string().max(2000).nullable().optional(),
+  details: z.string().max(10000).nullable().optional(),
+});
 
 export async function registrerResultat(formData: FormData) {
   const user = await requirePortalUser();
@@ -13,9 +21,7 @@ export async function registrerResultat(formData: FormData) {
   const notes = (formData.get("notes") as string) || null;
   const detailsRaw = formData.get("details") as string;
 
-  if (!testId || isNaN(score)) {
-    throw new Error("Ugyldig data: testId og score er påkrevd.");
-  }
+  RegistrerResultatSchema.parse({ testId, score, notes, details: detailsRaw || null });
 
   const test = await prisma.testDefinition.findUnique({ where: { id: testId } });
   if (!test) throw new Error("Testen finnes ikke.");

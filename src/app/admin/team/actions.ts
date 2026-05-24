@@ -1,10 +1,17 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { FRA_EPOST, resendKlient } from "@/lib/email";
+import { nonEmpty, email } from "@/lib/validation/schemas";
+
+const InviterCoachSchema = z.object({
+  email: email,
+  name: nonEmpty(200),
+});
 
 export type InviterCoachResult =
   | { ok: true; userId: string; epostSendt: boolean }
@@ -24,9 +31,19 @@ async function krevAdmin() {
  * hvis Resend mangler.
  */
 export async function inviterCoach(
-  email: string,
+  emailInput: string,
   name: string,
 ): Promise<InviterCoachResult> {
+  const zodResult = InviterCoachSchema.safeParse({ email: emailInput, name });
+  if (!zodResult.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const err of zodResult.error.issues) {
+      const field = err.path[0];
+      if (field) fieldErrors[String(field)] = err.message;
+    }
+    return { ok: false, error: "Validering feilet", fieldErrors };
+  }
+
   let aktor;
   try {
     aktor = await krevAdmin();
@@ -38,16 +55,7 @@ export async function inviterCoach(
   }
 
   const navn = (name ?? "").trim();
-  const epost = (email ?? "").trim().toLowerCase();
-
-  const fieldErrors: Record<string, string> = {};
-  if (navn.length < 2) fieldErrors.name = "Navn må være minst 2 tegn";
-  if (!epost || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(epost)) {
-    fieldErrors.email = "Ugyldig e-postadresse";
-  }
-  if (Object.keys(fieldErrors).length > 0) {
-    return { ok: false, error: "Validering feilet", fieldErrors };
-  }
+  const epost = (emailInput ?? "").trim().toLowerCase();
 
   const eksisterende = await prisma.user.findUnique({
     where: { email: epost },

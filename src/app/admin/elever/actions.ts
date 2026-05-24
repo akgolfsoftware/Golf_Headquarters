@@ -1,10 +1,29 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import type { Prisma } from "@/generated/prisma/client";
+import { nonEmpty, email, phone, optStr } from "@/lib/validation/schemas";
+
+const LeggTilSpillerSchema = z.object({
+  navn: nonEmpty(200),
+  epost: email,
+  alder: z.number().int().min(5, "Alder må være minst 5").max(120, "Alder må være maks 120").nullable().optional(),
+  klubb: optStr(200),
+  gruppe: optStr(200),
+});
+
+const OppdaterSpillerSchema = z.object({
+  userId: z.string().min(1, "Bruker-ID er påkrevd"),
+  navn: nonEmpty(200),
+  epost: email,
+  phone: phone.optional().or(z.literal("")),
+  klubb: optStr(200),
+  ambition: optStr(1000),
+});
 
 async function krevCoach() {
   const user = await getCurrentUser();
@@ -18,33 +37,6 @@ export type LeggTilSpillerResult = {
   error?: string;
   fieldErrors?: Record<string, string>;
   userId?: string;
-};
-
-// Lett, schema-fri validering. Vi har ikke zod i prosjektet — håndhever
-// regler manuelt. Returnerer feltvise feilmeldinger ved behov.
-function validate(input: {
-  navn: string;
-  epost: string;
-  alder: number | null;
-  klubb: string | null;
-  gruppe: string | null;
-}): { ok: true } | { ok: false; fieldErrors: Record<string, string> } {
-  const fieldErrors: Record<string, string> = {};
-  if (input.navn.trim().length < 2) {
-    fieldErrors.navn = "Navn må være minst 2 tegn";
-  }
-  // Enkel e-post-validering: må inneholde @ og .
-  const epost = input.epost.trim();
-  if (!epost || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(epost)) {
-    fieldErrors.epost = "Ugyldig e-postadresse";
-  }
-  if (input.alder !== null && (input.alder < 5 || input.alder > 120)) {
-    fieldErrors.alder = "Alder må være mellom 5 og 120";
-  }
-  if (Object.keys(fieldErrors).length > 0) {
-    return { ok: false, fieldErrors };
-  }
-  return { ok: true };
 }
 
 export async function leggTilSpiller(
@@ -63,15 +55,20 @@ export async function leggTilSpiller(
     return { ok: false, error: "Alder må være et tall" };
   }
 
-  const v = validate({
+  const zodResult = LeggTilSpillerSchema.safeParse({
     navn,
     epost,
     alder,
     klubb: klubb || null,
     gruppe: gruppe || null,
   });
-  if (!v.ok) {
-    return { ok: false, fieldErrors: v.fieldErrors };
+  if (!zodResult.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const err of zodResult.error.issues) {
+      const field = err.path[0];
+      if (field) fieldErrors[String(field)] = err.message;
+    }
+    return { ok: false, fieldErrors };
   }
 
   // Sjekk duplikat på e-post
@@ -138,7 +135,7 @@ export async function oppdaterSpiller(
 
   const navn = String(formData.get("navn") ?? "").trim();
   const epost = String(formData.get("epost") ?? "").trim().toLowerCase();
-  const phone = String(formData.get("phone") ?? "").trim();
+  const phoneFelt = String(formData.get("phone") ?? "").trim();
   const klubb = String(formData.get("klubb") ?? "").trim();
   const hcpRaw = String(formData.get("hcp") ?? "").trim();
   const ambition = String(formData.get("ambition") ?? "").trim();
@@ -154,15 +151,21 @@ export async function oppdaterSpiller(
     return { ok: false, error: "Handicap må være et tall" };
   }
 
-  const v = validate({
+  const zodResult = OppdaterSpillerSchema.safeParse({
+    userId,
     navn,
     epost,
-    alder,
+    phone: phoneFelt || undefined,
     klubb: klubb || null,
-    gruppe: null,
+    ambition: ambition || null,
   });
-  if (!v.ok) {
-    return { ok: false, fieldErrors: v.fieldErrors };
+  if (!zodResult.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const err of zodResult.error.issues) {
+      const field = err.path[0];
+      if (field) fieldErrors[String(field)] = err.message;
+    }
+    return { ok: false, fieldErrors };
   }
 
   const eksisterende = await prisma.user.findFirst({
@@ -194,7 +197,7 @@ export async function oppdaterSpiller(
     data: {
       name: navn,
       email: epost,
-      phone: phone || null,
+      phone: phoneFelt || null,
       homeClub: klubb || null,
       hcp,
       ambition: ambition || null,

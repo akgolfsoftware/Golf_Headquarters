@@ -1,10 +1,12 @@
 "use server";
 
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
+import { nonEmpty, isoDate, email, phone } from "@/lib/validation/schemas";
 
 export type BookingFormInput = {
   slug: string;
@@ -20,27 +22,37 @@ export type BookingResult =
   | { ok: true; url: string }
   | { ok: false; error: string };
 
+const BookingCheckoutSchema = z.object({
+  slug: nonEmpty(100),
+  start: isoDate,
+  coachId: z.string().min(1, "Coach er påkrevd"),
+  name: nonEmpty(200),
+  email: email,
+  phone: phone,
+  notes: z.string().max(1000).optional(),
+});
+
 export async function createBookingCheckout(
   input: BookingFormInput,
 ): Promise<BookingResult> {
   try {
-    if (!input.phone.trim() || input.phone.trim().length < 5) {
-      return { ok: false, error: "Telefonnummer er påkrevd." };
+    const parsed = BookingCheckoutSchema.safeParse(input);
+    if (!parsed.success) {
+      return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig input" };
     }
 
+    const data = parsed.data;
+
     const service = await prisma.serviceType.findUnique({
-      where: { slug: input.slug },
+      where: { slug: data.slug },
     });
     if (!service || !service.active) {
       return { ok: false, error: "Tjeneste ikke tilgjengelig." };
     }
 
-    const startAt = new Date(input.start);
-    if (isNaN(startAt.getTime())) {
-      return { ok: false, error: "Ugyldig tidspunkt." };
-    }
+    const startAt = new Date(data.start);
 
-    const ok = await isSlotStillAvailable(service.id, startAt, input.coachId);
+    const ok = await isSlotStillAvailable(service.id, startAt, data.coachId);
     if (!ok) {
       return {
         ok: false,
@@ -89,10 +101,11 @@ export async function createBookingCheckout(
       endAt,
       status: "PENDING" as const,
       priceOre: service.priceOre,
-      guestName: user ? null : input.name.trim(),
-      guestEmail: user ? null : input.email.trim().toLowerCase(),
-      guestPhone: input.phone.trim() || null,
-      notes: input.notes.trim() || null,
+      coachId: service.coachUserId ?? null,
+      guestName: user ? null : data.name.trim(),
+      guestEmail: user ? null : data.email.trim().toLowerCase(),
+      guestPhone: data.phone.trim() || null,
+      notes: data.notes?.trim() || null,
     };
 
     const booking = await prisma.booking.create({ data: bookingData });
@@ -102,7 +115,7 @@ export async function createBookingCheckout(
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      customer_email: user?.email ?? input.email.trim().toLowerCase(),
+      customer_email: user?.email ?? data.email.trim().toLowerCase(),
       line_items: [
         {
           price_data: {
@@ -118,7 +131,7 @@ export async function createBookingCheckout(
       ],
       metadata: {
         bookingId: booking.id,
-        coachId: input.coachId,
+        coachId: data.coachId,
         serviceSlug: service.slug,
       },
       success_url: `${appUrl}/booking/kvittering/${booking.id}?session_id={CHECKOUT_SESSION_ID}`,

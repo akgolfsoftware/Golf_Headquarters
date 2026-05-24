@@ -1,8 +1,15 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { nonEmpty } from "@/lib/validation/schemas";
+
+const SendMeldingSchema = z.object({
+  threadId: z.string().min(1, "Thread-ID er påkrevd"),
+  body: nonEmpty(4000),
+});
 
 async function krevCoach() {
   const user = await getCurrentUser();
@@ -26,6 +33,11 @@ export async function sendMelding(
   threadId: string,
   body: string,
 ): Promise<SendMeldingResult> {
+  const schemaResult = SendMeldingSchema.safeParse({ threadId, body });
+  if (!schemaResult.success) {
+    return { ok: false, error: schemaResult.error.issues[0]?.message ?? "Ugyldig input" };
+  }
+
   let me;
   try {
     me = await krevCoach();
@@ -34,15 +46,6 @@ export async function sendMelding(
   }
 
   const trimmet = body.trim();
-  if (trimmet.length < 1) {
-    return { ok: false, error: "Melding kan ikke være tom" };
-  }
-  if (trimmet.length > 4000) {
-    return { ok: false, error: "Melding er for lang (maks 4000 tegn)" };
-  }
-  if (!threadId || threadId.length < 1) {
-    return { ok: false, error: "Mangler thread-ID" };
-  }
 
   const ny: ChatMelding = {
     role: "coach",

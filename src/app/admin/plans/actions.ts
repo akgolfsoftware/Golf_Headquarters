@@ -1,9 +1,22 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { nonEmpty, isoDate } from "@/lib/validation/schemas";
+
+const PlanIdSchema = z.object({
+  planId: z.string().min(1, "Plan-ID er påkrevd"),
+});
+
+const CreatePlanSchema = z.object({
+  userId: z.string().min(1, "Bruker-ID er påkrevd"),
+  name: nonEmpty(300),
+  startDate: isoDate,
+  endDate: isoDate.optional(),
+});
 
 async function krevCoach() {
   const user = await getCurrentUser();
@@ -13,6 +26,7 @@ async function krevCoach() {
 }
 
 export async function togglePlanActive(planId: string) {
+  PlanIdSchema.parse({ planId });
   await krevCoach();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
@@ -25,6 +39,7 @@ export async function togglePlanActive(planId: string) {
 }
 
 export async function dupliserPlan(planId: string): Promise<string | null> {
+  PlanIdSchema.parse({ planId });
   await krevCoach();
   const original = await prisma.trainingPlan.findUnique({
     where: { id: planId },
@@ -74,6 +89,7 @@ export type CreatePlanInput = {
 };
 
 export async function createPlan(input: CreatePlanInput): Promise<string> {
+  CreatePlanSchema.parse(input);
   const coach = await krevCoach();
   const plan = await prisma.trainingPlan.create({
     data: {

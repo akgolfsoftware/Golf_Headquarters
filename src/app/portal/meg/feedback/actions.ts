@@ -1,8 +1,17 @@
 "use server";
 
+import { z } from "zod";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { audit } from "@/lib/audit";
+import { nonEmpty } from "@/lib/validation/schemas";
+
+const FeedbackSchema = z.object({
+  nps: z.number().int().min(0, "NPS må være minst 0").max(10, "NPS kan være maks 10"),
+  type: z.enum(["bug", "forslag", "ros", "sporsmal"], { error: "Ugyldig tilbakemeldingstype" }),
+  tekst: nonEmpty(2000),
+  anonym: z.boolean(),
+});
 
 type Input = {
   nps: number;
@@ -12,6 +21,7 @@ type Input = {
 };
 
 export async function submitFeedback(input: Input): Promise<void> {
+  FeedbackSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 

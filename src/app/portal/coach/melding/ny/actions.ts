@@ -1,10 +1,18 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { Prisma } from "@/generated/prisma/client";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { nonEmpty } from "@/lib/validation/schemas";
+
+const NyMeldingSchema = z.object({
+  recipientId: z.string().min(1, "Mottaker er påkrevd"),
+  subject: nonEmpty(500),
+  body: nonEmpty(4000),
+});
 
 export type NyMeldingInput = {
   recipientId: string;
@@ -13,6 +21,7 @@ export type NyMeldingInput = {
 };
 
 export async function sendMessage(input: NyMeldingInput) {
+  NyMeldingSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
   if (user.tier === "GRATIS") throw new Error("upgrade-required");

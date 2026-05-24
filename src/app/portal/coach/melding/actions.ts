@@ -1,10 +1,17 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { Prisma } from "@/generated/prisma/client";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { nonEmpty } from "@/lib/validation/schemas";
+
+const CoachMeldingSchema = z.object({
+  coachId: z.string().min(1, "Coach-ID er påkrevd"),
+  content: nonEmpty(4000),
+});
 
 export type CoachMeldingInput = {
   coachId: string;
@@ -12,6 +19,7 @@ export type CoachMeldingInput = {
 };
 
 export async function sendCoachMelding(input: CoachMeldingInput) {
+  CoachMeldingSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
   if (user.tier === "GRATIS") throw new Error("upgrade-required");

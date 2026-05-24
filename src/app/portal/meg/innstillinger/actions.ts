@@ -1,11 +1,20 @@
 "use server";
 
+import { z } from "zod";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { audit } from "@/lib/audit";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 import type { DrillFasilitet } from "@/generated/prisma/client";
+
+const LagreFasilitetProfilSchema = z.object({
+  fasiliteter: z.array(z.string().min(1)).max(20, "For mange fasiliteter"),
+});
+
+const DeleteUserAccountSchema = z.object({
+  confirmation: z.literal("SLETT", { error: 'Du må skrive "SLETT" for å bekrefte.' }),
+});
 
 const GYLDIGE_FASILITETER: DrillFasilitet[] = [
   "RADAR",
@@ -27,6 +36,10 @@ const GYLDIGE_FASILITETER: DrillFasilitet[] = [
 export async function lagreFasilitetProfil(
   fasiliteter: DrillFasilitet[],
 ): Promise<{ ok: boolean; error?: string }> {
+  const zodResult = LagreFasilitetProfilSchema.safeParse({ fasiliteter });
+  if (!zodResult.success) {
+    return { ok: false, error: zodResult.error.issues[0]?.message ?? "Ugyldig input" };
+  }
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "unauthenticated" };
 
@@ -167,13 +180,12 @@ export async function exportUserData(): Promise<{
 export async function deleteUserAccount(
   confirmation: string,
 ): Promise<{ ok: boolean; error?: string }> {
+  const zodResult = DeleteUserAccountSchema.safeParse({ confirmation });
+  if (!zodResult.success) {
+    return { ok: false, error: zodResult.error.issues[0]?.message ?? "Ugyldig bekreftelse" };
+  }
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "unauthenticated" };
-
-  // Sikkerhets-confirmation: bruker må skrive "SLETT" eksakt
-  if (confirmation !== "SLETT") {
-    return { ok: false, error: 'Du må skrive "SLETT" for å bekrefte.' };
-  }
 
   try {
     // Soft-delete

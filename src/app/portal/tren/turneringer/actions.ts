@@ -1,8 +1,28 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { isoDate, optStr } from "@/lib/validation/schemas";
+
+const TurnPrioritySchema = z.enum(["MAJOR", "NORMAL", "LOCAL"], {
+  error: "Ugyldig prioritet",
+});
+
+const LeggTilTurneringSchema = z.object({
+  seasonPlanId: z.string().min(1).optional(),
+  tournamentId: z.string().min(1).optional(),
+  manualName: optStr(300),
+  manualDate: isoDate.optional(),
+  manualEndDate: isoDate.optional(),
+  category: optStr(200),
+  priority: TurnPrioritySchema,
+  notes: optStr(1000),
+});
+
+const EntryIdSchema = z.string().min(1, "Påmeldings-ID er påkrevd");
+const TournamentIdSchema = z.string().min(1, "Turnerings-ID er påkrevd");
 
 export type TurnPriority = "MAJOR" | "NORMAL" | "LOCAL";
 
@@ -16,6 +36,10 @@ export async function leggTilTurnering(input: {
   priority: TurnPriority;
   notes?: string;
 }): Promise<{ ok: true; id: string } | { ok: false; feil: string }> {
+  const zodResult = LeggTilTurneringSchema.safeParse(input);
+  if (!zodResult.success) {
+    return { ok: false, feil: zodResult.error.issues[0]?.message ?? "Ugyldig input" };
+  }
   const user = await requirePortalUser();
 
   if (!input.tournamentId && !input.manualName) {
@@ -90,6 +114,10 @@ export async function oppdaterTournamentEntry(
 export async function meldDegPa(
   tournamentId: string,
 ): Promise<{ ok: true; id: string } | { ok: false; feil: string }> {
+  const zodResult = TournamentIdSchema.safeParse(tournamentId);
+  if (!zodResult.success) {
+    return { ok: false, feil: zodResult.error.issues[0]?.message ?? "Ugyldig turnerings-ID" };
+  }
   const user = await requirePortalUser();
 
   const turnering = await prisma.tournament.findUnique({
@@ -216,6 +244,10 @@ export async function bulkKoblTurneringerTilArsplan(
 export async function slettTournamentEntry(
   id: string
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
+  const zodResult = EntryIdSchema.safeParse(id);
+  if (!zodResult.success) {
+    return { ok: false, feil: zodResult.error.issues[0]?.message ?? "Ugyldig ID" };
+  }
   const user = await requirePortalUser();
 
   const entry = await prisma.tournamentEntry.findFirst({

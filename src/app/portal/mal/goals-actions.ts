@@ -1,9 +1,24 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { nonEmpty, isoDate } from "@/lib/validation/schemas";
+
+const GoalInputSchema = z.object({
+  type: z.string().min(1, "Type er påkrevd"),
+  title: nonEmpty(500),
+  targetValue: z.number().nullable().optional(),
+  targetDate: isoDate.nullable().optional(),
+});
+
+const GoalIdSchema = z.string().min(1, "Mål-ID er påkrevd");
+const AvbrytGoalSchema = z.object({
+  goalId: z.string().min(1, "Mål-ID er påkrevd"),
+  reason: z.string().max(1000).optional(),
+});
 
 export type GoalInput = {
   type: string;
@@ -13,6 +28,7 @@ export type GoalInput = {
 };
 
 export async function createGoal(input: GoalInput) {
+  GoalInputSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
   if (!input.title.trim()) throw new Error("missing-title");
@@ -31,6 +47,7 @@ export async function createGoal(input: GoalInput) {
 }
 
 export async function markeerGoalSomOppnaadd(goalId: string) {
+  GoalIdSchema.parse(goalId);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
@@ -47,6 +64,7 @@ export async function markeerGoalSomOppnaadd(goalId: string) {
 }
 
 export async function slettGoal(goalId: string) {
+  GoalIdSchema.parse(goalId);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
@@ -63,6 +81,7 @@ export async function slettGoal(goalId: string) {
  * I motsetning til `slettGoal` beholdes historikken.
  */
 export async function avbrytGoal(goalId: string, reason: string) {
+  AvbrytGoalSchema.parse({ goalId, reason });
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
@@ -97,6 +116,8 @@ export async function avbrytGoal(goalId: string, reason: string) {
  * Brukes fra «Endre mål»-modalen i mål-detalj.
  */
 export async function endreGoal(goalId: string, input: GoalInput) {
+  GoalIdSchema.parse(goalId);
+  GoalInputSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 

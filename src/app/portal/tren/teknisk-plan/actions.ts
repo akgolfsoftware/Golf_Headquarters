@@ -6,6 +6,7 @@
  * til planen (enten som spiller, opprettet-av eller coach/admin).
  */
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
@@ -21,6 +22,31 @@ import type {
   RepHastighet,
 } from "@/generated/prisma/client";
 import type { Prisma } from "@/generated/prisma/client";
+import { nonEmpty } from "@/lib/validation/schemas";
+
+const TaskInputSchema = z.object({
+  planId: z.string().min(1, "Plan-ID er påkrevd"),
+  pNummer: z.string().min(1, "Posisjonsnummer er påkrevd"),
+  pName: z.string().min(1, "Posisjonsnavn er påkrevd"),
+  tittel: nonEmpty(500),
+  beskrivelse: z.string().max(2000).optional(),
+  pyramide: z.string().min(1, "Pyramide-område er påkrevd"),
+  omraade: z.string().min(1, "Område er påkrevd"),
+  koller: z.array(z.string()),
+  repsMaalDry: z.number().int().min(0),
+  repsMaalLav: z.number().int().min(0),
+  repsMaalFull: z.number().int().min(0),
+});
+
+const IdSchema = z.string().min(1, "ID er påkrevd");
+const LogRepsSchema = z.object({
+  taskId: z.string().min(1, "Oppgave-ID er påkrevd"),
+  reps: z.object({
+    dry: z.number().int().min(0).optional(),
+    lav: z.number().int().min(0).optional(),
+    full: z.number().int().min(0).optional(),
+  }),
+});
 
 interface TmGoalInput {
   metric: string;
@@ -98,6 +124,7 @@ async function findOrCreatePosition(planId: string, pNummer: string, pName: stri
 }
 
 export async function createTask(input: TaskInput) {
+  TaskInputSchema.parse(input);
   const { user } = await ensurePlanAccess(input.planId);
   const position = await findOrCreatePosition(input.planId, input.pNummer, input.pName);
 
@@ -223,6 +250,7 @@ export async function updateTaskBasics(
 }
 
 export async function deleteTask(taskId: string) {
+  IdSchema.parse(taskId);
   const task = await prisma.positionTask.findUnique({
     where: { id: taskId },
     include: { position: { select: { planId: true } } },
@@ -246,6 +274,8 @@ export async function deleteTask(taskId: string) {
 }
 
 export async function reorderPositions(planId: string, orderedIds: string[]) {
+  IdSchema.parse(planId);
+  z.array(z.string().min(1)).parse(orderedIds);
   const { user } = await ensurePlanAccess(planId);
   await prisma.$transaction(
     orderedIds.map((id, i) =>
@@ -268,6 +298,8 @@ export async function reorderPositions(planId: string, orderedIds: string[]) {
 }
 
 export async function reorderTasks(positionId: string, orderedIds: string[]) {
+  IdSchema.parse(positionId);
+  z.array(z.string().min(1)).parse(orderedIds);
   const position = await prisma.technicalPlanPosition.findUnique({
     where: { id: positionId },
     select: { planId: true },
@@ -298,6 +330,7 @@ export async function logReps(
   taskId: string,
   reps: { dry?: number; lav?: number; full?: number },
 ) {
+  LogRepsSchema.parse({ taskId, reps });
   const task = await prisma.positionTask.findUnique({
     where: { id: taskId },
     include: { position: { select: { planId: true } } },
