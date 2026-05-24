@@ -287,7 +287,8 @@ export function CoachTesterStallScreen() {
               <div className="right">Klikk en celle for detalj · grønt = OK · oker = snart due · rødt = overdue</div>
             </div>
 
-            <div className="matrix">
+            <div style={{ overflowX: "auto" }}>
+            <div className="matrix" style={{ minWidth: 880 }}>
               <div className="cell h player">Spiller</div>
               {HEADERS.map((h, i) => (
                 <div key={i} className="cell h">
@@ -320,6 +321,7 @@ export function CoachTesterStallScreen() {
                   <div className={`cell tot${p.totWarn ? " warn" : ""}`}>{p.tot}</div>
                 </div>
               ))}
+            </div>
             </div>
           </section>
         </div>

@@ -222,6 +222,8 @@ export default async function KalenderManedPage({
             </div>
           </div>
 
+          <div className="overflow-x-auto">
+            <div className="min-w-[720px]">
           {/* Ukedager */}
           <div className="grid grid-cols-[32px_repeat(7,1fr)] border-b border-border bg-secondary/60">
             <div className="py-2 text-center font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
@@ -270,6 +272,8 @@ export default async function KalenderManedPage({
                 </RowFragment>
               );
             })}
+          </div>
+            </div>
           </div>
         </div>
 

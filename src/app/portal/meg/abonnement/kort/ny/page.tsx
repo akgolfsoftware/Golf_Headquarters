@@ -33,7 +33,7 @@ export default async function NyttKortPage() {
   const nesteBelastning = subscription.currentPeriodEnd ?? null;
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
       <PlayerHero
         eyebrow="PlayerHQ · Meg · Abonnement · Betalingskort"
         titleLead="Legg til"

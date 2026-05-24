@@ -171,6 +171,8 @@ export default async function TrackmanPage() {
         />
       ) : (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
+          <div className="overflow-x-auto">
+            <div className="min-w-[720px]">
           <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] gap-3 border-b border-border bg-secondary/40 px-4 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
             <div>Spiller</div>
             <div>Dato</div>
@@ -231,6 +233,8 @@ export default async function TrackmanPage() {
               </li>
             ))}
           </ul>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -72,7 +72,7 @@ export default async function AbonnementPage({
   const aktivSiden = subscription?.createdAt;
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
       <PageHeader
         eyebrow="PlayerHQ · Meg · Abonnement"
         titleLead="Din plan, betaling og"

@@ -108,6 +108,8 @@ export function ManedGrid({ okter }: { okter: ManedOkt[] }) {
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* Måneds-grid */}
         <div className="rounded-2xl border border-border bg-card p-4">
+          <div className="overflow-x-auto">
+            <div className="min-w-[640px]">
           <div className="grid grid-cols-7">
             {DAGER.map((d) => (
               <div key={d} className="pb-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -167,6 +169,8 @@ export function ManedGrid({ okter }: { okter: ManedOkt[] }) {
                 </button>
               );
             })}
+          </div>
+            </div>
           </div>
         </div>
 

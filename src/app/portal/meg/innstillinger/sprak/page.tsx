@@ -16,10 +16,10 @@ export default async function SprakPage() {
   const prefs = lesPreferences(fullUser ?? { preferences: null });
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 pb-20">
+    <div className="mx-auto max-w-2xl space-y-8 px-4 pb-20 sm:px-6">
       <Link
         href="/portal/meg/innstillinger"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ChevronLeft size={14} strokeWidth={1.5} />
         Tilbake til innstillinger
@@ -39,11 +39,11 @@ export default async function SprakPage() {
         </p>
       </header>
 
-      <div className="rounded-lg border border-border bg-card p-6">
+      <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
         <SpraakToggle initial={prefs.spraak} />
       </div>
 
-      <div className="rounded-lg border border-dashed border-border bg-card/40 p-6">
+      <div className="rounded-lg border border-dashed border-border bg-card/40 p-4 sm:p-6">
         <h2 className="font-display text-base font-semibold tracking-tight">
           Region og format
         </h2>

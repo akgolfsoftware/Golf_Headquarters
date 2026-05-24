@@ -96,7 +96,7 @@ export function UtstyrsbagView({ initial, finnes }: Props) {
           return (
             <div
               key={f.key}
-              className="rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
+              className="rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/40 sm:p-6"
             >
               <div className="flex items-start gap-4">
                 <div

@@ -305,7 +305,8 @@ export function ReachClient({ data }: { data: ReachData }) {
         </div>
 
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px] text-sm">
             <thead className="border-b border-border bg-secondary/40 text-left">
               <tr>
                 <Th>Spiller</Th>
@@ -385,6 +386,7 @@ export function ReachClient({ data }: { data: ReachData }) {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       </section>
 

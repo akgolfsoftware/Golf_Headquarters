@@ -66,7 +66,7 @@ export function TradUi({
 
   return (
     <>
-      <main className="mx-auto max-w-[880px] space-y-4 px-6 py-8" aria-live="polite">
+      <main className="mx-auto max-w-[880px] space-y-4 px-4 py-6 pb-40 sm:px-6 sm:py-8" aria-live="polite">
         {meldinger.map((m, i) => {
           const showDate =
             i === 0 ||
@@ -110,8 +110,8 @@ export function TradUi({
         </div>
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-card/95 backdrop-blur">
-        <div className="mx-auto max-w-[880px] px-6 py-3">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur">
+        <div className="mx-auto max-w-[880px] px-4 py-3 sm:px-6">
           <div className="mb-2 flex flex-wrap gap-2">
             {QUICK_REPLIES.map((r) => (
               <button
@@ -129,7 +129,7 @@ export function TradUi({
             <button
               type="button"
               title="Vedlegg"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
               <Paperclip className="h-4 w-4" strokeWidth={1.75} />
             </button>
@@ -146,7 +146,7 @@ export function TradUi({
               onClick={send}
               disabled={pending || !draft.trim()}
               title="Send"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent text-foreground hover:bg-[#C5ED32] disabled:opacity-40"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-foreground hover:bg-[#C5ED32] disabled:opacity-40"
             >
               <Send className="h-4 w-4" strokeWidth={1.75} />
             </button>

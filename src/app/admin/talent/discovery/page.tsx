@@ -226,7 +226,8 @@ export default async function TalentDiscovery({
               {filtrert.length} kandidater
             </span>
           </div>
-          <table className="w-full">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px]">
             <thead>
               <tr className="border-b border-border text-left font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 <th className="px-6 py-4 font-medium">Spiller</th>
@@ -267,6 +268,7 @@ export default async function TalentDiscovery({
               ))}
             </tbody>
           </table>
+          </div>
         </section>
       )}
     </div>

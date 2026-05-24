@@ -244,7 +244,7 @@ export default async function SgHubPage() {
     : null;
 
   return (
-    <div className="space-y-6 pb-20 md:space-y-10 md:pb-0">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-10 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · /portal/mal/sg-hub"
         titleLead="Min"

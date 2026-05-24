@@ -50,7 +50,7 @@ export default async function DokumenterPage() {
   const order: string[] = ["CONTRACT", "RECEIPT", "GUIDE", "OTHER"];
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
       <PageHeader
         eyebrow="PlayerHQ · Meg · Dokumenter"
         titleLead="Det som er"

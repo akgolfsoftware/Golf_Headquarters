@@ -178,21 +178,21 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
       )}
 
       {/* Footer */}
-      <div className="mt-6 flex items-center justify-between border-t border-border pt-6">
+      <div className="mt-6 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
         <button
           type="button"
           onClick={() => {
             setContent("");
             setEmne("");
           }}
-          className="rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+          className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           Avbryt
         </button>
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2.5 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-accent px-4 py-2.5 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {pending ? "Sender …" : "Send"}
           <Send className="h-4 w-4" />

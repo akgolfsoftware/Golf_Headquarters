@@ -56,7 +56,7 @@ export default async function CoachPerioderPage() {
   }));
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
       <PageHeader
         eyebrow="CoachHQ · Perioder"
         titleLead="Sesong"

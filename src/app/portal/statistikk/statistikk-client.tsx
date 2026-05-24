@@ -93,7 +93,7 @@ const REKORD_ICON = {
 
 export function StatistikkClient({ data }: { data: StatistikkData }) {
   return (
-    <div className="space-y-6 pb-20 md:space-y-10 md:pb-0">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-10 md:pb-0">
       <Hero data={data} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

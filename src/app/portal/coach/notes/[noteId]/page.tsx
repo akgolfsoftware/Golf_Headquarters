@@ -81,7 +81,7 @@ export default async function NoteDetalj({
     : "?";
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-6 pb-20 md:space-y-8 md:pb-0">
+    <div className="mx-auto w-full max-w-4xl space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
       <Link
         href="/portal/coach/notes"
         className="inline-flex h-11 items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"

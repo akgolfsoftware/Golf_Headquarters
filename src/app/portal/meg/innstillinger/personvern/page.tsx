@@ -16,7 +16,7 @@ export default async function PersonvernPage() {
   await requirePortalUser();
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 sm:px-6">
       <PageHeader
         eyebrow="INNSTILLINGER · PERSONVERN"
         titleLead="Dine data,"

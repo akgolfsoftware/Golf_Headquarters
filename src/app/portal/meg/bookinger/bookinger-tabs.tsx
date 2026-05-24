@@ -41,7 +41,7 @@ export function BookingerTabs({ kommende, historikk, nyBookingHref }: Props) {
             key={f.id}
             type="button"
             onClick={() => setAktivFane(f.id)}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
               aktivFane === f.id
                 ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"

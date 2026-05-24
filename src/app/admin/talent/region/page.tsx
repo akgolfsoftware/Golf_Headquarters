@@ -243,7 +243,8 @@ export default async function TalentRegion({
                 Region-oversikt ({regioner.length})
               </span>
             </div>
-            <table className="w-full text-[13px]">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px] text-[13px]">
               <thead>
                 <tr className="border-b border-border text-left">
                   <th className="px-6 py-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -301,6 +302,7 @@ export default async function TalentRegion({
                 })}
               </tbody>
             </table>
+            </div>
           </section>
         </div>
       )}

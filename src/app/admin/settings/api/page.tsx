@@ -78,14 +78,14 @@ export default async function AdminApiKeysPage() {
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-border overflow-x-auto">
             {keys.map((k) => {
               const erRevokert = k.revokedAt != null;
               const scopes = Array.isArray(k.scopes) ? (k.scopes as string[]) : [];
               return (
                 <div
                   key={k.id}
-                  className={`grid grid-cols-[1fr_220px_160px_72px] items-center gap-4 px-6 py-4 ${
+                  className={`grid min-w-[640px] grid-cols-[1fr_220px_160px_72px] items-center gap-4 px-6 py-4 ${
                     erRevokert ? "opacity-60" : ""
                   }`}
                 >

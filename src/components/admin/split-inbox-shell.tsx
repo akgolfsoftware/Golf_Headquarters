@@ -37,7 +37,7 @@ export function SplitInboxShell({
 
   return (
     <div
-      className="grid grid-cols-1 overflow-hidden rounded-lg border border-border bg-card md:[grid-template-columns:300px_1fr_320px]"
+      className="grid grid-cols-1 overflow-hidden rounded-lg border border-border bg-card md:[grid-template-columns:300px_1fr] lg:[grid-template-columns:300px_1fr_320px]"
       style={{
         height: "calc(100vh - 240px)",
         minHeight: "640px",
@@ -82,8 +82,8 @@ export function SplitInboxShell({
         {center}
       </div>
 
-      {/* Høyre: context-panel — kun på desktop */}
-      {right ? <div className="hidden md:contents">{right}</div> : null}
+      {/* Høyre: context-panel — kun på desktop (lg+) */}
+      {right ? <div className="hidden lg:contents">{right}</div> : null}
     </div>
   );
 }

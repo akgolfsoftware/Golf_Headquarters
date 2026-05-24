@@ -74,9 +74,9 @@ export function NyGoalModal() {
       <dialog
         ref={dialogRef}
         onClose={lukk}
-        className="rounded-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40 max-w-md w-full"
+        className="m-4 max-w-md w-full rounded-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40 sm:m-auto"
       >
-        <form onSubmit={lagre} className="p-6">
+        <form onSubmit={lagre} className="p-4 sm:p-6">
           <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
             <em className="font-normal text-primary md:italic">Nytt</em> mål
           </h2>

@@ -79,7 +79,7 @@ export default async function CoachNotes() {
 
   if (notater.length === 0) {
     return (
-      <div className="space-y-8">
+      <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
         <PageHeader
           eyebrow="PlayerHQ · Coach · Notater"
           titleLead="Ingen"
@@ -97,7 +97,7 @@ export default async function CoachNotes() {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
       {/* Hero */}
       <header>
         <Link
@@ -137,17 +137,17 @@ export default async function CoachNotes() {
               <StatPill label="Sesjoner" value={String(sesjoner.length)} />
             </div>
           </div>
-          <div className="flex shrink-0 flex-col items-end gap-2">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:shrink-0 sm:items-end">
             <Link
               href="/portal/coach/melding"
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2.5 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-6 py-2.5 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
             >
               <Play size={16} strokeWidth={1.5} />
               Svar coach
             </Link>
             <Link
               href="/portal/coach/melding?type=vurdering"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <Edit3 size={16} strokeWidth={1.5} />
               Be om vurdering

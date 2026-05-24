@@ -36,7 +36,7 @@ export default async function HelsePage() {
     .reverse();
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
       <PageHeader
         eyebrow="PlayerHQ · Meg · Helse"
         titleLead="Kroppen din,"

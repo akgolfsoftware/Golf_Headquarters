@@ -231,6 +231,8 @@ function ListView({ tasks }: { tasks: SampleTask[] }) {
               </span>
             </div>
 
+            <div className="overflow-x-auto">
+              <div className="min-w-[760px]">
             {/* Column headers */}
             <div className="font-mono grid grid-cols-[20px_1fr_140px_88px_80px_100px_80px_60px] items-center gap-3 rounded-lg bg-muted/40 px-3.5 py-2 text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
               <div />
@@ -284,6 +286,8 @@ function ListView({ tasks }: { tasks: SampleTask[] }) {
                 </li>
               ))}
             </ul>
+              </div>
+            </div>
           </section>
         );
       })}
@@ -400,6 +404,8 @@ function CalView({ tasks }: { tasks: SampleTask[] }) {
   return (
     <div className="px-1">
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <div className="overflow-x-auto">
+          <div className="min-w-[760px]">
         <div className="grid grid-cols-7 border-b border-border">
           {days.map((d, i) => (
             <div
@@ -454,6 +460,8 @@ function CalView({ tasks }: { tasks: SampleTask[] }) {
               </div>
             );
           })}
+        </div>
+          </div>
         </div>
       </div>
     </div>

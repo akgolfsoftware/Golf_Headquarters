@@ -11,8 +11,8 @@ export default async function SgHubLayout({
   const { sgHubMode } = lesPreferences(user);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 sm:px-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
             SG Coaching Hub

@@ -318,10 +318,10 @@ export default async function KategoriPage({
   ];
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 pb-20 md:space-y-12 md:pb-0">
+    <div className="mx-auto max-w-4xl space-y-8 px-4 pb-20 sm:px-6 md:space-y-12 md:pb-0">
       <Link
         href="/portal/meg/help"
-        className="inline-flex items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"
       >
         <ChevronLeft size={14} strokeWidth={1.75} />
         Tilbake til hjelp

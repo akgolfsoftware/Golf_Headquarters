@@ -83,8 +83,8 @@ export default async function AdminProfilePage() {
         />
       </header>
 
-      <div className="grid grid-cols-[320px_1fr] items-start gap-8">
-        <aside className="sticky top-6 flex flex-col gap-4 rounded-2xl border border-border bg-card p-6">
+      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[320px_1fr]">
+        <aside className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 lg:sticky lg:top-6">
           <div className="relative flex justify-center">
             <div className="grid h-24 w-24 place-items-center rounded-full bg-primary font-display text-[32px] font-semibold text-primary-foreground">
               {initials(user.name) || "AK"}
@@ -131,7 +131,7 @@ export default async function AdminProfilePage() {
           </Section>
 
           <Section title="Profesjonelt" aux="Vises på offentlig profil">
-            <div className="grid grid-cols-[180px_1fr_auto] items-start gap-6 border-b border-border px-6 py-6 last:border-b-0">
+            <div className="grid grid-cols-1 items-start gap-2 border-b border-border px-6 py-6 last:border-b-0 sm:grid-cols-[180px_1fr_auto] sm:gap-6">
               <div>
                 <span className="text-[13px] font-medium text-muted-foreground">
                   Bio
@@ -209,7 +209,7 @@ function Section({
 
 function FieldRow({ label, value, mono }: Field) {
   return (
-    <div className="grid grid-cols-[180px_1fr_auto] items-center gap-6 border-b border-border px-6 py-4 last:border-b-0">
+    <div className="grid grid-cols-1 items-center gap-1 border-b border-border px-6 py-4 last:border-b-0 sm:grid-cols-[180px_1fr_auto] sm:gap-6">
       <span className="text-[13px] font-medium text-muted-foreground">
         {label}
       </span>
@@ -233,7 +233,7 @@ function ChipRow({
   mono?: boolean;
 }) {
   return (
-    <div className="grid grid-cols-[180px_1fr_auto] items-center gap-6 border-b border-border px-6 py-4 last:border-b-0">
+    <div className="grid grid-cols-1 items-center gap-2 border-b border-border px-6 py-4 last:border-b-0 sm:grid-cols-[180px_1fr_auto] sm:gap-6">
       <span className="text-[13px] font-medium text-muted-foreground">
         {label}
       </span>

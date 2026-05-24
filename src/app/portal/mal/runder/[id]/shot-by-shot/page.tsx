@@ -54,7 +54,7 @@ export default async function RundeShotByShotPage({
   const vsPar = round.score - round.course.par;
 
   return (
-    <div className="space-y-6 pb-20 md:space-y-8 md:pb-16">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-16">
       {/* Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>

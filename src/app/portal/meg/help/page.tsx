@@ -105,7 +105,7 @@ export default async function HelpPage() {
   const totalArtikler = KATEGORIER.reduce((sum, k) => sum + k.artikler, 0);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 pb-20 md:space-y-12 md:pb-0">
+    <div className="mx-auto max-w-4xl space-y-8 px-4 pb-20 sm:px-6 md:space-y-12 md:pb-0">
       {/* Hero med stort søkefelt */}
       <section className="flex flex-col items-center gap-6 pt-4 text-center">
         <span

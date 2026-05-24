@@ -37,7 +37,7 @@ export function BekreftForm({ serviceTypeId, coachId, start }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-2xl border border-border bg-card p-6"
+      className="space-y-4 rounded-2xl border border-border bg-card p-4 sm:p-6"
     >
       <div>
         <label
@@ -65,7 +65,7 @@ export function BekreftForm({ serviceTypeId, coachId, start }: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
+        className="flex min-h-12 w-full items-center justify-center rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
       >
         {pending ? "Bekrefter …" : "Bekreft booking (bruk 1 credit)"}
       </button>

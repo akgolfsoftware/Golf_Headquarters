@@ -140,7 +140,7 @@ export default async function KlubbInnstillingerPage() {
       />
 
       {/* KPI-strip */}
-      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
         <Kpi label="Klubber totalt" value={String(klubber.length)} sub={`${aktive} aktive`} />
         <Kpi label="Fasiliteter" value={String(totalFasiliteter)} sub="Bookbare rom" />
         <Kpi

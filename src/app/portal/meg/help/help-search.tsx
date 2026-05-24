@@ -39,7 +39,7 @@ export function HelpSearch() {
               key={s}
               type="button"
               onClick={() => setQuery(aktiv ? "" : s)}
-              className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+              className={`inline-flex min-h-11 items-center rounded-full border px-4 py-2 text-sm transition-colors ${
                 aktiv
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card text-foreground hover:border-primary hover:text-primary"

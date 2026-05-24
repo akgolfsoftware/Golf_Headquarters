@@ -148,7 +148,7 @@ export default async function LeaderboardPage({
   const minRank = meg?.rank ?? null;
 
   return (
-    <div className="space-y-6 pb-20 md:pb-0">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:pb-0">
       <Head fornavn={fornavn} minRank={minRank} total={total} tab={tab} />
       {meg && <YourRank meg={meg} fornavn={user.name} hcp={meg.hcp} total={total} />}
       <Filters tab={tab} sgTab={sgTab} />

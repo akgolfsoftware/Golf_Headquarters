@@ -36,7 +36,7 @@ export default async function MineBookinger() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 sm:px-6">
       <PageHeader
         eyebrow="PlayerHQ · Meg · Bookinger"
         titleLead="Dine"
@@ -46,7 +46,7 @@ export default async function MineBookinger() {
         actions={
           <Link
             href={nyBookingHref}
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
             <CalendarPlus className="h-4 w-4" strokeWidth={1.75} />
             Ny booking

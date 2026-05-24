@@ -327,6 +327,8 @@ export default async function Turneringer({
         />
       ) : (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
+          <div className="sm:overflow-x-auto">
+            <div className="sm:min-w-[940px] lg:min-w-0">
           <div
             className="hidden border-b border-border bg-muted/40 px-6 py-4 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-muted-foreground sm:grid"
             style={{
@@ -413,6 +415,8 @@ export default async function Turneringer({
               );
             })}
           </ul>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -174,8 +174,10 @@ export function BookingerView({ bookinger, coachListe }: BookingerViewProps) {
         </div>
       </div>
 
-      {/* Liste */}
+      {/* Liste — desktop grid med horisontal scroll på tablet portrait/mobile */}
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <div className="overflow-x-auto">
+          <div className="min-w-[760px]">
         <div className="grid grid-cols-[1.2fr_1.5fr_1fr_1fr_0.8fr_0.8fr_40px] gap-4 border-b border-border bg-secondary px-5 py-3">
           <SortHeader k="dato" label="Dato" sortKey={sortKey} sortDir={sortDir} toggle={toggleSort} />
           <SortHeader k="spiller" label="Spiller" sortKey={sortKey} sortDir={sortDir} toggle={toggleSort} />
@@ -234,6 +236,8 @@ export function BookingerView({ bookinger, coachListe }: BookingerViewProps) {
             ))}
           </ul>
         )}
+          </div>
+        </div>
       </div>
     </div>
   );

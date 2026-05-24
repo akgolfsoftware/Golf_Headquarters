@@ -306,8 +306,8 @@ export default async function AnleggDetaljPage({ params }: Props) {
                 Neste 7 dager
               </span>
             </div>
-            <div className="overflow-hidden rounded-2xl border border-border bg-card">
-              <div className="grid grid-cols-[80px_repeat(7,_1fr)] border-b border-border bg-secondary/40 text-center">
+            <div className="overflow-x-auto rounded-2xl border border-border bg-card">
+              <div className="grid min-w-[640px] grid-cols-[80px_repeat(7,_1fr)] border-b border-border bg-secondary/40 text-center">
                 <div className="border-r border-border p-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                   Tid
                 </div>
@@ -326,7 +326,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
               {TIME_SLOTS.map((tid, ti) => (
                 <div
                   key={tid}
-                  className="grid grid-cols-[80px_repeat(7,_1fr)] border-b border-border last:border-b-0"
+                  className="grid min-w-[640px] grid-cols-[80px_repeat(7,_1fr)] border-b border-border last:border-b-0"
                 >
                   <div className="border-r border-border p-2 text-center font-mono text-[11px] font-semibold text-foreground tabular-nums">
                     {tid}

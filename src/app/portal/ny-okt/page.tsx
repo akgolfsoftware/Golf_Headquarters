@@ -16,7 +16,7 @@ export default async function NyOktPage() {
 
   if (user.tier === "GRATIS") {
     return (
-      <div className="space-y-6">
+      <div className="mx-auto max-w-[1240px] space-y-6 px-4 sm:px-6">
         <PageHeader
           eyebrow="PlayerHQ · Ny økt"
           titleLead="Lag din"
@@ -42,7 +42,7 @@ export default async function NyOktPage() {
   }
 
   return (
-    <div className="space-y-8 pb-32">
+    <div className="mx-auto max-w-[1240px] space-y-8 px-4 pb-32 sm:px-6">
       <PageHeader
         eyebrow="PlayerHQ · Ny økt"
         titleLead="Lag din"

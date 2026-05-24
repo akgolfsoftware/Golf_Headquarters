@@ -16,10 +16,10 @@ export default async function VarslerPage() {
   const prefs = lesPreferences(fullUser ?? { preferences: null });
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 pb-20">
+    <div className="mx-auto max-w-2xl space-y-8 px-4 pb-20 sm:px-6">
       <Link
         href="/portal/meg/innstillinger"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ChevronLeft size={14} strokeWidth={1.5} />
         Tilbake til innstillinger
@@ -38,7 +38,7 @@ export default async function VarslerPage() {
         </p>
       </header>
 
-      <div className="rounded-lg border border-border bg-card p-6">
+      <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
         <NotifToggles initial={prefs} />
       </div>
     </div>

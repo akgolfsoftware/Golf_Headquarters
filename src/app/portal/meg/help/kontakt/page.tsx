@@ -11,7 +11,7 @@ export default async function KontaktSupportPage({
   const sp = await searchParams;
 
   return (
-    <div className="mx-auto w-full max-w-[720px] space-y-8">
+    <div className="mx-auto w-full max-w-[720px] space-y-8 px-4 sm:px-6">
       <PageHeader
         eyebrow="Støtte · Direkte kontakt"
         titleLead="Kontakt"

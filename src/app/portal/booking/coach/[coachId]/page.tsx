@@ -349,7 +349,7 @@ export default async function BookingCoachPage({ params }: Props) {
               {TIDER.map((t, i) => (
                 <button
                   key={t}
-                  className={`rounded-md border py-2.5 font-mono text-[12.5px] font-semibold tabular-nums transition-colors ${
+                  className={`flex min-h-11 items-center justify-center rounded-md border py-2.5 font-mono text-[12.5px] font-semibold tabular-nums transition-colors ${
                     i === 2
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card text-foreground hover:border-foreground/30"

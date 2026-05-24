@@ -55,7 +55,7 @@ export default async function BaneDetailPage({
   if (!bane) notFound();
 
   return (
-    <div className="space-y-8 pb-32">
+    <div className="mx-auto max-w-[1240px] space-y-8 px-4 pb-32 sm:px-6">
       <PageHeader
         eyebrow={`PlayerHQ · Baner · ${bane.name.split(" ")[0]}`}
         titleLead=""

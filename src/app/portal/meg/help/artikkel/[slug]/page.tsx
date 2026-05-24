@@ -56,11 +56,11 @@ export default async function ArtikkelPage({
   if (!a) notFound();
 
   return (
-    <div className="grid gap-12 lg:grid-cols-[1fr_220px]">
+    <div className="mx-auto grid max-w-[1240px] gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_220px]">
       <article className="max-w-[720px] space-y-6">
         <Link
           href="/portal/meg/help"
-          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] text-muted-foreground hover:text-foreground"
+          className="inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
           Hjelp-hub

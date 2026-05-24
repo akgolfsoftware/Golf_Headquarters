@@ -62,12 +62,12 @@ export default async function BekreftCreditBookingPage({
   });
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 sm:px-6">
       <Link
         href={`/portal/booking/ny?service=${serviceSlug}&dato=${
           startAt.toISOString().split("T")[0]
         }`}
-        className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 items-center font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
       >
         ← Velg annen tid
       </Link>
@@ -89,7 +89,7 @@ export default async function BekreftCreditBookingPage({
         </div>
       )}
 
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <section className="rounded-2xl border border-border bg-card p-4 sm:p-6">
         <h2 className="font-display text-lg font-semibold tracking-tight">
           Oppsummering
         </h2>

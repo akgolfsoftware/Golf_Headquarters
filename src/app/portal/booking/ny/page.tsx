@@ -63,7 +63,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
   const isFree = user.tier === "GRATIS";
 
   return (
-    <div className="space-y-6 pb-20 md:pb-0">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · Book ny time"
         titleLead="Bruk"
@@ -255,7 +255,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
 
 function BruktOppView({ resetAt }: { resetAt: Date | null }) {
   return (
-    <div className="space-y-6 pb-20 md:pb-0">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · Book ny time"
         titleLead="Du har brukt"

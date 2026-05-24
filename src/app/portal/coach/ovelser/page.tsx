@@ -48,7 +48,7 @@ export default async function CoachOvelserPage({
   }
 
   return (
-    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
       <div className="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:justify-between">
         <PageHeader
           eyebrow="CoachHQ · Bibliotek"
@@ -58,7 +58,7 @@ export default async function CoachOvelserPage({
         />
         <Link
           href="/portal/coach/ovelser/ny"
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
         >
           <Plus className="h-4 w-4" strokeWidth={2} />
           Ny øvelse
@@ -76,7 +76,7 @@ export default async function CoachOvelserPage({
             <Link
               key={o.value}
               href={bygglenke(o.value)}
-              className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
+              className={`inline-flex min-h-9 items-center rounded-full px-4 py-1 text-xs font-medium transition-colors ${
                 aktiv
                   ? "bg-primary text-primary-foreground"
                   : "border border-input bg-card text-foreground hover:border-border hover:bg-secondary"

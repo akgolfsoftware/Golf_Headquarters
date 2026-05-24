@@ -57,7 +57,7 @@ export default async function OppgraderPage() {
   await requirePortalUser();
 
   return (
-    <div className="space-y-10">
+    <div className="mx-auto max-w-[1240px] space-y-10 px-4 sm:px-6">
       <PageHeader
         eyebrow="Pro · Oppgrader"
         titleLead="Slik"

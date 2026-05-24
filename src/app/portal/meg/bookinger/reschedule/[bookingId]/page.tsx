@@ -64,10 +64,10 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 sm:px-6">
       <Link
         href="/portal/meg/bookinger"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
         Tilbake til bookinger

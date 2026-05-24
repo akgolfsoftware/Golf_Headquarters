@@ -34,7 +34,7 @@ export default async function AvbestillPage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-[480px] space-y-6">
+    <div className="mx-auto w-full max-w-[480px] space-y-6 px-4 sm:px-6">
       {/* Hero */}
       <div className="flex flex-col items-center gap-4 pt-2 text-center">
         {/* Danger ring */}

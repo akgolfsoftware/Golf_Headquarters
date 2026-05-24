@@ -391,7 +391,7 @@ export default async function GoalDetailPage({
       : Math.min(100, (data.streak / 14) * 100);
 
   return (
-    <div className="pb-20 md:pb-0">
+    <div className="mx-auto max-w-[1240px] px-4 pb-20 sm:px-6 md:pb-0">
     <DetailShell
       breadcrumb={[
         { label: "Mål", href: "/portal/mal" },

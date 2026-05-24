@@ -257,7 +257,7 @@ export default async function DagligBrief() {
 
         {/* 03 + 04 — placeholder for agent-anbefalinger og oppmerksomhet */}
         <section className="mb-10">
-          <div className="grid grid-cols-2 items-start gap-8">
+          <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
             <div>
               <SectionNum num="03" title="Agentenes anbefalinger" />
               {/* TODO: hent agent-anbefalinger fra PlanAction-tabellen */}

@@ -124,7 +124,7 @@ export default async function OktDetalj({ params }: Props) {
         </div>
       </nav>
 
-      <div className="mx-auto max-w-3xl space-y-6 p-8 pb-24">
+      <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 pb-24 sm:p-8">
         {/* ── Hero ── */}
         <div className="flex flex-col gap-4">
           <div
@@ -134,7 +134,7 @@ export default async function OktDetalj({ params }: Props) {
             {statusOk ? "Planlagt" : "Bekreftet"}
           </div>
 
-          <h1 className="font-display text-4xl font-semibold leading-tight tracking-tight">
+          <h1 className="font-display text-2xl font-semibold leading-tight tracking-tight sm:text-4xl">
             {booking.serviceType.name} —{" "}
             <em className="font-serif font-normal italic text-primary">
               {booking.location.name.split(" ")[0]}

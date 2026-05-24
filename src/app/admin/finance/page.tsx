@@ -162,7 +162,8 @@ export default async function FinanceAdmin() {
           />
         ) : (
           <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] text-sm">
               <thead className="border-b border-border bg-secondary/40 text-left">
                 <tr>
                   <Th>Dato</Th>
@@ -226,6 +227,7 @@ export default async function FinanceAdmin() {
                 })}
               </tbody>
             </table>
+            </div>
           </div>
         )}
       </section>

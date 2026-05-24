@@ -56,7 +56,7 @@ export default async function FakturaDetaljPage({
   const mva = beloepOre - netto;
 
   return (
-    <div className="mx-auto w-full max-w-[820px] space-y-8">
+    <div className="mx-auto w-full max-w-[820px] space-y-8 px-4 sm:px-6">
       <Link
         href="/portal/meg/abonnement"
         className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] text-muted-foreground hover:text-foreground"
@@ -121,8 +121,8 @@ export default async function FakturaDetaljPage({
       </section>
 
       {/* Lines */}
-      <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <table className="w-full">
+      <section className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
+        <table className="w-full min-w-[640px]">
           <caption className="sr-only">Fakturalinjer</caption>
           <thead className="bg-muted/60">
             <tr>

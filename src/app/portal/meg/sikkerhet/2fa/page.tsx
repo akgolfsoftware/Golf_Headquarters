@@ -8,7 +8,7 @@ export default async function TwoFaPage() {
   await requirePortalUser();
 
   return (
-    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
       <Link
         href="/portal/meg/sikkerhet"
         className="inline-flex h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"

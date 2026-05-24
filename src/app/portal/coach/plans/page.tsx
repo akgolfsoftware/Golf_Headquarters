@@ -38,7 +38,7 @@ export default async function CoachPlans() {
   const ferdig = planer.filter((p) => !p.isActive);
 
   return (
-    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
       <PageHeader
         eyebrow="PlayerHQ · Coach · Planer"
         titleLead={aktiv.length === 0 ? "Ingen" : `${aktiv.length} aktiv`}

@@ -57,7 +57,7 @@ export default async function AdminSecurityPage() {
       </Section>
 
       <Section title="Passord">
-        <div className="grid grid-cols-[200px_1fr_auto] items-start gap-4 px-6 py-4">
+        <div className="grid grid-cols-1 items-start gap-2 px-6 py-4 sm:grid-cols-[200px_1fr_auto] sm:gap-4">
           <div>
             <div className="text-[13px] text-muted-foreground">Endre passord</div>
             <div className="mt-0.5 text-[11px] text-muted-foreground/80">

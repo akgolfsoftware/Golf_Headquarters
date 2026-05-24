@@ -11,7 +11,7 @@ import { SymptomWizard } from "./wizard";
 export default async function NyttSymptomPage() {
   await requirePortalUser();
   return (
-    <div className="space-y-6 pb-32">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-32 sm:px-6">
       <PageHeader
         eyebrow="PlayerHQ · Meg · Helse"
         titleLead="Legg til"

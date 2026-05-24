@@ -11,10 +11,10 @@ export default async function SikkerhetPage() {
   const score = user.email ? 65 : 40;
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
       <Link
         href="/portal/meg"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
         Min profil
@@ -30,7 +30,7 @@ export default async function SikkerhetPage() {
 
       {/* Oversikt */}
       <Section title="Oversikt">
-        <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:p-6">
           <MiniStat
             label="Sikkerhetsscore"
             value={String(score)}

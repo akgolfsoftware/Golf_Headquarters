@@ -81,7 +81,7 @@ export default async function AiCoachPage({
 
   return (
     <div className="grid min-h-[calc(100vh-64px)] grid-rows-[auto_auto_1fr] bg-background text-foreground">
-      <div className="border-b border-border bg-card px-8 pt-6 pb-4">
+      <div className="border-b border-border bg-card px-4 pt-6 pb-4 sm:px-8">
         <PageHeader
           eyebrow="PlayerHQ · AI-coach"
           titleLead="AI om"
@@ -89,7 +89,7 @@ export default async function AiCoachPage({
           sub="Personlig kontekst basert på profil og siste aktivitet."
         />
       </div>
-      <header className="flex items-center justify-between gap-4 border-b border-border bg-card px-8 py-3.5">
+      <header className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-3.5 sm:px-8">
         <div className="flex items-center gap-3.5">
           <div className="relative grid h-11 w-11 place-items-center rounded-full bg-primary text-primary-foreground">
             <span className="font-bold text-[14px]">{initialer}</span>

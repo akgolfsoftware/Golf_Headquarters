@@ -323,7 +323,7 @@ export default async function MetricDrillDownPage({
   const benchmarkDiff = verdi30d - info.benchmark;
 
   return (
-    <div className="space-y-6 pb-20 md:space-y-8 md:pb-16">
+    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-16">
       <PageHeader
         eyebrow={`PlayerHQ · Statistikk · ${info.slug.toUpperCase()}`}
         titleLead={info.title}

@@ -304,17 +304,17 @@ export function OnskeligOktForm({ coacher }: { coacher: Coach[] }) {
         </div>
       )}
 
-      <div className="mt-2 flex items-center justify-between border-t border-border pt-6">
+      <div className="mt-2 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
         <Link
           href="/portal"
-          className="rounded-md border border-border bg-transparent px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+          className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-transparent px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
         >
           Avbryt
         </Link>
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {pending ? "Sender …" : "Send forespørsel"}
           <Send className="h-4 w-4" />
@@ -336,7 +336,7 @@ function FormSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-border bg-card p-6">
+    <section className="rounded-xl border border-border bg-card p-4 sm:p-6">
       <div className="mb-4">
         <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           {num}
@@ -433,7 +433,7 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:opacity-90 ${
+      className={`inline-flex min-h-9 items-center rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:opacity-90 ${
         active
           ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-card text-foreground"
