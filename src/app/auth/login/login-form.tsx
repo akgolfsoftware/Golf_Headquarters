@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { safeRedirectPath } from "@/lib/security/safe-redirect-client";
 
 export function LoginForm() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export function LoginForm() {
       setError(oversettAuthFeil(error.message));
       return;
     }
-    const next = searchParams.get("next") ?? "/portal";
+    const next = safeRedirectPath(searchParams.get("next"), "/portal");
     router.push(next);
     router.refresh();
   }
@@ -35,7 +36,7 @@ export function LoginForm() {
   async function loggInnGoogle() {
     setError(null);
     setLoading(true);
-    const next = searchParams.get("next") ?? "/portal";
+    const next = safeRedirectPath(searchParams.get("next"), "/portal");
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",

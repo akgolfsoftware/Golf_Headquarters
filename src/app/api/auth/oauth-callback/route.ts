@@ -1,13 +1,15 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { safeRedirectPath } from "@/lib/security/safe-redirect";
 
 export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   const url = req.nextUrl;
   const code = url.searchParams.get("code");
-  const next = url.searchParams.get("next") ?? "/portal";
+  // safeRedirectPath avviser absolutte URLer og protocol-relative paths
+  const next = safeRedirectPath(url.searchParams.get("next"), "/portal");
 
   if (!code) {
     return NextResponse.redirect(new URL("/auth/login?error=no-code", url.origin));
@@ -72,5 +74,6 @@ export async function GET(req: NextRequest) {
     console.error("[oauth-callback] auto-link feilet:", linkErr);
   }
 
+  // next er allerede validert som relativ path — new URL er trygt her
   return NextResponse.redirect(new URL(next, url.origin));
 }

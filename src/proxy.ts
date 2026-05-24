@@ -53,8 +53,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Rolle-sjekk for /admin/* gjøres i src/app/admin/page.tsx (RSC) for å
-  // unngå Prisma-kall i proxy. Proxy-en stopper kun uautentiserte requests.
+  // Rolle-sjekk for /admin/* gjøres i src/app/admin/layout.tsx (RSC) via
+  // requirePortalUser({ allow: ["ADMIN","COACH"] }) for å unngå Prisma-kall
+  // her i proxy-laget. Proxy-en stopper kun uautentiserte requests.
   return response;
 }
 

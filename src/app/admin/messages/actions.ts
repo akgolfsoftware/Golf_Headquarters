@@ -56,7 +56,6 @@ export async function sendMelding(
   // Postgres vil avbryte den ene transaksjonen med 40001 ved konflikt;
   // vi retry-er da inntil 3 ganger.
   const MAX_FORSØK = 3;
-  let sisteFeil: unknown = null;
   for (let forsøk = 0; forsøk < MAX_FORSØK; forsøk++) {
     try {
       const utfall = await prisma.$transaction(
@@ -87,7 +86,6 @@ export async function sendMelding(
       revalidatePath("/admin/messages");
       return { ok: true };
     } catch (err) {
-      sisteFeil = err;
       // Postgres serialization failure (40001) eller deadlock (40P01)
       // → vent kort og retry
       const kode = (err as { code?: string } | null)?.code;
@@ -95,14 +93,11 @@ export async function sendMelding(
         await new Promise((r) => setTimeout(r, 25 * (forsøk + 1)));
         continue;
       }
-      throw err;
+      throw new Error("intern feil");
     }
   }
   return {
     ok: false,
-    error:
-      sisteFeil instanceof Error
-        ? `Kunne ikke lagre melding: ${sisteFeil.message}`
-        : "Kunne ikke lagre melding etter flere forsøk",
+    error: "Kunne ikke lagre melding etter flere forsøk",
   };
 }

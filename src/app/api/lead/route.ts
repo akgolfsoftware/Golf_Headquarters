@@ -3,6 +3,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sendVelkomstEpost } from "@/lib/email";
 import { rateLimit } from "@/lib/rate-limit";
+import { requireSameOrigin, getClientIp } from "@/lib/security/same-origin";
 
 export const runtime = "nodejs";
 
@@ -14,11 +15,13 @@ type RequestBody = {
 };
 
 export async function POST(req: Request) {
+  // CSRF-guard: kun requests fra akgolf.no
+  const guard = requireSameOrigin(req);
+  if (guard) return guard;
+
   // Rate-limit per IP — 5 leads per minutt for å hindre spam
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0] ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
+  // Bruker x-vercel-forwarded-for (ikke-spoofbar) i stedet for x-forwarded-for[0]
+  const ip = getClientIp(req);
   const rl = await rateLimit({ key: `lead:${ip}`, max: 5, windowMs: 60_000 });
   if (!rl.ok) {
     return NextResponse.json({ error: "rate-limited" }, { status: 429 });

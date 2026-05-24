@@ -5,6 +5,7 @@
  * Henter booking + relasjoner fra DB, bygger templaten, og sender.
  * Returnerer void; logger og throw-er ved feil slik at kaller kan håndtere.
  */
+import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { FRA_EPOST, resendKlient } from "@/lib/email";

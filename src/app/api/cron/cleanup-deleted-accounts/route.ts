@@ -18,7 +18,7 @@ const RETENTION_DAYS = 30;
 export async function GET(req: Request): Promise<NextResponse> {
   const auth = req.headers.get("authorization");
   const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
-  if (process.env.CRON_SECRET && auth !== expectedAuth) {
+  if (!process.env.CRON_SECRET || auth !== expectedAuth) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 

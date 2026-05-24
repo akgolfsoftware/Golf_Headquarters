@@ -16,6 +16,7 @@ import { ExternalLink, Lock, Plus, RefreshCw, Sparkles } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
 import { SourceBadge, WorkspaceTabs, VisibilityPill } from "@/components/workspace/primitives";
+import { ensureNotionConnection } from "@/lib/notion/bootstrap";
 import { getNotionConnectionForUser } from "@/lib/notion/client";
 
 export const dynamic = "force-dynamic";
@@ -26,9 +27,15 @@ export default async function WorkspaceNotionPage({
   searchParams: Promise<{ state?: string; error?: string }>;
 }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+
+  // Auto-bootstrap (kun ADMIN, kun hvis NOTION_INTERNAL_TOKEN er satt).
+  // Idempotent — trygt å kalle på hver request.
+  await ensureNotionConnection(user.id, user.role);
+
   const sp = await searchParams;
 
   const isAdmin = user.role === "ADMIN";
+  const hasInternalToken = Boolean(process.env.NOTION_INTERNAL_TOKEN);
   const connection = isAdmin ? await getNotionConnectionForUser(user.id) : null;
 
   // I prod: state følger faktisk DB-state. Dev-toggle (?state=) overstyrer
@@ -100,7 +107,7 @@ export default async function WorkspaceNotionPage({
 
       <div className="pb-12">
         {state === "empty" ? (
-          <EmptyState canConnect={isAdmin} />
+          <EmptyState isAdmin={isAdmin} hasInternalToken={hasInternalToken} />
         ) : (
           <ConnectedState
             workspaceName={connection?.workspaceName ?? "Notion workspace"}
@@ -135,93 +142,156 @@ function NotionLogo({ size = 48 }: { size?: number }) {
   );
 }
 
-function EmptyState({ canConnect }: { canConnect: boolean }) {
+function EmptyState({
+  isAdmin,
+  hasInternalToken,
+}: {
+  isAdmin: boolean;
+  hasInternalToken: boolean;
+}) {
+  // For ikke-ADMIN: vis kort hint.
+  if (!isAdmin) {
+    return (
+      <div className="mx-auto max-w-3xl space-y-5">
+        <div className="grid items-center gap-7 rounded-2xl border border-border bg-card p-9 md:grid-cols-[160px_1fr]">
+          <div className="flex justify-center">
+            <NotionLogo />
+          </div>
+          <div>
+            <div className="font-mono mb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+              NOTION · KUN ADMIN
+            </div>
+            <h2 className="font-display text-2xl font-bold leading-tight tracking-tight">
+              Kun ADMIN kan koble til Notion
+            </h2>
+            <p className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground">
+              Snakk med Anders hvis du vil at en database skal synkes til CoachHQ.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ADMIN uten env-var: forklar hva som må gjøres i Vercel.
+  if (!hasInternalToken) {
+    return (
+      <div className="mx-auto max-w-3xl space-y-7">
+        <div className="grid items-center gap-7 rounded-2xl border border-border bg-card p-9 md:grid-cols-[160px_1fr]">
+          <div className="flex justify-center">
+            <NotionLogo />
+          </div>
+          <div>
+            <div className="font-mono mb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+              NOTION · IKKE KONFIGURERT
+            </div>
+            <h2 className="font-display text-2xl font-bold leading-tight tracking-tight">
+              Sett{" "}
+              <em
+                className="font-normal not-italic"
+                style={{
+                  fontFamily: "'Instrument Serif', serif",
+                  fontStyle: "italic",
+                  color: "#005840",
+                }}
+              >
+                NOTION_INTERNAL_TOKEN
+              </em>{" "}
+              i Vercel for å koble til
+            </h2>
+            <p className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground">
+              CoachHQ bruker en Notion Internal Integration. Tokenet ligger som
+              env-var i Vercel — ingen OAuth-flyt nødvendig.
+            </p>
+          </div>
+        </div>
+
+        <section>
+          <div className="font-mono mb-3 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+            SLIK SETTER DU OPP
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            {[
+              {
+                n: "1",
+                title: "Opprett Internal Integration",
+                desc: "Gå til notion.so/my-integrations og lag en ny Internal Integration. Gi den Read/Update/Insert content.",
+              },
+              {
+                n: "2",
+                title: "Sett env-var i Vercel",
+                desc: "Lim inn tokenet som NOTION_INTERNAL_TOKEN i Vercel → Project → Settings → Environment Variables. Redeploy.",
+              },
+              {
+                n: "3",
+                title: "Del Tasks-DB med integrasjonen",
+                desc: "I Notion: åpne Tasks-DB → ··· → Connections → legg til integrasjonen. Last side på nytt.",
+              },
+            ].map((s) => (
+              <div
+                key={s.n}
+                className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-5"
+              >
+                <span className="font-display inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-base font-bold text-accent">
+                  {s.n}
+                </span>
+                <h3 className="font-display text-[15px] font-semibold">{s.title}</h3>
+                <p className="text-[12.5px] leading-relaxed text-muted-foreground">
+                  {s.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <div className="grid items-center gap-5 rounded-2xl bg-foreground p-6 text-white md:grid-cols-[1fr_auto]">
+          <div>
+            <div className="font-display text-lg font-semibold">Ferdig med oppsett?</div>
+            <div className="mt-1.5 text-[13px] leading-relaxed text-white/65">
+              Last siden på nytt etter du har satt env-var og delt Tasks-DB med
+              integrasjonen. Vi auto-kobler til på neste request.
+            </div>
+          </div>
+          <a
+            href="https://www.notion.so/my-integrations"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 font-display text-sm font-semibold text-primary hover:opacity-90"
+          >
+            <ExternalLink className="h-4 w-4" /> Åpne Notion-integrasjoner
+          </a>
+        </div>
+
+        <div className="flex items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/[0.04] px-4 py-3.5">
+          <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+          <p className="text-[12.5px] leading-relaxed">
+            <strong>Tokenet krypteres i databasen.</strong> Internal Integration-tokens
+            har scope kun til siden/databasen du eksplisitt deler med integrasjonen
+            i Notion.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ADMIN med env-var men ingen connection — race condition (bootstrap kjører).
   return (
-    <div className="mx-auto max-w-3xl space-y-7">
-      {/* Hero-card */}
+    <div className="mx-auto max-w-3xl space-y-5">
       <div className="grid items-center gap-7 rounded-2xl border border-border bg-card p-9 md:grid-cols-[160px_1fr]">
         <div className="flex justify-center">
           <NotionLogo />
         </div>
         <div>
           <div className="font-mono mb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-            NOTION · IKKE TILKOBLET
+            NOTION · KONFIGURERER...
           </div>
           <h2 className="font-display text-2xl font-bold leading-tight tracking-tight">
-            Koble til Notion for å synkronisere dine{" "}
-            <em
-              className="font-normal not-italic"
-              style={{
-                fontFamily: "'Instrument Serif', serif",
-                fontStyle: "italic",
-                color: "#005840",
-              }}
-            >
-              oppgaver og prosjekter
-            </em>{" "}
-            automatisk
+            Kobler til Notion automatisk
           </h2>
           <p className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground">
-            CoachHQ leser oppgaver og prosjekter fra dine Notion-databaser. Endringer i
-            Notion oppdaterer CoachHQ innen 4 min — endringer i CoachHQ skyves tilbake
-            til Notion innen 30 sek.
+            Vi oppretter tilkoblingen nå. Last siden på nytt om noen sekunder.
           </p>
         </div>
-      </div>
-
-      {/* 3 steg */}
-      <section>
-        <div className="font-mono mb-3 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-          SLIK FUNGERER DET
-        </div>
-        <div className="grid gap-3 md:grid-cols-3">
-          {[
-            { n: "1", title: "Logg inn med Notion-konto", desc: "OAuth via Notions offisielle integrasjon. Vi får aldri ditt passord." },
-            { n: "2", title: "Velg databaser å synke", desc: "Plukk ut akkurat de databasene CoachHQ skal lese — du har full kontroll." },
-            { n: "3", title: "Kartlegg felter", desc: "Status, Prioritet, Synlighet, Tildelt, Forfaller — match med dine egne kolonner." },
-          ].map((s) => (
-            <div key={s.n} className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-5">
-              <span className="font-display inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-base font-bold text-accent">
-                {s.n}
-              </span>
-              <h3 className="font-display text-[15px] font-semibold">{s.title}</h3>
-              <p className="text-[12.5px] leading-relaxed text-muted-foreground">
-                {s.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <div className="grid items-center gap-5 rounded-2xl bg-foreground p-6 text-white md:grid-cols-[1fr_auto]">
-        <div>
-          <div className="font-display text-lg font-semibold">Klar til å koble til?</div>
-          <div className="mt-1.5 text-[13px] leading-relaxed text-white/65">
-            Du blir sendt til Notions autorisering. Tar 30 sek.
-          </div>
-        </div>
-        {canConnect ? (
-          <a
-            href="/api/notion/oauth/start"
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 font-display text-sm font-semibold text-primary hover:opacity-90"
-          >
-            <ExternalLink className="h-4 w-4" /> Koble til Notion
-          </a>
-        ) : (
-          <span className="font-mono text-[11px] uppercase tracking-[0.06em] text-white/60">
-            Kun ADMIN
-          </span>
-        )}
-      </div>
-
-      {/* Sikkerhets-card */}
-      <div className="flex items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/[0.04] px-4 py-3.5">
-        <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-        <p className="text-[12.5px] leading-relaxed">
-          <strong>Vi lagrer kun et token.</strong> Du kan koble fra når som helst —
-          token revokes umiddelbart hos Notion, og synket data blir værende i CoachHQ.
-        </p>
       </div>
     </div>
   );
@@ -268,6 +338,9 @@ function ConnectedState({
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-600" />
               TILKOBLET
             </span>
+            <span className="font-mono inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
+              AUTO-KOBLET · NOTION_INTERNAL_TOKEN
+            </span>
             <span className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
               {sinceText}
             </span>
@@ -283,16 +356,6 @@ function ConnectedState({
           <form action="/api/notion/sync" method="post">
             <AthleticButton variant="ghost-light" size="sm" type="submit">
               <RefreshCw className="h-3.5 w-3.5" /> Synk nå
-            </AthleticButton>
-          </form>
-          <form action="/api/notion/oauth/disconnect" method="post">
-            <AthleticButton
-              variant="ghost-light"
-              size="sm"
-              className="text-destructive"
-              type="submit"
-            >
-              Koble fra
             </AthleticButton>
           </form>
         </div>

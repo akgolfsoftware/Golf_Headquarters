@@ -3,6 +3,7 @@
  *
  * Henter EmailTemplate via slug, substituerer placeholders, sender via Resend.
  */
+import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";

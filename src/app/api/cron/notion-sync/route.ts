@@ -12,7 +12,10 @@ export const maxDuration = 60;
 export async function GET(req: Request): Promise<NextResponse> {
   const auth = req.headers.get("authorization");
   const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
-  if (process.env.CRON_SECRET && auth !== expectedAuth) {
+  // VIKTIG: manglende CRON_SECRET i env er en konfigurasjonsfeil — avvis alltid.
+  // Original bug: `if (process.env.CRON_SECRET && ...)` tillot tilgang hvis
+  // env-variabelen MANGLER (tom string = falsy). Riktig: avvis hvis den mangler.
+  if (!process.env.CRON_SECRET || auth !== expectedAuth) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
