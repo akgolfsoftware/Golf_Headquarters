@@ -23,30 +23,49 @@ const nextConfig: NextConfig = {
   // /admin/bookings/ny beholdes uendret for å unngå å bryte interne lenker.
   async redirects() {
     return [
+      // CoachHQ duplikatkonsolidering — engelsk → norsk, deltagamle → kanoniske.
+      // Sub-paths (:path*) inkludert for å fange opp underruter etter sletting.
       { source: "/admin/bookings", destination: "/admin/bookinger", permanent: true },
+      { source: "/admin/bookings/:path*", destination: "/admin/bookinger/:path*", permanent: true },
       { source: "/admin/groups", destination: "/admin/grupper", permanent: true },
+      { source: "/admin/groups/:path*", destination: "/admin/grupper/:path*", permanent: true },
       { source: "/admin/elever", destination: "/admin/spillere", permanent: true },
+      { source: "/admin/elever/:path*", destination: "/admin/spillere/:path*", permanent: true },
       { source: "/admin/calendar", destination: "/admin/kalender", permanent: true },
+      { source: "/admin/calendar/:path*", destination: "/admin/kalender/:path*", permanent: true },
       { source: "/admin/capacity", destination: "/admin/kapasitet", permanent: true },
-      { source: "/admin/analytics", destination: "/admin/analyse", permanent: true },
+      { source: "/admin/capacity/:path*", destination: "/admin/kapasitet/:path*", permanent: true },
+      { source: "/admin/analytics", destination: "/admin/analysere", permanent: true },
+      { source: "/admin/analytics/:path*", destination: "/admin/analysere/:path*", permanent: true },
+      { source: "/admin/analyse", destination: "/admin/analysere", permanent: true },
       { source: "/admin/audit", destination: "/admin/audit-log", permanent: true },
+      { source: "/admin/audit/:path*", destination: "/admin/audit-log/:path*", permanent: true },
 
       // Tilleggsredirects per plan Del 2 (canonical-ruter)
       { source: "/admin/locations", destination: "/admin/anlegg", permanent: true },
       { source: "/admin/facilities", destination: "/admin/anlegg", permanent: true },
       { source: "/admin/facilities/:id", destination: "/admin/anlegg/:id", permanent: true },
       { source: "/admin/approvals", destination: "/admin/godkjenninger", permanent: true },
-      { source: "/admin/approvals/:id", destination: "/admin/godkjenninger?id=:id", permanent: true },
       { source: "/admin/plan-templates", destination: "/admin/plans/templates", permanent: true },
       { source: "/admin/plan-templates/:path*", destination: "/admin/plans/templates/:path*", permanent: true },
-      { source: "/admin/notion-prosjekter", destination: "/admin/workspace/prosjekter", permanent: true },
+      { source: "/admin/notion-prosjekter", destination: "/admin/workspace/notion", permanent: true },
+      { source: "/admin/notion-prosjekter/:path*", destination: "/admin/workspace/notion/:path*", permanent: true },
       { source: "/admin/notion-oppgaver", destination: "/admin/workspace/oppgaver", permanent: true },
+      { source: "/admin/notion-oppgaver/:path*", destination: "/admin/workspace/oppgaver/:path*", permanent: true },
       { source: "/admin/messages", destination: "/admin/innboks", permanent: true },
       { source: "/admin/meg", destination: "/admin/profile", permanent: true },
+      { source: "/admin/meg/:path*", destination: "/admin/profile/:path*", permanent: true },
 
       // PlayerHQ IA-restrukturering 2026-05-22 (master-plan)
       // Gamle ruter -> nye hovedseksjoner under /portal
       { source: "/portal/innsikt", destination: "/portal/analysere", permanent: true },
+      { source: "/portal/innsikt/:path*", destination: "/portal/analysere/:path*", permanent: true },
+      { source: "/portal/analyse", destination: "/portal/analysere", permanent: true },
+      { source: "/portal/analyse/:path*", destination: "/portal/analysere/:path*", permanent: true },
+      { source: "/portal/profil", destination: "/portal/meg", permanent: true },
+      { source: "/portal/profil/:path*", destination: "/portal/meg/:path*", permanent: true },
+      { source: "/portal/coach/notater", destination: "/portal/coach/notes", permanent: true },
+      { source: "/portal/coach/notater/:path*", destination: "/portal/coach/notes/:path*", permanent: true },
       { source: "/portal/statistikk", destination: "/portal/analysere?tab=statistikk", permanent: true },
       { source: "/portal/statistikk/:path*", destination: "/portal/analysere?tab=statistikk", permanent: true },
       { source: "/portal/mal", destination: "/portal/planlegge?tab=mal", permanent: true },
@@ -97,9 +116,8 @@ const nextConfig: NextConfig = {
       { source: "/portal/planlegge/turnering/:id", destination: "/portal/tren/turneringer/:id", permanent: false },
 
       // CoachHQ sub-routes
-      { source: "/admin/spillere/:id/rediger", destination: "/admin/elever/:id/rediger", permanent: false },
       { source: "/admin/planlegge/grupper/:id", destination: "/admin/grupper/:id", permanent: false },
-      { source: "/admin/gjennomfore/bookinger/ny", destination: "/admin/bookings/ny", permanent: false },
+      { source: "/admin/gjennomfore/bookinger/ny", destination: "/admin/bookinger/ny", permanent: false },
       { source: "/admin/gjennomfore/anlegg/:id", destination: "/admin/anlegg/:id", permanent: false },
       { source: "/admin/stall/caddie/:spillerId", destination: "/admin/agencyos/caddie/aktivitet", permanent: false },
       { source: "/admin/analysere/godkjenninger/:id", destination: "/admin/godkjenninger", permanent: false },
