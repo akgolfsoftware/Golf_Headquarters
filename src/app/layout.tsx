@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
 import { SwRegister } from "@/components/sw-register";
+import { CookieBanner } from "@/components/shared/cookie-banner";
 import "./globals.css";
 
 // Inter — UI og brødtekst (variable font)
@@ -138,6 +139,7 @@ export default async function RootLayout({
         {children}
         <InstallPrompt />
         <SwRegister />
+        <CookieBanner />
         <Analytics />
         <SpeedInsights />
       </body>
