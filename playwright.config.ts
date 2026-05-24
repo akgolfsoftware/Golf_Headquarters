@@ -1,14 +1,26 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
+const isCI = !!process.env.CI;
 
 export default defineConfig({
-  testDir: "./e2e",
-  fullyParallel: false,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: 1,
-  reporter: process.env.CI ? "html" : "list",
+  // Begge mappene scannes — `e2e/` er eldre tester, `tests/e2e/` er ny smoke-suite.
+  testDir: ".",
+  testMatch: ["e2e/*.spec.ts", "tests/e2e/*.spec.ts"],
+  testIgnore: [
+    "**/node_modules/**",
+    "**/.worktrees/**",
+    "**/.claude/**",
+    "**/.next/**",
+    "**/.vercel/**",
+    "**/_arkiv/**",
+  ],
+
+  fullyParallel: true,
+  forbidOnly: isCI,
+  retries: isCI ? 2 : 0,
+  workers: isCI ? 1 : 4,
+  reporter: [["html"], ["line"]],
 
   use: {
     baseURL,
@@ -21,10 +33,14 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
+    },
   ],
 
-  // Auto-start dev-server lokalt (i CI antar vi det allerede kjører)
-  webServer: process.env.CI
+  // Auto-start dev-server lokalt (i CI antar vi det allerede kjører eller at vi peker mot Vercel-deploy)
+  webServer: isCI
     ? undefined
     : {
         command: "npm run dev",
