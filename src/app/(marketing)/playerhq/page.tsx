@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PlayerHQMockup } from "@/components/marketing/playerhq-mockup";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const metadata: Metadata = {
   title: "PlayerHQ — AK Golf Academy",
@@ -63,9 +64,7 @@ export default function PlayerHQ() {
           </div>
 
           <header className="mt-10 text-center">
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-              PlayerHQ
-            </span>
+            <AthleticEyebrow tone="lime">PlayerHQ</AthleticEyebrow>
             <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
               <em className="font-normal italic text-primary">Din</em>{" "}
               spillerportal
@@ -82,9 +81,7 @@ export default function PlayerHQ() {
       <section className="border-y border-border bg-card px-4 sm:px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
-            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Funksjoner
-            </span>
+            <AthleticEyebrow>Funksjoner</AthleticEyebrow>
             <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
               <em className="font-normal italic text-primary">Hva</em> får du
             </h2>
@@ -116,9 +113,7 @@ export default function PlayerHQ() {
       <section className="px-6 py-20">
         <div className="mx-auto max-w-3xl">
           <div className="text-center">
-            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Pris
-            </span>
+            <AthleticEyebrow>Pris</AthleticEyebrow>
             <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
               Hvordan{" "}
               <em className="font-normal italic text-primary">prises</em>{" "}
@@ -188,15 +183,15 @@ export default function PlayerHQ() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/coaching"
-              className="rounded-md bg-primary px-6 py-4 text-base font-semibold text-primary-foreground"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-[15px] font-bold text-accent shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Bli Academy-kunde
             </Link>
             <Link
               href="/auth/signup"
-              className="rounded-md border border-input bg-card px-6 py-4 text-base font-medium text-foreground hover:border-border"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card px-6 text-[15px] font-semibold text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              Prøv PlayerHQ gratis →
+              Prøv PlayerHQ gratis
             </Link>
           </div>
         </div>

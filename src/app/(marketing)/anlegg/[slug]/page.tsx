@@ -438,10 +438,7 @@ export default async function AnleggDetalj({
       {/* ── CTA-banner ── */}
       <section className="px-6 pb-24">
         <div
-          className="relative mx-auto max-w-5xl overflow-hidden rounded-2xl px-8 py-14 text-center sm:px-14 sm:py-16"
-          style={{
-            background: "linear-gradient(150deg, #005840 0%, #003A2A 100%)",
-          }}
+          className="relative mx-auto max-w-5xl overflow-hidden rounded-2xl bg-primary px-8 py-14 text-center sm:px-14 sm:py-16"
         >
           {/* Radial lime glow */}
           <div

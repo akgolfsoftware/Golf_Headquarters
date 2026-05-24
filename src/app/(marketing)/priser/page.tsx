@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Check, CircleDot } from "lucide-react";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const metadata: Metadata = {
   title: "Priser — AK Golf Academy",
@@ -79,9 +80,9 @@ export default function PriserSide() {
       {/* Hero */}
       <section className="border-b border-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-12 pb-12 sm:pt-20 sm:pb-16 md:pt-28 md:pb-20 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1">
             <CircleDot className="h-3 w-3 text-primary" strokeWidth={2} />
-            Priser
+            <AthleticEyebrow>Priser</AthleticEyebrow>
           </div>
           <h1 className="mt-6 font-display text-4xl sm:text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
             Enkelt og{" "}
@@ -110,9 +111,7 @@ export default function PriserSide() {
       <section className="border-t border-border bg-card">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-24">
           <div className="text-center">
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              Spørsmål og svar
-            </span>
+            <AthleticEyebrow>Spørsmål og svar</AthleticEyebrow>
             <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight">
               Ofte stilte spørsmål om{" "}
               <em className="font-display font-normal italic text-primary">
@@ -138,9 +137,7 @@ export default function PriserSide() {
             style={{ background: "rgba(209,248,67,0.18)" }}
           />
           <div className="relative max-w-2xl mx-auto">
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] opacity-80">
-              Kom i gang
-            </span>
+            <AthleticEyebrow tone="light">Kom i gang</AthleticEyebrow>
             <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
               Klar til å ta neste steg?
             </h2>
@@ -150,13 +147,13 @@ export default function PriserSide() {
             <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-center gap-3 sm:gap-4">
               <Link
                 href="/registrer"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-bold text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition-opacity hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Opprett gratis konto
               </Link>
               <Link
                 href="/kontakt"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-6 text-[15px] font-semibold transition-colors hover:bg-white/10"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-6 text-[15px] font-semibold transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Snakk med oss
               </Link>
@@ -181,9 +178,7 @@ function TierCard({ tier }: { tier: Tier }) {
         </span>
       )}
 
-      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-        {tier.navn}
-      </p>
+      <AthleticEyebrow>{tier.navn}</AthleticEyebrow>
       <p className="mt-4 text-4xl font-semibold tabular-nums">
         {tier.pris}
         <span className="text-lg font-normal text-muted-foreground">

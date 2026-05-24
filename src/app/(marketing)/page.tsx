@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { BookingShortcuts } from "@/components/marketing/booking-shortcuts";
 import { NorskeDenneUkaTeaser } from "@/components/turneringer/norske-denne-uka-teaser";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
+import { AthleticBadge } from "@/components/athletic/badge";
 
 export const metadata: Metadata = {
   title: "AK Golf Academy | Personlig coaching, bygd på data",
@@ -89,14 +91,14 @@ export default function Hjem() {
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-4">
             <Link
               href="/booking"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 text-[15px] font-bold text-accent transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Book gratis kartleggings-økt
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </Link>
             <Link
               href="/coaching"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border bg-card px-6 text-[15px] font-semibold text-foreground transition-colors hover:bg-secondary"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border bg-card px-6 text-[15px] font-semibold text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Se tjenestene
             </Link>
@@ -159,12 +161,8 @@ export default function Hjem() {
         <div className="grid grid-cols-1 gap-8 rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:p-8 md:p-12 md:grid-cols-[1fr_1.2fr] md:items-center">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-primary px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary-foreground">
-                Inkludert
-              </span>
-              <span className="rounded-full bg-secondary px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                Beta
-              </span>
+              <AthleticBadge variant="primary">Inkludert</AthleticBadge>
+              <AthleticBadge variant="neutral">Beta</AthleticBadge>
             </div>
             <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-tight tracking-tight">
               PlayerHQ —{" "}
@@ -232,9 +230,7 @@ export default function Hjem() {
         </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-border bg-card px-8 py-6">
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Samarbeid og partnere
-          </span>
+          <AthleticEyebrow>Samarbeid og partnere</AthleticEyebrow>
           <div className="flex flex-wrap items-center gap-x-10 gap-y-3 text-[14px] font-medium text-foreground">
             <Partner
               label="WANG Toppidrett Fredrikstad"
@@ -261,9 +257,7 @@ export default function Hjem() {
             style={{ background: "rgba(209,248,67,0.18)" }}
           />
           <div className="relative max-w-2xl">
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] opacity-80">
-              Neste sesong
-            </span>
+            <AthleticEyebrow tone="light">Neste sesong</AthleticEyebrow>
             <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-6xl">
               Klar for{" "}
               <em className="font-display font-normal italic">
@@ -278,14 +272,14 @@ export default function Hjem() {
             <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-4">
               <Link
                 href="/booking"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-bold text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition-opacity hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <CalendarCheck className="h-4 w-4" strokeWidth={2} />
                 Book kartleggings-økt
               </Link>
               <Link
                 href="/coaching"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-6 text-[15px] font-semibold transition-colors hover:bg-white/10"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-6 text-[15px] font-semibold transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Se priser
               </Link>
@@ -308,9 +302,9 @@ function SectionHeader({
 }) {
   return (
     <div className="max-w-3xl">
-      <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+      <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1">
         <CircleDot className="h-3 w-3 text-primary" strokeWidth={2} />
-        {tag}
+        <AthleticEyebrow>{tag}</AthleticEyebrow>
       </div>
       <h2 className="mt-6 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
         {title}
@@ -358,9 +352,7 @@ function ServiceCard({
       <span className="grid h-12 w-12 place-items-center rounded-full bg-secondary text-foreground">
         <Icon className="h-6 w-6" strokeWidth={1.5} />
       </span>
-      <span className="mt-6 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-        {tag}
-      </span>
+      <AthleticEyebrow className="mt-6">{tag}</AthleticEyebrow>
       <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight">
         {title}
       </h3>
@@ -405,9 +397,7 @@ function FacilityCard({
         />
       </div>
       <div className="p-8">
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-          {tag}
-        </span>
+        <AthleticEyebrow>{tag}</AthleticEyebrow>
         <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight">
           {title}
         </h3>
@@ -453,9 +443,7 @@ function Stat({ value, label }: { value: string; label: string }) {
       <div className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl tabular-nums">
         {value}
       </div>
-      <div className="font-mono mt-1 text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </div>
+      <AthleticEyebrow className="mt-1">{label}</AthleticEyebrow>
     </div>
   );
 }

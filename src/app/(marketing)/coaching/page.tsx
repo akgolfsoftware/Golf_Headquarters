@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { SubscribeButton } from "@/components/marketing/subscribe-button";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const metadata: Metadata = {
   title: "Coaching — AK Golf Academy",
@@ -69,9 +70,7 @@ export default function Coaching() {
     <div className="px-4 sm:px-6 py-12 sm:py-20">
       <div className="mx-auto max-w-5xl">
         <header className="text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-            Coaching
-          </span>
+          <AthleticEyebrow tone="lime">Coaching</AthleticEyebrow>
           <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             <em className="font-normal italic text-primary">Coaching</em> som
             gir fremgang
@@ -124,9 +123,7 @@ export default function Coaching() {
               </div>
               <p className="mt-6 text-sm text-foreground">{p.beskrivelse}</p>
               <p className="mt-4 text-xs text-muted-foreground">
-                <span className="font-mono uppercase tracking-[0.10em]">
-                  Egnet for:
-                </span>{" "}
+                <AthleticEyebrow className="inline">Egnet for:</AthleticEyebrow>{" "}
                 {p.egnet}
               </p>
 

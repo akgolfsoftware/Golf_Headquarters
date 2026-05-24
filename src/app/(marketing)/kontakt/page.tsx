@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { KontaktForm } from "./form";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const metadata: Metadata = {
   title: "Kontakt — AK Golf Academy",
@@ -54,9 +55,7 @@ export default function KontaktSide() {
       {/* Hero */}
       <section className="border-b border-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-12 pb-12 sm:pt-20 sm:pb-16 md:pt-28 md:pb-20">
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Kontakt
-          </span>
+          <AthleticEyebrow>Kontakt</AthleticEyebrow>
           <h1 className="mt-4 max-w-4xl font-display text-4xl sm:text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
             Vi vil gjerne{" "}
             <em className="font-display font-normal italic text-primary">
@@ -102,9 +101,7 @@ export default function KontaktSide() {
             </div>
 
             <div className="rounded-2xl bg-primary p-5 sm:p-8 text-primary-foreground">
-              <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] opacity-80">
-                Tips
-              </span>
+              <AthleticEyebrow tone="light">Tips</AthleticEyebrow>
               <p className="mt-4 font-display text-xl font-semibold leading-[1.3] tracking-tight">
                 Vil du heller bare booke en{" "}
                 <em className="font-display font-normal italic">prøve-time</em>?
@@ -124,9 +121,7 @@ export default function KontaktSide() {
       {/* 3 kontakt-kort */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
         <div className="max-w-3xl">
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Kontaktinfo
-          </span>
+          <AthleticEyebrow>Kontaktinfo</AthleticEyebrow>
           <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
             Tre måter å nå oss på
           </h2>
@@ -159,9 +154,7 @@ export default function KontaktSide() {
       <section className="border-y border-border bg-card">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 sm:px-6 py-12 sm:py-16 md:py-24 md:grid-cols-2">
           <div>
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              Åpningstider
-            </span>
+            <AthleticEyebrow>Åpningstider</AthleticEyebrow>
             <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
               Når kan du{" "}
               <em className="font-display font-normal italic text-primary">
@@ -223,9 +216,7 @@ export default function KontaktSide() {
       {/* Kart-stub */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="max-w-3xl">
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Anlegg
-          </span>
+          <AthleticEyebrow>Anlegg</AthleticEyebrow>
           <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
             Finn frem til oss
           </h2>
@@ -259,9 +250,7 @@ export default function KontaktSide() {
       <section className="border-t border-border bg-card">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
           <div className="max-w-3xl">
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              FAQ
-            </span>
+            <AthleticEyebrow>FAQ</AthleticEyebrow>
             <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
               Korte svar på{" "}
               <em className="font-display font-normal italic text-primary">
@@ -319,9 +308,7 @@ function InfoCard({
       <span className="grid h-12 w-12 place-items-center rounded-full bg-secondary text-foreground">
         <Icon className="h-6 w-6" strokeWidth={1.5} />
       </span>
-      <span className="mt-6 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </span>
+      <AthleticEyebrow className="mt-6">{label}</AthleticEyebrow>
       <span className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground">
         {value}
       </span>

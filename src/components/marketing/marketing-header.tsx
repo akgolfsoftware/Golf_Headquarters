@@ -43,7 +43,7 @@ export function MarketingHeader() {
           </Link>
           <Link
             href="/booking"
-            className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90 active:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-xs font-bold text-accent transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Book tid
           </Link>

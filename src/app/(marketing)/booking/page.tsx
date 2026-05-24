@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { MapPin, User, CalendarDays, CreditCard, UserCheck } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const metadata: Metadata = {
   title: "Book økt — AK Golf",
@@ -100,9 +101,7 @@ export default async function BookingLanding({
     <div className="px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-5xl">
         <header className="text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-            Booking
-          </span>
+          <AthleticEyebrow tone="lime">Booking</AthleticEyebrow>
           <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl">
             <em className="font-normal italic text-primary">Book</em> en økt
           </h1>
@@ -377,9 +376,7 @@ function BookingPaused() {
     <div className="px-6 py-16 sm:py-20">
       <div className="mx-auto max-w-5xl">
         <div className="text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-            Booking
-          </span>
+          <AthleticEyebrow tone="lime">Booking</AthleticEyebrow>
           <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl">
             Booking er midlertidig{" "}
             <em className="font-normal italic text-primary">pauset</em>
@@ -394,7 +391,7 @@ function BookingPaused() {
           </p>
           <a
             href="mailto:post@akgolf.no?subject=Booking-foresp%C3%B8rsel"
-            className="mt-6 inline-block rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-[15px] font-bold text-accent shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Skriv til post@akgolf.no
           </a>
@@ -433,9 +430,7 @@ function SlikFungererDet() {
   return (
     <section className="mt-16 border-t border-border pt-16">
       <div className="text-center">
-        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-          Enkelt og trygt
-        </span>
+        <AthleticEyebrow tone="lime">Enkelt og trygt</AthleticEyebrow>
         <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight sm:text-3xl">
           Slik fungerer det
         </h2>
@@ -450,9 +445,7 @@ function SlikFungererDet() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                    Steg {s.nr}
-                  </span>
+                  <AthleticEyebrow>Steg {s.nr}</AthleticEyebrow>
                 </div>
                 <h3 className="mt-1 font-display text-lg font-semibold tracking-tight">
                   {s.tittel}

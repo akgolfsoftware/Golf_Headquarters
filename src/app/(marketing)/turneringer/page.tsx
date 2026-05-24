@@ -16,6 +16,7 @@ import { CalendarRange, MapPin, Trophy, Flag } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { NorskeDenneUkaWidget } from "@/components/turneringer/norske-denne-uka-widget";
 import { MersalgBanner } from "@/components/turneringer/mersalg-banner";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const revalidate = 1800; // 30 min
 
@@ -307,9 +308,7 @@ function TurneringKort({ t }: { t: TurneringKortData }) {
         className="group flex h-full flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-foreground/20"
       >
         <div className="flex items-start justify-between gap-3">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            {tourLabel}
-          </span>
+          <AthleticEyebrow>{tourLabel}</AthleticEyebrow>
           {erLive && (
             <span className="inline-flex items-center gap-1 rounded-full bg-destructive/15 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.10em] text-destructive">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-destructive" />

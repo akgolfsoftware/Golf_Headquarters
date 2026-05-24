@@ -35,10 +35,7 @@ const SUPPORT = [
 
 export function MarketingFooter() {
   return (
-    <footer
-      className="text-white"
-      style={{ background: "linear-gradient(165deg, #0F2A22 0%, #0A1F18 100%)" }}
-    >
+    <footer className="bg-primary text-white">
       <div className="relative overflow-hidden">
         <div
           aria-hidden
@@ -73,14 +70,14 @@ export function MarketingFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition hover:bg-[#D1F843] hover:text-[#0A1F18]"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition hover:bg-accent hover:text-accent-foreground"
                 >
                   <Send className="h-4 w-4" strokeWidth={1.75} />
                 </a>
                 <a
                   href="mailto:post@akgolf.no"
                   aria-label="E-post"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition hover:bg-[#D1F843] hover:text-[#0A1F18]"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition hover:bg-accent hover:text-accent-foreground"
                 >
                   <Mail className="h-4 w-4" strokeWidth={1.75} />
                 </a>
@@ -95,15 +92,15 @@ export function MarketingFooter() {
           <div className="grid gap-6 border-b border-white/10 py-10 md:grid-cols-2">
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                <Mail className="h-4 w-4 text-[#D1F843]" strokeWidth={1.75} />
+                <Mail className="h-4 w-4 text-accent" strokeWidth={1.75} />
               </span>
               <div>
-                <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#D1F843]">
+                <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
                   E-post
                 </div>
                 <a
                   href="mailto:post@akgolf.no"
-                  className="font-display mt-1 block text-base font-medium text-white hover:text-[#D1F843]"
+                  className="font-display mt-1 block text-base font-medium text-white hover:text-accent"
                 >
                   post@akgolf.no
                 </a>
@@ -114,15 +111,15 @@ export function MarketingFooter() {
             </div>
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                <MapPin className="h-4 w-4 text-[#D1F843]" strokeWidth={1.75} />
+                <MapPin className="h-4 w-4 text-accent" strokeWidth={1.75} />
               </span>
               <div>
-                <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#D1F843]">
+                <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
                   Anlegg
                 </div>
                 <Link
                   href="/anlegg"
-                  className="font-display mt-1 block text-base font-medium text-white hover:text-[#D1F843]"
+                  className="font-display mt-1 block text-base font-medium text-white hover:text-accent"
                 >
                   Gamle Fredrikstad GK · Mulligan Indoor
                 </Link>
@@ -140,19 +137,19 @@ export function MarketingFooter() {
             <div className="flex gap-5">
               <Link
                 href="/personvern"
-                className="hover:text-[#D1F843] focus-visible:underline focus-visible:outline-none"
+                className="hover:text-accent focus-visible:underline focus-visible:outline-none"
               >
                 Personvern
               </Link>
               <Link
                 href="/vilkar"
-                className="hover:text-[#D1F843] focus-visible:underline focus-visible:outline-none"
+                className="hover:text-accent focus-visible:underline focus-visible:outline-none"
               >
                 Vilkår
               </Link>
               <Link
                 href="/cookies"
-                className="hover:text-[#D1F843] focus-visible:underline focus-visible:outline-none"
+                className="hover:text-accent focus-visible:underline focus-visible:outline-none"
               >
                 Cookies
               </Link>
@@ -173,7 +170,7 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h4 className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#D1F843]">
+      <h4 className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
         {title}
       </h4>
       <ul className="mt-4 space-y-2.5 text-sm">
