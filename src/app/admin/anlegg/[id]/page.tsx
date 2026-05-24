@@ -8,16 +8,18 @@
  *   - KART: interaktivt SVG-kart med klikkbare fasilitets-hotspots
  *   - KALENDER: én rad per fasilitet × tidsblokker for valgt dag
  *
- * Server Component med Prisma. Tab-toggle og interaksjon i client-child.
+ * Refaktorert til DetailShell-mønster (plan Del 7).
  */
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Building2 } from "lucide-react";
+import Link from "next/link";
+import { Building2, MapPin } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { KPICard } from "@/components/ui/kpi-card";
+import { AthleticBadge } from "@/components/athletic/badge";
 import { AnleggDetailView } from "./anlegg-detail-view";
 
 type Params = Promise<{ id: string }>;
@@ -34,7 +36,6 @@ export default async function AnleggDetailPage({
   const { id } = await params;
   const q = searchParams ? await searchParams : {};
 
-  // Velg dag (default: i dag) som 7-radskalenderen rendrer
   const naa = new Date();
   const parsed = q.dag ? new Date(q.dag) : null;
   const dag = parsed && !isNaN(parsed.getTime()) ? parsed : new Date(naa);
@@ -77,7 +78,7 @@ export default async function AnleggDetailPage({
 
   if (!location) notFound();
 
-  // Telle bookinger på tvers av fasiliteter (for status-strip)
+  // Telle bookinger på tvers av fasiliteter
   let opptattNaa = 0;
   let bookingerIDag = 0;
   let ledigNaa = 0;
@@ -93,7 +94,6 @@ export default async function AnleggDetailPage({
     }
   }
 
-  // Serializer for client-komponenten — Prisma Date → ISO-string
   const viewData = {
     location: {
       id: location.id,
@@ -128,36 +128,75 @@ export default async function AnleggDetailPage({
     dagISO: dag.toISOString(),
   };
 
+  const navnFirstWord = location.name.split(" ")[0];
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.10em] text-muted-foreground">
-        <Link
-          href="/admin/anlegg"
-          className="inline-flex items-center gap-1 hover:text-foreground"
-        >
-          <ArrowLeft size={12} strokeWidth={1.75} />
-          Alle anlegg
-        </Link>
-      </div>
-
-      <PageHeader
-        eyebrow={`CoachHQ · ${location.name.toUpperCase()} · ${viewData.stats.total} FASILITETER`}
-        titleLead={location.name.split(" ")[0]}
-        titleItalic="anlegg"
-        titleTrail="— kalender, booking og aktivitet"
-        sub={location.address}
-        actions={
-          <Link
-            href={`/admin/bookings/ny?locationId=${location.id}`}
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+    <DetailShell
+      breadcrumb={[
+        { label: "Anlegg", href: "/admin/anlegg" },
+        { label: location.name },
+      ]}
+      backHref="/admin/anlegg"
+      title={
+        <>
+          {navnFirstWord}{" "}
+          <em
+            className="not-italic"
+            style={{
+              fontFamily: "'Instrument Serif', serif",
+              fontStyle: "italic",
+              color: "#005840",
+            }}
           >
-            <Building2 size={14} strokeWidth={1.75} />
-            Ny booking
-          </Link>
-        }
-      />
-
+            anlegg
+          </em>
+        </>
+      }
+      subtitle={location.address ?? undefined}
+      statusPill={
+        opptattNaa > 0 ? (
+          <AthleticBadge variant="warn">
+            {opptattNaa} OPPTATT
+          </AthleticBadge>
+        ) : (
+          <AthleticBadge variant="ok">{ledigNaa} LEDIG</AthleticBadge>
+        )
+      }
+      actions={
+        <Link
+          href={`/admin/bookings/ny?locationId=${location.id}`}
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-accent hover:brightness-110"
+        >
+          <Building2 size={14} strokeWidth={1.75} aria-hidden />
+          Ny booking
+        </Link>
+      }
+      kpiRow={
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <KPICard
+            eyebrow="Fasiliteter"
+            value={String(viewData.stats.total)}
+            variant="hero"
+            icon={<MapPin size={18} strokeWidth={1.75} aria-hidden />}
+          />
+          <KPICard
+            eyebrow="Opptatt nå"
+            value={String(viewData.stats.opptattNaa)}
+            variant={viewData.stats.opptattNaa > 0 ? "warn" : "default"}
+          />
+          <KPICard
+            eyebrow="Bookinger i dag"
+            value={String(viewData.stats.bookingerIDag)}
+          />
+          <KPICard
+            eyebrow="Ledig nå"
+            value={String(viewData.stats.ledigNaa)}
+            variant={viewData.stats.ledigNaa === 0 ? "danger" : "default"}
+          />
+        </div>
+      }
+    >
       <AnleggDetailView data={viewData} />
-    </div>
+    </DetailShell>
   );
 }

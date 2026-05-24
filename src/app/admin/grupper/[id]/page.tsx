@@ -14,7 +14,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   CalendarClock,
-  ChevronLeft,
   MapPin,
   Plus,
   Repeat,
@@ -23,7 +22,9 @@ import {
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { KPICard } from "@/components/ui/kpi-card";
+import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { avatarBg } from "@/lib/avatar-colors";
 
@@ -134,87 +135,71 @@ export default async function GruppeDetalj({
   const totalRunder = runderPerMedlem.reduce((s, r) => s + r._count._all, 0);
 
   return (
-    <div className="space-y-8">
-      {/* Tilbake-link */}
-      <Link
-        href="/admin/grupper"
-        className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ChevronLeft className="h-3 w-3" strokeWidth={1.75} />
-        Alle grupper
-      </Link>
-
-      <PageHeader
-        eyebrow={`CoachHQ · ${typeLabel(gruppe.level)}-gruppe`}
-        titleItalic={gruppe.name}
-        sub={`${gruppe._count.members} medlemmer · Snitt-HCP ${snittHcpVerdi} · ${gruppe._count.schedules} planlagte samlinger · Coach ${gruppe.coach?.name ?? "ikke satt"}`}
-        actions={
-          <div className="flex gap-2">
-            <Link
-              href={`/admin/bookings/ny?groupId=${gruppe.id}`}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary"
-            >
-              <CalendarClock className="h-3.5 w-3.5" strokeWidth={1.75} />
-              Planlegg samling
-            </Link>
-            <Link
-              href={`/admin/grupper/${gruppe.id}/rediger`}
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
-              Legg til spiller
-            </Link>
-          </div>
-        }
-      />
-
-      {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-        <div className="flex flex-col gap-1.5 rounded-lg border border-transparent bg-gradient-to-br from-foreground to-foreground/90 p-4 text-white">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent/70">
-            Medlemmer
-          </div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-white">
-            {gruppe._count.members}
-          </div>
-          <div className="font-mono text-[11px] text-background/70">
-            {gruppe.members.filter((m) => m.role === "ASSISTANT").length} hjelpetrener
-          </div>
+    <DetailShell
+      breadcrumb={[
+        { label: "Grupper", href: "/admin/grupper" },
+        { label: gruppe.name },
+      ]}
+      backHref="/admin/grupper"
+      title={
+        <em
+          className="not-italic"
+          style={{
+            fontFamily: "'Instrument Serif', serif",
+            fontStyle: "italic",
+            color: "#005840",
+          }}
+        >
+          {gruppe.name}
+        </em>
+      }
+      subtitle={`${gruppe._count.members} medlemmer · Snitt-HCP ${snittHcpVerdi} · ${gruppe._count.schedules} planlagte samlinger · Coach ${gruppe.coach?.name ?? "ikke satt"}`}
+      statusPill={<AthleticBadge variant="primary">{typeLabel(gruppe.level).toUpperCase()}</AthleticBadge>}
+      actions={
+        <>
+          <Link
+            href={`/admin/bookings/ny?groupId=${gruppe.id}`}
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary"
+          >
+            <CalendarClock className="h-3.5 w-3.5" strokeWidth={1.75} />
+            Planlegg samling
+          </Link>
+          <Link
+            href={`/admin/grupper/${gruppe.id}/rediger`}
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-[13px] font-semibold text-accent transition-opacity hover:opacity-90"
+          >
+            <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
+            Legg til spiller
+          </Link>
+        </>
+      }
+      kpiRow={
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <KPICard
+            eyebrow="Medlemmer"
+            value={String(gruppe._count.members)}
+            variant="hero"
+            icon={<Users size={18} strokeWidth={1.75} aria-hidden />}
+            footnote={`${gruppe.members.filter((m) => m.role === "ASSISTANT").length} hjelpetrener`}
+          />
+          <KPICard
+            eyebrow="Snitt-HCP"
+            value={snittHcpVerdi}
+            footnote="Median av aktive"
+          />
+          <KPICard
+            eyebrow="Runder · 90 d"
+            value={String(totalRunder)}
+            footnote="På tvers av medlemmer"
+          />
+          <KPICard
+            eyebrow="PRO-andel"
+            value={`${proAndel}%`}
+            footnote="Aktive abonnenter"
+          />
         </div>
-        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-            Snitt-HCP
-          </div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
-            {snittHcpVerdi}
-          </div>
-          <div className="font-mono text-[11px] text-muted-foreground">
-            Median av aktive
-          </div>
-        </div>
-        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-            Runder · 90 d
-          </div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
-            {totalRunder}
-          </div>
-          <div className="font-mono text-[11px] text-muted-foreground">
-            På tvers av medlemmer
-          </div>
-        </div>
-        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-            PRO-andel
-          </div>
-          <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
-            {proAndel}%
-          </div>
-          <div className="font-mono text-[11px] text-muted-foreground">
-            Aktive abonnenter
-          </div>
-        </div>
-      </div>
+      }
+    >
 
       {/* Neste samling */}
       <section className="rounded-2xl border border-border bg-card p-6">
@@ -472,6 +457,6 @@ export default async function GruppeDetalj({
           )}
         </div>
       </section>
-    </div>
+    </DetailShell>
   );
 }
