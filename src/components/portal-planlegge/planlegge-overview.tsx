@@ -47,6 +47,7 @@ export async function PlanleggeOverview({ userId }: { userId: string }) {
     kommendeTurneringer,
     nesteTurnering,
     nyligeDrills,
+    aktivFysPlan,
   ] = await Promise.all([
     prisma.seasonPlan.findFirst({
       where: { userId, year },
@@ -96,7 +97,20 @@ export async function PlanleggeOverview({ userId }: { userId: string }) {
         session: { studentId: userId, startTime: { gte: today, lte: in7 } },
       },
     }),
+    prisma.fysiskPlan.findFirst({
+      where: { userId, status: { in: ["ACTIVE", "DRAFT"] } },
+      orderBy: { startDato: "desc" },
+      select: {
+        navn: true,
+        status: true,
+        startDato: true,
+        uker: { select: { okter: { select: { id: true } } } },
+      },
+    }),
   ]);
+
+  const fysOkterTotal =
+    aktivFysPlan?.uker.reduce((s, u) => s + u.okter.length, 0) ?? 0;
 
   const kort: Kort[] = [
     {
@@ -163,6 +177,18 @@ export async function PlanleggeOverview({ userId }: { userId: string }) {
           ? `${nyligeDrills} i ukens økter`
           : "Ingen drills denne uken",
       secondaryLine: "Bla i biblioteket",
+    },
+    {
+      href: "/portal/tren/fys-plan",
+      eyebrow: "Styrke · kondisjon",
+      titel: "FYS-plan",
+      Icon: Dumbbell,
+      primaryLine: aktivFysPlan
+        ? aktivFysPlan.navn
+        : "Ingen aktiv FYS-plan",
+      secondaryLine: aktivFysPlan
+        ? `${aktivFysPlan.uker.length} uker · ${fysOkterTotal} økter`
+        : "Lag plan for styrke- og kondisjonsøkter",
     },
   ];
 
