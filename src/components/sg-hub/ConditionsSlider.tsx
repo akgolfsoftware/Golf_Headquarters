@@ -214,7 +214,7 @@ function SliderRow({
   return (
     <div>
       <div className="mb-2 flex items-center gap-2">
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <Icon className="h-4 w-4 text-muted-foreground" aria-hidden />
         <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
           {label}
         </span>
@@ -234,6 +234,7 @@ function SliderRow({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
+        aria-label={`${label} (${unit})`}
         className="mt-2 h-2 w-full cursor-pointer accent-primary"
       />
       <p className="mt-1 text-[10px] text-muted-foreground">{hint}</p>
