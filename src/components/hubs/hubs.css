@@ -42,6 +42,16 @@
   padding-bottom: 18px;
   border-bottom: 1px solid var(--hub-border);
 }
+@media (max-width: 640px) {
+  .hub-head {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .hub-head-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
 .hub-head-left { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .hub-head .eyebrow {
   font-family: var(--hub-font-mono); font-size: 10px; font-weight: 700;
@@ -119,7 +129,7 @@
   border-color: var(--hub-line-strong);
 }
 .hub-card.tone-empty {
-  background: repeating-linear-gradient(45deg, var(--hub-card) 0 6px, #FBFAF5 6px 12px);
+  background: repeating-linear-gradient(45deg, var(--hub-card) 0 6px, hsl(var(--secondary) / 0.4) 6px 12px);
   border-style: dashed; border-color: var(--hub-border);
 }
 .hub-card.tone-empty .hub-card-icon { opacity: 0.55; }
@@ -247,6 +257,12 @@
 .bag-club { min-width: 22px; height: 22px; padding: 0 5px; border-radius: 5px; background: var(--hub-bg); border: 1px solid var(--hub-border-soft); display: inline-flex; align-items: center; justify-content: center; font-family: var(--hub-font-mono); font-size: 9.5px; font-weight: 700; color: var(--hub-brand-primary); letter-spacing: 0.02em; }
 
 .player-hero-card { background: linear-gradient(160deg, #006C50 0%, #003A2A 100%); color: #fff; border-radius: var(--hub-r-card); padding: 22px 26px; position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; }
+@media (max-width: 768px) {
+  .player-hero-card { grid-template-columns: 1fr; gap: 18px; padding: 18px 20px; }
+  .phc-right { flex-wrap: wrap; gap: 12px; }
+  .phc-stat { padding: 0 14px; border-right: none; }
+  .phc-stat:first-child { padding-left: 0; }
+}
 .player-hero-card::before { content: ''; position: absolute; top: -40%; right: -8%; width: 380px; height: 380px; border-radius: 50%; background: radial-gradient(circle, rgba(209, 248, 67, 0.12), transparent 70%); pointer-events: none; }
 .phc-left { display: grid; grid-template-columns: 60px 1fr; gap: 16px; align-items: center; position: relative; z-index: 1; }
 .phc-av { width: 60px; height: 60px; border-radius: 50%; background: #fff; color: var(--hub-brand-primary); display: inline-flex; align-items: center; justify-content: center; font-family: var(--hub-font-display); font-size: 20px; font-weight: 700; border: 2px solid var(--hub-brand-accent); }
@@ -266,6 +282,11 @@
 .phc-sub { font-family: var(--hub-font-mono); font-size: 10px; color: rgba(255, 255, 255, 0.55); letter-spacing: 0.04em; }
 
 .meg-hero { background: var(--hub-card); border: 1px solid var(--hub-border); border-radius: var(--hub-r-card); padding: 24px 28px; display: grid; grid-template-columns: auto 1fr auto; gap: 28px; align-items: center; }
+@media (max-width: 768px) {
+  .meg-hero { grid-template-columns: 1fr; gap: 16px; padding: 18px; text-align: left; }
+  .meg-side { padding-left: 0; border-left: none; border-top: 1px solid var(--hub-border-soft); padding-top: 14px; text-align: left; }
+  .meg-contact { grid-template-columns: 1fr; gap: 8px; }
+}
 .meg-av-wrap { position: relative; }
 .meg-av { width: 100px; height: 100px; border-radius: 50%; background: var(--hub-brand-primary); color: var(--hub-brand-accent); display: inline-flex; align-items: center; justify-content: center; font-family: var(--hub-font-display); font-size: 36px; font-weight: 700; border: 3px solid var(--hub-brand-accent); }
 .meg-av-tier { position: absolute; bottom: 0; right: 0; background: var(--hub-brand-accent); color: var(--hub-fg); font-family: var(--hub-font-mono); font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 999px; letter-spacing: 0.08em; border: 2px solid var(--hub-card); }
