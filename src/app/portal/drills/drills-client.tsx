@@ -4,17 +4,23 @@
  * PlayerHQ · Drill-bibliotek · Klient-komponent
  *
  * - Filter-bar (anbefalt-toggle, disiplin-pills, skillArea-pills, MORAD, coach-anbefalt, søk)
+ * - Kompakte drill-cards → klikk åpner slide-in modal med full drill-info
  * - Visning-toggle (Grid/Liste)
- * - Mestret-badge (grønn checkmark for mestrede drills)
- * - Rate-knapp på drill-cards (hover-synlig, kun for drills som er trent)
- * - Sticky footer for samlet "Be om i neste plan"-forespørsel for valgte drills
- *
- * Bruker server-action `requestDrillInPlan` og `rateDrill` direkte.
+ * - Sticky footer for samlet "Be om i neste plan"-forespørsel
  */
-import { useMemo, useState, useTransition, useRef, useEffect } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import Link from "next/link";
 import {
   CheckCircle2,
+  Clock,
+  ExternalLink,
   LayoutGrid,
   List,
   Loader2,
@@ -23,15 +29,19 @@ import {
   Sparkles,
   Star,
   X,
+  Zap,
 } from "lucide-react";
 import type {
   DrillFasilitet,
+  DrillPracticeType,
+  NgfKategori,
   PyramidArea,
   SkillArea,
-  NgfKategori,
 } from "@/generated/prisma/client";
 import { requestDrillInPlan } from "./actions";
 import { rateDrill } from "./[id]/actions";
+
+/* ─── Typer ─── */
 
 type DrillRow = {
   id: string;
@@ -44,6 +54,8 @@ type DrillRow = {
   csMin: number | null;
   csMax: number | null;
   defaultRepsSets: string | null;
+  defaultSets: number | null;
+  defaultReps: number | null;
   environment: string[];
   fasilitetKrav: DrillFasilitet[];
   minKategori: NgfKategori | null;
@@ -52,6 +64,13 @@ type DrillRow = {
   coachAnbefalt: boolean;
   ganger: number;
   csForMeg: number | null;
+  utstyr: string[];
+  intensitet: number | null;
+  lPhases: string[];
+  tags: string[];
+  coachNotes: string | null;
+  treningstype: DrillPracticeType | null;
+  prerequisites: string[];
 };
 
 type RatingType = {
@@ -59,6 +78,8 @@ type RatingType = {
   label: string;
   rating: number;
 };
+
+/* ─── Konstanter ─── */
 
 const RATING_TYPER: RatingType[] = [
   { id: "aha", label: "Aha!", rating: 5 },
@@ -107,6 +128,44 @@ const SKILL_LABEL: Record<SkillArea, string> = {
   SPILL: "Spill",
 };
 
+const TRENINGSTYPE_LABEL: Record<DrillPracticeType, string> = {
+  BLOKK: "Blokktrening",
+  VARIABEL: "Variabel",
+  KONKURRANSE: "Konkurranse",
+  SPILL_TEST: "Spill / test",
+};
+
+const LPHASE_LABEL: Record<string, string> = {
+  GRUNN: "Grunnfase",
+  SPESIAL: "Spesialfase",
+  TURNERING: "Turneringsfase",
+};
+
+const ENV_LABEL: Record<string, string> = {
+  RANGE: "Driving range",
+  BANE: "Bane",
+  STUDIO: "Studio",
+  HJEM: "Hjemme",
+  SIMULATOR: "Simulator",
+};
+
+const FASILITET_LABEL: Partial<Record<DrillFasilitet, string>> = {
+  RADAR: "Radar / Launch monitor",
+  MAT_NET: "Matte + nett",
+  BUNKER: "Bunker",
+  KAMERA: "Kamera",
+  PUTTING_GREEN_KORT: "Putting green (kort)",
+  PUTTING_GREEN_LANG: "Putting green (lang)",
+  SHORT_GAME_AREA: "Short game-areal",
+  DRIVING_RANGE: "Driving range",
+  BANE: "Bane",
+  SIMULATOR: "Simulator",
+  VEKTSTANG: "Vektstang",
+  TRAPBAR: "Trapbar",
+  LOPEBANE: "Løpebane",
+  MED_BALL: "Medisinball",
+};
+
 const PYR_VALUES: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const SKILL_VALUES: SkillArea[] = [
   "TEE_TOTAL",
@@ -115,6 +174,8 @@ const SKILL_VALUES: SkillArea[] = [
   "PUTTING",
   "SPILL",
 ];
+
+/* ─── Hoved-komponent ─── */
 
 export function DrillsLibraryClient({
   drills,
@@ -149,13 +210,39 @@ export function DrillsLibraryClient({
   const [valgteDrills, setValgteDrills] = useState<Set<string>>(new Set());
   const [sendStatus, setSendStatus] = useState<"idle" | "ok" | "feil">("idle");
   const [pending, startTransition] = useTransition();
+  const [aapentDrill, setAapentDrill] = useState<DrillRow | null>(null);
 
   const erGratis = tier === "GRATIS";
   const spillerRank =
     spillerKategori !== null ? KATEGORI_RANK[spillerKategori] : null;
 
+  // Body scroll lock når modal er åpen
+  useEffect(() => {
+    if (aapentDrill) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [aapentDrill]);
+
+  // Escape-tast lukker modal
+  useEffect(() => {
+    if (!aapentDrill) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setAapentDrill(null);
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [aapentDrill]);
+
+  const aapneDrill = useCallback((drill: DrillRow) => {
+    setAapentDrill(drill);
+  }, []);
+
   const filtrerte = useMemo(() => {
-    // Bygg fasilitetSet inni memo slik at den ikke skaper ny referanse på hvert render.
     const fasilitetSet = new Set(spillerFasiliteter);
 
     return drills.filter((d) => {
@@ -166,8 +253,6 @@ export function DrillsLibraryClient({
           d.maxKategori !== null ? KATEGORI_RANK[d.maxKategori] : 11;
         if (spillerRank < minR || spillerRank > maxR) return false;
       }
-      // Fasilitet-filter: drill-krav må være delmengde av spillerens profil.
-      // Drills uten krav (tom liste) er alltid med.
       if (kunMineAnlegg && harFasilitetProfil && d.fasilitetKrav.length > 0) {
         const kanGjennomfores = d.fasilitetKrav.every((k) =>
           fasilitetSet.has(k),
@@ -207,7 +292,6 @@ export function DrillsLibraryClient({
     sok,
   ]);
 
-  // GRATIS-tier-grense: max 20 synlige, kun anbefalt-for-meg.
   const synlige = useMemo(() => {
     if (erGratis) return filtrerte.slice(0, 20);
     return filtrerte;
@@ -269,7 +353,6 @@ export function DrillsLibraryClient({
         aria-label="Filtre"
         className="space-y-4 rounded-2xl border border-border bg-card p-4 sm:p-6"
       >
-        {/* Søk + toggles */}
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <label
             htmlFor="drill-sok"
@@ -350,7 +433,6 @@ export function DrillsLibraryClient({
           </div>
         </div>
 
-        {/* Disiplin-pills */}
         <FilterRad
           label="Disiplin"
           options={PYR_VALUES.map((v) => ({ value: v, label: PYR_LABEL[v] }))}
@@ -360,7 +442,6 @@ export function DrillsLibraryClient({
           }
         />
 
-        {/* SkillArea-pills */}
         <FilterRad
           label="Område"
           options={SKILL_VALUES.map((v) => ({
@@ -419,13 +500,14 @@ export function DrillsLibraryClient({
           </button>
         </div>
       ) : visning === "grid" ? (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
           {synlige.map((d) => (
             <DrillCard
               key={d.id}
               drill={d}
               valgt={valgteDrills.has(d.id)}
               onToggleValgt={() => toggleValgt(d.id)}
+              onAapen={() => aapneDrill(d)}
               erGratis={erGratis}
               mestret={mestretSet.has(d.id)}
             />
@@ -436,6 +518,7 @@ export function DrillsLibraryClient({
           drills={synlige}
           valgte={valgteDrills}
           onToggle={toggleValgt}
+          onAapen={aapneDrill}
           erGratis={erGratis}
           mestretSet={mestretSet}
         />
@@ -446,10 +529,7 @@ export function DrillsLibraryClient({
         <div className="fixed inset-x-0 bottom-16 z-30 px-4 md:bottom-6">
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 rounded-2xl border border-primary/30 bg-card/95 px-4 py-3 shadow-lg backdrop-blur sm:px-6">
             <div className="flex items-center gap-3">
-              <Sparkles
-                className="h-4 w-4 text-primary"
-                strokeWidth={1.75}
-              />
+              <Sparkles className="h-4 w-4 text-primary" strokeWidth={1.75} />
               <p className="text-sm">
                 <span className="font-display text-base font-semibold">
                   {valgteDrills.size}
@@ -480,10 +560,7 @@ export function DrillsLibraryClient({
 
       {sendStatus === "ok" && (
         <div className="fixed inset-x-0 bottom-32 z-40 mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-primary/30 bg-card px-4 py-3 shadow-lg">
-          <CheckCircle2
-            className="h-5 w-5 text-primary"
-            strokeWidth={1.75}
-          />
+          <CheckCircle2 className="h-5 w-5 text-primary" strokeWidth={1.75} />
           <p className="text-sm">
             Forespørselen er sendt til Anders. Du får svar i varsler.
           </p>
@@ -499,9 +576,7 @@ export function DrillsLibraryClient({
       )}
       {sendStatus === "feil" && (
         <div className="fixed inset-x-0 bottom-32 z-40 mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-destructive/40 bg-card px-4 py-3 shadow-lg">
-          <p className="text-sm text-destructive">
-            Noe gikk galt. Prøv igjen.
-          </p>
+          <p className="text-sm text-destructive">Noe gikk galt. Prøv igjen.</p>
           <button
             type="button"
             onClick={() => setSendStatus("idle")}
@@ -512,171 +587,55 @@ export function DrillsLibraryClient({
           </button>
         </div>
       )}
-    </div>
-  );
-}
 
-function ToggleChip({
-  active,
-  onClick,
-  label,
-  disabled,
-  highlight,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-  disabled?: boolean;
-  highlight?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-pressed={active}
-      className={`inline-flex h-9 items-center rounded-full border px-4 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-        active && highlight
-          ? "border-accent bg-accent text-accent-foreground"
-          : active
-            ? "border-primary bg-primary text-primary-foreground"
-            : "border-input bg-background text-foreground hover:border-border hover:bg-secondary"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
-function FilterRad({
-  label,
-  options,
-  valgt,
-  onToggle,
-}: {
-  label: string;
-  options: { value: string; label: string }[];
-  valgt: Set<string>;
-  onToggle: (value: string) => void;
-}) {
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}:
-      </span>
-      {options.map((o) => {
-        const aktiv = valgt.has(o.value);
-        return (
-          <button
-            key={o.value}
-            type="button"
-            onClick={() => onToggle(o.value)}
-            aria-pressed={aktiv}
-            className={`inline-flex h-9 items-center rounded-full border px-4 text-xs font-medium transition-colors ${
-              aktiv
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-input bg-background text-foreground hover:border-border hover:bg-secondary"
-            }`}
-          >
-            {o.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function RateKnapp({ drillId }: { drillId: string }) {
-  const [aapen, setAapen] = useState(false);
-  const [pending, startTransition] = useTransition();
-  const [rated, setRated] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  // Lukk popover ved klikk utenfor.
-  useEffect(() => {
-    if (!aapen) return;
-    function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setAapen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [aapen]);
-
-  if (rated) {
-    return (
-      <span className="inline-flex h-8 items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-3 text-[11px] text-primary">
-        <Star className="h-3 w-3 fill-primary" strokeWidth={1.75} />
-        Ratet
-      </span>
-    );
-  }
-
-  return (
-    <div className="relative" ref={ref}>
-      <button
-        type="button"
-        onClick={() => setAapen((v) => !v)}
-        aria-label="Rate drill"
-        aria-expanded={aapen}
-        className="inline-flex h-8 items-center gap-1 rounded-full border border-input bg-background px-3 text-[11px] text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
-      >
-        <Star className="h-3 w-3" strokeWidth={1.75} />
-        Rate
-      </button>
-
-      {aapen && (
-        <div className="absolute bottom-10 right-0 z-20 min-w-[180px] rounded-xl border border-border bg-card p-2 shadow-lg">
-          <p className="mb-1.5 px-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Hva synes du?
-          </p>
-          <div className="flex flex-col gap-1">
-            {RATING_TYPER.map((rt) => (
-              <button
-                key={rt.id}
-                type="button"
-                disabled={pending}
-                onClick={() => {
-                  startTransition(async () => {
-                    const res = await rateDrill(drillId, rt.rating, rt.id, null);
-                    if (res.ok) {
-                      setRated(true);
-                      setAapen(false);
-                    }
-                  });
-                }}
-                className="rounded-lg px-3 py-2 text-left text-sm text-foreground hover:bg-secondary disabled:opacity-60"
-              >
-                {rt.label}
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* Drill-modal */}
+      {aapentDrill && (
+        <DrillModal
+          drill={aapentDrill}
+          valgt={valgteDrills.has(aapentDrill.id)}
+          onToggleValgt={() => toggleValgt(aapentDrill.id)}
+          onLukk={() => setAapentDrill(null)}
+          erGratis={erGratis}
+        />
       )}
     </div>
   );
 }
 
+/* ─── DrillCard (kompakt) ─── */
+
 function DrillCard({
   drill,
   valgt,
   onToggleValgt,
+  onAapen,
   erGratis,
   mestret,
 }: {
   drill: DrillRow;
   valgt: boolean;
   onToggleValgt: () => void;
+  onAapen: () => void;
   erGratis: boolean;
   mestret: boolean;
 }) {
   return (
     <article
-      className={`group relative flex h-full flex-col rounded-2xl border bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-md ${
+      role="button"
+      tabIndex={0}
+      onClick={onAapen}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onAapen();
+        }
+      }}
+      aria-label={`Åpne detaljer for ${drill.name}`}
+      className={`group relative flex cursor-pointer flex-col rounded-2xl border bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
         valgt ? "border-primary ring-2 ring-primary/30" : "border-border"
       }`}
     >
+      {/* Coach-anbefalt badge */}
       {drill.coachAnbefalt && (
         <span className="absolute -right-1 -top-1 inline-flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-accent-foreground shadow-sm">
           <Sparkles className="h-3 w-3" strokeWidth={1.75} />
@@ -684,15 +643,11 @@ function DrillCard({
         </span>
       )}
 
-      <div className="flex items-start justify-between gap-3">
-        <Link
-          href={`/portal/drills/${drill.id}`}
-          className="flex-1 font-display text-base font-semibold leading-tight text-foreground hover:text-primary"
-        >
+      {/* Tittel + mestret */}
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="flex-1 font-display text-base font-semibold leading-tight text-foreground">
           {drill.name}
-        </Link>
-
-        {/* Mestret-badge */}
+        </h3>
         {mestret && (
           <CheckCircle2
             className="h-5 w-5 shrink-0 text-primary"
@@ -702,6 +657,7 @@ function DrillCard({
         )}
       </div>
 
+      {/* Badges */}
       <div className="mt-2 flex flex-wrap gap-1.5">
         <span
           className={`inline-flex items-center rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${PYR_PILL[drill.pyramidArea]}`}
@@ -720,35 +676,39 @@ function DrillCard({
         )}
       </div>
 
-      {drill.description && (
-        <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">
-          {drill.description}
-        </p>
-      )}
-
-      <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border pt-3 font-mono text-[11px] text-muted-foreground">
-        {drill.durationMin !== null && <span>{drill.durationMin} min</span>}
-        {drill.csForMeg !== null && (
-          <span className="text-foreground">CS-target {drill.csForMeg}</span>
+      {/* Nøkkelinfo */}
+      <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[11px] text-muted-foreground">
+        {drill.durationMin !== null && (
+          <span className="inline-flex items-center gap-1">
+            <Clock className="h-3 w-3" strokeWidth={1.75} />
+            {drill.durationMin} min
+          </span>
         )}
-        {drill.environment.length > 0 && (
-          <span>{drill.environment[0]}</span>
+        {drill.csForMeg !== null && (
+          <span className="text-foreground">CS {drill.csForMeg}</span>
+        )}
+        {(drill.minKategori ?? drill.maxKategori) && (
+          <span>
+            {drill.minKategori ?? "A"}–{drill.maxKategori ?? "L"}
+          </span>
+        )}
+        {drill.ganger > 0 && (
+          <span className="text-primary">{drill.ganger}x trent</span>
         )}
       </div>
 
-      {drill.ganger > 0 && (
-        <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Trent {drill.ganger} gang{drill.ganger === 1 ? "" : "er"}
-        </p>
-      )}
-
-      <div className="mt-4 flex flex-wrap gap-2">
+      {/* Handlinger — stopPropagation forhindrer at card-klikk utløses */}
+      <div className="mt-4">
         <button
           type="button"
-          onClick={onToggleValgt}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleValgt();
+          }}
+          onKeyDown={(e) => e.stopPropagation()}
           disabled={erGratis}
           aria-pressed={valgt}
-          className={`inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+          className={`inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
             valgt
               ? "bg-primary text-primary-foreground"
               : "bg-accent text-accent-foreground hover:opacity-90"
@@ -763,29 +723,426 @@ function DrillCard({
             "Be om i neste plan"
           )}
         </button>
-        <Link
-          href={`/portal/drills/${drill.id}`}
-          className="inline-flex h-9 items-center justify-center rounded-full border border-input bg-background px-3 text-xs font-medium text-foreground hover:bg-secondary"
-        >
-          Vis detaljer
-        </Link>
-        {/* Rate-knapp — kun for drills som er trent */}
-        {drill.ganger > 0 && <RateKnapp drillId={drill.id} />}
       </div>
     </article>
   );
 }
 
+/* ─── DrillModal ─── */
+
+function DrillModal({
+  drill,
+  valgt,
+  onToggleValgt,
+  onLukk,
+  erGratis,
+}: {
+  drill: DrillRow;
+  valgt: boolean;
+  onToggleValgt: () => void;
+  onLukk: () => void;
+  erGratis: boolean;
+}) {
+  const [pending, startTransition] = useTransition();
+  const [rated, setRated] = useState(false);
+  const [ratingAapen, setRatingAapen] = useState(false);
+  const ratingRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ratingAapen) return;
+    function handleClick(e: MouseEvent) {
+      if (ratingRef.current && !ratingRef.current.contains(e.target as Node)) {
+        setRatingAapen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [ratingAapen]);
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-sm"
+        onClick={onLukk}
+        aria-hidden="true"
+      />
+
+      {/* Panel */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="drill-modal-tittel"
+        className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[480px] flex-col bg-card shadow-2xl"
+      >
+        {/* Header */}
+        <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-4 sm:px-6">
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Drill
+          </span>
+          <button
+            type="button"
+            onClick={onLukk}
+            aria-label="Lukk"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
+          >
+            <X className="h-4 w-4" strokeWidth={1.75} />
+          </button>
+        </div>
+
+        {/* Scrollbart innhold */}
+        <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+          {/* Tittel */}
+          <h2
+            id="drill-modal-tittel"
+            className="font-display text-2xl font-semibold leading-tight text-foreground"
+          >
+            {drill.name}
+          </h2>
+
+          {/* Badges */}
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            <span
+              className={`inline-flex items-center rounded-full border px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${PYR_PILL[drill.pyramidArea]}`}
+            >
+              {PYR_LABEL[drill.pyramidArea]}
+            </span>
+            {drill.skillArea && (
+              <span className="inline-flex items-center rounded-full border border-border bg-secondary px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-secondary-foreground">
+                {SKILL_LABEL[drill.skillArea]}
+              </span>
+            )}
+            {drill.treningstype && (
+              <span className="inline-flex items-center rounded-full border border-border bg-secondary px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-secondary-foreground">
+                {TRENINGSTYPE_LABEL[drill.treningstype]}
+              </span>
+            )}
+            {drill.morad && (
+              <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
+                MORAD
+              </span>
+            )}
+            {drill.coachAnbefalt && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/20 px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-accent-foreground">
+                <Sparkles className="h-3 w-3" strokeWidth={1.75} />
+                Coach-anbefalt
+              </span>
+            )}
+          </div>
+
+          {/* CS-target */}
+          {drill.csForMeg !== null && (
+            <div className="mt-6 rounded-xl border border-border bg-background p-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                CS-target for deg
+              </p>
+              <p className="mt-1 font-mono text-4xl font-bold tabular-nums text-foreground">
+                {drill.csForMeg}
+              </p>
+              {drill.csMin !== null && drill.csMax !== null && (
+                <p className="mt-1 font-mono text-[10px] text-muted-foreground">
+                  Spenn: {drill.csMin}–{drill.csMax}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Metadata-grid */}
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            {drill.durationMin !== null && (
+              <MetaCell label="Varighet" value={`${drill.durationMin} min`} />
+            )}
+            {drill.intensitet !== null && (
+              <MetaCell label="Intensitet" value={`${drill.intensitet}/10`} />
+            )}
+            {drill.defaultSets !== null && drill.defaultReps !== null && (
+              <MetaCell
+                label="Sett × Reps"
+                value={`${drill.defaultSets} × ${drill.defaultReps}`}
+              />
+            )}
+            {drill.defaultSets !== null && drill.defaultReps === null && (
+              <MetaCell label="Sett" value={`${drill.defaultSets}`} />
+            )}
+            {(drill.minKategori ?? drill.maxKategori) && (
+              <MetaCell
+                label="Spillerkategori"
+                value={`${drill.minKategori ?? "A"}–${drill.maxKategori ?? "L"}`}
+              />
+            )}
+            {drill.ganger > 0 && (
+              <MetaCell
+                label="Trent"
+                value={`${drill.ganger} gang${drill.ganger === 1 ? "" : "er"}`}
+              />
+            )}
+          </div>
+
+          {/* Miljø */}
+          {drill.environment.length > 0 && (
+            <div className="mt-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Miljø
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {drill.environment.map((e) => (
+                  <span
+                    key={e}
+                    className="inline-flex items-center rounded-full border border-border bg-secondary px-2.5 py-0.5 font-mono text-[11px] text-secondary-foreground"
+                  >
+                    {ENV_LABEL[e] ?? e}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Treningsfaser */}
+          {drill.lPhases.length > 0 && (
+            <div className="mt-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Treningsfase
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {drill.lPhases.map((p) => (
+                  <span
+                    key={p}
+                    className="inline-flex items-center rounded-full border border-border bg-secondary px-2.5 py-0.5 font-mono text-[11px] text-secondary-foreground"
+                  >
+                    {LPHASE_LABEL[p] ?? p}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Fasilitetskrav */}
+          {drill.fasilitetKrav.length > 0 && (
+            <div className="mt-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Fasilitetskrav
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {drill.fasilitetKrav.map((f) => (
+                  <span
+                    key={f}
+                    className="inline-flex items-center rounded-full border border-border bg-secondary px-2.5 py-0.5 font-mono text-[11px] text-secondary-foreground"
+                  >
+                    {FASILITET_LABEL[f] ?? f}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Utstyr */}
+          {drill.utstyr.length > 0 && (
+            <div className="mt-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Utstyr
+              </p>
+              <p className="mt-1.5 text-sm text-foreground">
+                {drill.utstyr.join(", ")}
+              </p>
+            </div>
+          )}
+
+          {/* Beskrivelse */}
+          {drill.description && (
+            <div className="mt-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Beskrivelse
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-foreground">
+                {drill.description}
+              </p>
+            </div>
+          )}
+
+          {/* Forutsetninger */}
+          {drill.prerequisites.length > 0 && (
+            <div className="mt-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Forutsetninger
+              </p>
+              <ul className="mt-2 space-y-1">
+                {drill.prerequisites.map((p) => (
+                  <li key={p} className="text-sm text-muted-foreground">
+                    · {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Coach-notater */}
+          {drill.coachNotes && (
+            <div className="mt-4 rounded-xl border border-accent/40 bg-accent/10 p-4">
+              <div className="flex items-center gap-1.5">
+                <Zap
+                  className="h-3.5 w-3.5 text-accent-foreground"
+                  strokeWidth={1.75}
+                />
+                <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-accent-foreground">
+                  Coach-notater
+                </p>
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-foreground">
+                {drill.coachNotes}
+              </p>
+            </div>
+          )}
+
+          {/* Tags */}
+          {drill.tags.length > 0 && (
+            <div className="mt-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Tags
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {drill.tags.map((t) => (
+                  <span
+                    key={t}
+                    className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 font-mono text-[11px] text-muted-foreground"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Rating (kun for drills som er trent) */}
+          {drill.ganger > 0 && (
+            <div className="mt-6">
+              <div className="relative" ref={ratingRef}>
+                {rated ? (
+                  <span className="inline-flex h-9 items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-4 font-mono text-[11px] text-primary">
+                    <Star
+                      className="h-3.5 w-3.5 fill-primary"
+                      strokeWidth={1.75}
+                    />
+                    Takk for tilbakemeldingen
+                  </span>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setRatingAapen((v) => !v)}
+                      aria-expanded={ratingAapen}
+                      className="inline-flex h-9 items-center gap-1.5 rounded-full border border-input bg-background px-4 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      <Star className="h-3.5 w-3.5" strokeWidth={1.75} />
+                      Rate denne drillen
+                    </button>
+                    {ratingAapen && (
+                      <div className="absolute bottom-12 left-0 z-10 min-w-[180px] rounded-xl border border-border bg-card p-2 shadow-lg">
+                        <p className="mb-1.5 px-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                          Hva synes du?
+                        </p>
+                        <div className="flex flex-col gap-1">
+                          {RATING_TYPER.map((rt) => (
+                            <button
+                              key={rt.id}
+                              type="button"
+                              disabled={pending}
+                              onClick={() => {
+                                startTransition(async () => {
+                                  const res = await rateDrill(
+                                    drill.id,
+                                    rt.rating,
+                                    rt.id,
+                                    null,
+                                  );
+                                  if (res.ok) {
+                                    setRated(true);
+                                    setRatingAapen(false);
+                                  }
+                                });
+                              }}
+                              className="rounded-lg px-3 py-2 text-left text-sm text-foreground hover:bg-secondary disabled:opacity-60"
+                            >
+                              {rt.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="shrink-0 border-t border-border px-4 py-4 sm:px-6">
+          <button
+            type="button"
+            onClick={onToggleValgt}
+            disabled={erGratis}
+            aria-pressed={valgt}
+            className={`inline-flex h-11 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+              valgt
+                ? "bg-primary text-primary-foreground"
+                : "bg-accent text-accent-foreground hover:opacity-90"
+            }`}
+          >
+            {valgt ? (
+              <>
+                <CheckCircle2 className="h-4 w-4" strokeWidth={1.75} />
+                Valgt — fjern fra forespørsel
+              </>
+            ) : (
+              <>
+                <Send className="h-4 w-4" strokeWidth={1.75} />
+                Be om i neste plan
+              </>
+            )}
+          </button>
+          <Link
+            href={`/portal/drills/${drill.id}`}
+            onClick={onLukk}
+            className="mt-3 flex h-10 w-full items-center justify-center gap-1.5 rounded-full border border-border text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
+          >
+            Se full side
+            <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.75} />
+          </Link>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ─── MetaCell ─── */
+
+function MetaCell({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-border bg-background p-3">
+      <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-1 font-mono text-sm font-semibold tabular-nums text-foreground">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+/* ─── DrillsListe ─── */
+
 function DrillsListe({
   drills,
   valgte,
   onToggle,
+  onAapen,
   erGratis,
   mestretSet,
 }: {
   drills: DrillRow[];
   valgte: Set<string>;
   onToggle: (id: string) => void;
+  onAapen: (drill: DrillRow) => void;
   erGratis: boolean;
   mestretSet?: Set<string>;
 }) {
@@ -819,12 +1176,13 @@ function DrillsListe({
               <tr key={d.id} className={valgt ? "bg-primary/5" : ""}>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <Link
-                      href={`/portal/drills/${d.id}`}
-                      className="font-medium text-foreground hover:text-primary"
+                    <button
+                      type="button"
+                      onClick={() => onAapen(d)}
+                      className="text-left font-medium text-foreground hover:text-primary"
                     >
                       {d.name}
-                    </Link>
+                    </button>
                     {d.coachAnbefalt && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em] text-accent-foreground">
                         Anbefalt
@@ -875,6 +1233,80 @@ function DrillsListe({
           })}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+/* ─── ToggleChip ─── */
+
+function ToggleChip({
+  active,
+  onClick,
+  label,
+  disabled,
+  highlight,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  disabled?: boolean;
+  highlight?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-pressed={active}
+      className={`inline-flex h-9 items-center rounded-full border px-4 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+        active && highlight
+          ? "border-accent bg-accent text-accent-foreground"
+          : active
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-input bg-background text-foreground hover:border-border hover:bg-secondary"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+/* ─── FilterRad ─── */
+
+function FilterRad({
+  label,
+  options,
+  valgt,
+  onToggle,
+}: {
+  label: string;
+  options: { value: string; label: string }[];
+  valgt: Set<string>;
+  onToggle: (value: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        {label}:
+      </span>
+      {options.map((o) => {
+        const aktiv = valgt.has(o.value);
+        return (
+          <button
+            key={o.value}
+            type="button"
+            onClick={() => onToggle(o.value)}
+            aria-pressed={aktiv}
+            className={`inline-flex h-9 items-center rounded-full border px-4 text-xs font-medium transition-colors ${
+              aktiv
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-input bg-background text-foreground hover:border-border hover:bg-secondary"
+            }`}
+          >
+            {o.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

@@ -57,11 +57,11 @@ enum SessionStatusV2 {
 // Påmeldingsstatus for TournamentEntry. Erstatter notes-prefiks-hack i
 // withdrawFromTournament.
 enum TournamentEntryStatus {
-  PLANNED     // meldt på
-  CONFIRMED   // bekreftet av spiller
-  WITHDRAWN   // trukket
-  COMPLETED   // gjennomført
-  DNF         // started, men trakk
+  PLANNED // meldt på
+  CONFIRMED // bekreftet av spiller
+  WITHDRAWN // trukket
+  COMPLETED // gjennomført
+  DNF // started, men trakk
 }
 
 enum PyramidArea {
@@ -97,10 +97,10 @@ enum SessionEnvironment {
 
 // P14: spiller-status for permisjon, skade, retur til spill
 enum UserStatus {
-  AKTIV          // Normal aktivitet
-  PERMISJON      // Pause (reise, jobb, etc.) — Subscription pauses
-  SKADET         // Skade — Subscription pauses, return-to-play-protokoll aktiveres
-  INAKTIV        // Lengre pause (> 6 mnd), historie beholdes
+  AKTIV // Normal aktivitet
+  PERMISJON // Pause (reise, jobb, etc.) — Subscription pauses
+  SKADET // Skade — Subscription pauses, return-to-play-protokoll aktiveres
+  INAKTIV // Lengre pause (> 6 mnd), historie beholdes
 }
 
 // P14: type permisjon/pause
@@ -113,23 +113,31 @@ enum LeaveReason {
   ANNET
 }
 
+// Treningstype — beskriver øvingsmetoden (blokkert / variabel / konkurranse / test).
+enum DrillPracticeType {
+  BLOKK // Isolert, repetitiv teknikk-innlæring
+  VARIABEL // Varierende betingelser, tilpasnings-trening
+  KONKURRANSE // Press-situasjon, scoring mot et krav
+  SPILL_TEST // Spill-simulering eller benchmark-test
+}
+
 // Utstyr/anlegg-krav per drill — brukes for facility-matching mot spillerprofil.
 // Tomme fasilitetKrav = drill kan gjøres overalt (ingen spesialkrav).
 enum DrillFasilitet {
-  RADAR              // Launch monitor: TrackMan, FlightScope, Garmin R10, Mevo+
-  MAT_NET            // Innendørs matte + nett
-  BUNKER             // Tilgang til sandbunker
-  KAMERA             // iPhone + stativ for video-feedback
+  RADAR // Launch monitor: TrackMan, FlightScope, Garmin R10, Mevo+
+  MAT_NET // Innendørs matte + nett
+  BUNKER // Tilgang til sandbunker
+  KAMERA // iPhone + stativ for video-feedback
   PUTTING_GREEN_KORT // Putting green opptil 10m (kortspill)
   PUTTING_GREEN_LANG // Putting green 15m+ (lag-putt, 10m+ slag)
-  SHORT_GAME_AREA    // Nærspillsareal: gress, fra rough, chip/pitch
-  DRIVING_RANGE      // Utendørs driving range
-  BANE               // Tilgang til golfrunde (9 eller 18 hull)
-  SIMULATOR          // Innendørs simulator-bay
-  VEKTSTANG      // Benkpress, squat rack
-  TRAPBAR        // Hex bar / trapbar
-  LOPEBANE       // Friidrettsbane eller tredemølle
-  MED_BALL       // Medisinball (2-4 kg)
+  SHORT_GAME_AREA // Nærspillsareal: gress, fra rough, chip/pitch
+  DRIVING_RANGE // Utendørs driving range
+  BANE // Tilgang til golfrunde (9 eller 18 hull)
+  SIMULATOR // Innendørs simulator-bay
+  VEKTSTANG // Benkpress, squat rack
+  TRAPBAR // Hex bar / trapbar
+  LOPEBANE // Friidrettsbane eller tredemølle
+  MED_BALL // Medisinball (2-4 kg)
 }
 
 // NGF-kategori-skala for nivå-differensiering av drills og plan-templates.
@@ -169,13 +177,13 @@ enum PressureLevel {
 }
 
 enum PlanStatus {
-  DRAFT           // Coach jobber på planen
-  PENDING_PLAYER  // Sendt til spiller for godkjenning
-  ACCEPTED        // Spiller har godtatt, klar til å starte
-  REJECTED        // Spiller ba om endring (se playerComment)
-  ACTIVE          // Pågående
-  PAUSED          // Midlertidig pause
-  ARCHIVED        // Ferdig eller avsluttet
+  DRAFT // Coach jobber på planen
+  PENDING_PLAYER // Sendt til spiller for godkjenning
+  ACCEPTED // Spiller har godtatt, klar til å starte
+  REJECTED // Spiller ba om endring (se playerComment)
+  ACTIVE // Pågående
+  PAUSED // Midlertidig pause
+  ARCHIVED // Ferdig eller avsluttet
 }
 
 // Treningsplanlegger (Masterplan Sesjon 0)
@@ -258,29 +266,29 @@ enum PlanAdjustmentStatus {
 // ---------- Models ----------
 
 model User {
-  id          String    @id @default(cuid())
+  id                 String    @id @default(cuid())
   // Knytter mot Supabase auth.users.id (UUID).
   // Holdes som String for å unngå Prisma-uuid-type-friksjon mot Supabase.
-  authId      String    @unique
-  email       String    @unique
-  name        String
-  phone       String?
-  avatarUrl   String?
-  role        UserRole  @default(PLAYER)
-  tier        Tier      @default(GRATIS)
-  lastLoginAt DateTime?
+  authId             String    @unique
+  email              String    @unique
+  name               String
+  phone              String?
+  avatarUrl          String?
+  role               UserRole  @default(PLAYER)
+  tier               Tier      @default(GRATIS)
+  lastLoginAt        DateTime?
   // Spiller-profil (Fase 1.4)
-  hcp                 Float?
-  playingYears        Int?
-  ambition            String?
-  homeClub            String?
+  hcp                Float?
+  playingYears       Int?
+  ambition           String?
+  homeClub           String?
   // VGS (videregående skole) — brukes for å koble spillere til toppidrettslinjer.
-  school              String?
+  school             String?
   // Snittscore forrige sesong — brukes som baseline for fremgang.
-  prevSeasonAvgScore  Int?
+  prevSeasonAvgScore Int?
   // Bruker-preferanser (notifikasjoner, språk, etc.) som flexibel JSON.
   // Strukturen håndheves i kode (src/lib/preferences.ts) ikke i DB.
-  preferences  Json?
+  preferences        Json?
 
   // Tilgjengelige fasiliteter og utstyr (settes under onboarding/innstillinger).
   // Brukes for å filtrere drills slik at spilleren kun ser øvelser de kan gjøre.
@@ -288,33 +296,33 @@ model User {
 
   // GDPR soft-delete (P20). Bruker markeres som deletedAt = now() ved kontosletting.
   // Cron /api/cron/cleanup-deleted-accounts sletter permanent etter 30 dager.
-  deletedAt   DateTime?
+  deletedAt DateTime?
 
   // GDPR art. 8 — mindreårig + foreldresamtykke (P17).
   // Norge: 16 år er aldersgrense for å samtykke selv til behandling av persondata.
-  dateOfBirth              DateTime?
-  requiresGuardianConsent  Boolean   @default(false)
-  guardianConsentGivenAt   DateTime?
-  guardianConsentByUserId  String?
+  dateOfBirth             DateTime?
+  requiresGuardianConsent Boolean   @default(false)
+  guardianConsentGivenAt  DateTime?
+  guardianConsentByUserId String?
 
   // P14: spiller-status (permisjon, skade, return-to-play)
-  userStatus               UserStatus @default(AKTIV)
-  leaves                   Leave[]
+  userStatus UserStatus @default(AKTIV)
+  leaves     Leave[]
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   bookings        Booking[]
   parentRelations ParentRelation[] @relation("Child")
   childRelations  ParentRelation[] @relation("Parent")
 
   // PlayerHQ-relasjoner
-  trainingPlans     TrainingPlan[]
-  rounds            Round[]
-  testResults       TestResult[]
-  testSessions      TestSession[]
-  trackManSessions  TrackManSession[]
-  subscription      Subscription?
+  trainingPlans    TrainingPlan[]
+  rounds           Round[]
+  testResults      TestResult[]
+  testSessions     TestSession[]
+  trackManSessions TrackManSession[]
+  subscription     Subscription?
 
   // Coaching-relasjoner
   playerCoachingSessions CoachingSession[] @relation("PlayerCoachingSessions")
@@ -327,8 +335,8 @@ model User {
   // Goals/achievements/sosiale (Fase 1.14)
   goals        Goal[]
   achievements Achievement[]
-  friendshipsA Friendship[] @relation("FriendshipUserA")
-  friendshipsB Friendship[] @relation("FriendshipUserB")
+  friendshipsA Friendship[]  @relation("FriendshipUserA")
+  friendshipsB Friendship[]  @relation("FriendshipUserB")
 
   // Documents og session-requests (Fase 1.17)
   documents               Document[]
@@ -342,19 +350,19 @@ model User {
 
   // CoachHQ-relasjoner (Fase 2.1)
   tournamentResults TournamentResult[]
-  coachedGroups     Group[]            @relation("CoachOfGroup")
+  coachedGroups     Group[]                   @relation("CoachOfGroup")
   groupMemberships  GroupMember[]
   apiKeys           ApiKey[]
   auditLogs         AuditLog[]
   coachAvailability CoachAvailability[]
-  serviceTypes      ServiceType[]      @relation("CoachServiceTypes")
+  serviceTypes      ServiceType[]             @relation("CoachServiceTypes")
   googleCalendar    GoogleCalendarConnection?
 
   // WAGR-snapshot (om spilleren er registrert i World Amateur Golf Ranking)
-  wagrSnapshot      WagrSnapshot?
+  wagrSnapshot WagrSnapshot?
 
   // Stripe-betalinger (Payment-modell)
-  payments          Payment[]
+  payments Payment[]
 
   // AI-genererte planer (Spor 2)
   aiGenerationsAsUser  AiPlanGeneration[] @relation("AiGenUser")
@@ -376,7 +384,7 @@ model User {
   videosAsCoach  SessionVideo[] @relation("VideoCoach")
 
   // Drill-challenges (M14)
-  ownedChallenges     DrillChallenge[]       @relation("ChallengeOwner")
+  ownedChallenges         DrillChallenge[]       @relation("ChallengeOwner")
   challengeParticipations ChallengeParticipant[]
 
   // Equipment bag (M18)
@@ -403,15 +411,18 @@ model User {
   bestSessionRef BestSessionReference?
 
   // Teknisk utviklingsplan
-  technicalPlans       TechnicalPlan[]      @relation("TechPlanUser")
-  createdTechPlans     TechnicalPlan[]      @relation("TechPlanCreator")
-  techPlanAudits       TechnicalPlanAudit[]
-  techPlanSuggestions  PlanSuggestion[]     @relation("SuggestionDecider")
+  technicalPlans      TechnicalPlan[]      @relation("TechPlanUser")
+  createdTechPlans    TechnicalPlan[]      @relation("TechPlanCreator")
+  techPlanAudits      TechnicalPlanAudit[]
+  techPlanSuggestions PlanSuggestion[]     @relation("SuggestionDecider")
 
   // Plan-templates (AI-baseline-system)
   createdPlanTemplates  PlanTemplate[]      @relation("PlanTemplateCoach")
   approvedPlanTemplates PlanTemplate[]      @relation("PlanTemplateApprover")
   planEffectiveness     PlanEffectiveness[]
+
+  // Notion-sync (v1.1) — per-user OAuth-tilkobling til Notion
+  notionConnection NotionConnection?
 
   @@map("users")
 }
@@ -451,17 +462,17 @@ model TalentTracking {
 
 // Ressurs-bibliotek for talent-program. Videoer, artikler, podcasts.
 model TalentRessurs {
-  id        String   @id @default(cuid())
-  tittel    String
-  kategori  String   // video | artikkel | podcast
-  url       String
+  id          String   @id @default(cuid())
+  tittel      String
+  kategori    String // video | artikkel | podcast
+  url         String
   // Hvilket nivå er ressursen mest relevant for
-  niva      String?  // U10, U12, ..., Senior, null = alle
+  niva        String? // U10, U12, ..., Senior, null = alle
   // Fokus-tag: teknikk, mental, taktikk, fysisk, motivasjon
-  fokus     String?
+  fokus       String?
   // Beskrivelse / sammendrag
   beskrivelse String?
-  createdAt DateTime @default(now())
+  createdAt   DateTime @default(now())
 
   @@index([kategori, niva])
   @@index([fokus])
@@ -491,19 +502,19 @@ model HealthEntry {
 // Når en Leave er aktiv (endAt null eller > now), Subscription pauses.
 // Coach varsles ved opprettelse og return-to-play-modal aktiveres.
 model Leave {
-  id          String      @id @default(cuid())
-  userId      String
-  reason      LeaveReason
-  startAt     DateTime
-  endAt       DateTime?   // null = pågående (åpen-ende permisjon)
-  description String?     @db.Text
+  id            String      @id @default(cuid())
+  userId        String
+  reason        LeaveReason
+  startAt       DateTime
+  endAt         DateTime? // null = pågående (åpen-ende permisjon)
+  description   String?     @db.Text
   // Hvis SKADE: rehab-protokoll og return-to-play-status
-  isInjury    Boolean     @default(false)
-  rehabPlan   Json?       // strukturert rehab-plan
-  returnedAt  DateTime?
-  notifiedCoach Boolean   @default(false)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  isInjury      Boolean     @default(false)
+  rehabPlan     Json? // strukturert rehab-plan
+  returnedAt    DateTime?
+  notifiedCoach Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -600,45 +611,45 @@ model Location {
 }
 
 model Booking {
-  id            String        @id @default(cuid())
-  userId        String?
-  serviceTypeId String
-  locationId    String
-  startAt       DateTime
-  endAt         DateTime
-  status        BookingStatus @default(PENDING)
-  notes         String?
+  id                      String        @id @default(cuid())
+  userId                  String?
+  serviceTypeId           String
+  locationId              String
+  startAt                 DateTime
+  endAt                   DateTime
+  status                  BookingStatus @default(PENDING)
+  notes                   String?
   // Pris låst ved booking (i øre, ikke Float). Refusjonsbeløp baseres på dette.
   // For credit-baserte bookinger fra Academy-abonnement: priceOre = 0.
-  priceOre      Int           @default(0)
+  priceOre                Int           @default(0)
   // Stripe-tracking. CheckoutSession før betaling, PaymentIntent etter.
   // Null for credit-baserte abonnement-bookinger.
   stripeCheckoutSessionId String?
   stripePaymentIntentId   String?
   // Hvis booking er trukket fra Academy-abonnement, peker dette tilbake til
   // Subscription. Brukes for credit-tilbakeføring ved avbestilling >24t.
-  subscriptionId String?
+  subscriptionId          String?
   // Google Calendar event-ID hvis booking er pushet til coachens kalender.
   // Brukes til oppdater/slett ved endring/avbestilling. Null hvis Calendar
   // ikke er koblet, eller hvis push feilet (best-effort sync).
-  googleEventId  String?
+  googleEventId           String?
   // Hvilken fasilitet (rom/range/simulator) bookingen tar opp. Optional —
   // ikke alle bookinger er koblet til en spesifikk fasilitet (drop-in kan
   // være "et sted på lokasjonen"). Brukes for tetthet-visning i kalender.
-  facilityId     String?
+  facilityId              String?
   // Kontakt-info for bookinger gjort av ikke-innloggede kunder (gjest-flow).
-  guestName     String?
-  guestEmail    String?
-  guestPhone    String?
+  guestName               String?
+  guestEmail              String?
+  guestPhone              String?
   // Sletting av brukerkonto skal ikke slette historiske bookinger — sett userId til null.
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
 
-  user         User?         @relation(fields: [userId], references: [id])
-  serviceType  ServiceType   @relation(fields: [serviceTypeId], references: [id])
-  location     Location      @relation(fields: [locationId], references: [id])
-  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
-  facility     Facility?     @relation(fields: [facilityId], references: [id], onDelete: SetNull)
+  user         User?              @relation(fields: [userId], references: [id])
+  serviceType  ServiceType        @relation(fields: [serviceTypeId], references: [id])
+  location     Location           @relation(fields: [locationId], references: [id])
+  subscription Subscription?      @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  facility     Facility?          @relation(fields: [facilityId], references: [id], onDelete: SetNull)
   payments     Payment[]
   recordings   SessionRecording[]
 
@@ -653,23 +664,23 @@ model Booking {
 // ---------- PlayerHQ-modeller (Fase 1.5) ----------
 
 model TrainingPlan {
-  id          String     @id @default(cuid())
-  userId      String
-  name        String
-  startDate   DateTime
-  endDate     DateTime?
-  isActive    Boolean    @default(true)
+  id            String     @id @default(cuid())
+  userId        String
+  name          String
+  startDate     DateTime
+  endDate       DateTime?
+  isActive      Boolean    @default(true)
   // Status-enum for godkjennings-flyt mellom coach og spiller.
   // DRAFT → PENDING_PLAYER → ACCEPTED → ACTIVE → ARCHIVED.
   // REJECTED hvis spiller ber om endring (se playerComment).
-  status      PlanStatus @default(DRAFT)
+  status        PlanStatus @default(DRAFT)
   // Kommentar fra spiller ved REJECTED.
   playerComment String?
   // Coach-id (User med role=COACH) hvis plan opprettet av coach. Ikke FK i v1
   // for å holde det enkelt — modelleres som relasjon i Fase 1.9.
-  createdById String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdById   String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   // AI-generering (Spor 2). aiGenerated=true når plan er opprettet fra
   // AiPlanGeneration. aiGenerationId peker til kilde-genereringen.
@@ -678,10 +689,10 @@ model TrainingPlan {
   aiModel        String?
   aiGenerationId String?
 
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sessions     TrainingPlanSession[]
-  planActions  PlanAction[]
-  aiGeneration AiPlanGeneration? @relation(fields: [aiGenerationId], references: [id])
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions      TrainingPlanSession[]
+  planActions   PlanAction[]
+  aiGeneration  AiPlanGeneration?     @relation(fields: [aiGenerationId], references: [id])
   effectiveness PlanEffectiveness?
 
   @@index([userId, isActive])
@@ -694,22 +705,22 @@ model TrainingPlan {
 // treningsplan logges her — kontekst, prompt, respons, tokens og kost.
 // Revisjoner peker tilbake til opprinnelig via iterationOf.
 model AiPlanGeneration {
-  id             String   @id @default(cuid())
-  userId         String
-  coachId        String
-  prompt         String
-  systemPrompt   String
-  contextJson    Json
-  responseJson   Json
-  model          String
-  tokensInput    Int?
-  tokensOutput   Int?
-  costUsd        Float?
-  iterationOf    String?
-  createdAt      DateTime @default(now())
+  id           String   @id @default(cuid())
+  userId       String
+  coachId      String
+  prompt       String
+  systemPrompt String
+  contextJson  Json
+  responseJson Json
+  model        String
+  tokensInput  Int?
+  tokensOutput Int?
+  costUsd      Float?
+  iterationOf  String?
+  createdAt    DateTime @default(now())
 
-  user            User           @relation("AiGenUser", fields: [userId], references: [id], onDelete: Cascade)
-  coach           User           @relation("AiGenCoach", fields: [coachId], references: [id], onDelete: Cascade)
+  user            User               @relation("AiGenUser", fields: [userId], references: [id], onDelete: Cascade)
+  coach           User               @relation("AiGenCoach", fields: [coachId], references: [id], onDelete: Cascade)
   trainingPlans   TrainingPlan[]
   iterations      AiPlanGeneration[] @relation("AiPlanIterations")
   parentIteration AiPlanGeneration?  @relation("AiPlanIterations", fields: [iterationOf], references: [id], onDelete: SetNull)
@@ -721,20 +732,20 @@ model AiPlanGeneration {
 }
 
 model TrainingPlanSession {
-  id          String        @id @default(cuid())
-  planId      String
-  scheduledAt DateTime
-  durationMin Int
-  title       String
-  rationale   String?
-  pyramidArea PyramidArea
-  skillArea   SkillArea?
-  environment SessionEnvironment?
+  id            String              @id @default(cuid())
+  planId        String
+  scheduledAt   DateTime
+  durationMin   Int
+  title         String
+  rationale     String?
+  pyramidArea   PyramidArea
+  skillArea     SkillArea?
+  environment   SessionEnvironment?
   lPhase        LPhase?
   pressureLevel PressureLevel?
-  status        SessionStatus @default(PLANNED)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  status        SessionStatus       @default(PLANNED)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
 
   plan           TrainingPlan            @relation(fields: [planId], references: [id], onDelete: Cascade)
   drills         SessionDrill[]
@@ -760,36 +771,39 @@ model ExerciseDefinition {
   parametersJson  Json?
 
   // Nivå-differensiering (NGF-skala + HCP-range)
-  skillArea       SkillArea?
-  minKategori     NgfKategori?
-  maxKategori     NgfKategori?
-  minHcp          Float?
-  maxHcp          Float?
+  skillArea   SkillArea?
+  minKategori NgfKategori?
+  maxKategori NgfKategori?
+  minHcp      Float?
+  maxHcp      Float?
 
   // Kontekst — hvor og hvordan drillen kjøres
-  environment     SessionEnvironment[]   @default([])
-  utstyr          String[]               @default([])
-  intensitet      Int?                   // 1-10
-  lPhases         LPhase[]               @default([])
-  morad           Boolean                @default(false)
+  environment SessionEnvironment[] @default([])
+  utstyr      String[]             @default([])
+  intensitet  Int? // 1-10
+  lPhases     LPhase[]             @default([])
+  morad       Boolean              @default(false)
 
   // Fasilitets-krav: strukturerte utstyr/anlegg-krav for facility-matching.
   // Tom liste = drill har ingen spesialkrav (kan gjøres av alle).
-  fasilitetKrav   DrillFasilitet[]       @default([])
+  fasilitetKrav DrillFasilitet[] @default([])
 
   // Pedagogikk
-  prerequisites   String[]               @default([])
-  tags            String[]               @default([])
-  coachNotes      String?
-  kilde           String?
+  prerequisites String[] @default([])
+  tags          String[] @default([])
+  coachNotes    String?
+  kilde         String?
+
+  // Treningstype — øvingsmetode
+  treningstype DrillPracticeType?
 
   // Progresjon
-  defaultSets     Int?
-  defaultReps     Int?
-  csTargetByKategori Json?               // {A:95,B:90,...} per NGF-kategori
+  defaultSets        Int?
+  defaultReps        Int?
+  csTargetByKategori Json? // {A:95,B:90,...} per NGF-kategori
 
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   createdByUser User?          @relation("ExerciseCreator", fields: [createdBy], references: [id], onDelete: SetNull)
   sessionDrills SessionDrill[]
@@ -823,7 +837,7 @@ model SessionDrill {
 // pyramide-balanse og mål. ~15-20 templates totalt (5 kategorier × 3 faser).
 model PlanTemplate {
   id                String      @id @default(cuid())
-  name              String      // "A1 Konkurranse-fase Standard"
+  name              String // "A1 Konkurranse-fase Standard"
   description       String?
   kategori          NgfKategori
   lPhase            LPhase
@@ -834,24 +848,24 @@ model PlanTemplate {
   disciplinFordeling Json
 
   // Mål-aldersgruppe (optional — null = alle aldre)
-  minAlder          Int?
-  maxAlder          Int?
+  minAlder Int?
+  maxAlder Int?
 
   // Metadata
-  byCoachId         String?
-  approved          Boolean     @default(false)
-  approvedById      String?
-  approvedAt        DateTime?
-  usageCount        Int         @default(0)
-  effectivenessAvg  Float?      // gjennomsnitt fra PlanEffectiveness
+  byCoachId        String?
+  approved         Boolean   @default(false)
+  approvedById     String?
+  approvedAt       DateTime?
+  usageCount       Int       @default(0)
+  effectivenessAvg Float? // gjennomsnitt fra PlanEffectiveness
 
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  byCoach           User?       @relation("PlanTemplateCoach", fields: [byCoachId], references: [id], onDelete: SetNull)
-  approvedBy        User?       @relation("PlanTemplateApprover", fields: [approvedById], references: [id], onDelete: SetNull)
-  sessions          PlanTemplateSession[]
-  effectiveness     PlanEffectiveness[]
+  byCoach       User?                 @relation("PlanTemplateCoach", fields: [byCoachId], references: [id], onDelete: SetNull)
+  approvedBy    User?                 @relation("PlanTemplateApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  sessions      PlanTemplateSession[]
+  effectiveness PlanEffectiveness[]
 
   @@unique([kategori, lPhase, name])
   @@index([kategori, lPhase])
@@ -859,22 +873,22 @@ model PlanTemplate {
 }
 
 model PlanTemplateSession {
-  id            String              @id @default(cuid())
-  templateId    String
-  ukeNr         Int                 // 1-N (N = varighetUker)
-  dagNr         Int                 // 1-7 (mandag=1)
-  title         String
-  varighetMin   Int
-  pyramidArea   PyramidArea
-  skillArea     SkillArea?
-  environment   SessionEnvironment
+  id          String             @id @default(cuid())
+  templateId  String
+  ukeNr       Int // 1-N (N = varighetUker)
+  dagNr       Int // 1-7 (mandag=1)
+  title       String
+  varighetMin Int
+  pyramidArea PyramidArea
+  skillArea   SkillArea?
+  environment SessionEnvironment
   // Anbefalte drill-IDer + sets/reps/csTarget per drill
   // Format: [{exerciseId, sets, reps, csTarget, notes}]
-  drillsJson    Json
-  focus         String?
-  notes         String?
+  drillsJson  Json
+  focus       String?
+  notes       String?
 
-  template      PlanTemplate        @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  template PlanTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
   @@unique([templateId, ukeNr, dagNr])
   @@index([templateId])
@@ -884,34 +898,34 @@ model PlanTemplateSession {
 // Effektivitets-tracking — etter fullført TrainingPlan: pre/post SG-deltas
 // + completion-rate. AI bruker dette til å lære hvilke templates som virker.
 model PlanEffectiveness {
-  id              String        @id @default(cuid())
-  planId          String        @unique
-  templateId      String?       // hvilken template ble brukt som baseline
-  userId          String
+  id         String  @id @default(cuid())
+  planId     String  @unique
+  templateId String? // hvilken template ble brukt som baseline
+  userId     String
 
   // Pre/post snapshots
-  preSnapshot     Json          // {sgTotal, sgOTT, sgAPP, sgARG, sgPUTT, hcp, kategori}
-  postSnapshot    Json          // samme felter etter plan
+  preSnapshot  Json // {sgTotal, sgOTT, sgAPP, sgARG, sgPUTT, hcp, kategori}
+  postSnapshot Json // samme felter etter plan
 
   // Beregnet effekt
-  sgTotalDelta    Float?
-  sgOttDelta      Float?
-  sgAppDelta      Float?
-  sgArgDelta      Float?
-  sgPuttDelta     Float?
-  hcpDelta        Float?
+  sgTotalDelta Float?
+  sgOttDelta   Float?
+  sgAppDelta   Float?
+  sgArgDelta   Float?
+  sgPuttDelta  Float?
+  hcpDelta     Float?
 
-  completionRate  Float         // 0-1 — andel økter fullført
-  selfRating      Float?        // 1-5 spillerens egen vurdering
-  coachRating     Float?        // 1-5 coachens vurdering
+  completionRate Float // 0-1 — andel økter fullført
+  selfRating     Float? // 1-5 spillerens egen vurdering
+  coachRating    Float? // 1-5 coachens vurdering
 
-  notes           String?       // coach-notater om hva som virket / ikke virket
+  notes String? // coach-notater om hva som virket / ikke virket
 
-  computedAt      DateTime      @default(now())
+  computedAt DateTime @default(now())
 
-  plan            TrainingPlan  @relation(fields: [planId], references: [id], onDelete: Cascade)
-  template        PlanTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan     TrainingPlan  @relation(fields: [planId], references: [id], onDelete: Cascade)
+  template PlanTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([templateId])
@@ -919,17 +933,17 @@ model PlanEffectiveness {
 }
 
 model TrainingPlanSessionLog {
-  id            String    @id @default(cuid())
-  sessionId     String    @unique
-  startedAt     DateTime
-  completedAt   DateTime?
-  csAchieved    Int?
-  notes         String? // Spillerens egne notater fra live-økt
-  rating        Int? // 1-5, spillerens mood/rating
-  coachFeedback String? // Coachens tilbakemelding på fullført økt
+  id                String    @id @default(cuid())
+  sessionId         String    @unique
+  startedAt         DateTime
+  completedAt       DateTime?
+  csAchieved        Int?
+  notes             String? // Spillerens egne notater fra live-økt
+  rating            Int? // 1-5, spillerens mood/rating
+  coachFeedback     String? // Coachens tilbakemelding på fullført økt
   coachFeedbackAt   DateTime?
   coachFeedbackById String?
-  createdAt     DateTime  @default(now())
+  createdAt         DateTime  @default(now())
 
   session TrainingPlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
@@ -953,16 +967,16 @@ model CourseDefinition {
 }
 
 model Round {
-  id       String   @id @default(cuid())
-  userId   String
-  courseId String
-  playedAt DateTime
-  score    Int
-  sgTotal  Float?
-  sgOtt    Float?
-  sgApp    Float?
-  sgArg    Float?
-  sgPutt   Float?
+  id           String   @id @default(cuid())
+  userId       String
+  courseId     String
+  playedAt     DateTime
+  score        Int
+  sgTotal      Float?
+  sgOtt        Float?
+  sgApp        Float?
+  sgArg        Float?
+  sgPutt       Float?
   // Granulære SG-felter (fra taksonomien — alle valgfrie)
   sgTee        Float?
   sgApp200     Float?
@@ -980,8 +994,8 @@ model Round {
   sgPutt15_25  Float?
   sgPutt25_40  Float?
   sgPutt40plus Float?
-  notes    String?
-  createdAt DateTime @default(now())
+  notes        String?
+  createdAt    DateTime @default(now())
 
   user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   course CourseDefinition @relation(fields: [courseId], references: [id])
@@ -1089,19 +1103,19 @@ enum TestSessionStatus {
 }
 
 model TestSession {
-  id          String            @id @default(cuid())
-  userId      String
-  testId      String
-  status      TestSessionStatus @default(IN_PROGRESS)
+  id               String            @id @default(cuid())
+  userId           String
+  testId           String
+  status           TestSessionStatus @default(IN_PROGRESS)
   // Hvilket steg spilleren er på (0-indexed mot protokoll.steps[])
-  currentStepIndex Int          @default(0)
+  currentStepIndex Int               @default(0)
   // Akkumulert data per steg: { [stepId]: ShotData[] }
-  scoringData Json              @default("{}")
-  startedAt   DateTime          @default(now())
-  completedAt DateTime?
-  abortedAt   DateTime?
+  scoringData      Json              @default("{}")
+  startedAt        DateTime          @default(now())
+  completedAt      DateTime?
+  abortedAt        DateTime?
   // Når committed: peker på resulterende TestResult
-  testResultId String?
+  testResultId     String?
 
   user User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   test TestDefinition @relation(fields: [testId], references: [id])
@@ -1256,17 +1270,17 @@ model Document {
 }
 
 model SessionRequest {
-  id          String               @id @default(cuid())
-  userId      String
-  coachId     String?
+  id      String  @id @default(cuid())
+  userId  String
+  coachId String?
 
   preferredArea PyramidArea?
   preferredDate DateTime?
   preferredTime String? // "morgen" | "ettermiddag" | "kveld" etc.
   durationMin   Int?
 
-  reason  String               @default("")
-  status  SessionRequestStatus @default(PENDING)
+  reason String               @default("")
+  status SessionRequestStatus @default(PENDING)
 
   approvedSessionId String?
   coachResponse     String?
@@ -1333,16 +1347,16 @@ model Subscription {
 // Idempotent på Stripe-IDer (paymentIntent/charge/invoice/checkoutSession).
 // Penger lagres i øre (Int), aldri Float.
 model Payment {
-  id                    String         @id @default(cuid())
-  stripePaymentIntentId String?        @unique
-  stripeChargeId        String?        @unique
-  stripeInvoiceId       String?        @unique
-  stripeSessionId       String?        @unique
+  id                    String        @id @default(cuid())
+  stripePaymentIntentId String?       @unique
+  stripeChargeId        String?       @unique
+  stripeInvoiceId       String?       @unique
+  stripeSessionId       String?       @unique
   stripeCustomerId      String?
   amountOre             Int
-  amountRefundedOre     Int            @default(0)
-  currency              String         @default("nok")
-  status                PaymentStatus  @default(PENDING)
+  amountRefundedOre     Int           @default(0)
+  currency              String        @default("nok")
+  status                PaymentStatus @default(PENDING)
   type                  PaymentType
   userId                String?
   bookingId             String?
@@ -1351,8 +1365,8 @@ model Payment {
   metadata              Json?
   paidAt                DateTime?
   refundedAt            DateTime?
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
 
   user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
   booking      Booking?      @relation(fields: [bookingId], references: [id], onDelete: SetNull)
@@ -1414,17 +1428,17 @@ enum PaymentType {
 // Drill-challenge (M14): spillere kan utfordre hverandre på et drill
 // over en periode. Achievements gis ved seier.
 model DrillChallenge {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   ownerId     String
-  drillId     String?  // ExerciseDefinition (optional — fritt-form-utfordring tillatt)
+  drillId     String? // ExerciseDefinition (optional — fritt-form-utfordring tillatt)
   name        String
   description String?
   startAt     DateTime?
   endAt       DateTime?
   // ACTIVE | ENDED
-  status      String   @default("ACTIVE")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  status      String    @default("ACTIVE")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   owner        User                   @relation("ChallengeOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   participants ChallengeParticipant[]
@@ -1475,28 +1489,28 @@ model EquipmentBag {
 // Lagres i Supabase Storage-bucket 'coaching-videos' (private). UI viser
 // via signert URL eller streaming-endpoint.
 model SessionVideo {
-  id          String   @id @default(cuid())
+  id           String   @id @default(cuid())
   // Hvilken spiller videoen er knyttet til (kan deles med spilleren)
-  playerId    String
+  playerId     String
   // Hvem som lastet opp (coach/admin)
-  coachId     String
+  coachId      String
   // Valgfri booking-tilknytning
-  bookingId   String?
-  title       String
-  videoUrl    String   // Public eller signert URL (path i storage)
+  bookingId    String?
+  title        String
+  videoUrl     String // Public eller signert URL (path i storage)
   thumbnailUrl String?
-  durationSec Int?
-  sizeBytes   Int?
+  durationSec  Int?
+  sizeBytes    Int?
   // Tema/kategori — fritekst for nå (kan bli enum senere)
-  tag         String?
-  notes       String?
+  tag          String?
+  notes        String?
   // PROCESSING | READY | FAILED — for V1 sett DONE direkte etter upload
-  status      String   @default("READY")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  status       String   @default("READY")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   player User @relation("VideoPlayer", fields: [playerId], references: [id], onDelete: Cascade)
-  coach  User @relation("VideoCoach",  fields: [coachId],  references: [id], onDelete: Cascade)
+  coach  User @relation("VideoCoach", fields: [coachId], references: [id], onDelete: Cascade)
 
   @@index([playerId, createdAt])
   @@index([coachId, createdAt])
@@ -1506,7 +1520,7 @@ model SessionVideo {
 // In-app varsler. Brukes for booking-bekreftelser, plan-godkjenninger,
 // achievements, coach-meldinger osv. Vises i Bell-dropdown og /portal/varsler.
 model Notification {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
   // Type-tag for ikon/farge i UI (booking, plan, achievement, melding, system, ...)
   type      String
@@ -1516,7 +1530,7 @@ model Notification {
   link      String?
   // Når brukeren markerte den som lest. Null = ulest.
   readAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1528,27 +1542,27 @@ model Notification {
 // Refresh-token er krypter via GOOGLE_TOKEN_ENCRYPTION_KEY før lagring.
 // channelId + resourceId brukes for push-notifikasjons-kanal (V1.5).
 model GoogleCalendarConnection {
-  id                   String   @id @default(cuid())
-  userId               String   @unique
+  id                 String    @id @default(cuid())
+  userId             String    @unique
   // Google-konto e-post (typisk akgolfgroup@gmail.com eller anders' personlige)
-  googleEmail          String
+  googleEmail        String
   // Hvilken kalender brukes som primær (default: "primary")
-  calendarId           String   @default("primary")
+  calendarId         String    @default("primary")
   // OAuth refresh-token (kryptert via AES-256-GCM)
-  refreshTokenCipher   String
+  refreshTokenCipher String
   // Tidsstempel siste vellykkede sync (busy-times pull)
-  lastSyncAt           DateTime?
+  lastSyncAt         DateTime?
   // Push-notifications (V1.5 — webhook fra Google ved Calendar-endring)
-  channelId            String?
-  resourceId           String?
-  channelExpiresAt     DateTime?
+  channelId          String?
+  resourceId         String?
+  channelExpiresAt   DateTime?
   // Sync-status: ACTIVE | PAUSED | ERROR
-  status               String   @default("ACTIVE")
-  lastError            String?
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  status             String    @default("ACTIVE")
+  lastError          String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
-  user          User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User                         @relation(fields: [userId], references: [id], onDelete: Cascade)
   subscriptions GoogleCalendarSubscription[]
 
   @@map("google_calendar_connections")
@@ -1562,7 +1576,7 @@ model GoogleCalendarConnection {
 // - watchChannelId/resourceId/expiresAt: Google Push Notifications-state
 //   for å motta webhook ved endringer (kun ved syncPull=true).
 model GoogleCalendarSubscription {
-  id               String   @id @default(cuid())
+  id               String    @id @default(cuid())
   connectionId     String
   // Google sin egen calendarId — kan være "primary", e-post eller UUID
   googleCalendarId String
@@ -1572,9 +1586,9 @@ model GoogleCalendarSubscription {
   // Hex-farge fra calendarList.backgroundColor (f.eks. "#4285F4")
   color            String?
   // Sync-retning
-  syncPush         Boolean  @default(false)
-  syncPull         Boolean  @default(true)
-  active           Boolean  @default(true)
+  syncPush         Boolean   @default(false)
+  syncPull         Boolean   @default(true)
+  active           Boolean   @default(true)
   // Google Push Notifications watch-tilstand (kun ved syncPull=true)
   watchChannelId   String?
   watchResourceId  String?
@@ -1582,8 +1596,8 @@ model GoogleCalendarSubscription {
   // Cache av siste sync
   lastSyncAt       DateTime?
   lastError        String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   connection GoogleCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
 
@@ -1596,15 +1610,15 @@ model GoogleCalendarSubscription {
 // ---------- CoachHQ-modeller (Fase 2.1) ----------
 
 model Tournament {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String
   // Slug for /turneringer/[slug]-URL. Nullable for legacy-rader uten slug.
-  slug      String?  @unique
+  slug      String?   @unique
   startDate DateTime
   endDate   DateTime?
   courseId  String?
   // STROKE | MATCH | STABLEFORD | OTHER
-  format    String   @default("STROKE")
+  format    String    @default("STROKE")
   notes     String?
 
   // /turneringer-felter (synkronisert fra ekstern kilde — DataGolf/NGF/GJGT)
@@ -1628,12 +1642,12 @@ model Tournament {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  course           CourseDefinition?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
-  results          TournamentResult[]
-  entries          TournamentEntry[]
-  preparations     TournamentPreparation[]
-  publicEntries    PublicPlayerEntry[]
-  leaderboardSnap  LeaderboardSnapshot?
+  course          CourseDefinition?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  results         TournamentResult[]
+  entries         TournamentEntry[]
+  preparations    TournamentPreparation[]
+  publicEntries   PublicPlayerEntry[]
+  leaderboardSnap LeaderboardSnapshot?
 
   @@index([startDate])
   @@index([sourceOrigin, sourceId])
@@ -1644,26 +1658,26 @@ model Tournament {
 // Norske + internasjonale spillere vi følger på /turneringer.
 // Separat fra User (User = kunder/coacher i PlayerHQ).
 model PublicPlayer {
-  id            String   @id @default(cuid())
-  slug          String   @unique
-  name          String
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
   // ISO 2-bokstavers landkode
-  country       String   @default("NO")
-  birthYear     Int?
+  country         String   @default("NO")
+  birthYear       Int?
   // Hva spilleren primært spiller: pro-pga | pro-dp | pro-lpga | amateur | junior | college
-  tier          String
+  tier            String
   // DataGolf player-ID (når vi kobler til pro-leaderboards)
-  dataGolfId    Int?     @unique
+  dataGolfId      Int?     @unique
   // NGF/Golfbox-ID (når vi kobler til amatør-leaderboards)
-  ngfId         String?
+  ngfId           String?
   // Kort beskrivelse for spillerprofil-side
-  bio           String?
-  photoUrl      String?
+  bio             String?
+  photoUrl        String?
   instagramHandle String?
   // Skjul fra public listings (men behold data)
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   entries PublicPlayerEntry[]
 
@@ -1711,7 +1725,7 @@ model LeaderboardSnapshot {
 }
 
 model TournamentResult {
-  id           String  @id @default(cuid())
+  id           String   @id @default(cuid())
   tournamentId String
   userId       String
   position     Int?
@@ -1732,8 +1746,8 @@ model TournamentResult {
 model SeasonPlan {
   id        String   @id @default(cuid())
   userId    String
-  year      Int                        // 2025, 2026, …
-  name      String?                    // "Sesong 2025"
+  year      Int // 2025, 2026, …
+  name      String? // "Sesong 2025"
   startDate DateTime
   endDate   DateTime
   notes     String?
@@ -1752,12 +1766,12 @@ model SeasonPlan {
 model PeriodBlock {
   id           String   @id @default(cuid())
   seasonPlanId String
-  lPhase       LPhase                 // GRUNN|SPESIAL|TURNERING
+  lPhase       LPhase // GRUNN|SPESIAL|TURNERING
   startDate    DateTime
   endDate      DateTime
-  focus        String?                // fri tekst, f.eks. "Putting + kort spill"
-  weeklyVolMin Int?                   // min minutter per uke
-  weeklyVolMax Int?                   // max minutter per uke
+  focus        String? // fri tekst, f.eks. "Putting + kort spill"
+  weeklyVolMin Int? // min minutter per uke
+  weeklyVolMax Int? // max minutter per uke
   notes        String?
 
   seasonPlan SeasonPlan @relation(fields: [seasonPlanId], references: [id], onDelete: Cascade)
@@ -1767,24 +1781,24 @@ model PeriodBlock {
 }
 
 model TournamentEntry {
-  id            String    @id @default(cuid())
-  userId        String
-  seasonPlanId  String?
+  id              String                @id @default(cuid())
+  userId          String
+  seasonPlanId    String?
   // Linket til Tournament-katalogen (null = manuell)
-  tournamentId  String?
+  tournamentId    String?
   // Manuelle felter (brukes kun når tournamentId er null)
-  manualName    String?
-  manualDate    DateTime?
-  manualEndDate DateTime?
+  manualName      String?
+  manualDate      DateTime?
+  manualEndDate   DateTime?
   // Felles
-  category      String?              // "A-rekke", "Åpen NM", "Kretsmesterskap"
-  priority      String   @default("NORMAL")  // MAJOR | NORMAL | LOCAL
-  entryStatus   TournamentEntryStatus @default(PLANNED)
-  withdrawnAt   DateTime?
+  category        String? // "A-rekke", "Åpen NM", "Kretsmesterskap"
+  priority        String                @default("NORMAL") // MAJOR | NORMAL | LOCAL
+  entryStatus     TournamentEntryStatus @default(PLANNED)
+  withdrawnAt     DateTime?
   withdrawnReason String?
-  notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  notes           String?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
 
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   tournament Tournament? @relation(fields: [tournamentId], references: [id], onDelete: SetNull)
@@ -1835,11 +1849,11 @@ model GroupSchedule {
 }
 
 model GroupMember {
-  id      String @id @default(cuid())
-  groupId String
-  userId  String
+  id       String   @id @default(cuid())
+  groupId  String
+  userId   String
   // PLAYER | ASSISTANT
-  role    String @default("PLAYER")
+  role     String   @default("PLAYER")
   joinedAt DateTime @default(now())
 
   group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
@@ -1855,7 +1869,7 @@ model EmailTemplate {
   slug      String   @unique
   name      String
   subject   String
-  body      String   // markdown
+  body      String // markdown
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1900,16 +1914,16 @@ model AuditLog {
 // L1 Observability — runtime error-tracking (system errors, ikke user actions)
 // Brukes via lib/error-tracking.ts -> logError()
 model ErrorLog {
-  id          String   @id @default(cuid())
-  context     String   // "stripe.webhook" | "gcal.sync" | "auth.signup" | etc.
-  message     String   @db.Text
-  stack       String?  @db.Text
-  userId      String?  // null = system error, ellers FK til User
-  meta        Json?    // tilleggsdata (bookingId, sessionId, etc.)
-  severity    String   @default("error") // "fatal" | "error" | "warn" | "info"
-  resolved    Boolean  @default(false)
-  resolvedAt  DateTime?
-  createdAt   DateTime @default(now())
+  id         String    @id @default(cuid())
+  context    String // "stripe.webhook" | "gcal.sync" | "auth.signup" | etc.
+  message    String    @db.Text
+  stack      String?   @db.Text
+  userId     String? // null = system error, ellers FK til User
+  meta       Json? // tilleggsdata (bookingId, sessionId, etc.)
+  severity   String    @default("error") // "fatal" | "error" | "warn" | "info"
+  resolved   Boolean   @default(false)
+  resolvedAt DateTime?
+  createdAt  DateTime  @default(now())
 
   @@index([context, createdAt])
   @@index([severity, resolved, createdAt])
@@ -1935,25 +1949,25 @@ model CoachAvailability {
 }
 
 model Facility {
-  id         String   @id @default(cuid())
-  locationId String
-  name       String
-  capacity   Int      @default(1)
-  active     Boolean  @default(true)
+  id          String       @id @default(cuid())
+  locationId  String
+  name        String
+  capacity    Int          @default(1)
+  active      Boolean      @default(true)
   // Type-klassifisering brukt for kart-ikoner, filtrering og statistikk
   // (se FacilityType-enum). Default GENERAL for bakoverkompatibilitet med
   // eksisterende seed-data hvor type ikke var spesifisert.
-  type       FacilityType @default(GENERAL)
+  type        FacilityType @default(GENERAL)
   // Innendørs vs utendørs. Brukes for værfilter og ikoner.
-  isIndoor   Boolean  @default(false)
+  isIndoor    Boolean      @default(false)
   // Fritekst-beskrivelse vist i detalj-drawer (utstyr, kapasitet-kommentar).
   description String?
   // Koordinater på anleggskartet (0-100 % av kart-bredde/høyde). Null for
   // fasiliteter som ikke skal vises på kart.
-  mapX       Float?
-  mapY       Float?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  mapX        Float?
+  mapY        Float?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   location Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
   bookings Booking[]
@@ -1963,15 +1977,15 @@ model Facility {
 }
 
 enum FacilityType {
-  STUDIO          // Performance Studio (indoor TrackMan)
-  RANGE_1F        // Driving Range 1. etg
-  RANGE_2F        // Driving Range 2. etg
-  PUTTING_GREEN   // Putting Green
-  SHORT_GAME      // Nærspillsområde
-  COURSE_9H       // 9-hullsbanen
-  COURSE_18H      // 18-hullsbanen
-  SPECIFIC_HOLES  // Hull 4/5 etc.
-  GENERAL         // Fallback for eldre/uklassifiserte fasiliteter
+  STUDIO // Performance Studio (indoor TrackMan)
+  RANGE_1F // Driving Range 1. etg
+  RANGE_2F // Driving Range 2. etg
+  PUTTING_GREEN // Putting Green
+  SHORT_GAME // Nærspillsområde
+  COURSE_9H // 9-hullsbanen
+  COURSE_18H // 18-hullsbanen
+  SPECIFIC_HOLES // Hull 4/5 etc.
+  GENERAL // Fallback for eldre/uklassifiserte fasiliteter
 }
 
 model SessionRecording {
@@ -2072,7 +2086,7 @@ model WagrSnapshot {
 // ---------- Treningsplanlegger (Masterplan Sesjon 0) ----------
 
 model TrainingSessionV2 {
-  id                   String   @id @default(cuid())
+  id                   String                 @id @default(cuid())
   title                String
   studentId            String?
   groupId              String?
@@ -2081,22 +2095,22 @@ model TrainingSessionV2 {
   endTime              DateTime
   miljo                MMiljo
   practiceType         PracticeType
-  status               SessionStatusV2 @default(PLANNED)
+  status               SessionStatusV2        @default(PLANNED)
   notes                String?
-  isCoachCreated       Boolean  @default(true)
+  isCoachCreated       Boolean                @default(true)
   rrule                String?
   recurringGroupId     String?
-  isException          Boolean  @default(false)
+  isException          Boolean                @default(false)
   generertFra          String?
   generertFraId        String?
   regelBrudd           Json?
-  trengerOppmerksomhet Boolean  @default(false)
-  drillLoggInterval    Int      @default(1)
+  trengerOppmerksomhet Boolean                @default(false)
+  drillLoggInterval    Int                    @default(1)
   completedSummary     Json?
   drills               TrainingDrillV2[]
   drillInstances       SessionDrillInstance[]
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
 
   @@index([studentId, startTime])
   @@index([coachId, startTime])
@@ -2104,7 +2118,7 @@ model TrainingSessionV2 {
 }
 
 model TrainingDrillV2 {
-  id                  String   @id @default(cuid())
+  id                  String            @id @default(cuid())
   sessionId           String
   session             TrainingSessionV2 @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sortOrder           Int
@@ -2112,7 +2126,7 @@ model TrainingDrillV2 {
   description         String?
   durationMinutes     Int
   repetitions         Int?
-  drillLoggInterval   Int      @default(1)
+  drillLoggInterval   Int               @default(1)
   pyramide            PyramidArea
   omraade             String?
   lFase               LFase?
@@ -2122,7 +2136,7 @@ model TrainingDrillV2 {
   pPosisjoner         String[]
   lifeKode            String?
   componentFocus      String?
-  slowMotionMode      Boolean  @default(false)
+  slowMotionMode      Boolean           @default(false)
   fysTreningstype     String?
   fysMuskelgruppe     String?
   fysOvelse           String?
@@ -2146,20 +2160,20 @@ model TrainingDrillV2 {
 }
 
 model DrillLogV2 {
-  id          String   @id @default(cuid())
+  id          String          @id @default(cuid())
   drillId     String
   drill       TrainingDrillV2 @relation(fields: [drillId], references: [id], onDelete: Cascade)
   loggedBy    String
   successRate Int
   notes       String?
-  loggedAt    DateTime @default(now())
+  loggedAt    DateTime        @default(now())
 
   @@index([drillId])
   @@map("drill_logs_v2")
 }
 
 model LockedAnchor {
-  id              String   @id @default(cuid())
+  id              String      @id @default(cuid())
   studentId       String
   navn            String
   pyramide        PyramidArea
@@ -2172,15 +2186,15 @@ model LockedAnchor {
   beskrivelse     String?
   fysMuskelgruppe String?
   fysTreningstype String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   @@index([studentId])
   @@map("locked_anchors")
 }
 
 model RecurringPattern {
-  id              String   @id @default(cuid())
+  id              String      @id @default(cuid())
   studentId       String
   navn            String
   pyramide        PyramidArea
@@ -2192,7 +2206,7 @@ model RecurringPattern {
   beskrivelse     String?
   fysMuskelgruppe String?
   fysTreningstype String?
-  createdAt       DateTime @default(now())
+  createdAt       DateTime    @default(now())
 
   @@index([studentId])
   @@map("recurring_patterns")
@@ -2209,7 +2223,7 @@ model PeriodVolumeRecipe {
 }
 
 model PeriodRecipeOkt {
-  id                      String   @id @default(cuid())
+  id                      String             @id @default(cuid())
   recipeId                String
   recipe                  PeriodVolumeRecipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   pyramide                PyramidArea
@@ -2242,15 +2256,15 @@ model ConditionalRule {
 }
 
 model DrillMal {
-  id                 String   @id @default(cuid())
+  id                 String      @id @default(cuid())
   coachId            String
   navn               String
   beskrivelse        String?
   kategori           String
   pyramide           PyramidArea
-  erFavoritt         Boolean  @default(false)
-  erGlobal           Boolean  @default(false)
-  bruktAntall        Int      @default(0)
+  erFavoritt         Boolean     @default(false)
+  erGlobal           Boolean     @default(false)
+  bruktAntall        Int         @default(0)
   sistBrukt          DateTime?
   omraade            String?
   lFase              LFase?
@@ -2267,8 +2281,8 @@ model DrillMal {
   fysVektProsent     Int?
   fysVarighetMin     Int?
   fysIntensitetsSone Int?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
 
   @@index([coachId])
   @@index([pyramide])
@@ -2276,7 +2290,7 @@ model DrillMal {
 }
 
 model OktMal {
-  id              String   @id @default(cuid())
+  id              String        @id @default(cuid())
   coachId         String
   navn            String
   beskrivelse     String?
@@ -2284,16 +2298,16 @@ model OktMal {
   pyramide        PyramidArea
   periodeType     PeriodeType?
   kategoriAK      String?
-  erFavoritt      Boolean  @default(false)
-  erGlobal        Boolean  @default(false)
-  bruktAntall     Int      @default(0)
+  erFavoritt      Boolean       @default(false)
+  erGlobal        Boolean       @default(false)
+  bruktAntall     Int           @default(0)
   sistBrukt       DateTime?
   durationMinutes Int
   practiceType    PracticeType
   notat           String?
   driller         OktMalDrill[]
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   @@index([coachId])
   @@index([pyramide])
@@ -2301,9 +2315,9 @@ model OktMal {
 }
 
 model OktMalDrill {
-  id              String  @id @default(cuid())
+  id              String      @id @default(cuid())
   malId           String
-  mal             OktMal  @relation(fields: [malId], references: [id], onDelete: Cascade)
+  mal             OktMal      @relation(fields: [malId], references: [id], onDelete: Cascade)
   sortOrder       Int
   pyramide        PyramidArea
   navn            String
@@ -2323,7 +2337,7 @@ model ClubsPracticed {
   id          String              @id @default(cuid())
   sessionId   String
   session     TrainingPlanSession @relation(fields: [sessionId], references: [id])
-  club        String              // "3W", "7i", "PW"
+  club        String // "3W", "7i", "PW"
   shotCount   Int?
   environment TrackManEnvironment
   createdAt   DateTime            @default(now())
@@ -2337,11 +2351,11 @@ model ClubsPracticed {
 model SgBaseline {
   id              String     @id @default(cuid())
   category        SgCategory
-  distanceBucket  String     // "175-200y"
+  distanceBucket  String // "175-200y"
   lie             ShotLie?
   expectedStrokes Float
   sampleSize      Int
-  source          String     // "datagolf-approach-skill-2026Q1"
+  source          String // "datagolf-approach-skill-2026Q1"
   fetchedAt       DateTime
 
   @@unique([category, distanceBucket, lie])
@@ -2354,7 +2368,7 @@ model SgInsight {
   userId         String
   user           User            @relation(fields: [userId], references: [id])
   category       InsightCategory
-  severity       Int             // 1-5
+  severity       Int // 1-5
   title          String
   body           String          @db.Text
   payload        Json
@@ -2372,7 +2386,7 @@ model BestSessionReference {
   user              User     @relation(fields: [userId], references: [id])
   trackmanSessionId String
   pinnedAt          DateTime @default(now())
-  pinnedBy          String   // userId — spiller eller coach
+  pinnedBy          String // userId — spiller eller coach
   notes             String?
   autoSuggested     Boolean  @default(false)
 
@@ -2383,8 +2397,8 @@ model BestSessionReference {
 model ShotAnnotation {
   id                String   @id @default(cuid())
   trackmanSessionId String
-  clubId            String   // "7i"
-  shotNumber        Int      // 1, 2, 3...
+  clubId            String // "7i"
+  shotNumber        Int // 1, 2, 3...
   coachId           String
   body              String   @db.Text
   videoUrl          String?
@@ -2670,10 +2684,10 @@ model TechnicalPlan {
 // TechnicalPlanPosition — én rad per P1.0 - P10.0 per plan
 // ----------------------------------------------------------------------------
 model TechnicalPlanPosition {
-  id      String @id @default(cuid())
-  planId  String
-  pNummer String // "P1.0" - "P10.0"
-  navn    String // "Topp-posisjon" - menneskelesbart
+  id        String @id @default(cuid())
+  planId    String
+  pNummer   String // "P1.0" - "P10.0"
+  navn      String // "Topp-posisjon" - menneskelesbart
   // Ytre prio — drag-and-drop på P-rader. Lavest = øverst.
   sortOrder Int
 
@@ -2762,9 +2776,9 @@ model PositionTaskLog {
 
   // Logger — fra hvilken kontekst
   // Optional fordi reps kan logges manuelt uten session-kontekst
-  sessionV2Id     String? // TrainingSessionV2 (live-økt counter)
-  trackmanShotId  String? @unique // hvis fra TrackMan-import
-  loggedByUserId  String // hvem klikket logg-knappen / importerte
+  sessionV2Id    String? // TrainingSessionV2 (live-økt counter)
+  trackmanShotId String? @unique // hvis fra TrackMan-import
+  loggedByUserId String // hvem klikket logg-knappen / importerte
 
   reps      Int
   hastighet RepHastighet
@@ -2772,8 +2786,8 @@ model PositionTaskLog {
 
   loggedAt DateTime @default(now())
 
-  task         PositionTask    @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  trackmanShot TrackManShot?   @relation(fields: [trackmanShotId], references: [id])
+  task         PositionTask  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  trackmanShot TrackManShot? @relation(fields: [trackmanShotId], references: [id])
 
   @@index([taskId, loggedAt])
   @@index([sessionV2Id])
@@ -2814,17 +2828,17 @@ model PositionTaskTmGoal {
   // Progress (oppdateres ved hver TM-import)
   currentValue Float?
   progressPct  Int? // 0-100 (hvor mye av baseline → target distansen er dekket)
-  inTarget     Boolean @default(false)
+  inTarget     Boolean   @default(false)
   lastUpdated  DateTime?
 
   // ----- HIT_RATE-spesifikke felt (Mekanisme 7) -----
   // Pass/fail-protokoll: "8/10 slag innenfor ±2° face angle"
   // Kun relevant når targetType = HIT_RATE.
-  protocol     TmGoalProtocol? // ROLLING_WINDOW | BEST_OF_N | STREAK | SESSION_GATE
-  windowSize   Int? // antall slag i vinduet (f.eks. 10)
-  requiredHits Int? // antall som må passere (f.eks. 8)
-  corridorMin  Float? // nedre grense for "treff" (f.eks. -2.0)
-  corridorMax  Float? // øvre grense for "treff" (f.eks. +2.0)
+  protocol         TmGoalProtocol? // ROLLING_WINDOW | BEST_OF_N | STREAK | SESSION_GATE
+  windowSize       Int? // antall slag i vinduet (f.eks. 10)
+  requiredHits     Int? // antall som må passere (f.eks. 8)
+  corridorMin      Float? // nedre grense for "treff" (f.eks. -2.0)
+  corridorMax      Float? // øvre grense for "treff" (f.eks. +2.0)
   // Aktuell status — oppdateres etter hver økt
   currentHits      Int? // antall treff i siste vindu
   currentBatchSize Int? // antall slag i siste vindu
@@ -2910,8 +2924,8 @@ model TechnicalPlanAudit {
 // Disse driver auto-oppdatering av PositionTask.repsGjort* og
 // PositionTaskTmGoal.currentValue.
 model TrackManShot {
-  id        String @id @default(cuid())
-  sessionId String
+  id         String @id @default(cuid())
+  sessionId  String
   shotNumber Int
 
   // Slag-identifikasjon
@@ -2940,8 +2954,8 @@ model TrackManShot {
   strikePatternY Float? // -1..1 (low-high)
 
   // Sync-felt
-  positionTaskId String? // kobling til arbeidsoppgave (null = umatchet)
-  matchSource    String? // "auto-club" | "auto-drill" | "manual"
+  positionTaskId  String? // kobling til arbeidsoppgave (null = umatchet)
+  matchSource     String? // "auto-club" | "auto-drill" | "manual"
   matchConfidence String? // "high" | "medium" | "low"
 
   // Klassifisering
@@ -2971,21 +2985,21 @@ model PlanSuggestion {
   id     String @id @default(cuid())
   planId String
 
-  type    SuggestionType
-  payload Json // forslag-detaljer (task-data, ny prio osv.)
+  type     SuggestionType
+  payload  Json // forslag-detaljer (task-data, ny prio osv.)
   evidence Json // TM-data og SG-data som backer forslaget
 
   reason String? // kort menneskelesbar forklaring
 
-  status     SuggestionStatus @default(PENDING)
-  decidedAt  DateTime?
-  decidedById String?
+  status       SuggestionStatus @default(PENDING)
+  decidedAt    DateTime?
+  decidedById  String?
   decisionNote String? // justeringer hvis EDITED
 
   createdAt DateTime @default(now())
 
-  plan TechnicalPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
-  decidedBy User?    @relation("SuggestionDecider", fields: [decidedById], references: [id])
+  plan      TechnicalPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  decidedBy User?         @relation("SuggestionDecider", fields: [decidedById], references: [id])
 
   @@index([planId, status])
   @@index([type, status])
@@ -3013,4 +3027,136 @@ model WebhookFailure {
 
   @@index([status, lastAttemptAt])
   @@map("webhook_failures")
+}
+
+// ─────────────────────────────────────────────────────────────────
+// NOTION SYNC v1.1
+//
+// Per-user OAuth-tilkobling til Notion. Kun ADMIN bruker dette i v1.1.
+// Tasks fra Notion synkes til OppgaveCache hvert 5. min. Coaches uten
+// Notion-konto (f.eks. Markus) ser tasks via tekst-match på navnet sitt
+// i `tildeltNavn`-feltet (server-side filtrering).
+// ─────────────────────────────────────────────────────────────────
+
+enum NotionLinkType {
+  OPPGAVER
+  PROSJEKTER
+}
+
+enum NotionSyncMode {
+  AUTO
+  MANUELL
+  PAUSED
+}
+
+model NotionConnection {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Token kryptert med NOTION_ENCRYPTION_KEY (AES-256-GCM)
+  accessTokenEnc String
+  botId          String?
+  workspaceId    String
+  workspaceName  String
+  workspaceIcon  String?
+
+  lastSyncAt    DateTime?
+  lastSyncError String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  databases NotionDatabaseLink[]
+
+  @@map("notion_connections")
+}
+
+model NotionDatabaseLink {
+  id           String           @id @default(cuid())
+  connectionId String
+  connection   NotionConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  notionDatabaseId   String
+  notionDataSourceId String?
+  navn               String
+  type               NotionLinkType @default(OPPGAVER)
+
+  // Property-mapping (Notion property-navn → våre felter)
+  propTittel    String  @default("Tittel")
+  propStatus    String?
+  propPrioritet String?
+  propSynlighet String?
+  propTildelt   String? // "Eier" som fallback hvis ingen Tildelt-property
+  propForfaller String?
+  propLenke     String?
+  propNotater   String?
+  propProsjekt  String?
+  propSelskap   String?
+
+  syncMode   NotionSyncMode @default(AUTO)
+  lastSyncAt DateTime?
+  pagesCount Int            @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  oppgaver OppgaveCache[]
+
+  @@unique([connectionId, notionDatabaseId])
+  @@map("notion_database_links")
+}
+
+model OppgaveCache {
+  id             String             @id @default(cuid())
+  databaseLinkId String
+  databaseLink   NotionDatabaseLink @relation(fields: [databaseLinkId], references: [id], onDelete: Cascade)
+
+  notionPageId String @unique
+  notionUrl    String
+
+  tittel    String
+  status    String?
+  prioritet String?
+  selskap   String[]  @default([])
+  forfaller DateTime?
+  notater   String?
+  lenke     String?
+
+  // Tekst-array — brukes for server-side filtrering for coaches uten Notion-konto
+  tildeltNavn String[] @default([])
+
+  // Notion page-IDer (resolved til ProsjektCache.notionPageId)
+  prosjektIds String[] @default([])
+
+  notionLastEdited DateTime
+  syncedAt         DateTime @default(now())
+
+  @@index([databaseLinkId])
+  @@index([notionLastEdited])
+  @@map("oppgave_cache")
+}
+
+model ProsjektCache {
+  id           String @id @default(cuid())
+  connectionId String
+
+  notionPageId String @unique
+  notionUrl    String
+
+  navn        String
+  beskrivelse String?
+  status      String?
+  selskap     String[] @default([])
+
+  // Aggregert telling fra OppgaveCache
+  oppgaverOpen  Int @default(0)
+  oppgaverDoing Int @default(0)
+  oppgaverDone  Int @default(0)
+
+  notionLastEdited DateTime
+  syncedAt         DateTime @default(now())
+
+  @@index([connectionId])
+  @@map("prosjekt_cache")
 }

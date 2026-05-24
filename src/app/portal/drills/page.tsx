@@ -168,6 +168,15 @@ export default async function DrillsLibraryPage() {
       coachAnbefalt: coachAnbefaltIds.has(d.id),
       ganger: gangerPerDrill.get(d.id) ?? 0,
       csForMeg,
+      utstyr: d.utstyr,
+      intensitet: d.intensitet,
+      lPhases: d.lPhases,
+      tags: d.tags,
+      coachNotes: d.coachNotes,
+      defaultSets: d.defaultSets,
+      defaultReps: d.defaultReps,
+      treningstype: d.treningstype,
+      prerequisites: d.prerequisites,
     };
   });
 
