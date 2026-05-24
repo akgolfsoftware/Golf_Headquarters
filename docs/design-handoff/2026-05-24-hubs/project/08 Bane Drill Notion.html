@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>08 — Bane, Drill, Notion · AK Golf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 88px; }
+  .topbar { padding: 0 24px; gap: 18px; }
+  .topbar-search { flex: 0 1 380px; display: flex; align-items: center; gap: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 7px 12px; color: var(--muted); }
+  .topbar-search svg { width: 14px; height: 14px; }
+  .topbar-search input { flex: 1; border: 0; outline: 0; background: transparent; font-size: 12.5px; color: var(--fg); }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .role-toggle { display: inline-flex; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+  .role-toggle button { padding: 5px 12px; border-radius: 999px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; color: var(--muted); border: 0; background: transparent; }
+  .role-toggle button.active { background: var(--primary); color: var(--accent); }
+  .tb-av { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 12px; font-weight: 700; }
+
+  .screen-strip { background: var(--primary); color: var(--accent); padding: 9px 32px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; display: flex; justify-content: space-between; }
+  .screen-strip .right { color: rgba(209,248,67,0.65); }
+  .screen { padding: 22px 32px 40px; display: flex; flex-direction: column; gap: 18px; }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .hero > div:first-child { min-width: 0; flex: 1 1 480px; }
+  .hero h1 { font-family: var(--font-display); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; text-wrap: balance; margin-top: 4px; }
+  .hero h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+  .hero .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 999px; font-size: 12.5px; font-weight: 600; border: 0; cursor: pointer; }
+  .btn svg { width: 14px; height: 14px; }
+  .btn.lime { background: var(--accent); color: var(--fg); }
+  .btn.forest { background: var(--primary); color: var(--accent); }
+  .btn.outline { background: #fff; color: var(--fg); border: 1px solid var(--border); }
+  .btn.sm { padding: 6px 12px; font-size: 11.5px; }
+  .btn.xs { padding: 4px 10px; font-size: 10.5px; }
+
+  .pill { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px; font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .pill.lime { background: var(--accent); color: var(--fg); }
+  .pill.forest { background: var(--primary); color: var(--accent); }
+  .pill.outline { background: #fff; color: var(--fg); border: 1px solid var(--border); }
+  .pill.disc-tek { background: rgba(0,88,64,0.13); color: var(--tek); }
+  .pill.disc-slag { background: rgba(44,125,82,0.16); color: var(--slag); }
+  .pill.disc-fys { background: rgba(26,77,46,0.15); color: var(--fys); }
+  .pill.disc-spill { background: rgba(136,180,90,0.25); color: #4D7A2E; }
+  .pill.disc-turn { background: rgba(209,248,67,0.40); color: #4A5418; }
+  .pill.warn { background: rgba(184,133,42,0.20); color: var(--warning); }
+  .pill.danger { background: rgba(163,45,45,0.15); color: var(--danger); }
+  .pill.ok { background: rgba(44,125,82,0.18); color: var(--success); }
+  .pill.cat-coach { background: rgba(0,88,64,0.13); color: var(--tek); }
+  .pill.cat-anlegg { background: rgba(184,133,42,0.20); color: var(--warning); }
+  .pill.cat-mark { background: rgba(209,248,67,0.40); color: #4A5418; }
+  .pill.cat-prod { background: rgba(44,125,82,0.18); color: var(--success); }
+  .pill.cat-drift { background: rgba(94,92,87,0.20); color: var(--muted); }
+
+  .filter-bar { display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
+  .filter-grp { display: flex; gap: 4px; align-items: center; }
+  .filter-grp .lbl { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.10em; margin-right: 6px; font-weight: 700; }
+  .seg { display: inline-flex; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
+  .seg button { padding: 5px 11px; border-radius: 7px; border: 0; background: transparent; font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; color: var(--muted); }
+  .seg button.active { background: #fff; color: var(--fg); }
+  .chip-pill { padding: 5px 11px; border-radius: 999px; background: #fff; border: 1px solid var(--border); font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; color: var(--muted); cursor: pointer; }
+  .chip-pill.on { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+
+  /* Bane-grid */
+  .bane-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .bane-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; cursor: pointer; }
+  .bane-card:hover { border-color: var(--muted-soft); }
+  .bane-hero { height: 150px; background: linear-gradient(135deg, #003A2A 0%, #006C50 100%); position: relative; padding: 14px 18px; display: flex; flex-direction: column; justify-content: space-between; color: #fff; }
+  .bane-hero svg.course { position: absolute; right: -20px; bottom: -20px; opacity: 0.30; }
+  .bane-hero .badge { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.10em; background: var(--accent); color: var(--fg); padding: 3px 9px; border-radius: 999px; align-self: flex-start; text-transform: uppercase; }
+  .bane-hero .nm { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .bane-hero .sub { font-family: var(--font-mono); font-size: 10.5px; opacity: 0.8; margin-top: 4px; letter-spacing: 0.04em; }
+  .bane-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 8px; }
+  .bane-disc-row { display: flex; gap: 6px; }
+  .bane-sg { font-family: var(--font-mono); font-size: 11.5px; color: var(--fg); }
+  .bane-sg strong { font-weight: 700; }
+  .bane-sg .sub { color: var(--muted); }
+  .bane-foot { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid var(--border-soft); margin-top: 4px; }
+  .bane-foot .meta { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.04em; }
+
+  /* Bane-detalj */
+  .bane-detail-top { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .bdt-card { padding: 18px 20px; border-radius: 14px; }
+  .bdt-card.cream { background: var(--bg); border: 1px solid var(--border); }
+  .bdt-card.forest { background: linear-gradient(160deg, #006C50, #003A2A); color: #fff; }
+  .bdt-card.forest .lbl { color: rgba(209,248,67,0.7); }
+  .bdt-card.lime { background: rgba(209,248,67,0.20); border: 1px solid rgba(209,248,67,0.55); }
+  .bdt-card .lbl { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .bdt-card .val { font-family: var(--font-mono); font-size: 16px; font-weight: 700; margin-top: 6px; }
+  .bdt-card .big { font-family: var(--font-mono); font-size: 28px; font-weight: 800; letter-spacing: -0.01em; margin-top: 6px; }
+  .bdt-card.forest .big { color: var(--accent); }
+  .bdt-card .row { display: flex; gap: 14px; margin-top: 8px; font-family: var(--font-mono); font-size: 11px; flex-wrap: wrap; }
+  .bdt-card .row span { display: flex; flex-direction: column; gap: 2px; }
+  .bdt-card .row .k { color: var(--muted); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .bdt-card.forest .row .k { color: rgba(209,248,67,0.65); }
+
+  /* Course map */
+  .course-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+  .course-card-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .course-card-h h3 { font-family: var(--font-display); font-size: 16px; font-weight: 700; }
+  .course-card-h .sub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+  .course-map-grid { display: grid; grid-template-columns: 2.5fr 1fr; gap: 18px; }
+  .map-svg { width: 100%; height: 580px; background: linear-gradient(to bottom, #F4F1E8 0%, #EAE6D8 100%); border-radius: 12px; }
+
+  /* Hull detail panel */
+  .hull-panel { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+  .hull-panel h4 { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .hull-mini-map { background: #fff; border-radius: 10px; padding: 8px; }
+  .hull-sg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-family: var(--font-mono); font-size: 11px; }
+  .hull-sg-row span { display: flex; justify-content: space-between; padding: 6px 8px; background: #fff; border-radius: 6px; }
+  .hull-sg-row .k { color: var(--muted); }
+  .hull-strat { background: #fff; border-left: 3px solid var(--accent); border-radius: 6px; padding: 10px 12px; font-size: 12.5px; line-height: 1.5; }
+  .hull-strat strong { font-family: var(--font-display); font-weight: 700; }
+
+  /* Wind rose */
+  .wind-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; gap: 14px; align-items: center; }
+  .wind-card .copy { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+  .wind-card .copy strong { color: var(--fg); font-weight: 700; }
+
+  /* Drill grid */
+  .drill-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .drill-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; position: relative; }
+  .drill-card.reco { border-color: var(--accent); }
+  .drill-thumb { position: relative; height: 140px; background: linear-gradient(135deg, #003A2A 0%, #006C50 100%); display: flex; align-items: center; justify-content: center; }
+  .drill-thumb .play { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.92); color: var(--primary); display: flex; align-items: center; justify-content: center; }
+  .drill-thumb .play svg { width: 24px; height: 24px; }
+  .drill-thumb .dur { position: absolute; bottom: 10px; left: 10px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; background: rgba(10,31,23,0.70); color: #fff; padding: 3px 8px; border-radius: 4px; }
+  .drill-thumb .disc { position: absolute; bottom: 10px; right: 10px; }
+  .drill-card .reco-badge { position: absolute; top: 10px; right: 10px; background: var(--accent); color: var(--fg); font-family: var(--font-mono); font-size: 9.5px; font-weight: 800; letter-spacing: 0.10em; padding: 4px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; }
+  .reco-badge svg { width: 11px; height: 11px; }
+  .drill-body { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .drill-body h3 { font-family: var(--font-display); font-size: 15px; font-weight: 700; line-height: 1.2; }
+  .drill-body .meta { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.04em; }
+  .drill-body .stars { display: flex; gap: 2px; }
+  .drill-body .stars svg { width: 11px; height: 11px; }
+  .drill-body .stars .on { fill: var(--accent); color: var(--primary); }
+  .drill-body .stars .off { fill: none; color: var(--border); }
+  .drill-body .desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .drill-foot { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px 12px; border-top: 1px solid var(--border-soft); margin-top: 4px; }
+  .drill-foot .meta { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+
+  /* Anbefalt strip */
+  .reco-strip { background: rgba(209,248,67,0.16); border: 1px solid rgba(209,248,67,0.55); border-radius: 14px; padding: 14px 18px; }
+  .reco-strip .head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.10em; color: var(--primary); }
+  .reco-strip .head svg { width: 14px; height: 14px; }
+  .reco-mini-grid { display: flex; gap: 12px; overflow-x: auto; }
+  .reco-mini { flex: 0 0 240px; display: flex; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; align-items: center; }
+  .reco-mini .thumb { width: 56px; height: 40px; background: linear-gradient(135deg, #003A2A, #006C50); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
+  .reco-mini .body .ttl { font-family: var(--font-display); font-size: 12.5px; font-weight: 700; line-height: 1.2; }
+  .reco-mini .body .sub { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); margin-top: 2px; }
+
+  /* Kanban */
+  .kanban-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .kanban-col { display: flex; flex-direction: column; gap: 8px; padding: 10px; border-radius: 14px; min-height: 480px; }
+  .kanban-col.backlog { background: rgba(94,92,87,0.06); }
+  .kanban-col.gang { background: rgba(209,248,67,0.10); }
+  .kanban-col.review { background: rgba(0,88,64,0.05); }
+  .kanban-col.ferdig { background: rgba(94,92,87,0.10); }
+  .kanban-col h3 { font-family: var(--font-mono); font-size: 10.5px; font-weight: 800; letter-spacing: 0.12em; color: var(--fg); padding: 6px 8px 10px; display: flex; gap: 8px; align-items: center; text-transform: uppercase; }
+  .kanban-col h3 .ct { background: var(--accent); color: var(--fg); padding: 1px 7px; border-radius: 999px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; }
+  .kanban-col.backlog h3 .ct { background: rgba(94,92,87,0.30); color: var(--fg); }
+  .kanban-col.review h3 .ct { background: var(--primary); color: var(--accent); }
+
+  .kanban-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; cursor: grab; }
+  .kanban-card:hover { border-left: 3px solid var(--accent); padding-left: 10px; }
+  .kanban-card .grip { color: var(--muted-soft); cursor: grab; }
+  .kanban-card .top { display: flex; align-items: center; gap: 6px; }
+  .kanban-card h4 { font-family: var(--font-display); font-size: 13px; font-weight: 700; line-height: 1.3; }
+  .kanban-card .tags { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.04em; }
+  .kanban-card .foot { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+  .kanban-card .av-init { width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 9px; font-weight: 700; }
+  .kanban-card .prog-bar { height: 4px; background: var(--bg); border-radius: 999px; overflow: hidden; }
+  .kanban-card .prog-bar > div { height: 100%; background: linear-gradient(90deg, var(--accent), var(--primary)); }
+  .kanban-card .review-status { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); padding: 4px 8px; background: var(--bg); border-radius: 6px; }
+
+  /* Table */
+  .table-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border-soft); font-size: 12.5px; vertical-align: middle; }
+  th { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase; font-weight: 700; background: var(--bg); }
+  td.mono { font-family: var(--font-mono); font-size: 11.5px; }
+  tr.overdue { border-left: 3px solid var(--danger); }
+  tr.overdue td.due { color: var(--danger); font-weight: 700; }
+  tr.done td:nth-child(2) { color: var(--muted); text-decoration: line-through; }
+  td.cb input { accent-color: var(--primary); width: 14px; height: 14px; }
+
+  .sticky-footer { display: grid; grid-template-columns: auto 1fr auto; gap: 24px; padding: 0 32px; align-items: center; }
+  .ft-status { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: center; }
+  .ft-status strong { color: var(--fg); font-weight: 700; }
+
+  .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat-mini { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+  .stat-mini .lbl { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+  .stat-mini .val { font-family: var(--font-mono); font-size: 18px; font-weight: 800; margin-top: 4px; }
+
+  .sec-h { display: flex; justify-content: space-between; align-items: baseline; }
+  .sec-h h2 { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .sec-h .sub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+
+  .mode-bar { display: flex; gap: 4px; border-bottom: 1px solid var(--border); padding: 0 32px; background: var(--card); position: sticky; top: 56px; z-index: 28; }
+  .mode-tab { padding: 14px 16px; border: 0; background: transparent; font-family: var(--font-display); font-size: 13.5px; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .mode-tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+
+  .ai-strip { display: flex; align-items: flex-start; gap: 12px; padding: 14px 18px; background: rgba(209,248,67,0.16); border: 1px solid rgba(209,248,67,0.55); border-radius: 14px; }
+  .ai-strip .ic { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); color: var(--fg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ai-strip .ic svg { width: 16px; height: 16px; }
+  .ai-strip .body { flex: 1; font-size: 13px; line-height: 1.5; }
+  .ai-strip .body strong { font-family: var(--font-display); font-weight: 700; }
+</style>
+</head>
+<body data-screen-label="08 Bane Drill Notion">
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img class="brand-logo" src="assets/logo-primary-on-dark.svg" alt="AK Golf">
+      <div class="name">AK GOLF</div>
+      <div class="meta">PLAYERHQ · PRO</div>
+    </div>
+    <div class="sidebar-profile">
+      <div class="avatar" style="background:var(--accent);color:var(--primary);">MR</div>
+      <div>
+        <div class="nm">Markus R.P.</div>
+        <div class="hcp">A1 · HCP +3,5</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">HJEM</div>
+      <button class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 12 12 3l9 9M5 10v10h14V10"/></svg>Dashbord</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">TRENING</div>
+      <button class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Plan</button>
+      <button class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"/></svg>Baner<span class="badge-count">24</span></button>
+      <button class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polygon points="5 3 19 12 5 21 5 3"/></svg>Drills<span class="badge-count">142</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">VERKTØY</div>
+      <button class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 3h18v18H3z"/></svg>Notion</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input placeholder="Søk eller hopp til...">
+      </div>
+      <div class="breadcrumb">Trening / <span class="current">Baner</span></div>
+      <div class="topbar-right">
+        <div class="role-toggle"><button class="active">SPILLER</button><button>COACH</button></div>
+        <div class="tb-av">MR</div>
+      </div>
+    </div>
+
+    <div class="mode-bar">
+      <button class="mode-tab active">Bane-bibliotek</button>
+      <button class="mode-tab">Bane-detalj</button>
+      <button class="mode-tab">Drill-bibliotek</button>
+      <button class="mode-tab">Notion · Prosjekter</button>
+      <button class="mode-tab">Notion · Oppgaver</button>
+    </div>
+
+    <!-- ====== SKJERM 1 — BANE-BIBLIOTEK ====== -->
+    <div class="screen-strip"><span>SKJERM 1 / 5 · /portal/mal/baner · BANE-BIBLIOTEK</span><span class="right">24 BANER · 8 SPILT 2026 · HJEMMEBANE GFGK</span></div>
+    <div class="screen">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">BANE-BIBLIOTEK · 24 BANER · 8 SPILT 2026 · HJEMMEBANE GFGK</div>
+          <h1>Mine <em>baner</em> — kunnskap, kart og strategi</h1>
+        </div>
+        <div class="actions">
+          <button class="btn outline">Sortering</button>
+          <button class="btn outline">Filtre</button>
+          <button class="btn forest">Importer fra GolfBox</button>
+          <button class="btn lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Legg til bane</button>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-grp"><span class="lbl">STATUS</span><div class="seg"><button class="active">ALLE</button><button>SPILT 2026</button><button>KOMMENDE TURN.</button><button>HJEMMEBANE</button></div></div>
+        <div class="filter-grp"><span class="lbl">REGION</span><span class="chip-pill on">ALLE</span><span class="chip-pill">ØSTLAND</span><span class="chip-pill">SØRLAND</span><span class="chip-pill">VESTLAND</span><span class="chip-pill">TRØND.</span></div>
+        <div class="filter-grp"><span class="lbl">TYPE</span><span class="chip-pill on">ALLE</span><span class="chip-pill">PARKLAND</span><span class="chip-pill">LINKS</span><span class="chip-pill">HEATH</span></div>
+      </div>
+
+      <div class="bane-grid">
+        <div class="bane-card">
+          <div class="bane-hero">
+            <span class="badge">HJEMMEBANE</span>
+            <div><div class="nm">Gamle Fredrikstad GK</div><div class="sub">Fredrikstad · Parkland · par 72 · 6 280m</div></div>
+            <svg class="course" width="180" height="120" viewBox="0 0 180 120"><path d="M10 80 Q40 30 80 50 T160 30" stroke="#D1F843" stroke-width="3" fill="none"/><circle cx="160" cy="30" r="6" fill="#D1F843"/></svg>
+          </div>
+          <div class="bane-body">
+            <div class="bane-disc-row"><span class="pill disc-tek">TEK</span><span class="pill disc-slag">SLAG</span><span class="pill disc-spill">SPILL</span></div>
+            <div class="bane-sg"><strong>SG-Total +1,4</strong> · 47 runder · <span class="sub">snitt 71,3</span></div>
+            <div class="bane-foot"><div class="meta">Sist spilt: 20. mai 2026</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Åpne</button><button class="btn forest xs">Strategi</button></div></div>
+          </div>
+        </div>
+
+        <div class="bane-card">
+          <div class="bane-hero" style="background:linear-gradient(135deg,#005840,#003A2A);">
+            <span class="badge" style="background:var(--card);color:var(--primary);">SØRLANDSÅPENT 16. JUNI</span>
+            <div><div class="nm">Mandalkrysset GK</div><div class="sub">Mandal · Parkland · par 71 · 6 423m</div></div>
+            <svg class="course" width="180" height="120" viewBox="0 0 180 120"><path d="M5 90 Q60 40 100 70 T170 20" stroke="#D1F843" stroke-width="3" fill="none"/><circle cx="170" cy="20" r="6" fill="#D1F843"/></svg>
+          </div>
+          <div class="bane-body">
+            <div class="bane-disc-row"><span class="pill disc-tek">TEK</span><span class="pill disc-spill">SPILL</span><span class="pill disc-turn">TURN</span></div>
+            <div class="bane-sg"><strong>SG-Total +0,8</strong> · 3 runder · <span class="sub">best 68 (−3)</span></div>
+            <div class="bane-foot"><div class="meta">Kommende: Sørlandsåpent · 21 dager</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Åpne</button><button class="btn lime xs">Strategi</button></div></div>
+          </div>
+        </div>
+
+        <div class="bane-card">
+          <div class="bane-hero">
+            <span class="badge" style="background:var(--card);color:var(--primary);">NM SLAG 22. JULI</span>
+            <div><div class="nm">Bærum GK</div><div class="sub">Bærum · Parkland · par 72 · 6 410m</div></div>
+            <svg class="course" width="180" height="120" viewBox="0 0 180 120"><path d="M10 60 Q70 90 120 60 T170 40" stroke="#D1F843" stroke-width="3" fill="none"/><circle cx="170" cy="40" r="6" fill="#D1F843"/></svg>
+          </div>
+          <div class="bane-body">
+            <div class="bane-disc-row"><span class="pill disc-tek">TEK</span><span class="pill disc-slag">SLAG</span></div>
+            <div class="bane-sg"><strong>SG-Total −0,2</strong> · 2 runder · <span class="sub">snitt 73,5</span></div>
+            <div class="bane-foot"><div class="meta">Sist spilt: 18. aug 2025</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Åpne</button><button class="btn forest xs">Strategi</button></div></div>
+          </div>
+        </div>
+
+        <div class="bane-card">
+          <div class="bane-hero">
+            <div><div class="nm">Borre GK</div><div class="sub">Horten · Links · par 70 · 5 950m</div></div>
+            <svg class="course" width="180" height="120" viewBox="0 0 180 120"><path d="M10 50 Q90 20 150 60" stroke="#D1F843" stroke-width="3" fill="none"/></svg>
+          </div>
+          <div class="bane-body">
+            <div class="bane-disc-row"><span class="pill disc-slag">SLAG</span><span class="pill disc-spill">SPILL</span></div>
+            <div class="bane-sg"><strong>SG-Total +0,5</strong> · 4 runder</div>
+            <div class="bane-foot"><div class="meta">Srixon Tour stop · 12. mai</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Åpne</button><button class="btn forest xs">Strategi</button></div></div>
+          </div>
+        </div>
+
+        <div class="bane-card">
+          <div class="bane-hero">
+            <div><div class="nm">Bossum GK</div><div class="sub">Asker · Parkland · par 70 · 5 870m</div></div>
+            <svg class="course" width="180" height="120" viewBox="0 0 180 120"><path d="M10 40 Q60 80 120 50 T170 30" stroke="#D1F843" stroke-width="3" fill="none"/></svg>
+          </div>
+          <div class="bane-body">
+            <div class="bane-disc-row"><span class="pill disc-tek">TEK</span></div>
+            <div class="bane-sg"><strong>SG-Total +0,3</strong> · 2 runder</div>
+            <div class="bane-foot"><div class="meta">Sist spilt: 28. mar 2026</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Åpne</button><button class="btn forest xs">Strategi</button></div></div>
+          </div>
+        </div>
+
+        <div class="bane-card">
+          <div class="bane-hero">
+            <div><div class="nm">Onsoy GK</div><div class="sub">Fredrikstad · Parkland · par 71 · 6 100m</div></div>
+            <svg class="course" width="180" height="120" viewBox="0 0 180 120"><path d="M10 80 Q80 30 150 70" stroke="#D1F843" stroke-width="3" fill="none"/></svg>
+          </div>
+          <div class="bane-body">
+            <div class="bane-disc-row"><span class="pill disc-tek">TEK</span><span class="pill disc-slag">SLAG</span></div>
+            <div class="bane-sg"><strong>SG-Total +1,1</strong> · 6 runder</div>
+            <div class="bane-foot"><div class="meta">Sist spilt: 14. mai 2026</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Åpne</button><button class="btn forest xs">Strategi</button></div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;"><button class="btn outline sm">Vis 18 baner til</button></div>
+    </div>
+
+    <!-- ====== SKJERM 2 — BANE-DETALJ (Mandalkrysset) ====== -->
+    <div class="screen-strip"><span>SKJERM 2 / 5 · /portal/mal/baner/mandalkrysset · BANE-DETALJ</span><span class="right">MANDALKRYSSET GK · SØRLANDSÅPENT 21 DAGER</span></div>
+    <div class="screen">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">MANDALKRYSSET GK · MANDAL · PARKLAND · PAR 71</div>
+          <h1>Mandalkrysset <em>course strategy</em> for Sørlandsåpent</h1>
+        </div>
+        <div class="actions">
+          <button class="btn outline">Tilbake til bibliotek</button>
+          <button class="btn outline">Del med coach</button>
+          <button class="btn outline">Print baneguide</button>
+          <button class="btn lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Notat</button>
+        </div>
+      </div>
+
+      <div class="bane-detail-top">
+        <div class="bdt-card cream">
+          <div class="lbl">Bane-meta</div>
+          <div class="val">par 71 · 6 423m · 18 hull</div>
+          <div class="row">
+            <span><div class="k">Stimp</div>11+</span>
+            <span><div class="k">Greens</div>A1 bent</span>
+            <span><div class="k">Etablert</div>1978</span>
+          </div>
+        </div>
+        <div class="bdt-card forest">
+          <div class="lbl">Min historikk</div>
+          <div class="big">3 runder · +0,8</div>
+          <div class="row">
+            <span><div class="k">Best</div>68 (−3)</span>
+            <span><div class="k">Snitt</div>71,3</span>
+            <span><div class="k">SG-Total</div>+0,8</span>
+          </div>
+        </div>
+        <div class="bdt-card lime">
+          <div class="lbl">Kommende</div>
+          <div class="big">Sørlandsåpent</div>
+          <div class="row">
+            <span><div class="k">Dato</div>16. juni 2026</span>
+            <span><div class="k">Dager</div>21</span>
+            <span><div class="k">Forberedt</div>78%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-card-h"><h3>Top-down bane-kart — Mandalkrysset GK</h3><div class="sub">Klikk hull for detaljer · vis hull 4 (nøkkelhull)</div></div>
+        <div class="course-map-grid">
+          <svg class="map-svg" viewBox="0 0 700 580">
+            <!-- bg ground -->
+            <rect width="700" height="580" fill="#E8E2C8"/>
+            <!-- trees scatter -->
+            <g fill="#1A4D2E" opacity="0.30">
+              <circle cx="40" cy="40" r="12"/><circle cx="80" cy="20" r="10"/><circle cx="660" cy="50" r="14"/><circle cx="620" cy="20" r="10"/><circle cx="40" cy="540" r="11"/><circle cx="680" cy="540" r="14"/><circle cx="350" cy="280" r="9"/><circle cx="180" cy="400" r="11"/>
+            </g>
+            <!-- water hazards hull 7 + 14 -->
+            <path d="M 270 230 Q 320 220 340 250 Q 330 280 280 270 Z" fill="#2A6FDB" opacity="0.50"/>
+            <path d="M 450 380 Q 500 370 510 410 Q 480 430 440 415 Z" fill="#2A6FDB" opacity="0.50"/>
+            <!-- 18 fairways (simplified shapes) -->
+            <g fill="#88B45A" opacity="0.50" stroke="#1A4D2E" stroke-width="1">
+              <path d="M 60 60 Q 130 70 200 90 L 210 100 Q 140 90 60 80 Z"/>
+              <path d="M 240 80 Q 310 100 360 120 L 365 130 Q 310 115 240 95 Z"/>
+              <path d="M 400 100 Q 470 130 530 160 L 535 170 Q 470 145 400 115 Z"/>
+              <!-- hull 4 highlight (key) -->
+              <path d="M 560 130 Q 620 170 660 220 L 660 240 Q 610 195 555 145 Z" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+              <path d="M 590 270 Q 620 320 600 370 L 580 365 Q 595 320 575 280 Z"/>
+              <path d="M 540 380 Q 470 410 410 430 L 405 420 Q 470 400 540 370 Z"/>
+              <path d="M 380 440 Q 320 470 270 480 L 265 470 Q 320 460 375 430 Z"/>
+              <path d="M 240 490 Q 180 510 130 510 L 130 500 Q 180 500 235 480 Z"/>
+              <path d="M 80 470 Q 90 410 100 360 L 110 360 Q 100 410 90 470 Z"/>
+              <path d="M 120 340 Q 145 290 180 250 L 188 256 Q 150 295 130 340 Z"/>
+              <path d="M 200 230 Q 240 200 280 180 L 285 188 Q 240 207 205 235 Z"/>
+              <path d="M 310 170 Q 280 220 270 280 L 260 280 Q 270 220 300 170 Z"/>
+              <path d="M 250 290 Q 280 340 290 390 L 280 393 Q 270 340 240 295 Z"/>
+              <path d="M 305 405 Q 360 380 400 360 L 405 365 Q 365 387 310 410 Z"/>
+              <path d="M 420 340 Q 470 320 510 280 L 514 286 Q 475 327 425 345 Z"/>
+              <path d="M 530 270 Q 510 220 480 190 L 488 184 Q 515 215 540 268 Z"/>
+              <path d="M 470 170 Q 410 160 360 160 L 360 150 Q 410 150 470 160 Z"/>
+              <path d="M 340 145 Q 290 130 240 130 L 240 122 Q 290 122 343 137 Z"/>
+            </g>
+            <!-- bunkers -->
+            <g fill="#F4ECC4" stroke="#C8B72A" stroke-width="0.5">
+              <ellipse cx="130" cy="75" rx="8" ry="4"/><ellipse cx="270" cy="105" rx="9" ry="4"/><ellipse cx="430" cy="125" rx="9" ry="4"/><ellipse cx="610" cy="200" rx="11" ry="5"/><ellipse cx="630" cy="240" rx="8" ry="4"/><ellipse cx="585" cy="335" rx="9" ry="4"/><ellipse cx="500" cy="395" rx="11" ry="5"/><ellipse cx="320" cy="465" rx="9" ry="4"/><ellipse cx="160" cy="500" rx="8" ry="4"/><ellipse cx="100" cy="430" rx="7" ry="4"/><ellipse cx="155" cy="310" rx="9" ry="4"/><ellipse cx="245" cy="210" rx="9" ry="4"/><ellipse cx="295" cy="230" rx="8" ry="4"/><ellipse cx="380" cy="375" rx="9" ry="5"/><ellipse cx="460" cy="305" rx="9" ry="4"/><ellipse cx="510" cy="245" rx="8" ry="4"/><ellipse cx="445" cy="178" rx="9" ry="4"/>
+            </g>
+            <!-- greens -->
+            <g fill="#D1F843" stroke="#005840" stroke-width="1.5">
+              <ellipse cx="210" cy="100" rx="14" ry="8"/>
+              <ellipse cx="365" cy="130" rx="14" ry="8"/>
+              <ellipse cx="535" cy="170" rx="14" ry="8"/>
+              <ellipse cx="660" cy="240" rx="16" ry="10" stroke-width="3"/>
+              <ellipse cx="580" cy="365" rx="14" ry="8"/>
+              <ellipse cx="405" cy="420" rx="14" ry="8"/>
+              <ellipse cx="265" cy="470" rx="14" ry="8"/>
+              <ellipse cx="130" cy="500" rx="14" ry="8"/>
+              <ellipse cx="110" cy="360" rx="14" ry="8"/>
+              <ellipse cx="188" cy="256" rx="14" ry="8"/>
+              <ellipse cx="285" cy="188" rx="14" ry="8"/>
+              <ellipse cx="270" cy="280" rx="14" ry="8"/>
+              <ellipse cx="280" cy="393" rx="14" ry="8"/>
+              <ellipse cx="405" cy="365" rx="14" ry="8"/>
+              <ellipse cx="514" cy="286" rx="14" ry="8"/>
+              <ellipse cx="488" cy="184" rx="14" ry="8"/>
+              <ellipse cx="360" cy="150" rx="14" ry="8"/>
+              <ellipse cx="240" cy="122" rx="14" ry="8"/>
+            </g>
+            <!-- tees + numbers -->
+            <g font-family="JetBrains Mono" font-size="11" font-weight="800" fill="#fff">
+              <g fill="#005840"><rect x="55" y="55" width="10" height="10"/><rect x="235" y="75" width="10" height="10"/><rect x="395" y="95" width="10" height="10"/><rect x="555" y="125" width="10" height="10" stroke="#D1F843" stroke-width="2"/><rect x="585" y="265" width="10" height="10"/><rect x="535" y="375" width="10" height="10"/><rect x="375" y="435" width="10" height="10"/><rect x="235" y="485" width="10" height="10"/><rect x="75" y="465" width="10" height="10"/><rect x="115" y="335" width="10" height="10"/><rect x="195" y="225" width="10" height="10"/><rect x="305" y="165" width="10" height="10"/><rect x="245" y="285" width="10" height="10"/><rect x="300" y="400" width="10" height="10"/><rect x="415" y="335" width="10" height="10"/><rect x="525" y="265" width="10" height="10"/><rect x="465" y="165" width="10" height="10"/><rect x="335" y="140" width="10" height="10"/></g>
+              <!-- hull number circles -->
+              <g><circle cx="100" cy="80" r="13" fill="#005840"/><text x="100" y="84" text-anchor="middle">1</text></g>
+              <g><circle cx="290" cy="100" r="13" fill="#005840"/><text x="290" y="104" text-anchor="middle">2</text></g>
+              <g><circle cx="450" cy="125" r="13" fill="#005840"/><text x="450" y="129" text-anchor="middle">3</text></g>
+              <g><circle cx="600" cy="180" r="15" fill="#D1F843" stroke="#005840" stroke-width="2"/><text x="600" y="184" text-anchor="middle" fill="#0A1F17">4</text></g>
+              <g><circle cx="595" cy="315" r="13" fill="#005840"/><text x="595" y="319" text-anchor="middle">5</text></g>
+              <g><circle cx="485" cy="395" r="13" fill="#005840"/><text x="485" y="399" text-anchor="middle">6</text></g>
+              <g><circle cx="340" cy="450" r="13" fill="#005840"/><text x="340" y="454" text-anchor="middle">7</text></g>
+              <g><circle cx="180" cy="495" r="13" fill="#005840"/><text x="180" y="499" text-anchor="middle">8</text></g>
+              <g><circle cx="90" cy="420" r="13" fill="#005840"/><text x="90" y="424" text-anchor="middle">9</text></g>
+              <g><circle cx="145" cy="300" r="13" fill="#005840"/><text x="145" y="304" text-anchor="middle">10</text></g>
+              <g><circle cx="240" cy="220" r="15" fill="#D1F843" stroke="#005840" stroke-width="2"/><text x="240" y="224" text-anchor="middle" fill="#0A1F17">11</text></g>
+              <g><circle cx="290" cy="225" r="13" fill="#005840"/><text x="290" y="229" text-anchor="middle">12</text></g>
+              <g><circle cx="260" cy="335" r="13" fill="#005840"/><text x="260" y="339" text-anchor="middle">13</text></g>
+              <g><circle cx="355" cy="385" r="13" fill="#005840"/><text x="355" y="389" text-anchor="middle">14</text></g>
+              <g><circle cx="460" cy="320" r="13" fill="#005840"/><text x="460" y="324" text-anchor="middle">15</text></g>
+              <g><circle cx="510" cy="225" r="13" fill="#005840"/><text x="510" y="229" text-anchor="middle">16</text></g>
+              <g><circle cx="420" cy="170" r="15" fill="#D1F843" stroke="#005840" stroke-width="2"/><text x="420" y="174" text-anchor="middle" fill="#0A1F17">17</text></g>
+              <g><circle cx="295" cy="135" r="13" fill="#005840"/><text x="295" y="139" text-anchor="middle">18</text></g>
+            </g>
+            <!-- wind rose bottom-left -->
+            <g transform="translate(40 510)">
+              <circle r="30" fill="#fff" stroke="#005840" stroke-width="1"/>
+              <text y="-32" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#005840" font-weight="700">N</text>
+              <line x1="0" y1="-26" x2="0" y2="26" stroke="#E5E3DD"/>
+              <line x1="-26" y1="0" x2="26" y2="0" stroke="#E5E3DD"/>
+              <polygon points="0,16 -5,0 5,0" fill="#D1F843" stroke="#005840" stroke-width="1" transform="rotate(150)"/>
+              <text y="40" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#005840">SSØ 4-6 m/s</text>
+            </g>
+            <!-- north arrow -->
+            <g transform="translate(660 510)">
+              <polygon points="0,-20 -8,8 0,4 8,8" fill="#005840"/>
+              <text y="-28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" font-weight="800" fill="#005840">N</text>
+            </g>
+          </svg>
+
+          <div class="hull-panel">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;">
+              <h4>Hull 4 — par 4 · 412m</h4>
+              <span class="pill lime">NØKKELHULL</span>
+            </div>
+            <div class="hull-mini-map">
+              <svg viewBox="0 0 240 100" style="width:100%;height:80px;">
+                <path d="M10 80 Q80 60 130 70 T230 30" fill="none" stroke="#88B45A" stroke-width="20" opacity="0.5"/>
+                <rect x="6" y="78" width="8" height="8" fill="#005840"/>
+                <ellipse cx="230" cy="30" rx="14" ry="8" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+                <ellipse cx="160" cy="50" rx="9" ry="4" fill="#F4ECC4" stroke="#C8B72A"/>
+                <ellipse cx="200" cy="20" rx="7" ry="3" fill="#F4ECC4" stroke="#C8B72A"/>
+                <text x="6" y="98" font-family="JetBrains Mono" font-size="9" fill="#005840" font-weight="700">TEE</text>
+                <text x="220" y="20" font-family="JetBrains Mono" font-size="9" fill="#005840" font-weight="700">G</text>
+              </svg>
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.10em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">Min historikk · 3 forsøk</div>
+              <div style="display:flex;gap:6px;"><span class="pill ok">PAR</span><span class="pill lime">BIRDIE</span><span class="pill warn">BOGEY</span></div>
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.10em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">SG per hull</div>
+              <div class="hull-sg-row">
+                <span><span class="k">SG-OTT</span><strong style="color:var(--danger);">−0,2</strong></span>
+                <span><span class="k">SG-APP</span><strong style="color:var(--success);">+0,4</strong></span>
+                <span><span class="k">SG-ARG</span><strong>E</strong></span>
+                <span><span class="k">SG-PUTT</span><strong style="color:var(--success);">+0,1</strong></span>
+              </div>
+            </div>
+            <div class="hull-strat">
+              <strong>Anders sier:</strong> Driver mot venstre side av fairway — unngå bunker høyre 240m. Approach med 8-jern til midten av greenen. Pinplassering bakre høyre = unngå.
+            </div>
+            <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);padding:8px 10px;background:#fff;border-radius:6px;border-left:3px solid #2A6FDB;"><strong style="color:var(--fg);">Vind-tilpasning:</strong> Med SSØ 4-6 m/s — vurder hybrid fra tee</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-card-h"><h3>Sammenligning forrige runder</h3><div class="sub">3 forsøk · 18 hull</div></div>
+        <table style="font-size:11.5px;">
+          <thead><tr><th class="mono">HULL</th><th class="mono">PAR</th><th class="mono">R1 (16.06.25)</th><th class="mono">R2 (15.06.24)</th><th class="mono">R3 (10.06.23)</th><th class="mono">SNITT</th><th class="mono">SG</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">1</td><td class="mono">4</td><td class="mono">4</td><td class="mono" style="color:var(--success);">3</td><td class="mono">4</td><td class="mono">3,67</td><td class="mono" style="color:var(--success);">+0,3</td></tr>
+            <tr><td class="mono">2</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3,00</td><td class="mono">E</td></tr>
+            <tr><td class="mono">3</td><td class="mono">5</td><td class="mono" style="color:var(--success);">4</td><td class="mono">5</td><td class="mono">5</td><td class="mono">4,67</td><td class="mono" style="color:var(--success);">+0,4</td></tr>
+            <tr style="background:rgba(209,248,67,0.10);"><td class="mono" style="font-weight:800;">4</td><td class="mono">4</td><td class="mono">4</td><td class="mono" style="color:var(--success);">3</td><td class="mono" style="color:var(--danger);">5</td><td class="mono">4,00</td><td class="mono" style="color:var(--success);">+0,3</td></tr>
+            <tr><td class="mono">5</td><td class="mono">4</td><td class="mono">4</td><td class="mono">4</td><td class="mono">4</td><td class="mono">4,00</td><td class="mono">E</td></tr>
+            <tr><td class="mono">6</td><td class="mono">4</td><td class="mono">4</td><td class="mono">4</td><td class="mono">4</td><td class="mono">4,00</td><td class="mono">E</td></tr>
+            <tr style="background:rgba(209,248,67,0.10);"><td class="mono" style="font-weight:800;">11</td><td class="mono">4</td><td class="mono" style="color:var(--danger);">5</td><td class="mono">4</td><td class="mono">4</td><td class="mono">4,33</td><td class="mono" style="color:var(--danger);">−0,2</td></tr>
+            <tr style="background:rgba(209,248,67,0.10);"><td class="mono" style="font-weight:800;">17</td><td class="mono">3</td><td class="mono">3</td><td class="mono" style="color:var(--success);">2</td><td class="mono">3</td><td class="mono">2,67</td><td class="mono" style="color:var(--success);">+0,4</td></tr>
+            <tr style="border-top:2px solid var(--fg);"><td class="mono" style="font-weight:800;">TOT</td><td class="mono">71</td><td class="mono" style="font-weight:800;">68</td><td class="mono" style="font-weight:800;">71</td><td class="mono" style="font-weight:800;">75</td><td class="mono" style="font-weight:800;">71,3</td><td class="mono" style="font-weight:800;color:var(--success);">+0,8</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ai-strip">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m12 3-1.5 4.5L6 9l4.5 1.5L12 15l1.5-4.5L18 9l-4.5-1.5L12 3z"/></svg></div>
+        <div class="body"><strong>Anders sier:</strong> Mandalkrysset er en ærlig parkland-bane. Greenene er små men jevne. Putting under 3m er kritisk — du står typisk for 28-32 putter per runde her. Fokuser på iron-presisjon: hullene 4, 11 og 17 avgjør runden.</div>
+        <div style="display:flex;gap:6px;"><button class="btn outline sm">Senere</button><button class="btn forest sm">Be om bane-spesifikk plan</button></div>
+      </div>
+    </div>
+
+    <!-- ====== SKJERM 3 — DRILL-BIBLIOTEK ====== -->
+    <div class="screen-strip"><span>SKJERM 3 / 5 · /portal/drills · DRILL-BIBLIOTEK</span><span class="right">142 DRILLS · 38 BRUKT · 8 ANBEFALT NÅ</span></div>
+    <div class="screen">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">DRILL-BIBLIOTEK · 142 DRILLS · 38 BRUKT · 8 ANBEFALT NÅ</div>
+          <h1>Mine <em>drills</em> — øvelser, video, progresjon</h1>
+        </div>
+        <div class="actions">
+          <button class="btn outline">Min progresjon</button>
+          <button class="btn outline">Filtre</button>
+          <button class="btn forest">Importer fra coach</button>
+          <button class="btn lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Legg til drill</button>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-grp"><span class="lbl">DISIPLIN</span><span class="chip-pill on">ALLE</span><span class="chip-pill">FYS</span><span class="chip-pill">TEK</span><span class="chip-pill">SLAG</span><span class="chip-pill">SPILL</span><span class="chip-pill">TURN</span></div>
+        <div class="filter-grp"><span class="lbl">VARIGHET</span><div class="seg"><button class="active">ALLE</button><button>&lt;5</button><button>5-15</button><button>15-30</button><button>30+</button></div></div>
+        <div class="filter-grp"><span class="lbl">NIVÅ</span><div class="seg"><button class="active">ALLE</button><button>LETT</button><button>MID</button><button>HARD</button><button>PRO</button></div></div>
+        <div class="filter-grp"><span class="lbl">STATUS</span><div class="seg"><button class="active">ALLE</button><button>ANBEFALT NÅ</button><button>BRUKT SIST</button><button>NY</button></div></div>
+      </div>
+
+      <div class="reco-strip">
+        <div class="head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m12 3-1.5 4.5L6 9l4.5 1.5L12 15l1.5-4.5L18 9l-4.5-1.5L12 3z"/></svg>ANBEFALT FOR SØRLANDSÅPENT · Anders foreslår</div>
+        <div class="reco-mini-grid">
+          <div class="reco-mini"><div class="thumb"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><div class="body"><div class="ttl">Iron-progresjon 5-PW</div><div class="sub">TEK · 8 min</div></div></div>
+          <div class="reco-mini"><div class="thumb"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><div class="body"><div class="ttl">Putting &lt;2,5m</div><div class="sub">SLAG · 12 min</div></div></div>
+          <div class="reco-mini"><div class="thumb"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><div class="body"><div class="ttl">Course mgmt. Mandalkr.</div><div class="sub">SPILL · 25 min</div></div></div>
+          <div class="reco-mini"><div class="thumb"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><div class="body"><div class="ttl">Pressure-putt sim</div><div class="sub">TURN · 15 min</div></div></div>
+          <div class="reco-mini"><div class="thumb"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><div class="body"><div class="ttl">Tempo m/ metronom</div><div class="sub">TEK · 5 min</div></div></div>
+        </div>
+      </div>
+
+      <div class="drill-grid">
+        <div class="drill-card reco">
+          <div class="drill-thumb"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><span class="dur">8 MIN</span><span class="disc"><span class="pill disc-tek">TEK</span></span></div>
+          <div class="reco-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.5 4.5L6 9l4.5 1.5L12 15l1.5-4.5L18 9l-4.5-1.5L12 3z"/></svg>ANBEFALT</div>
+          <div class="drill-body">
+            <h3>Iron-progresjon 5-PW</h3>
+            <div class="meta">TEK · 8 min · MIDDELS · 12 ganger brukt</div>
+            <div class="stars">
+              <svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg>
+              <svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg>
+              <svg viewBox="0 0 24 24" class="off" fill="currentColor" stroke="currentColor" stroke-width="1.75"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg>
+            </div>
+            <div class="desc">Progresjon gjennom hele iron-bag for konsistens og distance gapping.</div>
+          </div>
+          <div class="drill-foot"><div class="meta">Sist: 18. mai</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Detaljer</button><button class="btn lime xs">Start</button></div></div>
+        </div>
+
+        <div class="drill-card reco">
+          <div class="drill-thumb"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><span class="dur">12 MIN</span><span class="disc"><span class="pill disc-slag">SLAG</span></span></div>
+          <div class="reco-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.5 4.5L6 9l4.5 1.5L12 15l1.5-4.5L18 9l-4.5-1.5L12 3z"/></svg>ANBEFALT</div>
+          <div class="drill-body">
+            <h3>Putting &lt;2,5m konsistens</h3>
+            <div class="meta">SLAG · 12 min · MIDDELS · 8 brukt</div>
+            <div class="stars"><svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg><svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg><svg viewBox="0 0 24 24" class="off" fill="currentColor" stroke="currentColor" stroke-width="1.75"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg></div>
+            <div class="desc">30 putter per stasjon fra 1m, 1,5m, 2m, 2,5m. Logg treff per stasjon.</div>
+          </div>
+          <div class="drill-foot"><div class="meta">Sist: 14. mai</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Detaljer</button><button class="btn lime xs">Start</button></div></div>
+        </div>
+
+        <div class="drill-card">
+          <div class="drill-thumb"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><span class="dur">15 MIN</span><span class="disc"><span class="pill disc-slag">SLAG</span></span></div>
+          <div class="drill-body">
+            <h3>Chip-stige</h3>
+            <div class="meta">SLAG · 15 min · LETT · 6 brukt</div>
+            <div class="stars"><svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg><svg viewBox="0 0 24 24" class="off" fill="currentColor" stroke="currentColor" stroke-width="1.75"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg><svg viewBox="0 0 24 24" class="off" fill="currentColor" stroke="currentColor" stroke-width="1.75"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg></div>
+            <div class="desc">Chip-stigen fra 5m til 30m i 5m-trinn. Logg landing-treff og rull.</div>
+          </div>
+          <div class="drill-foot"><div class="meta">Sist: 8. mai</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Detaljer</button><button class="btn lime xs">Start</button></div></div>
+        </div>
+
+        <div class="drill-card">
+          <div class="drill-thumb"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><span class="dur">5 MIN</span><span class="disc"><span class="pill disc-tek">TEK</span></span></div>
+          <div class="drill-body">
+            <h3>Tempo-trening med metronom</h3>
+            <div class="meta">TEK · 5 min · LETT · 18 brukt</div>
+            <div class="stars"><svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg><svg viewBox="0 0 24 24" class="off" fill="currentColor" stroke="currentColor" stroke-width="1.75"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg><svg viewBox="0 0 24 24" class="off" fill="currentColor" stroke="currentColor" stroke-width="1.75"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg></div>
+            <div class="desc">Bruk metronom-app, 75 bpm. Synk swing-tempo til ratio 3:1.</div>
+          </div>
+          <div class="drill-foot"><div class="meta">Sist: 19. mai</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Detaljer</button><button class="btn lime xs">Start</button></div></div>
+        </div>
+
+        <div class="drill-card">
+          <div class="drill-thumb"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><span class="dur">10 MIN</span><span class="disc"><span class="pill disc-slag">SLAG</span></span></div>
+          <div class="drill-body">
+            <h3>Bunkerflukt fra dårlig lie</h3>
+            <div class="meta">SLAG · 10 min · HARD · 3 brukt</div>
+            <div class="stars"><svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg><svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg><svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg></div>
+            <div class="desc">Plugged-lies, oppoverbakke, nedoverbakke fra bunker. 5 slag per posisjon.</div>
+          </div>
+          <div class="drill-foot"><div class="meta">Sist: 2. mai</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Detaljer</button><button class="btn lime xs">Start</button></div></div>
+        </div>
+
+        <div class="drill-card reco">
+          <div class="drill-thumb"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="9 6 19 12 9 18 9 6"/></svg></div><span class="dur">25 MIN</span><span class="disc"><span class="pill disc-spill">SPILL</span></span></div>
+          <div class="reco-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.5 4.5L6 9l4.5 1.5L12 15l1.5-4.5L18 9l-4.5-1.5L12 3z"/></svg>ANBEFALT</div>
+          <div class="drill-body">
+            <h3>Course management Mandalkrysset</h3>
+            <div class="meta">SPILL · 25 min · PRO · 1 brukt</div>
+            <div class="stars"><svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg><svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg><svg viewBox="0 0 24 24" class="on" fill="currentColor"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg></div>
+            <div class="desc">Gjennomgang av nøkkelhull 4, 11, 17 med shot-tree-analyse pr scenario.</div>
+          </div>
+          <div class="drill-foot"><div class="meta">Sist: 10. mai</div><div style="display:flex;gap:4px;"><button class="btn outline xs">Detaljer</button><button class="btn lime xs">Start</button></div></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;"><button class="btn outline sm">Vis 130 drills til</button></div>
+    </div>
+
+    <!-- ====== SKJERM 4 — NOTION PROSJEKTER ====== -->
+    <div class="screen-strip"><span>SKJERM 4 / 5 · /admin/notion/prosjekter · NOTION-PROSJEKT-BOARD</span><span class="right">14 AKTIVE · SISTE SYNC 12:34</span></div>
+    <div class="screen" style="background:#FBFAF5;">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">NOTION · PROSJEKTER · 14 AKTIVE · 6 I REVIEW · SISTE SYNC 12:34</div>
+          <h1>AK Golf <em>prosjekter</em> — Notion-synkronisert</h1>
+        </div>
+        <div class="actions">
+          <button class="btn outline">Filtre</button>
+          <button class="btn outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M15 3h6v6M14 10l7-7M9 21H3v-6M10 14l-7 7"/></svg>Åpne i Notion</button>
+          <button class="btn forest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Sync nå</button>
+          <button class="btn lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nytt prosjekt</button>
+        </div>
+      </div>
+
+      <div class="stat-strip">
+        <div class="stat-mini"><div class="lbl">Aktive prosjekter</div><div class="val">14</div></div>
+        <div class="stat-mini"><div class="lbl">I review</div><div class="val">6</div></div>
+        <div class="stat-mini"><div class="lbl">Åpne oppgaver</div><div class="val">38</div></div>
+        <div class="stat-mini"><div class="lbl">Siste sync</div><div class="val" style="font-size:14px;">12:34 · ALT OK</div></div>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-grp"><span class="lbl">OMRÅDE</span><span class="chip-pill on">ALLE</span><span class="chip-pill">COACHING</span><span class="chip-pill">ANLEGG</span><span class="chip-pill">MARKETING</span><span class="chip-pill">PRODUKT</span><span class="chip-pill">DRIFT</span></div>
+        <div class="filter-grp"><span class="lbl">EIER</span><div class="seg"><button class="active">ALLE</button><button>ANDERS</button><button>ERIK</button><button>MAJA</button><button>DL</button></div></div>
+        <div class="filter-grp"><span class="lbl">TIDSHORISONT</span><div class="seg"><button>UKE</button><button class="active">MÅNED</button><button>KVARTAL</button><button>ÅR</button></div></div>
+      </div>
+
+      <div class="kanban-board">
+        <div class="kanban-col backlog">
+          <h3>BACKLOG <span class="ct">12</span></h3>
+          <div class="kanban-card"><div class="top"><span class="pill cat-coach">COACHING</span></div><h4>Coachfilosofi-dokument v2</h4><div class="tags">#sportsplan #junior</div><div class="foot"><div class="av-init">AK</div><span>høst 2026</span></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-anlegg">ANLEGG</span></div><h4>GFGK kameraoppsett til Performance Studio</h4><div class="tags">#anlegg #tech</div><div class="foot"><div class="av-init">DL</div><span>Q3</span></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-mark">MARKETING</span></div><h4>Brand guide for AK Golf Junior Academy</h4><div class="tags">#merkevare #junior</div><div class="foot"><div class="av-init">AK</div><span>Q3</span></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-mark">MARKETING</span></div><h4>Foreldre-onboarding e-postserie</h4><div class="tags">#onboarding</div><div class="foot"><div class="av-init">AK</div><span>vår</span></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-coach">COACHING</span></div><h4>Drill-bibliotek 100 nye drills</h4><div class="tags">#drills</div><div class="foot"><div class="av-init">MH</div><span>sommer</span></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-prod">PRODUKT</span></div><h4>Booking-integrasjon Stripe</h4><div class="tags">#tech #faktura</div><div class="foot"><div class="av-init">AK</div><span>Q4</span></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-mark">MARKETING</span></div><h4>AK Golf-podcast pilot</h4><div class="tags">#merkevare</div><div class="foot"><div class="av-init">AK</div><span>2027</span></div></div>
+        </div>
+        <div class="kanban-col gang">
+          <h3>I GANG <span class="ct">5</span></h3>
+          <div class="kanban-card"><div class="top"><span class="pill cat-coach">COACHING</span></div><h4>Sportsplan GFGK Junior 2026-2028</h4><div class="tags">#sportsplan</div><div class="prog-bar"><div style="width:73%;"></div></div><div class="foot"><div class="av-init">AK</div><span>due 30. mai · 73%</span></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-prod">PRODUKT</span></div><h4>AK Golf Academy ny nettside</h4><div class="tags">#nettside</div><div class="prog-bar"><div style="width:52%;"></div></div><div class="foot"><div class="av-init">AK</div><span>due 15. jun · 52%</span></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-mark">MARKETING</span></div><h4>Sponsor-pakke Junior Academy</h4><div class="tags">#sponsor</div><div class="prog-bar"><div style="width:84%;"></div></div><div class="foot"><div class="av-init">AK</div><span>due 28. mai · 84%</span></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-coach">COACHING</span></div><h4>Mac O'Grady kunnskaps-database</h4><div class="tags">#kunnskap</div><div class="prog-bar"><div style="width:35%;"></div></div><div class="foot"><div class="av-init">AK</div><span>due 30. jun · 35%</span></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-prod">PRODUKT</span></div><h4>Stripe-integrasjon Mulligan</h4><div class="tags">#tech</div><div class="prog-bar"><div style="width:61%;"></div></div><div class="foot"><div class="av-init">AK</div><span>due 10. jun · 61%</span></div></div>
+        </div>
+        <div class="kanban-col review">
+          <h3>REVIEW <span class="ct">6</span></h3>
+          <div class="kanban-card"><div class="top"><span class="pill cat-coach">COACHING</span></div><h4>Markus' årsplan 2026</h4><div class="review-status">venter på Markus + Tone</div><div class="foot"><div class="av-init">AK</div></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-drift">DRIFT</span></div><h4>GFGK prislister 2026</h4><div class="review-status">venter på styret</div><div class="foot"><div class="av-init">DL</div></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-mark">MARKETING</span></div><h4>Junior-rekruttering Q2-kampanje</h4><div class="review-status">venter på sponsor-svar</div><div class="foot"><div class="av-init">AK</div></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-prod">PRODUKT</span></div><h4>TrackMan-data eksport-flyt</h4><div class="review-status">venter på TrackMan-support</div><div class="foot"><div class="av-init">AK</div></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-prod">PRODUKT</span></div><h4>PlayerHQ v2 designsystem</h4><div class="review-status">venter på review</div><div class="foot"><div class="av-init">AK</div></div></div>
+          <div class="kanban-card"><div class="top"><span class="pill cat-coach">COACHING</span></div><h4>Coach-utviklingsplan Erik+Maja</h4><div class="review-status">venter på Erik</div><div class="foot"><div class="av-init">AK</div></div></div>
+        </div>
+        <div class="kanban-col ferdig">
+          <h3>FERDIG · 30 DAGER <span class="ct">8</span></h3>
+          <div class="kanban-card" style="opacity:0.7;"><div class="top"><span class="pill cat-mark">MARKETING</span></div><h4>Vår-kampanje akgolf.no</h4><div class="foot"><div class="av-init">AK</div><span>12. mai</span></div></div>
+          <div class="kanban-card" style="opacity:0.7;"><div class="top"><span class="pill cat-anlegg">ANLEGG</span></div><h4>Performance Studio åpning</h4><div class="foot"><div class="av-init">DL</div><span>5. mai</span></div></div>
+          <div class="kanban-card" style="opacity:0.7;"><div class="top"><span class="pill cat-drift">DRIFT</span></div><h4>Drift-rutiner GFGK</h4><div class="foot"><div class="av-init">DL</div><span>28. apr</span></div></div>
+          <div class="kanban-card" style="opacity:0.7;"><div class="top"><span class="pill cat-coach">COACHING</span></div><h4>Coachfilosofi-dokument v1</h4><div class="foot"><div class="av-init">AK</div><span>20. apr</span></div></div>
+          <div class="kanban-card" style="opacity:0.7;"><div class="top"><span class="pill cat-coach">COACHING</span></div><h4>Junior-camp påske</h4><div class="foot"><div class="av-init">MH</div><span>18. apr</span></div></div>
+          <div class="kanban-card" style="opacity:0.7;"><div class="top"><span class="pill cat-drift">DRIFT</span></div><h4>Nye GFGK onboarding-flyt</h4><div class="foot"><div class="av-init">DL</div><span>15. apr</span></div></div>
+          <div class="kanban-card" style="opacity:0.7;"><div class="top"><span class="pill cat-prod">PRODUKT</span></div><h4>Booking-system pilot</h4><div class="foot"><div class="av-init">AK</div><span>10. apr</span></div></div>
+          <div class="kanban-card" style="opacity:0.7;"><div class="top"><span class="pill cat-mark">MARKETING</span></div><h4>Sponsor Sparebanken1</h4><div class="foot"><div class="av-init">AK</div><span>8. apr</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SKJERM 5 — NOTION OPPGAVER ====== -->
+    <div class="screen-strip"><span>SKJERM 5 / 5 · /admin/notion/oppgaver · NOTION-OPPGAVER</span><span class="right">38 ÅPNE · 12 DENNE UKA · 4 OVER DUE</span></div>
+    <div class="screen">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">NOTION · OPPGAVER · 38 ÅPNE · 12 DENNE UKA · 4 OVER DUE</div>
+          <h1>Mine <em>oppgaver</em> — fra Notion</h1>
+        </div>
+        <div class="actions">
+          <button class="btn outline">Filtre</button>
+          <button class="btn outline">Eksporter uke-rapport</button>
+          <button class="btn forest">Sync nå</button>
+          <button class="btn lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Ny oppgave</button>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:center;"><div class="seg"><button class="active">TABELL</button><button>KANBAN</button></div></div>
+
+      <div class="filter-bar">
+        <div class="filter-grp"><span class="lbl">STATUS</span><span class="chip-pill on">ALLE</span><span class="chip-pill">IKKE STARTET</span><span class="chip-pill">I GANG</span><span class="chip-pill">BLOKKERT</span><span class="chip-pill">FERDIG</span></div>
+        <div class="filter-grp"><span class="lbl">PRIORITET</span><div class="seg"><button class="active">ALLE</button><button style="color:var(--danger);">HØY</button><button>MID</button><button>LAV</button></div></div>
+        <div class="filter-grp"><span class="lbl">ASSIGNEE</span><div class="seg"><button class="active">ALLE</button><button>AK · 22</button><button>MH · 8</button><button>DL · 6</button><button>ES · 2</button></div></div>
+        <div class="filter-grp"><span class="lbl">DUE</span><div class="seg"><button>I DAG</button><button class="active">UKE</button><button>KOMMENDE</button><button style="color:var(--danger);">OVER DUE</button></div></div>
+      </div>
+
+      <div class="table-card">
+        <table>
+          <thead><tr><th style="width:36px;"></th><th>Oppgave</th><th>Prosjekt</th><th>Eier</th><th>Prio</th><th class="due mono">Due</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>Skriv coachfilosofi kapittel 3</strong></td><td><span class="pill cat-coach">COACHING</span> Coachfilosofi v2</td><td><div style="display:flex;gap:6px;align-items:center;"><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></div></td><td><span class="pill danger">HØY</span></td><td class="due mono">22. mai</td><td><span class="pill" style="background:rgba(209,248,67,0.40);color:#4A5418;">I GANG</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>Be Tone om signering av Markus-plan</strong></td><td><span class="pill cat-coach">COACHING</span> Sportsplan GFGK Junior</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></td><td><span class="pill danger">HØY</span></td><td class="due mono">21. mai</td><td><span class="pill warn">BLOKKERT</span></td><td>⋯</td></tr>
+            <tr class="overdue"><td class="cb"><input type="checkbox"></td><td><strong>Bestille TrackMan-lisens 2026</strong></td><td><span class="pill cat-drift">DRIFT</span> Drift</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></td><td><span class="pill danger">HØY</span></td><td class="due mono">18. mai · OVER DUE</td><td><span class="pill outline">IKKE STARTET</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>Filme drill-bibliotek 10 nye drills</strong></td><td><span class="pill cat-coach">COACHING</span> Drill-bibliotek</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--slag);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">MH</div></td><td><span class="pill forest">MID</span></td><td class="due mono">25. mai</td><td><span class="pill" style="background:rgba(209,248,67,0.40);color:#4A5418;">I GANG</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>Sponsor-møte Sparebanken1 oppfølging</strong></td><td><span class="pill cat-mark">MARKETING</span> Sponsor-pakke</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></td><td><span class="pill danger">HØY</span></td><td class="due mono">23. mai</td><td><span class="pill outline">IKKE STARTET</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>Booking-flyt UX-test med 3 spillere</strong></td><td><span class="pill cat-prod">PRODUKT</span> Booking-integrasjon</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></td><td><span class="pill forest">MID</span></td><td class="due mono">28. mai</td><td><span class="pill outline">IKKE STARTET</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>Tone-of-voice guide PlayerHQ</strong></td><td><span class="pill cat-prod">PRODUKT</span> PlayerHQ v2</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></td><td><span class="pill outline">LAV</span></td><td class="due mono">5. jun</td><td><span class="pill outline">IKKE STARTET</span></td><td>⋯</td></tr>
+            <tr class="done"><td class="cb"><input type="checkbox" checked></td><td>Skrive ferdig vår-kampanje</td><td><span class="pill cat-mark">MARKETING</span> Vår-kampanje</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></td><td><span class="pill danger">HØY</span></td><td class="due mono">12. mai</td><td><span class="pill ok">FERDIG</span></td><td>⋯</td></tr>
+            <tr class="done"><td class="cb"><input type="checkbox" checked></td><td>Onboarde Erik som putting-coach</td><td><span class="pill cat-coach">COACHING</span> Coach-utvikling</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></td><td><span class="pill forest">MID</span></td><td class="due mono">10. mai</td><td><span class="pill ok">FERDIG</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>GFGK 9-hullsbane utstyr-sjekk</strong></td><td><span class="pill cat-drift">DRIFT</span> Drift GFGK</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--warning);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">DL</div></td><td><span class="pill forest">MID</span></td><td class="due mono">24. mai</td><td><span class="pill" style="background:rgba(209,248,67,0.40);color:#4A5418;">I GANG</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>Junior-camp sommer påmelding åpne</strong></td><td><span class="pill cat-mark">MARKETING</span> Junior-rekruttering</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--slag);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">MH</div></td><td><span class="pill danger">HØY</span></td><td class="due mono">1. jun</td><td><span class="pill outline">IKKE STARTET</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>AK Golf-podcast intro-jingle</strong></td><td><span class="pill cat-mark">MARKETING</span> Podcast</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></td><td><span class="pill outline">LAV</span></td><td class="due mono">30. jun</td><td><span class="pill outline">IKKE STARTET</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>Stripe webhook-flyt teste</strong></td><td><span class="pill cat-prod">PRODUKT</span> Stripe-integrasjon</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></td><td><span class="pill danger">HØY</span></td><td class="due mono">26. mai</td><td><span class="pill" style="background:rgba(209,248,67,0.40);color:#4A5418;">I GANG</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>Markus mai-review skrive</strong></td><td><span class="pill cat-coach">COACHING</span> Markus' årsplan</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">AK</div></td><td><span class="pill danger">HØY</span></td><td class="due mono">25. mai</td><td><span class="pill" style="background:rgba(209,248,67,0.40);color:#4A5418;">I GANG</span></td><td>⋯</td></tr>
+            <tr><td class="cb"><input type="checkbox"></td><td><strong>GFGK-styret kvartalspresentasjon</strong></td><td><span class="pill cat-drift">DRIFT</span> Drift</td><td><div style="width:22px;height:22px;border-radius:50%;background:var(--warning);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:800;">DL</div></td><td><span class="pill danger">HØY</span></td><td class="due mono">30. mai</td><td><span class="pill outline">IKKE STARTET</span></td><td>⋯</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="sticky-footer">
+    <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.04em;">5 skjermer · <strong style="color:var(--fg);">bane-bibliotek, bane-detalj, drill, prosjekter, oppgaver</strong></div>
+    <div class="ft-status">Anders har <strong>22 åpne oppgaver</strong> · Markus har <strong>8 anbefalte drills</strong> · 38 åpne totalt</div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn outline">Sync alt</button>
+      <button class="btn lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m12 3-1.5 4.5L6 9l4.5 1.5L12 15l1.5-4.5L18 9l-4.5-1.5L12 3z"/></svg>Spør AI</button>
+    </div>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('.mode-tab').forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const strips = document.querySelectorAll('.screen-strip');
+      if (strips[i]) strips[i].scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+</script>
+</body>
+</html>

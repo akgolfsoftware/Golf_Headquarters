@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>02 — ForeldrePortal komplett · Tone Berg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 80px; }
+
+  /* ============ TOPBAR ============ */
+  .topbar { padding: 0 24px; gap: 18px; }
+  .topbar .breadcrumb { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
+  .topbar-search { flex: 0 1 380px; display: flex; align-items: center; gap: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 7px 12px; color: var(--muted); }
+  .topbar-search svg { width: 14px; height: 14px; }
+  .topbar-search input { flex: 1; border: 0; outline: 0; background: transparent; font-size: 12.5px; color: var(--fg); }
+  .topbar-search .kbd { font-family: var(--font-mono); font-size: 9.5px; padding: 2px 6px; border-radius: 4px; background: #fff; border: 1px solid var(--border); color: var(--muted-soft); }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .role-toggle { display: inline-flex; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+  .role-toggle button { padding: 5px 12px; border-radius: 999px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; border: 0; background: transparent; }
+  .role-toggle button.active { background: var(--primary); color: var(--accent); }
+  .iconbtn { width: 34px; height: 34px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--muted); }
+  .iconbtn svg { width: 16px; height: 16px; }
+  .tb-av { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 12px; font-weight: 700; }
+
+  /* ============ SIDEBAR ============ */
+  .nav-item .badge-count.lime { background: var(--accent); color: var(--fg); }
+
+  /* ============ PAGE ============ */
+  .page-wrap { padding: 0 0 24px; max-width: 1640px; }
+  .screen-strip { background: var(--primary); color: var(--accent); padding: 10px 32px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+  .screen-strip .right { color: rgba(209,248,67,0.65); letter-spacing: 0.10em; }
+  .screen { padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* ============ HERO ============ */
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .hero .left { display: flex; flex-direction: column; gap: 8px; max-width: 760px; }
+  .hero h1 { font-family: var(--font-display); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; }
+  .hero h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+  .hero .actions { display: flex; gap: 8px; align-items: center; }
+  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 999px; font-size: 12.5px; font-weight: 600; border: 0; }
+  .btn svg { width: 14px; height: 14px; }
+  .btn.lime { background: var(--accent); color: var(--fg); }
+  .btn.forest { background: var(--primary); color: var(--accent); }
+  .btn.outline { background: #fff; color: var(--fg); border: 1px solid var(--border); }
+  .btn.danger-outline { background: #fff; color: var(--danger); border: 1px solid rgba(163,45,45,0.30); }
+  .btn.sm { padding: 6px 12px; font-size: 11.5px; }
+  .btn.xs { padding: 4px 10px; font-size: 10.5px; }
+
+  /* ============ CARDS ============ */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; }
+  .card h3 { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 12px; }
+  .card-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; gap: 12px; }
+  .card-h h3 { margin: 0; }
+  .card-h .sub-mono { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; }
+
+  /* ============ NOTIFY STRIPS ============ */
+  .notify-lime { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; background: rgba(209,248,67,0.16); border: 1px solid rgba(209,248,67,0.55); border-radius: 16px; }
+  .notify-lime .ic { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); color: var(--fg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .notify-lime .ic svg { width: 16px; height: 16px; }
+  .notify-lime .body { flex: 1; font-size: 13.5px; line-height: 1.5; color: var(--fg); }
+  .notify-lime .body strong { font-family: var(--font-display); font-weight: 600; }
+  .notify-lime .actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
+
+  .notify-cream { display: flex; gap: 12px; padding: 14px 18px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; font-size: 13.5px; line-height: 1.55; color: var(--fg); }
+  .notify-cream .ic { width: 28px; height: 28px; border-radius: 7px; background: #fff; color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .notify-cream .ic svg { width: 14px; height: 14px; }
+
+  .notify-danger { background: rgba(163,45,45,0.10); border: 1px solid rgba(163,45,45,0.30); color: var(--danger); }
+  .notify-danger .ic { background: var(--danger); color: #fff; }
+
+  /* status-strip */
+  .status-strip { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; background: rgba(209,248,67,0.16); border: 1px solid rgba(209,248,67,0.55); }
+  .status-strip .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--primary); }
+  .status-strip .txt { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--fg); }
+  .status-strip .txt strong { color: var(--primary); font-weight: 700; }
+
+  /* ============ HUB — BARN CARD ============ */
+  .barn-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 22px 24px; display: flex; flex-direction: column; gap: 18px; }
+  .barn-top { display: flex; gap: 16px; align-items: center; }
+  .barn-photo { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(140deg, var(--bg), #EFEDE6); border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--primary); flex-shrink: 0; }
+  .barn-top .name { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .barn-top .sub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; margin-top: 3px; }
+  .pills-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; }
+  .pill.lime { background: var(--accent); color: var(--fg); }
+  .pill.forest { background: var(--primary); color: var(--accent); }
+  .pill.cream { background: var(--bg); color: var(--fg); border: 1px solid var(--border); }
+  .pill.outline { background: #fff; color: var(--muted); border: 1px solid var(--border); }
+  .pill.danger { background: rgba(163,45,45,0.12); color: var(--danger); }
+  .pill.warn { background: rgba(184,133,42,0.15); color: var(--warning); }
+  .pill.success { background: rgba(44,125,82,0.18); color: var(--slag); }
+
+  .mini-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .mini-kpi { background: var(--bg); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .mini-kpi .lbl { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase; font-weight: 600; }
+  .mini-kpi .big { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--fg); letter-spacing: -0.01em; line-height: 1.1; }
+  .mini-kpi .big.tt { font-family: var(--font-display); font-size: 16px; letter-spacing: -0.01em; }
+  .mini-kpi .sub { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.04em; }
+  .mini-kpi .spark { height: 24px; }
+  .mini-kpi .bar { height: 5px; background: #fff; border-radius: 999px; overflow: hidden; }
+  .mini-kpi .bar > div { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 999px; }
+
+  /* week timeline */
+  .week-tl { display: grid; grid-template-columns: 80px 24px 1fr; gap: 8px 14px; }
+  .wt-row { display: contents; }
+  .wt-row .when { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; padding-top: 9px; }
+  .wt-row .dot { padding-top: 12px; }
+  .wt-row .dot::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+  .wt-row.now .dot::before { background: var(--accent); box-shadow: 0 0 0 4px rgba(209,248,67,0.30); }
+  .wt-row.future .dot::before { background: var(--primary); }
+  .wt-row .what { padding: 8px 0; border-bottom: 1px solid var(--border-soft); font-size: 13px; }
+  .wt-row .what .ttl { font-family: var(--font-display); font-weight: 600; }
+  .wt-row .what .sub { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 2px; letter-spacing: 0.04em; }
+
+  /* coach card */
+  .coach-card { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; }
+  .coach-card .h { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+  .coach-av { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .coach-card .nm { font-family: var(--font-display); font-size: 14px; font-weight: 700; }
+  .coach-card .meta { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; margin-top: 2px; }
+  .coach-card .quote { font-size: 14px; line-height: 1.55; color: var(--fg); padding: 12px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .coach-card .quote em { font-family: var(--font-serif); font-style: italic; color: var(--primary); }
+
+  /* shortcut grid */
+  .shortcut-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .shortcut { padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; gap: 12px; }
+  .shortcut.lime { background: rgba(209,248,67,0.16); border-color: rgba(209,248,67,0.55); }
+  .shortcut.cream { background: var(--bg); }
+  .shortcut.forest { background: rgba(0,88,64,0.06); border-color: rgba(0,88,64,0.20); }
+  .shortcut .ic { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: var(--fg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .shortcut .ic svg { width: 16px; height: 16px; }
+  .shortcut .ttl { font-family: var(--font-display); font-size: 13px; font-weight: 600; line-height: 1.25; }
+  .shortcut .sub { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.06em; margin-top: 2px; }
+
+  /* ============ GODKJENNINGER ============ */
+  .approval-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+  .approval-card.urgent { border-color: rgba(209,248,67,0.55); background: linear-gradient(180deg, #FCFEEC 0%, #FFFFFF 60%); }
+  .ah-row { display: flex; align-items: center; gap: 10px; }
+  .ah-row .ic { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: var(--fg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ah-row .ic svg { width: 18px; height: 18px; }
+  .ah-row h4 { font-family: var(--font-display); font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .ah-row .meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; margin-top: 2px; }
+  .ah-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; padding: 12px 14px; background: var(--bg); border-radius: 10px; font-size: 12.5px; }
+  .ah-detail .k { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase; font-weight: 600; }
+  .ah-detail .v { font-family: var(--font-body); font-weight: 600; }
+  .ah-detail .v.mono { font-family: var(--font-mono); }
+  .ah-quote { font-family: var(--font-serif); font-style: italic; font-size: 14px; line-height: 1.5; color: var(--muted); padding: 8px 0; border-top: 1px solid var(--border-soft); }
+  .ah-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* table */
+  .table-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-soft); font-size: 12.5px; }
+  th { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase; font-weight: 700; background: var(--bg); }
+  td.mono, th.mono { font-family: var(--font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+  td.right, th.right { text-align: right; }
+  tr:last-child td { border-bottom: 0; }
+  tr:hover td { background: rgba(209,248,67,0.05); cursor: pointer; }
+
+  .filter-row { display: flex; gap: 6px; padding: 12px 16px; background: var(--bg); border-bottom: 1px solid var(--border); }
+  .filter-row button { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: #fff; font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; }
+  .filter-row button.active { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+
+  /* auto-godkjenning */
+  .auto-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px 22px; }
+  .auto-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-soft); align-items: center; }
+  .auto-row:last-child { border-bottom: 0; }
+  .auto-row .ttl { font-family: var(--font-display); font-size: 13.5px; font-weight: 600; }
+  .auto-row .sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; margin-top: 2px; }
+  .switch { width: 36px; height: 20px; background: var(--border); border-radius: 999px; position: relative; cursor: pointer; transition: background 180ms; }
+  .switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left 180ms; }
+  .switch.on { background: var(--primary); }
+  .switch.on::after { left: 18px; }
+  .auto-row input[type=range] { width: 200px; accent-color: var(--primary); }
+
+  /* ============ FAKTURAER ============ */
+  .pay-method { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; }
+  .pay-method .visa { width: 56px; height: 36px; background: linear-gradient(135deg, #1A1F71, #4453A8); border-radius: 6px; color: #fff; font-family: var(--font-display); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; letter-spacing: 0.04em; }
+  .pay-method .body { flex: 1; }
+  .pay-method .nm { font-family: var(--font-display); font-size: 14px; font-weight: 600; }
+  .pay-method .sub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; margin-top: 2px; }
+
+  /* ============ SAMTYKKER ============ */
+  .consent-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .consent-card.revoked { opacity: 0.6; }
+  .consent-h { display: flex; align-items: flex-start; gap: 12px; }
+  .consent-h .toggle { width: 44px; height: 26px; background: var(--accent); border-radius: 999px; position: relative; cursor: pointer; flex-shrink: 0; }
+  .consent-h .toggle::after { content: ''; position: absolute; top: 2px; left: 20px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(10,31,23,0.20); }
+  .consent-h .toggle.off { background: var(--border); }
+  .consent-h .toggle.off::after { left: 2px; }
+  .consent-h .toggle.waiting { background: rgba(184,133,42,0.40); }
+  .consent-h .toggle.waiting::after { left: 11px; }
+  .consent-h h4 { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  .consent-h .pill { margin-top: 4px; }
+  .consent-body { font-size: 13.5px; line-height: 1.55; color: var(--fg); }
+  .consent-body strong { font-family: var(--font-display); font-weight: 600; }
+  .consent-list { font-size: 13px; padding-left: 18px; line-height: 1.7; }
+  .consent-list li::marker { color: var(--primary); }
+  .consent-meta { display: flex; gap: 24px; font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; }
+  .consent-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* ============ MIN SPILLER ============ */
+  .player-profile { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; padding: 20px 24px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; }
+  .player-profile .photo { width: 88px; height: 88px; border-radius: 50%; background: linear-gradient(140deg, var(--bg), #EFEDE6); border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--primary); }
+  .player-profile .info .name { font-family: var(--font-display); font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+  .player-profile .info .sub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; margin-top: 4px; }
+  .player-profile .pyramide { display: flex; gap: 8px; margin-top: 10px; align-items: flex-end; }
+  .player-profile .pyr-bar { width: 36px; background: var(--bg); border-radius: 6px 6px 0 0; position: relative; height: 50px; overflow: hidden; }
+  .player-profile .pyr-bar > div { position: absolute; bottom: 0; left: 0; right: 0; border-radius: 6px 6px 0 0; }
+  .player-profile .pyr-bar .lbl { position: absolute; bottom: 2px; left: 0; right: 0; font-family: var(--font-mono); font-size: 8px; font-weight: 700; text-align: center; color: var(--fg); }
+  .player-profile .coach-mini { background: var(--bg); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; max-width: 220px; }
+  .player-profile .coach-mini .av { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; font-weight: 700; }
+
+  .kpi-strip6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .kpi6 { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
+  .kpi6 .lbl { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase; font-weight: 600; }
+  .kpi6 .big { font-family: var(--font-mono); font-size: 22px; font-weight: 700; margin-top: 6px; }
+  .kpi6 .big.tt { font-family: var(--font-display); font-size: 16px; }
+  .kpi6 .sub { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 4px; letter-spacing: 0.04em; }
+
+  .sessions-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .session-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; }
+  .session-card .when { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--fg); letter-spacing: 0.04em; }
+  .session-card .ttl { font-family: var(--font-display); font-size: 14px; font-weight: 600; margin-top: 6px; }
+  .session-card .where { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); margin-top: 4px; letter-spacing: 0.04em; }
+  .session-card .disc { display: inline-flex; padding: 2px 8px; border-radius: 999px; font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.10em; margin-top: 8px; }
+  .disc.tek { background: rgba(0,88,64,0.13); color: var(--tek); }
+  .disc.slag { background: rgba(44,125,82,0.16); color: var(--slag); }
+  .disc.spill { background: rgba(136,180,90,0.20); color: #4D7A2E; }
+
+  .sg-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 22px; display: grid; grid-template-columns: 280px 1fr; gap: 20px; align-items: center; }
+  .sg-card svg { width: 100%; max-width: 280px; height: auto; }
+
+  /* sticky footer */
+  .sticky-footer { display: grid; grid-template-columns: auto 1fr auto; gap: 24px; padding: 0 32px; align-items: center; }
+  .ft-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+  .ft-meta strong { color: var(--fg); font-weight: 700; }
+
+  /* modal */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(10,31,23,0.42); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 24px; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: var(--card); border-radius: 20px; width: 560px; max-width: 100%; max-height: calc(100vh - 48px); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 24px 60px rgba(10,31,23,0.20); }
+  .modal-header { padding: 22px 24px 18px; border-bottom: 1px solid var(--border-soft); display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+  .modal-header h2 { font-family: var(--font-display); font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  .modal-header .cap { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.10em; color: var(--muted); text-transform: uppercase; margin-top: 6px; }
+  .modal-close { width: 32px; height: 32px; border-radius: 8px; border: 0; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+  .modal-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+  .modal-footer { padding: 14px 24px; border-top: 1px solid var(--border-soft); background: #fff; display: flex; gap: 8px; justify-content: flex-end; }
+  .field-label { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; display: block; }
+  .field-input { font-family: var(--font-body); font-size: 13.5px; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; outline: none; width: 100%; }
+  textarea.field-input { min-height: 90px; resize: vertical; }
+
+  .info-block { padding: 12px 14px; background: var(--bg); border-radius: 10px; font-size: 12.5px; line-height: 1.55; }
+  .info-block .row { display: flex; justify-content: space-between; padding: 4px 0; }
+  .info-block .row .k { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .info-block .row .v { font-family: var(--font-mono); font-weight: 600; }
+</style>
+</head>
+<body data-screen-label="02 ForeldrePortal">
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img class="brand-logo" src="assets/logo-primary-on-dark.svg" alt="AK Golf">
+      <div class="name">AK GOLF</div>
+      <div class="meta">FORELDREPORTAL</div>
+    </div>
+    <div class="sidebar-profile">
+      <div class="avatar">TB</div>
+      <div>
+        <div class="nm">Tone Berg</div>
+        <div class="hcp">FORELDRE · 1 BARN</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">HJEM</div>
+      <button class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/></svg>Hub</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">DITT BARN</div>
+      <button class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg>Markus</button>
+      <button class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Godkjenninger<span class="badge-count lime">2</span></button>
+      <button class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Fakturaer</button>
+      <button class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Samtykker</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">KONTAKT</div>
+      <button class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Coach Anders</button>
+      <button class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Hjelp & støtte</button>
+    </div>
+    <div style="margin-top:auto;padding-top:16px;border-top:1px solid rgba(209,248,67,0.10);">
+      <button class="nav-item" style="opacity:0.7;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logg ut</button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input placeholder="Søk eller hopp til...">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="breadcrumb"><span class="current">Foreldreportal</span></div>
+      <div class="topbar-right">
+        <div class="role-toggle"><button class="active">FORELDER</button><button>SPILLER</button></div>
+        <button class="iconbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
+        <div class="tb-av">TB</div>
+      </div>
+    </div>
+
+    <div class="page-wrap">
+
+      <!-- ============ SKJERM 1: HUB ============ -->
+      <div class="screen-strip">
+        <span>SKJERM 1 / 5 · /foreldre · HUB</span>
+        <span class="right">VELKOMMEN TILBAKE</span>
+      </div>
+      <div class="screen">
+        <div class="hero">
+          <div class="left">
+            <div class="eyebrow">VELKOMMEN TILBAKE · 1 BARN AKTIV · 2 GODKJENNINGER VENTER</div>
+            <h1>Hei <em>Tone</em> — her er det viktigste i dag</h1>
+          </div>
+          <div class="actions">
+            <button class="btn outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Send melding til coach</button>
+            <button class="btn lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Se Markus' utvikling</button>
+          </div>
+        </div>
+
+        <div class="notify-lime">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+          <div class="body"><strong>2 godkjenninger venter</strong> · Markus ønsker å delta i Sørlandsåpent 2026 (16. juni) og kjøpe nye sko fra Pro-shop (1 250 kr). Begge krever din OK.</div>
+          <div class="actions">
+            <button class="btn lime sm">Gå til godkjenninger</button>
+            <button class="btn outline sm">Senere</button>
+          </div>
+        </div>
+
+        <!-- BARN CARD -->
+        <div class="barn-card">
+          <div class="barn-top">
+            <div class="barn-photo">MRP</div>
+            <div style="flex:1;">
+              <div class="name">Markus Røinås Pedersen</div>
+              <div class="sub">17 ÅR · HCP +3,5 · A1 · GFGK</div>
+            </div>
+            <div class="pills-row">
+              <span class="pill lime">AKTIV</span>
+              <span class="pill forest">PRO 300 KR/MND</span>
+              <span class="pill cream">2/4 CREDITS BRUKT</span>
+              <span class="pill outline">SAMTYKKER OK</span>
+            </div>
+          </div>
+
+          <div class="mini-kpis">
+            <div class="mini-kpi">
+              <div class="lbl">Neste økt</div>
+              <div class="big tt">Tirsdag 09:00</div>
+              <div class="sub">Performance Studio · Anders</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="lbl">HCP</div>
+              <div class="big">+3,5</div>
+              <div class="sub">Δ −1,2 siste 6 mnd</div>
+              <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none"><polyline points="0,18 12,16 22,18 32,15 44,12 56,8 68,6 80,4" fill="none" stroke="#D1F843" stroke-width="2"/></svg>
+            </div>
+            <div class="mini-kpi">
+              <div class="lbl">Denne uka</div>
+              <div class="big">4 / 5</div>
+              <div class="sub">1 økt gjenstår torsdag</div>
+              <div class="bar"><div style="width:80%;"></div></div>
+            </div>
+            <div class="mini-kpi">
+              <div class="lbl">Neste turnering</div>
+              <div class="big tt">Sørlandsåpent</div>
+              <div class="sub">om 21 dager · 16. juni</div>
+              <span class="pill lime" style="margin-top:4px;align-self:flex-start;">HOVEDMÅL</span>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn lime">Se Markus' utvikling</button>
+            <button class="btn outline">Send melding til Anders</button>
+            <button class="btn outline">Be om foreldre-samtale</button>
+          </div>
+        </div>
+
+        <!-- WEEK TIMELINE + COACH MSG -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;">
+          <div class="card">
+            <div class="card-h"><h3>Hva skjer fremover</h3><span class="sub-mono">SISTE 3 + NESTE 4 DAGER</span></div>
+            <div class="week-tl">
+              <div class="wt-row"><span class="when">I går · 19/5</span><span class="dot"></span><span class="what"><div class="ttl">Markus fullførte TEK iron-økt</div><div class="sub">PERFORMANCE STUDIO · 90 MIN · COACH ANDERS</div></span></div>
+              <div class="wt-row now"><span class="when">I dag · 20/5</span><span class="dot"></span><span class="what"><div class="ttl">Ingen aktivitet planlagt</div><div class="sub">SKOLE-DAG · HVILE</div></span></div>
+              <div class="wt-row future"><span class="when">I morgen · 21/5</span><span class="dot"></span><span class="what"><div class="ttl">Privat-økt 09:00 · Performance Studio</div><div class="sub">TEK IRON-PROGRESJON 5-PW · 60 MIN</div></span></div>
+              <div class="wt-row future"><span class="when">Tor · 23/5</span><span class="dot"></span><span class="what"><div class="ttl">SLAG-økt 16:00 · Nærspillsområde</div><div class="sub">PUTTING + CHIP · 90 MIN</div></span></div>
+              <div class="wt-row future"><span class="when">Lør · 25/5</span><span class="dot"></span><span class="what"><div class="ttl">Spillsimulering 10:00 · 9-hullsbanen</div><div class="sub">COURSE MANAGEMENT HULL 4/5 · 120 MIN</div></span></div>
+              <div class="wt-row future"><span class="when">Søn · 26/5</span><span class="dot"></span><span class="what"><div class="ttl">Foreldre-rapport sendes på e-post</div><div class="sub">UKE-OPPSUMMERING · AUTOMATISK</div></span></div>
+            </div>
+          </div>
+
+          <div class="coach-card">
+            <div class="h">
+              <div class="coach-av">AK</div>
+              <div>
+                <div class="nm">Anders Kristiansen</div>
+                <div class="meta">HEAD COACH · 2 DAGER SIDEN</div>
+              </div>
+            </div>
+            <div class="quote">Markus leverer veldig solid denne uka. SG-trenden er positiv. Vi har lagt opp en plan mot Sørlandsåpent — jeg sender deg en kort oppsummering på <em>e-post</em> i morgen. Si fra hvis dere har spørsmål.</div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn lime sm" onclick="openModal('msg')">Svar Anders</button>
+              <button class="btn outline sm" onclick="openModal('meeting')">Be om samtale</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SHORTCUT GRID -->
+        <div class="shortcut-grid">
+          <div class="shortcut lime">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><div class="ttl">Godkjenninger venter</div><div class="sub">2 KREVER DIN HANDLING</div></div>
+          </div>
+          <div class="shortcut cream">
+            <div class="ic" style="background:var(--bg);border:1px solid var(--border);color:var(--primary);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <div><div class="ttl">Faktura forfaller</div><div class="sub">OM 11 DAGER · 3 200 KR</div></div>
+          </div>
+          <div class="shortcut forest">
+            <div class="ic" style="background:var(--primary);color:var(--accent);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div><div class="ttl">Samtykker</div><div class="sub">ALLE AKTIVE · 1 VENTER</div></div>
+          </div>
+          <div class="shortcut">
+            <div class="ic" style="background:var(--bg);border:1px solid var(--border);color:var(--primary);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg></div>
+            <div><div class="ttl">Min spiller</div><div class="sub">MARKUS · A1 · HCP +3,5</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SKJERM 2: GODKJENNINGER ============ -->
+      <div class="screen-strip">
+        <span>SKJERM 2 / 5 · /foreldre/godkjenninger · GODKJENNINGER</span>
+        <span class="right">2 VENTER · 14 GODKJENT 2026</span>
+      </div>
+      <div class="screen">
+        <div class="hero">
+          <div class="left">
+            <div class="eyebrow">GODKJENNINGER · 2 VENTER · 14 GODKJENT SIDEN JANUAR</div>
+            <h1>Godkjenn <em>Markus' aktiviteter</em></h1>
+          </div>
+          <div class="actions">
+            <button class="btn outline">Vis historikk</button>
+            <button class="btn outline">Auto-godkjenning</button>
+          </div>
+        </div>
+
+        <div class="notify-cream">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+          <div>Markus er 17 år og under 18. Enkelte kjøp og avtaler krever ditt samtykke som foreldre — turneringspåmelding, kjøp over 500 kr, og endringer i abonnement.</div>
+        </div>
+
+        <!-- APPROVAL 1: Turnering -->
+        <div class="approval-card urgent">
+          <div class="ah-row">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M6 9V2h12v7"/><path d="M6 9c0 5 6 5 6 5h0s6 0 6-5"/><path d="M12 14v8M8 22h8"/></svg></div>
+            <div style="flex:1;">
+              <h4>Sørlandsåpent 2026 — påmelding</h4>
+              <div class="meta">16. JUNI 2026 · MANDALKRYSSET GK · MANDAL · 36-HULLS SLAGSPILL</div>
+            </div>
+            <span class="pill lime">VENTER</span>
+          </div>
+          <div class="ah-detail">
+            <span class="k">Startavgift</span><span class="v mono">1 850 kr</span>
+            <span class="k">Reise</span><span class="v">4 t kjøretur · hotell anbefalt</span>
+            <span class="k">Coach følger</span><span class="v">Anders (1 dag)</span>
+            <span class="k">Mat + opphold</span><span class="v mono">~2 400 kr (estimert)</span>
+          </div>
+          <div class="ah-quote">"Dette er hovedmål-turneringen min. Mandalkrysset GK passer min spillestil." — Markus</div>
+          <textarea class="field-input" placeholder="Foreldre-kommentar (valgfri)..." rows="2"></textarea>
+          <div class="ah-actions">
+            <button class="btn lime" onclick="openModal('confirm')">Godkjenn</button>
+            <button class="btn danger-outline" onclick="openModal('reject')">Avslå</button>
+            <button class="btn outline">Spør Anders først</button>
+          </div>
+        </div>
+
+        <!-- APPROVAL 2: Pro-shop -->
+        <div class="approval-card urgent">
+          <div class="ah-row">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+            <div style="flex:1;">
+              <h4>Nye golfsko — FootJoy Premiere</h4>
+              <div class="meta">BELØP: 1 250 KR · PRO-SHOP GFGK · MARKUS' VALG</div>
+            </div>
+            <span class="pill lime">VENTER</span>
+          </div>
+          <div class="ah-detail">
+            <span class="k">Beløp</span><span class="v mono">1 250 kr</span>
+            <span class="k">Betalingsmetode</span><span class="v">Faktura · legges til neste</span>
+            <span class="k">Coach-anbefaling</span><span class="v" style="color:var(--success);">Anders har gitt grønt lys</span>
+            <span class="k">Begrunnelse</span><span class="v">Skoene slitt etter 18 mnd</span>
+          </div>
+          <div class="ah-actions">
+            <button class="btn lime" onclick="openModal('confirm')">Godkjenn</button>
+            <button class="btn danger-outline" onclick="openModal('reject')">Avslå</button>
+          </div>
+        </div>
+
+        <!-- HISTORIKK -->
+        <div class="card-h" style="margin-top:8px;"><h3>Godkjenningshistorikk · siste 12 måneder</h3><span class="sub-mono">14 GODKJENT · 0 AVSLÅTT</span></div>
+        <div class="table-card">
+          <table>
+            <thead><tr><th>Dato</th><th>Type</th><th>Tittel</th><th class="right">Beløp</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">14. mai 2026</td><td>Booking</td><td>Privat-økt 14. mai · Anders</td><td class="right mono">750 kr</td><td><span class="pill success">GODKJENT</span></td></tr>
+              <tr><td class="mono">5. mai 2026</td><td>Turnering</td><td>Påske-cup GFGK · påmelding</td><td class="right mono">250 kr</td><td><span class="pill success">GODKJENT</span></td></tr>
+              <tr><td class="mono">28. apr 2026</td><td>Pro-shop</td><td>3 dusin Titleist Pro V1-baller</td><td class="right mono">540 kr</td><td><span class="pill success">GODKJENT</span></td></tr>
+              <tr><td class="mono">14. apr 2026</td><td>Samtykke</td><td>Foto-bruk · fornyelse</td><td class="right mono">—</td><td><span class="pill success">GODKJENT</span></td></tr>
+              <tr><td class="mono">8. apr 2026</td><td>Booking</td><td>4 økter april · pakkepris</td><td class="right mono">2 800 kr</td><td><span class="pill success">GODKJENT</span></td></tr>
+              <tr><td class="mono">2. apr 2026</td><td>Turnering</td><td>Onsoy Open · påmelding</td><td class="right mono">850 kr</td><td><span class="pill success">GODKJENT</span></td></tr>
+              <tr><td class="mono">28. mar 2026</td><td>Booking</td><td>Privat-økt 28. mar · Anders</td><td class="right mono">750 kr</td><td><span class="pill success">GODKJENT</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <button class="btn outline sm">Vis 7 eldre godkjenninger</button>
+          <button class="btn outline sm">Eksporter historikk (PDF)</button>
+        </div>
+
+        <!-- AUTO-GODKJENNING -->
+        <div class="card-h" style="margin-top:8px;"><h3>Auto-godkjenning</h3><span class="sub-mono">VALGFRI · KAN ENDRES NÅR SOM HELST</span></div>
+        <div class="auto-card">
+          <div class="auto-row">
+            <div><div class="ttl">Auto-godkjenn kjøp under terskel</div><div class="sub">200 KR · DEKKER BALLER, HANSKER, SMÅUTSTYR</div></div>
+            <input type="range" min="0" max="1000" value="200" step="50">
+          </div>
+          <div class="auto-row">
+            <div><div class="ttl">Auto-godkjenn coach-anbefalte bookinger</div><div class="sub">KUN ANDERS · IKKE EKSTERNE COACHES</div></div>
+            <div class="switch"></div>
+          </div>
+          <div class="auto-row">
+            <div><div class="ttl">Send sammendrag i stedet for hver godkjenning</div><div class="sub">UKENTLIG E-POST · I STEDET FOR PR. KJØP</div></div>
+            <div class="switch"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SKJERM 3: FAKTURAER ============ -->
+      <div class="screen-strip">
+        <span>SKJERM 3 / 5 · /foreldre/fakturaer · FAKTURAER</span>
+        <span class="right">AJOUR · NESTE FORFALL 1. JUNI</span>
+      </div>
+      <div class="screen">
+        <div class="hero">
+          <div class="left">
+            <div class="eyebrow">FAKTURAER · 1 AKTIV · 14 BETALT SIDEN JANUAR · NESTE FORFALL 1. JUNI</div>
+            <h1>Fakturaer for <em>Markus</em></h1>
+          </div>
+          <div class="actions">
+            <button class="btn outline">Last ned alle (ZIP)</button>
+            <button class="btn outline">Endre betalingsmetode</button>
+          </div>
+        </div>
+
+        <div class="status-strip">
+          <div class="dot"></div>
+          <div class="txt"><strong>Ajour.</strong> Neste faktura forfaller <strong>1. juni 2026</strong> — 3 200 kr. Sendes automatisk til Visa **** 4242.</div>
+          <a href="#" style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--primary);letter-spacing:0.06em;font-weight:700;">SE NESTE FAKTURA →</a>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="pay-method">
+            <div class="visa">VISA</div>
+            <div class="body">
+              <div class="nm">**** **** **** 4242</div>
+              <div class="sub">UTLØPER 04/29 · TONE BERG · STRIPE-KOBLET</div>
+            </div>
+            <button class="btn outline sm">Endre</button>
+          </div>
+          <div class="pay-method" style="background:var(--bg);border-style:dashed;">
+            <div style="width:56px;height:36px;background:#fff;border:1px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="body">
+              <div class="nm">Legg til ny betalingsmetode</div>
+              <div class="sub">VIPPS · KORT · FAKTURA PR. E-POST</div>
+            </div>
+            <button class="btn outline sm">Legg til</button>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="filter-row">
+            <button class="active">Alle</button>
+            <button>Aktive</button>
+            <button>Betalt</button>
+            <button>Forfalt</button>
+            <button>Kreditnota</button>
+          </div>
+          <table>
+            <thead><tr><th>Fakturanr</th><th>Periode</th><th>Forfall</th><th class="right">Beløp</th><th>Status</th><th class="right">Handling</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">2026-006</td><td>Juni 2026 (forhåndsfaktura)</td><td class="mono">1. juni 2026</td><td class="right mono">3 200 kr</td><td><span class="pill cream">AKTIV</span></td><td class="right"><button class="btn lime xs">Betal</button></td></tr>
+              <tr><td class="mono">2026-005</td><td>Mai 2026</td><td class="mono">Betalt 1. mai</td><td class="right mono">3 200 kr</td><td><span class="pill success">BETALT</span></td><td class="right"><button class="btn outline xs">Last ned</button></td></tr>
+              <tr><td class="mono">2026-004</td><td>April 2026</td><td class="mono">Betalt 1. april</td><td class="right mono">2 800 kr</td><td><span class="pill success">BETALT</span></td><td class="right"><button class="btn outline xs">Last ned</button></td></tr>
+              <tr><td class="mono">2026-003</td><td>Mars 2026</td><td class="mono">Betalt 1. mars</td><td class="right mono">3 200 kr</td><td><span class="pill success">BETALT</span></td><td class="right"><button class="btn outline xs">Last ned</button></td></tr>
+              <tr><td class="mono">2026-002</td><td>Februar 2026</td><td class="mono">Betalt 1. feb</td><td class="right mono">3 200 kr</td><td><span class="pill success">BETALT</span></td><td class="right"><button class="btn outline xs">Last ned</button></td></tr>
+              <tr><td class="mono">2026-001</td><td>Januar 2026</td><td class="mono">Betalt 1. jan</td><td class="right mono">3 200 kr</td><td><span class="pill success">BETALT</span></td><td class="right"><button class="btn outline xs">Last ned</button></td></tr>
+              <tr><td class="mono">2025-012</td><td>Desember 2025</td><td class="mono">Betalt 1. des 2025</td><td class="right mono">2 900 kr</td><td><span class="pill success">BETALT</span></td><td class="right"><button class="btn outline xs">Last ned</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <button class="btn outline sm" style="align-self:flex-start;">Vis 8 eldre fakturaer</button>
+
+        <!-- Årsstatistikk -->
+        <div class="card">
+          <div class="card-h"><h3>Årsstatistikk</h3><span class="sub-mono">2026 VS 2025</span></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
+            <div><div style="font-family:var(--font-mono);font-size:9.5px;color:var(--muted);letter-spacing:0.10em;text-transform:uppercase;">Brukt 2026 (YTD)</div><div style="font-family:var(--font-mono);font-size:24px;font-weight:700;margin-top:6px;">15 800 kr</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:9.5px;color:var(--muted);letter-spacing:0.10em;text-transform:uppercase;">Brukt 2025 (totalt)</div><div style="font-family:var(--font-mono);font-size:24px;font-weight:700;margin-top:6px;">34 200 kr</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:9.5px;color:var(--muted);letter-spacing:0.10em;text-transform:uppercase;">Snitt per måned</div><div style="font-family:var(--font-mono);font-size:24px;font-weight:700;margin-top:6px;">3 160 kr</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:9.5px;color:var(--muted);letter-spacing:0.10em;text-transform:uppercase;">Trend</div><div style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--success);margin-top:6px;">+8 %</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:2px;">VS SAMME PERIODE I FJOR</div></div>
+          </div>
+          <svg viewBox="0 0 800 90" preserveAspectRatio="none" style="width:100%;height:90px;margin-top:14px;">
+            <g stroke="#EFEDE6" stroke-width="0.5">
+              <line x1="0" y1="22" x2="800" y2="22"/><line x1="0" y1="45" x2="800" y2="45"/><line x1="0" y1="68" x2="800" y2="68"/>
+            </g>
+            <g fill="#005840">
+              <rect x="20" y="35" width="40" height="50" rx="3"/>
+              <rect x="80" y="40" width="40" height="45" rx="3"/>
+              <rect x="140" y="32" width="40" height="53" rx="3"/>
+              <rect x="200" y="34" width="40" height="51" rx="3"/>
+              <rect x="260" y="30" width="40" height="55" rx="3"/>
+              <rect x="320" y="38" width="40" height="47" rx="3"/>
+              <rect x="380" y="36" width="40" height="49" rx="3"/>
+              <rect x="440" y="33" width="40" height="52" rx="3"/>
+              <rect x="500" y="35" width="40" height="50" rx="3"/>
+              <rect x="560" y="42" width="40" height="43" rx="3"/>
+              <rect x="620" y="44" width="40" height="41" rx="3"/>
+              <rect x="680" y="48" width="40" height="37" rx="3"/>
+            </g>
+            <rect x="500" y="35" width="220" height="50" fill="rgba(209,248,67,0.15)"/>
+          </svg>
+          <div style="display:grid;grid-template-columns:repeat(12,1fr);font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:0.06em;margin-top:6px;text-align:center;">
+            <span>JUN '25</span><span>JUL</span><span>AUG</span><span>SEP</span><span>OKT</span><span>NOV</span><span>DES</span><span>JAN '26</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAI</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SKJERM 4: SAMTYKKER ============ -->
+      <div class="screen-strip">
+        <span>SKJERM 4 / 5 · /foreldre/samtykker · SAMTYKKER</span>
+        <span class="right">5 AKTIVE · 1 VENTER · 0 REVOKERT</span>
+      </div>
+      <div class="screen">
+        <div class="hero">
+          <div class="left">
+            <div class="eyebrow">SAMTYKKER · 6 AKTIVE · 0 AVVIST · SIST OPPDATERT 14. APRIL 2026</div>
+            <h1>Dine <em>samtykker</em> for Markus</h1>
+          </div>
+          <div class="actions">
+            <button class="btn outline">Eksporter samtykke-rapport (PDF)</button>
+            <button class="btn outline" onclick="openModal('meeting')">Be om foreldre-samtale</button>
+          </div>
+        </div>
+
+        <div class="notify-cream">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div>Som foreldre til en mindreårig spiller (Markus, 17 år) gir du samtykke for konkrete formål. Du kan revoker hvilket som helst samtykke når som helst — det får virkning umiddelbart. Vi lagrer logg over alle endringer i 5 år (GDPR-krav).</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <!-- GDPR -->
+          <div class="consent-card">
+            <div class="consent-h">
+              <div class="toggle"></div>
+              <div style="flex:1;">
+                <h4>GDPR · behandling av personopplysninger</h4>
+                <span class="pill success">AKTIV</span>
+              </div>
+            </div>
+            <div class="consent-body"><strong>Hvorfor:</strong> For å levere tjenester, fakturere og kommunisere med dere som familie.</div>
+            <ul class="consent-list">
+              <li>Navn, e-post, telefon, fødselsdato</li>
+              <li>Kontaktinformasjon foreldre + spiller</li>
+              <li>Faktura- og betalings-historikk</li>
+            </ul>
+            <div class="consent-meta"><span>SIST OPPDATERT 14. APRIL 2026</span><span>GYLDIG UTEN UTLØP</span></div>
+            <div class="consent-actions"><button class="btn outline sm">Les fullstendig vilkår</button></div>
+          </div>
+
+          <!-- FOTO -->
+          <div class="consent-card">
+            <div class="consent-h">
+              <div class="toggle"></div>
+              <div style="flex:1;">
+                <h4>Foto- og videobruk</h4>
+                <span class="pill success">AKTIV</span>
+              </div>
+            </div>
+            <div class="consent-body"><strong>Hvorfor:</strong> Markedsføring, treningsinnhold og sosiale medier for AK Golf Academy.</div>
+            <ul class="consent-list">
+              <li>Bilder/video fra økter, klinikker og turneringer</li>
+              <li>Bruk i sosiale medier (Instagram, Facebook)</li>
+              <li>Internt treningsinnhold for andre spillere</li>
+            </ul>
+            <div class="consent-meta"><span>SIST OPPDATERT 14. APRIL 2026</span><span>GYLDIG TIL 31. DES 2026 · ÅRLIG</span></div>
+            <div class="consent-actions"><button class="btn outline sm">Les fullstendig vilkår</button><button class="btn danger-outline sm">Revoker</button></div>
+          </div>
+
+          <!-- KLUBB -->
+          <div class="consent-card">
+            <div class="consent-h">
+              <div class="toggle"></div>
+              <div style="flex:1;">
+                <h4>Deling med klubb (GFGK)</h4>
+                <span class="pill success">AKTIV</span>
+              </div>
+            </div>
+            <div class="consent-body"><strong>Hvorfor:</strong> Klubb og akademi samarbeider om utvikling og rapportering.</div>
+            <ul class="consent-list">
+              <li>HCP, runder spilt på klubb-bane</li>
+              <li>Plan og treningsdata</li>
+              <li>Deltakelse i klubb-turneringer</li>
+            </ul>
+            <div class="consent-meta"><span>SIST OPPDATERT 14. APRIL 2026</span><span>GYLDIG UTEN UTLØP</span></div>
+            <div class="consent-actions"><button class="btn outline sm">Les fullstendig vilkår</button><button class="btn danger-outline sm">Revoker</button></div>
+          </div>
+
+          <!-- NGF -->
+          <div class="consent-card">
+            <div class="consent-h">
+              <div class="toggle"></div>
+              <div style="flex:1;">
+                <h4>Deling med NGF og turneringsarrangør</h4>
+                <span class="pill success">AKTIV</span>
+              </div>
+            </div>
+            <div class="consent-body"><strong>Hvorfor:</strong> NGF-merket spiller — krever rapportering for nasjonal rangering.</div>
+            <ul class="consent-list">
+              <li>HCP, runde-resultater, turneringsdeltakelse</li>
+              <li>Junior-rangering NGF</li>
+            </ul>
+            <div class="consent-meta"><span>SIST OPPDATERT 14. APRIL 2026</span><span>SÅ LENGE NGF-MERKET AKTIVT</span></div>
+            <div class="consent-actions"><button class="btn outline sm">Les fullstendig vilkår</button></div>
+          </div>
+
+          <!-- HELSEDATA -->
+          <div class="consent-card" style="border-color:rgba(184,133,42,0.40);background:rgba(184,133,42,0.05);">
+            <div class="consent-h">
+              <div class="toggle waiting"></div>
+              <div style="flex:1;">
+                <h4>Helsedata fra trener</h4>
+                <span class="pill warn">VENTER · FORESPURT</span>
+              </div>
+            </div>
+            <div class="consent-body"><strong>Hvorfor:</strong> Coach kan logge skader, sykdom og mental tilstand for tilpasset plan.</div>
+            <ul class="consent-list">
+              <li>Notater om skader (eksempel: håndledd-irritasjon 12. mai)</li>
+              <li>Sykefravær og energinivå</li>
+              <li>Mental tilstand pre-turnering</li>
+            </ul>
+            <div class="consent-meta"><span>FORESPURT 18. MAI 2026 AV ANDERS</span><span>IKKE AKTIVERT ENNÅ</span></div>
+            <div class="consent-actions"><button class="btn lime sm">Godkjenn</button><button class="btn danger-outline sm">Avslå</button></div>
+          </div>
+
+          <!-- MARKEDS -->
+          <div class="consent-card">
+            <div class="consent-h">
+              <div class="toggle"></div>
+              <div style="flex:1;">
+                <h4>Markedsføring fra AK Golf Group</h4>
+                <span class="pill success">AKTIV</span>
+              </div>
+            </div>
+            <div class="consent-body"><strong>Hvorfor:</strong> Nyhetsbrev, kampanjer og klinikk-tilbud sendes på e-post.</div>
+            <ul class="consent-list">
+              <li>E-post-utsendelser fra akgolf.no</li>
+              <li>SMS for tidssensitive tilbud (maks 4 pr. år)</li>
+            </ul>
+            <div class="consent-meta"><span>SIST OPPDATERT 14. APRIL 2026</span><span>GYLDIG UTEN UTLØP</span></div>
+            <div class="consent-actions"><button class="btn outline sm">Les vilkår</button><button class="btn danger-outline sm">Revoker</button></div>
+          </div>
+        </div>
+
+        <!-- Historikk -->
+        <div class="card-h" style="margin-top:8px;"><h3>Samtykke-historikk · siste 24 mnd</h3><span class="sub-mono">GDPR-LOGG · LAGRES I 5 ÅR</span></div>
+        <div class="table-card">
+          <table>
+            <thead><tr><th>Dato</th><th>Samtykke</th><th>Endring</th><th>Av</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">18. mai 2026</td><td>Helsedata fra trener</td><td>Forespurt av Anders</td><td>Anders Kristiansen</td></tr>
+              <tr><td class="mono">14. april 2026</td><td>GDPR</td><td>Fornyet (årlig)</td><td>Tone Berg</td></tr>
+              <tr><td class="mono">14. april 2026</td><td>Foto-bruk</td><td>Fornyet (årlig)</td><td>Tone Berg</td></tr>
+              <tr><td class="mono">12. januar 2026</td><td>Deling NGF</td><td>Aktivert</td><td>Tone Berg</td></tr>
+              <tr><td class="mono">1. desember 2025</td><td>Markedsføring</td><td>Aktivert</td><td>Tone Berg</td></tr>
+              <tr><td class="mono">14. april 2025</td><td>GDPR + Foto + Klubb</td><td>Første samtykke ved registrering</td><td>Tone Berg</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ SKJERM 5: MIN SPILLER ============ -->
+      <div class="screen-strip">
+        <span>SKJERM 5 / 5 · /foreldre/min-spiller/markus-roinas-pedersen · MIN SPILLER</span>
+        <span class="right">READ-ONLY · OPPDATERT I DAG 06:00</span>
+      </div>
+      <div class="screen">
+        <div class="hero">
+          <div class="left">
+            <div class="eyebrow">DIN SPILLER · MARKUS RØINÅS PEDERSEN · A1 · HCP +3,5 · GFGK</div>
+            <h1>Markus' <em>utvikling</em></h1>
+            <div style="font-family:var(--font-mono);font-size:10.5px;color:var(--muted-soft);letter-spacing:0.04em;">Read-only · oppdatert hver dag · siste oppdatering 20. mai kl 06:00</div>
+          </div>
+          <div class="actions">
+            <button class="btn lime" onclick="openModal('msg')">Send melding til Anders</button>
+            <button class="btn outline" onclick="openModal('meeting')">Be om samtale</button>
+            <button class="btn outline">Eksporter rapport (PDF)</button>
+          </div>
+        </div>
+
+        <!-- PROFILE STRIP -->
+        <div class="player-profile">
+          <div class="photo">MRP</div>
+          <div class="info">
+            <div class="name">Markus Røinås Pedersen</div>
+            <div class="sub">17 ÅR · HCP +3,5 · KATEGORI A1 · HJEMMEBANE GFGK · MEDLEM SIDEN 2023</div>
+            <div class="pyramide">
+              <div class="pyr-bar" title="FYS 15%"><div style="height:30%;background:var(--fys);"></div><span class="lbl">FYS</span></div>
+              <div class="pyr-bar" title="TEK 30%"><div style="height:60%;background:var(--tek);"></div><span class="lbl">TEK</span></div>
+              <div class="pyr-bar" title="SLAG 25%"><div style="height:50%;background:var(--slag);"></div><span class="lbl">SLAG</span></div>
+              <div class="pyr-bar" title="SPILL 20%"><div style="height:40%;background:var(--spill);"></div><span class="lbl">SPILL</span></div>
+              <div class="pyr-bar" title="TURN 10%"><div style="height:20%;background:#C8B72A;"></div><span class="lbl">TURN</span></div>
+            </div>
+          </div>
+          <div class="coach-mini">
+            <div class="av">AK</div>
+            <div>
+              <div style="font-family:var(--font-display);font-size:13px;font-weight:700;">Anders Kristiansen</div>
+              <div style="font-family:var(--font-mono);font-size:9.5px;color:var(--muted);letter-spacing:0.08em;margin-top:2px;">HEAD COACH SIDEN 2023</div>
+              <button class="btn lime xs" style="margin-top:6px;" onclick="openModal('msg')">Send melding</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI STRIP 6 -->
+        <div class="kpi-strip6">
+          <div class="kpi6"><div class="lbl">HCP-utvikling</div><div class="big">+3,5</div><div class="sub">Δ −1,2 SISTE 6 MND · GOD RETNING</div></div>
+          <div class="kpi6"><div class="lbl">Snitt-score</div><div class="big">72,4</div><div class="sub">8 SISTE RUNDER · 5 SUB-PAR</div></div>
+          <div class="kpi6" style="background:linear-gradient(180deg,#FCFEEC 0%,#FFFFFF 60%);border-color:rgba(209,248,67,0.55);"><div class="lbl">Neste turnering</div><div class="big tt">Sørlandsåpent</div><div class="sub">OM 21 DAGER · 78 % KLAR</div></div>
+          <div class="kpi6"><div class="lbl">Denne uka</div><div class="big">4 / 5</div><div class="sub">1 ØKT IGJEN TORSDAG</div></div>
+          <div class="kpi6"><div class="lbl">SG-trend</div><div class="big">+0,42</div><div class="sub">LEVERER OVER SNITT</div></div>
+          <div class="kpi6"><div class="lbl">Trivsel</div><div class="big tt" style="color:var(--success);">Høy</div><div class="sub">COACH-VURDERING SISTE 4 UKER</div></div>
+        </div>
+
+        <!-- COACH UPDATE -->
+        <div class="coach-card" style="background:#fff;">
+          <div class="h">
+            <div class="coach-av">AK</div>
+            <div>
+              <div class="nm">Anders Kristiansen — oppdatert 18. mai 2026</div>
+              <div class="meta">HEAD COACH · MÅNEDLIG OPPSUMMERING</div>
+            </div>
+          </div>
+          <div class="quote" style="font-size:14.5px;">Markus leverer veldig solid utvikling denne perioden. SG-trenden er <strong>+0,42</strong>, som betyr at han over tid scorer 0,42 slag bedre per runde enn sin egen baseline. <em>Iron-spillet er hans største styrke.</em><br><br>Foran Sørlandsåpent fokuserer vi på bunker-spill (hans svakeste) og putting &gt;4m. Vi har lagt opp 5 fokus-økter de neste 3 ukene.<br><br>Trygt å si at han er på rett vei. Si fra om dere har spørsmål.</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn lime sm" onclick="openModal('msg')">Svar Anders</button>
+            <button class="btn outline sm" onclick="openModal('meeting')">Be om samtale på telefon</button>
+          </div>
+        </div>
+
+        <!-- ACTIVE PLAN -->
+        <div class="card">
+          <div class="card-h">
+            <h3>Aktiv plan: Spesialisering vår 2026</h3>
+            <span class="sub-mono">1. MAI – 30. JUNI 2026 · 68 % FULLFØRT · 12 AV 17 ØKTER</span>
+          </div>
+          <div style="height:10px;background:var(--bg);border-radius:999px;overflow:hidden;margin-bottom:14px;"><div style="height:100%;width:68%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:999px;"></div></div>
+          <div style="font-size:13.5px;line-height:1.55;color:var(--fg);">Markus følger en 8-ukers plan mot Sørlandsåpent. Han har gjort <strong>12 av 17 økter</strong>. Planen er fordelt mellom de fem disiplinene:</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:14px;">
+            <div><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.10em;color:var(--fys);">FYS</div><div style="height:6px;background:var(--bg);border-radius:999px;overflow:hidden;margin-top:6px;"><div style="height:100%;width:12%;background:var(--fys);border-radius:999px;"></div></div><div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:4px;">2 ØKTER · 12 %</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.10em;color:var(--tek);">TEK</div><div style="height:6px;background:var(--bg);border-radius:999px;overflow:hidden;margin-top:6px;"><div style="height:100%;width:35%;background:var(--tek);border-radius:999px;"></div></div><div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:4px;">6 ØKTER · 35 %</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.10em;color:var(--slag);">SLAG</div><div style="height:6px;background:var(--bg);border-radius:999px;overflow:hidden;margin-top:6px;"><div style="height:100%;width:24%;background:var(--slag);border-radius:999px;"></div></div><div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:4px;">4 ØKTER · 24 %</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.10em;color:#4D7A2E;">SPILL</div><div style="height:6px;background:var(--bg);border-radius:999px;overflow:hidden;margin-top:6px;"><div style="height:100%;width:18%;background:var(--spill);border-radius:999px;"></div></div><div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:4px;">3 ØKTER · 18 %</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.10em;color:#4A5418;">TURN</div><div style="height:6px;background:var(--bg);border-radius:999px;overflow:hidden;margin-top:6px;"><div style="height:100%;width:11%;background:#C8B72A;border-radius:999px;"></div></div><div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:4px;">2 ØKTER · 11 %</div></div>
+          </div>
+          <div class="notify-cream" style="margin-top:14px;">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/></svg></div>
+            <div>Du kan ikke endre planen direkte. Snakk med Anders hvis du ønsker justeringer — han svarer typisk innen 4 timer på hverdager.</div>
+          </div>
+        </div>
+
+        <!-- NEXT SESSIONS -->
+        <div>
+          <div class="card-h"><h3>Markus' neste 3 økter</h3><span class="sub-mono">TRENGER SKYSS? MARKER SOM FAMILIETRYGT</span></div>
+          <div class="sessions-3">
+            <div class="session-card">
+              <div class="when">TIRSDAG 21. MAI · 09:00–10:00</div>
+              <div class="ttl">Iron-progresjon 5-PW</div>
+              <div class="where">PERFORMANCE STUDIO · PRIVAT MED ANDERS</div>
+              <div class="disc tek">TEK</div>
+            </div>
+            <div class="session-card">
+              <div class="when">TORSDAG 23. MAI · 16:00–17:30</div>
+              <div class="ttl">Putting + chip</div>
+              <div class="where">NÆRSPILLSOMRÅDE · PRIVAT MED ANDERS</div>
+              <div class="disc slag">SLAG</div>
+            </div>
+            <div class="session-card">
+              <div class="when">LØRDAG 25. MAI · 10:00–12:00</div>
+              <div class="ttl">Course management</div>
+              <div class="where">9-HULLSBANEN · PRIVAT MED ANDERS</div>
+              <div class="disc spill">SPILL</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SG RADAR -->
+        <div class="sg-card">
+          <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="rg3" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#D1F843" stop-opacity="0.55"/>
+                <stop offset="100%" stop-color="#D1F843" stop-opacity="0.30"/>
+              </linearGradient>
+            </defs>
+            <g transform="translate(140 140)">
+              <polygon points="0,-110 95.3,-55 95.3,55 0,110 -95.3,55 -95.3,-55" fill="none" stroke="#E5E3DD" stroke-width="1"/>
+              <polygon points="0,-80 69.3,-40 69.3,40 0,80 -69.3,40 -69.3,-40" fill="none" stroke="#EFEDE6" stroke-width="1"/>
+              <polygon points="0,-50 43.3,-25 43.3,25 0,50 -43.3,25 -43.3,-25" fill="none" stroke="#EFEDE6" stroke-width="1"/>
+              <line x1="0" y1="0" x2="0" y2="-110" stroke="#E5E3DD"/>
+              <line x1="0" y1="0" x2="95.3" y2="-55" stroke="#E5E3DD"/>
+              <line x1="0" y1="0" x2="95.3" y2="55" stroke="#E5E3DD"/>
+              <line x1="0" y1="0" x2="0" y2="110" stroke="#E5E3DD"/>
+              <line x1="0" y1="0" x2="-95.3" y2="55" stroke="#E5E3DD"/>
+              <line x1="0" y1="0" x2="-95.3" y2="-55" stroke="#E5E3DD"/>
+              <polygon points="0,-50 43.3,-22 43.3,18 0,32 -45,8 -41,-29" fill="none" stroke="#005840" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.55"/>
+              <polygon points="0,-75 57.4,-33 58.3,34 0,55 -34,20 -58.3,-34" fill="url(#rg3)" stroke="#7BB31E" stroke-width="2"/>
+              <circle cx="0" cy="-75" r="3.5" fill="#005840"/>
+              <circle cx="57.4" cy="-33" r="3.5" fill="#005840"/>
+              <circle cx="58.3" cy="34" r="3.5" fill="#005840"/>
+              <circle cx="0" cy="55" r="3.5" fill="#005840"/>
+              <circle cx="-34" cy="20" r="3.5" fill="#005840"/>
+              <circle cx="-58.3" cy="-34" r="3.5" fill="#005840"/>
+            </g>
+            <text x="140" y="22" text-anchor="middle" font-family="Inter Tight" font-size="11" font-weight="700" fill="#0A1F17">SG-TOT +0,42</text>
+            <text x="245" y="90" font-family="JetBrains Mono" font-size="9" fill="#5E5C57">OTT</text>
+            <text x="245" y="200" font-family="JetBrains Mono" font-size="9" fill="#5E5C57">APP</text>
+            <text x="140" y="270" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#5E5C57">PUTT</text>
+            <text x="35" y="200" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#A32D2D">ARG</text>
+            <text x="35" y="90" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#5E5C57">T2G</text>
+          </svg>
+          <div>
+            <h3 style="font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-bottom:10px;">Strokes Gained — forklart</h3>
+            <div style="font-size:14px;line-height:1.6;color:var(--fg);">SG måler hvor mange slag Markus sparer per runde sammenlignet med en gjennomsnittlig amatør. <strong>Pluss-tall betyr at han er bedre</strong>. Iron-spill (+0,28) er hans skarpeste våpen. Around-the-green (−0,12) er det vi jobber med nå — derfor planen rundt bunker-trening foran Sørlandsåpent.</div>
+            <div style="display:flex;gap:8px;margin-top:14px;">
+              <button class="btn lime sm" onclick="openModal('msg')">Spør Anders om SG</button>
+              <button class="btn outline sm">Vis full statistikk</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- HVA NÅ -->
+        <div class="notify-lime">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M6 9V2h12v7"/><path d="M6 9c0 5 6 5 6 5h0s6 0 6-5"/><path d="M12 14v8M8 22h8"/></svg></div>
+          <div class="body">Markus' neste hovedmål er <strong>Sørlandsåpent 16. juni</strong>. Han er <strong>78 % forberedt</strong> — det betyr at av 15 planlagte fokus-økter har han fullført 12. De neste 3 ukene er kritiske. Anders har lagt opp 5 økter mot turneringen.</div>
+        </div>
+
+        <!-- COACH AVAILABILITY -->
+        <div class="card">
+          <div class="card-h"><h3>Kontakt Anders</h3><span class="sub-mono">SVARTID TYPISK 4 TIMER PÅ HVERDAGER</span></div>
+          <div style="display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;">
+            <div style="width:64px;height:64px;border-radius:50%;background:var(--primary);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;font-weight:700;">AK</div>
+            <div>
+              <div style="font-family:var(--font-display);font-size:18px;font-weight:700;">Anders Kristiansen</div>
+              <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.06em;margin-top:4px;">HEAD COACH AK GOLF ACADEMY · <a href="tel:+4741234567" style="color:var(--primary);">+47 412 34 567</a> · <a href="mailto:anders@akgolf.no" style="color:var(--primary);">anders@akgolf.no</a></div>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn lime sm" onclick="openModal('msg')">Send melding</button>
+              <button class="btn outline sm" onclick="openModal('meeting')">Be om samtale</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-wrap -->
+  </main>
+</div>
+
+<!-- ============ STICKY FOOTER ============ -->
+<div class="sticky-footer">
+  <div class="ft-meta"><strong>TONE BERG</strong> · 1 BARN · SIST INNLOGGET I GÅR 20:14</div>
+  <div class="ft-meta" style="text-align:center;">MARKUS' NESTE ØKT: <strong>TIRSDAG 09:00 · PERFORMANCE STUDIO</strong></div>
+  <div style="display:flex;gap:6px;">
+    <button class="btn outline sm">Trenger hjelp?</button>
+    <button class="btn lime sm">Godkjenninger (2)</button>
+  </div>
+</div>
+
+<!-- ============ MODALS ============ -->
+
+<!-- Confirm godkjenning -->
+<div class="modal-backdrop" id="modal-confirm">
+  <div class="modal">
+    <div class="modal-header">
+      <div><h2>Bekreft godkjenning</h2><div class="cap">SØRLANDSÅPENT 2026 · 16. JUNI · MANDALKRYSSET GK</div></div>
+      <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="info-block">
+        <div class="row"><span class="k">Hva</span><span class="v">Turneringspåmelding</span></div>
+        <div class="row"><span class="k">Beløp</span><span class="v">1 850 kr</span></div>
+        <div class="row"><span class="k">Faktureres</span><span class="v">1. juni 2026</span></div>
+        <div class="row"><span class="k">Coach følger</span><span class="v">Anders · 1 dag</span></div>
+      </div>
+      <label style="display:flex;gap:10px;align-items:center;font-size:13.5px;cursor:pointer;"><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--primary);">Send bekreftelse til Markus</label>
+      <label style="display:flex;gap:10px;align-items:center;font-size:13.5px;cursor:pointer;"><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--primary);">Send kopi til Anders (coach)</label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn outline" onclick="closeModal()">Avbryt</button>
+      <button class="btn lime" onclick="closeModal()">Godkjenn nå</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reject -->
+<div class="modal-backdrop" id="modal-reject">
+  <div class="modal">
+    <div class="modal-header">
+      <div><h2>Avslå denne godkjenningen</h2><div class="cap">MARKUS OG ANDERS VARSLES MED DIN BEGRUNNELSE</div></div>
+      <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <label class="field-label">Begrunnelse (påkrevd)</label>
+        <textarea class="field-input" placeholder="Hvorfor avslår du dette?"></textarea>
+      </div>
+      <div>
+        <label class="field-label">Hurtigvalg</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn outline sm">For dyrt akkurat nå</button>
+          <button class="btn outline sm">Vil snakke med Markus først</button>
+          <button class="btn outline sm">Trenger info fra coach</button>
+        </div>
+      </div>
+      <label style="display:flex;gap:10px;align-items:center;font-size:13.5px;cursor:pointer;"><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--primary);">Send beskjed til Markus</label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn outline" onclick="closeModal()">Avbryt</button>
+      <button class="btn danger-outline" onclick="closeModal()">Avslå</button>
+    </div>
+  </div>
+</div>
+
+<!-- Send melding -->
+<div class="modal-backdrop" id="modal-msg">
+  <div class="modal">
+    <div class="modal-header">
+      <div><h2>Send melding til Anders</h2><div class="cap">SVARTID TYPISK 4 TIMER PÅ HVERDAGER</div></div>
+      <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <label class="field-label">Mottaker</label>
+        <div style="display:flex;gap:10px;align-items:center;padding:10px 14px;background:var(--bg);border-radius:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:12px;font-weight:700;">AK</div>
+          <div style="flex:1;"><div style="font-family:var(--font-display);font-weight:600;">Anders Kristiansen</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);">HEAD COACH</div></div>
+          <label style="font-size:11px;color:var(--muted);"><input type="checkbox" style="margin-right:4px;">CC Markus</label>
+        </div>
+      </div>
+      <div><label class="field-label">Emne</label><input class="field-input" placeholder="Hva handler det om?"></div>
+      <div>
+        <label class="field-label">Hurtigvalg</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn outline sm">Spørsmål om plan</button>
+          <button class="btn outline sm">Bekymring</button>
+          <button class="btn outline sm">Skyss-koordinering</button>
+          <button class="btn outline sm">Generelt</button>
+        </div>
+      </div>
+      <div><label class="field-label">Melding</label><textarea class="field-input" placeholder="Hei Anders, ..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn outline" onclick="closeModal()">Avbryt</button>
+      <button class="btn outline" onclick="closeModal()">Lagre utkast</button>
+      <button class="btn lime" onclick="closeModal()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Be om samtale -->
+<div class="modal-backdrop" id="modal-meeting">
+  <div class="modal">
+    <div class="modal-header">
+      <div><h2>Be om foreldre-samtale</h2><div class="cap">ANDERS FORESLÅR 3 TIDER BASERT PÅ DINE PREFERANSER</div></div>
+      <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <label class="field-label">Type samtale</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+          <button class="btn forest sm" style="justify-content:center;">Telefon</button>
+          <button class="btn outline sm" style="justify-content:center;">Video</button>
+          <button class="btn outline sm" style="justify-content:center;">Fysisk møte GFGK</button>
+        </div>
+      </div>
+      <div><label class="field-label">Foretrukket dato</label><input class="field-input" type="date" value="2026-05-22"></div>
+      <div><label class="field-label">Foretrukket tid</label>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+          <button class="btn outline sm">08:00</button>
+          <button class="btn lime sm">12:00</button>
+          <button class="btn outline sm">16:00</button>
+          <button class="btn outline sm">19:00</button>
+        </div>
+      </div>
+      <div><label class="field-label">Hvorfor (valgfri)</label><textarea class="field-input" placeholder="Hva ønsker du å snakke om?"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn outline" onclick="closeModal()">Avbryt</button>
+      <button class="btn lime" onclick="closeModal()">Send forespørsel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(id) { document.getElementById('modal-' + id)?.classList.add('open'); }
+  function closeModal() { document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open')); }
+  document.querySelectorAll('.modal-backdrop').forEach(b => b.addEventListener('click', e => { if (e.target === b) closeModal(); }));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  document.querySelectorAll('.switch').forEach(s => s.addEventListener('click', () => s.classList.toggle('on')));
+</script>
+</body>
+</html>

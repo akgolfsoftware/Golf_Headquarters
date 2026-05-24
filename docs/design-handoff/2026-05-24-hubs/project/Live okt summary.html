@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Økt fullført — Wedge-presisjon 50–80m — AK Golf PlayerHQ</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0F2A22;
+    --panel: rgba(255,255,255,0.04);
+    --panel-2: rgba(255,255,255,0.07);
+    --cream: #FAFAF7;
+    --cream-70: rgba(250,250,247,0.72);
+    --cream-55: rgba(250,250,247,0.55);
+    --cream-35: rgba(250,250,247,0.35);
+    --border: rgba(250,250,247,0.10);
+    --border-strong: rgba(250,250,247,0.18);
+    --accent: #D1F843;
+    --accent-soft: rgba(209,248,67,0.15);
+    --warn: #EAA952;
+    --warn-soft: rgba(234,169,82,0.16);
+    --danger: #E08070;
+
+    --font-display: 'Inter Tight', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-serif: 'Instrument Serif', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--cream);
+    font-family: var(--font-body); min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse at top, rgba(209,248,67,0.06), transparent 50%),
+      radial-gradient(ellipse 80% 50% at bottom, rgba(0,88,64,0.30), transparent 60%);
+    background-attachment: fixed;
+  }
+  button { font: inherit; cursor: pointer; }
+
+  /* Topbar */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 32px; position: sticky; top: 0; z-index: 5;
+  }
+  .topbar .clock {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+    color: var(--cream); letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .topbar .clock .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--cream-55);
+  }
+  .topbar .close {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: transparent; border: 1px solid var(--border-strong);
+    color: var(--cream-70); display: inline-flex; align-items: center; justify-content: center;
+    text-decoration: none;
+  }
+  .topbar .close:hover { color: var(--cream); border-color: var(--cream-55); }
+  .topbar .close svg { width: 16px; height: 16px; }
+
+  /* Stage */
+  .stage {
+    max-width: 720px; margin: 0 auto;
+    padding: 16px 28px 200px;
+    display: flex; flex-direction: column; gap: 36px;
+  }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 10.5px;
+    font-weight: 600; letter-spacing: 0.18em;
+    color: var(--accent); text-transform: uppercase;
+  }
+
+  /* Title */
+  .title-block { display: flex; flex-direction: column; gap: 12px; }
+  .title-block h1 {
+    font-family: var(--font-display); font-size: 40px; font-weight: 600;
+    letter-spacing: -0.025em; line-height: 1.04;
+  }
+  .title-block h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--accent); }
+  .title-block .subline {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 22px; color: var(--cream-70); line-height: 1.4;
+  }
+  .title-block .meta {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--cream-55); letter-spacing: 0.10em; text-transform: uppercase;
+    margin-top: 4px;
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .title-block .meta .dot { color: var(--cream-35); }
+
+  /* Section head */
+  .sec { display: flex; flex-direction: column; gap: 14px; }
+  .sec-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  }
+  .sec-head h2 {
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    color: var(--cream); letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .sec-head .sub {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--cream-35); letter-spacing: 0.08em;
+  }
+
+  /* KPI grid */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .kpi {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .kpi.big {
+    background: linear-gradient(165deg, rgba(209,248,67,0.10), rgba(209,248,67,0.02));
+    border-color: rgba(209,248,67,0.25);
+  }
+  .kpi .lbl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--cream-55);
+  }
+  .kpi .val {
+    font-family: var(--font-mono); font-size: 36px; font-weight: 700;
+    color: var(--cream); letter-spacing: -0.02em; line-height: 1;
+    font-variant-numeric: tabular-nums;
+    margin-top: 2px;
+  }
+  .kpi.big .val { color: var(--accent); }
+  .kpi .val small {
+    font-family: var(--font-mono); font-size: 14px; color: var(--cream-55);
+    font-weight: 500; letter-spacing: 0;
+  }
+  .kpi .unit { font-family: var(--font-mono); font-size: 11px; color: var(--cream-55); letter-spacing: 0.08em; }
+
+  /* Goal rows */
+  .goal-row {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    gap: 16px; align-items: center;
+  }
+  .goal-row.success { border-color: rgba(209,248,67,0.30); }
+  .goal-row.partial { border-color: rgba(234,169,82,0.30); }
+
+  .goal-row .ic {
+    width: 30px; height: 30px; border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .goal-row.success .ic { background: var(--accent); color: var(--bg); }
+  .goal-row.partial .ic { background: var(--warn-soft); color: var(--warn); }
+  .goal-row .ic svg { width: 16px; height: 16px; }
+
+  .goal-row .body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .goal-row .ttl {
+    font-family: var(--font-display); font-size: 15px; font-weight: 600;
+    color: var(--cream); letter-spacing: -0.005em; line-height: 1.3;
+  }
+  .goal-row .bar-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .goal-row .bar {
+    flex: 1; height: 6px; background: rgba(250,250,247,0.10);
+    border-radius: 999px; overflow: hidden;
+  }
+  .goal-row .bar > div { height: 100%; border-radius: 999px; }
+  .goal-row.success .bar > div { background: var(--accent); }
+  .goal-row.partial .bar > div { background: var(--warn); }
+  .goal-row .bar-meta {
+    font-family: var(--font-mono); font-size: 10.5px; color: var(--cream-55);
+    letter-spacing: 0.06em; min-width: 64px; text-align: right;
+  }
+  .goal-row .verdict {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: var(--cream); text-align: right; max-width: 130px; line-height: 1.4;
+  }
+  .goal-row.success .verdict { color: var(--accent); }
+  .goal-row.partial .verdict { color: var(--warn); }
+
+  /* Highlights */
+  .highlights {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .hl {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 8px;
+    min-height: 130px;
+  }
+  .hl .hl-head {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .hl .hl-head .pip { width: 6px; height: 6px; border-radius: 50%; }
+  .hl.best .hl-head { color: var(--accent); }
+  .hl.best .hl-head .pip { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .hl.tend .hl-head { color: var(--warn); }
+  .hl.tend .hl-head .pip { background: var(--warn); }
+  .hl.pr .hl-head { color: var(--cream-70); }
+  .hl.pr .hl-head .pip { background: var(--cream-70); }
+
+  .hl .main {
+    font-family: var(--font-display); font-size: 20px; font-weight: 600;
+    color: var(--cream); letter-spacing: -0.01em; line-height: 1.15;
+  }
+  .hl .main em {
+    font-family: var(--font-mono); font-style: normal;
+    font-size: 26px; font-weight: 700; color: var(--accent);
+    margin-right: 4px; font-variant-numeric: tabular-nums;
+  }
+  .hl.tend .main em { color: var(--warn); }
+  .hl .note {
+    font-family: var(--font-body); font-size: 12.5px;
+    color: var(--cream-55); line-height: 1.4; margin-top: auto;
+  }
+  .hl .note em {
+    font-family: var(--font-serif); font-style: italic; font-size: 14px; color: var(--cream-70);
+  }
+
+  /* Reflection */
+  .reflect {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .reflect-q {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 24px; color: var(--cream); line-height: 1.3;
+    letter-spacing: -0.005em;
+  }
+  .reflect-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .reflect-chip {
+    padding: 9px 16px;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    font-family: var(--font-body); font-size: 13px; font-weight: 500;
+    color: var(--cream-70);
+    transition: all 160ms ease;
+  }
+  .reflect-chip:hover { border-color: var(--cream-55); color: var(--cream); }
+  .reflect-chip.active { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
+  .reflect-area {
+    background: rgba(15,42,34,0.50);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 14px 16px;
+    color: var(--cream);
+    font-family: var(--font-body); font-size: 14px; line-height: 1.5;
+    min-height: 96px; resize: none; width: 100%; outline: none;
+    transition: border-color 180ms ease;
+  }
+  .reflect-area:focus { border-color: var(--accent); }
+  .reflect-area::placeholder { color: var(--cream-35); }
+  .char-count {
+    align-self: flex-end;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--cream-35); letter-spacing: 0.06em;
+  }
+
+  /* VAS slider */
+  .vas {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .vas-q {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 22px; color: var(--cream); line-height: 1.3;
+  }
+  .vas-display {
+    display: flex; align-items: baseline; gap: 10px;
+    font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  }
+  .vas-display .big {
+    font-size: 56px; font-weight: 700; color: var(--accent);
+    letter-spacing: -0.04em; line-height: 1;
+  }
+  .vas-display .out {
+    font-size: 18px; color: var(--cream-55); letter-spacing: 0.04em;
+  }
+  .vas-display .word {
+    margin-left: auto; font-family: var(--font-display); font-size: 14px;
+    font-weight: 600; color: var(--cream-70);
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .vas-track {
+    position: relative; height: 36px;
+    display: flex; align-items: center;
+  }
+  .vas-track input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 6px;
+    background: linear-gradient(90deg,
+      rgba(209,248,67,0.20) 0%,
+      var(--accent) var(--vp, 80%),
+      rgba(250,250,247,0.10) var(--vp, 80%),
+      rgba(250,250,247,0.10) 100%);
+    border-radius: 999px; outline: none;
+  }
+  .vas-track input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px; height: 26px;
+    border-radius: 50%; background: var(--accent);
+    border: 4px solid var(--bg);
+    cursor: pointer;
+    box-shadow: 0 0 0 1px var(--accent), 0 4px 12px rgba(209,248,67,0.30);
+  }
+  .vas-track input[type=range]::-moz-range-thumb {
+    width: 26px; height: 26px;
+    border-radius: 50%; background: var(--accent);
+    border: 4px solid var(--bg);
+    cursor: pointer;
+    box-shadow: 0 0 0 1px var(--accent), 0 4px 12px rgba(209,248,67,0.30);
+  }
+  .vas-scale {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--cream-35); letter-spacing: 0.08em;
+    text-transform: uppercase; margin-top: -6px;
+  }
+
+  /* Action row */
+  .actions {
+    display: grid; grid-template-columns: 1fr auto; gap: 12px;
+    margin-top: 8px;
+  }
+  .btn-primary {
+    background: var(--accent); color: var(--bg);
+    border: 0; border-radius: 16px;
+    padding: 18px 28px;
+    font-family: var(--font-display); font-size: 15px; font-weight: 700;
+    letter-spacing: -0.005em;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    text-decoration: none;
+    box-shadow: 0 12px 32px rgba(209,248,67,0.20), 0 0 0 1px rgba(209,248,67,0.30);
+    transition: transform 140ms ease;
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-primary svg { width: 16px; height: 16px; }
+
+  .btn-ghost {
+    background: transparent; color: var(--cream-70);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    padding: 18px 22px;
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .btn-ghost:hover { color: var(--cream); border-color: var(--cream-55); }
+
+  @media (max-width: 640px) {
+    .stage { padding: 12px 18px 160px; gap: 28px; }
+    .title-block h1 { font-size: 30px; }
+    .title-block .subline { font-size: 18px; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .kpi:first-child { grid-column: 1 / -1; }
+    .highlights { grid-template-columns: 1fr; }
+    .actions { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-screen-label="Live økt summary">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+    <symbol id="ic-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="clock">
+    <span class="dot"></span>
+    <span id="clock">15:02</span>
+  </div>
+  <a href="Workbench v2.html" class="close" aria-label="Lukk"><svg><use href="#ic-x"/></svg></a>
+</header>
+
+<main class="stage">
+
+  <section class="title-block">
+    <span class="eyebrow">ØKT FULLFØRT · 22. MAI 2026 · 14:00–15:00</span>
+    <h1><em>Slik gikk det</em></h1>
+    <p class="subline">Wedge-presisjon 50–80m. Tre mål, 60 minutter, 78 shots.</p>
+    <div class="meta">
+      <span>MED HANS BRENNUM</span>
+      <span class="dot">·</span>
+      <span>GFGK PERFORMANCE STUDIO</span>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <h2>Tallene</h2>
+      <span class="sub">SAMMENDRAG</span>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi big">
+        <span class="lbl">Mål oppnådd</span>
+        <span class="val">2,5<small> / 3</small></span>
+        <span class="unit">2 BEKREFTET · 1 DELVIS</span>
+      </div>
+      <div class="kpi">
+        <span class="lbl">Varighet</span>
+        <span class="val">60<small> min</small></span>
+        <span class="unit">SOM PLANLAGT</span>
+      </div>
+      <div class="kpi">
+        <span class="lbl">Antall shots</span>
+        <span class="val">78</span>
+        <span class="unit">SNITT 92 PR ØKT</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <h2>Slik gikk det mot målene</h2>
+      <span class="sub">3 MÅL</span>
+    </div>
+
+    <div class="goal-row success">
+      <span class="ic"><svg><use href="#ic-check"/></svg></span>
+      <div class="body">
+        <div class="ttl">Treff GIR 7/10 fra 60m</div>
+        <div class="bar-row">
+          <div class="bar"><div style="width:80%;"></div></div>
+          <span class="bar-meta">8 / 10</span>
+        </div>
+      </div>
+      <span class="verdict">Overoppfylt<br/>+1 fra mål</span>
+    </div>
+
+    <div class="goal-row partial">
+      <span class="ic"><svg><use href="#ic-target"/></svg></span>
+      <div class="body">
+        <div class="ttl">Konsistens i tempo</div>
+        <div class="bar-row">
+          <div class="bar"><div style="width:60%;"></div></div>
+          <span class="bar-meta">6 / 10</span>
+        </div>
+      </div>
+      <span class="verdict">Delvis<br/>nær mål</span>
+    </div>
+
+    <div class="goal-row success">
+      <span class="ic"><svg><use href="#ic-check"/></svg></span>
+      <div class="body">
+        <div class="ttl">Identifisere mønster i misser</div>
+        <div class="bar-row">
+          <div class="bar"><div style="width:100%;"></div></div>
+          <span class="bar-meta">Bekreftet</span>
+        </div>
+      </div>
+      <span class="verdict">Mønster funnet<br/>venstre · 12%</span>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <h2>Highlights</h2>
+      <span class="sub">3 OBSERVASJONER</span>
+    </div>
+
+    <div class="highlights">
+      <div class="hl best">
+        <div class="hl-head"><span class="pip"></span> BESTE SHOT</div>
+        <div class="main"><em>4m</em> fra pin</div>
+        <div class="note">62 m med PW · landing 4,2m kort, rull til pin · ball #43</div>
+      </div>
+      <div class="hl tend">
+        <div class="hl-head"><span class="pip"></span> VERSTE TENDENS</div>
+        <div class="main"><em>12%</em> mot venstre</div>
+        <div class="note">9 av 78 misser samme vei · sjekk grep og setup neste økt</div>
+      </div>
+      <div class="hl pr">
+        <div class="hl-head"><span class="pip"></span> PR-MULIGHET</div>
+        <div class="main">9 GIR <em>= PR</em></div>
+        <div class="note"><em>Hadde du 9 GIR i dag, ville det vært ny PR for 60m-distansen.</em></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <h2>Refleksjon</h2>
+      <span class="sub">VALGFRITT · MAX 300 TEGN</span>
+    </div>
+
+    <div class="reflect">
+      <p class="reflect-q">Hva tar du med deg fra økten?</p>
+      <div class="reflect-chips">
+        <button class="reflect-chip">Bedre tempo</button>
+        <button class="reflect-chip">Funnet mønster</button>
+        <button class="reflect-chip active">Pust hjelper</button>
+        <button class="reflect-chip">Mer trygghet</button>
+      </div>
+      <textarea class="reflect-area" maxlength="300" id="reflect"
+        placeholder="… eller skriv egne ord">Tempoet ble bedre da jeg pustet ut på baksving. Vil prøve det igjen neste økt — og spesielt fra 70m hvor jeg fortsatt misser litt venstre.</textarea>
+      <span class="char-count"><span id="ch">128</span> / 300</span>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <h2>Hvordan føltes økten?</h2>
+      <span class="sub">STEMNING 1–10</span>
+    </div>
+
+    <div class="vas">
+      <p class="vas-q">Hvordan føltes økten i kroppen?</p>
+      <div class="vas-display">
+        <span class="big" id="vas-val">8</span>
+        <span class="out">/ 10</span>
+        <span class="word" id="vas-word">GODT</span>
+      </div>
+      <div class="vas-track" style="--vp:80%;">
+        <input type="range" min="1" max="10" step="1" value="8" id="vas" aria-label="Stemning 1 til 10" />
+      </div>
+      <div class="vas-scale">
+        <span>1 · slitsom</span>
+        <span>5 · greit</span>
+        <span>10 · flow</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="actions">
+    <a href="Meldingstrad - detalj.html" class="btn-primary">
+      <svg><use href="#ic-send"/></svg>
+      Send til coach
+    </a>
+    <a href="Workbench v2.html" class="btn-ghost">Lukk og fortsett</a>
+  </section>
+
+</main>
+
+<script>
+  // Clock
+  const clockEl = document.getElementById('clock');
+  function tick() {
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    clockEl.textContent = `${hh}:${mm}`;
+  }
+  tick(); setInterval(tick, 30000);
+
+  // Char count
+  const ta = document.getElementById('reflect');
+  const ch = document.getElementById('ch');
+  function updateCh() { ch.textContent = ta.value.length; }
+  ta.addEventListener('input', updateCh); updateCh();
+
+  // VAS
+  const vas = document.getElementById('vas');
+  const vasVal = document.getElementById('vas-val');
+  const vasWord = document.getElementById('vas-word');
+  const words = ['—','SLITSOM','TUNG','MIDDELS','GREIT','OK','BRA','GODT','GODT','VELDIG GODT','FLOW'];
+  function updateVas() {
+    const v = +vas.value;
+    vasVal.textContent = v;
+    vasWord.textContent = words[v];
+    vas.parentElement.style.setProperty('--vp', (v * 10) + '%');
+  }
+  vas.addEventListener('input', updateVas); updateVas();
+
+  // Reflect chips
+  document.querySelectorAll('.reflect-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      c.classList.toggle('active');
+    });
+  });
+</script>
+
+</body>
+</html>

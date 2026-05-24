@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Booking — AK Golf · Coaching</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  /* ============================================================
+     PUBLIC BOOKING FLOW — landing-side · 6 steg stacket for review
+     ============================================================ */
+  body { background: var(--bg); padding-bottom: 80px; }
+
+  /* ---------- Landing topnav ---------- */
+  .lnav {
+    position: sticky; top: 0; z-index: 40;
+    background: #fff; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 16px 40px; gap: 32px;
+  }
+  .lnav .brand-mark {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 16px; letter-spacing: -0.01em; color: var(--fg);
+    text-decoration: none;
+  }
+  .lnav .brand-mark img {
+    height: 30px; width: auto; display: block;
+  }
+  .lnav .brand-mark .wordmark {
+    display: inline-flex; align-items: baseline; gap: 6px;
+    line-height: 1;
+  }
+  .lnav .brand-mark em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+    font-size: 14px;
+  }
+  .lnav-links { display: flex; gap: 24px; }
+  .lnav-links a {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+    text-decoration: none;
+  }
+  .lnav-links a.current { color: var(--fg); }
+  .lnav-links a:hover { color: var(--fg); }
+  .lnav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .lnav-right .btn-login {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: var(--fg); background: transparent; border: 0;
+    font-weight: 600;
+  }
+  .lnav-right .btn-cta {
+    background: var(--primary); color: var(--accent);
+    padding: 8px 18px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase; border: 0;
+  }
+
+  /* ---------- Screen wrapper (one per step for review) ---------- */
+  .screen-strip {
+    background: var(--primary); color: var(--accent);
+    padding: 10px 40px; font-family: var(--font-mono);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .screen-strip .right { color: rgba(209,248,67,0.65); letter-spacing: 0.10em; }
+  .screen {
+    max-width: 1180px; margin: 0 auto;
+    padding: 40px 40px 56px;
+  }
+  .screen + .screen-strip { margin-top: 20px; }
+
+  /* ---------- Hero / step header ---------- */
+  .step-hero { margin-bottom: 28px; max-width: 760px; }
+  .step-eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .step-eyebrow .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--primary); color: var(--accent);
+    width: 22px; height: 22px; border-radius: 999px;
+    font-size: 10px; margin-right: 10px; letter-spacing: 0;
+    vertical-align: -5px;
+  }
+  .step-hero h1 {
+    font-family: var(--font-display); font-size: 38px;
+    font-weight: 700; letter-spacing: -0.025em;
+    line-height: 1.05; margin-top: 14px;
+  }
+  .step-hero h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .step-hero .lede {
+    font-size: 15px; color: var(--muted); margin-top: 12px;
+    line-height: 1.55; max-width: 620px;
+  }
+  .step-hero .lede strong { color: var(--fg); font-weight: 600; }
+
+  /* ---------- Stepper (horizontal, public-style) ---------- */
+  .stepper-shell {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 999px; padding: 10px 18px;
+    display: inline-flex; align-items: center; gap: 0;
+    margin-bottom: 28px;
+  }
+  .stepper-item {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 4px 14px;
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 700; letter-spacing: 0.10em;
+    color: var(--muted-soft); text-transform: uppercase;
+  }
+  .stepper-item .n {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--bg); color: var(--muted-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10.5px; border: 1px solid var(--border);
+  }
+  .stepper-item.done .n { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .stepper-item.done { color: var(--fg); }
+  .stepper-item.active .n {
+    background: var(--accent); color: var(--fg);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(209,248,67,0.30);
+  }
+  .stepper-item.active { color: var(--fg); }
+  .stepper-sep {
+    width: 24px; height: 1px; background: var(--border);
+  }
+
+  /* ---------- General buttons ---------- */
+  .btn-lime { background: var(--accent); color: var(--fg); padding: 12px 22px; border-radius: 999px; font-weight: 600; font-size: 14px; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-lime:hover { box-shadow: 0 6px 16px rgba(209,248,67,0.45); }
+  .btn-lime svg { width: 14px; height: 14px; }
+  .btn-ghost-line { background: #fff; color: var(--fg); padding: 12px 22px; border-radius: 999px; font-weight: 600; font-size: 14px; border: 1px solid var(--border); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-ghost-line:hover { border-color: var(--muted-soft); }
+  .btn-ghost-line svg { width: 14px; height: 14px; }
+  .btn-forest { background: var(--primary); color: var(--accent); padding: 12px 22px; border-radius: 999px; font-weight: 600; font-size: 14px; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+
+  .step-actions {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 28px; margin-top: 32px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .step-actions .left-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .step-actions .left-meta strong { color: var(--fg); font-weight: 600; }
+
+  /* ============================================================
+     STEG 1 — VELG LOKASJON
+     ============================================================ */
+  .loc-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  }
+  .loc-card {
+    background: var(--card); border: 2px solid var(--border);
+    border-radius: 18px; overflow: hidden;
+    display: flex; flex-direction: column;
+    cursor: pointer; transition: all 220ms ease;
+    position: relative;
+  }
+  .loc-card:hover { border-color: var(--muted-soft); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(10,31,23,0.07); }
+  .loc-card.selected {
+    border-color: var(--accent);
+    box-shadow: 0 12px 30px rgba(209,248,67,0.30);
+  }
+  .loc-card.selected::after {
+    content: ''; position: absolute; inset: 0; border-radius: 16px;
+    box-shadow: inset 0 0 0 4px rgba(209,248,67,0.18);
+    pointer-events: none;
+  }
+  .loc-hero {
+    height: 240px; position: relative; overflow: hidden;
+    background-color: #062b1c;
+    background-size: cover;
+    background-position: center;
+  }
+  /* Consistent dark overlay so both photos read the same */
+  .loc-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, rgba(6,30,20,0.19) 0%, rgba(6,30,20,0.38) 55%, rgba(6,30,20,0.54) 100%),
+      linear-gradient(150deg, rgba(0,88,64,0.22) 0%, rgba(0,40,28,0.35) 100%);
+    pointer-events: none;
+  }
+  .loc-hero > * { position: relative; z-index: 1; }
+  .loc-hero svg.bg-map { display: none; }
+  .loc-hero .badge-row {
+    position: absolute; top: 16px; left: 16px; right: 16px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .loc-pill {
+    background: rgba(255,255,255,0.10); color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 5px 11px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.10em; text-transform: uppercase; font-weight: 700;
+    backdrop-filter: blur(6px);
+  }
+  .loc-pill.lime { background: var(--accent); color: var(--fg); border-color: transparent; }
+  .loc-check {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,0.10);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.5);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .loc-card.selected .loc-check {
+    background: var(--accent); border-color: var(--accent); color: var(--fg);
+  }
+  .loc-check svg { width: 14px; height: 14px; }
+
+  .loc-hero h3 {
+    position: absolute; left: 20px; bottom: 56px;
+    font-family: var(--font-display); font-size: 24px;
+    font-weight: 700; letter-spacing: -0.015em;
+    color: #fff; max-width: 80%; line-height: 1.1;
+  }
+  .loc-hero .loc-where {
+    position: absolute; left: 20px; bottom: 20px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--accent); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .loc-hero .loc-where svg { width: 12px; height: 12px; }
+
+  .loc-body { padding: 20px 22px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
+  .loc-tagline {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 16px; line-height: 1.5; color: var(--fg);
+  }
+  .loc-facilities { display: flex; flex-wrap: wrap; gap: 6px; }
+  .fac-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 5px 10px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.06em; color: var(--fg);
+  }
+  .fac-chip svg { width: 11px; height: 11px; color: var(--primary); }
+  .loc-meta-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border-soft);
+    padding-top: 16px; gap: 16px;
+  }
+  .loc-meta .lbl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    font-weight: 700; letter-spacing: 0.10em;
+    color: var(--muted-soft); text-transform: uppercase;
+  }
+  .loc-meta .val {
+    font-family: var(--font-mono); font-size: 14px;
+    font-weight: 700; color: var(--fg); margin-top: 4px;
+    letter-spacing: -0.005em;
+  }
+  .loc-meta .val .unit { font-size: 11px; color: var(--muted); font-weight: 500; }
+
+  /* small map preview vector */
+  .mapviz-1 path { fill: rgba(209,248,67,0.55); }
+  .mapviz-2 path { fill: rgba(209,248,67,0.42); }
+
+  /* ============================================================
+     STEG 2 — VELG TRENER
+     ============================================================ */
+  .selected-location-strip {
+    display: flex; align-items: center; gap: 14px;
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 18px; margin-bottom: 22px;
+  }
+  .selected-location-strip .av {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  }
+  .selected-location-strip .label {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; color: var(--muted-soft);
+    letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .selected-location-strip .val {
+    font-family: var(--font-display); font-size: 15px;
+    font-weight: 600; color: var(--fg); margin-top: 2px;
+  }
+  .selected-location-strip .change {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 700; color: var(--primary);
+    letter-spacing: 0.10em; text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .coach-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  }
+  .coach-card-pub {
+    background: var(--card); border: 2px solid var(--border);
+    border-radius: 18px; padding: 24px;
+    display: flex; flex-direction: column;
+    cursor: pointer; transition: all 200ms;
+    position: relative; gap: 14px;
+  }
+  .coach-card-pub:hover { border-color: var(--muted-soft); transform: translateY(-2px); }
+  .coach-card-pub.selected {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, #FCFEEC 0%, #FFFFFF 60%);
+    box-shadow: 0 12px 28px rgba(209,248,67,0.28);
+  }
+  .coach-card-pub .ribbon {
+    position: absolute; top: 14px; right: 14px;
+    padding: 4px 10px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    font-weight: 700; letter-spacing: 0.10em;
+    background: var(--accent); color: var(--fg);
+  }
+  .coach-card-pub .ribbon.cream {
+    background: var(--bg); color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .coach-photo-pub {
+    width: 88px; height: 88px; border-radius: 50%;
+    background: linear-gradient(140deg, #0E5E45 0%, #003224 100%);
+    background-size: cover; background-position: center top;
+    color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 28px; font-weight: 700;
+    letter-spacing: -0.02em;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 14px rgba(10,31,23,0.10);
+    align-self: flex-start;
+    overflow: hidden;
+  }
+  .coach-card-pub h3 {
+    font-family: var(--font-display); font-size: 20px;
+    font-weight: 700; letter-spacing: -0.015em;
+  }
+  .coach-card-pub .role {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase; color: var(--muted);
+    margin-top: 2px;
+  }
+  .coach-card-pub .bio {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 14px; line-height: 1.5; color: var(--fg);
+  }
+  .coach-card-pub .specs { display: flex; flex-wrap: wrap; gap: 5px; }
+  .coach-card-pub .meta-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-top: 12px; border-top: 1px solid var(--border-soft);
+    font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+  }
+  .coach-card-pub .meta-row strong { color: var(--fg); font-weight: 700; }
+  .coach-card-pub .price-row {
+    background: var(--bg);
+    border-radius: 10px; padding: 10px 12px;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .coach-card-pub .price-row .from {
+    font-family: var(--font-mono); font-size: 9.5px;
+    font-weight: 700; color: var(--muted-soft);
+    letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .coach-card-pub .price-row .price {
+    font-family: var(--font-mono); font-size: 16px;
+    font-weight: 700; color: var(--fg);
+  }
+  .coach-card-pub .price-row .price .unit {
+    font-size: 11px; color: var(--muted); font-weight: 500;
+  }
+
+  /* ============================================================
+     STEG 3 — VELG COACHING-TYPE (PRIVAT + GRUPPE stacked)
+     ============================================================ */
+  .coaching-list { display: flex; flex-direction: column; gap: 14px; }
+  .coaching-card {
+    background: var(--card); border: 2px solid var(--border);
+    border-radius: 18px; padding: 0; overflow: hidden;
+    cursor: pointer; transition: all 200ms;
+    display: grid; grid-template-columns: 96px 1fr 220px;
+  }
+  .coaching-card:hover { border-color: var(--muted-soft); }
+  .coaching-card.selected {
+    border-color: var(--accent);
+    background: linear-gradient(90deg, #FCFEEC 0%, #FFFFFF 50%);
+    box-shadow: 0 12px 28px rgba(209,248,67,0.25);
+  }
+  .coaching-icon {
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    border-right: 1px solid var(--border);
+    color: var(--primary);
+    position: relative;
+  }
+  .coaching-card.selected .coaching-icon { background: var(--primary); color: var(--accent); }
+  .coaching-icon svg { width: 32px; height: 32px; }
+  .coaching-body { padding: 22px 28px; display: flex; flex-direction: column; gap: 12px; }
+  .coaching-body .head-row {
+    display: flex; align-items: baseline; gap: 12px;
+    flex-wrap: wrap;
+  }
+  .coaching-body h3 {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 700; letter-spacing: -0.015em;
+  }
+  .coaching-body h3 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .coaching-body .pill-tag {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase; padding: 3px 9px;
+    border-radius: 999px;
+  }
+  .coaching-body .pill-tag.lime { background: var(--accent); color: var(--fg); }
+  .coaching-body .pill-tag.forest { background: rgba(0,88,64,0.12); color: var(--primary); }
+  .coaching-body .desc {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 16px; line-height: 1.5; color: var(--fg);
+    max-width: 620px;
+  }
+  .coaching-features { display: flex; flex-wrap: wrap; gap: 18px; padding-top: 4px; }
+  .coaching-feature {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .coaching-feature svg { width: 13px; height: 13px; color: var(--primary); }
+  .coaching-feature strong { color: var(--fg); font-weight: 700; }
+
+  .coaching-right {
+    background: var(--bg); border-left: 1px solid var(--border);
+    padding: 22px 24px;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right;
+    gap: 6px;
+  }
+  .coaching-card.selected .coaching-right { background: #FCFEEC; border-left-color: rgba(209,248,67,0.55); }
+  .coaching-right .from {
+    font-family: var(--font-mono); font-size: 9.5px;
+    font-weight: 700; color: var(--muted-soft);
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .coaching-right .price {
+    font-family: var(--font-display); font-size: 32px;
+    font-weight: 700; color: var(--fg);
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .coaching-right .price .unit { font-family: var(--font-mono); font-size: 13px; color: var(--muted); font-weight: 500; margin-left: 3px; }
+  .coaching-right .per { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; }
+
+  .coaching-radio {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--border); flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-top: 4px;
+  }
+  .coaching-card.selected .coaching-radio {
+    border-color: var(--primary);
+    background: var(--accent);
+  }
+  .coaching-card.selected .coaching-radio::after {
+    content: ''; width: 10px; height: 10px;
+    border-radius: 50%; background: var(--primary);
+  }
+
+  /* ============================================================
+     STEG 4 — VELG DATO OG TID
+     ============================================================ */
+  .datetime-grid {
+    display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px;
+  }
+  .cal-pub {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 24px 28px;
+  }
+  .cal-pub-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 18px;
+  }
+  .cal-pub-head .month {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 700; letter-spacing: -0.01em;
+  }
+  .cal-pub-head .month em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+  .cal-pub-nav { display: flex; gap: 6px; }
+  .cal-pub-nav button {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: #fff; border: 1px solid var(--border);
+    color: var(--fg); display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .cal-pub-nav button:hover { border-color: var(--muted-soft); }
+  .cal-pub-nav button svg { width: 14px; height: 14px; }
+
+  .weekday-row {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 6px; margin-bottom: 8px;
+  }
+  .weekday-row span {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-soft); letter-spacing: 0.10em;
+    text-align: center; text-transform: uppercase;
+  }
+  .days-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+  }
+  .day-cell-pub {
+    aspect-ratio: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border-radius: 10px; cursor: pointer;
+    font-family: var(--font-mono); font-size: 13.5px;
+    font-weight: 600; color: var(--fg); position: relative;
+  }
+  .day-cell-pub.dim { color: var(--muted-soft); }
+  .day-cell-pub:hover:not(.disabled):not(.dim) { background: var(--bg); }
+  .day-cell-pub.has-slot::after {
+    content: ''; position: absolute; bottom: 8px;
+    width: 4px; height: 4px; border-radius: 50%; background: var(--primary);
+  }
+  .day-cell-pub.few-slots::after { background: var(--warning); }
+  .day-cell-pub.disabled { color: var(--muted-soft); cursor: not-allowed; }
+  .day-cell-pub.today { box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .day-cell-pub.selected {
+    background: var(--primary); color: var(--accent);
+    font-weight: 700;
+  }
+  .day-cell-pub.selected::after { background: var(--accent); }
+
+  .cal-legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    margin-top: 18px; padding-top: 16px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .cal-legend .lg {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .cal-legend .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+  }
+
+  /* slots column */
+  .slots-pub {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 24px;
+  }
+  .slots-head {
+    display: flex; flex-direction: column; gap: 4px; margin-bottom: 18px;
+  }
+  .slots-head .eyebrow-mono {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.12em;
+    color: var(--muted-soft); text-transform: uppercase;
+  }
+  .slots-head h3 {
+    font-family: var(--font-display); font-size: 20px;
+    font-weight: 700; letter-spacing: -0.01em;
+  }
+  .slots-head h3 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+
+  .tod-section { margin-bottom: 18px; }
+  .tod-section:last-child { margin-bottom: 0; }
+  .tod-section .tod-label {
+    font-family: var(--font-mono); font-size: 9.5px;
+    font-weight: 700; letter-spacing: 0.12em;
+    color: var(--muted); text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .tod-section .tod-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border-soft);
+  }
+  .tod-slots {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  }
+  .slot-btn {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 10px; padding: 11px 8px;
+    font-family: var(--font-mono); font-size: 12px;
+    font-weight: 700; color: var(--fg);
+    cursor: pointer; text-align: center;
+    transition: all 160ms;
+    position: relative;
+  }
+  .slot-btn:hover:not(.disabled):not(.selected) {
+    border-color: var(--primary); background: #FCFEEC;
+  }
+  .slot-btn.selected {
+    background: var(--accent); border-color: var(--accent);
+    color: var(--fg);
+  }
+  .slot-btn.disabled {
+    background: var(--bg); color: var(--muted-soft);
+    cursor: not-allowed; text-decoration: line-through;
+    text-decoration-color: var(--muted-soft);
+  }
+  .slot-btn .badge {
+    position: absolute; top: -7px; right: 6px;
+    font-family: var(--font-mono); font-size: 8.5px;
+    font-weight: 700; letter-spacing: 0.06em;
+    background: var(--primary); color: var(--accent);
+    padding: 1px 6px; border-radius: 999px;
+  }
+
+  .tz-strip {
+    margin-top: 18px; padding-top: 16px;
+    border-top: 1px solid var(--border-soft);
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .tz-strip strong { color: var(--fg); font-weight: 700; }
+
+  /* ============================================================
+     STEG 5 — BEKREFTELSE + BETALING
+     ============================================================ */
+  .pay-grid {
+    display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 24px;
+    align-items: start;
+  }
+  .summary-pub {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 28px 30px;
+  }
+  .summary-pub h3 {
+    font-family: var(--font-display); font-size: 18px;
+    font-weight: 700; letter-spacing: -0.01em;
+    padding-bottom: 14px; border-bottom: 1px solid var(--border-soft);
+    margin-bottom: 14px;
+  }
+  .summary-pub h3 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+  .summary-row {
+    display: grid; grid-template-columns: 28px 1fr auto;
+    gap: 14px; padding: 12px 0;
+    border-bottom: 1px solid var(--border-soft);
+    align-items: center;
+  }
+  .summary-row:last-of-type { border-bottom: 0; }
+  .summary-row .ic {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--bg); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .summary-row .ic svg { width: 13px; height: 13px; }
+  .summary-row .k {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.10em;
+    color: var(--muted-soft); text-transform: uppercase;
+  }
+  .summary-row .v {
+    font-family: var(--font-display); font-size: 15px;
+    font-weight: 600; color: var(--fg); margin-top: 2px;
+  }
+  .summary-row .v .sub-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); font-weight: 400; margin-left: 6px;
+  }
+  .summary-row .edit {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.10em;
+    color: var(--primary); text-transform: uppercase;
+    text-decoration: none;
+  }
+  .price-block {
+    background: var(--bg); border-radius: 12px;
+    padding: 16px 18px; margin-top: 18px;
+  }
+  .price-line {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 6px 0;
+    font-family: var(--font-mono); font-size: 12.5px;
+    color: var(--muted);
+  }
+  .price-line strong { color: var(--fg); font-weight: 600; }
+  .price-line.total {
+    padding-top: 14px; margin-top: 4px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-display); font-size: 18px;
+    font-weight: 700; color: var(--fg);
+  }
+  .price-line.total .amount {
+    font-family: var(--font-mono); font-size: 20px;
+    color: var(--fg); font-weight: 700;
+  }
+
+  /* payment column */
+  .pay-col {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 28px 30px;
+    display: flex; flex-direction: column; gap: 22px;
+  }
+  .pay-col h3 {
+    font-family: var(--font-display); font-size: 18px;
+    font-weight: 700; letter-spacing: -0.01em;
+  }
+  .pay-section { display: flex; flex-direction: column; gap: 10px; }
+  .pay-section-label {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.10em;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .pay-methods { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .pay-method {
+    background: #fff; border: 2px solid var(--border);
+    border-radius: 12px; padding: 14px 10px;
+    cursor: pointer; transition: all 180ms;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    text-align: center;
+  }
+  .pay-method:hover { border-color: var(--muted-soft); }
+  .pay-method.active {
+    border-color: var(--accent);
+    background: #FCFEEC;
+    box-shadow: 0 4px 12px rgba(209,248,67,0.25);
+  }
+  .pay-method .ic-pay {
+    width: 36px; height: 24px; border-radius: 5px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700;
+    color: #fff; letter-spacing: 0.02em;
+  }
+  .pay-method .ic-pay.vipps { background: #FF5B24; font-size: 11px; }
+  .pay-method .ic-pay.card { background: var(--fg); font-size: 9px; }
+  .pay-method .ic-pay.klarna { background: #FFA8CD; color: #17120F; font-size: 9px; }
+  .pay-method .pm-name {
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 700; color: var(--fg);
+  }
+
+  .form-row { display: flex; flex-direction: column; gap: 6px; }
+  .form-row label {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.10em;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .form-row input {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px;
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--fg); outline: 0;
+  }
+  .form-row input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,88,64,0.10); }
+  .form-row.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .check-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 12px 14px; background: var(--bg);
+    border-radius: 10px; cursor: pointer;
+  }
+  .check-row .box {
+    width: 18px; height: 18px; border-radius: 5px;
+    border: 1.5px solid var(--border); flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-top: 1px; background: #fff;
+  }
+  .check-row.checked .box { background: var(--primary); border-color: var(--primary); color: var(--accent); }
+  .check-row .body {
+    font-size: 13px; line-height: 1.5; color: var(--fg);
+  }
+  .check-row .body strong { font-weight: 600; }
+  .check-row .body a { color: var(--primary); }
+
+  /* trust strip */
+  .trust-strip {
+    background: rgba(0,88,64,0.04);
+    border: 1px solid rgba(0,88,64,0.12);
+    border-radius: 12px; padding: 12px 14px;
+    display: flex; gap: 10px; align-items: center;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em; line-height: 1.5;
+  }
+  .trust-strip svg { width: 16px; height: 16px; color: var(--primary); flex-shrink: 0; }
+  .trust-strip strong { color: var(--fg); font-weight: 700; }
+
+  /* ============================================================
+     STEG 6 — BEKREFTELSE (legg til i kalender)
+     ============================================================ */
+  .conf-wrap {
+    max-width: 860px; margin: 0 auto;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 24px; overflow: hidden;
+  }
+  .conf-banner-pub {
+    background: linear-gradient(150deg, #0E5E45 0%, #003224 100%);
+    color: #fff; padding: 40px 44px;
+    position: relative; overflow: hidden;
+  }
+  .conf-banner-pub::after {
+    content: ''; position: absolute; top: -60%; right: -10%;
+    width: 420px; height: 420px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .conf-banner-pub .check-circle {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--accent); color: var(--fg);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 18px; position: relative; z-index: 1;
+  }
+  .conf-banner-pub .check-circle svg { width: 32px; height: 32px; stroke-width: 2.5; }
+  .conf-banner-pub .eyebrow-conf {
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 700; letter-spacing: 0.16em;
+    color: var(--accent); text-transform: uppercase;
+    position: relative; z-index: 1;
+  }
+  .conf-banner-pub h2 {
+    font-family: var(--font-display); font-size: 36px;
+    font-weight: 700; letter-spacing: -0.025em;
+    line-height: 1.05; margin-top: 8px; position: relative; z-index: 1;
+  }
+  .conf-banner-pub h2 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--accent);
+  }
+  .conf-banner-pub .lede {
+    font-size: 15px; color: rgba(255,255,255,0.78);
+    margin-top: 14px; line-height: 1.55; max-width: 540px;
+    position: relative; z-index: 1;
+  }
+  .conf-banner-pub .lede strong { color: #fff; font-weight: 600; }
+
+  .conf-body-pub {
+    padding: 32px 44px 36px;
+    display: flex; flex-direction: column; gap: 28px;
+  }
+
+  /* event details mini-table */
+  .event-card-pub {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    background: var(--bg);
+  }
+  .event-card-pub .ec-row {
+    display: grid; grid-template-columns: 90px 1fr;
+    gap: 18px; padding: 9px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .event-card-pub .ec-row:last-child { border-bottom: 0; }
+  .event-card-pub .k {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.10em;
+    color: var(--muted-soft); text-transform: uppercase;
+    padding-top: 3px;
+  }
+  .event-card-pub .v {
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--fg); font-weight: 500; line-height: 1.45;
+  }
+  .event-card-pub .v strong { font-family: var(--font-display); font-weight: 700; }
+
+  /* calendar buttons */
+  .cal-actions-row {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .cal-actions-row .h {
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.12em;
+    color: var(--muted); text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .cal-actions-row .h svg { width: 13px; height: 13px; color: var(--primary); }
+  .cal-buttons {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  }
+  .cal-btn {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 14px;
+    cursor: pointer; transition: all 180ms;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    text-decoration: none;
+  }
+  .cal-btn:hover { border-color: var(--primary); background: #FCFEEC; }
+  .cal-btn .ic-cal {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-family: var(--font-display); font-weight: 700;
+  }
+  .cal-btn .ic-cal.gcal {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    color: #4285F4;
+    font-size: 14px;
+  }
+  .cal-btn .ic-cal.apple { background: #1d1d1f; color: #fff; font-size: 18px; }
+  .cal-btn .ic-cal.outlook { background: #0078D4; color: #fff; font-size: 13px; }
+  .cal-btn .ic-cal.ics { background: var(--primary); color: var(--accent); font-size: 11px; }
+  .cal-btn .ic-cal svg { width: 18px; height: 18px; }
+  .cal-btn .cn {
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 700; color: var(--fg);
+    text-align: center;
+  }
+  .cal-btn .cs {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-soft); letter-spacing: 0.06em;
+  }
+
+  /* next steps */
+  .next-steps-pub {
+    background: rgba(209,248,67,0.12);
+    border: 1px solid rgba(209,248,67,0.50);
+    border-radius: 14px; padding: 20px 22px;
+  }
+  .next-steps-pub h4 {
+    font-family: var(--font-mono); font-size: 10.5px;
+    font-weight: 700; letter-spacing: 0.12em;
+    color: var(--primary); text-transform: uppercase;
+    margin-bottom: 10px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .next-steps-pub h4 svg { width: 14px; height: 14px; }
+  .next-steps-pub ol {
+    margin: 0; padding-left: 22px;
+    font-size: 14px; line-height: 1.7; color: var(--fg);
+  }
+  .next-steps-pub ol li { padding: 1px 0; }
+  .next-steps-pub ol li strong { font-family: var(--font-display); font-weight: 700; }
+
+  /* receipt strip */
+  .receipt-strip {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 0; gap: 20px;
+    flex-wrap: wrap;
+  }
+  .receipt-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    line-height: 1.6;
+  }
+  .receipt-meta strong { color: var(--fg); font-weight: 700; }
+  .receipt-actions { display: flex; gap: 8px; }
+
+  .conf-footer-pub {
+    background: var(--bg);
+    padding: 22px 44px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 15px; color: var(--muted); line-height: 1.5;
+  }
+  .conf-footer-pub .sig {
+    font-family: var(--font-display); font-style: normal;
+    font-weight: 700; color: var(--fg); margin-top: 6px;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body data-screen-label="Booking-flyt landingsside">
+
+<!-- ============================================================
+     LANDING TOPNAV
+     ============================================================ -->
+<nav class="lnav">
+  <a href="#" class="brand-mark">
+    <img src="assets/logo-primary-on-light.svg" alt="AK Golf">
+    <span class="wordmark">AK Golf<em>· coaching</em></span>
+  </a>
+  <div class="lnav-links">
+    <a href="#" class="current">Book coaching</a>
+    <a href="#">Trenere</a>
+    <a href="#">Anlegg</a>
+    <a href="#">Priser</a>
+    <a href="#">Om oss</a>
+  </div>
+  <div class="lnav-right">
+    <button class="btn-login">Logg inn</button>
+    <button class="btn-cta">Bli medlem</button>
+  </div>
+</nav>
+
+<!-- ============================================================
+     STEG 1 — VELG LOKASJON
+     ============================================================ -->
+<div class="screen-strip">
+  <span>Skjerm 1 / 6 · /book · steg 1 · velg lokasjon</span>
+  <span class="right">Alle steg synlige for review</span>
+</div>
+<section class="screen" data-screen-label="01 Velg lokasjon">
+  <div class="step-hero">
+    <div class="step-eyebrow"><span class="num">1</span>Velg lokasjon</div>
+    <h1>Hvor vil du <em>trene</em>?</h1>
+    <p class="lede">Vi har to anlegg med Trackman, video-analyse og innendørs studio. <strong>Begge har samme priser</strong> — velg det som ligger nærmest deg.</p>
+  </div>
+
+  <div class="stepper-shell">
+    <div class="stepper-item active"><span class="n">1</span>Lokasjon</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">2</span>Trener</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">3</span>Coaching</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">4</span>Dato &amp; tid</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">5</span>Betaling</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">6</span>Bekreftet</div>
+  </div>
+
+  <div class="loc-grid">
+    <!-- GFGK -->
+    <div class="loc-card selected">
+      <div class="loc-hero" style="background-image: url('assets/loc-gfgk.jpg');">
+        <svg class="bg-map mapviz-1" viewBox="0 0 600 280" preserveAspectRatio="xMidYMid slice">
+          <path d="M 0 180 Q 80 120 180 130 Q 280 140 380 100 Q 480 70 600 90 L 600 280 L 0 280 Z"/>
+          <path d="M 0 220 Q 100 180 220 200 Q 340 220 460 180 Q 540 150 600 170 L 600 280 L 0 280 Z" opacity="0.6"/>
+          <circle cx="120" cy="80" r="22" fill="rgba(255,255,255,0.10)"/>
+          <circle cx="320" cy="60" r="14" fill="rgba(255,255,255,0.10)"/>
+          <circle cx="480" cy="120" r="18" fill="rgba(255,255,255,0.10)"/>
+          <path d="M 80 50 L 100 30 L 120 50 L 100 70 Z" fill="rgba(209,248,67,0.30)"/>
+          <path d="M 280 100 L 295 88 L 310 100 L 295 112 Z" fill="rgba(209,248,67,0.30)"/>
+        </svg>
+        <div class="badge-row">
+          <span class="loc-pill lime">Anbefalt</span>
+          <span class="loc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <h3>Gamle Fredrikstad Golfklubb</h3>
+        <div class="loc-where">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Fredrikstad
+        </div>
+      </div>
+      <div class="loc-body">
+        <div class="loc-tagline">Hjemmebanen vår. 9-hulls par 3-bane, Performance Studio med Trackman 4 og to-kamera-system — best for tek-arbeid året rundt.</div>
+        <div class="loc-facilities">
+          <span class="fac-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>2. etg. driving range</span>
+          <span class="fac-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Putting green</span>
+          <span class="fac-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Nærspillsgreen</span>
+          <span class="fac-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Performance Studio</span>
+          <span class="fac-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>9 hull · par 3-bane</span>
+        </div>
+        <div class="loc-meta-grid">
+          <div class="loc-meta"><div class="lbl">Trenere</div><div class="val">5</div></div>
+          <div class="loc-meta"><div class="lbl">Avstand</div><div class="val">68 <span class="unit">km</span></div></div>
+          <div class="loc-meta"><div class="lbl">Åpent</div><div class="val">07–22</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Miklagard -->
+    <div class="loc-card">
+      <div class="loc-hero" style="background-image: url('assets/loc-miklagard.jpg');">
+        <svg class="bg-map mapviz-2" viewBox="0 0 600 280" preserveAspectRatio="xMidYMid slice">
+          <path d="M 0 200 Q 120 160 240 170 Q 360 180 480 140 Q 560 110 600 130 L 600 280 L 0 280 Z"/>
+          <path d="M 0 240 Q 100 210 200 220 Q 320 230 440 200 Q 540 180 600 200 L 600 280 L 0 280 Z" opacity="0.5"/>
+          <circle cx="200" cy="90" r="20" fill="rgba(255,255,255,0.10)"/>
+          <circle cx="380" cy="60" r="16" fill="rgba(255,255,255,0.10)"/>
+          <circle cx="520" cy="100" r="22" fill="rgba(255,255,255,0.10)"/>
+          <path d="M 100 40 L 120 22 L 140 40 L 120 58 Z" fill="rgba(209,248,67,0.28)"/>
+          <path d="M 420 90 L 435 78 L 450 90 L 435 102 Z" fill="rgba(209,248,67,0.28)"/>
+        </svg>
+        <div class="badge-row">
+          <span class="loc-pill">Nytt anlegg</span>
+          <span class="loc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <h3>Miklagard Golfklubb</h3>
+        <div class="loc-where">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Kløfta
+        </div>
+      </div>
+      <div class="loc-body">
+        <div class="loc-tagline">Vårt sekundære anlegg — Norges mest prestisjetunge mesterskapsbane. Best for spill-trening på en utfordrende layout.</div>
+        <div class="loc-facilities">
+          <span class="fac-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>2. etg. Trackman driving range</span>
+          <span class="fac-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>2 × Performance Golf Studio</span>
+          <span class="fac-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Stor putting green</span>
+          <span class="fac-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Nærspillsgreen</span>
+          <span class="fac-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>State-of-the-art wedge-område</span>
+        </div>
+        <div class="loc-meta-grid">
+          <div class="loc-meta"><div class="lbl">Trenere</div><div class="val">3</div></div>
+          <div class="loc-meta"><div class="lbl">Avstand</div><div class="val">42 <span class="unit">km</span></div></div>
+          <div class="loc-meta"><div class="lbl">Åpent</div><div class="val">06–22</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-actions">
+    <span class="left-meta">Valgt: <strong>Gamle Fredrikstad Golfklubb</strong> · 2 trenere tilgjengelig</span>
+    <button class="btn-lime">Neste — velg trener
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ============================================================
+     STEG 2 — VELG TRENER
+     ============================================================ -->
+<div class="screen-strip">
+  <span>Skjerm 2 / 6 · /book/trener · steg 2 · velg trener</span>
+  <span class="right">2 trenere på Gamle Fredrikstad</span>
+</div>
+<section class="screen" data-screen-label="02 Velg trener">
+  <div class="step-hero">
+    <div class="step-eyebrow"><span class="num">2</span>Velg trener</div>
+    <h1>Hvem vil du <em>trene med</em>?</h1>
+    <p class="lede">Hver trener har sitt eget fokusområde og prisnivå. <strong>Bla gjennom bio og spesialitet</strong> — du kan alltids bytte coach senere.</p>
+  </div>
+
+  <div class="stepper-shell">
+    <div class="stepper-item done"><span class="n">✓</span>Lokasjon</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item active"><span class="n">2</span>Trener</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">3</span>Coaching</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">4</span>Dato &amp; tid</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">5</span>Betaling</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">6</span>Bekreftet</div>
+  </div>
+
+  <div class="selected-location-strip">
+    <span class="av">GFGK</span>
+    <div>
+      <div class="label">Lokasjon</div>
+      <div class="val">Gamle Fredrikstad Golfklubb</div>
+    </div>
+    <a href="#" class="change">Endre</a>
+  </div>
+
+  <div class="coach-grid">
+    <!-- Anders -->
+    <div class="coach-card-pub selected">
+      <span class="ribbon">Mest brukt</span>
+      <div class="coach-photo-pub" style="background-image: url('assets/coach-anders.jpg'); background-position: 68% 28%; background-size: 240%;"></div>
+      <div>
+        <h3>Anders Kristiansen</h3>
+        <div class="role">Head Coach · AK Golf Academy</div>
+      </div>
+      <div class="bio">«Spesialitet: TrackMan-tall + scoring + mental struktur som holder under press. Passer best for golfere som er klare for målbar progresjon og vil ha en plan å jobbe ut fra.»</div>
+      <div class="specs">
+        <span class="pill pill-tek">Tek</span>
+        <span class="pill pill-slag">Slag</span>
+        <span class="pill pill-spill">Spill</span>
+        <span class="pill pill-turn">Turn</span>
+      </div>
+      <div class="meta-row">
+        <span>★ <strong>4,9</strong> · 38 elever</span>
+        <span>15 år erfaring</span>
+      </div>
+      <div class="price-row">
+        <span class="from">Fra</span>
+        <span class="price">600<span class="unit"> kr / 20 min</span></span>
+      </div>
+    </div>
+
+    <!-- Markus -->
+    <div class="coach-card-pub">
+      <span class="ribbon cream">Junior</span>
+      <div class="coach-photo-pub">MR</div>
+      <div>
+        <h3>Markus Røinås Pedersen</h3>
+        <div class="role">Sportslig leder junior · GFGK</div>
+      </div>
+      <div class="bio">«Tålmodig og lekent fokus på grunnleggende mekanikk. Den ideelle starten hvis du er ny til golfen eller har høyt handicap og vil bygge fundamentet riktig.»</div>
+      <div class="specs">
+        <span class="pill pill-tek">Tek</span>
+        <span class="pill pill-fys">Fys</span>
+        <span class="pill pill-spill">Spill</span>
+      </div>
+      <div class="meta-row">
+        <span>★ <strong>4,8</strong> · 18 elever</span>
+        <span>4 år erfaring</span>
+      </div>
+      <div class="price-row">
+        <span class="from">Fra</span>
+        <span class="price">300<span class="unit"> kr / 20 min</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-actions">
+    <span class="left-meta">Valgt: <strong>Anders Kristiansen</strong> · Head Coach</span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-ghost-line">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbake
+      </button>
+      <button class="btn-lime">Neste — velg coaching-type
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STEG 3 — VELG COACHING-TYPE (Privat + Gruppe stacket)
+     ============================================================ -->
+<div class="screen-strip">
+  <span>Skjerm 3 / 6 · /book/type · steg 3 · velg coaching-produkt</span>
+  <span class="right">5 produkter · 1-til-1 med Anders</span>
+</div>
+<section class="screen" data-screen-label="03 Velg coaching">
+  <div class="step-hero">
+    <div class="step-eyebrow"><span class="num">3</span>Velg coaching</div>
+    <h1>Velg <em>økt</em> med Anders</h1>
+    <p class="lede">Anders tilbyr 5 økt-formater — fra korte 20-min fokus-økter til full <strong>Performance Pro</strong> med TrackMan, video og skriftlig oppfølging. Alle er 1-til-1.</p>
+  </div>
+
+  <div class="stepper-shell">
+    <div class="stepper-item done"><span class="n">✓</span>Lokasjon</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item done"><span class="n">✓</span>Trener</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item active"><span class="n">3</span>Coaching</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">4</span>Dato &amp; tid</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">5</span>Betaling</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">6</span>Bekreftet</div>
+  </div>
+
+  <div class="coaching-list">
+
+    <!-- FLEX 20 -->
+    <div class="coaching-card">
+      <div class="coaching-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="coaching-body">
+        <div class="head-row">
+          <h3>Flex 20 min<em> — Anders</em></h3>
+          <span class="pill-tag forest">Flex · Kort</span>
+          <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;">
+            <span class="coaching-radio"></span>
+          </span>
+        </div>
+        <div class="desc">«Kort fokus-økt med hovedcoachen. Ett tema, raskt inn og ut — perfekt for finpuss mellom runder eller en spesifikk frustrasjon du vil låse opp.»</div>
+        <div class="coaching-features">
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span><strong>20 min</strong></span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
+            <span>1-til-1</span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Ett fokus-tema</span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Drop-in mellom runder</span>
+          </span>
+        </div>
+      </div>
+      <div class="coaching-right">
+        <span class="from">Pris</span>
+        <span class="price">600<span class="unit">kr</span></span>
+        <span class="per">/ 20 min</span>
+      </div>
+    </div>
+
+    <!-- FLEX 50 -->
+    <div class="coaching-card">
+      <div class="coaching-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="coaching-body">
+        <div class="head-row">
+          <h3>Flex 50 min<em> — Anders</em></h3>
+          <span class="pill-tag forest">Flex · Standard</span>
+          <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;">
+            <span class="coaching-radio"></span>
+          </span>
+        </div>
+        <div class="desc">«Standard coaching-time med Anders. Du velger fokus — teknikk, taktikk eller mental — og vi jobber målrettet hele økten.»</div>
+        <div class="coaching-features">
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span><strong>50 min</strong></span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
+            <span>1-til-1</span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Du velger fokus</span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Range / studio</span>
+          </span>
+        </div>
+      </div>
+      <div class="coaching-right">
+        <span class="from">Pris</span>
+        <span class="price">1 500<span class="unit">kr</span></span>
+        <span class="per">/ 50 min</span>
+      </div>
+    </div>
+
+    <!-- FLEX 90 -->
+    <div class="coaching-card">
+      <div class="coaching-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><line x1="9" y1="2" x2="15" y2="2"/><line x1="12" y1="13" x2="12" y2="6"/><line x1="16.5" y1="9.5" x2="14" y2="12"/></svg>
+      </div>
+      <div class="coaching-body">
+        <div class="head-row">
+          <h3>Flex 90 min<em> — Anders</em></h3>
+          <span class="pill-tag forest">Flex · Utvidet</span>
+          <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;">
+            <span class="coaching-radio"></span>
+          </span>
+        </div>
+        <div class="desc">«Utvidet økt for dyp gjennomgang. Tid til å bryte ned swing, jobbe på range og hente det inn igjen. Du går hjem med en konkret plan.»</div>
+        <div class="coaching-features">
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span><strong>90 min</strong></span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Bryt ned + bygg opp</span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Studio + range</span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Konkret hjemmeplan</span>
+          </span>
+        </div>
+      </div>
+      <div class="coaching-right">
+        <span class="from">Pris</span>
+        <span class="price">2 500<span class="unit">kr</span></span>
+        <span class="per">/ 90 min</span>
+      </div>
+    </div>
+
+    <!-- PERFORMANCE — selected -->
+    <div class="coaching-card selected">
+      <div class="coaching-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <div class="coaching-body">
+        <div class="head-row">
+          <h3>Performance<em> — Anders</em></h3>
+          <span class="pill-tag lime">Standardvalg</span>
+          <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;">
+            <span class="coaching-radio"></span>
+          </span>
+        </div>
+        <div class="desc">«Månedlig pakke: 2 × 20 min med Anders hver måned. Strukturert datadrevet trening med TrackMan + swing-analyse — du måler progresjon måned for måned.»</div>
+        <div class="coaching-features">
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span><strong>2 × 20 min / mnd</strong></span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>TrackMan</strong></span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Swing-analyse</span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Løpende plan</span>
+          </span>
+        </div>
+      </div>
+      <div class="coaching-right">
+        <span class="from">Pris</span>
+        <span class="price">1 300<span class="unit">kr</span></span>
+        <span class="per">/ måned</span>
+      </div>
+    </div>
+
+    <!-- PERFORMANCE PRO -->
+    <div class="coaching-card">
+      <div class="coaching-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+      </div>
+      <div class="coaching-body">
+        <div class="head-row">
+          <h3>Performance Pro<em> — Anders</em></h3>
+          <span class="pill-tag forest">Premium</span>
+          <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;">
+            <span class="coaching-radio"></span>
+          </span>
+        </div>
+        <div class="desc">«Månedlig pakke: 4 × 20 min med Anders hver måned. Full performance-oppfølging med TrackMan, video, dispersjons-analyse og skriftlig plan for HCP-spillere.»</div>
+        <div class="coaching-features">
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span><strong>4 × 20 min / mnd</strong></span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>TrackMan + video</span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Dispersjons-analyse</span>
+          </span>
+          <span class="coaching-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Skriftlig plan</strong></span>
+          </span>
+        </div>
+      </div>
+      <div class="coaching-right">
+        <span class="from">Pris</span>
+        <span class="price">2 300<span class="unit">kr</span></span>
+        <span class="per">/ måned</span>
+      </div>
+    </div>
+
+    <!-- Markus note -->
+    <div style="display:flex;gap:14px;align-items:center;background:var(--bg);border:1px dashed var(--border);border-radius:12px;padding:14px 18px;margin-top:4px;">
+      <span style="width:36px;height:36px;border-radius:10px;background:#fff;color:var(--primary);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);font-family:var(--font-mono);font-size:11px;font-weight:700;">MR</span>
+      <div style="flex:1;font-size:13px;line-height:1.5;color:var(--fg);">
+        <strong style="font-family:var(--font-display);font-weight:700;">Markus Røinås Pedersen</strong> har 2 nybegynner-vennlige produkter: <strong>Flex 20 min — 300 kr</strong> og <strong>Flex 50 min — 800 kr</strong>. Bytt coach øverst for å se Markus' tilbud.
+      </div>
+      <button class="btn-ghost-line" style="flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;padding:8px 14px;">Bytt coach</button>
+    </div>
+  </div>
+
+  <div class="step-actions">
+    <span class="left-meta">Valgt: <strong>Performance — Anders</strong> · 2 × 20 min / mnd · 1 300 kr</span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-ghost-line">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbake
+      </button>
+      <button class="btn-lime">Neste — velg dato &amp; tid
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STEG 4 — VELG DATO OG TID
+     ============================================================ -->
+<div class="screen-strip">
+  <span>Skjerm 4 / 6 · /book/tid · steg 4 · velg dato og tid</span>
+  <span class="right">Anders' coach-dager: tir · tor · lør</span>
+</div>
+<section class="screen" data-screen-label="04 Velg dato og tid">
+  <div class="step-hero">
+    <div class="step-eyebrow"><span class="num">4</span>Velg dato og tid</div>
+    <h1>Når <em>passer det</em>?</h1>
+    <p class="lede">Vi viser kun dager hvor Anders er på GFGK. <strong>Punktet under datoen</strong> viser ledig kapasitet — grønn = god ledighet, oransje = få ledige slots.</p>
+  </div>
+
+  <div class="stepper-shell">
+    <div class="stepper-item done"><span class="n">✓</span>Lokasjon</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item done"><span class="n">✓</span>Trener</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item done"><span class="n">✓</span>Coaching</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item active"><span class="n">4</span>Dato &amp; tid</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">5</span>Betaling</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">6</span>Bekreftet</div>
+  </div>
+
+  <div class="datetime-grid">
+    <!-- Calendar -->
+    <div class="cal-pub">
+      <div class="cal-pub-head">
+        <div class="month">Mai <em>2026</em></div>
+        <div class="cal-pub-nav">
+          <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+      <div class="weekday-row">
+        <span>Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span><span>Lør</span><span>Søn</span>
+      </div>
+      <div class="days-grid">
+        <div class="day-cell-pub dim">27</div>
+        <div class="day-cell-pub dim">28</div>
+        <div class="day-cell-pub dim">29</div>
+        <div class="day-cell-pub dim">30</div>
+        <div class="day-cell-pub disabled">1</div>
+        <div class="day-cell-pub disabled">2</div>
+        <div class="day-cell-pub disabled">3</div>
+
+        <div class="day-cell-pub">4</div>
+        <div class="day-cell-pub has-slot">5</div>
+        <div class="day-cell-pub">6</div>
+        <div class="day-cell-pub has-slot">7</div>
+        <div class="day-cell-pub">8</div>
+        <div class="day-cell-pub has-slot">9</div>
+        <div class="day-cell-pub disabled">10</div>
+
+        <div class="day-cell-pub">11</div>
+        <div class="day-cell-pub has-slot">12</div>
+        <div class="day-cell-pub">13</div>
+        <div class="day-cell-pub has-slot">14</div>
+        <div class="day-cell-pub">15</div>
+        <div class="day-cell-pub few-slots">16</div>
+        <div class="day-cell-pub disabled">17</div>
+
+        <div class="day-cell-pub">18</div>
+        <div class="day-cell-pub today">19</div>
+        <div class="day-cell-pub today has-slot">20</div>
+        <div class="day-cell-pub selected has-slot">21</div>
+        <div class="day-cell-pub">22</div>
+        <div class="day-cell-pub few-slots">23</div>
+        <div class="day-cell-pub disabled">24</div>
+
+        <div class="day-cell-pub">25</div>
+        <div class="day-cell-pub has-slot">26</div>
+        <div class="day-cell-pub">27</div>
+        <div class="day-cell-pub has-slot">28</div>
+        <div class="day-cell-pub">29</div>
+        <div class="day-cell-pub has-slot">30</div>
+        <div class="day-cell-pub disabled">31</div>
+      </div>
+      <div class="cal-legend">
+        <span class="lg"><span class="dot" style="background:var(--primary);"></span>God ledighet</span>
+        <span class="lg"><span class="dot" style="background:var(--warning);"></span>Få ledige</span>
+        <span class="lg"><span class="dot" style="background:var(--muted-soft);opacity:0.5;"></span>Ikke ledig</span>
+        <span class="lg" style="margin-left:auto;">Tidssone: <strong style="color:var(--fg);">Oslo (CEST)</strong></span>
+      </div>
+    </div>
+
+    <!-- Slots -->
+    <div class="slots-pub">
+      <div class="slots-head">
+        <span class="eyebrow-mono">Ledige tider · tirsdag 21. mai</span>
+        <h3>Velg en <em>tid</em></h3>
+      </div>
+
+      <div class="tod-section">
+        <div class="tod-label">Morgen</div>
+        <div class="tod-slots">
+          <button class="slot-btn">08:00</button>
+          <button class="slot-btn selected"><span class="badge">Anbefalt</span>09:00</button>
+          <button class="slot-btn">10:30</button>
+        </div>
+      </div>
+
+      <div class="tod-section">
+        <div class="tod-label">Ettermiddag</div>
+        <div class="tod-slots">
+          <button class="slot-btn">14:00</button>
+          <button class="slot-btn">15:30</button>
+          <button class="slot-btn disabled">17:00</button>
+        </div>
+      </div>
+
+      <div class="tod-section">
+        <div class="tod-label">Kveld</div>
+        <div class="tod-slots">
+          <button class="slot-btn">18:30</button>
+          <button class="slot-btn">20:00</button>
+          <button class="slot-btn disabled">21:00</button>
+        </div>
+      </div>
+
+      <div class="tz-strip">
+        <span>Varighet: <strong>20 min</strong> · slutter <strong>09:20</strong> · 1 av 2 i måneden</span>
+        <span>5 ledige</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-actions">
+    <span class="left-meta">Valgt: <strong>Tir 21. mai · 09:00 – 10:00</strong></span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-ghost-line">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbake
+      </button>
+      <button class="btn-lime">Til betaling
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STEG 5 — BEKREFTELSE + BETALING
+     ============================================================ -->
+<div class="screen-strip">
+  <span>Skjerm 5 / 6 · /book/betaling · steg 5 · bekreftelse + betaling</span>
+  <span class="right">Sikker betaling · Stripe</span>
+</div>
+<section class="screen" data-screen-label="05 Bekreft og betal">
+  <div class="step-hero">
+    <div class="step-eyebrow"><span class="num">5</span>Bekreft &amp; betal</div>
+    <h1>Bekreft og <em>fullfør</em>.</h1>
+    <p class="lede">Sjekk detaljene under og velg betalingsmåte. <strong>Du kan avbestille gratis frem til 24 timer før</strong> økten — etter det belastes 50 %.</p>
+  </div>
+
+  <div class="stepper-shell">
+    <div class="stepper-item done"><span class="n">✓</span>Lokasjon</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item done"><span class="n">✓</span>Trener</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item done"><span class="n">✓</span>Coaching</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item done"><span class="n">✓</span>Dato &amp; tid</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item active"><span class="n">5</span>Betaling</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item"><span class="n">6</span>Bekreftet</div>
+  </div>
+
+  <div class="pay-grid">
+    <!-- LEFT: summary -->
+    <div class="summary-pub">
+      <h3>Din <em>booking</em></h3>
+
+      <div class="summary-row">
+        <span class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        <div>
+          <div class="k">Lokasjon</div>
+          <div class="v">Gamle Fredrikstad Golfklubb <span class="sub-meta">Performance Studio</span></div>
+        </div>
+        <a href="#" class="edit">Endre</a>
+      </div>
+
+      <div class="summary-row">
+        <span class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
+        </span>
+        <div>
+          <div class="k">Trener</div>
+          <div class="v">Anders Kristiansen <span class="sub-meta">Head Coach · PGA-A</span></div>
+        </div>
+        <a href="#" class="edit">Endre</a>
+      </div>
+
+      <div class="summary-row">
+        <span class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </span>
+        <div>
+          <div class="k">Coaching</div>
+          <div class="v">Performance <span class="sub-meta">2 × 20 min / mnd · første økt i pakken</span></div>
+        </div>
+        <a href="#" class="edit">Endre</a>
+      </div>
+
+      <div class="summary-row">
+        <span class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+        </span>
+        <div>
+          <div class="k">Dato &amp; tid</div>
+          <div class="v">Tirsdag 21. mai 2026 <span class="sub-meta">09:00 – 10:00</span></div>
+        </div>
+        <a href="#" class="edit">Endre</a>
+      </div>
+
+      <div class="price-block">
+        <div class="price-line"><span>Performance — Anders · 2 × 20 min / mnd</span><strong>1 300 kr</strong></div>
+        <div class="price-line"><span>TrackMan + video-analyse</span><strong>Inkludert</strong></div>
+        <div class="price-line"><span>Førstegangs-rabatt (kode <code style="font-family:var(--font-mono);background:#fff;padding:1px 5px;border-radius:4px;">VELKOMMEN</code>)</span><strong style="color:var(--success);">−200 kr</strong></div>
+        <div class="price-line total">
+          <span>Totalt å betale</span>
+          <span class="amount">1 100 kr</span>
+        </div>
+      </div>
+
+      <div class="trust-strip" style="margin-top:14px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg>
+        <span><strong>Gratis avbestilling</strong> frem til 24 t før økten. Etter det belastes 50 % av prisen.</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: payment -->
+    <div class="pay-col">
+      <h3>Velg <em>betalingsmåte</em></h3>
+
+      <div class="pay-section">
+        <div class="pay-methods">
+          <div class="pay-method active">
+            <span class="ic-pay vipps">vipps</span>
+            <span class="pm-name">Vipps</span>
+          </div>
+          <div class="pay-method">
+            <span class="ic-pay card">CARD</span>
+            <span class="pm-name">Bankkort</span>
+          </div>
+          <div class="pay-method">
+            <span class="ic-pay klarna">Klarna.</span>
+            <span class="pm-name">Klarna</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pay-section">
+        <div class="pay-section-label">Kontaktinformasjon</div>
+        <div class="form-row">
+          <label>Fullt navn</label>
+          <input type="text" value="Markus Rønne-Pettersen" />
+        </div>
+        <div class="form-row">
+          <label>E-post</label>
+          <input type="email" value="markus@example.no" />
+        </div>
+        <div class="form-row two">
+          <div class="form-row">
+            <label>Mobil</label>
+            <input type="tel" value="+47 901 23 456" />
+          </div>
+          <div class="form-row">
+            <label>Hcp (valgfritt)</label>
+            <input type="text" value="+3,5" />
+          </div>
+        </div>
+      </div>
+
+      <div class="pay-section">
+        <div class="pay-section-label">Vipps · 901 23 456</div>
+        <div class="check-row checked">
+          <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div class="body">Jeg har lest og godtar <a href="#">vilkår</a> og <a href="#">avbestillingsregler</a>.</div>
+        </div>
+        <div class="check-row">
+          <span class="box"></span>
+          <div class="body">Send meg månedlige tips fra Anders &amp; trener-teamet.</div>
+        </div>
+      </div>
+
+      <button class="btn-forest" style="display:flex;width:100%;justify-content:center;padding:18px 24px;font-size:16px;font-weight:700;gap:12px;margin-top:6px;border-radius:12px;letter-spacing:0.01em;box-shadow:0 6px 18px rgba(0,88,64,0.20);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Betal 1 100 kr med Vipps
+      </button>
+    </div>
+  </div>
+
+  <div class="step-actions">
+    <span class="left-meta">Sikker betaling via Stripe · 256-bit SSL · PCI-DSS</span>
+    <button class="btn-ghost-line">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Tilbake
+    </button>
+  </div>
+</section>
+
+<!-- ============================================================
+     STEG 6 — BEKREFTELSE (legg til i kalender)
+     ============================================================ -->
+<div class="screen-strip">
+  <span>Skjerm 6 / 6 · /book/bekreftet · steg 6 · bekreftelse</span>
+  <span class="right">Ordre #AK-2685 · 21.05.2026</span>
+</div>
+<section class="screen" data-screen-label="06 Bekreftet">
+  <div class="step-hero">
+    <div class="step-eyebrow"><span class="num">✓</span>Bekreftet</div>
+    <h1>Klar — vi <em>sees</em>!</h1>
+    <p class="lede">Bookingen er bekreftet og kvittering er sendt til <strong>markus@example.no</strong>. Husk å legge økten i kalenderen din.</p>
+  </div>
+
+  <div class="stepper-shell">
+    <div class="stepper-item done"><span class="n">✓</span>Lokasjon</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item done"><span class="n">✓</span>Trener</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item done"><span class="n">✓</span>Coaching</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item done"><span class="n">✓</span>Dato &amp; tid</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item done"><span class="n">✓</span>Betaling</div>
+    <div class="stepper-sep"></div>
+    <div class="stepper-item active"><span class="n">✓</span>Bekreftet</div>
+  </div>
+
+  <div class="conf-wrap">
+    <!-- Banner -->
+    <div class="conf-banner-pub">
+      <div class="check-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="eyebrow-conf">Ordre #AK-2685 · bekreftet 21.05.2026</div>
+      <h2>Tirsdag 21. mai · <em>09:00</em></h2>
+      <p class="lede">Første økt i din <strong>Performance</strong>-månedspakke med <strong>Anders Kristiansen</strong> i Performance Studio på Gamle Fredrikstad Golfklubb. Vi gleder oss!</p>
+    </div>
+
+    <!-- Body -->
+    <div class="conf-body-pub">
+
+      <!-- Event details -->
+      <div class="event-card-pub">
+        <div class="ec-row">
+          <span class="k">Når</span>
+          <span class="v"><strong>Tirsdag 21. mai 2026</strong> · 09:00 – 10:00 (Oslo)</span>
+        </div>
+        <div class="ec-row">
+          <span class="k">Hvor</span>
+          <span class="v"><strong>Performance Studio</strong> · Gamle Fredrikstad Golfklubb, Vesterelvveien 100, 1605 Fredrikstad</span>
+        </div>
+        <div class="ec-row">
+          <span class="k">Med</span>
+          <span class="v"><strong>Anders Kristiansen</strong> · Head Coach · anders@akgolf.no · +47 909 45 678</span>
+        </div>
+        <div class="ec-row">
+          <span class="k">Type</span>
+          <span class="v">Performance månedspakke · 2 × 20 min / mnd · TrackMan 4 + swing-analyse</span>
+        </div>
+        <div class="ec-row">
+          <span class="k">Betalt</span>
+          <span class="v"><strong>1 100 kr</strong> via Vipps · 901 23 456 · ref. AK-2685</span>
+        </div>
+      </div>
+
+      <!-- Add to calendar -->
+      <div class="cal-actions-row">
+        <div class="h">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+          Legg til i kalender
+        </div>
+        <div class="cal-buttons">
+          <a href="#" class="cal-btn">
+            <span class="ic-cal gcal">G</span>
+            <span class="cn">Google</span>
+            <span class="cs">.ics-feed</span>
+          </a>
+          <a href="#" class="cal-btn">
+            <span class="ic-cal apple"></span>
+            <span class="cn">Apple</span>
+            <span class="cs">iCloud</span>
+          </a>
+          <a href="#" class="cal-btn">
+            <span class="ic-cal outlook">O</span>
+            <span class="cn">Outlook</span>
+            <span class="cs">M365</span>
+          </a>
+          <a href="#" class="cal-btn">
+            <span class="ic-cal ics">ICS</span>
+            <span class="cn">Last ned</span>
+            <span class="cs">.ics-fil</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Next steps -->
+      <div class="next-steps-pub">
+        <h4>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          Slik forbereder du deg
+        </h4>
+        <ol>
+          <li><strong>Møt 10 min før</strong> — Performance Studio ligger i andre etasje, ved klubbhuset. Anders henter deg i resepsjonen.</li>
+          <li><strong>Ta med dine egne køller</strong> — vi har leie-køller i studio, men dine egne gir best data.</li>
+          <li><strong>Bekreftelses-SMS</strong> kommer 24 t før økten med veibeskrivelse og hva du bør tenke på.</li>
+          <li><strong>Avbestilling</strong> kan gjøres gratis frem til mandag 20. mai 09:00 — bruk lenken i e-posten.</li>
+        </ol>
+      </div>
+
+      <!-- Receipt + actions -->
+      <div class="receipt-strip">
+        <div class="receipt-meta">
+          Ordre <strong>#AK-2685</strong> · betalt <strong>1 100 kr</strong> via Vipps · ref. <strong>AK-2685-VIPPS</strong><br>
+          Kvittering er sendt til <strong>markus@example.no</strong>.
+        </div>
+        <div class="receipt-actions">
+          <button class="btn-ghost-line">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Last ned kvittering
+          </button>
+          <button class="btn-ghost-line">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><polyline points="4 4 12 13 20 4"/></svg>
+            Send på e-post igjen
+          </button>
+          <button class="btn-lime">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 4 4 20"/><path d="M20 4v6m0-6h-6"/></svg>
+            Til PlayerHQ
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="conf-footer-pub">
+      «Gleder meg til å se hva vi finner på Trackman tirsdag. Ta med deg svinge-spørsmålene dine.»
+      <div class="sig">— Anders Kristiansen, Head Coach</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Light interactivity: clicking cards toggles selection within their group.
+  document.querySelectorAll('.loc-card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.parentElement.querySelectorAll('.loc-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+  document.querySelectorAll('.coach-card-pub').forEach(card => {
+    card.addEventListener('click', () => {
+      card.parentElement.querySelectorAll('.coach-card-pub').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+  document.querySelectorAll('.coaching-card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.parentElement.querySelectorAll('.coaching-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+  document.querySelectorAll('.day-cell-pub').forEach(d => {
+    d.addEventListener('click', () => {
+      if (d.classList.contains('disabled') || d.classList.contains('dim')) return;
+      d.parentElement.querySelectorAll('.day-cell-pub').forEach(c => c.classList.remove('selected'));
+      d.classList.add('selected');
+    });
+  });
+  document.querySelectorAll('.slot-btn').forEach(s => {
+    s.addEventListener('click', () => {
+      if (s.classList.contains('disabled')) return;
+      // selection scoped to the entire slots column
+      const root = s.closest('.slots-pub');
+      root.querySelectorAll('.slot-btn').forEach(c => c.classList.remove('selected'));
+      s.classList.add('selected');
+    });
+  });
+  document.querySelectorAll('.pay-method').forEach(p => {
+    p.addEventListener('click', () => {
+      p.parentElement.querySelectorAll('.pay-method').forEach(c => c.classList.remove('active'));
+      p.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.check-row').forEach(c => {
+    c.addEventListener('click', () => c.classList.toggle('checked'));
+  });
+</script>
+</body>
+</html>

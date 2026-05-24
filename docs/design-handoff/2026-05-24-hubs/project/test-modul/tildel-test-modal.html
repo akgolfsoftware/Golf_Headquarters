@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Tildel test — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_tester.css">
+<style>
+  /* faded "page under modal" */
+  .behind {
+    position: fixed; inset: 0;
+    background: var(--cream);
+    z-index: 1;
+    filter: blur(0.5px);
+  }
+  .behind .b-side {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 240px;
+    background: #0F2A22; opacity: 0.92;
+  }
+  .behind .b-top {
+    position: fixed; top: 0; left: 240px; right: 0; height: 60px;
+    background: #fff; border-bottom: 1px solid var(--border);
+  }
+  .behind .b-hero {
+    position: fixed; top: 84px; left: 280px; right: 40px;
+    height: 60px;
+    background: var(--card); border-radius: 12px; opacity: 0.8;
+  }
+  .behind .b-card {
+    position: absolute; background: var(--card);
+    border: 1px solid var(--border); border-radius: 16px;
+    opacity: 0.7;
+  }
+
+  .modal-backdrop {
+    background: rgba(10,31,23,0.45);
+    backdrop-filter: blur(2px);
+  }
+  .modal { width: 600px; }
+
+  /* player chip at top of modal */
+  .ply-chip {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .ply-chip .av {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(140deg, var(--forest), var(--forest-dark));
+    color: var(--lime);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .ply-chip .nm {
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    line-height: 1.2;
+  }
+  .ply-chip .sub {
+    font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+    margin-top: 3px; letter-spacing: 0.04em;
+  }
+  .ply-chip .right {
+    margin-left: auto;
+    display: flex; gap: 6px;
+  }
+
+  /* test search + filter */
+  .search-input {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .search-input input {
+    flex: 1; border: 0; background: transparent; outline: none;
+    font-family: var(--font-body); font-size: 13.5px; color: var(--ink);
+  }
+  .search-input input::placeholder { color: var(--subtle); }
+  .search-input svg { width: 14px; height: 14px; color: var(--muted); }
+  .search-input kbd {
+    font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 5px; padding: 2px 6px;
+  }
+
+  .pyr-filters {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
+  }
+  .pyr-filter {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 11px; border-radius: 999px;
+    background: var(--cream); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    color: var(--muted); cursor: pointer;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    line-height: 1;
+  }
+  .pyr-filter.active { background: var(--forest); color: var(--lime); border-color: var(--forest); }
+  .pyr-filter .ct {
+    font-size: 9px; padding: 0 5px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 999px; font-weight: 700;
+  }
+  .pyr-filter:not(.active) .ct { background: var(--border); color: var(--muted); }
+
+  /* test result rows */
+  .test-results {
+    border: 1px solid var(--border); border-radius: 12px;
+    background: #fff;
+    max-height: 220px; overflow-y: auto;
+  }
+  .test-row {
+    display: grid; grid-template-columns: 64px 1fr auto;
+    align-items: center;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    gap: 12px;
+    cursor: pointer;
+  }
+  .test-row:last-child { border-bottom: 0; }
+  .test-row:hover { background: var(--cream); }
+  .test-row.selected { background: rgba(209,248,67,0.16); }
+  .test-row .ttl {
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    line-height: 1.25;
+  }
+  .test-row .sub {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); margin-top: 2px; letter-spacing: 0.04em;
+  }
+  .test-row .pyr-cell {
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .test-row .check {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: transparent;
+  }
+  .test-row.selected .check {
+    background: var(--forest); border-color: var(--forest); color: var(--lime);
+  }
+  .test-row.selected .check svg { width: 13px; height: 13px; }
+
+  /* date picker mini */
+  .date-pick {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px;
+  }
+  .date-pick .dh {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; text-align: center;
+    padding-bottom: 4px;
+  }
+  .date-pick .dc {
+    aspect-ratio: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 600;
+    color: var(--ink); background: #fff;
+    border: 1px solid transparent; border-radius: 8px;
+    cursor: pointer; position: relative;
+    min-height: 32px;
+  }
+  .date-pick .dc.dim { color: var(--subtle); background: transparent; }
+  .date-pick .dc.today { border-color: var(--forest); }
+  .date-pick .dc.has {
+    background: rgba(0,88,64,0.08);
+  }
+  .date-pick .dc.has::after {
+    content: ''; position: absolute; bottom: 3px;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--forest);
+  }
+  .date-pick .dc.sel {
+    background: var(--lime); color: var(--forest); font-weight: 700;
+    border-color: var(--lime);
+  }
+
+  .suggested {
+    margin-top: 10px;
+    background: rgba(209,248,67,0.16);
+    border: 1px solid rgba(191,233,51,0.45);
+    border-left: 3px solid var(--lime);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12.5px; line-height: 1.5;
+  }
+  .suggested svg { width: 14px; height: 14px; color: var(--forest); }
+  .suggested strong { font-weight: 700; }
+</style>
+</head>
+<body data-screen-label="05 Tildel test-modal">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.75"/><line x1="21" y1="21" x2="16" y2="16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 5 19 12 12 19" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.75"/></symbol>
+</defs>
+</svg>
+
+<!-- faded coach background (so modal looks alive) -->
+<div class="behind" aria-hidden="true">
+  <div class="b-side"></div>
+  <div class="b-top"></div>
+  <div class="b-hero"></div>
+  <div class="b-card" style="top:170px;  left:280px;  width:280px; height:120px;"></div>
+  <div class="b-card" style="top:170px;  left:580px;  width:280px; height:120px;"></div>
+  <div class="b-card" style="top:170px;  left:880px;  width:280px; height:120px;"></div>
+  <div class="b-card" style="top:310px; left:280px;  right:40px; height:280px;"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop">
+  <div class="modal" role="dialog" aria-label="Tildel test">
+
+    <div class="modal-head">
+      <div>
+        <div class="eye">CoachHQ · Stall · Spillere</div>
+        <h2>Tildel test til <strong>Markus R. Pedersen</strong></h2>
+      </div>
+      <button class="modal-close" aria-label="Lukk">
+        <svg fill="none" stroke="currentColor"><use href="#i-x"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- player chip -->
+      <div class="ply-chip">
+        <div class="av">MP</div>
+        <div>
+          <div class="nm">Markus Røinaas Pedersen</div>
+          <div class="sub">A1 · HCP 4.8 · 12/36 tester gjennomført</div>
+        </div>
+        <div class="right">
+          <span class="pill pill-pro">A1</span>
+        </div>
+      </div>
+
+      <!-- velg test -->
+      <div class="field">
+        <div class="field-lbl">Velg test <span class="req">*</span></div>
+
+        <div class="search-input">
+          <svg fill="none" stroke="currentColor"><use href="#i-search"/></svg>
+          <input placeholder="Søk test, disiplin, mål …" value="putt" />
+          <kbd>⌘K</kbd>
+        </div>
+
+        <div class="pyr-filters">
+          <button class="pyr-filter">Alle <span class="ct">36</span></button>
+          <button class="pyr-filter">FYS <span class="ct">8</span></button>
+          <button class="pyr-filter">TEK <span class="ct">6</span></button>
+          <button class="pyr-filter active">SLAG <span class="ct">9</span></button>
+          <button class="pyr-filter">SPILL <span class="ct">5</span></button>
+          <button class="pyr-filter">TURN <span class="ct">4</span></button>
+        </div>
+
+        <div class="test-results">
+          <div class="test-row selected">
+            <div class="pyr-cell"><span class="pyr pyr-slag">SLAG</span></div>
+            <div>
+              <div class="ttl">Putt 1–3 m</div>
+              <div class="sub">30 putt · 1m, 2m, 3m · % sunket · ~12 min</div>
+            </div>
+            <div class="check"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg></div>
+          </div>
+          <div class="test-row">
+            <div class="pyr-cell"><span class="pyr pyr-slag">SLAG</span></div>
+            <div>
+              <div class="ttl">Putt 4–8 m</div>
+              <div class="sub">20 putt · 4m, 6m, 8m · proximity til hull · ~10 min</div>
+            </div>
+            <div class="check"></div>
+          </div>
+          <div class="test-row">
+            <div class="pyr-cell"><span class="pyr pyr-slag">SLAG</span></div>
+            <div>
+              <div class="ttl">Putt langdistanse 10–20 m</div>
+              <div class="sub">15 putt · proximity 3-putt unngåelse · ~12 min</div>
+            </div>
+            <div class="check"></div>
+          </div>
+          <div class="test-row">
+            <div class="pyr-cell"><span class="pyr pyr-slag">SLAG</span></div>
+            <div>
+              <div class="ttl">Chip landingsone 15 m</div>
+              <div class="sub">10 chip · 3m landingsone · % i sone · ~8 min</div>
+            </div>
+            <div class="check"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- date picker -->
+      <div class="field">
+        <div class="field-lbl">Planlagt dato <span class="req">*</span></div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="font-family:var(--font-display);font-size:15px;font-weight:600;">Mai 2026</div>
+          <div style="display:flex;gap:4px;">
+            <button class="btn btn-outline btn-xs" style="padding:4px 10px;">← Apr</button>
+            <button class="btn btn-outline btn-xs" style="padding:4px 10px;">Jun →</button>
+          </div>
+        </div>
+
+        <div class="date-pick">
+          <div class="dh">M</div><div class="dh">T</div><div class="dh">O</div><div class="dh">T</div><div class="dh">F</div><div class="dh">L</div><div class="dh">S</div>
+
+          <div class="dc dim">27</div><div class="dc dim">28</div><div class="dc dim">29</div><div class="dc dim">30</div><div class="dc">1</div><div class="dc">2</div><div class="dc">3</div>
+          <div class="dc">4</div><div class="dc">5</div><div class="dc">6</div><div class="dc">7</div><div class="dc">8</div><div class="dc">9</div><div class="dc">10</div>
+          <div class="dc">11</div><div class="dc">12</div><div class="dc">13</div><div class="dc">14</div><div class="dc">15</div><div class="dc">16</div><div class="dc">17</div>
+          <div class="dc">18</div><div class="dc">19</div><div class="dc">20</div><div class="dc">21</div><div class="dc">22</div><div class="dc today">23</div><div class="dc has">24</div>
+          <div class="dc has">25</div><div class="dc">26</div><div class="dc sel">27</div><div class="dc has">28</div><div class="dc">29</div><div class="dc">30</div><div class="dc">31</div>
+        </div>
+
+        <div class="suggested">
+          <svg fill="none" stroke="currentColor"><use href="#i-zap"/></svg>
+          <div><strong>Foreslått: onsdag 27. mai · 16:00</strong> — Markus har Teknisk-økt planlagt; passer å koble på testen før økten.</div>
+        </div>
+      </div>
+
+      <!-- notat -->
+      <div class="field">
+        <div class="field-lbl">Notat til spiller</div>
+        <textarea class="textarea" placeholder="Hva skal Markus ha i tankene før testen?">Vi tar Putt 1–3m som baseline før vi øker volum til 90 putt/uke. Fokuser på pre-shot rutinen — 7 sekunder fra setup til putt. Lykke til.</textarea>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--subtle);letter-spacing:0.04em;margin-top:4px;">
+          Spilleren får varsel på mobil + e-post · 187 / 280 tegn
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-ghost ghost">Avbryt</button>
+      <button class="btn btn-outline">Lagre som utkast</button>
+      <button class="btn btn-primary">
+        Send forespørsel
+        <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

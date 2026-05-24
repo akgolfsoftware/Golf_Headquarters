@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Kalender · Uke 21 — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 48px; }
+
+  /* layout: calendar + sidebar */
+  .cal-layout {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 18px;
+    align-items: flex-start;
+  }
+
+  /* week header (nav + tabs) */
+  .week-nav-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap;
+  }
+  .nav-arrow {
+    width: 32px; height: 32px;
+    border-radius: 8px; border: 1px solid var(--border);
+    background: #fff; color: var(--fg); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .nav-arrow:hover { background: var(--bg); border-color: var(--primary); color: var(--primary); }
+  .nav-arrow svg { width: 14px; height: 14px; }
+  .today-btn {
+    padding: 7px 14px;
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: var(--font-body); font-size: 12.5px;
+    font-weight: 600; color: var(--fg); cursor: pointer;
+  }
+  .today-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+  .view-toggle {
+    display: flex; align-items: center; gap: 0;
+    background: var(--bg); border-radius: 10px; padding: 3px;
+  }
+  .view-toggle button {
+    padding: 6px 14px;
+    background: transparent; border: 0;
+    font-family: var(--font-body); font-size: 12px;
+    font-weight: 500; color: var(--muted); cursor: pointer;
+    border-radius: 7px;
+  }
+  .view-toggle button.active {
+    background: var(--fg); color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* calendar grid */
+  .cal-grid-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    margin-top: 18px;
+  }
+
+  /* day header row */
+  .cal-day-head {
+    display: grid;
+    grid-template-columns: 64px repeat(7, 1fr);
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    position: sticky; top: var(--topbar-h); z-index: 5;
+  }
+  .cal-day-head .corner { background: var(--card); }
+  .cal-day-head .day {
+    padding: 14px 12px;
+    text-align: center;
+    border-left: 1px solid var(--border-soft);
+  }
+  .cal-day-head .day.today {
+    background: rgba(209,248,67,0.10);
+  }
+  .cal-day-head .day .name {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .cal-day-head .day .num {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 700; color: var(--fg);
+    margin-top: 4px; line-height: 1;
+  }
+  .cal-day-head .day.today .name { color: var(--primary); font-weight: 700; }
+  .cal-day-head .day.today .num { color: var(--primary); }
+  .cal-day-head .day .ct {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.08em;
+    margin-top: 4px; text-transform: uppercase; font-weight: 600;
+  }
+  .cal-day-head .day.weekend { background: rgba(94,92,87,0.03); }
+  .cal-day-head .day.weekend .name { color: var(--muted-soft); }
+
+  /* time grid */
+  .cal-body {
+    position: relative;
+    display: grid;
+    grid-template-columns: 64px repeat(7, 1fr);
+    background: var(--card);
+  }
+  .time-col {
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+  }
+  .time-slot {
+    height: 60px;
+    padding: 4px 8px;
+    text-align: right;
+    border-bottom: 1px solid var(--border-soft);
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .day-col {
+    border-left: 1px solid var(--border-soft);
+    position: relative;
+    min-height: 100%;
+  }
+  .day-col.today {
+    background: rgba(209,248,67,0.04);
+  }
+  .day-col.weekend {
+    background: rgba(94,92,87,0.02);
+  }
+  .hour-line {
+    position: absolute; left: 0; right: 0;
+    height: 60px;
+    border-bottom: 1px solid var(--border-soft);
+    pointer-events: none;
+  }
+  .half-hour-line {
+    position: absolute; left: 0; right: 0;
+    height: 30px;
+    border-bottom: 1px dashed rgba(229,227,221,0.6);
+    pointer-events: none;
+  }
+
+  /* now-line */
+  .now-line {
+    position: absolute; left: 0; right: 0;
+    height: 0;
+    border-top: 2px solid var(--danger);
+    z-index: 4; pointer-events: none;
+  }
+  .now-line::before {
+    content: ''; position: absolute;
+    left: -4px; top: -5px;
+    width: 8px; height: 8px;
+    background: var(--danger); border-radius: 50%;
+  }
+  .now-label {
+    position: absolute;
+    right: 4px; top: -10px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--danger); font-weight: 700;
+    background: #fff;
+    padding: 1px 5px; border-radius: 4px;
+    letter-spacing: 0.06em;
+  }
+
+  /* session block */
+  .session {
+    position: absolute;
+    left: 3px; right: 3px;
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-family: var(--font-body); font-size: 11px;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 2;
+    border-left: 3px solid;
+    display: flex; flex-direction: column; gap: 2px;
+    transition: all 120ms;
+  }
+  .session:hover {
+    z-index: 3;
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(10,31,23,0.18);
+  }
+  .session .s-time {
+    font-family: var(--font-mono); font-size: 9.5px;
+    font-weight: 700; letter-spacing: 0.04em;
+    opacity: 0.85;
+  }
+  .session .s-title {
+    font-family: var(--font-display); font-size: 12px;
+    font-weight: 600; line-height: 1.2;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .session .s-player {
+    font-family: var(--font-mono); font-size: 9.5px;
+    opacity: 0.75; letter-spacing: 0.04em;
+  }
+  .session .drag {
+    position: absolute; top: 3px; right: 3px;
+    width: 12px; height: 12px;
+    background: rgba(255,255,255,0.30); border-radius: 3px;
+    opacity: 0; transition: opacity 120ms;
+  }
+  .session:hover .drag { opacity: 1; }
+
+  /* session color schemes */
+  .session.tek {
+    background: rgba(209,248,67,0.30); color: #3B4310;
+    border-left-color: #A8C82E;
+  }
+  .session.fys {
+    background: rgba(26,77,46,0.12); color: #103A20;
+    border-left-color: #1A4D2E;
+  }
+  .session.mental {
+    background: rgba(184,133,42,0.14); color: #6E5419;
+    border-left-color: #B8852A;
+  }
+  .session.wang {
+    background: rgba(123,79,180,0.12); color: #4B2D77;
+    border-left-color: #7B4FB4;
+  }
+  .session.privat {
+    background: repeating-linear-gradient(
+      45deg, rgba(94,92,87,0.06), rgba(94,92,87,0.06) 6px,
+      rgba(94,92,87,0.12) 6px, rgba(94,92,87,0.12) 12px);
+    color: var(--muted);
+    border-left-color: var(--muted-soft);
+  }
+  .session.slag {
+    background: rgba(44,125,82,0.14); color: #1A5232;
+    border-left-color: #2C7D52;
+  }
+  .session.spill {
+    background: rgba(136,180,90,0.20); color: #3F5821;
+    border-left-color: #88B45A;
+  }
+  .session.pending {
+    box-shadow: inset 0 0 0 1.5px var(--accent);
+  }
+  .session.pending::before {
+    content: 'VENTER';
+    position: absolute; top: 4px; right: 4px;
+    font-family: var(--font-mono); font-size: 7.5px;
+    background: var(--fg); color: var(--accent);
+    padding: 1px 4px; border-radius: 3px;
+    font-weight: 700; letter-spacing: 0.06em;
+  }
+
+  /* sidebar */
+  .cal-sidebar {
+    display: flex; flex-direction: column; gap: 14px;
+    position: sticky; top: calc(var(--topbar-h) + 16px);
+  }
+  .cs-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 18px 18px;
+  }
+  .cs-card h4 {
+    font-family: var(--font-display); font-size: 13.5px;
+    font-weight: 600; letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .cs-card .sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.08em;
+    text-transform: uppercase; font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  /* today list */
+  .today-list {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .today-item {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 10px; align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid var(--border-soft);
+  }
+  .today-item:first-child { border-top: 0; }
+  .today-item .t-time {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--fg); font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .today-item .t-info { min-width: 0; }
+  .today-item .t-title {
+    font-family: var(--font-display); font-size: 12.5px;
+    font-weight: 600; line-height: 1.2;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .today-item .t-sub {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+    margin-top: 3px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .today-item .t-sub .pill { font-size: 8.5px; padding: 1px 5px; }
+
+  /* mini KPI */
+  .mini-kpi {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border-soft);
+  }
+  .mini-kpi:first-child { border-top: 0; padding-top: 0; }
+  .mini-kpi .lbl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .mini-kpi .val {
+    font-family: var(--font-mono); font-size: 19px;
+    font-weight: 700; color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+  .mini-kpi .val.warn { color: var(--warning); }
+  .mini-kpi .val.good { color: var(--success); }
+  .mini-kpi .delta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+
+  /* legend */
+  .legend-list {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-top: 6px;
+  }
+  .legend-list .leg {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--fg);
+  }
+  .legend-list .leg .sw {
+    width: 12px; height: 12px; border-radius: 3px;
+    border-left: 3px solid;
+  }
+
+  /* sidebar actions */
+  .cs-action {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px; border-radius: 10px;
+    background: var(--bg); border: 1px solid var(--border);
+    cursor: pointer;
+    font-family: var(--font-body); font-size: 12.5px;
+    font-weight: 500; color: var(--fg);
+    margin-top: 8px;
+  }
+  .cs-action:hover {
+    background: rgba(0,88,64,0.04); border-color: var(--primary); color: var(--primary);
+  }
+  .cs-action svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body data-screen-label="CoachHQ Kalender uke">
+
+<!-- SVG sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-chev-l" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+    <symbol id="ic-chev-r" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+    <symbol id="ic-chev-d" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="ic-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="ic-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="ic-filter" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 5.7L19.6 10.6 13.9 12.5 12 18.2 10.1 12.5 4.4 10.6 10.1 8.7Z"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="assets/logo-white-on-green.svg" alt="AK Golf" class="brand-logo" />
+      <div class="name">AK GOLF</div>
+      <div class="meta">COACHHQ · HEAD COACH</div>
+    </div>
+    <div class="sidebar-profile coach">
+      <div class="avatar">AK</div>
+      <div>
+        <div class="nm">Anders K.</div>
+        <div class="role">38 SPILLERE</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Daglig</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Kalender</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>Meldinger<span class="badge-count">7</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operasjon</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Stall</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Planer</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg>Turneringer</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Statistikk</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Mål</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="topbar">
+      <div class="search">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+        <input placeholder="Søk spiller, økt eller plan…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="breadcrumb">
+        CoachHQ &nbsp;/&nbsp; Daglig &nbsp;/&nbsp; <span class="current">Kalender</span>
+      </div>
+      <div style="margin-left:auto; display:flex; align-items:center; gap:4px;">
+        <button aria-label="Meldinger" style="width:38px;height:38px;border-radius:10px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;color:var(--fg);cursor:pointer;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>
+        </button>
+        <button aria-label="Varsler" style="width:38px;height:38px;border-radius:10px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;color:var(--fg);cursor:pointer;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="page-coach">
+
+      <!-- HEADER -->
+      <div class="coach-header">
+        <div class="left">
+          <span class="eyebrow">UKE 21 · 18 — 24 MAI 2026</span>
+          <h1>Uke <em>21</em></h1>
+          <div class="sub">
+            32 ØKTER PLANLAGT
+            <span class="dot"></span>
+            <span class="ok">28 godkjent</span>
+            <span class="dot"></span>
+            <span class="warn">4 venter</span>
+            <span class="dot"></span>
+            21 SPILLERE INVOLVERT
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-download"/></svg>
+            Eksporter uke
+          </button>
+          <button class="btn btn-primary btn-sm">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-plus"/></svg>
+            Ny økt
+          </button>
+        </div>
+      </div>
+
+      <div class="cal-layout">
+
+        <!-- LEFT: calendar -->
+        <div>
+          <!-- nav strip -->
+          <div class="week-nav-card">
+            <button class="nav-arrow">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-l"/></svg>
+            </button>
+            <button class="today-btn">I dag</button>
+            <button class="nav-arrow">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-r"/></svg>
+            </button>
+
+            <div class="view-toggle">
+              <button>Dag</button>
+              <button class="active">Uke</button>
+              <button onclick="window.location.href='CoachHQ Kalender maned.html'">Måned</button>
+            </div>
+
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap: wrap;">
+              <button class="filter-pill active" style="padding:6px 12px; font-size:11.5px;">Alle <span class="count">32</span></button>
+              <button class="filter-pill" style="padding:6px 12px; font-size:11.5px;">AK Academy <span class="count">19</span></button>
+              <button class="filter-pill" style="padding:6px 12px; font-size:11.5px;">WANG <span class="count">10</span></button>
+              <button class="filter-pill" style="padding:6px 12px; font-size:11.5px;">Privat <span class="count">3</span></button>
+            </div>
+
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+              <div class="search-mini" style="display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 7px 12px; width: 180px;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted-soft); flex-shrink:0;"><use href="#ic-users"/></svg>
+                <input style="flex:1; border:0; background:transparent; font:inherit; font-size:12.5px; outline:none; color:var(--fg); min-width: 0;" placeholder="Filtrer spiller…" />
+              </div>
+            </div>
+          </div>
+
+          <!-- calendar grid -->
+          <div class="cal-grid-wrap">
+
+            <!-- day header -->
+            <div class="cal-day-head">
+              <div class="corner"></div>
+              <div class="day">
+                <div class="name">MAN</div>
+                <div class="num">19</div>
+                <div class="ct">5 ØKTER</div>
+              </div>
+              <div class="day today">
+                <div class="name">TIR</div>
+                <div class="num">20</div>
+                <div class="ct">7 ØKTER · I DAG</div>
+              </div>
+              <div class="day">
+                <div class="name">ONS</div>
+                <div class="num">21</div>
+                <div class="ct">6 ØKTER</div>
+              </div>
+              <div class="day">
+                <div class="name">TOR</div>
+                <div class="num">22</div>
+                <div class="ct">6 ØKTER</div>
+              </div>
+              <div class="day">
+                <div class="name">FRE</div>
+                <div class="num">23</div>
+                <div class="ct">4 ØKTER</div>
+              </div>
+              <div class="day weekend">
+                <div class="name">LØR</div>
+                <div class="num">24</div>
+                <div class="ct">3 ØKTER</div>
+              </div>
+              <div class="day weekend">
+                <div class="name">SØN</div>
+                <div class="num">25</div>
+                <div class="ct">1 ØKT</div>
+              </div>
+            </div>
+
+            <!-- body grid -->
+            <div class="cal-body">
+
+              <!-- TIME COLUMN -->
+              <div class="time-col">
+                <!-- 16 hours from 06:00 to 22:00 -->
+                <div class="time-slot">06:00</div>
+                <div class="time-slot">07:00</div>
+                <div class="time-slot">08:00</div>
+                <div class="time-slot">09:00</div>
+                <div class="time-slot">10:00</div>
+                <div class="time-slot">11:00</div>
+                <div class="time-slot">12:00</div>
+                <div class="time-slot">13:00</div>
+                <div class="time-slot">14:00</div>
+                <div class="time-slot">15:00</div>
+                <div class="time-slot">16:00</div>
+                <div class="time-slot">17:00</div>
+                <div class="time-slot">18:00</div>
+                <div class="time-slot">19:00</div>
+                <div class="time-slot">20:00</div>
+                <div class="time-slot">21:00</div>
+                <div class="time-slot">22:00</div>
+              </div>
+
+              <!-- MAN 19 -->
+              <div class="day-col" data-day="man">
+                <!-- hour lines (background grid) — we'll set up via JS, but inline for clarity -->
+                <!-- session blocks; top is offset from 06:00. Each hour = 60px. -->
+
+                <div class="session fys" style="top: 60px; height: 60px;">
+                  <span class="s-time">07:00 — 08:00</span>
+                  <span class="s-title">Styrketrening A</span>
+                  <span class="s-player">JOACHIM T. · WANG</span>
+                </div>
+
+                <div class="session tek" style="top: 240px; height: 90px;">
+                  <span class="s-time">10:00 — 11:30</span>
+                  <span class="s-title">Iron CS75 progresjon</span>
+                  <span class="s-player">EMMA S. · AK</span>
+                </div>
+
+                <div class="session privat" style="top: 420px; height: 60px;">
+                  <span class="s-time">13:00 — 14:00</span>
+                  <span class="s-title">Privat: Lunsj-møte</span>
+                </div>
+
+                <div class="session slag" style="top: 540px; height: 90px;">
+                  <span class="s-time">15:00 — 16:30</span>
+                  <span class="s-title">Pitch 50—80m</span>
+                  <span class="s-player">MARKUS R.P. · AK</span>
+                </div>
+
+                <div class="session mental" style="top: 720px; height: 60px;">
+                  <span class="s-time">18:00 — 19:00</span>
+                  <span class="s-title">Visualisering · pre-turnering</span>
+                  <span class="s-player">HENRIK V. · WANG</span>
+                </div>
+              </div>
+
+              <!-- TIR 20 (today) -->
+              <div class="day-col today" data-day="tir">
+                <!-- now line at 14:23 → top = (14-6)*60 + 23 = 503 -->
+                <div class="now-line" style="top: 503px;">
+                  <span class="now-label">14:23</span>
+                </div>
+
+                <div class="session fys" style="top: 60px; height: 45px;">
+                  <span class="s-time">07:00 — 07:45</span>
+                  <span class="s-title">Mobilitet</span>
+                  <span class="s-player">SOFIE H. · WANG</span>
+                </div>
+
+                <div class="session tek pending" style="top: 180px; height: 90px;">
+                  <span class="s-time">09:00 — 10:30</span>
+                  <span class="s-title">Iron CS70→CS80</span>
+                  <span class="s-player">MARKUS R.P. · AK</span>
+                </div>
+
+                <div class="session wang" style="top: 300px; height: 120px;">
+                  <span class="s-time">11:00 — 13:00</span>
+                  <span class="s-title">WANG-gruppe: Bane-sim</span>
+                  <span class="s-player">12 SPILLERE</span>
+                </div>
+
+                <div class="session privat" style="top: 432px; height: 30px;">
+                  <span class="s-time">13:12</span>
+                  <span class="s-title">Privat</span>
+                </div>
+
+                <div class="session slag pending" style="top: 600px; height: 60px;">
+                  <span class="s-time">16:00 — 17:00</span>
+                  <span class="s-title">Putt 4×8</span>
+                  <span class="s-player">MARKUS R.P. · AK</span>
+                </div>
+
+                <div class="session spill" style="top: 720px; height: 90px;">
+                  <span class="s-time">18:00 — 19:30</span>
+                  <span class="s-title">Spillsim 9 hull</span>
+                  <span class="s-player">ØYVIND R. · BÅDE</span>
+                </div>
+
+                <div class="session fys" style="top: 840px; height: 45px;">
+                  <span class="s-time">20:00 — 20:45</span>
+                  <span class="s-title">Core + restitusjon</span>
+                  <span class="s-player">IDA M. · AK</span>
+                </div>
+              </div>
+
+              <!-- ONS 21 -->
+              <div class="day-col" data-day="ons">
+                <div class="session tek" style="top: 120px; height: 90px;">
+                  <span class="s-time">08:00 — 09:30</span>
+                  <span class="s-title">Sving-analyse</span>
+                  <span class="s-player">TOBIAS F. · WANG</span>
+                </div>
+
+                <div class="session slag" style="top: 240px; height: 60px;">
+                  <span class="s-time">10:00 — 11:00</span>
+                  <span class="s-title">Driver baseline</span>
+                  <span class="s-player">AKSEL B. · WANG</span>
+                </div>
+
+                <div class="session privat" style="top: 360px; height: 90px;">
+                  <span class="s-time">12:00 — 13:30</span>
+                  <span class="s-title">Stab-møte</span>
+                </div>
+
+                <div class="session slag pending" style="top: 480px; height: 30px;">
+                  <span class="s-time">14:00 — 14:30</span>
+                  <span class="s-title">Putt 0—3m</span>
+                  <span class="s-player">MARKUS R.P. · AK</span>
+                </div>
+
+                <div class="session spill" style="top: 600px; height: 120px;">
+                  <span class="s-time">16:00 — 18:00</span>
+                  <span class="s-title">Bane GFGK hull 1—9</span>
+                  <span class="s-player">3 SPILLERE</span>
+                </div>
+
+                <div class="session mental" style="top: 780px; height: 60px;">
+                  <span class="s-time">19:00 — 20:00</span>
+                  <span class="s-title">Mental robust</span>
+                  <span class="s-player">EMMA S. · AK</span>
+                </div>
+              </div>
+
+              <!-- TOR 22 -->
+              <div class="day-col" data-day="tor">
+                <div class="session fys" style="top: 60px; height: 60px;">
+                  <span class="s-time">07:00 — 08:00</span>
+                  <span class="s-title">Styrketrening B</span>
+                  <span class="s-player">JOACHIM T. · WANG</span>
+                </div>
+
+                <div class="session wang" style="top: 180px; height: 180px;">
+                  <span class="s-time">09:00 — 12:00</span>
+                  <span class="s-title">WANG-gruppe: Range-blokk</span>
+                  <span class="s-player">12 SPILLERE</span>
+                </div>
+
+                <div class="session spill" style="top: 420px; height: 90px;">
+                  <span class="s-time">13:00 — 14:30</span>
+                  <span class="s-title">9-hulls spillsim</span>
+                  <span class="s-player">MARKUS R.P. · AK</span>
+                </div>
+
+                <div class="session tek" style="top: 600px; height: 60px;">
+                  <span class="s-time">16:00 — 17:00</span>
+                  <span class="s-title">Sving-justering</span>
+                  <span class="s-player">MATS K. · BÅDE</span>
+                </div>
+
+                <div class="session slag pending" style="top: 720px; height: 90px;">
+                  <span class="s-time">18:00 — 19:30</span>
+                  <span class="s-title">Pitch &amp; chip</span>
+                  <span class="s-player">SIGRID B. · AK</span>
+                </div>
+
+                <div class="session mental" style="top: 840px; height: 45px;">
+                  <span class="s-time">20:00 — 20:45</span>
+                  <span class="s-title">Pre-turnering pep</span>
+                  <span class="s-player">HENRIK V. · WANG</span>
+                </div>
+              </div>
+
+              <!-- FRE 23 -->
+              <div class="day-col" data-day="fre">
+                <div class="session tek" style="top: 120px; height: 90px;">
+                  <span class="s-time">08:00 — 09:30</span>
+                  <span class="s-title">Iron CS75</span>
+                  <span class="s-player">EMMA S. · AK</span>
+                </div>
+
+                <div class="session privat" style="top: 360px; height: 120px;">
+                  <span class="s-time">12:00 — 14:00</span>
+                  <span class="s-title">Privat: Tannlege</span>
+                </div>
+
+                <div class="session slag" style="top: 540px; height: 60px;">
+                  <span class="s-time">15:00 — 16:00</span>
+                  <span class="s-title">Bunker-eskalering</span>
+                  <span class="s-player">ØYVIND R. · BÅDE</span>
+                </div>
+
+                <div class="session spill" style="top: 660px; height: 90px;">
+                  <span class="s-time">17:00 — 18:30</span>
+                  <span class="s-title">Spillsim 18 hull-prep</span>
+                  <span class="s-player">MARKUS R.P. · AK</span>
+                </div>
+              </div>
+
+              <!-- LØR 24 (weekend) -->
+              <div class="day-col weekend" data-day="lor">
+                <div class="session spill" style="top: 180px; height: 240px;">
+                  <span class="s-time">09:00 — 13:00</span>
+                  <span class="s-title">Treningsrunde GFGK</span>
+                  <span class="s-player">5 SPILLERE</span>
+                </div>
+
+                <div class="session slag" style="top: 480px; height: 90px;">
+                  <span class="s-time">14:00 — 15:30</span>
+                  <span class="s-title">Putt-blokk</span>
+                  <span class="s-player">IDA M. · AK</span>
+                </div>
+
+                <div class="session fys" style="top: 660px; height: 60px;">
+                  <span class="s-time">17:00 — 18:00</span>
+                  <span class="s-title">Restitusjon-yoga</span>
+                  <span class="s-player">JOACHIM T. · WANG</span>
+                </div>
+              </div>
+
+              <!-- SØN 25 (weekend) -->
+              <div class="day-col weekend" data-day="son">
+                <div class="session mental" style="top: 240px; height: 60px;">
+                  <span class="s-time">10:00 — 11:00</span>
+                  <span class="s-title">Reflektivt notat-møte</span>
+                  <span class="s-player">MARKUS R.P. · AK</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: sidebar -->
+        <aside class="cal-sidebar">
+
+          <!-- Today list -->
+          <div class="cs-card">
+            <h4>I dag · tirsdag 20. mai</h4>
+            <div class="sub">7 ØKTER · NESTE OM 1T 37M</div>
+            <div class="today-list">
+              <div class="today-item">
+                <span class="t-time">16:00</span>
+                <div class="t-info">
+                  <div class="t-title">Putt 4×8 · Markus</div>
+                  <div class="t-sub">
+                    <span class="pill pill-slag">SLAG</span>
+                    <span>VENTER GODKJENNING</span>
+                  </div>
+                </div>
+              </div>
+              <div class="today-item">
+                <span class="t-time">18:00</span>
+                <div class="t-info">
+                  <div class="t-title">Spillsim · Øyvind</div>
+                  <div class="t-sub">
+                    <span class="pill pill-spill">SPILL</span>
+                    <span>GODKJENT</span>
+                  </div>
+                </div>
+              </div>
+              <div class="today-item">
+                <span class="t-time">20:00</span>
+                <div class="t-info">
+                  <div class="t-title">Core + restitusjon · Ida</div>
+                  <div class="t-sub">
+                    <span class="pill pill-fys">FYS</span>
+                    <span>GODKJENT · SHORT</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Week KPI -->
+          <div class="cs-card">
+            <h4>Uke-status</h4>
+            <div class="sub">OPPDATERT NÅ</div>
+            <div class="mini-kpi">
+              <span class="lbl">ØKTER TOTALT</span>
+              <span class="val">32</span>
+              <span class="delta">↑ 4 vs forrige uke</span>
+            </div>
+            <div class="mini-kpi">
+              <span class="lbl">GODKJENT</span>
+              <span class="val good">28</span>
+              <span class="delta">87 % av planlagte</span>
+            </div>
+            <div class="mini-kpi">
+              <span class="lbl">VENTER GODKJENNING</span>
+              <span class="val warn">4</span>
+              <span class="delta">MARKUS · MATS · SIGRID · KAROLINE</span>
+            </div>
+            <div class="mini-kpi">
+              <span class="lbl">TIMER TOTALT</span>
+              <span class="val">46:15</span>
+              <span class="delta">snitt 1:27 per økt</span>
+            </div>
+          </div>
+
+          <!-- Legend -->
+          <div class="cs-card">
+            <h4>Forklaring</h4>
+            <div class="legend-list">
+              <div class="leg"><span class="sw" style="background:rgba(209,248,67,0.30); border-left-color:#A8C82E;"></span>Teknisk</div>
+              <div class="leg"><span class="sw" style="background:rgba(44,125,82,0.14); border-left-color:#2C7D52;"></span>Slag</div>
+              <div class="leg"><span class="sw" style="background:rgba(136,180,90,0.20); border-left-color:#88B45A;"></span>Spill</div>
+              <div class="leg"><span class="sw" style="background:rgba(26,77,46,0.12); border-left-color:#1A4D2E;"></span>Fysisk</div>
+              <div class="leg"><span class="sw" style="background:rgba(184,133,42,0.14); border-left-color:#B8852A;"></span>Mental</div>
+              <div class="leg"><span class="sw" style="background:rgba(123,79,180,0.12); border-left-color:#7B4FB4;"></span>WANG-gruppe</div>
+              <div class="leg"><span class="sw" style="background:rgba(94,92,87,0.08); border-left-color:var(--muted-soft);"></span>Privat</div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="cs-card">
+            <h4>Hurtighandlinger</h4>
+            <div class="sub">PÅ UKE 21</div>
+            <button class="cs-action">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-send"/></svg>
+              Send påminnelser (4)
+            </button>
+            <button class="cs-action">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sparkle"/></svg>
+              Foreslå hull i timeplan
+            </button>
+            <button class="cs-action">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-download"/></svg>
+              Eksporter som iCal
+            </button>
+          </div>
+
+        </aside>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<script>
+  // session click → open session-detail modal (link)
+  document.querySelectorAll('.session').forEach(s => {
+    s.onclick = () => window.location.href = 'CoachHQ Okt-detalj coach.html';
+  });
+  document.querySelectorAll('.today-item').forEach(s => {
+    s.onclick = () => window.location.href = 'CoachHQ Okt-detalj coach.html';
+  });
+  // filter pill toggle
+  document.querySelectorAll('.week-nav-card .filter-pill').forEach(p => {
+    p.onclick = () => {
+      document.querySelectorAll('.week-nav-card .filter-pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+    };
+  });
+  // view-toggle
+  document.querySelectorAll('.view-toggle button').forEach(b => {
+    b.onclick = (e) => {
+      if (b.getAttribute('onclick')) return; // handled
+      document.querySelectorAll('.view-toggle button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    };
+  });
+</script>
+</body>
+</html>

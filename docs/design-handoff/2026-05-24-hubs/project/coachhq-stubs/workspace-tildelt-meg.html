@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Tildelt meg · CoachHQ — AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../workbench-v2.css">
+<link rel="stylesheet" href="../coachhq.css">
+<link rel="stylesheet" href="_coachhq-stubs.css">
+</head>
+<body class="cs-body" data-screen-label="01 Workspace · Tildelt meg">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+  <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+  <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="ic-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></symbol>
+  <symbol id="ic-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="ic-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+  <symbol id="ic-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="ic-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></symbol>
+  <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="ic-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+  <symbol id="ic-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="ic-bolt" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+</defs></svg>
+
+<div class="app-cs">
+  <aside class="sidebar sb-cs">
+    <div class="sidebar-brand">
+      <div class="name">AK GOLF</div>
+      <div class="meta">COACHHQ · HEAD COACH</div>
+    </div>
+    <div class="sidebar-profile">
+      <div class="avatar">AK</div>
+      <div>
+        <div class="nm">Anders K.</div>
+        <div class="role">38 spillere</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Oversikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bolt"/></svg>Daglig brief</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-inbox"/></svg>Innboks<span class="badge-count">7</span></button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Tildelt meg<span class="badge-count">14</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Stall</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Spillere</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Talent-radar</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Planlegge</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Årsplan</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-file-text"/></svg>Plan-maler</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Gjennomføre</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-card"/></svg>Bookinger</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Test-økt</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenninger<span class="badge-count">11</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Admin</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-settings"/></svg>Innstillinger</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar tb-cs">
+      <div class="crumb">
+        <span class="brand-link">CoachHQ</span>
+        <span class="sep">/</span>
+        <span>Oversikt</span>
+        <span class="sep">/</span>
+        <span class="current">Tildelt meg</span>
+      </div>
+      <div class="tb-right">
+        <button class="tb-icon-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg></button>
+        <button class="tb-icon-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg><span class="dot-notif"></span></button>
+      </div>
+    </header>
+
+    <div class="page-cs">
+
+      <div class="cs-hero">
+        <div class="left">
+          <span class="eyebrow">CoachHQ · Oversikt · Tildelt meg</span>
+          <h1>Det krever <em>din</em> handling</h1>
+          <div class="sub">
+            <strong>14</strong> ventende saker
+            <span class="dot"></span>
+            <span class="err">4 overdue</span>
+            <span class="dot"></span>
+            <strong>SLA</strong> snitt <strong>18 t</strong>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>Slå opp i kø</button>
+          <button class="btn btn-primary btn-sm"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg>Send påminnelse alle</button>
+        </div>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="kpi featured">
+          <span class="lbl">Ventende</span>
+          <span class="val">14</span>
+          <span class="sub">siden i går · <span style="color:var(--accent)">+3</span></span>
+        </div>
+        <div class="kpi danger">
+          <span class="lbl">Overdue</span>
+          <span class="val">4</span>
+          <span class="sub">&gt; 48 timer gammel</span>
+        </div>
+        <div class="kpi warn">
+          <span class="lbl">Due i dag</span>
+          <span class="val">7</span>
+          <span class="sub">må fullføres innen 23:59</span>
+        </div>
+        <div class="kpi">
+          <span class="lbl">SLA snitt</span>
+          <span class="val">18<span class="unit">t</span></span>
+          <span class="sub">mål &lt; 24t · <span class="trend up">↑ stabil</span></span>
+        </div>
+      </div>
+
+      <div class="filter-rail">
+        <span class="fr-label">Type</span>
+        <button class="fr-pill active">Alle <span class="ct">14</span></button>
+        <button class="fr-pill">Godkjenning <span class="ct">6</span></button>
+        <button class="fr-pill">Forespørsel <span class="ct">4</span></button>
+        <button class="fr-pill">Notion <span class="ct">2</span></button>
+        <button class="fr-pill">Melding <span class="ct">2</span></button>
+        <div class="fr-divider"></div>
+        <span class="fr-label">Vis</span>
+        <button class="fr-pill">Overdue</button>
+        <button class="fr-pill">I dag</button>
+        <button class="fr-pill active">Hele uka</button>
+        <div class="fr-search">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+          <input placeholder="Spiller, sak-ID…" />
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 320px; gap: 16px;">
+
+        <div class="task-list">
+
+          <!-- Overdue group -->
+          <div style="display:flex;align-items:center;gap:10px;padding:0 4px 4px;">
+            <span class="label-mono" style="color:var(--danger)">Overdue · 4</span>
+            <span style="flex:1;height:1px;background:var(--border);"></span>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c1">JK</div>
+              <span class="tp godkj">GODKJ</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Plan-justering · Julia Karlsen — "Bytte 30 min putt med approach"</div>
+              <div class="tr-meta">PLAN-2031 · innsendt mandag 19. mai · blokkerer 2 andre tasks</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill overdue"><span class="arr">↑</span> 3d</span>
+              <button class="btn btn-outline btn-xs"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>Avvis</button>
+              <button class="btn btn-primary btn-xs"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenn</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c2">OB</div>
+              <span class="tp foresp">FORESP</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Booking-forespørsel · Oliver Brekke — TrackMan-økt onsdag 21:00</div>
+              <div class="tr-meta">BK-451 · ønsker Mulligan studio 2 · alternativ tor 20:00</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill overdue"><span class="arr">↑</span> 2d</span>
+              <button class="btn btn-outline btn-xs">Avvis</button>
+              <button class="btn btn-primary btn-xs">Aksepter</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c3">SH</div>
+              <span class="tp godkj">GODKJ</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Klubb-bytte · Sara Hauge — Drøbak GK → GFGK</div>
+              <div class="tr-meta">KB-118 · krever foreldre-samtykke · vedlagt 1 dokument</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill overdue"><span class="arr">↑</span> 2d</span>
+              <button class="btn btn-outline btn-xs">Avvis</button>
+              <button class="btn btn-primary btn-xs">Godkjenn</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c4">EG</div>
+              <span class="tp foresp">FORESP</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Refusjons-forespørsel · Emil Grøtnes — avlyst økt 14. mai</div>
+              <div class="tr-meta">RF-12 · 1 600 kr · grunn: skade</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill overdue"><span class="arr">↑</span> 2d</span>
+              <button class="btn btn-outline btn-xs">Avvis</button>
+              <button class="btn btn-primary btn-xs">Godkjenn</button>
+            </div>
+          </div>
+
+          <!-- I dag group -->
+          <div style="display:flex;align-items:center;gap:10px;padding:14px 4px 4px;">
+            <span class="label-mono" style="color:var(--warning)">Due i dag · 7</span>
+            <span style="flex:1;height:1px;background:var(--border);"></span>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c5">MP</div>
+              <span class="tp meld">MELD</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Spørsmål om teknisk plan · Markus R. Pedersen</div>
+              <div class="tr-meta">MSG-298 · 4 timer siden · forventer svar samme dag</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill today">4t</span>
+              <button class="btn btn-primary btn-xs"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>Svar</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c6">LM</div>
+              <span class="tp godkj">GODKJ</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Plan-justering · Lukas Moe — øke FYS-volum til 14t/uke</div>
+              <div class="tr-meta">PLAN-2042 · innsendt 22. mai 09:15</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill today">I dag</span>
+              <button class="btn btn-outline btn-xs">Avvis</button>
+              <button class="btn btn-primary btn-xs">Godkjenn</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c7">NT</div>
+              <span class="tp notion">NOTION</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Ny task: "Lag treningsplan for U16 sommerleir"</div>
+              <div class="tr-meta">NTN-872 · prosjekt Junior-cup 2026 · tildelt av Anna J.</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill today">1d</span>
+              <button class="btn btn-outline btn-xs"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-right"/></svg>Åpne</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c8">IN</div>
+              <span class="tp foresp">FORESP</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Coaching-time · Ingrid Nystad — onsdag 14:00</div>
+              <div class="tr-meta">BK-503 · 60 min · TrackMan</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill today">I dag</span>
+              <button class="btn btn-outline btn-xs">Avvis</button>
+              <button class="btn btn-primary btn-xs">Aksepter</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c1">PV</div>
+              <span class="tp meld">MELD</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Spørsmål om turnerings-påmelding · Per Vatne (forelder)</div>
+              <div class="tr-meta">MSG-301 · "Lurer på om Stine kan delta i Sørlandsåpent…"</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill today">6t</span>
+              <button class="btn btn-primary btn-xs">Svar</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c2">SA</div>
+              <span class="tp godkj">GODKJ</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Booking-rabatt · Stian Aas — 20% gruppe-rabatt</div>
+              <div class="tr-meta">DSC-22 · gjelder 4 økter neste uke</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill today">I dag</span>
+              <button class="btn btn-outline btn-xs">Avvis</button>
+              <button class="btn btn-primary btn-xs">Godkjenn</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c3">NT</div>
+              <span class="tp notion">NOTION</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Review: "Sørlandsåpent forberedelse — uke 22-plan"</div>
+              <div class="tr-meta">NTN-877 · venter ditt review · 8 deltakere</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill today">3t</span>
+              <button class="btn btn-outline btn-xs">Åpne</button>
+            </div>
+          </div>
+
+          <!-- Denne uka group -->
+          <div style="display:flex;align-items:center;gap:10px;padding:14px 4px 4px;">
+            <span class="label-mono">Denne uka · 3</span>
+            <span style="flex:1;height:1px;background:var(--border);"></span>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c4">FK</div>
+              <span class="tp godkj">GODKJ</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Foreldre-tilgang · Frida Kvam — søknad fra Mona Kvam</div>
+              <div class="tr-meta">AC-77 · spiller er 16 år · krever spillerens samtykke</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill fresh">5t</span>
+              <button class="btn btn-outline btn-xs">Avvis</button>
+              <button class="btn btn-primary btn-xs">Godkjenn</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c5">TH</div>
+              <span class="tp foresp">FORESP</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Plan-feedback · Tobias Holm — "Liker ny PEI-rutine"</div>
+              <div class="tr-meta">FB-19 · skala 9/10 · 1 attachment</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill fresh">8t</span>
+              <button class="btn btn-outline btn-xs">Lukk</button>
+              <button class="btn btn-primary btn-xs">Kvitter</button>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="tr-left">
+              <div class="p-avatar sm c6">MB</div>
+              <span class="tp godkj">GODKJ</span>
+            </div>
+            <div class="tr-mid">
+              <div class="tr-title">Camp-påmelding · Mia Bråten — Sommerleir 2-uker</div>
+              <div class="tr-meta">CMP-08 · pris 18 400 kr · stipend tilgjengelig</div>
+            </div>
+            <div class="tr-right">
+              <span class="age-pill fresh">11t</span>
+              <button class="btn btn-outline btn-xs">Avvis</button>
+              <button class="btn btn-primary btn-xs">Godkjenn</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Daily AI brief -->
+        <aside style="display:flex; flex-direction:column; gap:14px;">
+          <div class="card" style="background:linear-gradient(180deg,#FBFAF5,var(--bg)); padding:18px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+              <div style="width:32px;height:32px;border-radius:9px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;color:var(--primary)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bolt"/></svg></div>
+              <div>
+                <div style="font-family:var(--font-display); font-size:14px; font-weight:600;">AI · Rydd køen</div>
+                <div style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;">3 forslag · 23. mai 14:18</div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="padding:12px; background:#fff; border:1px solid var(--border); border-radius:10px;">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                  <span class="tp primary">1 · BLOKKERER</span>
+                </div>
+                <div style="font-family:var(--font-display); font-size:13px; font-weight:600; line-height:1.35;">Behandle Julia + Oliver først — de blokkerer 2 andre tasks.</div>
+                <div style="font-family:var(--font-mono); font-size:10.5px; color:var(--muted); margin-top:6px;">Sparer ~6 timer SLA.</div>
+              </div>
+
+              <div style="padding:12px; background:#fff; border:1px solid var(--border); border-radius:10px;">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                  <span class="tp success">2 · BATCH</span>
+                </div>
+                <div style="font-family:var(--font-display); font-size:13px; font-weight:600; line-height:1.35;">5 lav-risiko godkjenninger kan batches — alle med PR siste 30d.</div>
+                <button class="btn btn-outline btn-xs" style="margin-top:8px; width:100%;">Forhåndsvis batch</button>
+              </div>
+
+              <div style="padding:12px; background:#fff; border:1px solid var(--border); border-radius:10px;">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                  <span class="tp muted">3 · DELEGER</span>
+                </div>
+                <div style="font-family:var(--font-display); font-size:13px; font-weight:600; line-height:1.35;">Anna J. kan ta Notion-tasks NTN-872 og NTN-877.</div>
+                <div style="font-family:var(--font-mono); font-size:10.5px; color:var(--muted); margin-top:6px;">Hun er tilgjengelig i dag etter 14:00.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:18px;">
+            <div class="cs-section-h" style="margin-bottom:10px;">
+              <div>
+                <h2 style="font-size:14px;">SLA-helse</h2>
+                <div class="sub">siste 30 dager</div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted);">
+              <div style="display:flex; justify-content:space-between;"><span>Snitt-tid · godkjenning</span><strong style="color:var(--success); font-weight:700;">14t</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>Snitt-tid · melding</span><strong style="color:var(--success); font-weight:700;">3t</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>SLA-brudd siste 7d</span><strong style="color:var(--warning); font-weight:700;">2</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>Stab. uke-over-uke</span><strong style="color:var(--fg); font-weight:700;">+2 %</strong></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Innstillinger · CoachHQ — AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../workbench-v2.css">
+<link rel="stylesheet" href="../coachhq.css">
+<link rel="stylesheet" href="_coachhq-stubs.css">
+</head>
+<body class="cs-body" data-screen-label="08 Innstillinger">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></symbol>
+  <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+  <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="ic-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="ic-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+  <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="ic-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></symbol>
+  <symbol id="ic-bolt" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="ic-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="ic-user-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M6.16 18.5a6 6 0 0 1 11.68 0"/></symbol>
+  <symbol id="ic-credit" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+  <symbol id="ic-building" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></symbol>
+  <symbol id="ic-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+  <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="ic-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+</defs></svg>
+
+<div class="app-cs">
+  <aside class="sidebar sb-cs">
+    <div class="sidebar-brand"><div class="name">AK GOLF</div><div class="meta">COACHHQ · HEAD COACH</div></div>
+    <div class="sidebar-profile"><div class="avatar">AK</div><div><div class="nm">Anders K.</div><div class="role">38 spillere</div></div></div>
+    <div class="nav-group">
+      <div class="nav-group-label">Oversikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bolt"/></svg>Daglig brief</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-inbox"/></svg>Innboks<span class="badge-count">7</span></button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Tildelt meg<span class="badge-count">14</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Stall</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Spillere</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Talent-radar</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Planlegge</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Årsplan</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-file-text"/></svg>Plan-maler</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Gjennomføre</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-card"/></svg>Bookinger</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Test-økt</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenninger<span class="badge-count">11</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Admin</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>Notion-prosjekter</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-file-text"/></svg>Audit-log</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-settings"/></svg>Innstillinger</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar tb-cs">
+      <div class="crumb">
+        <span class="brand-link">CoachHQ</span><span class="sep">/</span>
+        <span>Admin</span><span class="sep">/</span>
+        <span class="current">Innstillinger</span>
+      </div>
+      <div class="tb-right">
+        <button class="tb-icon-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg></button>
+        <button class="tb-icon-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg><span class="dot-notif"></span></button>
+      </div>
+    </header>
+
+    <div class="page-cs">
+
+      <div class="cs-hero">
+        <div class="left">
+          <span class="eyebrow">CoachHQ · Admin · Innstillinger</span>
+          <h1>Konfigurer <em>CoachHQ</em></h1>
+          <div class="sub">
+            Coach <strong>Anders K.</strong>
+            <span class="dot"></span>
+            klubb <strong>GFGK</strong>
+            <span class="dot"></span>
+            <strong>38</strong> spillere
+            <span class="dot"></span>
+            8 kategorier
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm">Sett som standard for nye coaches</button>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+
+        <div class="setting-card">
+          <div class="s-ic c-primary"><svg fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user-circle"/></svg></div>
+          <div class="s-body">
+            <div class="s-title">Min profil</div>
+            <div class="s-sub">Navn, profilbilde, kontakt-info, e-signatur og spiller-bio.</div>
+            <div class="s-status">
+              <span class="tp risk-high" style="text-transform:uppercase;">1 manglende felt</span>
+              <span style="color:var(--muted);">profilbilde · sist endret 14. apr</span>
+            </div>
+          </div>
+          <div class="s-arrow"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-right"/></svg></div>
+        </div>
+
+        <div class="setting-card">
+          <div class="s-ic c-accent"><svg fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg></div>
+          <div class="s-body">
+            <div class="s-title">Varsler</div>
+            <div class="s-sub">E-post, push, SMS, daglige sammendrag · stille-modus 21:00–07:00.</div>
+            <div class="s-status">
+              <span class="tp success" style="text-transform:uppercase;">E-post + Push aktivert</span>
+              <span style="color:var(--muted);">SMS av · daglig brief 08:00</span>
+            </div>
+          </div>
+          <div class="s-arrow"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-right"/></svg></div>
+        </div>
+
+        <div class="setting-card">
+          <div class="s-ic c-info"><svg fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg></div>
+          <div class="s-body">
+            <div class="s-title">Kalender · Google sync</div>
+            <div class="s-sub">2-veis sync med Google Calendar. Bookinger og turneringer holdes oppdatert.</div>
+            <div class="s-status">
+              <span class="tp success" style="text-transform:uppercase;">● Tilkoblet</span>
+              <span style="color:var(--muted);">sist sync 5 min siden · 18 hendelser</span>
+            </div>
+          </div>
+          <div class="s-arrow"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-right"/></svg></div>
+        </div>
+
+        <div class="setting-card">
+          <div class="s-ic c-warn"><svg fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-credit"/></svg></div>
+          <div class="s-body">
+            <div class="s-title">Betaling · abonnement</div>
+            <div class="s-sub">Stripe Connect · stallens abonnementer · payout-konto · MVA-håndtering.</div>
+            <div class="s-status">
+              <span class="tp warn" style="text-transform:uppercase;">Auto-payout 15. hver mnd</span>
+              <span style="color:var(--muted);">neste utbetaling 15. juni · 84 400 kr</span>
+            </div>
+          </div>
+          <div class="s-arrow"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-right"/></svg></div>
+        </div>
+
+        <div class="setting-card">
+          <div class="s-ic c-forest"><svg fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-building"/></svg></div>
+          <div class="s-body">
+            <div class="s-title">Klubb-info</div>
+            <div class="s-sub">Gamle Fredrikstad GK · adresser, åpningstider, anlegg, fakturerings-info.</div>
+            <div class="s-status">
+              <span style="font-family:var(--font-mono); font-weight:700; color:var(--fg);">38 spillere</span>
+              <span style="color:var(--muted);">· 12 trenere · 3 anlegg</span>
+            </div>
+          </div>
+          <div class="s-arrow"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-right"/></svg></div>
+        </div>
+
+        <div class="setting-card">
+          <div class="s-ic c-muted"><svg fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg></div>
+          <div class="s-body">
+            <div class="s-title">Team-tilganger</div>
+            <div class="s-sub">12 trenere · 3 admins · 2 ventende invitasjoner. Roller og tilgangs-nivåer.</div>
+            <div class="s-status">
+              <span class="tp warn" style="text-transform:uppercase;">2 ventende invitasjoner</span>
+              <span style="color:var(--muted);">Lars H. · Per V. · sendt 14. mai</span>
+            </div>
+          </div>
+          <div class="s-arrow"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-right"/></svg></div>
+        </div>
+
+        <div class="setting-card">
+          <div class="s-ic c-success"><svg fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-code"/></svg></div>
+          <div class="s-body">
+            <div class="s-title">API · integrasjoner</div>
+            <div class="s-sub">MCP-nøkler · webhooks · 3rd-party (Notion · WAGR · Stripe · TrackMan).</div>
+            <div class="s-status">
+              <span style="font-family:var(--font-mono); font-weight:700; color:var(--fg);">3 aktive nøkler</span>
+              <span style="color:var(--muted);">· 2 webhooks · neste rotering 14. juli</span>
+            </div>
+          </div>
+          <div class="s-arrow"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-right"/></svg></div>
+        </div>
+
+        <div class="setting-card">
+          <div class="s-ic c-danger"><svg fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-shield"/></svg></div>
+          <div class="s-body">
+            <div class="s-title">Sikkerhet</div>
+            <div class="s-sub">Passord · 2FA · aktive sesjoner · audit-tilgang · IP-allowlist.</div>
+            <div class="s-status">
+              <span class="tp success" style="text-transform:uppercase;">2FA aktivert</span>
+              <span style="color:var(--muted);">3 enheter pålogget · siste sjekk i dag</span>
+            </div>
+          </div>
+          <div class="s-arrow"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-right"/></svg></div>
+        </div>
+
+      </div>
+
+      <!-- Versjon / hjelpe-bench -->
+      <div class="bench-card">
+        <div class="bench-ic"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bolt"/></svg></div>
+        <div>
+          <div class="b-title">Trenger hjelp?</div>
+          <div class="b-sub">
+            <a href="#" style="color:var(--primary); text-decoration:none; border-bottom:1px dotted var(--primary);">Dokumentasjon</a>
+            <span class="dot-sep"></span>
+            <a href="#" style="color:var(--primary); text-decoration:none; border-bottom:1px dotted var(--primary);">Support</a>
+            <span class="dot-sep"></span>
+            <a href="#" style="color:var(--primary); text-decoration:none; border-bottom:1px dotted var(--primary);">Feature request</a>
+            <span class="dot-sep"></span>
+            <a href="#" style="color:var(--primary); text-decoration:none; border-bottom:1px dotted var(--primary);">Onboarding-video</a>
+          </div>
+        </div>
+        <div class="grow"></div>
+        <div style="text-align:right;">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--fg); font-weight:600;">CoachHQ v2.4.1</div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.04em; margin-top:2px;">sist oppdatert 23. mai 2026 · build #2486</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

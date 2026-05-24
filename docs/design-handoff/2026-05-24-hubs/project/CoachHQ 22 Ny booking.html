@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Ny booking — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding: 0; background: var(--bg); min-height: 100vh; }
+
+  /* faded scene behind */
+  .scene { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+  .scene-inner {
+    max-width: 1120px; margin: 0 auto; padding: 56px 32px;
+    opacity: 0.30; filter: blur(1.2px);
+    pointer-events: none; user-select: none;
+  }
+  .scene-inner h1 { font-family: var(--font-display); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+  .scene-inner h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+  .scene-inner .crumb {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .scene-table {
+    margin-top: 24px; background: #fff;
+    border: 1px solid var(--border); border-radius: 14px;
+    height: 380px;
+    background:
+      repeating-linear-gradient(0deg, transparent 0, transparent 44px, var(--border-soft) 44px, var(--border-soft) 45px);
+  }
+
+  /* backdrop */
+  .backdrop {
+    position: fixed; inset: 0; z-index: 10;
+    background: rgba(10,31,23,0.46);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .modal {
+    background: var(--card);
+    border-radius: 20px;
+    width: 680px; max-width: 100%;
+    max-height: calc(100vh - 48px);
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 32px 80px rgba(10,31,23,0.28);
+    animation: in 220ms ease-out;
+  }
+  @keyframes in {
+    from { opacity: 0; transform: translateY(10px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .m-head {
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 14px;
+  }
+  .m-head .stack { display: flex; flex-direction: column; gap: 4px; }
+  .m-head h2 {
+    font-family: var(--font-display); font-size: 22px; font-weight: 600;
+    letter-spacing: -0.01em; line-height: 1.2;
+  }
+  .m-head .cap {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+  .m-close {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 0; background: transparent; cursor: pointer;
+    color: var(--muted); flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    text-decoration: none;
+  }
+  .m-close:hover { background: var(--bg); color: var(--fg); }
+  .m-close svg { width: 16px; height: 16px; }
+
+  .m-body {
+    padding: 22px 24px;
+    display: flex; flex-direction: column; gap: 18px;
+    overflow-y: auto;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field-label {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase; color: var(--muted);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .field-label .req { color: var(--danger); margin-left: 2px; }
+  .field-label .help { font-weight: 500; letter-spacing: 0.04em; color: var(--muted-soft); text-transform: none; }
+
+  .text-input, .textarea-input, select.text-input {
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--fg); background: #fff;
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 11px 14px; outline: none; line-height: 1.4;
+    width: 100%;
+    transition: border-color 180ms, box-shadow 180ms;
+  }
+  .text-input::placeholder, .textarea-input::placeholder { color: var(--muted-soft); }
+  .text-input:focus, .textarea-input:focus, select.text-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0,88,64,0.10);
+  }
+  .textarea-input { min-height: 70px; resize: vertical; }
+  select.text-input {
+    appearance: none;
+    background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235E5C57' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>")
+      no-repeat right 12px center;
+    padding-right: 36px;
+  }
+
+  /* Player search dropdown */
+  .player-search {
+    position: relative;
+  }
+  .player-search-input {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+  }
+  .player-search-input:hover { border-color: var(--muted-soft); }
+  .player-search-input .selected {
+    display: flex; align-items: center; gap: 10px; flex: 1;
+  }
+  .player-search-input .selected .nm {
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    color: var(--fg); line-height: 1.2;
+  }
+  .player-search-input .selected .meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+    margin-top: 1px;
+  }
+  .player-search-input .change {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Service chips */
+  .service-chips {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  }
+  .svc-chip {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    cursor: pointer;
+    transition: border-color 140ms, background 140ms;
+  }
+  .svc-chip:hover { background: var(--bg); }
+  .svc-chip.active {
+    background: rgba(0,88,64,0.06);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(0,88,64,0.10);
+  }
+  .svc-chip .ic {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(0,88,64,0.08); color: var(--primary);
+  }
+  .svc-chip.active .ic { background: var(--primary); color: var(--accent); }
+  .svc-chip .ic svg { width: 14px; height: 14px; }
+  .svc-chip .nm {
+    font-family: var(--font-display); font-size: 12.5px; font-weight: 600;
+    color: var(--fg); line-height: 1.2; text-align: center;
+  }
+  .svc-chip .price {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .svc-chip.active .price { color: var(--primary); font-weight: 700; }
+
+  /* date/time grid */
+  .dt-grid {
+    display: grid; grid-template-columns: 1.4fr 0.8fr 0.8fr;
+    gap: 8px;
+  }
+  .dt-input {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px; outline: none;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+    color: var(--fg); width: 100%;
+    font-variant-numeric: tabular-nums;
+  }
+  .dt-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0,88,64,0.10);
+  }
+
+  /* duo/trio */
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .trio { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* price box */
+  .price-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; align-items: end;
+  }
+  .price-row .price-input {
+    position: relative;
+  }
+  .price-row .price-input input {
+    padding-right: 40px;
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+  .price-row .price-input .currency {
+    position: absolute;
+    right: 14px; top: 50%; transform: translateY(-50%);
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em; font-weight: 600;
+  }
+
+  /* discount toggle */
+  .discount-row {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+  }
+  .discount-row .seg-btn {
+    flex: 1;
+    background: transparent; border: 0;
+    padding: 6px 10px; border-radius: 7px;
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.06em; color: var(--muted); cursor: pointer;
+    text-transform: uppercase;
+  }
+  .discount-row .seg-btn.active {
+    background: var(--fg); color: var(--accent);
+  }
+
+  /* override section */
+  .override-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
+  .override-head {
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+    user-select: none;
+  }
+  .override-head:hover { background: #F3F1E9; }
+  .override-head .lbl {
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+    color: var(--fg);
+  }
+  .override-head .sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .override-head .chev {
+    margin-left: auto;
+    color: var(--muted); transition: transform 200ms ease;
+  }
+  .override-head .chev svg { width: 14px; height: 14px; }
+  .override-card.open .chev { transform: rotate(180deg); }
+  .override-body {
+    display: none;
+    padding: 4px 14px 14px;
+    flex-direction: column; gap: 8px;
+    border-top: 1px solid var(--border-soft);
+    background: #fff;
+  }
+  .override-card.open .override-body { display: flex; }
+  .switch-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 6px 0;
+    cursor: pointer;
+  }
+  .switch-row .copy { flex: 1; }
+  .switch-row .copy .ttl {
+    font-family: var(--font-body); font-size: 13px; font-weight: 500;
+    color: var(--fg);
+  }
+  .switch-row .copy .sub {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.04em; margin-top: 1px;
+  }
+  .switch {
+    width: 36px; height: 20px; border-radius: 999px;
+    background: var(--border-soft); position: relative;
+    transition: background 180ms; flex-shrink: 0;
+  }
+  .switch::after {
+    content: ''; position: absolute; left: 2px; top: 2px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 3px rgba(10,31,23,0.18);
+    transition: left 180ms ease;
+  }
+  .switch.on { background: var(--primary); }
+  .switch.on::after { left: 18px; }
+
+  /* Conflict alert */
+  .conflict {
+    background: rgba(163,45,45,0.06);
+    border: 1px solid rgba(163,45,45,0.30);
+    border-left: 3px solid var(--danger);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: grid; grid-template-columns: 20px 1fr auto;
+    gap: 12px; align-items: flex-start;
+  }
+  .conflict.ok {
+    background: rgba(209,248,67,0.10);
+    border: 1px solid rgba(209,248,67,0.45);
+    border-left: 3px solid var(--accent);
+  }
+  .conflict .ic {
+    color: var(--danger); margin-top: 1px;
+  }
+  .conflict.ok .ic { color: #4A5418; }
+  .conflict .ic svg { width: 16px; height: 16px; }
+  .conflict .copy { font-family: var(--font-body); font-size: 12.5px; color: var(--fg); line-height: 1.5; }
+  .conflict .copy strong { font-family: var(--font-display); font-weight: 600; }
+  .conflict .copy .conf-time {
+    font-family: var(--font-mono); background: rgba(255,255,255,0.5);
+    padding: 1px 6px; border-radius: 4px;
+    font-weight: 700; color: var(--danger);
+    font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
+  }
+  .conflict .actions {
+    display: flex; gap: 6px; flex-shrink: 0;
+  }
+  .conflict .actions button {
+    background: #fff; border: 1px solid var(--border);
+    color: var(--fg);
+    padding: 6px 10px; border-radius: 6px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; white-space: nowrap;
+  }
+  .conflict .actions button:hover { background: var(--bg); }
+
+  /* footer */
+  .m-foot {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-soft);
+    background: #FBFAF5;
+    display: flex; gap: 10px; justify-content: flex-end; align-items: center;
+  }
+  .m-foot .left {
+    margin-right: auto;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .m-foot .left .total {
+    font-family: var(--font-mono); font-size: 16px;
+    font-weight: 700; color: var(--fg); letter-spacing: -0.01em;
+  }
+  .m-foot .left .label {
+    font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .btn-ghost-2 {
+    background: transparent; color: var(--muted);
+    padding: 10px 18px; border-radius: 999px;
+    border: 0; cursor: pointer;
+    font-size: 13px; font-weight: 600;
+    text-decoration: none;
+    display: inline-flex; align-items: center;
+  }
+  .btn-ghost-2:hover { color: var(--fg); background: var(--bg); }
+  .btn-create {
+    background: var(--primary); color: var(--accent);
+    padding: 11px 22px; border-radius: 999px;
+    border: 0; cursor: pointer;
+    font-size: 13.5px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-body);
+  }
+  .btn-create:hover { background: var(--primary-dark); }
+  .btn-create svg { width: 14px; height: 14px; }
+
+  /* toast */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--fg); color: #fff;
+    padding: 12px 20px; border-radius: 999px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 500;
+    box-shadow: 0 12px 32px rgba(10,31,23,0.30);
+    opacity: 0; pointer-events: none;
+    transition: opacity 200ms, transform 200ms;
+    z-index: 100;
+  }
+  .toast svg { width: 16px; height: 16px; color: var(--accent); }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+  @media (max-width: 720px) {
+    .backdrop { padding: 0; align-items: flex-end; }
+    .modal { border-radius: 16px 16px 0 0; max-height: 94vh; }
+    .service-chips { grid-template-columns: 1fr 1fr; }
+    .dt-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-screen-label="22 CoachHQ Ny booking">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+    <symbol id="ic-chev-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="ic-shield-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  </defs>
+</svg>
+
+<!-- Scene behind -->
+<div class="scene" aria-hidden="true">
+  <div class="scene-inner">
+    <div class="crumb">COACHHQ &nbsp;/&nbsp; OPERASJON &nbsp;/&nbsp; BOOKINGER</div>
+    <h1>Book<em>inger</em></h1>
+    <div class="scene-table"></div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="backdrop">
+  <div class="modal" role="dialog" aria-labelledby="m-title" aria-modal="true">
+
+    <div class="m-head">
+      <div class="stack">
+        <span class="cap">OPERASJON · NY BOOKING · COACH-OPPRETTET</span>
+        <h2 id="m-title">Ny booking</h2>
+      </div>
+      <a href="CoachHQ 21 Bookinger.html" class="m-close" aria-label="Lukk"><svg><use href="#ic-x"/></svg></a>
+    </div>
+
+    <div class="m-body">
+
+      <!-- Player -->
+      <div class="field">
+        <label class="field-label">Spiller<span class="req">*</span></label>
+        <div class="player-search">
+          <div class="player-search-input">
+            <div class="selected">
+              <span class="p-avatar c2 sm">MP</span>
+              <div>
+                <div class="nm">Markus Røinås Pedersen</div>
+                <div class="meta">U18 · GFGK · HCP 4,2 · ABONNEMENT PRO</div>
+              </div>
+            </div>
+            <span class="change">Endre</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service type -->
+      <div class="field">
+        <label class="field-label">Tjeneste-type<span class="req">*</span></label>
+        <div class="service-chips">
+          <button class="svc-chip active" data-svc="putt">
+            <span class="ic"><svg><use href="#ic-target"/></svg></span>
+            <span class="nm">1:1 Putt</span>
+            <span class="price">1 200 KR / 60 MIN</span>
+          </button>
+          <button class="svc-chip" data-svc="iron">
+            <span class="ic"><svg><use href="#ic-target"/></svg></span>
+            <span class="nm">1:1 Iron</span>
+            <span class="price">1 200 KR / 60 MIN</span>
+          </button>
+          <button class="svc-chip" data-svc="gruppe">
+            <span class="ic"><svg><use href="#ic-users"/></svg></span>
+            <span class="nm">Gruppe</span>
+            <span class="price">650 KR / 90 MIN</span>
+          </button>
+          <button class="svc-chip" data-svc="range">
+            <span class="ic"><svg><use href="#ic-flag"/></svg></span>
+            <span class="nm">Range-økt</span>
+            <span class="price">450 KR / 60 MIN</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Date / time / duration -->
+      <div class="field">
+        <label class="field-label">Tidspunkt<span class="req">*</span></label>
+        <div class="dt-grid">
+          <input type="text" class="dt-input" value="Tirsdag 26.05.2026" aria-label="Dato" />
+          <input type="text" class="dt-input" value="16:00" aria-label="Starttid" />
+          <select class="text-input" aria-label="Varighet" style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;">
+            <option>30 min</option>
+            <option>45 min</option>
+            <option selected>60 min</option>
+            <option>90 min</option>
+            <option>120 min</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Conflict warning -->
+      <div class="conflict" id="conflict">
+        <span class="ic"><svg><use href="#ic-shield-warn"/></svg></span>
+        <div class="copy">
+          <strong>Konflikt registrert.</strong> Anders har allerede booking <span class="conf-time">16:00–17:00</span> med Mikkel Karlsen i Performance Studio bay 2.
+        </div>
+        <div class="actions">
+          <button>Erstatt</button>
+          <button>Annet tidspkt.</button>
+        </div>
+      </div>
+
+      <!-- Location + Coach -->
+      <div class="duo">
+        <div class="field">
+          <label class="field-label">Lokasjon<span class="req">*</span></label>
+          <select class="text-input">
+            <option>Performance Studio · Bay 2 (Trackman 4)</option>
+            <option>Performance Studio · Bay 1</option>
+            <option>Performance Studio · Bay 3 (GC Quad)</option>
+            <option>GFGK Pro Studio · Bay 1</option>
+            <option>Bossum Range · Bane A</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Coach<span class="req">*</span></label>
+          <select class="text-input">
+            <option>Anders K. (deg)</option>
+            <option>Hans Brennum</option>
+            <option>Erik Nordby</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Pricing -->
+      <div class="field">
+        <label class="field-label">Pris og rabatt <span class="help">auto-utfylt fra tjeneste</span></label>
+        <div class="price-row">
+          <div class="price-input">
+            <input type="text" class="text-input" value="1 200" aria-label="Pris" />
+            <span class="currency">NOK</span>
+          </div>
+          <div class="discount-row">
+            <button class="seg-btn active">Ingen rabatt</button>
+            <button class="seg-btn">% prosent</button>
+            <button class="seg-btn">Fast NOK</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coach note -->
+      <div class="field">
+        <label class="field-label">Notat <span class="help">vises kun for coach</span></label>
+        <textarea class="textarea-input" placeholder="Påminnelser, fokusområder eller spillerkontekst …">Følg opp tempo-arbeid fra forrige økt. Markus jobber med 1:3-forhold i backswing. Husk å logge TrackMan.</textarea>
+      </div>
+
+      <!-- Override toggles -->
+      <div class="override-card" id="override">
+        <div class="override-head" id="override-toggle">
+          <div>
+            <div class="lbl">Avanserte overstyringer</div>
+            <div class="sub">IGNORER KAPASITET · IKKE SEND BEKREFTELSE · IKKE KREV BETALING</div>
+          </div>
+          <span class="chev"><svg><use href="#ic-chev-d"/></svg></span>
+        </div>
+        <div class="override-body">
+          <div class="switch-row" data-sw="cap">
+            <div class="copy">
+              <div class="ttl">Ignorer kapasitet</div>
+              <div class="sub">TILLAT OVERBOOKING I DENNE BAY-EN</div>
+            </div>
+            <button class="switch" aria-checked="false" role="switch"></button>
+          </div>
+          <div class="switch-row" data-sw="notify">
+            <div class="copy">
+              <div class="ttl">Ikke send bekreftelse-e-post</div>
+              <div class="sub">SPILLER FÅR KUN APP-PUSH</div>
+            </div>
+            <button class="switch" aria-checked="false" role="switch"></button>
+          </div>
+          <div class="switch-row" data-sw="pay">
+            <div class="copy">
+              <div class="ttl">Ikke krev betaling</div>
+              <div class="sub">REGISTRER SOM «VENTER FAKTURA»</div>
+            </div>
+            <button class="switch" aria-checked="false" role="switch"></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="m-foot">
+      <div class="left">
+        <span class="label">TOTALT</span>
+        <span class="total">1 200 KR</span>
+        <span style="color:var(--muted-soft);">·</span>
+        <span>BEKREFTELSE SENDES TIL <strong>MARKUS@…</strong></span>
+      </div>
+      <a href="CoachHQ 21 Bookinger.html" class="btn-ghost-2">Avbryt</a>
+      <button class="btn-create" id="create">
+        <svg><use href="#ic-check"/></svg>
+        Opprett booking
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg><use href="#ic-check"/></svg>
+  <span>Booking opprettet · bekreftelse sendt</span>
+</div>
+
+<script>
+  // Service chips
+  document.querySelectorAll('.svc-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.svc-chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+    });
+  });
+
+  // Discount segs
+  document.querySelectorAll('.discount-row .seg-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      const par = b.parentElement;
+      par.querySelectorAll('.seg-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+
+  // Override expand
+  document.getElementById('override-toggle').addEventListener('click', () => {
+    document.getElementById('override').classList.toggle('open');
+  });
+
+  // Switch toggles
+  document.querySelectorAll('.switch-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const sw = row.querySelector('.switch');
+      const on = sw.classList.toggle('on');
+      sw.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+  });
+
+  // Create
+  const toast = document.getElementById('toast');
+  document.getElementById('create').addEventListener('click', () => {
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2400);
+  });
+</script>
+
+</body>
+</html>

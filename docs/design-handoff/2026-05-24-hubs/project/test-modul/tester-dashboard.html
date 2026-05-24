@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Tester — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_tester.css">
+</head>
+<body data-screen-label="01 Tester-dashboard">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><path d="M9 22V12h6v10" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20" fill="currentColor"/></symbol>
+  <symbol id="i-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="18" y1="20" x2="18" y2="4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="6" y1="20" x2="6" y2="16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-user-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M6 21a6 6 0 0 1 12 0" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 5 19 12 12 19" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-trend-up" viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 7 21 7 21 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-trend-dn" viewBox="0 0 24 24"><polyline points="3 7 9 13 13 9 21 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 17 21 17 21 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="2" fill="currentColor"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 22V4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M4 4h11l-2 4 2 4H4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M22 21v-2a4 4 0 0 0-3-3.87" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/><polyline points="3 3 3 8 8 8" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/><polyline points="12 7 12 12 16 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6 4v16M3 7v10M18 4v16M21 7v10M6 12h12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+</defs>
+</svg>
+
+<div class="shell has-side">
+
+  <!-- ============== SIDEBAR ============== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">
+        <div class="logo">A</div>
+        <div>
+          <div class="nm">AK Golf</div>
+        </div>
+      </div>
+      <div class="meta">PlayerHQ</div>
+    </div>
+
+    <button class="side-cta">
+      <svg><use href="#i-plus"/></svg>
+      Ny økt
+    </button>
+
+    <div class="nav-group">
+      <div class="nav-label">Trening</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-home"/></svg>Oversikt</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-cal"/></svg>Planlegge</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-play"/></svg>Gjennomføre</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor"><use href="#i-flag"/></svg>Tester<span class="ct">12/36</span></button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-bar"/></svg>Analysere</button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Støtte</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-users"/></svg>Coach<span class="ct">3</span></button>
+    </div>
+
+    <div class="side-foot">
+      <svg fill="none" stroke="currentColor"><use href="#i-user-circle"/></svg>
+      Min profil
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ============== TOPBAR ============== -->
+    <header class="topbar">
+      <a class="back" href="#">
+        <svg fill="none" stroke="currentColor"><use href="#i-arrow-left"/></svg>
+        PlayerHQ
+      </a>
+      <div class="player">
+        <div class="avatar">MP</div>
+        <div>
+          <div class="nm">Markus Røinaas Pedersen</div>
+          <div class="sub">A1 · HCP 4.8 · <span class="pill pill-pro" style="font-size:8.5px;padding:1px 7px;margin-left:4px;">PRO</span></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+
+      <!-- ============== HERO ============== -->
+      <section class="hero">
+        <div>
+          <div class="eyebrow">PlayerHQ · Trening · Tester</div>
+          <h1>Tester <em>og</em> benchmarks</h1>
+          <div class="sub">
+            <strong style="color:var(--ink);font-weight:700;">12</strong> av <strong style="color:var(--ink);font-weight:700;">36</strong> tester gjennomført
+            <span class="dot"></span>
+            <strong style="color:var(--ink);font-weight:700;">87</strong> resultater logget
+            <span class="dot"></span>
+            Sist: <strong style="color:var(--ink);font-weight:700;">18. mai 2026</strong>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm">Last ned PDF</button>
+          <button class="btn btn-primary">
+            <svg fill="none" stroke="currentColor"><use href="#i-plus"/></svg>
+            Ta ny test
+            <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============== KPI ROW ============== -->
+      <section class="kpi-row">
+        <div class="kpi featured">
+          <div class="lbl">Gjennomført</div>
+          <div class="val">12<span class="sm">/36</span></div>
+          <div class="sub">33% av batteriet</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Totale forsøk</div>
+          <div class="val">87</div>
+          <div class="sub">+9 siste måned</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Beste kategori</div>
+          <div class="val" style="font-size:22px;">TEK · Teknisk</div>
+          <div class="sub"><span class="dot" style="background:var(--pyr-tek);"></span>+12% mot stall</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Snitt-score</div>
+          <div class="val">67,3</div>
+          <div class="sub" style="color:var(--success);"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-trend-up"/></svg> +3,2 mnd</div>
+        </div>
+      </section>
+
+      <!-- ============== ACTIVE TEST BANNER ============== -->
+      <section class="active-banner">
+        <div class="ic">
+          <svg fill="none" stroke="currentColor" stroke-width="2"><use href="#i-activity"/></svg>
+        </div>
+        <div class="body">
+          <div class="ttl">Du har en pågående test: <strong>Putt 1–3m</strong></div>
+          <div class="meta">Steg 3 av 5 · pauset for 12 min siden · 47 av 90 putt registrert</div>
+        </div>
+        <button class="btn btn-primary btn-sm">
+          Fortsett
+          <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg>
+        </button>
+      </section>
+
+      <!-- ============== FYS SECTION ============== -->
+      <section class="disc">
+        <div class="disc-h">
+          <span class="pyr pyr-fys pyr-lg">FYS</span>
+          <div>
+            <div class="ttl">Fysisk</div>
+            <div class="sub">Styrke · utholdenhet · spenst</div>
+          </div>
+          <div class="right">
+            <div class="progress">
+              <div class="progress-bar"><div style="width:62.5%;"></div></div>
+              <span><strong style="color:var(--ink);font-weight:700;">5</strong> av 8</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tgrid">
+
+          <div class="tcard">
+            <div class="row1"><span class="pyr pyr-fys">FYS</span><span class="pill pill-done"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg> Gjort</span></div>
+            <div class="ttl">Trapbar Deadlift 1RM</div>
+            <div class="desc">3 forsøk på maks tung trapbar deadlift. Beste registrert i kg.</div>
+            <div class="num-row">
+              <div class="v">142<span style="font-size:14px;color:var(--muted);font-weight:500;"> kg</span></div>
+              <span class="trend up"><svg fill="none" stroke="currentColor"><use href="#i-trend-up"/></svg>+8</span>
+            </div>
+            <div class="last">Sist: <strong>05. mai</strong> · 4 forsøk</div>
+            <div class="foot">Se historikk <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg></div>
+          </div>
+
+          <div class="tcard">
+            <div class="row1"><span class="pyr pyr-fys">FYS</span><span class="pill pill-done"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg> Gjort</span></div>
+            <div class="ttl">CMJ — countermovement jump</div>
+            <div class="desc">3 forsøk på vertikalt hopp uten arm-svikt. Beste i cm.</div>
+            <div class="num-row">
+              <div class="v">52<span style="font-size:14px;color:var(--muted);font-weight:500;"> cm</span></div>
+              <span class="trend up"><svg fill="none" stroke="currentColor"><use href="#i-trend-up"/></svg>+3</span>
+            </div>
+            <div class="last">Sist: <strong>02. mai</strong> · 6 forsøk</div>
+            <div class="foot">Se historikk <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg></div>
+          </div>
+
+          <div class="tcard todo">
+            <div class="row1"><span class="pyr pyr-fys">FYS</span><span class="pill pill-todo">Ikke tatt</span></div>
+            <div class="ttl">VO₂max — Cooper 12 min</div>
+            <div class="desc">Løp så langt som mulig på 12 minutter. Beregnet ml/kg/min.</div>
+            <div class="placeholder">— Ingen målinger ennå —</div>
+            <button class="start"><svg fill="none" stroke="currentColor"><use href="#i-play"/></svg>Start test</button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============== TEK SECTION ============== -->
+      <section class="disc">
+        <div class="disc-h">
+          <span class="pyr pyr-tek pyr-lg">TEK</span>
+          <div>
+            <div class="ttl">Teknisk</div>
+            <div class="sub">Sving-mekanikk · clubhead speed · konsistens</div>
+          </div>
+          <div class="right">
+            <div class="progress">
+              <div class="progress-bar"><div style="width:50%;background:var(--pyr-tek);"></div></div>
+              <span><strong style="color:var(--ink);font-weight:700;">3</strong> av 6</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tgrid">
+
+          <div class="tcard">
+            <div class="row1"><span class="pyr pyr-tek">TEK</span><span class="pill pill-done"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg> Gjort</span></div>
+            <div class="ttl">Clubhead Speed — driver</div>
+            <div class="desc">5 fullsving driver på TrackMan. Snitt clubhead speed.</div>
+            <div class="num-row">
+              <div class="v">112<span style="font-size:14px;color:var(--muted);font-weight:500;"> mph</span></div>
+              <span class="trend up"><svg fill="none" stroke="currentColor"><use href="#i-trend-up"/></svg>+2,1</span>
+            </div>
+            <div class="last">Sist: <strong>14. mai</strong> · 12 forsøk</div>
+            <div class="foot">Se historikk <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg></div>
+          </div>
+
+          <div class="tcard">
+            <div class="row1"><span class="pyr pyr-tek">TEK</span><span class="pill pill-done"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg> Gjort</span></div>
+            <div class="ttl">7-jern Smash Factor</div>
+            <div class="desc">10 fullsving 7-jern. Snitt av middels-fart 3.</div>
+            <div class="num-row">
+              <div class="v">1,38</div>
+              <span class="trend flat">±0,00</span>
+            </div>
+            <div class="last">Sist: <strong>14. mai</strong> · 7 forsøk</div>
+            <div class="foot">Se historikk <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg></div>
+          </div>
+
+          <div class="tcard todo">
+            <div class="row1"><span class="pyr pyr-tek">TEK</span><span class="pill pill-todo">Ikke tatt</span></div>
+            <div class="ttl">Wedge-konsistens 50m</div>
+            <div class="desc">10 wedges til 50m flagg, måler spredning (laser, m).</div>
+            <div class="placeholder">— Ingen målinger ennå —</div>
+            <button class="start"><svg fill="none" stroke="currentColor"><use href="#i-play"/></svg>Start test</button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============== SLAG SECTION ============== -->
+      <section class="disc">
+        <div class="disc-h">
+          <span class="pyr pyr-slag pyr-lg">SLAG</span>
+          <div>
+            <div class="ttl">Slagteknikk</div>
+            <div class="sub">Driver · jern · putting · innspill</div>
+          </div>
+          <div class="right">
+            <div class="progress">
+              <div class="progress-bar"><div style="width:33%;background:var(--lime-deep);"></div></div>
+              <span><strong style="color:var(--ink);font-weight:700;">3</strong> av 9</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tgrid">
+
+          <div class="tcard" style="border-color:var(--lime-deep);background:linear-gradient(180deg,#FCFEEC 0%,#FBFBF8 60%);">
+            <div class="row1"><span class="pyr pyr-slag">SLAG</span><span class="pill pill-pr">PR</span></div>
+            <div class="ttl">Driver Basic</div>
+            <div class="desc">5 driver-slag. Måler carry-lengde, sideavvik og beregner PEI.</div>
+            <div class="num-row">
+              <div class="v">67,4</div>
+              <span class="trend up"><svg fill="none" stroke="currentColor"><use href="#i-trend-up"/></svg>+3,2</span>
+            </div>
+            <div class="last">Sist: <strong>12. mai</strong> · 8 forsøk</div>
+            <div class="foot">Se historikk <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg></div>
+          </div>
+
+          <div class="tcard">
+            <div class="row1"><span class="pyr pyr-slag">SLAG</span><span class="pill pill-done"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg> Pågående</span></div>
+            <div class="ttl">Putt 1–3 m</div>
+            <div class="desc">30 putt fordelt 1m, 2m og 3m. Måler % sunket.</div>
+            <div class="num-row">
+              <div class="v">73<span style="font-size:14px;color:var(--muted);font-weight:500;"> %</span></div>
+              <span class="trend up"><svg fill="none" stroke="currentColor"><use href="#i-trend-up"/></svg>+4</span>
+            </div>
+            <div class="last">Sist: <strong>i dag</strong> · 5 forsøk</div>
+            <div class="foot" style="color:var(--warn);">Fortsett test <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg></div>
+          </div>
+
+          <div class="tcard">
+            <div class="row1"><span class="pyr pyr-slag">SLAG</span><span class="pill pill-done"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg> Gjort</span></div>
+            <div class="ttl">Chip landingsone 15m</div>
+            <div class="desc">10 chip fra 15m til 3m landingsone. % i sone.</div>
+            <div class="num-row">
+              <div class="v">62<span style="font-size:14px;color:var(--muted);font-weight:500;"> %</span></div>
+              <span class="trend dn"><svg fill="none" stroke="currentColor"><use href="#i-trend-dn"/></svg>-3</span>
+            </div>
+            <div class="last">Sist: <strong>10. mai</strong> · 4 forsøk</div>
+            <div class="foot">Se historikk <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============== SPILL + TURN side-by-side ============== -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+        <section class="disc">
+          <div class="disc-h">
+            <span class="pyr pyr-spill pyr-lg">SPILL</span>
+            <div>
+              <div class="ttl">Spillforståelse</div>
+              <div class="sub">Course management · TrackMan</div>
+            </div>
+            <div class="right" style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">
+              <strong style="color:var(--ink);font-weight:700;">1</strong> av 5
+            </div>
+          </div>
+
+          <div class="tgrid" style="grid-template-columns:1fr;">
+
+            <div class="tcard">
+              <div class="row1"><span class="pyr pyr-spill">SPILL</span><span class="pill pill-done"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg> Gjort</span></div>
+              <div class="ttl">D-Plane forståelse — quiz</div>
+              <div class="desc">12-spørsmål quiz · TrackMan-data tolkning</div>
+              <div class="num-row">
+                <div class="v">82<span style="font-size:14px;color:var(--muted);font-weight:500;"> %</span></div>
+                <span class="trend up"><svg fill="none" stroke="currentColor"><use href="#i-trend-up"/></svg>+7</span>
+              </div>
+              <div class="last">Sist: <strong>06. mai</strong> · 2 forsøk</div>
+              <div class="foot">Se historikk <svg fill="none" stroke="currentColor"><use href="#i-arrow-right"/></svg></div>
+            </div>
+
+            <div class="tcard todo">
+              <div class="row1"><span class="pyr pyr-spill">SPILL</span><span class="pill pill-todo">Ikke tatt</span></div>
+              <div class="ttl">Course management — 10 scenarier</div>
+              <div class="desc">Velg riktig kølle og linje for 10 banescenarier.</div>
+              <div class="placeholder">— Ingen målinger ennå —</div>
+              <button class="start"><svg fill="none" stroke="currentColor"><use href="#i-play"/></svg>Start test</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="disc">
+          <div class="disc-h">
+            <span class="pyr pyr-turn pyr-lg">TURN</span>
+            <div>
+              <div class="ttl">Turneringsmodus</div>
+              <div class="sub">Mental tøffhet · pre-shot · fokus</div>
+            </div>
+            <div class="right" style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">
+              <strong style="color:var(--ink);font-weight:700;">0</strong> av 4
+            </div>
+          </div>
+
+          <div class="tgrid" style="grid-template-columns:1fr;">
+
+            <div class="tcard todo">
+              <div class="row1"><span class="pyr pyr-turn">TURN</span><span class="pill pill-todo">Ikke tatt</span></div>
+              <div class="ttl">MTQ stress-skåre</div>
+              <div class="desc">Mental Toughness Questionnaire — score 1–10.</div>
+              <div class="placeholder">— Ingen målinger ennå —</div>
+              <button class="start"><svg fill="none" stroke="currentColor"><use href="#i-play"/></svg>Start test</button>
+            </div>
+
+            <div class="tcard todo">
+              <div class="row1"><span class="pyr pyr-turn">TURN</span><span class="pill pill-todo">Ikke tatt</span></div>
+              <div class="ttl">Pre-shot rutine</div>
+              <div class="desc">Konsistens i rutine over 18 slag. Filmes og analyseres.</div>
+              <div class="placeholder">— Ingen målinger ennå —</div>
+              <button class="start"><svg fill="none" stroke="currentColor"><use href="#i-play"/></svg>Start test</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- bottom-nav for mobile -->
+  <nav class="bottom-nav" aria-hidden="true">
+    <button class="bn-item"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-home"/></svg>Hjem</button>
+    <button class="bn-item"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-cal"/></svg>Plan</button>
+    <button class="bn-item"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-play"/></svg>Gjør</button>
+    <button class="bn-item active"><svg fill="none" stroke="currentColor" stroke-width="2"><use href="#i-flag"/></svg>Tester</button>
+    <button class="bn-item"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-user-circle"/></svg>Profil</button>
+  </nav>
+
+</div>
+</body>
+</html>

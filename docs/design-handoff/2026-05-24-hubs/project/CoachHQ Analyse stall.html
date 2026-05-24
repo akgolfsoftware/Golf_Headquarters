@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Analyse · stall — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 48px; }
+
+  .stat-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .stat-cell {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .stat-cell.featured { background: var(--fg); color: #fff; border-color: var(--fg); }
+  .stat-cell .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+  .stat-cell.featured .lbl { color: rgba(209,248,67,0.65); }
+  .stat-cell .val { font-family: var(--font-mono); font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; color: var(--fg); margin-top: 2px; }
+  .stat-cell.featured .val { color: var(--accent); }
+  .stat-cell .val.good { color: var(--success); }
+  .stat-cell .val.urgent { color: var(--danger); }
+  .stat-cell .sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; margin-top: 2px; }
+  .stat-cell.featured .sub { color: rgba(255,255,255,0.65); }
+  .stat-cell .sub.up { color: var(--success); }
+  .stat-cell .sub.dn { color: var(--danger); }
+
+  /* main chart card */
+  .chart-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 24px 28px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .chart-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .chart-head h3 {
+    font-family: var(--font-display); font-size: 18px;
+    font-weight: 600; letter-spacing: -0.01em;
+  }
+  .chart-head h3 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .chart-head .sub {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600; margin-top: 4px;
+  }
+  .chart-legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--fg);
+  }
+  .chart-legend .lg {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chart-legend .sw {
+    display: inline-block; width: 14px; height: 3px; border-radius: 2px;
+  }
+
+  /* heatmap */
+  .heat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 24px 28px;
+  }
+  .heat-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 16px; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .heat-grid {
+    display: grid; grid-template-columns: 160px repeat(5, 1fr);
+    border-radius: 8px; overflow: hidden;
+  }
+  .heat-grid-head {
+    background: var(--bg);
+    padding: 10px 12px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 700;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .heat-grid-head.first { text-align: left; }
+  .heat-grid-cell {
+    padding: 0;
+    border-top: 1px solid var(--border-soft);
+    border-right: 1px solid var(--border-soft);
+    position: relative;
+  }
+  .heat-grid-cell.first {
+    background: var(--bg);
+    padding: 8px 12px;
+    font-family: var(--font-body); font-size: 12px;
+    color: var(--fg); font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+    border-right: 1px solid var(--border);
+  }
+  .heat-grid-cell.first .p-avatar { width: 22px; height: 22px; font-size: 9px; border: 0; }
+  .heat-grid-cell.first .hcp {
+    margin-left: auto; font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); font-weight: 600;
+  }
+  .heat-grid-cell .inner {
+    height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    cursor: pointer;
+    transition: transform 100ms;
+  }
+  .heat-grid-cell .inner:hover { transform: scale(1.08); z-index: 2; position: relative; }
+  .heat-grid-cell.l0 .inner { background: rgba(94,92,87,0.04); color: var(--muted-soft); }
+  .heat-grid-cell.l1 .inner { background: rgba(209,248,67,0.32); color: #3B4310; }
+  .heat-grid-cell.l2 .inner { background: #C5D9A6; color: #2D3D1A; }
+  .heat-grid-cell.l3 .inner { background: #88B45A; color: #1C2C0A; }
+  .heat-grid-cell.l4 .inner { background: #2C7D52; color: #fff; }
+  .heat-grid-cell.l5 .inner { background: var(--primary); color: var(--accent); }
+  .heat-grid-cell.neg .inner { background: rgba(163,45,45,0.12); color: var(--danger); }
+  .heat-grid-cell.neg2 .inner { background: rgba(163,45,45,0.24); color: var(--danger); }
+
+  /* legend */
+  .heat-legend {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.08em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .heat-legend .scale { display: flex; gap: 2px; }
+  .heat-legend .step { width: 22px; height: 12px; border-radius: 2px; }
+
+  /* insights */
+  .insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .insight-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 22px 24px;
+  }
+  .insight-card.lime {
+    background: rgba(209,248,67,0.10);
+    border-color: rgba(209,248,67,0.45);
+  }
+  .insight-card.forest {
+    background: linear-gradient(160deg, #006C50 0%, #003A2A 100%);
+    color: #fff; border: 0;
+    position: relative; overflow: hidden;
+  }
+  .insight-card.forest::before {
+    content: ''; position: absolute;
+    top: -50%; right: -10%;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.12), transparent 70%);
+  }
+  .insight-card .lbl {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 700;
+    position: relative; z-index: 1;
+  }
+  .insight-card.lime .lbl { color: #4A5418; }
+  .insight-card.forest .lbl { color: rgba(209,248,67,0.70); }
+  .insight-card .lbl svg { width: 11px; height: 11px; }
+  .insight-card h4 {
+    font-family: var(--font-display); font-size: 16px;
+    font-weight: 600; letter-spacing: -0.01em;
+    line-height: 1.3; margin-top: 6px;
+    position: relative; z-index: 1;
+  }
+  .insight-card h4 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .insight-card.forest h4 em { color: var(--accent); }
+  .insight-card .body-text {
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--fg); line-height: 1.55; margin-top: 8px;
+    position: relative; z-index: 1;
+  }
+  .insight-card.forest .body-text { color: rgba(255,255,255,0.85); }
+  .insight-card.forest .body-text strong { color: var(--accent); }
+  .insight-card .players-list {
+    display: flex; gap: 6px; margin-top: 10px;
+    flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .insight-card .pl-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px 3px 4px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--border);
+    font-family: var(--font-body); font-size: 11.5px;
+    font-weight: 600; color: var(--fg);
+  }
+  .insight-card .pl-chip .p-avatar { width: 18px; height: 18px; font-size: 8.5px; border: 0; }
+  .insight-card.forest .pl-chip {
+    background: rgba(255,255,255,0.10);
+    border-color: rgba(209,248,67,0.20);
+    color: #fff;
+  }
+
+  .compare-toggle {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px; border-radius: 999px;
+    background: var(--bg); border: 1px solid var(--border);
+    cursor: pointer;
+    font-family: var(--font-body); font-size: 12.5px;
+    font-weight: 500; color: var(--fg);
+  }
+  .compare-toggle.active {
+    background: var(--accent); color: var(--fg);
+    border-color: var(--accent); font-weight: 600;
+  }
+  .compare-toggle .sw {
+    width: 24px; height: 14px; border-radius: 999px;
+    background: var(--border); position: relative;
+    transition: all 150ms;
+  }
+  .compare-toggle .sw::after {
+    content: ''; position: absolute;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #fff; top: 2px; left: 2px;
+    transition: all 150ms;
+  }
+  .compare-toggle.active .sw { background: var(--fg); }
+  .compare-toggle.active .sw::after { left: 12px; }
+
+  .period-select { display: flex; align-items: center; gap: 0; background: var(--bg); border-radius: 10px; padding: 3px; }
+  .period-select button {
+    padding: 6px 14px; background: transparent; border: 0;
+    font-family: var(--font-body); font-size: 12px;
+    font-weight: 500; color: var(--muted); cursor: pointer;
+    border-radius: 7px;
+  }
+  .period-select button.active { background: var(--fg); color: var(--accent); font-weight: 600; }
+</style>
+</head>
+<body data-screen-label="CoachHQ Analyse stall">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 5.7L19.6 10.6 13.9 12.5 12 18.2 10.1 12.5 4.4 10.6 10.1 8.7Z"/></symbol>
+    <symbol id="ic-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="ic-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+    <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="ic-trending" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+    <symbol id="ic-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="assets/logo-white-on-green.svg" alt="AK Golf" class="brand-logo" />
+      <div class="name">AK GOLF</div>
+      <div class="meta">COACHHQ · HEAD COACH</div>
+    </div>
+    <div class="sidebar-profile coach"><div class="avatar">AK</div><div><div class="nm">Anders K.</div><div class="role">38 SPILLERE</div></div></div>
+    <div class="nav-group">
+      <div class="nav-group-label">Daglig</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Kalender</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>Innboks<span class="badge-count">7</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operasjon</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Stall</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Planer</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Analyse</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Talent</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg>Tester</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+        <input placeholder="Søk spiller, KPI…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="breadcrumb">CoachHQ &nbsp;/&nbsp; Innsikt &nbsp;/&nbsp; <span class="current">Analyse</span></div>
+      <div style="margin-left:auto;">
+        <button aria-label="Varsler" style="width:38px;height:38px;border-radius:10px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;color:var(--fg);cursor:pointer;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="page-coach">
+
+      <div class="coach-header">
+        <div class="left">
+          <span class="eyebrow">DASHBOARD · 90 DAGER · 19.02 — 19.05</span>
+          <h1>Analyse · <em>38 spillere</em></h1>
+          <div class="sub">
+            <span class="ok">SG-trend +0,3 stall</span>
+            <span class="dot"></span>
+            HCP-snitt ↓ 0,6
+            <span class="dot"></span>
+            <span class="warn">4 churn-risk-spillere</span>
+          </div>
+        </div>
+        <div class="actions">
+          <div class="period-select">
+            <button>30d</button>
+            <button class="active">90d</button>
+            <button>Sesong</button>
+            <button>1 år</button>
+          </div>
+          <button class="compare-toggle active" onclick="this.classList.toggle('active')">
+            <span class="sw"></span>
+            vs forrige periode
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI row (5) -->
+      <div class="stat-strip">
+        <div class="stat-cell featured">
+          <span class="lbl">SNITT-HCP STALL</span>
+          <span class="val">9,4</span>
+          <span class="sub up">↓ 0,6 vs forrige 90d</span>
+        </div>
+        <div class="stat-cell">
+          <span class="lbl">AKTIVITET 90D</span>
+          <span class="val">87 %</span>
+          <span class="sub">uendret · stabil</span>
+        </div>
+        <div class="stat-cell">
+          <span class="lbl">SG-TOTAL STALL</span>
+          <span class="val good">+0,3</span>
+          <span class="sub up">↑ 0,18 forrige periode</span>
+        </div>
+        <div class="stat-cell">
+          <span class="lbl">NYE SPILLERE 30D</span>
+          <span class="val">3</span>
+          <span class="sub">Vilde B · Sondre Å · Lasse R</span>
+        </div>
+        <div class="stat-cell">
+          <span class="lbl">CHURN-RISK</span>
+          <span class="val urgent">4</span>
+          <span class="sub dn">+1 vs forrige · krever oppfølging</span>
+        </div>
+      </div>
+
+      <!-- Main chart -->
+      <div class="chart-card">
+        <div class="chart-head">
+          <div>
+            <h3>SG-trend per <em>segment</em></h3>
+            <div class="sub">JUNIOR · SENIOR · PRO · 90 DAGER UKENTLIG</div>
+          </div>
+          <div class="chart-legend">
+            <span class="lg"><span class="sw" style="background:#A8C82E;"></span>Junior · 8 spillere</span>
+            <span class="lg"><span class="sw" style="background:var(--primary);"></span>Senior · 18 spillere</span>
+            <span class="lg"><span class="sw" style="background:#7B4FB4;"></span>Pro · 12 spillere</span>
+            <span class="lg"><span class="sw" style="background:var(--muted-soft); opacity:0.6;"></span>Stall-snitt</span>
+          </div>
+        </div>
+
+        <svg width="100%" height="280" viewBox="0 0 800 280" preserveAspectRatio="none" style="display:block;">
+          <!-- Y gridlines -->
+          <g stroke="#E5E3DD" stroke-width="1">
+            <line x1="50" y1="40" x2="790" y2="40"/>
+            <line x1="50" y1="100" x2="790" y2="100"/>
+            <line x1="50" y1="160" x2="790" y2="160"/>
+            <line x1="50" y1="220" x2="790" y2="220"/>
+          </g>
+          <!-- y labels -->
+          <g font-family="JetBrains Mono" font-size="9.5" fill="var(--muted-soft)" text-anchor="end">
+            <text x="42" y="44">+1,5</text>
+            <text x="42" y="104">+0,5</text>
+            <text x="42" y="164">0</text>
+            <text x="42" y="224">−0,5</text>
+          </g>
+          <!-- x labels -->
+          <g font-family="JetBrains Mono" font-size="9.5" fill="var(--muted)" text-anchor="middle" font-weight="600">
+            <text x="80" y="262">U08</text>
+            <text x="220" y="262">U12</text>
+            <text x="360" y="262">U16</text>
+            <text x="500" y="262">U18</text>
+            <text x="640" y="262">U20</text>
+            <text x="770" y="262">U21</text>
+          </g>
+
+          <!-- zero line -->
+          <line x1="50" y1="160" x2="790" y2="160" stroke="var(--fg)" stroke-width="1" stroke-dasharray="2 5" opacity="0.30"/>
+
+          <!-- Snitt (background dashed) -->
+          <polyline points="50,162 140,158 230,156 320,150 410,144 500,138 590,132 680,128 770,124"
+            fill="none" stroke="#5E5C57" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.45"/>
+
+          <!-- Pro line (lila, top) -->
+          <polyline points="50,142 140,132 230,124 320,118 410,108 500,98 590,84 680,76 770,70"
+            fill="none" stroke="#7B4FB4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <g fill="#7B4FB4">
+            <circle cx="770" cy="70" r="5" stroke="#FAFAF7" stroke-width="2"/>
+          </g>
+          <text x="775" y="68" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#7B4FB4">+1,1</text>
+
+          <!-- Junior (lime, mid) -->
+          <polyline points="50,168 140,164 230,158 320,150 410,142 500,134 590,126 680,118 770,112"
+            fill="none" stroke="#A8C82E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <g fill="#A8C82E">
+            <circle cx="770" cy="112" r="5" stroke="#FAFAF7" stroke-width="2"/>
+          </g>
+          <text x="775" y="110" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#88A328">+0,6</text>
+
+          <!-- Senior (forest, lower) -->
+          <polyline points="50,178 140,182 230,176 320,178 410,172 500,166 590,164 680,158 770,154"
+            fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <g fill="var(--primary)">
+            <circle cx="770" cy="154" r="5" stroke="#FAFAF7" stroke-width="2"/>
+          </g>
+          <text x="775" y="152" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="var(--primary)">+0,1</text>
+
+        </svg>
+      </div>
+
+      <!-- Heatmap -->
+      <div class="heat-card">
+        <div class="heat-head">
+          <div>
+            <h3>Spiller-heatmap · <em>5 dimensjoner</em></h3>
+            <div class="sub" style="font-family:var(--font-mono); font-size:10.5px; color:var(--muted); letter-spacing:0.10em; text-transform:uppercase; font-weight:600; margin-top:4px;">SG-VERDI PER OMRÅDE · 90 DAGER · KLIKK FOR SPILLER-DETALJ</div>
+          </div>
+          <div class="heat-legend">
+            <span>SVAK</span>
+            <div class="scale">
+              <span class="step" style="background:rgba(163,45,45,0.24);"></span>
+              <span class="step" style="background:rgba(163,45,45,0.12);"></span>
+              <span class="step" style="background:rgba(94,92,87,0.04);"></span>
+              <span class="step" style="background:rgba(209,248,67,0.32);"></span>
+              <span class="step" style="background:#C5D9A6;"></span>
+              <span class="step" style="background:#88B45A;"></span>
+              <span class="step" style="background:#2C7D52;"></span>
+              <span class="step" style="background:var(--primary);"></span>
+            </div>
+            <span>STERK</span>
+          </div>
+        </div>
+
+        <div class="heat-grid">
+          <div class="heat-grid-head first">Spiller</div>
+          <div class="heat-grid-head">Drive</div>
+          <div class="heat-grid-head">Iron</div>
+          <div class="heat-grid-head">Short</div>
+          <div class="heat-grid-head">Putt</div>
+          <div class="heat-grid-head">Mental</div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c1">MR</div>Markus R.P.<span class="hcp">+3,5</span></div>
+          <div class="heat-grid-cell l4"><div class="inner">+0,9</div></div>
+          <div class="heat-grid-cell l1"><div class="inner">−0,2</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,4</div></div>
+          <div class="heat-grid-cell l5"><div class="inner">+1,2</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,5</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c2">JT</div>Joachim T.<span class="hcp">+1,2</span></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,5</div></div>
+          <div class="heat-grid-cell l4"><div class="inner">+0,8</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,2</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,6</div></div>
+          <div class="heat-grid-cell l4"><div class="inner">+0,9</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c4">ØR</div>Øyvind R.<span class="hcp">+3,5</span></div>
+          <div class="heat-grid-cell l5"><div class="inner">+1,1</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,6</div></div>
+          <div class="heat-grid-cell l4"><div class="inner">+0,8</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,4</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,3</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c7">HV</div>Henrik V.<span class="hcp">+0,4</span></div>
+          <div class="heat-grid-cell l4"><div class="inner">+0,7</div></div>
+          <div class="heat-grid-cell l4"><div class="inner">+0,8</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,5</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,3</div></div>
+          <div class="heat-grid-cell l4"><div class="inner">+0,8</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c4">MK</div>Mats K.<span class="hcp">+1,8</span></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,4</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,2</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,5</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,6</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,2</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c2">TF</div>Tobias F.<span class="hcp">+2,1</span></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,5</div></div>
+          <div class="heat-grid-cell l1"><div class="inner">−0,1</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,1</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,5</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,4</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c3">ES</div>Emma S.<span class="hcp">4,8</span></div>
+          <div class="heat-grid-cell l1"><div class="inner">−0,2</div></div>
+          <div class="heat-grid-cell l1"><div class="inner">−0,3</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,5</div></div>
+          <div class="heat-grid-cell l4"><div class="inner">+0,8</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,2</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c8">IM</div>Ida M.<span class="hcp">3,1</span></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,2</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,5</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,1</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,1</div></div>
+          <div class="heat-grid-cell l3"><div class="inner">+0,4</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c1">AB</div>Aksel B.<span class="hcp">2,2</span></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,1</div></div>
+          <div class="heat-grid-cell l1"><div class="inner">−0,1</div></div>
+          <div class="heat-grid-cell l1"><div class="inner">−0,1</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,2</div></div>
+          <div class="heat-grid-cell l2"><div class="inner">+0,1</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c5">SB</div>Sigrid B.<span class="hcp">8,2</span></div>
+          <div class="heat-grid-cell neg"><div class="inner">−0,3</div></div>
+          <div class="heat-grid-cell neg2"><div class="inner">−0,6</div></div>
+          <div class="heat-grid-cell neg"><div class="inner">−0,2</div></div>
+          <div class="heat-grid-cell l1"><div class="inner">−0,1</div></div>
+          <div class="heat-grid-cell neg"><div class="inner">−0,4</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c6">NL</div>Nora L.<span class="hcp">12,4</span></div>
+          <div class="heat-grid-cell neg"><div class="inner">−0,2</div></div>
+          <div class="heat-grid-cell l0"><div class="inner">0,0</div></div>
+          <div class="heat-grid-cell l1"><div class="inner">−0,1</div></div>
+          <div class="heat-grid-cell l0"><div class="inner">0,0</div></div>
+          <div class="heat-grid-cell neg2"><div class="inner">−0,5</div></div>
+
+          <div class="heat-grid-cell first"><div class="p-avatar c3">KE</div>Karoline E.<span class="hcp">5,7</span></div>
+          <div class="heat-grid-cell neg2"><div class="inner">−0,5</div></div>
+          <div class="heat-grid-cell neg"><div class="inner">−0,3</div></div>
+          <div class="heat-grid-cell neg"><div class="inner">−0,4</div></div>
+          <div class="heat-grid-cell neg2"><div class="inner">−0,6</div></div>
+          <div class="heat-grid-cell neg2"><div class="inner">−0,7</div></div>
+
+        </div>
+        <div style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em; padding-top: 10px;">
+          VISER TOPP 12 AV 38 SPILLERE · SE ALLE I DETALJVIEW
+        </div>
+      </div>
+
+      <!-- INSIGHTS -->
+      <div class="insight-grid">
+        <div class="insight-card lime">
+          <span class="lbl">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-trending"/></svg>
+            AI-FUNN · STERKEST UTVIKLING
+          </span>
+          <h4>Putt-utvikling <em>vinner</em> siste 30 dager</h4>
+          <p class="body-text">
+            Disse tre spillerne har hver forbedret SG·Putt med over +0,6 siden 19. april. Felles drill-pattern: 5×6 fra 3m + press-runde.
+          </p>
+          <div class="players-list">
+            <span class="pl-chip"><span class="p-avatar c1">MR</span>Markus +1,2</span>
+            <span class="pl-chip"><span class="p-avatar c3">SH</span>Sofie +0,8</span>
+            <span class="pl-chip"><span class="p-avatar c4">EM</span>Emil +0,7</span>
+          </div>
+        </div>
+
+        <div class="insight-card forest">
+          <span class="lbl">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-alert"/></svg>
+            AI-FUNN · STAGNASJON
+          </span>
+          <h4>3 spillere har <em>flatet ut</em> på iron</h4>
+          <p class="body-text">
+            <strong>Aksel, Tobias og Emma</strong> har 0 SG·Iron-fremgang siste 60 dager. Vurder ny drill-plan med CS-progresjon (CS70 → CS80) eller bytte til <strong>blokk + random</strong>-format.
+          </p>
+          <div class="players-list">
+            <span class="pl-chip"><span class="p-avatar c1">AB</span>Aksel B.</span>
+            <span class="pl-chip"><span class="p-avatar c2">TF</span>Tobias F.</span>
+            <span class="pl-chip"><span class="p-avatar c3">ES</span>Emma S.</span>
+          </div>
+        </div>
+
+        <div class="insight-card">
+          <span class="lbl">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sparkle"/></svg>
+            SEGMENT-FUNN
+          </span>
+          <h4>Junior-gruppa har <em>+12 %</em> høyere fremmøte</h4>
+          <p class="body-text">
+            Junior-spillere (8) møter på 94 % av planlagte økter; senior (18) ligger på 82 %. Vurder å applisere junior-onboarding-mønsteret på senior-segmentet.
+          </p>
+        </div>
+
+        <div class="insight-card">
+          <span class="lbl">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-alert"/></svg>
+            CHURN-RISK · KREVER OPPFØLGING
+          </span>
+          <h4>4 spillere flagget med <em>lav aktivitet</em></h4>
+          <p class="body-text">
+            Karoline, Sigrid, Nora og Lasse har under 50 % aktivitet siste 30d. Karoline har dessuten utestående faktura. Anbefal én-til-én sjekk-inn neste uke.
+          </p>
+          <div class="players-list">
+            <span class="pl-chip"><span class="p-avatar c3">KE</span>Karoline E.</span>
+            <span class="pl-chip"><span class="p-avatar c5">SB</span>Sigrid B.</span>
+            <span class="pl-chip"><span class="p-avatar c6">NL</span>Nora L.</span>
+            <span class="pl-chip"><span class="p-avatar c4">LR</span>Lasse R.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- footer actions -->
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn btn-outline btn-sm">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-download"/></svg>
+          Eksporter rapport
+        </button>
+        <button class="btn btn-outline btn-sm">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-send"/></svg>
+          Del med team
+        </button>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  document.querySelectorAll('.period-select button').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.period-select button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    };
+  });
+</script>
+</body>
+</html>

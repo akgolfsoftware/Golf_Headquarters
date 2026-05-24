@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>AK Golf — Marketing klubbsider (Miklagard + GFGK)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; font-family: 'Inter', sans-serif; }
+  * { box-sizing: border-box; }
+  #root { width: 100vw; height: 100vh; }
+</style>
+</head>
+<body data-screen-label="Marketing klubbsider">
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="marketing-pages.jsx"></script>
+
+<script type="text/babel">
+  const App = () => (
+    <DesignCanvas>
+      <DCSection id="miklagard"
+                 title="Miklagard Golf"
+                 subtitle="/anlegg/miklagard-golfklubb — Desktop + mobil">
+        <DCArtboard id="miklagard-desktop" label="Desktop · 1280" width={1280} height={2620}>
+          <MarketingPage data={MIKLAGARD_DATA} mobile={false} />
+        </DCArtboard>
+        <DCArtboard id="miklagard-mobile" label="Mobil · 390" width={390} height={3280}>
+          <MarketingPage data={MIKLAGARD_DATA} mobile={true} />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="gfgk"
+                 title="Gamle Fredrikstad GK"
+                 subtitle="/anlegg/gamle-fredrikstad-gk — Desktop + mobil">
+        <DCArtboard id="gfgk-desktop" label="Desktop · 1280" width={1280} height={2620}>
+          <MarketingPage data={GFGK_DATA} mobile={false} />
+        </DCArtboard>
+        <DCArtboard id="gfgk-mobile" label="Mobil · 390" width={390} height={3280}>
+          <MarketingPage data={GFGK_DATA} mobile={true} />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>WAGR-import — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 48px; }
+
+  /* import status card */
+  .import-card {
+    background: linear-gradient(160deg, #006C50 0%, #003A2A 100%);
+    color: #fff; border-radius: var(--r-card);
+    padding: 28px 32px; position: relative; overflow: hidden;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 22px; align-items: center;
+  }
+  .import-card::before {
+    content: ''; position: absolute; top: -50%; right: -10%;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.12), transparent 70%);
+  }
+  .import-card .ic-big {
+    width: 72px; height: 72px; border-radius: 16px;
+    background: rgba(209,248,67,0.20);
+    border: 1.5px solid rgba(209,248,67,0.40);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 1; flex-shrink: 0;
+  }
+  .import-card .ic-big svg { width: 30px; height: 30px; }
+  .import-card .info { position: relative; z-index: 1; }
+  .import-card .lbl {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: rgba(209,248,67,0.70); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .import-card h3 {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 600; margin-top: 6px; letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .import-card h3 em {
+    font-family: var(--font-serif); font-style: italic;
+    color: var(--accent); font-weight: 400;
+  }
+  .import-card .desc {
+    font-family: var(--font-body); font-size: 13px;
+    color: rgba(255,255,255,0.80); margin-top: 8px;
+    line-height: 1.5;
+  }
+  .import-card .progress-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 14px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: rgba(209,248,67,0.85);
+    position: relative; z-index: 1;
+  }
+  .progress-bar {
+    flex: 1; height: 6px;
+    background: rgba(255,255,255,0.10);
+    border-radius: 999px; overflow: hidden;
+  }
+  .progress-bar .fill {
+    height: 100%; background: var(--accent);
+    border-radius: 999px; width: 25%;
+    transition: width 300ms;
+  }
+  .import-card .reimport-btn {
+    background: var(--accent); color: var(--fg);
+    border: 0; padding: 12px 22px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 14px;
+    font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    position: relative; z-index: 1;
+  }
+  .import-card .reimport-btn:hover { background: #C5EE2D; }
+  .import-card .reimport-btn svg { width: 14px; height: 14px; }
+
+  /* stat strip */
+  .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat-cell { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); padding: 16px 18px; }
+  .stat-cell .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+  .stat-cell .val { font-family: var(--font-mono); font-size: 26px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; color: var(--fg); margin-top: 4px; }
+  .stat-cell .val.good { color: var(--success); }
+  .stat-cell .val.dn { color: var(--danger); }
+  .stat-cell .sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; margin-top: 3px; }
+
+  /* diff table */
+  .section-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; }
+  .sc-head {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .sc-head h3 { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  .sc-head h3 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+  .sc-head .sub { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase; font-weight: 600; margin-top: 4px; }
+
+  .diff-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .diff-table thead { background: var(--bg); border-bottom: 1px solid var(--border); }
+  .diff-table thead th { text-align: left; padding: 10px 16px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+  .diff-table thead th.right { text-align: right; }
+  .diff-table tbody tr { border-bottom: 1px solid var(--border-soft); transition: background 120ms; }
+  .diff-table tbody tr:last-child { border-bottom: 0; }
+  .diff-table tbody tr:hover { background: var(--bg); }
+  .diff-table td { padding: 12px 16px; vertical-align: middle; font-variant-numeric: tabular-nums; }
+  .diff-table td.right { text-align: right; }
+
+  .player-cell { display: flex; align-items: center; gap: 10px; }
+  .player-cell .p-avatar { width: 28px; height: 28px; font-size: 10.5px; border: 0; }
+  .player-cell .nm { font-family: var(--font-display); font-size: 13px; font-weight: 600; }
+  .player-cell .sub { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.06em; margin-top: 2px; }
+
+  .rank-num { font-family: var(--font-mono); font-size: 13.5px; font-weight: 700; color: var(--fg); }
+  .rank-num.muted { color: var(--muted-soft); font-weight: 500; }
+  .delta-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 700; letter-spacing: 0.04em;
+    min-width: 70px; justify-content: center;
+  }
+  .delta-chip.up { background: rgba(209,248,67,0.36); color: #3B4310; }
+  .delta-chip.dn { background: rgba(163,45,45,0.10); color: var(--danger); }
+  .delta-chip.flat { background: rgba(94,92,87,0.10); color: var(--muted); }
+  .delta-chip svg { width: 11px; height: 11px; }
+
+  .trend-arrow { display: inline-block; }
+
+  /* mapping section */
+  .map-table tbody tr { cursor: pointer; }
+  .matched-input {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 10px;
+    font-family: var(--font-body); font-size: 12.5px;
+    color: var(--fg); min-width: 200px;
+  }
+  .matched-input svg { width: 12px; height: 12px; color: var(--muted-soft); }
+  .matched-input input {
+    flex: 1; border: 0; background: transparent;
+    font: inherit; outline: none; min-width: 0;
+  }
+  .match-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 12px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 11.5px; font-weight: 600;
+    cursor: pointer;
+  }
+  .match-btn.primary { background: var(--primary); color: var(--accent); border: 0; }
+  .match-btn.outline { background: #fff; border: 1px solid var(--border); color: var(--fg); }
+  .match-btn:hover { opacity: 0.9; }
+  .match-btn svg { width: 11px; height: 11px; }
+
+  /* logg list */
+  .log-list { display: flex; flex-direction: column; }
+  .log-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 14px; align-items: center;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .log-row:last-child { border-bottom: 0; }
+  .log-row .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--success);
+  }
+  .log-row .dot.danger { background: var(--danger); }
+  .log-row .when { font-family: var(--font-mono); font-size: 11px; color: var(--fg); font-weight: 600; letter-spacing: 0.04em; }
+  .log-row .desc { font-family: var(--font-body); font-size: 12.5px; color: var(--fg); }
+  .log-row .desc em { font-family: var(--font-serif); font-style: italic; color: var(--primary); font-weight: 400; }
+  .log-row .changes { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+  .log-row .status { font-family: var(--font-mono); font-size: 10px; color: var(--success); letter-spacing: 0.10em; text-transform: uppercase; font-weight: 700; }
+  .log-row .status.fail { color: var(--danger); }
+</style>
+</head>
+<body data-screen-label="CoachHQ WAGR import">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="ic-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></symbol>
+    <symbol id="ic-arrow-up" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></symbol>
+    <symbol id="ic-arrow-dn" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></symbol>
+    <symbol id="ic-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+    <symbol id="ic-user-plus" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><img src="assets/logo-white-on-green.svg" alt="AK Golf" class="brand-logo" /><div class="name">AK GOLF</div><div class="meta">COACHHQ · HEAD COACH</div></div>
+    <div class="sidebar-profile coach"><div class="avatar">AK</div><div><div class="nm">Anders K.</div><div class="role">38 SPILLERE</div></div></div>
+    <div class="nav-group">
+      <div class="nav-group-label">Daglig</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Kalender</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operasjon</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Stall</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Analyse</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Talent</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg>Tester</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg><input placeholder="Søk WAGR-spiller…" /><span class="kbd">⌘K</span></div>
+      <div class="breadcrumb">CoachHQ &nbsp;/&nbsp; Innsikt &nbsp;/&nbsp; <a href="CoachHQ Talent radar.html" style="color:inherit;text-decoration:none;">Talent</a> &nbsp;/&nbsp; <span class="current">WAGR-import</span></div>
+      <div style="margin-left:auto;"><button aria-label="Varsler" style="width:38px;height:38px;border-radius:10px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;color:var(--fg);cursor:pointer;"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg></button></div>
+    </header>
+
+    <div class="page-coach">
+
+      <div class="coach-header">
+        <div class="left">
+          <span class="eyebrow">EKSTERNE DATA · UKENTLIG SYNK</span>
+          <h1>WAGR-<em>import</em></h1>
+          <div class="sub">
+            SISTE IMPORT <strong style="color:var(--fg);">I GÅR 18:30</strong>
+            <span class="dot"></span>
+            <strong style="color:var(--fg);">4 832</strong> SPILLERE I DATABASE
+            <span class="dot"></span>
+            <span class="ok">12 endringer for AK Golf</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Import status card -->
+      <div class="import-card">
+        <div class="ic-big">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-download"/></svg>
+        </div>
+        <div class="info">
+          <span class="lbl">IMPORT-STATUS · PÅGÅR</span>
+          <h3>Henter side <em>12 av 48</em></h3>
+          <p class="desc">
+            Synker rangeringer fra wagr.com sin offentlige feed. Den nye batch-en publiseres hver tirsdag 18:00 GMT. Når importen er ferdig, oppdateres spillerprofiler automatisk.
+          </p>
+          <div class="progress-row">
+            <span>23 %</span>
+            <div class="progress-bar"><div class="fill" style="width:23%;"></div></div>
+            <span>EST. 2 MIN 14 S</span>
+          </div>
+        </div>
+        <button class="reimport-btn">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-refresh"/></svg>
+          Importer på nytt
+        </button>
+      </div>
+
+      <!-- Stat strip -->
+      <div class="stat-strip">
+        <div class="stat-cell"><span class="lbl">ENDRINGER AK</span><span class="val">12</span><span class="sub">8 opp · 3 ned · 1 ny</span></div>
+        <div class="stat-cell"><span class="lbl">STØRSTE OPPGANG</span><span class="val good">+184</span><span class="sub">Ida Myhre · 12 410</span></div>
+        <div class="stat-cell"><span class="lbl">STØRSTE NEDGANG</span><span class="val dn">−135</span><span class="sub">Sofie Hagen · 15 240</span></div>
+        <div class="stat-cell"><span class="lbl">NYE NORSKE</span><span class="val">5</span><span class="sub">venter mapping</span></div>
+      </div>
+
+      <!-- DIFF TABLE -->
+      <div class="section-card">
+        <div class="sc-head">
+          <div>
+            <h3>Diff <em>topp endringer</em> · AK Golf-spillere</h3>
+            <div class="sub">11 ENDRINGER · SAMMENLIGNET MED UKE 20</div>
+          </div>
+        </div>
+        <table class="diff-table">
+          <thead>
+            <tr>
+              <th>Spiller</th>
+              <th>Forrige rank</th>
+              <th>Ny rank</th>
+              <th>Endring</th>
+              <th class="right">Norsk junior</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c8">IM</div><div><div class="nm">Ida Myhre</div><div class="sub">HCP 3,1 · AK</div></div></div></td>
+              <td><span class="rank-num muted">12 594</span></td>
+              <td><span class="rank-num">12 410</span></td>
+              <td><span class="delta-chip up"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-up"/></svg>184</span></td>
+              <td class="right"><span class="rank-num">12</span></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c1">MR</div><div><div class="nm">Markus R.P.</div><div class="sub">HCP +3,5 · AK</div></div></div></td>
+              <td><span class="rank-num muted">4 920</span></td>
+              <td><span class="rank-num">4 832</span></td>
+              <td><span class="delta-chip up"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-up"/></svg>88</span></td>
+              <td class="right"><span class="rank-num">4</span></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c4">EM</div><div><div class="nm">Emil Mortensen</div><div class="sub">HCP 5,1 · AK</div></div></div></td>
+              <td><span class="rank-num muted">8 166</span></td>
+              <td><span class="rank-num">8 124</span></td>
+              <td><span class="delta-chip up"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-up"/></svg>42</span></td>
+              <td class="right"><span class="rank-num">11</span></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c7">HV</div><div><div class="nm">Henrik Vatne</div><div class="sub">HCP +0,4 · WANG</div></div></div></td>
+              <td><span class="rank-num muted">3 580</span></td>
+              <td><span class="rank-num">3 552</span></td>
+              <td><span class="delta-chip up"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-up"/></svg>28</span></td>
+              <td class="right"><span class="rank-num">2</span></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c4">ØR</div><div><div class="nm">Øyvind Rønning</div><div class="sub">HCP +3,5 · BÅDE</div></div></div></td>
+              <td><span class="rank-num muted">4 884</span></td>
+              <td><span class="rank-num">4 870</span></td>
+              <td><span class="delta-chip up"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-up"/></svg>14</span></td>
+              <td class="right"><span class="rank-num">5</span></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c2">JT</div><div><div class="nm">Joachim Tønnesen</div><div class="sub">HCP +1,2 · WANG</div></div></div></td>
+              <td><span class="rank-num muted">6 230</span></td>
+              <td><span class="rank-num">6 244</span></td>
+              <td><span class="delta-chip flat"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-dn"/></svg>14</span></td>
+              <td class="right"><span class="rank-num">8</span></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c4">MK</div><div><div class="nm">Mats Kristoffersen</div><div class="sub">HCP +1,8 · BÅDE</div></div></div></td>
+              <td><span class="rank-num muted">7 008</span></td>
+              <td><span class="rank-num">7 064</span></td>
+              <td><span class="delta-chip dn"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-dn"/></svg>56</span></td>
+              <td class="right"><span class="rank-num">9</span></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c2">SH</div><div><div class="nm">Sofie Hagen</div><div class="sub">HCP 8,1 · WANG</div></div></div></td>
+              <td><span class="rank-num muted">15 105</span></td>
+              <td><span class="rank-num">15 240</span></td>
+              <td><span class="delta-chip dn"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-arrow-dn"/></svg>135</span></td>
+              <td class="right"><span class="rank-num">21</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- MAPPING -->
+      <div class="section-card">
+        <div class="sc-head">
+          <div>
+            <h3>Nye norske amatører · <em>5 funnet</em></h3>
+            <div class="sub">SPILLERE I WAGR-FEED SOM IKKE ER MAPPET MOT INTERN PROFIL</div>
+          </div>
+        </div>
+        <table class="diff-table map-table">
+          <thead>
+            <tr>
+              <th>WAGR-spiller</th>
+              <th>Rank</th>
+              <th>Klubb / kategori</th>
+              <th>Match mot</th>
+              <th class="right"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c5">SA</div><div><div class="nm">Sondre Aaslund</div><div class="sub">17 ÅR · NORGE</div></div></div></td>
+              <td><span class="rank-num">9 488</span></td>
+              <td><div style="font-family:var(--font-body); font-size:12.5px;">Asker GK <span style="color:var(--muted); font-family:var(--font-mono); font-size:10px; margin-left:4px;">JUNIOR</span></div></td>
+              <td><div class="matched-input"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg><input value="Sondre Aaslund · AK Academy" /></div></td>
+              <td class="right" style="display:flex; gap:6px; justify-content:flex-end; padding-top:14px;"><button class="match-btn outline"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user-plus"/></svg>Opprett ny</button><button class="match-btn primary"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>Match</button></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c3">VB</div><div><div class="nm">Vilde Bryne</div><div class="sub">14 ÅR · NORGE</div></div></div></td>
+              <td><span class="rank-num">22 410</span></td>
+              <td><div style="font-family:var(--font-body); font-size:12.5px;">GFGK <span style="color:var(--muted); font-family:var(--font-mono); font-size:10px; margin-left:4px;">JUNIOR</span></div></td>
+              <td><div class="matched-input"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg><input value="Vilde Bryne (forespørsel mottatt)" /></div></td>
+              <td class="right" style="display:flex; gap:6px; justify-content:flex-end; padding-top:14px;"><button class="match-btn outline"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user-plus"/></svg>Opprett ny</button><button class="match-btn primary"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-link"/></svg>Match</button></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c6">KN</div><div><div class="nm">Kristian Næss</div><div class="sub">19 ÅR · NORGE</div></div></div></td>
+              <td><span class="rank-num">2 188</span></td>
+              <td><div style="font-family:var(--font-body); font-size:12.5px;">Bærum GK <span style="color:var(--muted); font-family:var(--font-mono); font-size:10px; margin-left:4px;">SENIOR-AMA</span></div></td>
+              <td><div class="matched-input" style="color:var(--muted);"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg><input placeholder="Ingen match funnet — søk…" /></div></td>
+              <td class="right" style="display:flex; gap:6px; justify-content:flex-end; padding-top:14px;"><button class="match-btn outline"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user-plus"/></svg>Opprett ny</button><button class="match-btn primary" disabled style="opacity:0.4; cursor:not-allowed;">Match</button></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c7">ML</div><div><div class="nm">Mikael Lien</div><div class="sub">16 ÅR · NORGE</div></div></div></td>
+              <td><span class="rank-num">10 220</span></td>
+              <td><div style="font-family:var(--font-body); font-size:12.5px;">Onsøy GK <span style="color:var(--muted); font-family:var(--font-mono); font-size:10px; margin-left:4px;">JUNIOR</span></div></td>
+              <td><div class="matched-input" style="color:var(--muted);"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg><input placeholder="Ingen match…" /></div></td>
+              <td class="right" style="display:flex; gap:6px; justify-content:flex-end; padding-top:14px;"><button class="match-btn outline"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user-plus"/></svg>Opprett ny</button><button class="match-btn primary" disabled style="opacity:0.4; cursor:not-allowed;">Match</button></td>
+            </tr>
+            <tr>
+              <td><div class="player-cell"><div class="p-avatar c8">FH</div><div><div class="nm">Frida Holm</div><div class="sub">15 ÅR · NORGE</div></div></div></td>
+              <td><span class="rank-num">18 540</span></td>
+              <td><div style="font-family:var(--font-body); font-size:12.5px;">Bossum GK <span style="color:var(--muted); font-family:var(--font-mono); font-size:10px; margin-left:4px;">JUNIOR</span></div></td>
+              <td><div class="matched-input" style="color:var(--muted);"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg><input placeholder="Ingen match…" /></div></td>
+              <td class="right" style="display:flex; gap:6px; justify-content:flex-end; padding-top:14px;"><button class="match-btn outline"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user-plus"/></svg>Opprett ny</button><button class="match-btn primary" disabled style="opacity:0.4; cursor:not-allowed;">Match</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- LOG -->
+      <div class="section-card">
+        <div class="sc-head">
+          <div>
+            <h3>Import-historikk · siste <em>10 kjøringer</em></h3>
+            <div class="sub">ALLE TIDER I LOKAL CET</div>
+          </div>
+        </div>
+        <div class="log-list">
+          <div class="log-row"><span class="dot"></span><span class="when">I GÅR · 18:30</span><span class="desc">Ukentlig <em>auto-import</em> · uke 20 batch</span><span class="changes">12 ENDRINGER · 5 NYE</span><span class="status">FULLFØRT</span></div>
+          <div class="log-row"><span class="dot"></span><span class="when">12.5 · 18:31</span><span class="desc">Ukentlig auto-import · uke 19 batch</span><span class="changes">8 ENDRINGER · 2 NYE</span><span class="status">FULLFØRT</span></div>
+          <div class="log-row"><span class="dot"></span><span class="when">05.5 · 18:30</span><span class="desc">Ukentlig auto-import · uke 18 batch</span><span class="changes">14 ENDRINGER · 7 NYE</span><span class="status">FULLFØRT</span></div>
+          <div class="log-row"><span class="dot"></span><span class="when">28.4 · 18:32</span><span class="desc">Ukentlig auto-import · uke 17 batch</span><span class="changes">10 ENDRINGER · 3 NYE</span><span class="status">FULLFØRT</span></div>
+          <div class="log-row"><span class="dot danger"></span><span class="when">21.4 · 18:30</span><span class="desc">Auto-import · uke 16 batch</span><span class="changes">TIMEOUT · WAGR-API SVARTE IKKE</span><span class="status fail">FEILET</span></div>
+          <div class="log-row"><span class="dot"></span><span class="when">21.4 · 19:14</span><span class="desc">Manuell re-trigger fra Anders</span><span class="changes">11 ENDRINGER · 4 NYE</span><span class="status">FULLFØRT</span></div>
+          <div class="log-row"><span class="dot"></span><span class="when">14.4 · 18:30</span><span class="desc">Ukentlig auto-import · uke 15 batch</span><span class="changes">9 ENDRINGER · 2 NYE</span><span class="status">FULLFØRT</span></div>
+          <div class="log-row"><span class="dot"></span><span class="when">07.4 · 18:30</span><span class="desc">Ukentlig auto-import · uke 14 batch</span><span class="changes">7 ENDRINGER · 1 NY</span><span class="status">FULLFØRT</span></div>
+          <div class="log-row"><span class="dot"></span><span class="when">31.3 · 18:30</span><span class="desc">Ukentlig auto-import · uke 13 batch</span><span class="changes">13 ENDRINGER · 6 NYE</span><span class="status">FULLFØRT</span></div>
+          <div class="log-row"><span class="dot"></span><span class="when">24.3 · 18:30</span><span class="desc">Ukentlig auto-import · uke 12 batch</span><span class="changes">11 ENDRINGER · 4 NYE</span><span class="status">FULLFØRT</span></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

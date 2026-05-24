@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Planlegge · Mål — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_planlegge.css">
+<script>
+  // Suppress benign ResizeObserver loop warning (Chrome/Edge quirk).
+  window.addEventListener('error', (e) => {
+    if (e.message && e.message.includes('ResizeObserver')) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+    }
+  });
+</script>
+<style>
+  /* ---- summary ring ---- */
+  .goal-hero {
+    background: linear-gradient(160deg, var(--forest) 0%, var(--forest-dark) 100%);
+    color: #fff;
+    border-radius: var(--r-card);
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: 200px 1fr auto;
+    gap: 28px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .goal-hero::before {
+    content: ''; position: absolute;
+    top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(209,248,67,0.22), transparent 65%);
+    pointer-events: none;
+  }
+  .gh-ring {
+    width: 180px; height: 180px;
+    position: relative;
+  }
+  .gh-ring svg { width: 100%; height: 100%; }
+  .gh-ring .center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+  }
+  .gh-ring .num {
+    font-size: 44px; font-weight: 700;
+    color: var(--lime); letter-spacing: -0.02em; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .gh-ring .num .u { font-size: 18px; color: rgba(209,248,67,0.55); margin-left: 2px; }
+  .gh-ring .lbl {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+    color: rgba(209,248,67,0.55); margin-top: 6px;
+    text-transform: uppercase;
+  }
+  .gh-body .eye {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: rgba(209,248,67,0.65); letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .gh-body h2 {
+    font-family: var(--font-display); font-size: 30px; font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.1; margin-top: 8px;
+  }
+  .gh-body h2 em {
+    font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--lime);
+  }
+  .gh-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 18px; margin-top: 18px;
+  }
+  .gh-stat .l {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: rgba(209,248,67,0.55); letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .gh-stat .v {
+    font-family: var(--font-mono); font-size: 22px; font-weight: 700;
+    color: #fff; line-height: 1; margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .gh-stat .v .u { font-size: 12px; color: rgba(255,255,255,0.6); margin-left: 2px; }
+  .gh-stat .v.lime { color: var(--lime); }
+  .gh-actions { display: flex; flex-direction: column; gap: 8px; }
+  .gh-actions .btn-lime { background: var(--lime); color: var(--forest); }
+  .gh-actions .btn-ghost-lime { background: transparent; color: var(--lime); border: 1px solid rgba(209,248,67,0.35); }
+
+  /* ---- goal card ---- */
+  .goal-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 22px 24px;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+  }
+  .goal-card.priority {
+    border-color: var(--lime-deep);
+    background: linear-gradient(180deg, #FBFEF1 0%, var(--card) 60%);
+  }
+  .goal-card.atrisk {
+    border-color: rgba(184,133,42,0.35);
+  }
+  .goal-card .top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .goal-card .g-type {
+    display: inline-flex; align-items: center;
+    padding: 3px 10px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.4;
+  }
+  .g-type.resultat { background: var(--lime); color: var(--forest); }
+  .g-type.prosess  { background: rgba(0,88,64,0.10); color: var(--forest); border: 1px solid rgba(0,88,64,0.20); }
+  .g-type.atferd   { background: rgba(184,133,42,0.14); color: var(--warn); }
+
+  .status-pill {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .status-pill.ontrack { background: rgba(44,125,82,0.14); color: var(--success); }
+  .status-pill.ontrack::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+  .status-pill.atrisk { background: rgba(184,133,42,0.16); color: var(--warn); }
+  .status-pill.atrisk::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--warn); }
+  .status-pill.behind { background: rgba(163,45,45,0.10); color: var(--danger); }
+  .status-pill.behind::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--danger); }
+  .status-pill.done { background: rgba(44,125,82,0.10); color: var(--success); }
+
+  .goal-card .title {
+    font-family: var(--font-display); font-size: 22px; font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.2; margin-top: 10px;
+    text-wrap: pretty;
+  }
+  .goal-card .title em {
+    font-family: var(--font-serif); font-style: italic; font-weight: 400;
+    color: var(--forest);
+  }
+
+  .progress-meta {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-top: 16px; font-family: var(--font-mono);
+  }
+  .progress-meta .from, .progress-meta .to, .progress-meta .now {
+    font-size: 15px; font-weight: 700; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .progress-meta .now { color: var(--forest); font-size: 20px; }
+  .progress-meta .arr { color: var(--subtle); font-size: 12px; }
+  .progress-meta .lbl {
+    font-size: 9.5px; font-weight: 700; color: var(--muted);
+    letter-spacing: 0.10em; text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  /* progress bar */
+  .pbar {
+    margin-top: 10px;
+    height: 12px;
+    background: var(--line);
+    border-radius: 999px;
+    position: relative; overflow: visible;
+  }
+  .pbar .fill {
+    position: absolute; top: 0; bottom: 0; left: 0;
+    background: linear-gradient(90deg, var(--forest) 0%, var(--lime-deep) 100%);
+    border-radius: 999px;
+  }
+  .pbar.atrisk .fill { background: linear-gradient(90deg, var(--warn) 0%, #D9B266 100%); }
+  .pbar .marker {
+    position: absolute; top: -4px; bottom: -4px;
+    width: 0;
+    border-left: 2px dashed var(--ink);
+  }
+  .pbar .marker::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -22px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: #fff;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 2px 6px; border-radius: 4px;
+    white-space: nowrap;
+  }
+  .pbar .now-dot {
+    position: absolute; top: -3px;
+    width: 18px; height: 18px;
+    background: var(--card); border: 3px solid var(--forest);
+    border-radius: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* milestones row */
+  .ms-row {
+    display: flex; gap: 8px;
+    margin-top: 16px;
+  }
+  .ms {
+    flex: 1;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .ms.done { background: rgba(44,125,82,0.06); border-color: rgba(44,125,82,0.20); }
+  .ms.current { background: rgba(209,248,67,0.16); border-color: var(--lime-deep); }
+  .ms .chk {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--border); color: transparent;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .ms.done .chk { background: var(--success); color: #fff; }
+  .ms.done .chk svg { width: 11px; height: 11px; }
+  .ms.current .chk { background: var(--lime); color: var(--forest); }
+  .ms.current .chk svg { width: 11px; height: 11px; }
+  .ms .body { line-height: 1.25; }
+  .ms .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .ms .v {
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 700;
+    color: var(--ink); margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .ms.done .v { color: var(--success); }
+
+  /* right column */
+  .goal-side {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .goal-card.priority .goal-side { background: #FBFEF1; border-color: rgba(191,233,51,0.45); }
+
+  .side-spark {
+    height: 80px;
+    width: 100%;
+  }
+  .side-meta {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .side-meta .item .l {
+    font-family: var(--font-mono); font-size: 8.5px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .side-meta .item .v {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    color: var(--ink); margin-top: 3px; line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+  .side-meta .item .v.ok { color: var(--success); }
+  .side-meta .item .v.warn { color: var(--warn); }
+
+  .deadline {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .deadline .dt {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+    display: block;
+  }
+  .deadline .v {
+    font-family: var(--font-display); font-size: 14px; font-weight: 700;
+    margin-top: 3px;
+  }
+  .deadline .v .days {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: var(--muted); margin-left: 6px;
+  }
+
+  .side-actions { display: flex; flex-direction: column; gap: 6px; }
+  .side-actions .btn { padding: 9px 12px; font-size: 11.5px; justify-content: center; }
+
+  /* coach-thread */
+  .thread {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 12px;
+  }
+  .thread .row { display: flex; gap: 8px; align-items: flex-start; }
+  .thread .av {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: linear-gradient(140deg, var(--forest), var(--forest-dark));
+    color: var(--lime);
+    font-family: var(--font-display); font-size: 9px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .thread .txt {
+    font-family: var(--font-serif); font-style: italic; font-size: 12.5px;
+    color: var(--ink); line-height: 1.45;
+  }
+  .thread .when {
+    font-family: var(--font-mono); font-size: 9px; color: var(--muted);
+    letter-spacing: 0.06em; margin-top: 4px;
+  }
+
+  /* archive done goal */
+  .goal-card.done {
+    opacity: 0.85;
+    background: var(--cream);
+    border-style: dashed;
+  }
+  .goal-card.done .title { color: var(--muted); }
+  .goal-card.done .title em { color: var(--muted); }
+
+  /* AI CTA inline */
+  .ai-bar {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 16px;
+    padding: 16px 22px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .ai-bar .ic {
+    width: 36px; height: 36px;
+    background: var(--lime); color: var(--forest);
+    border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .ai-bar .ic svg { width: 18px; height: 18px; }
+  .ai-bar .ttl { font-family: var(--font-display); font-size: 14px; font-weight: 600; line-height: 1.3; color: #fff; }
+  .ai-bar .sub { font-family: var(--font-mono); font-size: 10.5px; color: rgba(209,248,67,0.55); letter-spacing: 0.04em; margin-top: 3px; }
+  .ai-bar .btn { margin-left: auto; }
+</style>
+</head>
+<body data-screen-label="04 Planlegge · Mål">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M9 22V12h6v10" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20" fill="currentColor"/></symbol>
+  <symbol id="i-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="18" y1="20" x2="18" y2="4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="6" y1="20" x2="6" y2="16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-user-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M6 21a6 6 0 0 1 12 0" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 22V4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M4 4h11l-2 4 2 4H4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 5 19 12 12 19" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="18" cy="5" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6 4v16M3 7v10M18 4v16M21 7v10M6 12h12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="2" fill="currentColor"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M7 4h10v6a5 5 0 0 1-10 0z" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18 9.5l-4.2 1.8L12 16l-1.8-4.7L6 9.5l4.2-1.8L12 3zM19 14l.9 2.4L22 17l-2.1.6L19 20l-.9-2.4L16 17l2.1-.6L19 14z" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/></symbol>
+</defs>
+</svg>
+
+<div class="shell has-side">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark"><div class="logo">A</div><div><div class="nm">AK Golf</div></div></div>
+      <div class="meta">PlayerHQ</div>
+    </div>
+    <button class="side-cta"><svg><use href="#i-plus"/></svg>Ny økt</button>
+    <div class="nav-group">
+      <div class="nav-label">Trening</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-home"/></svg>Oversikt</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor"><use href="#i-route"/></svg>Planlegge<span class="ct">5</span></button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-play"/></svg>Gjennomføre</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-flag"/></svg>Tester<span class="ct">12/36</span></button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-bar"/></svg>Analysere</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Støtte</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor"><use href="#i-users"/></svg>Coach<span class="ct">3</span></button>
+    </div>
+    <div class="side-foot">
+      <svg fill="none" stroke="currentColor"><use href="#i-user-circle"/></svg>
+      Min profil
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <a class="back" href="#"><svg fill="none" stroke="currentColor"><use href="#i-arrow-left"/></svg>PlayerHQ</a>
+      <div class="player">
+        <div class="avatar">MP</div>
+        <div>
+          <div class="nm">Markus R. Pedersen</div>
+          <div class="sub">A1 · HCP 4.8 · Sesong 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page" style="max-width:1380px;">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div>
+          <div class="eyebrow">PlayerHQ · Planlegge · Mål</div>
+          <h1>Sesong-mål <em>2026</em></h1>
+          <div class="sub">
+            <strong style="color:var(--ink);font-weight:700;">3</strong> aktive mål
+            <span class="dot"></span>
+            <strong style="color:var(--success);font-weight:700;">2</strong> på plan
+            <span class="dot"></span>
+            <strong style="color:var(--warn);font-weight:700;">1</strong> trenger fokus
+            <span class="dot"></span>
+            Sist gjennomgang med coach <strong style="color:var(--ink);font-weight:700;">21. mai</strong>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm">Eksporter rapport</button>
+          <button class="btn btn-primary">
+            <svg fill="none" stroke="currentColor"><use href="#i-plus"/></svg>
+            Legg til mål
+          </button>
+        </div>
+      </section>
+
+      <!-- PLAN-TABS -->
+      <nav class="plan-tabs">
+        <button class="plan-tab">
+          <svg fill="none" stroke="currentColor"><use href="#i-cal"/></svg>
+          Årsplan
+        </button>
+        <button class="plan-tab">
+          <svg fill="none" stroke="currentColor"><use href="#i-dumbbell"/></svg>
+          Treningsplan
+          <span class="ct">12</span>
+        </button>
+        <button class="plan-tab active">
+          <svg fill="none" stroke="currentColor"><use href="#i-target"/></svg>
+          Mål
+          <span class="ct">3</span>
+        </button>
+        <button class="plan-tab">
+          <svg fill="none" stroke="currentColor"><use href="#i-trophy"/></svg>
+          Turneringer
+          <span class="ct">7</span>
+        </button>
+        <button class="plan-tab">
+          <svg fill="none" stroke="currentColor"><use href="#i-route"/></svg>
+          Drills
+          <span class="ct">48</span>
+        </button>
+      </nav>
+
+      <!-- ============== GOAL HERO RING ============== -->
+      <section class="goal-hero">
+        <div class="gh-ring">
+          <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="10"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--lime)" stroke-width="10"
+                    stroke-linecap="round"
+                    stroke-dasharray="264" stroke-dashoffset="119"
+                    transform="rotate(-90 50 50)"/>
+          </svg>
+          <div class="center">
+            <div class="num">55<span class="u">%</span></div>
+            <div class="lbl">Sesong-progresjon</div>
+          </div>
+        </div>
+
+        <div class="gh-body">
+          <div class="eye">Sammen-vektet sesong-score</div>
+          <h2>Du er <em>over halvveis</em> til breakthrough-året</h2>
+
+          <div class="gh-stats">
+            <div class="gh-stat">
+              <div class="l">HCP-progresjon</div>
+              <div class="v lime">4,8 <span class="u">av 2,5</span></div>
+            </div>
+            <div class="gh-stat">
+              <div class="l">Tester gjennomført</div>
+              <div class="v">12<span class="u">/36</span></div>
+            </div>
+            <div class="gh-stat">
+              <div class="l">Ranking-poeng</div>
+              <div class="v">128<span class="u">/280p</span></div>
+            </div>
+            <div class="gh-stat">
+              <div class="l">Dager igjen</div>
+              <div class="v">160 <span class="u">d</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gh-actions">
+          <button class="btn btn-lime">
+            <svg fill="none" stroke="currentColor"><use href="#i-target"/></svg>
+            Coach-samtale
+          </button>
+          <button class="btn btn-ghost-lime">Reflekter</button>
+        </div>
+      </section>
+
+      <!-- ============== GOAL 1 · PRIORITY ============== -->
+      <section class="goal-card priority">
+        <div>
+          <div class="top">
+            <span class="g-type resultat">Resultat</span>
+            <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:var(--forest);letter-spacing:0.10em;text-transform:uppercase;">★ HOVED-MÅL</span>
+            <span class="status-pill ontrack">På plan</span>
+            <button class="btn btn-ghost btn-xs" style="margin-left:auto;">
+              <svg fill="none" stroke="currentColor"><use href="#i-dots"/></svg>
+            </button>
+          </div>
+
+          <div class="title">HCP <em>4,8 → 2,5</em> innen 30. oktober</div>
+
+          <div class="progress-meta">
+            <span class="lbl">START</span>
+            <span class="from">6,8</span>
+            <span class="arr">→</span>
+            <span class="lbl" style="margin-left:14px;">NÅ</span>
+            <span class="now">4,8</span>
+            <span class="arr">→</span>
+            <span class="lbl" style="margin-left:14px;">MÅL</span>
+            <span class="to">2,5</span>
+            <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--success);">
+              ↑ -2,0 så langt · 47% av løypa
+            </span>
+          </div>
+
+          <div class="pbar">
+            <div class="fill" style="width:47%;"></div>
+            <div class="marker" data-label="Nå · uke 21" style="left:47%;"></div>
+            <div class="now-dot" style="left:47%;"></div>
+          </div>
+
+          <div class="ms-row">
+            <div class="ms done">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="3"><use href="#i-check"/></svg></span>
+              <div class="body">
+                <div class="lbl">28. FEB</div>
+                <div class="v">HCP 6,0</div>
+              </div>
+            </div>
+            <div class="ms done">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="3"><use href="#i-check"/></svg></span>
+              <div class="body">
+                <div class="lbl">15. APR</div>
+                <div class="v">HCP 5,2</div>
+              </div>
+            </div>
+            <div class="ms current">
+              <span class="chk"><svg fill="none" stroke="currentColor" stroke-width="3"><use href="#i-check"/></svg></span>
+              <div class="body">
+                <div class="lbl">23. MAI · NÅ</div>
+                <div class="v">HCP 4,8</div>
+              </div>
+            </div>
+            <div class="ms">
+              <span class="chk"></span>
+              <div class="body">
+                <div class="lbl">14. JUL</div>
+                <div class="v">HCP 3,8</div>
+              </div>
+            </div>
+            <div class="ms">
+              <span class="chk"></span>
+              <div class="body">
+                <div class="lbl">30. OKT</div>
+                <div class="v">HCP 2,5</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="goal-side">
+          <svg class="side-spark" viewBox="0 0 200 80" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="g1-fill" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#D1F843" stop-opacity="0.45"/>
+                <stop offset="100%" stop-color="#D1F843" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 4 12 L 28 18 L 52 24 L 76 34 L 100 44 L 124 50 L 148 56 L 172 62 L 196 68 L 196 80 L 4 80 Z" fill="url(#g1-fill)"/>
+            <polyline points="4,12 28,18 52,24 76,34 100,44 124,50 148,56 172,62 196,68"
+                      fill="none" stroke="#005840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="100" cy="44" r="5" fill="#D1F843" stroke="#003A2A" stroke-width="2"/>
+            <text x="100" y="36" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#0A1F17">NÅ</text>
+            <line x1="4" y1="72" x2="196" y2="72" stroke="#B8852A" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="196" y="78" text-anchor="end" font-family="JetBrains Mono" font-size="7.5" fill="#B8852A">mål 2,5</text>
+          </svg>
+
+          <div class="side-meta">
+            <div class="item"><div class="l">Sannsynlighet</div><div class="v ok">68%</div></div>
+            <div class="item"><div class="l">Behøver/uke</div><div class="v">-0,16</div></div>
+            <div class="item"><div class="l">Avhengig av</div><div class="v">Mål 2 + 3</div></div>
+            <div class="item"><div class="l">Coach-poeng</div><div class="v">+0,42 SG</div></div>
+          </div>
+
+          <div class="deadline">
+            <span style="background:var(--ink);color:var(--lime);padding:6px 8px;border-radius:8px;font-family:var(--font-mono);font-size:11px;font-weight:700;">160d</span>
+            <div>
+              <span class="dt">DEADLINE</span>
+              <span class="v">30. okt</span>
+            </div>
+          </div>
+
+          <div class="thread">
+            <div class="row">
+              <div class="av">AK</div>
+              <div>
+                <div class="txt">"Du ligger på rute. Hold trykket — Sørlandsåpent kan gi -0,6 alene."</div>
+                <div class="when">Anders K. · 21. mai · 11:42</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="side-actions">
+            <button class="btn btn-primary">Logg progresjon</button>
+            <button class="btn btn-outline btn-sm">Detaljert plan →</button>
+          </div>
+        </aside>
+      </section>
+
+      <!-- ============== GOAL 2 · ON TRACK ============== -->
+      <section class="goal-card">
+        <div>
+          <div class="top">
+            <span class="g-type prosess">Prosess</span>
+            <span class="status-pill ontrack">På plan</span>
+            <button class="btn btn-ghost btn-xs" style="margin-left:auto;">
+              <svg fill="none" stroke="currentColor"><use href="#i-dots"/></svg>
+            </button>
+          </div>
+
+          <div class="title">Driver Basic PEI <em>under 0,055</em> i 6 av 10 forsøk</div>
+
+          <div class="progress-meta">
+            <span class="lbl">START</span>
+            <span class="from">0/10</span>
+            <span class="arr">→</span>
+            <span class="lbl" style="margin-left:14px;">NÅ</span>
+            <span class="now">4/10</span>
+            <span class="arr">→</span>
+            <span class="lbl" style="margin-left:14px;">MÅL</span>
+            <span class="to">6/10</span>
+            <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--success);">
+              PR 0,054 satt i dag · +1 til måling
+            </span>
+          </div>
+
+          <div class="pbar">
+            <div class="fill" style="width:67%;"></div>
+            <div class="marker" data-label="Nå · 4 av 6" style="left:67%;"></div>
+            <div class="now-dot" style="left:67%;"></div>
+          </div>
+
+          <div class="ms-row">
+            <div class="ms done"><span class="chk"><svg fill="none" stroke="currentColor" stroke-width="3"><use href="#i-check"/></svg></span><div class="body"><div class="lbl">JAN-FEB</div><div class="v">0,082 → 0,072</div></div></div>
+            <div class="ms done"><span class="chk"><svg fill="none" stroke="currentColor" stroke-width="3"><use href="#i-check"/></svg></span><div class="body"><div class="lbl">MAR-APR</div><div class="v">PR 0,058</div></div></div>
+            <div class="ms current"><span class="chk"><svg fill="none" stroke="currentColor" stroke-width="3"><use href="#i-check"/></svg></span><div class="body"><div class="lbl">23. MAI · NÅ</div><div class="v">PR 0,054 · 4/10</div></div></div>
+            <div class="ms"><span class="chk"></span><div class="body"><div class="lbl">14. JUL</div><div class="v">5 av 10</div></div></div>
+            <div class="ms"><span class="chk"></span><div class="body"><div class="lbl">31. AUG</div><div class="v">6 av 10 ✓</div></div></div>
+          </div>
+        </div>
+
+        <aside class="goal-side">
+          <svg class="side-spark" viewBox="0 0 200 80" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="g2-fill" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#D1F843" stop-opacity="0.45"/>
+                <stop offset="100%" stop-color="#D1F843" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 4 60 L 28 56 L 52 50 L 76 48 L 100 38 L 124 36 L 148 28 L 172 24 L 196 18 L 196 80 L 4 80 Z" fill="url(#g2-fill)"/>
+            <polyline points="4,60 28,56 52,50 76,48 100,38 124,36 148,28 172,24 196,18"
+                      fill="none" stroke="#005840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="172" cy="24" r="5" fill="#D1F843" stroke="#003A2A" stroke-width="2"/>
+            <text x="172" y="16" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#0A1F17">NÅ</text>
+            <line x1="4" y1="18" x2="196" y2="18" stroke="#005840" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="196" y="14" text-anchor="end" font-family="JetBrains Mono" font-size="7.5" fill="#005840">mål 6/10</text>
+          </svg>
+
+          <div class="side-meta">
+            <div class="item"><div class="l">Sannsynlighet</div><div class="v ok">82%</div></div>
+            <div class="item"><div class="l">Test-frekvens</div><div class="v">2×/mnd</div></div>
+            <div class="item"><div class="l">Siste 5</div><div class="v">4 ok</div></div>
+            <div class="item"><div class="l">PGA Top 40</div><div class="v">&lt; 0,06</div></div>
+          </div>
+
+          <div class="deadline">
+            <span style="background:var(--ink);color:var(--lime);padding:6px 8px;border-radius:8px;font-family:var(--font-mono);font-size:11px;font-weight:700;">100d</span>
+            <div>
+              <span class="dt">DEADLINE</span>
+              <span class="v">31. aug</span>
+            </div>
+          </div>
+
+          <div class="side-actions">
+            <button class="btn btn-primary">Ta Driver Basic</button>
+            <button class="btn btn-outline btn-sm">Se historikk →</button>
+          </div>
+        </aside>
+      </section>
+
+      <!-- ============== GOAL 3 · AT RISK ============== -->
+      <section class="goal-card atrisk">
+        <div>
+          <div class="top">
+            <span class="g-type atferd">Atferd</span>
+            <span class="status-pill atrisk">Trenger fokus</span>
+            <button class="btn btn-ghost btn-xs" style="margin-left:auto;">
+              <svg fill="none" stroke="currentColor"><use href="#i-dots"/></svg>
+            </button>
+          </div>
+
+          <div class="title">Pre-shot rutine <em>7 sek</em> · 90% av slag i turnering</div>
+
+          <div class="progress-meta">
+            <span class="lbl">BASELINE</span>
+            <span class="from">62%</span>
+            <span class="arr">→</span>
+            <span class="lbl" style="margin-left:14px;">NÅ</span>
+            <span class="now" style="color:var(--warn);">68%</span>
+            <span class="arr">→</span>
+            <span class="lbl" style="margin-left:14px;">MÅL</span>
+            <span class="to">90%</span>
+            <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--warn);">
+              ⚠ Bare +6pp på 8 uker · trenger akselerasjon
+            </span>
+          </div>
+
+          <div class="pbar atrisk">
+            <div class="fill" style="width:21%;"></div>
+            <div class="marker" data-label="Nå · 68%" style="left:21%;"></div>
+            <div class="now-dot" style="left:21%;border-color:var(--warn);"></div>
+          </div>
+
+          <div class="ms-row">
+            <div class="ms done"><span class="chk"><svg fill="none" stroke="currentColor" stroke-width="3"><use href="#i-check"/></svg></span><div class="body"><div class="lbl">15. MAR · BASELINE</div><div class="v">62%</div></div></div>
+            <div class="ms current"><span class="chk"><svg fill="none" stroke="currentColor" stroke-width="3"><use href="#i-check"/></svg></span><div class="body"><div class="lbl">23. MAI · NÅ</div><div class="v">68%</div></div></div>
+            <div class="ms"><span class="chk"></span><div class="body"><div class="lbl">22. JUN · OSLO OPEN</div><div class="v">75%</div></div></div>
+            <div class="ms"><span class="chk"></span><div class="body"><div class="lbl">14. JUL · NM JR</div><div class="v">82%</div></div></div>
+            <div class="ms"><span class="chk"></span><div class="body"><div class="lbl">18. AUG · FINALEN</div><div class="v">90%</div></div></div>
+          </div>
+        </div>
+
+        <aside class="goal-side" style="background:rgba(184,133,42,0.06);border-color:rgba(184,133,42,0.25);">
+          <svg class="side-spark" viewBox="0 0 200 80" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="g3-fill" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#B8852A" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#B8852A" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 4 60 L 50 58 L 100 56 L 150 54 L 196 52 L 196 80 L 4 80 Z" fill="url(#g3-fill)"/>
+            <polyline points="4,60 50,58 100,56 150,54 196,52"
+                      fill="none" stroke="#B8852A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="196" cy="52" r="5" fill="#fff" stroke="#B8852A" stroke-width="2"/>
+            <line x1="4" y1="14" x2="196" y2="14" stroke="#005840" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="196" y="11" text-anchor="end" font-family="JetBrains Mono" font-size="7.5" fill="#005840">mål 90%</text>
+            <text x="100" y="78" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#B8852A">Flatt — trenger akselerasjon</text>
+          </svg>
+
+          <div class="side-meta">
+            <div class="item"><div class="l">Sannsynlighet</div><div class="v warn">54%</div></div>
+            <div class="item"><div class="l">Behøver/uke</div><div class="v">+1,8pp</div></div>
+            <div class="item"><div class="l">Drill-vol.</div><div class="v warn">2/uke</div></div>
+            <div class="item"><div class="l">Coach-fokus</div><div class="v">Mentaltrener</div></div>
+          </div>
+
+          <div class="deadline" style="background:rgba(184,133,42,0.06);border-color:rgba(184,133,42,0.25);">
+            <span style="background:var(--warn);color:#fff;padding:6px 8px;border-radius:8px;font-family:var(--font-mono);font-size:11px;font-weight:700;">87d</span>
+            <div>
+              <span class="dt">DEADLINE</span>
+              <span class="v">18. aug</span>
+            </div>
+          </div>
+
+          <div class="thread" style="background:rgba(184,133,42,0.08);border-color:rgba(184,133,42,0.25);">
+            <div class="row">
+              <div class="av">AK</div>
+              <div>
+                <div class="txt">"Vi må øke pre-shot drill til 4×/uke. Book MTQ-test denne uka."</div>
+                <div class="when">Anders K. · 19. mai · 09:18</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="side-actions">
+            <button class="btn btn-primary">Book MTQ-test</button>
+            <button class="btn btn-outline btn-sm">Be om revurdering →</button>
+          </div>
+        </aside>
+      </section>
+
+      <!-- AI bar -->
+      <section class="ai-bar">
+        <div class="ic"><svg fill="currentColor"><use href="#i-sparkles"/></svg></div>
+        <div>
+          <div class="ttl">Trenger flere mål? AI bygger SMART-mål basert på din sesong-plan</div>
+          <div class="sub">Resultat · Prosess · Atferd · maks 3 anbefalt</div>
+        </div>
+        <a href="ai-mal-bygger.html" class="btn btn-lime">
+          Åpne AI mål-bygger
+          <svg fill="none" stroke="currentColor" stroke-width="2"><use href="#i-arrow-right"/></svg>
+        </a>
+      </section>
+
+      <!-- ARCHIVE — done goal -->
+      <section class="goal-card done">
+        <div>
+          <div class="top">
+            <span class="g-type resultat">Resultat</span>
+            <span class="status-pill done">
+              <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="3"><use href="#i-check"/></svg>
+              Fullført 04. mai
+            </span>
+            <button class="btn btn-ghost btn-xs" style="margin-left:auto;">
+              <svg fill="none" stroke="currentColor"><use href="#i-dots"/></svg>
+            </button>
+          </div>
+
+          <div class="title">Vårcup 2026 · <em>topp-10</em> resultat — <strong style="color:var(--success);font-weight:700;font-style:normal;font-family:var(--font-display);">T-4 (+3)</strong></div>
+
+          <div class="progress-meta">
+            <span class="lbl">RESULTAT</span>
+            <span style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--success);">T-4 · 28 ranking-poeng</span>
+            <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--muted);">
+              Mål: topp-10 ✓ · oversteg med 6 plasseringer
+            </span>
+          </div>
+        </div>
+
+        <aside class="goal-side" style="background:rgba(44,125,82,0.05);border-color:rgba(44,125,82,0.20);">
+          <div style="text-align:center;padding:18px 0;">
+            <svg width="36" height="36" fill="none" stroke="var(--success)" stroke-width="1.5"><use href="#i-trophy"/></svg>
+            <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--success);margin-top:8px;">T-4</div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:0.08em;margin-top:4px;text-transform:uppercase;">Olyo Vårcup · 4. mai</div>
+          </div>
+          <button class="btn btn-outline btn-sm">Se rapport →</button>
+        </aside>
+      </section>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

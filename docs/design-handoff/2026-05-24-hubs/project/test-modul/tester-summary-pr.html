@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Ny PR! · Driver Basic — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_tester.css">
+<style>
+  body {
+    background:
+      radial-gradient(ellipse at top, rgba(209,248,67,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at center 80%, rgba(0,88,64,0.05) 0%, transparent 60%),
+      var(--cream);
+  }
+  .min-top {
+    padding: 16px 32px;
+    display: flex; align-items: center; gap: 14px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(4px);
+    position: sticky; top: 0; z-index: 30;
+  }
+  .min-top .right {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.10em; color: var(--muted);
+    text-transform: uppercase; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .min-top .right .ok-dot {
+    width: 8px; height: 8px; background: var(--success); border-radius: 50%;
+  }
+
+  .hero-center {
+    text-align: center;
+    padding-top: 8px;
+  }
+  .check-circle {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--forest);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+    box-shadow: 0 8px 28px rgba(209,248,67,0.40);
+  }
+  .check-circle svg { width: 44px; height: 44px; }
+
+  .pr-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 999px;
+    background: var(--forest); color: var(--lime);
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .pr-eyebrow svg { width: 13px; height: 13px; }
+
+  .hero-center h1 {
+    font-family: var(--font-display);
+    font-size: 44px; font-weight: 600;
+    letter-spacing: -0.025em; line-height: 1.05;
+    margin-top: 18px;
+  }
+  .hero-center h1 em {
+    font-family: var(--font-serif);
+    font-style: italic; font-weight: 400;
+    color: var(--forest);
+  }
+  .hero-center .sub {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted); letter-spacing: 0.08em;
+    margin-top: 14px; text-transform: uppercase; font-weight: 600;
+  }
+
+  .pr-score {
+    margin-top: 28px;
+    display: flex; align-items: baseline; justify-content: center;
+    gap: 14px;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .pr-score .num {
+    font-size: 96px; font-weight: 700;
+    letter-spacing: -0.03em; line-height: 0.9;
+    background: linear-gradient(180deg, var(--forest) 0%, var(--forest-dark) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .pr-score .u {
+    font-size: 24px; color: var(--muted);
+    font-weight: 500; letter-spacing: 0.04em;
+  }
+
+  .pr-delta {
+    margin: 18px auto 0;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 18px; border-radius: 999px;
+    background: var(--lime);
+    color: var(--forest);
+    font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+  }
+  .pr-delta svg { width: 16px; height: 16px; }
+
+  .stat3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .s3 {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px;
+    text-align: center;
+  }
+  .s3.lime { background: var(--lime); border-color: var(--lime); }
+  .s3 .ic { width: 32px; height: 32px; margin: 0 auto 10px; color: var(--forest); display: inline-flex; align-items:center; justify-content: center; }
+  .s3 .ic svg { width: 22px; height: 22px; }
+  .s3 .lbl {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  }
+  .s3.lime .lbl { color: var(--forest); }
+  .s3 .val {
+    font-family: var(--font-mono); font-size: 28px; font-weight: 700;
+    line-height: 1; letter-spacing: -0.02em; margin-top: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .s3 .sub {
+    font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+    margin-top: 6px; letter-spacing: 0.04em;
+  }
+
+  /* Hva nå card */
+  .next-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--line);
+  }
+  .next-row:last-child { border-bottom: 0; }
+  .next-row .dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--lime); color: var(--forest);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .next-row .dot svg { width: 13px; height: 13px; }
+  .next-row .txt { font-size: 13.5px; line-height: 1.5; }
+  .next-row .txt strong { font-weight: 700; }
+
+  .foot-cta {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-top: 8px;
+  }
+  .foot-cta .btn { padding: 14px 16px; font-size: 14px; justify-content: center; }
+  .pr-gradient-btn {
+    background: linear-gradient(95deg, var(--lime) 0%, #C8EE3F 50%, var(--forest) 100%);
+    color: var(--forest);
+    position: relative; overflow: hidden;
+  }
+  .pr-gradient-btn:hover { opacity: 0.92; }
+
+  /* serif quote */
+  .serif-quote {
+    margin-top: 32px;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.5;
+    max-width: 520px; margin-left: auto; margin-right: auto;
+  }
+  .serif-quote::before, .serif-quote::after {
+    content: '—'; color: var(--subtle);
+    margin: 0 6px;
+  }
+
+  /* confetti dots */
+  .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .c-dot { position: absolute; border-radius: 2px; opacity: 0.7; }
+
+  .page.narrow { max-width: 640px; padding: 40px 24px 96px; }
+</style>
+</head>
+<body data-screen-label="04a Summary · PR">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/><polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M7 4h10v6a5 5 0 0 1-10 0z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><path d="M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+  <symbol id="i-trend-up" viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 7 21 7 21 14" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><polyline points="12 5 19 12 12 19" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6 4v16M3 7v10M18 4v16M21 7v10M6 12h12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="2" fill="currentColor"/></symbol>
+</defs>
+</svg>
+
+<!-- confetti -->
+<div class="confetti" aria-hidden="true">
+  <span class="c-dot" style="left:8%;top:18%;width:10px;height:10px;background:var(--lime);transform:rotate(20deg);"></span>
+  <span class="c-dot" style="left:18%;top:10%;width:6px;height:14px;background:var(--forest);transform:rotate(-10deg);"></span>
+  <span class="c-dot" style="left:32%;top:28%;width:8px;height:8px;background:var(--lime-deep);border-radius:50%;"></span>
+  <span class="c-dot" style="left:78%;top:14%;width:8px;height:14px;background:var(--lime);transform:rotate(30deg);"></span>
+  <span class="c-dot" style="left:88%;top:26%;width:10px;height:10px;background:var(--forest);border-radius:50%;"></span>
+  <span class="c-dot" style="left:92%;top:42%;width:6px;height:12px;background:var(--lime);transform:rotate(-20deg);"></span>
+  <span class="c-dot" style="left:4%;top:42%;width:8px;height:8px;background:var(--warn);transform:rotate(15deg);"></span>
+  <span class="c-dot" style="left:14%;top:62%;width:6px;height:14px;background:var(--lime-deep);transform:rotate(45deg);"></span>
+  <span class="c-dot" style="left:84%;top:60%;width:10px;height:10px;background:var(--lime);transform:rotate(-30deg);"></span>
+</div>
+
+<div class="shell" style="position:relative;z-index:1;">
+
+  <header class="min-top">
+    <a class="back" href="tester-detalj.html" style="font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;font-weight:600;display:inline-flex;align-items:center;gap:6px;">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-arrow-left"/></svg>
+      PlayerHQ
+    </a>
+    <span class="right">
+      <span class="ok-dot"></span> Test fullført · synket
+    </span>
+  </header>
+
+  <div class="page narrow">
+
+    <!-- hero -->
+    <section class="hero-center">
+      <div class="check-circle">
+        <svg fill="none" stroke="currentColor"><use href="#i-check-circle"/></svg>
+      </div>
+
+      <div class="pr-eyebrow">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-trophy"/></svg>
+        NY PERSONLIG REKORD
+      </div>
+
+      <h1>Ny personlig <em>rekord!</em></h1>
+
+      <div class="sub">Driver Basic · 9. forsøk · PEI</div>
+
+      <div class="pr-score">
+        <span class="num">0,054</span>
+      </div>
+
+      <div class="pr-delta">
+        <svg fill="none" stroke="currentColor"><use href="#i-trend-up"/></svg>
+        +0,008 mot 12. mai (67,4 → 0,054)
+      </div>
+
+      <p class="serif-quote">5 driver-slag på rad. Snitt carry 246 m, sideavvik +1 m. Tightest spread du har levert siden januar.</p>
+    </section>
+
+    <!-- 3 stats -->
+    <section class="stat3" style="margin-top:36px;">
+      <div class="s3 lime">
+        <div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-trophy"/></svg></div>
+        <div class="lbl">Personlig rekord</div>
+        <div class="val">0,054</div>
+        <div class="sub" style="color:var(--forest);">Ny · i dag 14:24</div>
+      </div>
+      <div class="s3">
+        <div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-target"/></svg></div>
+        <div class="lbl">Snitt PEI</div>
+        <div class="val">0,074</div>
+        <div class="sub">Over 9 forsøk</div>
+      </div>
+      <div class="s3">
+        <div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-list"/></svg></div>
+        <div class="lbl">Antall forsøk</div>
+        <div class="val">9</div>
+        <div class="sub">Siden januar 2026</div>
+      </div>
+    </section>
+
+    <!-- benchmark -->
+    <section class="bench" style="margin-top:14px;">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-trophy"/></svg>
+      <div class="txt"><strong>PGA Tour Top 40 — snitt PEI &lt; 0,06.</strong> Du leverte 0,054 — under benchmark. Lim-deep zone.</div>
+    </section>
+
+    <!-- Hva nå -->
+    <section class="card" style="margin-top:20px;">
+      <div class="card-h" style="margin-bottom:8px;">
+        <h2>Hva nå?</h2>
+      </div>
+
+      <div class="next-row">
+        <div class="dot"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg></div>
+        <div class="txt"><strong>Resultatet er sendt automatisk til coach Anders.</strong> Han ser det i CoachHQ med en gang.</div>
+      </div>
+      <div class="next-row">
+        <div class="dot"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg></div>
+        <div class="txt">Ta samme test om <strong>14 dager</strong> for å måle om PEI under 0,06 holder seg konsistent.</div>
+      </div>
+      <div class="next-row">
+        <div class="dot"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg></div>
+        <div class="txt">Sammenlign mot <strong>A1-kohort</strong> på test-detalj — du er nå <strong>96. percentil</strong>.</div>
+      </div>
+    </section>
+
+    <!-- footer CTAs -->
+    <section class="foot-cta" style="margin-top:18px;">
+      <a class="btn btn-outline" href="tester-detalj.html">Tilbake til Driver Basic</a>
+      <a class="btn pr-gradient-btn" href="tester-dashboard.html">Alle tester
+        <svg fill="none" stroke="currentColor" stroke-width="2"><use href="#i-arrow-right"/></svg>
+      </a>
+    </section>
+
+  </div>
+</div>
+</body>
+</html>

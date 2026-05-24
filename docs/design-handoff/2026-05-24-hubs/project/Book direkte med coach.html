@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Book direkte med Hans — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding-bottom: 0; }
+
+  /* ===== Topnav (consistent with messaging pages) ===== */
+  .topnav {
+    display: flex; align-items: center;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #fff; gap: 16px;
+    position: sticky; top: 0; z-index: 30;
+  }
+  .topnav .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    text-transform: uppercase; font-weight: 600;
+    text-decoration: none;
+  }
+  .topnav .back-link:hover { color: var(--fg); }
+  .topnav .back-link svg { width: 14px; height: 14px; }
+  .topnav .brand {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 700; color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+
+  /* ===== Hero strip ===== */
+  .hero {
+    padding: 28px 32px 22px;
+    background: linear-gradient(180deg, #FBFAF5 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 8px;
+  }
+  .hero h1 {
+    font-family: var(--font-display); font-size: 30px;
+    font-weight: 600; letter-spacing: -0.02em; line-height: 1.1;
+    max-width: 760px;
+  }
+  .hero h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .hero .sub {
+    margin-top: 8px;
+    font-family: var(--font-mono); font-size: 11.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+
+  /* ===== Three-column shell ===== */
+  .booking-shell {
+    display: grid;
+    grid-template-columns: 320px 1fr 360px;
+    gap: 24px;
+    padding: 24px 32px 120px;
+    align-items: start;
+  }
+
+  /* ===== Column 1: Coach + filters ===== */
+  .col-coach { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 80px; }
+  .coach-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 22px;
+  }
+  .coach-card .av {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--primary); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 26px; font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  .coach-card h2 {
+    font-family: var(--font-display); font-size: 20px;
+    font-weight: 600; letter-spacing: -0.01em; line-height: 1.1;
+  }
+  .coach-card .role {
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin-top: 4px;
+  }
+  .coach-spec {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px;
+  }
+  .spec-chip {
+    display: inline-flex; align-items: center;
+    padding: 4px 10px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    background: rgba(0,88,64,0.08); color: var(--primary);
+  }
+  .coach-bio {
+    margin-top: 14px;
+    padding-top: 14px; border-top: 1px solid var(--border-soft);
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 14px; line-height: 1.5; color: var(--fg);
+  }
+  .coach-meta {
+    margin-top: 14px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    padding-top: 14px; border-top: 1px solid var(--border-soft);
+  }
+  .coach-meta .m-lbl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: var(--muted-soft); font-weight: 600;
+  }
+  .coach-meta .m-val {
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--fg); margin-top: 4px; font-weight: 600;
+  }
+
+  /* Filters block */
+  .filters {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 18px 20px;
+  }
+  .filters h3 {
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .filter-group { margin-bottom: 16px; }
+  .filter-group:last-child { margin-bottom: 0; }
+  .filter-label {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted-soft); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-label svg { width: 12px; height: 12px; }
+  .seg {
+    display: flex; gap: 0;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--r-button); padding: 3px;
+  }
+  .seg button {
+    flex: 1;
+    font-family: var(--font-body); font-size: 11.5px; font-weight: 600;
+    color: var(--muted); background: transparent; border: 0;
+    padding: 8px 4px; border-radius: 8px; line-height: 1.2;
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .seg button .mins {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-soft); font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+  .seg button:hover { color: var(--fg); }
+  .seg button.active { background: var(--primary); color: var(--accent); }
+  .seg button.active .mins { color: rgba(209,248,67,0.7); }
+  .seg.vert { flex-direction: column; gap: 3px; padding: 4px; }
+  .seg.vert button {
+    flex-direction: row; justify-content: flex-start; gap: 8px;
+    padding: 9px 10px; text-align: left; font-size: 12.5px;
+  }
+  .seg.vert button .place-meta {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-soft); letter-spacing: 0.06em;
+  }
+  .seg.vert button.active .place-meta { color: rgba(209,248,67,0.7); }
+
+  /* ===== Column 2: Calendar ===== */
+  .col-cal {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 22px;
+    min-width: 0;
+  }
+  .cal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 18px;
+  }
+  .cal-head .title {
+    font-family: var(--font-display); font-size: 20px;
+    font-weight: 600; letter-spacing: -0.01em;
+  }
+  .cal-head .week-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+    margin-top: 4px;
+  }
+  .week-nav { display: flex; gap: 6px; align-items: center; }
+  .nav-btn {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 1px solid var(--border); background: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--fg); cursor: pointer;
+  }
+  .nav-btn:hover { background: var(--bg); border-color: var(--muted-soft); }
+  .nav-btn svg { width: 14px; height: 14px; }
+  .today-btn {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    background: #fff; border: 1px solid var(--border);
+    color: var(--fg); padding: 0 12px; height: 32px;
+    border-radius: 8px; cursor: pointer;
+  }
+  .today-btn:hover { background: var(--bg); }
+
+  /* week grid */
+  .week-grid {
+    display: grid; grid-template-columns: 56px repeat(7, 1fr);
+    border-top: 1px solid var(--border-soft);
+    border-left: 1px solid var(--border-soft);
+    border-radius: 10px; overflow: hidden;
+  }
+  .wk-corner, .wk-dayhead, .wk-time, .wk-cell {
+    border-right: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
+    background: #fff;
+  }
+  .wk-dayhead {
+    padding: 10px 6px; text-align: center;
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .wk-dayhead.weekend { background: #FBF9F4; }
+  .wk-dayhead.today { background: rgba(209,248,67,0.25); color: var(--fg); font-weight: 700; }
+  .wk-dayhead .dnum {
+    display: block; font-family: var(--font-display);
+    font-size: 18px; font-weight: 700; color: var(--fg);
+    margin-top: 4px; letter-spacing: -0.01em;
+  }
+  .wk-dayhead.weekend .dnum { color: var(--muted); }
+  .wk-time {
+    padding: 8px 8px 0; text-align: right;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-soft); letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  .wk-cell {
+    padding: 3px;
+    min-height: 36px;
+    position: relative;
+  }
+  .wk-cell.weekend { background: #FBF9F4; }
+  .wk-cell.today { background: #FCFDF1; }
+
+  /* slot states */
+  .slot {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    padding: 6px 4px;
+    border-radius: 6px;
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    border: 0;
+    width: 100%; height: 30px;
+    line-height: 1;
+    background: transparent;
+    color: var(--muted-soft);
+  }
+  .slot.avail {
+    background: #fff;
+    border: 1px solid var(--accent);
+    color: var(--primary);
+  }
+  .slot.avail:hover {
+    background: rgba(209,248,67,0.18);
+  }
+  .slot.full {
+    background: var(--bg);
+    color: var(--muted-soft);
+    cursor: not-allowed;
+    border: 1px solid var(--border-soft);
+  }
+  .slot.full::after {
+    content: ''; position: absolute;
+    left: 8px; right: 8px; top: 50%;
+    border-top: 1px solid var(--muted-soft);
+    opacity: 0.35;
+  }
+  .slot.tentative {
+    background: rgba(184,133,42,0.10);
+    color: var(--warning);
+    border: 1px dashed rgba(184,133,42,0.4);
+  }
+  .slot.selected {
+    background: var(--primary);
+    color: var(--accent);
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .slot[aria-pressed="true"] {
+    background: var(--primary); color: var(--accent);
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .slot-tooltip {
+    position: absolute; bottom: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%);
+    background: var(--fg); color: #fff;
+    padding: 6px 10px; border-radius: 8px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.04em; white-space: nowrap;
+    pointer-events: none; opacity: 0;
+    transition: opacity 120ms ease;
+    z-index: 5;
+  }
+  .slot-tooltip::after {
+    content: ''; position: absolute;
+    top: 100%; left: 50%; transform: translateX(-50%);
+    border: 4px solid transparent; border-top-color: var(--fg);
+  }
+  .slot.avail:hover .slot-tooltip,
+  .slot.selected .slot-tooltip { opacity: 1; }
+
+  /* Legend */
+  .cal-legend {
+    margin-top: 16px;
+    display: flex; gap: 16px; flex-wrap: wrap;
+    padding-top: 14px; border-top: 1px solid var(--border-soft);
+  }
+  .lg-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .lg-sw {
+    width: 18px; height: 12px; border-radius: 4px;
+  }
+  .lg-sw.avail { background: #fff; border: 1px solid var(--accent); }
+  .lg-sw.full { background: var(--bg); border: 1px solid var(--border-soft); position: relative; }
+  .lg-sw.full::after { content: ''; position: absolute; inset: 5px 2px; border-top: 1px solid var(--muted-soft); opacity: 0.6; }
+  .lg-sw.tentative { background: rgba(184,133,42,0.10); border: 1px dashed rgba(184,133,42,0.5); }
+  .lg-sw.selected { background: var(--primary); box-shadow: 0 0 0 2px var(--accent); }
+
+  /* ===== Column 3: Summary ===== */
+  .col-summary {
+    position: sticky; top: 80px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .summary {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 22px;
+  }
+  .summary-eyebrow {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .summary h3 {
+    font-family: var(--font-display); font-size: 20px;
+    font-weight: 600; letter-spacing: -0.01em; line-height: 1.15;
+    margin-top: 6px;
+  }
+  .summary h3 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .when-card {
+    margin-top: 16px;
+    background: linear-gradient(160deg, #006C50 0%, #003A2A 100%);
+    border-radius: 14px; padding: 18px;
+    color: #fff;
+  }
+  .when-card .lbl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(209,248,67,0.7);
+  }
+  .when-card .date {
+    font-family: var(--font-display); font-size: 18px;
+    font-weight: 600; letter-spacing: -0.01em;
+    margin-top: 6px;
+    text-transform: capitalize;
+  }
+  .when-card .time {
+    font-family: var(--font-mono); font-size: 24px; font-weight: 700;
+    color: var(--accent); margin-top: 4px; letter-spacing: -0.01em;
+  }
+  .when-card .dur {
+    font-family: var(--font-mono); font-size: 11px;
+    color: rgba(255,255,255,0.7); margin-top: 2px;
+    letter-spacing: 0.08em;
+  }
+
+  .sum-rows { margin-top: 18px; }
+  .sum-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 10px 0; border-bottom: 1px solid var(--border-soft);
+    gap: 12px;
+  }
+  .sum-row:last-child { border-bottom: 0; }
+  .sum-row .k {
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .sum-row .k svg { width: 13px; height: 13px; opacity: 0.7; }
+  .sum-row .v {
+    font-family: var(--font-display); font-size: 13.5px;
+    font-weight: 600; color: var(--fg); text-align: right;
+  }
+  .sum-row .v.mono { font-family: var(--font-mono); }
+
+  .pay-block {
+    margin-top: 16px;
+    background: rgba(209,248,67,0.10);
+    border: 1px solid rgba(209,248,67,0.45);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px; padding: 14px;
+  }
+  .pay-block .pb-head {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase; color: var(--primary);
+  }
+  .pay-block .pb-head svg { width: 14px; height: 14px; }
+  .pay-block .credit-row {
+    margin-top: 10px;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .pay-block .credit-row .cur {
+    font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .pay-block .credit-row .now {
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg);
+    font-weight: 700;
+  }
+  .credit-bar {
+    margin-top: 10px;
+    display: flex; gap: 4px;
+  }
+  .credit-bar .cell {
+    flex: 1; height: 8px; border-radius: 3px;
+    background: rgba(0,88,64,0.10);
+  }
+  .credit-bar .cell.used { background: var(--accent); }
+  .credit-bar .cell.spent { background: var(--primary); }
+
+  .total-row {
+    margin-top: 18px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 16px 0 4px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .total-row .tk {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+  }
+  .total-row .tv {
+    font-family: var(--font-mono); font-size: 28px; font-weight: 700;
+    color: var(--fg); letter-spacing: -0.02em; line-height: 1;
+  }
+  .total-row .tv-sub {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); font-weight: 500;
+    letter-spacing: 0.06em; margin-top: 4px; text-align: right;
+  }
+
+  .summary-actions {
+    margin-top: 18px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .btn-block { width: 100%; justify-content: center; padding: 14px 20px; font-size: 14px; }
+  .btn-primary.btn-block {
+    box-shadow: 0 6px 18px rgba(0,88,64,0.18);
+  }
+
+  .micro-foot {
+    margin-top: 12px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-soft); letter-spacing: 0.04em;
+    text-align: center; line-height: 1.5;
+  }
+
+  .policy-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 16px 18px;
+  }
+  .policy-card .ttl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .policy-card ul {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .policy-card li {
+    display: flex; gap: 8px; align-items: flex-start;
+    font-size: 12px; color: var(--fg); line-height: 1.4;
+  }
+  .policy-card li svg {
+    width: 13px; height: 13px; color: var(--success); flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* hint when nothing selected */
+  .when-card.empty {
+    background: var(--bg);
+    border: 1.5px dashed var(--border);
+    color: var(--muted-soft);
+  }
+  .when-card.empty .lbl { color: var(--muted-soft); }
+  .when-card.empty .date,
+  .when-card.empty .time,
+  .when-card.empty .dur { color: var(--muted-soft); }
+
+  /* Mobile: stack flow */
+  @media (max-width: 1080px) {
+    .booking-shell {
+      grid-template-columns: 1fr;
+      padding: 20px 20px 200px;
+      gap: 16px;
+    }
+    .col-coach, .col-summary { position: static; }
+  }
+  @media (max-width: 720px) {
+    .topnav { padding: 14px 18px; }
+    .hero { padding: 22px 20px 18px; }
+    .hero h1 { font-size: 24px; }
+    .week-grid { font-size: 10px; }
+    .wk-time { font-size: 9px; }
+    .slot { font-size: 9.5px; padding: 4px; }
+
+    .col-summary {
+      position: sticky; bottom: 0; top: auto;
+      background: rgba(250,250,247,0.96);
+      backdrop-filter: blur(8px);
+      margin: 0 -20px -200px;
+      padding: 12px 20px 16px;
+      border-top: 1px solid var(--border);
+      z-index: 20;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Topnav -->
+<div class="topnav">
+  <a href="#" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Tilbake
+  </a>
+  <span class="brand">AK GOLF · PlayerHQ</span>
+  <div class="crumbs">
+    Coach <span style="margin:0 6px;opacity:0.5;">/</span>
+    Hans Brennum <span style="margin:0 6px;opacity:0.5;">/</span>
+    <span class="current">Book direkte</span>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-eyebrow">Direkte-booking · Privat økt</div>
+  <h1>Velg en ledig tid med <em>Hans</em> — bekreft uten å vente på svar.</h1>
+  <div class="sub">14 ledige slots denne uka · Pris dekkes av credits hvis du har Pro</div>
+</section>
+
+<!-- Booking shell -->
+<main class="booking-shell">
+
+  <!-- =========== COLUMN 1: COACH + FILTERS =========== -->
+  <aside class="col-coach">
+
+    <div class="coach-card">
+      <div class="av">HB</div>
+      <h2>Hans Brennum</h2>
+      <div class="role">Hovedcoach · GFGK</div>
+
+      <div class="coach-spec">
+        <span class="spec-chip">Teknikk</span>
+        <span class="spec-chip">Mental</span>
+        <span class="spec-chip">Junior A1</span>
+      </div>
+
+      <p class="coach-bio">
+        Tidligere proff på Nordic Tour. Spesialist på junior-utvikling og slag-mekanikk.
+        Jobber med Markus siden september 2024.
+      </p>
+
+      <div class="coach-meta">
+        <div>
+          <div class="m-lbl">Spillere</div>
+          <div class="m-val">38 aktive</div>
+        </div>
+        <div>
+          <div class="m-lbl">Snitt-rating</div>
+          <div class="m-val">4,9 / 5</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <h3>Filtrer ledige tider</h3>
+
+      <div class="filter-group">
+        <div class="filter-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Type økt
+        </div>
+        <div class="seg" role="tablist">
+          <button class="active" type="button" aria-pressed="true">Privat<span class="mins">60 min</span></button>
+          <button type="button" aria-pressed="false">Privat<span class="mins">90 min</span></button>
+          <button type="button" aria-pressed="false">Gruppe<span class="mins">60 min</span></button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Lokasjon
+        </div>
+        <div class="seg vert" role="tablist">
+          <button class="active" type="button" aria-pressed="true">
+            GFGK Performance
+            <span class="place-meta">Studio A</span>
+          </button>
+          <button type="button" aria-pressed="false">
+            Range — utendørs
+            <span class="place-meta">Bay 4–8</span>
+          </button>
+          <button type="button" aria-pressed="false">
+            Putting Studio
+            <span class="place-meta">Indoor</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Tid på dagen
+        </div>
+        <div class="seg">
+          <button type="button" aria-pressed="false">Morgen<span class="mins">06—11</span></button>
+          <button class="active" type="button" aria-pressed="true">Etter skole<span class="mins">14—18</span></button>
+          <button type="button" aria-pressed="false">Kveld<span class="mins">18—22</span></button>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- =========== COLUMN 2: WEEK CALENDAR =========== -->
+  <section class="col-cal">
+
+    <div class="cal-head">
+      <div>
+        <div class="title">Uke 21 · 19—25 mai</div>
+        <div class="week-meta">14 ledige · 6 fulle · 3 tentative</div>
+      </div>
+      <div class="week-nav">
+        <button class="nav-btn" title="Forrige uke" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="today-btn" type="button">Denne uka</button>
+        <button class="nav-btn" title="Neste uke" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="week-grid" id="weekGrid">
+      <!-- Header row -->
+      <div class="wk-corner"></div>
+      <div class="wk-dayhead">Man<span class="dnum">19</span></div>
+      <div class="wk-dayhead">Tir<span class="dnum">20</span></div>
+      <div class="wk-dayhead">Ons<span class="dnum">21</span></div>
+      <div class="wk-dayhead today">Tor<span class="dnum">22</span></div>
+      <div class="wk-dayhead">Fre<span class="dnum">23</span></div>
+      <div class="wk-dayhead weekend">Lør<span class="dnum">24</span></div>
+      <div class="wk-dayhead weekend">Søn<span class="dnum">25</span></div>
+
+      <!-- Rows generated by JS for compactness -->
+    </div>
+
+    <div class="cal-legend">
+      <span class="lg-item"><span class="lg-sw avail"></span>Ledig</span>
+      <span class="lg-item"><span class="lg-sw selected"></span>Valgt</span>
+      <span class="lg-item"><span class="lg-sw tentative"></span>Tentativ</span>
+      <span class="lg-item"><span class="lg-sw full"></span>Fullt</span>
+      <span class="lg-item" style="margin-left:auto;color:var(--muted-soft);">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Bruk piltaster for å navigere
+      </span>
+    </div>
+
+  </section>
+
+  <!-- =========== COLUMN 3: SUMMARY =========== -->
+  <aside class="col-summary">
+
+    <div class="summary">
+      <div class="summary-eyebrow">Din booking</div>
+      <h3>Bekreft din <em>direkte-booking</em></h3>
+
+      <div class="when-card" id="whenCard">
+        <div class="lbl">Valgt tid</div>
+        <div class="date" id="whenDate">tor. 22. mai</div>
+        <div class="time" id="whenTime">16:00 — 17:00</div>
+        <div class="dur" id="whenDur">60 min · privat</div>
+      </div>
+
+      <div class="sum-rows">
+        <div class="sum-row">
+          <span class="k">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Coach
+          </span>
+          <span class="v">Hans Brennum</span>
+        </div>
+        <div class="sum-row">
+          <span class="k">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Type
+          </span>
+          <span class="v">Privat 60 min</span>
+        </div>
+        <div class="sum-row">
+          <span class="k">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Lokasjon
+          </span>
+          <span class="v">GFGK Performance</span>
+        </div>
+        <div class="sum-row">
+          <span class="k">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Varighet
+          </span>
+          <span class="v mono">60 min</span>
+        </div>
+        <div class="sum-row">
+          <span class="k">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Listepris
+          </span>
+          <span class="v mono">1 200 kr</span>
+        </div>
+      </div>
+
+      <div class="pay-block">
+        <div class="pb-head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          Betal med credits — Pro
+        </div>
+        <div class="credit-row">
+          <span class="cur">Du har <strong style="font-weight:700;color:var(--fg);">4 credits</strong> · denne økta koster 2</span>
+        </div>
+        <div class="credit-bar" aria-label="4 av 4 credits, 2 brukes">
+          <span class="cell spent"></span>
+          <span class="cell spent"></span>
+          <span class="cell used"></span>
+          <span class="cell used"></span>
+        </div>
+        <div class="credit-row">
+          <span class="cur">Etter booking</span>
+          <span class="now">2 credits igjen</span>
+        </div>
+      </div>
+
+      <div class="total-row">
+        <div>
+          <span class="tk">Total å betale</span>
+          <span class="tv-sub">2 credits dekker</span>
+        </div>
+        <div style="text-align:right;">
+          <span class="tv">0 kr</span>
+        </div>
+      </div>
+
+      <div class="summary-actions">
+        <button class="btn btn-primary btn-block" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Bekreft booking
+        </button>
+        <button class="btn btn-outline btn-block" type="button">Betal med kort i stedet</button>
+      </div>
+
+      <div class="micro-foot">
+        Du får bekreftelse på e-post · ICS-kalenderfil følger med ·
+        Avbestilling gratis frem til 24 t før
+      </div>
+    </div>
+
+    <div class="policy-card">
+      <div class="ttl">Hva er inkludert</div>
+      <ul>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          1:1-økt med Hans, 60 minutter på Studio A
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          TrackMan-data, video og kommentar i appen etterpå
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Oppdatert plan i workbench innen 24 t
+        </li>
+      </ul>
+    </div>
+
+  </aside>
+
+</main>
+
+<!-- Speaker notes for slide deck export (not used here but safe noop) -->
+
+<script>
+/* ============================================================
+   Build the time-slot grid programmatically.
+   Times: 14:00 → 18:30 in 30-min steps (etter skole).
+   Days: 7 (mon–sun, today = thursday 22.).
+   ============================================================ */
+(function(){
+  const grid = document.getElementById('weekGrid');
+  const times = [];
+  for (let h = 14; h <= 18; h++) {
+    times.push(`${String(h).padStart(2,'0')}:00`);
+    if (h < 18) times.push(`${String(h).padStart(2,'0')}:30`);
+  }
+  // States per (timeIdx, dayIdx). Length must match times.length
+  // States: 'a' avail, 'f' full, 't' tentative, '-' nothing (treated as full muted)
+  // Days: man, tir, ons, TOR(today), fre, lør, søn
+  const matrix = [
+    // 14:00
+    ['a','f','a','a','a','-','-'],
+    // 14:30
+    ['a','f','f','a','a','-','-'],
+    // 15:00
+    ['f','a','a','a','f','-','-'],
+    // 15:30
+    ['f','a','t','f','a','-','-'],
+    // 16:00 — Markus's choice on Thursday
+    ['a','f','f','sel','a','-','-'],
+    // 16:30
+    ['a','t','a','sel','f','-','-'],
+    // 17:00
+    ['f','a','a','a','t','-','-'],
+    // 17:30
+    ['f','a','a','f','a','-','-'],
+    // 18:00
+    ['a','t','f','a','a','-','-'],
+  ];
+
+  const dayLabel = ['man','tir','ons','tor','fre','lør','søn'];
+  const dayDates = ['19','20','21','22','23','24','25'];
+  const todayIdx = 3;
+  const weekendIdx = [5,6];
+
+  function buildSlot(state, day, time) {
+    // sel == selected (already chosen)
+    if (state === '-' || state === 'f') {
+      return `<button class="slot full" type="button" aria-pressed="false" aria-disabled="true" tabindex="-1" data-day="${day}" data-time="${time}"></button>`;
+    }
+    if (state === 't') {
+      return `<button class="slot tentative" type="button" aria-pressed="false" data-day="${day}" data-time="${time}">${time}<span class="slot-tooltip">${dayLabel[day]}. ${dayDates[day]}. mai · ${time} · tentativ</span></button>`;
+    }
+    if (state === 'sel') {
+      return `<button class="slot selected" type="button" aria-pressed="true" data-day="${day}" data-time="${time}">${time}<span class="slot-tooltip">${dayLabel[day]}. ${dayDates[day]}. mai · ${time} · 60 min privat</span></button>`;
+    }
+    return `<button class="slot avail" type="button" aria-pressed="false" data-day="${day}" data-time="${time}">${time}<span class="slot-tooltip">${dayLabel[day]}. ${dayDates[day]}. mai · ${time} · 60 min privat</span></button>`;
+  }
+
+  let html = '';
+  for (let t = 0; t < times.length; t++) {
+    html += `<div class="wk-time">${times[t]}</div>`;
+    for (let d = 0; d < 7; d++) {
+      const isWeekend = weekendIdx.includes(d);
+      const isToday = d === todayIdx;
+      const cellCls = `wk-cell${isWeekend ? ' weekend' : ''}${isToday ? ' today' : ''}`;
+      html += `<div class="${cellCls}">${buildSlot(matrix[t][d], d, times[t])}</div>`;
+    }
+  }
+  grid.insertAdjacentHTML('beforeend', html);
+
+  /* ---- Click + keyboard navigation ---- */
+  const slots = Array.from(grid.querySelectorAll('.slot'));
+  const dayLabelLong = ['mandag','tirsdag','onsdag','torsdag','fredag','lørdag','søndag'];
+  function addOneHour(t) {
+    const [h,m] = t.split(':').map(Number);
+    let nh = h + 1;
+    return `${String(nh).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  }
+  function updateSummary(slot) {
+    const day = parseInt(slot.dataset.day,10);
+    const time = slot.dataset.time;
+    const end = addOneHour(time);
+    document.getElementById('whenDate').textContent =
+      `${dayLabelLong[day].slice(0,3)}. ${dayDates[day]}. mai`;
+    document.getElementById('whenTime').textContent = `${time} — ${end}`;
+    document.getElementById('whenDur').textContent = '60 min · privat';
+  }
+
+  slots.forEach((s, idx) => {
+    if (s.classList.contains('full')) return;
+    s.addEventListener('click', () => {
+      slots.forEach(x => {
+        if (x.classList.contains('selected')) {
+          x.classList.remove('selected');
+          x.classList.add('avail');
+          x.setAttribute('aria-pressed','false');
+        }
+      });
+      s.classList.remove('avail','tentative');
+      s.classList.add('selected');
+      s.setAttribute('aria-pressed','true');
+      updateSummary(s);
+    });
+  });
+
+  // keyboard arrows
+  grid.addEventListener('keydown', (e) => {
+    const active = document.activeElement;
+    if (!active.classList.contains('slot')) return;
+    const idx = slots.indexOf(active);
+    if (idx < 0) return;
+    let nextIdx = idx;
+    if (e.key === 'ArrowRight') nextIdx = idx + 1;
+    else if (e.key === 'ArrowLeft') nextIdx = idx - 1;
+    else if (e.key === 'ArrowDown') nextIdx = idx + 7;
+    else if (e.key === 'ArrowUp') nextIdx = idx - 7;
+    else return;
+    e.preventDefault();
+    while (nextIdx >= 0 && nextIdx < slots.length && slots[nextIdx].classList.contains('full')) {
+      nextIdx += (nextIdx > idx ? 1 : -1);
+    }
+    if (nextIdx >= 0 && nextIdx < slots.length) slots[nextIdx].focus();
+  });
+})();
+</script>
+
+</body>
+</html>

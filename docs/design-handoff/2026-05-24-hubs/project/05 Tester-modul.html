@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>05 — Tester-modul · AK Golf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 96px; }
+  /* tab bar */
+  .scr-tabs { position: sticky; top: var(--topbar-h); z-index: 25; background: var(--card); border-bottom: 1px solid var(--border); display: flex; gap: 0; padding: 0 32px; align-items: stretch; }
+  .scr-tab { background: transparent; border: 0; padding: 14px 18px; font-family: var(--font-display); font-size: 13.5px; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+  .scr-tab .sub { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; color: var(--muted-soft); text-transform: uppercase; font-weight: 600; }
+  .scr-tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+  .scr-tab.active .sub { color: var(--primary); }
+  .scr-tab .ct { font-family: var(--font-mono); font-size: 9.5px; background: var(--bg); border: 1px solid var(--border); padding: 1px 7px; border-radius: 999px; font-weight: 700; color: var(--muted); }
+  .scr-tab.active .ct { background: var(--accent); border-color: var(--accent); color: var(--fg); }
+
+  .scr-strip { background: var(--primary); color: var(--accent); padding: 8px 32px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; display: flex; justify-content: space-between; }
+  .scr-strip .right { color: rgba(209,248,67,0.62); }
+
+  .scr-page { padding: 26px 32px 48px; display: flex; flex-direction: column; gap: 22px; }
+  .scr-hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .scr-hero > div:first-child { min-width: 0; flex: 1 1 540px; }
+  .scr-hero h1 { font-family: var(--font-display); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .scr-hero h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+  .scr-hero .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .eyebrow { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+
+  /* discipline badges */
+  .disc-badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; }
+  .disc-badge.fys { background: rgba(58,110,171,0.16); color: #3A6EAB; }
+  .disc-badge.tek { background: rgba(168,50,125,0.14); color: #A8327D; }
+  .disc-badge.slag { background: rgba(0,88,64,0.12); color: var(--primary); }
+  .disc-badge.spill { background: rgba(209,248,67,0.45); color: var(--fg); }
+  .disc-badge.turn { background: rgba(194,73,20,0.14); color: #C24914; }
+  .disc-badge.lg { padding: 6px 14px; font-size: 11px; }
+
+  /* status pills */
+  .st-pill { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px; font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .st-pill.aktiv { background: var(--accent); color: var(--fg); }
+  .st-pill.pause { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+  .st-pill.oppnådd { background: var(--accent); color: var(--fg); }
+
+  .cat-pill { display: inline-flex; padding: 3px 9px; border-radius: 999px; font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; }
+  .cat-pill.a1 { background: var(--accent); color: var(--fg); }
+  .cat-pill.a2 { background: var(--primary); color: var(--accent); }
+  .cat-pill.b1 { background: var(--bg); color: var(--fg); border: 1px solid var(--border); }
+  .cat-pill.b2 { background: rgba(94,92,87,0.18); color: var(--muted); }
+  .cat-pill.b3 { background: #fff; color: var(--muted-soft); border: 1px solid var(--border); }
+
+  /* generic btn helpers (within page) */
+  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 999px; font-size: 12.5px; font-weight: 600; border: 0; cursor: pointer; }
+  .btn svg { width: 14px; height: 14px; }
+  .btn.lime { background: var(--accent); color: var(--fg); }
+  .btn.forest { background: var(--primary); color: var(--accent); }
+  .btn.outline { background: #fff; color: var(--fg); border: 1px solid var(--border); }
+  .btn.sm { padding: 6px 12px; font-size: 11.5px; }
+
+  /* disc group section */
+  .disc-section { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; }
+  .disc-section .ds-h { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .disc-section .ds-h .ds-ttl { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .disc-section .ds-h .ds-sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; }
+  .disc-section .ds-h .ds-link { margin-left: auto; font-family: var(--font-mono); font-size: 10.5px; color: var(--primary); font-weight: 700; letter-spacing: 0.06em; text-decoration: none; }
+
+  .test-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .tcard { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .tcard .row1 { display: flex; align-items: center; gap: 8px; }
+  .tcard .row1 .st-pill { margin-left: auto; }
+  .tcard .t-ttl { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+  .tcard .t-desc { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); line-height: 1.4; }
+  .tcard .target-strip { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 10px; }
+  .tcard .target-strip .v { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--fg); line-height: 1; }
+  .tcard .target-strip .l { font-family: var(--font-mono); font-size: 9px; color: var(--muted); letter-spacing: 0.10em; margin-top: 3px; text-transform: uppercase; }
+  .tcard .target-strip svg { width: 18px; height: 18px; color: var(--primary); margin-left: auto; }
+  .tcard .last-row { display: flex; gap: 14px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.04em; }
+  .tcard .last-row strong { color: var(--fg); font-weight: 700; }
+  .tcard .avg-bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--border-soft); }
+  .tcard .avg-bar > div { position: relative; }
+  .tcard .avg-bar > div.stall { background: var(--accent); }
+  .tcard .avg-bar > div.a1 { background: var(--primary); }
+  .tcard .avg-bar > div.int { background: #003A2A; }
+  .tcard .avg-meta { display: flex; gap: 10px; font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.04em; }
+  .tcard .avg-meta .dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+  .tcard .t-actions { display: flex; gap: 6px; padding-top: 8px; border-top: 1px solid var(--border-soft); }
+  .tcard .t-actions .mini { padding: 4px 9px; border-radius: 999px; font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; color: var(--muted); background: #fff; border: 1px solid var(--border); cursor: pointer; letter-spacing: 0.06em; }
+  .tcard:hover { box-shadow: 0 2px 8px rgba(10,31,23,0.04); cursor: pointer; }
+
+  /* KPI bubbles */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+  .kpi.featured { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .kpi.lime { background: var(--accent); color: var(--fg); border-color: var(--accent); }
+  .kpi .lbl { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; font-weight: 700; }
+  .kpi.featured .lbl { color: rgba(209,248,67,0.7); }
+  .kpi .v { font-family: var(--font-mono); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin-top: 8px; }
+  .kpi.featured .v { color: var(--accent); }
+  .kpi .sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); margin-top: 6px; letter-spacing: 0.04em; }
+  .kpi.featured .sub { color: rgba(255,255,255,0.65); }
+
+  /* card wrapper */
+  .ccard { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+  .ccard .ch { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+  .ccard .ch h3 { font-family: var(--font-display); font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+  .ccard .ch .sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; margin-left: auto; }
+
+  /* AI strip */
+  .ai-strip { background: rgba(209,248,67,0.16); border: 1px solid rgba(209,248,67,0.55); border-left: 4px solid var(--accent); border-radius: 14px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; }
+  .ai-strip svg { width: 18px; height: 18px; color: var(--primary); flex-shrink: 0; margin-top: 3px; }
+  .ai-strip .body { flex: 1; }
+  .ai-strip .body p { font-size: 13.5px; line-height: 1.5; }
+  .ai-strip .body p strong { font-family: var(--font-display); font-weight: 700; }
+  .ai-strip .actions { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+
+  /* tables */
+  .ttable { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .ttable thead th { padding: 12px 14px; text-align: left; font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; background: var(--bg); border-bottom: 1px solid var(--border); }
+  .ttable tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border-soft); vertical-align: middle; }
+  .ttable tbody tr:hover { background: rgba(209,248,67,0.05); cursor: pointer; }
+  .ttable tbody tr:last-child td { border-bottom: 0; }
+  .ttable td.right, .ttable th.right { text-align: right; }
+  .ttable td.mono, .ttable th.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 11.5px; }
+  .pcell { display: flex; align-items: center; gap: 10px; }
+  .pcell .av { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(140deg, var(--bg), #EFEDE6); color: var(--primary); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 10.5px; font-weight: 700; }
+  .pcell .nm { font-family: var(--font-display); font-size: 13px; font-weight: 600; }
+  .delta { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; }
+  .delta.up { color: var(--success); }
+  .delta.dn { color: var(--danger); }
+  .delta.flat { color: var(--muted); }
+
+  /* histogram svg */
+  .hist-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 22px; }
+  .hist-svg { width: 100%; height: 280px; }
+  .trend-svg { width: 100%; height: 200px; }
+
+  /* player detail hero */
+  .pd-hero { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .pd-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; gap: 16px; align-items: center; }
+  .pd-card.lime { background: var(--accent); border-color: var(--accent); }
+  .pd-card.forest { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .pd-card.forest .pd-lbl, .pd-card.forest .pd-sub { color: rgba(209,248,67,0.7); }
+  .pd-card.forest .pd-v { color: var(--accent); }
+  .pd-card .pd-ring { width: 100px; height: 100px; flex-shrink: 0; }
+  .pd-card .pd-text { flex: 1; }
+  .pd-card .pd-lbl { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+  .pd-card .pd-v { font-family: var(--font-mono); font-size: 26px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; margin-top: 6px; }
+  .pd-card .pd-sub { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 6px; letter-spacing: 0.04em; line-height: 1.45; }
+  .pd-card .pd-bottom { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.08); letter-spacing: 0.04em; }
+  .pd-card.lime .pd-bottom { border-top-color: rgba(10,31,23,0.10); color: var(--fg); }
+  .pd-card.forest .pd-bottom { border-top-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.65); }
+
+  /* anbefalt strip */
+  .rec-strip { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; border-left: 4px solid var(--accent); }
+  .rec-strip h3 { font-family: var(--font-display); font-size: 16px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .rec-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .rec-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .rec-card .rc-h { display: flex; align-items: center; gap: 8px; }
+  .rec-card .rc-ttl { font-family: var(--font-display); font-size: 13px; font-weight: 700; }
+  .rec-card .rc-sub { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.04em; }
+  .rec-card .rc-actions { margin-top: auto; padding-top: 6px; }
+
+  /* sub-card grid */
+  .sub-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .sub-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .sub-card .sc-row1 { display: flex; align-items: center; gap: 8px; }
+  .sub-card .sc-row1 .st-pill { margin-left: auto; }
+  .sub-card .sc-ttl { font-family: var(--font-display); font-size: 14.5px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+  .sub-card .sc-bigval { font-family: var(--font-mono); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .sub-card .sc-sub { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.04em; }
+  .sub-card .sc-spark { height: 40px; }
+  .sub-card .sc-actions { display: flex; gap: 6px; padding-top: 8px; border-top: 1px solid var(--border-soft); }
+
+  /* historikk table */
+  .hist-table th, .hist-table td { padding: 11px 14px; font-size: 12.5px; }
+
+  /* footer */
+  .scr-footer { position: fixed; bottom: 0; left: var(--sidebar-w); right: 0; height: 64px; background: #fff; border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; gap: 24px; z-index: 25; }
+  .scr-footer .left, .scr-footer .center { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+  .scr-footer .left strong, .scr-footer .center strong { color: var(--fg); font-weight: 700; }
+  .scr-footer .actions { margin-left: auto; display: flex; gap: 8px; }
+
+  /* tab visibility */
+  body[data-screen="s1"] .screen:not(#s1) { display: none; }
+  body[data-screen="s2"] .screen:not(#s2) { display: none; }
+  body[data-screen="s3"] .screen:not(#s3) { display: none; }
+  body[data-screen="s4"] .screen:not(#s4) { display: none; }
+  body[data-screen="s1"] .ft-s1, body[data-screen="s2"] .ft-s2, body[data-screen="s3"] .ft-s3, body[data-screen="s4"] .ft-s4 { display: flex; }
+  body[data-screen="s1"] .ft-s2, body[data-screen="s1"] .ft-s3, body[data-screen="s1"] .ft-s4,
+  body[data-screen="s2"] .ft-s1, body[data-screen="s2"] .ft-s3, body[data-screen="s2"] .ft-s4,
+  body[data-screen="s3"] .ft-s1, body[data-screen="s3"] .ft-s2, body[data-screen="s3"] .ft-s4,
+  body[data-screen="s4"] .ft-s1, body[data-screen="s4"] .ft-s2, body[data-screen="s4"] .ft-s3 { display: none; }
+</style>
+</head>
+<body data-screen="s1" data-screen-label="05 Tester">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-sparkles" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
+    <symbol id="ic-trendup" viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></symbol>
+    <symbol id="ic-arrowup" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></symbol>
+    <symbol id="ic-arrowdown" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></symbol>
+    <symbol id="ic-minus" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></symbol>
+    <symbol id="ic-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+    <symbol id="ic-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="name">AK GOLF</div>
+      <div class="meta">COACHHQ · HEAD COACH</div>
+    </div>
+    <div class="sidebar-profile">
+      <div class="avatar">AK</div>
+      <div><div class="nm">Anders K.</div><div class="hcp">38 SPILLERE</div></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Daglig</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Kalender</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operasjon</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Stall</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Analyse</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Talent</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg>Tester</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg><input placeholder="Søk test, spiller, disiplin…" /><span class="kbd">⌘K</span></div>
+      <div class="breadcrumb" id="bc">CoachHQ &nbsp;/&nbsp; Innsikt &nbsp;/&nbsp; <span class="current">Tester · oversikt</span></div>
+    </header>
+
+    <nav class="scr-tabs">
+      <button class="scr-tab active" data-go="s1"><span class="sub">01</span> Coach-oversikt <span class="ct">14</span></button>
+      <button class="scr-tab" data-go="s2"><span class="sub">02</span> Coach-detalj <span class="ct">32</span></button>
+      <button class="scr-tab" data-go="s3"><span class="sub">03</span> Spiller-oversikt <span class="ct">14</span></button>
+      <button class="scr-tab" data-go="s4"><span class="sub">04</span> Spiller-detalj <span class="ct">14</span></button>
+    </nav>
+
+    <!-- ============================================== -->
+    <!-- SKJERM 1 — Coach-oversikt -->
+    <!-- ============================================== -->
+    <section class="screen" id="s1" data-screen-label="01 Coach-oversikt">
+      <div class="scr-strip"><span>SKJERM 1 / 4 · /admin/tester · COACH-OVERSIKT</span><span class="right">14 TESTER · 5 DISIPLINER · 32 SPILLERE</span></div>
+      <div class="scr-page">
+
+        <div class="scr-hero">
+          <div>
+            <div class="eyebrow">TESTER · 5 DISIPLINER · 14 TESTER AKTIVE · 32 SPILLERE TESTET SISTE 30 DAGER</div>
+            <h1 style="margin-top:8px;">Tester <em>&amp;</em> benchmarks — hele stallen</h1>
+          </div>
+          <div class="actions">
+            <button class="btn lime"><svg fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-plus"/></svg>Ny test</button>
+            <button class="btn forest">Planlegg test-runde</button>
+            <button class="btn outline">Filtre</button>
+            <button class="btn outline">Eksporter benchmark-rapport</button>
+          </div>
+        </div>
+
+        <div class="filter-strip" style="position:static;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <span class="eyebrow">Disiplin</span>
+          <button class="filter-pill active">Alle <span class="count">14</span></button>
+          <button class="filter-pill">FYS <span class="count">4</span></button>
+          <button class="filter-pill">TEK <span class="count">3</span></button>
+          <button class="filter-pill">SLAG <span class="count">3</span></button>
+          <button class="filter-pill">SPILL <span class="count">2</span></button>
+          <button class="filter-pill">TURN <span class="count">3</span></button>
+          <div style="width:1px;height:22px;background:var(--border);"></div>
+          <span class="eyebrow">Periode</span>
+          <button class="filter-pill">Uke</button>
+          <button class="filter-pill active">Måned</button>
+          <button class="filter-pill">Kvartal</button>
+          <button class="filter-pill">Sesong</button>
+          <div style="width:1px;height:22px;background:var(--border);"></div>
+          <span class="eyebrow">Kategori</span>
+          <button class="filter-pill active">Alle</button>
+          <button class="filter-pill">A1</button>
+          <button class="filter-pill">A2</button>
+          <button class="filter-pill">B-pott</button>
+        </div>
+
+        <!-- FYS section -->
+        <div class="disc-section">
+          <div class="ds-h">
+            <span class="disc-badge fys lg">FYS</span>
+            <div>
+              <div class="ds-ttl">FYS — Fysisk</div>
+              <div class="ds-sub">4 TESTER · 30 SPILLERE · 102 MÅLINGER SISTE 30 DAGER</div>
+            </div>
+            <a class="ds-link" href="#">Se alle FYS-tester →</a>
+          </div>
+          <div class="test-cards">
+            <div class="tcard">
+              <div class="row1"><span class="disc-badge fys">FYS</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="t-ttl">VO2max</div>
+              <div class="t-desc">Cooper-løp 12 min på Garmin-pulsbelte. Beregnet ml/kg/min.</div>
+              <div class="target-strip"><div><div class="v">≥ 55</div><div class="l">Mål A1 · ml/kg/min</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+              <div class="last-row"><span><strong>24</strong> spillere</span><span>Sist <strong>18. mai 2026</strong></span></div>
+              <div class="avg-bar"><div class="stall" style="width:48%;"></div><div class="a1" style="width:30%;"></div><div class="int" style="width:22%;"></div></div>
+              <div class="avg-meta"><span><span class="dot" style="background:var(--accent);"></span>Stall 52,8</span><span><span class="dot" style="background:var(--primary);"></span>A1 55</span><span><span class="dot" style="background:#003A2A;"></span>Int. 58</span></div>
+              <div class="t-actions"><button class="mini">Se spillere</button><button class="mini">Endre mål</button><button class="mini">Arkiver</button></div>
+            </div>
+            <div class="tcard">
+              <div class="row1"><span class="disc-badge fys">FYS</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="t-ttl">Plank-tid</div>
+              <div class="t-desc">Statisk plank på albuer, til kollaps. Maks 5 min.</div>
+              <div class="target-strip"><div><div class="v">≥ 3:00</div><div class="l">Mål A1 · min</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+              <div class="last-row"><span><strong>30</strong> spillere</span><span>Sist <strong>17. mai</strong></span></div>
+              <div class="avg-bar"><div class="stall" style="width:45%;"></div><div class="a1" style="width:30%;"></div><div class="int" style="width:25%;"></div></div>
+              <div class="avg-meta"><span><span class="dot" style="background:var(--accent);"></span>Stall 2:42</span><span><span class="dot" style="background:var(--primary);"></span>A1 3:00</span><span><span class="dot" style="background:#003A2A;"></span>Int. 3:30</span></div>
+              <div class="t-actions"><button class="mini">Se spillere</button><button class="mini">Endre mål</button><button class="mini">Arkiver</button></div>
+            </div>
+            <div class="tcard">
+              <div class="row1"><span class="disc-badge fys">FYS</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="t-ttl">Balanse-test</div>
+              <div class="t-desc">Stå på enkelt ben med lukkede øyne — tid til balanse-brudd.</div>
+              <div class="target-strip"><div><div class="v">≥ 45 s</div><div class="l">Mål A1 · sekunder</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+              <div class="last-row"><span><strong>28</strong> spillere</span><span>Sist <strong>16. mai</strong></span></div>
+              <div class="avg-bar"><div class="stall" style="width:42%;"></div><div class="a1" style="width:33%;"></div><div class="int" style="width:25%;"></div></div>
+              <div class="avg-meta"><span><span class="dot" style="background:var(--accent);"></span>Stall 38 s</span><span><span class="dot" style="background:var(--primary);"></span>A1 45 s</span><span><span class="dot" style="background:#003A2A;"></span>Int. 52 s</span></div>
+              <div class="t-actions"><button class="mini">Se spillere</button><button class="mini">Endre mål</button><button class="mini">Arkiver</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEK section -->
+        <div class="disc-section">
+          <div class="ds-h">
+            <span class="disc-badge tek lg">TEK</span>
+            <div>
+              <div class="ds-ttl">TEK — Teknikk</div>
+              <div class="ds-sub">3 TESTER · 28 SPILLERE · 87 MÅLINGER SISTE 30 DAGER</div>
+            </div>
+            <a class="ds-link" href="#">Se alle TEK-tester →</a>
+          </div>
+          <div class="test-cards">
+            <div class="tcard">
+              <div class="row1"><span class="disc-badge tek">TEK</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="t-ttl">7-jern smash factor</div>
+              <div class="t-desc">TrackMan-måling 10 fullsving 7-jern. Snitt av middels-fart 3.</div>
+              <div class="target-strip"><div><div class="v">≥ 1,36</div><div class="l">Mål A1 · ratio</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+              <div class="last-row"><span><strong>28</strong> spillere</span><span>Sist <strong>18. mai</strong></span></div>
+              <div class="avg-bar"><div class="stall" style="width:48%;"></div><div class="a1" style="width:32%;"></div><div class="int" style="width:20%;"></div></div>
+              <div class="avg-meta"><span><span class="dot" style="background:var(--accent);"></span>Stall 1,34</span><span><span class="dot" style="background:var(--primary);"></span>A1 1,36</span><span><span class="dot" style="background:#003A2A;"></span>Int. 1,40</span></div>
+              <div class="t-actions"><button class="mini">Se spillere</button><button class="mini">Endre mål</button><button class="mini">Arkiver</button></div>
+            </div>
+            <div class="tcard">
+              <div class="row1"><span class="disc-badge tek">TEK</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="t-ttl">Driver carry distance</div>
+              <div class="t-desc">5 fullsving driver. Snitt carry-distanse (TrackMan).</div>
+              <div class="target-strip"><div><div class="v">≥ 250 m</div><div class="l">Mål A1 · meter</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+              <div class="last-row"><span><strong>26</strong> spillere</span><span>Sist <strong>17. mai</strong></span></div>
+              <div class="avg-bar"><div class="stall" style="width:46%;"></div><div class="a1" style="width:34%;"></div><div class="int" style="width:20%;"></div></div>
+              <div class="avg-meta"><span><span class="dot" style="background:var(--accent);"></span>Stall 245 m</span><span><span class="dot" style="background:var(--primary);"></span>A1 250 m</span><span><span class="dot" style="background:#003A2A;"></span>Int. 270 m</span></div>
+              <div class="t-actions"><button class="mini">Se spillere</button><button class="mini">Endre mål</button><button class="mini">Arkiver</button></div>
+            </div>
+            <div class="tcard">
+              <div class="row1"><span class="disc-badge tek">TEK</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="t-ttl">Wedge konsistens 50m</div>
+              <div class="t-desc">10 wedges til 50m flagg, måler spredning (laser, m).</div>
+              <div class="target-strip"><div><div class="v">≤ 4 m</div><div class="l">Mål A1 · spredning</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+              <div class="last-row"><span><strong>30</strong> spillere</span><span>Sist <strong>18. mai</strong></span></div>
+              <div class="avg-bar"><div class="stall" style="width:50%;"></div><div class="a1" style="width:30%;"></div><div class="int" style="width:20%;"></div></div>
+              <div class="avg-meta"><span><span class="dot" style="background:var(--accent);"></span>Stall 5,2 m</span><span><span class="dot" style="background:var(--primary);"></span>A1 4,0 m</span><span><span class="dot" style="background:#003A2A;"></span>Int. 3,2 m</span></div>
+              <div class="t-actions"><button class="mini">Se spillere</button><button class="mini">Endre mål</button><button class="mini">Arkiver</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLAG section -->
+        <div class="disc-section">
+          <div class="ds-h">
+            <span class="disc-badge slag lg">SLAG</span>
+            <div>
+              <div class="ds-ttl">SLAG — Slagteknikk</div>
+              <div class="ds-sub">3 TESTER · 32 SPILLERE · 144 MÅLINGER SISTE 30 DAGER</div>
+            </div>
+            <a class="ds-link" href="#">Se alle SLAG-tester →</a>
+          </div>
+          <div class="test-cards">
+            <div class="tcard" style="border-color:var(--accent);background:linear-gradient(180deg,#FCFEEC 0%,var(--bg) 60%);">
+              <div class="row1"><span class="disc-badge slag">SLAG</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="t-ttl">Putting 1,5m konsistens</div>
+              <div class="t-desc">30 putt fra 1,5m i ring rundt holet. % holet.</div>
+              <div class="target-strip"><div><div class="v">≥ 92%</div><div class="l">Mål A1 · konsistens</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+              <div class="last-row"><span><strong>32</strong> spillere</span><span>Sist <strong>18. mai</strong></span></div>
+              <div class="avg-bar"><div class="stall" style="width:47%;"></div><div class="a1" style="width:33%;"></div><div class="int" style="width:20%;"></div></div>
+              <div class="avg-meta"><span><span class="dot" style="background:var(--accent);"></span>Stall 87%</span><span><span class="dot" style="background:var(--primary);"></span>A1 92%</span><span><span class="dot" style="background:#003A2A;"></span>Int. 95%</span></div>
+              <div class="t-actions"><button class="mini" style="background:var(--accent);border-color:var(--accent);color:var(--fg);">Åpen i detalj →</button><button class="mini">Endre mål</button><button class="mini">Arkiver</button></div>
+            </div>
+            <div class="tcard">
+              <div class="row1"><span class="disc-badge slag">SLAG</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="t-ttl">Chipping landingsone</div>
+              <div class="t-desc">10 chip fra 15m til 3m landingsone. % i sone.</div>
+              <div class="target-strip"><div><div class="v">≥ 70%</div><div class="l">Mål A1 · i sone</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+              <div class="last-row"><span><strong>28</strong> spillere</span><span>Sist <strong>17. mai</strong></span></div>
+              <div class="avg-bar"><div class="stall" style="width:46%;"></div><div class="a1" style="width:32%;"></div><div class="int" style="width:22%;"></div></div>
+              <div class="avg-meta"><span><span class="dot" style="background:var(--accent);"></span>Stall 64%</span><span><span class="dot" style="background:var(--primary);"></span>A1 70%</span><span><span class="dot" style="background:#003A2A;"></span>Int. 78%</span></div>
+              <div class="t-actions"><button class="mini">Se spillere</button><button class="mini">Endre mål</button><button class="mini">Arkiver</button></div>
+            </div>
+            <div class="tcard">
+              <div class="row1"><span class="disc-badge slag">SLAG</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="t-ttl">Bunkershot %</div>
+              <div class="t-desc">10 bunkershot fra 15m. % innenfor 3m fra hull.</div>
+              <div class="target-strip"><div><div class="v">≥ 65%</div><div class="l">Mål A1 · 3m treff</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+              <div class="last-row"><span><strong>24</strong> spillere</span><span>Sist <strong>15. mai</strong></span></div>
+              <div class="avg-bar"><div class="stall" style="width:42%;"></div><div class="a1" style="width:33%;"></div><div class="int" style="width:25%;"></div></div>
+              <div class="avg-meta"><span><span class="dot" style="background:var(--accent);"></span>Stall 58%</span><span><span class="dot" style="background:var(--primary);"></span>A1 65%</span><span><span class="dot" style="background:#003A2A;"></span>Int. 72%</span></div>
+              <div class="t-actions"><button class="mini">Se spillere</button><button class="mini">Endre mål</button><button class="mini">Arkiver</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPILL + TURN combined row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="disc-section">
+            <div class="ds-h">
+              <span class="disc-badge spill lg">SPILL</span>
+              <div>
+                <div class="ds-ttl">SPILL — Spillforståelse</div>
+                <div class="ds-sub">2 TESTER · 22 SPILLERE</div>
+              </div>
+            </div>
+            <div class="test-cards" style="grid-template-columns:1fr 1fr;">
+              <div class="tcard">
+                <div class="row1"><span class="disc-badge spill">SPILL</span><span class="st-pill aktiv">Aktiv</span></div>
+                <div class="t-ttl">D-Plane forståelse</div>
+                <div class="t-desc">12-spørsmål quiz · TrackMan-data tolkning</div>
+                <div class="target-strip"><div><div class="v">≥ 85%</div><div class="l">Mål A1 · korrekt</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+                <div class="avg-meta"><span>Stall <strong>78%</strong></span><span>A1 <strong>85%</strong></span></div>
+              </div>
+              <div class="tcard">
+                <div class="row1"><span class="disc-badge spill">SPILL</span><span class="st-pill aktiv">Aktiv</span></div>
+                <div class="t-ttl">Course management quiz</div>
+                <div class="t-desc">10 scenario-spørsmål. Beste valg.</div>
+                <div class="target-strip"><div><div class="v">≥ 80%</div><div class="l">Mål A1 · korrekt</div></div><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-target"/></svg></div>
+                <div class="avg-meta"><span>Stall <strong>74%</strong></span><span>A1 <strong>80%</strong></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="disc-section">
+            <div class="ds-h">
+              <span class="disc-badge turn lg">TURN</span>
+              <div>
+                <div class="ds-ttl">TURN — Turneringsmodus</div>
+                <div class="ds-sub">3 TESTER · 18 SPILLERE</div>
+              </div>
+            </div>
+            <div class="test-cards" style="grid-template-columns:1fr 1fr 1fr;">
+              <div class="tcard">
+                <div class="row1"><span class="disc-badge turn">TURN</span><span class="st-pill aktiv">Aktiv</span></div>
+                <div class="t-ttl">Pre-shot rutine</div>
+                <div class="t-desc">Konsistens i rutine over 18 slag.</div>
+                <div class="target-strip"><div><div class="v">≥ 90%</div><div class="l">A1 · konsistens</div></div></div>
+                <div class="avg-meta"><span>Stall 84%</span></div>
+              </div>
+              <div class="tcard">
+                <div class="row1"><span class="disc-badge turn">TURN</span><span class="st-pill aktiv">Aktiv</span></div>
+                <div class="t-ttl">MTQ stress</div>
+                <div class="t-desc">Mental Toughness Q. score 1-10.</div>
+                <div class="target-strip"><div><div class="v">≥ 7</div><div class="l">A1 · score</div></div></div>
+                <div class="avg-meta"><span>Stall 6,2</span></div>
+              </div>
+              <div class="tcard">
+                <div class="row1"><span class="disc-badge turn">TURN</span><span class="st-pill aktiv">Aktiv</span></div>
+                <div class="t-ttl">Stroop-fokustest</div>
+                <div class="t-desc">Reaksjon i sek. på fargestresstest.</div>
+                <div class="target-strip"><div><div class="v">≤ 28 s</div><div class="l">A1 · tid</div></div></div>
+                <div class="avg-meta"><span>Stall 31 s</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SKJERM 2 — Coach-detalj -->
+    <!-- ============================================== -->
+    <section class="screen" id="s2" data-screen-label="02 Coach-detalj Putting">
+      <div class="scr-strip"><span>SKJERM 2 / 4 · /admin/tester/putt-1.5m · COACH-DETALJ</span><span class="right">SLAG · 32 SPILLERE · OPPDATERT 18. MAI</span></div>
+      <div class="scr-page">
+
+        <div class="scr-hero">
+          <div>
+            <div class="eyebrow">TEST · SLAG · PUTTING 1,5M KONSISTENS · 32 SPILLERE TESTET · OPPDATERT 18. MAI 2026</div>
+            <h1 style="margin-top:8px;">Test-<em>detalj</em> — alle spillere som har tatt</h1>
+          </div>
+          <div class="actions">
+            <button class="btn lime"><svg fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-plus"/></svg>Registrer ny måling</button>
+            <button class="btn forest">Inviter spiller til test</button>
+            <button class="btn outline">Endre mål</button>
+            <button class="btn outline">Eksporter resultater</button>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi"><div class="lbl">Stall-snitt</div><div class="v">87%</div><div class="sub">Mål A1: 92%</div></div>
+          <div class="kpi"><div class="lbl">A1-snitt</div><div class="v">91%</div><div class="sub">−1% under mål</div></div>
+          <div class="kpi"><div class="lbl">Beste resultat</div><div class="v">97%</div><div class="sub">Markus R.P. · 18. mai</div></div>
+          <div class="kpi lime"><div class="lbl">Trend siste 30 d</div><div class="v">+2,4%</div><div class="sub">Forbedring</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;">
+          <div class="hist-wrap">
+            <div class="ccard ch" style="padding:0;border:0;margin-bottom:14px;"><h3>Distribusjon — stall</h3><span class="sub" style="margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:var(--muted);">X: score % · Y: spillere</span></div>
+            <svg class="hist-svg" viewBox="0 0 700 280" preserveAspectRatio="none">
+              <defs>
+                <pattern id="grid1" width="60" height="35" patternUnits="userSpaceOnUse"><path d="M60 0H0V35" fill="none" stroke="#EFEDE6" stroke-width="1"/></pattern>
+              </defs>
+              <rect width="700" height="280" fill="url(#grid1)"/>
+              <!-- bars -->
+              <g fill="#005840">
+                <rect x="50" y="240" width="42" height="20"/>
+                <rect x="100" y="220" width="42" height="40"/>
+                <rect x="150" y="180" width="42" height="80"/>
+                <rect x="200" y="140" width="42" height="120"/>
+                <rect x="250" y="80" width="42" height="180" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+                <rect x="300" y="100" width="42" height="160"/>
+                <rect x="350" y="60" width="42" height="200"/>
+                <rect x="400" y="40" width="42" height="220" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+                <rect x="450" y="100" width="42" height="160"/>
+                <rect x="500" y="160" width="42" height="100"/>
+                <rect x="550" y="200" width="42" height="60"/>
+                <rect x="600" y="220" width="42" height="40"/>
+              </g>
+              <!-- A1 målline -->
+              <line x1="450" y1="20" x2="450" y2="260" stroke="#D1F843" stroke-width="2" stroke-dasharray="4 3"/>
+              <text x="450" y="14" fill="#0A1F17" font-family="JetBrains Mono" font-size="10" font-weight="700" text-anchor="middle">A1: 92%</text>
+              <!-- stall-snitt -->
+              <line x1="375" y1="20" x2="375" y2="260" stroke="#005840" stroke-width="1.5" stroke-dasharray="2 3"/>
+              <text x="375" y="14" fill="#005840" font-family="JetBrains Mono" font-size="10" font-weight="700" text-anchor="middle">Stall: 87%</text>
+              <!-- x-axis -->
+              <line x1="0" y1="260" x2="700" y2="260" stroke="#5E5C57" stroke-width="1"/>
+              <g font-family="JetBrains Mono" font-size="9" fill="#5E5C57">
+                <text x="71" y="275" text-anchor="middle">50%</text>
+                <text x="171" y="275" text-anchor="middle">60%</text>
+                <text x="271" y="275" text-anchor="middle">70%</text>
+                <text x="371" y="275" text-anchor="middle">80%</text>
+                <text x="471" y="275" text-anchor="middle">90%</text>
+                <text x="571" y="275" text-anchor="middle">100%</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="hist-wrap">
+            <div class="ccard ch" style="padding:0;border:0;margin-bottom:14px;"><h3>Trend siste 12 uker</h3><span class="sub" style="margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:var(--muted);">Stall-snitt %</span></div>
+            <svg class="trend-svg" viewBox="0 0 400 220" preserveAspectRatio="none">
+              <line x1="0" y1="60" x2="400" y2="60" stroke="#D1F843" stroke-width="2" stroke-dasharray="4 3"/>
+              <text x="394" y="56" fill="#0A1F17" font-family="JetBrains Mono" font-size="9" text-anchor="end" font-weight="700">A1-mål 92%</text>
+              <defs>
+                <linearGradient id="g2" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#005840" stop-opacity="0.20"/>
+                  <stop offset="100%" stop-color="#005840" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0 150 L36 145 L72 140 L108 132 L144 124 L180 118 L216 110 L252 100 L288 95 L324 90 L360 85 L400 80 L400 200 L0 200 Z" fill="url(#g2)"/>
+              <path d="M0 150 L36 145 L72 140 L108 132 L144 124 L180 118 L216 110 L252 100 L288 95 L324 90 L360 85 L400 80" fill="none" stroke="#005840" stroke-width="2.5"/>
+              <g fill="#D1F843" stroke="#005840" stroke-width="1.5">
+                <circle cx="0" cy="150" r="4"/><circle cx="72" cy="140" r="4"/><circle cx="144" cy="124" r="4"/><circle cx="216" cy="110" r="4"/><circle cx="288" cy="95" r="4"/><circle cx="360" cy="85" r="4"/>
+              </g>
+              <line x1="0" y1="200" x2="400" y2="200" stroke="#5E5C57" stroke-width="1"/>
+              <g font-family="JetBrains Mono" font-size="9" fill="#5E5C57">
+                <text x="0" y="215">Uke 8</text>
+                <text x="200" y="215" text-anchor="middle">Uke 14</text>
+                <text x="400" y="215" text-anchor="end">Uke 20</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="ccard" style="padding:0;overflow:hidden;">
+          <div style="padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);">
+            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:700;">Spillerliste — 32 spillere</h3>
+            <span style="font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.06em;">Sortert beste først</span>
+            <div style="margin-left:auto;display:flex;gap:6px;">
+              <button class="btn outline sm">Eksporter CSV</button>
+              <button class="btn outline sm">Filter</button>
+            </div>
+          </div>
+          <table class="ttable">
+            <thead><tr><th>Spiller</th><th>Kat</th><th>HCP</th><th class="right">Siste score</th><th>Dato</th><th class="right">vs Mål</th><th>Trend</th><th class="right">N</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><div class="pcell"><span class="av">MR</span><span class="nm">Markus Røinås Pedersen</span></div></td><td><span class="cat-pill a1">A1</span></td><td class="mono">+3,5</td><td class="right mono" style="font-size:14px;font-weight:700;">97%</td><td class="mono">18. mai</td><td class="right"><span class="delta up">+5%</span></td><td><svg width="60" height="24"><polyline points="0,18 12,16 24,12 36,10 48,7 60,4" fill="none" stroke="#2C7D52" stroke-width="2"/></svg></td><td class="right mono">14</td><td><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-more"/></svg></td></tr>
+              <tr><td><div class="pcell"><span class="av">HV</span><span class="nm">Henrik Vorli</span></div></td><td><span class="cat-pill a1">A1</span></td><td class="mono">+0,4</td><td class="right mono" style="font-size:14px;font-weight:700;">94%</td><td class="mono">17. mai</td><td class="right"><span class="delta up">+2%</span></td><td><svg width="60" height="24"><polyline points="0,16 12,14 24,12 36,10 48,8 60,6" fill="none" stroke="#2C7D52" stroke-width="2"/></svg></td><td class="right mono">12</td><td><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-more"/></svg></td></tr>
+              <tr><td><div class="pcell"><span class="av">JT</span><span class="nm">Joachim Tangen</span></div></td><td><span class="cat-pill a1">A1</span></td><td class="mono">+1,2</td><td class="right mono" style="font-size:14px;font-weight:700;">93%</td><td class="mono">18. mai</td><td class="right"><span class="delta up">+1%</span></td><td><svg width="60" height="24"><polyline points="0,12 12,12 24,11 36,12 48,11 60,10" fill="none" stroke="#5E5C57" stroke-width="2"/></svg></td><td class="right mono">13</td><td><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-more"/></svg></td></tr>
+              <tr><td><div class="pcell"><span class="av">ØR</span><span class="nm">Øyvind Røhjan</span></div></td><td><span class="cat-pill a1">A1</span></td><td class="mono">+3,5</td><td class="right mono" style="font-size:14px;font-weight:700;">95%</td><td class="mono">16. mai</td><td class="right"><span class="delta up">+3%</span></td><td><svg width="60" height="24"><polyline points="0,18 12,14 24,12 36,10 48,8 60,6" fill="none" stroke="#2C7D52" stroke-width="2"/></svg></td><td class="right mono">11</td><td><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-more"/></svg></td></tr>
+              <tr><td><div class="pcell"><span class="av">IM</span><span class="nm">Ida Mathisen</span></div></td><td><span class="cat-pill a2">A2</span></td><td class="mono">3,1</td><td class="right mono" style="font-size:14px;font-weight:700;">88%</td><td class="mono">17. mai</td><td class="right"><span class="delta dn">−4%</span></td><td><svg width="60" height="24"><polyline points="0,18 12,14 24,12 36,10 48,8 60,6" fill="none" stroke="#2C7D52" stroke-width="2"/></svg></td><td class="right mono">8</td><td><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-more"/></svg></td></tr>
+              <tr><td><div class="pcell"><span class="av">ES</span><span class="nm">Emma Sundsdal</span></div></td><td><span class="cat-pill a2">A2</span></td><td class="mono">4,8</td><td class="right mono" style="font-size:14px;font-weight:700;">85%</td><td class="mono">16. mai</td><td class="right"><span class="delta dn">−7%</span></td><td><svg width="60" height="24"><polyline points="0,12 12,12 24,11 36,10 48,11 60,10" fill="none" stroke="#5E5C57" stroke-width="2"/></svg></td><td class="right mono">9</td><td><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-more"/></svg></td></tr>
+              <tr><td><div class="pcell"><span class="av">SB</span><span class="nm">Sigrid Berg</span></div></td><td><span class="cat-pill b1">B1</span></td><td class="mono">8,2</td><td class="right mono" style="font-size:14px;font-weight:700;">81%</td><td class="mono">15. mai</td><td class="right"><span class="delta dn">−11%</span></td><td><svg width="60" height="24"><polyline points="0,18 12,16 24,15 36,13 48,11 60,9" fill="none" stroke="#2C7D52" stroke-width="2"/></svg></td><td class="right mono">7</td><td><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-more"/></svg></td></tr>
+              <tr><td><div class="pcell"><span class="av">PS</span><span class="nm">Pia Solberg</span></div></td><td><span class="cat-pill b1">B1</span></td><td class="mono">9,7</td><td class="right mono" style="font-size:14px;font-weight:700;">84%</td><td class="mono">18. mai</td><td class="right"><span class="delta dn">−8%</span></td><td><svg width="60" height="24"><polyline points="0,18 12,16 24,14 36,12 48,10 60,8" fill="none" stroke="#2C7D52" stroke-width="2"/></svg></td><td class="right mono">6</td><td><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-more"/></svg></td></tr>
+              <tr><td><div class="pcell"><span class="av">NL</span><span class="nm">Nora Lillevold</span></div></td><td><span class="cat-pill b2">B2</span></td><td class="mono">12,4</td><td class="right mono" style="font-size:14px;font-weight:700;">76%</td><td class="mono">14. mai</td><td class="right"><span class="delta dn">−16%</span></td><td><svg width="60" height="24"><polyline points="0,8 12,10 24,12 36,14 48,16 60,18" fill="none" stroke="#A32D2D" stroke-width="2"/></svg></td><td class="right mono">5</td><td><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-more"/></svg></td></tr>
+              <tr><td><div class="pcell"><span class="av">VA</span><span class="nm">Vetle Aabø</span></div></td><td><span class="cat-pill b2">B2</span></td><td class="mono">14,2</td><td class="right mono" style="font-size:14px;font-weight:700;">78%</td><td class="mono">16. mai</td><td class="right"><span class="delta dn">−14%</span></td><td><svg width="60" height="24"><polyline points="0,12 12,12 24,12 36,12 48,12 60,12" fill="none" stroke="#5E5C57" stroke-width="2"/></svg></td><td class="right mono">4</td><td><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-more"/></svg></td></tr>
+            </tbody>
+          </table>
+          <div style="padding:12px 20px;background:var(--bg);font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:center;letter-spacing:0.06em;">+22 spillere · <a href="#" style="color:var(--primary);font-weight:700;">Vis alle 32 →</a></div>
+        </div>
+
+        <div class="ai-strip">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-sparkles"/></svg>
+          <div class="body">
+            <p><strong>Anders sier:</strong> Markus har 97% på Putting 1,5m — på topp av kategorien. Anbefaler å øke målet til 95% for A1, og legge til 2,5m som ny test for utfordring.</p>
+            <div class="actions">
+              <button class="btn lime sm">Juster mål</button>
+              <button class="btn outline sm">Legg til 2,5m-test</button>
+              <button class="btn outline sm">Senere</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SKJERM 3 — Spiller-oversikt -->
+    <!-- ============================================== -->
+    <section class="screen" id="s3" data-screen-label="03 Spiller-oversikt">
+      <div class="scr-strip"><span>SKJERM 3 / 4 · /portal/tren/tester · SPILLER-OVERSIKT (MARKUS)</span><span class="right">14 TESTER · A1 · HCP +3,5</span></div>
+      <div class="scr-page">
+
+        <div class="scr-hero">
+          <div>
+            <div class="eyebrow">MINE TESTER · 14 TILGJENGELIGE · 12 TATT SISTE 30 DAGER · KATEGORI A1</div>
+            <h1 style="margin-top:8px;">Mine <em>tester</em> — anbefalt og historikk</h1>
+          </div>
+          <div class="actions">
+            <button class="btn lime"><svg fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-plus"/></svg>Ta ny test</button>
+            <button class="btn forest">Anbefalt rekkefølge</button>
+            <button class="btn outline">Filtre</button>
+            <button class="btn outline">Sammenlign med A1</button>
+          </div>
+        </div>
+
+        <div class="rec-strip">
+          <h3><svg fill="none" stroke="currentColor" stroke-width="1.75" style="width:16px;height:16px;color:var(--primary);"><use href="#ic-sparkles"/></svg>Anders anbefaler nå</h3>
+          <p style="font-size:13px;line-height:1.5;margin-bottom:14px;">Du har ikke tatt VO2max på 6 uker — anbefaler i denne uka. Også: chipping landingsone er forbedret med 8% siden mars, gjenta for å bekrefte trenden.</p>
+          <div class="rec-cards">
+            <div class="rec-card">
+              <div class="rc-h"><span class="disc-badge fys">FYS</span><span style="margin-left:auto;" class="st-pill aktiv">Aktiv</span></div>
+              <div class="rc-ttl">VO2max</div>
+              <div class="rc-sub">Sist tatt 8. apr 2026 · for 6 uker siden</div>
+              <div class="rc-actions"><button class="btn lime sm" style="width:100%;justify-content:center;">Ta nå →</button></div>
+            </div>
+            <div class="rec-card">
+              <div class="rc-h"><span class="disc-badge slag">SLAG</span><span style="margin-left:auto;" class="st-pill aktiv">Aktiv</span></div>
+              <div class="rc-ttl">Chipping landingsone</div>
+              <div class="rc-sub">Sist tatt 22. apr · gjenta for å bekrefte trend</div>
+              <div class="rc-actions"><button class="btn lime sm" style="width:100%;justify-content:center;">Ta nå →</button></div>
+            </div>
+            <div class="rec-card" style="border-color:var(--accent);background:linear-gradient(180deg,#FCFEEC 0%,var(--bg) 60%);">
+              <div class="rc-h"><span class="disc-badge turn">TURN</span><span style="margin-left:auto;" class="st-pill aktiv">Aktiv</span></div>
+              <div class="rc-ttl">MTQ stress-respons</div>
+              <div class="rc-sub">Aldri tatt — første gang før Sørlandsåpent</div>
+              <div class="rc-actions"><button class="btn lime sm" style="width:100%;justify-content:center;">Ta nå →</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLAG card grid (Markus focus) -->
+        <div class="disc-section">
+          <div class="ds-h">
+            <span class="disc-badge slag lg">SLAG</span>
+            <div><div class="ds-ttl">SLAG — Slagteknikk</div><div class="ds-sub">3 TESTER · SISTE OPPDATERING 18. MAI 2026</div></div>
+          </div>
+          <div class="sub-grid">
+            <div class="sub-card">
+              <div class="sc-row1"><span class="disc-badge slag">SLAG</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="sc-ttl">Putting 1,5m konsistens</div>
+              <div class="sc-bigval">97% <span style="font-size:14px;color:var(--success);font-weight:700;">+5%</span></div>
+              <div class="sc-sub">Sist 18. mai · vs A1 +5% · trend ↑</div>
+              <svg class="sc-spark" viewBox="0 0 120 40" preserveAspectRatio="none">
+                <polyline points="0,32 20,28 40,24 60,20 80,14 100,10 120,6" fill="none" stroke="#005840" stroke-width="2"/>
+                <circle cx="120" cy="6" r="3" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+              </svg>
+              <div class="sc-actions"><button class="btn outline sm">Ta på nytt</button><button class="btn forest sm">Detaljer →</button></div>
+            </div>
+            <div class="sub-card">
+              <div class="sc-row1"><span class="disc-badge slag">SLAG</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="sc-ttl">Chipping landingsone</div>
+              <div class="sc-bigval">72% <span style="font-size:14px;color:var(--success);font-weight:700;">+2%</span></div>
+              <div class="sc-sub">Sist 22. apr · vs A1 +2% · trend ↑</div>
+              <svg class="sc-spark" viewBox="0 0 120 40" preserveAspectRatio="none">
+                <polyline points="0,30 20,28 40,24 60,22 80,20 100,16 120,14" fill="none" stroke="#005840" stroke-width="2"/>
+                <circle cx="120" cy="14" r="3" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+              </svg>
+              <div class="sc-actions"><button class="btn outline sm">Ta på nytt</button><button class="btn forest sm">Detaljer →</button></div>
+            </div>
+            <div class="sub-card">
+              <div class="sc-row1"><span class="disc-badge slag">SLAG</span><span class="st-pill pause">Ikke tatt</span></div>
+              <div class="sc-ttl">Bunkershot %</div>
+              <div class="sc-bigval" style="color:var(--muted-soft);">—</div>
+              <div class="sc-sub">Aldri tatt · A1-mål: ≥ 65%</div>
+              <svg class="sc-spark" viewBox="0 0 120 40" preserveAspectRatio="none">
+                <line x1="0" y1="20" x2="120" y2="20" stroke="#E5E3DD" stroke-width="2" stroke-dasharray="3 3"/>
+              </svg>
+              <div class="sc-actions"><button class="btn lime sm">Ta nå →</button><button class="btn outline sm">Detaljer</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEK -->
+        <div class="disc-section">
+          <div class="ds-h">
+            <span class="disc-badge tek lg">TEK</span>
+            <div><div class="ds-ttl">TEK — Teknikk</div><div class="ds-sub">3 TESTER · SISTE 17. MAI</div></div>
+          </div>
+          <div class="sub-grid">
+            <div class="sub-card">
+              <div class="sc-row1"><span class="disc-badge tek">TEK</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="sc-ttl">7-jern smash factor</div>
+              <div class="sc-bigval">1,37 <span style="font-size:14px;color:var(--success);font-weight:700;">+1%</span></div>
+              <div class="sc-sub">Sist 17. mai · vs A1 +1% · trend ↑</div>
+              <svg class="sc-spark" viewBox="0 0 120 40" preserveAspectRatio="none">
+                <polyline points="0,28 20,26 40,22 60,20 80,16 100,14 120,12" fill="none" stroke="#005840" stroke-width="2"/>
+                <circle cx="120" cy="12" r="3" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+              </svg>
+              <div class="sc-actions"><button class="btn outline sm">Ta på nytt</button><button class="btn forest sm">Detaljer →</button></div>
+            </div>
+            <div class="sub-card">
+              <div class="sc-row1"><span class="disc-badge tek">TEK</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="sc-ttl">Driver carry</div>
+              <div class="sc-bigval">258 m <span style="font-size:14px;color:var(--success);font-weight:700;">+3%</span></div>
+              <div class="sc-sub">Sist 16. mai · vs A1 +3% · trend →</div>
+              <svg class="sc-spark" viewBox="0 0 120 40" preserveAspectRatio="none">
+                <polyline points="0,16 20,18 40,16 60,14 80,16 100,14 120,12" fill="none" stroke="#005840" stroke-width="2"/>
+                <circle cx="120" cy="12" r="3" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+              </svg>
+              <div class="sc-actions"><button class="btn outline sm">Ta på nytt</button><button class="btn forest sm">Detaljer →</button></div>
+            </div>
+            <div class="sub-card">
+              <div class="sc-row1"><span class="disc-badge tek">TEK</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="sc-ttl">Wedge konsistens 50m</div>
+              <div class="sc-bigval">3,8 m <span style="font-size:14px;color:var(--success);font-weight:700;">−5%</span></div>
+              <div class="sc-sub">Sist 14. mai · vs A1 +0,2m bedre · trend ↑</div>
+              <svg class="sc-spark" viewBox="0 0 120 40" preserveAspectRatio="none">
+                <polyline points="0,10 20,12 40,14 60,16 80,18 100,20 120,22" fill="none" stroke="#005840" stroke-width="2"/>
+                <circle cx="120" cy="22" r="3" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+              </svg>
+              <div class="sc-actions"><button class="btn outline sm">Ta på nytt</button><button class="btn forest sm">Detaljer →</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FYS -->
+        <div class="disc-section">
+          <div class="ds-h">
+            <span class="disc-badge fys lg">FYS</span>
+            <div><div class="ds-ttl">FYS — Fysisk</div><div class="ds-sub">4 TESTER · ANBEFALT FORNYELSE: VO2MAX</div></div>
+          </div>
+          <div class="sub-grid">
+            <div class="sub-card">
+              <div class="sc-row1"><span class="disc-badge fys">FYS</span><span class="st-pill pause">For gammel</span></div>
+              <div class="sc-ttl">VO2max</div>
+              <div class="sc-bigval">54 <span style="font-size:14px;color:var(--danger);font-weight:700;">−1</span></div>
+              <div class="sc-sub">Sist 8. apr · ml/kg/min · vs A1 −1 · trend →</div>
+              <svg class="sc-spark" viewBox="0 0 120 40" preserveAspectRatio="none">
+                <polyline points="0,16 20,18 40,16 60,18 80,18 100,20 120,20" fill="none" stroke="#005840" stroke-width="2"/>
+                <circle cx="120" cy="20" r="3" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+              </svg>
+              <div class="sc-actions"><button class="btn lime sm">Ta nå →</button><button class="btn outline sm">Detaljer</button></div>
+            </div>
+            <div class="sub-card">
+              <div class="sc-row1"><span class="disc-badge fys">FYS</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="sc-ttl">Plank</div>
+              <div class="sc-bigval">3:24 <span style="font-size:14px;color:var(--success);font-weight:700;">+24s</span></div>
+              <div class="sc-sub">Sist 12. mai · vs A1 +24 s · trend ↑</div>
+              <svg class="sc-spark" viewBox="0 0 120 40" preserveAspectRatio="none">
+                <polyline points="0,30 20,26 40,22 60,18 80,14 100,10 120,8" fill="none" stroke="#005840" stroke-width="2"/>
+                <circle cx="120" cy="8" r="3" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+              </svg>
+              <div class="sc-actions"><button class="btn outline sm">Ta på nytt</button><button class="btn forest sm">Detaljer →</button></div>
+            </div>
+            <div class="sub-card">
+              <div class="sc-row1"><span class="disc-badge fys">FYS</span><span class="st-pill aktiv">Aktiv</span></div>
+              <div class="sc-ttl">Balanse-test</div>
+              <div class="sc-bigval">52 s <span style="font-size:14px;color:var(--success);font-weight:700;">+7s</span></div>
+              <div class="sc-sub">Sist 10. mai · vs A1 +7 s · trend ↑</div>
+              <svg class="sc-spark" viewBox="0 0 120 40" preserveAspectRatio="none">
+                <polyline points="0,26 20,22 40,18 60,16 80,14 100,12 120,10" fill="none" stroke="#005840" stroke-width="2"/>
+                <circle cx="120" cy="10" r="3" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+              </svg>
+              <div class="sc-actions"><button class="btn outline sm">Ta på nytt</button><button class="btn forest sm">Detaljer →</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.08em;padding:8px;"><a href="#" style="color:var(--primary);font-weight:700;">Vis 8 til (SPILL + TURN) →</a></div>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SKJERM 4 — Spiller-detalj Putting 1,5m -->
+    <!-- ============================================== -->
+    <section class="screen" id="s4" data-screen-label="04 Spiller-detalj Putting">
+      <div class="scr-strip"><span>SKJERM 4 / 4 · /portal/tren/tester/putt-1.5m · SPILLER-DETALJ</span><span class="right">PUTTING 1,5M · 14 MÅLINGER · MARKUS R.P.</span></div>
+      <div class="scr-page">
+
+        <div class="scr-hero">
+          <div>
+            <div class="eyebrow">PUTTING 1,5M KONSISTENS · SLAG · 14 MÅLINGER · SIST 18. MAI 2026</div>
+            <h1 style="margin-top:8px;">Test-<em>resultat</em> med benchmark og AI-anbefaling</h1>
+          </div>
+          <div class="actions">
+            <button class="btn lime"><svg fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-plus"/></svg>Ta ny måling nå</button>
+            <button class="btn forest">Sett påminnelse</button>
+            <button class="btn outline">Del med coach</button>
+            <button class="btn outline">Eksporter</button>
+          </div>
+        </div>
+
+        <div class="pd-hero">
+          <div class="pd-card lime">
+            <svg class="pd-ring" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(10,31,23,0.10)" stroke-width="8"/>
+              <circle cx="50" cy="50" r="42" fill="none" stroke="#0A1F17" stroke-width="8" stroke-dasharray="263.9" stroke-dashoffset="7.9" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              <text x="50" y="56" text-anchor="middle" font-family="JetBrains Mono" font-size="24" font-weight="700" fill="#0A1F17">97%</text>
+            </svg>
+            <div class="pd-text">
+              <div class="pd-lbl" style="color:rgba(10,31,23,0.65);">Din siste score</div>
+              <div class="pd-v" style="color:var(--fg);">97%</div>
+              <div class="pd-sub" style="color:rgba(10,31,23,0.7);">18. mai 2026 · Performance Studio</div>
+              <div class="pd-bottom">Beste resultat 2026 · trend ↑ siste 3 målinger</div>
+            </div>
+          </div>
+          <div class="pd-card">
+            <svg class="pd-ring" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--bg)" stroke-width="8"/>
+              <circle cx="50" cy="50" r="42" fill="none" stroke="#005840" stroke-width="8" stroke-dasharray="263.9" stroke-dashoffset="23.8" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              <text x="50" y="56" text-anchor="middle" font-family="JetBrains Mono" font-size="24" font-weight="700" fill="#005840">91%</text>
+            </svg>
+            <div class="pd-text">
+              <div class="pd-lbl">A1-snitt</div>
+              <div class="pd-v">91%</div>
+              <div class="pd-sub">Gjennomsnitt A1-spillere</div>
+              <div class="pd-bottom">Du er +6% over snittet</div>
+            </div>
+          </div>
+          <div class="pd-card forest">
+            <svg class="pd-ring" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="8"/>
+              <circle cx="50" cy="50" r="42" fill="none" stroke="#D1F843" stroke-width="8" stroke-dasharray="263.9" stroke-dashoffset="21.1" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              <text x="50" y="56" text-anchor="middle" font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#D1F843">≥ 92%</text>
+            </svg>
+            <div class="pd-text">
+              <div class="pd-lbl">A1-mål</div>
+              <div class="pd-v">≥ 92%</div>
+              <div class="pd-sub">Coach Anders' mål for deg</div>
+              <div class="pd-bottom"><span class="st-pill oppnådd">Oppnådd</span> &nbsp;Siden 12. apr · 5 målinger over mål</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hist-wrap">
+          <div style="display:flex;align-items:baseline;margin-bottom:14px;"><h3 style="font-family:var(--font-display);font-size:16px;font-weight:700;">Historikk — 14 målinger over 8 måneder</h3><span style="margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:var(--muted);">Lime: deg · Forest stiplet: A1-snitt</span></div>
+          <svg class="hist-svg" viewBox="0 0 800 280" preserveAspectRatio="none">
+            <line x1="0" y1="60" x2="800" y2="60" stroke="#D1F843" stroke-width="2" stroke-dasharray="4 3"/>
+            <text x="798" y="56" fill="#0A1F17" font-family="JetBrains Mono" font-size="10" font-weight="700" text-anchor="end">A1-mål 92%</text>
+            <line x1="0" y1="80" x2="800" y2="80" stroke="#005840" stroke-width="1.5" stroke-dasharray="2 3"/>
+            <text x="798" y="76" fill="#005840" font-family="JetBrains Mono" font-size="10" font-weight="700" text-anchor="end">A1-snitt 91%</text>
+            <defs>
+              <linearGradient id="g3" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#D1F843" stop-opacity="0.30"/>
+                <stop offset="100%" stop-color="#D1F843" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- Markus line: 14 points -->
+            <path d="M30 180 L85 170 L140 165 L195 155 L250 130 L305 115 L360 95 L415 78 L470 55 L525 65 L580 50 L635 42 L690 35 L745 25 L745 240 L30 240 Z" fill="url(#g3)"/>
+            <path d="M30 180 L85 170 L140 165 L195 155 L250 130 L305 115 L360 95 L415 78 L470 55 L525 65 L580 50 L635 42 L690 35 L745 25" fill="none" stroke="#D1F843" stroke-width="2.5"/>
+            <g fill="#D1F843" stroke="#005840" stroke-width="1.5">
+              <circle cx="30" cy="180" r="5"/><circle cx="85" cy="170" r="5"/><circle cx="140" cy="165" r="5"/><circle cx="195" cy="155" r="5"/><circle cx="250" cy="130" r="5"/><circle cx="305" cy="115" r="5"/><circle cx="360" cy="95" r="5"/><circle cx="415" cy="78" r="6"/><circle cx="470" cy="55" r="6"/><circle cx="525" cy="65" r="5"/><circle cx="580" cy="50" r="6"/><circle cx="635" cy="42" r="6"/><circle cx="690" cy="35" r="6"/><circle cx="745" cy="25" r="7" fill="#005840" stroke="#D1F843" stroke-width="2"/>
+            </g>
+            <text x="745" y="18" fill="#005840" font-family="JetBrains Mono" font-size="10" font-weight="700" text-anchor="middle">97%</text>
+            <line x1="0" y1="240" x2="800" y2="240" stroke="#5E5C57" stroke-width="1"/>
+            <g font-family="JetBrains Mono" font-size="9" fill="#5E5C57">
+              <text x="30" y="258" text-anchor="middle">okt</text>
+              <text x="195" y="258" text-anchor="middle">des</text>
+              <text x="360" y="258" text-anchor="middle">feb</text>
+              <text x="525" y="258" text-anchor="middle">apr</text>
+              <text x="745" y="258" text-anchor="middle">18. mai</text>
+            </g>
+          </svg>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:14px;">
+          <div class="hist-wrap">
+            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:14px;">Kvartil-plot mot A1-kategori</h3>
+            <svg viewBox="0 0 600 200" style="width:100%;height:180px;">
+              <line x1="40" y1="100" x2="560" y2="100" stroke="#E5E3DD" stroke-width="1"/>
+              <!-- whiskers -->
+              <line x1="120" y1="100" x2="180" y2="100" stroke="#005840" stroke-width="2"/>
+              <line x1="120" y1="92" x2="120" y2="108" stroke="#005840" stroke-width="2"/>
+              <line x1="420" y1="100" x2="500" y2="100" stroke="#005840" stroke-width="2"/>
+              <line x1="500" y1="92" x2="500" y2="108" stroke="#005840" stroke-width="2"/>
+              <!-- box -->
+              <rect x="180" y="76" width="240" height="48" fill="#005840" opacity="0.85"/>
+              <!-- median -->
+              <line x1="300" y1="76" x2="300" y2="124" stroke="#D1F843" stroke-width="3"/>
+              <!-- Markus -->
+              <circle cx="480" cy="100" r="14" fill="#D1F843" stroke="#005840" stroke-width="2.5"/>
+              <text x="480" y="105" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0A1F17">97</text>
+              <text x="480" y="60" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#005840" font-weight="700">DEG · 92. percentil</text>
+              <!-- labels -->
+              <g font-family="JetBrains Mono" font-size="9" fill="#5E5C57">
+                <text x="120" y="155" text-anchor="middle">80%</text>
+                <text x="180" y="155" text-anchor="middle">Q1: 86%</text>
+                <text x="300" y="155" text-anchor="middle">Median: 89%</text>
+                <text x="420" y="155" text-anchor="middle">Q3: 92%</text>
+                <text x="500" y="155" text-anchor="middle">96%</text>
+              </g>
+              <text x="40" y="190" font-family="JetBrains Mono" font-size="10" fill="#0A1F17" font-weight="700">A1-kategori (n=26) — Du er i topp 8%</text>
+            </svg>
+          </div>
+          <div class="hist-wrap">
+            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:14px;">Topp 5 i A1</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+              <thead><tr><th style="text-align:left;padding:8px 6px;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:0.10em;text-transform:uppercase;">Rank</th><th style="text-align:left;padding:8px 6px;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:0.10em;text-transform:uppercase;">Spiller</th><th style="text-align:right;padding:8px 6px;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:0.10em;text-transform:uppercase;">Snitt</th><th style="text-align:right;padding:8px 6px;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:0.10em;text-transform:uppercase;">Beste</th></tr></thead>
+              <tbody>
+                <tr style="background:rgba(209,248,67,0.18);border-left:3px solid var(--accent);"><td style="padding:9px 6px;" class="mono">1</td><td style="padding:9px 6px;" class="mono"><strong>Markus R.P.</strong></td><td style="padding:9px 6px;text-align:right;" class="mono"><strong>94%</strong></td><td style="padding:9px 6px;text-align:right;" class="mono"><strong>97%</strong></td></tr>
+                <tr style="border-bottom:1px solid var(--border-soft);"><td style="padding:9px 6px;" class="mono">2</td><td style="padding:9px 6px;font-size:12px;">Henrik Vorli</td><td style="padding:9px 6px;text-align:right;" class="mono">93%</td><td style="padding:9px 6px;text-align:right;" class="mono">96%</td></tr>
+                <tr style="border-bottom:1px solid var(--border-soft);"><td style="padding:9px 6px;" class="mono">3</td><td style="padding:9px 6px;font-size:12px;">Øyvind Røhjan</td><td style="padding:9px 6px;text-align:right;" class="mono">92%</td><td style="padding:9px 6px;text-align:right;" class="mono">95%</td></tr>
+                <tr style="border-bottom:1px solid var(--border-soft);"><td style="padding:9px 6px;" class="mono">4</td><td style="padding:9px 6px;font-size:12px;">Joachim Tangen</td><td style="padding:9px 6px;text-align:right;" class="mono">91%</td><td style="padding:9px 6px;text-align:right;" class="mono">94%</td></tr>
+                <tr><td style="padding:9px 6px;" class="mono">5</td><td style="padding:9px 6px;font-size:12px;">Aksel Bø</td><td style="padding:9px 6px;text-align:right;" class="mono">90%</td><td style="padding:9px 6px;text-align:right;" class="mono">93%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="ccard">
+          <div class="ch"><h3>Detaljerte målinger</h3><span class="sub">Siste 5 av 14</span></div>
+          <table class="ttable">
+            <thead><tr><th>Dato</th><th>Tid</th><th>Score</th><th>Lokasjon</th><th>Coach</th><th>Notat</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">18. mai 2026</td><td class="mono">10:24</td><td class="mono" style="font-weight:700;color:var(--success);">97% (29/30)</td><td>Performance Studio</td><td>Anders</td><td style="font-style:italic;">Tre putts mistet — alle dro venstre</td></tr>
+              <tr><td class="mono">12. mai 2026</td><td class="mono">14:10</td><td class="mono" style="font-weight:700;">93% (28/30)</td><td>Putting Green GFGK</td><td>Anders</td><td style="font-style:italic;">Greener litt langsommere enn vanlig</td></tr>
+              <tr><td class="mono">28. apr 2026</td><td class="mono">16:00</td><td class="mono" style="font-weight:700;">95% (28/30, 2 retake)</td><td>Performance Studio</td><td>Anders</td><td style="font-style:italic;">Veldig stabilt — fokus på rytme</td></tr>
+              <tr><td class="mono">12. apr 2026</td><td class="mono">11:30</td><td class="mono" style="font-weight:700;">93% (28/30)</td><td>Putting Green GFGK</td><td>Anders</td><td style="font-style:italic;">Første gang over A1-mål</td></tr>
+              <tr><td class="mono">28. mar 2026</td><td class="mono">09:15</td><td class="mono" style="font-weight:700;color:var(--warning);">87% (26/30)</td><td>Performance Studio</td><td>Anders</td><td style="font-style:italic;">Tre putts mistet høyre — pre-shot rutine svak</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ai-strip">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-sparkles"/></svg>
+          <div class="body">
+            <p><strong>Anders sier:</strong> Du er konsistent over A1-målet siden april. Neste utfordring: legg til Putting 2,5m som ny test — A1-mål der er 78%. Vil du jeg setter den opp?</p>
+            <div class="actions">
+              <button class="btn lime sm">Sett opp 2,5m-test</button>
+              <button class="btn forest sm">Vis A1-rangering</button>
+              <button class="btn outline sm">Spør coach om detalj</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- footer -->
+  <div class="scr-footer ft-s1">
+    <div class="left"><strong>14 tester aktive</strong> · 87 målinger siste 30 dager · 4 spillere over A1-mål</div>
+    <div class="actions"><button class="btn outline sm"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-sparkles"/></svg>Spør Coach Anders</button><button class="btn lime sm"><svg fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-plus"/></svg>Ny test</button></div>
+  </div>
+  <div class="scr-footer ft-s2" style="display:none;">
+    <div class="left">Putting 1,5m · <strong>32 spillere</strong> · stall-snitt 87% · A1-snitt 91%</div>
+    <div class="actions"><button class="btn outline sm"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-sparkles"/></svg>Spør Coach Anders</button><button class="btn lime sm"><svg fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-plus"/></svg>Måling</button></div>
+  </div>
+  <div class="scr-footer ft-s3" style="display:none;">
+    <div class="left"><strong>12 av 14 tester</strong> tatt siste 30 dager · 3 anbefales nå</div>
+    <div class="actions"><button class="btn outline sm"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-sparkles"/></svg>Spør Coach Anders</button><button class="btn lime sm">Ta nå</button></div>
+  </div>
+  <div class="scr-footer ft-s4" style="display:none;">
+    <div class="left">Putting 1,5m · <strong>14 målinger</strong> · 5 over A1-mål · trend ↑</div>
+    <div class="actions"><button class="btn outline sm"><svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#ic-sparkles"/></svg>Spør Coach Anders</button><button class="btn lime sm"><svg fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-plus"/></svg>Ny måling</button></div>
+  </div>
+
+</div>
+
+<script>
+  const labels = {
+    s1: 'Tester · oversikt',
+    s2: 'Tester · Putting 1,5m',
+    s3: 'Mine tester',
+    s4: 'Putting 1,5m · detalj'
+  };
+  document.querySelectorAll('.scr-tab').forEach(b => b.addEventListener('click', () => {
+    const id = b.dataset.go;
+    document.body.dataset.screen = id;
+    document.querySelectorAll('.scr-tab').forEach(x => x.classList.toggle('active', x === b));
+    document.getElementById('bc').innerHTML = 'CoachHQ &nbsp;/&nbsp; Innsikt &nbsp;/&nbsp; <span class="current">' + labels[id] + '</span>';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }));
+</script>
+
+</body>
+</html>

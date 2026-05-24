@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Live · Driver Basic — Fullfør · AK Golf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_tester.css">
+<style>
+  /* preview PEI banner */
+  .pei-preview {
+    background: linear-gradient(160deg, var(--forest) 0%, var(--forest-dark) 100%);
+    color: #fff; padding: 22px 24px;
+    border-radius: 14px;
+    display: flex; align-items: center; gap: 22px;
+    margin-bottom: 18px;
+  }
+  .pei-preview .big {
+    font-family: var(--font-mono); font-size: 48px; font-weight: 700;
+    color: var(--lime); line-height: 1; letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .pei-preview .lbl-mini {
+    font-family: var(--font-mono); font-size: 10px;
+    color: rgba(209,248,67,0.65); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .pei-preview .meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: rgba(255,255,255,0.75); letter-spacing: 0.04em; margin-top: 4px;
+  }
+  .pei-preview .delta-pill {
+    margin-left: auto;
+    background: var(--lime); color: var(--forest);
+    padding: 6px 12px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+  }
+
+  /* star row */
+  .star-row { display: flex; gap: 4px; }
+  .star {
+    width: 32px; height: 32px;
+    border: 0; background: transparent; cursor: pointer;
+    color: var(--border);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .star svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  .star.on { color: var(--lime); }
+  .star.on svg { fill: var(--lime); stroke: var(--forest); }
+
+  /* feel-segmented */
+  .feel-seg {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 6px; background: var(--cream);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 4px;
+  }
+  .feel-seg button {
+    border: 0; background: transparent;
+    padding: 10px 4px; border-radius: 8px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted); cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+  .feel-seg button.active {
+    background: var(--forest); color: var(--lime);
+  }
+
+  /* avbryt modal — render visible on right side as preview */
+  .cancel-preview {
+    position: fixed;
+    right: 32px; top: 110px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    width: 320px;
+    box-shadow: 0 24px 60px rgba(10,31,23,0.18);
+    z-index: 80;
+  }
+  .cancel-preview .badge {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); display: inline-flex; align-items: center; gap: 6px;
+  }
+  .cancel-preview .badge .pulse { width: 6px; height: 6px; background: var(--danger); border-radius: 50%; }
+  .cancel-preview h3 {
+    font-family: var(--font-display); font-size: 16px; font-weight: 700;
+    letter-spacing: -0.01em; margin-top: 10px;
+  }
+  .cancel-preview p {
+    font-size: 12.5px; color: var(--muted);
+    line-height: 1.5; margin-top: 8px;
+  }
+  .cancel-preview .row {
+    display: flex; gap: 6px; margin-top: 14px;
+  }
+  .cancel-preview .row .btn { flex: 1; padding: 10px 12px; font-size: 12px; }
+</style>
+</head>
+<body data-screen-label="03 Live · Siste steg">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chevron-dn" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9 12 2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></symbol>
+</defs>
+</svg>
+
+<div class="live-shell">
+
+  <header class="live-head">
+    <span class="pyr pyr-slag">SLAG</span>
+    <div class="center">
+      <div class="ttl">Driver Basic</div>
+      <div class="eye">SLAGTEKNIKK · LIVE-TEST</div>
+    </div>
+    <button class="x" aria-label="Avbryt"><svg fill="none" stroke="currentColor"><use href="#i-x"/></svg></button>
+  </header>
+
+  <div class="live-progress">
+    <span class="lbl">Steg <strong>4 av 4</strong><span class="sep">·</span> Egenvurdering</span>
+    <div class="live-bar"><div style="width:96%;"></div></div>
+    <span class="time"><svg fill="none" stroke="currentColor"><use href="#i-clock"/></svg>~1 min igjen</span>
+  </div>
+
+  <div class="live-body">
+
+    <!-- collapsed done steps -->
+    <div class="step-card">
+      <div class="sh">
+        <div class="num done"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg></div>
+        <div class="meta">
+          <div class="ttl">Driver-oppvarming</div>
+          <div class="sub">5 AV 5 SLAG · FULLFØRT 14:08</div>
+        </div>
+        <button class="toggle"><svg fill="none" stroke="currentColor"><use href="#i-chevron-dn"/></svg></button>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="sh">
+        <div class="num done"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg></div>
+        <div class="meta">
+          <div class="ttl">5 driver-slag på rad</div>
+          <div class="sub">5 AV 5 SLAG · SNITT CARRY 246M · SIDEAVVIK +1M</div>
+        </div>
+        <button class="toggle"><svg fill="none" stroke="currentColor"><use href="#i-chevron-dn"/></svg></button>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="sh">
+        <div class="num done"><svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg></div>
+        <div class="meta">
+          <div class="ttl">Spread &amp; PEI-beregning</div>
+          <div class="sub">AUTO · PEI 0,054 BEREGNET</div>
+        </div>
+        <button class="toggle"><svg fill="none" stroke="currentColor"><use href="#i-chevron-dn"/></svg></button>
+      </div>
+    </div>
+
+    <!-- step 4 active -->
+    <div class="step-card open">
+      <div class="sh">
+        <div class="num">4</div>
+        <div class="meta">
+          <div class="ttl">Egenvurdering &amp; lagring</div>
+          <div class="sub">VALGFRITT · NOTAT &amp; FØLELSE</div>
+        </div>
+        <button class="toggle"><svg fill="none" stroke="currentColor"><use href="#i-chevron-up"/></svg></button>
+      </div>
+      <div class="sbody">
+
+        <!-- PEI preview -->
+        <div class="pei-preview">
+          <div>
+            <div class="lbl-mini">FORELØPIG PEI</div>
+            <div class="big">0,054</div>
+            <div class="meta">5 slag · snitt carry 246m · sideavvik +1m · spread 11m</div>
+          </div>
+          <div class="delta-pill">↑ +0,008 mot 12. mai</div>
+        </div>
+
+        <!-- feel -->
+        <div class="field">
+          <div class="field-lbl">Hvordan føltes økten?</div>
+          <div class="feel-seg" role="radiogroup">
+            <button>Svak</button>
+            <button>OK</button>
+            <button>God</button>
+            <button class="active">Veldig god</button>
+            <button>Topp</button>
+          </div>
+        </div>
+
+        <!-- self rating stars -->
+        <div class="field">
+          <div class="field-lbl">Stjerner — egenvurdering av prestasjon</div>
+          <div style="display:flex;gap:14px;align-items:center;">
+            <div class="star-row">
+              <button class="star on"><svg><use href="#i-star"/></svg></button>
+              <button class="star on"><svg><use href="#i-star"/></svg></button>
+              <button class="star on"><svg><use href="#i-star"/></svg></button>
+              <button class="star on"><svg><use href="#i-star"/></svg></button>
+              <button class="star"><svg><use href="#i-star"/></svg></button>
+            </div>
+            <span class="mono" style="color:var(--muted);font-size:12px;">4 av 5</span>
+          </div>
+        </div>
+
+        <!-- wind/conditions select -->
+        <div class="field" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div>
+            <div class="field-lbl">Vind</div>
+            <select class="select">
+              <option>Stille · &lt; 2 m/s</option>
+              <option selected>Lett bris · 2–5 m/s</option>
+              <option>Moderat · 5–8 m/s</option>
+              <option>Frisk · &gt; 8 m/s</option>
+            </select>
+          </div>
+          <div>
+            <div class="field-lbl">Sted</div>
+            <select class="select">
+              <option selected>TrackMan studio · innendørs</option>
+              <option>Range Miklagard</option>
+              <option>Range GFGK</option>
+              <option>Annet</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- notat -->
+        <div class="field">
+          <div class="field-lbl">Notat til deg selv <span style="color:var(--subtle);font-weight:500;letter-spacing:normal;text-transform:none;">(valgfritt)</span></div>
+          <textarea class="textarea" placeholder="Hva fungerte? Hva vil du jobbe med neste gang?">Veldig god rytme på de 3 første slagene. Slag 4 og 5 ble litt forhastet — jobbe med pre-shot rutinen og tempo.</textarea>
+        </div>
+
+        <div class="bench">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75"><use href="#i-zap"/></svg>
+          <div class="txt">Resultatet sendes <strong>automatisk til coach Anders</strong> når du trykker Fullfør. Du vil se det i historikken med en gang.</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="live-foot">
+    <span class="left">
+      <svg fill="none" stroke="currentColor"><use href="#i-clock"/></svg>
+      <strong style="color:var(--ink);font-weight:700;font-family:var(--font-mono);">11:42</strong> · 4 av 4 steg
+    </span>
+    <div class="cta">
+      <button class="btn btn-outline">Lagre &amp; pause</button>
+      <button class="btn btn-lime" style="font-size:14px;padding:14px 22px;">
+        <svg fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-check"/></svg>
+        Fullfør test
+      </button>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Avbryt-bekreftelse popover (preview) -->
+<aside class="cancel-preview" aria-label="Avbryt-bekreftelse">
+  <div class="badge"><span class="pulse"></span>AVBRYT-BEKREFTELSE</div>
+  <h3>Avbryt test?</h3>
+  <p>Data du har registrert (4 av 5 slag) beholdes som <strong style="color:var(--ink);font-weight:700;">UTKAST</strong> i 24 timer. Du kan fortsette der du slapp ved å åpne testen igjen.</p>
+  <div class="row">
+    <button class="btn btn-outline">Fortsett</button>
+    <button class="btn btn-danger">Avbryt likevel</button>
+  </div>
+</aside>
+
+</body>
+</html>

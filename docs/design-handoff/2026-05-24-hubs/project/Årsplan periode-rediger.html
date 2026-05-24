@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Rediger periode — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding-bottom: 96px; }
+
+  .topnav {
+    display: flex; align-items: center;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #fff; gap: 16px;
+  }
+  .topnav .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    text-transform: uppercase; font-weight: 600; text-decoration: none;
+  }
+  .topnav .back-link:hover { color: var(--fg); }
+  .topnav .back-link svg { width: 14px; height: 14px; }
+  .topnav .name {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 700; color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+
+  .page {
+    max-width: 840px; margin: 0 auto;
+    padding: 40px 24px 32px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+
+  /* hero */
+  .hero {
+    display: grid; grid-template-columns: 1fr auto; gap: 18px;
+    align-items: end;
+  }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700;
+  }
+  .h1 {
+    font-family: var(--font-display); font-size: 36px;
+    font-weight: 600; letter-spacing: -0.015em; line-height: 1.05;
+    margin-top: 6px;
+  }
+  .h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .hero .pid {
+    align-self: flex-end;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 6px 10px; border-radius: 999px;
+  }
+  .hero .pid strong { color: var(--fg); font-weight: 700; }
+
+  /* mini context: gantt-strip showing this period highlighted */
+  .gantt {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .gantt .head {
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .gantt .head .ttl {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .gantt .head .y {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-soft); letter-spacing: 0.06em;
+  }
+  .gantt-track {
+    position: relative;
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 2px;
+    height: 32px;
+    background: var(--bg); border-radius: 8px;
+    padding: 4px;
+  }
+  .gm {
+    border-radius: 4px; opacity: 0.45;
+    position: relative;
+  }
+  .gm.p1 { background: #C8D5C8; grid-column: 1 / 4; }     /* Grunntrening jan-mar */
+  .gm.p2 { background: #6FA686; grid-column: 3 / 5; }     /* Oppbygging mar-apr */
+  .gm.p3 { background: #005840; grid-column: 4 / 7; }     /* Spesialisering apr-jun */
+  .gm.p4 { background: #D1F843; grid-column: 6 / 9; opacity: 1;
+            box-shadow: 0 0 0 2px var(--fg) inset; }       /* AKTIV: Konkurranse */
+  .gm.p5 { background: #A8B89B; grid-column: 9 / 11; }
+  .gm.p6 { background: #E5E3DD; grid-column: 11 / 13; }
+  .month-row {
+    display: grid; grid-template-columns: repeat(12, 1fr);
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .month-row span { text-align: center; }
+  .month-row span.in { color: var(--fg); font-weight: 700; }
+
+  /* section */
+  .sec {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 24px 28px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .sec-head {
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .sec-num {
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 700; color: var(--muted-soft); letter-spacing: 0.10em;
+    font-variant-numeric: tabular-nums;
+  }
+  .sec-title {
+    font-family: var(--font-display); font-size: 17px;
+    font-weight: 600; letter-spacing: -0.005em;
+  }
+
+  /* fields */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-label {
+    font-family: var(--font-mono); font-size: 10.5px;
+    font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .field-label .req { color: var(--danger); }
+  .field-input, textarea.field-input, select.field-input {
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--fg); background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 11px 14px; line-height: 1.4;
+    outline: none; width: 100%;
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  .field-input:focus, textarea.field-input:focus, select.field-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0,88,64,0.10);
+  }
+  .field-input.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  textarea.field-input { min-height: 80px; resize: vertical; }
+  select.field-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235E5C57' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* color picker */
+  .color-row { display: flex; gap: 10px; align-items: center; }
+  .sw {
+    width: 36px; height: 36px; border-radius: 10px;
+    cursor: pointer; position: relative;
+    border: 2px solid transparent;
+  }
+  .sw.active { border-color: var(--fg); box-shadow: 0 0 0 2px #fff inset; }
+  .sw.lime { background: #D1F843; }
+  .sw.forest { background: #005840; }
+  .sw.cream { background: #E8DFC8; }
+  .sw.muted { background: #908D86; }
+  .color-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+    margin-left: 8px;
+  }
+  .color-meta strong { color: var(--fg); font-weight: 700; }
+
+  /* focus area chips (multiselect) */
+  .focus-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fchip {
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--card); border: 1.5px solid var(--border);
+    color: var(--muted);
+    font-family: var(--font-body); font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    line-height: 1;
+  }
+  .fchip:hover { color: var(--fg); border-color: var(--muted-soft); }
+  .fchip.on {
+    background: var(--primary); color: var(--accent);
+    border-color: var(--primary);
+  }
+  .fchip.on::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* goal tags */
+  .goal-list { display: flex; flex-direction: column; gap: 8px; }
+  .goal-tag {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px;
+    background: var(--bg); border: 1px solid var(--border);
+  }
+  .goal-tag .num {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.08em; font-weight: 700;
+    width: 16px; text-align: center;
+  }
+  .goal-tag .txt {
+    flex: 1;
+    font-family: var(--font-body); font-size: 13.5px;
+    color: var(--fg);
+  }
+  .goal-tag button {
+    background: transparent; border: 0;
+    width: 22px; height: 22px; border-radius: 50%;
+    color: var(--muted); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .goal-tag button:hover { background: var(--border); color: var(--danger); }
+  .goal-tag button svg { width: 11px; height: 11px; }
+  .add-goal {
+    display: flex; gap: 8px;
+  }
+  .add-goal input {
+    flex: 1;
+    font-family: var(--font-body); font-size: 13.5px;
+    background: var(--card); border: 1.5px dashed var(--border);
+    border-radius: 10px; padding: 10px 12px;
+    outline: none;
+  }
+  .add-goal input:focus { border-color: var(--primary); border-style: solid; }
+  .add-goal button {
+    background: var(--fg); color: var(--accent);
+    border: 0; padding: 0 16px;
+    border-radius: 10px; cursor: pointer;
+    font-family: var(--font-body); font-size: 12px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .add-goal button svg { width: 13px; height: 13px; }
+
+  /* sliders */
+  .slider-row {
+    display: grid; grid-template-columns: 1fr; gap: 10px;
+  }
+  .slider-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .slider-meta .lbl {
+    font-family: var(--font-mono); font-size: 10.5px;
+    font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .slider-meta .val {
+    font-family: var(--font-mono); font-size: 26px;
+    font-weight: 700; color: var(--fg); letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .slider-meta .val small {
+    font-size: 12px; color: var(--muted); font-weight: 500;
+    margin-left: 4px;
+  }
+  .slider-track {
+    position: relative; height: 28px;
+    background: var(--bg); border-radius: 999px;
+    overflow: hidden;
+  }
+  .slider-fill {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 999px;
+    transition: width 160ms;
+  }
+  .slider-thumb {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #fff; border: 3px solid var(--primary);
+    box-shadow: 0 2px 6px rgba(0,88,64,0.25);
+    cursor: grab;
+    transition: left 160ms;
+  }
+  .slider-ticks {
+    display: flex; justify-content: space-between;
+    margin-top: 4px; padding: 0 2px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-soft);
+  }
+  .slider-ticks span { width: 1px; }
+
+  /* conflict warning */
+  .conflict {
+    background: rgba(184,133,42,0.10);
+    border: 1px solid rgba(184,133,42,0.30);
+    border-left: 3px solid var(--warning);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .conflict svg { width: 16px; height: 16px; color: var(--warning); flex-shrink: 0; margin-top: 2px; }
+  .conflict .body {
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--fg); line-height: 1.45;
+  }
+  .conflict .body strong { font-family: var(--font-display); font-weight: 600; color: var(--warning); }
+
+  /* tournaments multi-select */
+  .turn-list { display: flex; flex-direction: column; gap: 6px; }
+  .turn-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--card);
+    cursor: pointer;
+  }
+  .turn-row.on {
+    border-color: var(--primary); background: rgba(0,88,64,0.04);
+  }
+  .turn-row .box {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid var(--border); flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .turn-row.on .box {
+    background: var(--primary); border-color: var(--primary); color: var(--accent);
+  }
+  .turn-row .box svg { width: 10px; height: 10px; opacity: 0; }
+  .turn-row.on .box svg { opacity: 1; }
+  .turn-row .nm {
+    font-family: var(--font-display); font-size: 13.5px;
+    font-weight: 600;
+  }
+  .turn-row .dates {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .turn-row .turn-pill {
+    font-family: var(--font-mono); font-size: 9.5px;
+    background: rgba(209,248,67,0.30); color: var(--fg);
+    padding: 2px 7px; border-radius: 999px;
+    letter-spacing: 0.08em; font-weight: 700;
+  }
+
+  /* sticky footer */
+  .sticky-foot {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex; align-items: center; gap: 12px;
+    z-index: 20;
+  }
+  .sf-inner {
+    max-width: 840px; width: 100%; margin: 0 auto;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .btn-destructive {
+    background: transparent; color: var(--danger);
+    padding: 11px 16px; border-radius: 999px;
+    font-size: 13px; font-weight: 600; border: 0;
+    font-family: var(--font-body); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-destructive:hover { background: rgba(163,45,45,0.06); }
+  .btn-destructive svg { width: 13px; height: 13px; }
+  .sf-right { margin-left: auto; display: flex; gap: 10px; }
+  .btn-ghost-m {
+    background: transparent; color: var(--muted);
+    padding: 11px 18px; border-radius: 999px;
+    font-size: 13px; font-weight: 600; border: 0;
+    font-family: var(--font-body); cursor: pointer;
+  }
+  .btn-ghost-m:hover { background: var(--bg); color: var(--fg); }
+  .btn-primary-m {
+    background: var(--primary); color: var(--accent);
+    padding: 11px 22px; border-radius: 999px;
+    font-size: 13.5px; font-weight: 600; border: 0;
+    font-family: var(--font-body); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary-m:hover { background: var(--primary-dark); }
+  .btn-primary-m svg { width: 14px; height: 14px; }
+
+  @media (max-width: 640px) {
+    .row-2 { grid-template-columns: 1fr; }
+    .hero { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-screen-label="Rediger periode — Konkurranse-blokk juni">
+
+<nav class="topnav">
+  <a href="Workbench v2.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    Tilbake til årsplan
+  </a>
+  <span class="name">AK GOLF · PLAYERHQ</span>
+  <span class="crumbs">Tren / Årsplan / <span class="current">Rediger periode</span></span>
+</nav>
+
+<main class="page">
+
+  <header class="hero">
+    <div>
+      <span class="eyebrow">PLAYERHQ · TREN · ÅRSPLAN</span>
+      <h1 class="h1">Rediger <em>periode</em></h1>
+    </div>
+    <span class="pid">PERIODE-ID <strong>p_2026_konk1</strong></span>
+  </header>
+
+  <!-- mini gantt context -->
+  <div class="gantt">
+    <div class="head">
+      <span class="ttl">Plassering i årsplan 2026</span>
+      <span class="y">12 mnd · uke 22 – 26 (aktiv)</span>
+    </div>
+    <div class="gantt-track">
+      <div class="gm p1" title="Grunntrening"></div>
+      <div class="gm p2" title="Oppbygging"></div>
+      <div class="gm p3" title="Spesialisering"></div>
+      <div class="gm p4" title="Konkurranse-blokk juni"></div>
+      <div class="gm p5" title="Overgang"></div>
+      <div class="gm p6" title="Hvile"></div>
+    </div>
+    <div class="month-row">
+      <span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAI</span>
+      <span class="in">JUN</span><span>JUL</span><span>AUG</span><span>SEP</span><span>OKT</span><span>NOV</span><span>DES</span>
+    </div>
+  </div>
+
+  <!-- 01 META -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <span class="sec-title">Periode</span>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Navn på periode <span class="req">*</span></label>
+      <input class="field-input" type="text" value="Konkurranse-blokk juni">
+    </div>
+
+    <div class="row-2">
+      <div class="field">
+        <label class="field-label">Type</label>
+        <select class="field-input">
+          <option>Forberedelse</option>
+          <option selected>Konkurranse</option>
+          <option>Restitusjon</option>
+          <option>Off-season</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Farge</label>
+        <div class="color-row">
+          <div class="sw lime"></div>
+          <div class="sw forest active"></div>
+          <div class="sw cream"></div>
+          <div class="sw muted"></div>
+          <span class="color-meta">Valgt: <strong>Forest dyp</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row-2">
+      <div class="field">
+        <label class="field-label">Startdato <span class="req">*</span></label>
+        <input class="field-input mono" type="text" value="01.06.2026">
+      </div>
+      <div class="field">
+        <label class="field-label">Sluttdato <span class="req">*</span></label>
+        <input class="field-input mono" type="text" value="30.06.2026">
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 FOKUS -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <span class="sec-title">Fokus</span>
+    </div>
+
+    <div class="field">
+      <label class="field-label">SG-områder <small style="text-transform:none;letter-spacing:0;color:var(--muted-soft);margin-left:6px">slag-typer · multivalg</small></label>
+      <div class="focus-chips">
+        <button class="fchip on">Tee</button>
+        <button class="fchip">Approach</button>
+        <button class="fchip">Rundt green</button>
+        <button class="fchip on">Putting</button>
+        <button class="fchip">Total</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Pyramide-fokus <small style="text-transform:none;letter-spacing:0;color:var(--muted-soft);margin-left:6px">trenings-dimensjon · multivalg</small></label>
+      <div class="focus-chips">
+        <button class="fchip">FYS</button>
+        <button class="fchip on">TEK</button>
+        <button class="fchip on">SLAG</button>
+        <button class="fchip">SPILL</button>
+        <button class="fchip">TURN</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Mål for perioden</label>
+      <div class="goal-list">
+        <div class="goal-tag">
+          <span class="num">1</span>
+          <span class="txt">Topp 10 NM Junior</span>
+          <button aria-label="Fjern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="goal-tag">
+          <span class="num">2</span>
+          <span class="txt">Sub-72 snitt i 4 runder</span>
+          <button aria-label="Fjern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+      </div>
+      <div class="add-goal" style="margin-top:8px">
+        <input type="text" placeholder="Legg til mål for perioden …">
+        <button>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Legg til
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 INTENSITET -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <span class="sec-title">Intensitet</span>
+    </div>
+
+    <div class="row-2">
+      <div class="slider-row" data-slider="vol" data-value="6">
+        <div class="slider-meta">
+          <span class="lbl">VOLUM · ØKTER/UKE</span>
+          <span class="val">6<small>/ 10</small></span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:60%"></div>
+          <div class="slider-thumb" style="left:60%"></div>
+        </div>
+        <div class="slider-ticks">
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+        </div>
+      </div>
+
+      <div class="slider-row" data-slider="load" data-value="7">
+        <div class="slider-meta">
+          <span class="lbl">BELASTNING · FYS</span>
+          <span class="val">7<small>/ 10</small></span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:70%"></div>
+          <div class="slider-thumb" style="left:70%"></div>
+        </div>
+        <div class="slider-ticks">
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="conflict">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div class="body">
+        <strong>Overlapper «Spesialisering»</strong> som slutter 03.06.2026. Vurder å justere én av periodene før lagring.
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 VEDLEGG -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <span class="sec-title">Vedlegg &amp; notat</span>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Tilknyttede turneringer</label>
+      <div class="turn-list">
+        <button class="turn-row on">
+          <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="nm">NM Junior 2026</span>
+          <span class="turn-pill">A-EVENT</span>
+          <span class="dates">18.06 – 21.06</span>
+        </button>
+        <button class="turn-row on">
+          <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="nm">GFGK Open</span>
+          <span class="dates">10.06 – 12.06</span>
+        </button>
+        <button class="turn-row">
+          <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="nm">Sørlandsåpent Junior</span>
+          <span class="dates">26.06 – 28.06</span>
+        </button>
+        <button class="turn-row">
+          <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="nm">Larvik Trofé</span>
+          <span class="dates">05.06</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Coach-notat</label>
+      <textarea class="field-input">Reduser TEK-fokus, hold form. Mer SPILL — særlig før GFGK Open og NM Junior. Bygg inn 2 reduserte uker hvis Markus melder høyere VAS enn 5.</textarea>
+    </div>
+  </section>
+
+</main>
+
+<footer class="sticky-foot">
+  <div class="sf-inner">
+    <button class="btn-destructive">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+      Slett periode
+    </button>
+    <div class="sf-right">
+      <button class="btn-ghost-m">Avbryt</button>
+      <button class="btn-primary-m">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Lagre endringer
+      </button>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // color swatches
+  document.querySelectorAll('.sw').forEach(s => s.addEventListener('click', () => {
+    document.querySelectorAll('.sw').forEach(o => o.classList.remove('active'));
+    s.classList.add('active');
+    const name = s.classList.contains('lime') ? 'Lime'
+      : s.classList.contains('forest') ? 'Forest dyp'
+      : s.classList.contains('cream') ? 'Cream varm' : 'Muted';
+    document.querySelector('.color-meta strong').textContent = name;
+  }));
+
+  // chips
+  document.querySelectorAll('.fchip').forEach(c => c.addEventListener('click', () => c.classList.toggle('on')));
+
+  // tournaments
+  document.querySelectorAll('.turn-row').forEach(c => c.addEventListener('click', () => c.classList.toggle('on')));
+
+  // sliders (drag)
+  document.querySelectorAll('.slider-row').forEach(row => {
+    const track = row.querySelector('.slider-track');
+    const fill = row.querySelector('.slider-fill');
+    const thumb = row.querySelector('.slider-thumb');
+    const val = row.querySelector('.val');
+    let dragging = false;
+    function setFromX(x) {
+      const r = track.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (x - r.left) / r.width));
+      const n = Math.round(pct * 9) + 1; // 1..10
+      const p = (n - 1) / 9 * 100;
+      fill.style.width = p + '%';
+      thumb.style.left = p + '%';
+      val.firstChild.nodeValue = n;
+    }
+    track.addEventListener('mousedown', e => { dragging = true; setFromX(e.clientX); });
+    window.addEventListener('mousemove', e => { if (dragging) setFromX(e.clientX); });
+    window.addEventListener('mouseup', () => dragging = false);
+    thumb.addEventListener('touchstart', e => { dragging = true; e.preventDefault(); });
+    window.addEventListener('touchmove', e => { if (dragging) setFromX(e.touches[0].clientX); }, { passive: false });
+    window.addEventListener('touchend', () => dragging = false);
+  });
+</script>
+
+</body>
+</html>

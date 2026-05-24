@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Sørlandsåpent — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="tournament.css">
+</head>
+<body data-screen-label="Tournament — Sørlandsåpent">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="ic-trophy" viewBox="0 0 24 24"><path d="M6 9H4a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h3"/><path d="M18 9h2a2 2 0 0 0 2-2V6a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+    <symbol id="ic-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="ic-up" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+    <symbol id="ic-map-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="ic-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.9 5.7L19.6 10.6 13.9 12.5 12 18.2 10.1 12.5 4.4 10.6 10.1 8.7Z"/></symbol>
+    <symbol id="ic-chev-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="assets/logo-white-on-green.svg" alt="AK Golf" class="brand-logo" />
+      <div class="name">AK GOLF</div>
+      <div class="meta">PLAYERHQ · PRO</div>
+    </div>
+    <div class="sidebar-profile">
+      <div class="avatar">MR</div>
+      <div>
+        <div class="nm">Markus R.P.</div>
+        <div class="hcp">HCP +3,5 · A1</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Hjem</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg>Varsler<span class="badge-count">3</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Workbench</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Min workbench</button>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Turneringer</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Mål</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Statistikk</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user"/></svg>Coach</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div class="search">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+        <input placeholder="Søk drill, plan eller mål…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="breadcrumb">
+        Workbench · <a href="Workbench v2.html" style="color:inherit;text-decoration:none;">Plan</a> &nbsp;/&nbsp; Årsplan &nbsp;/&nbsp;
+        <span class="current">Sørlandsåpent</span>
+      </div>
+    </header>
+
+    <div class="page">
+
+      <!-- 1. HERO -->
+      <section class="tour-hero" data-screen-label="01 Hero">
+        <div class="tour-hero-main">
+          <span class="label-mono">Turnering · A1-nivå · 10—12 juni 2026</span>
+          <h1>Sørlandsåpent <em>2026</em></h1>
+          <div class="sub">Mandal Golfklubb · 54 hull stroke play · 3 dager</div>
+          <div class="tour-hero-actions">
+            <button class="btn btn-primary" data-open-modal="forbered-meg">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sparkles"/></svg>
+              Forbered meg
+            </button>
+            <button class="btn btn-forest-on-dark" data-open-modal="logg-resultat">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-trophy"/></svg>
+              Logg resultat
+            </button>
+            <button class="btn btn-ghost-on-dark" data-open-modal="avregistrer">Avregistrer</button>
+          </div>
+        </div>
+
+        <div class="countdown-card">
+          <div>
+            <div class="label-mono">Starter om</div>
+            <div class="countdown-big">21<small>dager</small></div>
+            <div class="mono" style="color:var(--muted);font-size:11px;margin-top:6px;letter-spacing:0.06em;">START ONS 10. JUNI · 08:30 · TEE 1</div>
+          </div>
+
+          <div>
+            <div class="label-mono" style="margin-bottom:10px;">Forberedelses-status</div>
+            <div class="prep-bars">
+              <div class="prep-bar-row">
+                <span class="label">Approach-fokus</span>
+                <div class="bar"><div class="fill" style="width:65%;background:var(--slag);"></div></div>
+                <span class="val" style="color:var(--success);">65%</span>
+              </div>
+              <div class="prep-bar-row">
+                <span class="label">Bane-kjennskap</span>
+                <div class="bar"><div class="fill" style="width:80%;background:var(--tek);"></div></div>
+                <span class="val" style="color:var(--success);">80%</span>
+              </div>
+              <div class="prep-bar-row">
+                <span class="label">Mental prep</span>
+                <div class="bar"><div class="fill" style="width:30%;background:#C8B72A;"></div></div>
+                <span class="val" style="color:var(--warning);">30%</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="#" class="goal-link" style="text-decoration:none;color:inherit;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary);"><use href="#ic-target"/></svg>
+            <div class="body">
+              <div class="ttl">Hovedmål: Top 10</div>
+              <div class="meta">PRIO 1 · RESULTATMÅL · 38% sannsynlig</div>
+            </div>
+            <span class="pill pill-turn">PRIO 1</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- 3. BANE-INFO -->
+      <section data-screen-label="02 Bane">
+        <div class="section-h" style="margin-bottom:16px;">
+          <div>
+            <h2>Mandal Golfklubb</h2>
+            <div class="sub">PARK-LINKS · ETABLERT 1976 · GFGK-RIVAL</div>
+          </div>
+          <button class="btn btn-outline btn-sm" data-open-modal="bane-kart">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-map-pin"/></svg>
+            Vis bane-kart →
+          </button>
+        </div>
+
+        <div class="course-grid">
+          <!-- Bane-bilde + stats -->
+          <div class="card">
+            <div class="course-image">
+              <span class="pin"></span>
+              <span class="map-label">Mandal GK · 18 hull</span>
+            </div>
+            <div class="course-stats">
+              <div class="cstat"><div class="lbl">Lengde</div><div class="val">6 240 m</div></div>
+              <div class="cstat"><div class="lbl">Par</div><div class="val">72</div></div>
+              <div class="cstat"><div class="lbl">CR</div><div class="val">73,5</div></div>
+              <div class="cstat"><div class="lbl">Slope</div><div class="val">132</div></div>
+            </div>
+            <div style="font-family:var(--font-serif);font-style:italic;font-size:13.5px;color:var(--fg);margin-top:14px;line-height:1.5;padding-top:14px;border-top:1px solid var(--border-soft);">
+              <em class="italic-accent">Smale fairways</em>, forhøyede greener — straffer dårlige approach-skudd.
+            </div>
+          </div>
+
+          <!-- Hole-table -->
+          <div class="card">
+            <div class="card-head" style="margin-bottom:10px;">
+              <div>
+                <div class="title">Hull-for-hull</div>
+                <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">RUNDE 1 · BACKTEE</div>
+              </div>
+            </div>
+            <div class="hole-table-wrap">
+              <table class="hole-table">
+                <thead>
+                  <tr><th>Hull</th><th>Par</th><th>Lengde</th><th>HCP</th><th>Signature</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td class="hnum">1</td><td class="par">4</td><td>372 m</td><td>11</td><td class="sig">Åpen fairway · slag-inn</td></tr>
+                  <tr><td class="hnum">2</td><td class="par">3</td><td>168 m</td><td>15</td><td class="sig">Iron 7 over vann</td></tr>
+                  <tr><td class="hnum">3</td><td class="par">5</td><td>484 m</td><td>3</td><td class="sig">Dogleg venstre · risk/reward</td></tr>
+                  <tr><td class="hnum">4</td><td class="par">4</td><td>356 m</td><td>9</td><td class="sig">Smal fairway · pres på driver</td></tr>
+                  <tr><td class="hnum">5</td><td class="par">4</td><td>390 m</td><td>5</td><td class="sig">Forhøyet green · approach 130m</td></tr>
+                  <tr><td class="hnum">6</td><td class="par">3</td><td>184 m</td><td>13</td><td class="sig">Iron 6 · skrå green</td></tr>
+                  <tr><td class="hnum">7</td><td class="par">4</td><td>340 m</td><td>17</td><td class="sig">Kort par 4 · driver-mulighet</td></tr>
+                  <tr><td class="hnum">8</td><td class="par">5</td><td>520 m</td><td>1</td><td class="sig">Lang par 5 · 3 skudd</td></tr>
+                  <tr><td class="hnum">9</td><td class="par">4</td><td>382 m</td><td>7</td><td class="sig">Bunker-omkranset green</td></tr>
+                  <tr><td class="hnum">10</td><td class="par">4</td><td>368 m</td><td>10</td><td class="sig">Klubb-favoritt · åpen</td></tr>
+                  <tr><td class="hnum">11</td><td class="par">3</td><td>196 m</td><td>14</td><td class="sig">Iron 5 over rough</td></tr>
+                  <tr><td class="hnum">12</td><td class="par">5</td><td>498 m</td><td>2</td><td class="sig">Approach 140m · prio-1-soken</td></tr>
+                  <tr><td class="hnum">13</td><td class="par">4</td><td>372 m</td><td>6</td><td class="sig">Smal · driver eller iron</td></tr>
+                  <tr><td class="hnum">14</td><td class="par">4</td><td>410 m</td><td>4</td><td class="sig">Lang par 4 · approach 150m</td></tr>
+                  <tr><td class="hnum">15</td><td class="par">3</td><td>172 m</td><td>16</td><td class="sig">Iron 7 · vind-utsatt</td></tr>
+                  <tr><td class="hnum">16</td><td class="par">4</td><td>388 m</td><td>8</td><td class="sig">Forhøyet · approach 130m</td></tr>
+                  <tr><td class="hnum">17</td><td class="par">5</td><td>508 m</td><td>12</td><td class="sig">Risk/reward · vann venstre</td></tr>
+                  <tr><td class="hnum">18</td><td class="par">4</td><td>432 m</td><td>18</td><td class="sig">Avslutning · klubbhus-publikum</td></tr>
+                  <tr class="total-row"><td colspan="2">TOTALT</td><td>6 240 m</td><td colspan="2" style="text-align:right;">PAR 72 · 6 PAR-3 · 8 PAR-4 · 4 PAR-5</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Weather + previous results -->
+          <div class="card weather-card">
+            <div class="card-head" style="margin-bottom:6px;">
+              <div>
+                <div class="title">Historisk vær + mine resultater</div>
+                <div class="mono" style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;">SISTE 5 ÅR</div>
+              </div>
+            </div>
+            <div class="weather-row">
+              <span class="yr">2025</span>
+              <div class="desc">Sol, vind 6 m/s SV<small>RUNDER 71 · 74 · 72 = 217</small></div>
+              <span class="placement">14.</span>
+            </div>
+            <div class="weather-row">
+              <span class="yr">2024</span>
+              <div class="desc">Skyet, regn dag 2<small>RUNDER 73 · 78 · 74 = 225</small></div>
+              <span class="placement">28.</span>
+            </div>
+            <div class="weather-row">
+              <span class="yr">2023</span>
+              <div class="desc">Sol, lite vind<small>RUNDER 70 · 72 · 71 = 213</small></div>
+              <span class="placement win">8.</span>
+            </div>
+            <div class="weather-row">
+              <span class="yr">2022</span>
+              <div class="desc">Vind 10 m/s, kjølig<small>CUT (74 · 79 = 153)</small></div>
+              <span class="placement" style="color:var(--muted);">CUT</span>
+            </div>
+            <div class="weather-row">
+              <span class="yr">2021</span>
+              <div class="desc">Sol, varm<small>DEBUT · RUNDER 75 · 77 · 76 = 228</small></div>
+              <span class="placement">34.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. RESULTAT-TREND -->
+      <section data-screen-label="03 Resultater">
+        <div class="section-h" style="margin-bottom:16px;">
+          <div>
+            <h2>Mine resultater her</h2>
+            <div class="sub">5 DELTAKELSER · SNITT 73,2 · BESTE 8. PLASS (2023)</div>
+          </div>
+          <span class="pill pill-slag">SNITT-TREND ↓</span>
+        </div>
+
+        <div class="card">
+          <svg viewBox="0 0 880 200" preserveAspectRatio="none" style="width:100%;height:180px;">
+            <!-- y axis -->
+            <line x1="40" y1="20" x2="880" y2="20" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="2 4"/>
+            <line x1="40" y1="80" x2="880" y2="80" stroke="var(--border-soft)" stroke-width="1"/>
+            <line x1="40" y1="140" x2="880" y2="140" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="2 4"/>
+            <text x="36" y="24" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">68</text>
+            <text x="36" y="84" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">73</text>
+            <text x="36" y="144" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--muted)">78</text>
+            <!-- Reference line: par-72 -->
+            <line x1="40" y1="68" x2="880" y2="68" stroke="var(--success)" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="876" y="64" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="var(--success)">PAR 72</text>
+            <!-- Line: 5 years (75, 74, 70, 73, 71) -->
+            <polyline fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+              points="80,140 280,128 480,72 680,116 880,92"/>
+            <polyline fill="rgba(0,88,64,0.10)" stroke="none"
+              points="80,140 280,128 480,72 680,116 880,92 880,180 80,180"/>
+            <g>
+              <circle cx="80"  cy="140" r="5" fill="var(--primary)"/>
+              <circle cx="280" cy="128" r="5" fill="var(--primary)"/>
+              <circle cx="480" cy="72"  r="6" fill="var(--accent)" stroke="var(--primary)" stroke-width="2"/>
+              <circle cx="680" cy="116" r="5" fill="var(--primary)"/>
+              <circle cx="880" cy="92"  r="5" fill="var(--primary)"/>
+            </g>
+            <!-- year labels -->
+            <text x="80"  y="195" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--muted)">2021</text>
+            <text x="280" y="195" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--muted)">2022</text>
+            <text x="480" y="195" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--success)" font-weight="600">2023</text>
+            <text x="680" y="195" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--muted)">2024</text>
+            <text x="880" y="195" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--muted)">2025</text>
+            <!-- Best year tooltip -->
+            <g>
+              <rect x="445" y="42" width="68" height="22" rx="4" fill="var(--accent)"/>
+              <text x="479" y="57" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--fg)" font-weight="700">8. PLASS</text>
+            </g>
+          </svg>
+
+          <div style="font-family:var(--font-serif);font-style:italic;font-size:14px;color:var(--fg);margin-top:14px;line-height:1.5;padding-top:14px;border-top:1px solid var(--border-soft);">
+            Beste år (2023, 8. plass) hadde du <em class="italic-accent">+0,3 SG approach</em> og null cut-trussel. Reproduserbart med dagens form hvis approach-gapet tettes.
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. FORBEREDELSES-PLAN -->
+      <section data-screen-label="04 Forberedelse">
+        <div class="section-h" style="margin-bottom:16px;">
+          <div>
+            <h2>Forberedelses-plan</h2>
+            <div class="sub">12 ØKTER KNYTTET · 4 FULLFØRT · 8 PLANLAGT · 21 DAGER IGJEN</div>
+          </div>
+          <button class="btn btn-primary btn-sm" data-open-modal="be-om-turnering-plan">
+            <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>
+            Be om turnerings-plan
+          </button>
+        </div>
+
+        <div class="prep-list">
+          <div class="prep-row done">
+            <span class="dt">12. MAI</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Pitch 50—100m, lav trajectory</div>
+              <div class="meta">SLAG · 60 min · 184 reps · ±3,2m landing</div>
+            </div>
+            <span class="pill pill-slag">SLAG</span>
+            <span class="badge badge-success">FULLFØRT</span>
+          </div>
+          <div class="prep-row done">
+            <span class="dt">15. MAI</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Iron 7 dispersjons-test</div>
+              <div class="meta">TEK · 90 min · 96 reps · ±5,2m</div>
+            </div>
+            <span class="pill pill-tek">TEK</span>
+            <span class="badge badge-success">FULLFØRT</span>
+          </div>
+          <div class="prep-row done">
+            <span class="dt">17. MAI</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Driver-økt med vind-simulering</div>
+              <div class="meta">TEK · 60 min · CS 112 mph</div>
+            </div>
+            <span class="pill pill-tek">TEK</span>
+            <span class="badge badge-success">FULLFØRT</span>
+          </div>
+          <div class="prep-row done">
+            <span class="dt">19. MAI</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Mental visualisering · Sørlands</div>
+              <div class="meta">TURN · 15 min</div>
+            </div>
+            <span class="pill pill-turn">TURN</span>
+            <span class="badge badge-success">FULLFØRT</span>
+          </div>
+          <div class="prep-row">
+            <span class="dt">21. MAI</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Iron-progresjon CS70 → CS80</div>
+              <div class="meta">TEK · 90 min · 240 reps · av Anders</div>
+            </div>
+            <span class="pill pill-tek">TEK</span>
+            <span class="badge badge-forest">PLANLAGT</span>
+          </div>
+          <div class="prep-row">
+            <span class="dt">24. MAI</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Bossum Open · runde 1 (form-test)</div>
+              <div class="meta">SPILL · 4 t · 18 hull · ekte runde</div>
+            </div>
+            <span class="pill pill-spill">SPILL</span>
+            <span class="badge badge-danger">TURNERING</span>
+          </div>
+          <div class="prep-row">
+            <span class="dt">28. MAI</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Approach 100—150m blokk</div>
+              <div class="meta">SLAG · 90 min · 144 reps · prio-1-fokus</div>
+            </div>
+            <span class="pill pill-slag">SLAG</span>
+            <span class="badge badge-forest">PLANLAGT</span>
+          </div>
+          <div class="prep-row">
+            <span class="dt">2. JUN</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">9-hulls spillsim · Mandal-stil</div>
+              <div class="meta">SPILL · 90 min · smale fairways</div>
+            </div>
+            <span class="pill pill-spill">SPILL</span>
+            <span class="badge badge-forest">PLANLAGT</span>
+          </div>
+          <div class="prep-row">
+            <span class="dt">5. JUN</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Bunker-eskalering + sand-save</div>
+              <div class="meta">SLAG · 45 min · 80 reps</div>
+            </div>
+            <span class="pill pill-slag">SLAG</span>
+            <span class="badge badge-forest">PLANLAGT</span>
+          </div>
+          <div class="prep-row">
+            <span class="dt">8. JUN</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Mental forberedelse + visualisering</div>
+              <div class="meta">TURN · 30 min · pre-tournament</div>
+            </div>
+            <span class="pill pill-turn">TURN</span>
+            <span class="badge badge-forest">PLANLAGT</span>
+          </div>
+          <div class="prep-row">
+            <span class="dt">9. JUN</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Treningsrunde · Mandal Golfklubb</div>
+              <div class="meta">SPILL · 4 t · 18 hull · scout</div>
+            </div>
+            <span class="pill pill-spill">SPILL</span>
+            <span class="badge badge-lime">SCOUT</span>
+          </div>
+          <div class="prep-row">
+            <span class="dt">10. JUN</span>
+            <span class="status-dot"></span>
+            <div>
+              <div class="ttl">Sørlandsåpent · Runde 1</div>
+              <div class="meta">SPILL · 5 t · 18 hull · tee 08:30</div>
+            </div>
+            <span class="pill pill-spill">SPILL</span>
+            <span class="badge badge-danger">★ TURNERING</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. DELTAKERLISTE -->
+      <section data-screen-label="05 Deltakere">
+        <div class="collapsible open" id="participants-col">
+          <div class="collapsible-head" id="participants-toggle">
+            <div>
+              <h2 class="title" style="font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:-0.015em;">Deltakerliste</h2>
+              <div class="sub mono" style="font-size:11px;color:var(--muted);letter-spacing:0.06em;margin-top:4px;">38 A1-SPILLERE PÅMELDT · DU LIGGER PÅ #14 I FORM-RANKING</div>
+            </div>
+            <div class="row-flex">
+              <button class="btn btn-outline btn-sm">Filter A1</button>
+              <svg class="chev" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-down"/></svg>
+            </div>
+          </div>
+
+          <div class="collapsible-body">
+            <div class="participants">
+              <div class="participant-row">
+                <div class="avatar" style="background:var(--primary);color:var(--accent);">HV</div>
+                <div>
+                  <div class="nm">Henrik Vatne</div>
+                  <div class="meta">HCP +0,4 · OSLO GK · A1</div>
+                </div>
+                <div><div class="sg-val pos">+0,84</div><div class="sg-lbl">SG-TOT 90D</div></div>
+                <div><div class="rank">#1</div><div class="sg-lbl">FORM</div></div>
+              </div>
+              <div class="participant-row">
+                <div class="avatar" style="background:var(--primary);color:var(--accent);">JT</div>
+                <div>
+                  <div class="nm">Joachim Thorsen</div>
+                  <div class="meta">HCP +1,2 · BÆRUM · A1</div>
+                </div>
+                <div><div class="sg-val pos">+0,62</div><div class="sg-lbl">SG-TOT 90D</div></div>
+                <div><div class="rank">#3</div><div class="sg-lbl">FORM</div></div>
+              </div>
+              <div class="participant-row">
+                <div class="avatar" style="background:var(--primary);color:var(--accent);">ØR</div>
+                <div>
+                  <div class="nm">Øyvind Rud</div>
+                  <div class="meta">HCP +3,5 · STAVANGER · A1</div>
+                </div>
+                <div><div class="sg-val pos">+0,38</div><div class="sg-lbl">SG-TOT 90D</div></div>
+                <div><div class="rank">#8</div><div class="sg-lbl">FORM</div></div>
+              </div>
+              <div class="participant-row me">
+                <div class="avatar">MR</div>
+                <div>
+                  <div class="nm">Markus Røinås Pedersen <span style="font-family:var(--font-mono);font-size:10px;background:var(--accent);color:var(--fg);padding:1px 6px;border-radius:4px;letter-spacing:0.04em;margin-left:6px;">DU</span></div>
+                  <div class="meta">HCP +3,5 · GFGK · A1</div>
+                </div>
+                <div><div class="sg-val pos">+0,21</div><div class="sg-lbl">SG-TOT 90D</div></div>
+                <div><div class="rank">#14</div><div class="sg-lbl">FORM</div></div>
+              </div>
+              <div class="participant-row">
+                <div class="avatar" style="background:var(--primary);color:var(--accent);">HM</div>
+                <div>
+                  <div class="nm">Hampus Mörner</div>
+                  <div class="meta">HCP 0,8 · STOCKHOLM · A1 (gjest)</div>
+                </div>
+                <div><div class="sg-val pos">+0,18</div><div class="sg-lbl">SG-TOT 90D</div></div>
+                <div><div class="rank">#15</div><div class="sg-lbl">FORM</div></div>
+              </div>
+              <div class="participant-row">
+                <div class="avatar" style="background:var(--primary);color:var(--accent);">SH</div>
+                <div>
+                  <div class="nm">Sigrid Hansen</div>
+                  <div class="meta">HCP 1,4 · MANDAL · A1 (vert)</div>
+                </div>
+                <div><div class="sg-val pos">+0,12</div><div class="sg-lbl">SG-TOT 90D</div></div>
+                <div><div class="rank">#18</div><div class="sg-lbl">FORM</div></div>
+              </div>
+              <div class="participant-row">
+                <div class="avatar" style="background:var(--primary);color:var(--accent);">ES</div>
+                <div>
+                  <div class="nm">Emma Skogli</div>
+                  <div class="meta">HCP 4,8 · TRONDHEIM · A1</div>
+                </div>
+                <div><div class="sg-val neg">−0,08</div><div class="sg-lbl">SG-TOT 90D</div></div>
+                <div><div class="rank">#22</div><div class="sg-lbl">FORM</div></div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:center;margin-top:16px;">
+              <button class="btn btn-outline btn-sm">Vis alle 38 deltakere</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<footer class="sticky-footer">
+  <div class="ft-summary">
+    <strong>21 DAGER IGJEN</strong> · 12 ØKTER KNYTTET · 4 FULLFØRT · 8 PLANLAGT
+  </div>
+  <div class="ft-actions">
+    <button class="btn btn-outline btn-sm">Tilbake til workbench</button>
+    <button class="btn btn-primary btn-sm" data-open-modal="forbered-meg">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sparkles"/></svg>
+      Forbered meg
+    </button>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════════════════════
+     TOURNAMENT MODALS
+     3A ForberedMeg · 3B LoggResultat · 3C Avregistrer
+     3D BaneKart    · 3E BeOmTurneringsPlan
+     ════════════════════════════════════════════════════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-check"     viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-x"         viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-plus-t"    viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-alert-t"   viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+    <symbol id="ic-refresh"   viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></symbol>
+    <symbol id="ic-download"  viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="ic-send"      viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+  </defs>
+</svg>
+
+<style>
+  /* Tournament-specific modal styles
+     ──────────────────────────────── */
+
+  /* Quick-tags & urgency-3 reused inline from workbench (already in workbench-v2.css) */
+  .quick-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .quick-tag {
+    padding: 7px 12px; border-radius: var(--r-pill);
+    font-family: var(--font-body); font-size: 12px;
+    color: var(--muted); border: 1px solid var(--border);
+    background: var(--bg); cursor: pointer; line-height: 1.2;
+  }
+  .quick-tag:hover { color: var(--fg); border-color: var(--muted-soft); }
+  .urgency-3 {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--r-button); padding: 4px; gap: 4px;
+  }
+  .urgency-3 button {
+    font-family: var(--font-body); font-size: 12px; font-weight: 600;
+    color: var(--muted); background: transparent; border: 0;
+    padding: 8px 10px; border-radius: 8px;
+  }
+  .urgency-3 button.active.urg-mute   { background: var(--card); color: var(--fg); box-shadow: 0 1px 3px rgba(10,31,23,0.06); }
+  .urgency-3 button.active.urg-warn   { background: var(--warning); color: #fff; }
+  .urgency-3 button.active.urg-danger { background: var(--danger);  color: #fff; }
+
+  /* 3A — Forbered meg */
+  .modal.fm { width: 640px; }
+  .fm-hero {
+    background: linear-gradient(160deg, #006C50 0%, #003A2A 100%);
+    color: #fff; padding: 22px 24px;
+    margin: -22px -24px 0;
+    position: relative; overflow: hidden;
+  }
+  .fm-hero::before {
+    content: ''; position: absolute; top: -50%; right: -20%;
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.14), transparent 70%);
+    pointer-events: none;
+  }
+  .fm-hero .label-mono { color: rgba(209,248,67,0.7); }
+  .fm-hero h3 {
+    font-family: var(--font-display); font-size: 22px; font-weight: 600;
+    letter-spacing: -0.01em; margin-top: 4px;
+  }
+  .fm-hero h3 em {
+    font-family: var(--font-serif); font-style: italic; font-weight: 400;
+    color: var(--accent);
+  }
+  .fm-hero .countdown-row {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-top: 12px; position: relative; z-index: 1;
+  }
+  .fm-hero .countdown-row .big {
+    font-family: var(--font-mono); font-size: 32px; font-weight: 700;
+    color: var(--accent); letter-spacing: -0.02em; line-height: 1;
+  }
+  .fm-hero .countdown-row .lbl {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: rgba(255,255,255,0.6); letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .fm-hero .countdown-row .meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: rgba(255,255,255,0.78); letter-spacing: 0.04em;
+    margin-left: auto; text-align: right;
+  }
+
+  .fm-summary-strip {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 14px 16px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .fm-summary-strip .big {
+    font-family: var(--font-display); font-size: 18px;
+    font-weight: 700; color: var(--fg);
+  }
+  .fm-summary-strip .pills { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .fm-mini-timeline {
+    display: grid; grid-template-columns: repeat(21, 1fr);
+    gap: 3px;
+  }
+  .fm-mini-day {
+    aspect-ratio: 1;
+    background: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: 4px;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 8.5px;
+    color: var(--muted-soft);
+  }
+  .fm-mini-day .dot {
+    position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+    width: 5px; height: 5px; border-radius: 50%;
+  }
+  .fm-mini-day.has-tek   .dot { background: var(--tek); }
+  .fm-mini-day.has-slag  .dot { background: var(--slag); }
+  .fm-mini-day.has-fys   .dot { background: var(--fys); }
+  .fm-mini-day.has-spill .dot { background: var(--spill); }
+  .fm-mini-day.has-turn  .dot { background: #C8B72A; }
+  .fm-mini-day.has-multi {
+    background: linear-gradient(135deg, rgba(0,88,64,0.15), rgba(209,248,67,0.20));
+    border-color: var(--accent);
+  }
+  .fm-mini-day.target {
+    background: var(--accent); color: var(--fg); font-weight: 700;
+    border-color: var(--accent);
+  }
+  .fm-mini-day.weekend { background: #FBF9F4; }
+  .fm-tline-legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+    margin-top: 6px;
+  }
+  .fm-tline-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .fm-tline-legend span::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block;
+  }
+  .fm-tline-legend .tek::before   { background: var(--tek); }
+  .fm-tline-legend .slag::before  { background: var(--slag); }
+  .fm-tline-legend .fys::before   { background: var(--fys); }
+  .fm-tline-legend .spill::before { background: var(--spill); }
+  .fm-tline-legend .turn::before  { background: #C8B72A; }
+
+  .fm-reasons { display: flex; flex-direction: column; gap: 0; }
+  .fm-reason {
+    display: grid; grid-template-columns: 18px 1fr;
+    gap: 10px; padding: 9px 0;
+    border-bottom: 1px solid var(--border-soft);
+    align-items: baseline;
+  }
+  .fm-reason:last-child { border-bottom: 0; }
+  .fm-reason .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); margin-top: 6px; justify-self: center;
+  }
+  .fm-reason .why {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 13.5px; color: var(--fg); line-height: 1.45;
+  }
+  .fm-reason .why code {
+    font-family: var(--font-mono); font-style: normal;
+    background: rgba(209,248,67,0.30);
+    padding: 1px 5px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+  }
+
+  /* Reuse switch from ai-foreslå modal */
+  .t-switch-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .t-switch-row .body { flex: 1; min-width: 0; }
+  .t-switch-row .ttl { font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--fg); }
+  .t-switch-row .sub { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: 0.04em; }
+  .t-switch {
+    position: relative; width: 36px; height: 20px;
+    background: var(--border); border-radius: 999px;
+    cursor: pointer; flex-shrink: 0;
+    transition: background 160ms ease;
+  }
+  .t-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 3px rgba(10,31,23,0.18);
+    transition: transform 160ms ease;
+  }
+  .t-switch.on { background: var(--primary); }
+  .t-switch.on::after { transform: translateX(16px); }
+
+  /* 3B — Logg resultat */
+  .modal.lr { width: 560px; }
+  .lr-stepper { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .lr-stepper .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+  .lr-stepper .dot.active { background: var(--primary); transform: scale(1.2); }
+  .lr-stepper .dot.done { background: var(--accent); }
+  .lr-stepper .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: var(--muted); margin-left: 4px;
+  }
+  .lr-step { display: none; flex-direction: column; gap: 14px; }
+  .lr-step.active { display: flex; }
+  .lr-round-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .lr-round-head {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .lr-round-head .nm {
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+  }
+  .lr-round-head .nm .sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); font-weight: 500;
+    letter-spacing: 0.06em; margin-left: 8px;
+  }
+  .lr-round-head .par-pill {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    padding: 3px 10px; border-radius: 999px;
+    background: var(--card); border: 1px solid var(--border);
+  }
+  .lr-round-head .par-pill.under { background: var(--accent); border-color: var(--accent); }
+  .lr-round-head .par-pill.over { background: rgba(163,45,45,0.10); color: var(--danger); border-color: rgba(163,45,45,0.20); }
+  .lr-round-grid {
+    display: grid; grid-template-columns: 1fr 1.4fr;
+    gap: 10px;
+  }
+  .lr-round-grid .field { gap: 4px; }
+  .lr-round-grid .field-label {
+    font-size: 9.5px;
+    letter-spacing: 0.10em;
+  }
+
+  .lr-toggle-2 {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--r-button); padding: 4px; gap: 4px;
+  }
+  .lr-toggle-2 button {
+    font-family: var(--font-body); font-size: 12px; font-weight: 600;
+    color: var(--muted); background: transparent; border: 0;
+    padding: 9px 10px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .lr-toggle-2 button svg { width: 13px; height: 13px; }
+  .lr-toggle-2 button.active { background: var(--card); color: var(--fg); box-shadow: 0 1px 3px rgba(10,31,23,0.06); }
+  .lr-toggle-2 button.active.bad { color: var(--danger); }
+  .lr-toggle-2 button.active.good { color: var(--success); }
+
+  .lr-final-card {
+    background: linear-gradient(160deg, #006C50 0%, #003A2A 100%);
+    color: #fff; border-radius: 12px;
+    padding: 16px 18px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .lr-final-card .lbl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: rgba(209,248,67,0.7); letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+  .lr-final-card .val {
+    font-family: var(--font-mono); font-size: 22px; font-weight: 700;
+    color: #fff; margin-top: 4px; letter-spacing: -0.01em;
+  }
+  .lr-final-card .delta {
+    font-family: var(--font-mono); font-size: 10.5px;
+    margin-top: 2px; color: var(--accent);
+  }
+
+  /* 3C — Avregistrer */
+  .modal.av { width: 440px; }
+  .av-warning {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 11px 13px;
+    background: rgba(163,45,45,0.06);
+    border: 1px solid rgba(163,45,45,0.25);
+    border-left: 3px solid var(--danger);
+    border-radius: 10px;
+    font-size: 12.5px; line-height: 1.45;
+    color: var(--fg);
+  }
+  .av-warning svg { width: 14px; height: 14px; color: var(--danger); flex-shrink: 0; margin-top: 2px; }
+  .av-warning strong { font-family: var(--font-display); font-weight: 600; }
+
+  .av-radio-stack { display: flex; flex-direction: column; gap: 6px; }
+  .av-radio {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--r-button);
+    cursor: pointer;
+    font-family: var(--font-body); font-size: 13px;
+  }
+  .av-radio:hover { border-color: var(--muted-soft); }
+  .av-radio.active { border-color: var(--primary); background: rgba(0,88,64,0.04); }
+  .av-radio .dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 1.5px solid var(--border-soft); flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .av-radio.active .dot { border-color: var(--primary); }
+  .av-radio.active .dot::after {
+    content: ''; width: 7px; height: 7px;
+    border-radius: 50%; background: var(--primary);
+  }
+  .btn-danger {
+    background: var(--danger); color: #fff;
+  }
+  .btn-danger:hover { filter: brightness(0.92); }
+
+  /* 3D — Bane-kart */
+  .modal.bk { width: 880px; max-width: calc(100vw - 48px); }
+  .bk-body { padding: 0; display: grid; grid-template-columns: 1fr 240px; min-height: 540px; overflow: hidden; }
+  .bk-map {
+    position: relative;
+    background: linear-gradient(140deg, #4A7A3E 0%, #2E5A2E 35%, #88B45A 70%, #B8D060 100%);
+    overflow: hidden;
+    min-height: 540px;
+  }
+  .bk-map::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 30% 25%, rgba(255,255,255,0.18), transparent 60%),
+      radial-gradient(ellipse 40% 30% at 75% 70%, rgba(46,90,46,0.50), transparent 60%),
+      radial-gradient(ellipse 30% 20% at 50% 50%, rgba(255,255,255,0.10), transparent 60%);
+    pointer-events: none;
+  }
+  /* Fairway streaks */
+  .bk-map::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(110deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 30px),
+      repeating-linear-gradient(20deg, rgba(0,0,0,0.04) 0 18px, transparent 18px 38px);
+    pointer-events: none;
+  }
+  .bk-water {
+    position: absolute;
+    background: linear-gradient(180deg, #4A8DB5 0%, #2D6E96 100%);
+    border-radius: 60%;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.15);
+  }
+  .bk-bunker {
+    position: absolute;
+    background: linear-gradient(180deg, #E5D294 0%, #C9B47A 100%);
+    border-radius: 50%;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.10);
+  }
+  .bk-pin {
+    position: absolute;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--card); color: var(--fg);
+    border: 2px solid var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    transition: all 160ms ease;
+    box-shadow: 0 2px 8px rgba(10,31,23,0.30);
+    z-index: 2;
+  }
+  .bk-pin:hover, .bk-pin.active {
+    background: var(--accent); border-color: var(--primary);
+    transform: translate(-50%, -50%) scale(1.18);
+    z-index: 3;
+  }
+  .bk-pin .tip {
+    display: none;
+    position: absolute;
+    top: 34px; left: 50%; transform: translateX(-50%);
+    background: var(--fg); color: #fff;
+    padding: 6px 10px; border-radius: 8px;
+    font-family: var(--font-body); font-size: 11px; font-weight: 500;
+    letter-spacing: 0; white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(10,31,23,0.30);
+    pointer-events: none; z-index: 10;
+  }
+  .bk-pin .tip::before {
+    content: ''; position: absolute; top: -4px; left: 50%;
+    transform: translateX(-50%); width: 8px; height: 8px;
+    background: var(--fg); transform: translateX(-50%) rotate(45deg);
+  }
+  .bk-pin .tip .num { color: var(--accent); font-family: var(--font-mono); font-weight: 700; }
+  .bk-pin.active .tip,
+  .bk-pin:hover .tip { display: block; }
+
+  .bk-legend {
+    position: absolute; bottom: 12px; left: 12px;
+    background: rgba(10,31,23,0.78); color: #fff;
+    padding: 8px 12px; border-radius: 8px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.06em;
+    display: flex; gap: 14px;
+  }
+  .bk-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .bk-legend .sw { width: 10px; height: 10px; border-radius: 50%; }
+  .bk-legend .water .sw { background: #2D6E96; }
+  .bk-legend .bunker .sw { background: #C9B47A; }
+  .bk-legend .pin .sw { background: var(--accent); border: 1px solid var(--primary); }
+
+  .bk-rail {
+    background: var(--card);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .bk-rail-head {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--bg);
+  }
+  .bk-rail-head .ttl {
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+  }
+  .bk-rail-head .meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.06em; margin-top: 2px;
+  }
+  .bk-rail-list {
+    flex: 1; overflow-y: auto;
+    padding: 4px 0;
+  }
+  .bk-hole {
+    display: grid; grid-template-columns: 32px 1fr auto;
+    gap: 10px; padding: 9px 14px;
+    border-bottom: 1px solid var(--border-soft);
+    cursor: pointer;
+    align-items: center;
+  }
+  .bk-hole:hover, .bk-hole.active { background: var(--bg); }
+  .bk-hole.active { background: rgba(209,248,67,0.14); }
+  .bk-hole .num {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    color: var(--fg); text-align: center;
+  }
+  .bk-hole.active .num { color: var(--primary); }
+  .bk-hole .body { min-width: 0; }
+  .bk-hole .nm {
+    font-family: var(--font-display); font-size: 12px; font-weight: 600;
+    line-height: 1.2;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .bk-hole .meta {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); margin-top: 2px; letter-spacing: 0.04em;
+  }
+  .bk-hole .par-mini {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted); padding: 2px 6px;
+    background: var(--bg); border-radius: 4px;
+  }
+  .bk-hole.par5 .par-mini { background: rgba(163,45,45,0.10); color: var(--danger); }
+  .bk-hole.par3 .par-mini { background: rgba(209,248,67,0.30); color: var(--fg); }
+  .bk-rail-foot {
+    border-top: 1px solid var(--border-soft);
+    padding: 10px 14px;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .bk-rail-foot strong { font-family: var(--font-display); font-size: 13px; color: var(--fg); }
+
+  /* 3E — Be om turneringsplan */
+  .modal.bp { width: 560px; }
+
+  /* Stepper helpers — reuse from workbench */
+  /* nothing extra needed */
+
+  @media (max-width: 880px) {
+    .modal.bk { width: 100%; }
+    .bk-body { grid-template-columns: 1fr; min-height: 0; }
+    .bk-map { min-height: 320px; }
+    .bk-rail { max-height: 280px; border-left: 0; border-top: 1px solid var(--border); }
+  }
+  @media (max-width: 560px) {
+    .modal.fm, .modal.lr, .modal.av, .modal.bp { width: 100%; }
+    .fm-mini-timeline { grid-template-columns: repeat(7, 1fr); }
+    .lr-final-card { grid-template-columns: 1fr; }
+    .lr-round-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<!-- ════════ 3A — FORBERED MEG ════════ -->
+<div class="modal-backdrop" id="modal-forbered-meg" data-modal="forbered-meg" role="dialog" aria-modal="true" aria-labelledby="fm-title">
+  <div class="modal fm" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="fm-title">AI-bygd plan for Sørlandsåpent</h2>
+        <div class="caption">FRA NÅ TIL 10. JUNI · 21 DAGER · A1-NIVÅ</div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+
+      <div class="fm-hero">
+        <span class="label-mono">FORBEREDELSES-PLAN · 3 UKER</span>
+        <h3>12 økter mot <em>Sørlandsåpent</em></h3>
+        <div class="countdown-row">
+          <div><div class="big">21</div></div>
+          <div><div class="lbl">dager til start</div><div class="lbl" style="color:rgba(255,255,255,0.55);">ONS 10. JUNI · 08:30</div></div>
+          <div class="meta">220 MIN/UKE · 67 → 78% PYR-TREFF</div>
+        </div>
+      </div>
+
+      <div class="fm-summary-strip">
+        <span class="big">12 økter foreslått</span>
+        <div class="pills">
+          <span class="pill pill-tek">4 TEK</span>
+          <span class="pill pill-slag">5 SLAG</span>
+          <span class="pill pill-spill">2 SPILL</span>
+          <span class="pill pill-turn">1 TURN</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Forberedelses-løp · 21 dager</label>
+        <div class="fm-mini-timeline" id="fm-tline"></div>
+        <div class="fm-tline-legend">
+          <span class="tek">TEK</span>
+          <span class="slag">SLAG</span>
+          <span class="fys">FYS</span>
+          <span class="spill">SPILL</span>
+          <span class="turn">TURN</span>
+          <span style="margin-left:auto;color:var(--muted-soft);">↓ 10. juni</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Hvorfor disse 12 øktene</label>
+        <div class="fm-reasons">
+          <div class="fm-reason"><span class="dot"></span><div class="why">Approach-gap <code>−0,42 SG</code> → 3 SLAG-økter prioritert (100—150m blokk)</div></div>
+          <div class="fm-reason"><span class="dot"></span><div class="why">Mandal har <code>smale fairways</code> → 2 driver-presisjon-økter inn de neste to ukene</div></div>
+          <div class="fm-reason"><span class="dot"></span><div class="why">Bossum Open lørdag 31. mai fungerer som <code>form-test</code> før hovedmål</div></div>
+          <div class="fm-reason"><span class="dot"></span><div class="why">Mental prep <code>30%</code> av planen → 2 turn-økter, ritual og visualisering</div></div>
+          <div class="fm-reason"><span class="dot"></span><div class="why">Anders' tildelte iron-økt og swing-sjekk uka før beholdes som <code>anker</code></div></div>
+        </div>
+      </div>
+
+      <div class="t-switch-row">
+        <div class="body">
+          <div class="ttl">Erstatt eksisterende uplanlagt tid</div>
+          <div class="sub">12 økter fyller eksisterende luker uten å overstyre planlagte økter</div>
+        </div>
+        <div class="t-switch on" id="fm-replace-switch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <div class="left-meta">12 økter · 4 TEK · 5 SLAG · 2 SPILL · 1 TURN</div>
+      <button class="btn-ghost" data-close-modal>Avbryt</button>
+      <button class="btn btn-primary" id="fm-submit">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:13px;height:13px;"><use href="#ic-sparkles"/></svg>
+        Bygg planen
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ════════ 3B — LOGG RESULTAT ════════ -->
+<div class="modal-backdrop" id="modal-logg-resultat" data-modal="logg-resultat" role="dialog" aria-modal="true" aria-labelledby="lr-title">
+  <div class="modal lr" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="lr-title">Logg resultat — Sørlandsåpent</h2>
+        <div class="caption" id="lr-caption">10—12 JUNI · 54 HULL STROKE PLAY · PAR 71</div>
+        <div class="lr-stepper">
+          <span class="dot active" data-step="1"></span>
+          <span class="lbl" id="lr-step-lbl">Steg 1 av 2 · Runde-scorer</span>
+          <span style="flex:1;"></span>
+          <span class="dot" data-step="2"></span>
+        </div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+
+      <!-- STEP 1 — Runde-scorer -->
+      <div class="lr-step active" data-step="1">
+        <div class="lr-round-card">
+          <div class="lr-round-head">
+            <div class="nm">Runde 1<span class="sub">ONS 10. JUNI</span></div>
+            <span class="par-pill under" id="r1-pill">−2 (69)</span>
+          </div>
+          <div class="lr-round-grid">
+            <div class="field">
+              <label class="field-label">Score</label>
+              <input class="field-input lr-score" type="number" min="50" max="120" value="69" data-round="1" />
+            </div>
+            <div class="field">
+              <label class="field-label">Vær</label>
+              <select class="field-input">
+                <option>Sol · lett bris</option>
+                <option>Skyet</option>
+                <option>Regn</option>
+                <option>Vind &gt; 8 m/s</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">Notat</label>
+            <input class="field-input" type="text" placeholder="F.eks. Approach traff 11/14 GIR" />
+          </div>
+        </div>
+
+        <div class="lr-round-card">
+          <div class="lr-round-head">
+            <div class="nm">Runde 2<span class="sub">TOR 11. JUNI</span></div>
+            <span class="par-pill" id="r2-pill">±0 (71)</span>
+          </div>
+          <div class="lr-round-grid">
+            <div class="field">
+              <label class="field-label">Score</label>
+              <input class="field-input lr-score" type="number" min="50" max="120" value="71" data-round="2" />
+            </div>
+            <div class="field">
+              <label class="field-label">Vær</label>
+              <select class="field-input">
+                <option>Skyet</option>
+                <option>Sol · lett bris</option>
+                <option>Regn</option>
+                <option>Vind &gt; 8 m/s</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">Notat</label>
+            <input class="field-input" type="text" placeholder="F.eks. 3-putt på hull 14" />
+          </div>
+        </div>
+
+        <div class="lr-round-card">
+          <div class="lr-round-head">
+            <div class="nm">Runde 3<span class="sub">FRE 12. JUNI</span></div>
+            <span class="par-pill under" id="r3-pill">−1 (70)</span>
+          </div>
+          <div class="lr-round-grid">
+            <div class="field">
+              <label class="field-label">Score</label>
+              <input class="field-input lr-score" type="number" min="50" max="120" value="70" data-round="3" />
+            </div>
+            <div class="field">
+              <label class="field-label">Vær</label>
+              <select class="field-input">
+                <option>Vind &gt; 8 m/s</option>
+                <option>Sol · lett bris</option>
+                <option>Skyet</option>
+                <option>Regn</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">Notat</label>
+            <input class="field-input" type="text" placeholder="F.eks. Driver-presisjon holdt under press" />
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 — Sluttresultat -->
+      <div class="lr-step" data-step="2">
+        <div class="lr-final-card">
+          <div><div class="lbl">Total</div><div class="val" id="lr-total">210</div><div class="delta" id="lr-tot-delta">−3 (par 213)</div></div>
+          <div><div class="lbl">Snitt</div><div class="val" id="lr-avg">70,0</div><div class="delta" id="lr-avg-delta">Mål: snitt &lt; 72</div></div>
+          <div><div class="lbl">SG total</div><div class="val">+1,8</div><div class="delta">Approach +0,9</div></div>
+        </div>
+
+        <div class="field-grid-2">
+          <div class="field">
+            <label class="field-label" for="lr-place">Plassering</label>
+            <input id="lr-place" class="field-input" type="number" min="1" max="200" value="9" placeholder="F.eks. 9" />
+            <div class="field-helper">AI-foreslått: 7—12. plass basert på score</div>
+          </div>
+          <div class="field">
+            <label class="field-label">Cut-status</label>
+            <div class="lr-toggle-2" id="lr-cut">
+              <button type="button" class="active good" data-val="passed">
+                <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+                Passerte cut
+              </button>
+              <button type="button" class="bad" data-val="cut">
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+                Cuttet
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="lr-sg">SG-total (valgfri)</label>
+          <input id="lr-sg" class="field-input" type="text" placeholder="F.eks. +1,8 (Approach +0,9 · Putting −0,2)" />
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="lr-worked">Hva fungerte?</label>
+          <textarea id="lr-worked" class="field-input" rows="3" placeholder="F.eks. Approach-fokus betalte seg — traff 11/14 GIR runde 1"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="lr-improve">Hva skal forbedres til neste år?</label>
+          <textarea id="lr-improve" class="field-input" rows="3" placeholder="F.eks. Tre-putt-kontroll på raske greener · mer ritualer på 1. tee"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <div class="left-meta" id="lr-foot-meta">Steg 1 · 3 runder, par 213</div>
+      <button class="btn-ghost" data-close-modal>Avbryt</button>
+      <button class="btn btn-outline btn-sm" id="lr-back" style="display:none;">← Tilbake</button>
+      <button class="btn btn-primary" id="lr-next">
+        Neste →
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ════════ 3C — AVREGISTRER ════════ -->
+<div class="modal-backdrop" id="modal-avregistrer" data-modal="avregistrer" role="dialog" aria-modal="true" aria-labelledby="av-title">
+  <div class="modal av" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="av-title">Avregistrer fra Sørlandsåpent?</h2>
+        <div class="caption">10—12 JUNI · MANDAL GOLFKLUBB</div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+
+      <div style="font-size:13.5px;color:var(--fg);line-height:1.5;">
+        Du har <strong>12 økter</strong> knyttet til denne turneringen. <strong>4 er allerede fullført</strong> — data beholdes.
+        Resterende <strong>8 planlagte økter</strong> beholdes som vanlige treningsøkter.
+      </div>
+
+      <div class="av-warning">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-alert-t"/></svg>
+        <div><strong>Påmeldingsavgift NOK 1 450</strong> refunderes ikke etter 1. juni 2026.</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Hvorfor avregistrerer du?</label>
+        <div class="av-radio-stack" id="av-reason">
+          <label class="av-radio"><span class="dot"></span><span>Skade</span><input type="radio" name="av-reason" value="injury" style="display:none;" /></label>
+          <label class="av-radio"><span class="dot"></span><span>Skolekonflikt</span><input type="radio" name="av-reason" value="school" style="display:none;" /></label>
+          <label class="av-radio"><span class="dot"></span><span>Annen turnering</span><input type="radio" name="av-reason" value="other-tour" style="display:none;" /></label>
+          <label class="av-radio"><span class="dot"></span><span>Annet</span><input type="radio" name="av-reason" value="other" style="display:none;" /></label>
+        </div>
+      </div>
+
+      <div class="field" id="av-other-field" style="display:none;">
+        <label class="field-label" for="av-other">Beskriv kort</label>
+        <textarea id="av-other" class="field-input" rows="2" placeholder="F.eks. Familieforpliktelser samme helg"></textarea>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <button class="btn-ghost" data-close-modal>Avbryt</button>
+      <button class="btn btn-danger" id="av-confirm">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:13px;height:13px;"><use href="#ic-x"/></svg>
+        Bekreft avregistrering
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ════════ 3D — BANE-KART ════════ -->
+<div class="modal-backdrop" id="modal-bane-kart" data-modal="bane-kart" role="dialog" aria-modal="true" aria-labelledby="bk-title">
+  <div class="modal bk" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="bk-title">Mandal Golfklubb · Bane-kart</h2>
+        <div class="caption">18 HULL · PAR 71 · 5 980 M · A1-RATING 73,2</div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body bk-body">
+
+      <div class="bk-map" id="bk-map">
+        <!-- Water hazards -->
+        <div class="bk-water" style="top:42%; left:55%; width:18%; height:14%;"></div>
+        <div class="bk-water" style="top:14%; left:8%; width:10%; height:6%;"></div>
+        <div class="bk-water" style="top:74%; left:38%; width:8%; height:10%; border-radius:50%;"></div>
+
+        <!-- Bunkers -->
+        <div class="bk-bunker" style="top:22%; left:24%; width:5%; height:4%;"></div>
+        <div class="bk-bunker" style="top:34%; left:72%; width:6%; height:3%;"></div>
+        <div class="bk-bunker" style="top:58%; left:18%; width:5%; height:3%;"></div>
+        <div class="bk-bunker" style="top:66%; left:60%; width:7%; height:4%;"></div>
+        <div class="bk-bunker" style="top:84%; left:28%; width:5%; height:3%;"></div>
+        <div class="bk-bunker" style="top:18%; left:62%; width:4%; height:3%;"></div>
+
+        <!-- 18 pins positioned around the map -->
+        <button class="bk-pin" data-hole="1"  style="top:18%; left:18%;">1<div class="tip"><span class="num">H1</span> · Par 4 · 358 m · <em>signature: dogleg venstre</em></div></button>
+        <button class="bk-pin" data-hole="2"  style="top:14%; left:34%;">2<div class="tip"><span class="num">H2</span> · Par 4 · 320 m · <em>smal innspill</em></div></button>
+        <button class="bk-pin" data-hole="3"  style="top:22%; left:48%;">3<div class="tip"><span class="num">H3</span> · Par 3 · 168 m · <em>vann front</em></div></button>
+        <button class="bk-pin" data-hole="4"  style="top:14%; left:62%;">4<div class="tip"><span class="num">H4</span> · Par 5 · 478 m · <em>nådbar i 2</em></div></button>
+        <button class="bk-pin" data-hole="5"  style="top:18%; left:78%;">5<div class="tip"><span class="num">H5</span> · Par 4 · 340 m · <em>uphill approach</em></div></button>
+        <button class="bk-pin" data-hole="6"  style="top:32%; left:84%;">6<div class="tip"><span class="num">H6</span> · Par 3 · 142 m · <em>vind-eksponert</em></div></button>
+        <button class="bk-pin" data-hole="7"  style="top:42%; left:74%;">7<div class="tip"><span class="num">H7</span> · Par 4 · 372 m · <em>OB høyre</em></div></button>
+        <button class="bk-pin" data-hole="8"  style="top:52%; left:84%;">8<div class="tip"><span class="num">H8</span> · Par 4 · 360 m · <em>blind tee-shot</em></div></button>
+        <button class="bk-pin" data-hole="9"  style="top:62%; left:74%;">9<div class="tip"><span class="num">H9</span> · Par 5 · 502 m · <em>turn — vann krysser</em></div></button>
+        <button class="bk-pin" data-hole="10" style="top:58%; left:58%;">10<div class="tip"><span class="num">H10</span> · Par 4 · 348 m · <em>dogleg høyre</em></div></button>
+        <button class="bk-pin" data-hole="11" style="top:68%; left:48%;">11<div class="tip"><span class="num">H11</span> · Par 3 · 174 m · <em>øy-green</em></div></button>
+        <button class="bk-pin" data-hole="12" style="top:74%; left:62%;">12<div class="tip"><span class="num">H12</span> · Par 5 · 510 m · <em>strategi-hull</em></div></button>
+        <button class="bk-pin" data-hole="13" style="top:84%; left:48%;">13<div class="tip"><span class="num">H13</span> · Par 4 · 332 m · <em>kort dogleg</em></div></button>
+        <button class="bk-pin" data-hole="14" style="top:82%; left:32%;">14<div class="tip"><span class="num">H14</span> · Par 4 · 388 m · <em>raskest green</em></div></button>
+        <button class="bk-pin" data-hole="15" style="top:72%; left:22%;">15<div class="tip"><span class="num">H15</span> · Par 3 · 156 m · <em>tre-klubb-vurdering</em></div></button>
+        <button class="bk-pin" data-hole="16" style="top:62%; left:28%;">16<div class="tip"><span class="num">H16</span> · Par 4 · 362 m · <em>smal fairway</em></div></button>
+        <button class="bk-pin" data-hole="17" style="top:48%; left:38%;">17<div class="tip"><span class="num">H17</span> · Par 4 · 326 m · <em>uphill</em></div></button>
+        <button class="bk-pin" data-hole="18" style="top:40%; left:24%;">18<div class="tip"><span class="num">H18</span> · Par 5 · 488 m · <em>finalehull · vann front</em></div></button>
+
+        <div class="bk-legend">
+          <span class="pin"><span class="sw"></span>Hull 1—18</span>
+          <span class="water"><span class="sw"></span>Vann</span>
+          <span class="bunker"><span class="sw"></span>Bunker</span>
+        </div>
+      </div>
+
+      <aside class="bk-rail">
+        <div class="bk-rail-head">
+          <div class="ttl">Hull-oversikt</div>
+          <div class="meta">KLIKK PIN ELLER RAD FOR DETALJER</div>
+        </div>
+        <div class="bk-rail-list" id="bk-rail-list">
+          <!-- holes injected by JS -->
+        </div>
+        <div class="bk-rail-foot">
+          <span>Sum</span>
+          <strong>Par 71 · 5 980 m</strong>
+        </div>
+      </aside>
+
+    </div>
+
+    <footer class="modal-footer">
+      <div class="left-meta">Statisk kart · interaktiv visning kommer</div>
+      <button class="btn-ghost" data-close-modal>Lukk</button>
+      <button class="btn btn-primary" id="bk-export">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:13px;height:13px;"><use href="#ic-download"/></svg>
+        Eksporter scorecard PDF
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ════════ 3E — BE OM TURNERINGSPLAN ════════ -->
+<div class="modal-backdrop" id="modal-be-om-turnering-plan" data-modal="be-om-turnering-plan" role="dialog" aria-modal="true" aria-labelledby="bp-title">
+  <div class="modal bp" role="document">
+    <header class="modal-header">
+      <div>
+        <h2 id="bp-title">Be om plan for Sørlandsåpent</h2>
+        <div class="caption">TIL: ANDERS K. · 21 DAGER IGJEN · 10—12 JUNI</div>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Lukk">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+
+      <div class="field">
+        <label class="field-label">Hva trenger du hjelp med?<span class="req">*</span></label>
+        <div class="prio-radio" id="bp-help-type" style="grid-template-columns:1fr;">
+          <div class="prio-opt prio-2 active" data-val="from-scratch">
+            <span class="radio-dot"></span>
+            <div class="label-stack"><span class="nm" style="color:var(--success);">Bygg hele planen fra scratch</span><span class="sub">Anders setter opp 21 dager fra blank tavle</span></div>
+          </div>
+          <div class="prio-opt prio-3" data-val="adjust">
+            <span class="radio-dot"></span>
+            <div class="label-stack"><span class="nm">Juster eksisterende prep-økter</span><span class="sub">Behold 12 økter, juster fokus og volum</span></div>
+          </div>
+          <div class="prio-opt prio-3" data-val="focus-area">
+            <span class="radio-dot"></span>
+            <div class="label-stack"><span class="nm">Fokus på spesifikt område</span><span class="sub">Velg disipliner under</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field" id="bp-disc-field" style="display:none;">
+        <label class="field-label">Disiplin-fokus</label>
+        <div class="chip-row multi" id="bp-disc">
+          <button type="button" class="chip" data-val="tek" data-cls="chip-tek">TEK</button>
+          <button type="button" class="chip" data-val="slag" data-cls="chip-slag">SLAG</button>
+          <button type="button" class="chip" data-val="fys" data-cls="chip-fys">FYS</button>
+          <button type="button" class="chip" data-val="spill" data-cls="chip-spill">SPILL</button>
+          <button type="button" class="chip" data-val="turn" data-cls="chip-turn">TURN</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="bp-text">Begrunnelse<span class="req">*</span></label>
+        <textarea id="bp-text" class="field-input" rows="4" placeholder="F.eks. Mandal har smale fairways — jeg trenger driver-presisjon. Også litt nervøs for hull 12 (par-5 med vann krysser)."></textarea>
+        <div class="field-helper" id="bp-counter">0 / 320 tegn · minimum 10</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Hastegrad</label>
+        <div class="urgency-3" id="bp-urgency">
+          <button type="button" class="active urg-mute" data-val="normal">Når det passer</button>
+          <button type="button" class="urg-warn" data-val="24h">Innen 24 t</button>
+          <button type="button" class="urg-danger" data-val="today">I dag</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Hurtigvalg <span style="font-family:var(--font-body);font-weight:400;color:var(--muted-soft);text-transform:none;letter-spacing:0;">(klikk for å fylle inn)</span></label>
+        <div class="quick-tags" id="bp-tags">
+          <button type="button" class="quick-tag" data-text="Mer approach-fokus mot smale Mandal-greener — jeg vil ha 2 ekstra approach-økter i tilrettelagt format.">Mer approach-fokus mot smale Mandal-greener</button>
+          <button type="button" class="quick-tag" data-text="Mental forberedelse — jeg er nervøs for hovedmål. Trenger ritualer og visualisering for 1. tee.">Mental forberedelse — jeg er nervøs</button>
+          <button type="button" class="quick-tag" data-text="Kan vi sjekke swing før turnering? Føler iron-utgangen er litt åpen og vil ha en bekreftelse.">Sjekk swing før turnering</button>
+          <button type="button" class="quick-tag" data-text="Hull 12 er par-5 med vann krysser. Jeg vil ha en score-strategy — legge opp eller gå for det?">Score-strategy for hull 12 (par-5)</button>
+          <button type="button" class="quick-tag" data-text="Vil ha hvile-uke uka før turnering. Behold kun lett FYS og turnerings-rituale, kutt resten.">Hvile-uke uka før</button>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <div class="left-meta">Sendes som push + e-post til Anders</div>
+      <button class="btn-ghost" data-close-modal>Avbryt</button>
+      <button class="btn btn-primary" id="bp-submit">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:13px;height:13px;"><use href="#ic-send"/></svg>
+        Send forespørsel
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ════════ TOAST ════════ -->
+<div class="toast" id="t-toast" role="status" aria-live="polite">
+  <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><use href="#ic-check"/></svg>
+  <span id="t-toast-text">Klar</span>
+</div>
+
+<script>
+  document.getElementById('participants-toggle')?.addEventListener('click', () => {
+    document.getElementById('participants-col').classList.toggle('open');
+  });
+
+  // ═══════════ MODAL CORE ═══════════
+  const openModal = (name) => {
+    const m = document.querySelector(`.modal-backdrop[data-modal="${name}"]`);
+    if (!m) return;
+    m.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+  const closeModal = () => {
+    document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open'));
+    document.body.style.overflow = '';
+  };
+  document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('[data-open-modal]');
+    if (trigger) { openModal(trigger.dataset.openModal); return; }
+    const closer = e.target.closest('[data-close-modal]');
+    if (closer) { closeModal(); return; }
+    if (e.target.classList.contains('modal-backdrop')) { closeModal(); return; }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // Toast
+  const toast = document.getElementById('t-toast');
+  const showToast = (text) => {
+    document.getElementById('t-toast-text').textContent = text;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 3000);
+  };
+
+  // ═══════════ 3A — FORBERED MEG ═══════════
+  (() => {
+    const modal = document.getElementById('modal-forbered-meg');
+    if (!modal) return;
+    // Build the 21-day mini-timeline
+    const tline = modal.querySelector('#fm-tline');
+    // 21 days: today (May 19) + 20 days forward to June 9 (day before tournament)
+    // We mock a realistic distribution that matches the 12 sessions
+    const days = [];
+    const start = new Date('2026-05-19');
+    for (let i = 0; i < 21; i++) {
+      const d = new Date(start); d.setDate(start.getDate() + i);
+      days.push({ date: d, classes: [] });
+    }
+    // Distribute disciplines
+    const plan = {
+      0: 'tek',  2: 'fys',  3: 'slag', 4: 'tek',  6: 'spill',
+      7: 'slag', 9: 'tek',  10: 'slag', 12: 'spill', 13: 'turn',
+      14: 'slag', 16: 'tek', 18: 'slag', 19: 'turn'
+    };
+    Object.entries(plan).forEach(([idx, kind]) => {
+      days[+idx].classes.push('has-' + kind);
+    });
+    let html = '';
+    days.forEach((day, i) => {
+      const wd = day.date.getDay();
+      const isWeekend = wd === 0 || wd === 6;
+      const cls = day.classes.join(' ');
+      const isLast = i === 20;
+      html += `<div class="fm-mini-day ${cls} ${isWeekend ? 'weekend' : ''} ${isLast ? 'target' : ''}" title="${day.date.toLocaleDateString('nb')}">${day.date.getDate()}<span class="dot"></span></div>`;
+    });
+    tline.innerHTML = html;
+
+    // Switch toggle
+    const sw = modal.querySelector('#fm-replace-switch');
+    sw.addEventListener('click', () => {
+      const on = sw.classList.toggle('on');
+      sw.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+
+    // Submit
+    modal.querySelector('#fm-submit').addEventListener('click', () => {
+      console.log('POST /api/tournaments/sorlandsapent/build-plan', {
+        replaceUnplanned: sw.classList.contains('on'),
+        sessions: 12
+      });
+      closeModal();
+      showToast('12 økter lagt inn frem til Sørlandsåpent');
+    });
+  })();
+
+  // ═══════════ 3B — LOGG RESULTAT ═══════════
+  (() => {
+    const modal = document.getElementById('modal-logg-resultat');
+    if (!modal) return;
+    const dots = modal.querySelectorAll('.lr-stepper .dot');
+    const steps = modal.querySelectorAll('.lr-step');
+    const nextBtn = modal.querySelector('#lr-next');
+    const backBtn = modal.querySelector('#lr-back');
+    const stepLbl = modal.querySelector('#lr-step-lbl');
+    const footMeta = modal.querySelector('#lr-foot-meta');
+    let step = 1;
+    const setStep = (n) => {
+      step = n;
+      dots.forEach(d => {
+        const s = +d.dataset.step;
+        d.classList.toggle('active', s === n);
+        d.classList.toggle('done', s < n);
+      });
+      steps.forEach(v => v.classList.toggle('active', +v.dataset.step === n));
+      stepLbl.textContent = n === 1 ? 'Steg 1 av 2 · Runde-scorer' : 'Steg 2 av 2 · Sluttresultat';
+      if (n === 1) {
+        backBtn.style.display = 'none';
+        nextBtn.innerHTML = 'Neste →';
+        footMeta.textContent = 'Steg 1 · 3 runder, par 213';
+      } else {
+        backBtn.style.display = 'inline-flex';
+        nextBtn.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="width:13px;height:13px;"><use href="#ic-check"/></svg>Lagre resultat';
+        const tot = modal.querySelector('#lr-total').textContent;
+        footMeta.textContent = `Steg 2 · sum ${tot} (par 213)`;
+      }
+    };
+    nextBtn.addEventListener('click', () => {
+      if (step === 1) {
+        recalc();
+        setStep(2);
+      } else {
+        const payload = {
+          rounds: [...modal.querySelectorAll('.lr-score')].map(i => +i.value),
+          place: +modal.querySelector('#lr-place').value,
+          cut: modal.querySelector('#lr-cut button.active')?.dataset.val,
+          sg: modal.querySelector('#lr-sg').value,
+          worked: modal.querySelector('#lr-worked').value,
+          improve: modal.querySelector('#lr-improve').value
+        };
+        console.log('POST /api/tournaments/sorlandsapent/result', payload);
+        closeModal();
+        showToast(`Resultat lagret — Sørlandsåpent #${payload.place} plass`);
+        // reset
+        setTimeout(() => setStep(1), 300);
+      }
+    });
+    backBtn.addEventListener('click', () => setStep(1));
+
+    const recalc = () => {
+      const scores = [...modal.querySelectorAll('.lr-score')].map(i => +i.value || 0);
+      const tot = scores.reduce((a,b) => a+b, 0);
+      const par = 213;
+      const delta = tot - par;
+      const avg = (tot/3).toFixed(1).replace('.', ',');
+      modal.querySelector('#lr-total').textContent = tot;
+      modal.querySelector('#lr-tot-delta').textContent = `${delta >= 0 ? '+' : ''}${delta} (par ${par})`;
+      modal.querySelector('#lr-avg').textContent = avg;
+      // round pills
+      scores.forEach((s, i) => {
+        const p = modal.querySelector(`#r${i+1}-pill`);
+        if (!p) return;
+        const d = s - 71;
+        p.classList.remove('under','over');
+        if (d < 0) { p.classList.add('under'); p.textContent = `${d} (${s})`; }
+        else if (d > 0) { p.classList.add('over'); p.textContent = `+${d} (${s})`; }
+        else p.textContent = `±0 (${s})`;
+      });
+    };
+    modal.querySelectorAll('.lr-score').forEach(i => i.addEventListener('input', recalc));
+
+    // cut toggle
+    modal.querySelectorAll('#lr-cut button').forEach(b => {
+      b.addEventListener('click', () => {
+        modal.querySelectorAll('#lr-cut button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      });
+    });
+
+    // reset on open
+    document.querySelectorAll('[data-open-modal="logg-resultat"]').forEach(t => {
+      t.addEventListener('click', () => setTimeout(() => setStep(1), 10));
+    });
+  })();
+
+  // ═══════════ 3C — AVREGISTRER ═══════════
+  (() => {
+    const modal = document.getElementById('modal-avregistrer');
+    if (!modal) return;
+    const radios = modal.querySelectorAll('#av-reason .av-radio');
+    const otherField = modal.querySelector('#av-other-field');
+    radios.forEach(r => {
+      r.addEventListener('click', () => {
+        radios.forEach(x => x.classList.remove('active'));
+        r.classList.add('active');
+        r.querySelector('input').checked = true;
+        const isOther = r.querySelector('input').value === 'other';
+        otherField.style.display = isOther ? 'flex' : 'none';
+      });
+    });
+    modal.querySelector('#av-confirm').addEventListener('click', () => {
+      const active = modal.querySelector('#av-reason .av-radio.active');
+      if (!active) { showToast('Velg en grunn'); return; }
+      const reason = active.querySelector('input').value;
+      const other = reason === 'other' ? modal.querySelector('#av-other').value : null;
+      console.log('DELETE /api/tournaments/sorlandsapent/registration', { reason, other });
+      closeModal();
+      showToast('Avregistrert fra Sørlandsåpent');
+    });
+  })();
+
+  // ═══════════ 3D — BANE-KART ═══════════
+  (() => {
+    const modal = document.getElementById('modal-bane-kart');
+    if (!modal) return;
+    const HOLES = [
+      { n:1,  par:4, m:358, nm:'Dogleg-åpning',      sig:'dogleg venstre' },
+      { n:2,  par:4, m:320, nm:'Smal innspill',      sig:'smal innspill' },
+      { n:3,  par:3, m:168, nm:'Vann-par-3',         sig:'vann front' },
+      { n:4,  par:5, m:478, nm:'Nådbar par-5',       sig:'nådbar i 2' },
+      { n:5,  par:4, m:340, nm:'Uphill approach',    sig:'uphill approach' },
+      { n:6,  par:3, m:142, nm:'Vind-par-3',         sig:'vind-eksponert' },
+      { n:7,  par:4, m:372, nm:'OB høyre',           sig:'OB høyre' },
+      { n:8,  par:4, m:360, nm:'Blind tee-shot',     sig:'blind tee-shot' },
+      { n:9,  par:5, m:502, nm:'Turn par-5',         sig:'vann krysser' },
+      { n:10, par:4, m:348, nm:'Dogleg høyre',       sig:'dogleg høyre' },
+      { n:11, par:3, m:174, nm:'Øy-green',           sig:'øy-green' },
+      { n:12, par:5, m:510, nm:'Strategi-hull',      sig:'risk/reward' },
+      { n:13, par:4, m:332, nm:'Kort dogleg',        sig:'kort dogleg' },
+      { n:14, par:4, m:388, nm:'Rask green',         sig:'raskest green' },
+      { n:15, par:3, m:156, nm:'Tre-klubb-par-3',    sig:'klubb-vurdering' },
+      { n:16, par:4, m:362, nm:'Smal fairway',       sig:'smal fairway' },
+      { n:17, par:4, m:326, nm:'Uphill par-4',       sig:'uphill' },
+      { n:18, par:5, m:488, nm:'Finalehull',         sig:'vann front · finale' }
+    ];
+    const list = modal.querySelector('#bk-rail-list');
+    list.innerHTML = HOLES.map(h => `
+      <div class="bk-hole par${h.par}" data-hole="${h.n}">
+        <div class="num">${h.n}</div>
+        <div class="body">
+          <div class="nm">${h.nm}</div>
+          <div class="meta">${h.m} m · ${h.sig}</div>
+        </div>
+        <div class="par-mini">P${h.par}</div>
+      </div>
+    `).join('');
+
+    const pins = modal.querySelectorAll('.bk-pin');
+    const rows = modal.querySelectorAll('.bk-hole');
+    const activate = (n) => {
+      pins.forEach(p => p.classList.toggle('active', +p.dataset.hole === n));
+      rows.forEach(r => r.classList.toggle('active', +r.dataset.hole === n));
+      const r = modal.querySelector(`.bk-hole[data-hole="${n}"]`);
+      if (r) r.scrollIntoView({ block: 'nearest' });
+    };
+    pins.forEach(p => p.addEventListener('click', () => activate(+p.dataset.hole)));
+    rows.forEach(r => r.addEventListener('click', () => activate(+r.dataset.hole)));
+
+    modal.querySelector('#bk-export').addEventListener('click', () => {
+      console.log('GET /api/tournaments/sorlandsapent/scorecard.pdf');
+      showToast('Scorecard PDF eksporteres …');
+    });
+  })();
+
+  // ═══════════ 3E — BE OM TURNERINGSPLAN ═══════════
+  (() => {
+    const modal = document.getElementById('modal-be-om-turnering-plan');
+    if (!modal) return;
+    const radios = modal.querySelectorAll('#bp-help-type .prio-opt');
+    const discField = modal.querySelector('#bp-disc-field');
+    const discChips = modal.querySelectorAll('#bp-disc .chip');
+    const text = modal.querySelector('#bp-text');
+    const counter = modal.querySelector('#bp-counter');
+    const urgency = modal.querySelectorAll('#bp-urgency button');
+    const tags = modal.querySelectorAll('#bp-tags .quick-tag');
+
+    radios.forEach(r => {
+      r.addEventListener('click', () => {
+        radios.forEach(x => { x.classList.remove('active'); x.classList.remove('prio-2'); x.classList.add('prio-3'); });
+        r.classList.add('active'); r.classList.remove('prio-3'); r.classList.add('prio-2');
+        discField.style.display = (r.dataset.val === 'focus-area') ? 'flex' : 'none';
+      });
+    });
+
+    discChips.forEach(c => {
+      c.addEventListener('click', () => {
+        const on = c.classList.toggle('active');
+        c.classList.toggle(c.dataset.cls, on);
+      });
+    });
+
+    text.addEventListener('input', () => {
+      const v = text.value.length;
+      counter.textContent = `${v} / 320 tegn · minimum 10`;
+      counter.style.color = v < 10 ? 'var(--muted-soft)' : 'var(--success)';
+    });
+
+    urgency.forEach(b => {
+      b.addEventListener('click', () => {
+        urgency.forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      });
+    });
+
+    tags.forEach(t => {
+      t.addEventListener('click', () => {
+        text.value = t.dataset.text;
+        text.dispatchEvent(new Event('input'));
+      });
+    });
+
+    modal.querySelector('#bp-submit').addEventListener('click', () => {
+      if (text.value.length < 10) {
+        showToast('Begrunnelse må være minst 10 tegn');
+        return;
+      }
+      const payload = {
+        tournamentId: 'sorlandsapent-2026',
+        helpType: modal.querySelector('#bp-help-type .prio-opt.active')?.dataset.val,
+        disciplines: [...discChips].filter(c => c.classList.contains('active')).map(c => c.dataset.val),
+        text: text.value,
+        urgency: modal.querySelector('#bp-urgency button.active')?.dataset.val
+      };
+      console.log('POST /api/coach/requests', payload);
+      closeModal();
+      showToast('Forespørsel sendt til Anders');
+      text.value = '';
+      text.dispatchEvent(new Event('input'));
+    });
+  })();
+</script>
+
+</body>
+</html>

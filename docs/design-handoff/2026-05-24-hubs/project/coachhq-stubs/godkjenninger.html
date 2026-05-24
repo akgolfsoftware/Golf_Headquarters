@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Godkjenninger · CoachHQ — AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../workbench-v2.css">
+<link rel="stylesheet" href="../coachhq.css">
+<link rel="stylesheet" href="_coachhq-stubs.css">
+</head>
+<body class="cs-body" data-screen-label="05 Godkjenninger">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></symbol>
+  <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+  <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="ic-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="ic-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+  <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ic-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></symbol>
+  <symbol id="ic-bolt" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="ic-chevron-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="ic-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+</defs></svg>
+
+<div class="app-cs">
+  <aside class="sidebar sb-cs">
+    <div class="sidebar-brand"><div class="name">AK GOLF</div><div class="meta">COACHHQ · HEAD COACH</div></div>
+    <div class="sidebar-profile"><div class="avatar">AK</div><div><div class="nm">Anders K.</div><div class="role">38 spillere</div></div></div>
+    <div class="nav-group">
+      <div class="nav-group-label">Oversikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bolt"/></svg>Daglig brief</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-inbox"/></svg>Innboks<span class="badge-count">7</span></button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Tildelt meg<span class="badge-count">14</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Stall</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Spillere</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Talent-radar</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Planlegge</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Årsplan</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-file-text"/></svg>Plan-maler</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Gjennomføre</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-card"/></svg>Bookinger</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Test-økt</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item active"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenninger<span class="badge-count">11</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Admin</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-settings"/></svg>Innstillinger</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar tb-cs">
+      <div class="crumb">
+        <span class="brand-link">CoachHQ</span><span class="sep">/</span>
+        <span>Innsikt</span><span class="sep">/</span>
+        <span class="current">Godkjenninger</span>
+      </div>
+      <div class="tb-right">
+        <button class="tb-icon-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg></button>
+        <button class="tb-icon-btn"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bell"/></svg><span class="dot-notif"></span></button>
+      </div>
+    </header>
+
+    <div class="page-cs">
+
+      <div class="cs-hero">
+        <div class="left">
+          <span class="eyebrow">CoachHQ · Innsikt · Godkjenningskø</span>
+          <h1>Saker som krever <em>godkjenning</em></h1>
+          <div class="sub">
+            <strong>11</strong> ventende
+            <span class="dot"></span>
+            <span class="err">3 overdue (&gt; 48 t)</span>
+            <span class="dot"></span>
+            Snitt-tid: <strong>18 timer</strong>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-shield"/></svg>Eskaler til admin</button>
+          <button class="btn btn-primary btn-sm"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bolt"/></svg>Aksepter alle lav-risiko</button>
+        </div>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="kpi featured">
+          <span class="lbl">Ventende</span>
+          <span class="val">11</span>
+          <span class="sub">i kø nå</span>
+        </div>
+        <div class="kpi danger">
+          <span class="lbl">Overdue</span>
+          <span class="val">3</span>
+          <span class="sub">&gt; 48 timer · krever handling</span>
+        </div>
+        <div class="kpi">
+          <span class="lbl">Mottatt i dag</span>
+          <span class="val">4</span>
+          <span class="sub">snitt 3 / dag</span>
+        </div>
+        <div class="kpi success">
+          <span class="lbl">Godkjent denne uka</span>
+          <span class="val">28</span>
+          <span class="sub"><span class="trend up">↑ 6 %</span> vs forrige</span>
+        </div>
+      </div>
+
+      <div class="filter-rail">
+        <span class="fr-label">Kategori</span>
+        <button class="fr-pill active">Alle <span class="ct">11</span></button>
+        <button class="fr-pill">Plan-justering <span class="ct">4</span></button>
+        <button class="fr-pill">Foreldre-tilgang <span class="ct">2</span></button>
+        <button class="fr-pill">Mindreårig <span class="ct">1</span></button>
+        <button class="fr-pill">Booking-rabatt <span class="ct">3</span></button>
+        <button class="fr-pill">Annet <span class="ct">1</span></button>
+        <div class="fr-search">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+          <input placeholder="Spiller, sak-ID…" />
+        </div>
+      </div>
+
+      <div class="appr-list">
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp godkj">PLAN-JUSTERING</span>
+            <div class="p-avatar sm c1">MP</div>
+            <span class="nm">Markus R. Pedersen</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">PLAN-2031 · innsendt 19. mai 14:22</span>
+            <span style="flex:1"></span>
+            <span class="age-pill overdue"><span class="arr">↑</span> 3d overdue</span>
+            <span class="tp risk-med">MEDIUM RISK</span>
+          </div>
+          <div class="appr-desc">Bytte ut <strong>Driver Basic</strong> med <strong>Driver Gate</strong> denne uka.</div>
+          <div class="appr-reason">"PEI har stagnert siste 14 dager. Vil prøve mer presisjonsfokus før Sørlandsåpent."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span class="grow"></span>
+            <button class="btn btn-ghost btn-xs"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>Be om mer info</button>
+            <button class="btn btn-outline btn-xs"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>Avvis</button>
+            <button class="btn btn-primary btn-xs"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenn</button>
+          </div>
+        </div>
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp" style="background:rgba(123,79,180,0.14); color:#4B2D77;">KLUBB-BYTTE</span>
+            <div class="p-avatar sm c3">SH</div>
+            <span class="nm">Sara Hauge</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">KB-118 · 17 år · 2d siden</span>
+            <span style="flex:1"></span>
+            <span class="age-pill overdue"><span class="arr">↑</span> 2d overdue</span>
+            <span class="tp risk-high">HØY RISK</span>
+          </div>
+          <div class="appr-desc">Bytte fra <strong>Drøbak GK</strong> til <strong>Gamle Fredrikstad GK</strong> som hjemmebane.</div>
+          <div class="appr-reason">"Bedre treningsfasiliteter på GFGK, kortere reisevei fra Moss. Foreldre samtykker (Mona Hauge)."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--muted);">Krever forelder-samtykke ✓ vedlagt</span>
+            <span class="grow"></span>
+            <button class="btn btn-ghost btn-xs">Be om mer info</button>
+            <button class="btn btn-outline btn-xs">Avvis</button>
+            <button class="btn btn-primary btn-xs">Godkjenn</button>
+          </div>
+        </div>
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp warn">BOOKING-RABATT</span>
+            <div class="p-avatar sm c2">SA</div>
+            <span class="nm">Stian Aas</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">DSC-22 · 2d siden</span>
+            <span style="flex:1"></span>
+            <span class="age-pill overdue"><span class="arr">↑</span> 2d overdue</span>
+            <span class="tp risk-low">LAV RISK</span>
+          </div>
+          <div class="appr-desc"><strong>20 %</strong> gruppe-rabatt på <strong>4 økter</strong> neste uke (totalt 3 200 kr).</div>
+          <div class="appr-reason">"Familie booket 4 økter samme uke for søsken Stian (17) og Eira (14). Ber om samlerabatt."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span class="grow"></span>
+            <button class="btn btn-ghost btn-xs">Be om mer info</button>
+            <button class="btn btn-outline btn-xs">Avvis</button>
+            <button class="btn btn-primary btn-xs">Godkjenn</button>
+          </div>
+        </div>
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp godkj">PLAN-JUSTERING</span>
+            <div class="p-avatar sm c4">LM</div>
+            <span class="nm">Lukas Moe</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">PLAN-2042 · innsendt 22. mai 09:15</span>
+            <span style="flex:1"></span>
+            <span class="age-pill today">I dag</span>
+            <span class="tp risk-low">LAV RISK</span>
+          </div>
+          <div class="appr-desc">Øke <strong>FYS-volum</strong> fra 10t til <strong>14t/uke</strong> i 4 uker.</div>
+          <div class="appr-reason">"Føler jeg klarer mer enn nåværende plan. Vil teste høyere belastning før sommer."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span class="grow"></span>
+            <button class="btn btn-ghost btn-xs">Be om mer info</button>
+            <button class="btn btn-outline btn-xs">Avvis</button>
+            <button class="btn btn-primary btn-xs">Godkjenn</button>
+          </div>
+        </div>
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp" style="background:rgba(184,133,42,0.18); color:var(--warning);">FORELDRE-TILGANG</span>
+            <div class="p-avatar sm c5">FK</div>
+            <span class="nm">Frida Kvam</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">AC-77 · 16 år · 5t siden</span>
+            <span style="flex:1"></span>
+            <span class="age-pill today">5t</span>
+            <span class="tp risk-med">MEDIUM RISK</span>
+          </div>
+          <div class="appr-desc"><strong>Mona Kvam</strong> søker om foreldre-tilgang til Fridas PlayerHQ-konto.</div>
+          <div class="appr-reason">"Vil se treningsplan, bookinger og turnerings-resultater. Frida har gitt muntlig samtykke."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--warning);">⚠ Krever skriftlig samtykke fra spiller (under 18)</span>
+            <span class="grow"></span>
+            <button class="btn btn-ghost btn-xs">Be om samtykke</button>
+            <button class="btn btn-outline btn-xs">Avvis</button>
+            <button class="btn btn-primary btn-xs">Godkjenn</button>
+          </div>
+        </div>
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp" style="background:rgba(163,45,45,0.12); color:var(--danger);">MINDREÅRIG</span>
+            <div class="p-avatar sm c6">MB</div>
+            <span class="nm">Mia Bråten</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">MIN-04 · 16 år · 11t siden</span>
+            <span style="flex:1"></span>
+            <span class="age-pill today">11t</span>
+            <span class="tp risk-high">HØY RISK</span>
+          </div>
+          <div class="appr-desc">Påmelding til <strong>Sommerleir 2-uker intensiv</strong> (Vestlandet, 14 dager bortebodd).</div>
+          <div class="appr-reason">"Skriftlig samtykke fra begge foreldre vedlagt. Pris 18 400 kr · stipend søkes parallelt."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span class="grow"></span>
+            <button class="btn btn-ghost btn-xs">Be om mer info</button>
+            <button class="btn btn-outline btn-xs">Avvis</button>
+            <button class="btn btn-primary btn-xs">Godkjenn</button>
+          </div>
+        </div>
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp godkj">PLAN-JUSTERING</span>
+            <div class="p-avatar sm c7">JK</div>
+            <span class="nm">Julia Karlsen</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">PLAN-2055 · innsendt i dag 11:08</span>
+            <span style="flex:1"></span>
+            <span class="age-pill today">3t</span>
+            <span class="tp risk-low">LAV RISK</span>
+          </div>
+          <div class="appr-desc">Justere <strong>putt-fokus</strong> fra 30 min/dag til <strong>45 min/dag</strong> siste uke før turnering.</div>
+          <div class="appr-reason">"Føler putt er den største usikkerheten. Mulligan studio er ledig hver morgen kl. 07."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span class="grow"></span>
+            <button class="btn btn-ghost btn-xs">Be om mer info</button>
+            <button class="btn btn-outline btn-xs">Avvis</button>
+            <button class="btn btn-primary btn-xs">Godkjenn</button>
+          </div>
+        </div>
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp warn">BOOKING-RABATT</span>
+            <div class="p-avatar sm c8">IN</div>
+            <span class="nm">Ingrid Nystad</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">DSC-23 · 8t siden</span>
+            <span style="flex:1"></span>
+            <span class="age-pill today">8t</span>
+            <span class="tp risk-low">LAV RISK</span>
+          </div>
+          <div class="appr-desc">Henvisnings-rabatt <strong>10 %</strong> for å introdusere ny spiller (Pia N.) til AK.</div>
+          <div class="appr-reason">"Pia er min beste venn på laget — vil at hun skal prøve AK i sommer."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span class="grow"></span>
+            <button class="btn btn-outline btn-xs">Avvis</button>
+            <button class="btn btn-primary btn-xs">Godkjenn</button>
+          </div>
+        </div>
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp" style="background:rgba(184,133,42,0.18); color:var(--warning);">FORELDRE-TILGANG</span>
+            <div class="p-avatar sm c1">PV</div>
+            <span class="nm">Stine Vatne</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">AC-78 · 14 år · 6t siden</span>
+            <span style="flex:1"></span>
+            <span class="age-pill today">6t</span>
+            <span class="tp risk-low">LAV RISK</span>
+          </div>
+          <div class="appr-desc"><strong>Per Vatne</strong> (far) søker om foreldre-tilgang til Stine (under 18, default automatisk).</div>
+          <div class="appr-reason">"Standard foreldre-tilgang. Per har full myndighet (eneste verge registrert)."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span class="grow"></span>
+            <button class="btn btn-outline btn-xs">Avvis</button>
+            <button class="btn btn-primary btn-xs">Godkjenn</button>
+          </div>
+        </div>
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp godkj">PLAN-JUSTERING</span>
+            <div class="p-avatar sm c2">OB</div>
+            <span class="nm">Oliver Brekke</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">PLAN-2056 · innsendt i dag 12:44</span>
+            <span style="flex:1"></span>
+            <span class="age-pill fresh">2t</span>
+            <span class="tp risk-low">LAV RISK</span>
+          </div>
+          <div class="appr-desc">Flytte tirsdag-økt fra <strong>TrackMan</strong> til <strong>utendørs range</strong> denne uka (godt vær).</div>
+          <div class="appr-reason">"Vil føle ekte vind-forhold før Sørlandsåpent. Bytter ikke totalt volum, kun lokasjon."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span class="grow"></span>
+            <button class="btn btn-outline btn-xs">Avvis</button>
+            <button class="btn btn-primary btn-xs">Godkjenn</button>
+          </div>
+        </div>
+
+        <div class="appr-card">
+          <div class="appr-head">
+            <span class="tp warn">BOOKING-RABATT</span>
+            <div class="p-avatar sm c3">EG</div>
+            <span class="nm">Emil Grøtnes</span>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:0.06em;">DSC-24 · 1t siden</span>
+            <span style="flex:1"></span>
+            <span class="age-pill fresh">1t</span>
+            <span class="tp risk-low">LAV RISK</span>
+          </div>
+          <div class="appr-desc">Refusjon for avlyst økt 26. mai · <strong>800 kr</strong> · grunn: skade.</div>
+          <div class="appr-reason">"Strakk håndleddet under FYS-økt i går. Sykmelding fra fysio vedlagt (5 dager)."</div>
+          <div class="appr-foot">
+            <a class="ctx-link" href="#">Vis full kontekst ▾</a>
+            <span class="grow"></span>
+            <button class="btn btn-outline btn-xs">Avvis</button>
+            <button class="btn btn-primary btn-xs">Godkjenn</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bench-card">
+        <div class="bench-ic"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bolt"/></svg></div>
+        <div>
+          <div class="b-title">AI foreslår batch-godkjenning · 5 lav-risiko-saker</div>
+          <div class="b-sub">Stian (rabatt) · Lukas (FYS-volum) · Julia (putt-fokus) · Ingrid (henvisning) · Oliver (lokasjon) · alle fra spillere med PR siste 30 dager. Estimert tid spart: 22 min.</div>
+        </div>
+        <div class="grow"></div>
+        <button class="btn btn-outline btn-xs">Forhåndsvis</button>
+        <button class="btn btn-primary btn-xs">Godkjenn 5 <svg fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-arrow-right"/></svg></button>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

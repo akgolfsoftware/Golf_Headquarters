@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>09 — Onboarding-flyt · AK Golf Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #FAFAF7;
+    --fg: #0A1F17;
+    --primary: #005840;
+    --primary-dark: #003A2A;
+    --accent: #D1F843;
+    --card: #FFFFFF;
+    --border: #E5E3DD;
+    --border-soft: #EFEDE6;
+    --muted: #5E5C57;
+    --muted-soft: #908D86;
+    --danger: #A32D2D;
+    --success: #2C7D52;
+    --cream: #F1EEE5;
+    --font-display: 'Inter Tight', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-serif: 'Instrument Serif', serif;
+  }
+  html, body { background: var(--bg); font-family: var(--font-body); color: var(--fg); -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.5; }
+  body { padding-bottom: 60px; }
+
+  /* HEADER */
+  .ob-header { height: 72px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; gap: 24px; position: sticky; top: 0; z-index: 30; }
+  .ob-logo { display: flex; align-items: center; gap: 10px; }
+  .ob-logo .mark { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; font-weight: 800; letter-spacing: -0.02em; }
+  .ob-logo .nm { font-family: var(--font-mono); font-size: 11px; font-weight: 800; letter-spacing: 0.14em; color: var(--fg); }
+  .ob-stepper { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .ob-stepper .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); border: 1.5px solid var(--border); }
+  .ob-stepper .dot.done { background: var(--primary); border-color: var(--primary); }
+  .ob-stepper .dot.active { background: var(--accent); border-color: var(--primary); transform: scale(1.4); }
+  .ob-stepper .line { width: 28px; height: 2px; background: var(--border); }
+  .ob-stepper .line.done { background: var(--primary); }
+  .ob-stepper .label-active { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.10em; color: var(--primary); margin-left: 12px; text-transform: uppercase; }
+  .ob-header-actions { display: flex; align-items: center; gap: 8px; }
+  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 18px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 0; cursor: pointer; }
+  .btn svg { width: 14px; height: 14px; }
+  .btn.lime { background: var(--accent); color: var(--fg); }
+  .btn.lime.big { padding: 14px 28px; font-size: 14.5px; border-radius: 999px; font-weight: 700; min-width: 220px; justify-content: center; }
+  .btn.forest { background: var(--primary); color: var(--accent); }
+  .btn.outline { background: #fff; color: var(--fg); border: 1px solid var(--border); }
+  .btn.sm { padding: 7px 14px; font-size: 11.5px; }
+  .ob-close { width: 36px; height: 36px; border-radius: 8px; border: 0; background: transparent; color: var(--muted); display: inline-flex; align-items: center; justify-content: center; }
+
+  /* SCREEN SEPARATOR */
+  .screen-sep { background: var(--primary); color: var(--accent); padding: 14px 32px; font-family: var(--font-mono); font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+
+  /* STEP SEPARATOR */
+  .step-sep { background: var(--cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 10px 32px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; }
+  .step-sep strong { color: var(--primary); }
+
+  /* STEP CONTAINER */
+  .step { padding: 36px 32px 48px; display: flex; flex-direction: column; gap: 22px; max-width: 880px; margin: 0 auto; }
+  .step .illust { height: 240px; border-radius: 18px; overflow: hidden; background: var(--cream); display: flex; align-items: center; justify-content: center; position: relative; }
+  .step h2 { font-family: var(--font-display); font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.12; text-wrap: balance; }
+  .step h2 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+  .step .desc { font-size: 16px; line-height: 1.55; color: var(--muted); }
+  .step .desc p + p { margin-top: 12px; }
+  .step .desc strong { color: var(--fg); }
+
+  .inspo-strip { background: var(--accent); border-radius: 16px; padding: 22px 26px; }
+  .inspo-strip blockquote { font-family: var(--font-serif); font-style: italic; font-size: 19px; line-height: 1.4; color: var(--fg); }
+  .inspo-strip cite { display: block; margin-top: 10px; font-family: var(--font-mono); font-size: 11px; font-style: normal; color: var(--primary); letter-spacing: 0.10em; font-weight: 700; text-transform: uppercase; }
+  .inspo-strip.cream { background: var(--cream); }
+
+  /* FORM FIELDS */
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field.full { grid-column: span 2; }
+  .field label { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.10em; color: var(--muted); text-transform: uppercase; }
+  .input { font-family: var(--font-body); font-size: 15px; color: var(--fg); background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 13px 16px; outline: none; }
+  .input.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,88,64,0.10); }
+  .input-help { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted-soft); margin-top: 2px; }
+  .input-help.ok { color: var(--success); }
+  .input-help.err { color: var(--danger); }
+
+  /* radio cards */
+  .radio-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .radio-cards.col-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .radio-cards label { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border: 1px solid var(--border); background: #fff; border-radius: 12px; cursor: pointer; font-size: 14px; }
+  .radio-cards label.checked { border-color: var(--accent); border-width: 2px; padding: 11px 13px; background: rgba(209,248,67,0.10); }
+  .radio-cards label input { accent-color: var(--primary); }
+
+  /* category radio */
+  .cat-radio { display: flex; flex-direction: column; gap: 8px; }
+  .cat-radio label { display: flex; gap: 14px; align-items: center; padding: 12px 16px; border: 1px solid var(--border); background: #fff; border-radius: 12px; cursor: pointer; font-size: 14px; }
+  .cat-radio label.checked { border-color: var(--accent); border-width: 2px; padding: 11px 15px; background: rgba(209,248,67,0.12); }
+  .cat-radio .cat-pill { display: inline-flex; width: 44px; justify-content: center; padding: 4px 8px; border-radius: 999px; font-family: var(--font-mono); font-size: 11px; font-weight: 800; letter-spacing: 0.08em; }
+  .cat-pill.a1 { background: var(--accent); color: var(--fg); }
+  .cat-pill.a2 { background: var(--primary); color: var(--accent); }
+  .cat-pill.b1 { background: var(--cream); color: var(--fg); border: 1px solid var(--border); }
+  .cat-pill.b2 { background: rgba(94,92,87,0.20); color: var(--muted); }
+  .cat-pill.c { background: #fff; color: var(--muted-soft); border: 1px solid var(--border); }
+  .cat-radio .body { flex: 1; }
+  .cat-radio .hcp { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; margin-top: 2px; }
+
+  /* multi pills */
+  .multi-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .multi-pills label { padding: 7px 12px; border: 1px solid var(--border); background: #fff; border-radius: 999px; font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; color: var(--muted); cursor: pointer; letter-spacing: 0.04em; }
+  .multi-pills label.checked { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+
+  /* stepper number */
+  .num-stepper { display: flex; gap: 4px; align-items: center; }
+  .num-stepper button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: #fff; color: var(--fg); }
+  .num-stepper .opt { padding: 7px 14px; border-radius: 8px; font-family: var(--font-mono); font-weight: 700; color: var(--muted); }
+  .num-stepper .opt.active { background: var(--primary); color: var(--accent); }
+
+  /* Connect card */
+  .connect-card { background: var(--cream); border: 1px solid var(--border); border-radius: 16px; padding: 28px 30px; display: flex; flex-direction: column; gap: 14px; align-items: center; text-align: center; }
+  .connect-card .ic-big { width: 64px; height: 64px; border-radius: 16px; background: var(--card); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--primary); }
+  .connect-card .ic-big svg { width: 28px; height: 28px; }
+  .connect-card h4 { font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+  .connect-card .copy { font-size: 14px; color: var(--muted); max-width: 480px; }
+  .connect-card .trust { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted-soft); letter-spacing: 0.06em; margin-top: 4px; }
+  .skip-link { font-family: var(--font-mono); font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer; }
+
+  /* Coach card grid */
+  .coach-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .coach-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px 16px; display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center; cursor: pointer; position: relative; }
+  .coach-card.selected { border-color: var(--accent); border-width: 2px; padding: 17px 15px; }
+  .coach-card .badge { position: absolute; top: 10px; right: 10px; font-family: var(--font-mono); font-size: 9px; font-weight: 800; letter-spacing: 0.10em; padding: 3px 7px; border-radius: 4px; background: var(--accent); color: var(--fg); }
+  .coach-card .photo { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(140deg, var(--cream), var(--border)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 22px; font-weight: 800; }
+  .coach-card .nm { font-family: var(--font-display); font-size: 15px; font-weight: 700; }
+  .coach-card .role { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase; }
+  .coach-card .meta { font-size: 12px; color: var(--muted); line-height: 1.45; }
+
+  /* Plan cards */
+  .plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .plan-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 22px 20px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; position: relative; }
+  .plan-card.selected { border-color: var(--accent); border-width: 2px; padding: 21px 19px; }
+  .plan-card.selected::after { content: "ANBEFALT"; position: absolute; top: -10px; right: 16px; font-family: var(--font-mono); font-size: 9.5px; font-weight: 800; letter-spacing: 0.10em; padding: 3px 9px; border-radius: 4px; background: var(--accent); color: var(--fg); }
+  .plan-card .tier { font-family: var(--font-mono); font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: var(--muted); }
+  .plan-card.selected .tier { color: var(--primary); }
+  .plan-card .price { font-family: var(--font-mono); font-size: 28px; font-weight: 800; color: var(--fg); }
+  .plan-card .features { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); }
+  .plan-card .features .check { display: flex; gap: 8px; align-items: flex-start; }
+  .plan-card .features .check svg { width: 14px; height: 14px; color: var(--success); flex-shrink: 0; margin-top: 2px; }
+  .plan-card .features .x { color: var(--muted-soft); }
+
+  /* Summary card */
+  .summary-card { background: var(--cream); border: 1px solid var(--border); border-radius: 16px; padding: 24px 26px; }
+  .summary-card h4 { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+  .summary-row { display: grid; grid-template-columns: 200px 1fr; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border-soft); font-size: 14px; }
+  .summary-row:last-child { border-bottom: 0; padding-bottom: 0; }
+  .summary-row .k { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; align-self: center; text-transform: uppercase; }
+  .summary-row .v { font-family: var(--font-display); font-weight: 600; }
+  .summary-row .v.mono { font-family: var(--font-mono); }
+
+  /* Foreldre-melding-preview */
+  .pm-card { background: linear-gradient(160deg, #006C50, #003A2A); color: #fff; border-radius: 16px; padding: 22px 26px; display: flex; gap: 14px; align-items: flex-start; }
+  .pm-card .ic { width: 36px; height: 36px; border-radius: 10px; background: rgba(209,248,67,0.20); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pm-card .ic svg { width: 16px; height: 16px; }
+  .pm-card blockquote { font-size: 15px; line-height: 1.55; font-style: italic; }
+  .pm-card cite { display: block; margin-top: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.10em; font-style: normal; }
+
+  /* Agreement checks */
+  .agree-stack { display: flex; flex-direction: column; gap: 10px; }
+  .agree-card { background: var(--cream); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+  .agree-card.checked { border-color: var(--accent); border-width: 2px; padding: 15px 17px; background: rgba(209,248,67,0.12); }
+  .agree-card .ic { width: 36px; height: 36px; border-radius: 10px; background: #fff; color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .agree-card .ic svg { width: 18px; height: 18px; }
+  .agree-card .body { flex: 1; }
+  .agree-card .ttl { font-family: var(--font-display); font-size: 14.5px; font-weight: 700; }
+  .agree-card .sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .agree-card .read-link { font-family: var(--font-mono); font-size: 11px; color: var(--primary); text-decoration: underline; margin-top: 6px; display: inline-block; }
+  .agree-card .check-box { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--border); background: #fff; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff; }
+  .agree-card.checked .check-box { background: var(--primary); border-color: var(--primary); }
+  .agree-card .check-box svg { width: 12px; height: 12px; opacity: 0; }
+  .agree-card.checked .check-box svg { opacity: 1; }
+
+  .security-strip { background: rgba(209,248,67,0.20); border: 1px solid rgba(209,248,67,0.55); border-radius: 12px; padding: 14px 18px; font-size: 13px; line-height: 1.55; color: var(--fg); }
+  .security-strip strong { font-family: var(--font-display); }
+
+  /* Payment summary forest */
+  .pay-summary { background: linear-gradient(160deg, #006C50, #003A2A); color: #fff; border-radius: 16px; padding: 24px 28px; display: flex; flex-direction: column; gap: 8px; }
+  .pay-summary .lbl { font-family: var(--font-mono); font-size: 10.5px; color: rgba(209,248,67,0.65); letter-spacing: 0.10em; text-transform: uppercase; }
+  .pay-summary .name { font-family: var(--font-display); font-size: 20px; font-weight: 700; }
+  .pay-summary .price { font-family: var(--font-mono); font-size: 32px; font-weight: 800; letter-spacing: -0.01em; }
+  .pay-summary .meta { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 6px; }
+
+  /* Payment methods */
+  .paymethod-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .paymethod { background: var(--cream); border: 1px solid var(--border); border-radius: 14px; padding: 18px 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; cursor: pointer; position: relative; }
+  .paymethod.selected { border-color: var(--accent); border-width: 2px; padding: 17px 15px; }
+  .paymethod .ic { width: 44px; height: 44px; border-radius: 10px; background: #fff; color: var(--primary); display: flex; align-items: center; justify-content: center; }
+  .paymethod .ic svg { width: 22px; height: 22px; }
+  .paymethod .nm { font-family: var(--font-display); font-size: 13.5px; font-weight: 700; }
+  .paymethod .sub { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.06em; }
+  .paymethod .reco { position: absolute; top: -8px; right: 10px; background: var(--accent); color: var(--fg); font-family: var(--font-mono); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; padding: 2px 7px; border-radius: 4px; }
+
+  /* Success */
+  .success-screen { background: var(--cream); border-radius: 18px; padding: 60px 32px; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
+  .success-icon { width: 96px; height: 96px; border-radius: 50%; background: var(--accent); color: var(--fg); display: flex; align-items: center; justify-content: center; }
+  .success-icon svg { width: 48px; height: 48px; }
+  .success-screen h2 { font-size: 36px; line-height: 1.15; }
+
+  .read-only-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 14px 16px; background: var(--cream); border-radius: 12px; }
+  .read-only-grid .row { display: flex; justify-content: space-between; padding: 6px 8px; font-size: 13px; }
+  .read-only-grid .row .k { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .read-only-grid .row .v { font-family: var(--font-display); font-weight: 600; }
+  .read-only-grid .row .v.mono { font-family: var(--font-mono); }
+
+  /* CTA row */
+  .cta-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding-top: 8px; }
+  .cta-row .right { display: flex; gap: 10px; align-items: center; }
+  .cta-row.center { justify-content: center; }
+
+  /* Footer */
+  .ob-footer { height: 56px; position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; z-index: 25; }
+  .ob-footer strong { color: var(--fg); font-weight: 700; }
+  .ob-footer a { color: var(--primary); text-decoration: none; display: inline-flex; gap: 6px; align-items: center; }
+  .ob-footer a svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body data-screen-label="09 Onboarding-flyt">
+
+<header class="ob-header">
+  <div class="ob-logo">
+    <div class="mark">AK</div>
+    <div class="nm">AK GOLF ACADEMY</div>
+  </div>
+  <div class="ob-stepper">
+    <span class="dot done"></span><span class="line done"></span>
+    <span class="dot done"></span><span class="line done"></span>
+    <span class="dot active"></span><span class="line"></span>
+    <span class="dot"></span><span class="line"></span>
+    <span class="dot"></span><span class="line"></span>
+    <span class="dot"></span><span class="line"></span>
+    <span class="dot"></span>
+    <span class="label-active">STEG 3 AV 7 · Golf-erfaring</span>
+  </div>
+  <div class="ob-header-actions">
+    <button class="btn outline sm">Lagre og fortsett senere</button>
+    <button class="ob-close" title="Lukk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+</header>
+
+<!-- =================================== SKJERM 1 — SPILLER =================================== -->
+<div class="screen-sep">SKJERM 1 / 2 · /onboarding · SPILLER-ONBOARDING · MARKUS R.P.</div>
+
+<!-- STEG 1 — Velkommen -->
+<div class="step-sep">STEG <strong>1</strong> AV <strong>7</strong> · VELKOMMEN</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #D1F843 0%, #88B45A 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240" preserveAspectRatio="xMidYMid meet">
+      <!-- tree silhouette -->
+      <ellipse cx="160" cy="200" rx="80" ry="22" fill="#1A4D2E" opacity="0.55"/>
+      <path d="M160 60 L180 100 L210 95 L185 130 L220 140 L180 170 L160 200 L140 170 L100 140 L135 130 L110 95 L140 100 Z" fill="#1A4D2E"/>
+      <!-- ground curve -->
+      <path d="M 0 200 Q 440 170 880 200 L 880 240 L 0 240 Z" fill="#5E8538"/>
+      <!-- golfer silhouette -->
+      <g transform="translate(540 100)" fill="#003A2A">
+        <ellipse cx="0" cy="-8" rx="13" ry="14"/>
+        <path d="M0 6 L-4 70 L-18 105 L-10 110 L0 75 L10 100 L18 105 L8 70 L4 6 Z"/>
+        <path d="M-6 16 Q-30 -10 -52 -12 Q-46 -8 -32 0 Q-20 8 -6 24 Z"/>
+        <line x1="-50" y1="-15" x2="-92" y2="-66" stroke="#003A2A" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <!-- ball -->
+      <circle cx="600" cy="200" r="6" fill="#fff"/>
+      <!-- motion lines -->
+      <g stroke="#003A2A" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5">
+        <path d="M470 80 Q450 60 440 50"/>
+        <path d="M470 100 Q445 85 425 80"/>
+      </g>
+    </svg>
+  </div>
+  <h2>Hei Markus — vi <em>gleder oss</em> til å jobbe med deg.</h2>
+  <div class="desc">
+    <p>Coach Anders har invitert deg inn i AK Golf Academy. De neste 5 minuttene tar vi en kort gjennomgang for å sette opp profilen din, koble til verktøyene dine, og vise deg hvordan AK Golf fungerer.</p>
+    <p>Du kan når som helst gå tilbake, lagre og fortsette senere. <strong>Ingenting er låst før du selv bekrefter siste steg.</strong></p>
+    <p>La oss begynne.</p>
+  </div>
+  <div class="inspo-strip">
+    <blockquote>Vi tenker langsiktig. Du blir bedre ved å gjøre de små tingene riktig — hver dag, i 3 år, i 5 år. Vi bygger karriere, ikke quick fixes.</blockquote>
+    <cite>Anders Kristiansen · Head Coach AK Golf Academy</cite>
+  </div>
+  <div class="cta-row center"><button class="btn lime big">La oss starte</button></div>
+</div>
+
+<!-- STEG 2 — Om deg -->
+<div class="step-sep">STEG <strong>2</strong> AV <strong>7</strong> · OM DEG</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #003A2A 0%, #006C50 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240">
+      <!-- ID card -->
+      <rect x="290" y="50" width="300" height="160" rx="14" fill="#FAFAF7" stroke="#D1F843" stroke-width="3"/>
+      <circle cx="350" cy="115" r="32" fill="#D1F843"/>
+      <rect x="400" y="80" width="160" height="10" rx="3" fill="#005840" opacity="0.30"/>
+      <rect x="400" y="100" width="120" height="8" rx="2" fill="#005840" opacity="0.20"/>
+      <rect x="400" y="118" width="140" height="8" rx="2" fill="#005840" opacity="0.20"/>
+      <rect x="320" y="170" width="240" height="6" rx="2" fill="#005840" opacity="0.15"/>
+      <rect x="320" y="184" width="180" height="6" rx="2" fill="#005840" opacity="0.15"/>
+    </svg>
+  </div>
+  <h2>La oss bli <em>kjent</em>.</h2>
+  <div class="desc"><p>Litt grunninfo så Anders kan tilpasse opplegget ditt. Du kan endre alt senere.</p></div>
+  <div class="field-grid">
+    <div class="field"><label>Fullt navn</label><input class="input" value="Markus Røinås Pedersen"></div>
+    <div class="field"><label>Fødselsdato</label><input class="input mono" value="12.03.2008"><div class="input-help">17 år · krever foreldre-godkjenning</div></div>
+    <div class="field"><label>E-post</label><input class="input" value="markus.pedersen@gmail.com"></div>
+    <div class="field"><label>Telefon</label><input class="input mono" value="+47 476 12 345"></div>
+    <div class="field full"><label>Hjemmeadresse</label><input class="input" value="Bossekop 14, 1610 Fredrikstad"></div>
+    <div class="field"><label>Kjønn</label>
+      <div class="radio-cards col-3">
+        <label class="checked"><input type="radio" name="k" checked>Mann</label>
+        <label><input type="radio" name="k">Kvinne</label>
+        <label><input type="radio" name="k">Ikke oppgi</label>
+      </div>
+    </div>
+    <div class="field"><label>Profilbilde</label>
+      <div style="display:flex;gap:10px;align-items:center;background:#fff;border:1.5px dashed var(--border);border-radius:8px;padding:14px;">
+        <div style="width:50px;height:50px;border-radius:50%;background:var(--cream);display:flex;align-items:center;justify-content:center;color:var(--muted-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="9" r="4"/></svg>
+        </div>
+        <div style="font-size:12px;color:var(--muted);">Last opp eller dra hit</div>
+      </div>
+    </div>
+    <div class="field"><label>Foresatt</label><input class="input" value="Tone Berg"></div>
+    <div class="field"><label>Foresatt e-post</label><input class="input" value="tone.berg@gmail.com"><div class="input-help ok">✓ Vi sender invitasjon til foreldre-portalen etter onboarding</div></div>
+  </div>
+  <div class="cta-row"><button class="btn outline">Tilbake</button><div class="right"><button class="btn lime">Neste — Golf-erfaring →</button></div></div>
+</div>
+
+<!-- STEG 3 — Golf-erfaring -->
+<div class="step-sep">STEG <strong>3</strong> AV <strong>7</strong> · GOLF-ERFARING</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #F1EEE5 0%, #E5E3DD 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240">
+      <!-- bag -->
+      <g transform="translate(380 60)">
+        <ellipse cx="60" cy="30" rx="55" ry="14" fill="#1A4D2E"/>
+        <path d="M5 30 L5 160 Q5 175 60 175 Q115 175 115 160 L115 30 Z" fill="#005840"/>
+        <ellipse cx="60" cy="30" rx="55" ry="14" fill="#003A2A" opacity="0.55"/>
+        <!-- clubs -->
+        <line x1="40" y1="20" x2="30" y2="-30" stroke="#3A3A3A" stroke-width="3"/>
+        <line x1="55" y1="20" x2="50" y2="-40" stroke="#3A3A3A" stroke-width="3"/>
+        <line x1="70" y1="20" x2="70" y2="-50" stroke="#3A3A3A" stroke-width="3"/>
+        <line x1="85" y1="20" x2="92" y2="-35" stroke="#3A3A3A" stroke-width="3"/>
+        <!-- club heads -->
+        <ellipse cx="30" cy="-30" rx="6" ry="4" fill="#D1F843"/>
+        <ellipse cx="50" cy="-40" rx="6" ry="4" fill="#D1F843"/>
+        <ellipse cx="70" cy="-50" rx="7" ry="5" fill="#D1F843"/>
+        <ellipse cx="92" cy="-35" rx="6" ry="4" fill="#D1F843"/>
+      </g>
+    </svg>
+  </div>
+  <h2>Fortell om <em>spillet ditt</em>.</h2>
+  <div class="desc"><p>Dette hjelper Anders med å skreddersy treningsplanen din fra dag én.</p></div>
+  <div class="field-grid">
+    <div class="field"><label>Handicap</label><input class="input mono" value="+3,5" style="font-size:24px;font-weight:700;"></div>
+    <div class="field"><label>Hjemmebane / klubb</label><input class="input" value="Gamle Fredrikstad GK"></div>
+    <div class="field"><label>Antall år du har spilt</label><input class="input mono" type="range" min="0" max="25" value="11" style="padding:18px 0;"><div class="input-help"><strong>11 år</strong> · jeg startet da jeg var 6</div></div>
+    <div class="field"><label>Antall økter per uke</label>
+      <div class="num-stepper" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:6px;justify-content:space-between;">
+        <span class="opt">3</span><span class="opt">4</span><span class="opt active">5</span><span class="opt">6</span><span class="opt">7</span><span class="opt">8+</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="field"><label>Kategori (basert på HCP)</label>
+    <div class="cat-radio">
+      <label class="checked"><input type="radio" name="cat" checked><span class="cat-pill a1">A1</span><div class="body"><div style="font-weight:700;">Elite / proff-nivå</div><div class="hcp">HCP +5 til 4,4</div></div></label>
+      <label><input type="radio" name="cat"><span class="cat-pill a2">A2</span><div class="body"><div style="font-weight:700;">Amatør, høyt nivå</div><div class="hcp">HCP 4,5 til 11,4</div></div></label>
+      <label><input type="radio" name="cat"><span class="cat-pill b1">B1</span><div class="body"><div style="font-weight:700;">Klubbnivå, høyere</div><div class="hcp">HCP 11,5 til 18,4</div></div></label>
+      <label><input type="radio" name="cat"><span class="cat-pill b2">B2</span><div class="body"><div style="font-weight:700;">Klubbnivå</div><div class="hcp">HCP 18,5 til 36</div></div></label>
+      <label><input type="radio" name="cat"><span class="cat-pill c">C</span><div class="body"><div style="font-weight:700;">Nybegynner</div><div class="hcp">HCP 36+</div></div></label>
+    </div>
+  </div>
+
+  <div class="field"><label>Spiller du turneringer?</label>
+    <div class="radio-cards col-3">
+      <label class="checked"><input type="radio" name="turn" checked>Ja, regelmessig</label>
+      <label><input type="radio" name="turn">Ja, av og til</label>
+      <label><input type="radio" name="turn">Nei, ikke nå</label>
+    </div>
+  </div>
+
+  <div class="field"><label>Mål for sesongen — velg inntil 3</label>
+    <div class="multi-pills">
+      <label class="checked">SENKE HCP</label>
+      <label>VINNE KLUBBM.</label>
+      <label class="checked">SPILLE NM</label>
+      <label>COLLEGE USA</label>
+      <label>UNDER PAR</label>
+      <label>BEDRE PUTTING</label>
+      <label class="checked">BEDRE IRON-SPILL</label>
+      <label>MENTAL ROBUSTHET</label>
+      <label>BLI PROFF</label>
+    </div>
+  </div>
+
+  <div class="cta-row"><button class="btn outline">Tilbake</button><div class="right"><button class="btn lime">Neste — Koble GolfBox →</button></div></div>
+</div>
+
+<!-- STEG 4 — GolfBox -->
+<div class="step-sep">STEG <strong>4</strong> AV <strong>7</strong> · KOBLE GOLFBOX</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #F1EEE5 0%, #FAFAF7 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240">
+      <rect x="240" y="40" width="400" height="160" rx="14" fill="#fff" stroke="#005840" stroke-width="2"/>
+      <line x1="260" y1="64" x2="260" y2="180" stroke="#E5E3DD" stroke-width="1"/>
+      <line x1="260" y1="180" x2="620" y2="180" stroke="#E5E3DD" stroke-width="1"/>
+      <polyline points="270,160 320,130 370,135 420,105 470,100 520,80 580,70 610,55" fill="none" stroke="#D1F843" stroke-width="3"/>
+      <polyline points="270,170 330,155 380,150 430,140 480,130 530,120 580,110 610,100" fill="none" stroke="#005840" stroke-width="2" stroke-dasharray="4 3"/>
+      <text x="440" y="220" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#005840" letter-spacing="0.10em">HCP-HISTORIKK · 24 MND</text>
+    </svg>
+  </div>
+  <h2>Koble til <em>GolfBox</em>.</h2>
+  <div class="desc"><p>Når du kobler til GolfBox-kontoen din, henter vi automatisk inn HCP-historikken og runde-data dine. Du slipper å fylle inn manuelt — og <strong>Anders får et komplett bilde fra dag én.</strong></p></div>
+  <div class="connect-card">
+    <div style="display:flex;gap:12px;align-items:center;"><div class="ic-big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><span style="font-family:var(--font-display);font-size:24px;font-weight:800;letter-spacing:-0.02em;">GolfBox</span></div>
+    <div class="copy">Vi henter HCP, runder spilt siste 24 mnd, og turneringshistorikk.</div>
+    <button class="btn lime big">Koble til GolfBox</button>
+    <div class="trust">Krever GolfBox-konto · Vi lagrer aldri passordet ditt</div>
+  </div>
+  <div style="text-align:center;"><span class="skip-link">Hopp over — jeg kobler til senere</span></div>
+  <div class="security-strip" style="text-align:center;">Vi følger GDPR og lagrer kun det vi trenger for å hjelpe deg utvikle deg som spiller.</div>
+  <div class="cta-row"><button class="btn outline">Tilbake</button><div class="right"><button class="btn lime">Neste — TrackMan →</button></div></div>
+</div>
+
+<!-- STEG 5 — TrackMan -->
+<div class="step-sep">STEG <strong>5</strong> AV <strong>7</strong> · KOBLE TRACKMAN</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #003A2A 0%, #006C50 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240">
+      <!-- radar arcs -->
+      <g stroke="#D1F843" fill="none" stroke-width="2" opacity="0.5">
+        <path d="M 60 200 Q 60 100 200 100"/>
+        <path d="M 60 200 Q 60 60 280 60"/>
+        <path d="M 60 200 Q 60 20 360 20"/>
+      </g>
+      <!-- ball flight curve -->
+      <path d="M 60 200 Q 280 50 600 110" fill="none" stroke="#D1F843" stroke-width="4"/>
+      <!-- data points -->
+      <g fill="#D1F843"><circle cx="200" cy="120" r="5"/><circle cx="320" cy="80" r="5"/><circle cx="440" cy="80" r="5"/><circle cx="560" cy="105" r="5"/></g>
+      <!-- tee -->
+      <rect x="56" y="195" width="8" height="14" fill="#fff"/>
+      <circle cx="60" cy="200" r="4" fill="#fff"/>
+      <text x="450" y="220" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#D1F843" letter-spacing="0.10em">258m carry · 1,37 smash · 6° launch</text>
+    </svg>
+  </div>
+  <h2>Koble til <em>TrackMan</em>.</h2>
+  <div class="desc"><p>Hvis du har en TrackMan-konto (egen, fra klubb, eller fra Performance Studio), kobler vi den slik at swing-data og ball-flight-info automatisk synkes til profilen din.</p></div>
+  <div class="connect-card">
+    <div style="display:flex;gap:12px;align-items:center;"><div class="ic-big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><span style="font-family:var(--font-display);font-size:24px;font-weight:800;letter-spacing:-0.02em;">TrackMan</span></div>
+    <div class="copy">Vi henter swing-data, ball-flight og distance-data fra alle dine økter.</div>
+    <button class="btn lime big">Koble til TrackMan</button>
+    <div class="trust">Krever TrackMan-konto eller Performance Studio-tilgang</div>
+  </div>
+  <div style="text-align:center;"><span class="skip-link">Hopp over — jeg har ikke TrackMan-konto</span></div>
+  <div class="security-strip">
+    <strong>Bruker du Performance Studio på GFGK?</strong> Da er TrackMan automatisk koblet på via klubb-abonnementet — vi henter dataen din uten ekstra steg.
+  </div>
+  <div class="cta-row"><button class="btn outline">Tilbake</button><div class="right"><button class="btn lime">Neste — Coach + abonnement →</button></div></div>
+</div>
+
+<!-- STEG 6 — Coach + abonnement -->
+<div class="step-sep">STEG <strong>6</strong> AV <strong>7</strong> · COACH OG ABONNEMENT</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #88B45A 0%, #5E8538 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240">
+      <!-- ground -->
+      <ellipse cx="440" cy="200" rx="380" ry="20" fill="#003A2A" opacity="0.30"/>
+      <!-- coach -->
+      <g transform="translate(330 90)" fill="#003A2A">
+        <ellipse cx="0" cy="-5" rx="12" ry="13"/>
+        <path d="M-2 8 L-6 80 L-18 110 L-12 115 L-3 85 L0 85 L3 85 L12 115 L18 110 L6 80 L2 8 Z"/>
+      </g>
+      <!-- player -->
+      <g transform="translate(530 95)" fill="#003A2A">
+        <ellipse cx="0" cy="-5" rx="11" ry="12"/>
+        <path d="M-2 6 L-5 70 L-15 100 L-10 105 L-3 75 L0 75 L3 75 L10 105 L15 100 L5 70 L2 6 Z"/>
+      </g>
+      <!-- lime ball between -->
+      <circle cx="430" cy="195" r="10" fill="#D1F843" stroke="#003A2A" stroke-width="2"/>
+    </svg>
+  </div>
+  <h2>Din <em>coach</em> og ditt opplegg.</h2>
+  <div class="desc"><p>Velg coach og abonnement. Du kan endre dette når som helst.</p></div>
+
+  <div>
+    <div style="font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:0.10em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;">Velg coach</div>
+    <div class="coach-grid">
+      <div class="coach-card selected">
+        <span class="badge">VALGT</span>
+        <div class="photo">AK</div>
+        <div class="nm">Anders Kristiansen</div>
+        <div class="role">HEAD COACH</div>
+        <div class="meta">38 aktive spillere · 18 års erfaring · Mac O'Grady-skolen</div>
+      </div>
+      <div class="coach-card">
+        <div class="photo">ES</div>
+        <div class="nm">Erik Solli</div>
+        <div class="role">PUTTING-SPESIALIST</div>
+        <div class="meta">Anbefales for kort-spill-fokus</div>
+      </div>
+      <div class="coach-card">
+        <div class="photo">MH</div>
+        <div class="nm">Maja Hagen</div>
+        <div class="role">JUNIOR / UTVIKLING</div>
+        <div class="meta">Anbefales for nybegynnere og 12-16 år</div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div style="font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:0.10em;color:var(--muted);text-transform:uppercase;margin:18px 0 10px;">Velg abonnement</div>
+    <div class="plan-grid">
+      <div class="plan-card">
+        <div class="tier">GRATIS</div>
+        <div class="price">0 kr<span style="font-size:14px;color:var(--muted);font-weight:500;">/mnd</span></div>
+        <div class="features">
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>PlayerHQ-profil</div>
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>1 økt-logg per uke</div>
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Turneringskalender</div>
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>HCP-tracking</div>
+          <div class="x">— Ingen booking, drill-bibliotek eller AI-coach</div>
+        </div>
+      </div>
+      <div class="plan-card selected">
+        <div class="tier">PRO</div>
+        <div class="price">300 kr<span style="font-size:14px;color:var(--muted);font-weight:500;">/mnd</span></div>
+        <div class="features">
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Alt i GRATIS</div>
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Booking av økter og turneringer</div>
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>142-drill bibliotek</div>
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>AI-coach Anders</div>
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Bane-strategier · Sammenligning · Foreldre-portal</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:6px;">Avsluttes når som helst</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="security-strip">Vi sender faktura månedlig til <strong>markus.pedersen@gmail.com</strong>. Siden du er 17, sendes faktura til Tone Berg (foresatt) for godkjenning.</div>
+  <div class="cta-row"><button class="btn outline">Tilbake</button><div class="right"><button class="btn lime">Neste — Foreldre-godkjenning →</button></div></div>
+</div>
+
+<!-- STEG 7 — Ferdig -->
+<div class="step-sep">STEG <strong>7</strong> AV <strong>7</strong> · FORELDRE-GODKJENNING + FERDIG</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #F1EEE5 0%, #E5E3DD 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240">
+      <!-- family silhouettes on green -->
+      <ellipse cx="440" cy="210" rx="320" ry="14" fill="#88B45A" opacity="0.55"/>
+      <g transform="translate(380 110)" fill="#003A2A">
+        <ellipse cx="0" cy="-8" rx="14" ry="15"/>
+        <path d="M-3 8 L-7 78 L-20 105 L-12 110 L-3 80 L0 80 L3 80 L12 110 L20 105 L7 78 L3 8 Z"/>
+      </g>
+      <g transform="translate(490 130)" fill="#003A2A">
+        <ellipse cx="0" cy="-5" rx="11" ry="12"/>
+        <path d="M-2 6 L-5 65 L-15 90 L-9 94 L-2 68 L0 68 L2 68 L9 94 L15 90 L5 65 L2 6 Z"/>
+      </g>
+    </svg>
+  </div>
+  <h2>Nesten <em>ferdig</em> — siste sjekk.</h2>
+  <div class="desc"><p>Siden du er 17, sender vi en kort melding til Tone Berg (mor) som bekrefter at hun godkjenner abonnementet og at du blir spiller hos AK Golf Academy. Hun får sin egen invitasjon til foreldre-portalen rett etter.</p></div>
+
+  <div class="summary-card">
+    <h4>Du har valgt</h4>
+    <div class="summary-row"><div class="k">Coach</div><div class="v">Anders Kristiansen · HEAD COACH</div></div>
+    <div class="summary-row"><div class="k">Abonnement</div><div class="v mono">PRO · 300 kr/mnd</div></div>
+    <div class="summary-row"><div class="k">Faktura til</div><div class="v">Tone Berg · tone.berg@gmail.com</div></div>
+    <div class="summary-row"><div class="k">Hjemmebane</div><div class="v">Gamle Fredrikstad GK</div></div>
+    <div class="summary-row"><div class="k">Kategori</div><div class="v">A1 · <span class="mono">HCP +3,5</span></div></div>
+    <div class="summary-row"><div class="k">Mål</div><div class="v">Vinne klubbmesterskap · Spille NM · Bedre iron-spill</div></div>
+    <div class="summary-row"><div class="k">Frekvens</div><div class="v mono">5 økter/uke</div></div>
+  </div>
+
+  <div class="pm-card">
+    <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+    <div>
+      <blockquote>"Tone Berg, Markus har registrert seg som spiller hos AK Golf Academy med PRO-abonnement (300 kr/mnd). Godkjenn her: [LINK]."</blockquote>
+      <cite>Coach Anders Kristiansen · AK Golf Academy</cite>
+    </div>
+  </div>
+
+  <div class="agree-stack">
+    <div class="agree-card checked">
+      <div class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="body">
+        <div class="ttl">Jeg har lest og godtar AK Golf Academy sine vilkår</div>
+        <div class="sub">Inkluderer personvernerklæring og treningsfilosofi.</div>
+      </div>
+    </div>
+    <div class="agree-card checked">
+      <div class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="body">
+        <div class="ttl">Jeg samtykker til datadeling mellom Anders, mine foreldre og meg</div>
+        <div class="sub">Trenings- og helsedata. Du kan trekke tilbake samtykket når som helst.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-row"><button class="btn outline">Tilbake</button><div class="right"><button class="btn lime big">Fullfør registrering</button></div></div>
+</div>
+
+<!-- SUCCESS spiller -->
+<div class="step-sep">STEG <strong>7</strong> · FULLFØRT</div>
+<div class="step">
+  <div class="success-screen">
+    <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h2>Velkommen til AK Golf, <em>Markus</em>.</h2>
+    <div class="desc" style="max-width:540px;">Tone er varslet. Du får tilgang så snart hun bekrefter — vanligvis innen 1 time.</div>
+    <div style="display:flex;gap:10px;margin-top:8px;"><button class="btn outline">Last ned mobil-appen</button><button class="btn lime big">Gå til PlayerHQ</button></div>
+  </div>
+</div>
+
+<!-- =================================== SKJERM 2 — FORELDER =================================== -->
+<div class="screen-sep">SKJERM 2 / 2 · /onboarding/forelder · FORELDRE-ONBOARDING · TONE BERG</div>
+
+<!-- STEG 1 -->
+<div class="step-sep">STEG <strong>1</strong> AV <strong>4</strong> · VELKOMMEN</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #F1EEE5 0%, #E5E3DD 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240">
+      <!-- two hands offering ball -->
+      <g fill="#003A2A">
+        <path d="M 320 150 Q 340 110 380 100 L 400 110 Q 380 130 360 155 Z"/>
+        <path d="M 560 150 Q 540 110 500 100 L 480 110 Q 500 130 520 155 Z"/>
+      </g>
+      <circle cx="440" cy="120" r="20" fill="#D1F843" stroke="#003A2A" stroke-width="3"/>
+      <!-- ground -->
+      <ellipse cx="440" cy="210" rx="280" ry="14" fill="#88B45A" opacity="0.5"/>
+    </svg>
+  </div>
+  <h2>Hei Tone — <em>velkommen inn</em>.</h2>
+  <div class="desc">
+    <p>Anders Kristiansen og Markus har akkurat satt opp Markus' profil hos AK Golf Academy. Som mor er du en sentral del av hans utvikling, og vi vil at du skal være tett på — uten å være i veien.</p>
+    <p>De neste 3 minuttene tar vi en kort gjennomgang. Du får din egen <strong>foreldre-portal</strong> med innsyn i Markus' planer, runder, fakturaer og fremgang. Du kan også sende meldinger til Anders direkte hvis du lurer på noe.</p>
+    <p>La oss begynne.</p>
+  </div>
+  <div class="inspo-strip cream">
+    <blockquote>Foreldre er den viktigste støttespilleren en ung utøver har. Vi gjør alt vi kan for at du skal føle deg trygg på hva vi gjør — og hvorfor.</blockquote>
+    <cite>Anders Kristiansen · Head Coach AK Golf Academy</cite>
+  </div>
+  <div class="cta-row center"><button class="btn lime big">La oss begynne</button></div>
+</div>
+
+<!-- STEG 2 -->
+<div class="step-sep">STEG <strong>2</strong> AV <strong>4</strong> · OM MARKUS</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #006C50 0%, #003A2A 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240">
+      <rect x="290" y="50" width="300" height="160" rx="14" fill="#FAFAF7" stroke="#D1F843" stroke-width="3"/>
+      <circle cx="350" cy="115" r="32" fill="#D1F843"/>
+      <text x="350" y="121" text-anchor="middle" font-family="Inter Tight" font-size="18" font-weight="800" fill="#003A2A">MR</text>
+      <rect x="400" y="80" width="160" height="10" rx="3" fill="#005840" opacity="0.30"/>
+      <rect x="400" y="100" width="120" height="8" rx="2" fill="#005840" opacity="0.20"/>
+      <rect x="400" y="118" width="140" height="8" rx="2" fill="#005840" opacity="0.20"/>
+    </svg>
+  </div>
+  <h2>Bekreft <em>Markus' info</em>.</h2>
+  <div class="desc"><p>Markus har fylt inn dette selv. Sjekk at det stemmer — endre om noe er feil.</p></div>
+
+  <div class="read-only-grid">
+    <div class="row"><span class="k">Fullt navn</span><span class="v">Markus Røinås Pedersen</span></div>
+    <div class="row"><span class="k">Fødselsdato</span><span class="v mono">12. mars 2008 (17)</span></div>
+    <div class="row"><span class="k">Klubb</span><span class="v">Gamle Fredrikstad GK</span></div>
+    <div class="row"><span class="k">HCP</span><span class="v mono">+3,5</span></div>
+    <div class="row"><span class="k">Kategori</span><span class="v"><span class="cat-pill a1" style="padding:3px 9px;">A1</span></span></div>
+    <div class="row"><span class="k">Coach</span><span class="v">Anders Kristiansen</span></div>
+  </div>
+
+  <div style="font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:0.10em;color:var(--muted);text-transform:uppercase;margin-top:12px;">Din info</div>
+  <div class="field-grid">
+    <div class="field"><label>Ditt navn</label><input class="input" value="Tone Berg"></div>
+    <div class="field"><label>Telefon</label><input class="input mono" value="+47 478 22 567"></div>
+    <div class="field"><label>E-post</label><input class="input" value="tone.berg@gmail.com"></div>
+    <div class="field"><label>Relasjon til Markus</label>
+      <div class="radio-cards col-3">
+        <label class="checked"><input type="radio" name="rel" checked>Mor</label>
+        <label><input type="radio" name="rel">Far</label>
+        <label><input type="radio" name="rel">Foresatt</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="security-strip">Du kan invitere far/annen foresatt senere fra foreldre-portalen. <strong>Begge får samme tilgangsnivå.</strong></div>
+
+  <div class="cta-row"><button class="btn outline">Tilbake</button><div class="right"><button class="btn lime">Neste — Godkjenn vilkår →</button></div></div>
+</div>
+
+<!-- STEG 3 — Vilkår -->
+<div class="step-sep">STEG <strong>3</strong> AV <strong>4</strong> · GODKJENN VILKÅR</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #88B45A 0%, #5E8538 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240">
+      <rect x="240" y="60" width="400" height="120" rx="6" fill="#FAFAF7"/>
+      <line x1="280" y1="140" x2="600" y2="140" stroke="#003A2A" stroke-width="2"/>
+      <!-- pen -->
+      <g transform="translate(540 120) rotate(-30)">
+        <rect x="0" y="0" width="80" height="10" fill="#D1F843"/>
+        <polygon points="80,0 100,5 80,10" fill="#003A2A"/>
+        <rect x="-12" y="0" width="12" height="10" fill="#003A2A"/>
+      </g>
+    </svg>
+  </div>
+  <h2>Vilkår og <em>samtykke</em>.</h2>
+  <div class="desc"><p>Som foresatt for en mindreårig spiller må du godkjenne våre vilkår, personvernerklæringen, og avtalen om trenings-data.</p></div>
+
+  <div class="agree-stack">
+    <div class="agree-card checked">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div class="body">
+        <div class="ttl">AK Golf Academy Treningsavtale</div>
+        <div class="sub">Beskriver hva Markus får tilgang til, frekvens, og forventninger fra begge sider.</div>
+        <span class="read-link">Les hele avtalen →</span>
+      </div>
+      <div class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="agree-card checked">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div class="body">
+        <div class="ttl">Personvernerklæring og datadeling</div>
+        <div class="sub">Hvilke data vi samler om Markus, hvordan vi bruker dem, og dine rettigheter.</div>
+        <span class="read-link">Les hele erklæringen →</span>
+      </div>
+      <div class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="agree-card checked">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+      <div class="body">
+        <div class="ttl">Betaling og oppsigelse</div>
+        <div class="sub">Faktura månedlig. Avsluttes når som helst med 30 dagers oppsigelse.</div>
+        <span class="read-link">Les vilkårene →</span>
+      </div>
+      <div class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+  </div>
+
+  <div class="security-strip">
+    <strong>Anders Kristiansen og AK Golf Academy</strong> er forsikret, registrert som golftrener av NGF, og har politiattest. Alle våre rutiner følger Norges Idrettsforbund sine retningslinjer for arbeid med mindreårige.
+  </div>
+
+  <div class="cta-row"><button class="btn outline">Tilbake</button><div class="right"><button class="btn lime">Neste — Betaling →</button></div></div>
+</div>
+
+<!-- STEG 4 — Betaling -->
+<div class="step-sep">STEG <strong>4</strong> AV <strong>4</strong> · BETALING</div>
+<div class="step">
+  <div class="illust" style="background:linear-gradient(160deg, #F1EEE5 0%, #E5E3DD 100%);">
+    <svg width="100%" height="240" viewBox="0 0 880 240">
+      <rect x="320" y="40" width="240" height="180" rx="8" fill="#FAFAF7" stroke="#003A2A" stroke-width="2"/>
+      <rect x="320" y="40" width="240" height="44" fill="#003A2A"/>
+      <text x="440" y="68" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="800" fill="#D1F843" letter-spacing="0.18em">AK GOLF · FAKTURA</text>
+      <line x1="340" y1="110" x2="540" y2="110" stroke="#E5E3DD" stroke-width="1"/>
+      <line x1="340" y1="130" x2="540" y2="130" stroke="#E5E3DD" stroke-width="1"/>
+      <line x1="340" y1="150" x2="540" y2="150" stroke="#E5E3DD" stroke-width="1"/>
+      <text x="340" y="190" font-family="JetBrains Mono" font-size="22" font-weight="800" fill="#003A2A">300 kr</text>
+      <rect x="430" y="170" width="100" height="30" rx="6" fill="#D1F843"/>
+      <text x="480" y="190" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="800" fill="#003A2A" letter-spacing="0.10em">PR. MND</text>
+    </svg>
+  </div>
+  <h2>Sett opp <em>betaling</em>.</h2>
+  <div class="desc"><p>Markus har valgt PRO-abonnement, 300 kr/mnd. Du faktureres månedlig fra dato Markus er aktivert. Avsluttes når som helst.</p></div>
+
+  <div class="pay-summary">
+    <div class="lbl">Abonnement</div>
+    <div class="name">Markus Røinås Pedersen · AK Golf Academy PRO</div>
+    <div class="price">300 kr/mnd</div>
+    <div class="meta">Første faktura: 20. mai 2026 · Neste: 20. juni 2026 · Avsluttes når som helst</div>
+  </div>
+
+  <div>
+    <div style="font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:0.10em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;">Velg betalingsmetode</div>
+    <div class="paymethod-grid">
+      <div class="paymethod selected">
+        <span class="reco">ANBEFALT</span>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg></div>
+        <div class="nm">Vipps</div>
+        <div class="sub">Trekkes auto. 20. hver mnd</div>
+      </div>
+      <div class="paymethod">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div class="nm">Kort</div>
+        <div class="sub">Visa, MC, Stripe</div>
+      </div>
+      <div class="paymethod">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+        <div class="nm">Faktura på e-post</div>
+        <div class="sub">30 dagers betalingsfrist</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field-grid">
+    <div class="field"><label>Kortnummer</label><input class="input mono" placeholder="•••• •••• •••• ••••" value="•••• •••• •••• 4218"></div>
+    <div class="field"><label>Utløp / CVC</label><div style="display:flex;gap:8px;"><input class="input mono" value="12 / 28" style="flex:1;"><input class="input mono" placeholder="CVC" value="•••" style="width:80px;"></div></div>
+    <div class="field"><label>Navn på kort</label><input class="input" value="Tone Berg"></div>
+    <div class="field"><label>Postnummer</label><input class="input mono" value="1610"></div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.04em;">
+    <span>Sikret med Stripe · 256-bit kryptering</span>
+    <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" checked>Auto-lagre kort</label>
+  </div>
+
+  <div class="cta-row"><button class="btn outline">Tilbake</button><div class="right"><button class="btn lime big">Fullfør og aktiver Markus</button></div></div>
+</div>
+
+<!-- SUCCESS forelder -->
+<div class="step-sep">STEG <strong>4</strong> · FULLFØRT</div>
+<div class="step">
+  <div class="success-screen">
+    <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h2>Takk, Tone. Vi <em>gleder oss</em> til å jobbe sammen.</h2>
+    <div class="desc" style="max-width:580px;">Markus er aktivert. Du har nå tilgang til foreldre-portalen — vi har sendt deg en lenke på e-post.</div>
+    <div style="display:flex;gap:10px;margin-top:8px;"><button class="btn outline">Hopp til Markus' profil</button><button class="btn lime big">Gå til foreldre-portalen</button></div>
+    <div style="margin-top:18px;padding:14px 22px;background:#fff;border-radius:12px;font-size:13px;color:var(--muted);max-width:580px;line-height:1.55;">Spørsmål? <strong style="color:var(--fg);">Anders</strong> nås direkte på <span style="font-family:var(--font-mono);">akgolfgroup@gmail.com</span> eller <span style="font-family:var(--font-mono);">+47 905 12 345</span>. Vi svarer som regel innen 4 timer på hverdager.</div>
+  </div>
+</div>
+
+<footer class="ob-footer">
+  <span>Steg <strong>3 av 7</strong> · Spiller-onboarding · Markus R.P.</span>
+  <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Trenger du hjelp? Snakk med Anders</a>
+</footer>
+
+<script>
+  // Click step-sep to scroll to that step's container
+  document.querySelectorAll('.step-sep').forEach(sep => {
+    sep.addEventListener('click', () => sep.scrollIntoView({behavior:'smooth', block:'start'}));
+  });
+</script>
+</body>
+</html>

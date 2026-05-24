@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>AI-Caddie for Markus — AK Golf CoachHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<link rel="stylesheet" href="coachhq.css">
+<style>
+  body { padding-bottom: 48px; }
+
+  /* sub-tabs inherit from spiller-profil pattern */
+  .sub-tabs-wrap {
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 14px 40px 0;
+    position: sticky; top: var(--topbar-h); z-index: 18;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .sub-tabs-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 600;
+    text-decoration: none; padding-bottom: 14px;
+  }
+  .sub-tabs-back:hover { color: var(--fg); }
+  .sub-tabs-back svg { width: 12px; height: 12px; }
+  .sub-tabs { display: flex; gap: 0; flex: 1; }
+  .sub-tab {
+    background: transparent; border: 0; padding: 10px 16px 14px;
+    font-family: var(--font-display); font-size: 13px; font-weight: 500;
+    color: var(--muted); cursor: pointer; text-decoration: none;
+    border-bottom: 3px solid transparent; margin-bottom: -1px;
+    display: inline-flex; align-items: center; gap: 8px; line-height: 1;
+  }
+  .sub-tab:hover { color: var(--fg); }
+  .sub-tab.active { color: var(--fg); font-weight: 600; border-bottom-color: var(--accent); }
+  .sub-tab svg { width: 14px; height: 14px; }
+
+  .ai-wrap { padding: 28px 40px 80px; max-width: 1480px; display: flex; flex-direction: column; gap: 22px; }
+
+  /* Page header */
+  .ai-header { display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: end; }
+  .ai-header h1 { font-family: var(--font-display); font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; }
+  .ai-header h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary); }
+  .ai-header .stats {
+    font-family: var(--font-mono); font-size: 11.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 6px;
+  }
+  .ai-header .stats .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--muted-soft); }
+  .ai-header .stats .ok { color: var(--success); font-weight: 700; }
+  .ai-header .stats .err { color: var(--danger); font-weight: 700; }
+
+  .auto-toggle {
+    display: flex; align-items: center; gap: 14px;
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 14px 10px 16px;
+  }
+  .auto-toggle .copy { display: flex; flex-direction: column; gap: 2px; }
+  .auto-toggle .ttl { font-family: var(--font-display); font-size: 12.5px; font-weight: 600; line-height: 1.2; }
+  .auto-toggle .sub { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .switch {
+    width: 38px; height: 22px; border-radius: 999px;
+    background: var(--border-soft); position: relative; cursor: pointer;
+    transition: background 180ms ease; flex-shrink: 0; border: 0;
+  }
+  .switch::after {
+    content: ''; position: absolute; left: 2px; top: 2px;
+    width: 18px; height: 18px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 3px rgba(10,31,23,0.18);
+    transition: left 180ms ease;
+  }
+  .switch.on { background: var(--primary); }
+  .switch.on::after { left: 18px; }
+
+  .ai-grid { display: grid; grid-template-columns: 1fr 380px; gap: 22px; align-items: start; }
+
+  /* Conversation */
+  .conv {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .conv-head {
+    padding: 14px 20px; border-bottom: 1px solid var(--border-soft);
+    display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+  }
+  .conv-head h2 { font-family: var(--font-display); font-size: 15px; font-weight: 600; letter-spacing: -0.005em; }
+  .conv-head .jump {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; gap: 12px;
+  }
+  .conv-head .jump a { color: var(--muted); text-decoration: none; cursor: pointer; }
+  .conv-head .jump a:hover, .conv-head .jump a.active { color: var(--fg); font-weight: 700; }
+
+  .conv-body { padding: 24px; display: flex; flex-direction: column; gap: 22px; }
+
+  .day-divider {
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700;
+  }
+  .day-divider::before, .day-divider::after { content: ''; flex: 1; height: 1px; background: var(--border-soft); }
+
+  .msg { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: flex-start; }
+  .msg-av {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .msg.ai .msg-av { background: var(--primary); color: var(--accent); position: relative; }
+  .msg.ai .msg-av::after {
+    content: '✦'; position: absolute; right: -2px; bottom: -2px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent); color: var(--primary);
+    font-size: 9px; line-height: 14px; font-weight: 700;
+    text-align: center; border: 1.5px solid var(--card);
+  }
+  .msg.user .msg-av { background: #DCE7E1; color: var(--primary); }
+  .msg-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .msg-meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .msg-meta strong { font-weight: 700; color: var(--fg); letter-spacing: 0.02em; }
+  .msg-meta .ts { color: var(--muted-soft); }
+
+  .bubble {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 14px; padding: 12px 16px;
+    font-family: var(--font-body); font-size: 13.5px;
+    color: var(--fg); line-height: 1.55; max-width: 100%;
+  }
+  .msg.ai .bubble { background: rgba(0,88,64,0.04); border-color: rgba(0,88,64,0.15); }
+  .msg.ai .bubble strong { font-family: var(--font-display); font-weight: 600; }
+  .bubble em { font-family: var(--font-serif); font-style: italic; color: var(--primary); }
+
+  .bubble.proposal {
+    background: rgba(209,248,67,0.10);
+    border: 1px solid rgba(209,248,67,0.45);
+    padding: 0; overflow: hidden;
+  }
+  .proposal-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 16px; border-bottom: 1px solid rgba(209,248,67,0.30);
+    background: rgba(209,248,67,0.16);
+  }
+  .pending-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    background: var(--accent); color: var(--fg);
+    padding: 4px 8px; border-radius: 999px;
+  }
+  .pending-pill svg { width: 10px; height: 10px; }
+  .proposal-head .type { font-family: var(--font-display); font-size: 13px; font-weight: 600; }
+  .proposal-body { padding: 14px 16px 6px; font-family: var(--font-body); font-size: 13.5px; color: var(--fg); line-height: 1.55; }
+  .proposal-body strong { font-family: var(--font-display); font-weight: 600; }
+  .proposal-meta {
+    display: flex; gap: 14px; padding: 6px 16px 12px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .proposal-meta .impact { color: var(--success); font-weight: 700; }
+  .proposal-actions {
+    display: flex; gap: 6px; padding: 12px 16px;
+    border-top: 1px solid rgba(209,248,67,0.20);
+  }
+  .btn-approve {
+    background: var(--primary); color: var(--accent); border: 0; border-radius: 999px;
+    padding: 8px 14px; font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+    font-family: var(--font-body);
+  }
+  .btn-approve svg { width: 12px; height: 12px; }
+  .btn-edit, .btn-reject {
+    background: #fff; color: var(--fg); border: 1px solid var(--border);
+    border-radius: 999px; padding: 8px 14px; font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: var(--font-body);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-reject { color: var(--danger); }
+  .btn-reject:hover { background: rgba(163,45,45,0.06); border-color: rgba(163,45,45,0.30); }
+  .btn-edit svg, .btn-reject svg { width: 12px; height: 12px; }
+
+  .bubble.approved { background: rgba(0,88,64,0.05); border-color: rgba(0,88,64,0.20); }
+  .bubble.rejected { background: rgba(163,45,45,0.04); border-color: rgba(163,45,45,0.18); }
+  .status-line {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .bubble.approved .status-line { color: var(--success); }
+  .bubble.rejected .status-line { color: var(--danger); }
+  .status-line svg { width: 12px; height: 12px; }
+
+  /* Right rail */
+  .right-rail {
+    display: flex; flex-direction: column; gap: 16px;
+    position: sticky; top: calc(var(--topbar-h) + 64px);
+  }
+  .rail-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; }
+  .rail-card .head {
+    padding: 14px 16px 10px;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .rail-card .head h2 { font-family: var(--font-display); font-size: 14px; font-weight: 600; letter-spacing: -0.005em; }
+  .rail-card .head .ct {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.10em; font-weight: 700;
+    background: rgba(209,248,67,0.30); color: #4A5418;
+    padding: 2px 7px; border-radius: 999px;
+  }
+
+  .prop {
+    border-top: 1px solid var(--border-soft);
+    padding: 14px 16px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .prop .row1 { display: flex; align-items: center; gap: 8px; }
+  .prop .ic-block {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(209,248,67,0.25); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .prop .ic-block.tek  { background: rgba(0,88,64,0.10);   color: var(--primary); }
+  .prop .ic-block.fys  { background: rgba(26,77,46,0.12);  color: var(--fys); }
+  .prop .ic-block.plan { background: rgba(44,125,82,0.12); color: var(--slag); }
+  .prop .ic-block svg { width: 14px; height: 14px; }
+
+  .prop .type { font-family: var(--font-display); font-size: 13.5px; font-weight: 600; line-height: 1.2; flex: 1; }
+  .prop .reasoning { font-family: var(--font-body); font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+  .prop .reasoning strong { color: var(--fg); font-family: var(--font-display); font-weight: 600; }
+  .prop .imp-row { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+  .prop .imp {
+    font-family: var(--font-mono); font-weight: 700;
+    color: var(--success); background: rgba(44,125,82,0.10);
+    padding: 2px 8px; border-radius: 999px; font-size: 10.5px; letter-spacing: 0.06em;
+  }
+  .prop .imp-meta { color: var(--muted-soft); }
+  .prop .actions { display: flex; gap: 6px; margin-top: 4px; }
+  .btn-mini {
+    flex: 1; padding: 7px 10px; font-size: 11.5px; font-weight: 600;
+    border-radius: 8px; cursor: pointer; font-family: var(--font-body);
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .btn-mini svg { width: 11px; height: 11px; }
+  .btn-mini.approve { background: var(--primary); color: var(--accent); border: 0; }
+  .btn-mini.edit { background: #fff; color: var(--fg); border: 1px solid var(--border); }
+  .btn-mini.reject {
+    background: rgba(163,45,45,0.06); color: var(--danger);
+    border: 1px solid rgba(163,45,45,0.20); flex: 0 0 36px;
+  }
+
+  /* Feedback (forest) */
+  .feedback-card {
+    background: linear-gradient(165deg, #006C50 0%, #003A2A 100%);
+    color: #fff; border-radius: var(--r-card);
+    padding: 18px 18px 16px;
+    display: flex; flex-direction: column; gap: 12px;
+    position: relative; overflow: hidden;
+  }
+  .feedback-card::before {
+    content: ''; position: absolute; top: -40%; right: -10%;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.15), transparent 70%);
+  }
+  .feedback-card > * { position: relative; z-index: 1; }
+  .feedback-card .lbl {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase;
+  }
+  .feedback-card h3 {
+    font-family: var(--font-display); font-size: 16px; font-weight: 600;
+    letter-spacing: -0.01em; line-height: 1.2;
+  }
+  .feedback-card h3 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--accent); }
+  .feedback-card .copy { font-family: var(--font-body); font-size: 12.5px; color: rgba(255,255,255,0.78); line-height: 1.5; }
+  .feedback-card textarea {
+    width: 100%; min-height: 84px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: #fff; border-radius: 10px; padding: 12px;
+    font: 12.5px/1.5 var(--font-body); resize: none; outline: none;
+  }
+  .feedback-card textarea:focus { border-color: var(--accent); }
+  .feedback-card textarea::placeholder { color: rgba(209,248,67,0.50); font-family: var(--font-serif); font-style: italic; }
+  .feedback-card .examples { display: flex; flex-wrap: wrap; gap: 6px; }
+  .feedback-card .ex-chip {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: rgba(209,248,67,0.12); color: var(--accent);
+    border: 1px solid rgba(209,248,67,0.25);
+    padding: 4px 8px; border-radius: 999px; cursor: pointer; line-height: 1;
+  }
+  .feedback-card .save-row { display: flex; align-items: center; gap: 10px; }
+  .feedback-card .save-btn {
+    background: var(--accent); color: var(--primary); border: 0;
+    border-radius: 999px; padding: 8px 14px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    font-family: var(--font-body);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .feedback-card .save-btn svg { width: 12px; height: 12px; }
+  .feedback-card .save-meta {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: rgba(209,248,67,0.55); letter-spacing: 0.08em;
+  }
+
+  /* Stats card */
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); padding: 16px 18px; }
+  .stat-card .lbl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .stat-bar-row {
+    display: grid; grid-template-columns: 70px 1fr 32px;
+    gap: 10px; align-items: center; padding: 5px 0;
+    font-family: var(--font-mono); font-size: 11px;
+  }
+  .stat-bar-row .nm { color: var(--muted); font-weight: 600; letter-spacing: 0.04em; }
+  .stat-bar-row .bar {
+    height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden;
+    border: 1px solid var(--border-soft);
+  }
+  .stat-bar-row .bar > div { height: 100%; border-radius: 999px; }
+  .stat-bar-row .ct { text-align: right; font-weight: 700; color: var(--fg); }
+</style>
+</head>
+<body data-screen-label="06 AI-Caddie spiller">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-chev-l" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+    <symbol id="ic-sparkle" viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 10l-5.6 2.4L12 18l-2.4-5.6L4 10l5.6-2.4L12 2z"/></symbol>
+    <symbol id="ic-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="ic-trend" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+    <symbol id="ic-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+    <symbol id="ic-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></symbol>
+    <symbol id="ic-question" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="ic-rotate" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="assets/logo-white-on-green.svg" alt="AK Golf" class="brand-logo" />
+      <div class="name">AK GOLF</div>
+      <div class="meta">COACHHQ · HEAD COACH</div>
+    </div>
+    <div class="sidebar-profile coach">
+      <div class="avatar">AK</div>
+      <div>
+        <div class="nm">Anders K.</div>
+        <div class="role">38 SPILLERE</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Daglig</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-home"/></svg>Hjem</button>
+      <button class="nav-item" onclick="location.href='CoachHQ Kalender uke.html'"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-cal"/></svg>Kalender</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-msg"/></svg>Meldinger<span class="badge-count">7</span></button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operasjon</div>
+      <button class="nav-item active" onclick="location.href='CoachHQ Stall-oversikt.html'"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-users"/></svg>Stall</button>
+      <button class="nav-item" onclick="location.href='CoachHQ Plan-bygger.html'"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg>Planer</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-flag"/></svg>Turneringer</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Innsikt</div>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-bar"/></svg>Statistikk</button>
+      <button class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg>Mål</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+        <input placeholder="Søk spiller, økt eller plan…" />
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="breadcrumb">
+        CoachHQ &nbsp;/&nbsp; Stall &nbsp;/&nbsp; <a href="CoachHQ Spiller-profil.html" style="color:inherit;text-decoration:none;">Markus R. P.</a> &nbsp;/&nbsp; <span class="current">AI-Caddie</span>
+      </div>
+    </header>
+
+    <div class="sub-tabs-wrap">
+      <a href="CoachHQ Stall-oversikt.html" class="sub-tabs-back">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-l"/></svg>
+        Stall
+      </a>
+      <div class="sub-tabs">
+        <a class="sub-tab" href="CoachHQ Spiller-profil.html">Oversikt</a>
+        <a class="sub-tab" href="CoachHQ Spiller-profil.html">Plan</a>
+        <a class="sub-tab" href="CoachHQ Spiller-profil.html">Statistikk</a>
+        <a class="sub-tab" href="CoachHQ Spiller-profil.html">Meldinger</a>
+        <a class="sub-tab active" href="#">
+          <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-sparkle"/></svg>
+          AI-Caddie
+        </a>
+      </div>
+    </div>
+
+    <div class="ai-wrap">
+
+      <header class="ai-header">
+        <div>
+          <span class="eyebrow" style="color:var(--primary);">SPILLER · MARKUS RØINÅS PEDERSEN · HCP 4,2</span>
+          <h1>AI-Caddie for <em>Markus</em></h1>
+          <div class="stats">
+            <span><strong style="color:var(--fg);">23</strong> forslag siste 30 dager</span>
+            <span class="sep"></span>
+            <span class="ok">18 godkjent</span>
+            <span class="sep"></span>
+            <span class="err">5 avvist</span>
+            <span class="sep"></span>
+            <span>78 % approval-rate</span>
+          </div>
+        </div>
+        <div class="auto-toggle">
+          <div class="copy">
+            <span class="ttl">Auto-godkjenn lavrisiko</span>
+            <span class="sub">DRILL · INTENSITETS-JUSTERING</span>
+          </div>
+          <button class="switch" id="auto-switch" role="switch" aria-checked="false"></button>
+        </div>
+      </header>
+
+      <div class="ai-grid">
+
+        <!-- LEFT: Conversation -->
+        <section class="conv">
+          <div class="conv-head">
+            <h2>Samtale-strøm</h2>
+            <div class="jump">
+              <a class="active">I dag</a>
+              <a>I går</a>
+              <a>Tirsdag</a>
+              <a>Eldre</a>
+            </div>
+          </div>
+
+          <div class="conv-body">
+
+            <div class="day-divider">I DAG · 22. MAI</div>
+
+            <!-- AI proposal — pending -->
+            <div class="msg ai">
+              <span class="msg-av">AI</span>
+              <div class="msg-body">
+                <div class="msg-meta">
+                  <strong>AI-Caddie</strong>
+                  <span class="ts">14:08</span>
+                  <span>· til Markus</span>
+                </div>
+                <div class="bubble proposal">
+                  <div class="proposal-head">
+                    <span class="pending-pill"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clock"/></svg>Venter godkjenning</span>
+                    <span class="type">Ny drill foreslått</span>
+                  </div>
+                  <div class="proposal-body">
+                    <strong>Chipping low-flight 15–25m</strong> — 3 × 10 baller med PW. Lavt utløp, første sprett innenfor 5m fra pin. Fokus på håndledd-stilling gjennom impakt.
+                  </div>
+                  <div class="proposal-meta">
+                    <span>BEGRUNNELSE: Markus mister <strong style="color:var(--fg);">0,4 SG</strong> på chipping 15–25m</span>
+                    <span>·</span>
+                    <span class="impact">FORVENTET +0,2 SG / 4 UKER</span>
+                  </div>
+                  <div class="proposal-actions">
+                    <button class="btn-approve"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenn</button>
+                    <button class="btn-edit"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-edit"/></svg>Rediger først</button>
+                    <button class="btn-reject"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>Avvis</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Markus message -->
+            <div class="msg user">
+              <span class="msg-av">MR</span>
+              <div class="msg-body">
+                <div class="msg-meta">
+                  <strong>Markus</strong>
+                  <span class="ts">13:42 · til AI-Caddie</span>
+                </div>
+                <div class="bubble">
+                  Jeg sliter med chipping fra 15–25m — føler at jeg ikke vet om jeg skal slå låg eller høyt. Har du forslag?
+                </div>
+              </div>
+            </div>
+
+            <!-- AI response (text only, no proposal yet) -->
+            <div class="msg ai">
+              <span class="msg-av">AI</span>
+              <div class="msg-body">
+                <div class="msg-meta">
+                  <strong>AI-Caddie</strong>
+                  <span class="ts">13:44</span>
+                </div>
+                <div class="bubble">
+                  Bra at du tar opp det. Etter å ha sett på de siste 12 rundene dine, ser jeg at du mister i snitt <strong>0,4 SG</strong> på chipping fra 15–25m — mest når lien går oppoverbakke. <em>Skal jeg foreslå en spesifikk drill for Anders å godkjenne?</em>
+                </div>
+              </div>
+            </div>
+
+            <div class="day-divider">I GÅR · 21. MAI</div>
+
+            <!-- Approved -->
+            <div class="msg ai">
+              <span class="msg-av">AI</span>
+              <div class="msg-body">
+                <div class="msg-meta">
+                  <strong>AI-Caddie</strong>
+                  <span class="ts">09:12 → 09:18</span>
+                </div>
+                <div class="bubble proposal approved">
+                  <div class="proposal-head" style="background:rgba(0,88,64,0.06);border-color:rgba(0,88,64,0.20);">
+                    <span class="pending-pill" style="background:var(--success);color:#fff;">
+                      <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+                      Godkjent av Anders
+                    </span>
+                    <span class="type">Justert intensitet uke 21</span>
+                  </div>
+                  <div class="proposal-body" style="padding-bottom:14px;">
+                    <strong>Reduser fys-volum 20 %</strong> denne uka. Markus har logget muskel-tretthet 7+/10 tre dager på rad. Beholder teknisk-volum.
+                  </div>
+                  <div class="proposal-meta" style="padding-bottom:14px;">
+                    <span>ANDERS KOMMENTAR: "<em style="font-family:var(--font-serif);font-style:italic;color:var(--fg);">Bra fanget — kjør lett uke</em>"</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rejected -->
+            <div class="msg ai">
+              <span class="msg-av">AI</span>
+              <div class="msg-body">
+                <div class="msg-meta">
+                  <strong>AI-Caddie</strong>
+                  <span class="ts">08:30 → 11:02</span>
+                </div>
+                <div class="bubble proposal rejected">
+                  <div class="proposal-head" style="background:rgba(163,45,45,0.05);border-color:rgba(163,45,45,0.20);">
+                    <span class="pending-pill" style="background:var(--danger);color:#fff;">
+                      <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg>
+                      Avvist av Anders
+                    </span>
+                    <span class="type">Tilleggs-økt foreslått</span>
+                  </div>
+                  <div class="proposal-body" style="padding-bottom:14px;">
+                    <strong>Ekstra teknisk-økt lørdag morgen</strong> — 45 min iron-precision basert på dårlig GIR siste runde.
+                  </div>
+                  <div class="proposal-meta" style="padding-bottom:14px;">
+                    <span>ANDERS KOMMENTAR: "<em style="font-family:var(--font-serif);font-style:italic;color:var(--fg);">For mye volum — han trenger pause, ikke mer trening</em>"</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="day-divider">SØNDAG · 19. MAI</div>
+
+            <div class="msg user">
+              <span class="msg-av">MR</span>
+              <div class="msg-body">
+                <div class="msg-meta"><strong>Markus</strong><span class="ts">17:22</span></div>
+                <div class="bubble">Hva tenker du om resultatet på dagens runde? 78 slag.</div>
+              </div>
+            </div>
+            <div class="msg ai">
+              <span class="msg-av">AI</span>
+              <div class="msg-body">
+                <div class="msg-meta"><strong>AI-Caddie</strong><span class="ts">17:24</span></div>
+                <div class="bubble">
+                  Solid runde. SG-totalt +1,2 mot ditt hcp. <em>Beste segment:</em> driving (+0,8). Svakeste: putting (−0,3). Skal jeg sende deg en spesifikk put-drill til neste økt?
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- RIGHT: Active proposals + feedback + stats -->
+        <aside class="right-rail">
+
+          <div class="rail-card">
+            <div class="head">
+              <h2>Aktive forslag</h2>
+              <span class="ct">5 VENTER</span>
+            </div>
+
+            <div class="prop">
+              <div class="row1">
+                <span class="ic-block tek"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg></span>
+                <span class="type">Ny drill: chipping low-flight</span>
+              </div>
+              <div class="reasoning"><strong>Hvorfor:</strong> Markus mister 0,4 SG på chipping fra 15–25m siste 12 runder.</div>
+              <div class="imp-row">
+                <span class="imp">+0,2 SG</span>
+                <span class="imp-meta">/ 4 UKER · 90% KONF.</span>
+              </div>
+              <div class="actions">
+                <button class="btn-mini approve"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenn</button>
+                <button class="btn-mini edit">Rediger</button>
+                <button class="btn-mini reject"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg></button>
+              </div>
+            </div>
+
+            <div class="prop">
+              <div class="row1">
+                <span class="ic-block fys"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-activity"/></svg></span>
+                <span class="type">Reduser fys-volum 15 %</span>
+              </div>
+              <div class="reasoning"><strong>Hvorfor:</strong> RPE 8+ tre økter på rad. Restitusjon prioriteres før turnering 1. juni.</div>
+              <div class="imp-row">
+                <span class="imp">+0,1 SG</span>
+                <span class="imp-meta">/ 2 UKER · 82% KONF.</span>
+              </div>
+              <div class="actions">
+                <button class="btn-mini approve"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenn</button>
+                <button class="btn-mini edit">Rediger</button>
+                <button class="btn-mini reject"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg></button>
+              </div>
+            </div>
+
+            <div class="prop">
+              <div class="row1">
+                <span class="ic-block plan"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-clipboard"/></svg></span>
+                <span class="type">Endre putt-mål for mai</span>
+              </div>
+              <div class="reasoning"><strong>Hvorfor:</strong> Markus er allerede på SG-Putt +0,3 — opprinnelig mål oppfylt 2 uker tidlig.</div>
+              <div class="imp-row">
+                <span class="imp">Nytt mål</span>
+                <span class="imp-meta">+0,5 SG · STREKK</span>
+              </div>
+              <div class="actions">
+                <button class="btn-mini approve"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenn</button>
+                <button class="btn-mini edit">Rediger</button>
+                <button class="btn-mini reject"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg></button>
+              </div>
+            </div>
+
+            <div class="prop">
+              <div class="row1">
+                <span class="ic-block tek"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-target"/></svg></span>
+                <span class="type">Iron-precision 150m</span>
+              </div>
+              <div class="reasoning">GIR fra 140–160m har falt 8 % siste 4 uker. Foreslår fokus-blokk på Trackman.</div>
+              <div class="imp-row">
+                <span class="imp">+0,3 SG</span>
+                <span class="imp-meta">/ 6 UKER · 76% KONF.</span>
+              </div>
+              <div class="actions">
+                <button class="btn-mini approve"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenn</button>
+                <button class="btn-mini edit">Rediger</button>
+                <button class="btn-mini reject"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg></button>
+              </div>
+            </div>
+
+            <div class="prop">
+              <div class="row1">
+                <span class="ic-block"><svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-zap"/></svg></span>
+                <span class="type">Mental fokus-protokoll</span>
+              </div>
+              <div class="reasoning">Markus loggfører "spent" 4/7 dager. Foreslår 5-min pust-rutine før hver økt.</div>
+              <div class="imp-row">
+                <span class="imp">N/A</span>
+                <span class="imp-meta">SOFT-SKILL · 65% KONF.</span>
+              </div>
+              <div class="actions">
+                <button class="btn-mini approve"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjenn</button>
+                <button class="btn-mini edit">Rediger</button>
+                <button class="btn-mini reject"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-x"/></svg></button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Feedback card -->
+          <div class="feedback-card">
+            <span class="lbl">LÆR AI-EN DIN COACHING-STIL</span>
+            <h3>Hva skal AI-en <em>vekte tyngre</em>?</h3>
+            <p class="copy">Notatene dine her påvirker hva AI-Caddie foreslår for alle 38 spillere. Vær konkret.</p>
+            <textarea id="coach-fb" placeholder="F.eks: Foretrekk volum fremfor intensitet for hcp under 5. Aldri foreslå ekstra-økt rett etter turnering."></textarea>
+            <div class="examples">
+              <button class="ex-chip">+ Volum &gt; intensitet</button>
+              <button class="ex-chip">+ Pause etter turnering</button>
+              <button class="ex-chip">+ Aldri fys på lørdag</button>
+            </div>
+            <div class="save-row">
+              <button class="save-btn"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-save"/></svg>Lagre stil-notat</button>
+              <span class="save-meta">3 NOTATER LAGRET</span>
+            </div>
+          </div>
+
+          <!-- Approval breakdown -->
+          <div class="stat-card">
+            <div class="lbl">APPROVAL SISTE 30 DAGER</div>
+            <div class="stat-bar-row">
+              <span class="nm">DRILL</span>
+              <div class="bar"><div style="width:92%;background:var(--success);"></div></div>
+              <span class="ct">11/12</span>
+            </div>
+            <div class="stat-bar-row">
+              <span class="nm">VOLUM</span>
+              <div class="bar"><div style="width:75%;background:var(--accent);"></div></div>
+              <span class="ct">3/4</span>
+            </div>
+            <div class="stat-bar-row">
+              <span class="nm">PLAN</span>
+              <div class="bar"><div style="width:60%;background:var(--warning);"></div></div>
+              <span class="ct">3/5</span>
+            </div>
+            <div class="stat-bar-row">
+              <span class="nm">MENTAL</span>
+              <div class="bar"><div style="width:50%;background:var(--danger);"></div></div>
+              <span class="ct">1/2</span>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Auto-approve toggle
+  const sw = document.getElementById('auto-switch');
+  sw.addEventListener('click', () => {
+    const on = sw.classList.toggle('on');
+    sw.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+
+  // Mini approve buttons → fade and replace
+  document.querySelectorAll('.btn-mini.approve').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const prop = btn.closest('.prop');
+      prop.style.opacity = '0.45';
+      prop.querySelector('.actions').innerHTML = '<div style="flex:1;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.10em;color:var(--success);text-transform:uppercase;display:flex;align-items:center;gap:6px;"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>Godkjent · sendt til Markus</div>';
+    });
+  });
+  document.querySelectorAll('.btn-mini.reject').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const prop = btn.closest('.prop');
+      prop.style.opacity = '0.4';
+    });
+  });
+</script>
+
+</body>
+</html>

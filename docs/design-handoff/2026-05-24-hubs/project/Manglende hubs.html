@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Manglende hubs — AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pr1/pr1-styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; }
+
+  /* ============================================================
+     HUB-specific styles — extend pr1-frame
+     ============================================================ */
+
+  /* Make every hub artboard a sealed full-bleed canvas */
+  .pr1-frame.hub-frame { overflow: hidden; }
+  .pr1-frame.hub-frame .main { overflow: hidden; }
+  .pr1-frame.hub-frame .page.hub-page {
+    padding: 24px 32px 32px;
+    gap: 22px;
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+  }
+
+  /* page header */
+  .pr1-frame .hub-head {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 24px; align-items: flex-end;
+    padding-bottom: 18px; border-bottom: 1px solid var(--border);
+  }
+  .pr1-frame .hub-head-left { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .pr1-frame .hub-head h1 {
+    font-family: var(--font-display);
+    font-size: 36px; font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1.04;
+    margin-top: 2px;
+  }
+  .pr1-frame .hub-head h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--brand-primary);
+    margin-left: 2px;
+  }
+  .pr1-frame .hub-sub {
+    font-family: var(--font-body); font-size: 13.5px;
+    color: var(--muted); line-height: 1.45;
+    margin-top: 4px; max-width: 640px;
+  }
+  .pr1-frame .hub-head-actions {
+    display: flex; gap: 8px; align-items: center;
+    padding-bottom: 2px;
+  }
+
+  /* stats inline strip under sub */
+  .pr1-frame .hub-stats {
+    display: flex; align-items: center; gap: 0;
+    margin-top: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+    flex-wrap: wrap;
+  }
+  .pr1-frame .hub-stats strong { color: var(--fg); font-weight: 700; }
+  .pr1-frame .hub-stats > i {
+    display: inline-block; width: 4px; height: 4px;
+    border-radius: 50%; background: var(--muted-soft);
+    margin: 0 12px; vertical-align: middle;
+    font-style: normal;
+  }
+  .pr1-frame .hub-stats .ok-dot, .pr1-frame .hub-stats .warn-dot {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .pr1-frame .hub-stats .ok-dot > span:first-child {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success);
+  }
+  .pr1-frame .hub-stats .ok-dot strong { color: var(--success); }
+  .pr1-frame .hub-stats .warn-dot > span:first-child {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--warning);
+  }
+  .pr1-frame .hub-stats .warn-dot strong { color: var(--warning); }
+
+  /* ============================================================
+     Hub grid + HubCard
+     ============================================================ */
+  .pr1-frame .hub-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; align-items: stretch;
+  }
+  .pr1-frame .hub-grid.two-thirds { grid-template-columns: repeat(3, 1fr); }
+
+  .pr1-frame .hub-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 20px;
+    display: flex; flex-direction: column; gap: 12px;
+    min-height: 220px; position: relative;
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    cursor: pointer;
+  }
+  .pr1-frame .hub-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -8px rgba(10,31,23,0.10), 0 2px 4px rgba(10,31,23,0.05);
+    border-color: var(--line-strong);
+  }
+  .pr1-frame .hub-card.tone-empty {
+    background: repeating-linear-gradient(45deg, var(--card) 0 6px, #FBFAF5 6px 12px);
+    border-style: dashed; border-color: var(--border);
+  }
+  .pr1-frame .hub-card.tone-empty .hub-card-icon { opacity: 0.55; }
+  .pr1-frame .hub-card.tone-empty .hub-card-data .hub-card-prim {
+    color: var(--muted); font-style: italic;
+  }
+  .pr1-frame .hub-card.tone-muted .hub-card-prim { color: var(--muted); }
+  .pr1-frame .hub-card.tone-accent {
+    background: linear-gradient(180deg, rgba(209,248,67,0.08), var(--card) 60%);
+    border-color: rgba(209,248,67,0.45);
+  }
+
+  .pr1-frame .hub-card-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px;
+  }
+  .pr1-frame .hub-card-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--tint); color: var(--brand-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pr1-frame .hub-card.tone-accent .hub-card-icon {
+    background: var(--brand-accent); color: var(--brand-primary);
+  }
+
+  .pr1-frame .hub-card-body { display: flex; flex-direction: column; gap: 5px; }
+  .pr1-frame .hub-card-title {
+    font-family: var(--font-display); font-size: 18px; font-weight: 600;
+    letter-spacing: -0.015em; line-height: 1.15;
+    color: var(--fg);
+  }
+
+  .pr1-frame .hub-card-divider {
+    height: 1px; background: var(--border-soft);
+    margin: 2px 0;
+  }
+
+  .pr1-frame .hub-card-data {
+    display: flex; flex-direction: column; gap: 6px;
+    flex: 1;
+  }
+  .pr1-frame .hub-card-prim {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    color: var(--fg); letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+  .pr1-frame .hub-card-sub {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 500;
+    color: var(--muted); letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+
+  .pr1-frame .hub-card-cta {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    color: var(--brand-primary); letter-spacing: 0.10em; text-transform: uppercase;
+    margin-top: auto; padding-top: 6px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .pr1-frame .hub-card:hover .hub-card-cta { color: var(--fg); }
+
+  /* ============================================================
+     Hub pill (status)
+     ============================================================ */
+  .pr1-frame .hub-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 9px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .pr1-frame .hub-pill-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+  }
+  .pr1-frame .hub-pill-dot.d-pulse {
+    animation: hubpulse 1.4s ease-in-out infinite;
+  }
+  @keyframes hubpulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%     { opacity: 0.45; transform: scale(0.7); }
+  }
+  .pr1-frame .hub-pill.p-ok      { background: rgba(44,125,82,0.13);  color: var(--success); }
+  .pr1-frame .hub-pill.p-warn    { background: rgba(184,133,42,0.16); color: var(--warning); }
+  .pr1-frame .hub-pill.p-danger  { background: rgba(163,45,45,0.12);  color: var(--danger); }
+  .pr1-frame .hub-pill.p-accent  { background: var(--brand-accent);   color: var(--brand-primary); }
+  .pr1-frame .hub-pill.p-forest  { background: var(--brand-primary);  color: var(--brand-accent); }
+  .pr1-frame .hub-pill.p-muted   { background: rgba(94,92,87,0.13);   color: var(--muted); }
+  .pr1-frame .hub-pill.p-tier    { background: var(--fg);             color: var(--brand-accent); }
+
+  /* ============================================================
+     KPI bar + Progress
+     ============================================================ */
+  .pr1-frame .kpi-bar {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 10px; align-items: center; margin-top: 4px;
+  }
+  .pr1-frame .kpi-bar-track {
+    height: 6px; background: var(--bg);
+    border-radius: 999px; overflow: hidden;
+    border: 1px solid var(--border-soft);
+  }
+  .pr1-frame .kpi-bar-fill {
+    height: 100%; border-radius: 999px;
+    transition: width 240ms ease;
+  }
+  .pr1-frame .kpi-bar-fill.t-ok { background: var(--success); }
+  .pr1-frame .kpi-bar-fill.t-warn { background: var(--warning); }
+  .pr1-frame .kpi-bar-fill.t-err { background: var(--danger); }
+  .pr1-frame .kpi-bar-label {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    color: var(--fg); letter-spacing: 0.04em;
+  }
+
+  .pr1-frame .hubprog {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-top: 4px;
+  }
+  .pr1-frame .hubprog-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono);
+  }
+  .pr1-frame .hubprog-fig {
+    font-size: 16px; font-weight: 700; color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+  .pr1-frame .hubprog-fig span { color: var(--muted-soft); font-weight: 500; }
+  .pr1-frame .hubprog-pct {
+    font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em;
+  }
+  .pr1-frame .hubprog-track {
+    height: 5px; background: var(--bg);
+    border-radius: 999px; overflow: hidden;
+    border: 1px solid var(--border-soft);
+  }
+  .pr1-frame .hubprog-fill.t-ok { background: var(--brand-primary); height: 100%; border-radius: 999px; }
+  .pr1-frame .hubprog-fill.t-warn { background: var(--warning); height: 100%; border-radius: 999px; }
+
+  /* ============================================================
+     Pyramid mini
+     ============================================================ */
+  .pr1-frame .pyr-mini {
+    display: flex; flex-direction: column; gap: 4px; margin-top: 4px;
+  }
+  .pr1-frame .pyr-mini-row {
+    display: grid; grid-template-columns: 32px 1fr 28px;
+    gap: 8px; align-items: center;
+  }
+  .pr1-frame .pyr-mini-lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .pr1-frame .pyr-mini-bar {
+    height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden;
+    border: 1px solid var(--border-soft); position: relative;
+  }
+  .pr1-frame .pyr-mini-bar > span {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    border-radius: 999px;
+  }
+  .pr1-frame .pyr-mini-pct {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--fg); text-align: right;
+  }
+
+  /* ============================================================
+     Misc visuals (next-tourn, wk-strip, cal-mini, team-strip, etc.)
+     ============================================================ */
+  .pr1-frame .next-tourn {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg); border: 1px solid var(--border-soft);
+    border-radius: 9px; padding: 8px 12px;
+  }
+  .pr1-frame .nt-when {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--brand-primary); letter-spacing: 0.04em;
+    background: var(--brand-accent); padding: 2px 7px; border-radius: 5px;
+  }
+  .pr1-frame .nt-where {
+    font-family: var(--font-display); font-size: 12px; font-weight: 600;
+    color: var(--fg); flex: 1;
+  }
+  .pr1-frame .nt-cnt {
+    font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* week strip */
+  .pr1-frame .wk-strip {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+    margin-top: 2px;
+  }
+  .pr1-frame .wk-cell {
+    height: 28px; border-radius: 6px;
+    background: var(--bg); border: 1px solid var(--border-soft);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pr1-frame .wk-cell.on {
+    background: rgba(0,88,64,0.12); border-color: rgba(0,88,64,0.30);
+  }
+  .pr1-frame .wk-cell.me {
+    background: var(--brand-accent); border-color: var(--brand-accent);
+    box-shadow: 0 0 0 1px var(--brand-primary) inset;
+  }
+  .pr1-frame .wk-d {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .pr1-frame .wk-cell.on .wk-d { color: var(--brand-primary); }
+  .pr1-frame .wk-cell.me .wk-d { color: var(--fg); }
+
+  /* cal-mini ticks */
+  .pr1-frame .cal-mini {
+    position: relative; height: 10px; margin-top: 4px;
+    background: var(--bg); border-radius: 5px;
+    border: 1px solid var(--border-soft);
+    display: flex; align-items: center; padding: 0 6px;
+    gap: 4px;
+  }
+  .pr1-frame .cm-tick {
+    width: 18%; height: 3px; border-radius: 999px;
+    background: var(--brand-primary); opacity: 0.4;
+  }
+  .pr1-frame .cm-tick.m { opacity: 0.85; background: var(--brand-primary); }
+  .pr1-frame .cm-now {
+    position: absolute; left: 38%; top: -3px; bottom: -3px;
+    width: 2px; background: var(--danger);
+    border-radius: 999px;
+  }
+
+  /* team strip avatars */
+  .pr1-frame .team-strip { display: flex; align-items: center; margin-top: 4px; }
+  .pr1-frame .team-av {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 10px; font-weight: 700;
+    border: 1.5px solid var(--card);
+    margin-left: -6px;
+  }
+  .pr1-frame .team-av:first-child { margin-left: 0; }
+  .pr1-frame .team-av.c1 { background: #E8EFD9; color: #2C7D52; }
+  .pr1-frame .team-av.c2 { background: #DCE7E1; color: #005840; }
+  .pr1-frame .team-av.c3 { background: #F2E7D8; color: #B8852A; }
+  .pr1-frame .team-av.c4 { background: #E8D9D9; color: #A32D2D; }
+  .pr1-frame .team-av.c5 { background: #D8E3DE; color: #1A4D2E; }
+  .pr1-frame .team-av.c6 { background: #EBE3D9; color: #6E5A2A; }
+  .pr1-frame .team-av.c8 { background: #D7E6E2; color: #2A6A56; }
+
+  /* integration pills */
+  .pr1-frame .int-strip {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;
+  }
+  .pr1-frame .int-pill {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    padding: 3px 8px; border-radius: 999px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .pr1-frame .int-pill.on  { background: rgba(44,125,82,0.13); color: var(--success); }
+  .pr1-frame .int-pill.off { background: rgba(184,133,42,0.16); color: var(--warning); text-decoration: line-through; }
+
+  /* bag club strip */
+  .pr1-frame .bag-strip {
+    display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px;
+  }
+  .pr1-frame .bag-club {
+    min-width: 22px; height: 22px; padding: 0 5px;
+    border-radius: 5px;
+    background: var(--bg); border: 1px solid var(--border-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    color: var(--brand-primary); letter-spacing: 0.02em;
+  }
+
+  /* ============================================================
+     Player hero card (Gjennomføre)
+     ============================================================ */
+  .pr1-frame .player-hero-card {
+    background: linear-gradient(160deg, #006C50 0%, #003A2A 100%);
+    color: #fff; border-radius: var(--r-card);
+    padding: 22px 26px; position: relative; overflow: hidden;
+    display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center;
+  }
+  .pr1-frame .player-hero-card::before {
+    content: ''; position: absolute; top: -40%; right: -8%;
+    width: 380px; height: 380px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.12), transparent 70%);
+    pointer-events: none;
+  }
+  .pr1-frame .phc-left {
+    display: grid; grid-template-columns: 60px 1fr; gap: 16px;
+    align-items: center; position: relative; z-index: 1;
+  }
+  .pr1-frame .phc-av {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: #fff; color: var(--brand-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 20px; font-weight: 700;
+    border: 2px solid var(--brand-accent);
+  }
+  .pr1-frame .player-hero-card .eyebrow { color: rgba(209,248,67,0.7); }
+  .pr1-frame .player-hero-card h2 {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 600; letter-spacing: -0.01em; color: #fff;
+    margin-top: 4px;
+  }
+  .pr1-frame .phc-meta {
+    display: flex; align-items: center; gap: 8px; margin-top: 10px;
+  }
+  .pr1-frame .phc-meta .pill { background: rgba(255,255,255,0.12); color: #fff; }
+  .pr1-frame .phc-meta .pill-tier { background: var(--brand-accent); color: var(--fg); }
+  .pr1-frame .phc-meta .pill-tier-pro { background: var(--brand-primary); color: var(--brand-accent); }
+  .pr1-frame .phc-mono {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: rgba(255,255,255,0.65); letter-spacing: 0.06em;
+    padding-left: 6px; border-left: 1px solid rgba(255,255,255,0.18);
+    margin-left: 4px;
+  }
+  .pr1-frame .phc-right {
+    display: flex; gap: 0; align-items: stretch;
+    position: relative; z-index: 1;
+  }
+  .pr1-frame .phc-stat {
+    padding: 0 22px; border-right: 1px solid rgba(255,255,255,0.10);
+    display: flex; flex-direction: column; gap: 4px; text-align: left;
+  }
+  .pr1-frame .phc-stat:last-child { border-right: 0; padding-right: 0; }
+  .pr1-frame .phc-stat:first-child { padding-left: 0; }
+  .pr1-frame .phc-lbl {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    color: rgba(209,248,67,0.65); letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .pr1-frame .phc-val {
+    font-family: var(--font-display); font-size: 16px; font-weight: 600;
+    color: #fff; line-height: 1.1; letter-spacing: -0.005em;
+  }
+  .pr1-frame .phc-sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: rgba(255,255,255,0.55); letter-spacing: 0.04em;
+  }
+
+  /* ============================================================
+     Meg hero (Profile)
+     ============================================================ */
+  .pr1-frame .meg-hero {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 24px 28px;
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 28px; align-items: center;
+  }
+  .pr1-frame .meg-av-wrap { position: relative; }
+  .pr1-frame .meg-av {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: var(--brand-primary); color: var(--brand-accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 36px; font-weight: 700;
+    border: 3px solid var(--brand-accent);
+  }
+  .pr1-frame .meg-av-tier {
+    position: absolute; bottom: 0; right: 0;
+    background: var(--brand-accent); color: var(--fg);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    padding: 3px 9px; border-radius: 999px;
+    letter-spacing: 0.08em;
+    border: 2px solid var(--card);
+  }
+  .pr1-frame .meg-name-row {
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px;
+  }
+  .pr1-frame .meg-name-row h2 {
+    font-family: var(--font-display); font-size: 26px; font-weight: 700;
+    letter-spacing: -0.02em; color: var(--fg);
+  }
+  .pr1-frame .meg-contact {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 10px 32px;
+  }
+  .pr1-frame .mc-row {
+    display: flex; align-items: baseline; gap: 10px;
+    font-size: 13px; color: var(--fg);
+  }
+  .pr1-frame .mc-lbl {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+    min-width: 72px;
+  }
+  .pr1-frame .meg-side {
+    display: flex; flex-direction: column; gap: 4px; text-align: right;
+    padding-left: 24px; border-left: 1px solid var(--border-soft);
+    align-self: stretch; justify-content: center;
+  }
+  .pr1-frame .ms-lbl {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .pr1-frame .ms-val {
+    font-family: var(--font-mono); font-size: 22px; font-weight: 700;
+    color: var(--brand-primary); letter-spacing: -0.01em;
+  }
+  .pr1-frame .ms-sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+
+  /* ============================================================
+     Recent / sist rørt panel (Planlegge)
+     ============================================================ */
+  .pr1-frame .hub-recent {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 16px 20px;
+  }
+  .pr1-frame .hub-recent-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .pr1-frame .hub-recent-meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .pr1-frame .hub-recent-list {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .pr1-frame .hub-recent-list li {
+    display: grid; grid-template-columns: 26px 1fr auto;
+    gap: 12px; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--border-soft);
+  }
+  .pr1-frame .hub-recent-list li:last-child { border-bottom: 0; padding-bottom: 2px; }
+  .pr1-frame .rc-kind {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--bg); color: var(--brand-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .pr1-frame .rc-kind svg { width: 13px; height: 13px; }
+  .pr1-frame .rc-ttl {
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+    color: var(--fg);
+  }
+  .pr1-frame .rc-meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body data-screen-label="Manglende hubs Canvas">
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="manglende-hubs/hub-shared.jsx"></script>
+<script type="text/babel" src="manglende-hubs/hubs-coach.jsx"></script>
+<script type="text/babel" src="manglende-hubs/hubs-player.jsx"></script>
+<script type="text/babel" src="manglende-hubs/app.jsx"></script>
+
+</body>
+</html>

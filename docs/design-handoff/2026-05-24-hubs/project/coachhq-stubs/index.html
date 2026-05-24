@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>CoachHQ stubs · 8 sider · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; font-family: 'Inter', system-ui, sans-serif; }
+  iframe.dc-iframe {
+    width: 100%; height: 100%; border: 0; display: block; background: #FAFAF7;
+    pointer-events: auto;
+  }
+  .open-link {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(10,31,23,0.82); color: #D1F843;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase;
+    padding: 5px 10px; border-radius: 999px;
+    text-decoration: none;
+    z-index: 5;
+    opacity: 0; transition: opacity 120ms ease;
+  }
+  [data-dc-slot]:hover .open-link { opacity: 1; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="../design-canvas.jsx"></script>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+function App() {
+  return (
+    <DesignCanvas
+      title="AK Golf HQ · CoachHQ stubs (Batch D)"
+      subtitle="8 stub-sider · 240px sidebar · breadcrumb-topbar · forest #0F2A22 · pixel-perfekt 1280–1480px"
+    >
+      <DCSection
+        id="oversikt"
+        title="Oversikt · Tildelt meg"
+        subtitle="Coach-inbox av saker som krever handling akkurat nå"
+      >
+        <DCArtboard id="s1" label="01 · Workspace · Tildelt meg" width={1480} height={1900}>
+          <a className="open-link" href="workspace-tildelt-meg.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="workspace-tildelt-meg.html" title="01 Tildelt meg" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="stall"
+        title="Stall · WAGR-import"
+        subtitle="3-stegs wizard for å koble offisiell ranking til stall-spillere"
+      >
+        <DCArtboard id="s2" label="02 · WAGR-import (steg 2 match)" width={1480} height={2100}>
+          <a className="open-link" href="wagr-import.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="wagr-import.html" title="02 WAGR-import" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="planlegge"
+        title="Planlegge · Plan-maler"
+        subtitle="Bibliotek av gjenbrukbare plan-maler med effekt-rangering"
+      >
+        <DCArtboard id="s3" label="03 · Plan-maler" width={1480} height={1750}>
+          <a className="open-link" href="plan-templates.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="plan-templates.html" title="03 Plan-maler" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="gjennomfore"
+        title="Gjennomføre · Bookinger"
+        subtitle="Bookings på tvers av spillere · liste-/tidslinje-/kalender-view"
+      >
+        <DCArtboard id="s4" label="04 · Bookinger" width={1480} height={1850}>
+          <a className="open-link" href="bookinger.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="bookinger.html" title="04 Bookinger" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="innsikt"
+        title="Innsikt · Godkjenninger"
+        subtitle="Kø av godkjennings-saker med risiko-pills og batch-handling"
+      >
+        <DCArtboard id="s5" label="05 · Godkjenninger" width={1480} height={2300}>
+          <a className="open-link" href="godkjenninger.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="godkjenninger.html" title="05 Godkjenninger" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="admin"
+        title="Admin · Notion · Audit · Innstillinger"
+        subtitle="Operative verktøy og administrasjon"
+      >
+        <DCArtboard id="s6" label="06 · Notion-prosjekter" width={1480} height={1850}>
+          <a className="open-link" href="notion-prosjekter.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="notion-prosjekter.html" title="06 Notion-prosjekter" />
+        </DCArtboard>
+        <DCArtboard id="s7" label="07 · Audit-log" width={1480} height={1950}>
+          <a className="open-link" href="audit-log.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="audit-log.html" title="07 Audit-log" />
+        </DCArtboard>
+        <DCArtboard id="s8" label="08 · Innstillinger" width={1480} height={1300}>
+          <a className="open-link" href="settings.html" target="_blank" rel="noreferrer">Åpne ↗</a>
+          <iframe className="dc-iframe" src="settings.html" title="08 Innstillinger" />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
