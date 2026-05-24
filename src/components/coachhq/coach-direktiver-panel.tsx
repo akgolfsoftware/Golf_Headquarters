@@ -137,12 +137,13 @@ function DirektivRad({
           )}
         </div>
         <button
+          type="button"
           onClick={slett}
           disabled={isPending}
           aria-label="Slett direktiv"
           className="shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-40"
         >
-          <Trash2 size={13} strokeWidth={1.75} />
+          <Trash2 size={13} strokeWidth={1.75} aria-hidden />
         </button>
       </div>
     </li>
@@ -227,6 +228,7 @@ function LeggTilForm({
           <input
             type="text"
             placeholder="Søk på drill-navn..."
+            aria-label="Søk på drill-navn"
             value={soketekst}
             onChange={(e) => {
               setSoketekst(e.target.value);
@@ -238,13 +240,15 @@ function LeggTilForm({
           />
           {valgtDrill && (
             <button
+              type="button"
               onClick={() => {
                 setValgtDrill(null);
                 setSoketekst("");
               }}
+              aria-label="Fjern valgt drill"
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
-              <X size={12} strokeWidth={2} />
+              <X size={12} strokeWidth={2} aria-hidden />
             </button>
           )}
           {visDropdown && soketekst && !valgtDrill && (
@@ -253,6 +257,7 @@ function LeggTilForm({
                 {filtrerteDrills.slice(0, 20).map((d) => (
                   <li key={d.id}>
                     <button
+                      type="button"
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => velgDrill(d)}
                       className="flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-foreground hover:bg-secondary"
@@ -273,7 +278,11 @@ function LeggTilForm({
 
         {/* Type-velger */}
         <div className="relative">
+          <label htmlFor="direktiv-type" className="sr-only">
+            Direktiv-type
+          </label>
           <select
+            id="direktiv-type"
             value={type}
             onChange={(e) => setType(e.target.value as DirektivType)}
             className="w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pr-8 text-[13px] text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -286,6 +295,7 @@ function LeggTilForm({
             size={14}
             strokeWidth={1.75}
             className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
           />
         </div>
 
@@ -293,6 +303,7 @@ function LeggTilForm({
         <input
           type="text"
           placeholder="Kommentar (valgfri)"
+          aria-label="Kommentar"
           value={kommentar}
           onChange={(e) => setKommentar(e.target.value)}
           maxLength={500}
@@ -301,10 +312,14 @@ function LeggTilForm({
 
         {/* Gyldig til (valgfri) */}
         <div>
-          <label className="mb-1 block font-mono text-[10px] text-muted-foreground">
+          <label
+            htmlFor="direktiv-gyldig-til"
+            className="mb-1 block font-mono text-[10px] text-muted-foreground"
+          >
             Gyldig til (valgfri)
           </label>
           <input
+            id="direktiv-gyldig-til"
             type="date"
             value={gyldigTil}
             onChange={(e) => setGyldigTil(e.target.value)}
@@ -317,6 +332,7 @@ function LeggTilForm({
         )}
 
         <button
+          type="button"
           onClick={leggTil}
           disabled={isPending || !valgtDrill}
           className="inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2 font-mono text-[12px] font-semibold uppercase tracking-[0.06em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
@@ -389,6 +405,7 @@ export function CoachDirektiverPanel({
           )}
         </div>
         <button
+          type="button"
           onClick={() => setVisForm((v) => !v)}
           className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground transition-colors hover:border-primary hover:bg-secondary"
         >
