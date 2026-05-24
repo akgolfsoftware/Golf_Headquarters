@@ -82,8 +82,8 @@ export default async function AarsplanPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-[1200px] px-6 py-8">
-        <div className="mb-8">
+      <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 sm:py-8">
+        <div className="mb-6 sm:mb-8">
           <PageHeader
             eyebrow="PlayerHQ · Trening · Årsplan"
             titleLead="Årsplan"
@@ -133,7 +133,7 @@ export default async function AarsplanPage() {
             <AarsplanInteraktiv plan={plan} turneringer={turneringPins} />
 
             {/* Turneringer-lenke */}
-            <div className="mt-6 flex items-center justify-between rounded-xl border border-border bg-card px-6 py-4">
+            <div className="mt-6 flex flex-col items-stretch justify-between gap-3 rounded-xl border border-border bg-card px-4 py-4 sm:flex-row sm:items-center sm:px-6">
               <div className="flex items-center gap-3">
                 <Trophy className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
                 <div>
@@ -149,7 +149,7 @@ export default async function AarsplanPage() {
               </div>
               <Link
                 href="/portal/tren/turneringer"
-                className="rounded-full bg-secondary px-4 py-2 text-xs font-semibold text-foreground hover:bg-foreground/10"
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-secondary px-4 py-2 text-xs font-semibold text-foreground hover:bg-foreground/10"
               >
                 Se turneringsplan
               </Link>

@@ -360,13 +360,16 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
       </div>
 
       {/* STICKY BOTTOM BAR */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-border bg-background/95 backdrop-blur">
+      <div
+        className="fixed bottom-0 left-0 right-0 z-20 border-t border-border bg-background/95 backdrop-blur"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
         <div className="mx-auto flex max-w-[920px] items-center gap-2 px-4 py-3 sm:gap-3">
-          <button className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-3 font-sans text-[13px] font-semibold text-foreground hover:border-foreground/30">
+          <button className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-3 font-sans text-[13px] font-semibold text-foreground hover:border-foreground/30">
             <Save className="h-4 w-4" strokeWidth={2} />
             Lagre uten å sende
           </button>
-          <button className="inline-flex flex-[1.4] items-center justify-center gap-2 rounded-md bg-accent px-4 py-3 font-display text-[14px] font-semibold text-accent-foreground hover:opacity-90">
+          <button className="inline-flex min-h-11 flex-[1.4] items-center justify-center gap-2 rounded-md bg-accent px-4 py-3 font-display text-[14px] font-semibold text-accent-foreground hover:opacity-90">
             <Send className="h-4 w-4" strokeWidth={2} />
             Send til {data.coachName.split(" ")[0]}
           </button>

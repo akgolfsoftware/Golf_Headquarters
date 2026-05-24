@@ -29,6 +29,14 @@
   gap: 22px;
   position: relative;
 }
+@media (max-width: 640px) {
+  .drill-page { padding: 16px 16px 24px; gap: 16px; }
+  .drill-head { grid-template-columns: 1fr; align-items: stretch; }
+  .drill-head h1 { font-size: 28px; }
+  .drill-filter-row { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+  .drill-filter-row::-webkit-scrollbar { display: none; }
+  .drill-filter-pill { flex-shrink: 0; }
+}
 
 .drill-head {
   display: grid;
@@ -67,6 +75,7 @@
   color: var(--drill-muted); background: var(--drill-card);
   border: 1px solid var(--drill-border); cursor: pointer;
   transition: all 160ms ease;
+  min-height: 44px;
 }
 .drill-filter-pill:hover { color: var(--drill-fg); border-color: var(--drill-primary); }
 .drill-filter-pill.active {
@@ -311,6 +320,7 @@
 
 .drill-panel-footer {
   padding: 14px 24px 16px;
+  padding-bottom: max(env(safe-area-inset-bottom), 16px);
   border-top: 1px solid var(--drill-border);
   flex-shrink: 0;
   display: flex; flex-direction: column; gap: 8px;
@@ -323,6 +333,7 @@
   font-family: var(--drill-font-display); font-size: 14px; font-weight: 600;
   border: none; cursor: pointer;
   transition: filter 160ms ease;
+  min-height: 44px;
 }
 .drill-panel-cta:hover { filter: brightness(1.08); }
 .drill-panel-secondary {
@@ -337,5 +348,7 @@
   background: transparent; border: none; padding: 4px;
   color: var(--drill-muted); cursor: pointer;
   border-radius: 6px;
+  min-width: 44px; min-height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
 }
 .drill-panel-close:hover { background: hsl(var(--secondary)); color: var(--drill-fg); }

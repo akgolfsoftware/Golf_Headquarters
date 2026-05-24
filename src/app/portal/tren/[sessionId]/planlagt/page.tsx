@@ -157,7 +157,7 @@ export default async function OktPlanlagtPage({
                   </span>
                 </summary>
                 {drill.description && (
-                  <div className="grid grid-cols-[120px_1fr] gap-4 border-t border-border px-4 py-4">
+                  <div className="grid grid-cols-1 gap-4 border-t border-border px-4 py-4 sm:grid-cols-[120px_1fr]">
                     <div className="flex h-20 items-center justify-center rounded-md bg-primary/10 text-primary">
                       <Play size={20} strokeWidth={1.5} />
                     </div>
@@ -173,32 +173,35 @@ export default async function OktPlanlagtPage({
       </section>
 
       {/* Action bar */}
-      <footer className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card px-6 py-3">
-        <div className="mx-auto flex max-w-4xl items-center gap-3">
-          <span className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
+      <footer
+        className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card px-4 py-3 sm:px-6"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0.75rem)" }}
+      >
+        <div className="mx-auto flex max-w-4xl flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+          <span className="hidden font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground sm:inline">
             Starter{" "}
             <strong className="text-foreground">
               {formatTime(session.startTime)} · {formatDateLong(session.startTime)}
             </strong>
           </span>
-          <div className="ml-auto flex gap-2">
+          <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
             <button
               type="button"
               disabled
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground opacity-60"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground opacity-60"
             >
               <Pencil size={12} strokeWidth={1.75} /> Endre tid
             </button>
             <button
               type="button"
               disabled
-              className="inline-flex items-center gap-1.5 rounded-full border border-destructive/30 bg-card px-3 py-2 text-xs font-semibold text-destructive opacity-60"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-destructive/30 bg-card px-3 py-2 text-xs font-semibold text-destructive opacity-60"
             >
               <X size={12} strokeWidth={1.75} /> Avlys
             </button>
             <Link
               href={`/portal/tren/${sessionId}`}
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-foreground hover:opacity-90"
+              className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-foreground hover:opacity-90 sm:flex-initial"
             >
               <Play size={14} strokeWidth={2} /> Start økt
             </Link>

@@ -283,7 +283,7 @@ export function PeriodeRedigerForm({
             <button
               type="button"
               onClick={addGoal}
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90"
             >
               <Plus size={11} strokeWidth={2.5} /> Legg til
             </button>
@@ -315,21 +315,24 @@ export function PeriodeRedigerForm({
         </div>
       )}
 
-      <footer className="sticky bottom-0 -mx-4 mt-4 flex items-center gap-3 border-t border-border bg-card/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+      <footer
+        className="sticky bottom-0 -mx-4 mt-4 flex flex-wrap items-center gap-3 border-t border-border bg-card/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0.75rem)" }}
+      >
         <button
           type="button"
           onClick={slett}
           disabled={pending}
-          className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10"
         >
           <Trash2 size={12} strokeWidth={1.75} /> Slett periode
         </button>
-        <div className="ml-auto flex gap-2">
+        <div className="ml-auto flex flex-1 justify-end gap-2 sm:flex-initial">
           <button
             type="button"
             onClick={() => router.back()}
             disabled={pending}
-            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/40"
+            className="inline-flex min-h-11 items-center rounded-full px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/40"
           >
             Avbryt
           </button>
@@ -337,7 +340,7 @@ export function PeriodeRedigerForm({
             type="button"
             onClick={lagre}
             disabled={pending}
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
           >
             <Check size={14} strokeWidth={2} />
             {pending ? "Lagrer…" : "Lagre endringer"}
@@ -349,7 +352,7 @@ export function PeriodeRedigerForm({
 }
 
 const inputCls =
-  "w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full min-h-11 rounded-md border border-input bg-card px-4 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function Section({
   num,

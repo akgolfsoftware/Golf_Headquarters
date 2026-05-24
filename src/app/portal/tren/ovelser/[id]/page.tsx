@@ -23,17 +23,17 @@ export default async function OvelseDetaljPage({
     <div className="space-y-8">
       <Link
         href="/portal/tren/ovelser"
-        className="inline-flex items-center gap-1 font-mono text-[12px] font-medium text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-1 font-mono text-[12px] font-medium text-muted-foreground hover:text-foreground"
       >
         <ChevronRight size={14} strokeWidth={1.5} className="rotate-180" />
         Bibliotek
       </Link>
 
-      <div className="flex items-start gap-6">
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
         <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary font-mono text-primary-foreground ring-4 ring-accent">
           <Dumbbell size={26} strokeWidth={1.5} />
         </div>
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 w-full">
           <DrillDetail exercise={exercise} />
         </div>
       </div>

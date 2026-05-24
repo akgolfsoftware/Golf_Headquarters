@@ -96,10 +96,13 @@ export function LoggerClient({
   return (
     <div className="fixed inset-0 flex flex-col bg-[#0F2A22] text-white">
       {/* Header */}
-      <header className="flex items-center justify-between px-5 pt-6 pb-3">
+      <header
+        className="flex items-center justify-between px-5 pt-6 pb-3"
+        style={{ paddingTop: "max(env(safe-area-inset-top), 1.5rem)" }}
+      >
         <Link
           href={`/portal/live/${sessionId}/summary`}
-          className="font-mono inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white/55"
+          className="font-mono inline-flex min-h-11 items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white/55"
         >
           <X className="h-3.5 w-3.5" /> Avslutt
         </Link>
@@ -197,22 +200,25 @@ export function LoggerClient({
       </section>
 
       {/* Footer nav (forrige / sett / neste) */}
-      <footer className="flex items-center justify-between gap-3 px-5 pb-6">
+      <footer
+        className="flex items-center justify-between gap-3 px-5 pb-6"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 1.5rem)" }}
+      >
         <button
           type="button"
-          className="font-mono inline-flex items-center gap-1.5 rounded-xl bg-white/[0.06] px-4 py-3 text-[10.5px] font-bold uppercase tracking-[0.10em] text-white"
+          className="font-mono inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-white/[0.06] px-4 py-3 text-[10.5px] font-bold uppercase tracking-[0.10em] text-white"
         >
           <ArrowLeft className="h-3 w-3" /> Forrige
         </button>
         <button
           type="button"
-          className="font-mono rounded-xl bg-white/[0.06] px-4 py-3 text-[10.5px] font-bold uppercase tracking-[0.10em] text-white"
+          className="font-mono min-h-11 rounded-xl bg-white/[0.06] px-4 py-3 text-[10.5px] font-bold uppercase tracking-[0.10em] text-white"
         >
           Sett
         </button>
         <button
           type="button"
-          className="font-mono inline-flex items-center gap-1.5 rounded-xl bg-accent px-4 py-3 text-[10.5px] font-bold uppercase tracking-[0.10em] text-foreground"
+          className="font-mono inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-accent px-4 py-3 text-[10.5px] font-bold uppercase tracking-[0.10em] text-foreground"
         >
           Neste <ArrowRight className="h-3 w-3" />
         </button>

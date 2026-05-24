@@ -497,7 +497,7 @@ export function LiveShell({
           right={<CloseButton />}
         />
 
-        <section className="relative z-[1] mx-auto flex w-full max-w-[1100px] flex-col items-center justify-center px-8 pt-8">
+        <section className="relative z-[1] mx-auto flex w-full max-w-[1100px] flex-col items-center justify-center px-4 pt-6 sm:px-8 sm:pt-8">
           <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
             Klar til økt
           </div>
@@ -516,7 +516,7 @@ export function LiveShell({
             {drills.map((d, i) => (
               <li
                 key={d.id}
-                className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.04] px-6 py-3.5"
+                className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3.5 sm:gap-4 sm:px-6"
               >
                 <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/55 tabular-nums">
                   {String(i + 1).padStart(2, "0")}
@@ -540,7 +540,7 @@ export function LiveShell({
         <BottomBar>
           <Link
             href="/portal/tren"
-            className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-transparent px-8 text-[16px] font-medium text-white transition-colors hover:bg-white/[0.06]"
+            className="inline-flex h-[56px] sm:h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-transparent px-6 sm:px-8 text-[15px] sm:text-[16px] font-medium text-white transition-colors hover:bg-white/[0.06]"
           >
             Avbryt
           </Link>
@@ -548,7 +548,7 @@ export function LiveShell({
             type="button"
             onClick={handleStart}
             disabled={pending}
-            className="inline-flex h-[72px] flex-1 items-center justify-center gap-4 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99] disabled:opacity-60"
+            className="inline-flex h-[64px] sm:h-[72px] flex-1 items-center justify-center gap-3 sm:gap-4 rounded-xl bg-accent text-[17px] sm:text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99] disabled:opacity-60"
             style={{
               boxShadow:
                 "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -556,7 +556,7 @@ export function LiveShell({
           >
             {pending ? "Starter…" : "Start økt"}
             <ArrowRight className="h-[22px] w-[22px]" strokeWidth={2} />
-            <span className="ml-2 inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
+            <span className="ml-2 hidden sm:inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
               space
             </span>
           </button>
@@ -693,7 +693,7 @@ export function LiveShell({
 
             <div className="flex flex-col items-center">
               <div
-                className="font-mono text-[200px] font-medium leading-[0.9] tracking-[-0.05em] tabular-nums text-accent"
+                className="font-mono text-[120px] sm:text-[160px] md:text-[200px] font-medium leading-[0.9] tracking-[-0.05em] tabular-nums text-accent"
                 style={{ textShadow: "0 0 32px rgba(209,248,67,0.30)" }}
               >
                 {state.repsLogged}
@@ -738,11 +738,11 @@ export function LiveShell({
         </div>
 
         {showPauseOverlay ? (
-          <BottomBar cols="grid-cols-[200px_1fr]">
+          <BottomBar cols="sm:grid-cols-[200px_1fr]">
             <button
               type="button"
               onClick={() => dispatch({ type: "TOGGLE_PAUSE" })}
-              className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl text-[16px] font-medium text-white/85 transition-colors hover:bg-white/[0.06]"
+              className="inline-flex h-[64px] sm:h-[72px] items-center justify-center gap-2.5 rounded-xl text-[16px] font-medium text-white/85 transition-colors hover:bg-white/[0.06]"
             >
               <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
               Avbryt pause
@@ -750,7 +750,7 @@ export function LiveShell({
             <button
               type="button"
               onClick={() => dispatch({ type: "TOGGLE_PAUSE" })}
-              className="inline-flex h-[72px] items-center justify-center gap-4 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
+              className="inline-flex h-[64px] sm:h-[72px] items-center justify-center gap-4 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
               style={{
                 boxShadow:
                   "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -758,17 +758,17 @@ export function LiveShell({
             >
               <Play className="h-[22px] w-[22px]" strokeWidth={2} fill="currentColor" />
               Fortsett økt
-              <span className="ml-2 inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
+              <span className="ml-2 hidden sm:inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
                 space
               </span>
             </button>
           </BottomBar>
         ) : (
-          <BottomBar cols="grid-cols-[160px_160px_160px_1fr]">
+          <BottomBar cols="grid-cols-2 sm:grid-cols-[160px_160px_160px_1fr]">
             <button
               type="button"
               onClick={() => dispatch({ type: "TOGGLE_PAUSE" })}
-              className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/15 bg-transparent text-[15px] font-medium text-white/85 transition-colors hover:bg-white/[0.06]"
+              className="inline-flex h-[56px] sm:h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/15 bg-transparent text-[14px] sm:text-[15px] font-medium text-white/85 transition-colors hover:bg-white/[0.06]"
             >
               <Pause className="h-[18px] w-[18px]" strokeWidth={1.5} />
               Pause
@@ -776,7 +776,7 @@ export function LiveShell({
             <button
               type="button"
               onClick={handleCompleteDrill}
-              className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/15 bg-transparent text-[15px] font-medium text-white/75 transition-colors hover:bg-white/[0.04]"
+              className="inline-flex h-[56px] sm:h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/15 bg-transparent text-[14px] sm:text-[15px] font-medium text-white/75 transition-colors hover:bg-white/[0.04]"
             >
               <SkipForward className="h-[18px] w-[18px]" strokeWidth={1.5} />
               Hopp over
@@ -784,7 +784,7 @@ export function LiveShell({
             <button
               type="button"
               onClick={() => handleLogRep(false)}
-              className="inline-flex h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-transparent text-[16px] font-medium text-white transition-colors hover:bg-white/[0.06]"
+              className="inline-flex h-[56px] sm:h-[72px] items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-transparent text-[15px] sm:text-[16px] font-medium text-white transition-colors hover:bg-white/[0.06]"
             >
               <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
               Bom (X)
@@ -792,7 +792,7 @@ export function LiveShell({
             <button
               type="button"
               onClick={() => handleLogRep(true)}
-              className="inline-flex h-[72px] items-center justify-center gap-4 rounded-xl bg-accent text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
+              className="col-span-2 inline-flex h-[64px] sm:col-span-1 sm:h-[72px] items-center justify-center gap-4 rounded-xl bg-accent text-[17px] sm:text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99]"
               style={{
                 boxShadow:
                   "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -800,7 +800,7 @@ export function LiveShell({
             >
               <Check className="h-[22px] w-[22px]" strokeWidth={2} />
               Logg rep
-              <span className="ml-2 inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
+              <span className="ml-2 hidden sm:inline-flex items-center rounded-md border border-accent-foreground/25 bg-accent-foreground/10 px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.10em] text-accent-foreground">
                 space
               </span>
             </button>
@@ -895,7 +895,7 @@ export function LiveShell({
             </svg>
             <div className="flex flex-col items-center">
               <div
-                className="font-mono text-[200px] font-medium leading-[0.9] tracking-[-0.05em] tabular-nums text-accent"
+                className="font-mono text-[120px] sm:text-[160px] md:text-[200px] font-medium leading-[0.9] tracking-[-0.05em] tabular-nums text-accent"
                 style={{ textShadow: "0 0 40px rgba(209,248,67,0.45)" }}
               >
                 {state.repsLogged}
@@ -978,8 +978,8 @@ export function LiveShell({
           right={<CloseButton />}
         />
 
-        <section className="relative z-[1] mx-auto flex w-full max-w-[1280px] items-center px-16 py-12">
-          <div className="grid w-full max-w-[1120px] grid-cols-[1.1fr_1fr] items-center gap-16">
+        <section className="relative z-[1] mx-auto flex w-full max-w-[1280px] items-center px-4 py-6 sm:px-8 sm:py-8 md:px-16 md:py-12">
+          <div className="grid w-full max-w-[1120px] grid-cols-1 items-center gap-8 md:grid-cols-[1.1fr_1fr] md:gap-16">
             {/* LEFT — done summary */}
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
@@ -1197,9 +1197,9 @@ export function LiveShell({
         right={<CloseButton />}
       />
 
-      <section className="relative z-[1] mx-auto flex w-full max-w-[1240px] flex-col px-8 pt-12 pb-8 md:px-16">
+      <section className="relative z-[1] mx-auto flex w-full max-w-[1240px] flex-col px-4 pt-8 pb-6 sm:px-8 sm:pt-12 sm:pb-8 md:px-16">
         {/* Hero */}
-        <div className="mb-10 text-center">
+        <div className="mb-8 text-center sm:mb-10">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
             <Trophy className="h-[14px] w-[14px]" strokeWidth={1.5} />
             Økt fullført
@@ -1438,14 +1438,15 @@ function TopBar({
 
 function BottomBar({
   children,
-  cols = "grid-cols-[200px_1fr]",
+  cols = "sm:grid-cols-[200px_1fr]",
 }: {
   children: React.ReactNode;
   cols?: string;
 }) {
   return (
     <div
-      className={`relative z-10 grid ${cols} items-center gap-4 border-t border-white/[0.06] px-6 py-4`}
+      className={`relative z-10 grid grid-cols-1 ${cols} items-center gap-3 border-t border-white/[0.06] px-4 py-3 sm:gap-4 sm:px-6 sm:py-4`}
+      style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0.75rem)" }}
     >
       {children}
     </div>
@@ -1478,7 +1479,7 @@ function CloseButton() {
     <Link
       href="/portal/tren"
       aria-label="Lukk"
-      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white transition-colors hover:bg-white/10"
+      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white transition-colors hover:bg-white/10"
     >
       <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
     </Link>

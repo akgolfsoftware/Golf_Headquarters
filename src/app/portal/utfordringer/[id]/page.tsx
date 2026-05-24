@@ -71,7 +71,7 @@ export default async function UtfordringDetalj({
     <div className="space-y-8">
       <Link
         href="/portal/utfordringer"
-        className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground"
       >
         ← PlayerHQ · Utfordringer
       </Link>
@@ -101,7 +101,7 @@ export default async function UtfordringDetalj({
               <form action={avsluttAction}>
                 <button
                   type="submit"
-                  className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-2 text-sm font-medium text-destructive hover:border-destructive/50"
+                  className="inline-flex min-h-11 items-center rounded-md border border-destructive/30 bg-destructive/5 px-4 py-2 text-sm font-medium text-destructive hover:border-destructive/50"
                 >
                   Avslutt utfordring
                 </button>

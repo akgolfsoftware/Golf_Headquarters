@@ -110,6 +110,7 @@
   cursor: pointer;
   font-family: inherit;
   transition: background 140ms, border-color 140ms, box-shadow 140ms;
+  min-height: 44px;
 }
 .tp-btn svg { width: 13px; height: 13px; }
 .tp-btn.primary {
@@ -137,6 +138,11 @@
   display: flex;
   flex-direction: column;
   gap: 36px;
+}
+@media (max-width: 640px) {
+  .tp-wrap { padding: 16px 16px 60px; gap: 24px; }
+  .tp-group-head { flex-wrap: wrap; }
+  .tp-group-meta { width: 100%; }
 }
 
 /* === Group head === */

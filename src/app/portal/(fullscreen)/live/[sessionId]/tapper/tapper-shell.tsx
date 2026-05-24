@@ -231,7 +231,10 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
       </div>
 
       {/* TAP-knapp */}
-      <div className="relative z-10 px-4 pb-6 pt-2 sm:px-6 sm:pb-6">
+      <div
+        className="relative z-10 px-4 pb-6 pt-2 sm:px-6 sm:pb-6"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 1.5rem)" }}
+      >
         <button
           type="button"
           onClick={handleTap}

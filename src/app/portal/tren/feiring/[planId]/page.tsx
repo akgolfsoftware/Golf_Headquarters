@@ -111,7 +111,7 @@ export default async function PlanFeiring({ params }: { params: Params }) {
     <div className="space-y-8">
       <Link
         href="/portal/tren"
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft size={14} strokeWidth={1.5} />
         Tilbake til trening
@@ -232,17 +232,17 @@ export default async function PlanFeiring({ params }: { params: Params }) {
       )}
 
       {/* CTA */}
-      <section className="flex flex-wrap gap-3">
+      <section className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <Link
           href="/portal/tren"
-          className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
           Til trening
         </Link>
         <Link
           href="/portal/tren/kalender"
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           Be om ny plan
           <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.75} />

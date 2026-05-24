@@ -354,20 +354,20 @@ export default async function KalenderPage({
             <div className="inline-flex gap-1 rounded-md border border-border bg-card p-1">
               <Link
                 href={`/portal/tren/kalender?uke=${fmtParam(forrigeUke)}`}
-                className="inline-flex items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium text-foreground hover:bg-secondary"
+                className="inline-flex min-h-11 min-w-11 items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium text-foreground hover:bg-secondary"
               >
                 <ChevronLeft className="h-4 w-4" />
                 <span className="hidden sm:inline">Forrige uke</span>
               </Link>
               <Link
                 href="/portal/tren/kalender"
-                className="rounded-sm bg-foreground px-2 py-2 text-xs font-medium text-background"
+                className="inline-flex min-h-11 items-center rounded-sm bg-foreground px-3 py-2 text-xs font-medium text-background"
               >
                 I dag
               </Link>
               <Link
                 href={`/portal/tren/kalender?uke=${fmtParam(nesteUke)}`}
-                className="inline-flex items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium text-foreground hover:bg-secondary"
+                className="inline-flex min-h-11 min-w-11 items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium text-foreground hover:bg-secondary"
               >
                 <span className="hidden sm:inline">Neste uke</span>
                 <ChevronRight className="h-4 w-4" />
@@ -376,7 +376,7 @@ export default async function KalenderPage({
 
             <Link
               href="/portal/ny-okt"
-              className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90 sm:hidden"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90 sm:hidden"
             >
               <Plus className="h-4 w-4" />
               Ny økt
@@ -387,7 +387,7 @@ export default async function KalenderPage({
           <div className="flex gap-2 overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
             <Link
               href={filterLink("alle")}
-              className={`shrink-0 rounded-full px-4 py-1 text-xs font-medium transition-colors ${
+              className={`inline-flex min-h-11 shrink-0 items-center rounded-full px-4 text-xs font-medium transition-colors ${
                 aktivFilter === "alle"
                   ? "bg-foreground text-background"
                   : "border border-border bg-card text-foreground hover:bg-secondary"
@@ -399,7 +399,7 @@ export default async function KalenderPage({
               p.disabled ? (
                 <span
                   key={p.key}
-                  className="shrink-0 rounded-full border border-border bg-card px-4 py-1 text-xs font-medium text-foreground opacity-40"
+                  className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-border bg-card px-4 text-xs font-medium text-foreground opacity-40"
                 >
                   {p.label}
                 </span>
@@ -407,7 +407,7 @@ export default async function KalenderPage({
                 <Link
                   key={p.key}
                   href={filterLink(p.key)}
-                  className={`shrink-0 rounded-full px-4 py-1 text-xs font-medium transition-colors ${
+                  className={`inline-flex min-h-11 shrink-0 items-center rounded-full px-4 text-xs font-medium transition-colors ${
                     aktivFilter === p.key
                       ? "bg-foreground text-background"
                       : "border border-border bg-card text-foreground hover:bg-secondary"

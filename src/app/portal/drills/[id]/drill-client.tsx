@@ -56,13 +56,13 @@ export function DrillDetailClient({ drillId, drillTitle }: Props) {
   return (
     <section
       aria-label="Drill-handlinger"
-      className="flex flex-wrap items-center gap-3 border-t border-border pt-8"
+      className="flex flex-wrap items-stretch gap-3 border-t border-border pt-8"
     >
       <button
         type="button"
         onClick={startOkt}
         disabled={pending}
-        className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60 sm:flex-initial"
       >
         {pending ? (
           <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
@@ -76,7 +76,7 @@ export function DrillDetailClient({ drillId, drillTitle }: Props) {
         type="button"
         onClick={leggTilKalender}
         disabled={pending}
-        className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
+        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
       >
         <CalendarPlus className="h-4 w-4" strokeWidth={1.75} />
         Legg til kalender
@@ -86,7 +86,7 @@ export function DrillDetailClient({ drillId, drillTitle }: Props) {
         type="button"
         onClick={delDrill}
         disabled={pending}
-        className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
+        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
       >
         <Share2 className="h-4 w-4" strokeWidth={1.75} />
         Del

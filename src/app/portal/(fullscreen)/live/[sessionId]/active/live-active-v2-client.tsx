@@ -162,7 +162,7 @@ export function LiveActiveV2Client({
         <div className="mx-auto flex max-w-[920px] items-center justify-between gap-3 px-4 py-3">
           <Link
             href={`/portal/live/${sessionId}/brief`}
-            className="inline-flex h-9 items-center gap-1.5 font-mono text-[11px] text-muted-foreground hover:text-foreground"
+            className="inline-flex h-11 min-w-11 items-center gap-1.5 font-mono text-[11px] text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Brief
@@ -170,7 +170,7 @@ export function LiveActiveV2Client({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setRunning((r) => !r)}
-              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 font-mono text-[12px] font-semibold tabular-nums text-foreground hover:border-foreground/30"
+              className="inline-flex h-11 min-w-11 items-center gap-1.5 rounded-full border border-border bg-card px-3 font-mono text-[12px] font-semibold tabular-nums text-foreground hover:border-foreground/30"
             >
               {running ? (
                 <Pause className="h-3.5 w-3.5" strokeWidth={2} />
@@ -181,7 +181,7 @@ export function LiveActiveV2Client({
             </button>
             <Link
               href={`/portal/live/${sessionId}/summary`}
-              className="inline-flex h-9 items-center gap-1.5 rounded-full bg-primary px-3 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-primary-foreground"
+              className="inline-flex h-11 min-w-11 items-center gap-1.5 rounded-full bg-primary px-3 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-primary-foreground"
             >
               Fullfør
               <ArrowRight className="h-3 w-3" strokeWidth={2.5} />
@@ -348,7 +348,10 @@ export function LiveActiveV2Client({
       </main>
 
       {/* PILL-BAR BUNN */}
-      <nav className="fixed bottom-0 left-0 right-0 z-20 border-t border-border bg-card/95 backdrop-blur">
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-20 border-t border-border bg-card/95 backdrop-blur"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
         <div className="mx-auto flex max-w-[920px] items-center justify-around gap-2 px-4 py-3">
           <PillBtn icon={<FileText className="h-4 w-4" strokeWidth={1.75} />} label="Notat" />
           <PillBtn icon={<Video className="h-4 w-4" strokeWidth={1.75} />} label="Video" />
@@ -364,7 +367,7 @@ export function LiveActiveV2Client({
 
 function PillBtn({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <button className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-background px-3 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground hover:border-foreground/30 active:scale-[0.98]">
+    <button className="inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-background px-3 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground hover:border-foreground/30 active:scale-[0.98]">
       {icon}
       {label}
     </button>

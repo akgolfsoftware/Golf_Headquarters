@@ -188,7 +188,7 @@ export default async function SessionDetalj({
     <div className="space-y-6">
       <Link
         href="/portal/tren"
-        className="inline-flex items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         Tilbake til plan
@@ -202,13 +202,13 @@ export default async function SessionDetalj({
           kanStarte ? (
             <Link
               href={`/portal/live/${session.id}`}
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Play className="h-3.5 w-3.5" strokeWidth={2.5} />
               Start live
             </Link>
           ) : session.status === "COMPLETED" ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(60,142,109,0.13)] px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--color-pyr-tek)]">
+            <span className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-[rgba(60,142,109,0.13)] px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--color-pyr-tek)]">
               <Check className="h-3 w-3" strokeWidth={3} />
               Gjennomført
             </span>

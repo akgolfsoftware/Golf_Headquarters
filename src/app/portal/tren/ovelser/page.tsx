@@ -62,7 +62,7 @@ export default async function OvelserPage({
       <div className="mb-5">
         <Link
           href="/portal/tren"
-          className="mb-4 inline-flex items-center gap-1 font-mono text-[12px] font-medium text-muted-foreground hover:text-foreground"
+          className="mb-4 inline-flex min-h-11 items-center gap-1 font-mono text-[12px] font-medium text-muted-foreground hover:text-foreground"
         >
           <ChevronRight size={14} strokeWidth={1.5} className="rotate-180" />
           Trening
@@ -84,7 +84,7 @@ export default async function OvelserPage({
           size={14}
           className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
         />
-        <div className="w-full rounded-xl bg-secondary/70 py-2.5 pl-9 pr-4 text-[13px] text-muted-foreground">
+        <div className="flex min-h-11 w-full items-center rounded-xl bg-secondary/70 pl-9 pr-4 text-[13px] text-muted-foreground">
           Søk i øvelser...
         </div>
       </div>
@@ -100,7 +100,7 @@ export default async function OvelserPage({
             <Link
               key={t.value}
               href={href}
-              className={`flex-1 py-3 text-center text-[12px] font-medium transition-colors ${
+              className={`flex min-h-11 flex-1 items-center justify-center py-3 text-center text-[13px] font-medium transition-colors ${
                 aktiv
                   ? "border-b-2 border-primary font-bold text-primary"
                   : "text-muted-foreground hover:text-foreground"
@@ -109,7 +109,7 @@ export default async function OvelserPage({
               {t.label}
               {count !== null && count > 0 && (
                 <span
-                  className={`ml-1 rounded-full px-1.5 py-0.5 font-mono text-[9px] ${
+                  className={`ml-1 rounded-full px-1.5 py-0.5 font-mono text-[10px] ${
                     aktiv ? "bg-primary text-accent" : "bg-secondary text-muted-foreground"
                   }`}
                 >
