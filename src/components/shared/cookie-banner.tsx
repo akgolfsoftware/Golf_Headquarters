@@ -115,6 +115,7 @@ export function CookieBanner() {
             </span>
           </div>
           <button
+            type="button"
             onClick={onNodvendig}
             aria-label="Lukk og godta kun nødvendige"
             style={{
@@ -130,7 +131,7 @@ export function CookieBanner() {
               marginRight: -8,
             }}
           >
-            <X size={18} strokeWidth={1.75} />
+            <X size={18} strokeWidth={1.75} aria-hidden />
           </button>
         </div>
 
@@ -158,6 +159,7 @@ export function CookieBanner() {
         {/* Knapper */}
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <button
+            type="button"
             onClick={onGodta}
             style={{
               flex: 1,
@@ -176,6 +178,7 @@ export function CookieBanner() {
             Godta alle
           </button>
           <button
+            type="button"
             onClick={onNodvendig}
             style={{
               flex: 1,

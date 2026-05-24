@@ -458,18 +458,21 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
                     type="text"
                     autoFocus
                     placeholder="Søk svakhet..."
+                    aria-label="Søk svakhet"
                     value={leggTilSvakhet}
                     onChange={(e) => setLeggTilSvakhet(e.target.value)}
                     className="flex-1 bg-transparent text-[12px] text-foreground outline-none placeholder:text-muted-foreground"
                   />
                   <button
+                    type="button"
                     onClick={() => {
                       setVisSvakhetVelger(false);
                       setLeggTilSvakhet("");
                     }}
+                    aria-label="Lukk svakhet-velger"
                     className="text-muted-foreground hover:text-foreground"
                   >
-                    <X size={12} strokeWidth={2} />
+                    <X size={12} strokeWidth={2} aria-hidden />
                   </button>
                 </div>
                 <ul className="max-h-48 overflow-y-auto py-1">
