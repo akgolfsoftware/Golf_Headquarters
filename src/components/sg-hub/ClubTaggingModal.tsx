@@ -96,10 +96,14 @@ export function ClubTaggingModal({ sessionId }: Props) {
           </p>
 
           <div className="mb-4">
-            <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <label
+              htmlFor="club-tagging-environment"
+              className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+            >
               Treningsmiljø
-            </span>
+            </label>
             <select
+              id="club-tagging-environment"
               value={environment}
               onChange={(e) => setEnvironment(e.target.value as TrackManEnvironment)}
               className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"

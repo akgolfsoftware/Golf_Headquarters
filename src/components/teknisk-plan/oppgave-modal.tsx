@@ -656,11 +656,13 @@ function TmGoalRow({ goal, onChange, onRemove }: TmGoalRowProps) {
         value={goal.metric}
         onChange={(e) => onChange({ metric: e.target.value })}
         placeholder="dispersion_m_std"
+        aria-label="TM-måling"
       />
       <select
         className="v input"
         value={goal.klubb}
         onChange={(e) => onChange({ klubb: e.target.value })}
+        aria-label="Kølle"
       >
         {KOLLER.map((k) => (
           <option key={k}>{k}</option>
@@ -675,8 +677,9 @@ function TmGoalRow({ goal, onChange, onRemove }: TmGoalRowProps) {
           value={goal.baselineValue === "" ? "" : goal.baselineValue}
           onChange={(e) => onChange({ baselineValue: e.target.value === "" ? "" : Number(e.target.value) })}
           placeholder="Base"
+          aria-label="Baseline-verdi"
         />
-        <span style={{ color: "hsl(var(--muted-foreground))" }}>→</span>
+        <span style={{ color: "hsl(var(--muted-foreground))" }} aria-hidden>→</span>
         <input
           className="v input"
           type="number"
@@ -685,12 +688,14 @@ function TmGoalRow({ goal, onChange, onRemove }: TmGoalRowProps) {
           value={goal.targetValue === "" ? "" : goal.targetValue}
           onChange={(e) => onChange({ targetValue: e.target.value === "" ? "" : Number(e.target.value) })}
           placeholder="Mål"
+          aria-label="Mål-verdi"
         />
       </div>
       <select
         className="v input"
         value={goal.targetType}
         onChange={(e) => onChange({ targetType: e.target.value as TmGoalDraft["targetType"] })}
+        aria-label="Måltype"
       >
         <option value="PRIMARY">Primær</option>
         <option value="SECONDARY">Sekundær</option>
@@ -723,15 +728,15 @@ function HitRateRow({ goal, onChange, onRemove }: HitRateRowProps) {
 
   return (
     <div className="tp-hit-row">
-      <div className="field-stack">
+      <label className="field-stack">
         <span className="field-label">Måling</span>
         <input
           className="input"
           value={goal.metric}
           onChange={(e) => onChange({ metric: e.target.value })}
         />
-      </div>
-      <div className="field-stack">
+      </label>
+      <label className="field-stack">
         <span className="field-label">Kølle</span>
         <select
           className="input"
@@ -742,8 +747,8 @@ function HitRateRow({ goal, onChange, onRemove }: HitRateRowProps) {
             <option key={k}>{k}</option>
           ))}
         </select>
-      </div>
-      <div className="field-stack">
+      </label>
+      <div className="field-stack" role="group" aria-label="Korridor">
         <span className="field-label">Korridor</span>
         <div className="corridor-row">
           <input
@@ -754,8 +759,9 @@ function HitRateRow({ goal, onChange, onRemove }: HitRateRowProps) {
             onChange={(e) =>
               onChange({ corridorMin: e.target.value === "" ? "" : Number(e.target.value) })
             }
+            aria-label="Korridor min"
           />
-          <span className="sep">til</span>
+          <span className="sep" aria-hidden>til</span>
           <input
             className="input"
             type="number"
@@ -764,10 +770,11 @@ function HitRateRow({ goal, onChange, onRemove }: HitRateRowProps) {
             onChange={(e) =>
               onChange({ corridorMax: e.target.value === "" ? "" : Number(e.target.value) })
             }
+            aria-label="Korridor maks"
           />
         </div>
       </div>
-      <div className="field-stack">
+      <label className="field-stack">
         <span className="field-label">Protokoll</span>
         <select
           className="input"
@@ -778,8 +785,8 @@ function HitRateRow({ goal, onChange, onRemove }: HitRateRowProps) {
             <option key={k} value={k}>{v}</option>
           ))}
         </select>
-      </div>
-      <div className="field-stack">
+      </label>
+      <div className="field-stack" role="group" aria-label="Krav">
         <span className="field-label">Krav</span>
         <div className="req-row">
           <input
@@ -790,8 +797,9 @@ function HitRateRow({ goal, onChange, onRemove }: HitRateRowProps) {
             onChange={(e) =>
               onChange({ requiredHits: e.target.value === "" ? "" : Number(e.target.value) })
             }
+            aria-label="Antall treff"
           />
-          <span className="of">av</span>
+          <span className="of" aria-hidden>av</span>
           <input
             className="input"
             type="number"
@@ -800,6 +808,7 @@ function HitRateRow({ goal, onChange, onRemove }: HitRateRowProps) {
             onChange={(e) =>
               onChange({ windowSize: e.target.value === "" ? "" : Number(e.target.value) })
             }
+            aria-label="Antall slag"
           />
         </div>
       </div>
