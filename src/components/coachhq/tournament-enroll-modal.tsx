@@ -252,11 +252,12 @@ export function TournamentEnrollModal({
               Legg til spillere
             </h3>
             <div className="mb-3 flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm">
-              <Search size={14} strokeWidth={1.75} className="text-muted-foreground" />
+              <Search size={14} strokeWidth={1.75} className="text-muted-foreground" aria-hidden />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Søk spiller …"
+                aria-label="Søk spiller"
                 className="flex-1 border-none bg-transparent outline-none"
               />
             </div>

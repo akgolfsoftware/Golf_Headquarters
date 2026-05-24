@@ -240,6 +240,7 @@ export function TemplateEditor({
               value={drillSok}
               onChange={(e) => setDrillSok(e.target.value)}
               placeholder="Søk drill"
+              aria-label="Søk drill"
               className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-3 text-xs focus:border-primary focus:outline-none"
             />
           </div>
@@ -890,6 +891,7 @@ function SessionEditModal({
                 value={drillSok}
                 onChange={(e) => setDrillSok(e.target.value)}
                 placeholder="Søk drill å legge til"
+                aria-label="Søk drill å legge til"
                 className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-3 text-xs"
               />
             </div>
