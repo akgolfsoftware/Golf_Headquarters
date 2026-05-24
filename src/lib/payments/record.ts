@@ -1,5 +1,6 @@
 // Helper for å upserte Payment-rader idempotent fra Stripe-events.
 // Bruk fra webhook OG fra reimport-script.
+import "server-only";
 
 import type Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
@@ -215,24 +216,36 @@ export async function recordCheckoutSession(session: Stripe.Checkout.Session) {
   });
 }
 
+// Stripe v22 moved top-level `subscription` and `payment_intent` out of Invoice.
+// Webhook payloads using API versions before 2025-01-27.1 still include them at
+// top-level. Define an explicit intersection type (single cast) instead of `as unknown`.
+type InvoiceWebhookCompat = Stripe.Invoice & {
+  /** Legacy field — present in webhook payloads on API versions < 2025-01-27.1. */
+  subscription?: string | { id: string } | null;
+  /** Legacy field — present in webhook payloads on API versions < 2025-01-27.1. */
+  payment_intent?: string | { id: string } | null;
+};
+
 export async function recordInvoice(invoice: Stripe.Invoice) {
   const stripeCustomerId = customerId(invoice.customer);
-  const invoiceAny = invoice as unknown as {
-    subscription?: string | { id: string } | null;
-    payment_intent?: string | { id: string } | null;
-  };
-  const subscriptionStripeId =
-    typeof invoiceAny.subscription === "string"
-      ? invoiceAny.subscription
-      : invoiceAny.subscription && "id" in invoiceAny.subscription
-        ? invoiceAny.subscription.id
-        : null;
-  const paymentIntentId =
-    typeof invoiceAny.payment_intent === "string"
-      ? invoiceAny.payment_intent
-      : invoiceAny.payment_intent && "id" in invoiceAny.payment_intent
-        ? invoiceAny.payment_intent.id
-        : null;
+  const inv = invoice as InvoiceWebhookCompat;
+
+  // Primary source: Stripe v22 parent object. Fallback: legacy top-level fields.
+  const subscriptionStripeId = (() => {
+    const newSub = invoice.parent?.subscription_details?.subscription;
+    if (newSub) return typeof newSub === "string" ? newSub : newSub.id;
+    const legacySub = inv.subscription;
+    if (!legacySub) return null;
+    return typeof legacySub === "string" ? legacySub : legacySub.id;
+  })();
+
+  const paymentIntentId = (() => {
+    const newPi = invoice.payments?.data?.[0]?.payment?.payment_intent;
+    if (newPi) return typeof newPi === "string" ? newPi : newPi.id;
+    const legacyPi = inv.payment_intent;
+    if (!legacyPi) return null;
+    return typeof legacyPi === "string" ? legacyPi : legacyPi.id;
+  })();
 
   const subscriptionId = await findSubscriptionId(subscriptionStripeId);
   const userId = await findUserId({

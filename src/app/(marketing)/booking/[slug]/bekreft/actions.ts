@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
@@ -158,6 +159,15 @@ export async function createBookingCheckout(
     return { ok: true, url: session.url };
   } catch (err) {
     console.error("[createBookingCheckout]", err);
+    // S-12: Fang Prisma unique constraint violation (P2002) fra bookings_slot_unique.
+    // Dette skjer når to klienter sender booking-request for samme slot i samme ms
+    // (race condition som ikke fanges av isSlotStillAvailable-sjekken over).
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      return {
+        ok: false,
+        error: "Denne tiden ble dessverre booket av noen andre akkurat nå. Velg en annen tid.",
+      };
+    }
     const msg = err instanceof Error ? err.message : "Ukjent feil";
     // Ikke leak interne feilmeldinger til klienten i produksjon
     return {

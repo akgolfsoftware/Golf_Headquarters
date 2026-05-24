@@ -60,8 +60,9 @@ export async function loggMilepael(formData: FormData) {
     select: { milepaeler: true },
   });
 
-  const naa: Milepael[] = Array.isArray(eksisterende?.milepaeler)
-    ? (eksisterende!.milepaeler as unknown as Milepael[])
+  const rawMilepaeler: unknown = eksisterende?.milepaeler;
+  const naa: Milepael[] = Array.isArray(rawMilepaeler)
+    ? (rawMilepaeler as Milepael[])
     : [];
 
   const ny: Milepael = {

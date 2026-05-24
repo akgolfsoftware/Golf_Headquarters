@@ -76,7 +76,7 @@ export async function leggTilSpiller(
   if (eksisterende) {
     return {
       ok: false,
-      fieldErrors: { epost: "En bruker med denne e-posten finnes allerede" },
+      fieldErrors: { epost: "E-posten kan ikke brukes. Prøv en annen eller kontakt support." },
     };
   }
 
@@ -174,7 +174,7 @@ export async function oppdaterSpiller(
   if (eksisterende) {
     return {
       ok: false,
-      fieldErrors: { epost: "En annen bruker har allerede denne e-posten" },
+      fieldErrors: { epost: "E-posten kan ikke brukes. Prøv en annen eller kontakt support." },
     };
   }
 

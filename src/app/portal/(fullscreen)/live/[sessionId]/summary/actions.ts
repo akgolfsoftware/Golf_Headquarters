@@ -85,7 +85,8 @@ export async function freezeSessionSummary(
 
     // Allerede fryst — returnér eksisterende snapshot.
     if (session.completedSummary) {
-      const cached = session.completedSummary as unknown as SessionSummaryShape;
+      const rawSummary: unknown = session.completedSummary;
+      const cached = rawSummary as SessionSummaryShape;
       return { success: true, data: { summary: cached } };
     }
 

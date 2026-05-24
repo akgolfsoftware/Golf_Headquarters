@@ -1,6 +1,7 @@
 // Supabase service-role klient — KUN for server-side admin-handlinger.
 // Bruker SUPABASE_SERVICE_ROLE_KEY som har full DB-tilgang.
 // Aldri eksponer denne klienten mot browser eller Client Components.
+import "server-only";
 
 import { createClient } from "@supabase/supabase-js";
 

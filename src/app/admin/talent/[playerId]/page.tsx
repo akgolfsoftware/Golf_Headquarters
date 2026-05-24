@@ -91,8 +91,9 @@ export default async function TalentProfil({
     return vals.reduce((s, v) => s + v, 0) / vals.length;
   })();
 
-  const milepaeler: Milepael[] = Array.isArray(t.milepaeler)
-    ? (t.milepaeler as unknown as Milepael[])
+  const rawMilepaeler: unknown = t.milepaeler;
+  const milepaeler: Milepael[] = Array.isArray(rawMilepaeler)
+    ? (rawMilepaeler as Milepael[])
     : [];
 
   const inkludertFra = formatDato(t.inkludertFra.toISOString());

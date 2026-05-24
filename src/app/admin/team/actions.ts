@@ -64,8 +64,8 @@ export async function inviterCoach(
   if (eksisterende) {
     return {
       ok: false,
-      error: "En bruker med denne e-posten finnes allerede",
-      fieldErrors: { email: "En bruker med denne e-posten finnes allerede" },
+      error: "Registreringen kunne ikke fullføres. Kontakt support hvis problemet vedvarer.",
+      fieldErrors: { email: "E-posten kan ikke brukes. Prøv en annen eller kontakt support." },
     };
   }
 

@@ -71,8 +71,9 @@ export async function sendMelding(
           if (tråd.coachId !== me.id && me.role !== "ADMIN") {
             return { ok: false as const, error: "Ikke tilgang til denne tråden" };
           }
-          const eksisterende: ChatMelding[] = Array.isArray(tråd.messages)
-            ? (tråd.messages as unknown as ChatMelding[])
+          const rawMessages: unknown = tråd.messages;
+          const eksisterende: ChatMelding[] = Array.isArray(rawMessages)
+            ? (rawMessages as ChatMelding[])
             : [];
           await tx.coachingSession.update({
             where: { id: threadId },

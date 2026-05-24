@@ -1,5 +1,6 @@
 // Audit-logger. Brukes fra server actions for å spore kritiske handlinger.
 // Fire-and-forget — feil i logging skal aldri stoppe selve handlingen.
+import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";

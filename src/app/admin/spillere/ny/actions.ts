@@ -158,8 +158,8 @@ export async function createSpiller(
   if (eksisterende) {
     return {
       ok: false,
-      error: "En bruker med denne e-posten finnes allerede.",
-      fieldErrors: { epost: "E-post er allerede i bruk" },
+      error: "Registreringen kunne ikke fullføres. Kontakt support hvis problemet vedvarer.",
+      fieldErrors: { epost: "E-posten kan ikke brukes. Prøv en annen eller kontakt support." },
     };
   }
 

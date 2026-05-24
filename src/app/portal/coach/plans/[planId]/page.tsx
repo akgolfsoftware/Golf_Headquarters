@@ -138,8 +138,9 @@ export default async function CoachPlanDetalj({
 
   type MsgRolle = "user" | "assistant" | "coach" | "system";
   type Msg = { role: MsgRolle; content: string; ts?: string };
-  const meldinger = Array.isArray(sisteCoachingSession?.messages)
-    ? (sisteCoachingSession?.messages as unknown as Msg[])
+  const rawMeldinger: unknown = sisteCoachingSession?.messages;
+  const meldinger = Array.isArray(rawMeldinger)
+    ? (rawMeldinger as Msg[])
     : [];
   const sisteCoachMelding = [...meldinger]
     .reverse()

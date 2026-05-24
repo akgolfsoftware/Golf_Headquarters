@@ -62,7 +62,7 @@ export async function oppdaterCoachProfil(
   if (annenMedEpost) {
     return {
       ok: false,
-      fieldErrors: { epost: "En annen bruker har allerede denne e-posten" },
+      fieldErrors: { epost: "E-posten kan ikke brukes. Prøv en annen eller kontakt support." },
     };
   }
 
