@@ -66,7 +66,12 @@ export function AiPlanForslagButton({ playerId, fokusOmrader }: Props) {
       </button>
 
       {apen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="ai-plan-forslag-tittel"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4"
+        >
           <div className="relative w-full max-w-lg rounded-lg border border-border bg-card p-6 shadow-xl">
             <button
               type="button"
@@ -74,12 +79,15 @@ export function AiPlanForslagButton({ playerId, fokusOmrader }: Props) {
               className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:bg-secondary active:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Lukk"
             >
-              <X className="h-4 w-4" strokeWidth={1.8} />
+              <X className="h-4 w-4" strokeWidth={1.8} aria-hidden />
             </button>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               AI-coach · skisse
             </div>
-            <h3 className="mt-2 font-display text-xl font-semibold leading-tight tracking-tight">
+            <h3
+              id="ai-plan-forslag-tittel"
+              className="mt-2 font-display text-xl font-semibold leading-tight tracking-tight"
+            >
               Forslag til <em className="font-normal italic text-primary">plan</em>
             </h3>
             <div className="mt-4 min-h-24 rounded-md border border-border bg-background p-4 text-sm leading-relaxed">
