@@ -247,9 +247,9 @@ export function GolfBoxImportModal({
         ref={dialogRef}
         onClose={lukk}
         aria-label="Importer runder fra GolfBox"
-        className="w-[760px] max-w-[95vw] rounded-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40"
+        className="m-0 mt-auto w-full max-h-[95vh] rounded-t-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40 sm:m-auto sm:w-[760px] sm:max-w-[95vw] sm:rounded-2xl"
       >
-        <div className="p-8">
+        <div className="p-5 sm:p-8">
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -269,9 +269,9 @@ export function GolfBoxImportModal({
                 type="button"
                 onClick={lukk}
                 aria-label="Lukk modal"
-                className="grid h-8 w-8 place-items-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+                className="grid h-11 w-11 place-items-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-foreground hover:text-foreground sm:h-9 sm:w-9"
               >
-                <X size={14} strokeWidth={1.75} aria-hidden />
+                <X size={18} strokeWidth={1.75} aria-hidden />
               </button>
             </div>
           </div>

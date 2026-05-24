@@ -33,6 +33,12 @@
   display: flex;
   flex-direction: column;
 }
+@media (max-width: 640px) {
+  .hub-frame .hub-page {
+    padding: 16px 12px 24px;
+    gap: 16px;
+  }
+}
 
 .hub-head {
   display: grid;
@@ -60,6 +66,9 @@
 .hub-head h1 {
   font-family: var(--hub-font-display); font-size: 36px; font-weight: 700;
   letter-spacing: -0.02em; line-height: 1.04; margin: 2px 0 0 0;
+}
+@media (max-width: 640px) {
+  .hub-head h1 { font-size: 26px; }
 }
 .hub-head h1 em {
   font-family: var(--hub-font-serif); font-style: italic; font-weight: 400;

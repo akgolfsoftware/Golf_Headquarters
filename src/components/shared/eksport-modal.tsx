@@ -253,11 +253,11 @@ export function EksportModal(props: EksportModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="eksport-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/60 p-4 backdrop-blur-sm sm:p-6"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-background/60 backdrop-blur-sm sm:items-center sm:p-6"
       onClick={onClose}
     >
       <div
-        className="flex max-h-[calc(100vh-32px)] w-[640px] max-w-full flex-col overflow-hidden rounded-2xl bg-card shadow-2xl"
+        className="flex max-h-[95vh] w-full flex-col overflow-hidden bg-card shadow-2xl rounded-t-2xl sm:max-h-[calc(100vh-32px)] sm:w-[640px] sm:max-w-full sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -282,9 +282,9 @@ export function EksportModal(props: EksportModalProps) {
             type="button"
             onClick={onClose}
             aria-label="Lukk"
-            className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="-mr-2 -mt-1 grid h-11 w-11 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:h-9 sm:w-9"
           >
-            <X size={16} strokeWidth={1.75} />
+            <X size={18} strokeWidth={1.75} />
           </button>
         </header>
 
@@ -571,7 +571,7 @@ export function EksportModal(props: EksportModalProps) {
         </div>
 
         {/* Footer */}
-        <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-border bg-secondary/30 px-6 py-4 sm:px-7">
+        <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-border bg-secondary/30 px-6 py-4 pb-safe sm:px-7">
           <button
             type="button"
             onClick={onClose}

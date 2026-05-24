@@ -280,6 +280,44 @@ body {
   display: none;
 }
 
+/* ---------- Mobile / safe-area utilities (iPhone notch + home indicator) ----------
+ * Bruk safe-bottom på sticky footers og bottom-nav, safe-top på sticky headers.
+ */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.safe-left {
+  padding-left: env(safe-area-inset-left);
+}
+.safe-right {
+  padding-right: env(safe-area-inset-right);
+}
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+}
+.mb-safe {
+  margin-bottom: env(safe-area-inset-bottom);
+}
+
+/* Forhindre iOS auto-zoom ved tekst-input fokus (krever font-size >= 16px på mobile). */
+@media (max-width: 767px) {
+  .no-zoom-input,
+  input[type="text"].no-zoom-input,
+  input[type="email"].no-zoom-input,
+  input[type="password"].no-zoom-input,
+  input[type="search"].no-zoom-input,
+  input[type="tel"].no-zoom-input,
+  input[type="url"].no-zoom-input,
+  input[type="number"].no-zoom-input,
+  textarea.no-zoom-input,
+  select.no-zoom-input {
+    font-size: 16px !important;
+  }
+}
+
 /* Selection */
 ::selection {
   color: #0a1f17;

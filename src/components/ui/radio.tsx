@@ -21,7 +21,8 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
         ref={ref}
         type="radio"
         checked={checked}
-        className="absolute inset-0 cursor-pointer opacity-0"
+        // Utvidet hit-area for touch: -inset-2.5 gjør input 40x40 selv om visuell boks er 20x20
+        className="absolute -inset-2.5 cursor-pointer opacity-0"
         {...rest}
       />
       {checked && (

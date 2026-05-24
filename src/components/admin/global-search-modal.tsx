@@ -603,7 +603,7 @@ export function GlobalSearchModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="global-search-title"
-      className="fixed inset-0 z-50 flex items-start justify-center bg-foreground/40 px-4 pt-[10vh] backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-foreground/40 px-4 pt-4 backdrop-blur-sm sm:pt-[10vh]"
       onClick={(e) => {
         if (e.target === e.currentTarget) closeModal();
       }}

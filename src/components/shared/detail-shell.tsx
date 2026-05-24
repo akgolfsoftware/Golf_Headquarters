@@ -78,8 +78,8 @@ export function DetailShell({
       <div>{children}</div>
 
       {stickyActions && (
-        <div className="sticky bottom-0 -mx-4 mt-8 border-t border-border bg-background/80 px-4 py-4 backdrop-blur md:-mx-6 md:px-6">
-          <div className="flex items-center justify-between gap-3">
+        <div className="sticky bottom-0 -mx-4 mt-8 border-t border-border bg-background/80 px-4 py-4 pb-safe backdrop-blur md:-mx-6 md:px-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             {stickyActions}
           </div>
         </div>

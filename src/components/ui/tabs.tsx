@@ -84,7 +84,7 @@ export function Tab({ value, children, count, className }: TabProps) {
       aria-selected={isActive}
       onClick={() => setValue(value)}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-medium",
+        "inline-flex min-h-11 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap sm:min-h-9 sm:py-1.5",
         "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         isActive
           ? "bg-accent text-accent-foreground"

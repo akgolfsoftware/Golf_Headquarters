@@ -27,23 +27,23 @@ export function Breadcrumb({ items, className, backHref }: BreadcrumbProps) {
     <nav
       aria-label="Breadcrumb"
       className={cn(
-        "flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground",
+        "flex items-center gap-2 overflow-x-auto scrollbar-none font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground",
         className,
       )}
     >
       {backHref && (
         <Link
           href={backHref}
-          className="flex items-center gap-1 hover:text-foreground transition-colors"
+          className="flex h-11 w-11 shrink-0 items-center justify-center -ml-2 hover:text-foreground transition-colors sm:h-auto sm:w-auto sm:ml-0"
           aria-label="Tilbake"
         >
-          <ChevronLeft size={14} aria-hidden />
+          <ChevronLeft size={18} aria-hidden />
         </Link>
       )}
       {items.map((item, i) => {
         const isLast = i === items.length - 1;
         return (
-          <span key={`${item.label}-${i}`} className="flex items-center gap-2">
+          <span key={`${item.label}-${i}`} className="flex shrink-0 items-center gap-2 whitespace-nowrap">
             {item.href && !isLast ? (
               <Link
                 href={item.href}

@@ -77,6 +77,7 @@ export function CookieBanner() {
         right: 0,
         zIndex: 9999,
         padding: "16px",
+        paddingBottom: "calc(16px + env(safe-area-inset-bottom, 0px))",
         display: "flex",
         justifyContent: "center",
         pointerEvents: "none",
@@ -120,13 +121,16 @@ export function CookieBanner() {
               background: "none",
               border: "none",
               cursor: "pointer",
-              padding: 4,
+              width: 44,
+              height: 44,
               color: "#9C9990",
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
+              marginRight: -8,
             }}
           >
-            <X size={16} strokeWidth={1.75} />
+            <X size={18} strokeWidth={1.75} />
           </button>
         </div>
 
@@ -158,7 +162,7 @@ export function CookieBanner() {
             style={{
               flex: 1,
               minWidth: 140,
-              height: 40,
+              height: 44,
               borderRadius: 999,
               background: "#005840",
               color: "#D1F843",
@@ -176,7 +180,7 @@ export function CookieBanner() {
             style={{
               flex: 1,
               minWidth: 140,
-              height: 40,
+              height: 44,
               borderRadius: 999,
               background: "transparent",
               color: "#5E5C57",

@@ -103,7 +103,8 @@ export function InstallPrompt() {
     <div
       role="dialog"
       aria-label="Installer AK Golf"
-      className="fixed bottom-20 left-4 right-4 z-50 mx-auto max-w-md rounded-2xl border border-border bg-card p-4 shadow-2xl lg:bottom-4"
+      className="fixed left-4 right-4 z-50 mx-auto max-w-md rounded-2xl border border-border bg-card p-4 shadow-2xl lg:bottom-4"
+      style={{ bottom: "calc(5rem + env(safe-area-inset-bottom, 0px))" }}
     >
       <div className="flex items-start gap-4">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary font-display text-base font-semibold text-primary-foreground">

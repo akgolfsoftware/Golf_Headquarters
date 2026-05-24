@@ -581,7 +581,7 @@ export function PortalGlobalSearchModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="portal-search-title"
-      className="fixed inset-0 z-[100] flex items-start justify-center px-4 pt-20 sm:pt-24"
+      className="fixed inset-0 z-[100] flex items-start justify-center px-4 pt-4 sm:pt-24"
       onClick={(e) => {
         if (e.target === e.currentTarget) closeModal();
       }}

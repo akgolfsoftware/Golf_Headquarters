@@ -17,9 +17,9 @@ export function SearchTriggerButton() {
       type="button"
       onClick={open}
       aria-label="Åpne globalt søk (Cmd+K)"
-      className="inline-flex h-10 items-center gap-2 rounded-md border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="inline-flex h-11 items-center gap-2 rounded-md border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10"
     >
-      <Search className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} aria-hidden />
+      <Search className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />
       Søk overalt
       <span className="ml-1 hidden rounded border border-border bg-background px-1 font-mono text-[10px] text-muted-foreground sm:inline">
         ⌘K

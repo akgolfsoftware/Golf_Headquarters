@@ -16,16 +16,18 @@ type SheetProps = {
 
 const sideClasses = {
   left: {
-    base: "left-0 top-0 h-full w-80 max-w-[85vw]",
-    transition: "data-[state=open]:animate-in data-[state=open]:slide-in-from-left",
+    // Mobile: fra venstre, bredere; Desktop: fast bredde
+    base: "left-0 top-0 h-full w-[85vw] max-w-sm sm:w-80",
+    transition: "animate-in slide-in-from-left",
   },
   right: {
-    base: "right-0 top-0 h-full w-[480px] max-w-[90vw]",
-    transition: "data-[state=open]:animate-in data-[state=open]:slide-in-from-right",
+    // Mobile (<sm): bottom-sheet 85vh; Desktop: right-panel 480px
+    base: "inset-x-0 bottom-0 max-h-[85vh] w-full rounded-t-2xl sm:inset-x-auto sm:right-0 sm:top-0 sm:bottom-auto sm:h-full sm:max-h-none sm:w-[480px] sm:max-w-[90vw] sm:rounded-none",
+    transition: "animate-in slide-in-from-bottom sm:slide-in-from-right",
   },
   bottom: {
     base: "bottom-0 left-0 w-full max-h-[90vh] rounded-t-2xl",
-    transition: "data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom",
+    transition: "animate-in slide-in-from-bottom",
   },
 } as const;
 
@@ -84,12 +86,12 @@ export function Sheet({
           "absolute flex flex-col bg-card border-border shadow-xl",
           "duration-200",
           sideConfig.base,
-          side === "left" ? "border-r" : side === "right" ? "border-l" : "border-t",
+          side === "left" ? "border-r" : side === "right" ? "border-l sm:border-l" : "border-t",
           sideConfig.transition,
           className,
         )}
       >
-        <header className="flex items-start justify-between gap-4 border-b border-border px-5 py-4 shrink-0">
+        <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-card px-5 py-4 shrink-0">
             <div className="space-y-1 min-w-0">
               {title && (
                 <h2
@@ -103,17 +105,17 @@ export function Sheet({
             <button
               type="button"
               onClick={onClose}
-              className="shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              className="-mr-2 -mt-1 grid h-11 w-11 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:h-9 sm:w-9"
               aria-label="Lukk"
             >
-              <X size={18} aria-hidden />
+              <X size={20} aria-hidden />
             </button>
           </header>
 
         <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
 
         {footer && (
-          <footer className="border-t border-border px-5 py-4 shrink-0">
+          <footer className="sticky bottom-0 border-t border-border bg-card px-5 py-4 pb-safe shrink-0">
             {footer}
           </footer>
         )}

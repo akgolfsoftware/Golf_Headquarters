@@ -32,19 +32,19 @@ export function AgentFeedbackModal({ open, onClose, agentAction }: Props) {
   const aktivStjerne = hoverStjerne ?? valgtStjerne
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
       <div
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={handleLukk}
       />
-      <div className="relative z-10 w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl">
+      <div className="relative z-10 w-full max-h-[95vh] overflow-y-auto rounded-t-2xl border border-border bg-card p-5 shadow-xl sm:max-w-md sm:rounded-xl sm:p-6">
         <button
           type="button"
           onClick={handleLukk}
-          className="absolute right-4 top-4 text-muted-foreground hover:text-foreground"
+          className="absolute right-2 top-2 grid h-11 w-11 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground sm:h-9 sm:w-9"
           aria-label="Lukk"
         >
-          <X className="h-4 w-4" />
+          <X className="h-5 w-5" />
         </button>
 
         <div className="mb-1 flex items-center gap-2">

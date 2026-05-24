@@ -44,7 +44,7 @@ export function UserMenu({ name, email, avatarUrl }: Props) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex items-center gap-3 rounded-full border border-border bg-card pl-1 pr-3 py-1 text-sm transition hover:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="flex h-11 items-center gap-3 rounded-full border border-border bg-card pl-1 pr-2 text-sm transition hover:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:pr-3"
       >
         <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-primary text-xs font-semibold text-primary-foreground">
           {avatarUrl ? (
@@ -69,7 +69,7 @@ export function UserMenu({ name, email, avatarUrl }: Props) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-50 mt-2 w-64 rounded-2xl border border-border bg-card p-1.5 shadow-[0_8px_30px_rgba(10,31,24,0.12)]"
+          className="absolute right-0 z-50 mt-2 w-[calc(100vw-2rem)] max-w-xs rounded-2xl border border-border bg-card p-1.5 shadow-[0_8px_30px_rgba(10,31,24,0.12)] sm:w-64"
         >
           {/* Header */}
           <div className="flex items-center gap-3 px-3 py-3">

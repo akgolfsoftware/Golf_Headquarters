@@ -301,7 +301,7 @@ export function TrackmanImportModal({
       <dialog
         ref={dialogRef}
         onClose={lukk}
-        className="w-full max-w-2xl rounded-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40"
+        className="m-0 mt-auto w-full max-h-[95vh] rounded-t-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40 sm:m-auto sm:max-w-2xl sm:rounded-2xl"
       >
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div>
@@ -317,9 +317,9 @@ export function TrackmanImportModal({
             type="button"
             onClick={lukk}
             aria-label="Lukk"
-            className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="-mr-2 grid h-11 w-11 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:h-9 sm:w-9"
           >
-            <X size={16} strokeWidth={1.75} />
+            <X size={18} strokeWidth={1.75} />
           </button>
         </div>
 

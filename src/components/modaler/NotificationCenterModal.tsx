@@ -79,14 +79,14 @@ export function NotificationCenterModal({ open, onClose }: Props) {
   const antallUlest = MOCK_VARSLER.filter(erUlest).length
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
       <div
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-md rounded-xl border border-border bg-card shadow-xl">
+      <div className="relative z-10 w-full max-h-[90vh] overflow-hidden rounded-t-2xl border border-border bg-card shadow-xl sm:max-w-md sm:rounded-xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
+        <div className="flex items-center justify-between border-b border-border px-5 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center gap-2">
             <Bell className="h-4 w-4 text-primary" />
             <h2 className="text-base font-semibold">Varsler</h2>
@@ -107,10 +107,10 @@ export function NotificationCenterModal({ open, onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="text-muted-foreground hover:text-foreground"
+              className="-mr-2 grid h-11 w-11 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground sm:h-9 sm:w-9"
               aria-label="Lukk"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </button>
           </div>
         </div>

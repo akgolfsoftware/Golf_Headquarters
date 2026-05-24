@@ -76,9 +76,9 @@ export function LiveIntroModal({
       />
 
       {/* Top bar */}
-      <div className="relative z-10 flex items-center gap-4 px-6">
+      <div className="safe-top relative z-10 flex items-center gap-4 px-4 sm:px-6">
         <div className="flex flex-1 items-center gap-4">
-          <div className="h-1 w-[200px] overflow-hidden rounded-full bg-white/10">
+          <div className="h-1 w-full max-w-[200px] overflow-hidden rounded-full bg-white/10">
             <div
               className="h-full rounded-full"
               style={{
@@ -99,9 +99,9 @@ export function LiveIntroModal({
           type="button"
           onClick={() => setOpen(false)}
           aria-label="Lukk"
-          className="grid h-10 w-10 place-items-center rounded-full border border-white/20 text-white transition-colors hover:bg-white/10"
+          className="grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white transition-colors hover:bg-white/10"
         >
-          <X className="h-4 w-4" strokeWidth={1.75} />
+          <X className="h-5 w-5" strokeWidth={1.75} />
         </button>
       </div>
 
@@ -111,10 +111,10 @@ export function LiveIntroModal({
           <span className="h-1.5 w-1.5 rounded-full bg-[#1A7D56]" />
           {eyebrow}
         </div>
-        <h1 className="mt-7 font-display text-[64px] font-bold leading-[0.95] -tracking-[0.035em] text-white sm:text-[88px]">
+        <h1 className="mt-7 font-display text-[44px] font-bold leading-[0.95] -tracking-[0.035em] text-white sm:text-[64px] md:text-[88px]">
           {title}
         </h1>
-        <div className="mt-3.5 font-sans text-[20px] leading-tight text-white/75 sm:text-[24px]">
+        <div className="mt-3.5 font-sans text-[16px] leading-tight text-white/75 sm:text-[20px] md:text-[24px]">
           {subtitle}
         </div>
 
@@ -155,10 +155,10 @@ export function LiveIntroModal({
       </div>
 
       {/* CTA */}
-      <div className="relative z-10 flex items-center justify-center px-6 pb-8 pt-4">
+      <div className="relative z-10 flex items-center justify-center px-4 pb-safe pt-4 sm:px-6 sm:pb-8">
         <Link
           href={href}
-          className="inline-flex h-16 w-[280px] items-center justify-center gap-3 rounded-2xl bg-accent font-sans text-[18px] font-semibold text-accent-foreground transition-transform hover:opacity-95 active:scale-[0.98]"
+          className="inline-flex h-16 w-full max-w-[320px] items-center justify-center gap-3 rounded-2xl bg-accent font-sans text-[18px] font-semibold text-accent-foreground transition-transform hover:opacity-95 active:scale-[0.98]"
           style={{
             boxShadow:
               "0 0 0 1px rgba(209,248,67,0.5), 0 16px 32px rgba(209,248,67,0.18)",

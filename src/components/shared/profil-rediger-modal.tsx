@@ -126,7 +126,7 @@ export function ProfilRedigerModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 px-6 py-12 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-foreground/40 backdrop-blur-sm sm:items-start sm:px-6 sm:py-12"
       role="dialog"
       aria-modal="true"
       aria-labelledby="profil-modal-title"
@@ -134,7 +134,7 @@ export function ProfilRedigerModal({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="flex w-full max-w-[640px] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+      <div className="flex w-full max-h-[95vh] flex-col overflow-hidden rounded-t-2xl border border-border bg-card shadow-2xl sm:max-h-none sm:max-w-[640px] sm:rounded-2xl">
         <header className="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
           <div>
             <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
@@ -151,9 +151,9 @@ export function ProfilRedigerModal({
             type="button"
             aria-label="Lukk"
             onClick={onClose}
-            className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="-mr-2 -mt-1 grid h-11 w-11 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:h-9 sm:w-9"
           >
-            <X className="h-4 w-4" strokeWidth={1.75} />
+            <X className="h-5 w-5" strokeWidth={1.75} />
           </button>
         </header>
 

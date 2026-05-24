@@ -122,11 +122,11 @@ export function DelRundeModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="del-runde-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/60 p-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-background/60 backdrop-blur-sm sm:items-center sm:p-6"
       onClick={onClose}
     >
       <div
-        className="flex max-h-[calc(100vh-48px)] w-[560px] max-w-full flex-col overflow-hidden rounded-2xl bg-card shadow-2xl"
+        className="flex max-h-[95vh] w-full flex-col overflow-hidden rounded-t-2xl bg-card shadow-2xl sm:max-h-[calc(100vh-48px)] sm:w-[560px] sm:max-w-full sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -151,9 +151,9 @@ export function DelRundeModal({
             type="button"
             onClick={onClose}
             aria-label="Lukk"
-            className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="-mr-2 -mt-1 grid h-11 w-11 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:h-9 sm:w-9"
           >
-            <X size={16} strokeWidth={1.75} />
+            <X size={18} strokeWidth={1.75} />
           </button>
         </header>
 

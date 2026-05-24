@@ -69,7 +69,7 @@ export function NotificationBell({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-card text-foreground transition-colors hover:border-primary hover:text-primary active:border-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="relative inline-flex h-11 w-11 items-center justify-center rounded-md border border-input bg-card text-foreground transition-colors hover:border-primary hover:text-primary active:border-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-9 sm:w-9"
         aria-label={`Varsler${ulest > 0 ? ` (${ulest} uleste)` : ""}`}
       >
         <Bell className="h-4 w-4" strokeWidth={1.75} />
@@ -81,7 +81,7 @@ export function NotificationBell({
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+        <div className="absolute right-0 z-50 mt-2 w-[calc(100vw-2rem)] max-w-sm overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:w-80">
           <div className="flex items-center justify-between border-b border-border px-4 py-4">
             <span className="font-display text-sm font-semibold">Varsler</span>
             {ulest > 0 && (
