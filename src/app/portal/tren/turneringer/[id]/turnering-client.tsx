@@ -1,9 +1,11 @@
 "use client";
 
 /**
- * Tournament-detalj — klientkomponent som matcher
- * public/design/tournament.html ett-til-ett. Stilen ligger i en lokal
- * <style>-blokk med tdc- prefiks for å unngå kollisjoner med PortalShell.
+ * @deprecated 2026-05-25
+ * Tidligere klientkomponent med hardkodet Sørlandsåpent-mock.
+ * IKKE I BRUK — page.tsx renderer nå ekte Prisma-data direkte.
+ * Filen blir liggende inntil videre slik at git-historikk består.
+ * Kan slettes når Spor B/C har migrert til DetailShell-mønster.
  */
 
 import { useEffect, useState, useTransition } from "react";

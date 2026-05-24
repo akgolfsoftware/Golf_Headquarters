@@ -1,15 +1,18 @@
-// Foreldreportal — Innstillinger. Kontaktinfo + varsler + konto.
-// Mock-data i versjon 1 — kobles til Prisma i neste sprint.
+// Foreldreportal · Innstillinger
+//
+// Viser ekte bruker-info fra Supabase Auth + Prisma User-modell.
+// Varsel- og 2FA-innstillinger kobles på senere.
 
+import Link from "next/link";
 import {
-  Mail,
-  Phone,
   Bell,
+  ChevronRight,
   Lock,
   LogOut,
-  User,
-  ChevronRight,
+  Mail,
+  Phone,
   ShieldCheck,
+  User,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { ForelderHero } from "@/components/forelder/forelder-hero";
@@ -39,7 +42,7 @@ export default async function ForelderInnstillinger() {
         avatarUrl={user.avatarUrl}
       />
 
-      {/* Kontaktinfo */}
+      {/* Kontaktinfo — ekte data fra Prisma */}
       <section
         aria-labelledby="kontakt-overskrift"
         className="rounded-xl border border-border bg-card"
@@ -56,12 +59,12 @@ export default async function ForelderInnstillinger() {
             />
             Kontaktinformasjon
           </h2>
-          <button
-            type="button"
+          <Link
+            href="/portal/meg/profil"
             className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
           >
             Rediger
-          </button>
+          </Link>
         </div>
         <dl className="divide-y divide-border">
           <div className="flex items-center justify-between px-6 py-4 text-sm">
@@ -83,12 +86,14 @@ export default async function ForelderInnstillinger() {
               <Phone className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
               Telefon
             </dt>
-            <dd className="text-muted-foreground">Ikke registrert</dd>
+            <dd className="text-muted-foreground">
+              {user.phone ?? "Ikke registrert"}
+            </dd>
           </div>
         </dl>
       </section>
 
-      {/* Varsler */}
+      {/* Varsler — placeholder, kobles på senere */}
       <section
         aria-labelledby="varsler-overskrift"
         className="rounded-xl border border-border bg-card"
@@ -105,47 +110,13 @@ export default async function ForelderInnstillinger() {
             />
             Varsler
           </h2>
-          <a
-            href="/forelder/varsler"
-            className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
-          >
-            Detaljer
-            <ChevronRight className="h-3 w-3" strokeWidth={1.5} aria-hidden />
-          </a>
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Kommer Q3 2026
+          </span>
         </div>
-        <ul className="divide-y divide-border">
-          {[
-            { label: "Ny okt planlagt", sub: "Naar coach legger inn okt", aktiv: true },
-            { label: "Okt fullfort", sub: "Naar barnet logger fullfort okt", aktiv: true },
-            { label: "Ny faktura", sub: "Naar betaling forfaller eller mislykkes", aktiv: true },
-            { label: "Coach-melding", sub: "Naar coach sender direktemelding", aktiv: false },
-          ].map((v) => (
-            <li
-              key={v.label}
-              className="flex items-center justify-between gap-4 px-6 py-4 text-sm"
-            >
-              <div>
-                <div className="font-medium">{v.label}</div>
-                <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                  {v.sub}
-                </div>
-              </div>
-              <span
-                className={`rounded-full px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
-                  v.aktiv
-                    ? "bg-primary/10 text-primary"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {v.aktiv ? "Pa" : "Av"}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <div className="border-t border-border px-6 py-3">
-          <p className="text-xs text-muted-foreground">
-            Push-varsler kommer i Spor 1. Inntil da sendes varsler til e-post.
-          </p>
+        <div className="px-6 py-6 text-sm text-muted-foreground">
+          Foreldre-varsler (booking, faktura, coach-meldinger) kommer Q3 2026.
+          Inntil videre sendes viktige beskjeder direkte til e-posten din.
         </div>
       </section>
 
@@ -162,8 +133,8 @@ export default async function ForelderInnstillinger() {
         </h2>
         <ul className="divide-y divide-border">
           <li>
-            <button
-              type="button"
+            <Link
+              href="/portal/meg/innstillinger/sikkerhet"
               className="flex w-full items-center justify-between gap-4 px-6 py-4 text-sm transition-colors hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span className="inline-flex items-center gap-3">
@@ -184,11 +155,11 @@ export default async function ForelderInnstillinger() {
                 strokeWidth={1.5}
                 aria-hidden
               />
-            </button>
+            </Link>
           </li>
           <li>
-            <button
-              type="button"
+            <Link
+              href="/portal/meg/innstillinger/sikkerhet"
               className="flex w-full items-center justify-between gap-4 px-6 py-4 text-sm transition-colors hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span className="inline-flex items-center gap-3">
@@ -211,10 +182,10 @@ export default async function ForelderInnstillinger() {
                 strokeWidth={1.5}
                 aria-hidden
               />
-            </button>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               href="/auth/login"
               className="flex w-full items-center justify-between gap-4 px-6 py-4 text-sm text-destructive transition-colors hover:bg-destructive/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
@@ -223,7 +194,7 @@ export default async function ForelderInnstillinger() {
                 <span className="font-medium">Logg ut</span>
               </span>
               <ChevronRight className="h-4 w-4" strokeWidth={1.5} aria-hidden />
-            </a>
+            </Link>
           </li>
         </ul>
       </section>

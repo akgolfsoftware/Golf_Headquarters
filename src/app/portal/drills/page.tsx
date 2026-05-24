@@ -1,14 +1,15 @@
 /**
  * /portal/drills — PlayerHQ Drill-bibliotek
- * Design: plan Del 6 (visuell spec)
  *
- * NB: Bruker mock-data foreløpig. Prisma `Drill`-modellen må utvides med:
- *   skillArea, pyramidArea, duration, intensity, ngfCategoryMin/Max,
- *   csMal (per nivå), repsConfig, environment, facilityRequirements,
- *   description, coachNotes (per coach), tags, isCoachRecommended, timesTrained
+ * TODO(prisma-extension): Prisma-modellen for drill-bibliotek mangler felter
+ * vi trenger for biblioteket. Per nå har vi to delvise modeller:
+ *   - DrillMal: coach-eid mal med pyramide + life-kode + kategorier
+ *   - TrainingDrillV2: brukes i en konkret økt (har sessionId, sortOrder)
  *
- * Når data-modellen er klar, erstatt MOCK_DRILLS og getDrillDetail med
- * Prisma-queries.
+ * Ingen av dem har: ngfCategoryRange, csMal, fasilitetskrav, tags eller
+ * timesTrained. Inntil vi får en ren `Drill`-modell med disse feltene
+ * brukes mock-data midlertidig. Beta-spillere ser et representativt
+ * utvalg av drills som ikke avslører personlige data.
  */
 
 import { Filter, Search } from "lucide-react";
@@ -18,6 +19,8 @@ import "@/components/drills/drill.css";
 
 export const dynamic = "force-dynamic";
 
+// TODO(prisma-extension): Erstatt med prisma.drill.findMany() når Drill-
+// modellen finnes med feltene over.
 const MOCK_DRILLS: DrillCardData[] = [
   {
     id: "gate-drill-50",
@@ -26,7 +29,7 @@ const MOCK_DRILLS: DrillCardData[] = [
     duration: 15,
     intensity: 7,
     ngfCategoryRange: "D–G",
-    timesTrained: 3,
+    timesTrained: 0,
     isCoachRecommended: true,
   },
   {
@@ -36,7 +39,7 @@ const MOCK_DRILLS: DrillCardData[] = [
     duration: 20,
     intensity: 6,
     ngfCategoryRange: "C–F",
-    timesTrained: 8,
+    timesTrained: 0,
   },
   {
     id: "iron-tempo",
@@ -45,7 +48,7 @@ const MOCK_DRILLS: DrillCardData[] = [
     duration: 25,
     intensity: 5,
     ngfCategoryRange: "D–G",
-    timesTrained: 12,
+    timesTrained: 0,
     isCoachRecommended: true,
   },
   {
@@ -55,7 +58,7 @@ const MOCK_DRILLS: DrillCardData[] = [
     duration: 30,
     intensity: 8,
     ngfCategoryRange: "B–E",
-    timesTrained: 5,
+    timesTrained: 0,
   },
   {
     id: "wedge-spinn",
@@ -64,7 +67,7 @@ const MOCK_DRILLS: DrillCardData[] = [
     duration: 18,
     intensity: 7,
     ngfCategoryRange: "C–F",
-    timesTrained: 2,
+    timesTrained: 0,
   },
   {
     id: "putt-rutine",
@@ -73,7 +76,7 @@ const MOCK_DRILLS: DrillCardData[] = [
     duration: 12,
     intensity: 4,
     ngfCategoryRange: "D–H",
-    timesTrained: 18,
+    timesTrained: 0,
   },
 ];
 
@@ -97,8 +100,6 @@ const MOCK_DETAILS: Record<string, DrillDetailData> = {
     ],
     description:
       "Plasser to tees 50 cm fra hverandre, 1,5 m fra hullet. Putt 10 baller gjennom porten med jevn tempo. Fokus på sentrert kontakt og lik retning på balle ut og inn.",
-    coachNotes:
-      "Husk Anders — venstre øye over ballen, ikke hodet. Sjekk skuldre 90° til siktelinje før hver putt.",
     tags: ["slag-kontroll", "avstand", "blokktrening"],
   },
   "avstand-50m": {
@@ -133,8 +134,6 @@ const MOCK_DETAILS: Record<string, DrillDetailData> = {
     fasilitetskrav: [{ name: "Driving range" }, { name: "Radar" }],
     description:
       "15 svinger med 7-iron, fokus på tempo 3:1 (oppsving:nedsving). Bruk metronom på 75 BPM. Sjekk smash-faktor 1.40+.",
-    coachNotes:
-      "Anders — du tenderer å aksellerere for tidlig på vei ned. Pause i topp 0,2 sek før transition.",
     tags: ["tempo", "rytme", "swing-mekanikk"],
   },
   "driver-launch": {
