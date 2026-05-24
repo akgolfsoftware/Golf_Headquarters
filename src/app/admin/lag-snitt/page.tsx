@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Users2 } from "lucide-react";
+import { CohortBenchmark } from "@/components/admin-analyse-v2/cohort-benchmark";
 
 export const dynamic = "force-dynamic";
 
@@ -124,6 +125,9 @@ export default async function LagSnittPage() {
         />
       ) : (
         <>
+          {/* PR4 — Cohort-benchmark vs PGA Top 40 */}
+          <CohortBenchmark />
+
           {/* Matrix */}
           <section className="rounded-lg border border-border bg-card p-6 shadow-sm">
             <div className="mb-5 flex items-end justify-between gap-4">

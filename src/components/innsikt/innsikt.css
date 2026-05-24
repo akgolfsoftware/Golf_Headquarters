@@ -929,3 +929,262 @@
   .in-page-wrap { padding: 32px 16px 48px; }
   .in-pg-title { font-size: 28px; }
 }
+
+/* ============================================================
+   PR4 ADDITIONS — radar, distance-bar, sub-tabs, gantt, tm-grid-4
+   ============================================================ */
+
+/* --- Stat sub-tabs (inner) --- */
+.in-subtab-bar {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--in-border-soft);
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+.in-subtab {
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--in-muted);
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.in-subtab.active {
+  background: var(--in-card);
+  color: var(--in-fg);
+  box-shadow: 0 1px 2px rgba(10,31,23,0.06);
+}
+
+/* --- SG radar (5-akset SVG) --- */
+.in-radar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 8px;
+}
+.in-radar-svg { width: 100%; max-width: 320px; height: auto; }
+.in-radar-legend {
+  display: inline-flex;
+  gap: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--in-muted);
+}
+.in-radar-legend i {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* --- Distance bar-chart per kølle --- */
+.in-dist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.in-dist-row {
+  display: grid;
+  grid-template-columns: 56px 1fr 64px;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.in-dist-row .club {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--in-fg);
+}
+.in-dist-bar-wrap {
+  position: relative;
+  height: 14px;
+  background: var(--in-border-soft);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.in-dist-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--in-brand) 0%, #1A7D56 100%);
+  border-radius: 999px;
+}
+.in-dist-bar.accent {
+  background: linear-gradient(90deg, var(--in-brand) 0%, var(--in-accent) 100%);
+}
+.in-dist-row .val {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  font-size: 12.5px;
+  color: var(--in-fg);
+  font-weight: 600;
+}
+
+/* --- TrackMan 4-metric grid + sparklines --- */
+.in-tm-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+@media (max-width: 720px) {
+  .in-tm-metrics-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.in-tm-metric-card {
+  background: var(--in-card);
+  border: 1px solid var(--in-border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.in-tm-metric-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--in-muted);
+}
+.in-tm-metric-val {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--in-fg);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.in-tm-metric-val small {
+  font-size: 12px;
+  color: var(--in-muted);
+  font-weight: 500;
+}
+.in-tm-spark { width: 100%; height: 28px; }
+
+/* --- TrackMan timeline (siste 5 økter) --- */
+.in-tm-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.in-tm-timeline-row {
+  display: grid;
+  grid-template-columns: 70px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--in-border);
+}
+.in-tm-timeline-row:first-child { border-top: 0; }
+.in-tm-timeline-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--in-muted);
+}
+.in-tm-timeline-title {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--in-fg);
+}
+.in-tm-timeline-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--in-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Resultater gantt --- */
+.in-gantt-wrap {
+  overflow-x: auto;
+}
+.in-gantt {
+  display: grid;
+  grid-template-columns: 180px repeat(12, 1fr);
+  gap: 0;
+  min-width: 720px;
+  border: 1px solid var(--in-border);
+  border-radius: 14px;
+  background: var(--in-card);
+}
+.in-gantt-head {
+  display: contents;
+}
+.in-gantt-head > div {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--in-muted);
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--in-border);
+  background: var(--in-border-soft);
+  text-align: center;
+}
+.in-gantt-head > div:first-child { text-align: left; padding-left: 14px; }
+.in-gantt-row {
+  display: contents;
+}
+.in-gantt-row > .lbl {
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--in-fg);
+  border-bottom: 1px solid var(--in-border);
+  display: flex;
+  align-items: center;
+}
+.in-gantt-cell {
+  position: relative;
+  height: 36px;
+  border-left: 1px solid var(--in-border);
+  border-bottom: 1px solid var(--in-border);
+}
+.in-gantt-bar {
+  position: absolute;
+  top: 8px;
+  left: 4px;
+  right: 4px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--in-brand);
+  color: var(--in-accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+}
+.in-gantt-bar.a { background: #003A2A; color: var(--in-accent); }
+.in-gantt-bar.b { background: var(--in-brand); color: #fff; }
+.in-gantt-bar.c { background: #B8852A; color: #fff; }
+
+/* --- 2-col split for statistikk --- */
+.in-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 860px) {
+  .in-2col { grid-template-columns: 1fr; }
+}
+

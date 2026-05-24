@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Trophy, Plus, ArrowRight } from "lucide-react";
+import { Trophy, Plus, ArrowRight, Download } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Typer
@@ -27,11 +28,6 @@ export type ResultaterTurnering = {
 export type ResultaterTabProps = {
   runder?: ResultaterRunde[];
   turneringer?: ResultaterTurnering[];
-  kpi?: {
-    sisteRunde: number | null; // score vs par
-    snitt10: number | null;    // snitt score vs par
-    besteIAar: number | null;  // beste score vs par
-  };
 };
 
 // ---------------------------------------------------------------------------
@@ -49,7 +45,11 @@ const DEMO_RUNDER: ResultaterRunde[] = [
 const DEMO_TURNERINGER: ResultaterTurnering[] = [
   { id: "t1", tournamentName: "Bossum Open", startDate: "2026-05-04", position: 8, score: 70 },
   { id: "t2", tournamentName: "Krets-NM Slag", startDate: "2026-04-12", position: 3, score: 68 },
+  { id: "t3", tournamentName: "Junior Tour #4", startDate: "2026-06-15", position: null, score: null },
+  { id: "t4", tournamentName: "Klubbmesterskap", startDate: "2026-07-20", position: null, score: null },
 ];
+
+const MND_LABELS = ["JAN", "FEB", "MAR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DES"];
 
 // ---------------------------------------------------------------------------
 // Hjelpefunksjoner
@@ -57,9 +57,7 @@ const DEMO_TURNERINGER: ResultaterTurnering[] = [
 
 function formatDato(isoStr: string): string {
   return new Date(isoStr).toLocaleDateString("nb-NO", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
+    day: "numeric", month: "short", year: "numeric",
   });
 }
 
@@ -70,54 +68,71 @@ function scoreTilPar(score: number, par: number): string {
 }
 
 // ---------------------------------------------------------------------------
-// Runde-rad
+// Runde grid
 // ---------------------------------------------------------------------------
 
-function RundeRad({ runde }: { runde: ResultaterRunde }) {
-  const relScore = runde.score - runde.par;
-  const positiv = relScore <= 0;
-
+function RundeKort({ runde }: { runde: ResultaterRunde }) {
+  const rel = runde.score - runde.par;
+  const positiv = rel <= 0;
   return (
-    <div className="in-result-row">
-      <div className="dato">{formatDato(runde.playedAt)}</div>
-      <div className="bane">{runde.courseName}</div>
-      <div className={`score ${positiv ? "pos" : "neg"}`}>
-        {scoreTilPar(runde.score, runde.par)}
+    <Link href={`/portal/mal/runder/${runde.id}`} className="in-stat-card" style={{ display: "flex", flexDirection: "column", gap: 8, padding: 16, textDecoration: "none", color: "inherit" }}>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--in-muted)" }}>
+        {formatDato(runde.playedAt)}
       </div>
-      <div className="sg">
-        {runde.sgTotal != null ? (
-          <span className={runde.sgTotal >= 0 ? "pos" : "neg"}>
-            {runde.sgTotal >= 0 ? "+" : ""}{runde.sgTotal.toFixed(1)} SG
-          </span>
-        ) : (
-          <span className="ingen">—</span>
-        )}
+      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 600 }}>
+        {runde.courseName}
       </div>
-      <Link href={`/portal/mal/runder/${runde.id}`} className="detalj">
-        Detalj <ArrowRight size={10} aria-hidden />
-      </Link>
-    </div>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+        <span style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 26, fontWeight: 600, color: positiv ? "var(--in-success)" : "var(--in-danger)" }}>
+          {scoreTilPar(runde.score, runde.par)}
+        </span>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: "var(--in-muted)", fontVariantNumeric: "tabular-nums" }}>
+          {runde.score}/{runde.par}
+        </span>
+      </div>
+      {runde.sgTotal != null && (
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: runde.sgTotal >= 0 ? "var(--in-success)" : "var(--in-danger)" }}>
+          {runde.sgTotal >= 0 ? "+" : ""}{runde.sgTotal.toFixed(1)} SG
+        </div>
+      )}
+    </Link>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Turnering-rad
+// Turnerings-gantt (12 mnd)
 // ---------------------------------------------------------------------------
 
-function TurneringRad({ t }: { t: ResultaterTurnering }) {
+function TurneringsGantt({ turneringer, nowMs }: { turneringer: ResultaterTurnering[]; nowMs: number }) {
   return (
-    <div className="in-result-row">
-      <div className="dato">{formatDato(t.startDate)}</div>
-      <div className="bane">{t.tournamentName}</div>
-      <div className="score pos">{t.score != null ? t.score : "—"}</div>
-      <div className="sg">
-        {t.position != null ? (
-          <span className="pos">#{t.position}</span>
-        ) : (
-          <span className="ingen">—</span>
-        )}
+    <div className="in-gantt-wrap">
+      <div className="in-gantt">
+        <div className="in-gantt-head">
+          <div>Turnering</div>
+          {MND_LABELS.map((m) => <div key={m}>{m}</div>)}
+        </div>
+        {turneringer.map((t, idx) => {
+          const dato = new Date(t.startDate);
+          const mnd = dato.getMonth();
+          const variant = idx % 3 === 0 ? "a" : idx % 3 === 1 ? "b" : "c";
+          const erFremtid = dato.getTime() > nowMs;
+          const label = t.position != null ? `#${t.position}` : erFremtid ? "Påmeldt" : "Spilt";
+          return (
+            <div key={t.id} className="in-gantt-row">
+              <div className="lbl">{t.tournamentName}</div>
+              {MND_LABELS.map((_, i) => (
+                <div key={i} className="in-gantt-cell">
+                  {i === mnd && (
+                    <div className={`in-gantt-bar ${variant}`}>
+                      {label}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          );
+        })}
       </div>
-      <div className="detalj" style={{ opacity: 0.4 }}>—</div>
     </div>
   );
 }
@@ -126,17 +141,14 @@ function TurneringRad({ t }: { t: ResultaterTurnering }) {
 // Eksportert komponent
 // ---------------------------------------------------------------------------
 
-export function ResultaterTab({ runder, turneringer, kpi }: ResultaterTabProps) {
+export function ResultaterTab({ runder, turneringer }: ResultaterTabProps) {
   const visRunder = runder && runder.length > 0 ? runder : DEMO_RUNDER;
   const visTurneringer = turneringer && turneringer.length > 0 ? turneringer : DEMO_TURNERINGER;
+  const [nowMs] = useState(() => Date.now());
 
-  const sisteRunde = kpi?.sisteRunde ?? (visRunder[0].score - visRunder[0].par);
-  const snitt10 =
-    kpi?.snitt10 ??
-    Math.round(
-      (visRunder.reduce((s, r) => s + (r.score - r.par), 0) / visRunder.length) * 10
-    ) / 10;
-  const besteIAar = kpi?.besteIAar ?? Math.min(...visRunder.map((r) => r.score - r.par));
+  const sisteRunde = visRunder[0].score - visRunder[0].par;
+  const snitt10 = Math.round((visRunder.reduce((s, r) => s + (r.score - r.par), 0) / visRunder.length) * 10) / 10;
+  const besteIAar = Math.min(...visRunder.map((r) => r.score - r.par));
 
   function fmt(n: number): string {
     if (n === 0) return "E";
@@ -144,16 +156,13 @@ export function ResultaterTab({ runder, turneringer, kpi }: ResultaterTabProps) 
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-
+    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
       {/* KPI-rad */}
       <div className="in-kpi-row">
         <div className="in-kpi-card">
           <div className="in-kpi-label">Siste runde</div>
-          <div className={`in-kpi-val ${sisteRunde <= 0 ? "" : ""}`}>
-            {fmt(sisteRunde)}
-          </div>
-          <div className={`in-kpi-delta ${sisteRunde <= 0 ? "" : "muted"}`}>
+          <div className="in-kpi-val">{fmt(sisteRunde)}</div>
+          <div className={`in-kpi-delta${sisteRunde <= 0 ? "" : " muted"}`}>
             {sisteRunde <= 0 ? "under par" : "over par"}
           </div>
         </div>
@@ -169,58 +178,53 @@ export function ResultaterTab({ runder, turneringer, kpi }: ResultaterTabProps) 
         </div>
       </div>
 
-      {/* Siste runder */}
+      {/* Runde-grid */}
       <section>
         <div className="in-sec-header">
-          <h2 className="in-sec-title">Siste {visRunder.length} runder</h2>
+          <h2 className="in-sec-title">Siste runder</h2>
           <Link href="/portal/mal/runder" className="in-sec-link">
             <Trophy size={11} aria-hidden />
             Alle runder
           </Link>
         </div>
-        <div className="in-result-table">
-          <div className="in-result-header">
-            <span>Dato</span>
-            <span>Bane</span>
-            <span>Score</span>
-            <span>SG</span>
-            <span />
-          </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12 }}>
           {visRunder.map((r) => (
-            <RundeRad key={r.id} runde={r} />
+            <RundeKort key={r.id} runde={r} />
           ))}
         </div>
       </section>
 
-      {/* Turneringer */}
-      {visTurneringer.length > 0 && (
-        <section>
-          <div className="in-sec-header">
-            <h2 className="in-sec-title">Turneringsresultater</h2>
-          </div>
-          <div className="in-result-table">
-            <div className="in-result-header">
-              <span>Dato</span>
-              <span>Turnering</span>
-              <span>Score</span>
-              <span>Plass</span>
-              <span />
-            </div>
-            {visTurneringer.map((t) => (
-              <TurneringRad key={t.id} t={t} />
-            ))}
-          </div>
-        </section>
-      )}
+      {/* Turnerings-gantt */}
+      <section>
+        <div className="in-sec-header">
+          <h2 className="in-sec-title">Turneringssesong 2026</h2>
+        </div>
+        <TurneringsGantt turneringer={visTurneringer} nowMs={nowMs} />
+      </section>
 
-      {/* Legg til runde CTA */}
-      <div>
+      {/* CTAs */}
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
         <Link href="/portal/mal/runder/ny" className="in-sec-cta">
           <Plus size={13} aria-hidden />
-          Legg til runde manuelt
+          Legg til runde
+        </Link>
+        <button
+          type="button"
+          className="in-sec-cta"
+          style={{
+            background: "var(--in-card)",
+            color: "var(--in-brand)",
+            border: "1px solid var(--in-border)",
+          }}
+        >
+          <Download size={13} aria-hidden />
+          Eksporter rapport (PDF)
+        </button>
+        <Link href="/portal/mal/runder/ny" className="in-sec-cta" style={{ background: "var(--in-card)", color: "var(--in-brand)", border: "1px solid var(--in-border)" }}>
+          <ArrowRight size={13} aria-hidden />
+          Detaljert analyse
         </Link>
       </div>
-
     </div>
   );
 }

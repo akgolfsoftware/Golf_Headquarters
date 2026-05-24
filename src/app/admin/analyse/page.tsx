@@ -17,6 +17,7 @@ import { AnalyseTrender } from "@/components/analyse/AnalyseTrender";
 import { AnalyseSG } from "@/components/analyse/AnalyseSG";
 import { AnalyseFys } from "@/components/analyse/AnalyseFys";
 import { AnalysePlanFaktisk } from "@/components/analyse/AnalysePlanFaktisk";
+import { StallHeatmap } from "@/components/admin-analyse-v2/stall-heatmap";
 import {
   getAnalysisOverview,
   getKrysstabulering,
@@ -39,6 +40,7 @@ import {
 export const dynamic = "force-dynamic";
 
 type View =
+  | "stall"
   | "oversikt"
   | "krysstabell"
   | "trender"
@@ -47,6 +49,7 @@ type View =
   | "plan-faktisk";
 
 const GYLDIGE_VIEWS: View[] = [
+  "stall",
   "oversikt",
   "krysstabell",
   "trender",
@@ -111,6 +114,29 @@ export default async function AnalysePage({
     select: { id: true, name: true, avatarUrl: true, hcp: true },
     orderBy: { name: "asc" },
   });
+
+  // STALL-VIEW: cross-stall heatmap (egen layout uten sidebar)
+  if (view === "stall") {
+    const stallSpillere = spillere.length > 0
+      ? spillere.map((s) => ({ id: s.id, name: s.name ?? "Uten navn", hcp: s.hcp, avatarUrl: s.avatarUrl }))
+      : Array.from({ length: 8 }, (_, i) => ({
+          id: `demo-${i}`,
+          name: ["Markus R-P", "Thea L", "Oliver K", "Emma S", "Noah B", "Sofia H", "Lucas A", "Iben M"][i],
+          hcp: [5.4, 8.1, 12.3, 3.7, 9.8, 6.2, 11.0, 14.5][i] ?? null,
+          avatarUrl: null,
+        }));
+    return (
+      <div className="space-y-6">
+        <PageHeader
+          eyebrow={`CoachHQ · stall-analyse · ${periode.label}`}
+          titleLead="Hele stallen"
+          titleItalic="i ett blikk"
+          sub="Hit-rate per spiller × pyramide-område. Klikk en celle for drill-down."
+        />
+        <StallHeatmap spillere={stallSpillere} />
+      </div>
+    );
+  }
 
   // Hvis ingen studentId valgt → velg første spiller eller send til tom-state
   const studentId = params.studentId ?? spillere[0]?.id;
