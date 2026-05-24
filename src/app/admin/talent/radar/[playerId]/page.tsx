@@ -14,7 +14,9 @@ import { ArrowLeft, Target, TrendingUp } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { KPICard } from "@/components/ui/kpi-card";
+import { AthleticBadge } from "@/components/athletic/badge";
 import {
   RadarChart,
   AXIS_KEYS,
@@ -83,57 +85,66 @@ export default async function TalentRadarSpiller({
   const peerTotalSnitt = snitt(Object.values(peerSnitt));
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        eyebrow={`Talent · ${tracking.niva}${tracking.region ? ` · ${tracking.region}` : ""}`}
-        titleLead="Radar for"
-        titleItalic={tracking.user.name}
-        sub={`${peers.length} andre spillere på ${tracking.niva}-nivå brukes som referanse.`}
-        actions={
-          <Link
-            href="/admin/talent"
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
-          >
-            <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-            Tilbake til oversikt
-          </Link>
-        }
-      />
-
-      {/* KPI-strip */}
-      <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <KpiKort
-          icon={Target}
-          label="Sum radar"
-          verdi={spillerSum > 0 ? `${spillerSum}/50` : "—"}
-          sub="alle 5 akser"
-        />
-        <KpiKort
-          icon={TrendingUp}
-          label="Snitt spiller"
-          verdi={
-            spillerSnitt ? spillerSnitt.toFixed(1).replace(".", ",") : "—"
-          }
-          sub="av 10"
-        />
-        <KpiKort
-          icon={TrendingUp}
-          label={`Snitt ${tracking.niva}`}
-          verdi={
-            peerTotalSnitt
-              ? peerTotalSnitt.toFixed(1).replace(".", ",")
-              : "—"
-          }
-          sub={`${peers.length} peers`}
-        />
-        <KpiKort
-          icon={Target}
-          label="HCP"
-          verdi={tracking.user.hcp?.toFixed(1).replace(".", ",") ?? "—"}
-          sub={tracking.klubb ?? "—"}
-        />
-      </section>
-
+    <DetailShell
+      breadcrumb={[
+        { label: "Talent", href: "/admin/talent" },
+        { label: "Radar", href: "/admin/talent" },
+        { label: tracking.user.name },
+      ]}
+      backHref="/admin/talent"
+      title={`Radar for ${tracking.user.name}`}
+      subtitle={`${peers.length} andre spillere på ${tracking.niva}-nivå brukes som referanse.`}
+      statusPill={
+        <AthleticBadge variant="primary">
+          {tracking.niva}
+          {tracking.region ? ` · ${tracking.region}` : ""}
+        </AthleticBadge>
+      }
+      actions={
+        <Link
+          href="/admin/talent"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+        >
+          <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
+          Tilbake til oversikt
+        </Link>
+      }
+      kpiRow={
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <KPICard
+            eyebrow="Sum radar"
+            value={spillerSum > 0 ? `${spillerSum}/50` : "—"}
+            footnote="alle 5 akser"
+            icon={<Target size={18} strokeWidth={1.5} aria-hidden />}
+            variant="hero"
+          />
+          <KPICard
+            eyebrow="Snitt spiller"
+            value={
+              spillerSnitt ? spillerSnitt.toFixed(1).replace(".", ",") : "—"
+            }
+            footnote="av 10"
+            icon={<TrendingUp size={18} strokeWidth={1.5} aria-hidden />}
+          />
+          <KPICard
+            eyebrow={`Snitt ${tracking.niva}`}
+            value={
+              peerTotalSnitt
+                ? peerTotalSnitt.toFixed(1).replace(".", ",")
+                : "—"
+            }
+            footnote={`${peers.length} peers`}
+            icon={<TrendingUp size={18} strokeWidth={1.5} aria-hidden />}
+          />
+          <KPICard
+            eyebrow="HCP"
+            value={tracking.user.hcp?.toFixed(1).replace(".", ",") ?? "—"}
+            footnote={tracking.klubb ?? "—"}
+            icon={<Target size={18} strokeWidth={1.5} aria-hidden />}
+          />
+        </div>
+      }
+    >
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         {/* Radar-chart */}
         <section className="rounded-lg border border-border bg-card p-8">
@@ -206,31 +217,6 @@ export default async function TalentRadarSpiller({
           initial={spillerVerdier}
         />
       </div>
-    </div>
-  );
-}
-
-function KpiKort({
-  icon: Icon,
-  label,
-  verdi,
-  sub,
-}: {
-  icon: typeof Target;
-  label: string;
-  verdi: string;
-  sub: string;
-}) {
-  return (
-    <div className="rounded-lg border border-border bg-card p-6">
-      <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        <Icon className="h-3 w-3" strokeWidth={1.5} />
-        {label}
-      </div>
-      <div className="mt-3 font-mono text-[24px] font-semibold tabular-nums leading-none">
-        {verdi}
-      </div>
-      <div className="mt-2 text-[11px] text-muted-foreground">{sub}</div>
-    </div>
+    </DetailShell>
   );
 }

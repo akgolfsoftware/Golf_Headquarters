@@ -22,20 +22,28 @@ export default async function NyMal() {
         titleLead="Ny"
         titleItalic="mal"
         titleTrail="fra bunn"
-        sub="Mal-redigering fra bunn av kommer i v2. Inntil videre kan du lagre en eksisterende plan som mal."
+        sub="Wizard for å bygge maler fra bunn av kommer Q3 2026. Inntil videre kan du lagre en eksisterende plan som mal."
       />
 
       <EmptyState
         icon={LayoutTemplate}
-        titleItalic="Mal-redigering"
-        titleTrail="kommer i v2"
-        sub="Du kan opprette en mal ved å åpne en eksisterende plan og lagre den som mal."
+        titleItalic="Mal-wizard"
+        titleTrail="kommer Q3 2026"
+        sub="I mellomtiden kan du opprette en mal ved å åpne en eksisterende plan og bruke «Lagre som mal»."
+        cta={
+          <Link
+            href="/admin/plans/templates"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            Bruk eksisterende mal i stedet
+          </Link>
+        }
       />
 
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-3">
         <Link
           href="/admin/plans"
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           Gå til treningsplaner
         </Link>

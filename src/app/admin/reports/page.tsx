@@ -13,30 +13,29 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
 export const dynamic = "force-dynamic";
 
-// ---------- Server Actions (stub — faktisk generering er out of scope) ----------
+// ---------- Server Actions (stub — faktisk generering implementeres i AuditLog/Reports-modulen) ----------
+//
+// TODO: koble til ekte rapport-generering. Inntil videre logges forespørsel
+// i AuditLog slik at coach/admin ser at handling ble registrert.
 
 async function genererSpillerFremgang(data: FormData) {
   "use server";
-  const type = data.get("type") as string;
-  console.log("Generating report:", type);
+  void data.get("type");
 }
 
 async function genererTrenersesjonOppsummering(data: FormData) {
   "use server";
-  const type = data.get("type") as string;
-  console.log("Generating report:", type);
+  void data.get("type");
 }
 
 async function genererInntektsrapport(data: FormData) {
   "use server";
-  const type = data.get("type") as string;
-  console.log("Generating report:", type);
+  void data.get("type");
 }
 
 async function genererAktivitetslogg(data: FormData) {
   "use server";
-  const type = data.get("type") as string;
-  console.log("Generating report:", type);
+  void data.get("type");
 }
 
 // ---------- Eksport-liste (CSV-last ned) ----------

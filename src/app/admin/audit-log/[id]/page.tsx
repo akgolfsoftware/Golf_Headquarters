@@ -13,7 +13,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  ArrowLeft,
   Bot,
   Clock,
   Download,
@@ -28,7 +27,8 @@ import {
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { CopyButton } from "@/components/shared/copy-button";
 
@@ -62,6 +62,18 @@ const TYPE_PILL: Record<EvtType, string> = {
   auth: "bg-muted text-muted-foreground",
   agent: "bg-muted text-muted-foreground",
   "auth-fail": "bg-destructive/10 text-destructive",
+};
+
+const TYPE_BADGE_VARIANT: Record<
+  EvtType,
+  "ok" | "primary" | "urgent" | "neutral" | "lime"
+> = {
+  create: "ok",
+  update: "primary",
+  delete: "urgent",
+  auth: "neutral",
+  agent: "lime",
+  "auth-fail": "urgent",
 };
 
 function TypeIcon({ type }: { type: EvtType }) {
@@ -126,20 +138,22 @@ export default async function AuditLogDetailPage({
 
   if (user.role !== "ADMIN") {
     return (
-      <div className="space-y-8">
-        <PageHeader
-          eyebrow="CoachHQ · Audit-log · Detalj"
-          titleItalic="Kun"
-          titleTrail="for administratorer"
-          sub="Audit-detaljer er kun tilgjengelig for ADMIN-rollen."
-        />
+      <DetailShell
+        breadcrumb={[
+          { label: "Audit-log", href: "/admin/audit-log" },
+          { label: "Detalj" },
+        ]}
+        backHref="/admin/audit-log"
+        title="Kun for administratorer"
+        subtitle="Audit-detaljer er kun tilgjengelig for ADMIN-rollen."
+      >
         <EmptyState
           icon={ShieldOff}
           titleItalic="Manglende"
           titleTrail="tilgang"
           sub="Be Anders om å gi deg ADMIN-rolle for å se denne siden."
         />
-      </div>
+      </DetailShell>
     );
   }
 
@@ -180,63 +194,25 @@ export default async function AuditLogDetailPage({
   const kanRulleTilbake = type === "update" || type === "delete";
 
   return (
-    <div className="space-y-6">
-      <Link
-        href="/admin/audit-log"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
-        Audit-logg
-      </Link>
-
-      {/* Hero */}
-      <header className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:p-6 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0 flex-1 space-y-3">
-          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            CoachHQ · Audit · Detalj
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${TYPE_PILL[type]}`}
-            >
-              <TypeIcon type={type} />
-              {TYPE_LABEL[type]}
-            </span>
-            <code className="rounded bg-secondary px-2 py-0.5 font-mono text-xs">
-              {event.action}
-            </code>
-            {event.target && (
-              <span className="font-mono text-xs text-muted-foreground">
-                {event.target}
-              </span>
-            )}
-          </div>
-          <h1 className="font-display text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
-            <em className="font-normal italic">{event.action}</em>
-          </h1>
-          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
-              {formaterTidspunkt(event.createdAt)}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <User className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
-              {event.actor ? (
-                <>
-                  <span className="font-medium text-foreground">
-                    {event.actor.name}
-                  </span>
-                  <span className="text-muted-foreground">
-                    · {event.actor.email}
-                  </span>
-                </>
-              ) : (
-                <span>System</span>
-              )}
-            </span>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-2">
+    <DetailShell
+      breadcrumb={[
+        { label: "Audit-log", href: "/admin/audit-log" },
+        { label: event.action },
+      ]}
+      backHref="/admin/audit-log"
+      title={event.action}
+      subtitle={`${formaterTidspunkt(event.createdAt)} · ${
+        event.actor
+          ? `${event.actor.name} · ${event.actor.email}`
+          : "System"
+      }${event.target ? ` · ${event.target}` : ""}`}
+      statusPill={
+        <AthleticBadge variant={TYPE_BADGE_VARIANT[type]}>
+          {TYPE_LABEL[type]}
+        </AthleticBadge>
+      }
+      actions={
+        <>
           <CopyButton label="Kopier ID" text={event.id} />
           <CopyButton label="Kopier JSON" text={eksportPayload} />
           <button
@@ -252,8 +228,39 @@ export default async function AuditLogDetailPage({
             <Undo2 className="h-4 w-4" strokeWidth={ICON_STROKE} />
             Rull tilbake
           </button>
-        </div>
-      </header>
+        </>
+      }
+    >
+      {/* Action-info chips */}
+      <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+        <code className="rounded bg-secondary px-2 py-0.5 font-mono text-xs">
+          {event.action}
+        </code>
+        {event.target && (
+          <span className="font-mono text-xs text-muted-foreground">
+            {event.target}
+          </span>
+        )}
+        <span className="inline-flex items-center gap-1.5">
+          <Clock className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
+          {formaterTidspunkt(event.createdAt)}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <User className="h-3.5 w-3.5" strokeWidth={ICON_STROKE} />
+          {event.actor ? (
+            <>
+              <span className="font-medium text-foreground">
+                {event.actor.name}
+              </span>
+              <span className="text-muted-foreground">
+                · {event.actor.email}
+              </span>
+            </>
+          ) : (
+            <span>System</span>
+          )}
+        </span>
+      </div>
 
       {/* Innhold-grid */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
@@ -353,7 +360,7 @@ export default async function AuditLogDetailPage({
           </div>
         </aside>
       </div>
-    </div>
+    </DetailShell>
   );
 }
 

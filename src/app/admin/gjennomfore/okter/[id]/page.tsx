@@ -13,7 +13,9 @@ import { Pause, ChevronsRight, GripVertical, Star } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow, AthleticButton } from "@/components/athletic";
+import { AthleticButton } from "@/components/athletic";
+import { AthleticBadge } from "@/components/athletic/badge";
+import { DetailShell } from "@/components/shared/detail-shell";
 
 export const dynamic = "force-dynamic";
 
@@ -90,43 +92,52 @@ export default async function OktDetaljPage({
     .map((w: string) => w[0]?.toUpperCase() ?? "")
     .join("");
 
+  const statusBadgeVariant: "warn" | "lime" | "neutral" =
+    status === "OM 2 TIMER" ? "warn" : status === "AKTIV NÅ" ? "lime" : "neutral";
+
+  const heroTitle = (
+    <>
+      {spiller.name.split(" ")[0]}{" "}
+      {spiller.name.split(" ").slice(-1)[0][0]}.P. ·{" "}
+      <em
+        className="font-normal not-italic"
+        style={{
+          fontFamily: "'Instrument Serif', serif",
+          fontStyle: "italic",
+          color: "#005840",
+        }}
+      >
+        putt-fokus
+      </em>
+    </>
+  );
+
   return (
-    <div className="space-y-6 pb-24 md:pb-6">
-      {/* Hero */}
-      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-7 md:-mx-8 md:-mt-8 md:px-8">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <AthleticEyebrow>
-              {dateLabel.toUpperCase()} · {startTime}–{endTime} · {facility?.name ?? "Studio"}
-            </AthleticEyebrow>
-            <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-              {spiller.name.split(" ")[0]} {spiller.name.split(" ").slice(-1)[0][0]}.P. ·{" "}
-              <em
-                className="font-normal not-italic"
-                style={{
-                  fontFamily: "'Instrument Serif', serif",
-                  fontStyle: "italic",
-                  color: "#005840",
-                }}
-              >
-                putt-fokus
-              </em>
-            </h1>
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              <StatusPill status={status} />
-              <span className="font-mono rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-amber-800">
-                PUTT
-              </span>
-              <span className="font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground">
-                {durationMin} MIN · TRACKMAN BRIDGE
-              </span>
-            </div>
-          </div>
+    <div className="pb-24 md:pb-6">
+      <DetailShell
+        breadcrumb={[
+          { label: "Gjennomføre", href: "/admin/gjennomfore" },
+          { label: "Økter", href: "/admin/gjennomfore" },
+          { label: spiller.name.split(" ")[0] },
+        ]}
+        backHref="/admin/gjennomfore"
+        title={heroTitle}
+        subtitle={`${dateLabel} · ${startTime}–${endTime} · ${facility?.name ?? "Studio"} · ${durationMin} min · TrackMan Bridge`}
+        statusPill={
+          <AthleticBadge variant={statusBadgeVariant}>{status}</AthleticBadge>
+        }
+        actions={
           <div className="hidden flex-wrap gap-2 md:flex">
             {status !== "GJENNOMFØRT" ? (
               <>
-                <AthleticButton variant="ghost-light" size="sm">Reschedule</AthleticButton>
-                <AthleticButton variant="ghost-light" size="sm" className="text-destructive">
+                <AthleticButton variant="ghost-light" size="sm">
+                  Reschedule
+                </AthleticButton>
+                <AthleticButton
+                  variant="ghost-light"
+                  size="sm"
+                  className="text-destructive"
+                >
                   Avlys
                 </AthleticButton>
                 <AthleticButton variant="lime" size="sm">
@@ -135,14 +146,17 @@ export default async function OktDetaljPage({
               </>
             ) : (
               <>
-                <AthleticButton variant="ghost-light" size="sm">Eksporter</AthleticButton>
-                <AthleticButton variant="lime" size="sm">Skriv oppfølging</AthleticButton>
+                <AthleticButton variant="ghost-light" size="sm">
+                  Eksporter
+                </AthleticButton>
+                <AthleticButton variant="lime" size="sm">
+                  Skriv oppfølging
+                </AthleticButton>
               </>
             )}
           </div>
-        </div>
-      </header>
-
+        }
+      >
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         {/* Venstre: live-status + drills + notater */}
         <div className="flex flex-col gap-5">
@@ -312,6 +326,7 @@ export default async function OktDetaljPage({
           </section>
         </aside>
       </div>
+      </DetailShell>
 
       {/* Sticky mobile CTA */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card px-4 py-3 md:hidden">
@@ -333,25 +348,6 @@ export default async function OktDetaljPage({
         </div>
       </div>
     </div>
-  );
-}
-
-function StatusPill({ status }: { status: Status }) {
-  const colors: Record<Status, { bg: string; fg: string }> = {
-    "OM 2 TIMER": { bg: "bg-amber-100", fg: "text-amber-800" },
-    "AKTIV NÅ": { bg: "bg-accent", fg: "text-foreground" },
-    "GJENNOMFØRT": { bg: "bg-muted", fg: "text-muted-foreground" },
-  };
-  const c = colors[status];
-  return (
-    <span
-      className={`font-mono inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.08em] ${c.bg} ${c.fg}`}
-    >
-      {status === "AKTIV NÅ" ? (
-        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-      ) : null}
-      {status}
-    </span>
   );
 }
 

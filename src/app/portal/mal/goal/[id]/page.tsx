@@ -19,8 +19,6 @@
 import Link from "next/link";
 import {
   AlertTriangle,
-  ArrowLeft,
-  CalendarClock,
   CheckCircle2,
   ChevronRight,
   Flag,
@@ -33,7 +31,8 @@ import {
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { AthleticBadge } from "@/components/athletic/badge";
 import { GoalDetailClient } from "./goal-client";
 
 type GoalKind = "RESULT" | "PROCESS";
@@ -187,12 +186,10 @@ function statusLabel(s: GoalStatus): string {
   return "Aktivt";
 }
 
-function statusClasses(s: GoalStatus): string {
-  if (s === "ACHIEVED")
-    return "bg-primary/15 text-primary";
-  if (s === "ABANDONED")
-    return "bg-muted text-muted-foreground";
-  return "bg-accent/30 text-accent-foreground";
+function statusBadgeVariant(s: GoalStatus): "ok" | "neutral" | "lime" {
+  if (s === "ACHIEVED") return "ok";
+  if (s === "ABANDONED") return "neutral";
+  return "lime";
 }
 
 export default async function GoalDetailPage({
@@ -394,39 +391,31 @@ export default async function GoalDetailPage({
       : Math.min(100, (data.streak / 14) * 100);
 
   return (
-    <div className="space-y-6 pb-20 md:space-y-10 md:pb-0">
-      <Link
-        href="/portal/mal"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
-        Tilbake til mål-oversikten
-      </Link>
-
-      <PageHeader
-        eyebrow={`MITT MÅL · ${data.typeLabel.toUpperCase()}`}
-        titleLead="Mål:"
-        titleItalic={data.title}
-        sub={
-          data.status === "ACTIVE"
-            ? daysLeft != null
-              ? `${daysLeft} dager til frist · ${data.deadline ? formatDate(data.deadline) : ""}`
-              : "Uten frist"
-            : data.status === "ACHIEVED"
-              ? "Målet er markert som oppnådd"
-              : data.abandonReason
-                ? `Avbrutt — ${data.abandonReason}`
-                : "Målet er avbrutt"
-        }
-        actions={
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${statusClasses(data.status)}`}
-          >
-            <CalendarClock className="h-3 w-3" strokeWidth={1.75} />
-            {statusLabel(data.status)}
-          </span>
-        }
-      />
+    <div className="pb-20 md:pb-0">
+    <DetailShell
+      breadcrumb={[
+        { label: "Mål", href: "/portal/mal" },
+        { label: data.title },
+      ]}
+      backHref="/portal/mal"
+      title={`Mål: ${data.title}`}
+      subtitle={
+        data.status === "ACTIVE"
+          ? daysLeft != null
+            ? `${data.typeLabel} · ${daysLeft} dager til frist${data.deadline ? ` · ${formatDate(data.deadline)}` : ""}`
+            : `${data.typeLabel} · uten frist`
+          : data.status === "ACHIEVED"
+            ? `${data.typeLabel} · målet er markert som oppnådd`
+            : data.abandonReason
+              ? `${data.typeLabel} · avbrutt — ${data.abandonReason}`
+              : `${data.typeLabel} · målet er avbrutt`
+      }
+      statusPill={
+        <AthleticBadge variant={statusBadgeVariant(data.status)}>
+          {statusLabel(data.status)}
+        </AthleticBadge>
+      }
+    >
 
       {/* Tracker + sidebar */}
       <section
@@ -694,6 +683,7 @@ export default async function GoalDetailPage({
           }}
         />
       )}
+    </DetailShell>
     </div>
   );
 }

@@ -6,9 +6,11 @@
  */
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, ClipboardList, Target } from "lucide-react";
+import { ClipboardList, Target } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { KPICard } from "@/components/ui/kpi-card";
 import { EmptyState } from "@/components/shared/empty-state";
 
 const NB_SHORT = new Intl.DateTimeFormat("nb-NO", {
@@ -134,67 +136,41 @@ export default async function TekniskPlanSpiller({
   );
 
   const harData = allTekSessions.length > 0;
+  const fullfortAntall = allTekSessions.filter(
+    (s) => s.status === "COMPLETED",
+  ).length;
 
   return (
-    <div className="space-y-6">
-      <Link
-        href="/admin/teknisk-plan"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
-        Teknisk Plan oversikt
-      </Link>
-
-      {/* Hero */}
-      <header className="flex items-start justify-between gap-6 border-b border-border pb-6">
-        <div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Teknisk Plan · spiller
-          </span>
-          <h1 className="mt-1 font-display text-[28px] font-bold italic leading-[1.1] tracking-tight">
-            <em className="font-medium italic">{spiller.name.split(" ")[0]}</em>
-            {spiller.name.split(" ").length > 1 && (
-              <> {spiller.name.split(" ").slice(1).join(" ")}</>
-            )}
-          </h1>
-          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[13px] text-muted-foreground">
-            <span>HCP {formatHcp(spiller.hcp)}</span>
-            {spiller.homeClub && (
-              <>
-                <span className="text-border">·</span>
-                <span>{spiller.homeClub}</span>
-              </>
-            )}
-          </div>
+    <DetailShell
+      breadcrumb={[
+        { label: "Teknisk Plan", href: "/admin/teknisk-plan" },
+        { label: spiller.name },
+      ]}
+      backHref="/admin/teknisk-plan"
+      title={spiller.name}
+      subtitle={`HCP ${formatHcp(spiller.hcp)}${
+        spiller.homeClub ? ` · ${spiller.homeClub}` : ""
+      }`}
+      kpiRow={
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <KPICard
+            eyebrow="TEK-økter"
+            value={String(allTekSessions.length)}
+            variant="hero"
+          />
+          <KPICard
+            eyebrow="Fullført"
+            value={String(fullfortAntall)}
+            footnote={
+              allTekSessions.length > 0
+                ? `${Math.round((fullfortAntall / allTekSessions.length) * 100)}%`
+                : "—"
+            }
+          />
+          <KPICard eyebrow="Øvelser" value={String(drillAgg.length)} />
         </div>
-        <div className="flex gap-6 text-center">
-          <div>
-            <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              TEK-økter
-            </div>
-            <div className="mt-1.5 font-mono text-[22px] font-semibold leading-none tabular-nums">
-              {allTekSessions.length}
-            </div>
-          </div>
-          <div>
-            <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              Fullført
-            </div>
-            <div className="mt-1.5 font-mono text-[22px] font-semibold leading-none tabular-nums text-primary">
-              {allTekSessions.filter((s) => s.status === "COMPLETED").length}
-            </div>
-          </div>
-          <div>
-            <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              Øvelser
-            </div>
-            <div className="mt-1.5 font-mono text-[22px] font-semibold leading-none tabular-nums">
-              {drillAgg.length}
-            </div>
-          </div>
-        </div>
-      </header>
-
+      }
+    >
       {!harData ? (
         <EmptyState
           icon={ClipboardList}
@@ -368,6 +344,6 @@ export default async function TekniskPlanSpiller({
           </div>
         </>
       )}
-    </div>
+    </DetailShell>
   );
 }

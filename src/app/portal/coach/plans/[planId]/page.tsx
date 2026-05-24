@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  ChevronRight,
   Quote,
   Target,
   Calendar,
@@ -9,7 +8,9 @@ import {
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { KPICard } from "@/components/ui/kpi-card";
+import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   aggregateByArea,
@@ -186,35 +187,73 @@ export default async function CoachPlanDetalj({
 
   const coachNavn = coach?.name ?? "Coach";
 
+  const dagerIgjen = plan.endDate
+    ? Math.max(
+        0,
+        Math.ceil(
+          (plan.endDate.getTime() - naa.getTime()) / (24 * 3600 * 1000),
+        ),
+      )
+    : null;
+
   return (
-    <div className="space-y-6 pb-20 md:pb-0">
-      <Link
-        href="/portal/coach/plans"
-        className="inline-flex items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"
-      >
-        <ChevronRight size={14} strokeWidth={1.5} className="rotate-180" />
-        Alle coaching-planer
-      </Link>
-
-      <PageHeader
-        eyebrow="PlayerHQ · Min plan"
-        titleLead="Sommer"
-        titleItalic="toppform"
-        sub={`Coachet av ${coachNavn} · ${fmtDatoLang(plan.startDate)}${
-          plan.endDate ? ` – ${fmtDatoLang(plan.endDate)}` : ""
-        } · Fase ${fasenIdx + 1} av ${FASER.length}`}
-        actions={
-          erEier && (plan.status === "ACCEPTED" || plan.status === "ACTIVE") ? (
-            <PlayerPlanActions
-              planId={plan.id}
-              status={plan.status}
-              playerComment={plan.playerComment}
-              acceptedAt={plan.updatedAt}
+    <div className="pb-20 md:pb-0">
+    <DetailShell
+      breadcrumb={[
+        { label: "Coaching-planer", href: "/portal/coach/plans" },
+        { label: plan.name },
+      ]}
+      backHref="/portal/coach/plans"
+      title={plan.name}
+      subtitle={`Coachet av ${coachNavn} · ${fmtDatoLang(plan.startDate)}${
+        plan.endDate ? ` – ${fmtDatoLang(plan.endDate)}` : ""
+      } · Fase ${fasenIdx + 1} av ${FASER.length}`}
+      statusPill={
+        plan.isActive ? (
+          <AthleticBadge variant="ok">AKTIV</AthleticBadge>
+        ) : undefined
+      }
+      actions={
+        erEier && (plan.status === "ACCEPTED" || plan.status === "ACTIVE") ? (
+          <PlayerPlanActions
+            planId={plan.id}
+            status={plan.status}
+            playerComment={plan.playerComment}
+            acceptedAt={plan.updatedAt}
+          />
+        ) : undefined
+      }
+      kpiRow={
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <KPICard
+            eyebrow="Ferdige økter"
+            value={`${fullført} / ${total}`}
+            variant="hero"
+          />
+          <KPICard
+            eyebrow="Gjennomføring"
+            value={`${gjennomforing}%`}
+            footnote="av plan"
+          />
+          {nesteØkt ? (
+            <KPICard
+              eyebrow="Neste økt"
+              value={
+                <span className="truncate text-base font-semibold">
+                  {nesteØkt.title}
+                </span>
+              }
             />
-          ) : undefined
-        }
-      />
-
+          ) : (
+            <KPICard eyebrow="Neste økt" value="—" />
+          )}
+          <KPICard
+            eyebrow="Til slutt"
+            value={dagerIgjen != null ? `${dagerIgjen} d` : "—"}
+          />
+        </div>
+      }
+    >
       {erEier &&
         (plan.status === "PENDING_PLAYER" || plan.status === "REJECTED") && (
           <PlayerPlanActions
@@ -224,31 +263,6 @@ export default async function CoachPlanDetalj({
             acceptedAt={plan.updatedAt}
           />
         )}
-
-      {/* Hero-stat-pills */}
-      <div className="flex flex-wrap items-center gap-2">
-        <StatPill label="Ferdige økter" value={`${fullført} / ${total}`} />
-        {nesteØkt && (
-          <StatPill
-            label="Neste"
-            value={nesteØkt.title}
-            tone="accent"
-          />
-        )}
-        {plan.endDate && (
-          <StatPill
-            label="Til slutt"
-            value={`${Math.max(
-              0,
-              Math.ceil(
-                (plan.endDate.getTime() - naa.getTime()) /
-                  (24 * 3600 * 1000),
-              ),
-            )} d`}
-          />
-        )}
-        <StatPill label="Gjennomføring" value={`${gjennomforing} %`} />
-      </div>
 
       {/* Insight-banner */}
       {total > 0 && gjennomforing >= 50 && (
@@ -473,6 +487,7 @@ export default async function CoachPlanDetalj({
           )}
         </section>
       </div>
+    </DetailShell>
     </div>
   );
 }
@@ -501,33 +516,6 @@ function formaterMaalSub(type: string, date: Date | null) {
   const label = typeLabel[type] ?? "Mål";
   if (!date) return label;
   return `${label} · innen ${fmtDato(date)}`;
-}
-
-function StatPill({
-  label,
-  value,
-  tone = "muted",
-}: {
-  label: string;
-  value: string;
-  tone?: "muted" | "accent";
-}) {
-  const styles: Record<NonNullable<typeof tone>, string> = {
-    muted: "bg-secondary text-foreground border-border",
-    accent: "bg-accent/30 text-foreground border-accent/40",
-  };
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1 text-[12px] ${styles[tone]}`}
-    >
-      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-        {label}
-      </span>
-      <span className="max-w-[200px] truncate font-mono font-semibold tabular-nums">
-        {value}
-      </span>
-    </span>
-  );
 }
 
 function TypeTag({ type }: { type: PyramidArea }) {

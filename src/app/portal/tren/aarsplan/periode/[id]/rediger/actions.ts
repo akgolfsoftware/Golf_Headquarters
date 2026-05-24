@@ -17,7 +17,6 @@ export type UpdatePeriodeInput = {
   goals?: string[];
   volume?: number;
   load?: number;
-  tournamentIds?: string[];
   coachNote?: string;
 };
 

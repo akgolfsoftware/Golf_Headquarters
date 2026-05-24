@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Plus, X, AlertTriangle, Trash2 } from "lucide-react";
+import { Check, Plus, X, Trash2 } from "lucide-react";
 import { updatePeriode, deletePeriode } from "./actions";
 
 const SG_OPTIONS = ["Tee", "Approach", "Rundt green", "Putting", "Total"];
@@ -14,38 +14,56 @@ const COLORS: Array<{ id: string; label: string; cls: string }> = [
   { id: "muted", label: "Muted", cls: "bg-muted-foreground" },
 ];
 
-const TURNERINGER = [
-  { id: "nmj", name: "NM Junior 2026", badge: "A-event", dates: "18.06 – 21.06" },
-  { id: "gfgk", name: "GFGK Open", dates: "10.06 – 12.06" },
-  { id: "sl", name: "Sørlandsåpent Junior", dates: "26.06 – 28.06" },
-  { id: "larvik", name: "Larvik Trofé", dates: "05.06" },
-];
+type PeriodType =
+  | "Forberedelse"
+  | "Konkurranse"
+  | "Restitusjon"
+  | "Off-season";
 
-export function PeriodeRedigerForm({ periodeId }: { periodeId: string }) {
+function lPhaseToType(phase: "GRUNN" | "SPESIAL" | "TURNERING"): PeriodType {
+  switch (phase) {
+    case "GRUNN":
+      return "Forberedelse";
+    case "SPESIAL":
+      return "Forberedelse";
+    case "TURNERING":
+      return "Konkurranse";
+    default:
+      return "Forberedelse";
+  }
+}
+
+export type PeriodeRedigerInitial = {
+  focus: string | null;
+  notes: string | null;
+  startDate: string;
+  endDate: string;
+  lPhase: "GRUNN" | "SPESIAL" | "TURNERING";
+};
+
+export function PeriodeRedigerForm({
+  periodeId,
+  initial,
+}: {
+  periodeId: string;
+  initial: PeriodeRedigerInitial;
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  const [name, setName] = useState("Konkurranse-blokk juni");
-  const [type, setType] = useState<
-    "Forberedelse" | "Konkurranse" | "Restitusjon" | "Off-season"
-  >("Konkurranse");
+  const [name, setName] = useState(initial.focus ?? "Ny periode");
+  const [type, setType] = useState<PeriodType>(lPhaseToType(initial.lPhase));
   const [color, setColor] = useState("forest");
-  const [startDate, setStartDate] = useState("2026-06-01");
-  const [endDate, setEndDate] = useState("2026-06-30");
-  const [sgFocus, setSgFocus] = useState<string[]>(["Tee", "Putting"]);
-  const [pyrFocus, setPyrFocus] = useState<string[]>(["TEK", "SLAG"]);
-  const [goals, setGoals] = useState<string[]>([
-    "Topp 10 NM Junior",
-    "Sub-72 snitt i 4 runder",
-  ]);
+  const [startDate, setStartDate] = useState(initial.startDate);
+  const [endDate, setEndDate] = useState(initial.endDate);
+  const [sgFocus, setSgFocus] = useState<string[]>([]);
+  const [pyrFocus, setPyrFocus] = useState<string[]>([]);
+  const [goals, setGoals] = useState<string[]>([]);
   const [newGoal, setNewGoal] = useState("");
   const [volume, setVolume] = useState(6);
-  const [load, setLoad] = useState(7);
-  const [selectedTurns, setSelectedTurns] = useState<string[]>(["nmj", "gfgk"]);
-  const [coachNote, setCoachNote] = useState(
-    "Reduser TEK-fokus, hold form. Mer SPILL — særlig før GFGK Open og NM Junior.",
-  );
+  const [load, setLoad] = useState(5);
+  const [coachNote, setCoachNote] = useState(initial.notes ?? "");
 
   function toggle<T>(arr: T[], v: T): T[] {
     return arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
@@ -73,7 +91,6 @@ export function PeriodeRedigerForm({ periodeId }: { periodeId: string }) {
           goals,
           volume,
           load,
-          tournamentIds: selectedTurns,
           coachNote,
         });
       } catch {
@@ -279,58 +296,9 @@ export function PeriodeRedigerForm({ periodeId }: { periodeId: string }) {
           <Slider label="Volum · økter/uke" value={volume} onChange={setVolume} />
           <Slider label="Belastning · fys" value={load} onChange={setLoad} />
         </div>
-        <div className="flex items-start gap-3 rounded-md border border-accent/40 bg-accent/15 p-4 text-sm">
-          <AlertTriangle
-            size={16}
-            strokeWidth={1.75}
-            className="mt-0.5 flex-shrink-0 text-accent-foreground"
-          />
-          <div>
-            <strong>Overlapper «Spesialisering»</strong> som slutter 03.06.2026.
-            Vurder å justere én av periodene før lagring.
-          </div>
-        </div>
       </Section>
 
-      <Section num="04" title="Vedlegg og notat">
-        <Field label="Tilknyttede turneringer">
-          <div className="space-y-2">
-            {TURNERINGER.map((t) => {
-              const active = selectedTurns.includes(t.id);
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => setSelectedTurns((p) => toggle(p, t.id))}
-                  className={`flex w-full items-center gap-3 rounded-md border px-4 py-3 text-left text-sm ${
-                    active
-                      ? "border-primary bg-primary/[0.04]"
-                      : "border-border bg-card"
-                  }`}
-                >
-                  <span
-                    className={`flex h-5 w-5 items-center justify-center rounded-sm border ${
-                      active
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border"
-                    }`}
-                  >
-                    {active && <Check size={11} strokeWidth={2.5} />}
-                  </span>
-                  <span className="flex-1 font-medium">{t.name}</span>
-                  {t.badge && (
-                    <span className="rounded-full bg-accent px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.08em] text-accent-foreground">
-                      {t.badge}
-                    </span>
-                  )}
-                  <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-                    {t.dates}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </Field>
+      <Section num="04" title="Notat">
         <Field label="Coach-notat">
           <textarea
             value={coachNote}

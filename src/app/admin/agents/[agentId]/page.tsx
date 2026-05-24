@@ -4,10 +4,12 @@
 
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Bot, ChevronLeft, Sparkles } from "lucide-react";
+import { Bot, Sparkles } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { DetailShell } from "@/components/shared/detail-shell";
+import { KPICard } from "@/components/ui/kpi-card";
+import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { FeedbackForm } from "./feedback-form";
 import { ApprovalActions } from "@/app/admin/approvals/approval-actions";
@@ -57,10 +59,13 @@ const AGENT_KONFIG: Record<string, AgentKonfig> = {
   },
 };
 
-const STATUS_FARGE: Record<AgentKonfig["status"], string> = {
-  aktiv: "bg-primary/10 text-primary",
-  beta: "bg-accent/30 text-accent-foreground",
-  planlagt: "bg-secondary text-secondary-foreground",
+const STATUS_VARIANT: Record<
+  AgentKonfig["status"],
+  "ok" | "lime" | "neutral"
+> = {
+  aktiv: "ok",
+  beta: "lime",
+  planlagt: "neutral",
 };
 
 const ACTION_LABEL: Record<string, string> = {
@@ -110,53 +115,34 @@ export default async function AgentDetaljPage({
   ]);
 
   return (
-    <div className="space-y-8">
-      <Link
-        href="/admin/agents"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
-        Agenter
-      </Link>
-
-      <PageHeader
-        eyebrow={`CoachHQ · Agent · ${agentId}`}
-        titleLead={konfig.navn.split(" ")[0]}
-        titleItalic={konfig.navn.split(" ").slice(1).join(" ") || "agent"}
-        sub={konfig.beskrivelse}
-      />
-
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <article className="rounded-lg border border-border bg-card p-6">
-          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Status
-          </div>
-          <div className="mt-2">
-            <span
-              className={`rounded-full px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${
-                STATUS_FARGE[konfig.status]
-              }`}
-            >
-              {konfig.status}
-            </span>
-          </div>
-        </article>
-        <article className="rounded-lg border border-border bg-card p-6">
-          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Sist kjørt
-          </div>
-          <div className="mt-2 text-sm font-semibold">{konfig.sistKjort}</div>
-        </article>
-        <article className="rounded-lg border border-border bg-card p-6">
-          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Kjøringer i loggen
-          </div>
-          <div className="mt-2 font-mono text-2xl font-semibold tabular-nums">
-            {kjoringer.length}
-          </div>
-        </article>
-      </section>
-
+    <DetailShell
+      breadcrumb={[
+        { label: "Agenter", href: "/admin/agents" },
+        { label: konfig.navn },
+      ]}
+      backHref="/admin/agents"
+      title={konfig.navn}
+      subtitle={konfig.beskrivelse}
+      statusPill={
+        <AthleticBadge variant={STATUS_VARIANT[konfig.status]}>
+          {konfig.status}
+        </AthleticBadge>
+      }
+      kpiRow={
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <KPICard
+            eyebrow="Status"
+            value={konfig.status.toUpperCase()}
+            variant="hero"
+          />
+          <KPICard eyebrow="Sist kjørt" value={konfig.sistKjort} />
+          <KPICard
+            eyebrow="Kjøringer i loggen"
+            value={String(kjoringer.length)}
+          />
+        </div>
+      }
+    >
       {/* Siste 10 forslag (PlanAction) fra denne agenten */}
       <section>
         <div className="mb-4 flex items-center justify-between gap-2">
@@ -300,7 +286,7 @@ export default async function AgentDetaljPage({
           </div>
         )}
       </section>
-    </div>
+    </DetailShell>
   );
 }
 
