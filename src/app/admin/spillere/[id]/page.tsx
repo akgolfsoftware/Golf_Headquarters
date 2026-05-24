@@ -51,11 +51,11 @@ function deriveCategory(hcp: number | null): Category {
 }
 
 const CAT_STYLE: Record<Category, string> = {
-  A1: "bg-[#005840] text-[#D1F843]",
-  A2: "bg-[#D1F843] text-[#005840]",
-  B1: "bg-[#F1EEE5] text-[#0A1F17]",
-  B2: "bg-[#F1EEE5] text-[#5E5C57]",
-  C: "bg-[#F1EEE5] text-[#5E5C57]",
+  A1: "bg-primary text-primary-foreground",
+  A2: "bg-accent text-accent-foreground",
+  B1: "bg-secondary text-foreground",
+  B2: "bg-secondary text-muted-foreground",
+  C: "bg-secondary text-muted-foreground",
 };
 
 function formatHcp(v: number | null | undefined): string {
@@ -71,9 +71,9 @@ function tierLabel(t: string): string {
 }
 
 function tierStyle(t: string): string {
-  if (t === "PRO") return "bg-[#005840] text-[#D1F843]";
-  if (t === "ELITE") return "bg-[#D1F843] text-[#005840]";
-  return "bg-[#F1EEE5] text-[#5E5C57]";
+  if (t === "PRO") return "bg-primary text-primary-foreground";
+  if (t === "ELITE") return "bg-accent text-accent-foreground";
+  return "bg-secondary text-muted-foreground";
 }
 
 function calcAge(dob: Date | null): number | null {
@@ -481,19 +481,19 @@ function ProfilTab({
       {/* Hoved-innhold */}
       <div className="space-y-4">
         {/* Personalia */}
-        <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
           <div className="mb-4 flex items-baseline justify-between">
             <div>
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Personalia
               </div>
-              <h2 className="mt-1 font-display text-lg font-semibold text-[#0A1F17]">
+              <h2 className="mt-1 font-display text-lg font-semibold text-foreground">
                 Stamdata
               </h2>
             </div>
             <Link
               href={`/admin/spillere/${player.id}/profil`}
-              className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+              className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
             >
               Full profil →
             </Link>
@@ -520,12 +520,12 @@ function ProfilTab({
 
         {/* Forelder/verge */}
         {parents.length > 0 && (
-          <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+          <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
             <div className="mb-4 flex items-baseline justify-between">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Forelder / verge
               </div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                 {parents.length}
               </span>
             </div>
@@ -533,7 +533,7 @@ function ProfilTab({
               {parents.map((p) => (
                 <li
                   key={p.id}
-                  className="flex items-center gap-3 rounded-xl border border-[#E5E3DD] bg-[#FAFAF7] p-3"
+                  className="flex items-center gap-3 rounded-xl border border-border bg-background p-3"
                 >
                   {p.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -551,14 +551,14 @@ function ProfilTab({
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold text-[#0A1F17]">
+                    <div className="truncate text-sm font-semibold text-foreground">
                       {p.name}
                     </div>
-                    <div className="truncate font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                    <div className="truncate font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                       {p.phone ?? p.email}
                     </div>
                   </div>
-                  <span className="shrink-0 rounded-full bg-[#005840]/10 px-2 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-[#005840]">
+                  <span className="shrink-0 rounded-full bg-primary/10 px-2 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-primary">
                     Stripe-betaler
                   </span>
                 </li>
@@ -568,13 +568,13 @@ function ProfilTab({
         )}
 
         {/* Aktivitet-tidslinje (siste 30 dager) */}
-        <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
           <div className="mb-4 flex items-baseline justify-between">
             <div>
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Aktivitet · siste 30 dager
               </div>
-              <h2 className="mt-1 font-display text-lg font-semibold text-[#0A1F17]">
+              <h2 className="mt-1 font-display text-lg font-semibold text-foreground">
                 Tidslinje
               </h2>
             </div>
@@ -582,22 +582,22 @@ function ProfilTab({
           <ul className="space-y-3">
             {/* Sample event-stream — full impl bygges når data finnes */}
             <TimelineEvent
-              dot="#005840"
+              dot="primary"
               title="Putt-økt fullført · 45 min"
               meta="i dag, 11:00 · Mulligan Studio"
             />
             <TimelineEvent
-              dot="#D1F843"
+              dot="accent"
               title="Test gjennomført · CS70"
               meta="i går, 14:30"
             />
             <TimelineEvent
-              dot="#B8852A"
+              dot="warning"
               title="Runde · GFGK · 74"
               meta="20. mai"
             />
             <TimelineEvent
-              dot="#5E5C57"
+              dot="muted"
               title="Meldte seg på Sørlandsåpent"
               meta="18. mai"
             />
@@ -607,29 +607,29 @@ function ProfilTab({
 
       {/* Sidekol — Coach-notater */}
       <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-        <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
-          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Coach-notater
           </div>
           {coachNotater.length === 0 ? (
-            <p className="text-sm text-[#5E5C57]">Ingen notater ennå.</p>
+            <p className="text-sm text-muted-foreground">Ingen notater ennå.</p>
           ) : (
             <ul className="space-y-4">
               {coachNotater.map((n) => (
                 <li
                   key={n.id}
-                  className="border-l-2 border-[#D1F843] pl-3"
+                  className="border-l-2 border-accent pl-3"
                 >
                   <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate text-sm font-semibold text-[#0A1F17]">
+                    <span className="truncate text-sm font-semibold text-foreground">
                       {n.title}
                     </span>
-                    <time className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                    <time className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                       {NB_DATE.format(n.date)}
                     </time>
                   </div>
                   <p
-                    className="mt-2 text-sm leading-relaxed text-[#0A1F17]"
+                    className="mt-2 text-sm leading-relaxed text-foreground"
                     style={{
                       fontFamily: "'Instrument Serif', serif",
                       fontStyle: "italic",
@@ -667,63 +667,56 @@ function PlanTab({
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Aktiv treningsplan
         </div>
         {aktivPlanName ? (
           <>
-            <h3 className="mt-2 font-display text-2xl font-semibold leading-tight text-[#0A1F17]">
-              <em
-                className="font-normal not-italic"
-                style={{
-                  fontFamily: "'Instrument Serif', serif",
-                  fontStyle: "italic",
-                  color: "#005840",
-                }}
-              >
+            <h3 className="mt-2 font-display text-2xl font-semibold leading-tight text-foreground">
+              <em className="font-display italic font-normal text-primary">
                 {aktivPlanName}
               </em>
             </h3>
             <div className="mt-4">
-              <div className="mb-1.5 flex justify-between font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+              <div className="mb-1.5 flex justify-between font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                 <span>
                   {done}/{total} økter
                 </span>
                 <span>{pct} %</span>
               </div>
-              <div className="h-2 overflow-hidden rounded-full bg-[#F1EEE5]">
+              <div className="h-2 overflow-hidden rounded-full bg-secondary">
                 <div
-                  className="h-full rounded-full bg-[#005840]"
+                  className="h-full rounded-full bg-primary"
                   style={{ width: `${pct}%` }}
                 />
               </div>
             </div>
           </>
         ) : (
-          <p className="mt-3 rounded-md border border-dashed border-[#E5E3DD] p-4 text-sm text-[#5E5C57]">
+          <p className="mt-3 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
             Ingen aktiv plan.
           </p>
         )}
       </section>
 
-      <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Neste turnering
         </div>
         {turneringsNavn ? (
           <>
-            <h3 className="mt-2 font-display text-2xl font-semibold leading-tight text-[#0A1F17]">
+            <h3 className="mt-2 font-display text-2xl font-semibold leading-tight text-foreground">
               {turneringsNavn}
             </h3>
             {turneringsDato && (
-              <p className="mt-2 font-mono text-sm tabular-nums text-[#5E5C57]">
+              <p className="mt-2 font-mono text-sm tabular-nums text-muted-foreground">
                 {NB_LONG.format(turneringsDato)}
               </p>
             )}
           </>
         ) : (
-          <p className="mt-3 rounded-md border border-dashed border-[#E5E3DD] p-4 text-sm text-[#5E5C57]">
+          <p className="mt-3 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
             Ingen påmeldt.
           </p>
         )}
@@ -732,7 +725,7 @@ function PlanTab({
       <div className="lg:col-span-2">
         <Link
           href={`${baseHref}?tab=analyse`}
-          className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+          className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
         >
           Se plan-effektivitet →
         </Link>
@@ -751,33 +744,33 @@ function TesterTab({
   total: number;
 }) {
   return (
-    <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+    <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
       <div className="mb-4 flex items-baseline justify-between">
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Tester · {tester.length}/{total}
         </div>
       </div>
       {tester.length === 0 ? (
-        <p className="rounded-md border border-dashed border-[#E5E3DD] p-6 text-center text-sm text-[#5E5C57]">
+        <p className="rounded-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
           Ingen testresultater registrert.
         </p>
       ) : (
-        <ul className="divide-y divide-[#E5E3DD]">
+        <ul className="divide-y divide-border">
           {tester.map((t) => (
             <li
               key={t.id}
               className="grid grid-cols-[1fr_auto] items-center gap-4 py-3"
             >
               <div className="min-w-0">
-                <div className="truncate text-sm font-semibold text-[#0A1F17]">
+                <div className="truncate text-sm font-semibold text-foreground">
                   {t.name}
                 </div>
-                <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                   {NB_LONG.format(t.date)}
                 </div>
               </div>
               {t.score != null && (
-                <div className="font-mono text-lg font-semibold tabular-nums text-[#005840]">
+                <div className="font-mono text-lg font-semibold tabular-nums text-primary">
                   {t.score}
                 </div>
               )}
@@ -804,26 +797,26 @@ function NotaterTab({
 }) {
   if (notater.length === 0) {
     return (
-      <section className="rounded-2xl border border-[#E5E3DD] bg-card p-8 text-center">
-        <p className="text-sm text-[#5E5C57]">Ingen coach-notater registrert.</p>
+      <section className="rounded-2xl border border-border bg-card p-8 text-center">
+        <p className="text-sm text-muted-foreground">Ingen coach-notater registrert.</p>
       </section>
     );
   }
   return (
-    <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+    <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
       <ul className="space-y-4">
         {notater.map((n) => (
-          <li key={n.id} className="border-l-2 border-[#D1F843] pl-4">
+          <li key={n.id} className="border-l-2 border-accent pl-4">
             <div className="flex items-baseline justify-between gap-3">
-              <span className="truncate text-sm font-semibold text-[#0A1F17]">
+              <span className="truncate text-sm font-semibold text-foreground">
                 {n.title} · {n.area}
               </span>
-              <time className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+              <time className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                 {NB_DATE.format(n.date)}
               </time>
             </div>
             <p
-              className="mt-2 text-base leading-relaxed text-[#0A1F17]"
+              className="mt-2 text-base leading-relaxed text-foreground"
               style={{
                 fontFamily: "'Instrument Serif', serif",
                 fontStyle: "italic",
@@ -851,11 +844,11 @@ function Fact({
 }) {
   return (
     <div>
-      <dt className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+      <dt className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </dt>
       <dd
-        className={`mt-1 text-sm text-[#0A1F17] ${mono ? "font-mono tabular-nums" : ""}`}
+        className={`mt-1 text-sm text-foreground ${mono ? "font-mono tabular-nums" : ""}`}
       >
         {value}
       </dd>
@@ -868,19 +861,24 @@ function TimelineEvent({
   title,
   meta,
 }: {
-  dot: string;
+  dot: "primary" | "accent" | "warning" | "muted";
   title: string;
   meta: string;
 }) {
+  const dotClass: Record<typeof dot, string> = {
+    primary: "bg-primary",
+    accent: "bg-accent",
+    warning: "bg-warning",
+    muted: "bg-muted-foreground",
+  };
   return (
     <li className="flex items-start gap-3">
       <span
-        className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
-        style={{ background: dot }}
+        className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${dotClass[dot]}`}
       />
       <div className="min-w-0 flex-1">
-        <div className="text-sm font-medium text-[#0A1F17]">{title}</div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+        <div className="text-sm font-medium text-foreground">{title}</div>
+        <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
           {meta}
         </div>
       </div>

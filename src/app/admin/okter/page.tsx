@@ -36,22 +36,22 @@ const NORSK_UKEDAG_LANG = [
   "lørdag",
 ];
 
-// Bevisst dekorativ farge-palett — pyramide-områdene må separeres visuelt.
-// Speiler V2-designet (05-okter.html).
+// Pyramide-områdene må separeres visuelt. Bruker offisielle pyramide-tokens
+// fra globals.css (--color-pyr-{fys,tek,slag,spill,turn} + -track).
 const PYR_STRIPE_BG: Record<PyramidArea, string> = {
-  FYS: "bg-[#16A34A]",
-  TEK: "bg-[#005840]",
-  SLAG: "bg-[#D1F843]",
-  SPILL: "bg-[#F4C430]",
-  TURN: "bg-[#5E5C57]",
+  FYS: "bg-[var(--color-pyr-fys)]",
+  TEK: "bg-[var(--color-pyr-tek)]",
+  SLAG: "bg-[var(--color-pyr-slag)]",
+  SPILL: "bg-[var(--color-pyr-spill)]",
+  TURN: "bg-[var(--color-pyr-turn)]",
 };
 
 const PYR_TAG_BG: Record<PyramidArea, string> = {
-  FYS: "bg-[rgba(22,163,74,0.18)] text-[#0f7536]",
-  TEK: "bg-[rgba(0,88,64,0.16)] text-primary",
-  SLAG: "bg-[rgba(209,248,67,0.50)] text-[#3d4d0f]",
-  SPILL: "bg-[rgba(244,196,48,0.30)] text-[#7a5a08]",
-  TURN: "bg-[rgba(94,92,87,0.22)] text-[#3a3935]",
+  FYS: "bg-[var(--color-pyr-fys-track)] text-[var(--color-pyr-fys)]",
+  TEK: "bg-[var(--color-pyr-tek-track)] text-[var(--color-pyr-tek)]",
+  SLAG: "bg-[var(--color-pyr-slag-track)] text-[var(--color-pyr-slag)]",
+  SPILL: "bg-[var(--color-pyr-spill-track)] text-[var(--color-pyr-spill)]",
+  TURN: "bg-[var(--color-pyr-turn-track)] text-[var(--color-pyr-turn)]",
 };
 
 const STATUS_LABEL: Record<SessionStatus, string> = {

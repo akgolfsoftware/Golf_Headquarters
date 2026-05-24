@@ -20,13 +20,15 @@ import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { avatarBg } from "@/lib/avatar-colors";
 
+// 6 dekorative gradient-paletter for gruppe-identitet. Bruker offisielle
+// avatar-gradient-tokens fra globals.css for konsistens med avatar-grafikk.
 const HERO_GRADIENTS = [
-  "linear-gradient(135deg,#005840 0%,#0a4a35 60%,#163027 100%)",
-  "linear-gradient(135deg,#3b5994 0%,#2e4470 60%,#1e2e4a 100%)",
-  "linear-gradient(135deg,#a14b30 0%,#c26442 60%,#7d3a25 100%)",
-  "linear-gradient(135deg,#5a3b8a 0%,#7c52b0 60%,#3a2658 100%)",
-  "linear-gradient(135deg,#2c7d76 0%,#3fa39a 60%,#1b504c 100%)",
-  "linear-gradient(135deg,#7a5a1a 0%,#9a7a30 60%,#4a3608 100%)",
+  "var(--gradient-avatar-1)",
+  "var(--gradient-avatar-8)",
+  "var(--gradient-avatar-6)",
+  "var(--gradient-avatar-8)",
+  "var(--gradient-avatar-7)",
+  "var(--gradient-avatar-3)",
 ] as const;
 
 function typeLabel(level: string | null): string {

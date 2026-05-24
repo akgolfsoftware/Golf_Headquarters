@@ -162,14 +162,14 @@ export default async function AvailabilityAdmin({
           {/* Sticky save-bar */}
           <div className="sticky bottom-4 z-10 mt-6 flex items-center justify-between gap-4 rounded-2xl border border-border bg-card p-4 shadow-lg">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-2 w-2 rounded-full bg-[#B8852A]" />
+              <span className="inline-flex h-2 w-2 rounded-full bg-warning" />
               <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 {aktiveMin} aktive tidsvinduer · {minSlots.length - aktiveMin} inaktive
               </span>
             </div>
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:bg-[#003A2A]"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
             >
               <Save size={14} />
               Lagre endringer
@@ -240,12 +240,12 @@ function ExceptionRow({
   return (
     <div
       className={`flex items-center gap-4 rounded-lg border p-3 ${
-        tone === "warn" ? "border-[#B8852A]/30 bg-[#FFFBF5]" : "border-border bg-card"
+        tone === "warn" ? "border-warning/30 bg-warning/5" : "border-border bg-card"
       }`}
     >
       <span
         className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${
-          tone === "warn" ? "bg-[#B8852A]/20 text-[#B8852A]" : "bg-secondary text-muted-foreground"
+          tone === "warn" ? "bg-warning/20 text-warning" : "bg-secondary text-muted-foreground"
         }`}
       >
         <Icon size={16} />

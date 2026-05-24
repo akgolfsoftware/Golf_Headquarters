@@ -210,23 +210,23 @@ export default async function TalentOversikt({
                 <rect x="0" y="0" width={MAP_W} height={MAP_H} fill="hsl(var(--background))" rx="8" />
                 {yTicks2.map((t) => (
                   <g key={t}>
-                    <line x1={PAD} y1={mapY2(t)} x2={MAP_W - PAD} y2={mapY2(t)} stroke="#E5E3DD" strokeWidth="1" />
-                    <text x={PAD - 6} y={mapY2(t) + 4} textAnchor="end" fontFamily="monospace" fontSize="10" fill="#5E5C57">{t}</text>
+                    <line x1={PAD} y1={mapY2(t)} x2={MAP_W - PAD} y2={mapY2(t)} stroke="var(--color-border)" strokeWidth="1" />
+                    <text x={PAD - 6} y={mapY2(t) + 4} textAnchor="end" fontFamily="monospace" fontSize="10" fill="var(--color-muted-foreground)">{t}</text>
                   </g>
                 ))}
-                <text x={MAP_W / 2} y={MAP_H - 4} textAnchor="middle" fontFamily="monospace" fontSize="11" fontWeight="700" fill="#0A1F17">HCP</text>
-                <text x={14} y={MAP_H / 2} textAnchor="middle" fontFamily="monospace" fontSize="11" fontWeight="700" fill="#0A1F17" transform={`rotate(-90 14 ${MAP_H / 2})`}>TALENT</text>
+                <text x={MAP_W / 2} y={MAP_H - 4} textAnchor="middle" fontFamily="monospace" fontSize="11" fontWeight="700" fill="var(--color-foreground)">HCP</text>
+                <text x={14} y={MAP_H / 2} textAnchor="middle" fontFamily="monospace" fontSize="11" fontWeight="700" fill="var(--color-foreground)" transform={`rotate(-90 14 ${MAP_H / 2})`}>TALENT</text>
                 {alle.map((s) => {
                   const hcp = s.user.hcp ?? 10;
                   const score = radarSnitt(s) ?? 0;
                   const x = mapX2(hcp);
                   const y = mapY2(score);
-                  const fill = "#D1F843";
-                  const stroke = "#005840";
+                  const fill = "var(--color-accent)";
+                  const stroke = "var(--color-primary)";
                   return (
                     <g key={s.id} aria-label={`${s.user.name} HCP ${hcp}`}>
                       <circle cx={x} cy={y} r="16" fill={fill} stroke={stroke} strokeWidth="2" />
-                      <text x={x} y={y + 4} textAnchor="middle" fontFamily="var(--font-inter-tight,sans-serif)" fontSize="9" fontWeight="700" fill="#0A1F17">
+                      <text x={x} y={y + 4} textAnchor="middle" fontFamily="var(--font-inter-tight,sans-serif)" fontSize="9" fontWeight="700" fill="var(--color-foreground)">
                         {initials(s.user.name)}
                       </text>
                     </g>

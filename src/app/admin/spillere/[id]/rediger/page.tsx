@@ -67,26 +67,19 @@ export default async function RedigerSpiller({
   return (
     <div className="space-y-6">
       {/* Sub-hero + sticky save-bar */}
-      <div className="sticky top-0 z-20 -mx-4 border-b border-[#E5E3DD] bg-[#FAFAF7]/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+      <div className="sticky top-0 z-20 -mx-4 border-b border-border bg-background/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
             <Link
               href={`/admin/spillere/${id}`}
-              className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57] hover:text-[#005840]"
+              className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground hover:text-primary"
             >
               <ArrowLeft size={12} strokeWidth={2} />
               {player.name} · Rediger
             </Link>
-            <h1 className="mt-1 font-display text-2xl font-semibold leading-tight tracking-tight text-[#0A1F17] sm:text-3xl">
+            <h1 className="mt-1 font-display text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-3xl">
               Rediger{" "}
-              <em
-                className="font-normal not-italic"
-                style={{
-                  fontFamily: "'Instrument Serif', serif",
-                  fontStyle: "italic",
-                  color: "#005840",
-                }}
-              >
+              <em className="font-display italic font-normal text-primary">
                 spiller
               </em>
             </h1>
@@ -94,14 +87,14 @@ export default async function RedigerSpiller({
           <div className="flex items-center gap-2">
             <Link
               href={`/admin/spillere/${id}`}
-              className="inline-flex items-center gap-2 rounded-full border border-[#E5E3DD] bg-card px-4 py-2 text-sm font-medium text-[#0A1F17] hover:bg-[#F1EEE5]"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary"
             >
               Avbryt
             </Link>
             <button
               type="submit"
               form="rediger-form"
-              className="inline-flex items-center gap-2 rounded-full bg-[#D1F843] px-5 py-2 text-sm font-semibold text-[#0A1F17] hover:bg-[#BFE933]"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90"
             >
               Lagre
             </button>
@@ -119,8 +112,8 @@ export default async function RedigerSpiller({
         {/* Venstre kol — form */}
         <div className="space-y-6">
           {/* Personalia */}
-          <fieldset className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
-            <legend className="px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+          <fieldset className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+            <legend className="px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Personalia
             </legend>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -146,8 +139,8 @@ export default async function RedigerSpiller({
           </fieldset>
 
           {/* Coaching */}
-          <fieldset className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
-            <legend className="px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+          <fieldset className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+            <legend className="px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Coaching
             </legend>
             <div className="grid grid-cols-1 gap-4">
@@ -167,17 +160,17 @@ export default async function RedigerSpiller({
           </fieldset>
 
           {/* Forelder quick-edit */}
-          <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+          <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
             <div className="mb-4 flex items-baseline justify-between">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Foresatte
               </div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                 {parents.length}
               </span>
             </div>
             {parents.length === 0 ? (
-              <p className="rounded-md border border-dashed border-[#E5E3DD] bg-[#FAFAF7] p-4 text-sm text-[#5E5C57]">
+              <p className="rounded-md border border-dashed border-border bg-background p-4 text-sm text-muted-foreground">
                 Ingen foresatte registrert.
               </p>
             ) : (
@@ -185,19 +178,19 @@ export default async function RedigerSpiller({
                 {parents.map((pr) => (
                   <li
                     key={pr.id}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-[#E5E3DD] bg-[#FAFAF7] p-3"
+                    className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background p-3"
                   >
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold text-[#0A1F17]">
+                      <div className="truncate text-sm font-semibold text-foreground">
                         {pr.parent.name}
                       </div>
-                      <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                      <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                         {pr.relationship}
                       </div>
                     </div>
                     <Link
                       href={`/admin/spillere/${id}/profil`}
-                      className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+                      className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
                     >
                       Rediger →
                     </Link>
@@ -210,17 +203,17 @@ export default async function RedigerSpiller({
 
         {/* Høyre kol — endrings-historikk (sticky) */}
         <aside className="space-y-6 lg:sticky lg:top-32 lg:self-start">
-          <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+          <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
             <div className="mb-3 flex items-baseline justify-between">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Endrings-historikk
               </div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                 {history.length}
               </span>
             </div>
             {history.length === 0 ? (
-              <p className="rounded-md border border-dashed border-[#E5E3DD] bg-[#FAFAF7] p-3 text-xs text-[#5E5C57]">
+              <p className="rounded-md border border-dashed border-border bg-background p-3 text-xs text-muted-foreground">
                 Ingen endringer ennå.
               </p>
             ) : (
@@ -228,16 +221,16 @@ export default async function RedigerSpiller({
                 {history.map((h) => (
                   <li
                     key={h.id}
-                    className="border-l-2 border-[#E5E3DD] pl-3"
+                    className="border-l-2 border-border pl-3"
                   >
-                    <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                    <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                       {NB_DT.format(h.createdAt)}
                     </div>
-                    <div className="mt-0.5 text-sm text-[#0A1F17]">
+                    <div className="mt-0.5 text-sm text-foreground">
                       {h.action}
                     </div>
                     {h.actor?.name && (
-                      <div className="mt-0.5 font-mono text-[10px] text-[#9C9990]">
+                      <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
                         av {h.actor.name}
                       </div>
                     )}
@@ -250,11 +243,11 @@ export default async function RedigerSpiller({
       </form>
 
       {/* Sticky bunn-bar */}
-      <div className="sticky bottom-0 z-20 -mx-4 border-t border-[#E5E3DD] bg-[#FAFAF7]/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+      <div className="sticky bottom-0 z-20 -mx-4 border-t border-border bg-background/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-full border border-[#A32D2D]/40 bg-transparent px-4 py-2 text-sm font-medium text-[#A32D2D] hover:bg-[#A32D2D]/8"
+            className="inline-flex items-center gap-2 rounded-full border border-destructive/40 bg-transparent px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10"
           >
             <Trash2 size={14} strokeWidth={1.75} />
             Slett spiller
@@ -262,14 +255,14 @@ export default async function RedigerSpiller({
           <div className="flex items-center gap-2">
             <Link
               href={`/admin/spillere/${id}`}
-              className="inline-flex items-center gap-2 rounded-full border border-[#E5E3DD] bg-card px-4 py-2 text-sm font-medium text-[#0A1F17] hover:bg-[#F1EEE5]"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary"
             >
               Avbryt
             </Link>
             <button
               type="submit"
               form="rediger-form"
-              className="inline-flex items-center gap-2 rounded-full bg-[#005840] px-5 py-2 text-sm font-semibold text-[#D1F843] hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
               Lagre endringer
             </button>
@@ -299,19 +292,19 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {label}
-        {required && <span className="text-[#A32D2D]"> *</span>}
+        {required && <span className="text-destructive"> *</span>}
       </span>
       <input
         type={type}
         name={name}
         defaultValue={defaultValue}
         required={required}
-        className="mt-1.5 block w-full rounded-md border border-[#E0DDD6] bg-card px-3 py-2 text-sm text-[#0A1F17] focus:border-[#005840] focus:outline-none focus:ring-2 focus:ring-[#D1F843]"
+        className="mt-1.5 block w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-accent"
       />
       {hint && (
-        <span className="mt-1 block font-mono text-[10px] text-[#9C9990]">
+        <span className="mt-1 block font-mono text-[10px] text-muted-foreground">
           {hint}
         </span>
       )}
@@ -332,17 +325,17 @@ function FieldArea({
 }) {
   return (
     <label className="block">
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </span>
       <textarea
         name={name}
         defaultValue={defaultValue}
         rows={4}
-        className="mt-1.5 block w-full rounded-md border border-[#E0DDD6] bg-card px-3 py-2 text-sm text-[#0A1F17] focus:border-[#005840] focus:outline-none focus:ring-2 focus:ring-[#D1F843]"
+        className="mt-1.5 block w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-accent"
       />
       {hint && (
-        <span className="mt-1 block font-mono text-[10px] text-[#9C9990]">
+        <span className="mt-1 block font-mono text-[10px] text-muted-foreground">
           {hint}
         </span>
       )}
