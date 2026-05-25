@@ -463,6 +463,136 @@ For live-økt + test-execution.
 
 ---
 
+## ATHLETIC EDITORIAL — WORKBENCH-V2-KOMPONENTER
+
+Disse 10 komponentene utgjør PlayerHQ-hjem (`/portal`) og er den kanoniske referansen for athletic editorial. Skal også brukes som mønster på CoachHQ-Workbench.
+
+### PlayerHeroImage
+**Fil:** `src/components/portal/workbench/player-hero-image.tsx`
+
+Photo-hero med AK Golf Academy-foto som bakgrunn, dark gradient overlay, italic display-hilsen + meta-rad.
+
+```tsx
+<PlayerHeroImage
+  user={{
+    name: "Øyvind Rohjan",
+    tier: "PRO",
+    hcp: -2.1,
+    hcpTrend: 0.3,
+    nivaa: "A1",
+  }}
+  neste_turnering={{ navn: "Sørlandsåpent", dato: new Date("2026-06-15") }}
+  imageId={1}  // AK-Golf-Academy-1.webp
+/>
+```
+
+- Min-h 340 (mobile) / 440px (desktop)
+- Rounded-2xl shadow-xl
+- Dark gradient: from-black/85 via-black/55 to-black/20 + to-t from-black/60
+- Hilsen: text-4xl md:text-6xl font-display font-bold italic, fornavn = text-accent
+- Meta-rad: mono uppercase med tabular tall
+
+### CalendarWidget
+**Fil:** `src/components/portal/workbench/calendar-widget.tsx`
+
+Horisontal tidslinje 05:00-24:00 med pyramide-fargede øktblokker.
+
+- 4px venstre-stripe per blokk i pyramide-akse-farge
+- "NÅ"-markør med destructive (rød)
+- Hover-popover med drills + actions
+- Server-component med "use client" for popover-state
+
+### AiInsightsRow
+**Fil:** `src/components/portal/workbench/ai-insights-row.tsx`
+
+3-grid med type-spesifikke ikon-sirkler.
+
+- HANDLING: bg-accent + lime border-md
+- OBSERVASJON: bg-info/15 text-info
+- MAAL: bg-primary/10 text-primary
+- Type-badges på topp-høyre
+- Body: font-display text-[17px] medium leading-[1.45]
+
+### WeekProgressCard
+**Fil:** `src/components/portal/workbench/week-progress-card.tsx`
+
+Ukas pyramide-balanse + 4 stat-tiles.
+
+- 5/3 grid på desktop
+- Pyramide-bars med status-pills (ok/over/under)
+- Stat-tiles: 32px display-tall + ikoner
+- Italic editorial-anbefaling
+
+### QuickActions
+**Fil:** `src/components/portal/workbench/quick-actions.tsx`
+
+8-grid (4×2) med snarvei-tiles. Highlight-tile = dark moment.
+
+- 100px tiles, 40px ikon-sirkler
+- Hover: -translate-y-0.5 + ikon scale-110
+- Highlight: bg-foreground text-background + lime accent-ikon
+
+### TrainingPartnersRow
+**Fil:** `src/components/portal/workbench/training-partners-row.tsx`
+
+Treningskompiser med kommende felles økter.
+
+- 14-size avatarer med fargete bakgrunn (from name-hash)
+- Pyramide-pills med funksjonsbaserte farger
+- Status-pills (Bekreftet/Invitert/Avventer)
+- Pill CTAs i uppercase mono
+
+### NextTournamentCountdown
+**Fil:** `src/components/portal/workbench/next-tournament-countdown.tsx`
+
+**Dark moment** — sort card med 120px lime countdown.
+
+- bg-foreground text-background rounded-2xl shadow-xl
+- Countdown: text-[80px] sm:text-[120px] font-display tabular-nums text-accent
+- Forberedelse-sjekkliste: fyllte sirkler når ferdig (bg-accent)
+- CTA: bg-accent rounded-full uppercase tracking-[0.08em]
+
+### WellnessIndicators
+**Fil:** `src/components/portal/workbench/wellness-indicators.tsx`
+
+2×2 stat-tile-grid for energi/søvn/HRV/stress fra wearable.
+
+- 32px display-tall + Lucide ikon-corners (Activity, Moon, Heart, Brain)
+- Energy-bar: 10 segmenter
+- Empty-state: stort hero-ikon + "Koble enhet"-pill
+
+### FabButton
+**Fil:** `src/components/portal/workbench/fab-button.tsx`
+
+Floating Action Button — kun på mobile.
+
+- fixed bottom-20 right-4 z-30 md:hidden
+- Plus-ikon → 5 sub-actions ved klikk
+- Esc + click-outside lukker
+- Primary green (#005840)
+
+### SectionHeader
+**Fil:** `src/components/portal/workbench/section-header.tsx`
+
+Editorial section divider med lime accent-strek.
+
+```tsx
+<SectionHeader
+  eyebrow="Programmet i dag"
+  title="I dag"
+  description="5 økter planlagt — tidslinje fra 05:00 til 24:00."
+  cta={{ label: "Full kalender", href: "/portal/kalender" }}
+/>
+```
+
+- Lime strek: h-px w-8 bg-accent
+- Eyebrow: mono uppercase tracking-[0.16em]
+- Tittel: display 2xl/3xl font-bold tracking-tight
+- Description: muted, max-w-prose
+- CTA: pill med border + uppercase mono label
+
+---
+
 ## TELLINGER
 
 | Type | Antall |
@@ -472,6 +602,9 @@ For live-økt + test-execution.
 | Organismer | 19 |
 | Domene-spesifikke | 17 |
 | Templates | 5 |
-| **TOTALT** | **71 komponenter** |
+| **Workbench-v2 (athletic editorial)** | **10** |
+| **TOTALT** | **81 komponenter** |
 
 Alle bygd på samme designsystem-tokens. Hvis ny side trenger ny komponent: lag den her først, så bruk på sidene.
+
+Workbench-v2-komponentene er den **kanoniske referansen** for athletic editorial — alle nye PlayerHQ + CoachHQ-skjermer skal følge samme mønster.

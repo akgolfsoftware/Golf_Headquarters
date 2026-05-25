@@ -174,3 +174,50 @@ FORELDREPORTAL · FORELDER
 | 1180px (iPad landscape) | Sticky 256px | 64px sticky | 2-3-kol grid |
 | 1440px (desktop) | Sticky 256px | 64px sticky | 3-kol grid + sub-areas |
 | 1920px (large desktop) | Sticky 280px | 64px sticky | Multi-kol + side-paneler |
+
+---
+
+## Page-wrapper (athletic editorial)
+
+Hver side under `/portal/*` og `/admin/*` (dashboards og hub-sider) wrappes konsistent:
+
+```tsx
+<div className="mx-auto max-w-7xl space-y-10 px-4 py-6 sm:py-8 md:px-6 lg:space-y-12 lg:px-8">
+  {/* HERO eller toppseksjon */}
+  {/* SectionHeader + content */}
+  {/* SectionHeader + content */}
+  ...
+</div>
+```
+
+**Hvorfor space-y-10/12:** Gir editorial rytme — store nok mellomrom til at hver seksjon føles som et avsnitt, ikke en uendelig stable.
+
+**For detalj-sider:** Bytt `max-w-7xl` med `max-w-5xl`. Beholder samme spacing.
+
+**For forms/wizards:** Bytt med `max-w-2xl`. Beholder samme spacing.
+
+---
+
+## Seksjons-pattern (athletic editorial)
+
+Hver seksjon har:
+
+1. `<SectionHeader>` med eyebrow + tittel + valgfri description + valgfri CTA
+2. Content (én komponent eller et grid med flere)
+
+```tsx
+<section aria-labelledby="i-dag-heading">
+  <SectionHeader
+    eyebrow="Programmet i dag"
+    title="I dag"
+    description="5 økter planlagt."
+    cta={{ label: "Full kalender", href: "/portal/kalender" }}
+  />
+  <CalendarWidget sessions={sessions} currentTime={now} />
+</section>
+```
+
+**Aldri:**
+- Section uten SectionHeader (kan ikke ramme uten lime strek + eyebrow)
+- Section som er en raw card uten heading
+- Multiple H2 i samme section (bare i SectionHeader)

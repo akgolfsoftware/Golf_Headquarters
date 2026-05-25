@@ -322,3 +322,31 @@ Resten oversettes:
 
 **Bra:**
 > "Kunne ikke lagre. Sjekk internett-tilkobling og prøv igjen."
+
+---
+
+## Athletic editorial-overlapp (v2)
+
+Etter visuell pivot 2026-05-25 er språket nå koblet til athletic editorial-stilen:
+
+**Eyebrows er kondenserte og selvsikre:**
+- "PROGRAMMET I DAG" (ikke "DAGENS PROGRAM")
+- "FRA CADDIE" (ikke "AI-INNSIKT — FORSLAG FRA CADDIE")
+- "STATUS SISTE 7 DAGER" (ikke "DENNE UKEN")
+- "KOM RASKT I GANG" (ikke "ALLE SNARVEIER")
+- "HVA SOM TELLER MEST" (ikke "FOKUS NÅ")
+
+**Section-titler er korte og kraftige:**
+- "I dag" / "Ukas progresjon" / "Snarveier" / "Turnering + velvære"
+- Ikke "Oversikt over dagens aktivitet" eller "Sammendrag av uka"
+
+**Descriptions (under section-headers):** 1 setning, max 14 ord, gir kontekst uten å oversell.
+- Bra: "5 økter planlagt — tidslinje fra 05:00 til 24:00."
+- Bra: "Tre observasjoner basert på siste 30 dager. Klikk en handling for å sette i gang."
+- Dårlig: "Her ser du en detaljert oversikt over alle dagens planlagte aktiviteter med tidsangivelse"
+
+**CTA-tekst i pills:**
+- Athletic uppercase: "SE TURNERING", "BLI MED", "FULL KALENDER"
+- Tracking-[0.08em–0.10em] på pills
+- Max 3 ord
+- Verb-først
