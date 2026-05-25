@@ -15,10 +15,24 @@ import {
   createSpiller,
   SPILLER_KATEGORIER,
   SPILLER_TIERS,
+  ALL_PROGRAMS,
   type OpprettSpillerInput,
   type SpillerKategori,
   type SpillerTier,
 } from "./actions";
+import type { PlayerProgram } from "@/generated/prisma/client";
+
+const PROGRAM_LABEL: Record<PlayerProgram, string> = {
+  WANG_TOPPIDRETT:   "WANG Toppidrett Fredrikstad",
+  WANG_UNG:          "WANG Ung Fredrikstad",
+  GFGK_MINI:         "GFGK — Mini",
+  GFGK_BREDDE:       "GFGK — Bredde/Utvikling",
+  GFGK_JENTER:       "GFGK — Jenter",
+  GFGK_ELITE:        "GFGK — Elite",
+  AK_ACADEMY:        "AK Golf Academy",
+  AK_ACADEMY_JUNIOR: "AK Golf Academy Junior",
+  PLATFORM_ONLY:     "Selvbetjent (ingen coach)",
+};
 
 type StegNr = 1 | 2 | 3 | 4;
 
@@ -65,6 +79,10 @@ export function SpillerOnboardingWizard() {
   const [pending, startTransition] = useTransition();
   const [serverFeil, setServerFeil] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  // Program (steg 1 — obligatorisk)
+  const [program, setProgram] = useState<PlayerProgram>("AK_ACADEMY");
+  const [programCoachId, setProgramCoachId] = useState("");
 
   // Steg 1
   const [navn, setNavn] = useState("");
@@ -133,6 +151,8 @@ export function SpillerOnboardingWizard() {
     const input: OpprettSpillerInput = {
       navn: navn.trim(),
       epost: epost.trim(),
+      program,
+      programCoachId: programCoachId || "",
       fodselsdato,
       hcp: hcp.trim() === "" ? null : Number(hcp.replace(",", ".")),
       kategori,
@@ -183,16 +203,39 @@ export function SpillerOnboardingWizard() {
 
       <div className="rounded-2xl border border-border bg-card px-4 py-4 sm:px-6 sm:py-6">
         {steg === 1 && (
-          <Steg1Identitet
-            navn={navn}
-            setNavn={setNavn}
-            epost={epost}
-            setEpost={setEpost}
-            fodselsdato={fodselsdato}
-            setFodselsdato={setFodselsdato}
-            alder={alder}
-            fieldErrors={fieldErrors}
-          />
+          <>
+            {/* Program-valg øverst — obligatorisk */}
+            <div className="mb-6 rounded-lg border border-border bg-secondary/30 px-4 py-4">
+              <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                Program <span className="text-destructive">*</span>
+              </div>
+              <select
+                value={program}
+                onChange={(e) => setProgram(e.target.value as PlayerProgram)}
+                className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none"
+              >
+                {ALL_PROGRAMS.map((p) => (
+                  <option key={p} value={p}>
+                    {PROGRAM_LABEL[p]}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1.5 font-mono text-[10px] text-muted-foreground">
+                Spilleren enrolleres automatisk i dette programmet ved opprettelse.
+                Du kan endre det etterpå på spillerens profilside.
+              </p>
+            </div>
+            <Steg1Identitet
+              navn={navn}
+              setNavn={setNavn}
+              epost={epost}
+              setEpost={setEpost}
+              fodselsdato={fodselsdato}
+              setFodselsdato={setFodselsdato}
+              alder={alder}
+              fieldErrors={fieldErrors}
+            />
+          </>
         )}
         {steg === 2 && (
           <Steg2GolfProfil

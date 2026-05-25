@@ -51,12 +51,13 @@ export async function GET(req: NextRequest) {
           });
         }
       } else {
-        // Ny bruker — opprett som PLAYER med GRATIS tier (kan oppgradere senere)
+        // Ny bruker — opprett som PLAYER med GRATIS tier + PLATFORM_ONLY enrollering.
+        // Coach må manuelt enrollere i et coachingprogram.
         const metaName =
           (authUser.user_metadata?.full_name as string | undefined) ??
           (authUser.user_metadata?.name as string | undefined) ??
           email.split("@")[0];
-        await prisma.user.create({
+        const nyBruker = await prisma.user.create({
           data: {
             authId: authUser.id,
             email,
@@ -64,6 +65,15 @@ export async function GET(req: NextRequest) {
             role: "PLAYER",
             tier: "GRATIS",
             lastLoginAt: new Date(),
+          },
+        });
+        // Automatisk PLATFORM_ONLY-enrollering — usynlig i CoachHQ inntil coach
+        // enrollerer spilleren i et coachingprogram.
+        await prisma.playerEnrollment.create({
+          data: {
+            userId: nyBruker.id,
+            program: "PLATFORM_ONLY",
+            coachId: null,
           },
         });
       }

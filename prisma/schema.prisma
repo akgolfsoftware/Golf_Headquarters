@@ -181,6 +181,21 @@ enum SubscriptionStatus {
   TRIALING
 }
 
+// Program-tilhørighet for spillere.
+// PLATFORM_ONLY = selvbetjent bruker uten coachrelasjon (GDPR-skille).
+// Alle andre program = synlig i CoachHQ for tildelt coach.
+enum PlayerProgram {
+  WANG_TOPPIDRETT   // WANG Toppidrett Fredrikstad
+  WANG_UNG          // WANG Ung Fredrikstad
+  GFGK_MINI         // GFGK — Mini
+  GFGK_BREDDE       // GFGK — Bredde/Utvikling
+  GFGK_JENTER       // GFGK — Jenter
+  GFGK_ELITE        // GFGK — Elite
+  AK_ACADEMY        // AK Golf Academy (voksen individuell)
+  AK_ACADEMY_JUNIOR // AK Golf Academy Junior
+  PLATFORM_ONLY     // Selvbetjent — ingen coachrelasjon
+}
+
 enum PressureLevel {
   PR1
   PR2
@@ -440,6 +455,12 @@ model User {
 
   // Notion-sync (v1.1) — per-user OAuth-tilkobling til Notion
   notionConnection NotionConnection?
+
+  // Program-enrolleringer (mange-til-mange via PlayerEnrollment).
+  // Som spiller: hvilke program spilleren er/har vært i.
+  // Som coach: hvilke spillere er tildelt meg.
+  enrollmentsAsPlayer PlayerEnrollment[] @relation("PlayerEnrollments")
+  enrollmentsAsCoach  PlayerEnrollment[] @relation("CoachEnrollments")
 
   // Web Push-subscriptions — én rad per enhet/browser.
   pushSubscriptions PushSubscription[]
@@ -1422,6 +1443,33 @@ model Subscription {
   payments Payment[]
 
   @@map("subscriptions")
+}
+
+// Program-enrollering — kobler spiller til program + coach.
+// Én rad per (spiller × program × periode). Historikk beholdes ved endedAt.
+// En spiller kan ha flere aktive enrolleringer simultant (mange-til-mange).
+// GDPR: PLATFORM_ONLY-enrolleringer har coachId = null og er usynlige i CoachHQ.
+model PlayerEnrollment {
+  id        String        @id @default(cuid())
+  userId    String
+  program   PlayerProgram
+  // Null for PLATFORM_ONLY. Peker på coach (User med role COACH eller ADMIN).
+  coachId   String?
+  enrolledAt DateTime     @default(now())
+  // Null = aktiv enrollering. Settes ved utmelding — sletter IKKE brukeren.
+  endedAt   DateTime?
+  notes     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user  User  @relation("PlayerEnrollments", fields: [userId], references: [id], onDelete: Cascade)
+  coach User? @relation("CoachEnrollments", fields: [coachId], references: [id], onDelete: SetNull)
+
+  // Filtrering: aktive enrolleringer per spiller og per coach
+  @@index([userId, endedAt])
+  @@index([coachId, endedAt])
+  @@index([program, endedAt])
+  @@map("player_enrollments")
 }
 
 // Sentral Payment-modell — én rad per Stripe payment event.

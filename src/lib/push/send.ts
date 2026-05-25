@@ -1,18 +1,12 @@
 /**
  * Send Web Push-varsling til en bruker.
  *
- * STATUS: `web-push`-pakken er IKKE installert ennå. Skjelettet under er
- * klart, men selve sendingen er en TODO inntil pakken er godkjent for
- * install:
- *
- *   npm install web-push
- *   npm install -D @types/web-push
- *
- * Når pakken er installert: fjern stub-blokken og fjern kommentaren rundt
- * den ekte webpush-implementasjonen lengre nede.
+ * Aktivert 2026-05-25 etter `npm install web-push @types/web-push`.
+ * VAPID-keys ligger i .env.local (NEXT_PUBLIC_VAPID_PUBLIC_KEY + VAPID_PRIVATE_KEY).
  */
 import "server-only";
 
+import webpush from "web-push";
 import { prisma } from "@/lib/prisma";
 import { getServerVapidConfig } from "./vapid";
 
@@ -54,60 +48,49 @@ export async function sendPush(
     return { ok: true, sent: 0, failed: 0 };
   }
 
-  // TODO: aktivér når web-push-pakken er godkjent for install
-  // ------------------------------------------------------------
-  // import webpush from "web-push";
-  // webpush.setVapidDetails(vapid.subject, vapid.publicKey, vapid.privateKey);
-  //
-  // const json = JSON.stringify(payload);
-  // let sent = 0;
-  // let failed = 0;
-  // const slettEndpoints: string[] = [];
-  //
-  // await Promise.all(
-  //   subs.map(async (sub) => {
-  //     try {
-  //       await webpush.sendNotification(
-  //         {
-  //           endpoint: sub.endpoint,
-  //           keys: { p256dh: sub.p256dh, auth: sub.auth },
-  //         },
-  //         json,
-  //       );
-  //       sent++;
-  //     } catch (err) {
-  //       failed++;
-  //       const statusCode = (err as { statusCode?: number }).statusCode;
-  //       if (statusCode === 404 || statusCode === 410) {
-  //         slettEndpoints.push(sub.endpoint);
-  //       } else {
-  //         console.warn("[push] Sendingen feilet:", err);
-  //       }
-  //     }
-  //   }),
-  // );
-  //
-  // // Marker oppdaterte endpoints med ny lastUsedAt
-  // await prisma.pushSubscription
-  //   .updateMany({
-  //     where: { userId, endpoint: { notIn: slettEndpoints } },
-  //     data: { lastUsedAt: new Date() },
-  //   })
-  //   .catch(() => undefined);
-  //
-  // if (slettEndpoints.length > 0) {
-  //   await prisma.pushSubscription
-  //     .deleteMany({ where: { endpoint: { in: slettEndpoints } } })
-  //     .catch(() => undefined);
-  // }
-  //
-  // return { ok: failed === 0, sent, failed };
-  // ------------------------------------------------------------
+  webpush.setVapidDetails(vapid.subject, vapid.publicKey, vapid.privateKey);
 
-  // Stub — fjern når pakken er installert.
-  void payload;
-  console.info(
-    `[push] STUB — ville sendt push til ${subs.length} subscription(s). Installer "web-push" for å aktivere.`,
+  const json = JSON.stringify(payload);
+  let sent = 0;
+  let failed = 0;
+  const slettEndpoints: string[] = [];
+
+  await Promise.all(
+    subs.map(async (sub) => {
+      try {
+        await webpush.sendNotification(
+          {
+            endpoint: sub.endpoint,
+            keys: { p256dh: sub.p256dh, auth: sub.auth },
+          },
+          json,
+        );
+        sent++;
+      } catch (err) {
+        failed++;
+        const statusCode = (err as { statusCode?: number }).statusCode;
+        if (statusCode === 404 || statusCode === 410) {
+          slettEndpoints.push(sub.endpoint);
+        } else {
+          console.warn("[push] Sendingen feilet:", err);
+        }
+      }
+    }),
   );
-  return { ok: false, sent: 0, failed: subs.length };
+
+  // Marker oppdaterte endpoints med ny lastUsedAt
+  await prisma.pushSubscription
+    .updateMany({
+      where: { userId, endpoint: { notIn: slettEndpoints } },
+      data: { lastUsedAt: new Date() },
+    })
+    .catch(() => undefined);
+
+  if (slettEndpoints.length > 0) {
+    await prisma.pushSubscription
+      .deleteMany({ where: { endpoint: { in: slettEndpoints } } })
+      .catch(() => undefined);
+  }
+
+  return { ok: failed === 0, sent, failed };
 }

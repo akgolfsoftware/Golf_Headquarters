@@ -19,7 +19,14 @@ import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
-import type { Prisma } from "@/generated/prisma/client";
+import type { Prisma, PlayerProgram } from "@/generated/prisma/client";
+
+export const ALL_PROGRAMS: PlayerProgram[] = [
+  "WANG_TOPPIDRETT", "WANG_UNG",
+  "GFGK_MINI", "GFGK_BREDDE", "GFGK_JENTER", "GFGK_ELITE",
+  "AK_ACADEMY", "AK_ACADEMY_JUNIOR",
+  "PLATFORM_ONLY",
+];
 
 export const SPILLER_KATEGORIER = ["A1", "A2", "B1", "B2", "C"] as const;
 export type SpillerKategori = (typeof SPILLER_KATEGORIER)[number];
@@ -39,6 +46,14 @@ const OpprettSpillerSchema = z
       .trim()
       .toLowerCase()
       .email("Ugyldig e-postadresse"),
+    // Program spilleren enrolleres i ved opprettelse
+    program: z.enum([
+      "WANG_TOPPIDRETT", "WANG_UNG",
+      "GFGK_MINI", "GFGK_BREDDE", "GFGK_JENTER", "GFGK_ELITE",
+      "AK_ACADEMY", "AK_ACADEMY_JUNIOR", "PLATFORM_ONLY",
+    ] as const),
+    // coachId — null tillatt for PLATFORM_ONLY
+    programCoachId: z.string().optional().default(""),
     fodselsdato: z
       .string()
       .trim()
@@ -203,6 +218,19 @@ export async function createSpiller(
         },
       });
     }
+
+    // Enrollering i valgt program
+    const enrollCoachId =
+      data.program !== "PLATFORM_ONLY" && data.programCoachId
+        ? data.programCoachId
+        : null;
+    await tx.playerEnrollment.create({
+      data: {
+        userId: u.id,
+        program: data.program as PlayerProgram,
+        coachId: enrollCoachId,
+      },
+    });
 
     // Velkomst-varsling i ny spillers innboks (synlig først ved første pålogging).
     await tx.notification.create({

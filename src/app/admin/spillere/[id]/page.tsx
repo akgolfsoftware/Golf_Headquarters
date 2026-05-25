@@ -27,6 +27,7 @@ import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 import { EffektTab, type EffektRad } from "./effekt-tab";
+import { EnrollmentPanel } from "./enrollment-panel";
 
 type TabKey = "profil" | "plan" | "tester" | "analyse" | "notater";
 
@@ -166,6 +167,20 @@ export default async function SpillerCoachView({
     orderBy: { coachFeedbackAt: "desc" },
     take: 3,
     include: { session: { select: { title: true, pyramidArea: true } } },
+  });
+
+  // Enrolleringer — alle (aktive + historikk)
+  const enrollments = await prisma.playerEnrollment.findMany({
+    where: { userId: player.id },
+    include: { coach: { select: { id: true, name: true } } },
+    orderBy: { enrolledAt: "desc" },
+  });
+
+  // Coaches tilgjengelig for tildeling
+  const coaches = await prisma.user.findMany({
+    where: { role: { in: ["COACH", "ADMIN"] }, deletedAt: null },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
   });
 
   // Plan-effektivitet (for analyse-tab)
@@ -399,17 +414,32 @@ export default async function SpillerCoachView({
     >
       {/* Tab-innhold */}
       {tab === "profil" && (
-        <ProfilTab
-          player={player}
-          parents={player.childRelations.map((cr) => cr.parent)}
-          coachNotater={recentCoachNotater.map((n) => ({
-            id: n.id,
-            title: n.session.title,
-            text: n.coachFeedback ?? "",
-            date: n.coachFeedbackAt ?? new Date(),
-          }))}
-          ageYears={ageYears}
-        />
+        <>
+          <EnrollmentPanel
+            playerId={player.id}
+            enrollments={enrollments.map((e) => ({
+              id: e.id,
+              program: e.program,
+              coachId: e.coachId,
+              coachName: e.coach?.name ?? null,
+              enrolledAt: e.enrolledAt,
+              endedAt: e.endedAt,
+              notes: e.notes,
+            }))}
+            coaches={coaches}
+          />
+          <ProfilTab
+            player={player}
+            parents={player.childRelations.map((cr) => cr.parent)}
+            coachNotater={recentCoachNotater.map((n) => ({
+              id: n.id,
+              title: n.session.title,
+              text: n.coachFeedback ?? "",
+              date: n.coachFeedbackAt ?? new Date(),
+            }))}
+            ageYears={ageYears}
+          />
+        </>
       )}
       {tab === "plan" && (
         <PlanTab

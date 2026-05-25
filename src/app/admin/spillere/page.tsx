@@ -26,6 +26,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { avatarBg } from "@/lib/avatar-colors";
+import type { PlayerProgram } from "@/generated/prisma/client";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 
@@ -37,6 +38,7 @@ type SearchParams = {
   status?: string;
   q?: string;
   sort?: string;
+  program?: string;
 };
 
 type Tier = "GRATIS" | "PRO" | "ELITE";
@@ -57,6 +59,7 @@ type RawPlayer = {
   rounds: { playedAt: Date; sgTotal: number | null; score: number }[];
   testResults: { takenAt: Date }[];
   groupMemberships: { group: { name: string } }[];
+  enrollmentsAsPlayer: { program: PlayerProgram; coachId: string | null; endedAt: Date | null }[];
 };
 
 type EnrichedPlayer = RawPlayer & {
@@ -66,7 +69,29 @@ type EnrichedPlayer = RawPlayer & {
   /** SG-trend siste 3 målepunkter (eldst → nyest). Brukes til sparkline. */
   sgTrend: number[];
   sgAvg: number | null;
+  /** Aktive program-etiketter for visning på kort */
+  programLabels: string[];
 };
+
+const PROGRAM_LABEL: Record<PlayerProgram, string> = {
+  WANG_TOPPIDRETT:   "WANG Toppidrett",
+  WANG_UNG:          "WANG Ung",
+  GFGK_MINI:         "GFGK Mini",
+  GFGK_BREDDE:       "GFGK Bredde",
+  GFGK_JENTER:       "GFGK Jenter",
+  GFGK_ELITE:        "GFGK Elite",
+  AK_ACADEMY:        "AK Academy",
+  AK_ACADEMY_JUNIOR: "AK Junior",
+  PLATFORM_ONLY:     "Plattform",
+};
+
+// Alle gyldige program-verdier fra enum
+const ALL_PROGRAMS: PlayerProgram[] = [
+  "WANG_TOPPIDRETT", "WANG_UNG",
+  "GFGK_MINI", "GFGK_BREDDE", "GFGK_JENTER", "GFGK_ELITE",
+  "AK_ACADEMY", "AK_ACADEMY_JUNIOR",
+  "PLATFORM_ONLY",
+];
 
 function deriveCategory(hcp: number | null): Category {
   if (hcp === null) return "D";
@@ -172,7 +197,7 @@ export default async function SpillerePage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const params = await searchParams;
 
   const view: View =
@@ -180,25 +205,41 @@ export default async function SpillerePage({
       ? params.view
       : "kort";
 
-  // Felles where-klausul
-  const where: {
-    role: "PLAYER";
-    tier?: Tier;
-    OR?: {
-      name?: { contains: string; mode: "insensitive" };
-      email?: { contains: string; mode: "insensitive" };
-    }[];
-  } = { role: "PLAYER" };
+  // Program-filter fra URL (?program=WANG_TOPPIDRETT)
+  const programFilter =
+    params.program && ALL_PROGRAMS.includes(params.program as PlayerProgram)
+      ? (params.program as PlayerProgram)
+      : undefined;
 
-  if (params.tier === "GRATIS" || params.tier === "PRO" || params.tier === "ELITE") {
-    where.tier = params.tier;
-  }
-  if (params.q) {
-    where.OR = [
-      { name: { contains: params.q, mode: "insensitive" } },
-      { email: { contains: params.q, mode: "insensitive" } },
-    ];
-  }
+  // Where-klausul:
+  // ADMIN ser alle spillere med minst én aktiv enrollering (unntatt PLATFORM_ONLY).
+  // COACH ser kun spillere der coachId = coach.id og enrollering er aktiv.
+  const isAdmin = coach.role === "ADMIN";
+
+  const where = {
+    role: "PLAYER" as const,
+    deletedAt: null,
+    enrollmentsAsPlayer: {
+      some: {
+        endedAt: null,
+        // PLATFORM_ONLY er usynlig for coacher — kun de med ekte program
+        NOT: { program: "PLATFORM_ONLY" as PlayerProgram },
+        // Coach ser bare sine egne spillere; admin ser alle
+        ...(isAdmin ? {} : { coachId: coach.id }),
+        // Program-filter fra URL
+        ...(programFilter ? { program: programFilter } : {}),
+      },
+    },
+    // Fritekst-søk
+    ...(params.q
+      ? {
+          OR: [
+            { name: { contains: params.q, mode: "insensitive" as const } },
+            { email: { contains: params.q, mode: "insensitive" as const } },
+          ],
+        }
+      : {}),
+  };
 
   const orderBy =
     params.sort === "hcp-desc"
@@ -233,6 +274,10 @@ export default async function SpillerePage({
       groupMemberships: {
         select: { group: { select: { name: true } } },
         take: 1,
+      },
+      enrollmentsAsPlayer: {
+        where: { endedAt: null },
+        select: { program: true, coachId: true, endedAt: true },
       },
     },
     orderBy,
@@ -272,6 +317,10 @@ export default async function SpillerePage({
         ? sgValues.reduce((a, b) => a + b, 0) / sgValues.length
         : null;
 
+    const programLabels = raw.enrollmentsAsPlayer
+      .filter((e) => e.endedAt === null && e.program !== "PLATFORM_ONLY")
+      .map((e) => PROGRAM_LABEL[e.program]);
+
     return {
       ...raw,
       category: deriveCategory(p.hcp),
@@ -279,6 +328,7 @@ export default async function SpillerePage({
       daysSinceLogin: days,
       sgTrend: trend,
       sgAvg,
+      programLabels,
     };
   });
 
@@ -347,7 +397,7 @@ export default async function SpillerePage({
 
       <ViewTabs active={view} />
 
-      {/* Filter-rad — øverst, før grid */}
+      {/* Filter-rad */}
       <form className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         <input type="hidden" name="view" value={view} />
         <label className="flex min-h-11 w-full items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-base text-muted-foreground sm:min-w-[280px] sm:flex-1 sm:text-[13px]">
@@ -356,14 +406,30 @@ export default async function SpillerePage({
             type="search"
             name="q"
             defaultValue={params.q ?? ""}
-            placeholder="Søk spiller, e-post eller HCP"
+            placeholder="Søk spiller eller e-post"
             className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </label>
         <div className="flex flex-wrap gap-2">
-          <FilterChip label="Status" />
-          <FilterChip label="Kategori" />
-          <FilterChip label="Sort" />
+          {/* Program-filter */}
+          <select
+            name="program"
+            defaultValue={params.program ?? ""}
+            className="rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground outline-none"
+          >
+            <option value="">Alle program</option>
+            {ALL_PROGRAMS.filter((p) => p !== "PLATFORM_ONLY").map((p) => (
+              <option key={p} value={p}>
+                {PROGRAM_LABEL[p]}
+              </option>
+            ))}
+          </select>
+          <button
+            type="submit"
+            className="rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground hover:text-foreground"
+          >
+            Filtrer
+          </button>
         </div>
       </form>
 
@@ -762,8 +828,21 @@ function SpillerKort({ player }: { player: EnrichedPlayer }) {
           <div className="truncate font-display text-[15px] font-semibold leading-snug text-foreground group-hover:text-primary">
             {p.name}
           </div>
-          <div className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-            {p.groupMemberships[0]?.group.name ?? "Ingen gruppe"}
+          <div className="mt-1 flex flex-wrap gap-1">
+            {p.programLabels.length > 0 ? (
+              p.programLabels.map((label) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center rounded-sm bg-secondary px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.06em] text-muted-foreground"
+                >
+                  {label}
+                </span>
+              ))
+            ) : (
+              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                {p.groupMemberships[0]?.group.name ?? "Ingen gruppe"}
+              </span>
+            )}
           </div>
         </div>
       </div>

@@ -197,10 +197,35 @@ async function importerSpiller(input: CsvRad): Promise<Resultat> {
         role: "PLAYER",
         tier: "PRO",
         homeClub: "GFGK",
+        // Default-preferences for nye beta-spillere
+        preferences: {
+          beta: true,
+          onboardingCompleted: false,
+          notifications: {
+            email: true,
+            push: true,
+            sms: false,
+          },
+          language: "nb",
+          theme: "light",
+        },
       },
     });
 
-    // 4. Velkomst-e-post
+    // 4. Subscription (PRO = 4 coaching credits/mnd, gratis under beta)
+    await prisma.subscription.create({
+      data: {
+        userId: user.id,
+        tier: "PRO",
+        status: "ACTIVE",
+        monthlyCredits: 4,
+        creditsRemaining: 4,
+        // currentPeriodEnd = 90 dager fra nå (beta-periode)
+        currentPeriodEnd: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    // 5. Velkomst-e-post
     await resend.emails.send({
       from: FRA_EPOST,
       to: input.email,
