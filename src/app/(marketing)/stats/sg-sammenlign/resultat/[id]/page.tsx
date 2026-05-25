@@ -1,8 +1,10 @@
 /**
- * /stats/sg-sammenlign/resultat/[id] — viser SG-sammenligning + estimat + CTA
+ * /stats/sg-sammenlign/resultat/[id] — magazine-spread resultat-side
+ * Pixel-perfect port av design 09 fra design-handoff-stats-2026-05-25.
  *
- * Server component. Henter BrukerSammenligning + BrukerSgInput + ref-spiller-data.
- * Renderer radar-chart via client component, tekst-summary, og PlayerHQ-CTA.
+ * Data fra BrukerSammenligning + BrukerSgInput + PgaPlayerSeason.
+ * UI: VS-showdown hero, KPI-strip, stor radar, gap-card, tour-ekvivalent,
+ *     hva-nå-steg, PlayerHQ-mersalg, del-modul.
  */
 
 import { notFound, redirect } from "next/navigation";
@@ -10,15 +12,18 @@ import Link from "next/link";
 import {
   ArrowRight,
   ChevronLeft,
+  ExternalLink,
   RotateCcw,
   Sparkles,
   Trophy,
 } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { sammenlignMedReferanse } from "@/lib/stats/sg-estimator";
-import { SgResultatView } from "./result-view";
+import { StatsEyebrow } from "@/components/stats/eyebrow";
+import { Reveal } from "@/components/stats/reveal";
+import { StatsBigRadar } from "@/components/stats/stats-big-radar";
+import "../../../stats.css";
 
 export const dynamic = "force-dynamic";
 
@@ -26,10 +31,24 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-function formatSg(v: number | null | undefined): string {
+function fmtSg(v: number | null | undefined): string {
   if (v == null) return "—";
   return v >= 0 ? `+${v.toFixed(2)}` : v.toFixed(2);
 }
+
+const GAP_TEKST: Record<string, string> = {
+  ott: "Lengde er synlig, men ikke alltid mest verdifull. SG: OTT er en god start — speed-trening kan gi 15–20 yds på 12 uker.",
+  app: "Innspill er den mest forutsigbare SG-kategorien. Strokene tapt her er strokes du kan vinne tilbake med målrettet trening.",
+  arg: "Kort spill er gjort med trening, ikke talent. 30 chips à 10 min hver dag gir raske gevinster.",
+  putt: "Putting er det mest tekniske. Speed control fra 5–10m er der amatører taper aller mest strokes.",
+};
+
+const GAP_LABEL: Record<string, string> = {
+  ott: "Drive (Off The Tee)",
+  app: "Innspill (SG: APP)",
+  arg: "Kort spill (Around the Green)",
+  putt: "Putting",
+};
 
 export default async function SgResultatPage({ params }: Props) {
   const user = await getCurrentUser();
@@ -46,7 +65,6 @@ export default async function SgResultatPage({ params }: Props) {
 
   if (!sammenligning) notFound();
 
-  // Hent ref-spillerens SG-fordeling fra PgaPlayerSeason
   const ref = await prisma.pgaPlayerSeason.findFirst({
     where: {
       dgPlayerId: sammenligning.refDgPlayerId,
@@ -82,262 +100,821 @@ export default async function SgResultatPage({ params }: Props) {
     },
   );
 
-  const radarData = [
-    { kategori: "OTT", du: sg.sgOtt ?? 0, ref: ref?.sgOtt ?? 0 },
-    { kategori: "APP", du: sg.sgApp ?? 0, ref: ref?.sgApp ?? 0 },
-    { kategori: "ARG", du: sg.sgArg ?? 0, ref: ref?.sgArg ?? 0 },
-    { kategori: "PUTT", du: sg.sgPutt ?? 0, ref: ref?.sgPutt ?? 0 },
+  // For radar: normalize SG values to 0-1 (shift to make all positive)
+  const SHIFT = 5;
+  const radarYou = [
+    ((sg.sgOtt ?? 0) + SHIFT) / 10,
+    ((sg.sgApp ?? 0) + SHIFT) / 10,
+    ((sg.sgArg ?? 0) + SHIFT) / 10,
+    ((sg.sgPutt ?? 0) + SHIFT) / 10,
+  ];
+  const radarThem = [
+    ((ref?.sgOtt ?? 0) + SHIFT) / 10,
+    ((ref?.sgApp ?? 0) + SHIFT) / 10,
+    ((ref?.sgArg ?? 0) + SHIFT) / 10,
+    ((ref?.sgPutt ?? 0) + SHIFT) / 10,
+  ];
+  const radarYouRaw = [
+    sg.sgOtt ?? 0,
+    sg.sgApp ?? 0,
+    sg.sgArg ?? 0,
+    sg.sgPutt ?? 0,
+  ];
+  const radarThemRaw = [
+    ref?.sgOtt ?? 0,
+    ref?.sgApp ?? 0,
+    ref?.sgArg ?? 0,
+    ref?.sgPutt ?? 0,
   ];
 
-  const KAT_LABEL: Record<string, string> = {
-    ott: "Drive (Off The Tee)",
-    app: "Innspill (Approach)",
-    arg: "Kort spill (Around the Green)",
-    putt: "Putting",
-  };
+  const refEtternavn = sammenligning.refPlayerName.split(" ").at(-1) ?? sammenligning.refPlayerName;
+
+  const storsteGapKat = cmp.storsteGap?.kategori ?? "app";
+  const storsteGapDiff = cmp.storsteGap?.diff ?? 0;
+
+  const snittScore = sg.snittScore;
+  const createdDate = sammenligning.createdAt
+    ? new Intl.DateTimeFormat("nb-NO", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(new Date(sammenligning.createdAt))
+    : null;
 
   return (
     <div className="bg-background text-foreground">
-      <div className="border-b border-border bg-secondary/20">
-        <div className="mx-auto max-w-5xl px-4 py-3 sm:px-6">
-          <Link
-            href="/stats/sg-sammenlign"
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Tilbake til SG-sammenligning
-          </Link>
-        </div>
+
+      {/* ── BREADCRUMB ────────────────────────────────────────────── */}
+      <div style={{ padding: "12px 32px", borderBottom: "1px solid #E5E3DD" }}>
+        <Link
+          href="/stats/sg-sammenlign"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            fontSize: 13,
+            color: "#9D9C95",
+            textDecoration: "none",
+          }}
+        >
+          <ChevronLeft size={14} />
+          Tilbake til SG-sammenligning
+        </Link>
       </div>
 
-      {/* HERO */}
-      <section className="border-b border-border bg-gradient-to-b from-background to-secondary/40">
-        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="text-center">
-            <AthleticEyebrow tone="lime">
-              <Trophy className="mr-1.5 inline h-3 w-3" />
-              Din sammenligning
-            </AthleticEyebrow>
-            <h1 className="mt-5 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-              Du vs{" "}
-              <em className="font-normal italic text-primary">
-                {sammenligning.refPlayerName}
-              </em>
-            </h1>
-            <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-              Sesong {sammenligning.refYear} · PGA Tour
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* KPI-strip */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Kpi
-              label="Din SG Total"
-              value={formatSg(sg.sgTotal)}
-              detail="per runde vs Tour-snitt"
-              primary
-            />
-            <Kpi
-              label={`${sammenligning.refPlayerName} SG Total`}
-              value={formatSg(ref?.sgTotal)}
-              detail={`Sesong ${sammenligning.refYear}`}
-            />
-            <Kpi
-              label="Differanse"
-              value={
-                cmp.diff.total !== null
-                  ? `${cmp.diff.total >= 0 ? "−" : "+"}${Math.abs(cmp.diff.total).toFixed(2)}`
-                  : "—"
-              }
-              detail="strokes per runde du må ta inn"
-              accent
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* RADAR */}
-      <section className="border-b border-border bg-card">
-        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="text-center">
-            <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
-              Hvor er{" "}
-              <em className="font-normal italic text-primary">gapet</em>?
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Radar-graf — alle kategorier vist relativt til PGA Tour-snittet.
-            </p>
-          </div>
-
-          <div className="mt-8">
-            <SgResultatView
-              data={radarData}
-              duLabel="Du"
-              refLabel={sammenligning.refPlayerName}
-            />
-          </div>
-
-          {cmp.storsteGap && (
-            <div className="mx-auto mt-8 max-w-2xl rounded-lg border border-primary/30 bg-primary/5 p-5 text-center">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">
-                Største gap
-              </p>
-              <p className="mt-2 font-display text-xl font-semibold text-foreground">
-                {KAT_LABEL[cmp.storsteGap.kategori]}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {cmp.storsteGap.diff >= 0 ? "−" : "+"}
-                {Math.abs(cmp.storsteGap.diff).toFixed(2)} strokes per runde —
-                her er det mest å hente
-              </p>
+      {/* ── HERO — VS-showdown ───────────────────────────────────── */}
+      <section
+        style={{
+          padding: "56px 40px 48px",
+          borderBottom: "1px solid #E5E3DD",
+          background: "linear-gradient(180deg, #FAFAF7 0%, #F1EEE5 100%)",
+        }}
+      >
+        <div style={{ maxWidth: 920, margin: "0 auto" }}>
+          <Reveal>
+            <div style={{ textAlign: "center", marginBottom: 40 }}>
+              <StatsEyebrow tone="lime">Din sammenligning · {sammenligning.refYear}</StatsEyebrow>
             </div>
-          )}
-        </div>
-      </section>
+          </Reveal>
 
-      {/* ESTIMAT */}
-      {sammenligning.estPgaTourScore !== null && (
-        <section className="border-b border-border">
-          <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
-            <div className="text-center">
-              <AthleticEyebrow tone="default">Tour-ekvivalent</AthleticEyebrow>
-              <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight sm:text-3xl">
-                Din score på en{" "}
-                <em className="font-normal italic text-primary">
-                  PGA-bane
-                </em>
-              </h2>
-            </div>
-
-            <div className="mx-auto mt-8 max-w-2xl rounded-xl border border-border bg-card p-8 text-center">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                Norsk snittscore
-              </p>
-              <p className="mt-1 font-mono text-3xl font-semibold tabular-nums text-foreground">
-                {sg.snittScore?.toFixed(1) ?? "—"}
-              </p>
-
-              <div className="my-6 mx-auto h-px w-16 bg-border" />
-
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-                Estimert PGA Tour-score
-              </p>
-              <p className="mt-1 font-mono text-5xl font-semibold tabular-nums text-foreground">
-                {sammenligning.estPgaTourScore.toFixed(1)}
-              </p>
-              {sammenligning.estHcp !== null && (
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Estimert HCP: {sammenligning.estHcp.toFixed(1)}
-                </p>
-              )}
-              <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
-                Beregnet med WHS-formel og standard PGA Tour-bane (slope 145,
-                CR 74.5). Faktisk score vil variere med dagsform og banens
-                konfigurasjon.
-              </p>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* PLAYERHQ MERSALG */}
-      <section className="border-b border-border bg-primary text-primary-foreground">
-        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="grid gap-6 md:grid-cols-[2fr_1fr] md:items-center">
-            <div>
-              <AthleticEyebrow tone="lime">
-                <Sparkles className="mr-1.5 inline h-3 w-3" />
-                Få faktiske tall
-              </AthleticEyebrow>
-              <h2 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-                Vil du følge{" "}
-                <em className="font-normal italic">utviklingen</em>?
-              </h2>
-              <p className="mt-4 max-w-xl text-base leading-relaxed text-primary-foreground/90">
-                PlayerHQ regner ut din egen Strokes Gained automatisk hver
-                gang du logger en runde. Du ser om gapet til{" "}
-                {sammenligning.refPlayerName} blir mindre over tid, og AI-coachen
-                gir konkrete tips for å lukke det.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="/playerhq"
-                  className="inline-flex items-center gap-2 rounded-md bg-background px-5 py-3 text-sm font-semibold text-foreground hover:bg-background/90"
+          <Reveal delay={60}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr auto 1fr",
+                gap: "clamp(16px, 4vw, 48px)",
+                alignItems: "center",
+              }}
+            >
+              {/* Du */}
+              <div style={{ textAlign: "right" }}>
+                <h1
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "clamp(36px, 5vw, 64px)",
+                    fontStyle: "italic",
+                    fontWeight: 500,
+                    lineHeight: 1,
+                    color: "#005840",
+                  }}
                 >
-                  Prøv PlayerHQ gratis i 30 dager
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/stats/sg-sammenlign/start"
-                  className="inline-flex items-center gap-2 rounded-md border border-primary-foreground/30 px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10"
+                  {user.name?.split(" ")[0] ?? "Du"}
+                </h1>
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "clamp(18px, 2.5vw, 32px)",
+                    fontWeight: 500,
+                    marginTop: 8,
+                    color: "#5E5C57",
+                  }}
                 >
-                  <RotateCcw className="h-4 w-4" />
-                  Ny sammenligning
-                </Link>
+                  SG: {fmtSg(sg.sgTotal)}
+                </div>
+                <div
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    background: "#005840",
+                    marginLeft: "auto",
+                    marginTop: 12,
+                  }}
+                />
+              </div>
+
+              {/* VS glyph */}
+              <div
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: 28,
+                  fontStyle: "italic",
+                  color: "#0A1F17",
+                  background: "#D1F843",
+                  padding: "12px 20px",
+                  borderRadius: 12,
+                  textAlign: "center",
+                  lineHeight: 1,
+                }}
+              >
+                vs
+              </div>
+
+              {/* Ref */}
+              <div style={{ textAlign: "left" }}>
+                <h1
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "clamp(36px, 5vw, 64px)",
+                    fontStyle: "italic",
+                    fontWeight: 500,
+                    lineHeight: 1,
+                  }}
+                >
+                  {refEtternavn}
+                </h1>
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "clamp(18px, 2.5vw, 32px)",
+                    fontWeight: 500,
+                    marginTop: 8,
+                    color: "#005840",
+                  }}
+                >
+                  SG: {fmtSg(ref?.sgTotal)}
+                </div>
+                <div
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    background: "#D1F843",
+                    marginTop: 12,
+                  }}
+                />
               </div>
             </div>
+          </Reveal>
 
-            <div className="rounded-lg border border-primary-foreground/20 bg-primary-foreground/5 p-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary-foreground/70">
-                I PlayerHQ får du
-              </p>
-              <ul className="mt-3 space-y-2 text-sm text-primary-foreground/95">
-                {[
-                  "Strokes Gained per runde (automatisk)",
-                  "Trend over tid vs proff-benchmark",
-                  "AI-coach med kategori-spesifikke tips",
-                  "Treningsplaner mot ditt største gap",
-                ].map((b) => (
-                  <li key={b} className="flex items-start gap-2">
-                    <span className="mt-1 inline-block h-1 w-1 rounded-full bg-accent" />
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
-                300 kr/mnd · Gratis under beta
-              </p>
+          <Reveal delay={120}>
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: 20,
+                fontFamily: "var(--font-mono)",
+                fontSize: 10,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "#9D9C95",
+              }}
+            >
+              SESONG {sammenligning.refYear} · PGA TOUR
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── KPI-STRIP ────────────────────────────────────────────── */}
+      <Reveal>
+        <div
+          className="stats-kpi-strip"
+          style={{ gridTemplateColumns: "1fr 1fr 1fr" }}
+        >
+          <div className="stats-kpi">
+            <div className="stats-kpi-eyebrow">Din SG Total</div>
+            <div className="stats-kpi-value">{fmtSg(sg.sgTotal)}</div>
+            <div className="stats-kpi-sub">per runde, estimert</div>
+          </div>
+          <div className="stats-kpi">
+            <div className="stats-kpi-eyebrow">
+              {refEtternavn.toUpperCase()}S SG TOTAL
+            </div>
+            <div className="stats-kpi-value" style={{ color: "#005840" }}>
+              {fmtSg(ref?.sgTotal)}
+            </div>
+            <div className="stats-kpi-sub">sesong {sammenligning.refYear}</div>
+          </div>
+          <div
+            className="stats-kpi"
+            style={{ background: "#D1F843" }}
+          >
+            <div className="stats-kpi-eyebrow" style={{ color: "#005840" }}>
+              Differanse
+            </div>
+            <div
+              className="stats-kpi-value"
+              style={{ color: "#005840" }}
+            >
+              {cmp.diff.total !== null
+                ? fmtSg(-(Math.abs(cmp.diff.total)))
+                : "—"}
+            </div>
+            <div
+              className="stats-kpi-sub"
+              style={{ color: "rgba(0,88,64,0.7)" }}
+            >
+              du må ta inn
+            </div>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* ── RADAR CHART ─────────────────────────────────────────── */}
+      <section
+        className="stats-section stats-section-divider"
+        style={{ background: "#FFFFFF" }}
+      >
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal>
+            <div style={{ textAlign: "center" }}>
+              <StatsEyebrow>Visuell sammenligning</StatsEyebrow>
+              <h2
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: 36,
+                  fontWeight: 600,
+                  letterSpacing: "-0.025em",
+                  marginTop: 12,
+                  lineHeight: 1.05,
+                }}
+              >
+                Radar — du{" "}
+                <em
+                  style={{
+                    fontStyle: "italic",
+                    fontWeight: 400,
+                    color: "#005840",
+                  }}
+                >
+                  vs
+                </em>{" "}
+                {refEtternavn}
+              </h2>
+            </div>
+          </Reveal>
+
+          <Reveal delay={100}>
+            <div
+              style={{ display: "grid", placeItems: "center", marginTop: 32 }}
+            >
+              <StatsBigRadar
+                axes={["OTT", "APP", "ARG", "PUTT"]}
+                you={radarYou}
+                them={radarThem}
+                youLabel={user.name?.split(" ")[0] ?? "Du"}
+                themLabel={sammenligning.refPlayerName}
+                youRaw={radarYouRaw}
+                themRaw={radarThemRaw}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  gap: 24,
+                  marginTop: 16,
+                  fontSize: 13,
+                  fontFamily: "var(--font-mono)",
+                  letterSpacing: "0.04em",
+                }}
+              >
+                <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: 14,
+                      height: 14,
+                      background: "#005840",
+                      borderRadius: 3,
+                    }}
+                  />
+                  {user.name?.split(" ")[0] ?? "Du"}
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: 14,
+                      height: 14,
+                      background: "#D1F843",
+                      borderRadius: 3,
+                    }}
+                  />
+                  {sammenligning.refPlayerName}
+                </span>
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 10,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "#9D9C95",
+                  marginTop: 12,
+                }}
+              >
+                VERDIER PÅ RADAR ER NORMALISERT · TOOLTIP VISER EKTE SG-VERDIER
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── STØRSTE GAP + TOUR-EKVIVALENT ─────────────────────────── */}
+      <section className="stats-section stats-section-divider">
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 16,
+                alignItems: "stretch",
+              }}
+            >
+              {/* Største gap */}
+              <div
+                style={{
+                  background: "#D1F843",
+                  color: "#005840",
+                  borderRadius: 16,
+                  padding: 40,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 10,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    fontWeight: 600,
+                  }}
+                >
+                  STØRSTE GAP
+                </div>
+                <div style={{ marginTop: 16 }}>
+                  <h3
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: 26,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {GAP_LABEL[storsteGapKat]}{" "}
+                    <span
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: 14,
+                        opacity: 0.6,
+                        fontWeight: 400,
+                      }}
+                    >
+                      SG: {storsteGapKat.toUpperCase()}
+                    </span>
+                  </h3>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 64,
+                      fontWeight: 500,
+                      lineHeight: 1,
+                      marginTop: 12,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {storsteGapDiff >= 0 ? "−" : "+"}
+                    {Math.abs(storsteGapDiff).toFixed(2)}
+                  </div>
+                  <div style={{ fontSize: 14, marginTop: 8, opacity: 0.7 }}>
+                    strokes per runde
+                  </div>
+                </div>
+                <p
+                  style={{
+                    fontSize: 15,
+                    lineHeight: 1.55,
+                    marginTop: 24,
+                    maxWidth: 360,
+                  }}
+                >
+                  {GAP_TEKST[storsteGapKat]}
+                </p>
+                <Link
+                  href="/playerhq"
+                  style={{
+                    fontSize: 13,
+                    color: "#005840",
+                    fontWeight: 600,
+                    marginTop: 24,
+                    display: "inline-block",
+                    textDecoration: "underline",
+                  }}
+                >
+                  Få drillforslag for SG: {storsteGapKat.toUpperCase()} i
+                  PlayerHQ →
+                </Link>
+              </div>
+
+              {/* Tour-ekvivalent */}
+              {snittScore && sammenligning.estPgaTourScore ? (
+                <div
+                  style={{
+                    background: "#F1EEE5",
+                    borderRadius: 16,
+                    padding: 40,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 10,
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color: "#9D9C95",
+                    }}
+                  >
+                    DIN NORSKE SNITTSCORE
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 64,
+                      fontWeight: 500,
+                      lineHeight: 1,
+                      marginTop: 12,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {snittScore.toFixed(1)}
+                  </div>
+                  <div
+                    style={{
+                      borderTop: "1px solid #E5E3DD",
+                      margin: "28px 0",
+                    }}
+                  />
+                  <div
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 10,
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color: "#005840",
+                    }}
+                  >
+                    ESTIMERT PÅ PGA TOUR-BANE
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 64,
+                      fontWeight: 500,
+                      lineHeight: 1,
+                      marginTop: 12,
+                      color: "#005840",
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {sammenligning.estPgaTourScore.toFixed(1)}
+                  </div>
+                  {sammenligning.estHcp && (
+                    <div
+                      style={{
+                        fontSize: 14,
+                        color: "#5E5C57",
+                        marginTop: 8,
+                      }}
+                    >
+                      HCP-estimert: {sammenligning.estHcp.toFixed(1)}
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 10,
+                      letterSpacing: "0.12em",
+                      color: "#9D9C95",
+                      marginTop: 20,
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    BEREGNET MED WHS-FORMEL · SLOPE 145, CR 74.5
+                  </div>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    background: "#F1EEE5",
+                    borderRadius: 16,
+                    padding: 40,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <p style={{ color: "#9D9C95", fontSize: 14, textAlign: "center" }}>
+                    Tour-ekvivalent krever at du oppgav en snittscore i onboarding.
+                  </p>
+                </div>
+              )}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── HVA NÅ — 3 veier videre ─────────────────────────────── */}
+      <section className="stats-section stats-section-divider">
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal>
+            <div className="stats-section-head">
+              <div>
+                <StatsEyebrow>Hva nå?</StatsEyebrow>
+                <h2
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: 36,
+                    fontWeight: 600,
+                    letterSpacing: "-0.025em",
+                    marginTop: 12,
+                    lineHeight: 1.05,
+                  }}
+                >
+                  Tre{" "}
+                  <em
+                    style={{
+                      fontStyle: "italic",
+                      fontWeight: 400,
+                      color: "#005840",
+                    }}
+                  >
+                    veier
+                  </em>{" "}
+                  videre.
+                </h2>
+              </div>
+            </div>
+          </Reveal>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}
+          >
+            {[
+              {
+                n: "01",
+                t: "Prøv PlayerHQ",
+                d: "Få automatisk SG per runde + AI-tips for å lukke gapet.",
+                icon: <Sparkles size={24} />,
+                href: "/playerhq",
+              },
+              {
+                n: "02",
+                t: "Ny sammenligning",
+                d: "Velg en annen proff og se forskjellen.",
+                icon: <Trophy size={24} />,
+                href: "/stats/sg-sammenlign/start",
+              },
+              {
+                n: "03",
+                t: "Del",
+                d: "Del et screenshot på X eller med vennene dine.",
+                icon: <ExternalLink size={24} />,
+                href: "#del",
+              },
+            ].map((s, i) => (
+              <Reveal key={i} delay={i * 80}>
+                <Link
+                  href={s.href}
+                  style={{ textDecoration: "none", display: "block" }}
+                >
+                  <div
+                    style={{
+                      background: "#FFFFFF",
+                      border: "1px solid #E5E3DD",
+                      borderRadius: 16,
+                      padding: 24,
+                      height: "100%",
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        marginBottom: 14,
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: "#D1F843",
+                          background: "#005840",
+                          padding: "3px 9px",
+                          borderRadius: 5,
+                        }}
+                      >
+                        {s.n}
+                      </span>
+                      <span style={{ color: "#005840" }}>{s.icon}</span>
+                    </div>
+                    <h3
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: 18,
+                        fontWeight: 600,
+                        color: "#0A1F17",
+                      }}
+                    >
+                      {s.t}
+                    </h3>
+                    <p
+                      style={{
+                        fontSize: 13,
+                        color: "#5E5C57",
+                        lineHeight: 1.5,
+                        marginTop: 8,
+                      }}
+                    >
+                      {s.d}
+                    </p>
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PLAYERHQ MERSALG ────────────────────────────────────── */}
+      <section
+        className="stats-section"
+        style={{ background: "#005840", color: "#FAFAF7" }}
+      >
+        <div
+          style={{
+            maxWidth: 900,
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr",
+            gap: 48,
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <StatsEyebrow tone="lime">
+              <Sparkles size={12} style={{ display: "inline" }} /> Få faktiske tall
+            </StatsEyebrow>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: 36,
+                fontWeight: 600,
+                letterSpacing: "-0.025em",
+                marginTop: 12,
+                color: "#FAFAF7",
+                lineHeight: 1.1,
+              }}
+            >
+              Vil du følge{" "}
+              <em style={{ fontStyle: "italic", fontWeight: 400, color: "#D1F843" }}>
+                utviklingen
+              </em>
+              ?
+            </h2>
+            <p
+              style={{
+                fontSize: 16,
+                lineHeight: 1.55,
+                marginTop: 20,
+                color: "rgba(250,250,247,0.85)",
+                maxWidth: 440,
+              }}
+            >
+              PlayerHQ regner ut din egen Strokes Gained automatisk når du logger
+              runder. Du ser om gapet til {refEtternavn} blir mindre over tid.
+            </p>
+            <div style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}>
+              <Link
+                href="/playerhq"
+                style={{ textDecoration: "none" }}
+                className="stats-btn stats-btn-outline stats-btn-lg"
+              >
+                <span>Prøv PlayerHQ gratis i 30 dager</span>
+                <ArrowRight size={15} className="stats-btn-icon" />
+              </Link>
+              <Link
+                href="/stats/sg-sammenlign/start"
+                className="stats-btn stats-btn-ghost stats-btn-lg"
+                style={{ textDecoration: "none", color: "rgba(250,250,247,0.8)" }}
+              >
+                <RotateCcw size={15} />
+                <span>Ny sammenligning</span>
+              </Link>
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(209,248,67,0.2)",
+              borderRadius: 14,
+              padding: 24,
+            }}
+          >
+            {[
+              "Strokes Gained per runde (automatisk)",
+              "Trend over tid vs proff-benchmark",
+              "AI-coach med kategori-spesifikke tips",
+              "Treningsplaner mot ditt største gap",
+            ].map((b) => (
+              <div
+                key={b}
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "flex-start",
+                  marginBottom: 12,
+                  fontSize: 14,
+                  color: "rgba(250,250,247,0.88)",
+                }}
+              >
+                <span
+                  style={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: "50%",
+                    background: "#D1F843",
+                    marginTop: 6,
+                    flexShrink: 0,
+                  }}
+                />
+                {b}
+              </div>
+            ))}
+            <div
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 10,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "#D1F843",
+                marginTop: 12,
+              }}
+            >
+              300 KR/MND · GRATIS UNDER BETA
             </div>
           </div>
         </div>
       </section>
-    </div>
-  );
-}
 
-function Kpi({
-  label,
-  value,
-  detail,
-  primary,
-  accent,
-}: {
-  label: string;
-  value: string;
-  detail?: string;
-  primary?: boolean;
-  accent?: boolean;
-}) {
-  const bg = primary
-    ? "border-primary/30 bg-primary/5"
-    : accent
-      ? "border-accent/40 bg-accent/10"
-      : "border-border bg-card";
-  return (
-    <div className={`rounded-lg border ${bg} px-4 py-4`}>
-      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </p>
-      <p className="mt-1 font-mono text-2xl font-semibold tabular-nums text-foreground">
-        {value}
-      </p>
-      {detail && (
-        <p className="mt-0.5 text-[11px] text-muted-foreground">{detail}</p>
-      )}
+      {/* ── FOOTER ───────────────────────────────────────────────── */}
+      <div
+        style={{
+          padding: "20px 40px",
+          borderTop: "1px solid #E5E3DD",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontSize: 12,
+          color: "#9D9C95",
+          fontFamily: "var(--font-mono)",
+        }}
+      >
+        <span>
+          Lagret sammenligning #{id.slice(-6).toUpperCase()}
+          {createdDate && ` · ${createdDate}`}
+        </span>
+        <Link
+          href="/stats/sg-sammenlign"
+          style={{
+            color: "#005840",
+            textDecoration: "none",
+            fontWeight: 600,
+          }}
+        >
+          Mine sammenligninger →
+        </Link>
+      </div>
     </div>
   );
 }

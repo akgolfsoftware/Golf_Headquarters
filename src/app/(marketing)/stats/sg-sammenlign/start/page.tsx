@@ -1,10 +1,6 @@
 /**
- * /stats/sg-sammenlign/start — onboarding-skjema (auth-protected)
- *
- * 3-stegs flyt på én side:
- *   1. Velg referansespiller (topp 100 PgaPlayerSeason)
- *   2. Velg input-modus: oppgi snittscore (vi estimerer SG) ELLER egne SG-tall
- *   3. Submit → server action lagrer + redirect til resultatside
+ * /stats/sg-sammenlign/start — 2-stegs onboarding wizard (auth-protected)
+ * Pixel-perfect port av design 08 fra design-handoff-stats-2026-05-25.
  */
 
 import { redirect } from "next/navigation";
@@ -12,9 +8,9 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { startSammenligning } from "../actions";
 import { SgStartSkjema, type RefSpiller } from "./skjema";
+import "../../stats.css";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +24,6 @@ export default async function SgStartPage({ searchParams }: Props) {
     redirect("/auth/login?next=/stats/sg-sammenlign/start");
   }
 
-  // Hent topp 100 PGA-spillere etter sgTotal (lite filter — bare aktive)
   const refSpillere = await prisma.pgaPlayerSeason.findMany({
     where: {
       tour: "pga",
@@ -58,47 +53,71 @@ export default async function SgStartPage({ searchParams }: Props) {
 
   return (
     <div className="bg-background text-foreground">
-      <div className="border-b border-border bg-secondary/20">
-        <div className="mx-auto max-w-3xl px-4 py-3 sm:px-6">
-          <Link
-            href="/stats/sg-sammenlign"
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Tilbake
-          </Link>
-        </div>
+      {/* Top breadcrumb bar */}
+      <div
+        style={{
+          padding: "12px 32px",
+          borderBottom: "1px solid #E5E3DD",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Link
+          href="/stats/sg-sammenlign"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            fontSize: 13,
+            color: "#9D9C95",
+            textDecoration: "none",
+            fontWeight: 500,
+          }}
+        >
+          <ChevronLeft size={14} />
+          Tilbake til SG-sammenligning
+        </Link>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 10,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "#9D9C95",
+          }}
+        >
+          AK GOLF STATS · SG-SAMMENLIGNING
+        </span>
       </div>
 
-      <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-        <div className="text-center">
-          <AthleticEyebrow tone="lime">Start sammenligning</AthleticEyebrow>
-          <h1 className="mt-5 font-display text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
-            Velg{" "}
-            <em className="font-normal italic text-primary">referansespiller</em>
-            {" "}og legg inn{" "}
-            <em className="font-normal italic text-primary">din SG</em>.
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground">
-            Hvis du ikke har egne SG-tall — bare oppgi snittscoren din, så
-            estimerer vi fordelingen ved hjelp av Broadie-data.
-          </p>
-        </div>
-
+      {/* Main wizard content */}
+      <section
+        style={{
+          maxWidth: 800,
+          margin: "0 auto",
+          padding: "56px 32px 80px",
+        }}
+      >
         {spillereForUI.length === 0 ? (
-          <div className="mt-10 rounded-lg border border-dashed border-border bg-card/40 p-8 text-center">
-            <p className="text-sm text-muted-foreground">
+          <div
+            style={{
+              textAlign: "center",
+              padding: 64,
+              border: "1px dashed #E5E3DD",
+              borderRadius: 16,
+            }}
+          >
+            <p style={{ color: "#9D9C95", fontSize: 15 }}>
               PGA Tour-data er ikke synket ennå. Prøv igjen om litt.
             </p>
           </div>
         ) : (
-          <div className="mt-10">
-            <SgStartSkjema
-              referanseSpillere={spillereForUI}
-              action={startSammenligning}
-              feil={feil}
-            />
-          </div>
+          <SgStartSkjema
+            referanseSpillere={spillereForUI}
+            action={startSammenligning}
+            feil={feil}
+          />
         )}
       </section>
     </div>
