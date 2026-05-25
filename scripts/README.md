@@ -74,12 +74,13 @@ npx tsx scripts/import-norske-turneringer.ts
 
 ### Hva som importeres
 
-| Kilde | Tabell | Volum (siste 3 år) |
+| Kilde | Tabell | Volum (all historikk fra 2016) |
 |---|---|---|
-| Srixon Tour | `Tournament` + `PublicPlayer` + `PublicPlayerEntry` (med rounds-JSON) | ~21 turneringer, ~1 800 deltaker-rader |
-| OLYO Tour (alle regioner) | `Tournament` med JSON-meta (`krets`, `externalId`) | ~350 turneringer (kun schedules) |
-| Norges Cup (Garmin) | `Tournament` + `PublicPlayerEntry` (med r1–r4) | ~12 turneringer, ~780 deltaker-rader |
-| Østlandstour | `Tournament` + `PublicPlayerEntry` (med rounds-JSON) | ~28 turneringer, ~1 600 norske deltaker-rader |
+| Srixon Tour (2018–2025) | `Tournament` + `PublicPlayer` + `PublicPlayerEntry` (med rounds-JSON) | ~71 turneringer, ~6 100 deltaker-rader |
+| OLYO Tour (2018–2026, 6 regioner) | `Tournament` med JSON-meta (`krets`, `externalId`) | ~970 turneringer (kun schedules) |
+| Norges Cup Garmin (2019–2025) | `Tournament` + `PublicPlayerEntry` (med r1–r4) | ~31 turneringer, ~1 700 deltaker-rader |
+| Østlandstour (2016–2026) | `Tournament` + `PublicPlayerEntry` (med rounds-JSON) | ~103 turneringer, ~6 500 norske deltaker-rader |
+| **TOTAL** | | **~1 175 turneringer + ~14 300 deltaker-rader** |
 
 ### Idempotent
 
@@ -93,7 +94,7 @@ Kan kjøres flere ganger. Tournament-rader upsert-es på `slug`. PublicPlayer de
 
 ### Begrensninger
 
-- Hardkodet `MIN_YEAR = 2024` for å unngå overload
+- Hardkodet `MIN_YEAR = 2016` (tidligste år i datasettet). Endre i scriptet hvis du vil begrense til siste 3 år for raskere kjøring
 - NGC-CSV (`norgescup_srixon_filtered.csv`) er filtrert til Srixon-spillere — ikke komplett NGC
 - Østlandstour filtrerer bort ikke-norske spillere (de kommer fra andre tour-databaser)
 - OLYO er kun schedules (ingen deltakerlister i `olyo_schedules.json`)

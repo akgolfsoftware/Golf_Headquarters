@@ -35,8 +35,9 @@ const DRIVE_BASE = path.join(
   "My Drive/AK Golf Group/Data",
 );
 
-// Begrens import til siste 3 år
-const MIN_YEAR = 2024;
+// Importer all tilgjengelig historikk. Tidligste år i datasettet er 2016
+// (Østlandstour). Endre til høyere år hvis du vil ha rasere kjøring.
+const MIN_YEAR = 2016;
 
 // ---------------------------------------------------------------------------
 // Helpers
