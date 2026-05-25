@@ -206,15 +206,14 @@ export default async function StatsLandingPage() {
               tag="Oppdateres månedlig"
             />
             <ModulKort
-              status="KOMMER SNART"
+              status="LIVE"
               ikon={<Sparkles className="h-6 w-6" strokeWidth={1.5} />}
               tittel="SG-sammenligning"
               undertittel="Hvordan ligger du an mot Rory?"
-              tekst="Legg inn din egen Strokes Gained og sammenlign med spillere fra topp 250 i verden. Få estimat på hva din norske snittscore tilsvarer på PGA Tour."
+              tekst="Legg inn din egen Strokes Gained og sammenlign med spillere fra topp 100 på PGA Tour. Få estimat på hva din norske snittscore tilsvarer på PGA Tour-bane."
               href="/stats/sg-sammenlign"
-              hrefLabel="Bli varslet ved lansering"
+              hrefLabel="Start gratis sammenligning"
               tag="Krever gratis konto"
-              kommerSnart
             />
           </div>
         </div>
