@@ -44,13 +44,15 @@ const TOTAL_HOURS = END_HOUR - START_HOUR; // 19
 const HOUR_WIDTH = 40; // px per time på desktop
 const TOTAL_WIDTH = TOTAL_HOURS * HOUR_WIDTH; // 760px
 
-// Pyramide-farger via semantic tokens (lyst + mørkt tema-bevisst)
+// Pyramide-farger via semantic tokens (lyst + mørkt tema-bevisst).
+// Inspirert av referanse-design 2026-05-25: 4px venstre-stripe i akse-farge,
+// subtil bg-tint på resten av blokken.
 const PYRAMID_STYLE: Record<CalendarPyramid, string> = {
-  FYS: "bg-primary/20 text-primary border-primary/30",
-  TEK: "bg-warning/20 text-warning border-warning/30",
-  SLAG: "bg-info/20 text-info border-info/30",
-  SPILL: "bg-accent/30 text-accent-foreground border-accent/40",
-  TURN: "bg-destructive/15 text-destructive border-destructive/30",
+  FYS: "bg-primary/10 text-primary border-l-4 border-l-primary",
+  TEK: "bg-warning/10 text-warning border-l-4 border-l-warning",
+  SLAG: "bg-info/10 text-info border-l-4 border-l-info",
+  SPILL: "bg-accent/20 text-accent-foreground border-l-4 border-l-accent-foreground",
+  TURN: "bg-destructive/10 text-destructive border-l-4 border-l-destructive",
 };
 
 const PYRAMID_LABEL: Record<CalendarPyramid, string> = {

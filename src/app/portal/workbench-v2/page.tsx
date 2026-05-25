@@ -24,6 +24,7 @@ import {
   QuickActions,
   DEFAULT_QUICK_ACTIONS,
 } from "@/components/portal/workbench/quick-actions";
+import { FabButton } from "@/components/portal/workbench/fab-button";
 import { getWeekProgress } from "@/components/portal/workbench/get-week-progress";
 import { getCaddieInsights } from "@/lib/ai/get-workbench-insights";
 
@@ -216,6 +217,9 @@ export default async function WorkbenchV2() {
         )}
         <WellnessIndicators data={wellnessData} />
       </section>
+
+      {/* FAB — mobile-only floating action button */}
+      <FabButton />
     </div>
   );
 }
