@@ -20,7 +20,7 @@ import {
 
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui";
-import { AthleticBadge, AthleticButton } from "@/components/athletic";
+import { AthleticBadge } from "@/components/athletic";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -51,14 +51,6 @@ function deriveCategory(hcp: number | null): Category {
   return "C";
 }
 
-const CAT_STYLE: Record<Category, string> = {
-  A1: "bg-primary text-primary-foreground",
-  A2: "bg-accent text-accent-foreground",
-  B1: "bg-secondary text-foreground",
-  B2: "bg-secondary text-muted-foreground",
-  C: "bg-secondary text-muted-foreground",
-};
-
 function formatHcp(v: number | null | undefined): string {
   if (v == null) return "—";
   if (v <= 0) return `+${Math.abs(v).toFixed(1).replace(".", ",")}`;
@@ -71,11 +63,6 @@ function tierLabel(t: string): string {
   return "GRATIS";
 }
 
-function tierStyle(t: string): string {
-  if (t === "PRO") return "bg-primary text-primary-foreground";
-  if (t === "ELITE") return "bg-accent text-accent-foreground";
-  return "bg-secondary text-muted-foreground";
-}
 
 function calcAge(dob: Date | null): number | null {
   if (!dob) return null;
@@ -233,7 +220,7 @@ export default async function SpillerCoachView({
   const etternavn = player.name.split(" ").slice(1).join(" ") || "";
 
   // WAGR — sample (eksisterer ikke i DB ennå)
-  const wagrRank: number | null = null;
+  // const wagrRank: number | null = null; // TODO: koble til WagrSnapshot
 
   return (
     <DetailShell

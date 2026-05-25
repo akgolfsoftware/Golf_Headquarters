@@ -14,7 +14,6 @@
 
 import Link from "next/link";
 import {
-  ChevronDown,
   LayoutGrid,
   Search,
   Table2,
@@ -1044,12 +1043,6 @@ function Kpi({
   );
 }
 
-function FilterChip({ label }: { label: string }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground">
-      {label}
-      <ChevronDown size={11} strokeWidth={1.75} />
-    </span>
-  );
-}
+// FilterChip — beholdt for fremtidige filter-knapper (status, kategori)
+// function FilterChip({ label }: { label: string }) { ... }
 

@@ -407,6 +407,9 @@ model User {
   seasonPlans       SeasonPlan[]
   tournamentEntries TournamentEntry[]
 
+  // Manuelt-opprettede turneringer (Stats Fase 1)
+  createdTournaments Tournament[] @relation("ManualTournamentCreator")
+
   // Coaching-videoer (Sprint M11b)
   videosAsPlayer SessionVideo[] @relation("VideoPlayer")
   videosAsCoach  SessionVideo[] @relation("VideoCoach")
@@ -1768,6 +1771,22 @@ model Tournament {
   officialUrl  String?
   lastSyncAt   DateTime?
 
+  // --- Stats Fase 1: utvidelser for /turneringer + manuell innlegg + merge ---
+  // Kort visningsnavn (f.eks. "WGC-FedEx" istedenfor "World Golf Championships - FedEx St. Jude Invitational")
+  shortName       String?
+  // Premiepott i hele USD (for sortering og display)
+  purseUsd        Int?
+  // 1=major, 2=tour, 3=challenge, 4=junior, 5=amateur/lokal/klubb
+  tier            Int?
+  // Mandag i turneringsuken — denormalisert for raskt "denne uken"-søk
+  weekStart       DateTime?
+  // Antall norske deltakere — denormalisert cache for liste-rendering
+  norskeAntall    Int?      @default(0)
+  // Hvis sourceOrigin=MANUAL: hvilken bruker (spiller/coach) opprettet turneringen
+  createdByUserId String?
+  // Hvis denne er en dublett: peker mot kanonisk turnering (coach merger via /admin/tournaments/dubletter)
+  mergedIntoId    String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1778,9 +1797,16 @@ model Tournament {
   publicEntries   PublicPlayerEntry[]
   leaderboardSnap LeaderboardSnapshot?
 
+  createdBy       User?                  @relation("ManualTournamentCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  mergedInto      Tournament?            @relation("TournamentMerge", fields: [mergedIntoId], references: [id], onDelete: SetNull)
+  mergedFrom      Tournament[]           @relation("TournamentMerge")
+
   @@index([startDate])
   @@index([sourceOrigin, sourceId])
   @@index([tour, status, startDate])
+  @@index([weekStart, status])
+  @@index([createdByUserId])
+  @@index([mergedIntoId])
   @@map("tournaments")
 }
 

@@ -82,7 +82,8 @@ export function SpillerOnboardingWizard() {
 
   // Program (steg 1 — obligatorisk)
   const [program, setProgram] = useState<PlayerProgram>("AK_ACADEMY");
-  const [programCoachId, setProgramCoachId] = useState("");
+  // programCoachId — coach-tildeling i wizard kommer i v2 via EnrollmentPanel
+  const [programCoachId] = useState<string>("");
 
   // Steg 1
   const [navn, setNavn] = useState("");
