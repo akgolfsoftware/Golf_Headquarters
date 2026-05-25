@@ -65,7 +65,7 @@ const MAIN_ITEMS: NavItem[] = [
     ],
     children: [
       { href: "/admin/plans", label: "Treningsplaner" },
-      { href: "/admin/plan-templates", label: "Plan-maler" },
+      { href: "/admin/plans/templates", label: "Plan-maler" },
       { href: "/admin/drills", label: "Drill-bibliotek" },
       { href: "/admin/tournaments", label: "Turneringer" },
     ],
@@ -131,7 +131,7 @@ const MAIN_ITEMS: NavItem[] = [
       { href: "/admin/innboks", label: "Innboks" },
       { href: "/admin/email-templates", label: "E-postmaler" },
       { href: "/admin/agents", label: "AI-agenter" },
-      { href: "/admin/notion-prosjekter", label: "Notion-prosjekter" },
+      { href: "/admin/workspace/notion", label: "Notion-prosjekter" },
       { href: "/admin/team", label: "Team" },
       { href: "/admin/finance", label: "Økonomi" },
       { href: "/admin/integrasjoner", label: "Integrasjoner" },

@@ -43,6 +43,7 @@ const MAIN_ITEMS: NavItem[] = [
     children: [
       { href: "/portal/planlegge?tab=arsplan", label: "Årsplan" },
       { href: "/portal/planlegge?tab=treningsplan", label: "Treningsplan" },
+      { href: "/portal/tren/fys-plan", label: "Fysplan" },
       { href: "/portal/planlegge?tab=mal", label: "Mål" },
       { href: "/portal/planlegge?tab=turneringer", label: "Turneringer" },
       { href: "/portal/planlegge?tab=drills", label: "Drills" },
