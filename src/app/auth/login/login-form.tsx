@@ -51,6 +51,26 @@ export function LoginForm() {
     // Hvis ingen feil: Supabase redirecter til Google. Ingen videre handling her.
   }
 
+  // TODO: Apple OAuth — krever Apple Developer account + provisioning
+  // Når aktivert: render <button onClick={loggInnApple}> i UI-en under.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async function loggInnApple() {
+    setError(null);
+    setLoading(true);
+    const next = safeRedirectPath(searchParams.get("next"), "/portal");
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "apple",
+      options: {
+        redirectTo: `${origin}/api/auth/oauth-callback?next=${encodeURIComponent(next)}`,
+      },
+    });
+    if (error) {
+      setLoading(false);
+      setError(oversettAuthFeil(error.message));
+    }
+  }
+
   const errorId = "login-form-error";
 
   return (
