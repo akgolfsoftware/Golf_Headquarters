@@ -28,7 +28,14 @@ export type StatsIconName =
   | "Sun"
   | "Play"
   | "BarChart2"
-  | "TrendingUp";
+  | "TrendingUp"
+  | "Star"
+  | "Award"
+  | "Globe"
+  | "LayoutGrid"
+  | "User"
+  | "Calendar"
+  | "X";
 
 interface StatsIconProps {
   name: StatsIconName;
@@ -231,6 +238,55 @@ export function StatsIcon({
         <svg {...common}>
           <path d="m22 7-8.5 8.5-5-5L2 17" />
           <path d="M16 7h6v6" />
+        </svg>
+      );
+    case "Star":
+      return (
+        <svg {...common}>
+          <path d="M12 2l3 6.5H22l-5.5 4.5 2 7-6.5-4-6.5 4 2-7L2 8.5h7Z" />
+        </svg>
+      );
+    case "Award":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="8" r="6" />
+          <path d="M8.9 14.8 8 22l4-2 4 2-.9-7.2" />
+        </svg>
+      );
+    case "Globe":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+        </svg>
+      );
+    case "LayoutGrid":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+        </svg>
+      );
+    case "User":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+        </svg>
+      );
+    case "Calendar":
+      return (
+        <svg {...common}>
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
+        </svg>
+      );
+    case "X":
+      return (
+        <svg {...common}>
+          <path d="M18 6 6 18M6 6l12 12" />
         </svg>
       );
     default:
