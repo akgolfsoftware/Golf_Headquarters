@@ -110,10 +110,11 @@ export default async function Turneringer({
     return null;
   })();
 
-  const [allTournaments, courses, players, allEntries] = await Promise.all([
+  const [allTournaments, courses, players, allEntries, ventendeDubletter] = await Promise.all([
     prisma.tournament.findMany({
       include: {
         course: { select: { name: true } },
+        createdBy: { select: { name: true } },
         _count: { select: { results: true, entries: true } },
       },
       orderBy: { startDate: "asc" },
@@ -136,6 +137,9 @@ export default async function Turneringer({
         priority: true,
         user: { select: { name: true, hcp: true, tier: true } },
       },
+    }),
+    prisma.tournament.count({
+      where: { sourceOrigin: "MANUAL", mergedIntoId: null },
     }),
   ]);
 
@@ -176,6 +180,9 @@ export default async function Turneringer({
 
   // Filter-logikk
   const filtered = allTournaments.filter((t) => {
+    // Skjul mergede turneringer (dubletter som er sluttet sammen med kanonisk)
+    if (t.mergedIntoId) return false;
+
     const meta = parseMeta(t.notes);
     const tour = meta?.tour?.toLowerCase() ?? "";
 
@@ -231,6 +238,18 @@ export default async function Turneringer({
               + Ny turnering
             </Link>
             <TournamentForm courses={courses} triggerLabel="Hurtigopprett" />
+            <Link
+              href="/admin/tournaments/dubletter"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary"
+              title="Vurder manuelle turneringer for merge med kjente kilder"
+            >
+              Dubletter
+              {ventendeDubletter > 0 && (
+                <span className="rounded-full bg-accent/40 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground">
+                  {ventendeDubletter}
+                </span>
+              )}
+            </Link>
             <EksportTrigger
               kind="tournaments"
               turneringer={allTournaments.map((t) => ({
@@ -364,11 +383,28 @@ export default async function Turneringer({
                       href={`/admin/tournaments/${t.id}`}
                       className="block min-w-0"
                     >
-                      <div className="truncate font-medium text-foreground hover:text-primary">
-                        {t.name}
+                      <div className="flex items-center gap-2">
+                        <span className="truncate font-medium text-foreground hover:text-primary">
+                          {t.name}
+                        </span>
+                        {t.sourceOrigin === "MANUAL" && (
+                          <span
+                            className="shrink-0 rounded-sm bg-accent/30 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-accent-foreground"
+                            title={
+                              t.createdBy?.name
+                                ? `Lagt til manuelt av ${t.createdBy.name}`
+                                : "Lagt til manuelt"
+                            }
+                          >
+                            Manuell
+                          </span>
+                        )}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {tour ? TOUR_LABEL[tour] ?? tour : t.format}
+                        {t.sourceOrigin === "MANUAL" && t.createdBy?.name && (
+                          <> · av {t.createdBy.name}</>
+                        )}
                       </div>
                     </Link>
                     <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">

@@ -241,6 +241,129 @@ export async function bulkKoblTurneringerTilArsplan(
   return { ok: true, antall: entries.length };
 }
 
+// ---------------------------------------------------------------------------
+// Manuell turnering — opprett ny Tournament i felles katalog (Stats Fase 1)
+// ---------------------------------------------------------------------------
+
+const TurFormat = z.enum(["STROKE", "MATCH", "STABLEFORD", "OTHER"], {
+  error: "Ugyldig format",
+});
+
+const TurTour = z.enum(
+  ["junior-no", "amateur-no", "lokal", "klubb"],
+  { error: "Velg en kategori for turneringen" },
+);
+
+const OpprettManuellTurneringSchema = z.object({
+  name: z.string().min(2, "Navn må være minst 2 tegn").max(200),
+  location: z.string().min(2, "Sted/klubb må fylles inn").max(200),
+  country: z.string().length(2, "Bruk ISO 2-bokstav landskode (f.eks. NO)").default("NO"),
+  startDate: isoDate,
+  endDate: isoDate.optional(),
+  format: TurFormat.default("STROKE"),
+  tour: TurTour,
+  notes: optStr(1000),
+});
+
+/**
+ * Opprett en helt ny Tournament i den globale katalogen — manuell innlegg
+ * fra en innlogget spiller. Brukes når en lokal/junior-turnering ikke finnes
+ * i DataGolf/NGF-syncen.
+ *
+ * Anti-spam: maks 10 manuelle turneringer per bruker per kalendermåned.
+ * Coach kan senere merge mot kanonisk turnering via /admin/tournaments/dubletter.
+ */
+export async function opprettManuellTurnering(input: {
+  name: string;
+  location: string;
+  country?: string;
+  startDate: string;
+  endDate?: string;
+  format?: "STROKE" | "MATCH" | "STABLEFORD" | "OTHER";
+  tour: "junior-no" | "amateur-no" | "lokal" | "klubb";
+  notes?: string;
+}): Promise<
+  | { ok: true; id: string; slug: string | null }
+  | { ok: false; feil: string }
+> {
+  const parsed = OpprettManuellTurneringSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, feil: parsed.error.issues[0]?.message ?? "Ugyldig input" };
+  }
+  const user = await requirePortalUser();
+  const data = parsed.data;
+
+  // Anti-spam: tell brukerens manuelle turneringer denne måneden
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+  const manualThisMonth = await prisma.tournament.count({
+    where: {
+      createdByUserId: user.id,
+      sourceOrigin: "MANUAL",
+      createdAt: { gte: monthStart },
+    },
+  });
+  if (manualThisMonth >= 10) {
+    return {
+      ok: false,
+      feil: "Du har nådd grensen på 10 manuelle turneringer denne måneden.",
+    };
+  }
+
+  const start = new Date(data.startDate);
+  const end = data.endDate ? new Date(data.endDate) : null;
+
+  // Beregn weekStart (mandag i turneringsuken) for "denne uken"-cache
+  const weekStart = new Date(start);
+  const dayOfWeek = weekStart.getDay(); // 0=søndag, 1=mandag, ..., 6=lørdag
+  const daysSinceMonday = (dayOfWeek + 6) % 7;
+  weekStart.setDate(weekStart.getDate() - daysSinceMonday);
+  weekStart.setHours(0, 0, 0, 0);
+
+  // Generer slug — kebab-case av navn + år
+  const baseSlug = data.name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/æ/g, "ae")
+    .replace(/ø/g, "o")
+    .replace(/å/g, "a")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+  const slug = `${baseSlug}-${start.getFullYear()}`;
+
+  // Sjekk om slug er ledig — hvis ikke, slå til random suffix
+  const existing = await prisma.tournament.findUnique({ where: { slug } });
+  const finalSlug = existing ? `${slug}-${Math.random().toString(36).slice(2, 6)}` : slug;
+
+  const turnering = await prisma.tournament.create({
+    data: {
+      name: data.name,
+      slug: finalSlug,
+      startDate: start,
+      endDate: end,
+      format: data.format ?? "STROKE",
+      notes: data.notes ?? null,
+      sourceOrigin: "MANUAL",
+      tour: data.tour,
+      country: data.country ?? "NO",
+      location: data.location,
+      status: start > new Date() ? "UPCOMING" : "COMPLETED",
+      tier: 5,
+      weekStart,
+      createdByUserId: user.id,
+    },
+    select: { id: true, slug: true },
+  });
+
+  revalidatePath("/portal/tren/turneringer");
+  revalidatePath("/admin/tournaments");
+  revalidatePath("/turneringer");
+  return { ok: true, id: turnering.id, slug: turnering.slug };
+}
+
 export async function slettTournamentEntry(
   id: string
 ): Promise<{ ok: true } | { ok: false; feil: string }> {

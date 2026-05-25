@@ -286,6 +286,139 @@ function slugifyDateTs(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
+// ---------------------------------------------------------------------------
+// Merge dubletter (Stats Fase 1)
+// ---------------------------------------------------------------------------
+
+const MergeSchema = z.object({
+  sourceId: z.string().min(1, "Kilde-turnering kreves"),
+  targetId: z.string().min(1, "Mål-turnering kreves"),
+});
+
+/**
+ * Merge to turneringer — typisk en MANUAL-innlegg som matcher en DATAGOLF/NGF-turnering.
+ *
+ * Kanonisk turnering blir `targetId`. Dubletten `sourceId` markeres med
+ * `mergedIntoId = targetId` slik at den ikke forsvinner fra historikken,
+ * men ikke vises som egen rad. Alle PublicPlayerEntry, TournamentResult og
+ * TournamentEntry som peker mot sourceId flyttes til targetId.
+ */
+export async function mergeTurneringer(input: {
+  sourceId: string;
+  targetId: string;
+}): Promise<{ ok: true; flyttet: { entries: number; results: number; participants: number } } | { ok: false; feil: string }> {
+  const parsed = MergeSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, feil: parsed.error.issues[0]?.message ?? "Ugyldig input" };
+  }
+  const user = await krevCoach();
+
+  if (input.sourceId === input.targetId) {
+    return { ok: false, feil: "Kilde og mål kan ikke være samme turnering" };
+  }
+
+  // Verifiser at begge eksisterer
+  const [source, target] = await Promise.all([
+    prisma.tournament.findUnique({
+      where: { id: input.sourceId },
+      select: { id: true, name: true, mergedIntoId: true },
+    }),
+    prisma.tournament.findUnique({
+      where: { id: input.targetId },
+      select: { id: true, name: true, mergedIntoId: true },
+    }),
+  ]);
+
+  if (!source) return { ok: false, feil: "Kilde-turnering ikke funnet" };
+  if (!target) return { ok: false, feil: "Mål-turnering ikke funnet" };
+  if (source.mergedIntoId) {
+    return { ok: false, feil: "Kilde er allerede merget inn i en annen turnering" };
+  }
+  if (target.mergedIntoId) {
+    return { ok: false, feil: "Mål er en dublett — velg den kanoniske turneringen" };
+  }
+
+  // Flytt alle relaterte rader fra source → target i én transaksjon
+  const result = await prisma.$transaction(async (tx) => {
+    const entries = await tx.tournamentEntry.updateMany({
+      where: { tournamentId: input.sourceId },
+      data: { tournamentId: input.targetId },
+    });
+    const results = await tx.tournamentResult.updateMany({
+      where: { tournamentId: input.sourceId },
+      data: { tournamentId: input.targetId },
+    });
+    const participants = await tx.publicPlayerEntry.updateMany({
+      where: { tournamentId: input.sourceId },
+      data: { tournamentId: input.targetId },
+    });
+
+    // Marker source som merget
+    await tx.tournament.update({
+      where: { id: input.sourceId },
+      data: { mergedIntoId: input.targetId },
+    });
+
+    return {
+      entries: entries.count,
+      results: results.count,
+      participants: participants.count,
+    };
+  });
+
+  await audit({
+    actorId: user.id,
+    action: "tournament.merged",
+    target: `Tournament:${input.sourceId}`,
+    metadata: {
+      sourceId: input.sourceId,
+      sourceName: source.name,
+      targetId: input.targetId,
+      targetName: target.name,
+      flyttet: result,
+    },
+  });
+
+  revalidatePath("/admin/tournaments");
+  revalidatePath("/admin/tournaments/dubletter");
+  revalidatePath("/turneringer");
+  revalidatePath("/portal/tren/turneringer");
+
+  return { ok: true, flyttet: result };
+}
+
+/**
+ * Reverser en merge — sette mergedIntoId tilbake til null. Brukes hvis coach
+ * angrer. Flytter IKKE entries/results tilbake (det er irreversibelt uten extra logikk).
+ */
+export async function unmergeTurnering(sourceId: string): Promise<
+  { ok: true } | { ok: false; feil: string }
+> {
+  const user = await krevCoach();
+  const t = await prisma.tournament.findUnique({
+    where: { id: sourceId },
+    select: { id: true, mergedIntoId: true, name: true },
+  });
+  if (!t) return { ok: false, feil: "Turnering ikke funnet" };
+  if (!t.mergedIntoId) return { ok: false, feil: "Turneringen er ikke merget" };
+
+  await prisma.tournament.update({
+    where: { id: sourceId },
+    data: { mergedIntoId: null },
+  });
+
+  await audit({
+    actorId: user.id,
+    action: "tournament.unmerged",
+    target: `Tournament:${sourceId}`,
+    metadata: { name: t.name, hadMergedInto: t.mergedIntoId },
+  });
+
+  revalidatePath("/admin/tournaments");
+  revalidatePath("/admin/tournaments/dubletter");
+  return { ok: true };
+}
+
 export async function exportTournamentsReport(
   raw: ExportTournamentsInput,
 ): Promise<ExportTournamentsResult> {

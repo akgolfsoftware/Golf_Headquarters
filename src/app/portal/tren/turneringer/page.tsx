@@ -5,7 +5,8 @@
  * Kobles mot SeasonPlan og Tournament-katalogen (admin-data).
  */
 
-import { Calendar, Medal } from "lucide-react";
+import Link from "next/link";
+import { Calendar, Medal, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
@@ -92,10 +93,17 @@ export default async function TurneringerPage() {
           />
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 flex items-start justify-between gap-4">
           <AgentStrip label="Turnerings-agent">
             Viser {katalog.length} turneringer for {new Date().getFullYear()}-sesongen — kretsmesterskap, Olyo, Srixon og Østlandstour. Filtrer på &quot;Tilgjengelige&quot; for å melde deg på direkte.
           </AgentStrip>
+          <Link
+            href="/portal/tren/turneringer/ny"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-secondary"
+          >
+            <Plus className="h-4 w-4" />
+            Legg til turnering
+          </Link>
         </div>
 
         <TurneringerInteraktiv
