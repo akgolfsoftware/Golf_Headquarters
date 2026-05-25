@@ -60,6 +60,14 @@
     {
       "path": "/api/cron/pga-skill-ratings",
       "schedule": "0 6 * * 1"
+    },
+    {
+      "path": "/api/cron/pga-putt-distance",
+      "schedule": "0 7 * * 1"
+    },
+    {
+      "path": "/api/cron/pga-approach",
+      "schedule": "30 7 * * 1"
     }
   ]
 }

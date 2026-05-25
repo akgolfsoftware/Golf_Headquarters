@@ -2621,6 +2621,40 @@ model PgaPlayerSeason {
   @@map("pga_player_seasons")
 }
 
+// Putt-statistikk per avstand (meter) — Broadie-estimater seeded manuelt,
+// oppdateres via cron hvis DataGolf eksponerer et putt-distance-endepunkt.
+// Brukes til /stats/pga/putt-explorer.
+model PgaPuttDistance {
+  id              String   @id @default(cuid())
+  year            Int
+  distanceMeters  Int      // 1, 2, 3, 5, 8, 10, 15, 20
+  tourAvgSunkPct  Float    // 0-100
+  top10AvgSunkPct Float?   // 0-100 (topp 10 putters)
+  proximityNext   Float?   // gjennomsnittlig proximity i meter til neste putt
+  source          String   @default("broadie-estimate")
+  lastUpdated     DateTime @default(now()) @updatedAt
+
+  @@unique([year, distanceMeters])
+  @@map("pga_putt_distance")
+}
+
+// Approach-statistikk per yardage-bøtte — proximity til hull + GIR%.
+// Hentes fra DataGolf /preds/approach-skill aggregert per bucket.
+// Brukes til fremtidig /stats/pga/approach-distance-side.
+model PgaApproachDistance {
+  id                     String   @id @default(cuid())
+  year                   Int
+  // Bøtte-grenser i yards: "50-75", "75-100", "100-125", osv.
+  yardageBucket          String
+  tourAvgProximityMeters Float    // gjennomsnittlig proximity til hull
+  girPct                 Float?   // 0-100
+  source                 String   @default("datagolf-approach-skill")
+  lastUpdated            DateTime @default(now()) @updatedAt
+
+  @@unique([year, yardageBucket])
+  @@map("pga_approach_distance")
+}
+
 // AI-genererte innsikter per spiller — oppdateres daglig via cron kl 04:00.
 model SgInsight {
   id             String          @id @default(cuid())

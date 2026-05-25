@@ -15,7 +15,7 @@ import {
   syncLiveLeaderboards,
   syncNgfSchedule,
 } from "@/lib/turneringer/sync";
-import { syncPgaSkillRatings } from "@/lib/stats/pga-sync";
+import { syncPgaSkillRatings, syncPgaPuttDistance, syncPgaApproach } from "@/lib/stats/pga-sync";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -35,6 +35,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "turneringer-ngf": syncNgfSchedule,
   // /stats/pga sync (Fase 2 — ukentlig)
   "pga-skill-ratings": syncPgaSkillRatings,
+  "pga-putt-distance": syncPgaPuttDistance,
+  "pga-approach": syncPgaApproach,
 };
 
 export async function GET(
