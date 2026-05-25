@@ -22,7 +22,7 @@ export default function SectionHeader({
   ghostNum,
 }: SectionHeaderProps) {
   return (
-    <header className="relative flex flex-col gap-3 mb-5">
+    <header className="relative flex flex-col gap-2 mb-4">
       {ghostNum && (
         <span
           aria-hidden

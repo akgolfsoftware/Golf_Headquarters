@@ -75,7 +75,7 @@ export default function DetailHero({
         style={{
           minHeight: mobile ? 320 : 380,
           padding: mobile ? "20px" : "36px 44px",
-          color: "#FAFAF7",
+          color: "var(--background)",
         }}
       >
         {/* Back link */}
@@ -107,7 +107,7 @@ export default function DetailHero({
               style={{
                 background:
                   "color-mix(in oklab, #fff 14%, rgba(0,0,0,0.4))",
-                color: "#FAFAF7",
+                color: "var(--background)",
                 backdropFilter: "blur(8px)",
               }}
             >
@@ -132,7 +132,7 @@ export default function DetailHero({
           >
             <span>
               Kjørt{" "}
-              <span className="tabular" style={{ color: "#fff" }}>
+              <span className="tabular" style={{ color: "var(--background)" }}>
                 {timesRun}
               </span>{" "}
               ganger

@@ -27,7 +27,7 @@ export default function PageHero({
   crumbHref = "/",
 }: PageHeroProps) {
   return (
-    <header className="flex flex-col gap-3 mb-7">
+    <header className="flex flex-col gap-2 mb-8">
       {crumb && (
         <Link
           href={crumbHref}

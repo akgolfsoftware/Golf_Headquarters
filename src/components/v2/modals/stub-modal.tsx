@@ -52,7 +52,7 @@ export default function StubModal({
         style={{ background: "var(--card)" }}
       >
         {/* Header */}
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-2">
           <div>
             <h2
               id="stub-modal-title"

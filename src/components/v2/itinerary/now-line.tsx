@@ -6,7 +6,7 @@ export type NowLineProps = {
 export default function NowLine({ label, sub }: NowLineProps) {
   return (
     <div
-      className="grid items-center gap-3"
+      className="grid items-center gap-2"
       style={{ gridTemplateColumns: "80px 28px 1fr" }}
     >
       <div

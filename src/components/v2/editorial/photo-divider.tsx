@@ -35,7 +35,7 @@ export default function PhotoDivider({
         <p
           className="m-0 mt-2 font-display font-medium italic text-[24px] tracking-[-0.01em]"
           style={{
-            color: "#FAFAF7",
+            color: "var(--background)",
             maxWidth: 520,
             textWrap: "balance",
           } as React.CSSProperties}

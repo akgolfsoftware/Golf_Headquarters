@@ -24,7 +24,7 @@ export default function TournamentCard({
 
   return (
     <section
-      className="flex flex-col gap-5 rounded-[20px]"
+      className="flex flex-col gap-4 rounded-[20px]"
       style={{
         background: "var(--foreground)",
         color: "var(--background)",
@@ -106,7 +106,7 @@ export default function TournamentCard({
               <span
                 className="text-[14px]"
                 style={{
-                  color: item.done ? "rgba(250,250,247,0.6)" : "#FAFAF7",
+                  color: item.done ? "rgba(250,250,247,0.6)" : "var(--background)",
                   textDecoration: item.done ? "line-through" : "none",
                   textDecorationColor: "rgba(250,250,247,0.4)",
                 }}

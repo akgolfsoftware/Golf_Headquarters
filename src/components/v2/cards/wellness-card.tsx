@@ -29,7 +29,7 @@ export default function WellnessCard({ wellness }: WellnessCardProps) {
   } satisfies React.CSSProperties;
 
   return (
-    <section className="card p-7 flex flex-col gap-[14px]">
+    <section className="card p-8 flex flex-col gap-[14px]">
       <div>
         <span className="eyebrow eyebrow-w-strek">Dagens kropp</span>
         <h3
@@ -43,7 +43,7 @@ export default function WellnessCard({ wellness }: WellnessCardProps) {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         {/* Energi */}
         <div ref={eRef} className={tileCls} style={trackStyle}>
           <div className="flex justify-between">

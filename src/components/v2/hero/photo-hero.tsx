@@ -103,11 +103,11 @@ export default function PhotoHero({
         style={{
           minHeight: mobile ? 380 : 480,
           padding: mobile ? "20px" : "40px 48px",
-          color: "#FAFAF7",
+          color: "var(--background)",
         }}
       >
         {/* Top row */}
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-2">
           <div className="flex items-center">
             <span
               className="inline-flex items-center gap-[6px] px-3 py-[6px] rounded-full font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
@@ -143,7 +143,7 @@ export default function PhotoHero({
         <div>
           <h1
             className="m-0 font-display font-bold leading-[0.95] tracking-[-0.03em]"
-            style={{ fontSize: mobile ? 44 : 72, color: "#FAFAF7" }}
+            style={{ fontSize: mobile ? 44 : 72, color: "var(--background)" }}
           >
             Hei,{" "}
             <span style={{ fontStyle: "italic", color: "var(--accent)" }}>
@@ -162,7 +162,7 @@ export default function PhotoHero({
               <span
                 ref={hcpRef}
                 className="tabular font-display font-bold text-[18px] tracking-[-0.02em]"
-                style={{ color: "#FAFAF7" }}
+                style={{ color: "var(--background)" }}
               >
                 −{hcpVal}
               </span>
@@ -173,7 +173,7 @@ export default function PhotoHero({
               <span
                 ref={daysRef}
                 className="tabular font-display font-bold text-[18px] tracking-[-0.02em]"
-                style={{ color: "#FAFAF7" }}
+                style={{ color: "var(--background)" }}
               >
                 {daysVal}
               </span>{" "}

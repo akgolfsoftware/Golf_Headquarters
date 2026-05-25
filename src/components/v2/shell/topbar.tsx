@@ -18,13 +18,13 @@ export default function Topbar({ mobile = false }: TopbarProps) {
       }}
     >
       <div
-        className="flex items-center gap-3"
+        className="flex items-center gap-2"
         style={{ padding: mobile ? "10px 16px" : "12px 24px" }}
       >
         {mobile && (
           <>
             <div
-              className="w-9 h-9 rounded-full grid place-items-center flex-shrink-0 font-display italic font-bold text-[18px]"
+              className="w-8 h-8 rounded-full grid place-items-center flex-shrink-0 font-display italic font-bold text-[18px]"
               style={{ background: "var(--foreground)", color: "var(--accent)" }}
             >
               AK
@@ -50,7 +50,7 @@ export default function Topbar({ mobile = false }: TopbarProps) {
         )}
 
         <button
-          className="relative w-9 h-9 grid place-items-center rounded-[10px] border border-border text-foreground"
+          className="relative w-8 h-8 grid place-items-center rounded-[10px] border border-border text-foreground"
           style={{ background: "var(--card)" }}
           aria-label="Varsler"
         >
@@ -65,7 +65,7 @@ export default function Topbar({ mobile = false }: TopbarProps) {
         {!mobile && (
           <Link
             href="/profil"
-            className="w-9 h-9 grid place-items-center rounded-[10px] border border-border text-foreground"
+            className="w-8 h-8 grid place-items-center rounded-[10px] border border-border text-foreground"
             style={{ background: "var(--card)" }}
             aria-label="Innstillinger"
           >

@@ -62,7 +62,7 @@ export function CoachMessageDetail({ thread, coach }: CoachMessageDetailProps) {
 
   return (
     <div className="flex flex-col gap-4 h-full min-h-[400px]">
-      <div className="flex items-baseline justify-between gap-3">
+      <div className="flex items-baseline justify-between gap-2">
         <h3
           className="m-0 font-display font-bold tracking-[-0.02em]"
           style={{ fontSize: 22 }}
@@ -78,7 +78,7 @@ export function CoachMessageDetail({ thread, coach }: CoachMessageDetailProps) {
         className="flex items-center gap-[10px] pb-[14px] border-b border-border"
       >
         <div
-          className="w-9 h-9 rounded-full grid place-items-center font-display font-bold text-[12px] flex-shrink-0"
+          className="w-8 h-8 rounded-full grid place-items-center font-display font-bold text-[12px] flex-shrink-0"
           style={{
             background: fromCoach
               ? "var(--primary)"

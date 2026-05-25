@@ -69,7 +69,7 @@ export default function Sidebar({ player }: SidebarProps) {
       {/* Brand */}
       <div className="flex items-center gap-[10px] px-2 pb-4 mb-2 border-b border-border">
         <div
-          className="w-9 h-9 rounded-full grid place-items-center flex-shrink-0 font-display italic font-bold text-[18px]"
+          className="w-8 h-8 rounded-full grid place-items-center flex-shrink-0 font-display italic font-bold text-[18px]"
           style={{ background: "var(--foreground)", color: "var(--accent)" }}
         >
           AK
@@ -117,13 +117,13 @@ export default function Sidebar({ player }: SidebarProps) {
 
       {/* Player card */}
       <div
-        className="mt-auto flex items-center gap-[10px] p-3 rounded-[12px]"
+        className="mt-auto flex items-center gap-[10px] p-2 rounded-[12px]"
         style={{
           background: "color-mix(in oklab, var(--foreground) 4%, transparent)",
         }}
       >
         <div
-          className="w-9 h-9 rounded-full grid place-items-center flex-shrink-0 font-display font-bold text-[13px]"
+          className="w-8 h-8 rounded-full grid place-items-center flex-shrink-0 font-display font-bold text-[13px]"
           style={{ background: "var(--primary)", color: "var(--accent)" }}
         >
           {player.initials}
