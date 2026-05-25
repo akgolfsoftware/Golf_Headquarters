@@ -4,6 +4,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { NotifToggles } from "../notif-toggles";
+import { PushToggle } from "@/components/portal/push-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,10 @@ export default async function VarslerPage() {
           automatisk.
         </p>
       </header>
+
+      <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
+        <PushToggle />
+      </div>
 
       <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
         <NotifToggles initial={prefs} />

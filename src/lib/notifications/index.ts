@@ -82,7 +82,24 @@ export async function notify(input: NotifyInput): Promise<{ ok: boolean }> {
     }
   }
 
-  // Push + SMS — placeholder for senere
+  if (channels.includes("push")) {
+    try {
+      const { sendPush } = await import("../push/send");
+      await sendPush(input.userId, {
+        title: input.title,
+        body: input.body ?? "",
+        link: input.link,
+        tag: trigger.key,
+      });
+    } catch (err) {
+      console.error(
+        `[notifications] Push-leveranse feilet (${trigger.key}):`,
+        err,
+      );
+    }
+  }
+
+  // SMS — placeholder for senere
   return { ok: true };
 }
 
