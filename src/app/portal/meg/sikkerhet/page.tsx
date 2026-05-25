@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { ArrowLeft, Check, Monitor, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ChevronRight, Check, Monitor, Shield, ShieldCheck } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
-import { Setup2FA } from "./setup-2fa";
 
 export default async function SikkerhetPage() {
   const user = await requirePortalUser();
@@ -49,9 +48,27 @@ export default async function SikkerhetPage() {
 
       {/* To-faktor */}
       <Section title="Tofaktor-autentisering" aux="Authenticator-app">
-        <div className="p-6">
-          <Setup2FA />
-        </div>
+        <Link
+          href="/portal/meg/sikkerhet/2fa"
+          className="flex items-center gap-4 px-6 py-6 transition-colors hover:bg-secondary/40"
+        >
+          <div className="grid h-9 w-9 place-items-center rounded-md bg-primary/10 text-primary">
+            <Shield className="h-4 w-4" strokeWidth={1.75} />
+          </div>
+          <div className="flex-1">
+            <div className="text-sm font-medium text-foreground">
+              Konfigurer 2FA
+            </div>
+            <div className="font-mono text-xs text-muted-foreground">
+              Aktiver tofaktor med autenticator-app for ekstra beskyttelse
+            </div>
+          </div>
+          <ChevronRight
+            className="h-4 w-4 text-muted-foreground"
+            strokeWidth={1.75}
+            aria-hidden
+          />
+        </Link>
       </Section>
 
       {/* Aktive økter — TODO: kobles til Supabase auth sessions senere */}
