@@ -20,7 +20,10 @@ type SwScope = {
   addEventListener(type: string, handler: (event: Event) => void): void;
   registration: { showNotification(title: string, options: object): Promise<void> };
   clients: {
-    matchAll(opts: object): Promise<Array<{ url: string; focus(): Promise<void> }>>;
+    matchAll(opts: {
+      type?: string;
+      includeUncontrolled?: boolean;
+    }): Promise<Array<{ url: string; focus(): Promise<unknown> }>>;
     openWindow(url: string): Promise<unknown>;
   };
 } & SerwistGlobalConfig;
@@ -65,15 +68,21 @@ self.addEventListener("push", (event) => {
       title?: string;
       body?: string;
       url?: string;
+      link?: string;
       icon?: string;
+      tag?: string;
+      requireInteraction?: boolean;
     };
     const title = data.title ?? "AK Golf";
+    const targetUrl = data.link ?? data.url ?? "/portal";
     pushEvent.waitUntil(
       self.registration.showNotification(title, {
         body: data.body ?? "",
         icon: data.icon ?? "/icon-192.png",
         badge: "/icon-192.png",
-        data: { url: data.url ?? "/portal" },
+        tag: data.tag,
+        requireInteraction: data.requireInteraction ?? false,
+        data: { url: targetUrl },
       }),
     );
   } catch {
@@ -86,5 +95,15 @@ self.addEventListener("notificationclick", (event) => {
   notifEvent.notification.close();
   const url =
     (notifEvent.notification.data as { url?: string } | undefined)?.url ?? "/portal";
-  notifEvent.waitUntil(self.clients.openWindow(url));
+  // Hvis et eksisterende vindu allerede er på riktig URL, fokuser det i stedet
+  // for å åpne et nytt.
+  notifEvent.waitUntil(
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clients) => {
+        const existing = clients.find((c) => c.url.includes(url));
+        if (existing) return existing.focus();
+        return self.clients.openWindow(url);
+      }),
+  );
 });
