@@ -143,3 +143,46 @@ export async function getTournamentField(
   );
   return data.field ?? [];
 }
+
+// ---------------------------------------------------------------------------
+// Skill ratings — sesong-aggregat per spiller (drive_dist, sg_total, etc.)
+// Brukes til /stats/pga (Fase 2 PGA Tour playground).
+// ---------------------------------------------------------------------------
+
+export type DGSkillRatingRow = {
+  dg_id: number;
+  player_name: string;
+  country?: string;
+  // Strokes Gained-fordeling per runde (gjelder PGA Tour)
+  sg_total?: number;
+  sg_ott?: number;
+  sg_app?: number;
+  sg_arg?: number;
+  sg_putt?: number;
+  // Generelle stats
+  driving_dist?: number;
+  driving_acc?: number; // 0-1 (fairway %)
+  gir?: number; // 0-1
+  putts_per_round?: number;
+  scrambling?: number; // 0-1
+  rounds?: number;
+  avg_score?: number;
+};
+
+export type DGSkillRatingsResponse = {
+  last_updated?: string;
+  players?: DGSkillRatingRow[];
+};
+
+/**
+ * Henter siste skill-ratings for valgt tour. DataGolf gir sesong-aggregat
+ * basert på siste 2 år, vektet mot nylige resultater.
+ */
+export async function getSkillRatings(
+  tour: DGTour = "pga",
+): Promise<DGSkillRatingRow[]> {
+  const data = await fetchJson<DGSkillRatingsResponse>(
+    `/preds/skill-ratings?tour=${tour}&display=value`,
+  );
+  return data.players ?? [];
+}

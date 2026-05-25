@@ -186,15 +186,14 @@ export default async function StatsLandingPage() {
               tag="Oppdateres daglig"
             />
             <ModulKort
-              status="KOMMER SNART"
+              status="LIVE"
               ikon={<LineChart className="h-6 w-6" strokeWidth={1.5} />}
               tittel="PGA Tour Stats"
               undertittel="Hva er snittet egentlig?"
-              tekst="Interaktiv stats-playground: drive distance, fairway %, putt-snitt fra 3m, hva som skiller topp 10 fra resten. Lek deg med slidere og sammenlign deg selv."
+              tekst="Interaktiv stats-playground: drive distance, fairway %, GIR, putter og Strokes Gained. Lek deg med slidere og sammenlign deg selv med proffene."
               href="/stats/pga"
-              hrefLabel="Få varsel når den åpner"
-              tag="Bygges nå"
-              kommerSnart
+              hrefLabel="Utforsk PGA Tour Stats"
+              tag="Oppdateres ukentlig"
             />
             <ModulKort
               status="KOMMER SNART"

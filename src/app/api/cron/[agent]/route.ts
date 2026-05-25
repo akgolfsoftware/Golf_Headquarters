@@ -15,6 +15,7 @@ import {
   syncLiveLeaderboards,
   syncNgfSchedule,
 } from "@/lib/turneringer/sync";
+import { syncPgaSkillRatings } from "@/lib/stats/pga-sync";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -32,6 +33,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "turneringer-players": syncNorwegianPlayers,
   "turneringer-live": syncLiveLeaderboards,
   "turneringer-ngf": syncNgfSchedule,
+  // /stats/pga sync (Fase 2 — ukentlig)
+  "pga-skill-ratings": syncPgaSkillRatings,
 };
 
 export async function GET(

@@ -2576,6 +2576,51 @@ model SgBaseline {
   @@map("sg_baselines")
 }
 
+// ---------- AK Golf Stats — Fase 2 PGA Tour playground ----------
+// Sesong-aggregat per spiller per år per tour. Brukes til /stats/pga
+// topplister og interaktive sammenligninger (drive distance, fairway %, GIR,
+// putts, scoring avg, SG-fordeling).
+// Synket ukentlig fra DataGolf /preds/skill-ratings.
+model PgaPlayerSeason {
+  id            String   @id @default(cuid())
+  dgPlayerId    Int
+  // Tour-slug: pga | euro | kft | alt | champ | liv
+  tour          String
+  year          Int
+  playerName    String
+  country       String?
+
+  // Sesong-summer
+  rounds        Int?
+  // Stat-felter (alle valgfrie — DataGolf returnerer ikke alle for alle spillere)
+  avgScore      Float?
+  driveDist     Float?      // gjennomsnittlig driving distance (yards)
+  fairwayPct    Float?      // 0-100
+  girPct        Float?      // 0-100
+  puttsPerRound Float?
+  scrambling    Float?      // 0-100
+
+  // Strokes Gained-fordeling (per runde)
+  sgTotal       Float?
+  sgOtt         Float?
+  sgApp         Float?
+  sgArg         Float?
+  sgPutt        Float?
+
+  // Metadata
+  source        String      @default("datagolf")
+  lastUpdated   DateTime    @default(now()) @updatedAt
+
+  @@unique([dgPlayerId, tour, year])
+  @@index([tour, year, driveDist])
+  @@index([tour, year, sgTotal])
+  @@index([tour, year, fairwayPct])
+  @@index([tour, year, girPct])
+  @@index([tour, year, puttsPerRound])
+  @@index([tour, year, avgScore])
+  @@map("pga_player_seasons")
+}
+
 // AI-genererte innsikter per spiller — oppdateres daglig via cron kl 04:00.
 model SgInsight {
   id             String          @id @default(cuid())
