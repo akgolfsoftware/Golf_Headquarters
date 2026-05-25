@@ -10,7 +10,7 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHeroV2 } from "@/components/portal/workbench/player-hero-v2";
+import { PlayerHeroImage } from "@/components/portal/workbench/player-hero-image";
 import { CalendarWidget } from "@/components/portal/workbench/calendar-widget";
 import { AiInsightsRow } from "@/components/portal/workbench/ai-insights-row";
 import { WeekProgressCard } from "@/components/portal/workbench/week-progress-card";
@@ -142,14 +142,15 @@ export default async function WorkbenchV2() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-6 lg:px-8">
-      {/* Hero */}
-      <PlayerHeroV2
+      {/* Hero med AK Golf Academy-bilde */}
+      <PlayerHeroImage
         user={userData}
         neste_turnering={
           nesteTurnering
             ? { navn: nesteTurnering.navn, dato: nesteTurnering.startDato }
             : undefined
         }
+        imageId={1}
       />
 
       {/* I dag — horisontal kalender */}
