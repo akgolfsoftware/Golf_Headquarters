@@ -1,38 +1,49 @@
 /**
  * /stats/spillere — Norsk golf-spillerdatabase
  *
- * Søkbar offentlig liste over norske spillere med resultater fra
- * Srixon Tour, OLYO, Norges Cup og Østlandstour 2016-2026.
- *
+ * FotMob-aktig talent-database med søk, filterpills, kort-grid vs tabell.
  * ISR: 1 time revalidate. Server Component med GET-søk via searchParams.
  */
 
+import "./spillere.css";
+import "../../stats/stats.css";
+
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ChevronLeft,
-  Search,
-  Trophy,
-  Users,
-} from "lucide-react";
+import { Search, Users, TrendingUp, ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
+import { StatsEyebrow } from "@/components/stats/eyebrow";
+import { StatsInitialAvatar } from "@/components/stats/stats-initial-avatar";
+import { StatsSpillerRad } from "@/components/stats/stats-spiller-rad";
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Norsk spillerdatabase — AK Golf Stats",
   description:
-    "Søk opp norske golfspillere og se komplette turneringsresultater fra Srixon Tour, OLYO, Norges Cup og Østlandstour 2016–2026. Gratis fra AK Golf.",
+    "Søk opp norske golfspillere og se komplette turneringsresultater fra Srixon Tour, OLYO, Norges Cup og Østlandstour 2016–2026. 1 500+ spillere på ett sted.",
   alternates: { canonical: "https://akgolf.no/stats/spillere" },
   openGraph: {
     title: "Norsk spillerdatabase — AK Golf Stats",
     description:
-      "Søk opp norske golfspillere og se komplette turneringsresultater fra 10 år med norsk golf.",
+      "1 500+ norske golfspillere. Komplett resultathistorikk fra 10 år med norsk golf.",
     url: "https://akgolf.no/stats/spillere",
     type: "website",
   },
+};
+
+// ---------------------------------------------------------------------------
+// Typer
+// ---------------------------------------------------------------------------
+
+type Spiller = {
+  id: string;
+  slug: string;
+  name: string;
+  birthYear: number | null;
+  tier: string;
+  bio: string | null;
+  _count: { entries: number };
 };
 
 // ---------------------------------------------------------------------------
@@ -42,19 +53,31 @@ export const metadata: Metadata = {
 async function hentSideData(
   q: string | undefined,
   aar: string | undefined,
+  tier: string | undefined,
+  klubbQ: string | undefined,
+  view: string | undefined,
+  side: number,
 ) {
+  const PAGE_SIZE = 50;
+
   const [totalSpillere, totalTurneringer, totalResultater] = await Promise.all([
     prisma.publicPlayer.count({ where: { country: "NO", isActive: true } }),
     prisma.tournament.count({ where: { mergedIntoId: null } }),
     prisma.publicPlayerEntry.count(),
   ]);
 
-  const navnFilter = q && q.trim().length > 0
-    ? { name: { contains: q.trim(), mode: "insensitive" as const } }
-    : {};
+  const navnFilter =
+    q && q.trim().length > 0
+      ? { name: { contains: q.trim(), mode: "insensitive" as const } }
+      : {};
 
   const birthYearFilter =
     aar && /^\d{4}$/.test(aar) ? { birthYear: parseInt(aar, 10) } : {};
+
+  const tierFilter =
+    tier && tier !== "alle"
+      ? { tier: { in: TIER_MAP[tier] ?? [tier] } }
+      : {};
 
   const spillere = await prisma.publicPlayer.findMany({
     where: {
@@ -62,9 +85,11 @@ async function hentSideData(
       isActive: true,
       ...navnFilter,
       ...birthYearFilter,
+      ...tierFilter,
     },
     orderBy: { name: "asc" },
-    take: 50,
+    take: PAGE_SIZE,
+    skip: (side - 1) * PAGE_SIZE,
     select: {
       id: true,
       slug: true,
@@ -76,10 +101,37 @@ async function hentSideData(
     },
   });
 
-  return { totalSpillere, totalTurneringer, totalResultater, spillere };
+  // Topp 20 (WAGR/entries-sortert) — kun når ingen søk er aktivt
+  const harFilter = Boolean(q || aar || (tier && tier !== "alle") || klubbQ);
+  let topp20: Spiller[] = [];
+  if (!harFilter) {
+    topp20 = await prisma.publicPlayer.findMany({
+      where: { country: "NO", isActive: true },
+      orderBy: [{ tier: "asc" }, { name: "asc" }],
+      take: 20,
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        birthYear: true,
+        tier: true,
+        bio: true,
+        _count: { select: { entries: true } },
+      },
+    });
+  }
+
+  return {
+    totalSpillere,
+    totalTurneringer,
+    totalResultater,
+    spillere,
+    topp20,
+    harFilter,
+    PAGE_SIZE,
+  };
 }
 
-// Hent de 10 siste årgangene der vi har spillere
 async function hentAarganger(): Promise<number[]> {
   const rows = await prisma.publicPlayer.findMany({
     where: { country: "NO", isActive: true, birthYear: { not: null } },
@@ -88,16 +140,20 @@ async function hentAarganger(): Promise<number[]> {
     orderBy: { birthYear: "desc" },
     take: 10,
   });
-  return rows
-    .map((r) => r.birthYear)
-    .filter((y): y is number => y !== null);
+  return rows.map((r) => r.birthYear).filter((y): y is number => y !== null);
 }
 
 // ---------------------------------------------------------------------------
 // Hjelpefunksjoner
 // ---------------------------------------------------------------------------
 
-/** Hent klubb fra bio-feltet. Format: "Klubb: Navn" eller bare første setning. */
+const TIER_MAP: Record<string, string[]> = {
+  pro: ["pro-pga", "pro-dp", "pro-lpga", "pro"],
+  college: ["college"],
+  amateur: ["amateur"],
+  junior: ["junior"],
+};
+
 function parseKlubb(bio: string | null): string | null {
   if (!bio) return null;
   const match = bio.match(/[Kk]lubb:\s*([^\n.]+)/);
@@ -105,24 +161,31 @@ function parseKlubb(bio: string | null): string | null {
   return null;
 }
 
-function formaterTier(tier: string): string {
+function formaterTierLabel(tier: string): string {
   switch (tier) {
-    case "amateur":
-      return "Amateur";
-    case "junior":
-      return "Junior";
-    case "pro-pga":
-      return "PGA Pro";
-    case "pro-dp":
-      return "DP World Pro";
-    case "pro-lpga":
-      return "LPGA Pro";
-    case "college":
-      return "College";
-    default:
-      return tier.charAt(0).toUpperCase() + tier.slice(1);
+    case "amateur":  return "Amatør";
+    case "junior":   return "Junior";
+    case "pro-pga":  return "PRO PGA";
+    case "pro-dp":   return "DP World";
+    case "pro-lpga": return "LPGA";
+    case "college":  return "College";
+    default:         return tier.charAt(0).toUpperCase() + tier.slice(1);
   }
 }
+
+function tierBadgeCls(tier: string): string {
+  switch (tier) {
+    case "pro-pga":  return "stats-tier-badge stats-tier-pro-pga";
+    case "pro-dp":
+    case "pro-lpga": return "stats-tier-badge stats-tier-pro";
+    case "college":  return "stats-tier-badge stats-tier-college";
+    case "junior":   return "stats-tier-badge stats-tier-junior";
+    default:         return "stats-tier-badge stats-tier-amateur";
+  }
+}
+
+// Manuelt kuraterte "trending"-spillere (oppdateres månedlig)
+const TRENDING_SLUGS: string[] = [];
 
 // ---------------------------------------------------------------------------
 // Page
@@ -134,339 +197,488 @@ export default async function SpillerdatabasePage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const q = typeof params.q === "string" ? params.q : undefined;
-  const aar = typeof params.aar === "string" ? params.aar : undefined;
+  const q     = typeof params.q    === "string" ? params.q    : undefined;
+  const aar   = typeof params.aar  === "string" ? params.aar  : undefined;
+  const tier  = typeof params.tier === "string" ? params.tier : undefined;
+  const klubbQ= typeof params.klubb=== "string" ? params.klubb: undefined;
+  const view  = typeof params.view === "string" ? params.view : "grid";
+  const sideRaw = typeof params.side === "string" ? parseInt(params.side, 10) : 1;
+  const side  = isNaN(sideRaw) || sideRaw < 1 ? 1 : sideRaw;
 
-  const [{ totalSpillere, totalTurneringer, totalResultater, spillere }, aarganger] =
-    await Promise.all([hentSideData(q, aar), hentAarganger()]);
+  const [
+    {
+      totalSpillere,
+      totalTurneringer,
+      totalResultater,
+      spillere,
+      topp20,
+      harFilter,
+      PAGE_SIZE,
+    },
+    aarganger,
+  ] = await Promise.all([
+    hentSideData(q, aar, tier, klubbQ, view, side),
+    hentAarganger(),
+  ]);
 
-  const harFilter = Boolean(q || aar);
+  // Bygg URL-helpers
+  function buildUrl(overrides: Record<string, string | undefined>): string {
+    const base: Record<string, string> = {};
+    if (q)     base.q     = q;
+    if (aar)   base.aar   = aar;
+    if (tier)  base.tier  = tier;
+    if (klubbQ)base.klubb = klubbQ;
+    if (view !== "grid") base.view = view;
+    Object.entries(overrides).forEach(([k, v]) => {
+      if (v === undefined) delete base[k];
+      else base[k] = v;
+    });
+    const s = new URLSearchParams(base).toString();
+    return `/stats/spillere${s ? `?${s}` : ""}`;
+  }
+
+  const visGridBtn   = view !== "tabell";
+  const visTabell    = view === "tabell";
+
+  const TIER_CHIPS = [
+    { id: "alle",    label: "Alle" },
+    { id: "pro",     label: "Pro" },
+    { id: "college", label: "College" },
+    { id: "amateur", label: "Amatør" },
+    { id: "junior",  label: "Junior" },
+  ];
 
   return (
     <div className="bg-background text-foreground">
-      {/* Breadcrumb */}
-      <div className="border-b border-border bg-secondary/20">
-        <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
+      {/* BREADCRUMB */}
+      <div className="border-b border-border" style={{ background: "var(--s-secondary)" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "10px 64px" }}>
           <Link
             href="/stats"
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center gap-1 text-sm"
+            style={{ color: "var(--s-muted-fg)" }}
           >
-            <ChevronLeft className="h-4 w-4" />
-            Tilbake til AK Golf Stats
+            ← AK Golf Stats
           </Link>
         </div>
       </div>
 
       {/* HERO */}
-      <section className="border-b border-border bg-gradient-to-b from-background to-secondary/40">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-          <div className="text-center">
-            <AthleticEyebrow tone="lime">
-              Norsk golf · Spillerdatabase
-            </AthleticEyebrow>
-            <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
-              Norsk golf-database —{" "}
-              <em className="font-normal italic text-primary">
-                alle spillere
-              </em>{" "}
-              ett sted.
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] text-muted-foreground md:text-[18px]">
-              Komplett resultathistorikk fra 10 år med norsk golf. Srixon Tour,
-              OLYO, Norges Cup og Østlandstour 2016–2026 — alle runder, alle
-              tourer.
-            </p>
-
-            {/* Snapshot-tall */}
-            <div className="mx-auto mt-10 grid max-w-3xl grid-cols-3 gap-3">
-              <SnapshotKort
-                ikon={<Users className="h-4 w-4" />}
-                tall={totalSpillere.toLocaleString("nb-NO")}
-                label="Norske spillere"
-              />
-              <SnapshotKort
-                ikon={<Trophy className="h-4 w-4" />}
-                tall={totalTurneringer.toLocaleString("nb-NO")}
-                label="Turneringer"
-              />
-              <SnapshotKort
-                ikon={<Search className="h-4 w-4" />}
-                tall={totalResultater.toLocaleString("nb-NO")}
-                label="Registrerte resultater"
-              />
-            </div>
-          </div>
+      <section className="spillere-hero stats-hero">
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <StatsEyebrow tone="default">AK Golf Stats · Norsk golfdatabase</StatsEyebrow>
+          <h1>
+            Alle norske{" "}
+            <em className="stats-italic-accent">golfspillere</em>. Ett sted.
+          </h1>
+          <p className="spillere-hero-sub">
+            1 500+ spillere · 14 000+ turneringsresultater siden 2016 · oppdateres månedlig.
+          </p>
         </div>
       </section>
 
-      {/* SØK OG FILTER */}
-      <section className="border-b border-border bg-card">
-        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-          {/* Søkeboks */}
-          <form method="GET" className="flex gap-3">
-            {aar && (
-              <input type="hidden" name="aar" value={aar} />
-            )}
-            <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+      {/* STATS-STRØK */}
+      <div className="spillere-stats-strip" style={{ maxWidth: "none" }}>
+        <div style={{ display: "flex", gap: 40, maxWidth: 1280, margin: "0 auto", flexWrap: "wrap" }}>
+          <div className="spillere-stat-item">
+            <span className="spillere-stat-val">
+              {totalSpillere.toLocaleString("nb-NO")}
+            </span>
+            <span className="spillere-stat-label">Spillere i databasen</span>
+          </div>
+          <div className="spillere-stat-item">
+            <span className="spillere-stat-val">
+              {totalTurneringer.toLocaleString("nb-NO")}
+            </span>
+            <span className="spillere-stat-label">Turneringer totalt</span>
+          </div>
+          <div className="spillere-stat-item">
+            <span className="spillere-stat-val">
+              {totalResultater.toLocaleString("nb-NO")}
+            </span>
+            <span className="spillere-stat-label">Registrerte resultater</span>
+          </div>
+          <div className="spillere-stat-item">
+            <span className="spillere-stat-val">2016</span>
+            <span className="spillere-stat-label">Tidligste data</span>
+          </div>
+        </div>
+      </div>
+
+      {/* SØK + FILTER */}
+      <section className="spillere-search-section">
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          {/* Stor søkeboks */}
+          <form method="GET" style={{ maxWidth: 720 }}>
+            {aar   && <input type="hidden" name="aar"   value={aar} />}
+            {tier  && <input type="hidden" name="tier"  value={tier} />}
+            {view !== "grid" && <input type="hidden" name="view" value={view} />}
+            <div className="spillere-searchbox-wrap">
+              <Search
+                className="spillere-search-icon"
+                style={{ width: 20, height: 20 }}
+              />
               <input
                 type="search"
                 name="q"
                 defaultValue={q ?? ""}
-                placeholder="Søk etter spiller..."
+                placeholder="Søk etter navn — for eksempel «Hovland» eller «Bærum GK»…"
                 autoComplete="off"
-                className="h-10 w-full rounded-md border border-input bg-background pl-9 pr-4 text-sm placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                className="spillere-searchbox"
+                aria-label="Søk etter norsk golfspiller"
               />
+              <span className="spillere-search-hint">⌘K</span>
             </div>
-            <button
-              type="submit"
-              className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
-            >
-              Søk
-            </button>
-            {harFilter && (
-              <Link
-                href="/stats/spillere"
-                className="inline-flex h-10 items-center gap-2 rounded-md border border-border px-4 text-sm text-muted-foreground hover:text-foreground"
-              >
-                Nullstill
-              </Link>
-            )}
           </form>
 
-          {/* Årgangfilter */}
-          {aarganger.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              <span className="self-center font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                Årsklasse:
-              </span>
-              {aarganger.map((y) => (
+          {/* Filter-strip */}
+          <div className="spillere-filter-strip">
+            {/* Tier-filter */}
+            <div className="spillere-filter-group">
+              <span className="spillere-filter-label">Tier</span>
+              {TIER_CHIPS.map((chip) => {
+                const isActive = chip.id === "alle" ? !tier || tier === "alle" : tier === chip.id;
+                return (
+                  <Link
+                    key={chip.id}
+                    href={buildUrl({ tier: chip.id === "alle" ? undefined : chip.id, side: undefined })}
+                    className={`spillere-chip${isActive ? " active" : ""}`}
+                    aria-pressed={isActive}
+                  >
+                    {chip.label}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Årgangfilter */}
+            {aarganger.length > 0 && (
+              <div className="spillere-filter-group">
+                <span className="spillere-filter-label">Årgang</span>
                 <Link
-                  key={y}
-                  href={`/stats/spillere?${new URLSearchParams({
-                    ...(q ? { q } : {}),
-                    aar: String(y),
-                  }).toString()}`}
-                  className={`rounded-full px-3 py-0.5 font-mono text-[11px] font-medium transition-colors ${
-                    aar === String(y)
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
-                  }`}
+                  href={buildUrl({ aar: undefined, side: undefined })}
+                  className={`spillere-chip${!aar ? " active" : ""}`}
+                  aria-pressed={!aar}
                 >
-                  {y}
+                  Alle
                 </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* RESULTATLISTE */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-          {/* Teller */}
-          <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-            {harFilter
-              ? `${spillere.length} treff${spillere.length === 50 ? " (viser de første 50)" : ""}`
-              : `Viser ${spillere.length} av ${totalSpillere.toLocaleString("nb-NO")} spillere`}
-          </p>
-
-          {spillere.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-border bg-card/40 px-8 py-16 text-center">
-              <Users
-                className="mx-auto h-10 w-10 text-muted-foreground/40"
-                strokeWidth={1.25}
-              />
-              <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight">
-                Ingen spillere funnet
-              </h2>
-              <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-                Prøv et annet søkeord eller fjern filtrene.
-              </p>
-              <Link
-                href="/stats/spillere"
-                className="mt-6 inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary"
-              >
-                Vis alle spillere
-              </Link>
-            </div>
-          ) : (
-            <>
-              {/* Mobilvisning: cards */}
-              <div className="grid gap-3 sm:hidden">
-                {spillere.map((s) => {
-                  const klubb = parseKlubb(s.bio);
+                {aarganger.map((y) => {
+                  const isActive = aar === String(y);
                   return (
                     <Link
-                      key={s.id}
-                      href={`/stats/spillere/${s.slug}`}
-                      className="group flex items-center justify-between rounded-lg border border-border bg-card p-4 hover:border-primary/40 hover:shadow-sm"
+                      key={y}
+                      href={buildUrl({ aar: String(y), side: undefined })}
+                      className={`spillere-chip${isActive ? " active" : ""}`}
+                      aria-pressed={isActive}
                     >
-                      <div className="min-w-0">
-                        <p className="truncate font-display text-base font-semibold leading-tight tracking-tight text-foreground group-hover:text-primary">
-                          {s.name}
-                        </p>
-                        <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
-                          {[
-                            s.birthYear,
-                            klubb,
-                            formaterTier(s.tier),
-                          ]
-                            .filter(Boolean)
-                            .join(" · ")}
-                        </p>
-                      </div>
-                      <div className="ml-4 shrink-0 text-right">
-                        <p className="font-mono text-lg font-semibold tabular-nums text-foreground">
-                          {s._count.entries}
-                        </p>
-                        <p className="font-mono text-[10px] text-muted-foreground">
-                          tourer
-                        </p>
-                      </div>
+                      {y}
                     </Link>
                   );
                 })}
               </div>
+            )}
+          </div>
+        </div>
+      </section>
 
-              {/* Desktopvisning: tabell */}
-              <div className="hidden overflow-x-auto sm:block">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="pb-3 text-left font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                        Navn
-                      </th>
-                      <th className="pb-3 text-left font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                        Årsklasse
-                      </th>
-                      <th className="pb-3 text-left font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                        Klubb
-                      </th>
-                      <th className="pb-3 text-left font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                        Nivå
-                      </th>
-                      <th className="pb-3 text-right font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                        Turneringer
-                      </th>
-                      <th className="pb-3 text-right font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                        Profil
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {spillere.map((s, idx) => {
-                      const klubb = parseKlubb(s.bio);
-                      return (
-                        <tr
-                          key={s.id}
-                          className={`border-b border-border transition-colors hover:bg-secondary/30 ${
-                            idx % 2 === 0 ? "" : "bg-secondary/10"
-                          }`}
+      {/* RESULTATER */}
+      <section className="spillere-results-section">
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div className="spillere-results-header">
+            <span className="spillere-count-label">
+              {harFilter
+                ? `${spillere.length} treff${spillere.length === PAGE_SIZE ? ` (side ${side})` : ""}`
+                : `Viser ${spillere.length} av ${totalSpillere.toLocaleString("nb-NO")} spillere`}
+            </span>
+
+            {/* View-toggle */}
+            <div className="spillere-view-toggle" role="group" aria-label="Visningsmodus">
+              <Link
+                href={buildUrl({ view: "grid" })}
+                className={`spillere-view-btn${visGridBtn ? " active" : ""}`}
+                aria-pressed={visGridBtn}
+              >
+                Kort
+              </Link>
+              <Link
+                href={buildUrl({ view: "tabell" })}
+                className={`spillere-view-btn${visTabell ? " active" : ""}`}
+                aria-pressed={visTabell}
+              >
+                Tabell
+              </Link>
+            </div>
+          </div>
+
+          {spillere.length === 0 ? (
+            <div className="spillere-empty">
+              <Users style={{ width: 40, height: 40, color: "var(--s-muted-fg)", margin: "0 auto", display: "block" }} strokeWidth={1.25} />
+              <h2>Ingen spillere funnet</h2>
+              <p>Prøv et annet søkeord eller fjern filtrene.</p>
+              <Link
+                href="/stats/spillere"
+                className="spillere-chip active"
+                style={{ marginTop: 20, display: "inline-flex" }}
+              >
+                Vis alle spillere
+              </Link>
+            </div>
+          ) : visTabell ? (
+            /* TABELL-MODUS */
+            <div className="spillere-dtable-wrap">
+              <table className="spillere-dtable" aria-label="Spillerliste">
+                <thead>
+                  <tr>
+                    <th style={{ width: 40 }}>#</th>
+                    <th>Spiller</th>
+                    <th>Klubb</th>
+                    <th>Tier</th>
+                    <th>Årsklasse</th>
+                    <th className="num">Beste snitt</th>
+                    <th className="num">Turneringer</th>
+                    <th className="num"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {spillere.map((s, i) => {
+                    const klubb = parseKlubb(s.bio);
+                    return (
+                      <StatsSpillerRad
+                        key={s.id}
+                        rank={(side - 1) * PAGE_SIZE + i + 1}
+                        navn={s.name}
+                        slug={s.slug}
+                        klubb={klubb}
+                        tier={s.tier}
+                        antallTurneringer={s._count.entries}
+                        birthYear={s.birthYear}
+                      />
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            /* KORT-GRID */
+            <div className="spillere-grid">
+              {spillere.map((s) => {
+                const klubb = parseKlubb(s.bio);
+                const alder = s.birthYear ? new Date().getFullYear() - s.birthYear : null;
+
+                return (
+                  <Link
+                    key={s.id}
+                    href={`/stats/spillere/${s.slug}`}
+                    className="spillere-card"
+                    aria-label={`Se profil for ${s.name}`}
+                  >
+                    {/* Hode */}
+                    <div className="spillere-card-head">
+                      <StatsInitialAvatar name={s.name} size="sm" />
+                      <div className="spillere-card-info">
+                        <div className="spillere-card-name">{s.name}</div>
+                        <div className="spillere-card-meta">
+                          {[alder ? `${alder} år` : null, klubb]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Tier-chip */}
+                    <div className="spillere-card-chips">
+                      <span className={tierBadgeCls(s.tier)}>
+                        {formaterTierLabel(s.tier)}
+                      </span>
+                      {s.birthYear && (
+                        <span
+                          className="stats-tier-badge stats-tier-amateur"
+                          style={{ background: "transparent", border: "1px solid var(--s-border)" }}
                         >
-                          <td className="py-3 pr-4">
-                            <Link
-                              href={`/stats/spillere/${s.slug}`}
-                              className="font-display text-[15px] font-semibold tracking-tight text-foreground hover:text-primary"
-                            >
-                              {s.name}
-                            </Link>
-                          </td>
-                          <td className="py-3 pr-4 font-mono text-sm tabular-nums text-muted-foreground">
-                            {s.birthYear ?? "—"}
-                          </td>
-                          <td className="py-3 pr-4 text-sm text-muted-foreground">
-                            {klubb ?? "—"}
-                          </td>
-                          <td className="py-3 pr-4">
-                            <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-                              {formaterTier(s.tier)}
-                            </span>
-                          </td>
-                          <td className="py-3 pr-4 text-right font-mono text-sm tabular-nums text-foreground">
-                            {s._count.entries}
-                          </td>
-                          <td className="py-3 text-right">
-                            <Link
-                              href={`/stats/spillere/${s.slug}`}
-                              className="inline-flex items-center gap-1 text-xs text-primary hover:gap-2 transition-all"
-                            >
-                              Se profil
-                              <ArrowRight className="h-3 w-3" />
-                            </Link>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </>
+                          {s.birthYear}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* KPI */}
+                    <div className="spillere-card-kpi">
+                      <div className="spillere-card-kpi-item">
+                        <span className="spillere-card-kpi-label">Turneringer</span>
+                        <span className="spillere-card-kpi-val">{s._count.entries}</span>
+                      </div>
+                      <div className="spillere-card-kpi-item right">
+                        <span className="spillere-card-kpi-label">Se profil</span>
+                        <span className="spillere-card-arrow">→</span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Paginering */}
+          {spillere.length === PAGE_SIZE && (
+            <div style={{ display: "flex", gap: 8, marginTop: 32, justifyContent: "center" }}>
+              {side > 1 && (
+                <Link href={buildUrl({ side: String(side - 1) })} className="spillere-chip">
+                  ← Forrige
+                </Link>
+              )}
+              <span className="spillere-chip active" aria-current="page">
+                Side {side}
+              </span>
+              <Link href={buildUrl({ side: String(side + 1) })} className="spillere-chip">
+                Neste →
+              </Link>
+            </div>
           )}
         </div>
       </section>
 
-      {/* PLAYERHQ MERSALG */}
-      <section className="border-t border-border bg-primary text-primary-foreground">
-        <div className="mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 sm:py-16">
-          <AthleticEyebrow tone="lime">Din egen utvikling</AthleticEyebrow>
-          <h2 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-            Vil{" "}
-            <em className="font-normal italic">du</em> ha en slik profil?
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-primary-foreground/90">
-            Med PlayerHQ logger du runder, ser din egen Strokes Gained over tid,
-            og får AI-coach-analyser basert på ditt faktiske spill. 300 kr/mnd
-            — gratis de første 30 dagene.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/playerhq"
-              className="inline-flex items-center gap-2 rounded-md bg-background px-5 py-3 text-sm font-semibold text-foreground hover:bg-background/90"
-            >
-              Prøv PlayerHQ gratis i 30 dager
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/priser"
-              className="inline-flex items-center gap-2 rounded-md border border-primary-foreground/30 px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10"
-            >
-              Se priser
-            </Link>
+      {/* TOPP-20 MODUL — kun uten aktiv søk */}
+      {!harFilter && topp20.length > 0 && (
+        <section className="spillere-topp20-section">
+          <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+            <div className="stats-section-head">
+              <div>
+                <StatsEyebrow tone="default">
+                  <TrendingUp style={{ width: 12, height: 12 }} />
+                  Akkurat nå
+                </StatsEyebrow>
+                <h2 style={{ fontFamily: "var(--font-display)", fontSize: 36, fontWeight: 600, letterSpacing: "-0.025em", marginTop: 12 }}>
+                  Topp 20{" "}
+                  <em className="stats-italic-accent">norske spillere</em>
+                </h2>
+              </div>
+              <Link href="/stats/spillere?view=tabell" className="stats-section-head-link">
+                Se full tabell →
+              </Link>
+            </div>
+
+            <div className="spillere-dtable-wrap">
+              <table className="spillere-dtable" aria-label="Topp 20 norske spillere">
+                <thead>
+                  <tr>
+                    <th style={{ width: 40 }}>#</th>
+                    <th>Spiller</th>
+                    <th>Klubb</th>
+                    <th>Tier</th>
+                    <th>Årsklasse</th>
+                    <th className="num">Turneringer</th>
+                    <th className="num"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topp20.map((s, i) => {
+                    const klubb = parseKlubb(s.bio);
+                    return (
+                      <StatsSpillerRad
+                        key={s.id}
+                        rank={i + 1}
+                        navn={s.name}
+                        slug={s.slug}
+                        klubb={klubb}
+                        tier={s.tier}
+                        antallTurneringer={s._count.entries}
+                        birthYear={s.birthYear}
+                      />
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <p className="mt-6 text-xs text-primary-foreground/60">
-            Ingen kredittkort nødvendig. Avslutt når du vil.
-          </p>
+        </section>
+      )}
+
+      {/* TALENT PÅ VEI OPP */}
+      {!harFilter && TRENDING_SLUGS.length > 0 && (
+        <section className="spillere-talent-section">
+          <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+            <div className="stats-section-head">
+              <div>
+                <StatsEyebrow tone="default">Talent</StatsEyebrow>
+                <h2 style={{ fontFamily: "var(--font-display)", fontSize: 36, fontWeight: 600, letterSpacing: "-0.025em", marginTop: 12 }}>
+                  Spillere vi{" "}
+                  <em className="stats-italic-accent">følger med på</em>.
+                </h2>
+              </div>
+            </div>
+            <div className="spillere-talent-grid">
+              {/* Trendings vises her når TRENDING_SLUGS er fylt ut */}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* MERSALG-BÅND */}
+      <section className="stats-mersalg-wrap">
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div className="stats-mersalg">
+            <div>
+              <StatsEyebrow tone="lime">Din egen utvikling</StatsEyebrow>
+              <h2>
+                Vil{" "}
+                <em style={{ fontStyle: "italic", color: "var(--s-accent)" }}>
+                  du
+                </em>{" "}
+                være i databasen?
+              </h2>
+              <p>
+                Spiller du Srixon Tour, OLYO eller Norges Cup? Du er sannsynligvis allerede her.
+                Spillere som vil logge egne runder og se sin egen SG-profil over tid, gjør det i PlayerHQ.
+              </p>
+              <div className="stats-mersalg-ctas">
+                <a
+                  href="#søk"
+                  className="stats-btn stats-btn-outline stats-btn-md"
+                  onClick={undefined}
+                >
+                  Sjekk om jeg er her
+                </a>
+                <Link
+                  href="/playerhq"
+                  className="stats-btn stats-btn-outline stats-btn-md"
+                  style={{ gap: 8 }}
+                >
+                  Prøv PlayerHQ gratis
+                  <ArrowRight style={{ width: 16, height: 16 }} className="stats-btn-icon" />
+                </Link>
+              </div>
+            </div>
+            <div className="stats-mersalg-card">
+              <h4>PlayerHQ inkluderer</h4>
+              <ul>
+                <li>Logg og analyser dine egne runder</li>
+                <li>Se Strokes Gained-utvikling over tid</li>
+                <li>AI-coach-analyser basert på ditt spill</li>
+                <li>Sammenlign deg med andre norske spillere</li>
+              </ul>
+              <div className="stats-mersalg-price">
+                Fra{" "}
+                <strong>300 kr/mnd</strong> · Gratis de første 30 dagene
+              </div>
+            </div>
+          </div>
         </div>
       </section>
-    </div>
-  );
-}
 
-// ---------------------------------------------------------------------------
-// Sub-komponenter
-// ---------------------------------------------------------------------------
-
-function SnapshotKort({
-  ikon,
-  tall,
-  label,
-}: {
-  ikon: React.ReactNode;
-  tall: string;
-  label: string;
-}) {
-  return (
-    <div className="rounded-lg border border-border bg-card px-4 py-3">
-      <div className="flex items-center justify-center gap-1.5 text-primary">
-        {ikon}
-        <span className="font-mono text-2xl font-semibold tabular-nums text-foreground">
-          {tall}
-        </span>
+      {/* PERSONVERN-STRØK */}
+      <div className="spillere-gdpr-strip">
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <p className="spillere-gdpr-text">
+            Alle resultater her er hentet fra offentlige turneringer publisert av forbundene.
+            Er du, eller har du foreldreansvar for, en spiller som ikke ønsker å være i databasen?{" "}
+            <a
+              href={`mailto:akgolfgroup@gmail.com?subject=${encodeURIComponent("GDPR slett: Spillerprofil")}&body=${encodeURIComponent("Hei,\n\nJeg ønsker å få slettet informasjon fra AK Golf Stats-databasen.\n\nMvh")}`}
+              className="spillere-gdpr-link"
+            >
+              Klikk her for å be om sletting →
+            </a>
+          </p>
+        </div>
       </div>
-      <p className="mt-1 text-[11px] leading-tight text-muted-foreground">
-        {label}
-      </p>
     </div>
   );
 }

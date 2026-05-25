@@ -1,0 +1,551 @@
+/* spillere.css — scoped styles for /stats/spillere søk-side
+ * Ported from design-handoff-stats-2026-05-25 pages-a.jsx
+ * Extends stats.css tokens (--s-*)
+ */
+
+/* ─── Hero compact ─── */
+.spillere-hero {
+  padding: 72px 64px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.spillere-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 5vw, 78px);
+  line-height: 0.97;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  margin: 20px 0 0;
+  max-width: 880px;
+  text-wrap: balance;
+}
+.spillere-hero-sub {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--s-muted-fg);
+  margin-top: 20px;
+  max-width: 560px;
+}
+
+/* ─── Stats-strøk ─── */
+.spillere-stats-strip {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 24px 64px;
+  border-bottom: 1px solid var(--s-border);
+  background: var(--s-card);
+}
+.spillere-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.spillere-stat-val {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--s-fg);
+  line-height: 1;
+}
+.spillere-stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--s-muted-fg);
+  margin-top: 4px;
+}
+
+/* ─── Søkeboks-seksjon ─── */
+.spillere-search-section {
+  padding: 32px 64px 24px;
+  border-bottom: 1px solid var(--s-border);
+  background: var(--s-bg);
+}
+
+/* Stor søkeboks */
+.spillere-searchbox-wrap {
+  position: relative;
+  max-width: 720px;
+}
+.spillere-searchbox {
+  width: 100%;
+  height: 56px;
+  padding: 0 48px 0 52px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 400;
+  border: 1.5px solid var(--s-border);
+  border-radius: var(--s-r-lg);
+  background: var(--s-card);
+  color: var(--s-fg);
+  outline: none;
+  transition: border-color .18s, box-shadow .18s;
+}
+.spillere-searchbox:focus {
+  border-color: var(--s-accent);
+  box-shadow: 0 0 0 3px rgba(209, 248, 67, 0.22);
+}
+.spillere-searchbox::placeholder {
+  color: var(--s-muted-fg);
+  font-style: italic;
+}
+.spillere-search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--s-muted-fg);
+  pointer-events: none;
+}
+.spillere-search-hint {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--s-muted-fg);
+  letter-spacing: 0.06em;
+  background: var(--s-secondary);
+  border: 1px solid var(--s-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  pointer-events: none;
+}
+
+/* ─── Filter-strip ─── */
+.spillere-filter-strip {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.spillere-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.spillere-filter-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--s-muted-fg);
+  white-space: nowrap;
+}
+.spillere-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .15s;
+  border: 1px solid transparent;
+  background: var(--s-secondary);
+  color: var(--s-muted-fg);
+  white-space: nowrap;
+}
+.spillere-chip:hover {
+  background: var(--s-card);
+  border-color: var(--s-border);
+  color: var(--s-fg);
+}
+.spillere-chip.active {
+  background: var(--s-fg);
+  color: var(--s-bg);
+  border-color: var(--s-fg);
+}
+
+/* ─── Resultater-seksjon ─── */
+.spillere-results-section {
+  padding: 32px 64px;
+  border-bottom: 1px solid var(--s-border);
+}
+
+/* View-toggle */
+.spillere-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+.spillere-count-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--s-muted-fg);
+}
+.spillere-view-toggle {
+  display: flex;
+  gap: 3px;
+  background: var(--s-secondary);
+  border-radius: 999px;
+  padding: 3px;
+  border: 1px solid var(--s-border);
+}
+.spillere-view-btn {
+  padding: 6px 14px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  background: transparent;
+  border-radius: 999px;
+  color: var(--s-muted-fg);
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all .15s;
+  display: inline-flex;
+  align-items: center;
+}
+.spillere-view-btn.active {
+  background: var(--s-card);
+  color: var(--s-fg);
+  box-shadow: var(--s-shadow-sm);
+}
+
+/* ─── Spillerkort grid ─── */
+.spillere-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.spillere-card {
+  background: var(--s-card);
+  border: 1px solid var(--s-border);
+  border-radius: var(--s-r-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all .2s cubic-bezier(.4,0,.2,1);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  min-height: 200px;
+}
+.spillere-card:hover {
+  border-color: var(--s-primary);
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: var(--s-shadow-hover);
+}
+.spillere-card:hover .spillere-card-arrow { opacity: 1; transform: translateX(4px); }
+.spillere-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.spillere-card-info { flex: 1; min-width: 0; }
+.spillere-card-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--s-fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spillere-card-meta {
+  font-size: 12px;
+  color: var(--s-muted-fg);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spillere-card-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.spillere-card-kpi {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 12px;
+  border-top: 1px dashed var(--s-border);
+}
+.spillere-card-kpi-item { display: flex; flex-direction: column; gap: 2px; }
+.spillere-card-kpi-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--s-muted-fg);
+}
+.spillere-card-kpi-val {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--s-fg);
+}
+.spillere-card-kpi-item.right { align-items: flex-end; }
+.spillere-card-arrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--s-primary);
+  opacity: 0;
+  transition: opacity .2s, transform .2s;
+  align-self: flex-end;
+}
+
+/* ─── Tier badges ─── */
+.stats-tier-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.stats-tier-pro-pga {
+  background: var(--s-accent);
+  color: var(--s-accent-fg);
+}
+.stats-tier-pro {
+  background: var(--s-primary);
+  color: var(--s-primary-fg);
+}
+.stats-tier-college {
+  background: #E8F5F0;
+  color: #005840;
+  border: 1px solid rgba(0, 88, 64, 0.15);
+}
+.stats-tier-junior {
+  background: var(--s-secondary);
+  color: var(--s-muted-fg);
+}
+.stats-tier-amateur {
+  background: var(--s-secondary);
+  color: var(--s-muted-fg);
+}
+
+/* ─── DataGolf-stil tabell ─── */
+.spillere-dtable-wrap { overflow-x: auto; }
+.spillere-dtable {
+  width: 100%;
+  border-collapse: collapse;
+}
+.spillere-dtable thead th {
+  padding: 0 0 12px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--s-muted-fg);
+  font-weight: 500;
+  border-bottom: 1px solid var(--s-border);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.spillere-dtable thead th.num { text-align: right; }
+.spillere-dtable thead th:hover { color: var(--s-fg); }
+.stats-dtable-row {
+  border-bottom: 1px solid var(--s-border);
+  transition: background .15s;
+  cursor: pointer;
+}
+.stats-dtable-row:hover { background: rgba(241, 238, 229, 0.5); }
+.stats-dtable-rank {
+  padding: 12px 12px 12px 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--s-muted-fg);
+  width: 40px;
+  font-variant-numeric: tabular-nums;
+}
+.stats-dtable-name-cell {
+  padding: 10px 16px 10px 0;
+  min-width: 180px;
+}
+.stats-dtable-name-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--s-fg);
+  letter-spacing: -0.01em;
+}
+.stats-dtable-name-link:hover { color: var(--s-primary); }
+.stats-dtable-cell {
+  padding: 12px 16px 12px 0;
+  font-size: 13px;
+  color: var(--s-muted-fg);
+  white-space: nowrap;
+}
+.stats-mono-cell {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.stats-dtable-num {
+  padding: 12px 0 12px 16px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--s-fg);
+}
+.stats-dtable-action {
+  padding: 12px 0;
+  text-align: right;
+  white-space: nowrap;
+}
+.stats-dtable-se-profil {
+  font-size: 12px;
+  color: var(--s-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.stats-dtable-se-profil:hover { text-decoration: underline; }
+
+/* ─── Topp-20 modul ─── */
+.spillere-topp20-section {
+  padding: 64px;
+  border-top: 1px solid var(--s-border);
+}
+
+/* ─── Talent på vei opp ─── */
+.spillere-talent-section {
+  padding: 64px;
+  border-top: 1px solid var(--s-border);
+  background: var(--s-secondary);
+}
+.spillere-talent-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 32px;
+}
+.spillere-talent-card {
+  background: var(--s-card);
+  border: 1px solid var(--s-border);
+  border-radius: var(--s-r-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: all .2s;
+  text-decoration: none;
+  color: inherit;
+}
+.spillere-talent-card:hover {
+  border-color: var(--s-primary);
+  box-shadow: var(--s-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* ─── Trending badge ─── */
+.stats-trending-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--s-accent);
+  color: var(--s-accent-fg);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-weight: 600;
+}
+.stats-trending-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--s-accent-fg);
+  animation: stats-pulse 2s infinite;
+  flex-shrink: 0;
+}
+
+/* ─── Ingen treff ─── */
+.spillere-empty {
+  border: 1.5px dashed var(--s-border);
+  border-radius: var(--s-r-xl);
+  padding: 64px 32px;
+  text-align: center;
+}
+.spillere-empty h2 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 16px;
+  letter-spacing: -0.015em;
+}
+.spillere-empty p {
+  color: var(--s-muted-fg);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* ─── Personvern-strøk ─── */
+.spillere-gdpr-strip {
+  padding: 24px 64px;
+  border-top: 1px solid var(--s-border);
+  background: var(--s-secondary);
+}
+.spillere-gdpr-text {
+  font-size: 12.5px;
+  color: var(--s-muted-fg);
+  max-width: 760px;
+  line-height: 1.5;
+}
+.spillere-gdpr-link {
+  color: var(--s-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .spillere-hero { padding: 48px 24px 28px; }
+  .spillere-stats-strip { padding: 16px 24px; gap: 24px; }
+  .spillere-search-section { padding: 24px; }
+  .spillere-results-section { padding: 24px; }
+  .spillere-grid { grid-template-columns: repeat(2, 1fr); }
+  .spillere-talent-grid { grid-template-columns: repeat(2, 1fr); }
+  .spillere-topp20-section { padding: 40px 24px; }
+  .spillere-talent-section { padding: 40px 24px; }
+  .spillere-gdpr-strip { padding: 16px 24px; }
+}
+@media (max-width: 640px) {
+  .spillere-hero h1 { font-size: 40px; }
+  .spillere-searchbox { height: 48px; font-size: 15px; }
+  .spillere-grid { grid-template-columns: 1fr; }
+  .spillere-talent-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    padding-bottom: 8px;
+  }
+  .spillere-talent-card { flex: 0 0 80%; scroll-snap-align: start; }
+  .spillere-filter-strip { gap: 12px; }
+  .spillere-stats-strip { gap: 16px; }
+}
